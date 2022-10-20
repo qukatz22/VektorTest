@@ -1,0 +1,45 @@
+   private decimal SetPIP_ncPerUlKolOP/*_2017*/(Faktur faktur_rec)
+   {
+      // TODO: po rtransList_ForProjektCD bi trebalo ici i u prethodne godine! za radne naloge koji se protezu kroz vise godina 
+      List<Rtrans> rtransList_ForProjektCD = RtransDao.GetRtransList_ForProjektCD(TheDbConnection, faktur_rec.ProjektCD, Rtrans.artiklOrderBy_ASC);
+
+      rtransList_ForProjektCD.RemoveAll(rtr => rtr.TtAndTtNum == faktur_rec.TT_And_TtNum);
+
+      rtransList_ForProjektCD.AddRange(faktur_rec.TrnNonDel);
+
+BRO   decimal ukFinIzlaz     = rtransList_ForProjektCD.Where(rtr => rtr.T_TT == Faktur.TT_PPR).Sum(rtr => rtr.R_KC   ); // PIZ: faktur_rec.TrnSum_KCR       ; 
+NAZ   decimal ukKol_OP_Ulaz  = rtransList_ForProjektCD.Where(rtr => rtr.T_TT == Faktur.TT_PIP).Sum(rtr => rtr.R_kolOP); // PIZ: faktur_rec.TrnSum_K_PULX_ALL; 
+
+      decimal ncPerUlKolOP   = ZXC.DivSafe(ukFinIzlaz, ukKol_OP_Ulaz).Ron(4);
+
+      return  ncPerUlKolOP;
+   }
+
+ovo gore je ncPerUlKolOP 
+===========================================================================================
+ovo dole je ncPerUlKol 
+
+if(isPIP) ncPerUlKol = ncPerUlKolOP * artikl_rec.R_orgPak;
+
+===============================================================================================
+   internal static decimal Get_KoefDovrsenosti_From_RNM_PPR_PIP_list(List<Rtrans> rtrans_RNM_list, List<Rtrans> rtrans_PPR_PIP_list)
+   {
+      if(rtrans_RNM_list     == null || rtrans_RNM_list    .Count.IsZero()) return 0.00M;
+      if(rtrans_PPR_PIP_list == null || rtrans_PPR_PIP_list.Count.IsZero()) return 0.00M;
+
+      // 25.01.2017: prelazimo na kilogramsko (a ne komadno) ponderiranje stupnja dovrsenosti 
+    //return ZXC.DivSafe
+    //   (
+    //      rtrans_PPR_PIP_list.Where(rtr => rtr.T_TT == Faktur.TT_PIP).Sum(rtr => rtr.T_kol), // PIP kol / 
+    //      rtrans_RNM_list    .Where(rtr => rtr.T_TT == Faktur.TT_RNU).Sum(rtr => rtr.T_kol)  // RNU kol   
+    //   );
+      return ZXC.DivSafe
+         (
+            rtrans_PPR_PIP_list.Where(rtr => rtr.T_TT == Faktur.TT_PIP).Sum(rtr => rtr.R_kolOP), // PIP kg / 
+            rtrans_RNM_list    .Where(rtr => rtr.T_TT == Faktur.TT_RNU).Sum(rtr => rtr.R_kolOP)  // RNU kg   
+         );
+   }
+
+Postotak Dovrsenosti za Fld_ na DUC-u:
+((RNMDUC)this).Fld_RNM_StupanjDovrsenosti = ((RNMDUC)this).Fld_StatusCD == "R" ? 100M : // TODO: ovo 'R' bi trebalo trzati na LookupListin bool ... 'IsZatvoreni Status' 
+                                            100M * RtransDao.Get_KoefDovrsenosti_From_RNM_PPR_PIP_list(faktur_rec.Transes, (this as IVvRealizabeFakturDUC).RealizacijaRtransList);

@@ -1,0 +1,1922 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A4E89602-1ED6-46D2-B520-898830AF42DB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Vektor</RootNamespace>
+    <AssemblyName>Vektor</AssemblyName>
+    <StartupObject>VvForm</StartupObject>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <ManifestCertificateThumbprint>5AE42DA4BACEAD3EAD4A41784632AF97C9164FAA</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Vektor_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <TargetFrameworkProfile />
+    <PublishUrl>ftp://ftp.tellurian.hr/Vektor/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://www.tellurian.hr/viper/Vektor/</InstallUrl>
+    <UpdateUrl>http://www.tellurian.hr/viper/Vektor/</UpdateUrl>
+    <TargetCulture>hr-HR</TargetCulture>
+    <ProductName>Vektor</ProductName>
+    <PublisherName>VIPER</PublisherName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <DisallowUrlActivation>true</DisallowUrlActivation>
+    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationVersion>1.4.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>true</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>false</BootstrapperEnabled>
+    <BootstrapperComponentsLocation>Relative</BootstrapperComponentsLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=14.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.Enterprise.Framework, Version=14.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.Enterprise.InfoStore, Version=14.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=14.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=14.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=14.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="DotNetMagic, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9bf68ea376edccab, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Program Files\Crownwood Software Ltd\DotNetMagic 6.0.0\Bin\DotNetMagic.DLL</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.3.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Program Files\MySQL\MySQL Connector Net 6.3.2\Assemblies\v2.0\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessLayer\Amort.cs" />
+    <Compile Include="BusinessLayer\ArtStat.cs" />
+    <Compile Include="BusinessLayer\Atrans.cs" />
+    <Compile Include="BusinessLayer\DevTec.cs" />
+    <Compile Include="BusinessLayer\Faktur.cs" />
+    <Compile Include="BusinessLayer\Htrans.cs" />
+    <Compile Include="BusinessLayer\Kupdob.cs" />
+    <Compile Include="BusinessLayer\Osred.cs" />
+    <Compile Include="BusinessLayer\Person.cs" />
+    <Compile Include="BusinessLayer\Placa.cs" />
+    <Compile Include="BusinessLayer\Prvlg.cs" />
+    <Compile Include="BusinessLayer\Ptrane.cs" />
+    <Compile Include="BusinessLayer\Ptrano.cs" />
+    <Compile Include="BusinessLayer\Ptrans.cs" />
+    <Compile Include="BusinessLayer\Rtrano.cs" />
+    <Compile Include="BusinessLayer\Rtrans.cs" />
+    <Compile Include="BusinessLayer\Artikl.cs" />
+    <Compile Include="BusinessLayer\User.cs" />
+    <Compile Include="BusinessLayer\ZapIzvod.cs" />
+    <Compile Include="DataLayer\DS_AllColumns\DS_Ftrans_AllC.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_Ftrans_AllC.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_AllColumns\DS_Kupdob_AllC.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_Kupdob_AllC.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_AllColumns\DS_Prjkt_AllC.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_Prjkt_AllC.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findAmort.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findAmort.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findArtikl.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findArtikl.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findDevTec.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findDevTec.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findKplan.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findKplan.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findKupdob.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findKupdob.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findNalog.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findNalog.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findOsred.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findOsred.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findPerson.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findPerson.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findPlaca.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findPlaca.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findPrjkt.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findPrjkt.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findPrvlg.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findPrvlg.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findUser.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findUser.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_Reports\DS_Dnevnik.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_Dnevnik.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_Reports\DS_DnevnikAM.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_DnevnikAM.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_Reports\DS_KPI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_KPI.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_Reports\DS_Placa.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_Placa.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\DS_Reports\DS_ZapIzvod.cs">
+      <DependentUpon>DS_ZapIzvod.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataLayer\DS_Reports\DS_ZapIzvod.designer.cs">
+      <DependentUpon>DS_ZapIzvod.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayer\VvDaos\AmortDao.cs" />
+    <Compile Include="DataLayer\VvDaos\ArtStatDao.cs" />
+    <Compile Include="DataLayer\VvDaos\AtransDao.cs" />
+    <Compile Include="DataLayer\VvDaos\DevTecDao.cs" />
+    <Compile Include="DataLayer\VvDaos\FakturDao.cs" />
+    <Compile Include="DataLayer\VvDaos\HtransDao.cs" />
+    <Compile Include="DataLayer\VvDaos\OsredDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PersonDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PlacaDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PtraneDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PtranoDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PtransDao.cs" />
+    <Compile Include="DataLayer\VvDaos\ArtiklDao.cs" />
+    <Compile Include="DataLayer\VvDaos\RtranoDao.cs" />
+    <Compile Include="DataLayer\VvDaos\RtransDao.cs" />
+    <Compile Include="Framework\VvEditingControlCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvRichTextBoxToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_KKonta_New.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_KKonta_New.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_TSIpod.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_TSIpod.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_EmptyDummy.cs">
+      <DependentUpon>CR_EmptyDummy.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_KPI.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_KPI.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_NalogDocument_MjTr.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_NalogDocument_MjTr.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_NalogDocument_Obrt.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_NalogDocument_Obrt.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_NTR_RDiG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_NTR_RDiG.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_AnalitikaSKtaMT.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_AnalitikaSKtaMT.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_FinKartKD.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_FinKartKD.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_NalogDocument.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_NalogDocument.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_NTR_BilancaMP.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_NTR_BilancaMP.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_NTR_ObrPD.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_NTR_ObrPD.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_PPI.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PPI.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_PreviewIzvod.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PreviewIzvod.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_Sintetika_SCMT.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_Sintetika_SCMT.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvImpExp.cs" />
+    <Compile Include="Reports\FIZ\CR_PreviewZNP.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PreviewZNP.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\Reports_NTR.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_GeneralList.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_GeneralList.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_ListaPrjkta.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ListaPrjkta.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_PartnerFaktur.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PartnerFaktur.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_PartnerGrupTip.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PartnerGrupTip.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_PartnerKontakti.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PartnerKontakti.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_PartnerRabat.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PartnerRabat.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_PartnerSifre.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PartnerSifre.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_PartnerZiro.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PartnerZiro.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_VizitkaProsirena.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_VizitkaProsirena.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\CR_VizitKartaKD.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_VizitKartaKD.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\KIZ\Reports_KIZ.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_AmortDokument.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_AmortDokument.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_DnevnikAM.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_DnevnikAM.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_InvDiff.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_InvDiff.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_InvLista.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_InvLista.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_KOsred.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_KOsred.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_ListaPoKontu.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ListaPoKontu.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_PopisDI.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PopisDI.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_PopisDI_DD.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PopisDI_DD.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_RekapAmo.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapAmo.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\CR_RekapAmo_DD.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapAmo_DD.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\OSR\Reports_AIZ.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_DNRobrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_DNRobrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ID1obrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ID1obrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IDD1obrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IDD1obrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IDDobrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IDDobrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IDobrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IDobrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IDObrazac_Subreport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IDObrazac_Subreport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IPobrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IPobrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IPPobrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IPPobrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IPP_2010.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IPP_2010.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IsplatnaLista.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IsplatnaLista.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IsplatnaLista_080710.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IsplatnaLista_080710.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IsplatnaLista_New.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IsplatnaLista_New.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_IsplListaDrDoh.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IsplListaDrDoh.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ListaDjelatnika.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ListaDjelatnika.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ListaObustava.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ListaObustava.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ListaZaBanku.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ListaZaBanku.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ObracunDrDoh.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ObracunDrDoh.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ObracunPlace.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ObracunPlace.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ObracunPlace_2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ObracunPlace_2.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_PersonMaticni.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PersonMaticni.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_PersonPtrane.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PersonPtrane.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_PersonPtrano.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PersonPtrano.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_PersonPtrans.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PersonPtrans.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_PotvrdaDrugiDoh.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PotvrdaDrugiDoh.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_RekapitulacijaBruta.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapitulacijaBruta.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_RekapitulacijaPlacA.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapitulacijaPlacA.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_RekapPerson.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapPerson.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_RekapPlacaPoMjesecima.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapPlacaPoMjesecima.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_RSmObrazac.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RSmObrazac.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_VirmaniPlaca.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_VirmaniPlaca.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_Virmani_New.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_Virmani_New.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_ZbrojniNalogZaPr.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ZbrojniNalogZaPr.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\Reports_PIZ.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_ArtiklCard.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ArtiklCard.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_ArtiklCard_L.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ArtiklCard_L.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_RekapFaktur.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapFaktur.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_RekapTrans.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapTrans.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_RobnaKarica_AP.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RobnaKarica_AP.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_RobnaKartica_A.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RobnaKartica_A.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_RobnaKartica_B.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RobnaKartica_B.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\RIZ\Reports_RIZ.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\FTPConnection.cs" />
+    <Compile Include="UtilsEtc\FTP_lib.cs" />
+    <Compile Include="UtilsEtc\VvAboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\VvStandardTextBoxContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataLayer\VvDaos\KupdobDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PrvlgDao.cs" />
+    <Compile Include="DataLayer\VvDaos\UserDao.cs" />
+    <Compile Include="Framework\VvPref.cs" />
+    <Compile Include="Framework\VvUserControlRecord_Sub.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Framework\VvFindDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Framework\VvUserControl_Sub.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_BilancaSir.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_BilancaSir.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_BilancaUska.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_BilancaUska.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_KontniPlan.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_KontniPlan.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvReport_CR.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_AnalitkaSKta.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_AnalitkaSKta.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_Dnevnik.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_Dnevnik.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_KKonta.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_KKonta.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_KKonta_ALL.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_KKonta_ALL.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_OtvoreneStavke.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_OtvoreneStavke.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_RekapNalog.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapNalog.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CR_Sintetika_SC.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_Sintetika_SC.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\CSR_FinZaglavlje.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CSR_FinZaglavlje.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FIZ\Reports_FIZ.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvRptFilter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Framework\VvDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\DataGridViewFind.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvDtpAndCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\VvColors.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\VvColorsAndStyles.cs" />
+    <Compile Include="UtilsEtc\VvColorsStylsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\VvAES.cs" />
+    <Compile Include="Reports\FIZ\VvTestNewReport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VvTestNewReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="VvUC\FinUC\Fin_Dlg_UC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VvUC\KpdbUC\KupdobListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\KpdbUC\KupdobReportUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\FinUC\NalogListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\OsrUC\AmortDUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\OsrUC\AmortListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\OsrUC\OsredListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\OsrUC\OsredReportUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PlaUC\PersonListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PlaUC\PersonUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PlaUC\PlacaDUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PlaUC\PlacaDUC_Q.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PlaUC\PlacaListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PlaUC\PlacaReportUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\DevTecListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\DevTecUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\PrjktListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\PrvlgListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\UserListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VvUC\OsrUC\OsredUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\PrjktUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\PrvlgUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\PrjUC\UserUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\ArtiklListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\ArtiklUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\FakturDUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\FakturDucBabies.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\Faktur_OLD_DUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\FakturDUC_Q.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\RiskUC\RiskReportUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="zVvForm\Initializations_Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zVvForm\Menus_ToolStrips.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zVvForm\OnClick_EventHandlers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zVvForm\SubModulActions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zVvForm\TabControl_TabPages.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zVvForm\VvForm_Q.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VvUC\FinUC\KplanListUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BusinessLayer\Ftrans.cs" />
+    <Compile Include="BusinessLayer\Kplan.cs" />
+    <Compile Include="BusinessLayer\Nalog.cs" />
+    <Compile Include="BusinessLayer\Prjkt.cs" />
+    <Compile Include="Framework\VvDataRecord.cs" />
+    <Compile Include="DataLayer\VvDaos\FtransDao.cs" />
+    <Compile Include="DataLayer\VvDaos\KplanDao.cs" />
+    <Compile Include="DataLayer\VvDaos\NalogDao.cs" />
+    <Compile Include="DataLayer\VvDaos\PrjktDao.cs" />
+    <Compile Include="Framework\VvDaoBase.cs" />
+    <Compile Include="Framework\VvEx_CreateTableDefinitions.cs" />
+    <Compile Include="Framework\VvSQL.cs" />
+    <Compile Include="VvUC\FinUC\FinReportUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\FinUC\KplanUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VvUC\FinUC\NalogDUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="UtilsEtc\Settings.cs" />
+    <Compile Include="Framework\VvEditingControlDateTimePicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\TextToDataSet.cs" />
+    <Compile Include="Framework\VvEditingControlTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UtilsEtc\VvEnvironmentDescriptor.cs" />
+    <Compile Include="Framework\VvLookUpDialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Framework\VvTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\ZXC.cs" />
+    <Compile Include="zVvForm\VvForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Framework\VvHamper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="VvUC\KpdbUC\KupdobUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Framework\VvLookUpItem.cs" />
+    <Compile Include="Framework\VvLookUpLista.cs" />
+    <Compile Include="UtilsEtc\VvFont.cs" />
+    <Compile Include="Framework\VvTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Framework\VvUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="zVvForm\Moduls_CommandPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataLayer\DS_AllColumns\DS_Ftrans_AllC.xsc">
+      <DependentUpon>DS_Ftrans_AllC.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Ftrans_AllC.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_Ftrans_AllC.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Ftrans_AllC.xss">
+      <DependentUpon>DS_Ftrans_AllC.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Kupdob_AllC.xsc">
+      <DependentUpon>DS_Kupdob_AllC.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Kupdob_AllC.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_Kupdob_AllC.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Kupdob_AllC.xss">
+      <DependentUpon>DS_Kupdob_AllC.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Prjkt_AllC.xsc">
+      <DependentUpon>DS_Prjkt_AllC.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Prjkt_AllC.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_Prjkt_AllC.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_AllColumns\DS_Prjkt_AllC.xss">
+      <DependentUpon>DS_Prjkt_AllC.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findAmort.xsc">
+      <DependentUpon>DS_findAmort.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findAmort.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findAmort.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findAmort.xss">
+      <DependentUpon>DS_findAmort.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findArtikl.xsc">
+      <DependentUpon>DS_findArtikl.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findArtikl.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findArtikl.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findArtikl.xss">
+      <DependentUpon>DS_findArtikl.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findDevTec.xsc">
+      <DependentUpon>DS_findDevTec.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findDevTec.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findDevTec.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findDevTec.xss">
+      <DependentUpon>DS_findDevTec.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findKplan.xsc">
+      <DependentUpon>DS_findKplan.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findKplan.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findKplan.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findKplan.xss">
+      <DependentUpon>DS_findKplan.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findKupdob.xsc">
+      <DependentUpon>DS_findKupdob.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findKupdob.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findKupdob.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findKupdob.xss">
+      <DependentUpon>DS_findKupdob.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findNalog.xsc">
+      <DependentUpon>DS_findNalog.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findNalog.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findNalog.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findNalog.xss">
+      <DependentUpon>DS_findNalog.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findOsred.xsc">
+      <DependentUpon>DS_findOsred.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findOsred.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findOsred.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findOsred.xss">
+      <DependentUpon>DS_findOsred.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPerson.xsc">
+      <DependentUpon>DS_findPerson.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPerson.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findPerson.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPerson.xss">
+      <DependentUpon>DS_findPerson.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPlaca.xsc">
+      <DependentUpon>DS_findPlaca.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPlaca.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findPlaca.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPlaca.xss">
+      <DependentUpon>DS_findPlaca.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPrjkt.xsc">
+      <DependentUpon>DS_findPrjkt.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPrjkt.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findPrjkt.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPrjkt.xss">
+      <DependentUpon>DS_findPrjkt.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPrvlg.xsc">
+      <DependentUpon>DS_findPrvlg.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPrvlg.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findPrvlg.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findPrvlg.xss">
+      <DependentUpon>DS_findPrvlg.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findUser.xsc">
+      <DependentUpon>DS_findUser.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findUser.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findUser.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findUser.xss">
+      <DependentUpon>DS_findUser.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_Dnevnik.xsc">
+      <DependentUpon>DS_Dnevnik.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_Dnevnik.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_Dnevnik.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_Dnevnik.xss">
+      <DependentUpon>DS_Dnevnik.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_DnevnikAM.xsc">
+      <DependentUpon>DS_DnevnikAM.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_DnevnikAM.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_DnevnikAM.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_DnevnikAM.xss">
+      <DependentUpon>DS_DnevnikAM.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_KPI.xsc">
+      <DependentUpon>DS_KPI.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_KPI.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_KPI.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_KPI.xss">
+      <DependentUpon>DS_KPI.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_Placa.xsc">
+      <DependentUpon>DS_Placa.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_Placa.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_Placa.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_Placa.xss">
+      <DependentUpon>DS_Placa.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_ZapIzvod.xsc">
+      <DependentUpon>DS_ZapIzvod.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_ZapIzvod.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_ZapIzvod1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataLayer\DS_Reports\DS_ZapIzvod.xss">
+      <DependentUpon>DS_ZapIzvod.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\FIZ\CR_KPI.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_KPI.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_NalogDocument_MjTr.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_NalogDocument_MjTr.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_NalogDocument_Obrt.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_NalogDocument_Obrt.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_NTR_RDiG.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_NTR_RDiG.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_AnalitikaSKtaMT.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_AnalitikaSKtaMT.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_AnalitkaSKta.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_AnalitkaSKta.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_BilancaSir.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_BilancaSir.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_BilancaUska.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_BilancaUska.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_Dnevnik.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_Dnevnik.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_FinKartKD.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_FinKartKD.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_KKonta.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_KKonta.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_KKonta_ALL.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_KKonta_ALL.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_KontniPlan.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_KontniPlan.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_NalogDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_NalogDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_NTR_BilancaMP.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_NTR_BilancaMP.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_NTR_ObrPD.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_NTR_ObrPD.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_OtvoreneStavke.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_OtvoreneStavke.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_PPI.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PPI.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_PreviewIzvod.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PreviewIzvod.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_RekapNalog.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapNalog.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_Sintetika_SC.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_Sintetika_SC.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_Sintetika_SCMT.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_Sintetika_SCMT.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_PreviewZNP.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PreviewZNP.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CSR_FinZaglavlje.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CSR_FinZaglavlje.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_GeneralList.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_GeneralList.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_PartnerFaktur.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PartnerFaktur.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_PartnerGrupTip.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PartnerGrupTip.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_PartnerKontakti.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PartnerKontakti.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_PartnerRabat.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PartnerRabat.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_PartnerSifre.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PartnerSifre.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_PartnerZiro.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PartnerZiro.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_VizitkaProsirena.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_VizitkaProsirena.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_VizitKartaKD.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_VizitKartaKD.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_AmortDokument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_AmortDokument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_DnevnikAM.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_DnevnikAM.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_InvDiff.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_InvDiff.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_InvLista.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_InvLista.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_KOsred.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_KOsred.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_ListaPoKontu.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ListaPoKontu.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_PopisDI.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PopisDI.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_PopisDI_DD.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PopisDI_DD.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_RekapAmo.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapAmo.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\OSR\CR_RekapAmo_DD.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapAmo_DD.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_ArtiklCard_L.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ArtiklCard_L.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RekapTrans.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapTrans.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RobnaKarica_AP.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RobnaKarica_AP.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RobnaKartica_A.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RobnaKartica_A.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RobnaKartica_B.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RobnaKartica_B.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\fromUnix.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\ucitajOffRn.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\download.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Record\CloseAll.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importExcel_BlueCheck.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importExce_Blue.ico" />
+    <Content Include="id1-obrazac_2_0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ip-obrazac_2_0.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\next.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_undo.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_underlne.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_save.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_right.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_redo.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_paste.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_open.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_lst2icon.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_left.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_justify.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_italic.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_indent.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_hangng.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_font_sml.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_font_big.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_font.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_findRpl.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_find.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_cut.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_copy.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_centre.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\rtbx_bold.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\skip.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\IzvOk.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\pstanje.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\IzvLoad.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\temeljnica.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\delRow.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\addRow.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\calc2.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\calc.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\rename.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\empty.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_redDark.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_yellow.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_red.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_green.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_blue.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_square_yellow.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_square_red.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_square_green.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_square_blue.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_yellow.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_redDark.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_red.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_green.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_blue.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\closeCurView.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\findText.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\findPage.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\grTree.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\zoom.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\zoomW.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\zoomP.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\zoom100.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\lst.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\nxt.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\prv.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\frs.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\export.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\prnt.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\cancel.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\go.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\OffOpen.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\resize.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\tabDOWN.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\menueNO.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\menueL_red.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\menueR_red.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\filter.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\Arhiva.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Record\printPrw.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\qPrint.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\prv.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\nxt.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\lst.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\ARH_OldVer.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\ARH_NewVer.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\frs.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\fnd.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\sas.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\sav.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\esc.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\cpy.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\del.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\opn.ico">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\new.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Record\new.ico">
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{967B4E0D-AD0C-4609-AB67-0FA40C0206D8}" />
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\dirty.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\tabUP.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_BMP\DEL_1.BMP" />
+    <EmbeddedResource Include="Icons\ToolStrip_BMP\NEW_1.BMP" />
+    <EmbeddedResource Include="Icons\ToolStrip_BMP\OPEN_1.BMP" />
+    <EmbeddedResource Include="Icons\ToolStrip_BMP\VW-DTLS.BMP" />
+    <EmbeddedResource Include="Icons\ToolStrip_BMP\VW-LIST.BMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\del.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_RTB\new.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_blueRedDark.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\chckUpdate.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Surger.ico" />
+    <EmbeddedResource Include="Reports\KIZ\CR_EmptyDummy.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_EmptyDummy.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_ball_redGreenico.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\allGrid.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\blueGrid.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\placaRules.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\redGrid.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\viewChBoxGrid.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\addPeople.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\resetPlacaGrid.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importYellow.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importExcel.ico" />
+    <EmbeddedResource Include="Reports\PIZ\CR_DNRobrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_DNRobrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ID1obrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ID1obrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IDD1obrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IDD1obrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IDDobrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IDDobrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IDobrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IDobrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IPobrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IPobrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IPPobrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IPPobrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IPP_2010.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IPP_2010.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_PotvrdaDrugiDoh.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PotvrdaDrugiDoh.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_RekapPerson.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapPerson.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_RSmObrazac.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RSmObrazac.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\VvTestNewReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>VvTestNewReport.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\delAllRow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Record\DBkonekt.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importExcelChange.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\calcBruto.ico" />
+    <EmbeddedResource Include="Reports\PIZ\CR_IDObrazac_Subreport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IDObrazac_Subreport.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ObracunPlace.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ObracunPlace.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_PersonMaticni.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PersonMaticni.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_PersonPtrane.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PersonPtrane.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_PersonPtrano.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PersonPtrano.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_PersonPtrans.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PersonPtrans.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_RekapitulacijaPlacA.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapitulacijaPlacA.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_RekapPlacaPoMjesecima.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapPlacaPoMjesecima.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\xml.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importExcelOvrha.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\ovrha.ico" />
+    <EmbeddedResource Include="Reports\PIZ\CR_IsplatnaLista.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IsplatnaLista.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ListaZaBanku.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ListaZaBanku.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ObracunPlace_2.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ObracunPlace_2.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_RekapitulacijaBruta.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapitulacijaBruta.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_VirmaniPlaca.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_VirmaniPlaca.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_Virmani_New.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_Virmani_New.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ZbrojniNalogZaPr.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ZbrojniNalogZaPr.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Report\checkExcel.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\addGrid.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\importExcel_ovrha.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\opomena2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\pocetnoStanje.ico" />
+    <EmbeddedResource Include="Reports\FIZ\CR_KKonta_New.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_KKonta_New.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_TSIpod.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_TSIpod.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\KIZ\CR_ListaPrjkta.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ListaPrjkta.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IsplatnaLista_080710.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IsplatnaLista_080710.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IsplatnaLista_New.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IsplatnaLista_New.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IsplListaDrDoh.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IsplListaDrDoh.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ListaDjelatnika.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ListaDjelatnika.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ListaObustava.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ListaObustava.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ObracunDrDoh.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ObracunDrDoh.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_ArtiklCard.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ArtiklCard.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RekapFaktur.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapFaktur.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="stdole">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
+</Project>

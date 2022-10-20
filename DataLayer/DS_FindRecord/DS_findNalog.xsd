@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_findNalog" targetNamespace="http://tempuri.org/DS_findNalog.xsd" xmlns:mstns="http://tempuri.org/DS_findNalog.xsd" xmlns="http://tempuri.org/DS_findNalog.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_findNalog" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:EnforceConstraints="False" msprop:EnableTableAdapterManager="False" msprop:Generator_DataSetName="DS_findNalog" msprop:Generator_UserDSName="DS_findNalog">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="nalog" msprop:Generator_TableClassName="nalogDataTable" msprop:Generator_TableVarName="tablenalog" msprop:Generator_TablePropName="nalog" msprop:Generator_RowDeletingName="nalogRowDeleting" msprop:Generator_UserTableName="nalog" msprop:Generator_RowChangingName="nalogRowChanging" msprop:Generator_RowEvHandlerName="nalogRowChangeEventHandler" msprop:Generator_RowDeletedName="nalogRowDeleted" msprop:Generator_RowEvArgName="nalogRowChangeEvent" msprop:Generator_RowChangedName="nalogRowChanged" msprop:Generator_RowClassName="nalogRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" minOccurs="0" />
+              <xs:element name="addTS" msprop:Generator_ColumnVarNameInTable="columnaddTS" msprop:Generator_ColumnPropNameInRow="addTS" msprop:Generator_ColumnPropNameInTable="addTSColumn" msprop:Generator_UserColumnName="addTS" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="modTS" msprop:Generator_ColumnVarNameInTable="columnmodTS" msprop:Generator_ColumnPropNameInRow="modTS" msprop:Generator_ColumnPropNameInTable="modTSColumn" msprop:Generator_UserColumnName="modTS" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="addUID" msprop:Generator_ColumnVarNameInTable="columnaddUID" msprop:Generator_ColumnPropNameInRow="addUID" msprop:Generator_ColumnPropNameInTable="addUIDColumn" msprop:Generator_UserColumnName="addUID" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="modUID" msprop:Generator_ColumnVarNameInTable="columnmodUID" msprop:Generator_ColumnPropNameInRow="modUID" msprop:Generator_ColumnPropNameInTable="modUIDColumn" msprop:Generator_UserColumnName="modUID" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="dokNum" msprop:Generator_ColumnVarNameInTable="columndokNum" msprop:Generator_ColumnPropNameInRow="dokNum" msprop:Generator_ColumnPropNameInTable="dokNumColumn" msprop:Generator_UserColumnName="dokNum" type="xs:unsignedInt" minOccurs="0" />
+              <xs:element name="dokDate" msprop:Generator_ColumnVarNameInTable="columndokDate" msprop:Generator_ColumnPropNameInRow="dokDate" msprop:Generator_ColumnPropNameInTable="dokDateColumn" msprop:Generator_UserColumnName="dokDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="tt" msprop:Generator_ColumnVarNameInTable="columntt" msprop:Generator_ColumnPropNameInRow="tt" msprop:Generator_ColumnPropNameInTable="ttColumn" msprop:Generator_UserColumnName="tt" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ttNum" msprop:Generator_ColumnVarNameInTable="columnttNum" msprop:Generator_ColumnPropNameInRow="ttNum" msprop:Generator_ColumnPropNameInTable="ttNumColumn" msprop:Generator_UserColumnName="ttNum" type="xs:unsignedInt" minOccurs="0" />
+              <xs:element name="napomena" msprop:Generator_ColumnVarNameInTable="columnnapomena" msprop:Generator_ColumnPropNameInRow="napomena" msprop:Generator_ColumnPropNameInTable="napomenaColumn" msprop:Generator_UserColumnName="napomena" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="80" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="dug" msprop:Generator_ColumnVarNameInTable="columndug" msprop:Generator_ColumnPropNameInRow="dug" msprop:Generator_ColumnPropNameInTable="dugColumn" msprop:Generator_UserColumnName="dug" type="xs:decimal" minOccurs="0" />
+              <xs:element name="pot" msprop:Generator_ColumnVarNameInTable="columnpot" msprop:Generator_ColumnPropNameInRow="pot" msprop:Generator_ColumnPropNameInTable="potColumn" msprop:Generator_UserColumnName="pot" type="xs:decimal" minOccurs="0" />
+              <xs:element name="origRecID" msprop:Generator_ColumnVarNameInTable="columnorigRecID" msprop:Generator_ColumnPropNameInRow="origRecID" msprop:Generator_ColumnPropNameInTable="origRecIDColumn" msprop:Generator_UserColumnName="origRecID" type="xs:unsignedInt" minOccurs="0" />
+              <xs:element name="recVer" msprop:Generator_ColumnVarNameInTable="columnrecVer" msprop:Generator_ColumnPropNameInRow="recVer" msprop:Generator_ColumnPropNameInTable="recVerColumn" msprop:Generator_UserColumnName="recVer" type="xs:unsignedShort" minOccurs="0" />
+              <xs:element name="arAction" msprop:Generator_ColumnVarNameInTable="columnarAction" msprop:Generator_ColumnPropNameInRow="arAction" msprop:Generator_ColumnPropNameInTable="arActionColumn" msprop:Generator_UserColumnName="arAction" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="8" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="arTS" msprop:Generator_ColumnVarNameInTable="columnarTS" msprop:Generator_ColumnPropNameInRow="arTS" msprop:Generator_ColumnPropNameInTable="arTSColumn" msprop:Generator_UserColumnName="arTS" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="arUID" msprop:Generator_ColumnVarNameInTable="columnarUID" msprop:Generator_ColumnPropNameInRow="arUID" msprop:Generator_ColumnPropNameInTable="arUIDColumn" msprop:Generator_UserColumnName="arUID" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

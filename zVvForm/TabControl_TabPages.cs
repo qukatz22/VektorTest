@@ -1,0 +1,506 @@
+using System;
+using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+using Crownwood.DotNetMagic.Controls;
+using Crownwood.DotNetMagic.Forms;
+
+public /*sealed*/ partial class VvForm : DotNetMagicForm
+{
+
+   #region InitializeWorkTabControl
+
+   protected void InitializeWorkTabControl()
+   {
+      TheTabControl                   = new Crownwood.DotNetMagic.Controls.TabControl();
+      TheTabControl.Parent            = this;
+      TheTabControl.Dock              = DockStyle.Fill;
+      TheTabControl.Appearance        = VisualAppearance.MultiDocument;
+      TheTabControl.HotTrack          = true;  // ovo mece positionTop na true
+      TheTabControl.BringToFront();
+      TheTabControl.BoldSelectedPage  = true;
+      TheTabControl.OfficePixelBorder = false;
+      TheTabControl.OfficeStyle       = ZXC.vvColors.tabControl_OfficeStyle;
+      TheTabControl.Style             = ZXC.vvColors.vvform_VisualStyle;
+      ShowCloseAndArrowsDropSelectOnWorkTabControl(false);
+      TheTabControl.ClosePressed += new EventHandler(TheTabControl_ClosePressed);
+      TheTabControl.PositionTop = false;
+      TheTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
+   }
+
+   private void ShowCloseAndArrowsDropSelectOnWorkTabControl(bool _showCA)
+   {
+      TheTabControl.ShowClose      = _showCA;
+      TheTabControl.ShowArrows     = _showCA;
+      TheTabControl.ShowDropSelect = _showCA;
+   }
+
+   private void TheTabControl_ClosePressed(object sender, EventArgs e)
+   {
+      if(HasTheTabPageAnyUnsavedData(TheVvTabPage)) return;
+
+      TheVvTabPage.Dispose();
+
+      this.TheTabControl.TabPages.Remove(TheVvTabPage);
+
+      if(this.TheTabControl.TabPages.Count == 0)
+      {
+         ShowCloseAndArrowsDropSelectOnWorkTabControl(false);
+         EnableDisable_VvReportSubModuls_onCmdPanel(false, Point.Empty);
+         SetVvMenuEnabledOrDisabled_NoTabPageIsOpened();
+         foreach(ToolStrip ts in tsPanel_SubModul.Controls) ts.Visible = false;
+         aTopSetSubModul.Visible = false;
+      }
+      else
+      {
+         vvTabPage_GotFocus(null, EventArgs.Empty);
+      }
+   }
+   
+   private void CloseTabPage_CtrlW(object sender, EventArgs e)
+   {
+     if(TheTabControl.ShowClose == true) TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
+   }
+   
+   private void CloseAllOpenTabPage(object sender, EventArgs e)
+   {
+      //while(TheTabControl.ShowClose == true) TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
+      while(this.TheTabControl.TabPages.Count > 0) TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
+
+      // 11.03.2014: 
+      VvUserControl.NullifyAllSifrars();
+   }
+
+   
+
+
+   /// <summary>
+   /// Return value odgovara na pitanje 'Da li treba brejknuti ovu operaciju.'
+   /// </summary>
+   /// <param name="vvTabPage"></param>
+   /// <returns></returns>
+   public bool HasTheTabPageAnyUnsavedData(VvTabPage vvTabPage)
+   {
+      if(vvTabPage.HasUnsavedChanges)
+      {
+         if(!vvTabPage.Selected) vvTabPage.Selected = true;
+         DialogResult dr = MessageBox.Show("Da li da spremim podatke " + vvTabPage.Title + " [" + vvTabPage.TheVvDataRecord + "]?", "SPREMITI? (Da/Ne/Odustani)",
+                                           MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+         switch(dr)
+         {
+            case DialogResult.Yes:
+               bool validatedAndOK = SaveVvDataRecord(null, EventArgs.Empty); 
+               if(validatedAndOK)     return false;
+               else                   return true;
+
+            case DialogResult.No:
+               if(TheVvTabPage.TabPageKind == ZXC.VvTabPageKindEnum.RECORD_TabPage &&
+                  TheVvTabPage.WriteMode   == ZXC.WriteMode.Edit)
+               {
+                  ReleaseLock();
+               }
+
+               return false;
+
+            case DialogResult.Cancel: return true;
+
+            default: ZXC.aim_emsg("DialogResult [{0}] unsupported.", dr.ToString()); return true;
+         }
+      }
+      else // 04.08.2009: ____________________________________________________________________ 
+      {
+         if(TheVvTabPage.TabPageKind == ZXC.VvTabPageKindEnum.RECORD_TabPage &&
+            TheVvTabPage.WriteMode   == ZXC.WriteMode.Edit)
+         {
+            ReleaseLock();
+         }
+      }
+
+      return false;
+   }
+
+   private void ReleaseLock()
+   {
+      VvSQL.VvLockerInfo freshFromFile_lockerInfo = new VvSQL.VvLockerInfo(TheVvDataRecord.VirtualRecordName, TheVvDataRecord.VirtualRecID);
+
+      if(TheVvDao.IsInLocker(TheDbConnection, freshFromFile_lockerInfo, true) && // Lock exists AND Lock is mine! 
+         TheVvLockerInfo.lockID == freshFromFile_lockerInfo.lockID)
+      {
+         bool OK = TheVvDao.DeleteFromLocker(TheDbConnection, new VvSQL.VvLockerInfo(TheVvDataRecord.VirtualRecordName, TheVvDataRecord.VirtualRecID));
+
+         if(!OK) ZXC.aim_emsg("Ne mogu odlockirati zapis!");
+      }
+   }
+
+   #endregion InitializeWorkTabControl
+
+   #region CreateVvTabPage
+
+   private void CreateVvTabPage(Point xy, ZXC.VvTabPageKindEnum _tabPageKind, VvDataRecord initialVvDataRecord, uint? initialDataRecord_RecID, VvRecLstUC initialRecLstUC)
+   {
+      VvTabPage  vvTabPage;
+      VvSubModul vvSubModul = aModuli[xy.X].aSubModuls[xy.Y];
+      string     nazivTabPage;
+
+      if(ZXC.IsTEXTHOshop && vvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_IRM)
+      {
+         foreach(VvTabPage tp in TheTabControl.TabPages)
+         {
+            // 08.07.2015: ma, jos stroze! 
+          //if(tp.TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_IRM && tp.HasUnsavedChanges)
+            if(tp.TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_IRM                        )
+            {
+             //ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne možete otvarati novi IRM ekran\n\ndok imate prethodno otvoreni IRM ekran sa nespremljenim raèunom.\n\n(IRM TabPage sa crvenim uskliènikom)\n\nVratite se na taj TabPage (ekran) te usnimite raèun ili odustanite sa 'Odustani - Esc'.");
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne možete otvarati novi IRM ekran\n\ndok imate prethodno otvoreni.\n\nKoristite onoga veæ otvorenog.");
+               return;
+            }
+         }
+      }
+
+      ats_SubModulSet[xy.X][xy.Y].Parent = tsPanel_SubModul;
+
+      if(tsCbxVvDataBase.SelectedItem == null)
+      {
+         MessageBox.Show("Odaberite, molim, projekt.");
+         return;
+      }
+
+      if(vvSubModul.subModulEnum == ZXC.VvSubModulEnum.PRJ)
+      {
+         nazivTabPage = "PROJEKTI";//vvSubModul.subModul_shortName;
+      }
+      else if(vvSubModul.modulEnum == ZXC.VvModulEnum.MODUL_PRIJEM || vvSubModul.modulEnum == ZXC.VvModulEnum.MODUL_OPRANA)
+      {
+         nazivTabPage = vvSubModul.subModul_shortName;
+      }
+      else
+      {
+         nazivTabPage = vvSubModul.subModul_shortName + " [" + ZXC.TheVvDatabaseInfoIn_ComboBox4Projects.ProjectName + "]";
+      }
+      /* *                                                                                                                                                */
+      /* */
+      /* */ vvTabPage = new VvTabPage(this, nazivTabPage, xy, _tabPageKind, TheTabControl, initialVvDataRecord, initialDataRecord_RecID, initialRecLstUC);
+      /* */
+      /* *                                                                                                                                                */
+ 
+      if(vvTabPage.TheDbConnection == null || vvTabPage.TheDbConnection.State != System.Data.ConnectionState.Open) return;
+
+      if(TheTabControl.SelectedTab == null) return;
+
+      // preselili u constructor VvTabPage da izbjegnemo kokos/jaje...     vvTabPage.Selected = true;
+
+      ShowCloseAndArrowsDropSelectOnWorkTabControl(true);
+
+      // preselio u constructor vvTabPage-a zbog dbConnection 
+      //TheTabControl.TabPages.Add(vvTabPage);
+
+
+      switch(vvTabPage.TabPageKind)
+      {
+         case ZXC.VvTabPageKindEnum.RECORD_TabPage:
+            SetSorterComboBox();
+            break;
+
+         case ZXC.VvTabPageKindEnum.REPORT_TabPage:
+            SetReportComboBox((Point)vvTabPage.Tag, 0);
+            break;
+
+         case ZXC.VvTabPageKindEnum.RecLIST_TabPage:
+            break;
+      }
+
+      // 25.11.2009: 
+      //vvTabPage.Fld_PrjktNaziv = ZXC.TheVvDatabaseInfoIn_ComboBox4Projects.ProjectName; // TamponPanel_Header
+      vvTabPage.Fld_PrjktNaziv = vvTabPage.TheDbConnection.Database; // TamponPanel_Header
+
+      vvTabPage.GotFocus += new EventHandler(vvTabPage_GotFocus); // potreban zbog SorterComboBoxa jerbo se inace izgubi
+   }
+
+   private void vvTabPage_GotFocus(object sender, EventArgs e)
+   {
+      //VvTabPage vvTabPage = sender as VvTabPage;
+      //Point xy = (Point)vvTabPage.Tag;
+
+      if(TheVvTabPage.TabPageKind == ZXC.VvTabPageKindEnum.RECORD_TabPage) SetSorterComboBox();
+
+      if(TheVvTabPage.TabPageKind == ZXC.VvTabPageKindEnum.REPORT_TabPage) SetReportComboBox(TheVvTabPage.SubModul_xy, tsCbxReport.SelectedIndex);
+
+      // note: vvTabPage (tj. 'sender') NIJE jednako TheVvTabPage-u u slucaju kada se upravo 'radja' novi tab page sa nekog FindDialog-a     
+      // jer onaj TabPage sa kojega je otvaran Find privremeno dobije focus gasenjem find-a, a selectedTabPage od TabControle je vec novi TP 
+   }
+
+   #endregion CreateVvTabPage
+
+   #region Open New Record/Report/RecList TabPage
+
+   public void OpenNew_Record_TabPage(Point xy, uint? initialDataRecord_RecID)
+   {
+      CreateVvTabPage(xy, ZXC.VvTabPageKindEnum.RECORD_TabPage, null, initialDataRecord_RecID, null);
+   }
+
+   public void OpenNew_Record_TabPage_wInitialRecord(Point xy, VvDataRecord initialVvDataRecord)
+   {
+      CreateVvTabPage(xy, ZXC.VvTabPageKindEnum.RECORD_TabPage, initialVvDataRecord, null, null);
+   }
+
+   public void OpenNew_RecLst_TabPage(Point xy, VvRecLstUC recLstUC)
+   {
+      CreateVvTabPage(xy, ZXC.VvTabPageKindEnum.RecLIST_TabPage, null, null, recLstUC);
+   }
+
+   private void OpenNew_Report_TabPage(Point xy)
+   {
+      SetVisibilitiOfReportModulButton(xy);
+
+      CreateVvTabPage(xy, ZXC.VvTabPageKindEnum.REPORT_TabPage, null, null, null);
+
+      VvFormResize();
+
+   }
+
+   public void OpenNew_Other_TabPage(Point xy)
+   {
+      CreateVvTabPage(xy, ZXC.VvTabPageKindEnum.OTHER_TabPage, null, null, null);
+   }
+
+   public void SetVisibilitiOfReportModulButton(Point xy)
+   {
+      VvSubModul subModul = GetVvSubModulFrom_PointXY(xy);
+
+      for(int z = 0; z < subModul.aRptSubModuls.Length; z++)
+      {
+         aReportModulButton[xy.X][xy.Y][z].Visible = true;
+
+         aModulPanel[xy.X].Size = new Size(modulPanel.Width - 2 * margin4modul,
+                                           aModuli[xy.X].aSubModuls.Length * aSubModulButton[xy.X][xy.Y].Height
+                                           + subModul.aRptSubModuls.Length * aReportModulButton[xy.X][xy.Y][z].Height);
+
+      }
+      
+      OrganizeModulButtons(xy.X, true);
+
+#region Tree
+      aTreeNode0_Modul[xy.X].Expand();
+      aTreeNode1_SubModul[xy.X][xy.Y].Expand();
+      //da li da druge Colapsam
+#endregion Tree
+
+   }
+
+   #endregion OpenNew_Record_Report_TabPage
+
+   #region SubModulSet_EnableOrDisable_TSButtonsAndTSMnItems
+
+   public void SubModulSet_EnableOrDisable_TSButtonsAndTSMnItems()
+   {
+      ZXC.VvSubModulEnum vvModul = TheVvTabPage.TheVvSubModul.subModulEnum;
+
+      switch(vvModul)
+      {
+         case ZXC.VvSubModulEnum.PRJ: Prjkt_SubModul_EnableOrDisable_TSButtonsAndTSMnItems(); 
+                                      break;
+
+         //default                 : ZXC.aim_emsg("POI: VvSubModulEnum {0} still undone in SubModulSet_EnableOrDisable_TSButtonsAndTSMnItems()", vvModul);
+         //                          break;
+      }
+   }
+
+   #endregion SubModulSet_EnableOrDisable_TSButtonsAndTSMnItems
+   
+   #region AnySubModulSet_EnableOrDisable_TSButtonsAndTSMnItems
+
+   #region Prjkt_SubModul_EnableOrDisable_TSButtonsAndTSMnItems\
+
+   public void Prjkt_SubModul_EnableOrDisable_TSButtonsAndTSMnItems()
+   {
+      Point xy     = (Point)TheVvTabPage.Tag;
+      ToolStrip ts = ats_SubModulSet[xy.X][xy.Y];
+
+      bool shouldDisableCreationButton;
+
+      shouldDisableCreationButton =
+        VvSQL.CHECK_DATABASE_EXISTS(TheVvTabPage.TheDbConnection, ZXC.VvDB_NameConstructor(ZXC.projectYear, ((Prjkt)TheVvDataRecord).Ticker, ((Prjkt)TheVvDataRecord).KupdobCD/*RecID*/));
+
+      SetEnabled_SubModulSet_JOB(ts.Items["ceateDB"], !shouldDisableCreationButton);
+      SetEnabled_SubModulSet_JOB(ts.Items["activDB"], shouldDisableCreationButton);
+      if(ZXC.ThisIsVektorProject)
+      {
+         SetEnabled_SubModulSet_JOB(ts.Items["initNY"], shouldDisableCreationButton);
+         SetEnabled_SubModulSet_JOB(ts.Items["amortNY"], shouldDisableCreationButton);
+      }
+   }
+
+   #endregion Prjkt_SubModul_EnableOrDisable_TSButtonsAndTSMnItems
+
+   #region SetEnabled_SubModulSet_JOB
+
+   private void SetEnabled_SubModulSet_JOB(object item, bool enabled)
+   {
+      if(item.GetType() != typeof(ToolStripButton)) return;
+
+      ToolStripButton tsb = (ToolStripButton)item;
+     // ZXC.Koordinata_3D xyz = (ZXC.Koordinata_3D)tsb.Tag;
+      ToolStripMenuItem mi = (ToolStripMenuItem)tsb.Tag;
+      tsb.Enabled = mi.Enabled = enabled;
+      //atsBtn_SubModulSet[xyz.X][xyz.Y][xyz.Z].Enabled = aSubModulSet_menuItem[xyz.X][xyz.Y][xyz.Z].Enabled = enabled;
+   }
+
+   #endregion SetEnabled_SubModulSet_JOB
+
+   #endregion AnySubModulSet_EnableOrDisable_TSButtonsAndTSMnItems
+
+   #region Report_SubModul_EnableOrDisable_TSButtonsAndTSMnItems VisibitiTs_Report
+
+   public void Report_SubModul_EnableOrDisable_TSButtonsAndTSMnItems(ZXC.ReportMode reportMode, bool isReportTabPage)
+   {
+      ToolStrip ts = ts_Report;
+
+      if(isReportTabPage) SetEnabled_ProgresBarAnd_DropDowns(reportMode);
+
+      SetEnabled_ReportControls_JOB(ts.Items["GO"]          , (reportMode == ZXC.ReportMode.Working ||
+                                                               reportMode == ZXC.ReportMode.Canceling) ? false : true);
+      SetEnabled_ReportControls_JOB(ts.Items["Cancel"]      ,  reportMode == ZXC.ReportMode.Working    ? true : false);
+      
+      SetEnabled_ReportControls_JOB(ts.Items["Print"]       , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["Export"]      , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["PDF"]         , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+    // 15.09.2016.
+    //SetEnabled_ReportControls_JOB(ts.Items["SgnPDF"]      , (reportMode == ZXC.ReportMode.Done || 
+    //                                                                               !isReportTabPage) ? true : false);
+    //SetEnabled_ReportControls_JOB(ts.Items["SgnPDFVisibl"], (reportMode == ZXC.ReportMode.Done || 
+    //                                                                               !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["PDFnaMail"]   , (reportMode == ZXC.ReportMode.Done ||
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["PDFManager"]  , (reportMode == ZXC.ReportMode.Done ||
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["Frst"]        , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["Prev"]        , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["Next"]        , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["Last"]        , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["Zoom100"]     , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["PageWidth"]   , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["WholePage"]   , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["GroupTree"]   , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["FindPage"]    , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["FindText"]    , (reportMode == ZXC.ReportMode.Done || 
+                                                                                     !isReportTabPage) ? true : false);
+      SetEnabled_ReportControls_JOB(ts.Items["ColseCurView"], (reportMode == ZXC.ReportMode.Done ||
+                                                                                     !isReportTabPage) ? true : false);
+      if(TheVvUC is VirmanDUC)
+      {
+         SetEnabled_ReportControls_JOB(ts.Items["ToTXTorXML"], true);
+      }
+      // 18.06.2019: za eRacun umetnut ovaj else if 
+      else if(TheVvUC is FakturDUC && TheVvRecordUC.TheVvReport.IsForExport)
+      {
+         SetEnabled_ReportControls_JOB(ts.Items["ToTXTorXML"], true);
+      }
+      else
+      {
+       //SetEnabled_ReportControls_JOB(ts.Items["ToTXTorXML"], (reportMode == ZXC.ReportMode.Done && isReportTabPage &&                          TheVvReportUC.TheVvReport != null)
+         SetEnabled_ReportControls_JOB(ts.Items["ToTXTorXML"], (reportMode == ZXC.ReportMode.Done && isReportTabPage && TheVvReportUC != null && TheVvReportUC.TheVvReport != null)
+            ?
+            TheVvReportUC.TheVvReport.IsForExport :
+            false);
+      }
+
+      zoomButton_OnReport.Enabled = mi_ReportZoom.Enabled = ((reportMode == ZXC.ReportMode.Done ||
+                                                                                     !isReportTabPage) ? true : false);
+
+   }
+
+   private void SetEnabled_ProgresBarAnd_DropDowns(ZXC.ReportMode reportMode)
+   {
+
+      if(ZXC.TheVvForm.numberOfRunningWorkers > 0 ||
+             reportMode == ZXC.ReportMode.Working ||
+             reportMode == ZXC.ReportMode.Canceling)
+      {
+         progressBar.Visible = true;
+      }
+      else
+      {
+         progressBar.Visible = false;
+      }
+
+      if(reportMode == ZXC.ReportMode.Working) progressBar.MarqueeAnimationSpeed = 50;
+
+      tsCbxReport.Enabled = (reportMode == ZXC.ReportMode.Working ||
+                             reportMode == ZXC.ReportMode.Canceling ? false : true);
+
+      // Dear Tamara, ovo dole dize Exception kada cekas kraj izvjestaja na nekim drugom Tabpage-u 
+      // if (reportMode == ZXC.ReportMode.Done || reportMode == ZXC.ReportMode.Canceling) TheVvReportUC.Label_reportInProgressMessage.Visible = false;
+      // metoda dolje ispravlja ovo gore + linija 247 na VvTabPage
+   }
+
+   //private void SetLabel_reportInProgressMessageVisible(ZXC.ReportMode reportMode)
+   //{
+   //   if(reportMode == ZXC.ReportMode.Done || reportMode == ZXC.ReportMode.Canceling) TheVvReportUC.Label_reportInProgressMessage.Visible = false;
+   //}
+
+   /*private*/internal void SetEnabled_ReportControls_JOB(object item, bool enabled)
+   {
+      if(item.GetType() != typeof(ToolStripButton)) return;
+
+      ToolStripButton tsb = (ToolStripButton)item;
+      Point xy            = (Point)tsb.Tag;
+
+      atsBtn_RecordRep[xy.X][xy.Y].Enabled = aSubTopMenuItem[xy.X][xy.Y].Enabled = enabled;
+   }
+
+   public void ToolStripReportVisible_tsBtnOnTsReportVisible(bool isOnReportUC, ZXC.ReportMode reportMode, bool openVisible)
+   {
+      ts_Report.Items["Open"].Visible            = openVisible;
+      reportTopMenuItem.DropDownItems["Open"].Visible = false;
+
+      ts_Report.Items["GO"].             Visible =
+      ts_Report.Items["Cancel"].         Visible =
+      ts_Report.Items["tsCbxReport"].       Visible =
+      reportTopMenuItem.DropDownItems["GO"].Visible =
+      reportTopMenuItem.DropDownItems["Cancel"].Visible = isOnReportUC;
+
+
+      Report_SubModul_EnableOrDisable_TSButtonsAndTSMnItems(reportMode, isOnReportUC);
+   }
+
+   #endregion Report_SubModul_EnableOrDisable_TSButtonsAndTSMnItems
+
+   #region VisibiltiOfTsReportAndTsSubModulSet
+   
+   public void VisibiltiOfTsReportAndTsSubModulSet(Point xy, bool isReportViewerTabPage)
+   {
+      ts_Report.        Visible = isReportViewerTabPage;
+      reportTopMenuItem.Visible = isReportViewerTabPage;
+
+      ats_SubModulSet[xy.X][xy.Y].         Visible = !isReportViewerTabPage;
+      aTopMenuItem_SubModulSet[xy.X][xy.Y].Visible = !isReportViewerTabPage;
+
+      if(isReportViewerTabPage)
+      {
+         ts_Report.                  Dock = DockStyle.Left;
+         ats_SubModulSet[xy.X][xy.Y].Dock = DockStyle.Right;
+         ts_Report.Location = new Point(3, 0); // tamtam 30.9 provremno rj da ne plese/ 25.1.2010.
+      }
+      else
+      {
+         ats_SubModulSet[xy.X][xy.Y].Dock = DockStyle.Left;
+         ts_Report.                  Dock = DockStyle.Right;
+         ats_SubModulSet[xy.X][xy.Y].Location = new Point(3, 0); // tamtam 30.9 provremno rj da ne plese/ 25.1.2010.
+
+      }
+   }
+
+   #endregion VisibiltiOfTsReportAndTsSubModulSet
+}

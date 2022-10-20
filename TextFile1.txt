@@ -1,0 +1,155 @@
+A. Daj listu: sve IRA, IFA, IOD, IPV + MIR - grupirani
+
+(
+SELECT *
+FROM        faktur L
+LEFT  JOIN  faktEx R
+
+ON L.RecID = R.fakturRecID
+
+WHERE tt IN ('IRA', 'IFA', 'IOD', 'IPV')
+
+AND   pdvDate >= '2011-01-01'
+AND   pdvDate <= '2011-02-28'
+
+AND   pdvKnjiga = 1
+)
+
+UNION
+
+(
+SELECT *
+FROM        faktur L
+LEFT  JOIN  faktEx R
+
+ON L.RecID = R.fakturRecID
+
+WHERE tt = 'MIR'
+
+AND   pdvDate >= '2011-01-01'
+AND   pdvDate <= '2011-02-28'
+
+AND   pdvKnjiga = 1
+
+GROUP BY pdvDate
+)
+
+ORDER BY pdvDate
+==========================================================================================================================================
+
+B. Daj SUM-u razdoblja (koristi se za PDV obrazac i ide 2 puta, 1. za URA, UFA, ... 2. za MIR, IRA, IFA, ...
+OVO SE NE KORISTI za Knjigu URA/IRA nego se tamo suma dobije iz LIST-e
+
+Tu NE IDE filterMember 'pdvKnjiga' !
+
+SELECT 
+SUM(s_ukK      ) as s_ukK      , SUM(s_ukKC     ) as s_ukKC     , SUM(s_ukKCRMP  ) as s_ukKCRMP  , SUM(s_ukKCRM   ) as s_ukKCRM   , SUM(s_ukKCR    ) as s_ukKCR    , SUM(s_ukRbt1   ) as s_ukRbt1   , SUM(s_ukRbt2   ) as s_ukRbt2   , 
+SUM(s_ukZavisni) as s_ukZavisn , SUM(s_ukPdv23m ) as s_ukPdv23m , SUM(s_ukPdv23n ) as s_ukPdv23n , SUM(s_ukPdv22m ) as s_ukPdv22m , SUM(s_ukPdv22n ) as s_ukPdv22n , SUM(s_ukPdv10m ) as s_ukPdv10m , SUM(s_ukPdv10n ) as s_ukPdv10n , 
+SUM(s_ukOsn23m ) as s_ukOsn23m , SUM(s_ukOsn23n ) as s_ukOsn23n , SUM(s_ukOsn22m ) as s_ukOsn22m , SUM(s_ukOsn22n ) as s_ukOsn22n , SUM(s_ukOsn10m ) as s_ukOsn10m , SUM(s_ukOsn10n ) as s_ukOsn10n , SUM(s_ukOsn0   ) as s_ukOsn0   , 
+SUM(s_ukOsnPr  ) as s_ukOsnPr  , SUM(s_ukMrz    ) as s_ukMrz    , SUM(s_ukPdv    ) as s_ukPdv    , SUM(s_ukOsn07  ) as s_ukOsn07  , SUM(s_ukOsn08  ) as s_ukOsn08  , SUM(s_ukOsn09  ) as s_ukOsn09  , SUM(s_ukOsn10  ) as s_ukOsn10  , 
+SUM(s_ukOsn11  ) as s_ukOsn11  , SUM(s_ukOsnUr23) as s_ukOsnUr23, SUM(s_ukOsnUu10) as s_ukOsnUu10, SUM(s_ukOsnUu22) as s_ukOsnUu22, SUM(s_ukOsnUu23) as s_ukOsnUu23, SUM(s_ukPdvUr23) as s_ukPdvUr23, SUM(s_ukPdvUu10) as s_ukPdvUu10, 
+SUM(s_ukPdvUu22) as s_ukPdvUu22, SUM(s_ukPdvUu23) as s_ukPdvUu23, COUNT(*)         as s_recCount   
+
+FROM  faktur L 
+
+LEFT JOIN  faktEx R 
+
+ON L.RecID = R.fakturRecID
+ 
+WHERE tt IN ('MIR', 'IRA', 'IFA', 'IOD', 'IPV') 
+AND   pdvDate >= '2011-02-01' 
+AND   pdvDate <= '2011-02-28'
+
+===============================================================================================
+
+C. Daj KUMULATIVNU SUM-u od pocetka godine
+
+SELECT
+(
+  SELECT
+  # number of IRA,IFA,IOD,IPV lines
+  COUNT(*) +
+
+  (
+    SELECT COUNT(DISTINCT pdvDate)
+    # number of MIR groupped by pdvDate lines
+    FROM        faktur L
+    LEFT  JOIN  faktEx R
+
+    ON L.RecID = R.fakturRecID
+
+    WHERE tt = 'MIR'
+    AND   pdvDate >= '2011-01-01'
+    AND   pdvDate <= '2011-02-28'
+    AND   pdvKnjiga = 1
+  )
+
+  FROM       faktur L
+  LEFT JOIN  faktEx R
+
+  ON L.RecID = R.fakturRecID
+
+  WHERE tt IN ('IRA', 'IFA', 'IOD', 'IPV')
+  AND   pdvDate >= '2011-01-01'
+  AND   pdvDate <= '2011-02-28'
+  AND   pdvKnjiga = 1
+) AS s_lineCount,
+
+
+SUM(s_ukK      ), SUM(s_ukKC     ), SUM(s_ukKCRMP  ), SUM(s_ukKCRM   ), SUM(s_ukKCR    ), SUM(s_ukRbt1   ), SUM(s_ukRbt2   ), SUM(s_ukZavisni),
+SUM(s_ukPdv23m ), SUM(s_ukPdv23n ), SUM(s_ukPdv22m ), SUM(s_ukPdv22n ), SUM(s_ukPdv10m ), SUM(s_ukPdv10n ), SUM(s_ukOsn23m ), SUM(s_ukOsn23n ),
+SUM(s_ukOsn22m ), SUM(s_ukOsn22n ), SUM(s_ukOsn10m ), SUM(s_ukOsn10n ), SUM(s_ukOsn0   ), SUM(s_ukOsnPr  ), SUM(s_ukMrz    ), SUM(s_ukPdv    ),
+SUM(s_ukOsn07  ), SUM(s_ukOsn08  ), SUM(s_ukOsn09  ), SUM(s_ukOsn10  ), SUM(s_ukOsn11  ), SUM(s_ukOsnUr23), SUM(s_ukOsnUu10), SUM(s_ukOsnUu22),
+SUM(s_ukOsnUu23), SUM(s_ukPdvUr23), SUM(s_ukPdvUu10), SUM(s_ukPdvUu22), SUM(s_ukPdvUu23)
+
+FROM  faktur L
+LEFT JOIN  faktEx R
+
+ON L.RecID = R.fakturRecID
+
+WHERE tt IN ('MIR', 'IRA', 'IFA', 'IOD', 'IPV')
+AND   pdvDate >= '2011-01-01'
+AND   pdvDate <= '2011-02-28'
+AND   pdvKnjiga = 1
+
+
+
+
+(s_ukK      ) as s_ukK     ,
+(s_ukKC     ) as s_ukKC    ,
+(s_ukKCRMP  ) as s_ukKCRMP ,
+(s_ukKCRM   ) as s_ukKCRM  ,
+(s_ukKCR    ) as s_ukKCR   ,
+(s_ukRbt1   ) as s_ukRbt1  ,
+(s_ukRbt2   ) as s_ukRbt2  ,
+(s_ukZavisni) as s_ukZavisn,
+(s_ukPdv23m ) as s_ukPdv23m,
+(s_ukPdv23n ) as s_ukPdv23n,
+(s_ukPdv22m ) as s_ukPdv22m,
+(s_ukPdv22n ) as s_ukPdv22n,
+(s_ukPdv10m ) as s_ukPdv10m,
+(s_ukPdv10n ) as s_ukPdv10n,
+(s_ukOsn23m ) as s_ukOsn23m,
+(s_ukOsn23n ) as s_ukOsn23n,
+(s_ukOsn22m ) as s_ukOsn22m,
+(s_ukOsn22n ) as s_ukOsn22n,
+(s_ukOsn10m ) as s_ukOsn10m,
+(s_ukOsn10n ) as s_ukOsn10n,
+(s_ukOsn0   ) as s_ukOsn0  ,
+(s_ukOsnPr  ) as s_ukOsnPr ,
+(s_ukMrz    ) as s_ukMrz   ,
+(s_ukPdv    ) as s_ukPdv   ,
+(s_ukOsn07  ) as s_ukOsn07  ,
+(s_ukOsn08  ) as s_ukOsn08  ,
+(s_ukOsn09  ) as s_ukOsn09  ,
+(s_ukOsn10  ) as s_ukOsn10  ,
+(s_ukOsn11  ) as s_ukOsn11  ,
+(s_ukOsnUr23) as s_ukOsnUr23,
+(s_ukOsnUu10) as s_ukOsnUu10,
+(s_ukOsnUu22) as s_ukOsnUu22,
+(s_ukOsnUu23) as s_ukOsnUu23,
+(s_ukPdvUr23) as s_ukPdvUr23,
+(s_ukPdvUu10) as s_ukPdvUu10,
+(s_ukPdvUu22) as s_ukPdvUu22,
+(s_ukPdvUu23) as s_ukPdvUu23,
+0             as s_lineCount

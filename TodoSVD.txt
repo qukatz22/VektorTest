@@ -1,0 +1,28 @@
+foreach(Faktur UGOfaktur in TheFakturList)
+
+    - UGO TtNum
+    - UGO KupdobName
+    - UGO KupdobCd
+    - UGO VezniDok ('Ugovor')
+    - UGO DokDate
+    - UGO DospDate
+    - UGO Napomena .. ako stane
+
+    foreach(Rtrans UGOrtrans in UGOfaktur.Transes)
+        
+        - UGO T_ArtiklCD
+        - UGO T_ArtiklName
+        - UGO T_Kol
+        - UGO T_Cij
+        - UGO T_PdvSt
+        - UGO R_KCRP
+
+        foreach(Rtrans URArtrans in URArtransList_For_UGO_Artikl)
+
+            - URA T_TtNum
+            - URA T_skladDate
+            - URA T_Kol
+            - URA T_Cij
+            - URA T_RbtSt
+            - URA T_PdvSt
+            - URA R_KCRP

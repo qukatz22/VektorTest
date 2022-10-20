@@ -1,0 +1,8065 @@
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
+using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
+
+#if MICROSOFT
+using                  System.Data.SqlClient;
+using XSqlConnection = System.Data.SqlClient.SqlConnection;
+#else
+using                  MySql.Data.MySqlClient;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
+using System.Reflection;
+using System.Text;
+using System.IO;
+#endif
+
+public struct TtInfo
+{
+   #region General Propertiz
+
+   public string TheTT          { get; set; }
+   public short  TtSort         { get; set; }
+   public bool   IsSklCdInTtNum { get; set; }
+   public bool   IsYearInTtNum  { get; set; }
+
+   public Point              DefaultSubModulXY   { get; set; }
+   public ZXC.VvSubModulEnum DefaultSubModulEnum { get; set; }
+
+   public bool IsFinKol_U  { get; set; }
+   public bool IsFinKol_I  { get; set; }
+   public bool IsFinKol_PS { get; set; }
+   public bool IsFinKol_TT { get { return (IsFinKol_PS || IsFinKol_U || IsFinKol_I); } }
+   
+   public bool IsKolOnly_U  { get; set; } // 'Skladistari' ili Korekcija kolicine
+   public bool IsKolOnly_I  { get; set; } 
+   public bool IsKolOnly_TT { get { return (IsKolOnly_U || IsKolOnly_I); } }
+
+   public bool IsAnyKol_I { get { return IsFinKol_I || IsKolOnly_I; } }
+
+   public string TwinTT  { get; set; }
+   public bool HasTwinTT { get { return TwinTT.NotEmpty(); } } // Medjuskladisnice 
+
+   public string SplitTT  { get; set; }
+   public bool HasSplitTT { get { return SplitTT.NotEmpty(); } } // Proizvodnja 
+
+   public string ShadowTT { get; set; }
+   /// <summary>
+   /// PSM, KLK, URM, IRM
+   /// </summary>
+   public bool HasShadowTT { get { return ShadowTT.NotEmpty(); } } // Implicitne Nivelacije VMU namjerno nije ovdje, do dalnjega 
+
+   public bool IsIzlazniShadowTT { get { return HasShadowTT && ShadowTT == Faktur.TT_NIV; } }
+   public bool IsUlazniShadowTT  { get { return HasShadowTT && ShadowTT == Faktur.TT_NUV; } }
+
+   public bool IsPreDef        { get; set; }
+   public bool IsRezervKol     { get; set; }
+   public bool IsInventura     { get; set; }
+   public bool IsNivelacijaZPC { get; set; }
+
+   public bool IsInternUlaz { get { return IsInternUlaz_FromOneIzlaz || IsInternUlaz_FromManyIzlaz; } }
+
+   public bool IsInternUI { get { return IsInternUlaz || IsInternIzlaz; } }
+
+   // TODO: !!! da li su KIZ i KUL 'IsAllSkladFinKol_U' 
+   /// <summary>
+   /// Eksterni (vanjski) promet ONLY. Povecava stanje s obzirom na sva skladista kao jedno. InterniUlaz tu NE spada. PST tu NE spada.
+   /// </summary>
+   public bool IsAllSkladFinKol_U { get { return (IsFinKol_U == true && IsFinKol_PS == false && IsInternUlaz == false && IsNivelacijaZPC == false); } }
+
+   /// <summary>
+   /// Eksterni (vanjski) promet ONLY. Smanjuje stanje s obzirom na sva skladista kao jedno. InterniIzlaz tu NE spada.
+   /// </summary>
+   public bool IsAllSkladFinKol_I { get { return (IsFinKol_I == true && IsInternIzlaz == false); } }
+
+   /// <summary>
+   /// TT izlaznog dokumenta koji je i stvorio ovaj ulaz (ili TwinTT ili SplitTT slucaj)
+   /// </summary>
+   public string LinkedIzlazTT { get; set; }
+
+   public bool IsArtiklStatusInfluencer { get { return (
+      
+         IsFinKol_TT   ||
+         IsKolOnly_TT  ||
+         IsRezervKol   ||
+         IsPreDef      ||
+         IsInventura   ||
+
+         // 22.04.2012: 
+         IsPonudaTT    ||
+
+         // 05.04.2018: SVD 
+         (ZXC.IsSvDUH && TheTT == Faktur.TT_NRD)
+
+      ); } }
+
+   /// <summary>
+   /// Faktur.TT_MSI:
+   /// Faktur.TT_VMI:
+   /// Faktur.TT_PIZ:
+   /// Faktur.TT_TMU:
+   /// Faktur.TT_TMI:
+   /// Faktur.TT_IMT:
+   /// Faktur.TT_PPR:
+   /// Faktur.TT_POV:
+   /// Faktur.TT_INV:
+   /// Faktur.TT_ZPC:
+   /// </summary>
+   public bool IsDokCijShouldBePrNabCij 
+   { 
+      get 
+      {
+         if(this.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij/*                ||
+            this.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_PrOfPrNabCij_SumeSastojaka*/) return true;
+         else                                                                                           return false;
+      } 
+   }
+
+   public override string ToString()
+   {
+      return "'" + TheTT + "'";
+   }
+
+   #endregion General Propertiz
+
+   #region IsExtendable
+
+   private static string[] arrayExtendables = new string[] { 
+      Faktur.TT_IFA, 
+      Faktur.TT_IRA, 
+//    Faktur.TT_STI, 
+      Faktur.TT_IZD, 
+      Faktur.TT_IMT, 
+      Faktur.TT_IZM, 
+    //Faktur.TT_IMM, 
+      Faktur.TT_RVI, 
+      Faktur.TT_IOD, 
+      Faktur.TT_IPV, 
+      Faktur.TT_IRM, 
+      Faktur.TT_UFA,
+      Faktur.TT_UPA,
+      Faktur.TT_UFM,
+      Faktur.TT_URA,
+      Faktur.TT_URM,
+      Faktur.TT_UPM,
+//    Faktur.TT_STU,
+      Faktur.TT_UOD,
+      Faktur.TT_UPV,
+      Faktur.TT_PRI,
+    //Faktur.TT_PIP,
+      Faktur.TT_RVU,
+      Faktur.TT_KLK,
+      Faktur.TT_KKM,
+      Faktur.TT_OPN,
+      Faktur.TT_PON,
+      Faktur.TT_PNM,
+      Faktur.TT_INM,
+      Faktur.TT_NRD,
+      Faktur.TT_NRM,
+      Faktur.TT_NRU,
+      Faktur.TT_NRS,
+      Faktur.TT_NRK,
+      Faktur.TT_UPL,
+      Faktur.TT_ISP,
+      Faktur.TT_BUP,
+      Faktur.TT_BIS,
+      Faktur.TT_RNP,
+      Faktur.TT_RNS,
+      Faktur.TT_PRJ,
+      Faktur.TT_RNM,
+      Faktur.TT_RNU,
+      Faktur.TT_RNZ,
+      Faktur.TT_UGO,
+
+      Faktur.TT_KUG, // PCTGO tt 
+      Faktur.TT_AUN, // PCTGO tt 
+      Faktur.TT_UGN, // PCTGO tt 
+      Faktur.TT_DOD, // PCTGO tt 
+
+      Faktur.TT_KIZ,
+      Faktur.TT_KUL,
+      Faktur.TT_PIK,
+      Faktur.TT_PUK,
+
+      // 10.01.2012: ovi su tu NE zbog kupdob-a, nego zbog SUM-a (S_ukKCRP, ...) 
+      Faktur.TT_PSM,
+      Faktur.TT_ZPC,
+      Faktur.TT_ZKC,
+      Faktur.TT_VMI,
+      Faktur.TT_VMU,
+      Faktur.TT_TRI,
+      Faktur.TT_TRM,
+
+      //29.03.2013: 
+      Faktur.TT_PIX,
+      Faktur.TT_PUX,
+
+      Faktur.TT_BOR,
+      Faktur.TT_NOR,
+    //Faktur.TT_NOM,
+      Faktur.TT_PIM,
+
+      Faktur.TT_MMI,
+      Faktur.TT_MVI,
+      Faktur.TT_MVU,
+
+      //08.09.2015: 
+      Faktur.TT_PIZ,
+      Faktur.TT_PUL,
+
+    //Faktur.TT_WFA,
+    //Faktur.TT_WRA,
+    //Faktur.TT_WRM,
+    //Faktur.TT_YFA,
+    //Faktur.TT_YRA,
+    //Faktur.TT_YRM,
+      Faktur.TT_WRN,
+      Faktur.TT_YRN,
+
+      Faktur.TT_CJK,
+      Faktur.TT_ZAH,
+
+   };
+
+   public bool IsExtendableTT { get { return arrayExtendables.Contains(TheTT); } }
+
+   #endregion IsExtendable
+
+   #region ProposeCijenaKind - TODO 4 MMI, MVI !!! (MVI bi trebao k'o IZM, MMI ko KLK/URM ? )
+
+   public ZXC.TtProposeCijenaKindEnum ProposeCijenaKind
+   {
+      get
+      {
+         switch(TheTT)
+         {
+            case Faktur.TT_IRA:
+            case Faktur.TT_IFA:
+            case Faktur.TT_IOD:
+            case Faktur.TT_IPV:
+      case Faktur.TT_IZD:
+            case Faktur.TT_IRM:
+            case Faktur.TT_PIM: // !!! 
+            case Faktur.TT_IZM:
+            case Faktur.TT_OPN:
+            case Faktur.TT_PON:
+            case Faktur.TT_PNM:
+            case Faktur.TT_NRK:
+            case Faktur.TT_INM:
+            case Faktur.TT_BOR:
+          //case Faktur.TT_KIZ:
+
+            case Faktur.TT_CJK:
+
+               return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
+
+//case Faktur.TT_IZD: // SVD TEMP!!!
+
+            case Faktur.TT_MSI:
+            case Faktur.TT_KIZ:
+            case Faktur.TT_PIK:
+            case Faktur.TT_VMI:
+          //case Faktur.TT_MSU:
+            case Faktur.TT_PIZ:
+            case Faktur.TT_PIX:
+          //case Faktur.TT_PIM:
+          //case Faktur.TT_TMU: // remarckirano od 10.12.2015: od kada počesmo (aorist) koristiti korekturne temeljnice 
+          //case Faktur.TT_TMI: // remarckirano od 10.12.2015: od kada počesmo (aorist) koristiti korekturne temeljnice 
+            case Faktur.TT_IMT:
+            case Faktur.TT_PPR:
+            case Faktur.TT_POV:
+            case Faktur.TT_INV:
+            case Faktur.TT_ZPC:
+            case Faktur.TT_ZKC:
+            case Faktur.TT_NOR:
+            case Faktur.TT_TRI:
+          //case Faktur.TT_NOM:
+
+          //case Faktur.TT_UPV:
+          //case Faktur.TT_UOD:
+
+            case Faktur.TT_MVI: // !!! 
+
+               return ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij;
+
+            case Faktur.TT_PUL: // Proizvodnja ulaz 
+            case Faktur.TT_PUX: // Proizvodnja ulaz 
+            case Faktur.TT_PUM: // Proizvodnja ulaz 
+            case Faktur.TT_TRM: // Proizvodnja ulaz - MALOPRODAJA !!! ??? 
+            case Faktur.TT_RNU: // Proizvodnja ulaz 
+
+               return ZXC.TtProposeCijenaKindEnum.Propose_PrOfPrNabCij_SumeSastojaka;
+
+            default: 
+               return ZXC.TtProposeCijenaKindEnum.Propose_NONE;
+
+         }
+      }
+   }
+
+   #endregion ProposeCijenaKind
+
+   #region IsIRArucable
+
+   private static string[] arrayIRArucables = new string[] { 
+      Faktur.TT_IRA, 
+//    Faktur.TT_STI, 
+      Faktur.TT_IZD, 
+      Faktur.TT_IZM, 
+      Faktur.TT_IOD, 
+      Faktur.TT_IPV, 
+      Faktur.TT_IRM, 
+      Faktur.TT_OPN,
+      Faktur.TT_KIZ,
+      // NE! nije ArtStatInfluencer Faktur.TT_PON,
+
+      // 22.04.2013: ipak 
+      Faktur.TT_PON,
+      Faktur.TT_PNM,
+   };
+
+   public bool IsIRArucableTT { get { return arrayIRArucables.Contains(TheTT); } }
+
+   #endregion IsIRArucable
+
+   #region IsSkladDateTT
+
+   private static string[] arraySkladDateTT = new string[] { 
+      Faktur.TT_IRA, 
+      Faktur.TT_KIZ, 
+      Faktur.TT_PIK, 
+//    Faktur.TT_STI, 
+      Faktur.TT_IZD, 
+      Faktur.TT_IZM, 
+      Faktur.TT_RVI, 
+      Faktur.TT_IRM, 
+      Faktur.TT_IOD,
+      Faktur.TT_IPV,
+      Faktur.TT_URA,
+      Faktur.TT_URM,
+//    Faktur.TT_STU,
+      Faktur.TT_UOD,
+      Faktur.TT_UPV,
+      Faktur.TT_UPM,
+      Faktur.TT_PRI,
+    //Faktur.TT_PIP,
+      Faktur.TT_RVU,
+      Faktur.TT_KLK,
+      Faktur.TT_KKM,
+   };
+   /// <summary>
+   /// Ovi TT-ovi u T_skladDate napucavaju F_skladDate a ne F_dokDate
+   /// </summary>
+   public bool IsSkladDateTT { get { return arraySkladDateTT.Contains(TheTT); } }
+
+   #endregion IsSkladDateTT
+
+   #region IsArtStatInfoNeeded
+
+   private static string[] arrayArtStatInfoNeededTT = new string[] { 
+      Faktur.TT_IFA, // zbog cijene
+      Faktur.TT_IRA, 
+//    Faktur.TT_STU, 
+      Faktur.TT_IZD, 
+      Faktur.TT_IZM, 
+      Faktur.TT_RVI, 
+      Faktur.TT_IRM, 
+      Faktur.TT_MSI, 
+      Faktur.TT_MMI, 
+      Faktur.TT_KIZ, 
+      Faktur.TT_PIK, 
+      Faktur.TT_VMI, 
+      Faktur.TT_MVI, 
+      Faktur.TT_PIZ, 
+      Faktur.TT_PIX, 
+      Faktur.TT_PIM, 
+      Faktur.TT_OPN, 
+      Faktur.TT_PON, 
+      Faktur.TT_PNM, 
+      Faktur.TT_UOD, 
+      Faktur.TT_UPV, 
+      Faktur.TT_IOD, 
+      Faktur.TT_IPV, 
+      Faktur.TT_NRK, 
+      Faktur.TT_IMT, 
+    //Faktur.TT_IMM, 
+      Faktur.TT_PPR, 
+      Faktur.TT_POV, 
+      Faktur.TT_ZPC, 
+      Faktur.TT_ZKC, 
+      Faktur.TT_TMU, 
+      Faktur.TT_TMI, 
+      Faktur.TT_KLK, 
+      Faktur.TT_KKM, 
+      Faktur.TT_URM, 
+      Faktur.TT_UPM, 
+      Faktur.TT_INV, 
+      Faktur.TT_INM, 
+      Faktur.TT_BOR, 
+      Faktur.TT_NOR, 
+      Faktur.TT_TRI, 
+      //07.07.2015.
+      Faktur.TT_PSM, 
+   };
+   // Za sada ovo sluzi samo pri 'AnyArtiklTextBox_OnGrid_Leave' na FakturDUC-u 
+   /// <summary>
+   /// Ovi TT-ovi trebaju ArtStat info kod UpdateArtikl na RISK dokumentima
+   /// </summary>
+   public bool IsArtStatInfoNeededTT { get { return arrayArtStatInfoNeededTT.Contains(TheTT); } }
+
+   #endregion IsArtStatInfoNeeded
+
+   #region IsPonudaTT
+
+   private static string[] arrayPonudaTT = new string[] { 
+      Faktur.TT_PON,
+      Faktur.TT_OPN,
+      Faktur.TT_PNM,
+   };
+   public bool IsPonudaTT { get { return arrayPonudaTT.Contains(TheTT); } }
+
+   #endregion IsPonudaTT
+
+   #region IsDokKolShouldBePrevKolStanjeTT
+
+   private static string[] arrayDokKolShouldBePrevKolStanjeTT = new string[] { 
+      Faktur.TT_ZPC,
+    //Faktur.TT_ZKC, ... !!! NIJE jer ovo ide po npr. IRM-u, i treba biti kol NE prevKolst nego dokument t_kol 
+   };
+   public bool IsDokKolShouldBePrevKolStanjeTT { get { return arrayDokKolShouldBePrevKolStanjeTT.Contains(TheTT); } }
+
+   #endregion IsDokKolShouldBePrevKolStanjeTT
+
+   #region IsStornoTT
+
+   private static string[] arrayStornoTT = new string[] { 
+      Faktur.TT_IOD,
+      Faktur.TT_IPV,
+//    Faktur.TT_STI,
+      Faktur.TT_UOD,
+      Faktur.TT_UPV,
+      Faktur.TT_UPM,
+//    Faktur.TT_STU,
+      Faktur.TT_POV,
+    //Faktur.TT_PIK,
+    //Faktur.TT_PUK,
+   };
+   /// <summary>
+   /// Ovi TT-ovi u trebaju t_kol tretirati sa minis predznakom
+   /// </summary>
+   public bool IsStornoTT { get { return arrayStornoTT.Contains(TheTT); } }
+
+   #endregion IsStornoTT
+
+   #region IsInternUI
+
+   // TODO: !!! da li su TT_TMU, TT_TMI, TT_ZPC InterniUI ili ne?! 
+   
+   private static string[] arrayIsInternUlazTT_fromOneIzlaz = new string[] { 
+      Faktur.TT_MSU, 
+      Faktur.TT_MMU, 
+      Faktur.TT_KUL, 
+      Faktur.TT_PUK, 
+      Faktur.TT_VMU, 
+      Faktur.TT_MVU, 
+    //Faktur.TT_PUL, 
+   };
+   /// <summary>
+   /// Ovaj TT utjece na FinSt skladista po PrNabCij koja je iskalkulirana po linkanomIzlazu (cijena na Ulaznoj Medjuskladisnici je PrNabCij sa njegove Izlazne Medjusklad. 'sestre'
+   /// </summary>
+   public bool IsInternUlaz_FromOneIzlaz { get { return arrayIsInternUlazTT_fromOneIzlaz.Contains(TheTT); } } // U biti, tu idu svi vidovi medjuskladisnice - ulazna komponenta 
+
+   private static string[] arrayIsInternUlazTT_fromManyIzlaz = new string[] { 
+      Faktur.TT_PUL, 
+      Faktur.TT_PUX, 
+      Faktur.TT_PUM, 
+      Faktur.TT_TRM, // !!! NE ZABORAVI ako dodajes novu proizvodnju ulaz tt u RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB() ... a i VvSql ...!!!
+                     // ...dodati taj novi SplitTT pass za REKURZIJU !!!                                                              
+      Faktur.TT_RNU,
+
+   };
+   /// <summary>
+   /// Ovaj TT utjece na FinSt skladista po PrNabCij koja je iskalkulirana po SUMI linkanihIzlaza (cijena na Ulaznoj Proizvodnji je suma PrNabCij sa njegovih Izlaznih Proizvodnji.
+   /// </summary>
+   public bool IsInternUlaz_FromManyIzlaz { get { return arrayIsInternUlazTT_fromManyIzlaz.Contains(TheTT); } } // Proizvodnja ULAZ  
+
+   private static string[] arrayIsInternIzlazTT = new string[] { 
+      Faktur.TT_MSI, 
+      Faktur.TT_MMI, 
+      Faktur.TT_KIZ, 
+      Faktur.TT_PIK, 
+      Faktur.TT_VMI, 
+      Faktur.TT_MVI, 
+      Faktur.TT_TRI, 
+      Faktur.TT_PIZ, 
+      Faktur.TT_PIX, 
+      Faktur.TT_PIM, 
+      Faktur.TT_IMT, 
+    //Faktur.TT_IMM, 
+      Faktur.TT_PPR, 
+      Faktur.TT_POV, 
+   };
+   public bool IsInternIzlaz { get { return arrayIsInternIzlazTT.Contains(TheTT); } }
+
+#if _PUSE_
+   private static string[] arrayIsPrNcPrm_noStTT = new string[] { 
+      Faktur.TT_RVU, // ulaz 
+      Faktur.TT_IPV, // izlaz 
+//    Faktur.TT_STI, // izlaz 
+   };
+   /// <summary>
+   /// Ovaj TT utjece na FinSt skladista po PrNabCij a legalno se pojavljuje i kada je stanje nula. Npr. stanje skl je nula a nama se nesto vraca reversom, povrat od kupca, storno izlazne fakture, povrat konsignacije
+   /// </summary>
+   public bool IsPrNcPrm_noSt { get { return arrayIsPrNcPrm_noStTT.Contains(TheTT); } }
+#endif
+
+   #endregion IsInternUI
+
+   #region IsMalopTT
+
+   private static string[] arrayMalopTT = new string[] { 
+      Faktur.TT_PSM,
+      Faktur.TT_URM,
+      Faktur.TT_UPM,
+      Faktur.TT_PNM,
+      Faktur.TT_IRM,
+      Faktur.TT_IZM,
+    //Faktur.TT_IMM,
+      Faktur.TT_KLK,
+      Faktur.TT_KKM,
+      Faktur.TT_NIV,
+      Faktur.TT_NUV,
+      Faktur.TT_ZPC,
+      Faktur.TT_ZKC,
+    //Faktur.TT_VMI,
+      Faktur.TT_VMU,
+      Faktur.TT_MVI,
+      Faktur.TT_MMI,
+      Faktur.TT_MMU,
+      Faktur.TT_TRM,
+      Faktur.TT_NRM,
+      Faktur.TT_INM,
+    //Faktur.TT_NOM,
+    //Faktur.TT_BOR,
+      Faktur.TT_PIM,
+      Faktur.TT_PUM,
+   };
+   public bool IsMalopTT           { get { return arrayMalopTT.Contains(TheTT); } }
+ //public bool IsMalopTTwoIRM      { get { return TheTT != Faktur.TT_IRM && arrayMalopTT.Contains(TheTT); } }
+
+   public bool IsMalopTTorVMIorTRI { get { return arrayMalopTT.Contains(TheTT) || TheTT == Faktur.TT_VMI || TheTT == Faktur.TT_TRI; } }
+
+   // 30.10.2014: 
+ //public bool IsForceMalUlazCalc  { get { return (TheTT == Faktur.TT_VMI || TheTT == Faktur.TT_TRI                          ); } }
+   // 14.05.2015: idijote
+ //public bool IsForceMalUlazCalc  { get { return (TheTT == Faktur.TT_VMI || TheTT == Faktur.TT_TRI || TheTT == Faktur.TT_MVI); } }
+ //public bool IsForceMalUlazCalc  { get { return (TheTT == Faktur.TT_VMI || TheTT == Faktur.TT_TRI                          ); } }
+   // 19.05.2015: idijoteIdijote
+   public bool IsForceMalUlazCalc  { get { return (TheTT == Faktur.TT_VMI || TheTT == Faktur.TT_TRI || TheTT == Faktur.TT_MVI); } }
+
+   private static string[] arrayMalopTT_ULAZ = new string[] { 
+      Faktur.TT_PSM,
+      Faktur.TT_URM,
+      Faktur.TT_UPM,
+      Faktur.TT_KLK,
+      Faktur.TT_KKM,
+      // 04.11.2016: TT_NIV preseljen u arrayMalopTT_IZLAZ
+    //Faktur.TT_NIV,
+      Faktur.TT_NUV,
+      Faktur.TT_ZPC,
+    //Faktur.TT_ZKC,
+      Faktur.TT_VMU,
+      Faktur.TT_MMU,
+      Faktur.TT_TRM,
+   };
+   private static string[] arrayMalopFak2Nal_TT_ULAZ = new string[] { 
+      Faktur.TT_URM,
+      Faktur.TT_UPM,
+      Faktur.TT_UFM,
+      Faktur.TT_ZPC,
+      Faktur.TT_ZKC, // ?! 
+    //Faktur.TT_VMU,
+   };
+   private static string[] arrayMalopTT_IZLAZ = new string[] { 
+      Faktur.TT_IRM,
+      Faktur.TT_IZM,
+    //Faktur.TT_IMM,
+      Faktur.TT_MMI, 
+      Faktur.TT_MVI, 
+
+      // 04.11.2016: TT_NIV preseljen iz arrayMalopTT_ULAZ
+      Faktur.TT_NIV,
+   };
+   private static string[] arrayMalopTT_ULAZ_wIZM_wMVI
+   {
+      get
+      {
+         List<string> arrayMalopTT_ULAZlist = new List<string>(arrayMalopTT_ULAZ);
+
+         arrayMalopTT_ULAZlist.Add(Faktur.TT_IZM);
+         arrayMalopTT_ULAZlist.Add(Faktur.TT_MVI);
+
+         return arrayMalopTT_ULAZlist.ToArray();
+      }
+   }
+ //public bool IsMalopFin_U           { get { return IsFinKol_U && IsMalopTT; } }
+ //public bool IsMalopFin_I           { get { return IsFinKol_I && IsMalopTT; } }
+   public bool IsMalopFin_U           { get { return arrayMalopTT_ULAZ .Contains(TheTT); } }
+   public bool IsMalopFin_UorVMIorTRI { get { return arrayMalopTT_ULAZ .Contains(TheTT) || TheTT == Faktur.TT_VMI || TheTT == Faktur.TT_TRI; } }
+   public bool IsMalopFin_I           { get { return arrayMalopTT_IZLAZ.Contains(TheTT); } }
+
+   public bool IsMalopFak2Nal_U { get { return arrayMalopFak2Nal_TT_ULAZ.Contains(TheTT); } }
+   public bool IsMalopFak2Nal_I { get { return arrayMalopTT_IZLAZ       .Contains(TheTT); } } // TODO: 'MVI' ?
+
+   public static string UlazniMALOP_IN_Clause      { get { return GetSql_IN_Clause(arrayMalopTT_ULAZ      ); } }
+   public static string UlazniMALOP_IN_Clause_wIZM { get { return GetSql_IN_Clause(arrayMalopTT_ULAZ_wIZM_wMVI ); } }
+   public static string IzlazniMALOP_IN_Clause     { get { return GetSql_IN_Clause(arrayMalopTT_IZLAZ     ); } }
+
+   public static string UlazniMALOP_Fak2Nal_IN_Clause  { get { return GetSql_IN_Clause(arrayMalopFak2Nal_TT_ULAZ); } }
+   public static string IzlazniMALOP_Fak2Nal_IN_Clause { get { return GetSql_IN_Clause(arrayMalopTT_IZLAZ);        } } // za sada jednako kao IzlazniMALOP_IN_Clause 
+
+   #endregion IsMalopTT
+
+   #region IsUlazniPDV
+
+   private static string[] arrayUlazniPdvTT = new string[] { 
+      Faktur.TT_URA,
+      Faktur.TT_URM,
+      Faktur.TT_UFA,
+      Faktur.TT_UFM,
+      Faktur.TT_UOD,
+      Faktur.TT_UPV,
+      Faktur.TT_UPM,
+      Faktur.TT_UPA,
+
+    //Faktur.TT_WFA,
+    //Faktur.TT_WRA,
+    //Faktur.TT_WRM,
+      Faktur.TT_WRN,
+   };
+   public bool IsUlazniPdvTT { get { return arrayUlazniPdvTT.Contains(TheTT); } }
+
+   public static string UlazniPdv_IN_Clause { get { return GetSql_IN_Clause(arrayUlazniPdvTT); } }
+
+   public bool IsVirtualPdvTT { get { return TheTT == Faktur.TT_UPA; } }
+
+   public bool Is_WYRN_TT { get { return TheTT == Faktur.TT_WRN || TheTT == Faktur.TT_YRN; } }
+
+   #endregion IsUlazniPDV
+
+   #region IsIzlazniPDV
+
+   private static string[] arrayIzlazniPdvTT = new string[] { 
+      Faktur.TT_IRM,
+      Faktur.TT_IRA,
+      Faktur.TT_IFA,
+      Faktur.TT_IOD,
+      Faktur.TT_IPV,
+    //Faktur.TT_UPA,
+
+    //Faktur.TT_YFA,
+    //Faktur.TT_YRA,
+    //Faktur.TT_YRM,
+      Faktur.TT_YRN,
+   };
+
+   public bool IsIzlazniPdvTT { get { return arrayIzlazniPdvTT.Contains(TheTT); } }
+
+   public static string IzlazniPdv_IN_Clause { get { return GetSql_IN_Clause(arrayIzlazniPdvTT                       ); } }
+ //public static string IzlazniPdv_IN_Clause { get { return GetSql_IN_Clause(arrayIzlazniPdvTT_W_VirtualPdvTTaddition); } }
+
+   public bool IsPdvTT { get { return (IsUlazniPdvTT || IsIzlazniPdvTT); } }
+
+   public static string[] arrayIzlazniPdvTT_W_VirtualPdvTTaddition
+   {
+      get
+      {
+         List<string> theList = new List<string>(arrayIzlazniPdvTT.Length + 1);
+
+         theList.AddRange(arrayIzlazniPdvTT);
+         theList.Add(Faktur.TT_UPA);
+
+         return theList.ToArray();
+      }
+   }
+
+   #endregion IsIzlazniPDV
+
+
+   #region IsBlagajna
+
+   private static string[] arrayBlagajnaTT = new string[] { 
+      Faktur.TT_ISP,
+      Faktur.TT_UPL,
+      Faktur.TT_BIS,
+      Faktur.TT_BUP,
+   };
+   public bool IsBlagajnaTT { get { return arrayBlagajnaTT.Contains(TheTT); } }
+
+   public static string Blagajna_IN_Clause { get { return GetSql_IN_Clause(arrayBlagajnaTT); } }
+
+   #endregion IsBlagajna
+
+   #region IsProizvodnjaIzlaz
+
+   private static string[] arrayProizvodnjaIzlazTT = new string[] { 
+      Faktur.TT_PPR,
+      Faktur.TT_POV,
+   };
+   public bool IsProizvodnjaIzlazTT { get { return arrayProizvodnjaIzlazTT.Contains(TheTT); } }
+
+   public static string ProizvodnjaIzlaz_IN_Clause { get { return GetSql_IN_Clause(arrayProizvodnjaIzlazTT); } }
+
+   #endregion IsProizvodnjaIzlaz
+
+   #region IsProjektTT
+
+   /*private*/internal static string[] arrayProjektTT = new string[] { 
+      Faktur.TT_RNP,
+      Faktur.TT_RNS,
+      Faktur.TT_RNM,
+      Faktur.TT_PRJ,
+      Faktur.TT_BOR,
+      Faktur.TT_RNZ,
+      Faktur.TT_UGO,
+   };
+   public bool IsProjektTT { get { return arrayProjektTT.Contains(TheTT); } }
+
+   #endregion IsProjektTT
+
+   #region IsKorekTemTT
+
+   private static string[] arrayKorekTemTT = new string[] { 
+      Faktur.TT_TMI,
+      Faktur.TT_TMU,
+   };
+   public bool IsKorekTemTT { get { return arrayKorekTemTT.Contains(TheTT); } }
+
+   #endregion IsKorekTemTT
+
+   #region IsSplitProizvodnja Ulaz/Izlaz
+
+   private static string[] arraySplitProizvodnjaULAZ = new string[] { 
+      Faktur.TT_PUL,
+      Faktur.TT_PUX,
+      Faktur.TT_PUM,
+      Faktur.TT_TRM,
+      Faktur.TT_RNU,
+   };
+   public bool IsSplitProizvodnjaULAZ { get { return arraySplitProizvodnjaULAZ.Contains(TheTT); } }
+
+   private static string[] arraySplitProizvodnjaIZLAZ = new string[] { 
+      Faktur.TT_PIZ,
+      Faktur.TT_PIX,
+      Faktur.TT_PIM,
+      Faktur.TT_TRI,
+   };
+   public bool IsSplitProizvodnjaIZLAZ { get { return arraySplitProizvodnjaIZLAZ.Contains(TheTT); } }
+
+   public bool IsSplitProizvodnjaUI { get { return IsSplitProizvodnjaULAZ || IsSplitProizvodnjaIZLAZ; } }
+
+   #endregion IsSplitProizvodnja Ulaz/Izlaz
+
+   #region IsPrihodTT
+
+   private static string[] arrayPrihodTT = new string[] { 
+      Faktur.TT_IFA,
+      Faktur.TT_IRA,
+      Faktur.TT_IRM,
+      Faktur.TT_IOD,
+      Faktur.TT_IPV,
+   };
+   /// <summary>
+   /// Ovi TT-ovi su REALIZACIJA / PRIHOD 
+   /// </summary>
+   public bool IsPrihodTT { get { return arrayPrihodTT.Contains(TheTT); } }
+
+   public static string Prihod_IN_Clause { get { return GetSql_IN_Clause(arrayPrihodTT); } }
+
+   #endregion IsPrihodTT
+
+   #region IsNotSyncChkPrNabCij_RtransTT
+
+   // ovo treba kasnije nadopuniti po potrebi 
+   private static string[] arrayNotSyncChkPrNabCij_RtransTT = new string[] { 
+      Faktur.TT_MSI, Faktur.TT_MSU, 
+      Faktur.TT_VMI, Faktur.TT_VMU, 
+      Faktur.TT_TRI, Faktur.TT_TRM, 
+   };
+   /// <summary>
+   /// Ovi TT-ovi pri ChkPrNabCij mogu promijeniti t_cij
+   /// </summary>
+   public bool IsNotSyncChkPrNabCij_RtransTT { get { return arrayNotSyncChkPrNabCij_RtransTT.Contains(TheTT); } }
+
+   #endregion IsPrihodTT
+
+   #region IsRashodTT
+
+   private static string[] arrayRashodTT = new string[] { 
+      Faktur.TT_URA,
+      Faktur.TT_URM,
+      Faktur.TT_UFA,
+      Faktur.TT_UFM,
+      Faktur.TT_UOD,
+      Faktur.TT_UPV,
+      Faktur.TT_UPM,
+      Faktur.TT_UPA,
+   };
+   /// <summary>
+   /// Ovi TT-ovi su ULAZ, trosak / Rashod 
+   /// </summary>
+   public bool IsRashodTT { get { return arrayRashodTT.Contains(TheTT); } }
+
+   public static string Rashod_IN_Clause { get { return GetSql_IN_Clause(arrayRashodTT); } }
+
+   #endregion IsRashodTT
+
+   #region IsZavisniTT
+
+   private static string[] arrayZavisniTT = new string[] { 
+      Faktur.TT_PRI,
+      Faktur.TT_KLK,
+    //Faktur.TT_KKM, // NE za sada? 
+   };
+   /// <summary>
+   /// Ovi TT-ovi u trebaju t_kol tretirati sa minis predznakom
+   /// </summary>
+   public bool IsZavisniTT { get { return arrayZavisniTT.Contains(TheTT); } }
+
+   #endregion IsZavisniTT
+
+   #region IsManualPUcijTT
+
+   private static string[] arrayManualPUcijTT = new string[] {  
+      Faktur.TT_PUX,
+   };
+   /// <summary>
+   /// PUX, rucna korekcija ulazne cijene proizvoda 
+   /// </summary>
+   public bool IsManualPUcijTT { get { return arrayManualPUcijTT.Contains(TheTT); } }
+
+ //private static string[] arrayKoefPUcijTT = new string[] {  
+ //   Faktur.TT_TRM,
+ //};
+ ///// <summary>
+ ///// TRU, koeficijentom korigirana ulazna cijene proizvoda 
+ ///// </summary>
+ //public bool IsKoefPUcijTT { get { return arrayKoefPUcijTT.Contains(TheTT); } }
+
+   #endregion IsManualPUcijTT
+
+   #region IsRadNalPUcijTT
+
+   private static string[] arrayRadNalPUcijTT = new string[] {  
+      // 17.11.2016: !!! BIG NEWS !!!                   
+      // Raskidamo vezu PPR/PIP cijene                  
+      // TT_PIP vise nije 'arrayRadNalPUcijTT'          
+      // Za nekog drugog u buducnosti treba onda uvesti 
+      // novi set U/I TT-ova                            
+
+      // 25.11.2016: vraćamo! ipak 
+      Faktur.TT_PIP,
+   };
+   /// <summary>
+   /// PUX, rucna korekcija ulazne cijene proizvoda 
+   /// </summary>
+   public bool IsRadNalPUcijTT { get { return arrayRadNalPUcijTT.Contains(TheTT); } }
+
+   #endregion IsRadNalPUcijTT
+
+   #region IsRNMsetTT
+
+   private static string[] arrayRNMsetTT = new string[] {  
+      Faktur.TT_RNM,
+      Faktur.TT_RNU,
+      Faktur.TT_PIP,
+      Faktur.TT_PPR,
+   };
+   /// <summary>
+   /// RNM, RNU, PIP, PPR
+   /// </summary>
+   public bool IsRNMsetTT { get { return arrayRNMsetTT.Contains(TheTT); } }
+
+   private static string[] arrayRNM_Plan_setTT = new string[] {  
+      Faktur.TT_RNM,
+      Faktur.TT_RNU,
+   };
+   /// <summary>
+   /// RNM, RNU
+   /// </summary>
+   public bool IsRNM_Plan_setTT { get { return arrayRNM_Plan_setTT.Contains(TheTT); } }
+
+   private static string[] arrayRNM_Realizacija_setTT = new string[] {  
+      Faktur.TT_PIP,
+      Faktur.TT_PPR,
+   };
+   /// <summary>
+   /// PPR, PIP
+   /// </summary>
+   public bool IsRNM_Realizacija_setTT { get { return arrayRNM_Realizacija_setTT.Contains(TheTT); } }
+
+   #endregion IsRNMsetTT
+
+   #region IsKomisExtraProdCij
+
+   private static string[] arrayKomisExtraProdCijTT = new string[] { 
+      Faktur.TT_KIZ,
+   };
+   /// <summary>
+   /// PUX, rucna korekcija ulazne cijene proizvoda 
+   /// </summary>
+   public bool IsKomisExtraProdCij { get { return arrayKomisExtraProdCijTT.Contains(TheTT); } }
+
+   #endregion IsKomisExtraProdCij
+
+   #region IsDokDate2TT ... ULAZ po drugacijem datumu. Za sada samo medjuskladisnice ...
+
+   private static string[] arrayDokDate2TT = new string[] { 
+      Faktur.TT_MSU,
+      Faktur.TT_VMU,
+      Faktur.TT_MVU,
+      Faktur.TT_MMU,
+   };
+   public bool IsDokDate2TT { get { return arrayDokDate2TT.Contains(TheTT); } }
+
+   #endregion IsDokDate2TT
+
+   #region IsSplitTTMalULAZ
+
+ //public bool IsSplitTTMalULAZ { get { return IsSplitProizvodnjaULAZ && IsMalopFin_U; } }
+   public bool IsSplitTTMalULAZ { get { return TheTT == Faktur.TT_TRI; } }
+
+   #endregion IsSplitTTMalULAZ
+
+   #region IsV1andV2specialUse ... PTG ...
+
+   private static string[] isV1andV2specialUseTT = new string[] {
+      Faktur.TT_KUG, // PCTGO tt 
+      Faktur.TT_AUN, // PCTGO tt 
+      Faktur.TT_UGN, // PCTGO tt 
+      Faktur.TT_DOD, // PCTGO tt 
+      Mixer .TT_KOP, // PCTGO tt 
+   };
+   public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
+
+   #endregion IsV1andV2specialUse ... PTG ...
+
+   #region Constructors
+
+   public TtInfo(string _theTT, /*u*/short _ttSort, bool _isSklCdInTtNum, bool _isFinKol_U, bool _isFinKol_I, ZXC.VvSubModulEnum _defaultSubModulEnum) : this(_theTT, _ttSort, _isSklCdInTtNum, _isFinKol_U, _isFinKol_I, _defaultSubModulEnum, false) { }
+
+   public TtInfo(string _theTT, /*u*/short _ttSort, bool _isSklCdInTtNum, bool _isFinKol_U, bool _isFinKol_I, ZXC.VvSubModulEnum _defaultSubModulEnum, bool _isPreDef/*, bool _isKolOnly_U, bool _isKolOnly_I*/) : this() 
+   {
+      TheTT       = _theTT;
+      TtSort      = _ttSort;
+
+      IsFinKol_U  = _isFinKol_U ;
+      IsFinKol_I  = _isFinKol_I ;
+
+      IsSklCdInTtNum = _isSklCdInTtNum;
+      
+      // 30.12.2012: 
+      if(ZXC.IsFikalEra && this.IsIzlazniPdvTT && !this.Is_WYRN_TT) // IRM, IRA, IFA, IOD, IPV 
+      {
+         IsSklCdInTtNum = true /*_isSklCdInTtNum*/;
+      }
+
+      IsPreDef = _isPreDef;
+
+      DefaultSubModulEnum =                            (_defaultSubModulEnum);
+      DefaultSubModulXY   = ZXC.TheVvForm.GetSubModulXY(_defaultSubModulEnum);
+
+      #region FinKol_PS
+
+      if(TheTT == Faktur.TT_PST || 
+         TheTT == Faktur.TT_PSM) IsFinKol_PS = true;
+
+      #endregion FinKol_PS
+
+      #region RezervKol_I
+
+      if(TheTT == Faktur.TT_OPN) IsRezervKol = true;
+
+      #endregion RezervKol_I
+
+      #region Inventura
+
+      if(TheTT == Faktur.TT_INV ||
+         TheTT == Faktur.TT_INM) IsInventura = true;
+
+      #endregion Inventura
+
+      #region IsNivelacijaZPC
+
+      if(TheTT == Faktur.TT_ZPC) IsNivelacijaZPC = true;
+      if(TheTT == Faktur.TT_ZKC) IsNivelacijaZPC = true;
+
+      #endregion IsNivelacijaZPC
+
+      #region Meduskladisnice - TwinTrans Technology
+
+      if(TheTT == Faktur.TT_MSI) TwinTT        = Faktur.TT_MSU;
+      if(TheTT == Faktur.TT_MSU) LinkedIzlazTT = Faktur.TT_MSI;
+
+      if(TheTT == Faktur.TT_MMI) TwinTT        = Faktur.TT_MMU;
+      if(TheTT == Faktur.TT_MMU) LinkedIzlazTT = Faktur.TT_MMI;
+
+      if(TheTT == Faktur.TT_VMI) TwinTT        = Faktur.TT_VMU;
+      if(TheTT == Faktur.TT_VMU) LinkedIzlazTT = Faktur.TT_VMI;
+
+      if(TheTT == Faktur.TT_MVI) TwinTT        = Faktur.TT_MVU;
+      if(TheTT == Faktur.TT_MVU) LinkedIzlazTT = Faktur.TT_MVI;
+
+      if(TheTT == Faktur.TT_KIZ) TwinTT        = Faktur.TT_KUL;
+      if(TheTT == Faktur.TT_KUL) LinkedIzlazTT = Faktur.TT_KIZ;
+
+      if(TheTT == Faktur.TT_PIK) TwinTT        = Faktur.TT_PUK;
+      if(TheTT == Faktur.TT_PUK) LinkedIzlazTT = Faktur.TT_PIK;
+
+      #endregion Meduskladisnice
+
+      #region Proizvodnja - SplitTrans Technology
+
+      if(TheTT == Faktur.TT_PIZ) SplitTT       = Faktur.TT_PUL;
+      if(TheTT == Faktur.TT_PUL) LinkedIzlazTT = Faktur.TT_PIZ;
+
+      if(TheTT == Faktur.TT_PIX) SplitTT       = Faktur.TT_PUX;
+      if(TheTT == Faktur.TT_PUX) LinkedIzlazTT = Faktur.TT_PIX;
+
+      if(TheTT == Faktur.TT_PIM) SplitTT       = Faktur.TT_PUM;
+      if(TheTT == Faktur.TT_PUM) LinkedIzlazTT = Faktur.TT_PIM;
+
+      if(TheTT == Faktur.TT_TRI) SplitTT       = Faktur.TT_TRM;
+      if(TheTT == Faktur.TT_TRM) LinkedIzlazTT = Faktur.TT_TRI;
+
+      if(TheTT == Faktur.TT_RNM) SplitTT       = Faktur.TT_RNU;
+      if(TheTT == Faktur.TT_RNU) LinkedIzlazTT = Faktur.TT_RNM;
+
+      #endregion Proizvodnja
+
+      #region Implicitne Nivelacije - ShadowTrans Technology
+
+      if(TheTT == Faktur.TT_PSM) ShadowTT = Faktur.TT_NUV;
+      if(TheTT == Faktur.TT_KLK) ShadowTT = Faktur.TT_NUV;
+      if(TheTT == Faktur.TT_KKM) ShadowTT = Faktur.TT_NUV;
+      if(TheTT == Faktur.TT_URM) ShadowTT = Faktur.TT_NUV;
+      if(TheTT == Faktur.TT_IRM) ShadowTT = Faktur.TT_NIV;
+      if(TheTT == Faktur.TT_IZM) ShadowTT = Faktur.TT_NIV;
+    //if(TheTT == Faktur.TT_TRI) ShadowTT = Faktur.TT_NIV; 
+      if(TheTT == Faktur.TT_TRM) ShadowTT = Faktur.TT_NUV; 
+    //if(TheTT == Faktur.TT_IMM) ShadowTT = Faktur.TT_NIV;
+    //if(TheTT == Faktur.TT_MVU) ShadowTT = Faktur.TT_NUV;
+      if(TheTT == Faktur.TT_MVI) ShadowTT = Faktur.TT_NIV; // tek od 09.12.2015: 
+      if(TheTT == Faktur.TT_MMI) ShadowTT = Faktur.TT_NIV;
+      if(TheTT == Faktur.TT_MMU) ShadowTT = Faktur.TT_NUV;
+
+      // observacija od 07.11.2016:
+      // TT_VMU namjerno ne ide u 'HasShadowTT' zbog prirode rada 'Pretank'-a 
+      // dakle, VMI ne dize implicitnu nivelaciju jer je tako prilagodeno Francuzovom stilu rada 
+      // kod TH ioanko je MPC kolona bijela pa niti ne mogu staviti krivu cijenu ... koja bi onda zahtjevala implicitnu nivelaciju 
+      // BE ADVICED!!! Kada dode neka nova firma tipa vpsk centrala puca direktno mpsk poslovnicama 
+      // tada treba otvoriti novi par VMI/VMU TT-ova koji ce za razliku od Francuz (Pretank only) / TextileHouse (automatska 'bijela' MPC kolona)
+      // imati zuti kolonu MPC i ici ce u 'HasShadowTT' da bi po potrebi diglo implicitnu nivelaciju 
+
+      // ...a do tada: namjerno i zauvijek: 
+      //if(TheTT == Faktur.TT_VMU) ShadowTT = Faktur.TT_NUV; 
+
+      #endregion Meduskladisnice
+
+      #region Sklad Kol ONLY
+
+      if(TheTT == Faktur.TT_SKU) IsKolOnly_U = true;
+      if(TheTT == Faktur.TT_RVU) IsKolOnly_U = true;
+      if(TheTT == Faktur.TT_SKI) IsKolOnly_I = true;
+      if(TheTT == Faktur.TT_RVI) IsKolOnly_I = true;
+
+      #endregion Sklad Kol ONLY
+
+      #region IsYearInTtNum
+
+      if(IsProjektTT) IsYearInTtNum = true;
+      else            IsYearInTtNum = false;
+
+      #endregion IsYearInTtNum
+
+      if(IsFinKol_U == true && IsFinKol_I == true) throw new Exception("Ama nemre " + TheTT + " biti i ulaz i izlaz?!");
+    //if(IsFinKol_U == false && IsFinKol_I == false) throw new Exception("Ama nemre " + TheTT + " biti niti ulaz niti izlaz?!");
+   }
+
+   #endregion Constructors
+
+   #region Util Metodz (GetSql_IN_Clause())
+
+   public static string GetSql_IN_Clause(string[] TTstrings)
+   {
+      string sql_IN_Clause = "(";
+
+      bool firstPass = true;
+      foreach(string theTT in TTstrings)
+      {
+         sql_IN_Clause += (firstPass ? "'" : ", '") + theTT + "'";
+         if(firstPass) firstPass = false;
+      }
+
+      sql_IN_Clause += ")";
+
+      return sql_IN_Clause;
+   }
+
+   public static string GetSql_IN_Clause_Integer(int[] integers)
+   {
+      string sql_IN_Clause = "(";
+
+      bool firstPass = true;
+      foreach(int integer in integers)
+      {
+         sql_IN_Clause += (firstPass ? "" : ", ") + integer + "";
+         if(firstPass) firstPass = false;
+      }
+
+      sql_IN_Clause += ")";
+
+      return sql_IN_Clause;
+   }
+
+   #endregion Util Metodz
+
+}
+
+public abstract partial class FakturDUC : VvPolyDocumRecordUC
+{
+
+   #region FakturDUC_Validating & OnExit Set or Validate some fields
+
+   void FakturDUC_Validating(object sender, CancelEventArgs e)
+   {
+      #region Should validate enivej?
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None ||
+         TheVvTabPage.WriteMode == ZXC.WriteMode.Delete ||
+         this.Visible == false) return;
+
+      // Mozda trerba a mozda ne?! 19.1.2011: NE treba! 19.1.2011 lejter that day: DA treba! More lejter NE!!! 
+      //GetFields(false);
+
+      bool isWYRN = this is WYRNDUC;
+
+      DateTime serverNow = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+
+      #endregion Should validate enivej?
+
+      #region IsDocumentFromLockedPeriod
+
+      // 09.02.2016: 
+
+      if(VvDaoBase.IsDocumentFromLockedPeriod(Fld_DokDate.Date, false)) e.Cancel = true;
+
+      #endregion IsDocumentFromLockedPeriod
+
+      #region for petlja: Check Column ArtiklCD, IsInMinus, Primka vs Narudzba Kol, ...
+
+      //SetSifrarAndAutocomplete<Artikl>(vvtbT_artiklCD, VvSQL.SorterType./*Name*/Code);
+
+      string artiklCD;
+      decimal /*maxKol = 0,*/ t_kol = 0, t_cij = 0;
+      decimal R_CIJ_KCRP;
+
+      bool isThereAnyPPMVartikl = VvUserControl.ArtiklSifrar.Any(art => art.IsPPMV);
+
+      bool isProductLineChecked;
+
+      // zbog provjere ppmv kataloske cijene, prvo prikazi cijenu u kunama 
+      if(isThereAnyPPMVartikl && this.IsShowingConvertedMoney)
+      {
+         this.TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(this, EventArgs.Empty);
+      }
+
+      Artikl artikl_rec;
+
+      for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
+      {
+         artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rowIdx, false);
+         t_kol = TheG.GetDecimalCell(ci.iT_kol, rowIdx, false);
+         t_cij = TheG.GetDecimalCell(ci.iT_cij, rowIdx, false);
+
+         artikl_rec = Get_Artikl_FromVvUcSifrar/*ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD)*/(artiklCD);
+
+         isProductLineChecked = VvCheckBox.GetBool4String(TheG.GetStringCell(ci.iT_isProductLine, rowIdx, false));
+
+         #region IsInMinus - PUSE. Na nivou cijelog dolumenta brigu vodi VvForm.CheckForMinus(ZXC.WriteMode writeMode)
+
+         ////if(faktur_rec.TtInfo.IsFinKol_TT && ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, ref maxKol, ref t_kol))
+         ////{
+         ////   Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, maxKol, t_kol, rowIdx);
+
+         ////   if(MinusPolicyIsStricktly) e.Cancel = true;
+         ////}
+
+         #endregion IsInMinus
+
+         #region ArtiklCD does exist
+
+         if(artiklCD.NotEmpty() && ArtiklSifrar.Select(artikl => artikl.ArtiklCD).Contains(artiklCD) == false)
+         {
+            //DialogResult result = MessageBox.Show("Artikl ne postoji.\n\nRedak: " + (rIdx + 1) + " ArtiklCD: " + artiklCD + "\n\nŽelite li zaista usnimiti ovaj dokument?", "Potvrdite usnimavanje?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            //if(result != DialogResult.Yes) e.Cancel = true;
+
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl ne postoji.\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
+            e.Cancel = true;
+         }
+
+         // 28.01.2014: 
+         //if(artiklCD.IsEmpty() && faktur_rec.TtInfo.IsFinKol_TT && t_kol.NotZero()                                               )
+         if(artiklCD.IsEmpty() && faktur_rec.TtInfo.IsFinKol_TT && t_kol.NotZero() && ZXC.RISK_CopyToOtherDUC_inProgress == false)
+         {
+            string artikl = TheG.GetStringCell(ci.iT_artiklName, rowIdx, false);
+
+            DialogResult result = MessageBox.Show("Artikl ne postoji.\n\nRedak: " + (rowIdx + 1) + " Artikl: " + artikl + "\n\nŽelite li zaista usnimiti ovaj dokument?", "Potvrdite usnimavanje?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if(result != DialogResult.Yes) e.Cancel = true;
+         }
+
+         // 23.01.2015:
+         if(ZXC.IsTEXTHOshop && artiklCD.IsEmpty() && faktur_rec.TtInfo.IsBlagajnaTT == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Račun ne smije sadržavati redak bez artikla.\n\nŠifra artikla je prazna u retku {0}", rowIdx + 1);
+            e.Cancel = true;
+         }
+
+         #endregion artiklCD does exist
+
+         #region Check kol: Primka vs Narudzba
+
+         bool isInPrimkaVsNarudzbaMinus;
+         decimal primkaKol, narudzbaKol;
+
+         if(ZXC.CURR_prjkt_rec.IsChkPrKol == true && faktur_rec.TT == Faktur.TT_PRI)
+         {
+            primkaKol = TheG.GetDecimalCell(ci.iT_kol, rowIdx, true);
+
+            isInPrimkaVsNarudzbaMinus = GetIsInPrimkaVsNarudzbaMinus(artiklCD, primkaKol, faktur_rec, out narudzbaKol);
+
+            if(isInPrimkaVsNarudzbaMinus)
+            {
+               Issue_ArtiklIsInPrimkaVersusNarudzbaMinus_ErrorMessage(artiklCD, narudzbaKol, primkaKol, rowIdx);
+               e.Cancel = true;
+            }
+         }
+
+         #endregion Check kol: Primka vs Narudzba
+
+         #region PPMV kataloska cijena vs Malop Ulaz Cij
+
+         // 16.04.2018: uvodimo i Tembu ppmv ali on ne koristi externi cjenik u xtrans-u    
+         //if(                        isThereAnyPPMVartikl && faktur_rec.TtInfo.IsMalopFin_U) 
+         if(ZXC.IsTEMBO == false && isThereAnyPPMVartikl && faktur_rec.TtInfo.IsMalopFin_U)
+         {
+            //Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+            if(artikl_rec != null && artikl_rec.IsPPMV)
+            {
+               Xtrans xtrans_rec = XtransDao.Get_PPMV_Xtrans(TheDbConnection, artiklCD, faktur_rec.DokDate);
+               if(xtrans_rec != null)
+               {
+                  decimal kataloskaCij = xtrans_rec.T_moneyA;
+                  decimal dokMPC = TheG.GetDecimalCell(ci.iT_cij_MSK, rowIdx, false);
+
+                  if(ZXC.AlmostEqual(kataloskaCij, dokMPC, 0.02M) == false)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "Za motorno vozilo [{0} - {1}]\n\r\n\rulazna MPC {2}\n\r\n\rse razlikuje od deklarirane kataloške cijene {3}!",
+                        artiklCD, artikl_rec.ArtiklName, dokMPC.ToStringVv(), kataloskaCij.ToStringVv());
+                  }
+               }
+               else
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu naći katalošku cijenu (na PMV dokumentu) za motorno vozilo [{0} - {1}]!", artiklCD, artikl_rec.ArtiklName);
+               }
+            }
+         }
+
+         #endregion PPMV kataloska cijena vs Malop Ulaz Cij
+
+         #region IRM rtrans brez kolicine
+
+         if(ZXC.CURR_userName != ZXC.vvDB_programSuperUserName && ZXC.IsTEXTHOshop && faktur_rec.TT == Faktur.TT_IRM)
+         {
+            if(t_kol.IsZero())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Račun ne smije sadržavati stavku sa količinom nula.\n\nRedak {0} artikl {1}", rowIdx + 1, artiklCD);
+               e.Cancel = true;
+            }
+         }
+
+         #endregion IRM rtrans brez kolicine
+
+         #region IRM rtrans brez CIJENE
+
+         // 02.01.2018: 
+         if(ZXC.CURR_userName != ZXC.vvDB_programSuperUserName && ZXC.IsTEXTHOshop && faktur_rec.TT == Faktur.TT_IRM)
+         {
+            R_CIJ_KCRP = TheG.GetDecimalCell(ci.iT_cij_kcrp, rowIdx, false);
+
+            if(R_CIJ_KCRP.IsZero())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Račun ne smije sadržavati stavku sa cijenom nula.\n\nRedak {0} artikl {1}", rowIdx + 1, artiklCD);
+               e.Cancel = true;
+            }
+         }
+
+         #endregion IRM rtrans brez kolicine
+
+         #region Oblig Artikl From RRD Rules
+
+         // 07.12.2018: 
+         //if(ZXC.RRD.Dsc_IsObligArtikl                                          ) // ArtiklCD muss, kol muss, cij muss 
+         if(ZXC.RRD.Dsc_IsObligArtikl && faktur_rec.TtInfo.IsInventura == false) // ArtiklCD muss, kol muss, cij muss 
+         {
+            if(artiklCD.IsEmpty() && faktur_rec.TtInfo.IsBlagajnaTT == false)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Račun ne smije sadržavati redak bez artikla.\n\nŠifra artikla je prazna u retku {0}", rowIdx + 1);
+               e.Cancel = true;
+            }
+            // 03.12.2019: 
+            //if(t_cij.IsZero())
+            if(t_cij.IsZero() && faktur_rec.TT != Faktur.TT_NOR && isProductLineChecked == false)
+            {
+               // 25.01.2021: dozvoljavamo na SvDUH donacijama 
+               // 23.06.2022: 
+               //bool isSvDUH_donacije = (ZXC.IsSvDUH && faktur_rec.SkladCD == "20");
+               bool isSvDUH_donacije = ZXC.IsSvDUH_donSkl(faktur_rec.SkladCD);
+
+               if(isSvDUH_donacije == false && faktur_rec.TT != Faktur.TT_ZAH)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Račun ne smije sadržavati stavku sa cijenom nula.\n\nRedak {0} artikl {1}", rowIdx + 1, artiklCD);
+                  e.Cancel = true;
+               }
+            }
+            if(t_kol.IsZero())
+            {
+               //bool ipakSmije = (faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD == "P");
+               bool ipakSmije = (faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD == "P") || faktur_rec.TT == Faktur.TT_PST;
+               bool neSmije = !ipakSmije;
+
+               if(neSmije)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Račun ne smije sadržavati stavku bez količine.\n\nRedak {0} artikl {1}", rowIdx + 1, artiklCD);
+                  e.Cancel = true;
+               }
+            }
+         }
+
+         #endregion Oblig Artikl From RRD Rules
+
+         #region MSI-MSU Roundtrip
+
+         if(faktur_rec.TT == Faktur.TT_MSI)
+         {
+            DateTime skladDate = Fld_DokDate;
+            string skladCD = Fld_SkladCD;
+            string skladCD2 = Fld_SkladCD2;
+
+            List<ZXC.VvUtilDataPackage> theTtAndTtNumList;
+            ZXC.MySqlCheck_Kind MySqlCheck_Kind = ZXC.MySqlCheck_Kind.M_MsiMsu_Roundtrip;
+            bool hasMsiMsuProblem;
+
+            hasMsiMsuProblem =
+               VvDaoBase.MsiMsu_Roundtrip_CheckBefSave(TheDbConnection, MySqlCheck_Kind, artiklCD, skladDate, skladCD, skladCD2, out theTtAndTtNumList);
+            if(hasMsiMsuProblem)
+            {
+               string errMessage = VvForm.GetErrMessageList(theTtAndTtNumList);
+               ZXC.aim_emsg(MessageBoxIcon.Error, "{0}\n\nJedan te isti artikl [{2}] ne može u jednom danu doći pa se vratiti na-sa istog skladišta.\n\n{3} <---> {4}\n\nIli povrat stavite na drugi datum\n\nili povrat izvršite na prvom MSI-u sa minus količinom.\n\n{1}",
+                  MySqlCheck_Kind, errMessage, artiklCD, skladCD, skladCD2);
+               e.Cancel = true;
+            }
+
+         }
+
+         #endregion MSI-MSU Roundtrip
+
+         #region KPN Check Rbt
+
+         if(ZXC.IsTEXTHOshop && faktur_rec.TT == Faktur.TT_IRM)
+         {
+            bool is_KPN_IN_TtNum_IS_EMPTY = Fld_V2_ttNum.IsZero();
+            bool is_KPN_IN_TtNum_NOT_EMPTY = Fld_V2_ttNum.NotZero();
+            bool is_KPN_IN_RbtSt_IS_EMPTY = Fld_Decimal02.IsZero();
+            bool is_KPN_IN_RbtSt_NOT_EMPTY = Fld_Decimal02.NotZero();
+
+            if(is_KPN_IN_TtNum_NOT_EMPTY || is_KPN_IN_RbtSt_NOT_EMPTY)
+            {
+               //Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+               if(artikl_rec != null)
+               {
+                  decimal usualRbt1St = Get_TH_IRM_Rabat(Fld_SkladCD, Fld_DokDate, artikl_rec);
+                  //decimal KPN_Rbt1St  = Fld_Decimal02;
+                  decimal theRbt1St = TheG.GetDecimalCell(ci.iT_rbt1St, rowIdx, true);
+
+                  if(theRbt1St != usualRbt1St /*+ KPN_Rbt1St*/)
+                  {
+                     // 18.12.2018: 
+                     //ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1}: Nekonzistentan rabat ({2}%) kod ZAPRIMANJA KUPONA.\n\nRabat svake stavke treba biti {0}%!", usualRbt1St /*+ KPN_Rbt1St*/, (rowIdx + 1), theRbt1St);
+                     //e.Cancel = true;
+
+                     string warningMessage = string.Format("Redak {1}: Nekonzistentan rabat ({2}%) kod ZAPRIMANJA KUPONA.\n\nRabat svake stavke treba biti {0}%!", usualRbt1St.Ron2() /*+ KPN_Rbt1St*/, (rowIdx + 1), theRbt1St.Ron2());
+                     DialogResult result = MessageBox.Show
+                        (warningMessage + "\n\nDa li još uvijek želite usnimiti ovaj dokument?",
+                        "Nekonzistentne stope rabata?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                     if(result != DialogResult.Yes) e.Cancel = true;
+
+                  }
+               }
+            }
+         }
+
+         #endregion KPN Check Rbt
+
+         #region SVD LJEKOVI / POTROSNI rule
+
+         // 26.08.2020: mix happy bday! 
+         // roman oce da se ubuduce smiju mijesati L i P artikli po jednoj URA-i, pa smo ovo komentirali 
+
+         if(ZXC.IsSvDUH && this.HasOrgBopCop)
+         {
+            artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+         
+            if(artikl_rec != null)
+            {
+               if((this as FakturExtDUC).Fld_PdvZPkind == ZXC.PdvZPkindEnum.SVD_LJEK && !artikl_rec.IsSvdArtGR_Ljek_)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Warning, "Artikl nije LIJEK\n\r\n\r{0}", artikl_rec.ArtiklName);
+                  //e.Cancel = true;
+               }
+               if((this as FakturExtDUC).Fld_PdvZPkind == ZXC.PdvZPkindEnum.SVD_POTR && !artikl_rec.IsSvdArtGR_Potr_)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Warning, "Artikl nije POTROŠNI\n\r\n\r{0}", artikl_rec.ArtiklName);
+                  //e.Cancel = true;
+               }
+            }
+         }
+
+         #endregion SVD LJEKOVI / POTROSNI rule
+
+         #region Artikl is neaktivan, isRashod, izuzet, ...
+
+         if(artikl_rec != null && artikl_rec.IsRashod)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljeni artikl!\n\n(neaktivan ili izuzet)\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
+            e.Cancel = true;
+         }
+
+         #endregion Artikl is neaktivan, isRashod, izuzet, ...
+
+      } // for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx) 
+
+      #endregion Check Column ArtiklCD, IsInMinus
+
+      #region IsShowingConvertedMoney
+
+      if(IsShowingConvertedMoney) // kod sejvanja, bili u devizama 
+      {
+         TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
+      }
+      // 12.10.2016: BIG NEWS ...da se kune kod zaokruzivanja postave na vrijednost koja ce dati deviznu cijenu na cent tocno 
+      else if(ArerWeIn_DevizniDokument())// kod sejvanja, bili u kunama 
+      {
+         TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
+         TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
+      }
+
+      // if still... 
+      if(IsShowingConvertedMoney)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u kune.");
+         e.Cancel = true;
+      }
+
+      #endregion IsShowingConvertedMoney
+
+      #region Check DokDate, SkladDate, T_pdvSt, OIB
+
+      // 08.04.2016: OIB 
+      // 19.04.2016: OIB 
+      //if(this is FakturExtDUC && faktur_rec.TtInfo.IsPdvTT)
+      if(this is FakturExtDUC && faktur_rec.TtInfo.IsPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV)
+      {
+         if((this as FakturExtDUC).Fld_KdOib.IsEmpty())
+         {
+            if((this as FakturExtDUC).Fld_KupdobCd != ZXC.RRD.Dsc_MalopKCD)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "OIB Partnera ne smije biti prazan!");
+               e.Cancel = true;
+            }
+         }
+      }
+
+      // 06.04.2014:
+      if(Fld_DokDate.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Datum dokumenta ne smije biti nedefiniran!");
+         e.Cancel = true;
+      }
+
+      if(isWYRN == false && Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Date < ZXC.projectYearFirstDay) ZXC.aim_emsg(MessageBoxIcon.Warning, "Datum dokumenta: {0} je stariji od prvog dana u radnoj godini!?", Fld_DokDate.ToString(ZXC.VvDateFormat));
+      if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Date > DateTime.Now.Date) ZXC.aim_emsg(MessageBoxIcon.Warning, "Datum dokumenta: {0} je iz budućnosti!?", Fld_DokDate.ToString(ZXC.VvDateFormat));
+
+      if(this is FakturExtDUC)
+      {
+         DateTime fld_SkladDate = (this as FakturExtDUC).Fld_SkladDate;
+
+         if(isWYRN == false && fld_SkladDate != DateTimePicker.MinimumDateTime && fld_SkladDate.Date < ZXC.projectYearFirstDay) ZXC.aim_emsg(MessageBoxIcon.Warning, "Sklad Datum: {0} je stariji od prvog dana u radnoj godini!?", (this as FakturExtDUC).Fld_SkladDate.ToString(ZXC.VvDateFormat));
+         if(fld_SkladDate != DateTimePicker.MinimumDateTime && fld_SkladDate.Date > DateTime.Now.Date) ZXC.aim_emsg(MessageBoxIcon.Warning, "Sklad Datum: {0} je iz budućnosti!?", (this as FakturExtDUC).Fld_SkladDate.ToString(ZXC.VvDateFormat));
+
+         if(faktur_rec.TtInfo.IsPdvTT && faktur_rec.TrnNonDel.Any(rtrans => rtrans.R_KC.IsZero()))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) bez iznosa.");
+         }
+
+         if(faktur_rec.TtInfo.IsPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV &&
+            faktur_rec.TrnNonDel.Any(rtrans => rtrans.T_pdvSt.IsZero() && rtrans.T_kol.NotZero()) &&
+            ((this as FakturExtDUC).Fld_DevNameAsEnum == ZXC.ValutaNameEnum.EMPTY ||
+             (this as FakturExtDUC).Fld_DevNameAsEnum == ZXC.ValutaNameEnum.HRK))
+         {
+            //01.10.2018. ako je projekt auto kuca grupa/Tip = "A" pustamo da moze bez oznake kolone kada je stopa 0
+            //if(faktur_rec.TtInfo.IsIzlazniPdvTT && ZXC.VvDeploymentSite != ZXC.VektorSiteEnum.KROVAL                              // KROVAL-a pustamo da ipak moze (30.11.2016) 
+            if(faktur_rec.TtInfo.IsIzlazniPdvTT && ZXC.VvDeploymentSite != ZXC.VektorSiteEnum.KROVAL && IsAutoKucaProjekt == false// KROVAL-a pustamo da ipak moze (30.11.2016) 
+                                                                                                                                  /*&& faktur_rec.TrnNonDel.Any(rtrans => rtrans.T_pdvColTip == ZXC.PdvKolTipEnum.NIJE && rtrans.T_kol.NotZero())*/) // Validation error 
+            {
+               foreach(Rtrans rtrans in faktur_rec.TrnNonDel.Where(rtrans => rtrans.T_pdvSt.IsZero() && rtrans.T_kol.NotZero()))
+               {
+                  if(rtrans.R_isBadPdvColTip_ForPdvStopaZero)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDokument sadrži stavku(e) sa NEDOZVOLJENOM nultom stopom PDV-a.\n\nProvjerite sadržaj 'PK' kolone.");
+                     e.Cancel = true;
+                  }
+               }
+            }
+            else // Warning only 
+            {
+               if(ZXC.VvDeploymentSite != ZXC.VektorSiteEnum.KROVAL) // KROVAL-a pustamo da ipak moze (30.11.2016) 
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa nultom stopom PDV-a.");
+               }
+            }
+         }
+
+         if(faktur_rec.TtInfo.IsPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec./*Pdv*/DokDate < Faktur.NewPdvStopaDate &&
+            faktur_rec.TrnNonDel.Any(rtrans => rtrans.T_pdvSt == 25.00M))
+         {
+            ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa stopom PDV-a 25%.");
+            //e.Cancel = true;
+         }
+
+         if(faktur_rec.TtInfo.IsPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec./*Pdv*/DokDate >= Faktur.NewPdvStopaDate &&
+            faktur_rec.TrnNonDel.Any(rtrans => rtrans.T_pdvSt == 23.00M))
+         {
+            ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa stopom PDV-a 23%.");
+            //e.Cancel = true;
+         }
+
+         // Check FISKAL radno vrijeme za IRM, IRA, IFA, IOD, IPV 
+         if(faktur_rec.IsFiskalDutyFaktur)
+         {
+            TimeSpan timeOfDay_RvrOD = ZXC.CURR_prjkt_rec.RvrOd.TimeOfDay;
+            TimeSpan timeOfDay_RvrDO = ZXC.CURR_prjkt_rec.RvrDo.TimeOfDay;
+
+            // 25.05.2017: zmjenio da provjera ne ida via Fld_DokDate nego serwerNow varijable 
+            // buduci ce tako i onako nize doci Fld_DokDate = serverNow                        
+            //TimeSpan timeOfDay_fak = Fld_DokDate.TimeOfDay;
+            TimeSpan timeOfDay_fak = serverNow.TimeOfDay;
+
+            if(timeOfDay_fak < timeOfDay_RvrOD || timeOfDay_fak > timeOfDay_RvrDO)
+            {
+               ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning,
+                  "UPOZORENJE:\n\n Vrijeme izdavanja računa [{0}] je izvan deklariranog radnog vremena [{1}]-[{2}]!",
+                     Fld_DokDate.ToShortTimeString(),
+                     ZXC.CURR_prjkt_rec.RvrOd.ToShortTimeString(),
+                     ZXC.CURR_prjkt_rec.RvrDo.ToShortTimeString());
+            }
+         }
+
+         if(faktur_rec.IsFiskalDutyFaktur_ONLINE && faktur_rec.NacPlac.IsEmpty())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nNije definiran način plaćanja!");
+            e.Cancel = true;
+         }
+
+         // NEGATIVNA MARZA warning 
+         if(faktur_rec.TtInfo.IsMalopFin_U && faktur_rec.TrnNonDel.Any(rtrans => rtrans.R_mrzSt.IsNegative()))
+         {
+            ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa NEGATIVNOM maržom.");
+         }
+
+         // NEGATIVNI RUC 
+         if(faktur_rec.TtInfo.IsIzlazniPdvTT && faktur_rec.TrnNonDel./*Where(r => r.T_pdvColTip != ZXC.PdvKolTipEnum.GlassOnIRM).*/Any(rtrans => rtrans.R_Ira_RUV.IsNegative()))
+         {
+            if(ZXC.RISK_PromjenaNacPlac_inProgress != true)
+            {
+               ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa NEGATIVNOM zaradom (RUC).");
+            }
+         }
+         // RUC ispod MINIMUMA 
+         decimal minimalRUCpoOP = ZXC.RRD.Dsc_MinimalRUC;
+         if(minimalRUCpoOP.NotZero() && faktur_rec.TtInfo.IsIzlazniPdvTT && faktur_rec.TrnNonDel./*Where(r => r.T_pdvColTip != ZXC.PdvKolTipEnum.GlassOnIRM).*/Any(rtrans => rtrans.R_Ira_RUV_poOP < minimalRUCpoOP))
+         {
+            Rtrans rtrans_rec = faktur_rec.TrnNonDel.First(rtrans => rtrans.R_Ira_RUV_poOP < minimalRUCpoOP);
+            ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa zaradom (RUC) ispod minimuma od {0} kn.\r\n[{1}] ruc: {2}",
+               minimalRUCpoOP.ToStringVv(), rtrans_rec.T_artiklCD, rtrans_rec.R_Ira_RUV_poOP.ToStringVv());
+         }
+      }
+
+      #endregion Check DokDate, SkladDate
+
+      #region MALOP TT vs MALOP SKLAD_CD
+
+      if(IsIn_TtVsSkladCD_Problem(faktur_rec.TT, faktur_rec.SkladCD))
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Tip Transakcije '{0}' nije korektan za skladiste '{1}'", faktur_rec.TT, ZXC.luiListaSkladista.GetNameForThisCd(faktur_rec.SkladCD));
+         e.Cancel = true;
+      }
+
+      #endregion MALOP TT vs MALOP SKLAD_CD
+
+      #region Is OTS or SVD FinLimit da Kupdob Overflow
+
+      bool shouldCheckKupdob_OTS_FinLimit = false; // TEMBO 
+      bool shouldCheckKupdob_SVD_FinLimit = false; // SvDUH 
+
+      Kupdob kupdob_rec = null;
+
+      // 26.03.2018: 
+      //if(this is FakturExtDUC                                )
+      if(this is FakturExtDUC && faktur_rec.TtInfo.IsFinKol_I)
+      {
+         kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
+
+         if(kupdob_rec != null)
+         {
+            shouldCheckKupdob_OTS_FinLimit = kupdob_rec.FinLimit.NotZero() && ZXC.IsSvDUH == false; // TEMBO 
+            shouldCheckKupdob_SVD_FinLimit = kupdob_rec.FinLimit.NotZero() && ZXC.IsSvDUH == true; // SvDUH 
+
+            if(ZXC.IsSvDUH && kupdob_rec.IsMtr == false) { ZXC.aim_emsg(MessageBoxIcon.Error, "Partner nije odjel!\n\nZadajte odjel prije usnimavanja!"); e.Cancel = true; }
+         }
+      }
+
+
+      if(shouldCheckKupdob_OTS_FinLimit) // should check enivej 
+      {
+         decimal leftToSpend, kupdobLimit, saldoOTS;
+
+         string theKonto = (this as FakturExtDUC).Fld_Konto;
+
+         if(theKonto.IsEmpty())
+         {
+            //KtoShemaDsc KSD = new KtoShemaDsc(ZXC.dscLuiLst_KtoShema);
+            theKonto = ZXC.KSD.Dsc_RKto_Kupca;
+         }
+
+         List<Ftrans> theFtransList = NalogDao.GetOTS_FtransByTipBrSortedList(TheDbConnection, theKonto, kupdob_rec.KupdobCD, (this as FakturExtDUC).Fld_DokDate);
+
+         saldoOTS = theFtransList.Sum(ftr => ftr.T_dug) - theFtransList.Sum(ftr => ftr.T_pot);
+
+         kupdobLimit = kupdob_rec.FinLimit;
+
+         leftToSpend = kupdobLimit - saldoOTS;
+
+         if(leftToSpend.IsZeroOrNegative()) // saldo is in overflow 
+         {
+            if(ZXC.CurrUserHasSuperPrivileges == false)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Račun neće biti moguće usnimiti zbog prekoračenja financijskog limita: {0}.\n\nTrenutni dug partnera: {1}\n\nIznos prekoračenja: {2}", kupdobLimit.ToStringVv(), saldoOTS.ToStringVv(), leftToSpend.ToStringVv());
+
+               e.Cancel = true;
+            }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Da nemate SuperUserPrivilegije,\n\nRačun ne bi bilo moguće usnimiti zbog prekoračenja financijskog limita: {0}.\n\nTrenutni dug partnera: {1}\n\nIznos prekoračenja: {2}", kupdobLimit.ToStringVv(), saldoOTS.ToStringVv(), leftToSpend.ToStringVv());
+            }
+         }
+         else // saldo is OK 
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Information, "Financijski limit: {0}.\n\nTrenutni dug partnera: {1}\n\nPreostalo: {2}", kupdobLimit.ToStringVv(), saldoOTS.ToStringVv(), leftToSpend.ToStringVv());
+         }
+      }
+
+      if(shouldCheckKupdob_SVD_FinLimit) // should check enivej 
+      {
+         decimal leftToSpend, kupdobLimit, spendSoFar, spendSoFarPosto;
+
+         ZXC.SVD_PotrosnjaInfo potrosnjaInfo = RtransDao.Get_SVD_PotrosnjaInfo(TheDbConnection, faktur_rec.TT, kupdob_rec, DateTime.MinValue, Fld_DokDate, VvUserControl.KupdobSifrar, false);
+         spendSoFar = potrosnjaInfo.AnaUtrosMM;
+         spendSoFarPosto = potrosnjaInfo.AnaPostoUtrosMM;
+
+         kupdobLimit = kupdob_rec.FinLimit;
+
+         leftToSpend = kupdobLimit - spendSoFar;
+
+         if(leftToSpend.IsZeroOrNegative()) // saldo is in overflow 
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Prekoračenje financijskog limita od: {0}.\n\nTrenutna potrošnja: {1} ({3}%)\n\nIznos prekoračenja: {2}",
+               kupdobLimit.ToStringVv(), spendSoFar.ToStringVv(), leftToSpend.ToStringVv(), spendSoFarPosto.ToString0Vv());
+         }
+         //else // saldo is OK 
+         //{
+         //   ZXC.aim_emsg(MessageBoxIcon.Information, "Financijski limit: {0}.\n\nTrenutni dug partnera: {1}\n\nPreostalo: {2}", kupdobLimit.ToStringVv(), spendSoFar.ToStringVv(), leftToSpend.ToStringVv());
+         //}
+      }
+
+      #endregion Is FinLimit da Prjkt Overflow
+
+      #region Is FISKAL Time elapsed too much? od 02.01.2015: FORCE 'NOW' as DokDateTime
+
+      // provjera dodana TEK 07.01.2016: 
+      if(faktur_rec.IsFiskalDutyFaktur_ONLINE && serverNow.Year != ZXC.projectYearFirstDay.Year)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu mijenjati dokumente iz godine koja nije 'tekuća'!");
+         e.Cancel = true;
+      }
+
+      if(faktur_rec.IsFiskalDutyFaktur_ONLINE && TheVvTabPage.WriteMode == ZXC.WriteMode.Add)
+      {
+         // 02.01.2015: 
+
+         //TimeSpan tolerancyTS = TimeSpan.FromMinutes(1);
+         //
+         //DateTime serverNow = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+         //
+         //if(serverNow - Fld_DokDate > tolerancyTS)
+         //{
+         //   DialogResult result = MessageBox.Show(
+         //      String.Format("Razlika između vremena računa {0} i vremena 'sad' {1}\n\nje čudno velika.\n\nŽelite li postaviti vrijeme računa na {1}?",
+         //         Fld_DokDate.ToString(ZXC.VvTimeOnlyFormat), serverNow.ToString(ZXC.VvTimeOnlyFormat)), 
+         //      "Potvrdite usnimavanje?!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+         //
+         //   switch(result)
+         //   {
+         //      case DialogResult.Cancel: e.Cancel = true;         break;
+         //      case DialogResult.Yes   : Fld_DokDate = serverNow; break;
+         //   }
+         //
+         //   //if(result != DialogResult.No) e.Cancel = true;
+         //}
+
+         // 02.01.2015: od ssada ovako: 
+         // 06.08.2015: za intervencije u slucaju 'Nekonzistentnost brojeva racuna' 
+         //Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+         if((ZXC.IsTEXTHOshop && ZXC.CurrUserHasSuperPrivileges) == false) // dakle, samo za superuser@TEXTHOshop se DOZVOLJAVA rucni datum, tj. ovo dole se NE izvodi 
+         {
+            // provjera dodana TEK 07.01.2016: 
+            if(serverNow.Year != ZXC.projectYearFirstDay.Year) ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu postaviti datum dokumenta na godinu koja nije 'ProjektYear'!");
+            //else                                               Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+            else if(ZXC.RISK_FiskParagon_InProgress == false) Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+         }
+
+         // 03.09.2018: ne daj sejvati racun usera bez oib-a i/ili BadOib-a 
+         //string FiskOibOper = TheVvTabPage.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID         ); 
+         string FiskOibOper = TheVvTabPage.TheVvForm.GetFisk_Oib_Oper(ZXC.CURR_user_rec.UserName);
+         if(ZXC.IsBadOib(FiskOibOper, false))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Greška fiskalizacije:\n\r\n\rUser {0} ima prazan ili netočan OIB!\n\r\n\rIzađite iz programa i prijavite se kao registrirani korisnik sa pravilno unesenim OIB-om.", /*faktur_rec.AddUID*/ZXC.CURR_user_rec.UserName);
+
+            if((ZXC.CURR_user_rec.UserName != ZXC.vvDB_programSuperUserName)) // da superuser ipak moze spremiti IRM kojega je zbog npr. datuma korigirao 
+            {
+               e.Cancel = true;
+            }
+         }
+
+      } // if(faktur_rec.IsFiskalDutyFaktur_ONLINE && TheVvTabPage.WriteMode == ZXC.WriteMode.Add)
+
+      #endregion Is FISKAL Time elapsed too much?
+
+      #region Check DokYear vs ZXC.projectYear
+
+      //if(faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay)
+      // 09.06.2022.
+      //if(isWYRN == false &&                                        faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
+      if(isWYRN == false && (this is UGNorAUN_PTG_DUC) == false && faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Zadali ste nedozvoljenu godinu!");
+         e.Cancel = true;
+      }
+
+      if(isWYRN == true && faktur_rec.DokDate.Year == ZXC.projectYearFirstDay.Year)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Zadali ste nedozvoljenu godinu!");
+         e.Cancel = true;
+      }
+
+      #endregion Check DokYear vs ZXC.projectYear
+
+      #region Check KOMISIJSKO Stuff
+
+      bool isFakturExtDUC = this is FakturExtDUC;
+      // 15.05.2014. kada je posl jedinica komisija
+      //kupdob_rec            = isFakturExtDUC     ? Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd) : null;
+      kupdob_rec = isFakturExtDUC ? Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_PosJedCd) : null;
+      //bool isKupdobKomisija = isFakturExtDUC     ? kupdob_rec.Komisija != ZXC.KomisijaKindEnum.NIJE               : false;
+      bool isKupdobKomisija = kupdob_rec != null ? kupdob_rec.Komisija != ZXC.KomisijaKindEnum.NIJE : false;
+
+      // 22.10.2014: 
+      bool isKomisijaInUse = VvUserControl.KupdobSifrar.Any(kpdb => kpdb.Komisija != ZXC.KomisijaKindEnum.NIJE);
+
+      VvLookUpItem skladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD);
+      VvLookUpItem sklad2LUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD2);
+      bool isSklKomisija = skladLUI == null ? false : isKomisijaInUse ? skladLUI.Integer > 10 : false;
+      bool isSkl2Komisija = sklad2LUI == null ? false : isKomisijaInUse ? sklad2LUI.Integer > 10 : false;
+
+      // 19.05.2017: bikoz TEMBO, overriding isSklKomisija rule 
+      if(isSklKomisija && skladLUI.Cd.ToUpper().StartsWith("VPSK")) isSklKomisija = false; // ako SkladCD1 pocne sa 'VPSK' tada NIJE komisija bez obzira na druge obzire 
+      if(isSkl2Komisija && sklad2LUI.Cd.ToUpper().StartsWith("VPSK")) isSkl2Komisija = false; // ako SkladCD1 pocne sa 'VPSK' tada NIJE komisija bez obzira na druge obzire 
+
+      if(this is MedjuSkladDUC)
+      {
+         if(isSklKomisija == true || isSkl2Komisija == true)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "MSI nije dozvoljen za komisijsko skladište!");
+            e.Cancel = true;
+         }
+      }
+
+
+      if(this is KIZDUC) // izdatnica u komisiju. 1. Partner MORA biti komisijski partner, 2. skl NE SMIJE biti, 3. skl2 MORA biti komisijsko skladiste 
+      {                  // 4. PartnerTicker MORA biti jednak sklCD2 
+                         /* 1. */
+         if(isKupdobKomisija == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Partner\n\n{0}\n\nNIJE označen kao komisija!", kupdob_rec);
+            e.Cancel = true;
+         }
+         /* 2. */
+         if(isSklKomisija == true)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Polazno skladište\n\n{0}\n\nNE SMIJE biti komisijsko skladište!\n\n(SklBr iznad 10)", skladLUI.Cd);
+            e.Cancel = true;
+         }
+         /* 3. */
+         if(isSkl2Komisija == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Dolazno skladište\n\n{0}\n\nNIJE komisijsko skladište!\n\n(SklBr iznad 10)", sklad2LUI.Cd);
+            e.Cancel = true;
+         }
+         /* 4. */
+         if(kupdob_rec.Ticker != sklad2LUI.Cd)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Partner\n\n{0}\n\ni Skladište {1}\n\nNISU upareni kao komisija!", kupdob_rec, sklad2LUI);
+            e.Cancel = true;
+         }
+
+         if(Fld_SkladBR2 < 11 || Fld_SkladBR2 > 99)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Oznaka KOMISIJSKOG (ulaznog) skladišta mora biti između 11 i 99!");
+            e.Cancel = true;
+         }
+      }
+
+      if(this is PIKDUC) // povrat iz komisije. 1. Partner MORA biti komisijski partner, 2. skl MORA biti, 3. skl2 NE SMIJE biti komisijsko skladiste 
+      {                  // 4. PartnerTicker MORA biti jednak sklCD 
+                         /* 1. */
+         if(isKupdobKomisija == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Partner\n\n{0}\n\nNIJE označen kao komisija!", kupdob_rec);
+            e.Cancel = true;
+         }
+         /* 2. */
+         if(isSklKomisija == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Polazno skladište\n\n{0}\n\nNIJE komisijsko skladište!\n\n(SklBr iznad 10)", skladLUI.Cd);
+            e.Cancel = true;
+         }
+         /* 3. */
+         if(isSkl2Komisija == true)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Dolazno skladište\n\n{0}\n\nNE SMIJE biti komisijsko skladište!\n\n(SklBr iznad 10)", sklad2LUI.Cd);
+            e.Cancel = true;
+         }
+         /* 4. */
+         if(kupdob_rec.Ticker != skladLUI.Cd)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Partner\n\n{0}\n\ni Skladište {1}\n\nNISU upareni kao komisija!", kupdob_rec, skladLUI);
+            e.Cancel = true;
+         }
+
+         if(Fld_SkladBR/*2*/ < 11 || Fld_SkladBR/*2*/ > 99)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Oznaka KOMISIJSKOG (izlaznog) skladišta mora biti između 11 i 99!");
+            e.Cancel = true;
+         }
+      }
+
+      // Externi dokument a nije KIZ niti PIK (npr. IRA) 
+      if(this is FakturExtDUC == true &&  // e.cancel = true: ako skladLUI NEMA zadan opp  
+         this is UFADUC == false && // e.cancel = true: ako je skl komisijsko  a KupdobTK nije jednak sklCD-u 
+         this is KIZDUC == false && // e.cancel = true: ako je skl komisijsko  a KupdobTK nije jednak sklCD-u 
+         this is PocetnoStanjeMPDUC == false &&
+         this is PocetnoStanjeDUC == false &&
+         this is PIKDUC == false)   // warning only   : ako je Kupdob komisija a KupdobTK nije jednak sklCD-u 
+      {
+         if(isSklKomisija && skladLUI.Uinteger.IsZero())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Komisijsko skladište\n\n{0}\n\nnema zadanu OPP!", skladLUI.Cd);
+            e.Cancel = true;
+         }
+         if(isSklKomisija == true && (kupdob_rec == null || kupdob_rec.Ticker != skladLUI.Cd))
+         {
+            if(kupdob_rec == null)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Za komisijsko skladište\n\n{0}\n\nNEMA komisijskog partnera!", skladLUI.Cd);
+            }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Za komisijsko skladište\n\n{0}\n\n{1}\n\nNIJE komisijski partner!", skladLUI.Cd, kupdob_rec);
+            }
+
+            e.Cancel = true;
+         }
+         if(isKupdobKomisija == true && kupdob_rec.Ticker != skladLUI.Cd)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje:\n\nZa komisijskog partnera\n\n{0}\n\n{1}\n\nNIJE upareno komisijsko skladište.", kupdob_rec, skladLUI.Cd);
+            //e.Cancel = true;
+         }
+      }
+
+      #endregion Check KOMISIJSKO Skladiste Number
+
+      #region IsNpCash but NOT fiskalize
+
+      if(faktur_rec.IsFiskalDutyFaktur == true && // IRM, IRA, IFA, IOD, IPV 
+         faktur_rec.IsFiskalDutyFaktur_ONLINE == false && // PREMA Prjkt pravilima ovaj TT NE IDE na OnLine Fiskalizaciju 
+         faktur_rec.IsNpCash == true)    // ...a zadao je NP 'Novcanice' 
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Prema pravilima u Projektu, ovaj dokument NE MOŽE imati GOTOVINSKI način plaćanja ('Novčanice')!");
+
+         e.Cancel = true;
+      }
+
+      // 30.12.2016: 
+      if((ZXC.IsTEXTHOshop || ZXC.CURR_prjkt_rec.IsFiskalOnline) &&
+         faktur_rec.TT == Faktur.TT_IRM &&
+         faktur_rec.NacPlac.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "NEDEFINIRAN način plaćanja!");
+
+         e.Cancel = true;
+      }
+
+      #endregion IsNpCash but NOT fiskalize
+
+      #region PIZ check DOUBLE ROLE Artikl ('X' and non'X')
+
+      if(this is ProizvodnjaDUC || this is PIZpDUC || this is TransformDUC)
+      {
+         string errMsg;
+         if((errMsg = GetPIZ_IntersectTT()).NotEmpty())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDokument sadrži stavku(e) sa DUPLOM ULOGOM!\n\n" + errMsg);
+            e.Cancel = true;
+         }
+      }
+
+      #endregion PIZ check DOUBLE ROLE Artikl ('X' and non'X')
+
+      #region Check IsNpCash Flag
+
+      if(this is FakturExtDUC)
+      {
+         string nacPlac = faktur_rec.NacPlac;
+         bool isNpCash = faktur_rec.IsNpCash;
+
+         bool shouldBeIsNpCash = ZXC.luiListaRiskVrstaPl.GetFlagForThisCd(nacPlac);
+
+         //if(isNpCash != shouldBeIsNpCash                                           )
+         if(isNpCash != shouldBeIsNpCash && faktur_rec.TtInfo.IsBlagajnaTT == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
+            e.Cancel = true;
+         }
+      }
+
+      #endregion Check IsNpCash Flag
+
+      #region Check IRA-2 rtransKOL vs rtranoKOL
+
+      if(this is IRPDUC || this is BORDUC)
+      {
+         decimal rtransKOL = faktur_rec.TrnSum_K;
+         decimal rtranoKOL = faktur_rec.TrnSum2_K;
+
+         if(ZXC.AlmostEqual(rtransKOL, rtranoKOL, 0.02M) == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nSuma količina prve tablice je {0}, a druge {1}!\n\nRazlika: {2}",
+               rtransKOL.ToStringVv(), rtranoKOL.ToStringVv(), (rtransKOL - rtranoKOL).ToStringVv());
+
+            if(this is BORDUC) e.Cancel = true;
+         }
+      }
+
+      if(this is BORDUC)
+      {
+         var rtransArtiklCDs = faktur_rec.TrnNonDel.Select(rtr => rtr.T_artiklCD).Distinct();
+         var rtranoArtiklCDs = faktur_rec.TrnNonDel2.Select(rto => rto.T_artiklCD).Distinct();
+         var intersect = rtransArtiklCDs.Intersect(rtranoArtiklCDs);
+
+         if(rtransArtiklCDs.Count() != intersect.Count() ||
+            rtranoArtiklCDs.Count() != intersect.Count())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nArtikli prve i druge tablice nisu usklađeni!\n\nOdaberite 'Grupiraj'.");
+            e.Cancel = true;
+         }
+      }
+
+      #endregion Check IRA-2 rtransKOL vs rtranoKOL
+
+      #region Check Empty Kupdob
+
+      if(this is FakturExtDUC)
+      {
+         FakturExtDUC theFakturExtDUC = this as FakturExtDUC;
+
+         //if(CtrlOK(theFakturExtDUC.tbx_KupdobCd) && faktur_rec.KupdobCD.IsZero() && (faktur_rec.KupdobName + faktur_rec.KupdobTK).IsEmpty())
+         if(CtrlOK(theFakturExtDUC.tbx_KupdobCd) && (faktur_rec.KupdobCD.IsZero() || faktur_rec.KupdobName.IsEmpty() || faktur_rec.KupdobTK.IsEmpty()))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nMolim, zadajte partnera prije usnimavanja.");
+            e.Cancel = true;
+         }
+      }
+
+      #endregion Check Empty Kupdob
+
+      #region TwinTrans Same SkladCD ?
+
+      if(faktur_rec.TtInfo.HasTwinTT && faktur_rec.SkladCD == faktur_rec.SkladCD2)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Međuskladišnica NE MOŽE imati isto odlazno i dolazno skladište!");
+
+         e.Cancel = true;
+      }
+
+      #endregion TwinTrans Same SkladCD ?
+
+      #region TwinTOrSplitrans NO SkladCD2 ?
+
+      if((faktur_rec.TtInfo.HasTwinTT || faktur_rec.TtInfo.HasSplitTT) && faktur_rec.SkladCD2.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Skladište 2 ne smije biti prazno!");
+
+         e.Cancel = true;
+      }
+
+      #endregion TwinTOrSplitrans NO SkladCD2 ?
+
+      #region Fiskal Faktur without Rtrans?
+
+      if(ZXC.CURR_userName != ZXC.vvDB_programSuperUserName &&
+         ZXC.RISK_SaveVvDataRecord_inProgress && faktur_rec.IsFiskalDutyFaktur && faktur_rec.IsFiskalDutyFaktur_ONLINE &&
+         (faktur_rec.TrnNonDel.Count().IsZero() || faktur_rec.S_ukTrnCount.IsZero()))
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Nema smisla usnimiti fiskalni račun bez stavaka.");
+
+         e.Cancel = true;
+      }
+
+      #endregion IRM without Rtrans?
+
+      #region INVENTURA stuff 
+
+      if(faktur_rec.TtInfo.IsInventura)
+      {
+         // 14.12.2016: ne dozvoljavamo TH-u sejvati INV/INM a da nije dan inventure (31.12.2016) 
+         //if(ZXC.IsTEXTHOany && faktur_rec.DokDate.Date != ZXC.projectYearLastDay .Date)
+         if(ZXC.IsTEXTHOany && faktur_rec.DokDate.Date != ZXC.TexthoInventuraDate.Date)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljen datum dokumenta inventure!");
+            e.Cancel = true;
+         }
+
+         if(ZXC.IsTEXTHOany && faktur_rec.TrnNonDel.Count(f => f.T_kol.NotZero() || f.T_kol2.NotZero()).IsZero())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Usnimavate dokument na kojem niste popunili niti jednu kolicinu!");
+            //e.Cancel = true;
+         }
+
+         List<Artikl> artiklWithStanjeList = new List<Artikl>();
+         ArtiklDao.Get_HasKolStOnly_ArtiklWithArtstatList(TheDbConnection, artiklWithStanjeList, faktur_rec.SkladCD, faktur_rec.DokDate, "", "artiklName ");
+
+         #region Pagging 
+
+         // 10.12.2018: Pagging Additions 
+         int startRowIdx;
+         int rangeCount;
+         if(GetPagging_IndexAndCount_FromNapomena(Fld_Napomena, out startRowIdx, out rangeCount))
+         {
+            artiklWithStanjeList = artiklWithStanjeList.GetRange(startRowIdx, rangeCount).ToList();
+         }
+
+         #endregion Pagging 
+
+         List<string> artiklInTroubleList = ArtiklDao.Get_NoInventura_YesKolSt_ArtiklWithArtstatList(artiklWithStanjeList, faktur_rec.Transes);
+
+         int count = 0, maxCount = 16;
+         if(artiklInTroubleList.Count.NotZero()) // znaci, IMA problema 
+         {
+            string errMessage = "UPOZORENJE:\n\n";
+
+            foreach(string artCD in artiklInTroubleList)
+            {
+               if(++count <= maxCount)
+               {
+                  errMessage += "Artikl [" + artCD + "] sklad [" + faktur_rec.SkladCD + "]\n";
+               }
+               else
+               {
+                  errMessage += "\n... i još [" + (artiklInTroubleList.Count - count + 1).ToString() + "] artikla ...";
+                  break;
+               }
+            }
+
+            //errMessage += "\n\nIma/imaju količinsko stanje a NEMA ga/ih na ovome dokumentu inventure pa NEĆE izaći na izvještajima inventure!\n\nARTIKLE TREBA DODATI NA OVAJ DOKUMENT INVENTURE!";
+            errMessage += "\n\nIma/imaju količinsko stanje a NEMA ga/ih na ovome dokumentu inventure pa će izaći na izvještajima inventure implicitno\n\nkao da je stavljen na ovaj dokument sa količinom 0.";
+
+            MessageBox.Show(errMessage, "ARTIKLI KOJE TREBA DODATI NA DOKUMENT INVENTURE!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+         } // if(badList.Count.NotZero()) // znaci, IMA problema 
+
+         // check duple pojave artikla na INV/INM dokumentu 
+         string innerArtiklCD;
+         for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
+         {
+            artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rowIdx, false);
+
+            for(int inIdx = 0; inIdx < TheG.RowCount - 1; ++inIdx)
+            {
+               innerArtiklCD = TheG.GetStringCell(ci.iT_artiklCD, inIdx, false);
+
+               if(artiklCD == innerArtiklCD && rowIdx < inIdx)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl [{0}] ima više od jedne pojave.\n\nRedak [{1}] i [{2}]\n\nRješite, molim, konflikt prije usnimavanja.", artiklCD, rowIdx + 1, inIdx + 1);
+                  e.Cancel = true;
+               }
+
+            } // inner loop 
+
+         } // outer loop for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx) 
+
+      } // if(faktur_rec.TtInfo.IsInventura) 
+
+      // 14.12.2016: ne dozvoljavamo TH-u na dan inventure (31.12.2016) ADD-ati ikoje dokumente osim inventurnih 
+      //else if(ZXC.IsTEXTHOany && faktur_rec.TtInfo.IsArtiklStatusInfluencer && faktur_rec.DokDate.Date == ZXC.projectYearLastDay .Date) // This is NOT inventura AND is TexthoAny 
+      else if(ZXC.IsTEXTHOany && faktur_rec.TtInfo.IsArtiklStatusInfluencer && faktur_rec.DokDate.Date == ZXC.TexthoInventuraDate.Date) // This is NOT inventura AND is TexthoAny 
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljen dokument na dan inventure!");
+
+         // 24.01.2017: da ipak bar na centrali mozemo kemijati: 
+         if(ZXC.IsTEXTHOcentrala && ZXC.CURR_userName == ZXC.vvDB_programSuperUserName)
+         {
+            // dakle, mi mozemo 
+         }
+         else
+         {
+            e.Cancel = true;
+         }
+      }
+
+      #endregion INVENTURA stuff
+
+      #region RED document
+
+      // 29.04.2016: pokusaj onemogucavanja nastanka nezeljeno 'crvenih' dokumenata 
+      if(!ZXC.AlmostEqual(faktur_rec.S_ukK.Ron2(), faktur_rec.TrnSum_K.Ron2(), /*tolerancy*/0.01M))
+      {
+         PutTransSumToDocumentSumFields(); // ziheraski, jos jemput 
+         GetFields(false);
+
+         if(!ZXC.AlmostEqual(faktur_rec.S_ukK.Ron2(), faktur_rec.TrnSum_K.Ron2(), /*tolerancy*/0.01M))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Prenos suma stavaka u sumu dokumenta nije točan.\n\nPonovite unos količine na prvoj stavci, te usnimite dokument.\n\nS-ukK {0} TrnSum_K {1}", faktur_rec.S_ukK.Ron2(), faktur_rec.TrnSum_K.Ron2());
+
+            e.Cancel = true;
+         }
+      }
+
+      #endregion RED document
+
+      #region Za UlazPDV_TT VezniDok vec postoji - warning only
+
+      if(faktur_rec.TtInfo.IsUlazniPdvTT && faktur_rec.VezniDok.NotEmpty() && faktur_rec.KupdobCD.NotZero())
+      {
+         // 09.02.2020: Goga HZTK-a 
+         //List<Faktur> fakturList = RtransDao.GetFakturList_VezniDok_KupdobCD_DokDate(TheDbConnection, faktur_rec.VezniDok, faktur_rec.KupdobCD,   faktur_rec.DokDate);
+         List<Faktur> fakturList = RtransDao.GetFakturList_VezniDok_KupdobCD_DokDate(TheDbConnection, faktur_rec.VezniDok, faktur_rec.KupdobCD/*, faktur_rec.DokDate*/);
+
+         if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit) fakturList.RemoveAll(fak => fak.RecID == faktur_rec.RecID);
+
+         if(fakturList.Count.NotZero())
+         {
+            int count = 0, maxCount = 10;
+            //string errMessage = "Za ovog partnera na ovaj dan već ima dukument(i) sa istim OrigBrDok [" + faktur_rec.VezniDok + "]\n\n";
+            string errMessage = "Za ovog partnera već ima dukument(i) sa istim OrigBrDok [" + faktur_rec.VezniDok + "]\n\n";
+
+            foreach(Faktur faktur in fakturList)
+            {
+               if(++count <= maxCount)
+               {
+                  errMessage += faktur + "\n";
+               }
+               else
+               {
+                  errMessage += "\n... i još [" + (fakturList.Count - count + 1).ToString() + "] stavaka ...";
+                  break;
+               }
+            }
+
+            //MessageBox.Show(errMessage, "OTKRIVEN JE VEĆ UNESENI OrigBrDok", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            DialogResult result = MessageBox.Show
+               (errMessage + "\n\nDa li još uvijek želite usnimiti ovaj dokument?",
+               faktur_rec.VezniDok + " JE VEĆ UNESENI OrigBrDok - ponavljanje već unesenog dokumenta?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if(result != DialogResult.Yes) e.Cancel = true;
+         }
+      }
+
+      // 11.07.2022: check duplicate URA/UFA by kcd date money
+      // 20.07.2022: da l ise uopce zeli provjeravati i ovo - npr. Rzelu to smeta pa smo stavili pravila
+    //if(                                         faktur_rec.TtInfo.IsUlazniPdvTT && faktur_rec.DokDate.NotEmpty() && faktur_rec.KupdobCD.NotZero())
+      if(ZXC.RRD.Dsc_NOcheckDupUbyKMD == false && faktur_rec.TtInfo.IsUlazniPdvTT && faktur_rec.DokDate.NotEmpty() && faktur_rec.KupdobCD.NotZero())
+      {
+         List<Faktur> fakturList = RtransDao.GetFakturList_TT_KupdobCD_DokDate_KCRP(TheDbConnection, faktur_rec.TT, faktur_rec.KupdobCD, faktur_rec.DokDate, faktur_rec.S_ukKCRP);
+
+         if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit) fakturList.RemoveAll(fak => fak.RecID == faktur_rec.RecID);
+
+         if(fakturList.Count.NotZero())
+         {
+            int count = 0, maxCount = 10;
+            //string errMessage = "Za ovog partnera na ovaj dan već ima dukument(i) sa istim OrigBrDok [" + faktur_rec.VezniDok + "]\n\n";
+            string errMessage = "Za ovog partnera već ima ulazni dukument(i) sa istim datumom i iznosom?!\n\n";
+
+            foreach(Faktur faktur in fakturList)
+            {
+               if(++count <= maxCount)
+               {
+                  errMessage += faktur + "\n";
+               }
+               else
+               {
+                  errMessage += "\n... i još [" + (fakturList.Count - count + 1).ToString() + "] stavaka ...";
+                  break;
+               }
+            }
+
+            DialogResult result = MessageBox.Show
+               (errMessage + "\n\nDa li još uvijek želite usnimiti ovaj dokument?",
+               "Ponavljanje već unesenog dokumenta?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if(result != DialogResult.Yes) e.Cancel = true;
+         }
+      }
+
+      #endregion Za UlazPDV_TT VezniDok vec postoji - warning only
+
+      #region IsPdvDateTooOld - warning only, SvDUH zabrana proslosti
+
+      // 26.03.2018:
+    //if(                                                            faktur_rec.TtInfo.IsPdvTT && faktur_rec.PdvR12 == ZXC.PdvR12Enum.R1 && faktur_rec.IsPdvDateTooOld())
+      if(ZXC.CURR_prjkt_rec.PdvRTip != ZXC.PdvRTipEnum.NOT_IN_PDV && faktur_rec.TtInfo.IsPdvTT && faktur_rec.PdvR12 == ZXC.PdvR12Enum.R1 && faktur_rec.IsPdvDateTooOld())
+      {
+         //ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nPDV datum je 'pre star', tj. račun stavljate\n\nu razdoblje za koje je već trebao biti predan PDV obrazac!?");
+         string errMessage;
+         DateTime dateNow = DateTime.Now;
+
+         //if(dateNow.Day <= 20)
+         //{
+         errMessage = String.Format("UPOZORENJE:\n\nNa današnji dan {0}\n\nPDV datum {1} je 'pre star',\n\ntj. račun stavljate\n\nu razdoblje za koje je već trebao biti predan PDV obrazac!?\n\n{2} mjesec",
+            dateNow.ToString(ZXC.VvDateFormat),
+            faktur_rec.PdvDate.ToString(ZXC.VvDateFormat),
+            faktur_rec.PdvDate.Month);
+         //}
+         //else
+         //{
+         //   errMessage = String.Format("UPOZORENJE:\n\nNa današnji dan {0}\n\nPDV datum {1} je 'pre star',\n\ntj. račun stavljate\n\nu razdoblje za koje je već trebao biti predan PDV obrazac!?\n\n{2} mjesec",
+         //      dateNow           .ToString(ZXC.VvDateFormat), 
+         //      faktur_rec.PdvDate.ToString(ZXC.VvDateFormat), 
+         //      faktur_rec.PdvDate.Month);
+         //}
+
+         DialogResult result = MessageBox.Show
+            (errMessage + "\n\nDa li još uvijek želite usnimiti ovaj dokument?",
+            "PDV datum je 'pre star'?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+         if(result != DialogResult.Yes) e.Cancel = true;
+      }
+
+      // 21.07.2022: 
+      if(ZXC.IsSvDUH                                        && 
+         ZXC.CURR_userName != ZXC.vvDB_programSuperUserName &&
+         faktur_rec.TT != Faktur.TT_UGO                     &&
+         faktur_rec.TT != Faktur.TT_NOR                     &&
+         faktur_rec.TT != Faktur.TT_ZAH                      )
+      {
+         bool isSvduhDokumentTooOld;
+
+         if(serverNow.Day <= 20) // do  20-og u mjesecu jos uvijek mogu u prosli mjesec 
+         {
+            isSvduhDokumentTooOld = ZXC.MonthDifference(serverNow, faktur_rec.DokDate) > 1; // 0 and 1 monthDiff is ok 
+         }
+         else // dan mjeseca je veci od 20 ... mogu samo od ovog mjeseca 
+         {
+            isSvduhDokumentTooOld = ZXC.MonthDifference(serverNow, faktur_rec.DokDate) >= 1; // 0 monthDiff is ok only 
+         }
+
+         // 07.09.2022: privremeno! DELLMELATTER! 
+         // evo, deletao 
+       //if(ZXC.IsSvDUH_donSkl(faktur_rec.SkladCD)) isSvduhDokumentTooOld = false;
+
+         if(isSvduhDokumentTooOld)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDokument je iz 'zaključanog' razdoblja!\n\n[{0}]\n\nPreporuča se mehanizam 'STORNO Dokumenta'", faktur_rec.DokDate.ToString(ZXC.VvDateFormat));
+
+            e.Cancel = true;
+         }
+      }
+
+      #endregion IsPdvDateTooOld - warning only
+
+      #region TRI izlazArtGR vs ulazArtGR
+
+      // 09.12.2016: 
+      if(Faktur.IsProizvCijByArtGr(faktur_rec.TT)) // Faktur.TT_TRI 
+      {
+         decimal ukFinIzlaz   ;
+         decimal ukFinIzlazMPC;
+         decimal ukKolUlaz    ;
+         decimal ncPerUlKol   ;
+         decimal mcPerUlKol   ;
+         /*Artikl*/ artikl_rec = null; 
+
+         // ZELENI ULAZ 
+         for(int rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
+         {
+            if(faktur_rec.TtInfo.IsRadNalPUcijTT == false && VvCheckBox.GetBool4String(TheG.GetStringCell(ci.iT_isProductLine, rIdx, false)) == false) continue;
+
+            Rtrans.SetRtransArtiklGrupa1CD(faktur_rec.TrnNonDel         , VvUserControl.ArtiklSifrar);
+            Rtrans.SetRtransArtiklGrupa1CD(faktur_rec.TrnNonDel_PULX_ALL, VvUserControl.ArtiklSifrar);
+
+            artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rIdx, /*false*/true);
+            if(artiklCD.IsEmpty()) continue;
+            artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD);
+            if(artikl_rec == null)
+            {
+               /* 23.08.2020: dodan if prije emsg */
+               if(!e.Cancel) ZXC.aim_emsg(MessageBoxIcon.Error, "Nema artikla [{0}]", artiklCD); ukFinIzlaz = 0.01M;
+            }
+            else
+            {
+               ukFinIzlaz    = faktur_rec.TrnNonDel         .Where(r => r.R_grName == artikl_rec.Grupa1CD).Sum(rtrn => rtrn.R_KCR );
+               ukFinIzlazMPC = faktur_rec.TrnNonDel         .Where(r => r.R_grName == artikl_rec.Grupa1CD).Sum(rtrn => rtrn.R_KCRP);
+               ukKolUlaz     = faktur_rec.TrnNonDel_PULX_ALL.Where(r => r.R_grName == artikl_rec.Grupa1CD).Sum(rtrn => rtrn.T_kol );
+
+               ncPerUlKol = ZXC.DivSafe(ukFinIzlaz   , ukKolUlaz).Ron(4);
+               mcPerUlKol = ZXC.DivSafe(ukFinIzlazMPC, ukKolUlaz).Ron(4);
+            }
+            if(ukFinIzlaz.IsZero())
+            {
+               /* 23.08.2020: dodan if prije emsg */
+               if(!e.Cancel) ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA!\n\nNema financijskog fonda za artikle kategorije\n\n[{0}]\n\n{1}\n\n...nedostaje artikl u 'bijelome' retku,\n\na koji je kategorije [{0}].", artikl_rec.Grupa1CD, artikl_rec);
+               e.Cancel = true;
+            }
+
+            // 02.01.2018: ne daj TRM-u MPC 0
+          //R_CIJ_KCRP = TheG.GetDecimalCell(ci.iT_cij_kcrp, rIdx, false);
+            R_CIJ_KCRP = TheG.GetDecimalCell(ci.iT_cij_MSK, rIdx, false);
+
+            if(R_CIJ_KCRP.IsZero())
+            {
+               /* 23.08.2020: dodan if prije emsg */
+               if(!e.Cancel) ZXC.aim_emsg(MessageBoxIcon.Error, "TRI-k ne smije sadržavati 'zelenu' (ulaznu) stavku sa MPC nula.\n\nRedak {0} artikl {1}", rIdx + 1, artiklCD);
+               e.Cancel = true;
+            }
+
+         } // Check ZELENI ULAZ for(int rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx) 
+
+         // 12.10.2017:  
+         // Bijeli IZLAZ 
+         for(int rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
+         {
+            if(faktur_rec.TtInfo.IsRadNalPUcijTT == false && VvCheckBox.GetBool4String(TheG.GetStringCell(ci.iT_isProductLine, rIdx, false)) == true) continue;
+
+            Rtrans.SetRtransArtiklGrupa1CD(faktur_rec.TrnNonDel         , VvUserControl.ArtiklSifrar);
+            Rtrans.SetRtransArtiklGrupa1CD(faktur_rec.TrnNonDel_PULX_ALL, VvUserControl.ArtiklSifrar);
+
+            artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rIdx, /*false*/true);
+            if(artiklCD.IsEmpty()) continue;
+            artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD);
+            if(artikl_rec == null)
+            {
+               /* 23.08.2020: dodan if prije emsg */
+               if(!e.Cancel) ZXC.aim_emsg(MessageBoxIcon.Error, "Nema artikla [{0}]", artiklCD); ukKolUlaz = 0.01M;
+            }
+            else
+            {
+               ukKolUlaz = faktur_rec.TrnNonDel_PULX_ALL.Where(r => r.R_grName == artikl_rec.Grupa1CD).Sum(rtrn => rtrn.T_kol );
+            }
+            if(ukKolUlaz.IsZero())
+            {
+               /* 23.08.2020: dodan if prije emsg */
+               if(!e.Cancel) ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA!\n\nNema produkta koji bi iscrpio fin. fond izlaza za artikle kategorije\n\n[{0}]\n\n{1}\n\n...nedostaje artikl u 'zelenom' retku,\n\na koji je kategorije [{0}].", artikl_rec.Grupa1CD, artikl_rec);
+               e.Cancel = true;
+            }
+         } // Check ZELENI ULAZ for(int rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx) 
+
+      } // if(Faktur.IsProizvCijByArtGr(faktur_rec.TT)) // Faktur.TT_TRI 
+
+      #endregion TRI izlazArtGR vs ulazArtGR
+
+      #region Check RNM ProjektCD
+
+      // 16.05.2018: 
+    //if(this is FakturExtDUC && faktur_rec.TT == Faktur.TT_RNM)
+      if(this is FakturExtDUC && faktur_rec.TtInfo.IsProjektTT )
+      {
+         //FakturExtDUC theFakturExtDUC = this as FakturExtDUC;
+
+         if(Fld_ProjektCD != faktur_rec.TT_And_TtNum) // sori, g ko k, ne znam pametnije 
+         {
+            Fld_ProjektCD = faktur_rec.ProjektCD  = faktur_rec.TT_And_TtNum;
+         }
+
+         if(faktur_rec.ProjektCD != faktur_rec.TT_And_TtNum)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nProjektCD != TT_And_TtNum\n\n[{0}] [{1}]", faktur_rec.ProjektCD, faktur_rec.TT_And_TtNum);
+
+            e.Cancel = true;
+         }
+
+         if(ThePolyGridTabControl.SelectedTab.Title == "Realizacija")
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nVratite se sa Tab-a 'Realizacija' na Tab 'Nalog' prije usnimavanja.");
+
+            e.Cancel = true;
+         }
+      }
+
+      #endregion Check Check RNM ProjektCD
+
+      #region Check PIP SkladCD
+
+      if(this is PIPDUC)
+      {
+         string fakturSkladKonto = Faktur2NalogRulesAndData.GetSkladKontoForSkladCD(faktur_rec.SkladCD);
+         string skladGPROkonto   = ZXC.KSD.Dsc_otp_ktoGotProiz;
+
+         if(fakturSkladKonto != skladGPROkonto)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nPIP dokument može ići samo na skladište gotvih proizvoda konto\n\n[{0}]\n\na ne na skladište {2} koje se vodi po kontu\n\n[{1}]", skladGPROkonto, fakturSkladKonto, faktur_rec.SkladCD);
+
+            e.Cancel = true;
+         }
+      }
+
+      if(this is RNMDUC)
+      {
+         string fakturSkladKonto = Faktur2NalogRulesAndData.GetSkladKontoForSkladCD(faktur_rec.SkladCD2);
+         string skladGPROkonto = ZXC.KSD.Dsc_otp_ktoGotProiz;
+
+         if(fakturSkladKonto != skladGPROkonto)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nRNM dokument može ići samo na skladište gotvih proizvoda konto\n\n[{0}]\n\na ne na skladište {2} koje se vodi po kontu\n\n[{1}]", skladGPROkonto, fakturSkladKonto, faktur_rec.SkladCD2);
+
+            e.Cancel = true;
+         }
+      }
+
+      if(this is RNZDUC)
+      {
+         if((this as RNZDUC).Fld_PersonCD .IsZero ()) { ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nZadajte zaštitara prije usnimavanja!"); e.Cancel = true; }
+         if((this as RNZDUC).Fld_VezniDok2.IsEmpty()) { ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nPartner nema ugovor!"                ); e.Cancel = true; }
+      }
+
+      #endregion Check PIP SkladCD
+
+      #region KPN validating (TH Kupon)
+
+      if(ZXC.IsTEXTHOshop && this is IRMDUC)
+      {
+         IRMDUC theIRMDUC = this as IRMDUC;
+         // LIJEVO: IZDAJ 
+         // 1. ako je checkirano; nesmije biti prazan niti RbtSt niti ExpDate
+         // 2. ako je checkirano; nesmije biti samo vrecica                  
+         if(theIRMDUC.cbx_isKpnOUT.Checked == true)
+         {
+            if(theIRMDUC.Fld_somePercent.IsZero () ||
+               theIRMDUC.Fld_PonudDate  .IsEmpty() ||
+               theIRMDUC.Fld_RokIspDate .IsEmpty()  )
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Za IZDAVANJE KUPONA potrebno je zadati i iznos popusta i datum valjanosti!");
+               e.Cancel = true;
+            }
+
+            bool onIRMisVrecicaOnly = faktur_rec.Transes.Any(rtr => rtr.T_artiklCD.StartsWith("VR") == false) == false;
+
+            if(onIRMisVrecicaOnly)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Na računu je samo vrećica.\n\nPrivremeno odznačite pa nakon izdavanja ovog računa vratite oznaku izdavanje kupona.Za IZDAVANJE KUPONA potrebno je zadati još neki artikl osim vrećice!");
+               e.Cancel = true;
+            }
+         }
+
+         // DESNO: ZAPRIMI 
+         // ili i jedno i drugo puno ili i jedno i drugo prazno
+         // ... + validacija TtNum-a 
+
+         bool is_KPN_IN_TtNum_IS_EMPTY  = theIRMDUC.Fld_V2_ttNum .IsZero ();
+         bool is_KPN_IN_TtNum_NOT_EMPTY = theIRMDUC.Fld_V2_ttNum .NotZero();
+         bool is_KPN_IN_RbtSt_IS_EMPTY  = theIRMDUC.Fld_Decimal02.IsZero ();
+         bool is_KPN_IN_RbtSt_NOT_EMPTY = theIRMDUC.Fld_Decimal02.NotZero();
+
+         if((is_KPN_IN_TtNum_NOT_EMPTY || is_KPN_IN_RbtSt_NOT_EMPTY) &&
+            (is_KPN_IN_TtNum_IS_EMPTY  || is_KPN_IN_RbtSt_IS_EMPTY))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Za ZAPRIMANJE KUPONA potrebno je zadati i broj kupona (broj računa) i iznos popusta!");
+            e.Cancel = true;
+         }
+
+         if((is_KPN_IN_TtNum_NOT_EMPTY || is_KPN_IN_RbtSt_NOT_EMPTY))
+         {
+            if(theIRMDUC.Is_TH_KPN_IN_TtNum_Invalid())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Pogrešno upisan broj zaprimljenog kupona (računa)!\n\nNema 7 znamenaka!\n\nIspravni primjeri:1400001, 7601234, 2000001...\n\nNajmanji mogući broj: 1400001\n\nPrepišite, molim, broj kupona točno od znamenke do znamenke.");
+               e.Cancel = true;
+            }
+         }
+      }
+
+      #endregion KPN validating (TH Kupon)
+
+      #region Check Dupla Pojava Artikla ... tamo gdje to smeta 
+
+      if(ZXC.IsSvDUH && this is UGODUC) // ovo vec ima i u INV/INM regiji! 
+      {
+         // check duple pojave artikla na INV/INM dokumentu 
+         string innerArtiklCD;
+         for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
+         {
+            artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rowIdx, false);
+
+            for(int inIdx = 0; inIdx < TheG.RowCount - 1; ++inIdx)
+            {
+               innerArtiklCD = TheG.GetStringCell(ci.iT_artiklCD, inIdx, false);
+
+               if(artiklCD == innerArtiklCD && rowIdx < inIdx)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl [{0}] ima više od jedne pojave.\n\nRedak [{1}] i [{2}]\n\nRješite, molim, konflikt prije usnimavanja.", artiklCD, rowIdx + 1, inIdx + 1);
+                  e.Cancel = true;
+               }
+
+            } // inner loop 
+
+         } // outer loop for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx) 
+      }
+
+      if(ZXC.IsSvDUH && this is URA_SVD_DUC && Fld_ProjektCD.NotEmpty()) // check URA kupdob vs UGO kupdob, URA dokDate vs UGO period 
+      {
+         Ftrans.ParseTipBr(Fld_ProjektCD, out string ugoTt, out uint ugoTtNum); // primjer inlined variable daclaration-a 
+
+         if(ugoTt.NotEmpty() && ugoTtNum.NotZero())
+         {
+            Faktur UGOfaktur_rec = new Faktur();
+
+            bool OK = FakturDao.SetMeFaktur(TheDbConnection, UGOfaktur_rec, ugoTt, ugoTtNum, false);
+
+            if(!OK)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Ne postoji ugovor!\n\n{0}", Fld_ProjektCD);
+               e.Cancel = true;
+            }
+            else if(UGOfaktur_rec.KupdobCD != (this as FakturExtDUC).Fld_KupdobCd)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Dobavljač URA računa se ne podudara sa dobavljačem UGO ugovora!\n\nURA: {0}\n\nUGO: {1}", (this as FakturExtDUC).Fld_KupdobName, UGOfaktur_rec.KupdobName);
+               e.Cancel = true;
+            }
+            else if((this as FakturExtDUC).Fld_DokDate < UGOfaktur_rec.DokDate ||
+                    (this as FakturExtDUC).Fld_DokDate > UGOfaktur_rec.DospDate)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Datum URA računa je izvan perioda Ugovora!?\n\nURA: {0}\n\nUGO: {1} - {2}", 
+                  (this as FakturExtDUC).Fld_DokDate.ToString(ZXC.VvDateFormat), UGOfaktur_rec.DokDate.ToString(ZXC.VvDateFormat), UGOfaktur_rec.DospDate.ToString(ZXC.VvDateFormat));
+               //e.Cancel = true;
+            }
+         }
+         else
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Ne postoji ugovor!\n\n{0}", Fld_ProjektCD);
+            e.Cancel = true;
+         }
+
+      }
+
+      if(ZXC.IsSvDUH && Fld_SkladCD.NotEmpty())
+      {
+         // 20.06.2022: 
+         // ovo bi, mozda, trebalo ugasiti nakon sto smo uveli da je 
+         // ZXC.luiListaSkladista postala IsYearDependent = true     
+         if(!SVD_RptLine.SVD_LegalSkl2022.Contains(Fld_SkladCD))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljeno skladište! Skl: [{0}]", Fld_SkladCD);
+            e.Cancel = true;
+         }
+      }
+
+      #endregion Check Dupla Pojava Artikla ... tamo gdje to smeta 
+
+   } // void FakturDUC_Validating(object sender, CancelEventArgs e)
+
+   protected string oldSkladCD, oldSkladCD2, oldVezniDok;
+   private   uint   oldTtNum;
+
+   public string GetPIZ_IntersectTT()
+   {
+      // 23.08.2020: 
+    //var sirovineListCD = faktur_rec.Transes  .Where(rtr => rtr.T_TT == faktur_rec.TT             && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklCD.ToUpper());
+    //var produktiListCD = faktur_rec.Transes  .Where(rtr => rtr.T_TT == faktur_rec.TtInfo.SplitTT && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklCD.ToUpper());
+      var sirovineListCD = faktur_rec.TrnNonDel.Where(rtr => rtr.T_TT == faktur_rec.TT             && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklCD.ToUpper());
+      var produktiListCD = faktur_rec.TrnNonDel.Where(rtr => rtr.T_TT == faktur_rec.TtInfo.SplitTT && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklCD.ToUpper());
+
+      var presjekListCD = sirovineListCD.Intersect(produktiListCD);
+
+      string errMsgCD = "";
+
+      if(presjekListCD.Count().NotZero())
+      {
+         foreach(string rtransDoubler in presjekListCD)
+         {
+            errMsgCD += rtransDoubler + "\n";
+         }
+
+         //ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDokument sadrži stavku(e) sa DUPLOM ULOGOM!\n\n" + errMsg);
+         //e.Cancel = true;
+      }
+
+      // 23.08.2020: 
+    //var sirovineListName = faktur_rec.Transes  .Where(rtr => rtr.T_TT == faktur_rec.TT             && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklName.ToUpper());
+    //var produktiListName = faktur_rec.Transes  .Where(rtr => rtr.T_TT == faktur_rec.TtInfo.SplitTT && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklName.ToUpper());
+      var sirovineListName = faktur_rec.TrnNonDel.Where(rtr => rtr.T_TT == faktur_rec.TT             && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklName.ToUpper());
+      var produktiListName = faktur_rec.TrnNonDel.Where(rtr => rtr.T_TT == faktur_rec.TtInfo.SplitTT && rtr.T_artiklCD.NotEmpty()).Select(rtr => rtr.T_artiklName.ToUpper());
+
+      var presjekListName = sirovineListName.Intersect(produktiListName);
+
+      string errMsgName = "";
+
+      if(presjekListName.Count().NotZero())
+      {
+         foreach(string rtransDoubler in presjekListName)
+         {
+            errMsgName += rtransDoubler + "\n";
+         }
+
+         //ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDokument sadrži stavku(e) sa DUPLOM ULOGOM!\n\n" + errMsg);
+         //e.Cancel = true;
+      }
+
+      return errMsgCD + errMsgName;
+   }
+
+   private void OnExitSkladCD2_SetKomisijaPartner(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      if(this.Visible == false) return;
+
+      VvTextBox vvtb = sender as VvTextBox;
+
+      if(oldSkladCD2 == vvtb.Text) return; // nepromijenjeno skladiste 
+
+      bool isCentToCentMSI = (this is MedjuSkladDUC) &&
+                             Fld_SkladCD .StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) &&
+                             Fld_SkladCD2.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00"));
+
+      if(ZXC.IsTEXTHOany && isCentToCentMSI && Fld_SkladCD2.StartsWith("12BP"))
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, " Skladište POVRATA je nedozvoljeno!");
+         e.Cancel = true;
+      }
+
+      VvLookUpItem thisSklad2LUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD2); 
+      if(this is FakturExtDUC && thisSklad2LUI != null && thisSklad2LUI.Integer > 10) // '> 10' znaci da je zadano komisijsko skladiste 
+      {
+         Kupdob kupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(kpdb => kpdb.Ticker == Fld_SkladCD2);
+         if(kupdob_rec != null)
+         {
+            FakturExtDUC theDUC = this as FakturExtDUC;
+            theDUC.Fld_KupdobTk = Fld_SkladCD2;
+            VvSQL.SorterType origSorter = theDUC.sifrarSorterType;
+            theDUC.sifrarSorterType = VvSQL.SorterType.Ticker;
+            theDUC.AnyKupdobTextBoxLeave(theDUC.tbx_KupdobTk, EventArgs.Empty);
+            theDUC.sifrarSorterType = origSorter;
+         }
+      }
+      oldSkladCD2 = Fld_SkladCD2;
+   }
+
+   protected /*private*/ void OnExitSkladCD_SetTtNum_And_ValidateSkladCD(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      // 29.03.2016: 
+      if(this is RNMDUC) return;
+
+      if(this.Visible == false) return;
+
+      VvTextBox vvtb = sender as VvTextBox;
+
+      uint newTtNum=0;
+
+      if(oldSkladCD != vvtb.Text) // promijenjeno skladiste 
+      {
+         bool isCentToCentMSI = (this is MedjuSkladDUC) && 
+                                Fld_SkladCD .StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) && 
+                                Fld_SkladCD2.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00"));
+
+         if(ZXC.IsTEXTHOany && isCentToCentMSI && Fld_SkladCD.StartsWith("12BP"))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, " Skladište POVRATA je nedozvoljeno!");
+            e.Cancel = true;
+         }
+
+         string skladCD4_ttNum = GetSkladCD4_ttNum(/*out isSkladCD2*/); // 12.12.2014: Logika za slijednost brojeva: vidi komentar kod GetSkladCD4_ttNum() 
+
+         if(this is ZAH_SVD_DUC)
+         {
+            skladCD4_ttNum = ZXC.CURR_userName;
+         }
+
+         // 28.01.2016: 
+         bool isInEditNotInADD    = TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
+         bool IsSklCd_NOT_InTtNum = !faktur_rec.TtInfo.IsSklCdInTtNum           ;
+
+         uint   arhivedTtNum   =  0;
+         string arhivedSkladCD = "";
+
+         if(isInEditNotInADD)
+         {
+            arhivedTtNum   = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum  ;
+            arhivedSkladCD = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
+         }
+
+         bool isJednakaSlijednost = GetIsJednakaSlijednost(Fld_TT, arhivedSkladCD, vvtb.Text);
+
+         if(isInEditNotInADD && arhivedSkladCD == vvtb.Text)
+         {
+            Put_NewTT_Num(arhivedTtNum);
+         }
+       //else if(isInEditNotInADD &&  isJednakaSlijednost                        ) // usli smo i ispravi i promijenili skladiste... ako je novo skl u istoj slijednosti sa starim                                    , OSTAVI isti broj
+         else if(isInEditNotInADD && (isJednakaSlijednost || IsSklCd_NOT_InTtNum)) // usli smo i ispravi i promijenili skladiste... ako je novo skl u istoj slijednosti sa starim ili ako uopce nije u korjenu ttNuma, OSTAVI isti broj
+         {
+            Put_NewTT_Num(arhivedTtNum);
+         }
+         else
+         {
+            newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI);
+            Put_NewTT_Num(newTtNum);
+         }
+
+         // 18.03.2014: Komisija News 
+         if(ZXC.TtInfo(Fld_TT).IsPrihodTT)
+         {
+            VvLookUpItem baseSkladLUI = ZXC.luiListaSkladista.GetBaseSkladLUI(Fld_SkladCD); // glavno skladiste 
+            if(baseSkladLUI != null)
+            {
+               Fld_SkladBR = (uint)ZXC.luiListaSkladista.GetBaseSkladLUI(Fld_SkladCD).Integer;
+            }
+            else // debil ima OPP koje ne postoji kao glavno skladiste 
+            {
+               Fld_SkladBR = ZXC.luiListaSkladista.GetUintegerForThisCd(Fld_SkladCD); // glavno skladiste 
+            }
+         }
+         // 18.03.2014: Komisija News continued 
+         VvLookUpItem thisSkladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD); // zadano/realno skladiste 
+         if(this is FakturExtDUC && thisSkladLUI != null && thisSkladLUI.Integer > 10) // '> 10' znaci da je zadano komisijsko skladiste 
+         {
+            Kupdob kupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(kpdb => kpdb.Ticker == Fld_SkladCD);
+            if(kupdob_rec != null)
+            {
+               FakturExtDUC theDUC = this as FakturExtDUC;
+               theDUC.Fld_KupdobTk = Fld_SkladCD;
+               this.originalText   = Fld_SkladCD;
+
+               // 18.05.2020: bio BUG bez ovoga ... save ORIG 
+               VvSQL.SorterType ORIG_sifrarSorterType = theDUC.sifrarSorterType;
+
+               theDUC.sifrarSorterType = VvSQL.SorterType.Ticker;
+
+               //// 11.07.2019: 
+               //theDUC.Fld_KupdobCd   = kupdob_rec.KupdobCD;
+               //theDUC.Fld_KupdobTk   = kupdob_rec.Ticker  ;
+               //theDUC.Fld_KupdobName = kupdob_rec.Naziv   ;
+
+
+               theDUC.AnyKupdobTextBoxLeave(theDUC.tbx_KupdobTk, EventArgs.Empty);
+
+               // 18.05.2020: bio BUG bez ovoga ... restore ORIG 
+               theDUC.sifrarSorterType = ORIG_sifrarSorterType;
+            }
+         }
+
+         #region if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
+
+         // 04.11.2021: 
+       //if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij)
+         if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij || (ZXC.IsSvDUH && faktur_rec.TT == Faktur.TT_IZD))
+         {
+            RecalcPrNabCijAndResultFields();
+         }
+
+         #endregion if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
+
+      }
+      //if(TheVvTabPage.WriteMode == ZXC.WriteMode.Add)
+      //{
+      //   if(oldSkladCD != vvtb.Text) // promijenjeno skladiste 
+      //   {
+      //      newTtNum = TheVvDao.GetNextTtNum(conn, Fld_TT, Fld_SkladCD);
+      //      Put_NewTT_Num(newTtNum);
+      //   }
+      //}
+      //else if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit)
+      //{
+      //   string befEditSkladCD = faktur_rec.BackupData._skladCD;
+
+      //   if(faktur_rec.TtInfo.IsSklCdInTtNum == true)
+      //   {
+      //   }
+      //   else
+      //   {
+      //   }
+      //}
+
+      oldTtNum   = Fld_TtNum;
+      oldSkladCD = Fld_SkladCD;
+
+      ////if(dbNavigationRestrictor.RestrictedValues.Contains(vvtb.Text) == false)
+      ////{
+      ////   ZXC.RaiseErrorProvider((Control)sender, "Nedozvoljeni TIP TRANSAKCIJE (TT).");
+      ////   e.Cancel = true;
+      ////}
+
+
+      //#region Nepoznata Potreba Ovo je code-irala, ali ispada bug koji ne da ispraviti ttNum, renmarck do dalnjega...
+      ////if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit)
+      ////{
+      ////   if(faktur_rec.BackupData._skladCD == Fld_SkladCD &&
+      ////      faktur_rec.BackupData._tt      == Fld_TT)
+      ////   {
+      ////      Put_NewTT_Num(faktur_rec.BackupData._ttNum);
+      ////      return;
+      ////   }
+      ////}
+
+      //// 30.1.2011:
+      //if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && faktur_rec.TtInfo.IsSklCdInTtNum == false) return;
+
+      //#endregion Nepoznata Potreba Ovo je code-irala, ali ispada bug koji ne da ispraviti ttNum, renmarck do dalnjega...
+
+      ////if(Fld_TT.IsEmpty()/* || ZXC.TtInfo(Fld_TT).IsSklCdInTtNum == false*/) return;
+
+      //if(TheVvTabPage.WriteMode != ZXC.WriteMode.Edit) Put_NewTT_Num(newTtNum);
+
+      //if(oldTtNum.NotZero() && oldTtNum != newTtNum)
+      //{
+      //   if(faktur_rec.TtInfo.IsSklCdInTtNum)
+      //      ZXC.aim_emsg(MessageBoxIcon.Warning,
+      //         "Upozorenje: stari broj dokumenta {0} je u međuvremenu iskorišten, ili je promijenjeno skladište te dokument dobiva novi broj {1}", oldTtNum, newTtNum);
+      //   else
+      //      ZXC.aim_emsg(MessageBoxIcon.Warning,
+      //         "Upozorenje: stari broj dokumenta {0} je u međuvremenu iskorišten, te dokument dobiva novi broj {1}", oldTtNum, newTtNum);
+      //}
+
+      if((faktur_rec.TtInfo.IsSklCdInTtNum && Fld_TtNum.ToString().StartsWith(Fld_SkladBR.ToString()) == false) || Fld_TtNum.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error,
+            " Brojčana oznaka skladišta {0} mora biti u korjenu broja dokumenta {1}, a nije!", Fld_SkladBR, Fld_TtNum);
+         e.Cancel = true;
+      }
+
+      if(faktur_rec.TtInfo.IsFinKol_TT && Fld_SkladBR.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error,
+            " Brojčana oznaka skladišta {0} nesmije biti 0 - 'Nebitno'!", Fld_SkladBR);
+         e.Cancel = true;
+      }
+
+      //if(newTtNum.IsZero()) e.Cancel = true;
+
+      // 20.02.2014: Lili :-) 
+      ZXC.TheVvForm.VvPref.findArtikl.LastUsedSkladCD = Fld_SkladCD;
+   }
+
+   protected /*private*/ void OnExitRNMkind_SetTtNum(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      if(this is RNMDUC == false) return;
+
+      if(this.Visible == false) return;
+
+      VvTextBox vvtb = sender as VvTextBox;
+
+      uint newTtNum=0;
+
+      if(oldVezniDok != vvtb.Text) // promijenjeni VezniDok as RNMkind 
+      {
+         bool isInEditNotInADD = TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
+
+         uint   arhivedTtNum    =  0;
+         string arhivedVezniDok = "";
+
+         if(isInEditNotInADD)
+         {
+            arhivedTtNum    = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum   ;
+            arhivedVezniDok = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).VezniDok;
+         }
+
+       //bool isJednakaSlijednost = GetIsJednakaSlijednost_RNMkind(arhivedVezniDok, vvtb.Text);
+
+         if(isInEditNotInADD && arhivedVezniDok == vvtb.Text)
+         {
+            Put_NewTT_Num(arhivedTtNum);
+         }
+       //else if(isInEditNotInADD /*&& isJednakaSlijednost*/) // usli smo i ispravi i promijenili VezniDok 
+       //{
+       //   Put_NewTT_Num(arhivedTtNum);
+       //}
+         else
+         {
+            newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*skladCD4_ttNum*/"", /*isCentToCentMSI*/false, vvtb.Text);
+            Put_NewTT_Num(newTtNum);
+         }
+      }
+      oldTtNum    = Fld_TtNum   ;
+      oldVezniDok = Fld_VezniDok;
+   }
+
+   private bool GetIsJednakaSlijednost(string theTT, string arhivedSkladCD, string newSkladCD)
+   {
+      VvLookUpItem oldSkladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(arhivedSkladCD);
+      VvLookUpItem newSkladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(    newSkladCD);
+
+    //if(ZXC.IsOPPsljednost(theTT, newSkladLUI.Uinteger) == false) return false; // nemoj na promjenu sklCDa NonPrihodTT-ovima () proglasavati zajednicku sljednost iako imaju isti opp 
+      if(ZXC.TtInfo(theTT).IsPrihodTT                    == false) return false; // nemoj na promjenu sklCDa NonPrihodTT-ovima () proglasavati zajednicku sljednost iako imaju isti opp 
+
+      if(oldSkladLUI == null || newSkladLUI == null) return false;
+
+      if(oldSkladLUI.Uinteger.NotZero() && oldSkladLUI.Uinteger == newSkladLUI.Uinteger) return true;
+
+      VvLookUpItem oldBaseSkladLUI = ZXC.luiListaSkladista.GetBaseSkladLUI(arhivedSkladCD); // glavno skladiste OLD 
+      VvLookUpItem newBaseSkladLUI = ZXC.luiListaSkladista.GetBaseSkladLUI(    newSkladCD); // glavno skladiste NEW 
+      
+      if(oldBaseSkladLUI != null && newBaseSkladLUI != null && oldBaseSkladLUI.Cd == newBaseSkladLUI.Cd) return true;
+
+      return false;
+   }
+
+   /// <summary>
+   /// Ovime se definira logika slijednosti TtNum-ova za promete koji imaju dva (odlazno i dolazno) skladista
+   /// Ako je tako odobreno u RiskRulsima, slijednost odredjuje (njegov SBR ide u korjen TtNum-a) skladiste
+   /// koje se odnosi na poslovnicu, ili sta vec, samo da nije neko zajednicko - centralno skladiste
+   /// </summary>
+   /// <returns></returns>
+   private string GetSkladCD4_ttNum(/*out bool isSkladCD2*/)
+   {
+      //isSkladCD2 = false;
+
+      if(ZXC.RRD.Dsc_IsMSIttNumByPosl == false) return Fld_SkladCD;
+
+      // ako ne postoje 2 sklad na DUCu, onda daj to prvo i jedino,          
+      if(Fld_SkladCD2.IsEmpty()) return Fld_SkladCD;
+
+      // ako postoje 2, daj prvoga u kojem se spominje poslovnicaSkladiste   
+      // ako postoje 2, a ni jedno nije poslovnicaSkladiste, tada vrati prvo 
+      if(Fld_SkladCD2.NotEmpty())
+      {
+              if(ZXC.IsPoslovnicaSklad(Fld_SkladCD )) {                        return Fld_SkladCD ; }
+         else if(ZXC.IsPoslovnicaSklad(Fld_SkladCD2)) { /*isSkladCD2 = true;*/ return Fld_SkladCD2; }
+         else                                         {                        return Fld_SkladCD ; }
+      }
+
+      return Fld_SkladCD;
+   }
+
+   private void RecalcPrNabCijAndResultFields()
+   {
+      // 08.06.2017: da nulti ZPC ne traje dugo 
+      if(ZXC.IsTEXTHOcentrala && this is NivelacijaDUC && Faktur.Get_IsNultiZPC(Fld_TT, Fld_TtNum) == true) return; // oj van, nemoj revalorizirati cijene 
+
+      bool changeOccured = false, changeReported = false;
+
+      Rtrans rtrans_rec;
+
+      for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
+      {
+         rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, false, null);
+
+         ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, rtrans_rec);
+
+         if(artStat_rec == null) artStat_rec = new ArtStat();
+
+         if(rtrans_rec.T_cij != artStat_rec.PrNabCij)
+         {
+            changeOccured = true;
+
+            // 16.10.2015: 
+            if(changeReported == false)
+            {
+             //ZXC.aim_emsg(MessageBoxIcon.Warning, "Redak {0} cijena je kriva usljed promjene skladišta i/ili datuma.\n\nIspraviti ću je automatski.", rowIdx + 1);
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Usljed promjene skladišta i/ili datuma, neke su cijene krive.\n\nIspraviti ću ih automatski.");
+               changeReported = true;
+            }
+
+            TheG.PutCell(ci.iT_cij, rowIdx, artStat_rec.PrNabCij);
+            
+            // 28.04.2016: tek sada! Bijo BUG!!! 
+            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(rowIdx);
+            //rtrans_rec.T_cij = artStat_rec.PrNabCij;
+
+            //rtrans_rec.CalcTransResults(null);
+
+            //PutDgvLineResultsFields1(rowIdx, rtrans_rec, true);
+         }
+
+         if(changeOccured)
+         {
+            PutDgvTransSumFields1();
+         }
+      }
+   }
+
+   public /*private*/ void OnExit_ValidateTTrestrictor(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      VvTextBox vvtb = sender as VvTextBox;
+
+      if(vvtb.EditedHasChanges() == false) return;
+
+      if(dbNavigationRestrictor_TT.RestrictedValues.Contains(vvtb.Text) == false)
+      {
+         ZXC.RaiseErrorProvider((Control)sender, "Nedozvoljeni TIP TRANSAKCIJE (TT).");
+         e.Cancel = true;
+      }
+   }
+
+   private void dtp_DokDate_ValueChanged_SetSkladAndPdvDate(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      // 23.04.2018: da ne provjerava
+      bool isProjektTT = ZXC.TtInfo(Fld_TT).IsProjektTT;
+
+    //if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year                ) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
+      if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year && !isProjektTT) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
+
+      #region if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
+
+      // 20.08.2011: 
+      if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij)
+      {
+         RecalcPrNabCijAndResultFields();
+      }
+
+      #endregion if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
+
+      #region TRI - TRM
+
+      // 20.11.2017:                                                         
+      // Pri promjeni datuma, SVE podatke koji dolaze iz Artstat-a / Cache-a 
+      // treba revalorizirati jer je artstat ovisan o datumu!!!              
+
+      //if("ima li ijedan ovisan o artstat-u?") // ima li ikoja kolona u koju 'UpdateArtikl' puca nesto iz artstat-a 
+      //{
+      //   forič(redak)
+      //   {
+      //      PukniOsvježeniPodatak(rowIdx, podatak);
+      //   }
+      //}
+
+      // ... ALI SI LIJEN PA CES I OVO SAMO CILJANO ZA TRM ... drz vodu dok majstori (penzija) ne odu 
+
+      if(faktur_rec.TtInfo.TheTT == Faktur.TT_TRI)
+      {
+         TheVvTabPage.TheVvForm.RISK_SetColumnValues(VvForm.RISK_ColumnKindEnum.MalopCij);
+      }
+
+
+      #endregion TRI - TRM
+
+
+
+      FakturDUC fakturDUC = this as FakturDUC;
+
+      //26.05.2015.
+      if(CtrlOK(fakturDUC.tbx_DokDate2)) fakturDUC.Fld_DokDate2 = Fld_DokDate;
+
+      if(this is FakturExtDUC == false) return;
+      FakturExtDUC fakturExtDUC = this as FakturExtDUC;
+
+      if(CtrlOK(fakturExtDUC.tbx_SkladDate)) fakturExtDUC.Fld_SkladDate = Fld_DokDate;
+      if(CtrlOK(fakturExtDUC.tbx_PdvDate  )) fakturExtDUC.Fld_PdvDate   = Fld_DokDate;
+    
+      // 09.2017: 
+      #region RNZ Additions
+
+      if(this is RNZDUC)
+      {
+         #region TtNum
+
+         uint newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*skladCD4_ttNum*/"", /*isCentToCentMSI*/false, Fld_VezniDok, Fld_DokDate.Month);
+         Put_NewTT_Num(newTtNum);
+
+         #endregion TtNum
+
+      } // if(this is RNZDUC) 
+
+      #endregion RNZ Additions
+
+   }
+
+   #region PrimkaVersusNarudzbaMinus
+   
+   private bool GetIsInPrimkaVsNarudzbaMinus(string artiklCD, decimal primkaKol, Faktur faktur_rec, out decimal narudzbaKol)
+   {
+      #region Saznaj NarTT i NarTtNum
+
+      narudzbaKol = 0;
+
+      string narTt;
+      uint narTtNum;
+
+      narTt = Faktur.TT_NRD;
+      narTtNum = faktur_rec.GetFirstVezaTtNumForTT(narTt);
+      
+      if(narTtNum.IsZero()) // Nije nasao NRD, probaj naci NRU 
+      {
+         narTt = Faktur.TT_NRU;
+         narTtNum = faktur_rec.GetFirstVezaTtNumForTT(narTt);
+      }
+
+      if(narTtNum.IsZero()) // NEMA NARUDZBE U VEZI 
+      {
+         //narTt = "";
+         //narTtNum = 0;
+
+         return false;
+      }
+
+      #endregion Saznaj NarTT i NarTtNum
+
+      // ako smo dosli do ovdje: narudzba je zadana - nije prazna 
+
+      narudzbaKol = FakturDao.GetNarudzbaKolForArtikl(TheDbConnection, artiklCD, narTt, narTtNum);
+
+      if(primkaKol > narudzbaKol) return true;
+      else                        return false;
+   }
+
+   private void Issue_ArtiklIsInPrimkaVersusNarudzbaMinus_ErrorMessage(string artiklCD, decimal narudzbaKol, decimal primkaKol, int rowIdx)
+   {
+      ZXC.aim_emsg(MessageBoxIcon.Error, "VEĆA KOLIČINA NEGO NA NARUDŽBI!\n\nRedak: {0}\n\nArtikl: '{1}'\n\nKoličina sa narudžbe: {2}\n\nA na primku ste zadali količinu: {3}",
+         rowIdx + 1, artiklCD, narudzbaKol.ToStringVv(), primkaKol.ToStringVv());
+   }
+
+   #endregion PrimkaVersusNarudzbaMinus
+
+   public bool GetPagging_IndexAndCount_FromNapomena(string f_napomena, out int startRowIdx, out int rangeCount)
+   {
+      startRowIdx = -1;
+      rangeCount  = -1;
+
+      if(f_napomena.Replace(" ", "").StartsWith("Red:"))
+      {
+         string od_do_str = f_napomena.Replace(" ", "").Replace("Red:", "");
+         string[] odAndDo = od_do_str.Split(new string[] { ":", "-", "/", "od" }, StringSplitOptions.None );
+
+         if(odAndDo.Length > 1)
+         {
+            int redOd = ZXC.ValOrZero_Int(odAndDo[0]);
+            int redDo = ZXC.ValOrZero_Int(odAndDo[1]);
+
+            if(redDo > redOd)
+            {
+               startRowIdx = redOd - 1        ;
+               rangeCount  = redDo - redOd + 1;
+
+               return true;
+            }
+
+            return false;
+         }
+
+         return false;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   #endregion FakturDUC_Validating
+
+   #region OnExit BOR-SOBA-GOST
+
+   public void OnExit_GOST_SOBA_BOR_SetOtherData(object sender, EventArgs e)
+   {
+      if(this is IZMDUC_2 == false) return;
+
+      VvTextBox vvTB = sender as VvTextBox;
+
+      if(vvTB.EditedHasChanges() == false) return;
+
+      FakturExtDUC theDUC = this as FakturExtDUC;
+      uint borTtNum;
+      List<Rtrano> rtranoList;
+
+      ZXC.GOST_SOBA_BOR_SetOtherData_InProgress = true;
+
+      switch(vvTB.A0_JAM_Name)
+      {
+         // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>      
+         case "tbx_kupdobCd"  : // Zadano: Ime i Prezime gosta - popuni BOR i sobu                                     
+         case "tbx_kupdobName": // Zadano: Ime i Prezime gosta - popuni BOR i sobu                                     
+         case "tbx_kupdobTk"  : // Zadano: Ime i Prezime gosta - popuni BOR i sobu                                     
+
+            //if(theDUC.Fld_ProjektCD.NotEmpty() || theDUC.Fld_OsobaX.NotEmpty()) break;
+
+          //rtranoList = RtranoDao.GetRtranoList_For_Gost(TheDbConnection, theDUC.Fld_KupdobCd);
+          //if(rtranoList.Count.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Za gosta [{0}]\n\nnema BORavka!", theDUC.Fld_KupdobName); return; }
+            borTtNum = RtranoDao.GetBOR_TtNum_ForGost(TheDbConnection, theDUC.Fld_KupdobCd);
+            if(borTtNum.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Za gosta [{0}]\n\nnema BORavka!", theDUC.Fld_KupdobName); return; }
+
+            theDUC.Fld_ProjektCD = Faktur.Set_TT_And_TtNum(Faktur.TT_BOR, borTtNum);
+            theDUC.Fld_OsobaX    = RtranoDao.GetBOR_Soba_ForGost(TheDbConnection, theDUC.Fld_KupdobCd);
+
+            break;
+         // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>      
+         case "tbx_osobaX"    : // Zadana: SOBA - popuni BOR i zadnji kupdob (gost) iz sobe                              
+
+            //if(theDUC.Fld_ProjektCD.NotEmpty() || theDUC.Fld_KupdobCd.NotZero()) break;
+
+            if(theDUC.Fld_OsobaX.IsEmpty()) { ZXC.GOST_SOBA_BOR_SetOtherData_InProgress = false; return; }
+
+            rtranoList = RtranoDao.GetRtranoList_For_SobaBr(TheDbConnection, theDUC.Fld_OsobaX);
+            if(rtranoList.Count.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Za sobu [{0}]\n\nnema BORavka!", theDUC.Fld_OsobaX); return; }
+
+            theDUC.Fld_ProjektCD = Faktur.Set_TT_And_TtNum(Faktur.TT_BOR, rtranoList.Last().T_ttNum)  ;
+            theDUC.Fld_KupdobCd  =                                        rtranoList.Last().T_paletaNo;
+            theDUC.sifrarSorterType = VvSQL.SorterType.Code;
+            theDUC.AnyKupdobTextBoxLeave(theDUC.tbx_KupdobCd, EventArgs.Empty);
+            break;
+         // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>      
+         case "tbx_Projekt"   : // Zadan:  BOR - popuni sobu (zadnji rtrano s BORa), popuni kupdoba (zadnji rtrano s BORa) 
+
+            //if(theDUC.Fld_OsobaX.NotEmpty() || theDUC.Fld_KupdobCd.NotZero()) break;
+
+            if(theDUC.Fld_ProjektCD.IsEmpty()) { ZXC.GOST_SOBA_BOR_SetOtherData_InProgress = false; return; }
+
+            rtranoList = RtranoDao.GetRtranoList_ForProjektCD(TheDbConnection, theDUC.Fld_ProjektCD);
+            if(rtranoList.Count.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nema BORavka [{0}]!", theDUC.Fld_ProjektCD); return; }
+
+            theDUC.Fld_OsobaX    = rtranoList.Last().T_serno;
+            theDUC.Fld_KupdobCd  = rtranoList.Last().T_paletaNo;
+            theDUC.sifrarSorterType = VvSQL.SorterType.Code;
+            theDUC.AnyKupdobTextBoxLeave(theDUC.tbx_KupdobCd, EventArgs.Empty);
+
+            break;
+         // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>      
+
+         default: ZXC.aim_emsg(MessageBoxIcon.Error, "Unknown sender [{0}][{1}]\n\nIn OnExit_GOST_SOBA_BOR_SetOtherData()", vvTB.A0_JAM_Name, sender); break;
+      }
+
+      ZXC.GOST_SOBA_BOR_SetOtherData_InProgress = false;
+
+   }
+
+   #endregion OnExit BOR-SOBA-GOST
+
+   #region MinusPolicy OvoOno, CheckPrevCij
+
+   public void OnExitT_Cij_CheckPrevCij(object sender, EventArgs e)
+   {
+      bool isSvdNrd    = ZXC.IsSvDUH && Fld_TT == Faktur.TT_NRD;
+      bool isNotSvdNrd = !isSvdNrd                             ;
+      // 18.04.2018: 
+    //if(faktur_rec.TtInfo.IsAllSkladFinKol_U == false               ) return;
+      if(faktur_rec.TtInfo.IsAllSkladFinKol_U == false && isNotSvdNrd) return;
+
+      if(ArerWeIn_OutsideEU_DevizniDokument() == true) return;
+
+      int currRow = TheG.CurrentRow.Index;
+
+      ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
+
+      if(artStat_rec == null || artStat_rec.PrNabCij.IsZero()) return;
+
+    // 12.04.2018:
+    //decimal tolerancy =                                                                           50; 
+      decimal tolerancy = ZXC.RRD.Dsc_TolerancOdstUlCij.NotZero() ? ZXC.RRD.Dsc_TolerancOdstUlCij : 50; 
+
+      string artiklCD       = TheG.GetStringCell (ci.iT_artiklCD  , currRow, false);
+      string artiklName     = TheG.GetStringCell (ci.iT_artiklName, currRow, false);
+      decimal newCij        = TheG.GetDecimalCell(ci.iT_cij       , currRow, false);
+      decimal stopaPromjene = ZXC.StopaPromjene(artStat_rec.PrNabCij, newCij);
+
+      if(Math.Abs(stopaPromjene) > tolerancy)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE!\n\nRedak: {0}\n\nArtikl: '{1} {5}'\n\nPrethodna prosječna nabavna cijena: {2}\n\nNova nabavna cijena: {3}\n\nOdstupanje: {4}%",
+            currRow + 1, artiklCD, artStat_rec.PrNabCij.ToStringVv(), newCij.ToStringVv(), stopaPromjene.ToString0Vv(), artiklName);
+      }
+   }
+
+   private void OnExitT_Kol_ValidateCheckMinus(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      if(faktur_rec.TtInfo.IsFinKol_TT == false) return;
+
+      decimal maxKol=0, t_kol=0;
+      int rowIdx = TheG.CurrentRow.Index;
+
+      string artiklCD   = TheG.GetStringCell(ci.iT_artiklCD  , rowIdx, false);
+      string artiklName = TheG.GetStringCell(ci.iT_artiklName, rowIdx, false);
+
+      if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, ref maxKol, ref t_kol))
+      {
+         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx);
+
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL) e.Cancel = true;
+
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT == false) e.Cancel = true; // ZABRANA samo za VELEP 
+      }
+   }
+
+   private void Issue_ArtiklIsInMinus_ErrorMessage(string artiklCD, string artiklName, decimal oldKolSt, decimal t_kol, int rowIdx)
+   {
+      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT) // npr. Zagria, za MAL niti ne javljaj minuse 
+      {
+         return;
+      }
+      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG) // npr. Zagria, za MAL niti ne javljaj minuse 
+      {
+         return;
+      }
+
+      ZXC.aim_emsg(MessageBoxIcon.Error, "U MINUSU!\n\nRedak: {0}\n\nArtikl: '{1} {4}'\n\nMaksimalna kol: {2}\n\nZadana kol: {3}",
+         rowIdx + 1, artiklCD, oldKolSt.ToStringVv(), t_kol.ToStringVv(), artiklName);
+   }
+
+   private bool ThisRowWillProduceMinusKolSt(int rowIdx, string artiklCD, ref decimal kolStBeforeThisChange, ref decimal t_kol)
+   {
+      // 06.04.2018: 
+    //                         return false; 
+      if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
+
+      // TODO: !!!!! ovo ne radi zbog toga sto
+      // Rtrans rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, /*false*/true, null);
+      // pri 'Ispravi' u T_BCKPkol nikada nema zaista beckup vrijednost jer BeginEdit never tuk plejs!
+      // kako li je ovo ikada radilo za 'Ispravi' 
+
+      Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      if(artikl_rec == null) return false;
+
+      if(artiklCD.IsEmpty() || artikl_rec == null || artikl_rec.IsAllowMinus || artikl_rec.IsMinusOK) return false;
+
+    //maxKol = ArtiklDao.GetArtiklStatus(conn, (Rtrans)GetDgvLineFields1(rowIdx, false, null)).StanjeKolFree;
+      ArtStat artstat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, artiklCD, Fld_SkladCD);
+      if(artstat_rec != null) kolStBeforeThisChange = artstat_rec.StanjeKolFree;
+      else                    kolStBeforeThisChange = 0.00M;
+
+      uint recID = TheG.GetUint32Cell(ci.iT_recID, rowIdx, false);
+
+      ZXC.WriteMode thisRtransWriteMode = ZXC.WriteMode.Add;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && recID.IsPositive()) // znaci, ovo smo u ispravi i ovo je stari record 
+      {
+         thisRtransWriteMode = ZXC.WriteMode.Edit;
+      }
+
+      Rtrans rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, /*false*/true, null);
+
+      decimal deltaKol = rtrans_rec.GetDeltaKol(thisRtransWriteMode);
+
+      t_kol = rtrans_rec.T_kol;
+
+      decimal newKolSt = kolStBeforeThisChange + deltaKol;
+
+      return (newKolSt.IsNegative());
+   }
+      
+   #endregion MinusPolicy OvoOno
+
+   #region UpdateArtikl
+
+   private void AnyArtiklTextBox_OnGrid2_Leave(object sender, EventArgs e, VvDataGridView theGrid, int currRow, Artikl artikl_rec)
+   {
+
+      FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
+
+      if(artikl_rec != null)
+      {
+         theGrid.PutCell(ci2.iT_artiklCD   , currRow, artikl_rec.ArtiklCD  );
+         theGrid.PutCell(ci2.iT_artiklName , currRow, artikl_rec.ArtiklName);
+         theGrid.PutCell(ci2.iT_jm         , currRow, artikl_rec.JedMj     );
+      }
+   }
+
+   // ****** 
+   public void AnyArtiklTextBox_OnGrid_Leave(object sender, EventArgs e)
+   {
+      #region Init stuff
+
+      if(isPopulatingSifrar)                           return;
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvTextBoxEditingControl vvtb_editingControl = sender as VvTextBoxEditingControl;
+
+      if(vvtb_editingControl == null) return;
+
+      if(vvtb_editingControl.Text == this.originalText) return;
+
+      VvDataGridView theGrid = ((VvDataGridView)vvtb_editingControl.EditingControlDataGridView);
+
+      int currRow = vvtb_editingControl.EditingControlRowIndex;
+
+      this.originalText = vvtb_editingControl.Text;
+      Artikl artikl_rec = ArtiklSifrar.Find(FoundInSifrar<Artikl>);
+
+      // 28.10.2014: 
+      if(CheckIsArtiklKindAdequate(currRow) == false) return; // !!! 
+
+      // 14.12.2016: THSHOP na INM/INV MORA prvo stisnuti SubModulAkciju 'Artikli' 
+      // pa to pokusavamo detektirati da li je poceo rucno zadavati artikl na prvom redku 
+      if(ZXC.IsTEXTHOany && currRow.IsZero() && faktur_rec.TtInfo.IsInventura)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Ručno dodavati artikle možete tek nakon akcije 'Artikli'\n\nI to samo artikle koji su, eventualno,\n\npronađeni u skladištu a po programskom stanju ih uopće nema.");
+         return;
+      }
+
+      #region Check duplicate BarCodes
+
+      bool thisIsBarCodeAction = (artikl_rec != null && ZXC.RRD.Dsc_IsBarCode == true && this.sifrarSorterType == VvSQL.SorterType.BarCode);
+      // 16.09.2013:  
+      if(thisIsBarCodeAction)
+      {
+         var artiklsWithSameBarCode = ArtiklSifrar.Where(a => a.BarCode1 == vvtb_editingControl.Text);
+
+         if(artiklsWithSameBarCode.Count() > 1)
+         {
+            string errMessage = "";
+
+            foreach(Artikl artikl in artiklsWithSameBarCode)
+            {
+               errMessage += "[" + artikl.ArtiklCD + "] [" + artikl.ArtiklName + "]\n";
+            }
+
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: ArtiklSifrar sadrži više od jednog artikla sa BarKodom: [{0}]\n\n{1}", vvtb_editingControl.Text, errMessage);
+         }
+
+         // !!! IF thisIsBarCodeAction and artikl already exists on grid, just sum kol 
+         if(true) // int he future let the user decide this bihaveour 
+         {
+            string  exixtingBarCode;
+            decimal exixtingKol;
+            for(int rIdx = 0; rIdx < theGrid.RowCount - 1; ++rIdx)
+            {
+               exixtingBarCode = theGrid.GetStringCell(ci.iT_barCode1, rIdx, false);
+
+               if(theGrid.CurrentRow.Index != rIdx && exixtingBarCode == vvtb_editingControl.Text) // This artikl already exists on grid! 
+               {
+                  exixtingKol = theGrid.GetDecimalCell(ci.iT_kol, rIdx, false);
+
+                  theGrid.PutCell(ci.iT_kol,      rIdx,                     exixtingKol + 1); // increment existing kol  
+                  theGrid.PutCell(ci.iT_barCode1, theGrid.CurrentRow.Index, ""             ); // clear CurrentCell value 
+
+                  GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(rIdx);
+
+                  SendKeys.Send("+({TAB})"); // Shift + Tab 
+
+                  goto END_Action_LABEL;
+               }
+
+            } // for(int rIdx = 0; rIdx < theGrid.RowCount - 1; ++rIdx) 
+         } // if(true) 
+      } // if(thisIsBarCodeAction) 
+
+      #endregion Check duplicate BarCodes
+
+      bool isOutsideEU_DevizniDokument = ArerWeIn_OutsideEU_DevizniDokument();
+      
+      bool isIzvozniRacun = faktur_rec.TtInfo.IsIzlazniPdvTT && ArerWeIn_DevizniDokument();
+
+      bool isRtranoSecondGrid = theGrid.Name.StartsWith("Rtrano");
+
+      // ##################################################################### 
+      if(isRtranoSecondGrid) // ############################################## 
+      {
+         theGrid.ClearRowContent(currRow);
+         AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+         return;
+      }
+      // ##################################################################### 
+      // ##################################################################### 
+
+      #endregion Init stuff
+
+      #region Reset row results, recalc document results (in case this is old DGV row - zamjena artikla na stavci)
+
+      theGrid.ClearRowContent(currRow);
+
+      PutDgvTransSumFields();
+      
+      PutTransSumToDocumentSumFields();
+      
+      #endregion Reset row results, recalc document results (in case this is old DGV row - zamjena artikla na stavci)
+
+      #region if(artikl_rec != null)
+
+      TtInfo TtInfoOfThisRow = GetTtInfoOfThisRow(currRow);
+
+      if(artikl_rec != null)
+      {
+         #region ArtiklCD, ArtiklName, JedMj, Konto, BarCode1
+
+         theGrid.PutCell(ci.iT_artiklCD   , currRow, artikl_rec.ArtiklCD  );
+         theGrid.PutCell(ci.iT_artiklName , currRow, artikl_rec.ArtiklName);
+         theGrid.PutCell(ci.iT_barCode1   , currRow, artikl_rec.BarCode1  );
+
+         theGrid.PutCell(ci.iT_jedMj      , currRow, artikl_rec.JedMj     );
+         theGrid.PutCell(ci.iT_isIrmUsluga, currRow, VvCheckBox.GetString4Bool(artikl_rec.IsMinusOK_or_UDP_Artikl));
+
+         // 25.01.2017: 
+         if(ZXC.IsRNMnotRNP) // metaflex
+         {
+          //theGrid.PutCell(ci.iT_ppmvOsn, currRow, artikl_rec.MasaNetto);
+            theGrid.PutCell(ci.iT_ppmvOsn, currRow, artikl_rec.R_orgPak );
+         }
+
+         // 11.3.2011:
+         if(artikl_rec.TS == "UDP" && faktur_rec.TtInfo.IsIzlazniPdvTT == true) // dakle, UDP - 'Usluga Daljnja Prodaja' na IRA, IFA, IOD, IPV ide prazan konto da bi kod fak2nal dobio default-ni kto byRules... 
+         {
+            // Don't put konto. Leave it empty 
+         }
+         else
+         {
+            theGrid.PutCell(ci.iT_konto, currRow, artikl_rec.Konto);
+         }
+
+         #endregion ArtiklCD, ArtiklName, JedMj, Konto
+
+         #region PdvSt, PdvKolTip
+
+         // 26.02.2016: 
+       //if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false                                          ))
+       //21.03.2018:                                                                                                                                                                 
+       //if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false && isIzvozniRacun == false               ))
+         if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false && isIzvozniRacun == false) || ZXC.IsSvDUH)
+         {
+            if(artikl_rec.PdvKat.NotEmpty())
+            {
+               VvLookUpItem lui = ZXC.luiListaPdvKat.GetLuiForThisCd(artikl_rec.PdvKat);
+               theGrid.PutCell(ci.iT_pdvSt, currRow, lui.Number);
+            }
+          //else   if(currRow == 0)
+            else /*if(currRow == 0)*/ // 19.02.2012: uvijek stavi 25 
+            {
+               theGrid.PutCell(ci.iT_pdvSt, currRow, faktur_rec.CommonPdvSt);
+            }
+
+            //theGrid.PutCell(ci.iT_pdvKolTip, currRow, GetOneLetter4PdvKolTip(faktur_rec.PdvKolTip));
+
+            // 14.12.2013: 
+            if(artikl_rec.IsPNP)
+            {
+               theGrid.PutCell(ci.iT_pnpSt, currRow, ZXC.RRD.Dsc_PnpSt);
+            }
+         }
+
+         #endregion PdvSt, PdvKolTip
+
+         #region Ignore ImportCij 05.03.2018
+
+         if(ZXC.RRD.Dsc_IsIgnoreImportCij)
+         {
+            artikl_rec.ImportCij = 0.00M;
+         }
+
+         #endregion Ignore ImportCij 05.03.2018
+
+         // --- CIJENE Manager 
+         #region PreDefs, Check For Minus
+
+         // "CV1"-Cjenik VPC1 "CV2"-Cjenik VPC2 "CM1"-Cjenik MPC  "CDE"-Cjenik Devizni "MNK"-Cjenik MinKol  "RB1"-Cjenik Rabat1  "RB2"-Cjenik Rabat2  "MRZ"-Cjenik MARZA   
+
+         if(faktur_rec.TtInfo.IsArtStatInfoNeededTT) // Ili zbog cjenika ili zbog max Izlaz Kol, ... 
+         {
+            ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
+
+            if(artStat_rec != null)
+            {
+
+               if(faktur_rec.TtInfo.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_CJENIK)
+               {
+                  #region Rabat1&2
+
+                  if(faktur_rec.TT == Faktur.TT_IRM && ((this as FakturExtDUC).Fld_NacPlacRbt).NotZero())
+                  {
+                     theGrid.PutCell(ci.iT_rbt1St, currRow, (this as FakturExtDUC).Fld_NacPlacRbt);
+                  }
+                  else
+                  {
+                     theGrid.PutCell(ci.iT_rbt1St, currRow, artStat_rec.PreDefRbt1);
+                     theGrid.PutCell(ci.iT_rbt2St, currRow, artStat_rec.PreDefRbt2);
+                  }
+
+                  // rabat ovisan o cycle momentu 
+                  // 13.05.2015: 
+                //if(ZXC.IsTEXTHOany                                                        && faktur_rec.TT == Faktur.TT_IRM)
+                  if(ZXC.IsTEXTHOany && ZXC.IsTEXTHOatypicShop(faktur_rec.SkladCD) == false && faktur_rec.TT == Faktur.TT_IRM)
+                  {
+                     // 20.12.2017: izloirano u zasebnu metodu. 
+                     decimal TH_IRM_Rabat = Get_TH_IRM_Rabat(faktur_rec.SkladCD, faktur_rec.DokDate, artikl_rec);
+
+                     if(TH_IRM_Rabat.NotZero()) theGrid.PutCell(ci.iT_rbt1St, currRow, TH_IRM_Rabat);
+
+                     //QQQ  20.12.2017: Comment START 
+                     //QQQ ZXC.TH_CycleMoment TH_CycleMoment = ZXC.TH_GetCycleMoment(faktur_rec.DokDate, ZXC.IsTH_5WeekShop(faktur_rec.SkladCD), faktur_rec.SkladCD);
+                     //QQQ 
+                     //QQQ decimal thRbt1St = 0.00M;
+                     //QQQ 
+                     //QQQ if(artikl_rec.Grupa3CD == Artikl.ProdRobaGrCD) // na vrecice ProAndNabGrCD nema rabata 
+                     //QQQ {
+                     //QQQ    if(TH_CycleMoment == ZXC.TH_CycleMoment.W5_Tjedan_2___20_posto                                    ) thRbt1St = 20.00M;
+                     //QQQ    if(TH_CycleMoment == ZXC.TH_CycleMoment.W5_Tjedan_3_Dan_1___happy_hour_30_posto && Fld_IsHappyHour) thRbt1St = 30.00M;
+                     //QQQ    if(TH_CycleMoment == ZXC.TH_CycleMoment.W5_Tjedan_3_Dan_2___happy_hour_50_posto && Fld_IsHappyHour) thRbt1St = 50.00M;
+                     //QQQ    if(TH_CycleMoment == ZXC.TH_CycleMoment.W5_Tjedan_3_Dan_3_4___30_posto                            ) thRbt1St = 30.00M;
+                     //QQQ    if(TH_CycleMoment == ZXC.TH_CycleMoment.W5_Tjedan_3_Dan_5_6___50_posto                            ) thRbt1St = 50.00M;
+                     //QQQ 
+                     //QQQ    // 13.05.2015: ali samo za 5week
+                     //QQQ  //if(TH_CycleMoment == ZXC.TH_CycleMoment.W3_Tjedan_1_Dan_67___do_25kn_happy_hour_20_posto    && Fld_IsHappyHour) thRbt1St = 20.00M;
+                     //QQQ  //if(TH_CycleMoment == ZXC.TH_CycleMoment.W3_Tjedan_2_Dan_23___do_20kn_happy_hour_25_posto    && Fld_IsHappyHour) thRbt1St = 25.00M;
+                     //QQQ  //if(TH_CycleMoment == ZXC.TH_CycleMoment.W3_Tjedan_2_Dan_567__do_15kn_happy_hour_33_33_posto && Fld_IsHappyHour) thRbt1St = 33.33M;
+                     //QQQ  //if(TH_CycleMoment == ZXC.TH_CycleMoment.W3_Tjedan_3_Dan_23___do_10kn_happy_hour_50_posto    && Fld_IsHappyHour) thRbt1St = 50.00M;
+                     //QQQ }
+                     //QQQ 
+                     //QQQ // 30.07.2015: temporary in comment: 
+                     //QQQ // 19.05.2016: uncommented: 
+                     //QQQ // 13.07.2016: suspend automatic rabat in unusual 6week cycle: 11.07.2016 - 21.08.2016) 
+                     //QQQ // 03.10.2016: suspend automatic rabat in unusual 6week cycle: 26.09.2016 - 06.11.2016) 
+                     //QQQ //bool is5weekClassic = faktur_rec.DokDate >= ZXC.THcycle_ZeroDate5weekClassicNEW2;
+                     //QQQ //bool is5weekClassic = faktur_rec.DokDate >= ZXC.THcycle_ZeroDate5weekClassicNEW3;
+                     //QQQ bool is5weekClassic = faktur_rec.DokDate >= ZXC.THcycle_ZeroDate5weekClassicNEW4;
+                     //QQQ if(is5weekClassic && thRbt1St.NotZero()) theGrid.PutCell(ci.iT_rbt1St, currRow, thRbt1St);
+                     //QQQ  20.12.2017: Comment END 
+
+                  } // if(ZXC.IsTEXTHOany && ZXC.IsTEXTHOatypicShop(faktur_rec.SkladCD) == false && faktur_rec.TT == Faktur.TT_IRM)
+
+                  #endregion Rabat1&2
+
+                  #region Vpc1Policy is PrNabCij uvecana za marzu from PreDef
+
+                  if(artikl_rec.Vpc1Policy == ZXC.ArtiklVpc1Policy.MARZA)
+                  {
+                     theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCijPlusMarza);
+                  }
+
+                  #endregion Vpc1Policy is PrNabCij uvecana za marzu
+
+                  #region Vpc1Policy is VP1 or VP2 from PreDef
+
+                  else
+                  {
+                     switch(faktur_rec.CjenikTT)
+                     {
+                        case Faktur.TT_CJ_VP1: // VELEPRODAJNI cjenik 1 
+                           // 09.06.2014: start _______________________________________________________________________________ 
+                           VvLookUpItem skladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD);
+                           bool isSklKomisija    = skladLUI  == null ? false : skladLUI.Integer  > 10;
+                           if(isSklKomisija && skladLUI .Cd.ToUpper().StartsWith("VPSK")) isSklKomisija  = false; // ako SkladCD1 pocne sa 'VPSK' tada NIJE komisija bez obzira na druge obzire 
+
+                           if(isSklKomisija)
+                           {
+                              string komArtCD = ((Rtrans)GetDgvLineFields1(currRow, false, null)).T_artiklCD;
+
+                              VvLookUpItem baseSkladLUI = ZXC.luiListaSkladista.GetBaseSkladLUI(skladLUI); // glavno skladiste 
+                              string mainSkladCD = baseSkladLUI.Cd;
+
+                              ArtStat komisArtStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, komArtCD, mainSkladCD, Fld_DokDate);
+
+                              theGrid.PutCell(ci.iT_cij, currRow, komisArtStat_rec.PreDefVpc1);
+                           }
+                           // 09.06.2014: end __________________________________________________________________________________ 
+                           else if(artStat_rec.PreDefVpc1.NotZero())
+                           {
+                              theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PreDefVpc1);
+                           }
+                           else /* user ne koristi CjenikDUC nego cijene drzi na samoj skladisnoj kartici (npr. zbog importa) */
+                           {
+                              decimal theVPC = artikl_rec.ImportCij;
+
+                              #region I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
+
+                              if(ZXC.RRD.Dsc_VpcMpcMarzaTheSame4VPC == true) // i u veleprodaji digni VpcMpcMarza pa daj rabat da bude opet isto 
+                              {
+                                 theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+
+                                 decimal rbtSt = ZXC.VvGet_rbtSt_100to90(theVPC, artikl_rec.ImportCij);
+
+                                 theGrid.PutCell(ci.iT_rbt1St, currRow, rbtSt);
+                              }
+
+                              #endregion I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
+
+                              theGrid.PutCell(ci.iT_cij, currRow, /*artikl_rec.ImportCij*/ theVPC);
+                           }
+                           break;
+
+                        case Faktur.TT_CJ_VP2: // VELEPRODAJNI cjenik 2 
+
+                           Rtrans rtransVP2_rec = new Rtrans();
+                           string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRow, false);
+                           bool success = FakturDao.SetMeLastRtransForArtiklAndTtNum(TheDbConnection, rtransVP2_rec, faktur_rec.CjenikTT, faktur_rec.CjenTTnum, artiklCD, false);
+                           if(success) theGrid.PutCell(ci.iT_cij, currRow, rtransVP2_rec.T_cij);
+                           break;
+
+                        case Faktur.TT_CJ_MP: // MALOPRODAJNI cjenik 
+
+                           decimal theMPC = 0.00M;
+
+                           if(artStat_rec.PreDefMpc1.NotZero())
+                           {
+                              theMPC = artStat_rec.PreDefMpc1;
+
+                           }
+                           else /* user ne koristi CjenikDUC nego cijene drzi na samoj skladisnoj kartici (npr. zbog importa) */
+                           {
+                              decimal theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+                                      theMPC = ZXC.VvGet_125_on_100(theVPC              , faktur_rec.CommonPdvSt);
+
+                              decimal theCijPop = ZXC.VvGet_90_from_100(theMPC, TheG.GetDecimalCell(ci.iT_rbt1St, currRow, false));
+
+                              theGrid.PutCell(ci.iT_cij_kcrp, currRow, theCijPop); // IRM! 
+
+                           }
+
+                           if(theMPC.IsZero()) // najder PreDef, najder importCij. Let's 'LastMalopCij' 
+                           {
+                              theMPC = artStat_rec.LastUlazMPC;
+                           }
+
+                           theGrid.PutCell(ci.iT_cij,     currRow, theMPC);
+
+                           // 24.09.2018: cijela regija 'UMJETNINA' preseljena van switch-a 
+                           #region UMJETNINA set T_ppmvOsn(tj. nabCij)
+                           //
+                           //   // 17.09.2018: 
+                           // //if(artikl_rec.IsUMJETNINA &&  faktur_rec.TT == Faktur.TT_IRM                                   ) // UMJETNINA               na MALOP IRA 
+                           //   if(artikl_rec.IsPDVonRUC  && (faktur_rec.TT == Faktur.TT_IRM || faktur_rec.TT == Faktur.TT_IRA)) // UMJETNINA ili RabVozilo na IRA, IRM  
+                           //   {
+                           //      theGrid.PutCell(ci.iT_ppmvOsn, currRow, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
+                           //   }
+
+                           #endregion UMJETNINA set T_ppmvOsn(tj. nabCij)
+
+                           break; // case Faktur.TT_CJ_MP: // MALOPRODAJNI cjenik 
+
+                     }
+
+                     #region UMJETNINA set T_ppmvOsn(tj. nabCij)
+
+                     // 17.09.2018: 
+                   //if(artikl_rec.IsUMJETNINA &&  faktur_rec.TT == Faktur.TT_IRM                                   ) // UMJETNINA               na MALOP IRA 
+                   //if(artikl_rec.IsPDVonRUC  && (faktur_rec.TT == Faktur.TT_IRM || faktur_rec.TT == Faktur.TT_IRA)) // UMJETNINA ili RabVozilo na IRA, IRM  
+                     // 01.10.2018: vracamo samo na IRM
+                   //if(artikl_rec.IsUMJETNINA &&  faktur_rec.TT == Faktur.TT_IRM                                   ) // UMJETNINA               na MALOP IRA 
+                     {
+                        theGrid.PutCell(ci.iT_ppmvOsn, currRow, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
+                     }
+
+                     #endregion UMJETNINA set T_ppmvOsn(tj. nabCij)
+
+                  }
+
+                  #endregion Vpc1Policy is VP1 or VP2 from PreDef
+
+               } // if(faktur_rec.TtInfo.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_CJENIK)
+
+               else if(TtInfoOfThisRow.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij)
+               {
+                  theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCij);
+
+                  // ZPC additions START ______________________________
+                  if(TtInfoOfThisRow.IsNivelacijaZPC)
+                  {
+                     theGrid.PutCell(ci.iT_kol     , currRow, artStat_rec.StanjeKol);
+                     theGrid.PutCell(ci.iT_doCijMal, currRow, artStat_rec.MalopCij );
+                     theGrid.PutCell(ci.iT_noCijMal, currRow, artStat_rec.MalopCij );
+
+                     ZXC.RISK_InitZPCvalues_InProgress = true;
+                     ZXC.MalopCalcKind bckpKind = Fld_MalopCalcKind;
+                     Fld_MalopCalcKind = ZXC.MalopCalcKind.By_MPC;
+                     GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+                     Fld_MalopCalcKind = bckpKind;
+                     ZXC.RISK_InitZPCvalues_InProgress = false;
+
+                  }
+                  // ZPC additions END   ______________________________
+
+                  // KIZ additions START ______________________________
+                  if(TtInfoOfThisRow.IsKomisExtraProdCij) // iT_noCijMal treba dobiti prodajnu cijenu 
+                  {
+                     switch(faktur_rec.CjenikTT)
+                     {
+                        case Faktur.TT_CJ_VP1: // VELEPRODAJNI cjenik 1 
+
+                           if(artStat_rec.PreDefVpc1.NotZero())
+                           {
+                              theGrid.PutCell(ci.iT_noCijMal, currRow, artStat_rec.PreDefVpc1);
+                           }
+                           else /* user ne koristi CjenikDUC nego cijene drzi na samoj skladisnoj kartici (npr. zbog importa) */
+                           {
+                              decimal theVPC = artikl_rec.ImportCij;
+
+                              #region I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
+
+                              //if(ZXC.RRD.Dsc_VpcMpcMarzaTheSame4VPC == true) // i u veleprodaji digni VpcMpcMarza pa daj rabat da bude opet isto 
+                              //{
+                              //   theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+
+                              //   decimal rbtSt = ZXC.VvGet_rbtSt_100to90(theVPC, artikl_rec.ImportCij);
+
+                              //   theGrid.PutCell(ci.iT_rbt1St, currRow, rbtSt);
+                              //}
+
+                              #endregion I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
+
+                              theGrid.PutCell(ci.iT_noCijMal, currRow, /*artikl_rec.ImportCij*/ theVPC);
+                           }
+                           break;
+
+                        case Faktur.TT_CJ_VP2: // VELEPRODAJNI cjenik 2 
+
+                           Rtrans rtransVP2_rec = new Rtrans();
+                           string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRow, false);
+                           bool success = FakturDao.SetMeLastRtransForArtiklAndTtNum(TheDbConnection, rtransVP2_rec, faktur_rec.CjenikTT, faktur_rec.CjenTTnum, artiklCD, false);
+                           if(success) theGrid.PutCell(ci.iT_noCijMal, currRow, rtransVP2_rec.T_cij);
+                           break;
+                     } // switch 
+                  } // if(TtInfoOfThisRow.IsKomisExtraProdCij)
+                  // KIZ additions END   ______________________________
+
+                  //// PIM additions START   ______________________________
+                  //if(TtInfoOfThisRow.TheTT == Faktur.TT_PIM)
+                  //{
+                  //   theGrid.PutCell(ci.iT_cij    , currRow, artStat_rec.MalopCij);
+                  //   theGrid.PutCell(ci.iT_cij_MSK, currRow, artStat_rec.MalopCij);
+
+                  //   //ZXC.RISK_InitZPCvalues_InProgress = true;
+                  //   //ZXC.MalopCalcKind bckpKind = Fld_MalopCalcKind;
+                  //   //Fld_MalopCalcKind = ZXC.MalopCalcKind.By_MPC;
+                  //   //GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+                  //   //Fld_MalopCalcKind = bckpKind;
+                  //   //ZXC.RISK_InitZPCvalues_InProgress = false;
+
+                  //}
+                  //// PIM additions END     ______________________________
+
+                  // MVI additions START     ______________________________
+                  if(TtInfoOfThisRow.TheTT == Faktur.TT_MVI) // MALOP 2 VELEP medjuskladisnica  
+                  {
+                     bool noGoodMPC = false;
+                     if(artStat_rec != null)
+                     {
+                        theGrid.PutCell(ci.iT_cij_MSK, currRow, artStat_rec.LastUlazMPC);
+                        if(artStat_rec.LastUlazMPC.IsZero()) noGoodMPC = true;
+                     }
+                     else noGoodMPC = true;
+
+                     if(noGoodMPC) ZXC.aim_emsg(MessageBoxIcon.Error, "Za artikl [{0}] nema MPC!", artikl_rec.ArtiklCD);
+                  }
+                  // MVI additions END     ______________________________
+
+                  // VMI additions START     ______________________________
+                  if(TtInfoOfThisRow.TheTT == Faktur.TT_VMI) // VELEP 2 MALOP medjuskladisnica  
+                  {
+                     ArtStat artStatTRM_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, artikl_rec.ArtiklCD, Fld_SkladCD2, Fld_DokDate2.NotEmpty() ? Fld_DokDate2 : Fld_DokDate);
+                     bool noGoodMPC = false;
+                     if(artStatTRM_rec != null)
+                     {
+                        theGrid.PutCell(ci.iT_cij_MSK, currRow, artStatTRM_rec.LastUlazMPC);
+                        if(artStatTRM_rec.LastUlazMPC.IsZero()) noGoodMPC = true;
+                     }
+                     else noGoodMPC = true;
+
+                     if(noGoodMPC) ZXC.aim_emsg(MessageBoxIcon.Error, "Za artikl [{0}] nema MPC!", artikl_rec.ArtiklCD);
+                  }
+                  // VMI additions END     ______________________________
+
+
+               } // else if(TtInfoOfThisRow.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij)
+
+               else if(faktur_rec.TtInfo.IsMalopFin_U) // KLK & URM 
+               {
+                  if(IsShowingConvertedMoney)
+                  {
+                     decimal theCij = artStat_rec.LastUlazMPC;
+                     /* daj kune u devizu */ TheG.PutCell(ci.iT_cij_MSK, currRow, ZXC.DivSafe(theCij, DevTecaj));
+                  }
+                  else
+                  {
+                     theGrid.PutCell(ci.iT_cij_MSK, currRow, artStat_rec.LastUlazMPC); // propose do_cij_mal as no_cij_mal 
+                  }
+
+                  // 17.09.2018: 
+                //if(artikl_rec.IsUMJETNINA && faktur_rec.TT == Faktur.TT_UPM) // UMJETNINA               na MALOP POVRAT DOBAVLJACU 
+                  if(artikl_rec.IsPDVonRUC  && faktur_rec.TT == Faktur.TT_UPM) // UMJETNINA ili RabVozilo na MALOP POVRAT DOBAVLJACU 
+                  {
+                     theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
+                  }
+
+               }
+
+               else if(TtInfoOfThisRow.TheTT == Faktur.TT_TRM) // Zeleni, ulazni redak na dokumentu transformacije 
+               {
+                  ArtStat artStatTRM_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, artikl_rec.ArtiklCD, Fld_SkladCD2, /*Fld_DokDate2.NotEmpty() ? Fld_DokDate2 :*/ Fld_DokDate);
+                //ArtStat artStatTRM_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
+                  bool noGoodMPC = false;
+                  if(artStatTRM_rec != null)
+                  {
+                     theGrid.PutCell(ci.iT_cij_MSK, currRow, artStatTRM_rec.LastUlazMPC);
+                     if(artStatTRM_rec.LastUlazMPC.IsZero()) noGoodMPC = true;
+                  }
+                  else noGoodMPC = true;
+
+                  if(noGoodMPC) ZXC.aim_emsg(MessageBoxIcon.Error, "Za artikl [{0}] nema MPC!", artikl_rec.ArtiklCD);
+               }
+
+            } // if(artStat_rec != null)
+            else if(TtInfoOfThisRow.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_PrOfPrNabCij_SumeSastojaka)
+            {
+               // __?__ 
+            }
+            else // (artStat_rec == null)
+            {
+               if(faktur_rec.TT == Faktur.TT_IRM) // MALOP IRA 
+               {
+                  decimal theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+                  decimal theMPC = ZXC.VvGet_125_on_100(theVPC              , faktur_rec.CommonPdvSt );
+
+                  #region ČPP or ČNP
+
+                  // 22.12.2013: still nothing. Is this first ulay for ČPP or ČNP? 
+                  if(theMPC.IsZero() && artikl_rec.IsGlass) // Let's find bottle 'LastMalopCij' 
+                  {
+                     Artikl bottleArtikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artikl_rec.LinkArtCD);
+                     if(bottleArtikl_rec != null)
+                     {
+                        ArtStat bottleArtstat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, bottleArtikl_rec.ArtiklCD, faktur_rec.SkladCD, faktur_rec.DokDate);
+
+                        if(bottleArtstat_rec != null) theMPC = bottleArtstat_rec.LastUlazMPCOP * artikl_rec.R_orgPak;
+                     }
+                  }
+
+                  #endregion ČPP or ČNP
+
+                  theGrid.PutCell(ci.iT_cij, currRow, theMPC);
+               }
+               else if(faktur_rec.TT == Faktur.TT_PNM || faktur_rec.TT == Faktur.TT_INM) 
+               {
+                  //decimal theMPC = XtransDao.GetExternCijenaInKune(TheDbConnection, artikl_rec.ArtiklCD, Fld_DokDate); 
+                  //theGrid.PutCell(ci.iT_cij, currRow, theMPC);
+
+                  // 09.10.2013: 
+                  decimal theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+                  decimal theMPC = ZXC.VvGet_125_on_100(theVPC              , faktur_rec.CommonPdvSt ); 
+
+                  theGrid.PutCell(ci.iT_cij, currRow, theMPC);
+               }
+               else
+               {
+                  decimal theVPC = artikl_rec.ImportCij;
+
+                  #region I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
+
+                  if(ZXC.RRD.Dsc_VpcMpcMarzaTheSame4VPC == true) // i u veleprodaji digni VpcMpcMarza pa daj rabat da bude opet isto 
+                  {
+                     theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+
+                     decimal rbtSt = ZXC.VvGet_rbtSt_100to90(theVPC, artikl_rec.ImportCij);
+
+                     theGrid.PutCell(ci.iT_rbt1St, currRow, rbtSt);
+                  }
+
+                  #endregion I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
+
+                  if(faktur_rec.TtInfo.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_CJENIK) // ovaj if dodan tek 19.01.2012 
+                  {
+                     theGrid.PutCell(ci.iT_cij, currRow, /*artikl_rec.ImportCij*/ theVPC);
+                  }
+               }
+
+               if(faktur_rec.TT == Faktur.TT_IRM && ((this as FakturExtDUC).Fld_NacPlacRbt).NotZero())
+               {
+                  theGrid.PutCell(ci.iT_rbt1St, currRow, (this as FakturExtDUC).Fld_NacPlacRbt);
+               }
+            }
+
+            #region Check For Minus
+
+            //TtInfo ttInfoOfThisRow = GetTtInfoOfThisRow(currRow);
+
+            if(TtInfoOfThisRow.IsFinKol_I)
+            {
+               if((artStat_rec == null && artikl_rec .IsMinusNotOK) ||
+                  (artStat_rec != null && artStat_rec.StanjeKolFree.IsZeroOrNegative() && artStat_rec.IsMinusNotOK))
+               {
+                  if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT) goto skiMessageLabel; // NE javljaj ako je malop i DENY_VEL_ALLOW_MAL ('Zagria pattern')
+                  if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG                                  ) goto skiMessageLabel; // NE javljaj ako je malop i DENY_VEL_ALLOW_MAL ('Zagria pattern')
+                  if(artikl_rec.IsGlass                                                                                 ) goto skiMessageLabel; // NE javljaj ako je čaša u ugostiteljstvu 
+
+                //ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Zadali ste artikl                               kojega nema na stanju skladišta '" + Fld_SkladCD + "'.");
+                  ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Zadali ste artikl [" + artikl_rec.ArtiklCD + "] kojega nema na stanju skladišta '" + Fld_SkladCD + "'.");
+
+                  skiMessageLabel: ;
+
+               }
+            }
+
+            #endregion Check For Minus
+
+         } // if(faktur_rec.TtInfo.IsArtStatInfoNeededTT) // Ili zbog cjenika ili zbog max Izlaz Kol, ... 
+
+         #endregion PreDefs, Check For Minus
+
+         #region Spritz Artikl Fields in faktur_rec.opis
+
+         if(artikl_rec.Grupa1CD == ZXC.MotVoziloGrCD &&
+            (Fld_TT == Faktur.TT_IRM || Fld_TT == Faktur.TT_PNM)
+            ) // TODO: !!! kako iz grupe raspoznavati motocikl 
+         {
+            Fld_Opis += "BROJ ŠASIJE:\t\t\r\n";
+            Fld_Opis += "BOJA:\t\t\t\t\r\n";
+            Fld_Opis += "OBUJAM:\t\t\t" + artikl_rec.Zapremina.ToStringVv_NoDecimalNoGroup() + " ccm\r\n";
+            Fld_Opis += "SNAGA:\t\t\t" + artikl_rec.Snaga.ToStringVv_NoDecimalNoGroup() + " kW\r\n";
+            //Fld_Opis += "EURO NORMA:\t\tEURO "    + artikl_rec.Garancija.ToString                   () + "\r\n"    ; // FUSE 
+            Fld_Opis += "God. proizvodnje:\t\r\n\r\n";
+            Fld_Opis += "DRŽAVA PROIZVODNJE: " + (ZXC.IsTEMBO ? "" : "ITALIJA");
+         }
+
+         #endregion Spritz Artikl Fields in faktur_rec.opis
+
+         #region UMJETNINA set T_pdvColTip = PdvKolTipEnum.UMJETN
+
+         // 17.09.2018: 
+       //if(artikl_rec.IsUMJETNINA) 
+         if(artikl_rec.IsPDVonRUC )
+         {
+            theGrid.PutCell(ci.iT_pdvKolTip, currRow, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.UMJETN));
+         }
+
+         #endregion UMJETNINA set T_pdvColTip = PdvKolTipEnum.UMJETN
+
+         #region IsGlassOnIRM set T_pdvColTip = PdvKolTipEnum.GlassOnIRM
+
+         if(artikl_rec.IsGlass && faktur_rec.TtInfo.IsMalopFin_I)
+         {
+            theGrid.PutCell(ci.iT_pdvKolTip, currRow, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.GlassOnIRM));
+         }
+         //// 13.01.2014: 
+         //else if(artikl_rec.TS == "RPP" && artikl_rec.Grupa1CD == "PIĆ" && artikl_rec.Grupa2CD == "ŽAP" && faktur_rec.TtInfo.IsMalopFin_I)
+         //{
+         //   Artikl glassArtiklRec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.LinkArtCD == artikl_rec.ArtiklCD);
+
+         //   if(glassArtiklRec != null)
+         //   {
+         //      ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nZadali ste artikl koji se inace prodaje na čaše!\n\n{0}", glassArtiklRec);
+         //   }
+         //}
+
+         #endregion IsGlassOnIRM set T_pdvColTip = PdvKolTipEnum.GlassOnIRM
+
+         // 14.03.2013: 
+       //if(this is ProizvodnjaDUC == false && this is PIZpDUC == false && this is PIMDUC == false)
+         // 02.01.2014: bio bug 
+         if(this is ProizvodnjaDUC == false && this is PIZpDUC == false && this is PIMDUC == false && this is TransformDUC == false && TtInfoOfThisRow.IsNivelacijaZPC == false)
+         {
+            theGrid.PutCell(ci.iT_kol, currRow, 1.00M); 
+            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+         }
+
+         #region Get PMV Xtrans data for this Artikl
+
+         if(artikl_rec.IsPPMV && Fld_DokDate >= ZXC.PdvEU_EraDate /* 01.07.2013: aka. PpmvEraDate */)
+         {
+
+            if(ZXC.IsTEMBO)
+            {
+               decimal osnovica, stopa1i2;
+               osnovica = Artikl.GetMotoPpmv2017(artikl_rec.Zapremina, artikl_rec.EuroNorma);
+               stopa1i2 = 100M;
+               theGrid.PutCell(ci.iT_ppmvOsn, currRow, osnovica);
+               theGrid.PutCell(ci.iT_ppmvSt1i2, currRow, stopa1i2);
+
+               if(this is IRMDUC_2)
+               {
+                  IRMDUC_2 theDUCex = this as IRMDUC_2;
+
+                  theDUCex.Fld_PrjArtCD = artikl_rec.ArtiklCD;
+                  theDUCex.Fld_PrjArtName = artikl_rec.ArtiklName;
+               }
+            }
+            else // not tembo
+            {
+               Xtrans xtrans_rec = XtransDao.Get_PPMV_Xtrans(TheDbConnection, artikl_rec.ArtiklCD, Fld_DokDate);
+
+               if(xtrans_rec != null)
+               {
+                  decimal osnovica = xtrans_rec.T_moneyA;
+                  bool isDizel = false; // TODO 
+                  bool isAuto = false; // TODO 
+
+                  decimal stopaPO = Artikl.GetPpmvStopaFor_PorOsn(osnovica);
+
+                  decimal stopaCO2 = isDizel ?
+                                     Artikl.GetPpmvStopaFor_CO2_Dizel(xtrans_rec.T_moneyB, artikl_rec.EuroNorma) :
+                                     Artikl.GetPpmvStopaFor_CO2_Benz(xtrans_rec.T_moneyB);
+
+                  decimal stopaCM3 = Artikl.GetPpmvStopaFor_CM3(xtrans_rec.T_moneyC);
+                  decimal stopaEN = Artikl.GetPpmvStopaFor_EuroNorma((ZXC.EuroNormaEnum)xtrans_rec.T_intA);
+
+                  decimal stopa1i2 = isAuto ? stopaPO + stopaCO2 : stopaCM3 + stopaEN;
+
+                  // 10.01.2017: overriding old-Bef2017 rules with 2017 rules ___ START ___ 
+                  if(ZXC.projectYearFirstDay.Year >= 2017)
+                  {
+                     decimal kontrolnaOsnovica = Artikl.GetMotoPpmv2017(xtrans_rec.T_moneyC, (ZXC.EuroNormaEnum)xtrans_rec.T_intA);
+                     osnovica = Artikl.GetMotoPpmv2017(artikl_rec.Zapremina, artikl_rec.EuroNorma);
+                     stopa1i2 = 100M;
+
+                     if(kontrolnaOsnovica != osnovica) ZXC.aim_emsg(MessageBoxIcon.Warning, "Nekonzistentni podaci EuroNorma i/ili Zapremina\n\nArtikl sifrar vs Xtrans ppmv cjenik!");
+                  }
+                  // 10.01.2017: overriding old-Bef2017 rules with 2017 rules ___  END  ___ 
+
+                  theGrid.PutCell(ci.iT_ppmvOsn, currRow, osnovica);
+                  theGrid.PutCell(ci.iT_ppmvSt1i2, currRow, stopa1i2);
+
+                  if(this is IRMDUC_2)
+                  {
+                     IRMDUC_2 theDUCex = this as IRMDUC_2;
+
+                     theDUCex.Fld_PrjArtCD = artikl_rec.ArtiklCD;
+                     theDUCex.Fld_PrjArtName = artikl_rec.ArtiklName;
+                  }
+
+               } // if(xtrans_rec != null) 
+            } // not tembo
+
+            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+
+         } // if(artikl_rec.IsPPMV) 
+         else
+         {
+            if(this is IRMDUC_2)
+            {
+               IRMDUC_2 theDUCex = this as IRMDUC_2;
+
+               theDUCex.Fld_PrjArtCD   = 
+               theDUCex.Fld_PrjArtName = "";
+            }
+         }
+
+         #endregion PPMV - Get Xtrans data for this Rtrans
+
+         #region JAM_IsOnEndEditJump2NextRow) // BarCode column
+
+         if(vvtb_editingControl.JAM_IsOnEndEditJump2NextRow) // BarCode column 
+         {
+            //theGrid.CurrentCell = theGrid["Q_barCode1", theGrid.CurrentRow.Index + 1];
+            //theGrid.CurrentCell.Selected = true;
+            //theGrid.Select();
+            ////theGrid["Q_barCode1", theGrid.CurrentRow.Index + 1].Selected = true;
+            //theGrid.BeginEdit(false);
+
+            //for(int currColIdx = theGrid.CurrentCell.ColumnIndex + 1; currColIdx < theGrid.Columns.Count; ++currColIdx)
+            //{
+            //   if(theGrid.Columns[currColIdx].Tag == null) continue;
+
+            //   if(theGrid[currColIdx, theGrid.CurrentCell.RowIndex].Visible == true && ((VvTextBox)theGrid.Columns[currColIdx].Tag).JAM_ReadOnly == false) SendKeys.Send("{TAB}");
+            //}
+            ZXC.SendMultipleTabKey(7);
+         }
+
+         #endregion JAM_IsOnEndEditJump2NextRow) // BarCode column
+
+         #region TRI on TransfromDUC
+
+         // 1. Put 'X' if produkt - zeleni red 
+
+         // 2. Vidi kamo s koeficijentom 
+
+         #endregion TRI on TransfromDUC
+
+         #region SvDUH Additions
+
+         if(ZXC.IsSvDUH)
+         {
+            decimal theORG = 0M;
+
+            if(this is UGODUC)
+            {
+               theGrid.PutCell(ci.iT_artiklLongOpis, currRow, artikl_rec.LongOpis);
+            }
+            if(this is IZD_SVD_DUC || this is ZAH_SVD_DUC)
+            {
+               theGrid.PutCell(ci.iT_kol, currRow, 0.00M); // overrajdanje prethodne jedinice 
+
+               ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
+
+               if(artStat_rec != null)
+               {
+                  theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCij);
+               }
+            }
+            if(this.HasOrgBopCop)
+            {
+               theORG = Get_SVD_theORG(TheDbConnection, artikl_rec.ArtiklCD, false);
+
+               theGrid.PutCell(ci.iT_doCijMal, currRow, theORG);
+
+               // 30.01.2019: 
+                    if(artikl_rec.IsSvdArtGR_Ljek_) (this as FakturExtDUC).Fld_PdvZPkind = ZXC.PdvZPkindEnum.SVD_LJEK;
+               else if(artikl_rec.IsSvdArtGR_Potr_) (this as FakturExtDUC).Fld_PdvZPkind = ZXC.PdvZPkindEnum.SVD_POTR;
+
+                 // šudajstejoršudajgou? 
+                 //if(lastORG != artORG) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje: zadnje korišteni ORG je različit od ORG-a u šifrarniku.\n\n");
+            }
+
+            // 23.09.2019: 
+            if(this is NRD_SVD_DUC)
+            {
+               Rtrans NRDrtrans_rec = new Rtrans();
+               Rtrans UGOrtrans_rec = new Rtrans();
+
+               NRD_SVD_DUC theDUCex = this as NRD_SVD_DUC;
+
+               NRDrtrans_rec.T_artiklCD  = artikl_rec.ArtiklCD  ;
+               NRDrtrans_rec.T_kupdobCD  = theDUCex.Fld_KupdobCd;
+               NRDrtrans_rec.T_skladDate =          Fld_DokDate ;
+
+               bool UGOrtransFound = FakturDao.SetMeLastUGOrtransForURArtrans(TheDbConnection, UGOrtrans_rec, NRDrtrans_rec);
+
+               if(UGOrtransFound)
+               {
+                  theGrid.PutCell(ci.iT_cij  , currRow, UGOrtrans_rec.T_cij         );
+                  theGrid.PutCell(ci.iT_cop  , currRow, UGOrtrans_rec.T_cij * theORG);
+                  theGrid.PutCell(ci.iT_pdvSt, currRow, UGOrtrans_rec.T_pdvSt       );
+               }
+            }
+
+         } // if(ZXC.IsSvDUH) 
+
+         #endregion SvDUH Additions
+
+         #region CKP Additions (FRAG - Cjenik kupca)
+
+       //if(faktur_rec.TtInfo.IsIzlazniPdvTT                                   && this is FakturExtDUC) // TODO: da li da uopce idemo u potragu 
+         if((faktur_rec.TtInfo.IsIzlazniPdvTT || faktur_rec.TtInfo.IsPonudaTT) && this is FakturExtDUC) // TODO: da li da uopce idemo u potragu 
+         {
+            FakturExtDUC theDUCex = this as FakturExtDUC;
+
+            List<Rtrans> Cjenik_RtransList_For_IRA_Artikl = RtransDao.Get_RtransList_For_TT_Artikl_Kupdob(TheDbConnection, Faktur.TT_CJK, artikl_rec.ArtiklCD, theDUCex.Fld_KupdobCd);
+
+            if(Cjenik_RtransList_For_IRA_Artikl.NotEmpty())
+            {
+               // lista je sortirana po 'Rtrans.artiklOrderBy_ASC' - Robna Kartica Sort 
+               Rtrans  lastRtransBy_cjenikKupca = Cjenik_RtransList_For_IRA_Artikl.Last();
+               decimal theCij                   = lastRtransBy_cjenikKupca.T_cij      ;
+
+               if(IsShowingConvertedMoney)
+               {
+                  decimal theTecaj = ZXC.DevTecDao.GetHnbTecaj(theDUCex.Fld_DevNameAsEnum, lastRtransBy_cjenikKupca.T_skladDate);
+
+                  theCij = ZXC.DivSafe(theCij, theTecaj);
+               }
+
+             // 19.04.2021. kad je u cjeniku devizna cjena a IRA je kunska
+             //theGrid.PutCell(ci.iT_cij, currRow, theCij);
+               theGrid.PutCell(ci.iT_cij, currRow, theCij.Ron2());
+            }
+         }
+
+         #endregion CKP Additions (FRAG - Cjenik kupca)
+
+      } // if(artikl_rec != null) 
+
+      else if(this.sifrarSorterType == VvSQL.SorterType.Name && vvtb_editingControl.Text != "") // ako smo dosli iz naziva, a artikl_rec je null, to je onda 'qwe' pattern (ne postoji kao sifrar) 
+      {
+         theGrid.PutCell(ci.iT_artiklName, currRow, vvtb_editingControl.Text);
+
+         if(ZXC.CURR_prjkt_rec.IS_IN_PDV && isOutsideEU_DevizniDokument == false) theGrid.PutCell(ci.iT_pdvSt, currRow, faktur_rec.CommonPdvSt);
+      }
+
+      #endregion if(artikl_rec != null)
+
+      END_Action_LABEL:
+
+      #region Actions independent of Artikl or Artstat (18.06.2020)
+
+      if(ZXC.RRD.Dsc_IsRbtFromPartner)
+      {
+         if(this is FakturExtDUC && 
+            (faktur_rec.TtInfo.IsPrihodTT || faktur_rec.TtInfo.IsPonudaTT))
+         {
+            Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
+
+            if(kupdob_rec != null && kupdob_rec.StRbt1.NotZero())
+            {
+               theGrid.PutCell(ci.iT_rbt1St, currRow, kupdob_rec.StRbt1);
+            }
+         }
+      }
+
+      #endregion Actions independent of Artikl or Artstat (18.06.2020)
+
+      ZXC.TheVvForm.SetDirtyFlag(sender);
+   }
+
+   public static decimal Get_SVD_theORG(XSqlConnection conn, string artiklCD, bool shouldErrorReportToFile)
+   {
+      decimal lastORG = 0M;
+      decimal artORG  = 0M;
+      decimal theORG  = 0M;
+
+      Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      if(artikl_rec != null)
+      {
+         lastORG = RtransDao.GetLastUsed_URA_ORG(conn, artiklCD, artikl_rec.ArtiklCD2, shouldErrorReportToFile);
+
+         artORG = ZXC.ValOrZero_Decimal(artikl_rec.OrgPak, 0);
+      }
+
+      theORG = lastORG.NotZero() ? lastORG :
+               artORG .NotZero() ? artORG  :
+               1;
+
+      return theORG;
+   }
+
+   private decimal Get_TH_IRM_Rabat(string skladCD, DateTime dokDate, Artikl artikl_rec)
+   {
+      bool isVrecice    = (artikl_rec.Grupa3CD == Artikl.ProAndNabGrCD)                  ; // na vrecice ProAndNabGrCD nema rabata 
+      bool isODEandAkat = (artikl_rec.Grupa1CD == "Akat" && artikl_rec.Grupa2CD == "ODE"); // Odjeca Exclusive A kategorije (ono sto od 03.2021. hoce promjenjeni tretman cijena) 
+
+      // !!! 
+      // !!! 
+      // !!! 
+      // 15.03.2021: 
+    //if(isVrecice                ) return 0.00M; // ne zelimo automatski (preko rule) rabat za ovakve artikle 
+      // 11.06.2021: opet vracamo na staro, kak je bilo prije 15.03.2021: 
+    //if(isVrecice || isODEandAkat) return 0.00M; // ne zelimo automatski (preko rule) rabat za ovakve artikle 
+      if(isVrecice                ) return 0.00M; // ne zelimo automatski (preko rule) rabat za ovakve artikle 
+      // !!! 
+      // !!! 
+      // !!! 
+
+
+
+
+
+      // Ako smo do tu dosli, znaci da je ovo sve true: TH.IRM.Artikl.ProdRobaGrCD ... 
+
+      TH_PriceRuleForCycleMoment theTHPR = TH_PriceRuleForCycleMoment.GetTHPR_ForThisDay(skladCD, dokDate);
+
+      // 07.03.2018: implementiramo KPN logiku (TH Kupon) 
+      decimal eventualKPN_RbtSt = Fld_Decimal02;
+
+      // 06.12.2019: implementiramo HH logiku (a mogli smo iprije) 
+      decimal eventualHH_RbtSt = (Fld_IsHappyHour ? theTHPR.HHpercent : 0.00M);
+
+      //return theTHPR.RbtSt1                                       ;
+      //return theTHPR.RbtSt1 + eventualKPN_RbtSt                   ;
+
+      // 24.06.2022: 
+      if(eventualHH_RbtSt.NotZero()) return eventualHH_RbtSt;
+
+      // 24.06.2022: 
+    //return theTHPR.RbtSt1 + eventualKPN_RbtSt   + eventualHH_RbtSt  ;
+      return theTHPR.RbtSt1 + eventualKPN_RbtSt /*+ eventualHH_RbtSt*/;
+   }
+
+   private bool CheckIsArtiklKindAdequate(int currRow)
+   {
+      if(ZXC.VvDeploymentSite != ZXC.VektorSiteEnum.TEXTHO) return true;
+
+      bool isAdequate = true;
+
+      string artiklCD   = TheG.GetStringCell(ci.iT_artiklCD  , currRow, false);
+      string artiklName = TheG.GetStringCell(ci.iT_artiklName, currRow, false);
+
+      if((artiklCD + artiklName).IsEmpty()) return isAdequate;
+
+      Artikl artikl_rec;
+      if(artiklCD.NotEmpty()) artikl_rec = Get_Artikl_FromVvUcSifrar      (artiklCD  );
+      else                    artikl_rec = Get_Artikl_FromVvUcSifrarByName(artiklName);
+
+      if(artikl_rec == null) return isAdequate;
+
+      TtInfo ttInfo = GetTtInfoOfThisRow(currRow);
+
+      string thisKind = artikl_rec.Grupa3CD ;
+      string nabKind  = Artikl.NabRobaGrCD  ; // "NBKG"  
+      string prodKind = Artikl.ProdRobaGrCD ; // "PRKOM" 
+      string nbprKind = Artikl.ProAndNabGrCD; // "NBiPR" 
+
+      // Ovo ti je ujedno i TEXTHO Faktur.TT_ LISTA 
+      switch(ttInfo.TheTT)
+      {
+         case Faktur.TT_MSI: isAdequate =(thisKind == nabKind || thisKind == nbprKind );  break;
+         case Faktur.TT_TRI: isAdequate =(thisKind == nabKind                         );  break;
+         case Faktur.TT_TRM: isAdequate =(thisKind == prodKind                        );  break;
+       //case Faktur.TT_IRM: isAdequate =(thisKind == prodKind                        );  break;
+         case Faktur.TT_IRM: isAdequate =(thisKind == prodKind || thisKind == nbprKind);  break;
+
+       //case Faktur.TT_MVI:                              isAdequate =(thisKind == prodKind                        );  break; 
+       //case Faktur.TT_MVI:                              isAdequate =(thisKind == prodKind || thisKind == nbprKind);  break; // 10.09.2015. da se mogu vratiti ogrlice
+         case Faktur.TT_MVI: if(this is MedjuSkladMVI2DUC) isAdequate =(thisKind == nbprKind                        );// 14.09.2015. komadna roba ide na sklPOVRATA
+                             else                          isAdequate =(thisKind == prodKind                        );// 14.09.2015. ogrlice i vrecice idu na GLSK
+                             break; 
+
+         // 27.04.2018: uvodimo novi VMI2 za povrat povrata - anti shop return (zatvara se Vukovar i jos jedna) 
+       //case Faktur.TT_VMI:                               isAdequate =(thisKind == nbprKind                        );  break; // ! 
+         case Faktur.TT_VMI: if(this is MedjuSkladVMI2DUC) isAdequate =(thisKind == prodKind                        ); 
+                             else                          isAdequate =(thisKind == nbprKind                        );  break; // ! 
+
+         case Faktur.TT_URA: isAdequate =(thisKind == nbprKind                        );  break; // ! 
+         case Faktur.TT_INV: isAdequate =(thisKind == nabKind  || thisKind == nbprKind);  break;
+         case Faktur.TT_PSM: isAdequate =(thisKind == prodKind || thisKind == nbprKind);  break;
+         case Faktur.TT_INM: isAdequate =(thisKind == prodKind || thisKind == nbprKind);  break;
+       //case Faktur.TT_ZPC: isAdequate =(thisKind == prodKind                        );  break; 
+         case Faktur.TT_ZPC: isAdequate =(thisKind == prodKind || thisKind == nbprKind);  break;
+         case Faktur.TT_PIZ: isAdequate =(thisKind == prodKind                        );  break;
+         case Faktur.TT_PUL: isAdequate =(thisKind == nabKind                         );  break;
+
+         // PST, PRI, IZD su poseban slucaj jer se jevljaju u BO - NabKind veleprodaja kao i u 12BPS - ProdKind veleprodaja 
+         case Faktur.TT_PST: case Faktur.TT_PRI: case Faktur.TT_IZD: 
+            if(faktur_rec.Skl1kind == ZXC.SkySklKind.CentPVSK) isAdequate = true; // tu se mogu pojaviti i vreće i komadi 
+            if(faktur_rec.Skl1kind != ZXC.SkySklKind.CentPVSK) isAdequate =(thisKind == nabKind  || thisKind == nbprKind);  
+            break;
+      }
+
+      if(artikl_rec.IsFKZ) isAdequate = true;
+
+      if(isAdequate == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl [{0}]\n\ngrupa [{1}]\n\nJe NEPRIMJEREN za transakciju\n\n[{2}]",
+            artikl_rec.ToString(), artikl_rec.Grupa3CD + " - " + artikl_rec.Grupa3Name, Fld_TT + " - " + ZXC.luiListaFakturType.GetNameForThisCd(Fld_TT));
+
+         TheG.ClearRowContent(currRow); // !!! 
+      }
+
+      return isAdequate;
+   }
+
+   /*private*/ public TtInfo GetTtInfoOfThisRow(int currRow)
+   {
+      if(faktur_rec.TtInfo.HasSplitTT == false) return faktur_rec.TtInfo;
+      else
+      {
+         bool isUlazTT = VvCheckBox.GetBool4String(TheG.GetStringCell(ci.iT_isProductLine, currRow, false));
+
+         if(isUlazTT) return ZXC.TtInfo(faktur_rec.TtInfo.SplitTT);
+         else         return faktur_rec.TtInfo;
+      }
+   }
+
+   #region Update_Faktur_4_ProjektCD
+
+   public static ZXC.VvSubModulEnum GetVvSubModulEnum_ForTT(string theTT)
+   {
+      // 26.12.2013: 
+      return ZXC.TtInfo(theTT).DefaultSubModulEnum;
+
+      //switch(theTT)
+      //{
+      //   case Faktur.TT_UFA: return ZXC.VvSubModulEnum.R_UFA;
+      //   case Faktur.TT_UPA: return ZXC.VvSubModulEnum.R_UPA;
+      //   case Faktur.TT_UFM: return ZXC.VvSubModulEnum.R_UFM;
+      //   case Faktur.TT_URA: return ZXC.VvSubModulEnum.R_URA;
+      //   case Faktur.TT_URM: return ZXC.VvSubModulEnum.R_URM;
+      //   case Faktur.TT_UOD: return ZXC.VvSubModulEnum.R_UOD;
+      //   case Faktur.TT_UPV: return ZXC.VvSubModulEnum.R_UPV;
+      //   case Faktur.TT_UPM: return ZXC.VvSubModulEnum.R_UPM;
+
+      //   case Faktur.TT_IFA: return ZXC.VvSubModulEnum.R_IFA;
+      //   case Faktur.TT_IRA: return ZXC.VvSubModulEnum.R_IRA;
+      //   case Faktur.TT_IOD: return ZXC.VvSubModulEnum.R_IOD;
+      //   case Faktur.TT_IPV: return ZXC.VvSubModulEnum.R_IPV;
+
+      //   case Faktur.TT_IRM: return ZXC.VvSubModulEnum.R_IRM;
+
+      //   case Faktur.TT_UPL: return ZXC.VvSubModulEnum.R_UPL;
+      //   case Faktur.TT_ISP: return ZXC.VvSubModulEnum.R_ISP;
+
+      //   case Faktur.TT_RNP: return ZXC.VvSubModulEnum.R_RNP;
+      //   case Faktur.TT_RNS: return ZXC.VvSubModulEnum.R_RNS;
+      //   case Faktur.TT_PRJ: return ZXC.VvSubModulEnum.R_PRJ;
+
+      //   case Faktur.TT_PPR: return ZXC.VvSubModulEnum.R_PPR;
+      //   case Faktur.TT_POV: return ZXC.VvSubModulEnum.R_POV;
+
+      //   default: ZXC.aim_emsg(MessageBoxIcon.Error, "GetVvSubModulEnum_ForTT [{0}] sims tubi andifajnd :-(", theTT); return ZXC.VvSubModulEnum.UNDEF;
+      //}
+   }
+
+   /// <summary>
+   /// 'FindVvDataRecord' procedura. Inicirana:
+   /// 1. Context menu (Mouse right click)
+   /// 2. Mouse click (Ctrl ili Alt click)
+   /// 3. Keyboard initiated (Ctrl/Alt + F/Space)
+   /// </summary>
+   /// <param name="startValue"></param>
+   /// <returns></returns>
+   public static string Update_Faktur_4_ProjektCD(object startValue)
+   {
+      Faktur Faktur_rec = new Faktur();
+      FakturListUC FakturListUC;
+      XSqlConnection dbConnection = ZXC.TheVvForm.TheDbConnection;
+
+      if(ZXC.LastUsedProjektTT_IsDiscovered == false)
+      {
+         ZXC.LastUsedProjektTT = FakturDao.Discover_LastUsedProjektTT(dbConnection);
+
+         ZXC.LastUsedProjektTT_IsDiscovered = true;
+      }
+
+      VvForm.VvSubModul theVvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(GetVvSubModulEnum_ForTT(ZXC.LastUsedProjektTT));
+
+      VvFindDialog dlg = CreateFind_Faktur_Dialog(theVvSubModul);
+
+      FakturListUC = (FakturListUC)(dlg.TheRecListUC);
+
+      bool backupOf_Supress_ImaLiIjedan_StartField_Neprazan_Action = FakturListUC.Supress_ImaLiIjedan_StartField_Neprazan_Action;
+      FakturListUC.Supress_ImaLiIjedan_StartField_Neprazan_Action = false;
+
+      FakturListUC.Fld_FromTtNum = (uint)startValue;
+      FakturListUC.rbt_Descending.Checked = true;
+      FakturListUC.asc_or_desc = VvSQL.OrderDirectEnum.DESC;
+
+      // 04.05.2018: 
+      if(ZXC.IsSvDUH && ZXC.TheVvForm.TheVvUC is FakturExtDUC) // trazimo SVD - UGO - ugovor 
+      {
+         FakturListUC.Fld_FiltPartnerCD   = (ZXC.TheVvForm.TheVvUC as FakturExtDUC).Fld_KupdobCd  ;
+         FakturListUC.Fld_FiltPartnerTick = (ZXC.TheVvForm.TheVvUC as FakturExtDUC).Fld_KupdobTk  ;
+         FakturListUC.Fld_FiltPartnerName = (ZXC.TheVvForm.TheVvUC as FakturExtDUC).Fld_KupdobName;
+      }
+
+      if(dlg.ShowDialog() == DialogResult.OK)
+      {
+         if(!ZXC.FakturDao.SetMe_Record_byRecID(dbConnection, Faktur_rec, (uint)dlg.SelectedRecID, false)) return null;
+      }
+      else
+      {
+         Faktur_rec = null;
+      }
+
+      //if(dlg.SelectionIsNewlyAddedRecord == true) ZXC.ShouldForceSifrarRefreshing = true;
+
+      dlg.Dispose();
+
+      FakturListUC.Supress_ImaLiIjedan_StartField_Neprazan_Action = backupOf_Supress_ImaLiIjedan_StartField_Neprazan_Action;
+
+      if(Faktur_rec != null) return Faktur_rec.TT_And_TtNum;
+      else return null;
+   }
+
+   #endregion Update_Faktur_4_ProjektCD
+
+   #region Are we in devizni dokument
+
+   private bool ArerWeIn_OutsideEU_DevizniDokument()
+   {
+      FakturExtDUC theFaktExtDUC = this as FakturExtDUC;
+
+      if(theFaktExtDUC == null) return false;
+
+      bool isEUpdv = theFaktExtDUC.Fld_PdvGEOkind == ZXC.PdvGEOkindEnum.EU;
+
+      if(isEUpdv) return false;
+
+      return ArerWeIn_DevizniDokument();
+   }
+
+   private bool ArerWeIn_DevizniDokument()
+   {
+      FakturExtDUC theFaktExtDUC = this as FakturExtDUC;
+
+      if(theFaktExtDUC == null) return false;
+
+      bool isDevizniDokument = false;
+
+      if(theFaktExtDUC != null &&
+         theFaktExtDUC.Fld_DevNameAsEnum != ZXC.ValutaNameEnum.EMPTY &&
+         theFaktExtDUC.Fld_DevNameAsEnum != ZXC.ValutaNameEnum.HRK)
+      {
+         isDevizniDokument = true;
+      }
+
+      return isDevizniDokument;
+   }
+
+   #endregion Are we in devizni dokument
+
+   private void OnExit_UGO_SetSVDartiklLongOpis(object sender, EventArgs e)
+   {
+      #region Init stuff
+
+      if(isPopulatingSifrar)                           return;
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvTextBoxEditingControl vvtb_editingControl = sender as VvTextBoxEditingControl;
+
+      if(vvtb_editingControl                    == null             ) return;
+      if(vvtb_editingControl.Text               == this.originalText) return;
+      if(vvtb_editingControl.EditedHasChanges() == false            ) return;
+      if(vvtb_editingControl.Text.              IsEmpty()           ) return;
+
+      VvDataGridView theGrid = ((VvDataGridView)vvtb_editingControl.EditingControlDataGridView);
+
+      int currRow = vvtb_editingControl.EditingControlRowIndex;
+
+      #endregion Init stuff
+
+      string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRow, false);
+
+      Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      if(artikl_rec == null) return;
+
+      string ducArtiklLongOpis = vvtb_editingControl.Text;
+      string oldArtiklLongOpis = artikl_rec.LongOpis     ;
+
+      if(ducArtiklLongOpis == oldArtiklLongOpis) return;
+
+      DialogResult result = MessageBox.Show("Da li želite da zapamtim ugovorni opis artikla i dobavljača?\n\n<" + artikl_rec.ArtiklCD + "> <" + artikl_rec.ArtiklName + ">",
+         "Potvrdite Artikl Long Opis!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+      if(result != DialogResult.Yes) return;
+
+      artikl_rec.BeginEdit();
+
+      artikl_rec.LongOpis = ducArtiklLongOpis;
+
+      artikl_rec.DobavCD  = (this as FakturExtDUC).Fld_KupdobCd;
+
+      artikl_rec.VvDao.RWTREC(TheDbConnection, artikl_rec, false, true);
+
+      artikl_rec.EndEdit();
+
+   }
+
+   #endregion UpdateArtikl
+
+   #region Update_SERNO
+
+   protected void OnExitT_Update_SERNO(object sender, EventArgs e)
+   {
+      if(faktur_rec.TtInfo.IsFinKol_I == false) return; // well, traziti cemo rtrano_rec na osnovu t_serno-a SAMO na izlazima (PIZ, IRA, ...) 
+
+      #region Init stuff
+
+      if(isPopulatingSifrar)                           return;
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvTextBoxEditingControl vvtb_editingControl = sender as VvTextBoxEditingControl;
+
+      if(vvtb_editingControl == null) return;
+
+      if(vvtb_editingControl.Text.IsEmpty())            return;
+      if(vvtb_editingControl.Text == this.originalText) return;
+
+      VvDataGridView theGrid = ((VvDataGridView)vvtb_editingControl.EditingControlDataGridView);
+
+      this.originalText = vvtb_editingControl.Text;
+      
+      //Artikl artikl_rec = ArtiklSifrar.Find(FoundInSifrar<Artikl>);
+
+      int currRow = vvtb_editingControl.EditingControlRowIndex;
+
+      //bool isDevizniDokument = ArerWeInDevizniDokument();
+
+      #endregion Init stuff
+
+      List<Rtrano> rtranoList = RtranoDao.GetRtranoList_For_SERNO(TheDbConnection, vvtb_editingControl.Text);
+
+      bool rtranoNOTfound   = rtranoList.Count.IsZero();
+      bool rtranoMULTIfound = rtranoList.Count > 1     ;
+
+      theGrid.ClearRowContent(currRow);
+
+      //PutDgvTransSumFields();
+
+      //PutTransSumToDocumentSumFields();
+
+      // ________ Here we go! ________ 
+
+      if(rtranoNOTfound)
+      {
+         // votafakshouldajdunau? 
+         return;
+      }
+
+      if(rtranoMULTIfound)
+      {
+         string rtranos = "";
+         foreach(Rtrano rtrano in rtranoList)
+         {
+            rtranos += rtrano + "\n\n";
+         }
+
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE:\n\nZa serno:\n\n{0}\n\nsam pronašao više ({1}) knjiženja!\n\n{2}\n", vvtb_editingControl.Text, rtranoList.Count, rtranos);
+      }
+
+      Rtrano firstFoundRtrano_rec = rtranoList.First();
+
+      PutDgvLineFields2(firstFoundRtrano_rec, currRow, true);
+
+      ZXC.TheVvForm.SetDirtyFlag(sender);
+   }
+
+   #endregion Update_SERNO
+
+   #region GoTo some other document
+
+   public void GoTo_RISK_Dokument_Click(object sender, EventArgs e)
+   {
+      Button btn = sender as Button;
+
+      int vezaRbr = (int)btn.Tag;
+
+      switch(vezaRbr)
+      {
+         case 1: if(Fld_V1_tt.NotEmpty() && Fld_V1_ttNum.NotZero()) GoTo_RISK_Dokument(Fld_V1_tt, Fld_V1_ttNum); break;
+         case 2: if(Fld_V2_tt.NotEmpty() && Fld_V2_ttNum.NotZero()) GoTo_RISK_Dokument(Fld_V2_tt, Fld_V2_ttNum); break;
+
+         case 3: if((this as FakturExtDUC).Fld_V3_tt.NotEmpty() && (this as FakturExtDUC).Fld_V3_ttNum.NotZero()) GoTo_RISK_Dokument((this as FakturExtDUC).Fld_V3_tt, (this as FakturExtDUC).Fld_V3_ttNum); break;
+         case 4: if((this as FakturExtDUC).Fld_V4_tt.NotEmpty() && (this as FakturExtDUC).Fld_V4_ttNum.NotZero()) GoTo_RISK_Dokument((this as FakturExtDUC).Fld_V4_tt, (this as FakturExtDUC).Fld_V4_ttNum); break;
+         case 10:
+            if((this as FakturExtDUC).Fld_CjenikTT.IsEmpty()) break;
+            if((this as FakturExtDUC).Fld_CjenikTT == Faktur.TT_CJ_VP1)
+            {
+               Faktur cjenik_rec = FakturDao.LSTSET_Faktur(TheDbConnection, Faktur.TT_CJ_VP1, (this as FakturExtDUC).Fld_SkladDate, 0);
+
+               if(cjenik_rec != null) GoTo_RISK_Dokument(cjenik_rec.TT, cjenik_rec.TtNum);
+               break;
+            }
+            if((this as FakturExtDUC).Fld_CjenikTT == Faktur.TT_CJ_VP2)
+            {
+               if((this as FakturExtDUC).Fld_CjenikTTnum.NotZero()) GoTo_RISK_Dokument((this as FakturExtDUC).Fld_CjenikTT, (this as FakturExtDUC).Fld_CjenikTTnum); break;
+            }
+            break;
+
+      }
+   }
+
+   protected int FirstEmptyVezaField
+   {
+      get
+      {
+
+         if(Fld_V1_tt.IsEmpty() && Fld_V1_ttNum.IsZero()) return 1;
+         if(Fld_V2_tt.IsEmpty() && Fld_V2_ttNum.IsZero()) return 2;
+
+         if(this is FakturExtDUC == false) return 0;
+
+         FakturExtDUC theExtDUC = this as FakturExtDUC;
+
+         if(theExtDUC.Fld_V3_tt.IsEmpty() && theExtDUC.Fld_V3_ttNum.IsZero()) return 3;
+         if(theExtDUC.Fld_V4_tt.IsEmpty() && theExtDUC.Fld_V4_ttNum.IsZero()) return 4;
+
+         return 0;
+      }
+   }
+
+   public static void GoTo_RISK_Dokument(string _tt, uint _ttNum)
+   {
+      Point vvSubModulXY = ZXC.TtInfo(_tt).DefaultSubModulXY;
+
+      // 20.12.2012: start 
+      FakturDUC currentFakturDUC = ZXC.TheVvForm.TheVvUC as FakturDUC;
+      if(currentFakturDUC != null)
+      {
+         switch(currentFakturDUC.TheSubModul.subModulEnum)
+         {
+            case ZXC.VvSubModulEnum.R_KLD:
+               if(_tt == Faktur.TT_UFA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_UFAdev);
+               break;
+            case ZXC.VvSubModulEnum.R_UFAdev:
+               if(_tt == Faktur.TT_KLK) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_KLD);
+               break;
+
+            case ZXC.VvSubModulEnum.R_IZD_SVD:
+               if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_SVD);
+               if(_tt == Faktur.TT_NRD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_NRD_SVD);
+               break;
+            case ZXC.VvSubModulEnum.R_URA_SVD:
+               if(_tt == Faktur.TT_NRD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_NRD_SVD);
+               if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_SVD);
+               break;
+            case ZXC.VvSubModulEnum.R_NRD_SVD:
+               if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_SVD);
+               if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_SVD);
+               break;
+         }
+      }
+      // 20.12.2012: end    
+
+
+
+      if(vvSubModulXY == Point.Empty)
+      {
+         GoTo_MIXER_Dokument(_tt, _ttNum);
+
+         return;
+      }
+
+      VvTabPage existingTabPage = ZXC.TheVvForm.TheVvTabPage.TheVvForm.TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModulXY);
+
+      Faktur linkedFaktur_rec;
+
+      if(existingTabPage == null) linkedFaktur_rec = new Faktur();
+      else                        linkedFaktur_rec = (Faktur)existingTabPage.TheVvDataRecord;
+
+      bool dbOK = FakturDao.SetMeFaktur(ZXC.TheVvForm.TheDbConnection, linkedFaktur_rec, _tt, _ttNum, false);
+
+      if(dbOK == false) return;
+
+      if(existingTabPage != null)
+      {
+         existingTabPage.Selected = true;
+
+         string currTT    = ((FakturDUC)(existingTabPage.TheVvDocumentRecordUC)).Fld_TT;
+         uint   currTTnum = ((FakturDUC)(existingTabPage.TheVvDocumentRecordUC)).Fld_TtNum;
+
+         //if(currTT == _tt && currTTnum == _ttNum) return;
+
+         if(dbOK) 
+         {
+            existingTabPage.TheVvForm.PutFieldsActions(ZXC.TheVvForm.TheDbConnection, linkedFaktur_rec, existingTabPage.TheVvRecordUC); 
+         }
+      }
+      else
+      {
+         ZXC.TheVvForm.OpenNew_Record_TabPage(vvSubModulXY, linkedFaktur_rec.RecID);
+      }
+
+   }
+
+   private static void GoTo_MIXER_Dokument(string _tt, uint _ttNum)
+   {
+      Point vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(_tt));
+
+      if(vvSubModulXY == Point.Empty)
+      {
+         return;
+      }
+
+      VvTabPage existingTabPage = ZXC.TheVvForm.TheVvTabPage.TheVvForm.TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModulXY);
+
+      Mixer linkedMixer_rec;
+
+      if(existingTabPage == null) linkedMixer_rec = new Mixer();
+      else                        linkedMixer_rec = (Mixer)existingTabPage.TheVvDataRecord;
+
+      bool dbOK = MixerDao.SetMeMixer(ZXC.TheVvForm.TheDbConnection, linkedMixer_rec, _tt, _ttNum, false);
+
+      if(dbOK == false) return;
+
+      if(existingTabPage != null)
+      {
+         existingTabPage.Selected = true;
+
+         string currTT    = ((MixerDUC)(existingTabPage.TheVvDocumentRecordUC)).Fld_TT;
+         uint   currTTnum = ((MixerDUC)(existingTabPage.TheVvDocumentRecordUC)).Fld_TtNum;
+
+         //if(currTT == _tt && currTTnum == _ttNum) return;
+
+         if(dbOK) 
+         {
+            existingTabPage.TheVvForm.PutFieldsActions(ZXC.TheVvForm.TheDbConnection, linkedMixer_rec, existingTabPage.TheVvRecordUC); 
+         }
+      }
+      else
+      {
+         ZXC.TheVvForm.OpenNew_Record_TabPage(vvSubModulXY, linkedMixer_rec.RecID);
+      }
+   }
+
+   public void GoToProjektCD_RISK_Dokument_Click(object sender, EventArgs e)
+   {
+      string tt;
+      uint ttNum;
+
+      Ftrans.ParseTipBr(Fld_ProjektCD, out tt, out ttNum);
+
+      if(tt.IsEmpty()) return;
+
+      GoTo_RISK_Dokument(tt, ttNum);
+
+   }
+
+   #endregion GoTo some other document
+
+   #region VvCurrency converter
+
+   internal ZXC.ValutaNameEnum ValutaNameInUse { get; set; }
+   public bool    IsShowingConvertedMoney { get; set; }
+   public decimal DevTecaj                { get; set; }
+
+   public ZXC.ValutaNameEnum Fld_ShowInValutaLookUp
+   {
+      get
+      {
+         if(tbx_IznosUvaluti.Text.IsEmpty()) return ZXC.ValutaNameEnum.EMPTY;
+         else                                return (ZXC.ValutaNameEnum)Enum.Parse(typeof(ZXC.ValutaNameEnum), tbx_IznosUvaluti.Text, true);
+      }
+      set
+      {
+         if(value == ZXC.ValutaNameEnum.EMPTY) tbx_IznosUvaluti.Text = "";
+         else                                  tbx_IznosUvaluti.Text = value.ToString();
+
+         ValutaNameInUse = value;
+      }
+   }
+
+   void tbx_IznosUvaluti_TextChanged(object sender, EventArgs e)
+   {
+      ValutaNameInUse = Fld_ShowInValutaLookUp;
+
+      if(ValutaNameInUse == ZXC.ValutaNameEnum.EMPTY || ValutaNameInUse == ZXC.ValutaNameEnum.HRK) IsShowingConvertedMoney = false;
+      else                                                                                         IsShowingConvertedMoney = true;
+
+      if(IsShowingConvertedMoney == true) // idemo iz kuna u neku drugu valutu 
+      {
+         DevTecaj = ZXC.DevTecDao.GetHnbTecaj(ValutaNameInUse, Fld_DokDate);
+      }
+
+      PutFields(faktur_rec, false);
+
+      TheVvTabPage.TheVvForm.ToggleDevizaVisualApperiance(IsShowingConvertedMoney, ValutaNameInUse.ToString(), Fld_DevTecaj);
+   }
+
+
+   internal decimal VvCurrency(decimal _money)
+   {
+      if(ValutaNameInUse         == ZXC.ValutaNameEnum.EMPTY ||
+         ValutaNameInUse         == ZXC.ValutaNameEnum.HRK   ||
+         IsShowingConvertedMoney == false)
+      {
+         return _money;
+      }
+      else if(TheVvTabPage.WriteMode != ZXC.WriteMode.None)
+      {
+         return _money;
+      }
+      else
+      {
+         if(IsShowingConvertedMoney) // daj kune u devizu 
+         {
+            return ZXC.DivSafe(_money, DevTecaj);
+         }
+         else // daj devizu u kune
+         {
+            return (_money * DevTecaj);
+         }
+      }
+   }
+
+   #endregion VvCurrency converter
+
+   #region IsOkToInitiateThisAction (Da li je dok vec proknjizen u Financijsko)
+
+   public int NumOf_T_cij_decimalPlaces { get { return vvtbT_cij == null ? -1 :  vvtbT_cij.JAM_NumberOfDecimalPlaces; } }
+
+   public override bool IsOkToInitiateThisAction(ZXC.WriteMode writeMode)
+   {
+      switch(writeMode)
+      {
+         case ZXC.WriteMode.Add:///////////////////////////////////////////////////////////////////////////////////////////////// 
+            if(IsShowingConvertedMoney)
+            {
+               TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
+               return true;
+            }
+            else return true;
+
+         case ZXC.WriteMode.Edit: ///////////////////////////////////////////////////////////////////////////////////////////////// 
+
+          //if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O")
+            if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O" && faktur_rec.StatusCD != "P")
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljena akcija.\n\nZahtjevnica je već poslana u apoteku.\n\n.");
+               return false;
+            }
+
+
+            // 05.04.2016: need for numberOfDecimalPlaces discrepancy (devizni vs nonDevizni DUC) start 
+
+            int thisDUC_MaxDecimalPlaces              = /*vvtbT_cij.JAM_NumberOfDecimalPlaces*/ NumOf_T_cij_decimalPlaces;
+            int thisFakturMaxSignificantDecimalPlaces = Faktur.GetMaxCountOfSignificantDecimalPlaces(this.faktur_rec);
+
+
+
+            // 13.04.2016: !!! privremeno suspendirano jer u fajlu je 8 dacimalnih ___ start 
+          //if(thisFakturMaxSignificantDecimalPlaces > thisDUC_MaxDecimalPlaces)
+          //{
+          //   ZXC.aim_emsg(MessageBoxIcon.Error, "Premali broj decimalnih mjesta za cijenu.\n\nIspravite dokument na orginalnom ekranu.\n\nOvaj dokument\tMAX decimal. mj.: [{0}]\nvs\nOvaj ekran\tMAX decimal. mj.: [{1}]",
+          //      thisFakturMaxSignificantDecimalPlaces, thisDUC_MaxDecimalPlaces);
+          //   return false;
+          //}
+            // 13.04.2016: !!! privremeno suspendirano jer u fajlu je 8 dacimalnih ___ end 
+
+
+
+            // 05.04.2016: need for numberOfDecimalPlaces discrepancy (devizni vs nonDevizni DUC) end 
+
+
+
+            if(FakturOpeningExistsInFtrans(faktur_rec.TT, faktur_rec./*TipBr*/TT_And_TtNum) == true) 
+            {
+               if(ZXC.CURR_userName == ZXC.vvDB_systemSuperUserName ||
+                  ZXC.CURR_userName == ZXC.vvDB_programSuperUserName/* || ZXC.CURR_user_rec.IsSuper*/)
+               {
+                  IssueMessageWarning();            return true;
+               }
+               else
+               {
+                  IssueUnauthorizedActionMessage(); return false;
+               }
+            }
+            else {                                  return true ; }
+
+         case ZXC.WriteMode.Delete: ///////////////////////////////////////////////////////////////////////////////////////////////// 
+
+            if(FakturOpeningExistsInFtrans(faktur_rec.TT, faktur_rec.TipBr) == true) 
+            { 
+               IssueUnauthorizedActionMessage(); 
+               return false; 
+            }
+            else if(faktur_rec.TtInfo.IsExtendableTT && faktur_rec.IsAlreadyFiskalized)
+            {
+#if(DEBUG) // >__________________________________________________________________________________________________________________________________________< 
+               return true;
+#else //                                                                                                                                                   
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljena akcija.\n\nDokument je fiskaliziran.\n\nPreostaje opcija 'STORNO'.");
+               return false;
+#endif // >_______________________________________________________________________________________________________________________________________________<
+            }
+            else if(faktur_rec.TtInfo.IsIzlazniPdvTT && !faktur_rec.TtInfo.Is_WYRN_TT && faktur_rec.TtNum != TheVvDao.GetLastTtNum(TheDbConnection, faktur_rec.TT, faktur_rec.SkladCD)) // well, dozvoliti ce se brisanje samo zadnje IRA, IRM, ...
+            {
+#if(DEBUG) // >__________________________________________________________________________________________________________________________________________<
+               return true;
+#else//                                                                                                                                                   
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljena akcija.\n\nOvo je izlazni račun koji nije zadnji, te će prouzrokovati rupu u brojevima.\n\nPreostaje opcija 'STORNO'.");
+               return false;
+#endif // >______________________________________________________________________________________________________________________________________________<
+            }
+            else
+            {                                   
+               return true; 
+            }
+
+
+         default: return true;
+      }
+   }
+
+   private void IssueUnauthorizedActionMessage()
+   {
+      ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljena akcija.\n\nDokument je već proknjižen u financijsko knjigovodstvo.\n\nDetalje o knjiženjima možete vidjeti na tab-u 'SaldaKonti'\nkraj tab-a 'Zoom' na ovome ekranu.\n\nPreostaje opcija 'STORNO'.");
+   }
+
+   private void IssueMessageWarning()
+   {
+      ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE!\n\nDokument je već proknjižen u financijsko knjigovodstvo.\n\nDetalje o knjiženjima možete vidjeti na tab-u 'SaldaKonti'\nkraj tab-a 'Zoom' na ovome ekranu.");
+   }
+
+   // puse: 
+   //private bool FakturExistsInFtrans(uint fakturRecID)
+   //{
+   //   List<VvSqlFilterMember> filterMembers =  new List<VvSqlFilterMember>(1);
+
+   //   filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "", fakturRecID, "", "", " = ", ""));
+
+   //   int? count = VvDaoBase.CountRecords(TheDbConnection, filterMembers);
+
+   //   if(count == null) return false;
+
+   //   return count.Value.IsPositive();
+   //}
+
+   private bool FakturOpeningExistsInFtrans(/*uint fakturRecID*/ string _tt, string _tipBr)
+   {
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "", fakturRecID, "", "", " = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_tipBr], "elTipBr",   _tipBr                   , " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_tt   ], "elNalogTT", GetNalogTT_ForRiskTT(_tt), " = "));
+
+      int? count = VvDaoBase.CountRecords(TheDbConnection, filterMembers);
+
+      if(count == null) return false;
+
+      return count.Value.IsPositive();
+   }
+
+   public string GetNalogTT_ForRiskTT(string riskTT)
+   {
+      Faktur2NalogRulesAndData theRules = new Faktur2NalogRulesAndData();
+      theRules.Fak2nalSet = ZXC.Faktur2NalogSetEnum.OneExactTT;
+      theRules.ThisTT_Only = riskTT;
+      theRules.SetNalogTT(riskTT);
+
+      return theRules.NalogTT;
+   }
+
+   internal static bool IsIn_TtVsSkladCD_Problem(string _tt, string _skladCD)
+   {
+      TtInfo ttInfo = ZXC.TtInfo(_tt);
+
+      if(ttInfo.IsKorekTemTT) return false;
+
+      bool isMalopSklad = ZXC.luiListaSkladista.GetFlagForThisCd(_skladCD);
+
+      // 29.10.2014: komentirao '&& ttInfo.IsTwinTT == false' jer ne radi dobro kod TEXTHO 
+      if(((ttInfo.IsMalopTT /*&& ttInfo.IsTwinTT == false*/) == true  && isMalopSklad == false) ||
+         ((ttInfo.IsMalopTT /*&& ttInfo.IsTwinTT == false*/) == false && isMalopSklad == true))
+      {
+         // 25.11.2016: izuzatak za blagTT 
+         if(ttInfo.IsBlagajnaTT) return false;
+
+         return true;
+      }
+
+      return false;
+   }
+
+   #endregion IsOkToInitiateThisAction (Da li je dok vec proknjizen u Financijsko)
+
+   #region Open ArtiklUC or KupdobUC
+
+   private void TheG_CellMouseDoubleClick_OpenArtiklUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      if(e.ColumnIndex != ci.iT_artiklCD &&
+         e.ColumnIndex != ci.iT_artiklName) return;
+
+      string artiklCD   = TheG.GetStringCell(ci.iT_artiklCD  , rowIdx, false);
+      // 19.12.2014: 
+      if(artiklCD.IsEmpty()) return; // znaci da smo u zutome probali doubleclickom inicirati editiranje cell-a 
+
+      //Artikl artikl_rec = new Artikl();
+      //artikl_rec.VvDao.SetMe_Record_bySomeUniqueColumn(conn, artikl_rec, artiklCD, ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD], false);
+
+      SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+
+    // 18.08.2011: bijo BUG! Kako je reference type, saljuci element ArtiklSifrar-a kao TheVvDataRecord, svaka promkena TheVvDataRecord-a je mijenjala i element ArtiklSifrar-a! 
+    //Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      Artikl artikl_rec;
+      try
+      {
+         artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD).MakeDeepCopy();
+      }
+      catch(Exception ex)
+      {
+         artikl_rec = null;
+      }
+
+      if(artikl_rec != null)
+      {
+         TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(TheVvTabPage.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.ART), artikl_rec);
+      }
+   }
+
+   private void RealizacGrid_CellMouseDoubleClick_OpenFakturDUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      uint selectedRecID = 0;
+      string selectedTT = "";
+
+      if(RealizacGrid.CurrentRow != null) selectedTT    = RealizacGrid.CurrentRow.Cells["TT"].Value.ToString();
+      if(RealizacGrid.CurrentRow != null) selectedRecID = ZXC.ValOrZero_UInt(RealizacGrid.CurrentRow.Cells[0].Value.ToString());
+
+      if(selectedRecID.IsZero() || selectedTT.IsEmpty()) return;
+
+      ZXC.VvSubModulEnum vvSubModulEnum = TheVvTabPage.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(selectedTT);
+      Point xy = TheVvTabPage.TheVvForm.GetSubModulXY(vvSubModulEnum);
+      TheVvTabPage.TheVvForm.OpenNew_Record_TabPage(xy, (uint?)selectedRecID);
+   }
+
+   private void FakLink_Grid_CellMouseDoubleClick_OpenFakturDUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      uint selectedRecID = 0;
+      string selectedTT = "";
+
+      if(fakLinkGrid.CurrentRow != null) selectedTT    = fakLinkGrid.CurrentRow.Cells["TT"].Value.ToString();
+      if(fakLinkGrid.CurrentRow != null) selectedRecID = ZXC.ValOrZero_UInt(fakLinkGrid.CurrentRow.Cells[0].Value.ToString());
+
+      if(selectedRecID.IsZero() || selectedTT.IsEmpty()) return;
+
+      ZXC.VvSubModulEnum vvSubModulEnum = TheVvTabPage.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(selectedTT);
+      Point xy = TheVvTabPage.TheVvForm.GetSubModulXY(vvSubModulEnum);
+      TheVvTabPage.TheVvForm.OpenNew_Record_TabPage(xy, (uint?)selectedRecID);
+   }
+
+   protected void AnyKupdobTextBox_DoubleClick(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode != ZXC.WriteMode.None) return;
+
+      SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+
+    //Kupdob artikl_rec = KupdobSifrar.SingleOrDefault(a => a.KupdobCD == (this as FakturExtDUC).Fld_KupdobCd);
+      Kupdob kupdobFromSifrar_rec = KupdobSifrar.SingleOrDefault(k => k.KupdobCD == (this as FakturExtDUC).Fld_KupdobCd);
+      Kupdob kupdob_rec;
+
+      if(kupdobFromSifrar_rec == null) return;
+
+      kupdob_rec = kupdobFromSifrar_rec.MakeDeepCopy();
+
+      Point xy = TheVvTabPage.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.KID);
+
+      // 13.11.2014: 
+      if(xy.IsEmpty) return;
+
+      TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(xy, kupdob_rec);
+   }
+
+   #endregion Open ArtiklUC or KupdobUC
+
+   #region PrnFakDsc Utils
+
+   public static VvLookUpLista GetDscLuiListForThisTT(string theTT, ushort subDsc)
+   {
+      switch(theTT)
+      {
+         case Faktur.TT_IRA: 
+            switch(subDsc)
+            {
+               case 0:  case 1: return ZXC.dscLuiLst_IRA_1;
+               case 2:          return ZXC.dscLuiLst_IRA_2;
+               case 3:          return ZXC.dscLuiLst_IRA_3;
+               case 4:          return ZXC.dscLuiLst_IRA_4;
+               case 5:          return ZXC.dscLuiLst_IRA_5; //15.06.2020.
+               default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
+            }
+         case Faktur.TT_IFA:
+            switch(subDsc)
+            {
+               case 0: case 1: return ZXC.dscLuiLst_IFA;
+               case 2:         return ZXC.dscLuiLst_IFA_2;
+               case 3:         return ZXC.dscLuiLst_IFA_3;
+               case 4:         return ZXC.dscLuiLst_IFA_4;
+               default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
+            }
+            
+         case Faktur.TT_IRM:
+            switch(subDsc)
+            {
+               case 0: case 1: return ZXC.dscLuiLst_IRM;
+               case 2:         return ZXC.dscLuiLst_IRM_2;
+               case 3:         return ZXC.dscLuiLst_IRM_3;
+               case 4:         return ZXC.dscLuiLst_IRM_4;
+               default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
+            }
+
+         case Faktur.TT_PON   : 
+         case Faktur.TT_OPN   :
+            switch(subDsc)
+            {
+               case 0:
+               case 1: return ZXC.dscLuiLst_PON;
+               case 2: return ZXC.dscLuiLst_PON_2;
+               case 3: return ZXC.dscLuiLst_PON_3;
+               case 4: return ZXC.dscLuiLst_PON_4;
+               default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
+            }
+
+         
+         
+         
+         case Faktur.TT_PNM   :
+            switch(subDsc)
+            {
+               case 0:
+               case 1: return ZXC.dscLuiLst_PNM;
+               case 2: return ZXC.dscLuiLst_PNM_2;
+               case 3: return ZXC.dscLuiLst_PNM_3;
+               case 4: return ZXC.dscLuiLst_PNM_4;
+               default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
+            }
+
+         case Faktur.TT_URA   : return ZXC.dscLuiLst_URA;
+         case Faktur.TT_UFA   : return ZXC.dscLuiLst_UFA;
+         case Faktur.TT_UPA   : return ZXC.dscLuiLst_UFA; // upaTODO: !!!!!! 
+         case Faktur.TT_UFM   : return ZXC.dscLuiLst_UFM;
+         case Faktur.TT_PRI   : return ZXC.dscLuiLst_PRI;
+         case Faktur.TT_KLK   : return ZXC.dscLuiLst_KLK;
+         case Faktur.TT_KKM   : return ZXC.dscLuiLst_KKM;
+         
+         case Faktur.TT_IZD   : return ZXC.dscLuiLst_IZD;
+         case Faktur.TT_UOD   : return ZXC.dscLuiLst_UOD;
+         case Faktur.TT_UPV   : return ZXC.dscLuiLst_UPV;
+         case Faktur.TT_UPM   : return ZXC.dscLuiLst_UPM;
+         case Faktur.TT_IOD   : return ZXC.dscLuiLst_IOD;
+         case Faktur.TT_IPV   : return ZXC.dscLuiLst_IPV;
+         case Faktur.TT_NRD   : return ZXC.dscLuiLst_NRD;
+         case Faktur.TT_NRM   : return ZXC.dscLuiLst_NRM;
+         case Faktur.TT_NRU   : return ZXC.dscLuiLst_NRU;
+         case Faktur.TT_NRS   : return ZXC.dscLuiLst_NRS;
+         case Faktur.TT_NRK   : return ZXC.dscLuiLst_NRK;
+//       case Faktur.TT_STU   : return ZXC.dscLuiLst_STU;
+//       case Faktur.TT_STI   : return ZXC.dscLuiLst_STI;
+         case Faktur.TT_RVI   : return ZXC.dscLuiLst_RVI;
+         case Faktur.TT_RVU   : return ZXC.dscLuiLst_RVU;
+         case Faktur.TT_UPL   : return ZXC.dscLuiLst_UPL;
+         case Faktur.TT_ISP   : return ZXC.dscLuiLst_ISP;
+         case Faktur.TT_BUP   : return ZXC.dscLuiLst_BUP;
+         case Faktur.TT_BIS   : return ZXC.dscLuiLst_BIS;
+         case Faktur.TT_PST   : return ZXC.dscLuiLst_PST;
+         case Faktur.TT_INV   : return ZXC.dscLuiLst_INV;
+         case Faktur.TT_INM   : return ZXC.dscLuiLst_INM;
+         case Faktur.TT_PPR   : return ZXC.dscLuiLst_PPR;
+         case Faktur.TT_PIP   : return ZXC.dscLuiLst_PIP;
+         case Faktur.TT_POV   : return ZXC.dscLuiLst_POV;
+         case Faktur.TT_MSI   : return ZXC.dscLuiLst_MSI;
+         case Faktur.TT_IZM   : return ZXC.dscLuiLst_IZM;
+         case Faktur.TT_KIZ   : return ZXC.dscLuiLst_KIZ;
+         case Faktur.TT_PIK   : return ZXC.dscLuiLst_PIK;
+         
+         case Faktur.TT_CJ_VP1: 
+         case Faktur.TT_CJ_VP2: 
+         case Faktur.TT_CJ_DE : 
+         case Faktur.TT_CJ_MK : 
+         case Faktur.TT_CJ_MP : 
+         case Faktur.TT_CJ_MRZ: 
+         case Faktur.TT_CJ_RB1: 
+         case Faktur.TT_CJ_RB2: return ZXC.dscLuiLst_CJE;
+
+         default: return null;
+            //if(ZXC.TtInfo(theTT).IsExtendableTT)            return ZXC.dscLuiLst_XYZ;
+            //else                                            return ZXC.dscLuiLst_XYZ;
+      }
+
+   }
+
+   public void LoadDscLuiList_And_PutFilterFields(ushort subDsc)
+   {
+      FakturDocFilter theRptFilter = VirtualRptFilter as FakturDocFilter;
+
+      VvLookUpLista theDscLuiList = GetDscLuiListForThisTT(faktur_rec.TT, subDsc/*theRptFilter.ChoseObrazac*/);
+
+      if(theDscLuiList == null || VirtualFilterUC == null) return;
+
+      theRptFilter.PFD           = new PrnFakDsc(theDscLuiList);
+      theRptFilter.ChosenObrazac = subDsc;
+
+      VirtualFilterUC.PutFilterFields(theRptFilter);
+   }
+
+   //06.10.2015: 
+   internal List<Ftrans> TheTheFtransList;
+   //29.10.2015: 
+   internal decimal OTS_saldo { get { return TheTheFtransList == null ? 0M : TheTheFtransList.Sum(ftr => ftr.R_DugMinusPot); } }
+
+   #endregion PrnFakDsc Utils
+
+   #region T_serlot
+
+   public void OnSerlotEnter_FillDataSource(object sender, EventArgs e)
+   {
+      // /* temp. For deploy: */ return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+      
+    // 04.02.2021. dodajemo novi RRD koji vrijedi za PIZ i za izlaze - pratimo samo izlaz proizvoda 
+    //if(ZXC.RRD.Dsc_IsSerlotVisible == false                                            ) return;
+    //if(ZXC.RRD.Dsc_IsSerlotVisible == false && ZXC.RRD.Dsc_IsVisibleLotOnIzlaz == false) return;
+      if(ZXC.RRD.Is_Serlot_Active == false) return;
+      
+      DataGridView dgv = null;
+      
+      if(sender is VvTextBoxEditingControl)
+      {
+         VvTextBoxEditingControl vtbec = sender as VvTextBoxEditingControl;
+         dgv = vtbec.EditingControlDataGridView;
+      
+       //ZXC.aim_emsg("row: <{0}> col: <{1}> row: <{2}> col: <{3}>",
+       //   TheG.CurrentCellAddress.Y + 1, TheG.CurrentCellAddress.X + 1,
+       //    dgv.CurrentCellAddress.Y + 1,  dgv.CurrentCellAddress.X + 1);
+      }
+      else return;
+      
+      int rIdx = dgv.CurrentRow.Index;
+      
+      string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rIdx, true);
+
+      // clear 
+      ZXC.luiListaSerlot.Clear(); vvtbT_serlot.JAM_Set_LookUpTable(ZXC.luiListaSerlot, (int)ZXC.Kolona.prva);
+
+      if(artiklCD.IsEmpty() || Fld_SkladCD.IsEmpty()) return;
+      
+      List<ZXC.VvUtilDataPackage> availableSerlots = RtransDao.GetFreeSerlotList_ForArtikl(TheDbConnection, artiklCD, Fld_SkladCD, Fld_DokDate);
+      
+      #region Ako zelimo via AutoComplete
+
+      //var strings = availableSerlots.Select(s => "RGC-" + s.TheName + " : " + s.TheDecimal.ToStringVv() + "kg");
+      
+      //string[] stringArray = strings.ToArray();
+      //
+      //vvtbT_serlot.AutoCompleteCustomSource.Clear();
+      //vvtbT_serlot.AutoCompleteCustomSource.AddRange(stringArray);
+      
+      #endregion Ako zelimo via AutoComplete
+      
+      ZXC.luiListaSerlot.Clear();
+      
+      availableSerlots.ForEach(sl => ZXC.luiListaSerlot.Add(new VvLookUpItem(sl.TheStr1, sl.TheStr2, sl.TheDecimal, false, 0, sl.TheDate, 0, "")));
+
+      vvtbT_serlot.JAM_Set_LookUpTable(ZXC.luiListaSerlot, (int)ZXC.Kolona.prva);
+
+   }
+
+   //public void OnSerlotExit_ClearSuffixAndPreffix(object sender, EventArgs e)
+   //{
+   //   if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+   //   VvTextBoxEditingControl vvTbSerlot = sender as VvTextBoxEditingControl;
+
+   //   string dirtyString = vvTbSerlot.Text, cleanString;
+
+   //   int spaceIdx = dirtyString.IndexOf(' ');
+
+   //   if(dirtyString.Length.IsZero() || spaceIdx.IsNegative()) return;
+
+   // //cleanString = dirtyString.SubstringSafe(0, spaceIdx);
+   //   cleanString = "fakju";
+
+   //   //vvTbKonto.Text = cleanString;
+   //   //TheG.EditingControl.Text = cleanString;
+   //   TheG.PutCell(ci.iT_serlot, vvTbSerlot.EditingControlDataGridView.CurrentRow.Index, cleanString);
+   //}
+
+   #endregion T_serlot
+
+   #region Veza Has ...
+
+   public uint VezaTtNumForTT(string theTT)
+   {
+      if(faktur_rec.V1_tt == theTT) return faktur_rec.V1_ttNum;
+      if(faktur_rec.V2_tt == theTT) return faktur_rec.V2_ttNum;
+      if(faktur_rec.V3_tt == theTT) return faktur_rec.V3_ttNum;
+      if(faktur_rec.V4_tt == theTT) return faktur_rec.V4_ttNum;
+
+      return 0;
+   }
+
+   #endregion Veza Has ...
+
+   #region ORG BOP COP + SVD Grid_CellMouseDoubleClick
+
+   public virtual bool HasOrgBopCop { get { return false; } }
+
+   public void OnExitT_ORG_BOP_COP_Calc_Kol_Cij(object sender, EventArgs e)
+   {
+      if(this.HasOrgBopCop == false) return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      int currRow = TheG.CurrentRow.Index;
+
+      decimal org = TheG.GetDecimalCell(ci.iT_doCijMal, currRow, false);
+      decimal bop = TheG.GetDecimalCell(ci.iT_bop     , currRow, false);
+      decimal cop = TheG.GetDecimalCell(ci.iT_cop     , currRow, false);
+
+      decimal R_kol =             bop * org ;
+      decimal R_cij = ZXC.DivSafe(cop , org);
+
+      TheG.PutCell(ci.iT_kol, currRow, R_kol);
+      TheG.PutCell(ci.iT_cij, currRow, R_cij);
+   }
+
+   private void URA_NRD_SVD_Grid_CellMouseDoubleClick_Open_UGO_DUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      if((this is URA_SVD_DUC) == false && this is NRD_SVD_DUC == false) return;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      if(e.ColumnIndex != ci.iT_utilUint) return;
+
+      uint UGO_TtNum = TheG.GetUint32Cell(ci.iT_utilUint, rowIdx, false);
+
+      if(UGO_TtNum.IsZero()) return;
+
+      Faktur faktur_rec = new Faktur();
+
+      bool fakturOK = ZXC.FakturDao.SetMe_VvDocumentRecord_byTtAndTtNum(TheDbConnection, faktur_rec, Faktur.TT_UGO, UGO_TtNum, false, false);
+
+      if(fakturOK)
+      {
+         ZXC.VvSubModulEnum vvSubModulEnum = FakturDUC.GetVvSubModulEnum_ForTT(Faktur.TT_UGO);
+
+         if(vvSubModulEnum == ZXC.VvSubModulEnum.UNDEF) return;
+
+         TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(TheVvTabPage.TheVvForm.GetSubModulXY(vvSubModulEnum), faktur_rec);
+      }
+   }
+
+   private void ZAH_SVD_Grid_CellMouseDoubleClick_Open_IZD_SVD_DUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      if((this is ZAH_SVD_DUC) == false) return;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      if(e.ColumnIndex != ci.iT_utilUint) return;
+
+      uint IZD_TtNum = TheG.GetUint32Cell(ci.iT_utilUint, rowIdx, false);
+
+      if(IZD_TtNum.IsZero()) return;
+
+      Faktur faktur_rec = new Faktur();
+
+      bool fakturOK = ZXC.FakturDao.SetMe_VvDocumentRecord_byTtAndTtNum(TheDbConnection, faktur_rec, Faktur.TT_IZD, IZD_TtNum, false, false);
+
+      if(fakturOK)
+      {
+         ZXC.VvSubModulEnum vvSubModulEnum = FakturDUC.GetVvSubModulEnum_ForTT(Faktur.TT_IZD);
+
+         if(vvSubModulEnum == ZXC.VvSubModulEnum.UNDEF) return;
+
+         TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(TheVvTabPage.TheVvForm.GetSubModulXY(vvSubModulEnum), faktur_rec);
+      }
+   }
+
+   #endregion ORG BOP COP + SVD Grid_CellMouseDoubleClick
+
+}
+
+public partial class FakturExtDUC : FakturDUC
+{
+   public static List<VvMigrator> GetMigratorList(string theTT)
+   {
+      switch(theTT)
+      {
+         case Faktur.TT_IFA: return ZXC.TheVvForm.VvPref.fakturIRaDUC      .MigratorStates;
+         case Faktur.TT_IRA: return ZXC.TheVvForm.VvPref.fakturIRbDUC      .MigratorStates;
+         case Faktur.TT_UFA: return ZXC.TheVvForm.VvPref.fakturURaDUC      .MigratorStates;
+         case Faktur.TT_UPA: return ZXC.TheVvForm.VvPref.fakturUPaDUC      .MigratorStates;
+         case Faktur.TT_UFM: return ZXC.TheVvForm.VvPref.fakturUFMDUC      .MigratorStates;
+         case Faktur.TT_URA: return ZXC.TheVvForm.VvPref.fakturURbDUC      .MigratorStates;
+         case Faktur.TT_URM: return ZXC.TheVvForm.VvPref.fakturURmDUC      .MigratorStates;
+         case Faktur.TT_PRI: return ZXC.TheVvForm.VvPref.fakturPrimkaDUC   .MigratorStates;
+         case Faktur.TT_KLK: return ZXC.TheVvForm.VvPref.fakturKalkDUC     .MigratorStates;
+         case Faktur.TT_KKM: return ZXC.TheVvForm.VvPref.fakturKKMDUC      .MigratorStates;
+         case Faktur.TT_IZD: return ZXC.TheVvForm.VvPref.fakturIzdatnicaDUC.MigratorStates;
+         case Faktur.TT_IRM: return ZXC.TheVvForm.VvPref.fakturIRMDUC      .MigratorStates;
+         case Faktur.TT_IOD: return ZXC.TheVvForm.VvPref.fakturOdobrKupDUC .MigratorStates;
+         case Faktur.TT_IPV: return ZXC.TheVvForm.VvPref.fakturPovKupDUC   .MigratorStates;
+         case Faktur.TT_UOD: return ZXC.TheVvForm.VvPref.fakturOdobrDobDUC .MigratorStates;
+         case Faktur.TT_UPV: return ZXC.TheVvForm.VvPref.fakturPovDobDUC   .MigratorStates;
+         case Faktur.TT_UPM: return ZXC.TheVvForm.VvPref.fakturPovDobMalDUC.MigratorStates; //koji ca nam ovo k? 
+         case Faktur.TT_OPN: return ZXC.TheVvForm.VvPref.fakturObavPonDUC  .MigratorStates;
+         case Faktur.TT_PON: return ZXC.TheVvForm.VvPref.fakturPonudaDUC   .MigratorStates;
+         case Faktur.TT_PNM: return ZXC.TheVvForm.VvPref.fakturPonMalDUC   .MigratorStates;
+         case Faktur.TT_NRD: return ZXC.TheVvForm.VvPref.fakturNarDobDUC   .MigratorStates;
+         case Faktur.TT_NRM: return ZXC.TheVvForm.VvPref.fakturNRMDUC      .MigratorStates;
+         case Faktur.TT_NRU: return ZXC.TheVvForm.VvPref.fakturNarDobUvDUC .MigratorStates;
+         case Faktur.TT_NRS: return ZXC.TheVvForm.VvPref.fakturNarDobUslDUC.MigratorStates;
+         case Faktur.TT_NRK: return ZXC.TheVvForm.VvPref.fakturNarKupDUC   .MigratorStates;
+         case Faktur.TT_RVI: return ZXC.TheVvForm.VvPref.fakturReversDUC   .MigratorStates;
+         case Faktur.TT_RVU: return ZXC.TheVvForm.VvPref.fakturPovRevDUC   .MigratorStates;
+         case Faktur.TT_UPL: return ZXC.TheVvForm.VvPref.fakturBlgUplDUC   .MigratorStates;
+         case Faktur.TT_ISP: return ZXC.TheVvForm.VvPref.fakturBlgIspDUC   .MigratorStates;
+         case Faktur.TT_BUP: return ZXC.TheVvForm.VvPref.fakturBlgUplMDUC  .MigratorStates;
+         case Faktur.TT_BIS: return ZXC.TheVvForm.VvPref.fakturBlgIspMDUC  .MigratorStates;
+         case Faktur.TT_RNP: return ZXC.TheVvForm.VvPref.fakturRNpDUC      .MigratorStates;
+         case Faktur.TT_RNM: return ZXC.TheVvForm.VvPref.fakturRNmDUC      .MigratorStates;
+         case Faktur.TT_RNS: return ZXC.TheVvForm.VvPref.fakturRNsDUC      .MigratorStates;
+         case Faktur.TT_RNZ: return ZXC.TheVvForm.VvPref.fakturRNzDUC      .MigratorStates;
+         case Faktur.TT_PRJ: return ZXC.TheVvForm.VvPref.fakturPRjDUC      .MigratorStates;
+         case Faktur.TT_KIZ: return ZXC.TheVvForm.VvPref.fakturKIZDUC      .MigratorStates;
+         case Faktur.TT_CJK: return ZXC.TheVvForm.VvPref.fakturCjKupcaDUC  .MigratorStates;
+
+         default: throw new Exception("Za TT " + theTT + " nedefiniran MigratorList u FakturExtDUC.GetMigratorList()");
+      }
+   }
+
+   #region PutAllKupdobFields
+
+   /*protected*/ public void AnyKupdobTextBoxLeave(object sender, EventArgs e)
+   {
+      if(isPopulatingSifrar) return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      TextBox tb = sender as TextBox;
+      Kupdob  kupdob_rec;
+
+      if(tb.Text == this.originalText) return;
+
+      //----------------------------------------------------
+
+      this.originalText = tb.Text;
+
+      // 8.6.2011: SetSifrarAndAutocomplete<Artikl> zjebe kupdobSifrar u PutDgvFields (Artikl treba za TS na gridu)
+      if(ZXC.RISK_CopyToOtherDUC_inProgress      ) OnVvTBEnter_SetAutocmplt_Kupdob_sorterName(tbx_KupdobName, EventArgs.Empty);
+
+      kupdob_rec = KupdobSifrar.Find(FoundInSifrar<Kupdob>);
+
+      ClearAllKupdobFields();
+
+      if(kupdob_rec != null)
+      {
+         PutAllKupdobFields(kupdob_rec);
+      }
+
+      // 27.12.2013: 
+      if(ZXC.GOST_SOBA_BOR_SetOtherData_InProgress == false)
+      {
+         OnExit_GOST_SOBA_BOR_SetOtherData(sender, e);
+      }
+
+      #region Check Kupdob OTS
+
+    //if(kupdob_rec != null && faktur_rec.TT == Faktur.TT_IRA && (ZXC.VvDeploymentSite == ZXC.VektorSiteEnum.TEMBO || ZXC.CURR_prjkt_rec.Ticker.StartsWith("TEMBO")))
+      if(kupdob_rec != null && faktur_rec.TT == Faktur.TT_IRA && ZXC.RRD.Dsc_IsCheckOpenSaldo)
+      {
+         // 22.01.2015: 'OPREZ' & 'PAZITI' tembo 
+         if(kupdob_rec.Napom1  .ToUpper().Contains("OPREZ") || kupdob_rec.Napom1  .ToUpper().Contains("PAZITI")) ZXC.aim_emsg(MessageBoxIcon.Warning, kupdob_rec.Napom1  );
+         if(kupdob_rec.Napom2  .ToUpper().Contains("OPREZ") || kupdob_rec.Napom2  .ToUpper().Contains("PAZITI")) ZXC.aim_emsg(MessageBoxIcon.Warning, kupdob_rec.Napom2  );
+         if(kupdob_rec.Komentar.ToUpper().Contains("OPREZ") || kupdob_rec.Komentar.ToUpper().Contains("PAZITI")) ZXC.aim_emsg(MessageBoxIcon.Warning, kupdob_rec.Komentar);
+
+         // 04.12.2015: 'PRESTAO SA RADOM' tembo 
+         if(kupdob_rec.Napom1  .ToUpper().Contains("PRESTAO") || 
+            kupdob_rec.Napom2  .ToUpper().Contains("PRESTAO") || 
+            kupdob_rec.Komentar.ToUpper().Contains("PRESTAO"))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Partner je oznacen kao 'Prestao sa radom'!\n\nFakturiranje je onemogućeno.");
+            ClearAllKupdobFields();
+         }
+
+         decimal saldoOTS;
+         string theKonto = (this as FakturExtDUC).Fld_Konto;
+         if(theKonto.IsEmpty()) { /*KtoShemaDsc KSD = new KtoShemaDsc(ZXC.dscLuiLst_KtoShema);*/ theKonto = ZXC.KSD.Dsc_RKto_Kupca; }
+
+         List<Ftrans> theFtransList = NalogDao.GetOTS_FtransByTipBrSortedList(TheDbConnection, theKonto, kupdob_rec.KupdobCD, (this as FakturExtDUC).Fld_DokDate);
+
+         saldoOTS = theFtransList.Sum(ftr => ftr.T_dug) - theFtransList.Sum(ftr => ftr.T_pot);
+         bool isOtsDospOnly = true; // ! 
+
+         if(saldoOTS.NotZero())
+         {
+            List<Ftrans> ftransesToRemoveList = null;
+
+            if(isOtsDospOnly) ftransesToRemoveList = new List<Ftrans>();
+
+            foreach(Ftrans ftrans_rec in theFtransList)
+            {
+               NalogDao.SetOtsInfo_IOS(ftrans_rec, ""/*kontraKontoSet*/, theFtransList, /*dateOTS*/faktur_rec.DokDate);
+
+               // 26.4.2011: remarkirano jer kada je karticna kuca onda ufa ide na 1200, ... za sada nemozemo razlikovati korektno od greske, pa necemo javljati poruke upozorenja do daljnjega... 
+               //CheckFtrans_Ots(ftrans_rec, isOtsKupaca);
+
+               // Remove nedospjele 
+               if(isOtsDospOnly && ftrans_rec.OtsZakas.IsNegative()) ftransesToRemoveList.Add(ftrans_rec);
+            }
+
+            if(isOtsDospOnly)
+            {
+               foreach(Ftrans ftransToRemove in ftransesToRemoveList)
+               {
+                  theFtransList.Remove(ftransToRemove);
+               }
+            }
+
+            saldoOTS = theFtransList.Sum(ftr => ftr.T_dug) - theFtransList.Sum(ftr => ftr.T_pot);
+
+            // 18.05.2020: aim_emsg opkoljen if()-om 
+            if(saldoOTS.NotZero())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Information, "Trenutni dug partnera: {0}", saldoOTS.ToStringVv());
+               tbx_DokDate.Visible = true; // tbx nestaje bez ovoga?! 
+            }
+         }
+
+      } // if(kupdob_rec != null && faktur_rec.TT == Faktur.TT_IRA && ZXC.RRD.Dsc_IsCheckOpenSaldo) 
+
+      #endregion Check Kupdob OTS
+
+   }
+
+   private void PutAllKupdobFields_From_ROOT_prjkt_rec()
+   {
+      PutAllKupdobFields(ZXC.ROOT_prjkt_rec);
+   }
+
+   /*private*/ internal void PutAllKupdobFields(Kupdob _kupdob_rec)
+   {
+      #region Classic & Poslovna Jedinica operations 
+
+      if(_kupdob_rec.CentrID.NotZero()) // kupdob_rec je, znaci, Poslovna Jedinica! 
+      {
+         Kupdob kupdobCentrala_rec = KupdobSifrar.SingleOrDefault(kpdb => kpdb.KupdobCD == _kupdob_rec.CentrID);
+
+         if(kupdobCentrala_rec == null)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Nema CENTRALE (KCD: [{0}])!", _kupdob_rec.CentrID);
+            
+            PutCentralaKupdobFields(_kupdob_rec);
+         }
+         else
+         {
+            PutCentralaKupdobFields(kupdobCentrala_rec);
+            PutPosJedinKupdobFields(_kupdob_rec);
+         }
+      } // artikl_rec je, znaci, Poslovna Jedinica! 
+      else // Classic KupDob 
+      {
+         PutCentralaKupdobFields(_kupdob_rec);
+
+         // 08.03.2013:
+         if(ZXC.LoadPoprat_InProgress == false || _kupdob_rec.KupdobCD.IsNegative()) // ako je negative znaci da smo pozvani od ClearKupdobFields 
+         {
+            VvHamper.ClearFieldContents(hamp_posJedCd);
+
+            PutPosJedinKupdobFields(_kupdob_rec);
+         }
+      }
+
+      #endregion Classic & Poslovna Jedinica operations
+
+      #region Putnik 06.11.2013.
+
+      if(_kupdob_rec.PutnikID.NotZero()) faktur_rec.PersonCD   = Fld_PersonCD   = _kupdob_rec.PutnikID;
+      if(_kupdob_rec.PutName.NotEmpty()) faktur_rec.PersonName = Fld_PersonName = _kupdob_rec.PutName;
+
+      #endregion Putnik
+
+      #region EU VAT Code Action
+
+      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && faktur_rec.TtInfo.IsUlazniPdvTT)
+      {
+         Fld_PdvKnjiga  = ZXC.PdvKnjigaEnum .NIJEDNA;
+         Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.EU;
+         Fld_PdvR12     = ZXC.PdvR12Enum    .R1;
+      }
+
+      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && faktur_rec.TtInfo.IsIzlazniPdvTT)
+      {
+         Fld_PdvKnjiga  = ZXC.PdvKnjigaEnum .REDOVNA;
+         Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.EU;
+         Fld_PdvR12     = ZXC.PdvR12Enum    .R1;
+      }
+
+      #endregion EU VAT Code Action
+
+      #region RNZ - radni nalog zastitara (ugovor i nacin sticenja)
+
+      if(this is RNZDUC) // ugovor + nacin zastite 
+      {
+         Mixer  prevRNZmixer_rec       = new Mixer();
+         bool   prevRNZmixer_rec_found = MixerDao.SetMeLast_MixerUgovor_ByKupdobCD(TheDbConnection, prevRNZmixer_rec, Fld_KupdobCd, true);
+         if(prevRNZmixer_rec_found)
+         {
+            Fld_VezniDok2 = prevRNZmixer_rec.StrF_64;
+            Fld_Fco       = prevRNZmixer_rec.StrH_32;
+         }
+         else
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Greška!\n\nZa partnera [{0}]\n\nnema ugovora.", _kupdob_rec.ToString());
+
+            Fld_VezniDok2 = 
+            Fld_Fco       = "";
+            tbx_DokDate.Visible = true;
+         }
+      }
+
+      #endregion RNZ - radni nalog zastitara (ugovor i nacin sticenja)
+
+      #region KUPDOB NOT IN PDV 17.12.2019
+
+      if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.NOT_IN_PDV && faktur_rec.TtInfo.IsUlazniPdvTT)
+      {
+         Fld_PdvKnjiga = ZXC.PdvKnjigaEnum.NIJEDNA;
+         Fld_PdvR12    = ZXC.PdvR12Enum   .NIJEDNO;
+      }
+
+      // 30.03.2021: poboljsavamo logiku Fld_PdvKnjiga
+      // ALI ODUSTAJEMO 
+    //if(_kupdob_rec.IsHRVATSKA && faktur_rec.TtInfo.IsUlazniPdvTT)
+    //{
+    //   //Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
+    //
+    //   // Fld_PdvKnjiga: 
+    //   if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.PODUZECE_R1 ||
+    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL ||
+    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R1     ||
+    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2      )
+    //   {
+    //      Fld_PdvKnjiga = ZXC.PdvKnjigaEnum.REDOVNA;
+    //   }
+    //
+    //   // Fld_PdvR12: 
+    //   if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.PODUZECE_R1 ||
+    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R1      )
+    //   {
+    //      Fld_PdvR12 = ZXC.PdvR12Enum.R1;
+    //   }
+    //   else if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL ||
+    //           _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2      )
+    //   {
+    //      Fld_PdvR12 = ZXC.PdvR12Enum.R2;
+    //   }
+    //
+    //}
+
+      #endregion KUPDOB NOT IN PDV 17.12.2019
+
+      #region KOMISIJA
+
+      if((this is KIZDUC || this is PIKDUC || this is IRADUC) && _kupdob_rec.KupdobCD.IsPositive()) // ako nije positive znaci da smo pozvani od ClearKupdobFields 
+      {
+         if(_kupdob_rec.Komisija == ZXC.KomisijaKindEnum.NIJE)
+         {
+            if(this is KIZDUC || this is PIKDUC)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Partner [{0}]\n\nNIJE označen kao KOMISIJA u Adresaru Partnera!", _kupdob_rec.ToString());
+            }
+            tbx_DokDate.Visible = true;
+            return; // !!! 
+         }
+
+         // ako smo dosli do ovdje, znaci, partner JE komisija
+         VvLookUpItem theLui = ZXC.luiListaSkladista.SingleOrDefault(lui => lui.Cd == _kupdob_rec.Ticker);
+
+         if(theLui == null)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu naći skladište [{0}] vezano na ovoga Partnera [{1}]!", _kupdob_rec.Ticker, _kupdob_rec.ToString());
+            tbx_DokDate.Visible = true;
+            return;
+         }
+
+         // so far, so good ... 
+
+         if(this is KIZDUC) // Izdatnica U Komisiju 
+         {
+            Fld_SkladCD2   = theLui.Cd;
+            Fld_Sklad2Opis = theLui.Name;
+            Fld_SkladBR2   = (uint)theLui.Integer;
+         }
+         else // PIKDUC // Povrat Iz Komisije ili IRA iz komisije 
+         {
+            Fld_SkladCD   = theLui.Cd;
+            Fld_SkladOpis = theLui.Name;
+            Fld_SkladBR   = (uint)theLui.Integer;
+         }
+         this.oldSkladCD  = "";
+         this.oldSkladCD2 = "";
+         OnExitSkladCD_SetTtNum_And_ValidateSkladCD(tbx_SkladCd, new CancelEventArgs());
+      }
+
+      #endregion KOMISIJA
+
+      // !!! PAZI !!! 
+      // #region KOMISIJA mora biti zadnja stvar u metodi jer sadrzi return-ove, 
+      // pa se tako onda eventualno niza logika nece dogoditi
+      // ... 
+   }
+
+   private void PutPosJedinKupdobFields(Kupdob _kupdob_rec)
+   {
+      // 29.6.2011: 
+      //Fld_PosJedCd     = _kupdob_rec.KupdobCD;
+      //Fld_PosJedTk     = _kupdob_rec.Ticker;
+      //Fld_PosJedName   = _kupdob_rec.Naziv;
+
+      //Fld_PosJedUlica  = _kupdob_rec.Ulica2;
+      //Fld_PosJedZip    = _kupdob_rec.PostaBr;
+      //Fld_PosJedMjesto = _kupdob_rec.Grad;
+      
+      faktur_rec.PosJedCD     = Fld_PosJedCd     = _kupdob_rec.KupdobCD;
+      faktur_rec.PosJedTK     = Fld_PosJedTk     = _kupdob_rec.Ticker;
+      faktur_rec.PosJedName   = Fld_PosJedName   = _kupdob_rec.Naziv;
+      faktur_rec.PosJedUlica  = Fld_PosJedUlica  = _kupdob_rec.Ulica2;
+      faktur_rec.PosJedZip    = Fld_PosJedZip    = _kupdob_rec.PostaBr;
+      faktur_rec.PosJedMjesto = Fld_PosJedMjesto = _kupdob_rec.Grad;
+      
+      Fld_PosJedAdresa = Faktur.GetAdresa(Fld_PosJedUlica, Fld_PosJedZip, Fld_PosJedMjesto);
+
+   }
+
+   private void PutCentralaKupdobFields(Kupdob kupdob_rec)
+   {
+      Fld_KupdobCd     = kupdob_rec.KupdobCD;
+      Fld_KupdobTk     = kupdob_rec.Ticker;
+      Fld_KupdobName   = kupdob_rec.Naziv;
+      Fld_KdOib        = kupdob_rec.Oib;
+      Fld_VatCntryCode = kupdob_rec.VatCntryCode;
+
+      //mixer_rec.KdUlica  = artikl_rec.Ulica2;
+      //mixer_rec.KdZip    = artikl_rec.PostaBr;
+      //mixer_rec.KdMjesto = artikl_rec.Grad;
+      Fld_KupdobUlica  = kupdob_rec.Ulica2;
+      Fld_KupdobZip    = kupdob_rec.PostaBr;
+      Fld_KupdobMjesto = kupdob_rec.Grad;
+
+      //Fld_KdAdresa = Faktur.GetAdresa(mixer_rec.KdUlica, mixer_rec.KdZip, mixer_rec.KdMjesto);
+      Fld_KdAdresa = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto);
+
+      // 14.09.2011: ova tri su stavljena u 'if' 
+      if(ZXC.RISK_CopyToOtherDUC_inProgress == false)
+      {
+         Fld_RokPlac  = kupdob_rec.ValutaPl;
+
+         //ptg 01.10.2021.
+         //                                    Fld_DospDate = Fld_DokDate + new TimeSpan(Fld_RokPlac, 0, 0, 0);
+         if(this is UGNorAUN_PTG_DUC == false) Fld_DospDate = Fld_DokDate + new TimeSpan(Fld_RokPlac, 0, 0, 0);
+
+         Fld_DevName  = kupdob_rec.DevName;
+      }
+
+      if(Fld_DevNameAsEnum != ZXC.ValutaNameEnum.EMPTY &&
+         Fld_DevNameAsEnum != ZXC.ValutaNameEnum.HRK)
+      {
+         // jer ako je RecID 0, onda znaci da smo dosli iz 'ClearAllKupdobFields()', tj. ovdje se kod kopiraj dolazi davput (prvo clear, onda put) pa se ovo toggla 2 puta pa je to dreku pljuska... 
+         if(kupdob_rec.RecID.NotZero())
+            TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
+      }
+
+      #region ZiroRnList
+
+      //if(ZXC.TtInfo(Fld_TT).IsFinKol_I) FillZiroList(Fld_TT, ZXC.CURR_prjkt_rec);
+      //else                              FillZiroList(Fld_TT, artikl_rec);  
+
+
+      if(Fld_TT == Faktur.TT_IFA ||   Fld_TT == Faktur.TT_IRA ||
+       /*Fld_TT == Faktur.TT_STI ||*/ Fld_TT == Faktur.TT_IOD ||
+         Fld_TT == Faktur.TT_IPV)
+      {
+
+         Kupdob.FillLookUpItemZiroList(ZXC.CURR_prjkt_rec);
+
+       //27.05.2013.IBAN
+       //Fld_ZiroRn = ZXC.CURR_prjkt_rec.Ziro1;
+         Fld_ZiroRn = ZXC.GetIBANfromOldZiro(ZXC.CURR_prjkt_rec.Ziro1);
+      }
+      else if(Fld_TT == Faktur.TT_UFA || Fld_TT == Faktur.TT_UFM || Fld_TT == Faktur.TT_URA ||
+       /*Fld_TT == Faktur.TT_STU ||*/    Fld_TT == Faktur.TT_UOD ||
+         Fld_TT == Faktur.TT_UPV || Fld_TT == Faktur.TT_UPM)
+      {
+         Kupdob.FillLookUpItemZiroList(kupdob_rec);
+
+       //27.05.2013.IBAN
+       //Fld_ZiroRn = kupdob_rec.Ziro1;
+         Fld_ZiroRn = ZXC.GetIBANfromOldZiro(kupdob_rec.Ziro1);
+
+      }
+
+      #endregion ZiroRnList
+
+      #region Konto
+
+      if(Fld_TT == Faktur.TT_IFA ||   Fld_TT == Faktur.TT_IRA ||
+       /*Fld_TT == Faktur.TT_STI ||*/ Fld_TT == Faktur.TT_IOD ||
+         Fld_TT == Faktur.TT_IPV)
+      {
+         if(kupdob_rec.KontoPot.NotEmpty()) Fld_Konto = kupdob_rec.KontoPot;
+      }
+      else if(Fld_TT == Faktur.TT_UFA ||   Fld_TT == Faktur.TT_UFM || Fld_TT == Faktur.TT_URA ||
+            /*Fld_TT == Faktur.TT_STU ||*/ Fld_TT == Faktur.TT_UOD ||
+              Fld_TT == Faktur.TT_UPV ||   Fld_TT == Faktur.TT_UPM)
+      {
+         if(kupdob_rec.KontoDug.NotEmpty()) Fld_Konto = kupdob_rec.KontoDug;
+      }
+
+      else if(Fld_TT == Faktur.TT_UPA)
+      {
+         if(kupdob_rec.KontoDug.NotEmpty()) Fld_Konto = kupdob_rec.KontoDug; // upaTODO: !!!!!! 
+      }
+
+      #endregion Konto
+
+      #region PCTOGO UGAN
+      if(Fld_TT == Faktur.TT_KUG)
+      {
+         (this as KUG_PTG_DUC).PTG_DanFakturiranjaString = kupdob_rec.Fuse1;
+      }
+
+      if(Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN )
+      {
+         (this as UGNorAUN_PTG_DUC).Fld_somePercent        = kupdob_rec.StRbt1;
+         (this as UGNorAUN_PTG_DUC).Fld_NapFromPartner_PTG = kupdob_rec.Napom1; //??? mozda je premala
+
+         if(Fld_TT == Faktur.TT_UGN)
+         {
+            (this as UGNorAUN_PTG_DUC).Fld_PTG_DanFakturiranjaString = kupdob_rec.Fuse1.NotEmpty() ? kupdob_rec.Fuse1 : ZXC.PTG_DanFakturiranjaEnum.PrviDanMjeseca.ToString();
+            (this as UGNorAUN_PTG_DUC).Fld_PTG_DanFakturiranjaOpis   = ZXC.luiListaPTG_DanZaFaktur.GetNameForThisCd((this as UGNorAUN_PTG_DUC).Fld_PTG_DanFakturiranjaString);
+         }
+      }
+      
+      #endregion PCTOGO UGAN
+
+
+      // 29.1.2011: 
+      if(kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 &&
+         faktur_rec.TtInfo.IsUlazniPdvTT)
+      {
+         Fld_PdvR12 = ZXC.PdvR12Enum.R2;
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje: prema adresaru partnera, PDV Rtip za ovog dobavljača je R2.");
+      }
+   }
+
+   private void ClearAllKupdobFields()
+   {
+      PutAllKupdobFields(new Kupdob(0));
+
+      if(this is RNZDUC) // ugovor + nacin zastite 
+      {
+         Fld_VezniDok2 = 
+         Fld_Fco       = "";
+      }
+
+   }
+
+   #endregion PutAllKupdobFields
+
+   private void AnyArtiklTextBox_OnZaglavlje_Leave(object sender, EventArgs e)
+   {
+      if(isPopulatingSifrar) return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      TextBox tb = sender as TextBox;
+      Artikl  artikl_rec;
+
+      if(tb.Text != this.originalText)
+      {
+         this.originalText = tb.Text;
+
+         artikl_rec = ArtiklSifrar.Find(FoundInSifrar<Artikl>);
+
+         if(artikl_rec != null && tb.Text != "")
+         {
+            Fld_PrjArtCD   = artikl_rec.ArtiklCD;
+            Fld_PrjArtName = artikl_rec.ArtiklName;
+            if(this is NORDUC)
+            {
+               Fld_PrjArtOP   = artikl_rec.R_orgPak;
+               Fld_PrjArtOpJM = artikl_rec.R_orgPakJM;
+            }
+         }
+         else if(this.sifrarSorterType == VvSQL.SorterType.Name && tb.Text != "") // ako smo dosli iz naziva, a artikl_rec je null, to je onda 'qwe' pattern (ne postoji kao sifrar) 
+         {
+            //Fld_PrjArtName = tb.Text;
+            Fld_PrjArtCD = "";
+         }
+         else
+         {
+            Fld_PrjArtCD = Fld_PrjArtName = "";
+         }
+      }
+   }
+
+   public void Link_ExternDokument_Click(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None ||
+         TheVvTabPage.WriteMode == ZXC.WriteMode.Delete ||
+         this.Visible == false) return;
+
+      #region fieldz
+
+      Button btn = sender as Button;
+      int linkId = ZXC.ValOrZero_Int(btn.Tag.ToString()); if(linkId != 1 && linkId != 2) throw new Exception("Link_ExternDokument_Click: linkId unknown! (" + linkId.ToString() + ")");
+
+      string thisDocumentID = faktur_rec.TipBr;
+
+      #endregion fieldz
+
+      #region FileDialog
+
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+
+      switch(linkId)
+      {
+         case 1: openFileDialog.InitialDirectory = ZXC.TheVvForm.VvPref.eksternLinks1.DirectoryName; break;
+         case 2: openFileDialog.InitialDirectory = ZXC.TheVvForm.VvPref.eksternLinks2.DirectoryName; break;
+      }
+
+      // volia 
+      Clipboard.SetText(thisDocumentID); // !!! 
+
+      //openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+      //openFileDialog.Filter = "(*" + thisDocumentID + "*)|" + "*" + thisDocumentID + "*" + "|All files (*.*)|*.*";
+      openFileDialog.Filter = "Datoteke " + thisDocumentID + "|" + "*" + thisDocumentID + "*" + "|Sve datoteke (*.*)|*.*";
+      openFileDialog.FilterIndex = 1;
+      openFileDialog.RestoreDirectory = true;
+
+
+      #endregion FileDialog
+      
+      if(openFileDialog.ShowDialog() == DialogResult.OK)
+      {
+         string fullPathName = openFileDialog.FileName;
+         DirectoryInfo dInfo = new DirectoryInfo(fullPathName);
+
+         string fileName = dInfo.Name;
+         string directoryName = fullPathName.Substring(0, fullPathName.Length - (fileName.Length + 1));
+         
+         switch(linkId)
+         {
+            case 1: ZXC.TheVvForm.VvPref.eksternLinks1.DirectoryName = directoryName; Fld_externLink1 = fullPathName; break;
+            case 2: ZXC.TheVvForm.VvPref.eksternLinks2.DirectoryName = directoryName; Fld_externLink2 = fullPathName; break;
+         }
+      }
+
+      openFileDialog.Dispose();
+   }
+
+   public void Show_ExternDokument_Click(object sender, EventArgs e)
+   {
+      #region fieldz
+
+      Button btn = sender as Button;
+      int linkId = ZXC.ValOrZero_Int(btn.Tag.ToString()); if(linkId != 1 && linkId != 2) throw new Exception("Link_ExternDokument_Click: linkId unknown! (" + linkId.ToString() + ")");
+
+      string fullPathFileName = "";
+
+      #endregion fieldz
+
+      switch(linkId)
+      {
+         case 1: fullPathFileName = Fld_externLink1; break;
+         case 2: fullPathFileName = Fld_externLink2; break;
+      }
+
+      if(fullPathFileName.IsEmpty()) return;
+
+      // here we go 
+      try
+      {
+         System.Diagnostics.Process.Start(fullPathFileName);
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, ex.Message);
+      }
+   }
+
+   private void OnExitOIB_SaveToKupdob(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+    //TextBox tb = sender as TextBox;
+      Kupdob  kupdob_rec;
+
+    //kupdob_rec = KupdobSifrar.Find(FoundInSifrar<Kupdob>);
+      kupdob_rec = Get_Kupdob_FromVvUcSifrar(Fld_KupdobCd);
+
+    //bool notEmpty   = Fld_KdOib.NotEmpty()        || Fld_VatCntryCode.NotEmpty()                ;
+      bool hasChanges = Fld_KdOib != kupdob_rec.Oib || Fld_VatCntryCode != kupdob_rec.VatCntryCode;
+
+    //if(kupdob_rec != null && tb.Text.NotEmpty() && tb.Text != kupdob_rec.Oib)
+      if(kupdob_rec != null && hasChanges                                     )
+      {
+         DialogResult result = MessageBox.Show("Da li zelite usnimiti VATc / OIB na ovoga partnera?",
+            "Potvrdite novi VATc / OIB?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+         if(result != DialogResult.Yes) return;
+
+         // here we go 
+         RwtrecKupdob_SaveOIB(kupdob_rec, /*tb.Text*/Fld_KdOib, Fld_VatCntryCode);
+      }
+   }
+
+   private void RwtrecKupdob_SaveOIB(Kupdob kupdob_rec, string newOIB, string newVatCntryCode)
+   {
+      TheVvTabPage.TheVvForm.BeginEdit(kupdob_rec);
+
+      kupdob_rec.Oib          = newOIB;
+      kupdob_rec.VatCntryCode = newVatCntryCode;
+
+      kupdob_rec.VvDao.RWTREC(TheDbConnection, kupdob_rec, false, true);
+
+      TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
+   }
+
+   public override bool IsSomeCrutialFieldIrregularyChanged()
+   {
+      if(faktur_rec.IsFiskalDutyFaktur_ONLINE == false) return false;
+
+//if(faktur_rec.IsAlreadyFiskalized == false) return false;
+      
+      FaktEx fx = faktur_rec.TheEx;
+
+      if(faktur_rec.CurrentData._dokDate != faktur_rec.BackupData._dokDate) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena datuma nakon fiskalizacije!"  ); return true; }
+      if(faktur_rec.CurrentData._dokNum  != faktur_rec.BackupData._dokNum)  { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena broja rn nakon fiskalizacije!"); return true; }
+      if(faktur_rec.CurrentData._skladCD != faktur_rec.BackupData._skladCD) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena opp-a nakon fiskalizacije!"   ); return true; }
+
+      if(fx.CurrentData._s_ukKCRP != fx.BackupData._s_ukKCRP) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa nakon fiskalizacije!"); return true; }
+
+      // 10.11.2015: 
+    //if(fx.CurrentData._nacPlac    != fx.BackupData._nacPlac         ) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena nacina placanja nakon fiskalizacije!"); return true; }
+      if(faktur_rec.FiskNacPlacEnum != faktur_rec.FiskNacPlac_BKP_Enum) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena nacina placanja nakon fiskalizacije!"); return true; }
+
+      if(fx.CurrentData._s_ukPdv25m != fx.BackupData._s_ukPdv25m) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+      if(fx.CurrentData._s_ukPdv23m != fx.BackupData._s_ukPdv23m) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+      if(fx.CurrentData._s_ukPdv22m != fx.BackupData._s_ukPdv22m) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+      if(fx.CurrentData._s_ukPdv10m != fx.BackupData._s_ukPdv10m) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+
+  //if(fx.CurrentData._s_ukOsn08 + fx.CurrentData._s_ukOsn09 + fx.CurrentData._s_ukOsn10 + fx.CurrentData._s_ukOsn11
+  //   !=
+  //   fx.BackupData._s_ukOsn08  + fx.BackupData._s_ukOsn09  + fx.BackupData._s_ukOsn10  + fx.BackupData._s_ukOsn11) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+    if(fx.CurrentData._s_ukOsn08 + fx.CurrentData._s_ukOsn09 + fx.CurrentData._s_ukOsn10 + fx.CurrentData._s_ukOsn11 + fx.CurrentData._s_ukOsn0
+       !=
+       fx.BackupData._s_ukOsn08  + fx.BackupData._s_ukOsn09  + fx.BackupData._s_ukOsn10  + fx.BackupData._s_ukOsn11  + fx.BackupData._s_ukOsn0) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+      
+      if(fx.CurrentData._s_ukOsn07  != fx.BackupData._s_ukOsn07 ) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa pdv-a nakon fiskalizacije!"); return true; }
+
+      return false;
+   }
+ 
+   public void OnExitCijenaSpopustom(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvTextBoxEditingControl vvTb_cijSaPop = sender as VvTextBoxEditingControl;
+
+      int rIdx = TheG.CurrentCell.RowIndex;
+      int cIdx = TheG.CurrentCell.ColumnIndex;
+
+      decimal ppmvIzn        = TheG.GetDecimalCell(ci.iT_ppmvIzn , rIdx, false);
+      decimal wantedCijSaPop = TheG.GetDecimalCell(ci.iT_cij_kcrp, rIdx, false);
+
+      if(Fld_IsViaRabat == false)
+      {
+         decimal rabatSt1       = TheG.GetDecimalCell(ci.iT_rbt1St  , rIdx, false);
+         decimal new_t_cij      = ZXC.DivSafe((100M * wantedCijSaPop), (100M - rabatSt1));
+         TheG.PutCell(ci.iT_cij, rIdx, new_t_cij.Ron(4) - ppmvIzn);
+      }
+      else
+      {
+         decimal t_cij     = TheG.GetDecimalCell(ci.iT_cij, rIdx, false);
+         decimal newRbtSt1 = ZXC.VvGet_rbtSt_100to90(t_cij, wantedCijSaPop - ppmvIzn); // !!! ovo ne radi ako je i ppmv u pitanju, te ako novi ppmv bude veci (umjetno povecava ciljanu MPC)
+         TheG.PutCell(ci.iT_rbt1St, rIdx, newRbtSt1);
+      }
+   }
+  
+}
+
+public class NewRecordEventArgs : EventArgs // Fuse, ali primjer kako inheritirati EventArgs te ga koristiti kao additional info u nekom EventHandler-u 
+{
+   public VvDataRecord VvDataRecord          { get; set; }
+   public VvRecordUC   RecordUC              { get; set; }
+   public bool         IsCopyingToAnotherDUC { get; set; }
+
+   public NewRecordEventArgs(VvDataRecord _vvDataRecord, VvRecordUC _recordUC, bool _isCopyingToAnotherDUC)
+   {
+      this.VvDataRecord          = _vvDataRecord;
+      this.RecordUC              = _recordUC;
+      this.IsCopyingToAnotherDUC = _isCopyingToAnotherDUC;
+   }
+}
+
+public class PrnFakDsc : VvLookupAsDsc
+{
+   #region DataLayer Propertiz
+
+   public string  Dsc_AdresaLeftRight      { get; set; }
+   public string  Dsc_RptOrientation       { get; set; } 
+   public bool    Dsc_VertikalLine         { get; set; } 
+   public bool    Dsc_TableBorder          { get; set; } // TableHeaderColor
+   public bool    Dsc_TekstualIznos        { get; set; }
+   public bool    Dsc_HorizontalLine       { get; set; }
+   public bool    Dsc_RazmakRows           { get; set; }
+
+   public string  Dsc_Title                { get; set; }
+
+   
+   
+   // 10.11.2020: nije se pamtio kao uint jer: 1. nije bio dodan 'theUinteger' u doticnoj tablici                        
+   //                                          2. lista nije bila dodana u eksplicitno navođenje korisnika theUinteger-a 
+   //                                             u VvDaoBase.ThisLuiList_DoesntNeed_ExtraData(string luiListTitle);     
+ //public uint    Dsc_PnbM                 { get; set; } 
+   public int     Dsc_PnbM                 { get; set; }
+
+
+
+   public string  Dsc_Separ1_Rn            { get; set; } 
+   public string  Dsc_Separ1_Pn            { get; set; }
+   public uint    Dsc_Prefix1              { get; set; } //brisat FUSE
+   public string  Dsc_Prefix1Rn            { get; set; } 
+   public string  Dsc_Separ2_Rn            { get; set; } 
+   public string  Dsc_Separ2_Pn            { get; set; } 
+   public uint    Dsc_Prefix2              { get; set; } //brisat FUSE
+   public string  Dsc_Prefix2Rn            { get; set; } 
+   public bool    Dsc_IsAddTtNum           { get; set; } 
+   public string  Dsc_SeparIfTtNum_Rn      { get; set; } 
+   public string  Dsc_SeparIfTtNum_Pn      { get; set; } 
+   public bool    Dsc_IsAddYear            { get; set; } 
+   public string  Dsc_SeparIfYear_Rn       { get; set; } 
+   public string  Dsc_SeparIfYear_Pn       { get; set; } 
+   public bool    Dsc_IsAddKupDobCd        { get; set; } 
+   public string  Dsc_SeparIfKDcd_Rn       { get; set; } 
+   public string  Dsc_SeparIfKDcd_Pn       { get; set; } 
+   public bool    Dsc_IsAddTT              { get; set; }
+   public string  Dsc_SeparIfTT_Rn         { get; set; } 
+   public uint    Dsc_PrefixIR1Pb          { get; set; } 
+   public uint    Dsc_PrefixIR2Pb          { get; set; } //brisat FUSE
+   public string  Dsc_PrefixIR2PbTx        { get; set; } 
+   public bool    Dsc_IsAddTtNum_Pb        { get; set; } 
+   public bool    Dsc_IsAddYear_Pb         { get; set; } 
+   public bool    Dsc_IsAddKupDobCd_Pb     { get; set; } 
+
+   public string  Dsc_LblPrjktPerson      { get; set; } 
+   public string  Dsc_LblUserPerson       { get; set; } 
+   public string  Dsc_LblOsobaA           { get; set; } 
+   public string  Dsc_LblOsobaB           { get; set; } 
+   public bool    Dsc_SignPrimaoc         { get; set; } 
+   public string  Dsc_LblPrimio           { get; set; } 
+   public string  Dsc_LblOpciA            { get; set; } 
+   public string  Dsc_LblOpciB            { get; set; } 
+
+   public bool    Dsc_T_artiklCD          { get; set; }     
+   public bool    Dsc_T_artiklName        { get; set; }   
+   public bool    Dsc_NapomenaArt         { get; set; }  // saArtikla - stavi u CR  
+   public bool    Dsc_BarCode1            { get; set; }       
+   public bool    Dsc_ArtiklCD2           { get; set; }      
+   public bool    Dsc_ArtiklName2         { get; set; }    
+   public bool    Dsc_BarCode2            { get; set; }       
+   public bool    Dsc_LongOpis            { get; set; }       
+   public bool    Dsc_SerNo               { get; set; }          
+   public bool    Dsc_T_jedMj             { get; set; }        
+   public bool    Dsc_T_kol               { get; set; }          
+   public bool    Dsc_T_cij               { get; set; }          
+   public bool    Dsc_R_KC                { get; set; }           
+   public bool    Dsc_T_rbt1St            { get; set; }       
+   public bool    Dsc_R_rbt1              { get; set; }         
+   public bool    Dsc_T_rbt2St            { get; set; }       
+   public bool    Dsc_R_rbt2              { get; set; }         
+   public bool    Dsc_R_cij_KCR           { get; set; }
+   public bool    Dsc_R_KCR               { get; set; }          
+   public bool    Dsc_T_mrzSt             { get; set; }    //26.02.2016. T_serlot // 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture   
+   public bool    Dsc_R_mrz               { get; set; } // 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture     
+   public bool    Dsc_R_cij_KCRM          { get; set; }   // 29.08.2013. za Kn Tkn_Cij // 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture
+   public bool    Dsc_R_KCRM              { get; set; }   // 29.08.2013. za Kn Rkn_KCRP// 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture    
+   public bool    Dsc_R_ztr               { get; set; } // 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture     
+   public bool    Dsc_T_pdvSt             { get; set; }     
+   public bool    Dsc_R_pdv               { get; set; }     
+   public bool    Dsc_R_cij_KCRMP         { get; set; }   
+   public bool    Dsc_R_KCRMP             { get; set; }   
+   public bool    Dsc_T_doCijMal          { get; set; }    // ArtiklTS 
+   public bool    Dsc_T_noCijMal          { get; set; }    //11.05.2020. theVPC on IRM
+   public bool    Dsc_Ocu_VPCnaIRM        { get; set; }    //11.05.2020. kad sam ga vec dodala da ga ne brisemo iz svih lookUplista
+   public bool    Dsc_R_mjMasaN           { get; set; }
+   public bool    Dsc_T_garancija         { get; set; }
+
+   public int     Dsc_NumDecT_kol         { get; set; }          
+   public int     Dsc_NumDecT_cij         { get; set; }          
+   public int     Dsc_NumDecR_KC          { get; set; }           
+   public int     Dsc_NumDecT_rbt1St      { get; set; }       
+   public int     Dsc_NumDecR_rbt1        { get; set; }         
+   public int     Dsc_NumDecT_rbt2St      { get; set; }       
+   public int     Dsc_NumDecR_rbt2        { get; set; }         
+   public int     Dsc_NumDecR_cij_KCR     { get; set; }      
+   public int     Dsc_NumDecR_KCR         { get; set; }          
+   public int     Dsc_NumDecT_mrzSt       { get; set; } // 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture      
+   public int     Dsc_NumDecR_mrz         { get; set; }    // 18.12.2013. R_cijOP       
+   public int     Dsc_NumDecR_cij_KCRM    { get; set; }    // 29.08.2013. za Kn Tkn_Cij 
+   public int     Dsc_NumDecR_KCRM        { get; set; }    // 29.08.2013. za Kn Rkn_KCRP
+   public int     Dsc_NumDecR_ztr         { get; set; } // 10.07.2012. FUSE za nekaj jer su se bezrazlozno nasli na printu fakture          
+   public int     Dsc_NumDecT_pdvSt       { get; set; }     
+   public int     Dsc_NumDecR_pdv         { get; set; }     
+   public int     Dsc_NumDecR_cij_KCRMP   { get; set; }   
+   public int     Dsc_NumDecR_KCRMP       { get; set; }   
+   public int     Dsc_NumDecT_doCijMal    { get; set; }   
+   public int     Dsc_NumDecT_noCijMal    { get; set; }
+
+   public string  Dsc_ValName             { get; set; }
+   public string  Dsc_NazivPoslJed        { get; set; }
+
+   public string  Dsc_BelowGrid           { get; set; }
+
+   public bool    Dsc_OcuHeader           { get; set; }
+   public bool    Dsc_OcuFooter           { get; set; }
+   public bool    Dsc_OcuFooter2          { get; set; }
+   public bool    Dsc_OcuLogo             { get; set; }
+   public int     Dsc_ScalingLogo         { get; set; }
+   public decimal Dsc_ScalingPostoLogo    { get; set; }
+   public bool    Dsc_OcuIspisPnb         { get; set; }
+
+   public int     Dsc_FontOpis            { get; set; }
+   public int     Dsc_FontColumns         { get; set; }
+   public int     Dsc_FontBelGr           { get; set; }
+
+   public bool    Dsc_OcuR12              { get; set; }
+   public string  Dsc_JezikReport         { get; set; }
+  
+   public bool    Dsc_BlgOcuColKonto      { get; set; }
+   public bool    Dsc_BlgOcuColRacun      { get; set; }
+   public bool    Dsc_BlgOcu2na1strani    { get; set; }
+   public bool    Dsc_BlgOcuOkvirUplsp    { get; set; }
+
+   // new________________________________________________
+
+   public bool    Dsc_OcuKupDobTel           { get; set; }   
+   public bool    Dsc_OcuProjektTel          { get; set; }
+   public bool    Dsc_OcuKupDobFax           { get; set; }
+   public bool    Dsc_OcuProjektFax          { get; set; }
+   public bool    Dsc_OcuKupDobOib           { get; set; }
+   public bool    Dsc_OcuProjektOib          { get; set; }
+   public bool    Dsc_OcuKupDobMail          { get; set; }
+   public bool    Dsc_OcuProjektMail         { get; set; }
+   public bool    Dsc_OcuKupDobNr            { get; set; }
+   public bool    Dsc_PotvrdaNarudzbe        { get; set; }
+   public bool    Dsc_OcuIspisDospjecePl     { get; set; }
+   public bool    Dsc_OcuIspisVeze1          { get; set; }
+   public bool    Dsc_OcuIspisVeze2          { get; set; }
+   public bool    Dsc_OcuIspisVeze3          { get; set; }
+   public bool    Dsc_OcuIspisVeze4          { get; set; }
+   public bool    Dsc_OcuIspisVezDok2        { get; set; }
+   public bool    Dsc_OcuIspisNapomena2      { get; set; }
+   public bool    Dsc_OcuIspisDokNum2        { get; set; }
+   public bool    Dsc_OcuMemoHOnAllPages     { get; set; }
+   public bool    Dsc_OcuMemoFOnAllPages     { get; set; }
+   public string  Dsc_LblVeze1               { get; set; }
+   public string  Dsc_LblVeze2               { get; set; }
+   public string  Dsc_LblVeze3               { get; set; }
+   public string  Dsc_LblVeze4               { get; set; }
+   public string  Dsc_LblVezDok2             { get; set; }
+   public string  Dsc_LblOsobaX              { get; set; }
+   public string  Dsc_AboveGrid              { get; set; }
+   public string  Dsc_AlignmentPageNum       { get; set; }
+   public string  Dsc_PrintPageNum           { get; set; }
+   public string  Dsc_AlignmentDokNum        { get; set; }
+   public bool    Dsc_AdresOkvir             { get; set; }
+   public bool    Dsc_AdresOnlyPartner       { get; set; }
+   public bool    Dsc_PrintDokNum_BeforAdres { get; set; }
+   public bool    Dsc_MigPositionHeader      { get; set; }
+   public bool    Dsc_OcuIspisLblNapomena    { get; set; } // OcuOrigBrDok  vezniDOk
+   public bool    Dsc_OcuTitleOkvir          { get; set; }
+   public bool    Dsc_OcuTitleBoja           { get; set; }
+   public bool    Dsc_OcuKupDobBoja          { get; set; }
+   public bool    Dsc_OcuPrjktBoja           { get; set; }
+   public bool    Dsc_OcuLinijeHeader        { get; set; }
+   public bool    Dsc_OcuLinijeFooter        { get; set; }
+   public string  Dsc_BeforNRD               { get; set; }
+   public string  Dsc_AfterNRD               { get; set; }
+   public bool    Dsc_OcuIspisVirmana        { get; set; }
+   public string  Dsc_ObrazacA               { get; set; }
+   public string  Dsc_ObrazacB               { get; set; }
+   public string  Dsc_ObrazacC               { get; set; }
+   public bool    Dsc_OcuKDZiro_Vir          { get; set; }
+
+   public int     Dsc_LeftMargin             { get; set; }
+   public int     Dsc_RightMargin            { get; set; }
+   public bool    Dsc_OcuLinijePerson        { get; set; }
+   public bool    Dsc_OcuZiroFromFak         { get; set; }
+   public bool    Dsc_IspisNapomene          { get; set; }
+   public bool    Dsc_OcuTextNap2            { get; set; }
+   public bool    Dsc_PositionPersonR        { get; set; }
+   public bool    Dsc_OcuFirmuUpotpis        { get; set; }
+   public bool    Dsc_OcuTitulu              { get; set; }
+   public string  Dsc_ObrazacD               { get; set; }
+   public bool    Dsc_OcuJednakiFtTxt2Red    { get; set; }
+
+   public bool    Dsc_FakAdresKaoPoslJed     { get; set; }
+   public bool    Dsc_PlVirUrokuDana         { get; set; }
+   public bool    Dsc_IspisOtpremnicaBr      { get; set; }
+   public bool    Dsc_IspisUgovora           { get; set; }
+   public bool    Dsc_OnlyArtiklLongOpis     { get; set; } //Glupaco to imas rjesno kroz kolone SAD JE TO UKUPNA TEZINA ONLY BEY KOLONE TEZINE
+   public bool    Dsc_CentarNapKaoNaslov     { get; set; }
+   public bool    Dsc_OibIspodAdreseOnlyP    { get; set; }
+   public bool    Dsc_VisibleProjektCd       { get; set; }
+
+   public bool    Dsc_OcuDevCijAndDevTec     { get; set; }
+   public bool    Dsc_OcuRokIsporDokDate     { get; set; }
+   public bool    Dsc_OcuMtrosName           { get; set; }
+
+   public string  Dsc_TextPostoBefore        { get; set; }
+   public string  Dsc_TextPostoAfter         { get; set; }
+
+
+   public bool    Dsc_OcuPomakVirmana        { get; set; }
+   public bool    Dsc_OcuDateX               { get; set; }
+   public string  Dsc_LblDateX               { get; set; }
+
+   public bool    Dsc_OcuPosPrint            { get; set; }
+   public bool    Dsc_OcuMojuPoslJed         { get; set; }
+   public string  Dsc_BelowOnPOS             { get; set; }
+
+   public string  Dsc_MemoPOS                { get; set; }
+   public string  Dsc_MemoAdd                { get; set; }
+
+   public bool    Dsc_OcuDatumRacuna         { get; set; }   
+   public bool    Dsc_OcuNapomUmjKupDob      { get; set; }   
+   public bool    Dsc_OcuLikvidator          { get; set; }
+
+   public decimal Dsc_ScalingLogo2_FP        { get; set; }
+   public string  Dsc_AlignmentLogo2_FP      { get; set; }
+   public string  Dsc_IsLogo2_FPN            { get; set; }
+   public string  Dsc_AlignmentMemoAdd       { get; set; }
+
+   public bool    Dsc_OcuOTS_saldo           { get; set; }
+   public bool    Dsc_OcuDugoImeOnlyP        { get; set; }
+   public bool    Dsc_OcuBarkodTtNum         { get; set; }
+   public bool    Dsc_OcuBarKodPDF417        { get; set; }
+   public bool    Dsc_OcuMemoAddGore         { get; set; }
+   public bool    Dsc_NecuFiskalDodatak      { get; set; }
+
+   public string  Dsc_TekstOslobodenPDV      { get; set; }
+   public bool    Dsc_Necu_prikazEUR         { get; set; }
+
+   #endregion DataLayer Propertiz
+
+   #region Constructor
+
+   public PrnFakDsc(VvLookUpLista vvLookUpLista) : base(vvLookUpLista)
+   {
+   }
+
+   public PrnFakDsc(VvLookUpLista vvLookUpLista, bool weNeedDefaultList) : base(vvLookUpLista, weNeedDefaultList)
+   {
+   }
+
+   #endregion Constructor
+
+   #region override SetDefaultValues
+
+   public override void SetDefaultValues(VvLookUpLista luiList)
+   {
+      #region string initializations
+
+       Dsc_AdresaLeftRight    = 
+       Dsc_RptOrientation     = 
+       Dsc_Title              = 
+       Dsc_Separ1_Rn          = 
+       Dsc_Separ1_Pn          = 
+       Dsc_Separ2_Rn          = 
+       Dsc_Separ2_Pn          = 
+       Dsc_SeparIfTtNum_Rn    = 
+       Dsc_SeparIfTtNum_Pn    = 
+       Dsc_SeparIfYear_Rn     = 
+       Dsc_SeparIfYear_Pn     = 
+       Dsc_SeparIfKDcd_Rn     = 
+       Dsc_SeparIfKDcd_Pn     = 
+       Dsc_LblPrjktPerson     = 
+       Dsc_LblUserPerson      = 
+       Dsc_LblOsobaA          = 
+       Dsc_LblOsobaB          = 
+       Dsc_ValName            =
+       Dsc_JezikReport        =
+       Dsc_NazivPoslJed       =
+       Dsc_LblPrimio          = 
+       Dsc_LblOpciA           = 
+       Dsc_LblOpciB           = 
+       Dsc_BelowGrid          =  
+       Dsc_LblVeze1           =
+       Dsc_LblVeze2           =
+       Dsc_LblVeze3           =
+       Dsc_LblVeze4           =
+       Dsc_LblVezDok2         =
+       Dsc_LblOsobaX          =
+       Dsc_AboveGrid          =
+       Dsc_AlignmentPageNum   =
+       Dsc_PrintPageNum       =
+       Dsc_AlignmentDokNum    = 
+       Dsc_BeforNRD           = 
+       Dsc_AfterNRD           = 
+       Dsc_ObrazacA           = 
+       Dsc_ObrazacB           = 
+       Dsc_ObrazacC           = 
+       Dsc_ObrazacD           = 
+       Dsc_TextPostoBefore    =
+       Dsc_TextPostoAfter     = 
+       Dsc_LblDateX           =
+       Dsc_BelowOnPOS         = 
+       Dsc_MemoPOS            = 
+       Dsc_MemoAdd            = 
+       Dsc_AlignmentLogo2_FP  = 
+       Dsc_IsLogo2_FPN        = 
+       Dsc_AlignmentMemoAdd   = 
+       Dsc_TekstOslobodenPDV  = "";
+
+      #endregion string initializations
+
+      #region defautValue
+
+      Dsc_AdresaLeftRight = "R";    
+      Dsc_RptOrientation  = "P";
+     
+      Dsc_PnbM = 2;
+              
+      Dsc_IsAddTtNum      = true;
+      Dsc_IsAddKupDobCd   = true;     
+      Dsc_SeparIfKDcd_Rn  = "-";    
+      Dsc_SeparIfKDcd_Pn  = "-";   
+         
+      Dsc_NumDecT_kol       = 
+      Dsc_NumDecT_rbt1St    =
+      Dsc_NumDecT_rbt2St    =
+      Dsc_NumDecT_mrzSt     =
+      Dsc_NumDecT_pdvSt     = 0;   
+      Dsc_NumDecT_cij       =    
+      Dsc_NumDecR_KC        =    
+      Dsc_NumDecR_rbt1      =    
+      Dsc_NumDecR_rbt2      =    
+      Dsc_NumDecR_cij_KCR   =    
+      Dsc_NumDecR_KCR       =    
+      Dsc_NumDecR_mrz       =    
+      Dsc_NumDecR_cij_KCRM  =    
+      Dsc_NumDecR_KCRM      =    
+      Dsc_NumDecR_ztr       =    
+      Dsc_NumDecR_pdv       =    
+      Dsc_NumDecR_cij_KCRMP =    
+      Dsc_NumDecR_KCRMP     =    
+      Dsc_NumDecT_doCijMal  =    
+      Dsc_NumDecT_noCijMal  = 2;
+
+      Dsc_LblOpciA         = "Opci A:";
+      Dsc_LblOpciB         = "Opci B:";
+      Dsc_ScalingPostoLogo = 100.00M;
+
+      Dsc_OcuHeader = 
+      Dsc_OcuFooter = 
+      Dsc_OcuLogo   = true;
+
+      Dsc_OcuFooter2 = false;
+
+      Dsc_OcuKupDobTel           =        
+      Dsc_OcuProjektTel          =      
+      Dsc_OcuKupDobFax           =      
+      Dsc_OcuProjektFax          =      
+      Dsc_OcuProjektOib          =      
+      Dsc_OcuKupDobMail          =      
+      Dsc_OcuProjektMail         =      
+      Dsc_OcuKupDobNr            =      
+      Dsc_PotvrdaNarudzbe        = false;
+      Dsc_OcuKupDobOib           =
+      Dsc_OcuIspisDospjecePl     = true;   
+      Dsc_OcuIspisVeze1          =    
+      Dsc_OcuIspisVeze2          =    
+      Dsc_OcuIspisVeze3          =    
+      Dsc_OcuIspisVeze4          =    
+      Dsc_OcuIspisVezDok2        = false;   
+      Dsc_OcuIspisNapomena2      = false;  
+      Dsc_OcuIspisDokNum2        = true;  
+      Dsc_OcuMemoHOnAllPages     = true;  
+      Dsc_OcuMemoFOnAllPages     = true;  
+      Dsc_AlignmentPageNum       = "R";  
+      Dsc_PrintPageNum           = "H";  
+      Dsc_AlignmentDokNum        = "L";  
+      Dsc_AdresOkvir             = false;  
+      Dsc_AdresOnlyPartner       = true;  
+      Dsc_PrintDokNum_BeforAdres = true;
+      Dsc_MigPositionHeader      = true;
+
+      Dsc_OcuLinijeFooter     = true;
+      Dsc_OcuLinijeHeader     = true;
+      Dsc_OcuTitleOkvir       = false;
+      Dsc_OcuTitleBoja        = false;
+      Dsc_OcuKupDobBoja       = false;
+      Dsc_OcuPrjktBoja        = false;
+      Dsc_OcuIspisVirmana     = false;
+      Dsc_OcuKDZiro_Vir       = false;
+      Dsc_OcuIspisLblNapomena = false;
+
+      Dsc_ObrazacA = "ObrazacA";
+      Dsc_ObrazacB = "ObrazacB";
+      Dsc_ObrazacC = "ObrazacC";
+      Dsc_ObrazacD = "ObrazacD";
+
+      Dsc_FontOpis    = 
+      Dsc_FontColumns = 
+      Dsc_FontBelGr   = 9;
+
+      Dsc_LeftMargin          = 1    ;
+      Dsc_RightMargin         = 1    ;
+      Dsc_OcuLinijePerson     = false;
+      Dsc_OcuZiroFromFak      = false;
+      Dsc_IspisNapomene       = true ;
+      Dsc_OcuTextNap2         = true ;
+      Dsc_PositionPersonR     = true ;
+      Dsc_OcuFirmuUpotpis     = false;
+      Dsc_OcuTitulu           = false;
+      Dsc_OcuJednakiFtTxt2Red = false;
+
+      Dsc_R_mjMasaN           = false;
+      Dsc_T_garancija         = false;
+
+      Dsc_FakAdresKaoPoslJed  = false;   
+      Dsc_PlVirUrokuDana      = false;   
+      Dsc_IspisOtpremnicaBr   = false;   
+      Dsc_IspisUgovora        = false;   
+      Dsc_OnlyArtiklLongOpis  = false;   // UKUPNA TEZINA ONLY BEZ KOLONE
+      Dsc_CentarNapKaoNaslov  = false;
+      Dsc_OibIspodAdreseOnlyP = false;
+      Dsc_VisibleProjektCd    = false;
+
+      Dsc_OcuPomakVirmana     = false;
+      Dsc_OcuDateX            = false;
+      Dsc_LblDateX            = "";
+      Dsc_OcuPosPrint         = false;
+      Dsc_OcuMojuPoslJed      = false;
+      Dsc_OcuDatumRacuna      = false;
+      Dsc_OcuNapomUmjKupDob   = false;
+      Dsc_OcuLikvidator       = false;
+
+      Dsc_ScalingLogo2_FP     =   0.00M;
+      Dsc_AlignmentLogo2_FP   = "R";
+      Dsc_IsLogo2_FPN         = "N";
+      Dsc_AlignmentMemoAdd    = "L";
+                              
+      Dsc_OcuOTS_saldo        = false;
+      Dsc_OcuBarkodTtNum      = false;
+      Dsc_OcuBarKodPDF417     = false;
+      Dsc_T_mrzSt             = false; //26.02.2016. serlot
+      Dsc_OcuDugoImeOnlyP     = false; // 09.05.2018. Tvrtaka - dugi opis partnera a printu dokumenata
+      Dsc_OcuMemoAddGore      = false; // 11.04.2019. 
+      Dsc_NecuFiskalDodatak   = false; // 15.06.2020. za dostavnicu za koju to ne treba 
+
+      Dsc_Necu_prikazEUR     = false;
+
+      #endregion defautValue
+
+      //erwer 
+
+      if(TT == Faktur.TT_IRA)
+      {
+         if(luiList == ZXC.dscLuiLst_IRA_1)
+         {
+            Dsc_Title = "RAČUN - Izdatnica";
+           
+            Dsc_T_artiklCD   =          
+            Dsc_T_artiklName =          
+            Dsc_T_jedMj      =          
+            Dsc_T_kol        =          
+            Dsc_T_cij        =          
+            Dsc_T_rbt1St     =          
+            Dsc_R_KCR        =          
+            Dsc_T_pdvSt      =          
+            Dsc_R_KCRMP      = true;         
+            
+            Dsc_SignPrimaoc  = true;         
+            Dsc_LblPrimio    = "Robu preuzeo:";
+            Dsc_OcuR12       = true;
+         }
+         else if(luiList == ZXC.dscLuiLst_IRA_2)
+         {
+            Dsc_Title        = "Izdatnica";
+
+            Dsc_T_artiklCD   =          
+            Dsc_T_artiklName =          
+            Dsc_T_jedMj      =          
+            Dsc_T_kol        =          
+            Dsc_T_cij        =          
+            Dsc_T_rbt1St     =          
+            Dsc_R_KCR        =          
+            Dsc_R_KCRMP      = true;
+           
+            Dsc_SignPrimaoc  = true;         
+            Dsc_LblPrimio    = "Robu preuzeo:";
+
+         }
+         else if(luiList == ZXC.dscLuiLst_IRA_3)
+         {
+            Dsc_Title = "RAČUN";
+
+            Dsc_T_artiklCD   =          
+            Dsc_T_artiklName =          
+            Dsc_T_jedMj      =          
+            Dsc_T_kol        =          
+            Dsc_T_cij        =          
+            Dsc_T_rbt1St     =          
+            Dsc_R_KCR        =          
+            Dsc_T_pdvSt      =          
+            Dsc_R_KCRMP      = true;         
+
+         }
+         else if(luiList == ZXC.dscLuiLst_IRA_4)
+         {
+            Dsc_Title = "RAČUN";
+
+            Dsc_T_artiklCD =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj =
+            Dsc_T_kol =
+            Dsc_T_cij =
+            Dsc_T_rbt1St =
+            Dsc_R_KCR =
+            Dsc_T_pdvSt =
+            Dsc_R_KCRMP = true;
+
+         }
+         else if(luiList == ZXC.dscLuiLst_IRA_5)
+         {
+            Dsc_Title = "DOSTAVNICA";
+
+            Dsc_T_artiklCD   =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj      =
+            Dsc_T_kol        =  true;
+         }
+      }
+      else if(TT == Faktur.TT_PON || TT == Faktur.TT_OPN)
+      {
+         Dsc_Title = "PONUDA";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_T_rbt1St     =          
+         Dsc_R_KCR        =          
+         Dsc_R_KCRMP      = true;         
+         Dsc_OcuR12       = false;
+      }
+      else if(luiList == ZXC.dscLuiLst_PNM)
+      {
+         Dsc_Title = "PONUDA";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_T_rbt1St     =          
+         Dsc_R_KCR        =          
+         Dsc_R_KCRMP      = true;         
+         Dsc_OcuR12       = false;
+      }
+      else if(luiList == ZXC.dscLuiLst_INM)
+      {
+         Dsc_Title = "INVENTURA";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_T_rbt1St     =          
+         Dsc_R_KCR        =          
+         Dsc_R_KCRMP      = true;         
+         Dsc_OcuR12       = false;
+      }
+      else if(luiList == ZXC.dscLuiLst_PNM_2)
+      {
+         Dsc_Title = "PONUDA";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_T_rbt1St =
+         Dsc_R_KCR =
+         Dsc_R_KCRMP = true;
+         Dsc_OcuR12 = false;
+      }
+      else if(luiList == ZXC.dscLuiLst_PNM_3)
+      {
+         Dsc_Title = "PONUDA";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_T_rbt1St =
+         Dsc_R_KCR =
+         Dsc_R_KCRMP = true;
+         Dsc_OcuR12 = false;
+      }
+      else if(luiList == ZXC.dscLuiLst_PNM_4)
+      {
+         Dsc_Title = "PONUDA";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_T_rbt1St     =          
+         Dsc_R_KCR        =          
+         Dsc_R_KCRMP      = true;         
+         Dsc_OcuR12       = false;
+      }
+
+      else if(TT == Faktur.TT_IFA)
+      {
+         if(luiList == ZXC.dscLuiLst_IFA)
+         {
+
+            Dsc_Title = "RAČUN";
+
+            Dsc_T_artiklName =
+            Dsc_T_jedMj =
+            Dsc_T_kol =
+            Dsc_T_cij =
+            Dsc_R_KCR =
+            Dsc_T_pdvSt =
+            Dsc_R_KCRMP = true;
+            Dsc_OcuR12 = true;
+         }
+         else if(luiList == ZXC.dscLuiLst_IFA_2)
+         {
+            Dsc_Title = "RAČUN";
+
+            Dsc_T_artiklName =
+            Dsc_T_jedMj =
+            Dsc_T_kol =
+            Dsc_T_cij =
+            Dsc_R_KCR =
+            Dsc_T_pdvSt =
+            Dsc_R_KCRMP = true;
+            Dsc_OcuR12  = false;
+
+         }
+         else if(luiList == ZXC.dscLuiLst_IFA_3)
+         {
+            Dsc_Title = "RAČUN";
+
+            Dsc_T_artiklName =
+            Dsc_T_jedMj =
+            Dsc_T_kol =
+            Dsc_T_cij =
+            Dsc_R_KCR =
+            Dsc_T_pdvSt =
+            Dsc_R_KCRMP = true;
+            Dsc_OcuR12 = false;
+
+         }
+         else if(luiList == ZXC.dscLuiLst_IFA_4)
+         {
+            Dsc_Title = "RAČUN";
+
+            Dsc_T_artiklName =
+            Dsc_T_jedMj =
+            Dsc_T_kol =
+            Dsc_T_cij =
+            Dsc_R_KCR =
+            Dsc_T_pdvSt =
+            Dsc_R_KCRMP = true;
+            Dsc_OcuR12 = false;
+
+         }
+
+      }
+      else if(TT == Faktur.TT_IZD)
+      { 
+         Dsc_Title = "Izdatnica";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_T_rbt1St =
+         Dsc_R_KCR =
+         Dsc_R_KCRMP = true;
+
+         Dsc_SignPrimaoc = true;
+         Dsc_LblPrimio = "Robu preuzeo:";
+
+         Dsc_OcuR12 = false;
+
+      }
+     
+     
+      else if(TT == Faktur.TT_IRM) 
+      {
+         if(luiList == ZXC.dscLuiLst_IRM)
+         {
+            Dsc_Title        = "Račun";
+            Dsc_T_artiklCD   =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj      =
+            Dsc_T_kol        =
+            Dsc_T_cij        =
+            Dsc_T_rbt1St     =
+            Dsc_R_KCR        =
+            Dsc_R_KCRMP      = true;
+         }
+         else if(luiList == ZXC.dscLuiLst_IRM_2)
+         {
+            Dsc_Title        = "Račun";
+            Dsc_T_artiklCD   =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj      =
+            Dsc_T_kol        =
+            Dsc_T_cij        =
+            Dsc_T_rbt1St     =
+            Dsc_R_KCR        =
+            Dsc_R_KCRMP      = true;
+         }
+         else if(luiList == ZXC.dscLuiLst_IRM_3)
+         {
+            Dsc_Title        = "Račun";
+            Dsc_T_artiklCD   =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj      =
+            Dsc_T_kol        =
+            Dsc_T_cij        =
+            Dsc_T_rbt1St     =
+            Dsc_R_KCR        =
+            Dsc_R_KCRMP      = true;
+         }
+         else if(luiList == ZXC.dscLuiLst_IRM_4)
+         {
+            Dsc_Title        = "Račun";
+            Dsc_T_artiklCD   =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj      =
+            Dsc_T_kol        =
+            Dsc_T_cij        =
+            Dsc_T_rbt1St     =
+            Dsc_R_KCR        =
+            Dsc_R_KCRMP      = true;
+         }
+
+
+      }
+      else if(TT == Faktur.TT_IZM)
+      { 
+         Dsc_Title = "Izdatnica";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_T_rbt1St =
+         Dsc_R_KCR =
+         Dsc_R_KCRMP = true;
+
+         Dsc_SignPrimaoc = true;
+         Dsc_LblPrimio = "Robu preuzeo:";
+
+         Dsc_OcuR12 = false;
+
+      }
+
+      else if(TT == Faktur.TT_URA) { Dsc_Title = "URA"; }
+      else if(TT == Faktur.TT_UFA) { Dsc_Title = "UFA"; }
+      else if(TT == Faktur.TT_UPA) { Dsc_Title = "UFA"; } // upaTODO !!!!!! 
+      else if(TT == Faktur.TT_UFM) { Dsc_Title = "UFM"; }
+      else if(TT == Faktur.TT_PRI) { Dsc_Title = "PRIMKA"; }
+      else if(TT == Faktur.TT_KLK) { Dsc_Title = "KALKULACIJA"; }
+      else if(TT == Faktur.TT_KKM) { Dsc_Title = "KOMISIJSKA KALKULACIJA"; }
+      else if(TT == Faktur.TT_UOD) { Dsc_Title = "ODOBRENJE"; }
+      else if(TT == Faktur.TT_UPV) { Dsc_Title = "POVRAT"; }
+      else if(TT == Faktur.TT_UPM) { Dsc_Title = "POVRAT MALOPRODAJNI"; }
+      else if(TT == Faktur.TT_IOD) { Dsc_Title = "ODOBRENJE"; }
+      else if(TT == Faktur.TT_IPV) { Dsc_Title = "POVRAT"; }
+      else if(TT == Faktur.TT_NRD) 
+      { 
+         Dsc_Title = "NARUDŽBA";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_R_KCRMP = true;
+
+         Dsc_OcuR12 = false;
+
+      }
+      else if(TT == Faktur.TT_NRM)
+      {
+         Dsc_Title = "NARUDŽBA";
+
+         Dsc_T_artiklCD   =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj      =
+         Dsc_T_kol        =
+         Dsc_T_cij        =
+         Dsc_R_KCRMP      = true;
+
+         Dsc_OcuR12 = false;
+
+      }
+
+      else if(TT == Faktur.TT_NRU) 
+      { 
+         Dsc_Title = "NARUDŽBA";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_R_KCRMP = true;
+
+         Dsc_OcuR12 = false;
+
+
+      }
+      else if(TT == Faktur.TT_NRS) 
+      {
+         Dsc_Title = "NARUDŽBA"; 
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_R_KCRMP = true;
+
+         Dsc_OcuR12 = false;
+
+
+      }
+      else if(TT == Faktur.TT_NRK) { Dsc_Title = "NARUDŽBA"; }
+      //else if(TT == Faktur.TT_STU) { Dsc_Title = "STU"; }
+      //else if(TT == Faktur.TT_STI) { Dsc_Title = "STI"; }
+      else if(TT == Faktur.TT_RVI) 
+      { 
+         Dsc_Title = "REVERS"; 
+      
+         Dsc_T_artiklCD   =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj      =
+         Dsc_T_kol        = true;
+
+      }
+      else if(TT == Faktur.TT_RVU)
+      { 
+         Dsc_Title = "POVRAT REVERSA";
+         Dsc_T_artiklCD   =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj      =
+         Dsc_T_kol        = true;
+
+      }
+      else if(TT == Faktur.TT_UPL || TT == Faktur.TT_ISP || TT == Faktur.TT_BUP || TT == Faktur.TT_BIS) 
+      {
+
+         Dsc_OcuHeader        =
+         Dsc_OcuFooter        =
+         Dsc_OcuLogo          =
+         Dsc_BlgOcuColKonto   =
+         Dsc_BlgOcuColRacun   =
+         Dsc_BlgOcu2na1strani =
+         Dsc_BlgOcuOkvirUplsp =
+         Dsc_TableBorder      = true;
+         Dsc_OcuFooter2 = false;
+      }
+      
+      else if(TT == "CJE" /*Faktur.TT_CJ_DE || TT == Faktur.TT_CJ_MK ||TT == Faktur.TT_CJ_MP ||TT == Faktur.TT_CJ_MRZ ||TT == Faktur.TT_CJ_RB1 ||TT == Faktur.TT_CJ_RB2 ||TT == Faktur.TT_CJ_VP1 ||TT == Faktur.TT_CJ_VP2*/)
+      {
+         Dsc_Title        = "CJENIK";
+
+         Dsc_T_artiklCD   =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj      = true;
+         Dsc_T_kol        = false;          
+         Dsc_T_cij        = true;         
+         Dsc_R_KC         = false;
+         Dsc_SeparIfKDcd_Rn = "";
+         Dsc_IsAddKupDobCd = false;     
+
+      }
+      else if(TT == Faktur.TT_PST)
+      {
+         Dsc_Title        = "POČETNO STANJE";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_R_KC         = true;
+         Dsc_SeparIfKDcd_Rn = "";
+         Dsc_IsAddKupDobCd = false;     
+
+      }
+
+      else if(TT == Faktur.TT_INV )
+      {
+         Dsc_Title        = "INVENTURA";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_R_KC         = true;
+         Dsc_SeparIfKDcd_Rn = "";
+         Dsc_IsAddKupDobCd = false;     
+         
+      }
+      else if(TT == Faktur.TT_PPR)
+      {
+         Dsc_Title = "PREDATNICA U PROIZVODNJU";
+
+         Dsc_T_artiklCD   =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj      =
+         Dsc_T_kol        = true;
+         Dsc_SeparIfKDcd_Rn = "";
+         Dsc_IsAddKupDobCd = false;
+
+      }
+      else if(TT == Faktur.TT_PIP)
+      {
+         Dsc_Title = "PRIMKA IZ PROIZVODNJE";
+
+         Dsc_T_artiklCD     =
+         Dsc_T_artiklName   =
+         Dsc_T_jedMj        =
+         Dsc_T_kol          = true;
+         Dsc_SeparIfKDcd_Rn = "";
+         Dsc_IsAddKupDobCd  = false;
+
+      } 
+      else if(TT == Faktur.TT_POV)
+      {
+         Dsc_Title = "POVRATNICA";
+
+         Dsc_T_artiklCD   =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj      =
+         Dsc_T_kol        = true;
+         Dsc_SeparIfKDcd_Rn = "";
+         Dsc_IsAddKupDobCd = false;
+
+      }
+      else if(TT == Faktur.TT_MSI || TT == Faktur.TT_MSU)
+      {
+         Dsc_Title = "MEĐUSKLADIŠNICA";
+
+         Dsc_T_artiklCD     =
+         Dsc_T_artiklName   =
+         Dsc_T_jedMj        =
+         Dsc_T_kol          =
+         Dsc_T_cij          =
+         Dsc_R_KC           = true;
+         Dsc_SeparIfKDcd_Rn = "";
+      }
+      else if(TT == Faktur.TT_KIZ)
+      {
+         Dsc_Title = "IZDATNICA";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_T_rbt1St     =          
+         Dsc_R_KC         = true;         
+         Dsc_R_KCR        = true;         
+         Dsc_OcuR12       = false;
+         Dsc_SignPrimaoc  = true;
+         Dsc_LblPrimio    = "Robu preuzeo:";
+         Dsc_OcuIspisDospjecePl = false;
+
+      }
+      else if(TT == Faktur.TT_PIK)
+      {
+         Dsc_Title = "POVRAT";
+           
+         Dsc_T_artiklCD   =          
+         Dsc_T_artiklName =          
+         Dsc_T_jedMj      =          
+         Dsc_T_kol        =          
+         Dsc_T_cij        =          
+         Dsc_T_rbt1St     =          
+         Dsc_R_KC         = true;         
+         Dsc_R_KCR        = true;         
+         Dsc_OcuR12       = false;
+         Dsc_OcuIspisDospjecePl = false;
+      }
+
+
+
+      //else if(TT == Faktur.TT_IMT ) 
+      //else if(TT == Faktur.TT_PIZ )
+      //else if(TT == Faktur.TT_PUL ) 
+      //else if(TT == Faktur.TT_SKI )
+      //else if(TT == Faktur.TT_SKU )
+      //else if(TT == Faktur.TT_TMI )
+      //else if(TT == Faktur.TT_TMU )
+      //else if(TT == Faktur.TT_ZPC )
+   }
+
+   #endregion override SetDefaultValues
+}
+
+public class KtoShemaDsc : VvLookupAsDsc
+{
+   #region DataLayer Propertiz
+
+   #region KontoSchema
+
+   public string Dsc_RKto_Dobav        { get; set; }
+   public string Dsc_RKto_Osn_Ura      { get; set; }
+   public string Dsc_RKto_Pdv10m_Ura   { get; set; }
+   public string Dsc_RKto_Pdv22m_Ura   { get; set; }
+   public string Dsc_RKto_Pdv23m_Ura   { get; set; }
+   public string Dsc_RKto_Pdv25m_Ura   { get; set; }
+   public string Dsc_RKto_Pdv10n_Ura   { get; set; }
+   public string Dsc_RKto_Pdv22n_Ura   { get; set; }
+   public string Dsc_RKto_Pdv23n_Ura   { get; set; }
+   public string Dsc_RKto_Pdv25n_Ura   { get; set; }
+   public string Dsc_RKto_Pdv10R2_Ura  { get; set; }
+   public string Dsc_RKto_Pdv22R2_Ura  { get; set; }
+   public string Dsc_RKto_Pdv23R2_Ura  { get; set; }
+   public string Dsc_PKto_Dobav        { get; set; }
+   public string Dsc_PKto_Osn_Ura      { get; set; }
+   public string Dsc_PKto_Pdv10m_Ura   { get; set; }
+   public string Dsc_PKto_Pdv22m_Ura   { get; set; }
+   public string Dsc_PKto_Pdv23m_Ura   { get; set; }
+   public string Dsc_PKto_Pdv25m_Ura   { get; set; }
+   public string Dsc_PKto_Pdv10n_Ura   { get; set; }
+   public string Dsc_PKto_Pdv22n_Ura   { get; set; }
+   public string Dsc_PKto_Pdv23n_Ura   { get; set; }
+   public string Dsc_PKto_Pdv25n_Ura   { get; set; }
+   public string Dsc_UKto_Dobav        { get; set; }
+   public string Dsc_UKto_Osn_Ura      { get; set; }
+   public string Dsc_UKto_Pdv10m_Ura   { get; set; }
+   public string Dsc_UKto_Pdv22m_Ura   { get; set; }
+   public string Dsc_UKto_Pdv23m_Ura   { get; set; }
+   public string Dsc_UKto_Pdv25m_Ura   { get; set; }
+   public string Dsc_UKto_Pdv10n_Ura   { get; set; }
+   public string Dsc_UKto_Pdv22n_Ura   { get; set; }
+   public string Dsc_UKto_Pdv23n_Ura   { get; set; }
+   public string Dsc_UKto_Pdv25n_Ura   { get; set; }
+   public string Dsc_SKto_Dobav        { get; set; }
+   public string Dsc_SKto_Osn_Ura      { get; set; }
+   public string Dsc_SKto_Pdv10m_Ura   { get; set; }
+   public string Dsc_SKto_Pdv22m_Ura   { get; set; }
+   public string Dsc_SKto_Pdv23m_Ura   { get; set; }
+   public string Dsc_SKto_Pdv25m_Ura   { get; set; }
+   public string Dsc_SKto_Pdv10n_Ura   { get; set; }
+   public string Dsc_SKto_Pdv22n_Ura   { get; set; }
+   public string Dsc_SKto_Pdv23n_Ura   { get; set; }
+   public string Dsc_SKto_Pdv25n_Ura   { get; set; }
+   public string Dsc_RKto_Kupca        { get; set; }
+   public string Dsc_RKto_Osn_Ira      { get; set; }
+   public string Dsc_RKto_Pdv10_Ira    { get; set; }
+   public string Dsc_RKto_Pdv22_Ira    { get; set; }
+   public string Dsc_RKto_Pdv23_Ira    { get; set; }
+   public string Dsc_RKto_Pdv25_Ira    { get; set; }
+   public string Dsc_PKto_Kupca        { get; set; }
+   public string Dsc_PKto_Osn_Ira      { get; set; }
+   public string Dsc_PKto_Pdv10_Ira    { get; set; }
+   public string Dsc_PKto_Pdv22_Ira    { get; set; }
+   public string Dsc_PKto_Pdv23_Ira    { get; set; }
+   public string Dsc_PKto_Pdv25_Ira    { get; set; }
+   public string Dsc_Mir_Kupci         { get; set; }
+   public string Dsc_KtoOsn_Mir        { get; set; }
+   public string Dsc_KtoPdv10_Mir      { get; set; }
+   public string Dsc_KtoPdv22_Mir      { get; set; }
+   public string Dsc_KtoPdv23_Mir      { get; set; }
+   public string Dsc_KtoPdv25_Mir      { get; set; }
+   public string Dsc_Blg_Promet        { get; set; }
+   public string Dsc_Blg_Uplat         { get; set; }
+   public string Dsc_Blg_Isplat        { get; set; }
+   public string Dsc_Kto_Skladiste     { get; set; }
+   public string Dsc_Kto_Realizacija   { get; set; }
+   public string Dsc_RKto_Osn_Ira_Roba { get; set; }
+   public string Dsc_PKto_Osn_Ira_Roba { get; set; }
+   public bool   Dsc_HocuRealizaciju   { get; set; }
+   public bool   Dsc_MirSumMonthly     { get; set; }
+   public bool   Dsc_MirGroupByNacPlac { get; set; }
+   public string Dsc_KtoOsnIra_UslgDP  { get; set; }
+   public string Dsc_KtoMatSklad       { get; set; }
+   public string Dsc_KtoMatTrsk        { get; set; }
+   public string Dsc_KtoSInvSklad      { get; set; }
+   public string Dsc_KtoSInvTrsk       { get; set; }
+   public bool   Dsc_IsCheckAvanses    { get; set; }
+
+   public int                          Dsc_Fak2NalTime_Ulaz { get; set; }
+   public ZXC.Faktur2NalogTimeRuleEnum     Fak2NalTime_Ulaz 
+   { 
+      get { return (ZXC.Faktur2NalogTimeRuleEnum)Dsc_Fak2NalTime_Ulaz; }  
+      set {                                      Dsc_Fak2NalTime_Ulaz = (int)value; } 
+   }
+
+   public int                          Dsc_Fak2NalTime_IzlazVP  { get; set; }
+   public ZXC.Faktur2NalogTimeRuleEnum     Fak2NalTime_IzlazVP  
+   { 
+      get { return (ZXC.Faktur2NalogTimeRuleEnum)Dsc_Fak2NalTime_IzlazVP; }  
+      set {                                      Dsc_Fak2NalTime_IzlazVP = (int)value; } 
+   }
+
+   public int                          Dsc_Fak2NalTime_IzlazMP  { get; set; }
+   public ZXC.Faktur2NalogTimeRuleEnum     Fak2NalTime_IzlazMP  
+   {
+      get { return (ZXC.Faktur2NalogTimeRuleEnum)Dsc_Fak2NalTime_IzlazMP; }  
+      set {                                      Dsc_Fak2NalTime_IzlazMP = (int)value; } 
+   }
+
+   public int                          Dsc_Fak2NalTime_Blagajna  { get; set; }
+   public ZXC.Faktur2NalogTimeRuleEnum     Fak2NalTime_Blagajna
+   {
+      get { return (ZXC.Faktur2NalogTimeRuleEnum)Dsc_Fak2NalTime_Blagajna; }
+      set {                                      Dsc_Fak2NalTime_Blagajna = (int)value; }
+   }
+
+   public int                          Dsc_Fak2NalTime_InterniDok  { get; set; }
+   public ZXC.Faktur2NalogTimeRuleEnum     Fak2NalTime_InterniDok
+   {
+      get { return (ZXC.Faktur2NalogTimeRuleEnum)Dsc_Fak2NalTime_InterniDok; }
+      set {                                      Dsc_Fak2NalTime_InterniDok = (int)value; }
+   }
+
+   public string Dsc_PNTukupno     { get; set; }
+   public string Dsc_PNTacc        { get; set; }
+   public string Dsc_PNTdnevnice   { get; set; }
+   public string Dsc_PNTprijevTr   { get; set; }
+   public string Dsc_PNTostaliTr   { get; set; }
+   public string Dsc_PNIukupno     { get; set; }
+   public string Dsc_PNIacc        { get; set; }
+   public string Dsc_PNIdnevnice   { get; set; }
+   public string Dsc_PNIprijevTr   { get; set; }
+   public string Dsc_PNIostaliTr   { get; set; }
+   public string Dsc_LokoUkup      { get; set; }
+   public string Dsc_LokoPrijevTr  { get; set; }
+   public string Dsc_LokoOstTr     { get; set; }
+
+   public string Dsc_IrmKupciCash    { get; set; }  
+   public string Dsc_KtoIrmOsnUsl    { get; set; } 
+   public string Dsc_MSK_25          { get; set; } 
+   public string Dsc_MSK_23          { get; set; } 
+   public string Dsc_MSK_10          { get; set; } 
+   public string Dsc_MSK_00          { get; set; } 
+   public string Dsc_MskPdv_25       { get; set; } 
+   public string Dsc_MskPdv_23       { get; set; } 
+   public string Dsc_MskPdv_10       { get; set; } 
+   public string Dsc_Mrz             { get; set; }
+   public bool   Dsc_KnjiziMSK_ulaz  { get; set; }
+   public bool   Dsc_KnjiziMSK_izlaz { get; set; }
+
+
+   public string Dsc_RKto_Pdv05_Ira  { get; set; }
+   public string Dsc_PKto_Pdv05_Ira  { get; set; }
+   public string Dsc_RKto_Pdv05m_Ura { get; set; }
+   public string Dsc_RKto_Pdv05n_Ura { get; set; }
+   public string Dsc_PKto_Pdv05m_Ura { get; set; }
+   public string Dsc_PKto_Pdv05n_Ura { get; set; }
+   public string Dsc_KtoPdv05_Mir    { get; set; }
+   public string Dsc_MSK_05          { get; set; }
+   public string Dsc_MskPdv_05       { get; set; }
+
+   public string Dsc_KtoPpmv         { get; set; }
+   public string Dsc_PdvR10m_EU      { get; set; }
+   public string Dsc_PdvR25m_EU      { get; set; }
+   public string Dsc_PdvR10n_EU      { get; set; }
+   public string Dsc_PdvR25n_EU      { get; set; }
+   public string Dsc_PdvR05m_EU      { get; set; }
+   public string Dsc_PdvR05n_EU      { get; set; }
+   public string Dsc_PdvU10m_EU      { get; set; }
+   public string Dsc_PdvU25m_EU      { get; set; }
+   public string Dsc_PdvU10n_EU      { get; set; }
+   public string Dsc_PdvU25n_EU      { get; set; }
+   public string Dsc_PdvU05m_EU      { get; set; }
+   public string Dsc_PdvU05n_EU      { get; set; }
+   public string Dsc_Pdv10m_BS       { get; set; }
+   public string Dsc_Pdv25m_BS       { get; set; }
+   public string Dsc_Pdv10n_BS       { get; set; }
+   public string Dsc_Pdv25n_BS       { get; set; }
+   public string Dsc_Pdv25m_TP       { get; set; }
+   public string Dsc_Pdv25n_TP       { get; set; }
+   public string Dsc_KupDobR_EU      { get; set; }
+   public string Dsc_TrosakR_EU      { get; set; }
+   public string Dsc_ObrPdvR25_EU    { get; set; }
+   public string Dsc_ObrPdvR10_EU    { get; set; }
+   public string Dsc_ObrPdvR05_EU    { get; set; }
+   public string Dsc_KupDobU_EU      { get; set; }
+   public string Dsc_TrosakU_EU      { get; set; }
+   public string Dsc_ObrPdvU25_EU    { get; set; }
+   public string Dsc_ObrPdvU10_EU    { get; set; }
+   public string Dsc_ObrPdvU05_EU    { get; set; }
+   public string Dsc_KupDob_BS       { get; set; }
+   public string Dsc_Trosak_BS       { get; set; }
+   public string Dsc_ObrPdv10_BS     { get; set; }
+   public string Dsc_ObrPdv25_BS     { get; set; }
+   public string Dsc_KupDob_TP       { get; set; }
+   public string Dsc_Trosak_TP       { get; set; }
+   public string Dsc_ObrPdv25_TP     { get; set; }
+   public string Dsc_UKto_Pdv05m_Ura { get; set; }
+   public string Dsc_UKto_Pdv05n_Ura { get; set; }
+   public string Dsc_SKto_Pdv05m_Ura { get; set; }
+   public string Dsc_SKto_Pdv05n_Ura { get; set; }
+   public string Dsc_ukIznPNP        { get; set; }
+   public string Dsc_Msk_PNP         { get; set; }
+   public string Dsc_KtoIZD          { get; set; }
+   public string Dsc_KtoIZM          { get; set; }
+   public bool   Dsc_OcuPrihLikeSklad{ get; set; }
+
+   public string Dsc_KupacKontaIOS   { get; set; }
+   public string Dsc_DobavKontaIOS   { get; set; }
+   public string Dsc_KtoRnmPprUSL    { get; set; }
+
+   public bool Dsc_IsVisibleColPozicija { get; set; }
+   public bool Dsc_IsVisibleColMtrosCD  { get; set; }
+   public bool Dsc_IsVisibleColMtrosTK  { get; set; }
+   public bool Dsc_IsVisibleColProjekt  { get; set; }
+   public bool Dsc_IsVisibleColFond     { get; set; }
+   public bool Dsc_IsVisibleColObrpdv   { get; set; }
+   public bool Dsc_IsVisibleColObr037   { get; set; }
+   public bool Dsc_IsPlanViaMtros       { get; set; }
+   public bool Dsc_NoPrintPozicCd       { get; set; }
+   public bool Dsc_IsVisibleColPozName  { get; set; }
+   public bool Dsc_IsVisibleColFondName { get; set; }
+   public bool Dsc_IsVisibleColProgAkt  { get; set; }
+   public bool Dsc_isExtValidation      { get; set; }
+
+   public bool Dsc_IsNeGrupTrosak       { get; set; }
+
+   public bool Dsc_IsOnlyIOSknjizenje   { get; set; }
+   public bool Dsc_IsIFAtoUPL_napomena  { get; set; }
+   public bool Dsc_Is_OTSviaMtrosCD     { get; set; }
+   public bool Dsc_ForceIRMkaoIRA       { get; set; }
+
+   #endregion KontoSchema
+
+   #region Obrada Troskova Proizvodnje
+
+   public string   Dsc_otp_obrProTT        { get; set; }
+   public string   Dsc_otp_niKtoRoot       { get; set; } 
+   public string   Dsc_otp_niAnaGR         { get; set; }
+   public string   Dsc_otp_rdKtoRoot       { get; set; }
+   public string   Dsc_otp_rdAnaGR         { get; set; }
+   public string   Dsc_otp_ktoObrade       { get; set; }
+   public string   Dsc_otp_ktoPrerspTrsk   { get; set; }
+   public string   Dsc_otp_kto7trosProizv  { get; set; }
+   public string   Dsc_otp_ktoGotProiz     { get; set; }
+   public string   Dsc_otp_ktoIndirEnd     { get; set; }
+   public bool     Dsc_otp_IsSkladGotProizv{ get; set; }
+   public bool     Dsc_otp_IsDirekt        { get; set; }
+   public bool     Dsc_otp_IsKtoEndSame    { get; set; }
+   public bool     Dsc_otp_IsAutoSave      { get; set; }
+   public string   Dsc_otp_skipSatus       { get; set; }
+
+   #endregion Obrada Troskova Proizvodnje
+
+   #region Analiza Troskova Proizvodnje
+
+   public decimal Dsc_atp_postoRr         { get; set; }
+   public string  Dsc_atp_ktoAmKorjen     { get; set; }
+   public string  Dsc_atp_rrAnaGR         { get; set; }
+   public bool    Dsc_atp_hocuAmort       { get; set; }
+
+   public string  Dsc_PrimAvansKonta      { get; set; }
+   public string  Dsc_DaniAvansKonta      { get; set; }
+
+   #endregion Analiza Troskova Proizvodnje
+
+   #endregion DataLayer Propertiz
+
+   #region Constructor
+
+   public KtoShemaDsc(VvLookUpLista vvLookUpLista) : base(vvLookUpLista)
+   {
+   }
+
+   public KtoShemaDsc(VvLookUpLista vvLookUpLista, bool weNeedDefaultList) : base(vvLookUpLista, weNeedDefaultList)
+   {
+   }
+
+   #endregion Constructor
+
+   #region override SetDefaultValues
+
+   public override void SetDefaultValues(VvLookUpLista luiList)
+   {
+      #region defautValue
+
+      Fak2NalTime_Ulaz       =
+      Fak2NalTime_IzlazVP    =
+      Fak2NalTime_IzlazMP    =
+      Fak2NalTime_Blagajna   = 
+      Fak2NalTime_InterniDok = ZXC.Faktur2NalogTimeRuleEnum.DoIt_NEVER;
+
+      Dsc_RKto_Dobav        = "2200";
+      Dsc_RKto_Osn_Ura      = "4000";
+      Dsc_RKto_Pdv10m_Ura   = "14001";
+      Dsc_RKto_Pdv22m_Ura   = "14002";
+      Dsc_RKto_Pdv23m_Ura   = "14003";
+      Dsc_RKto_Pdv25m_Ura   = "14005";
+      Dsc_RKto_Pdv10n_Ura   = "14001";
+      Dsc_RKto_Pdv22n_Ura   = "14002";
+      Dsc_RKto_Pdv23n_Ura   = "14003";
+      Dsc_RKto_Pdv25n_Ura   = "14005";
+      Dsc_RKto_Pdv10R2_Ura  = "14001";
+      Dsc_RKto_Pdv22R2_Ura  = "14002";
+      Dsc_RKto_Pdv23R2_Ura  = "14003";
+      Dsc_PKto_Dobav        = "2200";
+      Dsc_PKto_Osn_Ura      = "4000";
+      Dsc_PKto_Pdv10m_Ura   = "14001";
+      Dsc_PKto_Pdv22m_Ura   = "14002";
+      Dsc_PKto_Pdv23m_Ura   = "14003";
+      Dsc_PKto_Pdv25m_Ura   = "14005";
+      Dsc_PKto_Pdv10n_Ura   = "14001";
+      Dsc_PKto_Pdv22n_Ura   = "14002";
+      Dsc_PKto_Pdv23n_Ura   = "14003";
+      Dsc_PKto_Pdv25n_Ura   = "14005";
+      Dsc_UKto_Dobav        = "2210";
+      Dsc_UKto_Osn_Ura      = "6600";
+      Dsc_UKto_Pdv10m_Ura   = "1401";
+      Dsc_UKto_Pdv22m_Ura   = "14002";
+      Dsc_UKto_Pdv23m_Ura   = "1401";
+      Dsc_UKto_Pdv25m_Ura   = "1405";
+      Dsc_UKto_Pdv10n_Ura   = "14001";
+      Dsc_UKto_Pdv22n_Ura   = "14002";
+      Dsc_UKto_Pdv23n_Ura   = "14003";
+      Dsc_UKto_Pdv25n_Ura   = "14005";
+      Dsc_SKto_Dobav        = "2210";
+      Dsc_SKto_Osn_Ura      = "4000";
+      Dsc_SKto_Pdv10m_Ura   = "14001";
+      Dsc_SKto_Pdv22m_Ura   = "14002";
+      Dsc_SKto_Pdv23m_Ura   = "14003";
+      Dsc_SKto_Pdv25m_Ura   = "14005";
+      Dsc_SKto_Pdv10n_Ura   = "14001";
+      Dsc_SKto_Pdv22n_Ura   = "14002";
+      Dsc_SKto_Pdv23n_Ura   = "14003";
+      Dsc_SKto_Pdv25n_Ura   = "14005";
+      Dsc_RKto_Kupca        = "1200";
+      Dsc_RKto_Osn_Ira      = "7500";
+      Dsc_RKto_Pdv10_Ira    = "24001";
+      Dsc_RKto_Pdv22_Ira    = "24002";
+      Dsc_RKto_Pdv23_Ira    = "24003";
+      Dsc_RKto_Pdv25_Ira    = "24005";
+      Dsc_PKto_Kupca        = "1200";
+      Dsc_PKto_Osn_Ira      = "7500";
+      Dsc_PKto_Pdv10_Ira    = "24001";
+      Dsc_PKto_Pdv22_Ira    = "24002";
+      Dsc_PKto_Pdv23_Ira    = "24003";
+      Dsc_PKto_Pdv25_Ira    = "24005";
+      Dsc_Mir_Kupci         = "1200";
+      Dsc_KtoOsn_Mir        = "7600";
+      Dsc_KtoPdv10_Mir      = "24001";
+      Dsc_KtoPdv22_Mir      = "24002";
+      Dsc_KtoPdv23_Mir      = "24003";
+      Dsc_KtoPdv25_Mir      = "24005";
+      Dsc_Blg_Promet        = "1020";
+      Dsc_Blg_Uplat         = "1009";
+      Dsc_Blg_Isplat        = "4000";
+      Dsc_Kto_Skladiste     = "6600";
+      Dsc_Kto_Realizacija   = "7100";
+      Dsc_RKto_Osn_Ira_Roba = "7600";
+      Dsc_PKto_Osn_Ira_Roba = "7600";
+      Dsc_KtoOsnIra_UslgDP  = "7511";
+      Dsc_KtoMatSklad       = "3100";
+      Dsc_KtoMatTrsk        = "4001";
+      Dsc_KtoSInvSklad      = "3500";
+      Dsc_KtoSInvTrsk       = "4040";
+
+      Dsc_HocuRealizaciju   = false;
+      Dsc_MirSumMonthly     = false;
+      Dsc_MirGroupByNacPlac = false;
+                            
+      Dsc_PNTukupno         = "2305";
+      Dsc_PNTacc            = "1240";
+      Dsc_PNTdnevnice       = "4600";
+      Dsc_PNTprijevTr       = "4602";
+      Dsc_PNTostaliTr       = "4604";
+      Dsc_PNIukupno         = "2305";
+      Dsc_PNIacc            = "1240";
+      Dsc_PNIdnevnice       = "4601";
+      Dsc_PNIprijevTr       = "4602";
+      Dsc_PNIostaliTr       = "4604";
+      Dsc_LokoUkup          = "2305";
+      Dsc_LokoPrijevTr      = "4603";
+      Dsc_LokoOstTr         = "4604";
+
+      Dsc_IrmKupciCash      = "1021";
+      Dsc_KtoIrmOsnUsl      = "7510";
+      Dsc_MSK_25            = "6635";
+      Dsc_MSK_23            = "6630";
+      Dsc_MSK_10            = "6631";
+      Dsc_MSK_00            = "6632";
+      Dsc_MskPdv_25         = "6645";
+      Dsc_MskPdv_23         = "6640";
+      Dsc_MskPdv_10         = "6641";
+      Dsc_Mrz               = "6681";
+      Dsc_KnjiziMSK_ulaz    = false;
+      Dsc_KnjiziMSK_izlaz   = false;
+
+      Dsc_otp_obrProTT        = "RNP" ;
+      Dsc_otp_niKtoRoot       = ""    ; 
+      Dsc_otp_niAnaGR         = ""    ;
+      Dsc_otp_rdKtoRoot       = ""    ;
+      Dsc_otp_rdAnaGR         = ""    ;
+      Dsc_otp_ktoObrade       = "6000";
+      Dsc_otp_ktoPrerspTrsk   = "4901";
+      Dsc_otp_kto7trosProizv  = "7000";
+      Dsc_otp_ktoGotProiz     = "6300";
+      Dsc_otp_ktoIndirEnd     = ""    ;
+      Dsc_otp_IsSkladGotProizv= false ;
+      Dsc_otp_IsDirekt        = true  ;
+      Dsc_otp_IsKtoEndSame    = false ;
+      Dsc_otp_IsAutoSave      = false ;
+      Dsc_otp_skipSatus       = "";
+
+      Dsc_atp_postoRr      = 100.00M;
+      Dsc_atp_ktoAmKorjen  = "430";
+      Dsc_atp_rrAnaGR      = "";
+      Dsc_atp_hocuAmort    = false;
+
+      Dsc_RKto_Pdv05_Ira  = "240005";
+      Dsc_PKto_Pdv05_Ira  = "240005";
+      Dsc_RKto_Pdv05m_Ura = "140005";
+      Dsc_RKto_Pdv05n_Ura = "140005";
+      Dsc_PKto_Pdv05m_Ura = "140005";
+      Dsc_PKto_Pdv05n_Ura = "140005";
+      Dsc_KtoPdv05_Mir    = "140005";
+      Dsc_MSK_05          = "6636"  ;
+      Dsc_MskPdv_05       = "6646"  ;
+      Dsc_KtoPpmv         = ""      ;
+      Dsc_PdvR10m_EU      = "14010";
+      Dsc_PdvR25m_EU      = "14025";
+      Dsc_PdvR10n_EU      = "14010";
+      Dsc_PdvR25n_EU      = "14025";
+      Dsc_PdvR05m_EU      = "14005";
+      Dsc_PdvR05n_EU      = "14005";
+      Dsc_PdvU10m_EU      = "14010";
+      Dsc_PdvU25m_EU      = "14025";
+      Dsc_PdvU10n_EU      = "14010";
+      Dsc_PdvU25n_EU      = "14025";
+      Dsc_PdvU05m_EU      = "14005";
+      Dsc_PdvU05n_EU      = "14005";
+      Dsc_Pdv10m_BS       = "14010";
+      Dsc_Pdv25m_BS       = "14025";
+      Dsc_Pdv10n_BS       = "14010";
+      Dsc_Pdv25n_BS       = "14025";
+      Dsc_Pdv25m_TP       = "14025";
+      Dsc_Pdv25n_TP       = "14025";
+      Dsc_KupDobR_EU      = "2210" ;
+      Dsc_TrosakR_EU      = "4000" ;
+      Dsc_ObrPdvR25_EU    = "24025";
+      Dsc_ObrPdvR10_EU    = "24010";
+      Dsc_ObrPdvR05_EU    = "24005";
+      Dsc_KupDobU_EU      = "2210" ;
+      Dsc_TrosakU_EU      = "4000" ;
+      Dsc_ObrPdvU25_EU    = "24025";
+      Dsc_ObrPdvU10_EU    = "24010";
+      Dsc_ObrPdvU05_EU    = "24005";
+      Dsc_KupDob_BS       = "2200" ;
+      Dsc_Trosak_BS       = "4000" ;
+      Dsc_ObrPdv10_BS     = "24010";
+      Dsc_ObrPdv25_BS     = "24025";
+      Dsc_KupDob_TP       = "2200" ;
+      Dsc_Trosak_TP       = "4000" ;
+      Dsc_ObrPdv25_TP     = "24025";
+      Dsc_UKto_Pdv05m_Ura = "1405";
+      Dsc_UKto_Pdv05n_Ura = "1405";
+      Dsc_SKto_Pdv05m_Ura = "1405";
+      Dsc_SKto_Pdv05n_Ura = "1405";
+
+      Dsc_ukIznPNP          = "2484";
+      Dsc_Msk_PNP           = "6642";
+      Dsc_KtoIZD            = "4000";
+      Dsc_KtoIZM            = "4000";
+      Dsc_OcuPrihLikeSklad  = true;
+
+      Dsc_KupacKontaIOS     = "120, 121, 122";
+      Dsc_DobavKontaIOS     = "220, 221, 222";
+
+      Dsc_KtoRnmPprUSL      = "4000";
+
+      Dsc_IsVisibleColPozicija = 
+      Dsc_IsVisibleColMtrosCD  = 
+      Dsc_IsVisibleColMtrosTK  = 
+      Dsc_IsVisibleColProjekt  = 
+      Dsc_IsVisibleColFond     = 
+      Dsc_IsVisibleColObrpdv   = 
+      Dsc_IsVisibleColObr037   = 
+      Dsc_IsPlanViaMtros       = 
+      Dsc_IsVisibleColPozName  =
+      Dsc_IsVisibleColFondName =
+      Dsc_IsVisibleColProgAkt  =
+      Dsc_isExtValidation      =
+      Dsc_NoPrintPozicCd       = 
+      Dsc_IsNeGrupTrosak       = 
+      Dsc_IsOnlyIOSknjizenje   = 
+      Dsc_ForceIRMkaoIRA       = 
+      Dsc_IsIFAtoUPL_napomena  = false;
+      Dsc_Is_OTSviaMtrosCD     = false;
+
+      Dsc_PrimAvansKonta       = "230";
+      Dsc_DaniAvansKonta       = "130";
+
+      #endregion defautValue
+   }
+
+   #endregion override SetDefaultValues
+}
+
+
+public class RiskRulesDsc : VvLookupAsDsc
+{
+   #region DataLayer Propertiz
+
+   public int      Dsc_MalopCalcKind { get; set; }
+   public ZXC.MalopCalcKind MalopCalcKind 
+   {
+      get { return (ZXC.MalopCalcKind)Dsc_MalopCalcKind; }  
+      set {                           Dsc_MalopCalcKind = (int)value; } 
+   }
+
+   public decimal Dsc_VpcMpcMarza            { get; set; }
+   public int     Dsc_MalopKCD               { get; set; }
+   public bool    Dsc_IsViaRabat             { get; set; }
+   public Kupdob  MalopKupdob_rec            { get; set; }
+   public bool    Dsc_VpcMpcMarzaTheSame4VPC { get; set; }
+
+   public bool    Dsc_IsBarCode              { get; set; }
+   public bool    Dsc_IsPKvisible            { get; set; }
+   public bool    Dsc_IsZtrViaOrgPak         { get; set; }
+   public bool    Dsc_IsOrgPakVisible        { get; set; }
+   public string  Dsc_OrgPakText             { get; set; }
+
+   //public bool    Dsc_IsSupressSHADOWing     { 
+   //   get; 
+   //   set; 
+   //}
+
+
+   private bool dsc_IsSupressSHADOWing;
+   public  bool Dsc_IsSupressSHADOWing
+   {
+      get { return dsc_IsSupressSHADOWing; }
+      set {        dsc_IsSupressSHADOWing = value; }
+   }
+
+   public int  Dsc_KolNumOfDecimalPlaces   { get; set; }
+   public int  Dsc_FISK_TimeOutSeconds     { get; set; }
+                                           
+   public bool    Dsc_IsPnpStVisible       { get; set; }
+   public decimal Dsc_PnpSt                { get; set; }
+   public bool    Dsc_IsDateXDateIzd       { get; set; }
+   public bool    Dsc_IsAnaPrihodIRM       { get; set; }
+                                           
+   public bool    Dsc_IsCheckOpenSaldo     { get; set; }
+   public bool    Dsc_IsPrintOTSafterIRA   { get; set; }
+   public decimal Dsc_KomProvizSt          { get; set; }
+   public decimal Dsc_MinimalRUC           { get; set; }
+                                           
+   public bool    Dsc_IsMtrosColVisible    { get; set; }
+   public bool    Dsc_IsKol2Visible        { get; set; }
+
+   public int     Dsc_AmbKolNumOfDecimalPlaces { get; set; }
+   public bool    Dsc_IsIRMttNum7              { get; set; }
+   public bool    Dsc_IsProizvCijByArtGr       { get; set; }
+   public bool    Dsc_IsDokDate2               { get; set; }
+
+   public bool    Dsc_IsRetMoneyCalc           { get; set; }
+   public bool    Dsc_IsIrmQuickPrint          { get; set; }
+   public bool    Dsc_IsSklRestrictor          { get; set; }
+   public bool    Dsc_IsMSIttNumByPosl         { get; set; }
+   public bool    Dsc_IsRbtFromPartner         { get; set; }
+
+   public decimal Dsc_OmjerPdv                 { get; set; }
+   public decimal Dsc_BlgMin                   { get; set; }
+   public decimal Dsc_KoefPlanCijProizv        { get; set; }
+
+   public bool Dsc_IsSerlotVisible             { get; set; }
+   public bool Dsc_IsRbt2ColVisible            { get; set; }
+
+   public bool Dsc_IsCentralaFindFaktur        { get; set; }
+   public bool Dsc_IsOibOznOper                { get; set; }
+
+   public bool Dsc_IsIgnoreImportCij           { get; set; }
+
+   public bool    Dsc_IsObligArtikl            { get; set; }
+   public decimal Dsc_TolerancOdstUlCij        { get; set; }
+   public bool    Dsc_IsPamtiPrintDate         { get; set; }
+   public bool    Dsc_IsBlgOrderByDokNum       { get; set; }
+
+   public int Dsc_NorKolNumOfDecimalPlaces     { get; set; }
+
+   // 30.09.2020: 
+   public string  Dsc_PreferedSkladOnUCLoad    { get; set; }
+
+   public bool Dsc_IsVisibleLotOnIzlaz         { get; set; }
+   public bool Dsc_IsUseNAK                    { get; set; }
+   public bool Dsc_IsSintArt4Print             { get; set; }
+
+   public bool Is_Serlot_Active
+   {
+      get
+      {
+         return this.Dsc_IsSerlotVisible || Dsc_IsVisibleLotOnIzlaz;
+      }
+   }
+   
+   public string Dsc_OpcinaCd_PNP              { get; set; }
+   public bool Dsc_NOcheckDupUbyKMD            { get; set; } //check duplicate URA/UFA by kcd date money
+
+   #endregion DataLayer Propertiz
+
+   #region Constructor
+
+   public RiskRulesDsc(VvLookUpLista vvLookUpLista) : base(vvLookUpLista)
+   {
+      //SetMalopKupdob_rec();
+   }
+
+   public RiskRulesDsc(VvLookUpLista vvLookUpLista, bool weNeedDefaultList) : base(vvLookUpLista, weNeedDefaultList)
+   {
+   }
+
+   #endregion Constructor
+
+   #region override SetDefaultValues
+
+   public override void SetDefaultValues(VvLookUpLista luiList)
+   {
+      #region defautValue
+
+      MalopCalcKind   = ZXC.MalopCalcKind.By_MPC;
+      Dsc_IsViaRabat  = true;
+      Dsc_IsBarCode   = false;
+      Dsc_IsPKvisible = false;
+
+      Dsc_VpcMpcMarza = 14.00M;
+
+      Dsc_MalopKCD = 1;
+      
+      Dsc_VpcMpcMarzaTheSame4VPC = false;
+      
+      Dsc_KolNumOfDecimalPlaces = 2;
+      Dsc_NorKolNumOfDecimalPlaces = 2;
+
+      Dsc_FISK_TimeOutSeconds = 16;
+
+      Dsc_IsZtrViaOrgPak  = false;
+      Dsc_IsOrgPakVisible = false;
+      Dsc_IsPnpStVisible  = false;
+      Dsc_IsDateXDateIzd  = false;
+      Dsc_IsAnaPrihodIRM  = false;
+
+      Dsc_PnpSt = 3.00M;
+
+      Dsc_IsCheckOpenSaldo   = false;
+      Dsc_IsPrintOTSafterIRA = false;
+      Dsc_KomProvizSt        = 0.00M;   
+      Dsc_MinimalRUC         = 0.00M;
+
+      Dsc_IsMtrosColVisible        = false;
+      Dsc_IsKol2Visible            = false;
+      Dsc_IsIRMttNum7              = false;
+      Dsc_AmbKolNumOfDecimalPlaces = 0;
+      Dsc_IsProizvCijByArtGr       = false;
+      Dsc_IsDokDate2               = false;
+      Dsc_IsRetMoneyCalc           = false;
+      Dsc_IsIrmQuickPrint          = false;
+      Dsc_IsSklRestrictor          = false;
+      Dsc_IsMSIttNumByPosl         = false;
+      Dsc_IsRbtFromPartner         = false;
+
+      Dsc_OmjerPdv                 = 0.00M;
+      Dsc_BlgMin                   = 400.00M;
+      Dsc_KoefPlanCijProizv        = 0.00M;
+
+      Dsc_OrgPakText               = "";
+      Dsc_IsCentralaFindFaktur     = false;
+      Dsc_IsOibOznOper             = false;
+      Dsc_IsIgnoreImportCij        = false;
+      Dsc_IsObligArtikl            = false;
+      Dsc_TolerancOdstUlCij        = 0.00M;
+      Dsc_IsPamtiPrintDate         = false;
+      Dsc_IsVisibleLotOnIzlaz      = false;
+      Dsc_IsUseNAK                 = false;
+      Dsc_IsSintArt4Print          = false;
+      Dsc_OpcinaCd_PNP             = "";
+      Dsc_IsSintArt4Print          = false;
+
+      Dsc_PreferedSkladOnUCLoad    = "";
+      
+      #endregion defautValue
+   }
+
+   #endregion override SetDefaultValues
+
+   internal void SetMalopKupdob_rec(FakturDUC theDUC)
+   {
+      if(theDUC == null) theDUC = ZXC.TheVvForm.TheVvUC as FakturDUC;
+
+      MalopKupdob_rec = theDUC.Get_Kupdob_FromVvUcSifrar((uint)Dsc_MalopKCD);
+
+      if(MalopKupdob_rec == null) MalopKupdob_rec = new Kupdob();
+   }
+
+}
+
+public class VvRiskMacro
+{
+   public uint              RecID         { get; set; } // direct dataLayers
+   public string            MacroName     { get; set; } // direct dataLayers
+   public int               ReportZ       { get; set; } // direct dataLayers PUSE !!! 
+   public bool              UseMacroDates { get; set; } // direct dataLayers
+   //--------------------------------------------------                     
+   public VvRpt_RiSk_Filter RptFilter     { get; set; } // every property is surficed 4 dataLayer 
+
+   public VvRiskMacro()
+   {
+      this.RptFilter = new VvRpt_RiSk_Filter(false);
+   }
+
+   public VvRiskMacro(string macroName, string shortReportName, int reportZ, bool useMacroDates, VvRpt_RiSk_Filter rptFilter)
+   {
+      this.MacroName     = macroName    ;
+      this.ReportZ       = reportZ      ; // PUSE !!! 
+      this.UseMacroDates = useMacroDates;
+      this.RptFilter     = rptFilter    ;
+
+      // 25.11.2012: 
+      this.RptFilter.FuseStr2 = shortReportName;
+   }
+
+   public override string ToString()
+   {
+      return MacroName;
+   }
+
+}
+
+public interface IVvRealizableFakturDUC
+{
+
+   List<Rtrans> RealizRtrList_AllYears
+   {
+      get;
+      set;
+   }
+
+   List<Rtrans> RealizRtrList_ThisYear
+   {
+      get;
+      set;
+   }
+
+}
+
+//public interface IVvOtplatanFakturDUC
+//{
+//
+//   //PTG_OtplatniPlan TheOtplatniPlan
+//   //{
+//   //   get;
+//   //   set;
+//   //}
+//
+//   PTG_Ugovor ThePtgUgovor_rec
+//   {
+//      get;
+//      set;
+//   }
+//
+//}

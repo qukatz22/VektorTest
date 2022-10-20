@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_findPlaca" targetNamespace="http://tempuri.org/DS_findPlaca.xsd" xmlns:mstns="http://tempuri.org/DS_findPlaca.xsd" xmlns="http://tempuri.org/DS_findPlaca.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_findPlaca" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:EnforceConstraints="False" msprop:EnableTableAdapterManager="False" msprop:Generator_DataSetName="DS_findPlaca" msprop:Generator_UserDSName="DS_findPlaca">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="placa" msprop:Generator_TableClassName="placaDataTable" msprop:Generator_TableVarName="tableplaca" msprop:Generator_TablePropName="placa" msprop:Generator_RowDeletingName="placaRowDeleting" msprop:Generator_UserTableName="placa" msprop:Generator_RowChangingName="placaRowChanging" msprop:Generator_RowEvHandlerName="placaRowChangeEventHandler" msprop:Generator_RowDeletedName="placaRowDeleted" msprop:Generator_RowEvArgName="placaRowChangeEvent" msprop:Generator_RowChangedName="placaRowChanged" msprop:Generator_RowClassName="placaRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" />
+              <xs:element name="addTS" msprop:Generator_ColumnVarNameInTable="columnaddTS" msprop:Generator_ColumnPropNameInRow="addTS" msprop:Generator_ColumnPropNameInTable="addTSColumn" msprop:Generator_UserColumnName="addTS" type="xs:dateTime" />
+              <xs:element name="modTS" msprop:Generator_ColumnVarNameInTable="columnmodTS" msprop:Generator_ColumnPropNameInRow="modTS" msprop:Generator_ColumnPropNameInTable="modTSColumn" msprop:Generator_UserColumnName="modTS" type="xs:dateTime" />
+              <xs:element name="addUID" msprop:Generator_ColumnVarNameInTable="columnaddUID" msprop:Generator_ColumnPropNameInRow="addUID" msprop:Generator_ColumnPropNameInTable="addUIDColumn" msprop:Generator_UserColumnName="addUID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="modUID" msprop:Generator_ColumnVarNameInTable="columnmodUID" msprop:Generator_ColumnPropNameInRow="modUID" msprop:Generator_ColumnPropNameInTable="modUIDColumn" msprop:Generator_UserColumnName="modUID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="dokNum" msprop:Generator_ColumnVarNameInTable="columndokNum" msprop:Generator_ColumnPropNameInRow="dokNum" msprop:Generator_ColumnPropNameInTable="dokNumColumn" msprop:Generator_UserColumnName="dokNum" type="xs:unsignedInt" />
+              <xs:element name="dokDate" msprop:Generator_ColumnVarNameInTable="columndokDate" msprop:Generator_ColumnPropNameInRow="dokDate" msprop:Generator_ColumnPropNameInTable="dokDateColumn" msprop:Generator_UserColumnName="dokDate" type="xs:dateTime" />
+              <xs:element name="tt" msprop:Generator_ColumnVarNameInTable="columntt" msprop:Generator_ColumnPropNameInRow="tt" msprop:Generator_ColumnPropNameInTable="ttColumn" msprop:Generator_UserColumnName="tt">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ttNum" msprop:Generator_ColumnVarNameInTable="columnttNum" msprop:Generator_ColumnPropNameInRow="ttNum" msprop:Generator_ColumnPropNameInTable="ttNumColumn" msprop:Generator_UserColumnName="ttNum" type="xs:unsignedInt" />
+              <xs:element name="vrstaObr" msprop:Generator_ColumnVarNameInTable="columnvrstaObr" msprop:Generator_ColumnPropNameInRow="vrstaObr" msprop:Generator_ColumnPropNameInTable="vrstaObrColumn" msprop:Generator_UserColumnName="vrstaObr">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="mmyyyy" msprop:Generator_ColumnVarNameInTable="columnmmyyyy" msprop:Generator_ColumnPropNameInRow="mmyyyy" msprop:Generator_ColumnPropNameInTable="mmyyyyColumn" msprop:Generator_UserColumnName="mmyyyy">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="fondSati" msprop:Generator_ColumnVarNameInTable="columnfondSati" msprop:Generator_ColumnPropNameInRow="fondSati" msprop:Generator_ColumnPropNameInTable="fondSatiColumn" msprop:Generator_UserColumnName="fondSati" type="xs:decimal" />
+              <xs:element name="mtros_cd" msprop:Generator_ColumnVarNameInTable="columnmtros_cd" msprop:Generator_ColumnPropNameInRow="mtros_cd" msprop:Generator_ColumnPropNameInTable="mtros_cdColumn" msprop:Generator_UserColumnName="mtros_cd" type="xs:unsignedInt" />
+              <xs:element name="mtros_tk" msprop:Generator_ColumnVarNameInTable="columnmtros_tk" msprop:Generator_ColumnPropNameInRow="mtros_tk" msprop:Generator_ColumnPropNameInTable="mtros_tkColumn" msprop:Generator_UserColumnName="mtros_tk">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="napomena" msprop:Generator_ColumnVarNameInTable="columnnapomena" msprop:Generator_ColumnPropNameInRow="napomena" msprop:Generator_ColumnPropNameInTable="napomenaColumn" msprop:Generator_UserColumnName="napomena">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="80" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="rSm_ID" msprop:Generator_ColumnVarNameInTable="columnrSm_ID" msprop:Generator_ColumnPropNameInRow="rSm_ID" msprop:Generator_ColumnPropNameInTable="rSm_IDColumn" msprop:Generator_UserColumnName="rSm_ID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="4" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="origRecID" msprop:Generator_ColumnVarNameInTable="columnorigRecID" msprop:Generator_ColumnPropNameInRow="origRecID" msprop:Generator_ColumnPropNameInTable="origRecIDColumn" msprop:Generator_UserColumnName="origRecID" type="xs:unsignedInt" />
+              <xs:element name="recVer" msprop:Generator_ColumnVarNameInTable="columnrecVer" msprop:Generator_ColumnPropNameInRow="recVer" msprop:Generator_ColumnPropNameInTable="recVerColumn" msprop:Generator_UserColumnName="recVer" type="xs:unsignedShort" />
+              <xs:element name="arAction" msprop:Generator_ColumnVarNameInTable="columnarAction" msprop:Generator_ColumnPropNameInRow="arAction" msprop:Generator_ColumnPropNameInTable="arActionColumn" msprop:Generator_UserColumnName="arAction">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="8" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="arTS" msprop:Generator_ColumnVarNameInTable="columnarTS" msprop:Generator_ColumnPropNameInRow="arTS" msprop:Generator_ColumnPropNameInTable="arTSColumn" msprop:Generator_UserColumnName="arTS" type="xs:dateTime" />
+              <xs:element name="arUID" msprop:Generator_ColumnVarNameInTable="columnarUID" msprop:Generator_ColumnPropNameInRow="arUID" msprop:Generator_ColumnPropNameInTable="arUIDColumn" msprop:Generator_UserColumnName="arUID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

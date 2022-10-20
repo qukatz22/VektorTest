@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_findKdcXtrans" targetNamespace="http://tempuri.org/DS_findKdcXtrans.xsd" xmlns:mstns="http://tempuri.org/DS_findKdcXtrans.xsd" xmlns="http://tempuri.org/DS_findKdcXtrans.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_findKdcXtrans" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:EnforceConstraints="False" msprop:EnableTableAdapterManager="False" msprop:Generator_DataSetName="DS_findKdcXtrans" msprop:Generator_UserDSName="DS_findKdcXtrans">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="xtrans" msprop:Generator_TableClassName="xtransDataTable" msprop:Generator_TableVarName="tablextrans" msprop:Generator_RowChangedName="xtransRowChanged" msprop:Generator_TablePropName="xtrans" msprop:Generator_RowDeletingName="xtransRowDeleting" msprop:Generator_RowChangingName="xtransRowChanging" msprop:Generator_RowEvHandlerName="xtransRowChangeEventHandler" msprop:Generator_RowDeletedName="xtransRowDeleted" msprop:Generator_RowClassName="xtransRow" msprop:Generator_UserTableName="xtrans" msprop:Generator_RowEvArgName="xtransRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" />
+              <xs:element name="t_kpdbNameA_50" msprop:Generator_ColumnVarNameInTable="columnt_kpdbNameA_50" msprop:Generator_ColumnPropNameInRow="t_kpdbNameA_50" msprop:Generator_ColumnPropNameInTable="t_kpdbNameA_50Column" msprop:Generator_UserColumnName="t_kpdbNameA_50">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kpdbUlBrA_32" msprop:Generator_ColumnVarNameInTable="columnt_kpdbUlBrA_32" msprop:Generator_ColumnPropNameInRow="t_kpdbUlBrA_32" msprop:Generator_ColumnPropNameInTable="t_kpdbUlBrA_32Column" msprop:Generator_UserColumnName="t_kpdbUlBrA_32">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="32" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_vezniDokA_64" msprop:Generator_ColumnVarNameInTable="columnt_vezniDokA_64" msprop:Generator_ColumnPropNameInRow="t_vezniDokA_64" msprop:Generator_ColumnPropNameInTable="t_vezniDokA_64Column" msprop:Generator_UserColumnName="t_vezniDokA_64">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="64" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kpdbZiroA_32" msprop:Generator_ColumnVarNameInTable="columnt_kpdbZiroA_32" msprop:Generator_ColumnPropNameInRow="t_kpdbZiroA_32" msprop:Generator_ColumnPropNameInTable="t_kpdbZiroA_32Column" msprop:Generator_UserColumnName="t_kpdbZiroA_32">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="32" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1">
+      <xs:selector xpath=".//mstns:xtrans" />
+      <xs:field xpath="mstns:recID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_Ftrans_AllC" targetNamespace="http://tempuri.org/DS_Ftrans_AllC.xsd" xmlns:mstns="http://tempuri.org/DS_Ftrans_AllC.xsd" xmlns="http://tempuri.org/DS_Ftrans_AllC.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_Ftrans_AllC" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:EnforceConstraints="False" msprop:EnableTableAdapterManager="False" msprop:Generator_DataSetName="DS_Ftrans_AllC" msprop:Generator_UserDSName="DS_Ftrans_AllC">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="IzvjTable" msprop:Generator_TableClassName="IzvjTableDataTable" msprop:Generator_TableVarName="tableIzvjTable" msprop:Generator_TablePropName="IzvjTable" msprop:Generator_RowDeletingName="IzvjTableRowDeleting" msprop:Generator_RowChangingName="IzvjTableRowChanging" msprop:Generator_RowEvHandlerName="IzvjTableRowChangeEventHandler" msprop:Generator_RowDeletedName="IzvjTableRowDeleted" msprop:Generator_UserTableName="IzvjTable" msprop:Generator_RowChangedName="IzvjTableRowChanged" msprop:Generator_RowEvArgName="IzvjTableRowChangeEvent" msprop:Generator_RowClassName="IzvjTableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" />
+              <xs:element name="t_parentID" msprop:Generator_ColumnVarNameInTable="columnt_parentID" msprop:Generator_ColumnPropNameInRow="t_parentID" msprop:Generator_ColumnPropNameInTable="t_parentIDColumn" msprop:Generator_UserColumnName="t_parentID" type="xs:unsignedInt" />
+              <xs:element name="t_dokNum" msprop:Generator_ColumnVarNameInTable="columnt_dokNum" msprop:Generator_ColumnPropNameInRow="t_dokNum" msprop:Generator_ColumnPropNameInTable="t_dokNumColumn" msprop:Generator_UserColumnName="t_dokNum" type="xs:unsignedInt" />
+              <xs:element name="t_serial" msprop:Generator_ColumnVarNameInTable="columnt_serial" msprop:Generator_ColumnPropNameInRow="t_serial" msprop:Generator_ColumnPropNameInTable="t_serialColumn" msprop:Generator_UserColumnName="t_serial" type="xs:unsignedShort" />
+              <xs:element name="t_dokDate" msprop:Generator_ColumnVarNameInTable="columnt_dokDate" msprop:Generator_ColumnPropNameInRow="t_dokDate" msprop:Generator_ColumnPropNameInTable="t_dokDateColumn" msprop:Generator_UserColumnName="t_dokDate" type="xs:dateTime" />
+              <xs:element name="t_konto" msprop:Generator_ColumnVarNameInTable="columnt_konto" msprop:Generator_ColumnPropNameInRow="t_konto" msprop:Generator_ColumnPropNameInTable="t_kontoColumn" msprop:Generator_UserColumnName="t_konto">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="8" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kupdob_cd" msprop:Generator_ColumnVarNameInTable="columnt_kupdob_cd" msprop:Generator_ColumnPropNameInRow="t_kupdob_cd" msprop:Generator_ColumnPropNameInTable="t_kupdob_cdColumn" msprop:Generator_UserColumnName="t_kupdob_cd" type="xs:unsignedInt" />
+              <xs:element name="t_ticker" msprop:Generator_ColumnVarNameInTable="columnt_ticker" msprop:Generator_ColumnPropNameInRow="t_ticker" msprop:Generator_ColumnPropNameInTable="t_tickerColumn" msprop:Generator_UserColumnName="t_ticker">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_mtros_cd" msprop:Generator_ColumnVarNameInTable="columnt_mtros_cd" msprop:Generator_ColumnPropNameInRow="t_mtros_cd" msprop:Generator_ColumnPropNameInTable="t_mtros_cdColumn" msprop:Generator_UserColumnName="t_mtros_cd" type="xs:unsignedInt" />
+              <xs:element name="t_mtros_tk" msdata:Caption="t_ticker" msprop:Generator_ColumnVarNameInTable="columnt_mtros_tk" msprop:Generator_ColumnPropNameInRow="t_mtros_tk" msprop:Generator_ColumnPropNameInTable="t_mtros_tkColumn" msprop:Generator_UserColumnName="t_mtros_tk">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_tipBr" msprop:Generator_ColumnVarNameInTable="columnt_tipBr" msprop:Generator_ColumnPropNameInRow="t_tipBr" msprop:Generator_ColumnPropNameInTable="t_tipBrColumn" msprop:Generator_UserColumnName="t_tipBr">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="64" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_opis" msprop:Generator_ColumnVarNameInTable="columnt_opis" msprop:Generator_ColumnPropNameInRow="t_opis" msprop:Generator_ColumnPropNameInTable="t_opisColumn" msprop:Generator_UserColumnName="t_opis">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="80" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_valuta" msprop:Generator_ColumnVarNameInTable="columnt_valuta" msprop:Generator_ColumnPropNameInRow="t_valuta" msprop:Generator_ColumnPropNameInTable="t_valutaColumn" msprop:Generator_UserColumnName="t_valuta" type="xs:dateTime" />
+              <xs:element name="t_tt" msprop:Generator_ColumnVarNameInTable="columnt_tt" msprop:Generator_ColumnPropNameInRow="t_tt" msprop:Generator_ColumnPropNameInTable="t_ttColumn" msprop:Generator_UserColumnName="t_tt">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_pdv" msprop:Generator_ColumnVarNameInTable="columnt_pdv" msprop:Generator_ColumnPropNameInRow="t_pdv" msprop:Generator_ColumnPropNameInTable="t_pdvColumn" msprop:Generator_UserColumnName="t_pdv">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_037" msprop:Generator_ColumnVarNameInTable="columnt_037" msprop:Generator_ColumnPropNameInRow="t_037" msprop:Generator_ColumnPropNameInTable="t_037Column" msprop:Generator_UserColumnName="t_037">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_dug" msprop:Generator_ColumnVarNameInTable="columnt_dug" msprop:Generator_ColumnPropNameInRow="t_dug" msprop:Generator_ColumnPropNameInTable="t_dugColumn" msprop:Generator_UserColumnName="t_dug" type="xs:decimal" />
+              <xs:element name="t_pot" msprop:Generator_ColumnVarNameInTable="columnt_pot" msprop:Generator_ColumnPropNameInRow="t_pot" msprop:Generator_ColumnPropNameInTable="t_potColumn" msprop:Generator_UserColumnName="t_pot" type="xs:decimal" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="nalog" msprop:Generator_TableClassName="nalogDataTable" msprop:Generator_TableVarName="tablenalog" msprop:Generator_TablePropName="nalog" msprop:Generator_RowDeletingName="nalogRowDeleting" msprop:Generator_RowChangingName="nalogRowChanging" msprop:Generator_RowEvHandlerName="nalogRowChangeEventHandler" msprop:Generator_RowDeletedName="nalogRowDeleted" msprop:Generator_UserTableName="nalog" msprop:Generator_RowChangedName="nalogRowChanged" msprop:Generator_RowEvArgName="nalogRowChangeEvent" msprop:Generator_RowClassName="nalogRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" />
+              <xs:element name="addTS" msprop:Generator_ColumnVarNameInTable="columnaddTS" msprop:Generator_ColumnPropNameInRow="addTS" msprop:Generator_ColumnPropNameInTable="addTSColumn" msprop:Generator_UserColumnName="addTS" type="xs:dateTime" />
+              <xs:element name="modTS" msprop:Generator_ColumnVarNameInTable="columnmodTS" msprop:Generator_ColumnPropNameInRow="modTS" msprop:Generator_ColumnPropNameInTable="modTSColumn" msprop:Generator_UserColumnName="modTS" type="xs:dateTime" />
+              <xs:element name="addUID" msprop:Generator_ColumnVarNameInTable="columnaddUID" msprop:Generator_ColumnPropNameInRow="addUID" msprop:Generator_ColumnPropNameInTable="addUIDColumn" msprop:Generator_UserColumnName="addUID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="modUID" msprop:Generator_ColumnVarNameInTable="columnmodUID" msprop:Generator_ColumnPropNameInRow="modUID" msprop:Generator_ColumnPropNameInTable="modUIDColumn" msprop:Generator_UserColumnName="modUID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="dokNum" msprop:Generator_ColumnVarNameInTable="columndokNum" msprop:Generator_ColumnPropNameInRow="dokNum" msprop:Generator_ColumnPropNameInTable="dokNumColumn" msprop:Generator_UserColumnName="dokNum" type="xs:unsignedInt" />
+              <xs:element name="dokDate" msprop:Generator_ColumnVarNameInTable="columndokDate" msprop:Generator_ColumnPropNameInRow="dokDate" msprop:Generator_ColumnPropNameInTable="dokDateColumn" msprop:Generator_UserColumnName="dokDate" type="xs:dateTime" />
+              <xs:element name="tt" msprop:Generator_ColumnVarNameInTable="columntt" msprop:Generator_ColumnPropNameInRow="tt" msprop:Generator_ColumnPropNameInTable="ttColumn" msprop:Generator_UserColumnName="tt">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ttNum" msprop:Generator_ColumnVarNameInTable="columnttNum" msprop:Generator_ColumnPropNameInRow="ttNum" msprop:Generator_ColumnPropNameInTable="ttNumColumn" msprop:Generator_UserColumnName="ttNum" type="xs:unsignedInt" minOccurs="0" />
+              <xs:element name="napomena" msprop:Generator_ColumnVarNameInTable="columnnapomena" msprop:Generator_ColumnPropNameInRow="napomena" msprop:Generator_ColumnPropNameInTable="napomenaColumn" msprop:Generator_UserColumnName="napomena">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="80" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="flagA" msprop:Generator_ColumnVarNameInTable="columnflagA" msprop:Generator_ColumnPropNameInRow="flagA" msprop:Generator_ColumnPropNameInTable="flagAColumn" msprop:Generator_UserColumnName="flagA" type="xs:unsignedByte" />
+              <xs:element name="dug" msprop:Generator_ColumnVarNameInTable="columndug" msprop:Generator_ColumnPropNameInRow="dug" msprop:Generator_ColumnPropNameInTable="dugColumn" msprop:Generator_UserColumnName="dug" type="xs:decimal" />
+              <xs:element name="pot" msprop:Generator_ColumnVarNameInTable="columnpot" msprop:Generator_ColumnPropNameInRow="pot" msprop:Generator_ColumnPropNameInTable="potColumn" msprop:Generator_UserColumnName="pot" type="xs:decimal" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:IzvjTable" />
+      <xs:field xpath="mstns:recID" />
+    </xs:unique>
+    <xs:unique name="nalog_Constraint1" msdata:ConstraintName="Constraint1">
+      <xs:selector xpath=".//mstns:nalog" />
+      <xs:field xpath="mstns:dokNum" />
+    </xs:unique>
+    <xs:unique name="Constraint2" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:nalog" />
+      <xs:field xpath="mstns:recID" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="Relation_NalogForFtrans" msdata:parent="nalog" msdata:child="IzvjTable" msdata:parentkey="recID" msdata:childkey="t_parentID" msprop:Generator_UserChildTable="IzvjTable" msprop:Generator_ChildPropName="GetIzvjTableRows" msprop:Generator_UserRelationName="Relation_NalogForFtrans" msprop:Generator_ParentPropName="nalogRow" msprop:Generator_RelationVarName="relationRelation_NalogForFtrans" msprop:Generator_UserParentTable="nalog" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

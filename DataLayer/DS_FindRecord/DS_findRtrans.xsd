@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_findRtrans" targetNamespace="http://tempuri.org/DS_findRtrans.xsd" xmlns:mstns="http://tempuri.org/DS_findRtrans.xsd" xmlns="http://tempuri.org/DS_findRtrans.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_findRtrans" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:EnforceConstraints="False" msprop:EnableTableAdapterManager="False" msprop:Generator_DataSetName="DS_findRtrans" msprop:Generator_UserDSName="DS_findRtrans">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="rtrans" msprop:Generator_TableClassName="rtransDataTable" msprop:Generator_TableVarName="tablertrans" msprop:Generator_RowChangedName="rtransRowChanged" msprop:Generator_TablePropName="rtrans" msprop:Generator_RowDeletingName="rtransRowDeleting" msprop:Generator_RowChangingName="rtransRowChanging" msprop:Generator_RowEvHandlerName="rtransRowChangeEventHandler" msprop:Generator_RowDeletedName="rtransRowDeleted" msprop:Generator_RowClassName="rtransRow" msprop:Generator_UserTableName="rtrans" msprop:Generator_RowEvArgName="rtransRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" />
+              <xs:element name="t_parentID" msprop:Generator_ColumnVarNameInTable="columnt_parentID" msprop:Generator_ColumnPropNameInRow="t_parentID" msprop:Generator_ColumnPropNameInTable="t_parentIDColumn" msprop:Generator_UserColumnName="t_parentID" type="xs:unsignedInt" />
+              <xs:element name="t_dokNum" msprop:Generator_ColumnVarNameInTable="columnt_dokNum" msprop:Generator_ColumnPropNameInRow="t_dokNum" msprop:Generator_ColumnPropNameInTable="t_dokNumColumn" msprop:Generator_UserColumnName="t_dokNum" type="xs:unsignedInt" />
+              <xs:element name="t_serial" msprop:Generator_ColumnVarNameInTable="columnt_serial" msprop:Generator_ColumnPropNameInRow="t_serial" msprop:Generator_ColumnPropNameInTable="t_serialColumn" msprop:Generator_UserColumnName="t_serial" type="xs:unsignedShort" />
+              <xs:element name="t_skladDate" msprop:Generator_ColumnVarNameInTable="columnt_skladDate" msprop:Generator_ColumnPropNameInRow="t_skladDate" msprop:Generator_ColumnPropNameInTable="t_skladDateColumn" msprop:Generator_UserColumnName="t_skladDate" type="xs:dateTime" />
+              <xs:element name="t_tt" msprop:Generator_ColumnVarNameInTable="columnt_tt" msprop:Generator_ColumnPropNameInRow="t_tt" msprop:Generator_ColumnPropNameInTable="t_ttColumn" msprop:Generator_UserColumnName="t_tt">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_ttNum" msprop:Generator_ColumnVarNameInTable="columnt_ttNum" msprop:Generator_ColumnPropNameInRow="t_ttNum" msprop:Generator_ColumnPropNameInTable="t_ttNumColumn" msprop:Generator_UserColumnName="t_ttNum" type="xs:unsignedInt" />
+              <xs:element name="t_ttSort" msprop:Generator_ColumnVarNameInTable="columnt_ttSort" msprop:Generator_ColumnPropNameInRow="t_ttSort" msprop:Generator_ColumnPropNameInTable="t_ttSortColumn" msprop:Generator_UserColumnName="t_ttSort" type="xs:byte" />
+              <xs:element name="t_artiklCD" msprop:Generator_ColumnVarNameInTable="columnt_artiklCD" msprop:Generator_ColumnPropNameInRow="t_artiklCD" msprop:Generator_ColumnPropNameInTable="t_artiklCDColumn" msprop:Generator_UserColumnName="t_artiklCD">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="32" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_skladCD" msprop:Generator_ColumnVarNameInTable="columnt_skladCD" msprop:Generator_ColumnPropNameInRow="t_skladCD" msprop:Generator_ColumnPropNameInTable="t_skladCDColumn" msprop:Generator_UserColumnName="t_skladCD">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_artiklName" msprop:Generator_ColumnVarNameInTable="columnt_artiklName" msprop:Generator_ColumnPropNameInRow="t_artiklName" msprop:Generator_ColumnPropNameInTable="t_artiklNameColumn" msprop:Generator_UserColumnName="t_artiklName">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="80" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kupdob_cd" msprop:Generator_ColumnVarNameInTable="columnt_kupdob_cd" msprop:Generator_ColumnPropNameInRow="t_kupdob_cd" msprop:Generator_ColumnPropNameInTable="t_kupdob_cdColumn" msprop:Generator_UserColumnName="t_kupdob_cd" type="xs:unsignedInt" />
+              <xs:element name="t_jedMj" msprop:Generator_ColumnVarNameInTable="columnt_jedMj" msprop:Generator_ColumnPropNameInRow="t_jedMj" msprop:Generator_ColumnPropNameInTable="t_jedMjColumn" msprop:Generator_UserColumnName="t_jedMj">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="12" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_konto" msprop:Generator_ColumnVarNameInTable="columnt_konto" msprop:Generator_ColumnPropNameInRow="t_konto" msprop:Generator_ColumnPropNameInTable="t_kontoColumn" msprop:Generator_UserColumnName="t_konto">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kol" msprop:Generator_ColumnVarNameInTable="columnt_kol" msprop:Generator_ColumnPropNameInRow="t_kol" msprop:Generator_ColumnPropNameInTable="t_kolColumn" msprop:Generator_UserColumnName="t_kol" type="xs:decimal" />
+              <xs:element name="t_cij" msprop:Generator_ColumnVarNameInTable="columnt_cij" msprop:Generator_ColumnPropNameInRow="t_cij" msprop:Generator_ColumnPropNameInTable="t_cijColumn" msprop:Generator_UserColumnName="t_cij" type="xs:decimal" />
+              <xs:element name="t_pdvSt" msprop:Generator_ColumnVarNameInTable="columnt_pdvSt" msprop:Generator_ColumnPropNameInRow="t_pdvSt" msprop:Generator_ColumnPropNameInTable="t_pdvStColumn" msprop:Generator_UserColumnName="t_pdvSt" type="xs:decimal" />
+              <xs:element name="t_rbt1St" msprop:Generator_ColumnVarNameInTable="columnt_rbt1St" msprop:Generator_ColumnPropNameInRow="t_rbt1St" msprop:Generator_ColumnPropNameInTable="t_rbt1StColumn" msprop:Generator_UserColumnName="t_rbt1St" type="xs:decimal" />
+              <xs:element name="t_rbt2St" msprop:Generator_ColumnVarNameInTable="columnt_rbt2St" msprop:Generator_ColumnPropNameInRow="t_rbt2St" msprop:Generator_ColumnPropNameInTable="t_rbt2StColumn" msprop:Generator_UserColumnName="t_rbt2St" type="xs:decimal" />
+              <xs:element name="t_wanted" msprop:Generator_ColumnVarNameInTable="columnt_wanted" msprop:Generator_ColumnPropNameInRow="t_wanted" msprop:Generator_ColumnPropNameInTable="t_wantedColumn" msprop:Generator_UserColumnName="t_wanted" type="xs:decimal" />
+              <xs:element name="t_doCijMal" msprop:Generator_ColumnVarNameInTable="columnt_doCijMal" msprop:Generator_ColumnPropNameInRow="t_doCijMal" msprop:Generator_ColumnPropNameInTable="t_doCijMalColumn" msprop:Generator_UserColumnName="t_doCijMal" type="xs:decimal" />
+              <xs:element name="t_noCijMal" msprop:Generator_ColumnVarNameInTable="columnt_noCijMal" msprop:Generator_ColumnPropNameInRow="t_noCijMal" msprop:Generator_ColumnPropNameInTable="t_noCijMalColumn" msprop:Generator_UserColumnName="t_noCijMal" type="xs:decimal" />
+              <xs:element name="t_twinID" msprop:Generator_ColumnVarNameInTable="columnt_twinID" msprop:Generator_ColumnPropNameInRow="t_twinID" msprop:Generator_ColumnPropNameInTable="t_twinIDColumn" msprop:Generator_UserColumnName="t_twinID" type="xs:unsignedInt" />
+              <xs:element name="t_pdvKolTip" msprop:Generator_ColumnVarNameInTable="columnt_pdvKolTip" msprop:Generator_ColumnPropNameInRow="t_pdvKolTip" msprop:Generator_ColumnPropNameInTable="t_pdvKolTipColumn" msprop:Generator_UserColumnName="t_pdvKolTip" type="xs:unsignedByte" />
+              <xs:element name="t_ztr" msprop:Generator_ColumnVarNameInTable="columnt_ztr" msprop:Generator_ColumnPropNameInRow="t_ztr" msprop:Generator_ColumnPropNameInTable="t_ztrColumn" msprop:Generator_UserColumnName="t_ztr" type="xs:decimal" />
+              <xs:element name="t_kol2" msprop:Generator_ColumnVarNameInTable="columnt_kol2" msprop:Generator_ColumnPropNameInRow="t_kol2" msprop:Generator_ColumnPropNameInTable="t_kol2Column" msprop:Generator_UserColumnName="t_kol2" type="xs:decimal" />
+              <xs:element name="t_mCalcKind" msprop:Generator_ColumnVarNameInTable="columnt_mCalcKind" msprop:Generator_ColumnPropNameInRow="t_mCalcKind" msprop:Generator_ColumnPropNameInTable="t_mCalcKindColumn" msprop:Generator_UserColumnName="t_mCalcKind" type="xs:unsignedByte" />
+              <xs:element name="t_mtros_cd" msprop:Generator_ColumnVarNameInTable="columnt_mtros_cd" msprop:Generator_ColumnPropNameInRow="t_mtros_cd" msprop:Generator_ColumnPropNameInTable="t_mtros_cdColumn" msprop:Generator_UserColumnName="t_mtros_cd" type="xs:unsignedInt" />
+              <xs:element name="t_isIrmUslug" msprop:Generator_ColumnVarNameInTable="columnt_isIrmUslug" msprop:Generator_ColumnPropNameInRow="t_isIrmUslug" msprop:Generator_ColumnPropNameInTable="t_isIrmUslugColumn" msprop:Generator_UserColumnName="t_isIrmUslug" type="xs:unsignedByte" />
+              <xs:element name="t_ppmvOsn" msprop:Generator_ColumnVarNameInTable="columnt_ppmvOsn" msprop:Generator_ColumnPropNameInRow="t_ppmvOsn" msprop:Generator_ColumnPropNameInTable="t_ppmvOsnColumn" msprop:Generator_UserColumnName="t_ppmvOsn" type="xs:decimal" />
+              <xs:element name="t_ppmvSt1i2" msprop:Generator_ColumnVarNameInTable="columnt_ppmvSt1i2" msprop:Generator_ColumnPropNameInRow="t_ppmvSt1i2" msprop:Generator_ColumnPropNameInTable="t_ppmvSt1i2Column" msprop:Generator_UserColumnName="t_ppmvSt1i2" type="xs:decimal" />
+              <xs:element name="t_pnpSt" msprop:Generator_ColumnVarNameInTable="columnt_pnpSt" msprop:Generator_ColumnPropNameInRow="t_pnpSt" msprop:Generator_ColumnPropNameInTable="t_pnpStColumn" msprop:Generator_UserColumnName="t_pnpSt" type="xs:decimal" />
+              <xs:element name="t_serlot" msprop:Generator_ColumnVarNameInTable="columnt_serlot" msprop:Generator_ColumnPropNameInRow="t_serlot" msprop:Generator_ColumnPropNameInTable="t_serlotColumn" msprop:Generator_UserColumnName="t_serlot">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="32" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ext_kpdbName" msprop:Generator_ColumnVarNameInTable="columnext_kpdbName" msprop:Generator_ColumnPropNameInRow="ext_kpdbName" msprop:nullValue="&quot;&quot;" msprop:Generator_ColumnPropNameInTable="ext_kpdbNameColumn" msprop:Generator_UserColumnName="ext_kpdbName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:rtrans" />
+      <xs:field xpath="mstns:recID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

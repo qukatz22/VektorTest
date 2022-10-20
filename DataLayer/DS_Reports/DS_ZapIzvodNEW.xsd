@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_ZapIzvodNEW" targetNamespace="http://tempuri.org/DS_ZapIzvodNEW.xsd" xmlns:mstns="http://tempuri.org/DS_ZapIzvodNEW.xsd" xmlns="http://tempuri.org/DS_ZapIzvodNEW.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_ZapIzvodNEW" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DS_ZapIzvodNEW" msprop:Generator_UserDSName="DS_ZapIzvodNEW">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="headRecord" msprop:Generator_TableClassName="headRecordDataTable" msprop:Generator_TableVarName="tableheadRecord" msprop:Generator_TablePropName="headRecord" msprop:Generator_RowDeletingName="headRecordRowDeleting" msprop:Generator_RowChangingName="headRecordRowChanging" msprop:Generator_RowEvHandlerName="headRecordRowChangeEventHandler" msprop:Generator_RowDeletedName="headRecordRowDeleted" msprop:Generator_UserTableName="headRecord" msprop:Generator_RowChangedName="headRecordRowChanged" msprop:Generator_RowEvArgName="headRecordRowChangeEvent" msprop:Generator_RowClassName="headRecordRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="iz_br" msprop:Generator_ColumnVarNameInTable="columniz_br" msprop:Generator_ColumnPropNameInRow="iz_br" msprop:Generator_ColumnPropNameInTable="iz_brColumn" msprop:Generator_UserColumnName="iz_br" type="xs:long" minOccurs="0" />
+              <xs:element name="iz_date" msprop:Generator_ColumnVarNameInTable="columniz_date" msprop:Generator_ColumnPropNameInRow="iz_date" msprop:Generator_ColumnPropNameInTable="iz_dateColumn" msprop:Generator_UserColumnName="iz_date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="iz_prev_sign" msprop:Generator_ColumnVarNameInTable="columniz_prev_sign" msprop:Generator_ColumnPropNameInRow="iz_prev_sign" msprop:Generator_ColumnPropNameInTable="iz_prev_signColumn" msprop:Generator_UserColumnName="iz_prev_sign" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:length value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="iz_new_sign" msprop:Generator_ColumnVarNameInTable="columniz_new_sign" msprop:Generator_ColumnPropNameInRow="iz_new_sign" msprop:Generator_ColumnPropNameInTable="iz_new_signColumn" msprop:Generator_UserColumnName="iz_new_sign" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:length value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="iz_firma" msprop:Generator_ColumnVarNameInTable="columniz_firma" msprop:Generator_ColumnPropNameInRow="iz_firma" msprop:Generator_ColumnPropNameInTable="iz_firmaColumn" msprop:Generator_UserColumnName="iz_firma" type="xs:string" minOccurs="0" />
+              <xs:element name="iz_zap_name" msprop:Generator_ColumnVarNameInTable="columniz_zap_name" msprop:Generator_ColumnPropNameInRow="iz_zap_name" msprop:Generator_ColumnPropNameInTable="iz_zap_nameColumn" msprop:Generator_UserColumnName="iz_zap_name" type="xs:string" minOccurs="0" />
+              <xs:element name="iz_ziro_bdi" msprop:Generator_ColumnVarNameInTable="columniz_ziro_bdi" msprop:Generator_ColumnPropNameInRow="iz_ziro_bdi" msprop:Generator_ColumnPropNameInTable="iz_ziro_bdiColumn" msprop:Generator_UserColumnName="iz_ziro_bdi" type="xs:string" minOccurs="0" />
+              <xs:element name="iz_ziro_rnpri" msprop:Generator_ColumnVarNameInTable="columniz_ziro_rnpri" msprop:Generator_ColumnPropNameInRow="iz_ziro_rnpri" msprop:Generator_ColumnPropNameInTable="iz_ziro_rnpriColumn" msprop:Generator_UserColumnName="iz_ziro_rnpri" type="xs:string" minOccurs="0" />
+              <xs:element name="iz_ziro_racun" msprop:Generator_ColumnVarNameInTable="columniz_ziro_racun" msprop:Generator_ColumnPropNameInRow="iz_ziro_racun" msprop:Generator_ColumnPropNameInTable="iz_ziro_racunColumn" msprop:Generator_UserColumnName="iz_ziro_racun" type="xs:string" minOccurs="0" />
+              <xs:element name="iz_uk_dug" msprop:Generator_ColumnVarNameInTable="columniz_uk_dug" msprop:Generator_ColumnPropNameInRow="iz_uk_dug" msprop:Generator_ColumnPropNameInTable="iz_uk_dugColumn" msprop:Generator_UserColumnName="iz_uk_dug" type="xs:decimal" minOccurs="0" />
+              <xs:element name="iz_uk_pot" msprop:Generator_ColumnVarNameInTable="columniz_uk_pot" msprop:Generator_ColumnPropNameInRow="iz_uk_pot" msprop:Generator_ColumnPropNameInTable="iz_uk_potColumn" msprop:Generator_UserColumnName="iz_uk_pot" type="xs:decimal" minOccurs="0" />
+              <xs:element name="iz_prev_saldo" msprop:Generator_ColumnVarNameInTable="columniz_prev_saldo" msprop:Generator_ColumnPropNameInRow="iz_prev_saldo" msprop:Generator_ColumnPropNameInTable="iz_prev_saldoColumn" msprop:Generator_UserColumnName="iz_prev_saldo" type="xs:decimal" minOccurs="0" />
+              <xs:element name="iz_saldo" msprop:Generator_ColumnVarNameInTable="columniz_saldo" msprop:Generator_ColumnPropNameInRow="iz_saldo" msprop:Generator_ColumnPropNameInTable="iz_saldoColumn" msprop:Generator_UserColumnName="iz_saldo" type="xs:decimal" minOccurs="0" />
+              <xs:element name="iz_mjesto" msprop:Generator_ColumnVarNameInTable="columniz_mjesto" msprop:Generator_ColumnPropNameInRow="iz_mjesto" msprop:Generator_ColumnPropNameInTable="iz_mjestoColumn" msprop:Generator_UserColumnName="iz_mjesto" type="xs:string" minOccurs="0" />
+              <xs:element name="iz_dateIn6" msprop:Generator_ColumnVarNameInTable="columniz_dateIn6" msprop:Generator_ColumnPropNameInRow="iz_dateIn6" msprop:Generator_ColumnPropNameInTable="iz_dateIn6Column" msprop:Generator_UserColumnName="iz_dateIn6" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="iz_numOfTranses" msprop:Generator_ColumnVarNameInTable="columniz_numOfTranses" msprop:Generator_ColumnPropNameInRow="iz_numOfTranses" msprop:Generator_ColumnPropNameInTable="iz_numOfTransesColumn" msprop:Generator_UserColumnName="iz_numOfTranses" type="xs:unsignedInt" minOccurs="0" />
+              <xs:element name="iz_fName" msprop:Generator_ColumnVarNameInTable="columniz_fName" msprop:Generator_ColumnPropNameInRow="iz_fName" msprop:Generator_ColumnPropNameInTable="iz_fNameColumn" msprop:Generator_UserColumnName="iz_fName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="transRecord" msprop:Generator_TableClassName="transRecordDataTable" msprop:Generator_TableVarName="tabletransRecord" msprop:Generator_TablePropName="transRecord" msprop:Generator_RowDeletingName="transRecordRowDeleting" msprop:Generator_RowChangingName="transRecordRowChanging" msprop:Generator_RowEvHandlerName="transRecordRowChangeEventHandler" msprop:Generator_RowDeletedName="transRecordRowDeleted" msprop:Generator_UserTableName="transRecord" msprop:Generator_RowChangedName="transRecordRowChanged" msprop:Generator_RowEvArgName="transRecordRowChangeEvent" msprop:Generator_RowClassName="transRecordRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="t_br" msprop:Generator_ColumnVarNameInTable="columnt_br" msprop:Generator_ColumnPropNameInRow="t_br" msprop:Generator_ColumnPropNameInTable="t_brColumn" msprop:Generator_UserColumnName="t_br" type="xs:long" minOccurs="0" />
+              <xs:element name="t_serial" msprop:Generator_ColumnVarNameInTable="columnt_serial" msprop:Generator_ColumnPropNameInRow="t_serial" msprop:Generator_ColumnPropNameInTable="t_serialColumn" msprop:Generator_UserColumnName="t_serial" type="xs:int" minOccurs="0" />
+              <xs:element name="t_valuta" msprop:Generator_ColumnVarNameInTable="columnt_valuta" msprop:Generator_ColumnPropNameInRow="t_valuta" msprop:Generator_ColumnPropNameInTable="t_valutaColumn" msprop:Generator_UserColumnName="t_valuta" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="t_rbr" msprop:Generator_ColumnVarNameInTable="columnt_rbr" msprop:Generator_ColumnPropNameInRow="t_rbr" msprop:Generator_ColumnPropNameInTable="t_rbrColumn" msprop:Generator_UserColumnName="t_rbr" type="xs:string" minOccurs="0" />
+              <xs:element name="t_kd_ziro" msprop:Generator_ColumnVarNameInTable="columnt_kd_ziro" msprop:Generator_ColumnPropNameInRow="t_kd_ziro" msprop:Generator_ColumnPropNameInTable="t_kd_ziroColumn" msprop:Generator_UserColumnName="t_kd_ziro" type="xs:string" minOccurs="0" />
+              <xs:element name="t_kupdob" msprop:Generator_ColumnVarNameInTable="columnt_kupdob" msprop:Generator_ColumnPropNameInRow="t_kupdob" msprop:Generator_ColumnPropNameInTable="t_kupdobColumn" msprop:Generator_UserColumnName="t_kupdob" type="xs:string" minOccurs="0" />
+              <xs:element name="t_kd_mjesto" msprop:Generator_ColumnVarNameInTable="columnt_kd_mjesto" msprop:Generator_ColumnPropNameInRow="t_kd_mjesto" msprop:Generator_ColumnPropNameInTable="t_kd_mjestoColumn" msprop:Generator_UserColumnName="t_kd_mjesto" type="xs:string" minOccurs="0" />
+              <xs:element name="t_pnb0_zad" msprop:Generator_ColumnVarNameInTable="columnt_pnb0_zad" msprop:Generator_ColumnPropNameInRow="t_pnb0_zad" msprop:Generator_ColumnPropNameInTable="t_pnb0_zadColumn" msprop:Generator_UserColumnName="t_pnb0_zad" type="xs:string" minOccurs="0" />
+              <xs:element name="t_pnb1_zad" msprop:Generator_ColumnVarNameInTable="columnt_pnb1_zad" msprop:Generator_ColumnPropNameInRow="t_pnb1_zad" msprop:Generator_ColumnPropNameInTable="t_pnb1_zadColumn" msprop:Generator_UserColumnName="t_pnb1_zad" type="xs:string" minOccurs="0" />
+              <xs:element name="t_pnb0_odob" msprop:Generator_ColumnVarNameInTable="columnt_pnb0_odob" msprop:Generator_ColumnPropNameInRow="t_pnb0_odob" msprop:Generator_ColumnPropNameInTable="t_pnb0_odobColumn" msprop:Generator_UserColumnName="t_pnb0_odob" type="xs:string" minOccurs="0" />
+              <xs:element name="t_pnb1_odob" msprop:Generator_ColumnVarNameInTable="columnt_pnb1_odob" msprop:Generator_ColumnPropNameInRow="t_pnb1_odob" msprop:Generator_ColumnPropNameInTable="t_pnb1_odobColumn" msprop:Generator_UserColumnName="t_pnb1_odob" type="xs:string" minOccurs="0" />
+              <xs:element name="t_vezna_oznaka" msprop:Generator_ColumnVarNameInTable="columnt_vezna_oznaka" msprop:Generator_ColumnPropNameInRow="t_vezna_oznaka" msprop:Generator_ColumnPropNameInTable="t_vezna_oznakaColumn" msprop:Generator_UserColumnName="t_vezna_oznaka" type="xs:string" minOccurs="0" />
+              <xs:element name="t_svrha_doz" msprop:Generator_ColumnVarNameInTable="columnt_svrha_doz" msprop:Generator_ColumnPropNameInRow="t_svrha_doz" msprop:Generator_ColumnPropNameInTable="t_svrha_dozColumn" msprop:Generator_UserColumnName="t_svrha_doz" type="xs:string" minOccurs="0" />
+              <xs:element name="t_new_old_rn" msprop:Generator_ColumnVarNameInTable="columnt_new_old_rn" msprop:Generator_ColumnPropNameInRow="t_new_old_rn" msprop:Generator_ColumnPropNameInTable="t_new_old_rnColumn" msprop:Generator_UserColumnName="t_new_old_rn" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:length value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_reklamacija" msprop:Generator_ColumnVarNameInTable="columnt_reklamacija" msprop:Generator_ColumnPropNameInRow="t_reklamacija" msprop:Generator_ColumnPropNameInTable="t_reklamacijaColumn" msprop:Generator_UserColumnName="t_reklamacija" type="xs:string" minOccurs="0" />
+              <xs:element name="t_iznos" msprop:Generator_ColumnVarNameInTable="columnt_iznos" msprop:Generator_ColumnPropNameInRow="t_iznos" msprop:Generator_ColumnPropNameInTable="t_iznosColumn" msprop:Generator_UserColumnName="t_iznos" type="xs:decimal" minOccurs="0" />
+              <xs:element name="t_dug" msprop:Generator_ColumnVarNameInTable="columnt_dug" msprop:Generator_ColumnPropNameInRow="t_dug" msprop:Generator_ColumnPropNameInTable="t_dugColumn" msprop:Generator_UserColumnName="t_dug" type="xs:decimal" minOccurs="0" />
+              <xs:element name="t_pot" msprop:Generator_ColumnVarNameInTable="columnt_pot" msprop:Generator_ColumnPropNameInRow="t_pot" msprop:Generator_ColumnPropNameInTable="t_potColumn" msprop:Generator_UserColumnName="t_pot" type="xs:decimal" minOccurs="0" />
+              <xs:element name="t_vrsta_transakcije" msprop:Generator_ColumnVarNameInTable="columnt_vrsta_transakcije" msprop:Generator_ColumnPropNameInRow="t_vrsta_transakcije" msprop:Generator_ColumnPropNameInTable="t_vrsta_transakcijeColumn" msprop:Generator_UserColumnName="t_vrsta_transakcije" type="xs:string" minOccurs="0" />
+              <xs:element name="t_rnpvd" msprop:Generator_ColumnVarNameInTable="columnt_rnpvd" msprop:Generator_ColumnPropNameInRow="t_rnpvd" msprop:Generator_ColumnPropNameInTable="t_rnpvdColumn" msprop:Generator_UserColumnName="t_rnpvd" type="xs:string" minOccurs="0" />
+              <xs:element name="t_kd_vbdi" msprop:Generator_ColumnVarNameInTable="columnt_kd_vbdi" msprop:Generator_ColumnPropNameInRow="t_kd_vbdi" msprop:Generator_ColumnPropNameInTable="t_kd_vbdiColumn" msprop:Generator_UserColumnName="t_kd_vbdi" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="RelationHeadRecordForTransRecord" msdata:parent="headRecord" msdata:child="transRecord" msdata:parentkey="iz_br" msdata:childkey="t_br" msprop:Generator_UserChildTable="transRecord" msprop:Generator_ChildPropName="GettransRecordRows" msprop:Generator_UserRelationName="RelationHeadRecordForTransRecord" msprop:Generator_ParentPropName="headRecordRow" msprop:Generator_RelationVarName="relationRelationHeadRecordForTransRecord" msprop:Generator_UserParentTable="headRecord" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

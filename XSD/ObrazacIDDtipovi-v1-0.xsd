@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacIDD/v1-0" xmlns:meta="http://e-porezna.porezna-uprava.hr/sheme/Metapodaci/v2-0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:temeljni="http://e-porezna.porezna-uprava.hr/sheme/TemeljniTipovi/v2-1" targetNamespace="http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacIDD/v1-0" elementFormDefault="qualified" version="1.0" id="ObrazacIDDtipovi-v1-0" xml:lang="hr-HR">
+	<xsd:annotation>
+		<xsd:documentation>XML shema sadrži tipove koji definiraju sadržaj IDD obrasca</xsd:documentation>
+	</xsd:annotation>
+	<xsd:import namespace="http://e-porezna.porezna-uprava.hr/sheme/TemeljniTipovi/v2-1" schemaLocation="TemeljniTipovi-v2-1.xsd"/>
+	<xsd:import namespace="http://e-porezna.porezna-uprava.hr/sheme/Metapodaci/v2-0" schemaLocation="ObrazacIDDmetapodaci-v1-0.xsd"/>
+	<xsd:complexType name="sObrazacIDD">
+		<xsd:annotation>
+			<xsd:documentation>Struktura IDD obrasca</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="meta:Metapodaci"/>
+			<xsd:element name="Zaglavlje" type="sZaglavlje"/>
+			<xsd:element name="Tijelo" type="sTijelo"/>
+		</xsd:sequence>
+		<xsd:attribute name="verzijaSheme" use="required" fixed="1.0"/>
+	</xsd:complexType>
+	<xsd:complexType name="sPoslovniSubjekt">
+		<xsd:annotation>
+			<xsd:documentation>Podaci o poslovnom subjektu</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element name="Ime" type="temeljni:tOgraniceniZnakovniNizMin2Max128">
+						<xsd:annotation>
+							<xsd:documentation>Ime ili naziv poslovnog subjekta</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Prezime" type="temeljni:tOgraniceniZnakovniNizMin2Max128">
+						<xsd:annotation>
+							<xsd:documentation>Prezime poslovnog subjekta</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:element name="Naziv" type="temeljni:tOgraniceniZnakovniNizMin2Max128">
+					<xsd:annotation>
+						<xsd:documentation>Naziv poslovnog subjekta</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:element name="OIB" type="temeljni:tOIB">
+				<xsd:annotation>
+					<xsd:documentation>OIB poslovnog subjekta</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="sAdresa">
+		<xsd:annotation>
+			<xsd:documentation>Adresa</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Mjesto" type="temeljni:tOgraniceniZnakovniNizMin2Max128">
+				<xsd:annotation>
+					<xsd:documentation>Naziv mjesta</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Ulica" type="temeljni:tOgraniceniZnakovniNizMin2Max128">
+				<xsd:annotation>
+					<xsd:documentation>Naziv ulice</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Broj" type="temeljni:tAdresaBroj">
+				<xsd:annotation>
+					<xsd:documentation>Kućni broj</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="sRazdoblje">
+		<xsd:annotation>
+			<xsd:documentation>Struktura razdoblja (vremenski period)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DatumOd" type="xsd:date">
+				<xsd:annotation>
+					<xsd:documentation>Početni datum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DatumDo" type="xsd:date">
+				<xsd:annotation>
+					<xsd:documentation>Završni datum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="sZaglavlje">
+		<xsd:annotation>
+			<xsd:documentation>Zaglavlje obrasca</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PodnositeljZahtjeva">
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="sPoslovniSubjekt">
+							<xsd:sequence>
+								<xsd:element name="Adresa" type="sAdresa"/>
+							</xsd:sequence>
+						</xsd:extension>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Razdoblje" type="sRazdoblje"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="sTijelo">
+		<xsd:annotation>
+			<xsd:documentation>Tijelo obrasca</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Podatak010">
+				<xsd:annotation>
+					<xsd:documentation>Broj primatelja</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Iznos3" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Propisana obveza doprinosa</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Iznos4" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Izuzeti od obveze doprinosa</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Iznos5" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Autorsko i umjetničko djelo</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Iznos6" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Športaši, umjetnici i novinari</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Iznos7" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Nerezidenti</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Iznos8" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Primici učenika i studenata</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Iznos9" type="xsd:int">
+							<xsd:annotation>
+								<xsd:documentation>Ukupno(3+4+5+6+7+8)</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak020">
+				<xsd:annotation>
+					<xsd:documentation>Isplaceni primici</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:group ref="SviIznosi"/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak030">
+				<xsd:annotation>
+					<xsd:documentation>Izdaci</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos5"/>
+						<xsd:element ref="Iznos6"/>
+						<xsd:element ref="Iznos7"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak040">
+				<xsd:annotation>
+					<xsd:documentation>Osnovica za obracun doprinosa</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos3"/>
+						<xsd:element ref="Iznos7"/>
+						<xsd:element ref="Iznos8"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak051">
+				<xsd:annotation>
+					<xsd:documentation>mir.osig. na temelju generacijske solidarnosti</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos3"/>
+						<xsd:element ref="Iznos7"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak052">
+				<xsd:annotation>
+					<xsd:documentation>mir.osig. u odredjenim okolnostima</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos8"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak053">
+				<xsd:annotation>
+					<xsd:documentation>mir.osig. na temelju individualne kapit.stednje</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos3"/>
+						<xsd:element ref="Iznos7"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak054">
+				<xsd:annotation>
+					<xsd:documentation>osnovno zdravstveno siguranje</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos3"/>
+						<xsd:element ref="Iznos7"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak055">
+				<xsd:annotation>
+					<xsd:documentation>poseban za osigur. u odredjenim okolnostima</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos8"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak056">
+				<xsd:annotation>
+					<xsd:documentation>poseban za koristenje zdr. zastite u inozemstvu</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos3"/>
+						<xsd:element ref="Iznos4"/>
+						<xsd:element ref="Iznos5"/>
+						<xsd:element ref="Iznos6"/>
+						<xsd:element ref="Iznos8"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak060">
+				<xsd:annotation>
+					<xsd:documentation>Izdaci za doprinose</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="Iznos3"/>
+						<xsd:element ref="Iznos7"/>
+						<xsd:element ref="Iznos9"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak070">
+				<xsd:annotation>
+					<xsd:documentation>Osnovica za obracun poreza</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:group ref="SviIznosi"/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak080">
+				<xsd:annotation>
+					<xsd:documentation>Obracunan predujam poreza na dohodak</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:group ref="SviIznosi"/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak090">
+				<xsd:annotation>
+					<xsd:documentation>Obracunan prirez porezu na dohodak</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:group ref="SviIznosi"/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Podatak100">
+				<xsd:annotation>
+					<xsd:documentation>Uplacen porez na dohodak i prirez</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:group ref="SviIznosi"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="Iznos3" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Točke 1,3,4,5,10 i 11</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Iznos4" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Točke 6,8 i 9</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Iznos5" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Autorsko i umjetničko djelo</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Iznos6" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Športaši, umjetnici i novinari</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Iznos7" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Nerezidenti</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Iznos8" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Primitak učenika i studenata</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Iznos9" type="temeljni:tDecimal14-2">
+		<xsd:annotation>
+			<xsd:documentation>Ukupno(3+4+5+6+7+8)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:group name="SviIznosi">
+		<xsd:annotation>
+			<xsd:documentation>Svi iznosi u retku</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Iznos3"/>
+			<xsd:element ref="Iznos4"/>
+			<xsd:element ref="Iznos5"/>
+			<xsd:element ref="Iznos6"/>
+			<xsd:element ref="Iznos7"/>
+			<xsd:element ref="Iznos8"/>
+			<xsd:element ref="Iznos9"/>
+		</xsd:sequence>
+	</xsd:group>
+</xsd:schema>
