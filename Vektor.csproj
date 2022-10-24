@@ -20,7 +20,7 @@
     <SccProvider>
     </SccProvider>
     <ApplicationIcon>Vektor.ico</ApplicationIcon>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -33,9 +33,9 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
     <TargetFrameworkProfile />
-    <PublishUrl>\\RIPLEY7\Deployed\VektorSVD\</PublishUrl>
+    <PublishUrl>\\RIPLEY22\Deployed\VektorTEST\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Unc</InstallFrom>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -43,16 +43,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\APOTEKA1\VektorClientDeploy\</InstallUrl>
-    <UpdateUrl>\\APOTEKA1\VektorClientDeploy\</UpdateUrl>
+    <InstallUrl>http://www.viper.hr/vektorTEST/</InstallUrl>
+    <UpdateUrl>http://www.viper.hr/vektorTEST/</UpdateUrl>
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
-    <MinimumRequiredVersion>7.9.0.309</MinimumRequiredVersion>
+    <MinimumRequiredVersion>8.0.0.6</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>309</ApplicationRevision>
-    <ApplicationVersion>7.9.0.%2a</ApplicationVersion>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>8.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
