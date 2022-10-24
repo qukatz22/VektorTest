@@ -33,7 +33,7 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
     <TargetFrameworkProfile />
-    <PublishUrl>\\RIPLEY22\Deployed\VektorTEST\</PublishUrl>
+    <PublishUrl>\\RIPLEY22\Deployed\Vektor\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -43,15 +43,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.viper.hr/vektorTEST/</InstallUrl>
-    <UpdateUrl>http://www.viper.hr/vektorTEST/</UpdateUrl>
+    <InstallUrl>http://www.viper.hr/vektor/</InstallUrl>
+    <UpdateUrl>http://www.viper.hr/vektor/</UpdateUrl>
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
-    <MinimumRequiredVersion>8.0.0.12</MinimumRequiredVersion>
+    <MinimumRequiredVersion>8.0.0.1</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>8.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
