@@ -143,6 +143,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       } 
 
       ZXC.InitializeApplication_InProgress = false;
+
    }
 
    protected static bool loginExceptionRised = false;
@@ -257,6 +258,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
             LoadDevTec();
             ZXC.SetStatusText("InitializeCrystalReports_LoadDLL_ForDummyReport_InTheBackGround");
             InitializeCrystalReports_LoadDLL_ForDummyReport_InTheBackGround();
+
          }
 
 
@@ -350,16 +352,18 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       // 03.05.2016: komentirano: }
       // 03.05.2016: komentirano: finally
       // 03.05.2016: komentirano: {
+
         CloseForm_ThreadSafe(progressForm);
+
       // 03.05.2016: komentirano: }
-      
+
       // 16.11.2015: 
       // 15.08.2016: 
       // 07.09.2016: 
-    //if(ZXC.ThisIsVektorProject                                                                                  ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
-    //if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name                            ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
+      //if(ZXC.ThisIsVektorProject                                                                                  ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
+      //if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name                            ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
       // 13.11.2016: privremeno suspendirao dokle ne zavrsimo migraciju na novi SkyLab 79.143. ... 
-    //if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false                                    ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
+      //if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false                                    ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
       if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false && ZXC.ThisIsSurgerProject == false) VvDaoBase.Process_MBF_Data(); // uncomment this 
 
       ResumeLayout();
