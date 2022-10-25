@@ -187,6 +187,10 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
             ZXC.ClearStatusText();
          }
 
+         // 25.10.2022: 
+         AppContext.SetSwitch("Switch.System.Security.Cryptography.Xml.UseInsecureHashAlgorithms", true);
+         AppContext.SetSwitch("Switch.System.Security.Cryptography.Pkcs.UseInsecureHashAlgorithms", true);
+
          GetLoginData(/*forceLoginForm*/);
 
          // 20.06.2022: 
