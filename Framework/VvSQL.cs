@@ -1805,7 +1805,7 @@ public static class VvSQL
       uint actualInFileTableVersion      = vvTableMetaData.TableVersion;
 
       // 11.02.2015:                                                                                             ovo IsNotRipley7 dodano 08.11.2016 da ubrzam ulazak u vvTH 
-      if(ZXC.ThisIsSkyLabProject == false && tableName != DevTec.recordName && tableName != Htrans.recordName && ZXC.IsNotRipley7nor22 &&
+      if(ZXC.ThisIsSkyLabProject == false && tableName != DevTec.recordName && tableName != Htrans.recordName && ZXC.IsRipleyOrKristal == false &&
          // Za 'vvDB_ServerID_CENTRALA' NEMOJ provjeravati OSIM ako si superuser na localhostu)
        //(ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA ||  ZXC.vvDB_IsLocalhost                                                       )) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
          (ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA || (ZXC.vvDB_IsLocalhost && ZXC.CURR_userName == ZXC.vvDB_programSuperUserName))) VvSqlMaintenanceCheckTable(conn, dbName, tableName);

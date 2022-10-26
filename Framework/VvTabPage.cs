@@ -428,7 +428,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          ZXC.TheVvForm.Refresh(); Cursor.Current = Cursors.WaitCursor;
 
          // 08.11.2016: fast program entrance
-         if((ZXC.IsRipley7or22 && ZXC.vvDB_VvDomena == "vvTH") || (ZXC.IsTEXTHOcentrala))
+         if((ZXC.IsRipleyOrKristal && ZXC.vvDB_VvDomena == "vvTH") || (ZXC.IsTEXTHOcentrala))
          {
             goto be_fast;
          }
