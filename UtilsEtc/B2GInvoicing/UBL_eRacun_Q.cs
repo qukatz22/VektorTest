@@ -1477,8 +1477,12 @@ namespace EN16931.UBL
 
       private static string GetKupdobIdentification(Kupdob kupdob_rec)
       {
-         // "peppol identifiers" 
-         return "9934:" + kupdob_rec.Oib;
+        // "peppol identifiers" 
+        //return "9934:" + kupdob_rec.Oib;
+        //25.10.2022. ya sifru poslovne jedinice koja bi se trebala upisati negdje na kupdoba
+        //< cbc:ID > 9934:18683136487::HR99:11002 </ cbc:ID >
+        if(kupdob_rec.Regob.NotEmpty())  return "9934:" + kupdob_rec.Oib + "::HR99:" + kupdob_rec.Regob;
+        else                             return "9934:" + kupdob_rec.Oib;
       }
 
       private static string GetProjektIdentification(Prjkt prjkt_rec)
