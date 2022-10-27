@@ -359,7 +359,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       // 03.05.2016: komentirano: finally
       // 03.05.2016: komentirano: {
 
-        /* ZDRAVKOC */CloseForm_ThreadSafe(progressForm);
+      /* ZDRAVKOC */ if(ZXC.IsSkipSplash == false) CloseForm_ThreadSafe(progressForm);
 
       // 03.05.2016: komentirano: }
 
