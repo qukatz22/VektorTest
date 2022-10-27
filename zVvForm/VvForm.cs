@@ -157,7 +157,9 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
    {
       // !!! 
       if(ZXC.ThisIsHektorProject) return Initialize_Hektor_Application(isRecconection);
-      
+
+      Cursor.Current = Cursors.WaitCursor;
+
       SuspendLayout();
 
       // ________ here you can TestSomething(); ________ 
@@ -172,7 +174,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
        //this.Icon = new Icon(GetManifestResourceStream("Vektor.Icons.Vektor.ico"));
          this.Icon = CreateIconSafely(GetManifestResourceStream("Vektor.Icons.Vektor.ico"));
 
-         // ZDRAVKOCprogressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
+         /* ZDRAVKOC */progressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
 
          if(isRecconection == false || loginExceptionRised == true)
          {
@@ -357,7 +359,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       // 03.05.2016: komentirano: finally
       // 03.05.2016: komentirano: {
 
-        // ZDRAVKOCCloseForm_ThreadSafe(progressForm);
+        /* ZDRAVKOC */CloseForm_ThreadSafe(progressForm);
 
       // 03.05.2016: komentirano: }
 
@@ -371,6 +373,8 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false && ZXC.ThisIsSurgerProject == false) VvDaoBase.Process_MBF_Data(); // uncomment this 
 
       ResumeLayout();
+
+      Cursor.Current = Cursors.Default;
 
       return true;
    }
