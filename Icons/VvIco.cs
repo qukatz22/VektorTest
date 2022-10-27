@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -205,6 +206,15 @@ public static class VvIco
    public static Icon New16                 = new Icon(GetManifestResourceStream("Vektor.Icons.ToolStrip_RTB.new.ico"                    ), 16, 16);
 
    public static Icon Help                  = new Icon(GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.help.ico"));
+
+    
+    public static VvForm.VvSubMenu VvSubMenu_DodajRed    = new VvForm.VvSubMenu("Dodaj red"   , ZXC.vvMenuStyleEnum.MenuItemAndButton, "addRow"     , true, VvIco.AddRow     , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_InsertRow)         , "Dodaj red"                   );
+    public static VvForm.VvSubMenu VvSubMenu_BrisiRed    = new VvForm.VvSubMenu("Briši red"   , ZXC.vvMenuStyleEnum.MenuItemAndButton, "delRow"     , true, VvIco.DelRow     , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_DeleteRow)         , "Briši red"                   );
+    public static VvForm.VvSubMenu VvSubMenu_BrisiRedove = new VvForm.VvSubMenu("Briši redove", ZXC.vvMenuStyleEnum.MenuItemAndButton, "delAllRow"  , true, VvIco.DelAllRow  , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_DeleteManyRows)    , "Briši sve/označene redove"   );
+    public static VvForm.VvSubMenu VvSubMenu_Spoji       = new VvForm.VvSubMenu("Spoji"       , ZXC.vvMenuStyleEnum.MenuItemAndButton, "spojiStavke", true, VvIco.SpojiStavke, Keys.None, new EventHandler(ZXC.TheVvForm.TakeGridRowsFromOtherDocument), "Dodaj retke drugog dokumenta");
+   
+    public static VvForm.VvSubMenu VvSubMenu_LGO        = new VvForm.VvSubMenu("LGO"       , ZXC.vvMenuStyleEnum.MenuItemAndButton      , "lskpl_empty", false, VvIco.Go        , Keys.None, new EventHandler(ZXC.TheVvForm.LIST_GO)         , "Description: ");
+    public static VvForm.VvSubMenu VvSubMenu_FullScreen = new VvForm.VvSubMenu("FullScreen", ZXC.vvMenuStyleEnum.MenuItemAndButtonReport, "FullScreen" , false, VvIco.FullScreen, Keys.F11 , new EventHandler(ZXC.TheVvForm.FullScreen_Click), "Description: ");
 
 
 }
