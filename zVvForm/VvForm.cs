@@ -172,7 +172,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
        //this.Icon = new Icon(GetManifestResourceStream("Vektor.Icons.Vektor.ico"));
          this.Icon = CreateIconSafely(GetManifestResourceStream("Vektor.Icons.Vektor.ico"));
 
-         progressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
+         // ZDRAVKOCprogressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
 
          if(isRecconection == false || loginExceptionRised == true)
          {
@@ -357,7 +357,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       // 03.05.2016: komentirano: finally
       // 03.05.2016: komentirano: {
 
-        CloseForm_ThreadSafe(progressForm);
+        // ZDRAVKOCCloseForm_ThreadSafe(progressForm);
 
       // 03.05.2016: komentirano: }
 
