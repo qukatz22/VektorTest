@@ -66,6 +66,13 @@ namespace EN16931.UBL
             the_eRacun.ProfileID = new ProfileIDType { Value = Fak2eR__String("BT023", faktur_rec, null) }; //BT-23 Vrsta poslovnog procesa ProfileID 	 Šifra      1..1 
          }
 
+         //BT-13 Referenca na narudžbenicu
+         the_eRacun.OrderReference = new OrderReferenceType
+         {
+             ID = new IDType { Value = Fak2eR__String("BT013", faktur_rec, null)}
+         };
+
+
          #region napomena
 
          //BT-22 Napomena na računu	Tekst 1..1
@@ -1178,6 +1185,7 @@ namespace EN16931.UBL
             case "BT003"         : theString = VvUBL_InvoiceTypeCode                                                     ; break; //BT- 3 Šifra vrste                                           
             case "BT005"         : theString = faktur_rec.CurrencyID                                                     ; break; //BT- 5 Šifra valute !!!Valuta u kojoj su navedeni svi iznosi računa izuzev ukupnog iznosa PDV-a u računovodstvenoj valuti.
             case "BT006"         : theString = faktur_rec.CurrencyID                                                     ; break; //BT- 6 TaxCurrencyCode Šifra valute PDV!!!
+            case "BT013"         : theString = faktur_rec.OpciAvalue                                                     ; break; //BT-13 OrderReference - narudzbenica 
             case "BT022 napomena": theString = faktur_rec.Napomena                                                       ; break; //BT-22 napomena                                   
             case "BT022 operater": theString = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) + "#Oznaka operatera" ; break; //BT-22 operater                                   
             case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
