@@ -67,11 +67,13 @@ namespace EN16931.UBL
          }
 
          //BT-13 Referenca na narudžbenicu
-         the_eRacun.OrderReference = new OrderReferenceType
+         if (faktur_rec.OpciAvalue.NotEmpty())
          {
-             ID = new IDType { Value = Fak2eR__String("BT013", faktur_rec, null)}
-         };
-
+             the_eRacun.OrderReference = new OrderReferenceType
+             {
+                 ID = new IDType { Value = Fak2eR__String("BT013", faktur_rec, null) }
+             };
+         }
 
          #region napomena
 
