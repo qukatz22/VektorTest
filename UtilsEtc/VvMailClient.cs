@@ -320,7 +320,9 @@ public sealed class VvMailClient
 
          List<string> mailTO_stringList = new List<string>(mailTO_AddressList);
 
-         using(SmtpClient = new SmtpClient(MailHost, (PortNo.IsZero() ? 25 : PortNo))) // port 25 je default 
+         // 31.10.2022: 
+       //using(SmtpClient = new SmtpClient(MailHost, (PortNo.IsZero() ?  25 : PortNo))) // port 25 je default 
+         using(SmtpClient = new SmtpClient(MailHost, (PortNo.IsZero() ? 587 : PortNo))) // port 25 je default 
          {
             // !!! NOTA BENE !!!
             // 1. pozivanje SETtera od 'UseDefaultCredentials'  postavlja SmtpClient.Credentials na NULL!  
