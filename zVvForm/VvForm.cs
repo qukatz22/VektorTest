@@ -174,8 +174,6 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
        //this.Icon = new Icon(GetManifestResourceStream("Vektor.Icons.Vektor.ico"));
          this.Icon = CreateIconSafely(GetManifestResourceStream("Vektor.Icons.Vektor.ico"));
 
-         /* ZDRAVKOC */progressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
-
          if(isRecconection == false || loginExceptionRised == true)
          {
             ZXC.SetStatusText("InitializeVvColorsAndStyles"); InitializeVvColorsAndStyles();
@@ -194,6 +192,11 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
          AppContext.SetSwitch("Switch.System.Security.Cryptography.Pkcs.UseInsecureHashAlgorithms", true);
 
          GetLoginData(/*forceLoginForm*/);
+
+         /* ZDRAVKOC */ ProgressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
+
+         /* ZDRAVKOC */ if(ProgressForm != null && ProgressForm.Visible && ZXC.IsSkipSplash == false) SetFormVisibility_ThreadSafe(ProgressForm, false);
+         /* ZDRAVKOC */ if(                                                ZXC.IsSkipSplash == false) ShowProgressForm_BackgroundWorker();
 
          // 20.06.2022: 
          if(ZXC.IsSvDUHdomena == true)
@@ -359,7 +362,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       // 03.05.2016: komentirano: finally
       // 03.05.2016: komentirano: {
 
-      /* ZDRAVKOC */ if(ZXC.IsSkipSplash == false) CloseForm_ThreadSafe(progressForm);
+      /* ZDRAVKOC */ if(ZXC.IsSkipSplash == false) CloseForm_ThreadSafe(ProgressForm);
 
       // 03.05.2016: komentirano: }
 

@@ -2037,9 +2037,9 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
    internal static void ImportFromOffix_Translate437(XSqlConnection conn)
    {
-      int debugCount;
+      //int debugCount;
 
-      VvDaoBase.GenericLoopAnd_RWTREC_AllRecord<Artikl>(conn, Translate437, null, "", ZXC.TheVvForm.TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName, out debugCount);
+      VvDaoBase.GenericLoopAnd_RWTREC_AllRecord<Artikl>(conn, Translate437, null, "", ZXC.TheVvForm.TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName, out int debugCount);
    }
 
    static bool Translate437(XSqlConnection conn, VvDataRecord vvDataRecord)
