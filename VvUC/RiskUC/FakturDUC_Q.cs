@@ -1889,12 +1889,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       }
 
       // Externi dokument a nije KIZ niti PIK (npr. IRA) 
-      if(this is FakturExtDUC == true &&  // e.cancel = true: ako skladLUI NEMA zadan opp  
-         this is UFADUC == false && // e.cancel = true: ako je skl komisijsko  a KupdobTK nije jednak sklCD-u 
-         this is KIZDUC == false && // e.cancel = true: ako je skl komisijsko  a KupdobTK nije jednak sklCD-u 
+      if(this is FakturExtDUC       == true  && // e.cancel = true: ako skladLUI NEMA zadan opp  
+         this is UFADUC             == false && // e.cancel = true: ako je skl komisijsko  a KupdobTK nije jednak sklCD-u 
+         this is KIZDUC             == false && // e.cancel = true: ako je skl komisijsko  a KupdobTK nije jednak sklCD-u 
          this is PocetnoStanjeMPDUC == false &&
-         this is PocetnoStanjeDUC == false &&
-         this is PIKDUC == false)   // warning only   : ako je Kupdob komisija a KupdobTK nije jednak sklCD-u 
+         this is PocetnoStanjeDUC   == false &&
+         this is CjenikKupca_DUC    == false &&
+         this is PIKDUC             == false)   // warning only   : ako je Kupdob komisija a KupdobTK nije jednak sklCD-u 
       {
          if(isSklKomisija && skladLUI.Uinteger.IsZero())
          {
