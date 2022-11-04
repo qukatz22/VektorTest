@@ -191,12 +191,12 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
          AppContext.SetSwitch("Switch.System.Security.Cryptography.Xml.UseInsecureHashAlgorithms", true);
          AppContext.SetSwitch("Switch.System.Security.Cryptography.Pkcs.UseInsecureHashAlgorithms", true);
 
-         GetLoginData(/*forceLoginForm*/);
-
          /* ZDRAVKOC */ ProgressForm = CreateWaitingForConnectionForm(/*this.Icon*/);
 
-         /* ZDRAVKOC */ if(ProgressForm != null && ProgressForm.Visible && ZXC.IsSkipSplash == false) SetFormVisibility_ThreadSafe(ProgressForm, false);
-         /* ZDRAVKOC */ if(                                                ZXC.IsSkipSplash == false) ShowProgressForm_BackgroundWorker();
+         GetLoginData(/*forceLoginForm*/);
+
+         ///* ZDRAVKOC */ if(ProgressForm != null && ProgressForm.Visible && ZXC.IsSkipSplash == false) SetFormVisibility_ThreadSafe(ProgressForm, false);
+         ///* ZDRAVKOC */ if(                                                ZXC.IsSkipSplash == false) ShowProgressForm_BackgroundWorker();
 
          // 20.06.2022: 
          if(ZXC.IsSvDUHdomena == true)
