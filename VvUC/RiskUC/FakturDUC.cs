@@ -18299,8 +18299,8 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
-   public  Label     lbl_strMoney, lbl_decMoney, lbl_strRetMoney, lbl_decRetMoney, lbl_strS_ukKCRP, lbl_decS_ukKCRP, lbl_iIli;
-   public  VvTextBox tbx_moneyKN, tbx_moneyEUR;
+   public  Label     lbl_strMoney, lbl_decMoney_Kn, lbl_decMoney_EUR, lbl_strRetMoney, /*lbl_decRetMoney,*/ lbl_strS_ukKCRP, lbl_decS_ukKCRP_Kn, lbl_decS_ukKCRP_EUR, lbl_iIli;
+   public  VvTextBox tbx_decRetMoney_KN, tbx_decRetMoney_EUR;
    public  string    text_i_ili;
    #endregion Filedz
 
@@ -18322,8 +18322,8 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
       okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_moneyKN , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_moneyEUR, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_KN , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
 
 
       this.BackColor = Color.Aquamarine;
@@ -18335,46 +18335,48 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 
    private void CreateHamper()
    {
-      hamper          = new VvHamper(6, 3, "", this, false);
+      hamper          = new VvHamper(4, 4, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q4un, ZXC.QUN, ZXC.QUN, ZXC.Q4un, ZXC.Q2un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q4un, ZXC.QUN , ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4};
+      hamper.VvRowHgt       = new int[] { ZXC.QUN ,ZXC.QUN , ZXC.QUN , ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.QUN };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      lbl_strS_ukKCRP =  hamper .CreateVvLabel  (0, 0, "Iznos računa:" , ContentAlignment.MiddleRight);
-      lbl_decS_ukKCRP =  hamper .CreateVvLabel  (1, 0, ""              , ContentAlignment.MiddleRight);
-      lbl_strMoney    =  hamper .CreateVvLabel  (0, 1, "Dobiven iznos:", ContentAlignment.MiddleRight);
-      lbl_decMoney    =  hamper .CreateVvLabel  (1, 1, ""              , ContentAlignment.MiddleRight);
-      lbl_strRetMoney =  hamper .CreateVvLabel  (0, 2, "ZA POVRAT:"    , ContentAlignment.MiddleRight);
-      //lbl_decRetMoney =  hamper .CreateVvLabel  (1, 2, ""              , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(1, 0, "KN:" , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(3, 0, "EUR:", ContentAlignment.MiddleRight);
 
-      tbx_moneyKN = hamper.CreateVvTextBox(1, 2, "tbx_moneyKN", "", 12);
-                    hamper.CreateVvLabel  (2, 2, "Kn"        , ContentAlignment.MiddleLeft);
-      lbl_iIli    = hamper.CreateVvLabel  (3, 2, text_i_ili  , ContentAlignment.MiddleCenter);
+      lbl_strS_ukKCRP     = hamper.CreateVvLabel  (0, 1, "Iznos računa:" , ContentAlignment.MiddleRight);
+      lbl_decS_ukKCRP_Kn  = hamper.CreateVvLabel  (1, 1, ""              , ContentAlignment.MiddleRight);
+      lbl_decS_ukKCRP_EUR = hamper.CreateVvLabel  (3, 1, ""              , ContentAlignment.MiddleRight);
+      
+      lbl_strMoney        = hamper.CreateVvLabel  (0, 2, "Dobiven iznos:", ContentAlignment.MiddleRight);
+      lbl_decMoney_Kn     = hamper.CreateVvLabel  (1, 2, ""              , ContentAlignment.MiddleRight);
+      lbl_decMoney_EUR    = hamper.CreateVvLabel  (3, 2, ""              , ContentAlignment.MiddleRight);
+    
+      
+      lbl_strRetMoney     = hamper.CreateVvLabel  (0, 3, "ZA POVRAT:"    , ContentAlignment.MiddleRight);
+      tbx_decRetMoney_KN  = hamper.CreateVvTextBox(1, 3, "tbx_decRetMoney_KN", "", 12);
+      lbl_iIli            = hamper.CreateVvLabel  (2, 3, text_i_ili  , ContentAlignment.MiddleCenter);
+      tbx_decRetMoney_EUR = hamper.CreateVvTextBox(3, 3, "tbx_decRetMoney_EUR", "", 12);
 
-      tbx_moneyEUR = hamper.CreateVvTextBox(4, 2, "tbx_moneyEUR", "", 12);
-                     hamper.CreateVvLabel  (5, 2, "EUR"        , ContentAlignment.MiddleLeft);
-
-      tbx_moneyKN.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_moneyEUR.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_decRetMoney_KN.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_decRetMoney_EUR.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
 
-      lbl_strS_ukKCRP.Font =
-      lbl_decS_ukKCRP.Font =
-      lbl_strMoney   .Font =
-      lbl_decMoney   .Font =
+      lbl_strS_ukKCRP   .Font =
+      lbl_decS_ukKCRP_Kn.Font =
+      lbl_strMoney      .Font =
+      lbl_decMoney_Kn   .Font =
       lbl_strRetMoney.Font = ZXC.vvFont.BaseFont;
-      //lbl_decRetMoney.Font = ZXC.vvFont.LargeBoldFont;
 
       lbl_strRetMoney.ForeColor = /*lbl_decRetMoney.ForeColor = */Color.Red;
 
-      tbx_moneyKN.Leave  += Tbx_moneyKN_Leave;
-      tbx_moneyEUR.Leave += Tbx_moneyEUR_Leave;
+      tbx_decRetMoney_KN.Leave  += Tbx_moneyKN_Leave;
+      tbx_decRetMoney_EUR.Leave += Tbx_moneyEUR_Leave;
    }
 
    private void Tbx_moneyKN_Leave(object sender, EventArgs e)
@@ -18399,8 +18401,8 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 
    #region Fld_
 
-   public decimal Fld_MoneyKN  { get { return tbx_moneyKN.GetDecimalField(); } set { tbx_moneyKN.PutDecimalField(value); } }
-   public decimal Fld_MoneyEUR { get { return tbx_moneyEUR.GetDecimalField(); } set { tbx_moneyEUR.PutDecimalField(value); } }
+   public decimal Fld_MoneyKN  { get { return tbx_decRetMoney_KN.GetDecimalField(); } set { tbx_decRetMoney_KN.PutDecimalField(value); } }
+   public decimal Fld_MoneyEUR { get { return tbx_decRetMoney_EUR.GetDecimalField(); } set { tbx_decRetMoney_EUR.PutDecimalField(value); } }
 
    #endregion Fld_
 
