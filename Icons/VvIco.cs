@@ -202,11 +202,15 @@ public static class VvIco
     public static Icon New16                 = new Icon(GetManifestResourceStream("Vektor.Icons.ToolStrip_RTB.new.ico"                    ), 16, 16);
     public static Icon Help                  = new Icon(GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.help.ico"));
 
-    #endregion Icon
+    public static Icon Kn                    = new Icon(GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.Kn.ico"));
+    public static Icon Eur                   = new Icon(GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.Eur.ico"));
 
-    #region VvSubMenu
 
-    public static VvForm.VvSubMenu VvSubMenu_DodajRed      = new VvForm.VvSubMenu("Dodaj red"         , ZXC.vvMenuStyleEnum.MenuItemAndButton      , "addRow"      ,  true, VvIco.AddRow     , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_InsertRow)         , "Dodaj red"                   );
+   #endregion Icon
+
+   #region VvSubMenu
+
+   public static VvForm.VvSubMenu VvSubMenu_DodajRed      = new VvForm.VvSubMenu("Dodaj red"         , ZXC.vvMenuStyleEnum.MenuItemAndButton      , "addRow"      ,  true, VvIco.AddRow     , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_InsertRow)         , "Dodaj red"                   );
     public static VvForm.VvSubMenu VvSubMenu_BrisiRed      = new VvForm.VvSubMenu("Briši red"         , ZXC.vvMenuStyleEnum.MenuItemAndButton      , "delRow"      ,  true, VvIco.DelRow     , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_DeleteRow)         , "Briši red"                   );
     public static VvForm.VvSubMenu VvSubMenu_BrisiRedove   = new VvForm.VvSubMenu("Briši redove"      , ZXC.vvMenuStyleEnum.MenuItemAndButton      , "delAllRow"   ,  true, VvIco.DelAllRow  , Keys.None, new EventHandler(ZXC.TheVvForm.DocumentUC_DeleteManyRows)    , "Briši sve/označene redove"   );
     public static VvForm.VvSubMenu VvSubMenu_Spoji         = new VvForm.VvSubMenu("Spoji"             , ZXC.vvMenuStyleEnum.MenuItemAndButton      , "spojiStavke" ,  true, VvIco.SpojiStavke, Keys.None, new EventHandler(ZXC.TheVvForm.TakeGridRowsFromOtherDocument), "Dodaj retke drugog dokumenta");

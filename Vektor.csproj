@@ -4285,6 +4285,8 @@
     <EmbeddedResource Include="Icons\ToolStrip_Modul\barkod.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\cpyToBLG.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\help.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\Eur.ico" />
+    <EmbeddedResource Include="Icons\ToolStrip_Modul\Kn.ico" />
     <Content Include="XSD\id1-obrazac_4_0.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

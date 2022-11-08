@@ -18178,7 +18178,7 @@ public class VvRetMoneyCalcDlg : VvDialog
       hamper          = new VvHamper(2, 1, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q4un };
+      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = 0;
 
@@ -18300,8 +18300,9 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
    public  Label     lbl_strMoney, lbl_decMoney_Kn, lbl_decMoney_EUR, lbl_strRetMoney, /*lbl_decRetMoney,*/ lbl_strS_ukKCRP, lbl_decS_ukKCRP_Kn, lbl_decS_ukKCRP_EUR, lbl_iIli;
-   public  VvTextBox tbx_decRetMoney_KN, tbx_decRetMoney_EUR;
+   public  VvTextBox tbx_decRetMoney_KN, tbx_decRetMoney_EUR, tbx_empty;
    public  string    text_i_ili;
+
    #endregion Filedz
 
    #region Constructor
@@ -18324,7 +18325,6 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 
       VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_KN , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
-
 
       this.BackColor = Color.Aquamarine;
    }
@@ -18359,13 +18359,12 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
     
       
       lbl_strRetMoney     = hamper.CreateVvLabel  (0, 3, "ZA POVRAT:"    , ContentAlignment.MiddleRight);
-      tbx_decRetMoney_KN  = hamper.CreateVvTextBox(1, 3, "tbx_decRetMoney_KN", "", 12);
+      tbx_decRetMoney_KN = hamper.CreateVvTextBox(1, 3, "tbx_decRetMoney_KN", "", 12);
       lbl_iIli            = hamper.CreateVvLabel  (2, 3, text_i_ili  , ContentAlignment.MiddleCenter);
       tbx_decRetMoney_EUR = hamper.CreateVvTextBox(3, 3, "tbx_decRetMoney_EUR", "", 12);
 
       tbx_decRetMoney_KN.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_decRetMoney_EUR.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-
 
       lbl_strS_ukKCRP   .Font =
       lbl_decS_ukKCRP_Kn.Font =
@@ -18374,19 +18373,15 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       lbl_strRetMoney.Font = ZXC.vvFont.BaseFont;
 
       lbl_strRetMoney.ForeColor = /*lbl_decRetMoney.ForeColor = */Color.Red;
+      lbl_iIli.ForeColor = Color.Red;
+      lbl_iIli.Font = ZXC.vvFont.LargeBoldFont;
 
-      tbx_decRetMoney_KN.Leave  += Tbx_moneyKN_Leave;
-      tbx_decRetMoney_EUR.Leave += Tbx_moneyEUR_Leave;
+      //tbx_decRetMoney_KN.TextChanged  ili Leave ne znam 
+      //tbx_decRetMoney_EUR.TextChanged ili Leave ne znam 
+      SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); // ovo da nebude plavi prvi tbx a kad se klikne tab onda do]e na prvi
+
    }
 
-   private void Tbx_moneyKN_Leave(object sender, EventArgs e)
-   {
-      lbl_iIli.Text = "i";
-   }
-   private void Tbx_moneyEUR_Leave(object sender, EventArgs e)
-   {
-      lbl_iIli.Text = "i";
-   }
 
    #endregion hamper
 
@@ -18401,8 +18396,8 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 
    #region Fld_
 
-   public decimal Fld_MoneyKN  { get { return tbx_decRetMoney_KN.GetDecimalField(); } set { tbx_decRetMoney_KN.PutDecimalField(value); } }
-   public decimal Fld_MoneyEUR { get { return tbx_decRetMoney_EUR.GetDecimalField(); } set { tbx_decRetMoney_EUR.PutDecimalField(value); } }
+   public decimal Fld_RetMoneyKN  { get { return tbx_decRetMoney_KN.GetDecimalField(); } set { tbx_decRetMoney_KN.PutDecimalField(value); } }
+   public decimal Fld_RetMoneyEUR { get { return tbx_decRetMoney_EUR.GetDecimalField(); } set { tbx_decRetMoney_EUR.PutDecimalField(value); } }
 
    #endregion Fld_
 
