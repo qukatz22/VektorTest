@@ -18302,13 +18302,20 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
    public  Label     lbl_strMoney, lbl_decMoney_Kn, lbl_decMoney_EUR, lbl_strRetMoney, /*lbl_decRetMoney,*/ lbl_strS_ukKCRP, lbl_decS_ukKCRP_Kn, lbl_decS_ukKCRP_EUR, lbl_iIli;
    public  VvTextBox tbx_decRetMoney_KN, tbx_decRetMoney_EUR, tbx_empty;
    public  string    text_i_ili;
+   private readonly bool isEURinput;
+   private readonly decimal fakMoney_EUR;
+   private readonly decimal gotMoney;
 
    #endregion Filedz
 
    #region Constructor
 
-   public VvReturnMoney_KNorEUR_Dlg()
+   public VvReturnMoney_KNorEUR_Dlg(bool _isEURinput, decimal _fakMoney_EUR, decimal _gotMoney)
    {
+      this.isEURinput   = _isEURinput  ;
+      this.fakMoney_EUR = _fakMoney_EUR;
+      this.gotMoney     = _gotMoney    ;
+
       this.StartPosition = FormStartPosition.CenterScreen;
       this.Text = "Povrat novca";
 
@@ -18327,6 +18334,8 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
 
       this.BackColor = Color.Aquamarine;
+
+      okButton.Focus();
    }
 
    #endregion Constructor
@@ -18362,9 +18371,12 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       tbx_decRetMoney_KN = hamper.CreateVvTextBox(1, 3, "tbx_decRetMoney_KN", "", 12);
       lbl_iIli            = hamper.CreateVvLabel  (2, 3, text_i_ili  , ContentAlignment.MiddleCenter);
       tbx_decRetMoney_EUR = hamper.CreateVvTextBox(3, 3, "tbx_decRetMoney_EUR", "", 12);
-
-      tbx_decRetMoney_KN.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+ 
+      tbx_decRetMoney_KN .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_decRetMoney_EUR.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
+      tbx_decRetMoney_KN .Tag = false;
+      tbx_decRetMoney_EUR.Tag = true ;
 
       lbl_strS_ukKCRP   .Font =
       lbl_decS_ukKCRP_Kn.Font =
@@ -18376,12 +18388,28 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       lbl_iIli.ForeColor = Color.Red;
       lbl_iIli.Font = ZXC.vvFont.LargeBoldFont;
 
-      //tbx_decRetMoney_KN.TextChanged  ili Leave ne znam 
-      //tbx_decRetMoney_EUR.TextChanged ili Leave ne znam 
-      SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); // ovo da nebude plavi prvi tbx a kad se klikne tab onda do]e na prvi
+      tbx_decRetMoney_KN .JAM_FieldExitMethod = new EventHandler(OnExit_Recalc_RetMoney);
+      tbx_decRetMoney_EUR.JAM_FieldExitMethod = new EventHandler(OnExit_Recalc_RetMoney);
+
+      //SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); // ovo da nebude plavi prvi tbx a kad se klikne tab onda do]e na prvi
 
    }
 
+   public void OnExit_Recalc_RetMoney(object sender, EventArgs e)
+   {
+      VvTextBox vvTB = sender as VvTextBox;
+      if(vvTB == null) return;
+
+      bool isNewEUR = (bool)vvTB.Tag;
+
+      decimal NEWretMoney = isNewEUR ? Fld_RetMoneyEUR : Fld_RetMoneyKN;
+
+      (decimal retMoney_KN, decimal retMoney_EUR) = ZXC.RetCalc_KN_PLUS_EUR(isEURinput, fakMoney_EUR, gotMoney, isNewEUR, NEWretMoney);
+
+      Fld_RetMoneyKN  = retMoney_KN ;
+      Fld_RetMoneyEUR = retMoney_EUR;
+
+   }
 
    #endregion hamper
 
