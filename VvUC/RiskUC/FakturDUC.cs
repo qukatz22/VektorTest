@@ -18296,8 +18296,8 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 {
    #region Filedz
 
-   private Button    okButton, cancelButton;
-   private VvHamper  hamper;
+   private Button    okButton, cancelButton, mixButton;
+   private VvHamper  hamper, hamperMix;
    private int       dlgWidth, dlgHeight;
    public  Label     lbl_strMoney, lbl_decMoney_Kn, lbl_decMoney_EUR, lbl_strRetMoney, /*lbl_decRetMoney,*/ lbl_strS_ukKCRP, lbl_decS_ukKCRP_Kn, lbl_decS_ukKCRP_EUR, lbl_iIli;
    public  VvTextBox tbx_decRetMoney_KN, tbx_decRetMoney_EUR, tbx_empty;
@@ -18309,7 +18309,6 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
    #endregion Filedz
 
    #region Constructor
-
    public VvReturnMoney_KNorEUR_Dlg(bool _isEURinput, decimal _fakMoney_EUR, decimal _gotMoney)
    {
       this.isEURinput   = _isEURinput  ;
@@ -18322,6 +18321,7 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       text_i_ili = "ili";
 
       CreateHamper();
+      CreateHamperMix();
 
       dlgWidth        = hamper.Right + ZXC.QunMrgn;
       dlgHeight       = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
@@ -18330,12 +18330,13 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
       okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_KN , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_KN , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
 
       this.BackColor = Color.Aquamarine;
 
-      okButton.Focus();
    }
 
    #endregion Constructor
@@ -18347,16 +18348,16 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       hamper          = new VvHamper(4, 4, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q4un, ZXC.QUN , ZXC.Q4un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q4un, ZXC.Q2un , ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = 0;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN ,ZXC.QUN , ZXC.QUN , ZXC.QUN };
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.QUN };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(1, 0, "KN:" , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(3, 0, "EUR:", ContentAlignment.MiddleRight);
+      Label lblKn  = hamper.CreateVvLabel(1, 0, "KN" , ContentAlignment.MiddleRight);
+      Label lblEUR = hamper.CreateVvLabel(3, 0, "EUR", ContentAlignment.MiddleRight);
 
       lbl_strS_ukKCRP     = hamper.CreateVvLabel  (0, 1, "Iznos računa:" , ContentAlignment.MiddleRight);
       lbl_decS_ukKCRP_Kn  = hamper.CreateVvLabel  (1, 1, ""              , ContentAlignment.MiddleRight);
@@ -18378,21 +18379,42 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       tbx_decRetMoney_KN .Tag = false;
       tbx_decRetMoney_EUR.Tag = true ;
 
-      lbl_strS_ukKCRP   .Font =
-      lbl_decS_ukKCRP_Kn.Font =
-      lbl_strMoney      .Font =
-      lbl_decMoney_Kn   .Font =
+      lbl_strS_ukKCRP    .Font =
+      lbl_decS_ukKCRP_Kn .Font =
+      lbl_decS_ukKCRP_EUR.Font =
+      lbl_strMoney       .Font =
+      lbl_decMoney_Kn    .Font =
+      lbl_decMoney_EUR   .Font =
       lbl_strRetMoney.Font = ZXC.vvFont.BaseFont;
 
       lbl_strRetMoney.ForeColor = /*lbl_decRetMoney.ForeColor = */Color.Red;
-      lbl_iIli.ForeColor = Color.Red;
-      lbl_iIli.Font = ZXC.vvFont.LargeBoldFont;
+      //lbl_iIli.ForeColor = Color.Red;
+      lbl_iIli.Font = 
+      lblKn   .Font = 
+      lblEUR  .Font = ZXC.vvFont.LargeBoldFont;
+
 
       tbx_decRetMoney_KN .JAM_FieldExitMethod = new EventHandler(OnExit_Recalc_RetMoney);
       tbx_decRetMoney_EUR.JAM_FieldExitMethod = new EventHandler(OnExit_Recalc_RetMoney);
 
       //SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}"); // ovo da nebude plavi prvi tbx a kad se klikne tab onda do]e na prvi
 
+   }
+
+   private void CreateHamperMix()
+   {
+      hamperMix          = new VvHamper(1, 1, "", this, false);
+      hamperMix.Location = new Point(ZXC.QunMrgn, hamper.Bottom + ZXC.QunMrgn);
+      
+      hamperMix.VvColWdt      = new int[] { ZXC.Q8un };
+      hamperMix.VvSpcBefCol   = new int[] { ZXC.Qun4 };
+      hamperMix.VvRightMargin = 0;
+      
+      hamperMix.VvRowHgt       = new int[] { ZXC.QunBtnH + ZXC.Qun8 };
+      hamperMix.VvSpcBefRow    = new int[] { ZXC.Qun8    };
+      hamperMix.VvBottomMargin = hamperMix.VvTopMargin;
+
+      mixButton = hamperMix.CreateVvButton(0, 0, new EventHandler(MixaniPovratKNiEUR),"Povrat Kn i EUR");
    }
 
    public void OnExit_Recalc_RetMoney(object sender, EventArgs e)
@@ -18414,10 +18436,41 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
    #endregion hamper
 
    #region Button_Click
-
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
+   }
+
+   public void MixaniPovratKNiEUR(object sender, EventArgs e)
+   {
+      Button btn = sender as Button;
+      if(btn.Text == "Povrat Kn i EUR")// zelimo mixane valute
+      {
+         btn.Text = "Povrat Kn ili EUR";
+         
+         VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_KN , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+         VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+
+         lbl_iIli.Text = " i ";
+         lbl_iIli.ForeColor = Color.Red;
+
+      }
+      else
+      {
+         btn.Text = "Povrat Kn i EUR";
+         
+         VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_KN , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+         VvHamper.Open_Close_Fields_ForWriting(tbx_decRetMoney_EUR, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+
+         lbl_iIli.Text = " ili ";
+         lbl_iIli.ForeColor = Color.Black;
+
+         // sad bi tu trebalo vratiti originlne iynose
+         (decimal retMoney_KN, decimal retMoney_EUR) = ZXC.RetCalc_KN_OR_EUR(isEURinput, fakMoney_EUR, gotMoney);
+
+         Fld_RetMoneyKN  = retMoney_KN;
+         Fld_RetMoneyEUR = retMoney_EUR;
+      }
    }
 
    #endregion Button_Click
