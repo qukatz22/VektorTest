@@ -18157,8 +18157,8 @@ public class VvRetMoneyCalcDlg : VvDialog
    {
       this.StartPosition = FormStartPosition.CenterScreen;
       this.Text = captionText;
-
-      CreateHamper(labelText);
+      
+      CreateHamper(labelText, gotMoneyKind);
 
       dlgWidth        = hamper.Right + ZXC.QunMrgn;
       dlgHeight       = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
@@ -18175,22 +18175,41 @@ public class VvRetMoneyCalcDlg : VvDialog
 
    #region hamper
 
-   private void CreateHamper(string labelText)
+   private void CreateHamper(string labelText, ZXC.GotMoneyKind gotMoneyKind)
    {
-      hamper          = new VvHamper(2, 1, "", this, false);
+      hamper          = new VvHamper(5, 1, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q4un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q4un, ZXC.Q4un, ZXC.Q4un, ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = 0;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                 hamper .CreateVvLabel  (0, 0, labelText, ContentAlignment.MiddleRight);
-      tbx_gotMoney_1 = hamper.CreateVvTextBox(1, 0, "tbx_money", "", 12);
+                       hamper.CreateVvLabel  (0, 0, labelText, ContentAlignment.MiddleRight);
+      tbx_gotMoney_1 = hamper.CreateVvTextBox(1, 0, "tbx_gotMoney_1", "", 12);
       tbx_gotMoney_1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
+                       hamper.CreateVvLabel  (3, 0, labelText, ContentAlignment.MiddleRight);
+      tbx_gotMoney_2 = hamper.CreateVvTextBox(4, 0, "tbx_gotMoney_2", "", 12);
+      tbx_gotMoney_2.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
+
+      if(gotMoneyKind == ZXC.GotMoneyKind.Kune)
+      {
+         tbx_gotMoney_2.Visible = false;
+      }
+      else if(gotMoneyKind == ZXC.GotMoneyKind.Euri)
+      {
+         tbx_gotMoney_1.Visible = false;
+      }
+      else
+      {
+         tbx_gotMoney_2.Visible = true;
+         tbx_gotMoney_1.Visible = true;
+      }
    }
 
    #endregion hamper
