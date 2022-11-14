@@ -2998,8 +2998,12 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
             virmanRow.prim2 = "PRIREZ porezu na dohodak";
             virmanRow.prim3 = "Prirez " + opcName;
-            if(pvi.aJeOtherDohodak) virmanRow.opisPl = prezimeIme      + " " + stopaPri + @"%(" + prirezOsnova + ")";
-            else                    virmanRow.opisPl = virmanRow.prim3 + " " + stopaPri + @"%(" + prirezOsnova + ")";
+
+            // 14.11.2022: nekom tam parseru smeta "%" 
+          //if(pvi.aJeOtherDohodak) virmanRow.opisPl = prezimeIme      + " " + stopaPri + @"%(" + prirezOsnova + ")";
+          //else                    virmanRow.opisPl = virmanRow.prim3 + " " + stopaPri + @"%(" + prirezOsnova + ")";
+            if(pvi.aJeOtherDohodak) virmanRow.opisPl = prezimeIme      + " " + stopaPri + @"posto(" + prirezOsnova + ")";
+            else                    virmanRow.opisPl = virmanRow.prim3 + " " + stopaPri + @"posto(" + prirezOsnova + ")";
 
             break;
 
