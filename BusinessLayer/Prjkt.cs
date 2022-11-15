@@ -270,84 +270,98 @@ public class Prjkt : Kupdob
       set { this.currentExtData._placaTip = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal ToPayA
    {
       get { return this.currentExtData._toPayA; }
       set { this.currentExtData._toPayA = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal ToPayB
    {
       get { return this.currentExtData._toPayB; }
       set { this.currentExtData._toPayB = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal ToPayC
    {
       get { return this.currentExtData._toPayC; }
       set { this.currentExtData._toPayC = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal TemKapit
    {
       get { return this.currentExtData._temKapit; }
       set { this.currentExtData._temKapit = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidSume
    {
       get { return this.currentExtData._pidSume; }
       set { this.currentExtData._pidSume = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidSRent
    {
       get { return this.currentExtData._pidSRent; }
       set { this.currentExtData._pidSRent = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidTurst
    {
       get { return this.currentExtData._pidTurst; }
       set { this.currentExtData._pidTurst = value; }
    }
-   
+
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidDobit
    {
       get { return this.currentExtData._pidDobit; }
       set { this.currentExtData._pidDobit = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidKmDopr
    {
       get { return this.currentExtData._pidKmDopr; }
       set { this.currentExtData._pidKmDopr = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidKmClan
    {
       get { return this.currentExtData._pidKmClan; }
       set { this.currentExtData._pidKmClan = value; }
    }
    
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidMO1 
    {
       get { return this.currentExtData._pidMO1; }
       set { this.currentExtData._pidMO1 = value; }
    }
    
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidMO2 
    {
       get { return this.currentExtData._pidMO2; }
       set { this.currentExtData._pidMO2 = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidZdr
    {
       get { return this.currentExtData._pidZdr; }
       set { this.currentExtData._pidZdr = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal PidZor
    {
       get { return this.currentExtData._pidZor; }

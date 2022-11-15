@@ -792,6 +792,7 @@ public class Artikl : VvSifrarRecord
       set {        this.currentData._napomena = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] 
    /* 63 */ public decimal ImportCij
    {
       get { return this.currentData._importCij; }

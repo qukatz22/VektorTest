@@ -972,6 +972,7 @@ public class Kupdob : VvSifrarRecord
       set {        this.currentData._devName = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] 
    /* 85 */ public decimal FinLimit
    {
       get { return this.currentData._finLimit; }
@@ -1027,6 +1028,7 @@ public class Kupdob : VvSifrarRecord
       }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] 
    /* 91 */ public decimal MitoIzn // iznos po litri 
    {
       get { return this.currentData._mitoIzn; }
@@ -1037,11 +1039,13 @@ public class Kupdob : VvSifrarRecord
       get { return this.currentData._mitoSt; }
       set {        this.currentData._mitoSt = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] 
    /* 93 */ public decimal InvestTr // iznos po litri 
    {
       get { return this.currentData._investTr; }
       set {        this.currentData._investTr = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] 
    /* 94 */ public decimal TrecaStr // iznos po partneru 
    {
       get { return this.currentData._trecaStr; }
