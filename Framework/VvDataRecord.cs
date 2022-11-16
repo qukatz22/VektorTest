@@ -919,6 +919,38 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
 
    #endregion Serialize / Deserialize
 
+   #region Convert All Money Propertiez of VvDataRecord
+
+   internal static bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez<T>(XSqlConnection conn, T vvDataRecord) where T : VvDataRecord//, new()
+   {
+      //Artikl artikl_rec = vvDataRecord as Artikl;
+      //if(kupdob_rec.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in typeof(T).GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(vvDataRecord, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(vvDataRecord)));
+            }
+         }
+      }
+
+      return vvDataRecord.EditedHasChanges();
+   }
+
+   public bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez(/*XSqlConnection conn*/)
+   {
+      return Convert_Kuna_To_Euro_ForAllMoneyPropertiez<VvDataRecord>(/*conn*/null, this);
+   }
+
+   #endregion Convert All Money Propertiez of VvDataRecord
+
 }
 
 public abstract class VvSifrarRecord     : VvDataRecord
