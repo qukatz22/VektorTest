@@ -1771,9 +1771,17 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       if(opis.IsEmpty()) opis = currOpis;
       else               opis = LimitedOpisStr(opis + "/" + currOpis);
 
+      // 15.11.2022: 
+      if(ZXC.projectYearAsInt == 2023) // !!! pazi da li se doticna NY operacija (Init_NY, SendToPsNalog, PS_RISK, ...) izvodi u PG ili u NY!!! 
+      {
+         cDug = ZXC.EURiIzKuna_HRD_(cDug);
+         cPot = ZXC.EURiIzKuna_HRD_(cPot);
+      }
+
       //------------------------------------------------------------------------- 
       /* */
-      /* */  Ftrans ftrans_rec = 
+      /* */
+      Ftrans ftrans_rec = 
       /* */
       /* */  AutoSetNalog(conn, ref _line,
       /* */

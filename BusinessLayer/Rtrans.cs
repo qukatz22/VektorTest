@@ -593,6 +593,7 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
    /// Ovo je: ili T_wantedMrzSt, ili T_wantedVPC, ili T_wantedMPC
    /// </summary>
    /* 19 */
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal T_wanted
    {
       get { return this.currentData._t_wanted; }
@@ -654,7 +655,9 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
       get { return this.currentData._t_isIrmUslug; }
       set {        this.currentData._t_isIrmUslug = value; }
    }
-   /* 29 */ public decimal T_ppmvOsn
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
+   /* 29 */
+   public decimal T_ppmvOsn
    {
       get { return this.currentData._t_ppmvOsn; }
       set {        this.currentData._t_ppmvOsn = value; }

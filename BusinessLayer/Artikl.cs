@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Serialization;
+using MySql.Data.MySqlClient;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 #region struct ArtiklStruct
 
@@ -1257,6 +1260,28 @@ public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty
    public override VvDataRecord Deserialize_VvDataRecord_FromXmlFile(string fileName)
    {
       return DeserializeFromXmlFile<Artikl>(fileName);
+   }
+
+   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB<T>(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in typeof(Artikl).GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
    }
 
 

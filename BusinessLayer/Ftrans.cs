@@ -335,6 +335,7 @@ public class Ftrans : VvTransRecord
       set { this.currentData._t_037 = value; }
    }
    /* 16 */
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal T_dug
    {
       get { return this.currentData._t_dug; }
@@ -342,6 +343,7 @@ public class Ftrans : VvTransRecord
    }
 
    /* 17 */
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal T_pot
    {
       get { return this.currentData._t_pot; }
