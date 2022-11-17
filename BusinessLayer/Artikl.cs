@@ -1266,7 +1266,7 @@ public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty
    {
       //if(this.Tip != "MT") return false;
 
-      foreach(PropertyInfo pInfo in typeof(Artikl).GetProperties())
+      foreach(PropertyInfo pInfo in typeof(T).GetProperties())
       {
          if(pInfo.PropertyType != typeof(decimal)) continue;
 

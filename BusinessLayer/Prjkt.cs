@@ -917,7 +917,7 @@ public class Prjkt : Kupdob
    {
       //if(this.Tip != "MT") return false;
 
-      foreach(PropertyInfo pInfo in typeof(Prjkt).GetProperties())
+      foreach(PropertyInfo pInfo in typeof(T).GetProperties())
       {
          if(pInfo.PropertyType != typeof(decimal)) continue;
 

@@ -1426,7 +1426,7 @@ public class Kupdob : VvSifrarRecord
    {
     //if(this.Tip != "MT") return false;
 
-      foreach(PropertyInfo pInfo in typeof(Kupdob).GetProperties())
+      foreach(PropertyInfo pInfo in typeof(T).GetProperties())
       {
          if(pInfo.PropertyType != typeof(decimal)) continue;
 
