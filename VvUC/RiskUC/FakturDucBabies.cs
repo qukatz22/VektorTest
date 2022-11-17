@@ -1659,11 +1659,12 @@ public class IRMDUC              : FakturExtDUC
          tbx_v1_tt   .JAM_ReadOnly = tbx_v1_ttNum    .JAM_ReadOnly = true;
         //tbx_KdOib   .JAM_ReadOnly = tbx_vatCntryCode.JAM_ReadOnly = 
 
-         /* !!! */ // 06.08.2015: za intervencije u slucaju 'Nekonzistentnost brojeva racuna' 
-         /* !!! */ if(ZXC.CurrUserHasSuperPrivileges)
-         /* !!! */ {
-         /* !!! */    tbx_DokDate .JAM_ReadOnly = tbx_TtNum.JAM_ReadOnly = false;
-         /* !!! */ }
+         /* !!! */  // 06.08.2015: za intervencije u slucaju 'Nekonzistentnost brojeva racuna' 
+         /* !!! *///if(ZXC.CurrUserHasSuperPrivileges)
+         /* !!! */  if(ZXC.CurrUserHasSuperPrivileges)
+         /* !!! */  {
+         /* !!! */     tbx_DokDate .JAM_ReadOnly = tbx_TtNum.JAM_ReadOnly = false;
+         /* !!! */  }
 
          //26.02.2020.
          tbx_vatCntryCode.JAM_ReadOnly = tbx_KdOib.JAM_ReadOnly = true;
