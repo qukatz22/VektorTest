@@ -921,14 +921,15 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
 
    #region Convert All Money Propertiez of VvDataRecord
 
-   public virtual bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB<T>(XSqlConnection conn/*, T vvDataRecord*/) where T : VvDataRecord
+   public virtual bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(XSqlConnection conn/*, T vvDataRecord*/) //where T : VvDataRecord
    {
-      throw new Exception("Virtual Convert_Kuna_To_Euro_ForAllMoneyPropertiez NOT OVERRIDEN!\n\r\n\r For Type " + typeof(T).ToString());
+    //throw new Exception("Virtual Convert_Kuna_To_Euro_ForAllMoneyPropertiez NOT OVERRIDEN!\n\r\n\r For Type " + typeof(T).ToString());
+      throw new Exception("Virtual Convert_Kuna_To_Euro_ForAllMoneyPropertiez NOT OVERRIDEN!");
     //return false; // EditedHasChanges 
    }
-   internal static bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez<T>(XSqlConnection conn, T vvDataRecord) where T : VvDataRecord//, new()
+   internal static bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez/*<T>*/(XSqlConnection conn, /*T*/VvDataRecord vvDataRecord) //where T : VvDataRecord//, new()
    {
-      return vvDataRecord.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB<T>(conn/*, vvDataRecord*/);
+      return vvDataRecord.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<T>*/(conn/*, vvDataRecord*/);
    }
 
    #endregion Convert All Money Propertiez of VvDataRecord

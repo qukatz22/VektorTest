@@ -1484,9 +1484,9 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
       if(ZXC.projectYearAsInt == 2023)
       {
-         pgFaktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB<Faktur>(conn);
+         pgFaktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<Faktur>*/(conn);
 
-         pgFaktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB<Rtrans>(conn));
+         pgFaktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<Rtrans>*/(conn));
       }
 
       OK = pgFaktur_rec.VvDao.ADDREC(conn, pgFaktur_rec);

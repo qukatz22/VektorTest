@@ -1262,11 +1262,11 @@ public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty
       return DeserializeFromXmlFile<Artikl>(fileName);
    }
 
-   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB<T>(XSqlConnection conn)
+   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
    {
       //if(this.Tip != "MT") return false;
 
-      foreach(PropertyInfo pInfo in typeof(T).GetProperties())
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
       {
          if(pInfo.PropertyType != typeof(decimal)) continue;
 

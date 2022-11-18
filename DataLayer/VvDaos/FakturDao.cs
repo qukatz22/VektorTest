@@ -3428,6 +3428,30 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
             rtrans_rec.CalcTransResults(null);
 
+            #region HRD 2022 ---> 2023
+
+            if(ZXC.projectYearAsInt == 2023)
+            {
+             //decimal euroR_KC  = ZXC.EURiIzKuna_HRD_(rtrans_rec.R_KC)       ; // this IS     Ron2() 
+               decimal euroR_KC  = ZXC.DivSafe(rtrans_rec.R_KC, ZXC.HRD_tecaj); // this IS NOT Ron2() 
+
+               decimal euroT_cij = ZXC.DivSafe(euroR_KC, rtrans_rec.T_kol)/*.Ron2()*/;
+
+               rtrans_rec.T_cij = euroT_cij/*.Ron2()*/;
+
+               if(_isMalopSkl)
+               {
+                  decimal euroMP_cij = ZXC.DivSafe(rtrans_rec.R_CIJ_MSK, ZXC.HRD_tecaj); // this IS NOT Ron2() 
+
+                //rtrans_rec.T_wanted = euroMP_cij/*.Ron2()*/;
+                  rtrans_rec.T_wanted = euroMP_cij.Ron(4);
+               }
+
+               rtrans_rec.CalcTransResults(null);
+            }
+
+            #endregion HRD 2022 ---> 2023
+
             rtransList.Add(rtrans_rec);
 
          } // if(artikl_rec.TheAsEx.IsWorthForPS)
