@@ -2842,8 +2842,8 @@ public static class VvSQL
 
       cmd.CommandText = "SELECT MAX(" + VvSQL.ttNumColName + ") FROM " + recordName     + " F\n" +
                         "LEFT JOIN  " + FaktEx.recordName  + " X ON X.FakturRecID = F.RecID  \n" +
-                        "WHERE "      + VvSQL.ttColName    + " = '"    + wantedTT       + " '\n" +
-                        "AND   "      + "KupdobTK"         + " = '"    + ticker         + " '\n" ;
+                        "WHERE "      + VvSQL.ttColName    + " = '"    + wantedTT       + "'\n" +
+                        "AND   "      + "KupdobTK"         + " = '"    + ticker         + "'\n" ;
 
       return (cmd);
    }

@@ -2682,8 +2682,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(this is FakturExtDUC && thisSklad2LUI != null && thisSklad2LUI.Integer > 10) // '> 10' znaci da je zadano komisijsko skladiste 
       {
          Kupdob kupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(kpdb => kpdb.Ticker == Fld_SkladCD2);
-         if(kupdob_rec != null)
-         {
+         // 21.11.2022: 
+       //if(kupdob_rec != null)
+         if(kupdob_rec != null && kupdob_rec.Komisija != ZXC.KomisijaKindEnum.NIJE)
+            {
             FakturExtDUC theDUC = this as FakturExtDUC;
             theDUC.Fld_KupdobTk = Fld_SkladCD2;
             VvSQL.SorterType origSorter = theDUC.sifrarSorterType;
@@ -2773,7 +2775,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          if(this is FakturExtDUC && thisSkladLUI != null && thisSkladLUI.Integer > 10) // '> 10' znaci da je zadano komisijsko skladiste 
          {
             Kupdob kupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(kpdb => kpdb.Ticker == Fld_SkladCD);
-            if(kupdob_rec != null)
+
+            // 21.11.2022: 
+          //if(kupdob_rec != null)
+            if(kupdob_rec != null && kupdob_rec.Komisija != ZXC.KomisijaKindEnum.NIJE)
             {
                FakturExtDUC theDUC = this as FakturExtDUC;
                theDUC.Fld_KupdobTk = Fld_SkladCD;
