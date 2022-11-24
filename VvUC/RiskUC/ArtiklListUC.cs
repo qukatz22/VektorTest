@@ -49,9 +49,12 @@ public class ArtiklListUC : VvRecLstUC
       Artikl.sorterName.BiloGdjeU_Tekstu = Fld_BiloGdjeUArtiklName = ZXC.TheVvForm.VvPref.findArtikl.IsBiloGdjeUnazivu;
       if(recordSorter.SortType == Artikl.sorterName.SortType) recordSorter.BiloGdjeU_Tekstu = Artikl.sorterName.BiloGdjeU_Tekstu;
 
-      rBtSortByName   .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv;
-      rBtSortBySifra  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra;
+      rBtSortByName   .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv  ;
+      rBtSortByName2  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2 ;
+      rBtSortBySifra  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra  ;
+      rBtSortBySifra2 .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2 ;
       rBtSortByBarCode.Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode;
+
       cbx_isWKolOnly  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsWKolOnly;
       cbx_isStatus    .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsStatus;
 
@@ -399,20 +402,28 @@ public class ArtiklListUC : VvRecLstUC
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
       this.recordSorter = Artikl.sorterName;
 
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = true;
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = false;
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2  =
       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = true;
    }
- 
+
    private void radioButtonSortByName2_generika_Click(object sender, System.EventArgs e)
    {
       RadioButton rbt   = sender as RadioButton;
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
       this.recordSorter = Artikl.sorterName2;
 
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = true;
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = false;
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2  =
       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2  = true;
    }
     private void radioButtonSortBySifra_Click(object sender, System.EventArgs e)
     {
@@ -420,21 +431,28 @@ public class ArtiklListUC : VvRecLstUC
        rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
        this.recordSorter = Artikl.sorterCD;
         
-       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = false;
-       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = true;
-       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = true;
     }
   
     private void radioButtonSortBySifra2_ATK_Click(object sender, System.EventArgs e)
     {
     RadioButton rbt   = sender as RadioButton;
     rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
-    this.recordSorter = Artikl.sorterCD;
+    this.recordSorter = Artikl.sorterCD2;
      
-    ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = true;
-    ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = false;
-    ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
-    
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2  = true;
    }
 
    private void radioButtonSortByBarcod_Click(object sender, System.EventArgs e)
@@ -443,8 +461,12 @@ public class ArtiklListUC : VvRecLstUC
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
       this.recordSorter = Artikl.sorterBCode;
  
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = false;
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = false;
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2  =
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+
       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = true;
 }
 

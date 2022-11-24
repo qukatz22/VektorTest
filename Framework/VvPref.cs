@@ -735,6 +735,10 @@ public class VvPref
       public bool   IsWKolOnly        { get; set; }
       public bool   IsStatus          { get; set; }
       public string LastUsedSkladCD   { get; set; }
+
+      public bool IsFindBy_naziv2 { get; set; }
+      public bool IsFindBy_sifra2 { get; set; }
+
    }
 
    public struct FindFakturPrefs

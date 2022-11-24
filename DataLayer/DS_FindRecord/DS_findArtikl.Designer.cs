@@ -321,6 +321,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             private global::System.Data.DataColumn columnext_KolFisycal;
             
+            private global::System.Data.DataColumn columnartiklCD2;
+            
+            private global::System.Data.DataColumn columnartiklName2;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public artiklDataTable() {
@@ -524,6 +528,22 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn artiklCD2Column {
+                get {
+                    return this.columnartiklCD2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn artiklName2Column {
+                get {
+                    return this.columnartiklName2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -580,7 +600,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         decimal ext_KolFree, 
                         decimal ext_Kolreserved, 
                         decimal ext_RucVpc1, 
-                        decimal ext_KolFisycal) {
+                        decimal ext_KolFisycal, 
+                        string artiklCD2, 
+                        string artiklName2) {
                 artiklRow rowartiklRow = ((artiklRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         recID,
@@ -603,7 +625,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         ext_KolFree,
                         ext_Kolreserved,
                         ext_RucVpc1,
-                        ext_KolFisycal};
+                        ext_KolFisycal,
+                        artiklCD2,
+                        artiklName2};
                 rowartiklRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowartiklRow);
                 return rowartiklRow;
@@ -647,6 +671,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_Kolreserved = base.Columns["ext_Kolreserved"];
                 this.columnext_RucVpc1 = base.Columns["ext_RucVpc1"];
                 this.columnext_KolFisycal = base.Columns["ext_KolFisycal"];
+                this.columnartiklCD2 = base.Columns["artiklCD2"];
+                this.columnartiklName2 = base.Columns["artiklName2"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -694,6 +720,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 base.Columns.Add(this.columnext_RucVpc1);
                 this.columnext_KolFisycal = new global::System.Data.DataColumn("ext_KolFisycal", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnext_KolFisycal);
+                this.columnartiklCD2 = new global::System.Data.DataColumn("artiklCD2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnartiklCD2);
+                this.columnartiklName2 = new global::System.Data.DataColumn("artiklName2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnartiklName2);
                 this.columnrecID.AllowDBNull = false;
                 this.columnaddTS.AllowDBNull = false;
                 this.columnmodTS.AllowDBNull = false;
@@ -730,6 +760,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_RucVpc1.Caption = "ulazKol";
                 this.columnext_KolFisycal.AllowDBNull = false;
                 this.columnext_KolFisycal.Caption = "ulazKol";
+                this.columnartiklCD2.AllowDBNull = false;
+                this.columnartiklCD2.MaxLength = 32;
+                this.columnartiklName2.AllowDBNull = false;
+                this.columnartiklName2.MaxLength = 80;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1098,6 +1132,28 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 }
                 set {
                     this[this.tableartikl.ext_KolFisycalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string artiklCD2 {
+                get {
+                    return ((string)(this[this.tableartikl.artiklCD2Column]));
+                }
+                set {
+                    this[this.tableartikl.artiklCD2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string artiklName2 {
+                get {
+                    return ((string)(this[this.tableartikl.artiklName2Column]));
+                }
+                set {
+                    this[this.tableartikl.artiklName2Column] = value;
                 }
             }
         }

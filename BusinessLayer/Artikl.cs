@@ -147,14 +147,14 @@ public class Artikl : VvSifrarRecord
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklName2]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklName ]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer     ], true)
-      }, "Naziv2", VvSQL.SorterType.Name, false);
+      }, "Naziv2", VvSQL.SorterType.Name2, false);
 
    public static VvSQL.RecordSorter sorterCD2 = new VvSQL.RecordSorter(Artikl.recordName, Artikl.recordNameArhiva, new VvSQL.IndexSegment[]
       {
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklCD2 ]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklName]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer    ], true)
-      }, "Sifra2", VvSQL.SorterType.Name, false);
+      }, "Sifra2", VvSQL.SorterType.Code2, false);
 
    private VvSQL.RecordSorter[] _sorters =
       new  VvSQL.RecordSorter[]
