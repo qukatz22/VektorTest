@@ -8,24 +8,25 @@ public class ArtiklListUC : VvRecLstUC
 {
    #region Fieldz
 
-   private RadioButton rBtSortByName, rBtSortBySifra, rBtSortByBarCode, 
-                       rBtcurrChecked;
+   private RadioButton rBtSortByName , rBtSortBySifra , rBtSortByBarCode,
+                       rBtSortByName2, rBtSortBySifra2, rBtcurrChecked;
 
    private VvTextBox tbx_artiklName, tbx_artiklCD, tbx_barCode1,
-                       tbx_skladCD, tbx_skladOpis, tbx_grupa1CD, tbx_grupa1Opis, tbx_grupa2CD, tbx_grupa2Opis, tbx_grupa3CD, tbx_grupa3Opis,
-                       tbx_ts, tbx_tsOpis, tbx_pdvKat, tbx_pdvKatOpis, tbx_jedMj, tbx_konto,
-                       tbx_barCode2, tbx_serNo, tbx_placement, tbx_linkArtCD, 
-                       tbx_drzPorjekla, tbx_atestBr,
-                       tbx_dobCd, tbx_dobNaziv, tbx_dobTick, tbx_proizvCd, tbx_proizvNaziv, tbx_proizvTick,
-                       tbx_artiklName2, tbx_artiklCD2,
-                       tbx_masaNettoOd, tbx_masaBrutoOd, tbx_promjerOd, tbx_povrsinaOd, tbx_zapreminaOd, tbx_duljinaOd, tbx_sirinaOd,  tbx_visinaOd, tbx_starostOd, tbx_velicinaOd,
-                       tbx_masaNettoDo, tbx_masaBrutoDo, tbx_promjerDo, tbx_povrsinaDo, tbx_zapreminaDo, tbx_duljinaDo, tbx_sirinaDo,  tbx_visinaDo, tbx_starostDo, tbx_velicinaDo,
-                       tbx_boja, tbx_spol, 
-                       tbx_kolStOd, tbx_prNabCijOd, tbx_finStOd, tbx_izlRezervKolOd, tbx_KolStFreeOd,    
-                       tbx_kolStDo, tbx_prNabCijDo, tbx_finStDo, tbx_izlRezervKolDo, tbx_KolStFreeDo,
-                       tbx_cjenikVpc1Od, tbx_rucOd, tbx_VPC2Od, tbx_MPC1Od, tbx_devCOd, tbx_rabat1Od, tbx_rabat2Od, tbx_minKolOd, tbx_marzaOd,
-                       tbx_cjenikVpc1Do, tbx_rucDo, tbx_VPC2Do, tbx_MPC1Do, tbx_devCDo, tbx_rabat1Do, tbx_rabat2Do, tbx_minKolDo, tbx_marzaDo,
-                       tbx_zaSkladCD, tbx_zaSkladOpis, tbx_snagaOd, tbx_snagaDo;
+                     tbx_artiklName2_gen, tbx_artiklCD2_ATK,  //SVD to su inace artiklName2, tbx_artiklCD2,
+                     tbx_skladCD, tbx_skladOpis, tbx_grupa1CD, tbx_grupa1Opis, tbx_grupa2CD, tbx_grupa2Opis, tbx_grupa3CD, tbx_grupa3Opis,
+                     tbx_ts, tbx_tsOpis, tbx_pdvKat, tbx_pdvKatOpis, tbx_jedMj, tbx_konto,
+                     tbx_barCode2, tbx_serNo, tbx_placement, tbx_linkArtCD, 
+                     tbx_drzPorjekla, tbx_atestBr,
+                     tbx_dobCd, tbx_dobNaziv, tbx_dobTick, tbx_proizvCd, tbx_proizvNaziv, tbx_proizvTick,
+                     tbx_artiklName2, tbx_artiklCD2,
+                     tbx_masaNettoOd, tbx_masaBrutoOd, tbx_promjerOd, tbx_povrsinaOd, tbx_zapreminaOd, tbx_duljinaOd, tbx_sirinaOd,  tbx_visinaOd, tbx_starostOd, tbx_velicinaOd,
+                     tbx_masaNettoDo, tbx_masaBrutoDo, tbx_promjerDo, tbx_povrsinaDo, tbx_zapreminaDo, tbx_duljinaDo, tbx_sirinaDo,  tbx_visinaDo, tbx_starostDo, tbx_velicinaDo,
+                     tbx_boja, tbx_spol, 
+                     tbx_kolStOd, tbx_prNabCijOd, tbx_finStOd, tbx_izlRezervKolOd, tbx_KolStFreeOd,    
+                     tbx_kolStDo, tbx_prNabCijDo, tbx_finStDo, tbx_izlRezervKolDo, tbx_KolStFreeDo,
+                     tbx_cjenikVpc1Od, tbx_rucOd, tbx_VPC2Od, tbx_MPC1Od, tbx_devCOd, tbx_rabat1Od, tbx_rabat2Od, tbx_minKolOd, tbx_marzaOd,
+                     tbx_cjenikVpc1Do, tbx_rucDo, tbx_VPC2Do, tbx_MPC1Do, tbx_devCDo, tbx_rabat1Do, tbx_rabat2Do, tbx_minKolDo, tbx_marzaDo,
+                     tbx_zaSkladCD, tbx_zaSkladOpis, tbx_snagaOd, tbx_snagaDo;
 
    private CheckBox    cbx_biloGdjeUArtiklName, cbx_isWKolOnly, cbx_isStatus, cbx_ikadaUminusu;
    private Artikl      artikl_rec;
@@ -97,8 +98,10 @@ public class ArtiklListUC : VvRecLstUC
 
       if(ZXC.IsSvDUHdomena)
       {
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly (TheGrid, "Šifra", colWidth, false, "artiklCD");
-         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly (TheGrid, "Naziv", colWidth, true , "artiklName");
+         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Šifra"   , colWidth, false, "artiklCD"   );
+         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Naziv"   , colWidth, true , "artiklName" );
+         colWidth = ZXC.Q5un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "ATK"     , colWidth, false, "artiklCD2"  );
+         colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Generika", colWidth, false, "artiklName2");
 
          if(ZXC.IsSvDUH_ZAHonly)//28.10.2021.
          {
@@ -109,8 +112,8 @@ public class ArtiklListUC : VvRecLstUC
             col.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
          }
 
-         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly (TheGrid, "Gr1"  , colWidth, false, "grupa1CD");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "PrNBC", colWidth,     2, "ext_lastPrNabCij");
+         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly (TheGrid, "Gr1"     , colWidth, false, "grupa1CD");
+         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "PrNBC"   , colWidth,     2, "ext_lastPrNabCij");
 
          if(!ZXC.IsSvDUH_ZAHonly)
          {
@@ -163,95 +166,222 @@ public class ArtiklListUC : VvRecLstUC
          this.ControlForInitialFocus = tbx_barCode1;
          radioButtonSortByBarcod_Click(rBtSortByBarCode, EventArgs.Empty);
       }
+
+      if(ZXC.IsSvDUHdomena)
+      {
+         if(rBtSortByName2.Checked)
+         {
+            this.ControlForInitialFocus = tbx_artiklName2_gen;
+            radioButtonSortByName2_generika_Click(rBtSortByName2, EventArgs.Empty);
+         }
+         if(rBtSortBySifra2.Checked)
+         {
+            this.ControlForInitialFocus = tbx_artiklCD2_ATK;
+            radioButtonSortBySifra2_ATK_Click(rBtSortBySifra2, EventArgs.Empty);
+         }
+      }
+
    }
 
    protected override void CreateHamperSpecifikum()
    {
-      hampSpecifikum = new VvHamper(11, 3, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
+      if(ZXC.IsSvDUHdomena) 
+      {
+         hampSpecifikum = new VvHamper(11, 4, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
 
-      //                                                   0             1          2         3        4              5                     6              7          8          9         10      
-      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q2un + ZXC.Qun4, ZXC.Q2un, ZXC.Q5un, ZXC.QUN, ZXC.Q4un, ZXC.QUN - ZXC.Qun8, ZXC.Q3un - ZXC.Qun2 , ZXC.Q5un, ZXC.Q2un  ,ZXC.Q2un  ,ZXC.Q4un  };
-      hampSpecifikum.VvSpcBefCol   = new int[] {            ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8,          ZXC.Qun12,            ZXC.Qun12, ZXC.Qun8 , ZXC.Qun8 , ZXC.Qun8 , ZXC.Qun8  };
-      hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
+         //                                                   0             1          2         3        4              5                     6              7          8          9         10      
+         hampSpecifikum.VvColWdt      = new int[] { ZXC.Q2un + ZXC.Qun4, ZXC.Q2un, ZXC.Q5un, ZXC.QUN, ZXC.Q5un, ZXC.QUN - ZXC.Qun8, ZXC.Q3un - ZXC.Qun2 , ZXC.Q5un, ZXC.Q2un  ,ZXC.Q2un  ,ZXC.Q4un  };
+         hampSpecifikum.VvSpcBefCol   = new int[] {            ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8,          ZXC.Qun12,            ZXC.Qun12, ZXC.Qun8 , ZXC.Qun8 , ZXC.Qun8 , ZXC.Qun8  };
+         hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
 
-      hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
-      hampSpecifikum.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
-      hampSpecifikum.VvBottomMargin = hampSpecifikum.VvTopMargin;
+         hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+         hampSpecifikum.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+         hampSpecifikum.VvBottomMargin = hampSpecifikum.VvTopMargin;
 
-      rBtSortBySifra = hampSpecifikum.CreateVvRadioButton(0, 0, new EventHandler(radioButtonSortBySifra_Click), "Od šifre:", 1, 0, TextImageRelation.ImageAboveText);
-      tbx_artiklCD   = hampSpecifikum.CreateVvTextBox    (2, 0, "tbx_artiklCD", "");
-      tbx_artiklCD.DoubleClick += new EventHandler(tbx_DoubleClick);
-      tbx_artiklCD.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+         rBtSortBySifra = hampSpecifikum.CreateVvRadioButton(0, 0, new EventHandler(radioButtonSortBySifra_Click), "Od šifre:", 1, 0, TextImageRelation.ImageAboveText);
+         tbx_artiklCD   = hampSpecifikum.CreateVvTextBox    (2, 0, "tbx_artiklCD", "");
+         tbx_artiklCD.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_artiklCD.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
 
-      tbx_artiklCD.Tag   = rBtSortBySifra;
-      rBtSortBySifra.Tag = tbx_artiklCD;
+         tbx_artiklCD.Tag   = rBtSortBySifra;
+         rBtSortBySifra.Tag = tbx_artiklCD;
 
-      rBtSortByName           = hampSpecifikum.CreateVvRadioButton (4, 0, new EventHandler(radioButtonSortByName_Click), "Od naziva:", TextImageRelation.ImageAboveText);
-      cbx_biloGdjeUArtiklName = hampSpecifikum.CreateVvCheckBox_OLD(5, 0, CheckBox_biloGdjeUnazivu_Click, "", RightToLeft.No);
-      tbx_artiklName          = hampSpecifikum.CreateVvTextBox     (6, 0, "tbx_artiklName", "",64, 1, 0);
-      cbx_biloGdjeUArtiklName.Checked = true;
-      SetVvPrefLink_AND_ToolTipText_ForGenericBiloGdjeUnazivuCheckBox(cbx_biloGdjeUArtiklName, new EventHandler(cbx_biloGdjeUArtiklName_Click_SaveToVvPref));
+         rBtSortByName           = hampSpecifikum.CreateVvRadioButton (4, 0, new EventHandler(radioButtonSortByName_Click), "Od naziva:", TextImageRelation.ImageAboveText);
+         cbx_biloGdjeUArtiklName = hampSpecifikum.CreateVvCheckBox_OLD(5, 0, CheckBox_biloGdjeUnazivu_Click, "", RightToLeft.No);
+         tbx_artiklName          = hampSpecifikum.CreateVvTextBox     (6, 0, "tbx_artiklName", "",64, 1, 0);
+         cbx_biloGdjeUArtiklName.Checked = true;
+         SetVvPrefLink_AND_ToolTipText_ForGenericBiloGdjeUnazivuCheckBox(cbx_biloGdjeUArtiklName, new EventHandler(cbx_biloGdjeUArtiklName_Click_SaveToVvPref));
 
-      rBtSortByName.Checked = true;
-      tbx_artiklName.DoubleClick += new EventHandler(tbx_DoubleClick);
-      tbx_artiklName.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+         rBtSortByName.Checked = true;
+         tbx_artiklName.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_artiklName.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
 
-      tbx_artiklName.Tag      = rBtSortByName;
-      rBtSortByName.Tag = tbx_artiklName;
+         tbx_artiklName.Tag      = rBtSortByName;
+         rBtSortByName.Tag = tbx_artiklName;
+
+         rBtSortBySifra2      = hampSpecifikum.CreateVvRadioButton(0, 1, new EventHandler(radioButtonSortBySifra2_ATK_Click), "Od ATK:", 1, 0, TextImageRelation.ImageAboveText);
+         tbx_artiklCD2_ATK    = hampSpecifikum.CreateVvTextBox    (2, 1, "tbx_artiklCD2_ATK", "");
+         tbx_artiklCD2_ATK.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_artiklCD2_ATK.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+
+         tbx_artiklCD2_ATK.Tag   = rBtSortBySifra2;
+         rBtSortBySifra2.Tag = tbx_artiklCD2_ATK;
+
+         rBtSortByName2          = hampSpecifikum.CreateVvRadioButton (4, 1, new EventHandler(radioButtonSortByName2_generika_Click), "Od generike:", TextImageRelation.ImageAboveText);
+       //cbx_biloGdjeUArtiklName = hampSpecifikum.CreateVvCheckBox_OLD(5, 1, CheckBox_biloGdjeUnazivu_Click, "", RightToLeft.No);
+         tbx_artiklName2_gen     = hampSpecifikum.CreateVvTextBox     (6, 1, "tbx_artiklName2_gen", "",64, 1, 0);
+       //cbx_biloGdjeUArtiklName.Checked = true;
+       //SetVvPrefLink_AND_ToolTipText_ForGenericBiloGdjeUnazivuCheckBox(cbx_biloGdjeUArtiklName, new EventHandler(cbx_biloGdjeUArtiklName_Click_SaveToVvPref));
+
+         rBtSortByName2.Checked = true;
+         tbx_artiklName2_gen.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_artiklName2_gen.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+
+         tbx_artiklName2_gen.Tag = rBtSortByName2;
+         rBtSortByName2.Tag      = tbx_artiklName2_gen;
+
+         rBtSortByBarCode = hampSpecifikum.CreateVvRadioButton(0, 2, new EventHandler(radioButtonSortByBarcod_Click), "Od Bar Koda:", 1, 0, TextImageRelation.ImageAboveText);
+         tbx_barCode1    = hampSpecifikum.CreateVvTextBox     (2, 2, "tbx_barCode1", "");
+         tbx_barCode1.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_barCode1.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+
+         tbx_barCode1.Tag     = rBtSortByBarCode;
+         rBtSortByBarCode.Tag = tbx_barCode1;
+
+         this.ControlForInitialFocus = tbx_artiklCD;
+
+         Label lbl_ZaSklad = hampSpecifikum.CreateVvLabel        (3, 2, "SITUACIJA ZA SKLADIŠTE", 2, 0, ContentAlignment.MiddleRight);
+         tbx_zaSkladCD     = hampSpecifikum.CreateVvTextBoxLookUp(6, 2, "tbx_zaSkladCD", "");
+         tbx_zaSkladOpis   = hampSpecifikum.CreateVvTextBox      (7, 2, "tbx_zaSkladOpis", "");
+         tbx_zaSkladOpis.JAM_ReadOnly = true;
+         tbx_zaSkladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+         tbx_zaSkladCD.JAM_lui_NameTaker_JAM_Name = tbx_zaSkladOpis.JAM_Name;
+         tbx_zaSkladCD.JAM_WriteOnly = true;
+
+         cbx_isStatus   = hampSpecifikum.CreateVvCheckBox_OLD(8, 0, new EventHandler(cbx_IsStatus_Click_SaveToVvPref)  ,2 , 0, "Prikaži Stanje", RightToLeft.Yes);
+         cbx_isWKolOnly = hampSpecifikum.CreateVvCheckBox_OLD(8, 1, new EventHandler(cbx_IsWKolOnly_Click_SaveToVvPref),2 , 0, "Samo Aktivni"  , RightToLeft.Yes);
+
+                              hampSpecifikum.CreateVvLabel        (0, 3, "GrupaA:", ContentAlignment.MiddleRight);
+         tbx_grupa1CD       = hampSpecifikum.CreateVvTextBoxLookUp(1, 3, "tbx_grupa1CD", "");
+         tbx_grupa1Opis     = hampSpecifikum.CreateVvTextBox      (2, 3, "tbx_grupa1Opis", "");
+         tbx_grupa1Opis.JAM_ReadOnly = true;
+         tbx_grupa1CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
+         tbx_grupa1CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa1Opis.JAM_Name;
+         tbx_grupa1CD.JAM_WriteOnly = true;
+
+                              hampSpecifikum.CreateVvLabel        (4, 3, "GrupaB:", 1, 0, ContentAlignment.MiddleRight);
+         tbx_grupa2CD       = hampSpecifikum.CreateVvTextBoxLookUp(6, 3, "tbx_grupa2CD", "");
+         tbx_grupa2Opis     = hampSpecifikum.CreateVvTextBox      (7, 3, "tbx_grupa2Opis", "");
+         tbx_grupa2Opis.JAM_ReadOnly = true;
+         tbx_grupa2CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+         tbx_grupa2CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa2Opis.JAM_Name;
+         tbx_grupa2CD.JAM_WriteOnly = true;
+
+                              hampSpecifikum.CreateVvLabel        ( 8, 3, ZXC.IsSPSISTdemo ? "Kat.Br." : "GrupaC:", ContentAlignment.MiddleRight);
+         tbx_grupa3CD       = hampSpecifikum.CreateVvTextBoxLookUp( 9, 3, "tbx_grupa3CD", "");
+         tbx_grupa3Opis     = hampSpecifikum.CreateVvTextBox      (10, 3, "tbx_grupa3Opis", "");
+         tbx_grupa3Opis.JAM_ReadOnly = true;
+         tbx_grupa3CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
+         tbx_grupa3CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa3Opis.JAM_Name;
+         tbx_grupa3CD.JAM_WriteOnly = true;
+
+         VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD2_ATK, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+         VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName2_gen, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
+
+      }
+      else
+      {
+         hampSpecifikum = new VvHamper(11, 3, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
+
+         //                                                   0             1          2         3        4              5                     6              7          8          9         10      
+         hampSpecifikum.VvColWdt      = new int[] { ZXC.Q2un + ZXC.Qun4, ZXC.Q2un, ZXC.Q5un, ZXC.QUN, ZXC.Q4un, ZXC.QUN - ZXC.Qun8, ZXC.Q3un - ZXC.Qun2 , ZXC.Q5un, ZXC.Q2un  ,ZXC.Q2un  ,ZXC.Q4un  };
+         hampSpecifikum.VvSpcBefCol   = new int[] {            ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8,          ZXC.Qun12,            ZXC.Qun12, ZXC.Qun8 , ZXC.Qun8 , ZXC.Qun8 , ZXC.Qun8  };
+         hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
+
+         hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+         hampSpecifikum.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+         hampSpecifikum.VvBottomMargin = hampSpecifikum.VvTopMargin;
+
+         rBtSortBySifra = hampSpecifikum.CreateVvRadioButton(0, 0, new EventHandler(radioButtonSortBySifra_Click), "Od šifre:", 1, 0, TextImageRelation.ImageAboveText);
+         tbx_artiklCD   = hampSpecifikum.CreateVvTextBox    (2, 0, "tbx_artiklCD", "");
+         tbx_artiklCD.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_artiklCD.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+
+         tbx_artiklCD.Tag   = rBtSortBySifra;
+         rBtSortBySifra.Tag = tbx_artiklCD;
+
+         rBtSortByName           = hampSpecifikum.CreateVvRadioButton (4, 0, new EventHandler(radioButtonSortByName_Click), "Od naziva:", TextImageRelation.ImageAboveText);
+         cbx_biloGdjeUArtiklName = hampSpecifikum.CreateVvCheckBox_OLD(5, 0, CheckBox_biloGdjeUnazivu_Click, "", RightToLeft.No);
+         tbx_artiklName          = hampSpecifikum.CreateVvTextBox     (6, 0, "tbx_artiklName", "",64, 1, 0);
+         cbx_biloGdjeUArtiklName.Checked = true;
+         SetVvPrefLink_AND_ToolTipText_ForGenericBiloGdjeUnazivuCheckBox(cbx_biloGdjeUArtiklName, new EventHandler(cbx_biloGdjeUArtiklName_Click_SaveToVvPref));
+
+         rBtSortByName.Checked = true;
+         tbx_artiklName.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_artiklName.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+
+         tbx_artiklName.Tag      = rBtSortByName;
+         rBtSortByName.Tag = tbx_artiklName;
 
 
-      rBtSortByBarCode = hampSpecifikum.CreateVvRadioButton(0, 1, new EventHandler(radioButtonSortByBarcod_Click), "Od Bar Koda:", 1, 0, TextImageRelation.ImageAboveText);
-      tbx_barCode1    = hampSpecifikum.CreateVvTextBox     (2, 1, "tbx_barCode1", "");
-      tbx_barCode1.DoubleClick += new EventHandler(tbx_DoubleClick);
-      tbx_barCode1.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+         rBtSortByBarCode = hampSpecifikum.CreateVvRadioButton(0, 1, new EventHandler(radioButtonSortByBarcod_Click), "Od Bar Koda:", 1, 0, TextImageRelation.ImageAboveText);
+         tbx_barCode1    = hampSpecifikum.CreateVvTextBox     (2, 1, "tbx_barCode1", "");
+         tbx_barCode1.DoubleClick += new EventHandler(tbx_DoubleClick);
+         tbx_barCode1.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
 
-      tbx_barCode1.Tag     = rBtSortByBarCode;
-      rBtSortByBarCode.Tag = tbx_barCode1;
+         tbx_barCode1.Tag     = rBtSortByBarCode;
+         rBtSortByBarCode.Tag = tbx_barCode1;
 
-      this.ControlForInitialFocus = tbx_artiklCD;
+         this.ControlForInitialFocus = tbx_artiklCD;
 
-      Label lbl_ZaSklad = hampSpecifikum.CreateVvLabel        (3, 1, "SITUACIJA ZA SKLADIŠTE", 2, 0, ContentAlignment.MiddleRight);
-      tbx_zaSkladCD     = hampSpecifikum.CreateVvTextBoxLookUp(6, 1, "tbx_zaSkladCD", "");
-      tbx_zaSkladOpis   = hampSpecifikum.CreateVvTextBox      (7, 1, "tbx_zaSkladOpis", "");
-      tbx_zaSkladOpis.JAM_ReadOnly = true;
-      tbx_zaSkladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-      tbx_zaSkladCD.JAM_lui_NameTaker_JAM_Name = tbx_zaSkladOpis.JAM_Name;
-      tbx_zaSkladCD.JAM_WriteOnly = true;
+         Label lbl_ZaSklad = hampSpecifikum.CreateVvLabel        (3, 1, "SITUACIJA ZA SKLADIŠTE", 2, 0, ContentAlignment.MiddleRight);
+         tbx_zaSkladCD     = hampSpecifikum.CreateVvTextBoxLookUp(6, 1, "tbx_zaSkladCD", "");
+         tbx_zaSkladOpis   = hampSpecifikum.CreateVvTextBox      (7, 1, "tbx_zaSkladOpis", "");
+         tbx_zaSkladOpis.JAM_ReadOnly = true;
+         tbx_zaSkladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+         tbx_zaSkladCD.JAM_lui_NameTaker_JAM_Name = tbx_zaSkladOpis.JAM_Name;
+         tbx_zaSkladCD.JAM_WriteOnly = true;
 
-    //tbx_zaSkladCD.Leave       += new EventHandler(tbx_zaSkladCD_Leave_RememberTheLastUsedSkladCD);
-    //tbx_zaSkladCD.TextChanged += new EventHandler(tbx_zaSkladCD_TextChanged_RememberTheLastUsedSkladCD);
+       //tbx_zaSkladCD.Leave       += new EventHandler(tbx_zaSkladCD_Leave_RememberTheLastUsedSkladCD);
+       //tbx_zaSkladCD.TextChanged += new EventHandler(tbx_zaSkladCD_TextChanged_RememberTheLastUsedSkladCD);
 
-      cbx_isStatus   = hampSpecifikum.CreateVvCheckBox_OLD(8, 0, new EventHandler(cbx_IsStatus_Click_SaveToVvPref)  ,2 , 0, "Prikaži Stanje", RightToLeft.Yes);
-      cbx_isWKolOnly = hampSpecifikum.CreateVvCheckBox_OLD(8, 1, new EventHandler(cbx_IsWKolOnly_Click_SaveToVvPref),2 , 0, "Samo Aktivni"  , RightToLeft.Yes);
+         cbx_isStatus   = hampSpecifikum.CreateVvCheckBox_OLD(8, 0, new EventHandler(cbx_IsStatus_Click_SaveToVvPref)  ,2 , 0, "Prikaži Stanje", RightToLeft.Yes);
+         cbx_isWKolOnly = hampSpecifikum.CreateVvCheckBox_OLD(8, 1, new EventHandler(cbx_IsWKolOnly_Click_SaveToVvPref),2 , 0, "Samo Aktivni"  , RightToLeft.Yes);
+
+         //VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+         //VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
+         //VvHamper.Open_Close_Fields_ForWriting(tbx_barCode1  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+         //VvHamper.Open_Close_Fields_ForWriting(tbx_zaSkladCD , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
+
+                              hampSpecifikum.CreateVvLabel        (0, 2, "GrupaA:", ContentAlignment.MiddleRight);
+         tbx_grupa1CD       = hampSpecifikum.CreateVvTextBoxLookUp(1, 2, "tbx_grupa1CD", "");
+         tbx_grupa1Opis     = hampSpecifikum.CreateVvTextBox      (2, 2, "tbx_grupa1Opis", "");
+         tbx_grupa1Opis.JAM_ReadOnly = true;
+         tbx_grupa1CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
+         tbx_grupa1CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa1Opis.JAM_Name;
+         tbx_grupa1CD.JAM_WriteOnly = true;
+
+                              hampSpecifikum.CreateVvLabel        (4, 2, "GrupaB:", 1, 0, ContentAlignment.MiddleRight);
+         tbx_grupa2CD       = hampSpecifikum.CreateVvTextBoxLookUp(6, 2, "tbx_grupa2CD", "");
+         tbx_grupa2Opis     = hampSpecifikum.CreateVvTextBox      (7, 2, "tbx_grupa2Opis", "");
+         tbx_grupa2Opis.JAM_ReadOnly = true;
+         tbx_grupa2CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+         tbx_grupa2CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa2Opis.JAM_Name;
+         tbx_grupa2CD.JAM_WriteOnly = true;
+
+                              hampSpecifikum.CreateVvLabel        ( 8, 2, ZXC.IsSPSISTdemo ? "Kat.Br." : "GrupaC:", ContentAlignment.MiddleRight);
+         tbx_grupa3CD       = hampSpecifikum.CreateVvTextBoxLookUp( 9, 2, "tbx_grupa3CD", "");
+         tbx_grupa3Opis     = hampSpecifikum.CreateVvTextBox      (10, 2, "tbx_grupa3Opis", "");
+         tbx_grupa3Opis.JAM_ReadOnly = true;
+         tbx_grupa3CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
+         tbx_grupa3CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa3Opis.JAM_Name;
+         tbx_grupa3CD.JAM_WriteOnly = true;
+      }
 
       VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_barCode1  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_zaSkladCD , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
-
-                           hampSpecifikum.CreateVvLabel        (0, 2, "GrupaA:", ContentAlignment.MiddleRight);
-      tbx_grupa1CD       = hampSpecifikum.CreateVvTextBoxLookUp(1, 2, "tbx_grupa1CD", "");
-      tbx_grupa1Opis     = hampSpecifikum.CreateVvTextBox      (2, 2, "tbx_grupa1Opis", "");
-      tbx_grupa1Opis.JAM_ReadOnly = true;
-      tbx_grupa1CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
-      tbx_grupa1CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa1Opis.JAM_Name;
-      tbx_grupa1CD.JAM_WriteOnly = true;
-
-                           hampSpecifikum.CreateVvLabel        (4, 2, "GrupaB:", 1, 0, ContentAlignment.MiddleRight);
-      tbx_grupa2CD       = hampSpecifikum.CreateVvTextBoxLookUp(6, 2, "tbx_grupa2CD", "");
-      tbx_grupa2Opis     = hampSpecifikum.CreateVvTextBox      (7, 2, "tbx_grupa2Opis", "");
-      tbx_grupa2Opis.JAM_ReadOnly = true;
-      tbx_grupa2CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
-      tbx_grupa2CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa2Opis.JAM_Name;
-      tbx_grupa2CD.JAM_WriteOnly = true;
-
-                           hampSpecifikum.CreateVvLabel        ( 8, 2, ZXC.IsSPSISTdemo ? "Kat.Br." : "GrupaC:", ContentAlignment.MiddleRight);
-      tbx_grupa3CD       = hampSpecifikum.CreateVvTextBoxLookUp( 9, 2, "tbx_grupa3CD", "");
-      tbx_grupa3Opis     = hampSpecifikum.CreateVvTextBox      (10, 2, "tbx_grupa3Opis", "");
-      tbx_grupa3Opis.JAM_ReadOnly = true;
-      tbx_grupa3CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
-      tbx_grupa3CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa3Opis.JAM_Name;
-      tbx_grupa3CD.JAM_WriteOnly = true;
+      VvHamper.Open_Close_Fields_ForWriting(tbx_zaSkladCD , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
 
       VvHamper.Open_Close_Fields_ForWriting(tbx_grupa1CD, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_grupa2CD, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
@@ -274,17 +404,39 @@ public class ArtiklListUC : VvRecLstUC
       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
    }
  
-   private void radioButtonSortBySifra_Click(object sender, System.EventArgs e)
+   private void radioButtonSortByName2_generika_Click(object sender, System.EventArgs e)
    {
       RadioButton rbt   = sender as RadioButton;
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
-      this.recordSorter = Artikl.sorterCD;
-       
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = false;
-      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = true;
+      this.recordSorter = Artikl.sorterName2;
+
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = true;
+      ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = false;
       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
-  }
+   }
+    private void radioButtonSortBySifra_Click(object sender, System.EventArgs e)
+    {
+       RadioButton rbt   = sender as RadioButton;
+       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
+       this.recordSorter = Artikl.sorterCD;
+        
+       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = false;
+       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = true;
+       ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+    }
   
+    private void radioButtonSortBySifra2_ATK_Click(object sender, System.EventArgs e)
+    {
+    RadioButton rbt   = sender as RadioButton;
+    rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
+    this.recordSorter = Artikl.sorterCD;
+     
+    ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv   = true;
+    ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra   = false;
+    ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode = false;
+    
+   }
+
    private void radioButtonSortByBarcod_Click(object sender, System.EventArgs e)
    {
       RadioButton rbt   = sender as RadioButton;
@@ -328,7 +480,9 @@ public class ArtiklListUC : VvRecLstUC
    {
       CreateHamperOpenFilter();
 
-      hampFilter = new VvHamper(16, 11, "", this, true, hampOpenFilter.Left, hampOpenFilter.Top + ZXC.Qun8, razmakHamp);
+    //hampFilter = new VvHamper(16, 11, "", this, true, hampOpenFilter.Left, hampOpenFilter.Top + ZXC.Qun8, razmakHamp);
+      hampFilter = new VvHamper(16, 11, "", this, true, hampOpenFilter.Left, hampSpecifikum != null ? hampSpecifikum.Bottom :  hampOpenFilter.Top + ZXC.Qun8, razmakHamp);
+
       //                                        0                1                      2              3              4                  5              6         7        8             9                   10                  11                     12                      13                  14             15
       hampFilter.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un - ZXC.Qun2, ZXC.Q2un + ZXC.Qun8 , ZXC.Q3un, ZXC.Q2un +ZXC.Qun4, ZXC.Q2un +ZXC.Qun4, ZXC.Q3un, ZXC.Q2un, ZXC.Q2un, ZXC.Q3un+ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q3un - ZXC.Qun2 , ZXC.Q3un - ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q3un };
       hampFilter.VvSpcBefCol   = new int[] { ZXC.Qun8,            ZXC.Qun8,            ZXC.Qun12, ZXC.Qun8,           ZXC.Qun8,          ZXC.Qun12, ZXC.Qun8, ZXC.Qun8, ZXC.Qun12,          ZXC.Qun8,            ZXC.Qun8,            ZXC.Qun8 ,             ZXC.Qun8,            ZXC.Qun8,            ZXC.Qun8, ZXC.QUN   };
@@ -396,10 +550,10 @@ public class ArtiklListUC : VvRecLstUC
 
       cbx_ikadaUminusu = hampFilter.CreateVvCheckBox_OLD(3, 0, null, 2, 0, "Ikada u minusu", RightToLeft.Yes);
 
-                        hampFilter.CreateVvLabel  (3, 1, "Naziv2:", ContentAlignment.MiddleRight);
+                        hampFilter.CreateVvLabel  (3, 1, ZXC.IsSvDUHdomena ? "Generika:" : "Naziv2:", ContentAlignment.MiddleRight);
       tbx_artiklName2 = hampFilter.CreateVvTextBox(4, 1, "tbx_artiklName2", "Naziv artikla2", 32, 1, 0);
 
-                      hampFilter.CreateVvLabel  (3, 2, "Šifra2:", ContentAlignment.MiddleRight);
+                      hampFilter.CreateVvLabel  (3, 2, ZXC.IsSvDUHdomena ? "ATK:" : "Šifra2:", ContentAlignment.MiddleRight);
       tbx_artiklCD2 = hampFilter.CreateVvTextBox(4, 2, "tbx_artiklCD2", "Šifra artikla2", 32, 1, 0);
 
                      hampFilter.CreateVvLabel  (3, 3, "BarKod2", ContentAlignment.MiddleRight);
@@ -706,6 +860,18 @@ public class ArtiklListUC : VvRecLstUC
    {
       get { return tbx_artiklCD.Text; }
       set {        tbx_artiklCD.Text = value; }
+   }
+
+   public string Fld_FromName2_GEN
+   {
+      get { return tbx_artiklName2_gen.Text; }
+      set {        tbx_artiklName2_gen.Text = value; }
+   }
+
+   public string Fld_FromArtiklCD2_ATK
+   {
+      get { return tbx_artiklCD2_ATK.Text; }
+      set {        tbx_artiklCD2_ATK.Text = value; }
    }
 
    public bool Fld_BiloGdjeUArtiklName
@@ -1090,9 +1256,11 @@ public class ArtiklListUC : VvRecLstUC
       {
          switch (recordSorter.SortType)
          {
-            case VvSQL.SorterType.Name    : return new object[] { Fld_FromName    , Fld_FromArtiklCD, 0 };
-            case VvSQL.SorterType.Code    : return new object[] { Fld_FromArtiklCD,                   0 };
-            case VvSQL.SorterType.BarCode : return new object[] { Fld_FromBarCode1,                   0 };
+            case VvSQL.SorterType.Name    : return new object[] { Fld_FromName         , Fld_FromArtiklCD, 0 };
+            case VvSQL.SorterType.Code    : return new object[] { Fld_FromArtiklCD     ,                   0 };
+            case VvSQL.SorterType.BarCode : return new object[] { Fld_FromBarCode1     ,                   0 };
+            case VvSQL.SorterType.Name2   : return new object[] { Fld_FromName2_GEN    , Fld_FromName    , 0 };
+            case VvSQL.SorterType.Code2   : return new object[] { Fld_FromArtiklCD2_ATK, Fld_FromName    , 0 };
 
             default: ZXC.aim_emsg("Q42: SortType [{0}] undifajnd in property 'From_IndexSegmentValues'", recordSorter.SortType); return null;
          }
