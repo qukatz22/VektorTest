@@ -278,7 +278,7 @@ public static class VvSQL
 
    #region RecordSorter
 
-   public enum SorterType { None, /*RecID, */Code, Ticker, Matbr, Name, DokNum, DokDate, TtNum, TtNum2, Person, City, Konto, KontoNaziv, OIB, BarCode, KpdbName, ArtStat, ArtTopByKol, ArtTopByFin, ArtTopByRuc, Serlot, NewRecID, s_lio, KCDnaziv };
+   public enum SorterType { None, /*RecID, */Code, Ticker, Matbr, Name, DokNum, DokDate, TtNum, TtNum2, Person, City, Konto, KontoNaziv, OIB, BarCode, KpdbName, ArtStat, ArtTopByKol, ArtTopByFin, ArtTopByRuc, Serlot, NewRecID, s_lio, KCDnaziv, Name2, Code2 };
 
    public enum RptOrderBy 
    { 

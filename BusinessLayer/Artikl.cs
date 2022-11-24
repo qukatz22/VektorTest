@@ -142,12 +142,28 @@ public class Artikl : VvSifrarRecord
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer  ], true)
       }, "BarKod", VvSQL.SorterType.BarCode, false);
 
+   public static VvSQL.RecordSorter sorterName2 = new VvSQL.RecordSorter(Artikl.recordName, Artikl.recordNameArhiva, new VvSQL.IndexSegment[]
+      {
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklName2]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklName ]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer     ], true)
+      }, "Naziv2", VvSQL.SorterType.Name, false);
+
+   public static VvSQL.RecordSorter sorterCD2 = new VvSQL.RecordSorter(Artikl.recordName, Artikl.recordNameArhiva, new VvSQL.IndexSegment[]
+      {
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklCD2 ]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.artiklName]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer    ], true)
+      }, "Sifra2", VvSQL.SorterType.Name, false);
+
    private VvSQL.RecordSorter[] _sorters =
       new  VvSQL.RecordSorter[]
       { 
          sorterName,
          sorterCD,
-         sorterBCode 
+         sorterBCode,
+         sorterName2,
+         sorterCD2
       };
 
    public override VvSQL.RecordSorter[] Sorters
@@ -159,9 +175,12 @@ public class Artikl : VvSifrarRecord
    {
       switch(sortType)
       {
-         case VvSQL.SorterType.Name   : return new object[] { this.ArtiklName, this.ArtiklCD, RecVer };
-         case VvSQL.SorterType.Code   : return new object[] { this.ArtiklCD,                  RecVer };
-         case VvSQL.SorterType.BarCode: return new object[] { this.BarCode1,    this.ArtiklCD, RecVer };
+         case VvSQL.SorterType.Name   : return new object[] { this.ArtiklName , this.ArtiklCD  , RecVer };
+         case VvSQL.SorterType.Code   : return new object[] { this.ArtiklCD   ,                  RecVer };
+         case VvSQL.SorterType.BarCode: return new object[] { this.BarCode1   , this.ArtiklCD  , RecVer };
+
+         case VvSQL.SorterType.Name2  : return new object[] { this.ArtiklName2, this.ArtiklName, RecVer };
+         case VvSQL.SorterType.Code2  : return new object[] { this.ArtiklCD2  , this.ArtiklName, RecVer };
 
          default: ZXC.aim_emsg(recordName + " Nema definiran sorter " + sortType.ToString());
             return null;
