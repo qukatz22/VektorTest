@@ -4245,7 +4245,40 @@ public class RptR_RekapFaktur       : RptR_StandardRiskReport
       RptFilter.NeedsGroupTree = (RptFilter.GrupiranjeDokum == "KupdobName") ? true : false;
       //TheFilterSet = RiskFilterSetEnum.REALIZ;
 
+      TheReportUC.TheReportViewer.DoubleClickPage -= new PageMouseEventHandler(     TheReportUC.TheReportViewer_DoubleClickPage);
+      TheReportUC.TheReportViewer.DoubleClickPage += new PageMouseEventHandler(RptR_RekapFaktur_TheReportViewer_DoubleClickPage);
+
    }
+
+   void RptR_RekapFaktur_TheReportViewer_DoubleClickPage(object sender, PageMouseEventArgs e)
+   {
+    //if(e.ObjectInfo.Name == "TtipBr1") // "IFA-100123" 
+    //{
+    //   ZXC.TheVvForm.ShowFakturDUC_For_TipBr(e.ObjectInfo.Text);
+    //}
+    //if(e.ObjectInfo.Name == "TdokNum1") // "000190" 
+    //{
+    //   ZXC.TheVvForm.ShowNalogDUC_For_DokNum(e.ObjectInfo.Text);
+    //}
+
+      if(e.ObjectInfo.Name == "TtNum1") // "100123" 
+      {
+         if(RptFilter.TT.IsEmpty() || e.ObjectInfo.Text.IsEmpty()) return;
+
+         string tipBr, tt   ;
+         uint          ttNum;
+
+         tt    = RptFilter.TT;
+         ttNum = ZXC.ValOrZero_UInt(e.ObjectInfo.Text);
+
+         if(ttNum.IsZero()) return;
+
+         tipBr = Faktur.Set_TT_And_TtNum(tt, ttNum);
+
+         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+      }
+   }
+
 
    public override int FillRiskReportLists()
    {
