@@ -373,7 +373,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_CJ_RB1 = "RB1"; // Cjenik Rabat1  
    public const string TT_CJ_RB2 = "RB2"; // Cjenik Rabat2  
    public const string TT_CJ_MRZ = "MRZ"; // Cjenik MARZA   
-   public const string TT_CJK    = "CKP"; // Cjenik KUPCA (kunski ili devizni) 
+   public const string TT_CKP    = "CKP"; // Cjenik KUPCA (kunski ili devizni) 
 
    /// <summary>
    /// OBVEZUJUCE PONUDE (REZERVACIJE)

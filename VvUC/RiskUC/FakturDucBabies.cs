@@ -7097,7 +7097,7 @@ public class CjenikKupca_DUC         : FakturExtDUC
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
          { 
-            Faktur.TT_CJK
+            Faktur.TT_CKP
          });
    }
 

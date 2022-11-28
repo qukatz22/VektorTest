@@ -2177,6 +2177,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
       uint recID, okCount=0;
       bool OK;
 
+      bool isCopyOUT = !isCopyIN;
+
       string message = "Da li zaista zelite umnožiti " + TheGrid.RowCount.ToString() + " prikazanih zapisa tablice [" + TheDataTable.TableName + "]\n\n" +
                        " U database: [" + conn.Database + "]!?";
 
@@ -2308,6 +2310,63 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                }
                // 25.02.2016: bez ovoga, bijo BUG! end 
+
+               #region HRD 2022 ---> 2023
+
+               bool isCopyOUT_2022to2023 = isCopyOUT && ZXC.projectYearAsInt == 2022 && conn.Database.Contains("2023");
+
+               if(isCopyOUT_2022to2023)
+               {
+                  #region Faktur
+
+                  if(VirtualDataRecord is Faktur)
+                  {
+                     Faktur faktur_rec = VirtualDataRecord as Faktur;
+
+                     bool wasEURfaktur = faktur_rec.DevName.ToUpper() == "EUR";
+
+                     if(faktur_rec.TT == Faktur.TT_CKP) // Cjenik KUPCA (kunski ili devizni) 
+                     {
+                        if(wasEURfaktur)
+                        {
+                           decimal euroT_cij, tecaj;
+
+                           DateTime cjenikDokDate = faktur_rec.DokDate;
+
+                           foreach(Rtrans rtrans in faktur_rec.Transes)
+                           {
+                              tecaj = ZXC.DevTecDao.GetHnbTecaj(ZXC.ValutaNameEnum.EUR, cjenikDokDate);
+
+                              euroT_cij = ZXC.DivSafe(rtrans.T_cij, tecaj).Ron2();
+
+                              rtrans.T_cij = euroT_cij;
+                           }
+
+                           faktur_rec.DevName = "";
+
+                        } // was EURfaktur
+
+                        else // was NOT EURfaktur
+                        {
+                           faktur_rec.Transes.ForEach(trn => trn.T_cij = ZXC.EURiIzKuna_HRD_(trn.T_cij));
+                        }
+                     }
+                  }
+
+                  #endregion Faktur
+
+                  #region Mixer
+
+                  if(VirtualDataRecord is Mixer)
+                  {
+
+                  }
+
+                  #endregion Mixer
+
+               }
+
+               #endregion HRD 2022 ---> 2023
 
                OK = TheVvDao.ADDREC(conn, VirtualDataRecord, /*false 02.01.2012: */VirtualDataRecord.IsDocument, false, false, false);
             }

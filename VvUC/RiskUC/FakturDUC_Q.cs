@@ -218,7 +218,7 @@ public struct TtInfo
       Faktur.TT_WRN,
       Faktur.TT_YRN,
 
-      Faktur.TT_CJK,
+      Faktur.TT_CKP,
       Faktur.TT_ZAH,
 
    };
@@ -251,7 +251,7 @@ public struct TtInfo
             case Faktur.TT_BOR:
           //case Faktur.TT_KIZ:
 
-            case Faktur.TT_CJK:
+            case Faktur.TT_CKP:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
 
@@ -4268,7 +4268,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          {
             FakturExtDUC theDUCex = this as FakturExtDUC;
 
-            List<Rtrans> Cjenik_RtransList_For_IRA_Artikl = RtransDao.Get_RtransList_For_TT_Artikl_Kupdob(TheDbConnection, Faktur.TT_CJK, artikl_rec.ArtiklCD, theDUCex.Fld_KupdobCd);
+            List<Rtrans> Cjenik_RtransList_For_IRA_Artikl = RtransDao.Get_RtransList_For_TT_Artikl_Kupdob(TheDbConnection, Faktur.TT_CKP, artikl_rec.ArtiklCD, theDUCex.Fld_KupdobCd);
 
             if(Cjenik_RtransList_For_IRA_Artikl.NotEmpty())
             {
@@ -5595,7 +5595,7 @@ public partial class FakturExtDUC : FakturDUC
          case Faktur.TT_RNZ: return ZXC.TheVvForm.VvPref.fakturRNzDUC      .MigratorStates;
          case Faktur.TT_PRJ: return ZXC.TheVvForm.VvPref.fakturPRjDUC      .MigratorStates;
          case Faktur.TT_KIZ: return ZXC.TheVvForm.VvPref.fakturKIZDUC      .MigratorStates;
-         case Faktur.TT_CJK: return ZXC.TheVvForm.VvPref.fakturCjKupcaDUC  .MigratorStates;
+         case Faktur.TT_CKP: return ZXC.TheVvForm.VvPref.fakturCjKupcaDUC  .MigratorStates;
 
          default: throw new Exception("Za TT " + theTT + " nedefiniran MigratorList u FakturExtDUC.GetMigratorList()");
       }
