@@ -50,10 +50,14 @@ public class ArtiklListUC : VvRecLstUC
       if(recordSorter.SortType == Artikl.sorterName.SortType) recordSorter.BiloGdjeU_Tekstu = Artikl.sorterName.BiloGdjeU_Tekstu;
 
       rBtSortByName   .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv  ;
-      rBtSortByName2  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2 ;
       rBtSortBySifra  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra  ;
-      rBtSortBySifra2 .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2 ;
       rBtSortByBarCode.Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_barCode;
+
+      if(ZXC.IsSvDUH)
+      {
+         rBtSortBySifra2.Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_sifra2;
+         rBtSortByName2 .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsFindBy_naziv2;
+      }
 
       cbx_isWKolOnly  .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsWKolOnly;
       cbx_isStatus    .Checked = ZXC.TheVvForm.VvPref.findArtikl.IsStatus;
