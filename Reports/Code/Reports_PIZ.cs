@@ -2244,6 +2244,13 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          foreach(var virman in virmanTable)
          {
+            // 28.11.2022: izbaci virmane sa negativnim moneyom 
+            if(virman.money.IsZeroOrNegative())
+            {
+               virmanRowsToBeRemoved.Add(virman);
+               continue;
+            }
+
             // 02.06.2016: SEPA; skip eventual unwanted VirmanBtchBookgKind ___ START ___ 
 
             if(isSEPA && RptFilter.VirmanGroup != ZXC.VirmanBtchBookgKind.ALL)
