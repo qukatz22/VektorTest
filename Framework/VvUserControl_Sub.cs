@@ -2325,6 +2325,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                      bool wasEURfaktur = faktur_rec.DevName.ToUpper() == "EUR";
 
+                     #region TT_CKP - Cjenik KUPCA (kunski ili devizni) 
+
                      if(faktur_rec.TT == Faktur.TT_CKP) // Cjenik KUPCA (kunski ili devizni) 
                      {
                         if(wasEURfaktur)
@@ -2351,6 +2353,45 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
                            faktur_rec.Transes.ForEach(trn => trn.T_cij = ZXC.EURiIzKuna_HRD_(trn.T_cij));
                         }
                      }
+
+                     #endregion TT_CKP - Cjenik KUPCA (kunski ili devizni) 
+
+                     #region TT_CJ_VP1i2
+
+                     if(faktur_rec.TT == Faktur.TT_CJ_VP1 || faktur_rec.TT == Faktur.TT_CJ_VP2) 
+                     {
+                        faktur_rec.Transes.ForEach(trn => trn.T_cij = ZXC.EURiIzKuna_HRD_(trn.T_cij));
+                     }
+
+                     #endregion TT_CJ_VP1i2
+
+                     #region TT_CJ_VP1i2
+
+                     if(faktur_rec.TT == Faktur.TT_CJ_VP1 || faktur_rec.TT == Faktur.TT_CJ_VP2)
+                     {
+                        faktur_rec.Transes.ForEach(trn => trn.T_cij = ZXC.EURiIzKuna_HRD_(trn.T_cij));
+                     }
+
+                     #endregion TT_CJ_VP1i2
+
+                     #region PRJs, UGO, ...
+
+                     if(faktur_rec.TtInfo.IsProjektTT)
+                     {
+                        faktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(conn);
+
+                        faktur_rec.SomeMoney = faktur_rec.SomeMoney.EURiIzKuna_HRD_();
+                        faktur_rec.Decimal01 = faktur_rec.Decimal01.EURiIzKuna_HRD_();
+                        faktur_rec.Decimal02 = faktur_rec.Decimal02.EURiIzKuna_HRD_();
+
+                        if(faktur_rec.TT == Faktur.TT_UGO) // SVD 
+                        {
+                           faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<Rtrans>*/(conn));
+                        }
+                     }
+
+                     #endregion PRJs, UGO, ...
+
                   }
 
                   #endregion Faktur

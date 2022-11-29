@@ -4811,6 +4811,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_SVD);
                if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_SVD);
                break;
+            case ZXC.VvSubModulEnum.R_UGO:
+               if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_SVD);
+               if(_tt == Faktur.TT_NRD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_NRD_SVD);
+               break;
+            case ZXC.VvSubModulEnum.R_ZAH_SVD:
+               if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_SVD);
+               if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_SVD);
+               break;
          }
       }
       // 20.12.2012: end    

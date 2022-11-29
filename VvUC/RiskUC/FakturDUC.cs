@@ -11828,6 +11828,9 @@ public partial class FakturExtDUC : FakturDUC
    {
       set
       {
+         // 29.11.2022: zasto nemamo ovu recenicu na svim DateTimePicker Fld-ovima?!
+         if(value == DateTime.MinValue) dtp_ugoZadURA.Value = DateTimePicker.MinimumDateTime;
+
          if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
          {
             dtp_ugoZadURA.Value = value;
