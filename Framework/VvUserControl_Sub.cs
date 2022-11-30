@@ -2365,20 +2365,23 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                      #endregion TT_CJ_VP1i2
 
-                     #region TT_CJ_VP1i2
+                     #region TT_ZAH
 
-                     if(faktur_rec.TT == Faktur.TT_CJ_VP1 || faktur_rec.TT == Faktur.TT_CJ_VP2)
+                     if(faktur_rec.TT == Faktur.TT_ZAH)
                      {
-                        faktur_rec.Transes.ForEach(trn => trn.T_cij = ZXC.EURiIzKuna_HRD_(trn.T_cij));
+                      //faktur_rec.                           Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null);
+                        faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                        faktur_rec.Transes.ForEach(rtr => rtr.CalcTransResults(faktur_rec));
+                        faktur_rec.TakeTransesSumToDokumentSum(true);
                      }
 
-                     #endregion TT_CJ_VP1i2
+                     #endregion TT_ZAH
 
                      #region PRJs, UGO, ...
 
                      if(faktur_rec.TtInfo.IsProjektTT)
                      {
-                        faktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(conn);
+                        faktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null);
 
                         faktur_rec.SomeMoney = faktur_rec.SomeMoney.EURiIzKuna_HRD_();
                         faktur_rec.Decimal01 = faktur_rec.Decimal01.EURiIzKuna_HRD_();
@@ -2386,7 +2389,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                         if(faktur_rec.TT == Faktur.TT_UGO) // SVD 
                         {
-                           faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<Rtrans>*/(conn));
+                           faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
                         }
                      }
 
@@ -2445,7 +2448,16 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       if(weWantOrigTtNum == false)
       {
-         uint newTtNum = /*TheVvDao*/ZXC.FakturDao.GetNextTtNum(conn, ((VvDocumLikeRecord)VirtualDataRecord).VirtualTT, "");
+         string olfaSkladCD = "";
+
+         // 30.11.2022:
+         if(VirtualDataRecord is Faktur && (VirtualDataRecord as Faktur).TT == Faktur.TT_ZAH)
+         {
+            olfaSkladCD = (VirtualDataRecord as Faktur).KupdobTK;
+         }
+
+       //uint newTtNum = /*TheVvDao*/ZXC.FakturDao.GetNextTtNum(conn, ((VvDocumLikeRecord)VirtualDataRecord).VirtualTT, ""         );
+         uint newTtNum = /*TheVvDao*/ZXC.FakturDao.GetNextTtNum(conn, ((VvDocumLikeRecord)VirtualDataRecord).VirtualTT, olfaSkladCD);
          ((VvDocumLikeRecord)VirtualDataRecord).VirtualTTnum = newTtNum;
       }
 

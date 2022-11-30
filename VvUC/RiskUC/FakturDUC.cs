@@ -4305,11 +4305,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          List<Rtrans> rtransList_For_UGO_Artikl = (this as IVvRealizableFakturDUC).RealizRtrList_AllYears.Where(rtr => rtr.T_artiklCD == rtrans_rec.T_artiklCD).ToList();
 
          // PUSE: 
-       //rtransList_For_UGO_Artikl = RtransDao.Get_URA_RtransList_For_UGO_Artikl(TheDbConnection, Faktur.TT_URA,
-       //   rtrans_rec.T_artiklCD                 , // artiklCD 
-       //   rtrans_rec.T_kupdobCD                 , // kupdobCD 
-       //     Fld_DokDate/*ZXC.prevYearFirstDay*/ , // dateOD   ... prosla i ova godina! 
-       //   (this as UGODUC).Fld_DospDate        ); // dateDO   !? 
+         //rtransList_For_UGO_Artikl = RtransDao.Get_URA_RtransList_For_UGO_Artikl(TheDbConnection, Faktur.TT_URA,
+         //   rtrans_rec.T_artiklCD                 , // artiklCD 
+         //   rtrans_rec.T_kupdobCD                 , // kupdobCD 
+         //     Fld_DokDate/*ZXC.prevYearFirstDay*/ , // dateOD   ... prosla i ova godina! 
+         //   (this as UGODUC).Fld_DospDate        ); // dateDO   !? 
 
          if(rtransList_For_UGO_Artikl.NotEmpty())
          { 

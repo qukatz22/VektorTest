@@ -2913,11 +2913,10 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       }
 
-      //// 29.11.2022: tu si stao 
-      //if(ZXC.projectYearAsInt >= 2023)
-      //{
-      //   rtransList.Where(rtr => rtr.T_skladDate < ZXC.EURoERAstart).ToList().ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<Rtrans>*/(conn));
-      //}
+      if(ZXC.projectYearAsInt >= 2023)
+      {
+         rtransList.Where(rtr => rtr.T_skladDate < ZXC.EURoERAstart).ToList().ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB/*<Rtrans>*/(conn));
+      }
 
       rtransList.ForEach(rtr => rtr.CalcTransResults(null));
 
