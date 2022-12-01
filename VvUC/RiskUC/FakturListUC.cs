@@ -1126,6 +1126,37 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "PersonAName", text, " = "));
       }
 
+      // Fld_FilterPersonAName2 - SVD: ime pacijenta                                                                                                                                          
+
+      drSchema = FaktExSchemaRows[FaktExCI.personName];
+      text = Fld_FilterPersonAName2;
+
+      if(text.NotEmpty())
+      {
+         this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "PersonAName2", text, " = "));
+      }
+
+      // Fld_OpciAlabel                                                                                                                                          
+
+      drSchema = FaktExSchemaRows[FaktExCI.opciAlabel];
+      text = Fld_OpciAlabel; // SVD: prezime pacijenta 
+
+      if(text.NotEmpty())
+      {
+       //this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "OpciAlabel", text,       " = "   ));
+         this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "OpciAlabel", text + "%", " LIKE "));
+      }
+
+      // Fld_OpciAvalue                                                                                                                                          
+
+      drSchema = FaktExSchemaRows[FaktExCI.opciAlabel];
+      text = Fld_OpciAvalue; // SVD: MBO pacijenta 
+
+      if(text.NotEmpty())
+      {
+         this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "OpciAvalue", text,       " = "   ));
+      }
+
 
    }
 
