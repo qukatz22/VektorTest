@@ -36,7 +36,10 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
                      tbx_filterPdvKnjiga, tbx_filterPdvR12,
 
                      tbx_filterKdOib, tbx_filterKupdobUlica, tbx_filterKupdobMjesto,
-                     tbx_filterZiroRn;
+                     tbx_filterZiroRn,
+                     tbx_Svd_PersonAName2,
+                     tbx_Svd_OpciAlabel        ,
+                     tbx_Svd_OpciAvalue;
 
    public CheckBox cbx_biloGdjeUnazivu, cbx_biloGdjeUnapomeni, cbx_biloGdjeUnapomeni2, cbx_biloGdjeUopisu;
 
@@ -281,6 +284,8 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
    {
       CreateHamperOpenFilter();
 
+      bool isSvd = ZXC.IsSvDUH;
+
       hampFilter = new VvHamper(11, 10, "", this, true, hampOpenFilter.Left, hampOpenFilter.Top, razmakHamp);
 
       hampFilter.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un, ZXC.Q3un, ZXC.Q6un, ZXC.QUN - ZXC.Qun4, ZXC.Q4un, ZXC.Q3un - ZXC.Qun4, ZXC.Q5un, ZXC.Q4un, ZXC.Q3un  , ZXC.Q3un};
@@ -311,7 +316,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       //==============================================================================================================================
 
       
-                             hampFilter.CreateVvLabel  (0, 2, "PoslJed:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)             hampFilter.CreateVvLabel  (0, 2, "PoslJed:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterPosJedCd   = hampFilter.CreateVvTextBox(1, 2, "tbx_filterPosJedCd"  , "Šifra poslovne jedinice" );
       tbx_filterPosJedTk   = hampFilter.CreateVvTextBox(2, 2, "tbx_filterPosJedTk"  , "Ticker poslovne jedinice");
       tbx_filterPosJedName = hampFilter.CreateVvTextBox(3, 2, "tbx_filterPosJedName", "Naziv poslovne jedinice");
@@ -323,9 +328,12 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       tbx_filterPosJedTk  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyPoslJedTextBoxLeave));
       tbx_filterPosJedName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv .SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyPoslJedTextBoxLeave));
 
+      tbx_filterPosJedCd  .Visible = !isSvd;
+      tbx_filterPosJedTk  .Visible = !isSvd;
+      tbx_filterPosJedName.Visible = !isSvd;
       //==============================================================================================================================
 
-                            hampFilter.CreateVvLabel  (0, 3, "MjTroška:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)            hampFilter.CreateVvLabel  (0, 3, "MjTroška:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterMtrosCD   = hampFilter.CreateVvTextBox(1, 3, "tbx_filterMtrosCD"  , "Šifra  mjesta troška" );
       tbx_filterMtrosTK   = hampFilter.CreateVvTextBox(2, 3, "tbx_filterMtrosTK"  , "Ticker mjesta troška");
       tbx_filterMtrosName = hampFilter.CreateVvTextBox(3, 3, "tbx_filterMtrosName", "Naziv  mjesta troška" );
@@ -337,10 +345,12 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       tbx_filterMtrosTK  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyMtrosTextBoxLeave));
       tbx_filterMtrosName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType , ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyMtrosTextBoxLeave));
 
-
+      tbx_filterMtrosCD   .Visible = !isSvd;
+      tbx_filterMtrosTK   .Visible = !isSvd;
+      tbx_filterMtrosName .Visible = !isSvd;
       //==============================================================================================================================
 
-                               hampFilter.CreateVvLabel  (0, 4, "PrimPlat:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)               hampFilter.CreateVvLabel  (0, 4, "PrimPlat:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterPrimPlatCD   = hampFilter.CreateVvTextBox(1, 4, "tbx_filtPrimPlatCd"  , "Šifra  primatelja / platitelja" );
       tbx_filterPrimPlatTK   = hampFilter.CreateVvTextBox(2, 4, "tbx_filtPrimPlatTick", "Ticker primatelja / platitelja");
       tbx_filterPrimPlatName = hampFilter.CreateVvTextBox(3, 4, "tbx_filtPrimPlatName", "Naziv  primatelja / platitelja" );
@@ -352,16 +362,20 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       tbx_filterPrimPlatTK  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyPrimPlatTextBoxLeave));
       tbx_filterPrimPlatName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyPrimPlatTextBoxLeave));
 
+      tbx_filterPrimPlatCD  .Visible = !isSvd;
+      tbx_filterPrimPlatTK  .Visible = !isSvd;
+      tbx_filterPrimPlatName.Visible = !isSvd;
+
 
       //==============================================================================================================================
-                           hampFilter.CreateVvLabel   (0, 5, "OrigBrDok:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterVezniDok = hampFilter.CreateVvTextBox (1, 5, "tbx_filtVeznidok", "Filter originalni broj dokumenta dokument", 32, 2, 0);
+                           hampFilter.CreateVvLabel   (0, isSvd ? 2 : 5, "OrigBrDok:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterVezniDok = hampFilter.CreateVvTextBox (1, isSvd ? 2 : 5, "tbx_filtVeznidok", "Filter originalni broj dokumenta dokument", 32, 2, 0);
 
 
-                                hampFilter.CreateVvLabel        (0, 6, "Veza:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterV_tt          = hampFilter.CreateVvTextBoxLookUp(1, 6, "filterV_tt"         , "Interna veza na Vektor dokument");
-      tbx_filterV_ttOpis      = hampFilter.CreateVvTextBox      (3, 6, "filterfilter_ttOpis", "Interna veza na Vektor dokument");
-      tbx_filterV_ttNum       = hampFilter.CreateVvTextBox      (2, 6, "filterV_ttNum"      , "Interna veza na Vektor dokument", 6);
+                                hampFilter.CreateVvLabel        (0, isSvd ? 3 : 6, "Veza:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterV_tt          = hampFilter.CreateVvTextBoxLookUp(1, isSvd ? 3 : 6, "filterV_tt"         , "Interna veza na Vektor dokument");
+      tbx_filterV_ttOpis      = hampFilter.CreateVvTextBox      (3, isSvd ? 3 : 6, "filterfilter_ttOpis", "Interna veza na Vektor dokument");
+      tbx_filterV_ttNum       = hampFilter.CreateVvTextBox      (2, isSvd ? 3 : 6, "filterV_ttNum"      , "Interna veza na Vektor dokument", 6);
 
       tbx_filterV_tt.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_filterV_tt.JAM_Set_LookUpTable(ZXC.luiListaFakturType, (int)ZXC.Kolona.prva);
@@ -372,25 +386,25 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
       //==============================================================================================================================
 
-
-
-                              hampFilter.CreateVvLabel       (0, 7, "Napomena:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterNapomena    = hampFilter.CreateVvTextBox     (1, 7, "tbx_filtNapomena", "Filter Napomena", 32, 2, 0);
-      cbx_biloGdjeUnapomeni = hampFilter.CreateVvCheckBox_OLD(4, 7, null, "", RightToLeft.Yes, true);
+                              hampFilter.CreateVvLabel       (0, isSvd ? 4 : 7, "Napomena:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterNapomena    = hampFilter.CreateVvTextBox     (1, isSvd ? 4 : 7, "tbx_filtNapomena", "Filter Napomena", 32, 2, 0);
+      cbx_biloGdjeUnapomeni = hampFilter.CreateVvCheckBox_OLD(4, isSvd ? 4 : 7, null, "", RightToLeft.Yes, true);
       cbx_biloGdjeUnapomeni.Checked = true;
       
-                               hampFilter.CreateVvLabel       (0, 8, "Napomena2:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterNapomena2    = hampFilter.CreateVvTextBox     (1, 8, "tbx_filterNapomena2", "Filter Napomena2", 32, 2, 0);
-      cbx_biloGdjeUnapomeni2 = hampFilter.CreateVvCheckBox_OLD(4, 8, null, "", RightToLeft.Yes, true);
+                               hampFilter.CreateVvLabel       (0, isSvd ? 5 : 8, isSvd ? "Odobravatelj" : "Napomena2:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterNapomena2    = hampFilter.CreateVvTextBox     (1, isSvd ? 5 : 8, "tbx_filterNapomena2", "Filter Napomena2", 32, 2, 0);
+      cbx_biloGdjeUnapomeni2 = hampFilter.CreateVvCheckBox_OLD(4, isSvd ? 5 : 8, null, "", RightToLeft.Yes, true);
       cbx_biloGdjeUnapomeni2.Checked = true;
 
-      
-                           hampFilter.CreateVvLabel       (0, 9, "Opis:", System.Drawing.ContentAlignment.MiddleRight);
+
+      if(!isSvd)           hampFilter.CreateVvLabel       (0, 9, "Opis:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterOpis     = hampFilter.CreateVvTextBox     (1, 9, "tbx_filterOpis", "Filter Opis", 32, 2, 0);
       cbx_biloGdjeUopisu = hampFilter.CreateVvCheckBox_OLD(4, 9, null, "", RightToLeft.Yes, true);
       cbx_biloGdjeUopisu.Checked = true;
+      tbx_filterOpis    .Visible = !isSvd;
+      cbx_biloGdjeUopisu.Visible = !isSvd;
 
-
+      //==============================================================================================================================
 
                             hampFilter.CreateVvLabel        (5, 1, "Skladište:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterSkladCd   = hampFilter.CreateVvTextBoxLookUp(6, 1, "tbx_filterSkladCd", "Skladište");
@@ -402,20 +416,22 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       tbx_filterSkladCd.JAM_lui_NameTaker_JAM_Name = tbx_filterSkladOpis.JAM_Name;
 
 
-                          hampFilter.CreateVvLabel        (5, 2, "Način plaćanja:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)           hampFilter.CreateVvLabel        (5, 2, "Način plaćanja:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterNacPlac = hampFilter.CreateVvTextBoxLookUp("tbx_NacPlac", 6, 2, "Način plaćanja", 32, 1, 0);
       tbx_filterNacPlac.JAM_Set_LookUpTable(ZXC.luiListaRiskVrstaPl, (int)ZXC.Kolona.prva);
+      tbx_filterNacPlac.Visible = !isSvd;
 
-                             hampFilter.CreateVvLabel        (5, 3, "TipOtpreme:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)             hampFilter.CreateVvLabel        (5, 3, "TipOtpreme:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterTipOtpreme = hampFilter.CreateVvTextBoxLookUp("tbx_TipOtpreme", 6, 3, "TipOtpreme", 32, 1, 0);
       tbx_filterTipOtpreme.JAM_Set_LookUpTable(ZXC.luiListaRiskTipOtprem, (int)ZXC.Kolona.prva);
+      tbx_filterTipOtpreme.Visible = !isSvd;
 
 
-                              hampFilter.CreateVvLabel  (5, 4, "OpciA:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)              hampFilter.CreateVvLabel  (5, 4, "OpciA:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterOpciAvalue  = hampFilter.CreateVvTextBox(6, 4, "tbx_OpciAvalue", "Unos teksta za ispis na računu", 32, 1, 0);
-                              hampFilter.CreateVvLabel  (5, 5, "OpciB:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)              hampFilter.CreateVvLabel  (5, 5, "OpciB:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterOpciBvalue  = hampFilter.CreateVvTextBox(6, 5, "tbx_OpciBvalue", "Unos teksta za ispis na računu", 32, 1, 0);
-                              hampFilter.CreateVvLabel  (5, 6, "OsobaA:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)              hampFilter.CreateVvLabel  (5, 6, "OsobaA:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterPersonAcd   = hampFilter.CreateVvTextBox(6, 6, "tbx_PersonName", "Djelatnik");
       tbx_filterPersonAName = hampFilter.CreateVvTextBox(7, 6, "tbx_PersonName", "Djelatnik");
       tbx_filterPersonAcd.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
@@ -423,16 +439,34 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       tbx_filterPersonAcd  .JAM_SetAutoCompleteData(Person.recordName, Person.sorterCD.SortType     , new EventHandler(OnVvTBEnter_SetAutocmplt_Person_sorterSifra)  , new EventHandler(AnyPersonTextBoxLeave));
       tbx_filterPersonAName.JAM_SetAutoCompleteData(Person.recordName, Person.sorterPrezime.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Person_sorterPrezime), new EventHandler(AnyPersonTextBoxLeave));
 
-                              hampFilter.CreateVvLabel  (5, 7, "OsobaB:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)              hampFilter.CreateVvLabel  (5, 7, "OsobaB:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterPersonBName = hampFilter.CreateVvTextBox(6, 7, "tbx_odgvPersName", "Odgovorna osoba", 32, 1, 0);
 
 
-                           hampFilter.CreateVvLabel  (5, 8, "DostNaziv:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)           hampFilter.CreateVvLabel  (5, 8, "DostNaziv:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterDostName = hampFilter.CreateVvTextBox(6, 8, "tbx_dostName", "Naziv dostave", 32, 1, 0);
-                           hampFilter.CreateVvLabel  (5, 9, "DostAdres:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)           hampFilter.CreateVvLabel  (5, 9, "DostAdres:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterDostAddr = hampFilter.CreateVvTextBox(6, 9, "tbx_DostAddr", "Adresa dostave", 32, 1, 0);
 
+      tbx_filterOpciAvalue .Visible = !isSvd;
+      tbx_filterOpciBvalue .Visible = !isSvd;
+      tbx_filterPersonAcd  .Visible = !isSvd;
+      tbx_filterPersonAName.Visible = !isSvd;
+      tbx_filterPersonBName.Visible = !isSvd;
+      tbx_filterDostName   .Visible = !isSvd;
+      tbx_filterDostAddr   .Visible = !isSvd;
 
+      if(isSvd)              hampFilter.CreateVvLabel  (5, 2, "Ime:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_Svd_PersonAName2 = hampFilter.CreateVvTextBox(6, 2, "tbx_OpciAvalue", "Ime", 32, 1, 0);
+      if(isSvd)              hampFilter.CreateVvLabel  (5, 3, "Prezime:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_Svd_OpciAlabel   = hampFilter.CreateVvTextBox(6, 3, "tbx_OpciBvalue", "Prezime", 32, 1, 0);
+      if(isSvd)              hampFilter.CreateVvLabel  (5, 4, "MBO:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_Svd_OpciAvalue   = hampFilter.CreateVvTextBox(6, 4, "tbx_OpciBvalue", "MBO", 32, 1, 0);
+      tbx_Svd_OpciAvalue.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
+      tbx_Svd_PersonAName2.Visible = isSvd;
+      tbx_Svd_OpciAlabel  .Visible = isSvd;
+      tbx_Svd_OpciAvalue  .Visible = isSvd;
 
       //--------------------------------------------------------------------------------------------------------------------------------------
                      hampFilter.CreateVvLabel        (8, 1, "TipTrans:", System.Drawing.ContentAlignment.MiddleRight);
@@ -440,46 +474,52 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       tbx_filterTT.JAM_Set_LookUpTable(ZXC.luiListaFakturType, (int)ZXC.Kolona.prva);
       tbx_filterTT.JAM_CharacterCasing = CharacterCasing.Upper;
 
-                              hampFilter.CreateVvLabel        ( 8, 2, "Cjenik:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)              hampFilter.CreateVvLabel        ( 8, 2, "Cjenik:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterCjenikTT    = hampFilter.CreateVvTextBoxLookUp( 9, 2, "tbx_filterCjenikTT", "CjenikTT" );
       tbx_filterCjenikTTnum = hampFilter.CreateVvTextBox      (10, 2, "tbx_filterCjenikTTnum", "CjenikNum", 6);
       tbx_filterCjenikTT.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_filterCjenikTTnum.JAM_CharEdits     = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_filterCjenikTT.JAM_Set_LookUpTable(ZXC.luiListaRiskCjenik, (int)ZXC.Kolona.prva);
+      tbx_filterCjenikTT   .Visible = !isSvd;
+      tbx_filterCjenikTTnum.Visible = !isSvd;
 
-                                hampFilter.CreateVvLabel  (8, 3, "IzvVal:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)          hampFilter.CreateVvLabel  (8, 3, "IzvVal:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterValName = hampFilter.CreateVvTextBoxLookUp(9, 3, "tbx_filterValName", "Naziv devizne valute");
       tbx_filterValName.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_filterValName.JAM_Set_LookUpTable(ZXC.luiListaDeviza, (int)ZXC.Kolona.prva);
-      
-                         hampFilter.CreateVvLabel        (8, 4, "Status:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterStatus = hampFilter.CreateVvTextBoxLookUp(9, 4, "tbx_filterStatus", "Status");
+      tbx_filterValName.Visible = !isSvd;
+
+
+                         hampFilter.CreateVvLabel        (8, isSvd ? 2 : 4, "Status:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterStatus = hampFilter.CreateVvTextBoxLookUp(9, isSvd ? 2 : 4, "tbx_filterStatus", "Status");
       tbx_filterStatus.JAM_Set_LookUpTable(ZXC.luiListaRiskStatus, (int)ZXC.Kolona.prva);
       tbx_filterStatus.JAM_lookUp_NOTobligatory = true;
       tbx_filterStatus.JAM_lookUp_MultiSelection = true;
 
 
-                          hampFilter.CreateVvLabel  (8, 5, "Projekt:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterProjekt = hampFilter.CreateVvTextBox(9, 5, "tbx_Projekt", "Projekt - ");
+                          hampFilter.CreateVvLabel  (8, isSvd ? 3 : 5, "Projekt:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterProjekt = hampFilter.CreateVvTextBox(9, isSvd ? 3 : 5, "tbx_Projekt", "Projekt - ");
       tbx_filterProjekt.JAM_CharacterCasing = CharacterCasing.Upper;
 
 
-                                hampFilter.CreateVvLabel  (8, 6, "PdvKnjiga:", System.Drawing.ContentAlignment.MiddleRight);
+      if(!isSvd)                hampFilter.CreateVvLabel  (8, 6, "PdvKnjiga:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterPdvKnjiga     = hampFilter.CreateVvTextBox(9, 6, "tbx_PdvKnjiga", "PdvKnjiga  R - Redovna knjiga URA/IRA, P - Knjiga predujmova URA/IRA, U - Knjiga uvoza robe URA,   S - Knjiga uvoza usluga URA");
       tbx_filterPdvKnjiga.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_filterPdvKnjiga.JAM_AllowedInputCharacters = "RUPS";
       tbx_filterPdvKnjiga.TextAlign = HorizontalAlignment.Center;
-     
-                             hampFilter.CreateVvLabel  (8, 7, "Račun R-:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterPdvKnjiga.Visible = !isSvd;
+
+      if(!isSvd)             hampFilter.CreateVvLabel  (8, 7, "Račun R-:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterPdvR12 =     hampFilter.CreateVvTextBox(9, 7, "tbx_PdvR12", "Oznaka računa 1-R1, 2-R2");
       tbx_filterPdvR12.JAM_AllowedInputCharacters = "12";
       tbx_filterPdvR12.TextAlign = HorizontalAlignment.Center;
+      tbx_filterPdvR12.Visible = !isSvd;
 
-                            hampFilter.CreateVvLabel  (8, 8, "VezniDok2:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterVezniDok2 = hampFilter.CreateVvTextBox(9, 8, "tbx_VezniDok2", "VezniDok2");
-                            hampFilter.CreateVvLabel  (8, 9, "Fco:", System.Drawing.ContentAlignment.MiddleRight);
+                            hampFilter.CreateVvLabel  (8, isSvd ? 4 : 8, "VezniDok2:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterVezniDok2 = hampFilter.CreateVvTextBox(9, isSvd ? 4 : 8, "tbx_VezniDok2", "VezniDok2");
+      if(!isSvd)            hampFilter.CreateVvLabel  (8, 9, "Fco:", System.Drawing.ContentAlignment.MiddleRight);
       tbx_filterFco       = hampFilter.CreateVvTextBox(9, 9, "tbx_Fco", "Franco");
-
+      tbx_filterFco.Visible = !isSvd;
 
       VvHamper.Open_Close_Fields_ForWriting(hampFilter  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
 
@@ -898,6 +938,10 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
    public string Fld_FilterPersonAcdAsTxt { get { return tbx_filterPersonAcd.Text;                } set { tbx_filterPersonAcd.Text = value;             } }
 
 
+  public string Fld_FilterPersonAName2{ get { return tbx_Svd_PersonAName2.Text;                } set { tbx_Svd_PersonAName2.Text = value;             } }
+  public string Fld_OpciAlabel        { get { return tbx_Svd_OpciAlabel  .Text;                } set { tbx_Svd_OpciAlabel  .Text = value;             } }
+  public string Fld_OpciAvalue        { get { return tbx_Svd_OpciAvalue  .Text;                } set { tbx_Svd_OpciAvalue  .Text = value;             } }
+
    #endregion Fld_
 
    #region Overriders and specifics
@@ -1149,7 +1193,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
       // Fld_OpciAvalue                                                                                                                                          
 
-      drSchema = FaktExSchemaRows[FaktExCI.opciAlabel];
+      drSchema = FaktExSchemaRows[FaktExCI.opciAvalue];
       text = Fld_OpciAvalue; // SVD: MBO pacijenta 
 
       if(text.NotEmpty())
