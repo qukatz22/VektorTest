@@ -333,6 +333,12 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             private global::System.Data.DataColumn columnext_statusCD;
             
+            private global::System.Data.DataColumn columnext_personName;
+            
+            private global::System.Data.DataColumn columnext_opciAlabel;
+            
+            private global::System.Data.DataColumn columnext_opciAvalue;
+            
             private global::System.Data.DataColumn columnext_s_ukKCRMP;
             
             private global::System.Data.DataColumn columnorigRecID;
@@ -596,6 +602,30 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_personNameColumn {
+                get {
+                    return this.columnext_personName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_opciAlabelColumn {
+                get {
+                    return this.columnext_opciAlabel;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_opciAvalueColumn {
+                get {
+                    return this.columnext_opciAvalue;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public global::System.Data.DataColumn ext_s_ukKCRMPColumn {
                 get {
                     return this.columnext_s_ukKCRMP;
@@ -707,6 +737,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         string ext_kupdobName, 
                         string ext_posJedName, 
                         string ext_statusCD, 
+                        string ext_personName, 
+                        string ext_opciAlabel, 
+                        string ext_opciAvalue, 
                         decimal ext_s_ukKCRMP, 
                         uint origRecID, 
                         ushort recVer, 
@@ -742,6 +775,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         ext_kupdobName,
                         ext_posJedName,
                         ext_statusCD,
+                        ext_personName,
+                        ext_opciAlabel,
+                        ext_opciAvalue,
                         ext_s_ukKCRMP,
                         origRecID,
                         recVer,
@@ -797,6 +833,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_kupdobName = base.Columns["ext_kupdobName"];
                 this.columnext_posJedName = base.Columns["ext_posJedName"];
                 this.columnext_statusCD = base.Columns["ext_statusCD"];
+                this.columnext_personName = base.Columns["ext_personName"];
+                this.columnext_opciAlabel = base.Columns["ext_opciAlabel"];
+                this.columnext_opciAvalue = base.Columns["ext_opciAvalue"];
                 this.columnext_s_ukKCRMP = base.Columns["ext_s_ukKCRMP"];
                 this.columnorigRecID = base.Columns["origRecID"];
                 this.columnrecVer = base.Columns["recVer"];
@@ -862,6 +901,12 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 base.Columns.Add(this.columnext_posJedName);
                 this.columnext_statusCD = new global::System.Data.DataColumn("ext_statusCD", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnext_statusCD);
+                this.columnext_personName = new global::System.Data.DataColumn("ext_personName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_personName);
+                this.columnext_opciAlabel = new global::System.Data.DataColumn("ext_opciAlabel", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_opciAlabel);
+                this.columnext_opciAvalue = new global::System.Data.DataColumn("ext_opciAvalue", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_opciAvalue);
                 this.columnext_s_ukKCRMP = new global::System.Data.DataColumn("ext_s_ukKCRMP", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnext_s_ukKCRMP);
                 this.columnorigRecID = new global::System.Data.DataColumn("origRecID", typeof(uint), null, global::System.Data.MappingType.Element);
@@ -916,6 +961,12 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_posJedName.MaxLength = 50;
                 this.columnext_statusCD.AllowDBNull = false;
                 this.columnext_statusCD.MaxLength = 3;
+                this.columnext_personName.AllowDBNull = false;
+                this.columnext_personName.MaxLength = 32;
+                this.columnext_opciAlabel.AllowDBNull = false;
+                this.columnext_opciAlabel.MaxLength = 32;
+                this.columnext_opciAvalue.AllowDBNull = false;
+                this.columnext_opciAvalue.MaxLength = 32;
                 this.columnext_s_ukKCRMP.AllowDBNull = false;
                 this.columnext_s_ukKCRMP.Caption = "ext_s_ukKCRP";
                 this.columnorigRecID.AllowDBNull = false;
@@ -1359,6 +1410,39 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 }
                 set {
                     this[this.tablefaktur.ext_statusCDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string ext_personName {
+                get {
+                    return ((string)(this[this.tablefaktur.ext_personNameColumn]));
+                }
+                set {
+                    this[this.tablefaktur.ext_personNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string ext_opciAlabel {
+                get {
+                    return ((string)(this[this.tablefaktur.ext_opciAlabelColumn]));
+                }
+                set {
+                    this[this.tablefaktur.ext_opciAlabelColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string ext_opciAvalue {
+                get {
+                    return ((string)(this[this.tablefaktur.ext_opciAvalueColumn]));
+                }
+                set {
+                    this[this.tablefaktur.ext_opciAvalueColumn] = value;
                 }
             }
             

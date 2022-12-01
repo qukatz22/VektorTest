@@ -1149,7 +1149,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
       // Fld_OpciAvalue                                                                                                                                          
 
-      drSchema = FaktExSchemaRows[FaktExCI.opciAlabel];
+      drSchema = FaktExSchemaRows[FaktExCI.opciAvalue];
       text = Fld_OpciAvalue; // SVD: MBO pacijenta 
 
       if(text.NotEmpty())
