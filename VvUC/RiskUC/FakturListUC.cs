@@ -757,7 +757,6 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
    #endregion Eveniti
 
    #region DataGridView
-
    protected override void CreateDataGridViewColumn()
    {
       DataGridViewTextBoxColumn col;
@@ -800,6 +799,11 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       colWidth = ZXC.Q2un+ZXC.Qun4 ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Sklad"    , colWidth, false   , "skladCD");
     //colWidth = ZXC.Q5un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Broj u PG", colWidth, false   , "vezniDok2");
       colWidth = ZXC.Q5un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "OrigBrDok", colWidth, false   , "vezniDok");
+      if(ZXC.IsSvDUH)
+      {
+         colWidth = ZXC.Q4un + ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Pac.Prezime", colWidth, false, "ext_opciAlabel");
+         colWidth = ZXC.Q4un + ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Pac.MBO"    , colWidth, false, "ext_opciAvalue");
+      }
       colWidth = ZXC.Q8un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Napomena" , colWidth, false   , "napomena");
       colWidth = ZXC.Q2un+ZXC.Qun4 ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Status"   , colWidth, false   , "ext_statusCD");
       colWidth = ZXC.Q3un+ZXC.Qun2 ; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "Iznos"    , colWidth,        2, "ext_s_ukKCRMP");
