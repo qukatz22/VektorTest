@@ -7380,9 +7380,9 @@ public class IZD_SVD_DUC         : FakturExtDUC
                         hamper.CreateVvLabel  (0, 0, "Pac.Ime:"    , ContentAlignment.MiddleRight);
                         hamper.CreateVvLabel  (2, 0, "Pac.Prezime:", ContentAlignment.MiddleRight);
                         hamper.CreateVvLabel  (4, 0, "Pac.MBO:"    , ContentAlignment.MiddleRight);
-      tbx_PersonAName = hamper.CreateVvTextBox(1, 0, "tbx_PersonAName", "Odobrio/la", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.personName));
-      tbx_OpciAlabel  = hamper.CreateVvTextBox(3, 0, "tbx_OpciAlabel ", "Odobrio/la", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAlabel ));
-      tbx_OpciAvalue  = hamper.CreateVvTextBox(5, 0, "tbx_OpciAvalue ", "Odobrio/la", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue));
+      tbx_PersonAName = hamper.CreateVvTextBox(1, 0, "tbx_PersonAName", "Pacijent Ime:"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.personName));
+      tbx_OpciAlabel  = hamper.CreateVvTextBox(3, 0, "tbx_OpciAlabel ", "Pacijent Prezime:", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAlabel ));
+      tbx_OpciAvalue  = hamper.CreateVvTextBox(5, 0, "tbx_OpciAvalue ", "Pacijent MBO:"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue));
       tbx_OpciAvalue.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
    }
@@ -7834,9 +7834,9 @@ public class ZAH_SVD_DUC         : FakturExtDUC
                         hamper.CreateVvLabel  (0, 0, "Pac.Ime:"    , ContentAlignment.MiddleRight);
                         hamper.CreateVvLabel  (2, 0, "Pac.Prezime:", ContentAlignment.MiddleRight);
                         hamper.CreateVvLabel  (4, 0, "Pac.MBO:"    , ContentAlignment.MiddleRight);
-      tbx_PersonAName = hamper.CreateVvTextBox(1, 0, "tbx_PersonAName", "Odobrio/la", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.personName));
-      tbx_OpciAlabel  = hamper.CreateVvTextBox(3, 0, "tbx_OpciAlabel ", "Odobrio/la", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAlabel ));
-      tbx_OpciAvalue  = hamper.CreateVvTextBox(5, 0, "tbx_OpciAvalue ", "Odobrio/la", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue));
+      tbx_PersonAName = hamper.CreateVvTextBox(1, 0, "tbx_PersonAName", "Pacijent Ime:"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.personName));
+      tbx_OpciAlabel  = hamper.CreateVvTextBox(3, 0, "tbx_OpciAlabel ", "Pacijent Prezime:", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAlabel ));
+      tbx_OpciAvalue  = hamper.CreateVvTextBox(5, 0, "tbx_OpciAvalue ", "Pacijent MBO:"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue));
       tbx_OpciAvalue.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
    }
 
