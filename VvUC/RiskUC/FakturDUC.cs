@@ -11959,8 +11959,11 @@ public partial class FakturExtDUC : FakturDUC
          VvLookUpItem luiOpciA = theDscLuiList.SingleOrDefault(lui => lui.Cd == "Dsc_LblOpciA");
          VvLookUpItem luiOpciB = theDscLuiList.SingleOrDefault(lui => lui.Cd == "Dsc_LblOpciB");
 
-         if(luiOpciA != null) Fld_OpciAlabel = luiOpciA.Name;
-         if(luiOpciB != null) Fld_OpciBlabel = luiOpciB.Name;
+       //02.12.2022. SVD
+       //if(luiOpciA != null                ) Fld_OpciAlabel = luiOpciA.Name;
+       //if(luiOpciB != null                ) Fld_OpciBlabel = luiOpciB.Name;
+         if(luiOpciA != null && !ZXC.IsSvDUH) Fld_OpciAlabel = luiOpciA.Name;
+         if(luiOpciB != null && !ZXC.IsSvDUH) Fld_OpciBlabel = luiOpciB.Name;
       }
 
       // 14.09.2011: preselio u VvFrom.NewRecord_OnClick() 
