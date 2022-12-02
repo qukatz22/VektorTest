@@ -4245,8 +4245,11 @@ public class RptR_RekapFaktur       : RptR_StandardRiskReport
       RptFilter.NeedsGroupTree = (RptFilter.GrupiranjeDokum == "KupdobName") ? true : false;
       //TheFilterSet = RiskFilterSetEnum.REALIZ;
 
-      TheReportUC.TheReportViewer.DoubleClickPage -= new PageMouseEventHandler(     TheReportUC.TheReportViewer_DoubleClickPage);
-      TheReportUC.TheReportViewer.DoubleClickPage += new PageMouseEventHandler(RptR_RekapFaktur_TheReportViewer_DoubleClickPage);
+      if(TheReportUC != null && TheReportUC.TheReportViewer != null)
+      {
+         TheReportUC.TheReportViewer.DoubleClickPage -= new PageMouseEventHandler(TheReportUC.     TheReportViewer_DoubleClickPage);
+         TheReportUC.TheReportViewer.DoubleClickPage += new PageMouseEventHandler(RptR_RekapFaktur_TheReportViewer_DoubleClickPage);
+      }
 
    }
 
