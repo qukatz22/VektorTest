@@ -1938,6 +1938,12 @@
       <DependentUpon>CR_SVD_PlanRealizUGO.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_SVD_PrmArt4Nabava.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_SVD_PrmArt4Nabava.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_SVD_PrmArt_Ulaz.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3711,6 +3717,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_SVD_PlanRealizUGO.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_SVD_PlanRealizUGO.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_SVD_PrmArt4Nabava.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_SVD_PrmArt4Nabava.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_SVD_PrmArt_Ulaz.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
