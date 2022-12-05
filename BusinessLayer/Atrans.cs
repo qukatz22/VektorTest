@@ -274,12 +274,14 @@ public class Atrans : VvTransRecord
       set {        this.currentData._t_normalAm = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 12 */ public decimal T_dug
    {
       get { return this.currentData._t_dug; }
       set {        this.currentData._t_dug = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 13 */ public decimal T_pot
    {
       get { return this.currentData._t_pot; }

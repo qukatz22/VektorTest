@@ -11057,10 +11057,18 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       if(reportDocument is Vektor.Reports.RIZ.CR_SVD_PrmArt4Nabava)
       {
          Artikl artikl_rec;
+         Rtrans lastURArtrans_rec;
+         Kupdob kupdobSifrar_rec;
+
+         bool lastURArtransFound;
+
+         decimal thePdvSt = 0M;
 
          List<Halmed_SVD.HALMEDartikl> halmedArtiklList = VvDaoBase.Get_HALMEDartikl_List(TheDbConnection, "");
 
          Halmed_SVD.HALMEDartikl halmedArtikl;
+
+         TheReportUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.None);
 
          foreach(VvReportSourceUtil rsuLine in TheDeviznaSumaList)
          {
@@ -11068,9 +11076,22 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
             if(artikl_rec != null)
             {
+               lastURArtrans_rec = new Rtrans();
+
+               lastURArtransFound = FakturDao.SetMeLastRtransForArtiklAndTT(TheDbConnection, lastURArtrans_rec, Faktur.TT_URA, rsuLine.TheCD, /*false*/true);
+
+               if(lastURArtransFound) thePdvSt = lastURArtrans_rec.T_pdvSt;
+               else                   thePdvSt = ZXC.ValOrZero_Decimal(artikl_rec.PdvKat, 0);
+
                rsuLine.KupdobName = artikl_rec.ArtiklCD2  ; // ATK           
                rsuLine.String1    = artikl_rec.ArtiklName2; // generika      
                rsuLine.String2    = artikl_rec.JedMj      ; // jedinica mjere
+
+               kupdobSifrar_rec = VvUserControl.KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == artikl_rec.DobavCD);
+               if(kupdobSifrar_rec != null && artikl_rec.DobavCD.NotZero())
+               {
+                  rsuLine.String4 = kupdobSifrar_rec.Naziv;
+               }
 
                halmedArtikl = halmedArtiklList.SingleOrDefault(ha => ha.s_lio == artikl_rec.AtestBr);
 
@@ -11079,19 +11100,12 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
                   rsuLine.String3 /*halmedORG*/ = halmedArtikl.obl_ozn + ", " + halmedArtikl.doza + " " + halmedArtikl.mj_ozn;
                   rsuLine.ArtiklGrName          = halmedArtikl.par_naziv;
                   rsuLine.ArtiklGrCD            = halmedArtikl.naziv;
-               }
-            }
-            else
-            {
-               rsuLine.KupdobName   = "";
-               rsuLine.String1      = "";
-               rsuLine.String2      = "";
-               rsuLine.String3      = ""; 
-               rsuLine.ArtiklGrName = "";
-               rsuLine.ArtiklGrCD   = "";
-            }
+               } // if(halmedArtikl.s_lio.NotEmpty())
 
+            } // if(artikl_rec != null)
 
+            rsuLine.TheMoney2 = ZXC.VvGet_100_from_125(rsuLine.TheMoney, thePdvSt); // iznos bez pdv, dočim je TheMoney iznos sa pdv a Average1i2 su odgovarajuce cijene 
+            rsuLine.TheKoef   = thePdvSt;
          }
       }
 

@@ -2395,7 +2395,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                      #endregion PRJs, UGO, ...
 
-                  }
+                  } // if(VirtualDataRecord is Faktur)
 
                   #endregion Faktur
 
@@ -2403,8 +2403,59 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                   if(VirtualDataRecord is Mixer)
                   {
+                     Mixer mixer_rec = VirtualDataRecord as Mixer;
 
-                  }
+                     // SVIMA, bez obzira na TT!?: 
+                     mixer_rec.MoneyA = ZXC.EURiIzKuna_HRD_(mixer_rec.MoneyA);
+
+                     if(mixer_rec.TT == Mixer.TT_RASTERF)
+                     {
+                        mixer_rec.Transes.ForEach(trn => trn.T_moneyA = ZXC.EURiIzKuna_HRD_(trn.T_moneyA));
+                     }
+
+                     bool wasEURmixer = mixer_rec.DevName.ToUpper() == "EUR"; 
+
+                     if(mixer_rec.TT == Mixer.TT_RASTERB)
+                     {
+                        if(wasEURmixer) // DO NOTHING. data layer veæ je u EURima 
+                        {
+                           //decimal euroT_cij, tecaj;
+                           //
+                           //DateTime cjenikDokDate = mixer_rec.DokDate;
+                           //
+                           //foreach(Xtrans xtrans in mixer_rec.Transes)
+                           //{
+                           //   tecaj = ZXC.DevTecDao.GetHnbTecaj(ZXC.ValutaNameEnum.EUR, cjenikDokDate);
+                           //
+                           //   euroT_cij = ZXC.DivSafe(xtrans.T_moneyA, tecaj).Ron2();
+                           //   xtrans.T_moneyA = euroT_cij;
+                           //
+                           //   euroT_cij = ZXC.DivSafe(xtrans.T_moneyB, tecaj).Ron2();
+                           //   xtrans.T_moneyB = euroT_cij;
+                           //
+                           //   euroT_cij = ZXC.DivSafe(xtrans.T_moneyC, tecaj).Ron2();
+                           //   xtrans.T_moneyC = euroT_cij;
+                           //
+                           //}
+                           //
+
+                           mixer_rec.DevName = "";
+
+                        } // was EURfaktur
+
+                        else // was NOT EURfaktur
+                        {
+                           foreach(Xtrans xtrans in mixer_rec.Transes)
+                           {
+                              xtrans.T_moneyA = ZXC.EURiIzKuna_HRD_(xtrans.T_moneyA);
+                              xtrans.T_moneyB = ZXC.EURiIzKuna_HRD_(xtrans.T_moneyB);
+                              xtrans.T_moneyC = ZXC.EURiIzKuna_HRD_(xtrans.T_moneyC);
+                           }
+                        }
+
+                     } // if(mixer_rec.TT == Mixer.TT_RASTERB) 
+
+                  } // if(VirtualDataRecord is Mixer) 
 
                   #endregion Mixer
 
@@ -2458,6 +2509,13 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
        //uint newTtNum = /*TheVvDao*/ZXC.FakturDao.GetNextTtNum(conn, ((VvDocumLikeRecord)VirtualDataRecord).VirtualTT, ""         );
          uint newTtNum = /*TheVvDao*/ZXC.FakturDao.GetNextTtNum(conn, ((VvDocumLikeRecord)VirtualDataRecord).VirtualTT, olfaSkladCD);
+
+         // 05.12.2022: 
+         if(VirtualDataRecord is Mixer)
+         {
+            newTtNum = /*TheVvDao*/ZXC.MixerDao.GetNextTtNum(conn, ((VvDocumLikeRecord)VirtualDataRecord).VirtualTT, "");
+         }
+
          ((VvDocumLikeRecord)VirtualDataRecord).VirtualTTnum = newTtNum;
       }
 
