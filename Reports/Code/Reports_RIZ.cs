@@ -11068,18 +11068,27 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
             if(artikl_rec != null)
             {
-               rsuLine.KupdobName = artikl_rec.ArtiklName2;
+               rsuLine.KupdobName = artikl_rec.ArtiklCD2  ; // ATK           
+               rsuLine.String1    = artikl_rec.ArtiklName2; // generika      
+               rsuLine.String2    = artikl_rec.JedMj      ; // jedinica mjere
 
                halmedArtikl = halmedArtiklList.SingleOrDefault(ha => ha.s_lio == artikl_rec.AtestBr);
 
                if(halmedArtikl.s_lio.NotEmpty())
                {
-                  //rsuLine.String3 /*halmedORG*/ = ZXC.ValOrZero_Decimal(halmedArtikl.br_pak, 2);
+                  rsuLine.String3 /*halmedORG*/ = halmedArtikl.obl_ozn + ", " + halmedArtikl.doza + " " + halmedArtikl.mj_ozn;
+                  rsuLine.ArtiklGrName          = halmedArtikl.par_naziv;
+                  rsuLine.ArtiklGrCD            = halmedArtikl.naziv;
                }
             }
             else
             {
-               rsuLine.KupdobName = "";
+               rsuLine.KupdobName   = "";
+               rsuLine.String1      = "";
+               rsuLine.String2      = "";
+               rsuLine.String3      = ""; 
+               rsuLine.ArtiklGrName = "";
+               rsuLine.ArtiklGrCD   = "";
             }
 
 
