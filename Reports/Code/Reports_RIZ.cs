@@ -2555,9 +2555,9 @@ public class RptR_StandardRiskReport : VvRiskReport
 
          #endregion Kreiraj HALMED error txt fajlove da ih saljes Gabrijeli 
 
-      } //if(reportDocument is Vektor.Reports.RIZ.CR_SVD_ALMP || reportDocument is Vektor.Reports.RIZ.CR_SVD_HALMED) 
+      } //if(reportDocument is Vektor.Reports.RIZ.CR_SVD_ALMP || reportDocument is Vektor.Reports.RIZ.CR_SVD_HALMED)
 
-#endregion SVD HALMED potrosnje ... ex ALMP 
+      #endregion SVD HALMED potrosnje ... ex ALMP 
 
       // 21.01.2022: 
       if(ZXC.IsSvDUH)
@@ -3350,6 +3350,7 @@ public class RptR_StandardRiskReport : VvRiskReport
       {
          case ""          : return ""                                                     ;
          case "KupdobName": grData = KupdobOrMtrosName(rtrans_rec.T_kupdobCD)             ; return grData.NotEmpty() ? grData : " NEDEFINIRANI Partner"  ;
+         case "SVDklinika": grData = SVDklinikaName   (rtrans_rec.T_kupdobCD)             ; return grData.NotEmpty() ? grData : " NEDEFINIRANI Partner"  ;
          case "MtrosName" : grData = KupdobOrMtrosName(rtrans_rec.T_mtrosCD)              ; return grData.NotEmpty() ? grData : " NEDEFINIRANO MjTros"   ;
          case "TT"        : grData = rtrans_rec.T_TT                                      ; return grData.NotEmpty() ? grData : " NEDEFINIRANI TT"       ;
 
@@ -3360,7 +3361,7 @@ public class RptR_StandardRiskReport : VvRiskReport
                             
          case "DayOfWeek" : grData = ((int)rtrans_rec.T_skladDate.DayOfWeek).ToString() + "-" + 
                                      rtrans_rec.T_skladDate.ToString("dddd")                   ; return grData.NotEmpty() ? grData : " NEDEFINIRANI DanTjedna";
-         case "SkladCD": grData = rtrans_rec.T_skladCD + " " +
+         case "SkladCD"   : grData = rtrans_rec.T_skladCD + " " +
                                   ZXC.luiListaSkladista.GetNameForThisCd(rtrans_rec.T_skladCD) ; return grData.NotEmpty() ? grData : " NEDEFINIRANO Skladiste";
          case "TH_CycleM" : grData = rtrans_rec.TH_CycleMoment                                 ; return grData.NotEmpty() ? grData : " NEDEFINIRANI TH_CycleM";
 
@@ -3378,6 +3379,14 @@ public class RptR_StandardRiskReport : VvRiskReport
       if(this is RptR_Rekap_TH_DjelatRabat) kcdAddition = "";
 
       if(kupdob_rec != null) return kupdob_rec.Naziv + kcdAddition;
+      else                   return "";
+   }
+
+   private string SVDklinikaName(uint theCD)
+   {
+      Kupdob kupdob_rec = TheKupdobList.SingleOrDefault(k => k.KupdobCD == theCD);
+
+      if(kupdob_rec != null) return kupdob_rec.Ulica2;
       else                   return "";
    }
 
@@ -10804,16 +10813,24 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       TheRtransList.RemoveAll(rtr =>                        rtr.A_ArtGrCd1 != "90" );
 #endif
 
-      // 21.01.2022: 
       if(ZXC.IsSvDUH)
       {
-         if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_LJEK)
+         if(true/*reportDocument is Vektor.Reports.RIZ.kurac*/)
          {
+            FakturGR = "SVDklinika";
+
             TheRtransList.RemoveAll(rtr => rtr.IsSvdArtGR_Ljek_ == false);
          }
-         if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_POTR)
+         else
          {
-            TheRtransList.RemoveAll(art => art.IsSvdArtGR_Potr_ == false);
+            if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_LJEK)
+            {
+               TheRtransList.RemoveAll(rtr => rtr.IsSvdArtGR_Ljek_ == false);
+            }
+            if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_POTR)
+            {
+               TheRtransList.RemoveAll(art => art.IsSvdArtGR_Potr_ == false);
+            }
          }
       }
 
@@ -11021,7 +11038,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
       }
 
-#endregion NO Groupping at all
+      #endregion NO Groupping at all
 
 #if DEBUG//_SVDsamoLijekovi_23_11_2021_zaUpravnoVijece
 
@@ -11036,6 +11053,15 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
 
 #endif
+
+      #region SVD_PrmArt4Nabava
+
+      if(true/*reportDocument is Vektor.Reports.RIZ.kurac*/)
+      { 
+         // dojebati deviznu sumu sa atk, generika, ....
+      }
+
+      #endregion SVD_PrmArt4Nabava
 
       return TheDeviznaSumaList.Count;
    }
