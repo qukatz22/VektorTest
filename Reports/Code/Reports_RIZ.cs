@@ -10815,10 +10815,8 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
       if(ZXC.IsSvDUH)
       {
-         if(true/*reportDocument is Vektor.Reports.RIZ.kurac*/)
+         if(reportDocument is Vektor.Reports.RIZ.CR_SVD_PrmArt4Nabava)
          {
-            FakturGR = "SVDklinika";
-
             TheRtransList.RemoveAll(rtr => rtr.IsSvdArtGR_Ljek_ == false);
          }
          else
@@ -11056,9 +11054,36 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
       #region SVD_PrmArt4Nabava
 
-      if(true/*reportDocument is Vektor.Reports.RIZ.kurac*/)
-      { 
-         // dojebati deviznu sumu sa atk, generika, ....
+      if(reportDocument is Vektor.Reports.RIZ.CR_SVD_PrmArt4Nabava)
+      {
+         Artikl artikl_rec;
+
+         List<Halmed_SVD.HALMEDartikl> halmedArtiklList = VvDaoBase.Get_HALMEDartikl_List(TheDbConnection, "");
+
+         Halmed_SVD.HALMEDartikl halmedArtikl;
+
+         foreach(VvReportSourceUtil rsuLine in TheDeviznaSumaList)
+         {
+            artikl_rec = TheReportUC.Get_Artikl_FromVvUcSifrar(rsuLine.TheCD);
+
+            if(artikl_rec != null)
+            {
+               rsuLine.KupdobName = artikl_rec.ArtiklName2;
+
+               halmedArtikl = halmedArtiklList.SingleOrDefault(ha => ha.s_lio == artikl_rec.AtestBr);
+
+               if(halmedArtikl.s_lio.NotEmpty())
+               {
+                  //rsuLine.String3 /*halmedORG*/ = ZXC.ValOrZero_Decimal(halmedArtikl.br_pak, 2);
+               }
+            }
+            else
+            {
+               rsuLine.KupdobName = "";
+            }
+
+
+         }
       }
 
       #endregion SVD_PrmArt4Nabava
