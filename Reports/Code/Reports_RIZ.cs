@@ -10878,10 +10878,36 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
                    /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, grp.Key.T_artiklCD),
                    /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key.T_artiklCD),
                    /* TheSaldo     */ grp.Sum(gr => gr.R.R_Ira_RUV)
-
+            
                   ))
                .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
                .ToList();
+
+
+            // FUSE za dnevnik knjiženja 
+
+          //TheDeviznaSumaList = 
+          //   
+          //   TheRtransList 
+          //   .Select(Rtr => new { R = Rtr, FakGRdata = GetFakGRdata(FakturGR, Rtr) })
+          // //.GroupBy(RichR => new { RichR.FakGRdata, RichR.R.T_artiklCD })
+          //   .Select(rtr => new VvReportSourceUtil
+          //      (/* DevName      */ rtr.R.T_artiklName, 
+          //       /* TheCD        */ rtr.R.T_artiklCD, 
+          //       /* Count        */ 1, 
+          //       /* Kol          */ rtr.R.R_kol,
+          //       /* TheMoneyKCR  */ rtr.R.R_KCR,
+          //       /* TheMoney     */ rtr.R.R_KCR,
+          //       /* TheMoney2    */ rtr.R.R_Kol_Puta_PrNabCij,
+          //       /* FakturGR     */ rtr.FakGRdata,
+          //       /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, rtr.R.T_artiklCD),
+          //       /* ArtiklGrName */ GetArtGrName(ArtiklGR, rtr.R.T_artiklCD),
+          //       /* TheSaldo     */ rtr.R.R_Ira_RUV
+          //
+          //      ))
+          //   .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+          //   .ToList();
+
          }
       }
 
