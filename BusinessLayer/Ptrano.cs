@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 #region struct PtranoStruct
 
@@ -363,6 +365,7 @@ public class Ptrano : VvTransRecord
       get { return this.currentData._t_kupdob_tk; }
       set {        this.currentData._t_kupdob_tk = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 15 */public decimal T_iznosOb
    {
       get { return this.currentData._t_iznosOb; }
@@ -491,6 +494,28 @@ public class Ptrano : VvTransRecord
    public override void TakeInBackupData_CurrentDataFrom(VvDataRecord vvDataRecord)
    {
       this.backupData = ((Ptrano)vvDataRecord).currentData;
+   }
+
+   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
    }
 
    #endregion VvDataRecordFactory

@@ -2459,6 +2459,20 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                   #endregion Mixer
 
+                  #region Placa
+
+                  if(VirtualDataRecord is Placa)
+                  {
+                     Placa placa_rec = VirtualDataRecord as Placa;
+
+                     placa_rec.                            Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null) ;
+                     placa_rec.Transes .ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                   //placa_rec.Transes2.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                     placa_rec.Transes3.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                  }
+
+                  #endregion Placa
+
                }
 
                #endregion HRD 2022 ---> 2023

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Vektor.DataLayer.DS_Reports;
 using System.Data;
+using System.Reflection;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 #region struct PtransStruct
 
@@ -538,11 +540,13 @@ public class Ptrans : VvTransRecord
       get { return Person.GetPrezimeIme(this.currentData._t_prezime, this.currentData._t_ime); }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 13 */public decimal T_brutoOsn
    {
       get { return this.currentData._t_brutoOsn; }
       set {        this.currentData._t_brutoOsn = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 14 */public decimal T_topObrok
    {
       get { return this.currentData._t_topObrok; }
@@ -553,6 +557,7 @@ public class Ptrans : VvTransRecord
       get { return this.currentData._t_godStaza; }
       set {        this.currentData._t_godStaza = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 16 */public decimal T_dodBruto
    {
       get { return this.currentData._t_dodBruto; }
@@ -573,12 +578,14 @@ public class Ptrans : VvTransRecord
       get { return this.currentData._t_koef; }
       set {        this.currentData._t_koef = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 20 */public decimal T_zivotno
    {
       get { return this.currentData._t_zivotno; }
       set {        this.currentData._t_zivotno = value; }
    }
    
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 21 */public decimal T_dopZdr
    {
       get { return this.currentData._t_dopZdr; }
@@ -589,7 +596,7 @@ public class Ptrans : VvTransRecord
       get { return (ZXC.projectYearAsInt >= 2019) ? this.T_dopZdr : 0.00M; }
    }
 
-
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 22 */public decimal T_dobMIO   
    {
       get { return this.currentData._t_dobMIO; }
@@ -599,11 +606,7 @@ public class Ptrans : VvTransRecord
    {
       get { return (ZXC.projectYearAsInt >= 2019) ? this.T_dobMIO : 0.00M; }
    }
-
-
-
-   /* 23 */
-   public decimal T_koefHRVI
+   /* 23 */public decimal T_koefHRVI
    {
       get { return this.currentData._t_koefHRVI; }
       set {        this.currentData._t_koefHRVI = value; }
@@ -640,6 +643,7 @@ public class Ptrans : VvTransRecord
       get { return this.currentData._t_stPrirez; }
       set {        this.currentData._t_stPrirez = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 30 */public decimal T_NetoAdd
    {
       get { return this.currentData._t_netoAdd; }
@@ -650,6 +654,7 @@ public class Ptrans : VvTransRecord
       get { return this.currentData._t_isDirNeto; }
       set {        this.currentData._t_isDirNeto = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 32 */public decimal T_prijevoz
    {
       get { return this.currentData._t_prijevoz; }
@@ -676,12 +681,14 @@ public class Ptrans : VvTransRecord
       set {        this.currentData._t_brutoDodSt = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 39 */public decimal T_brDodPoloz
    {
       get { return this.currentData._t_brDodPoloz; }
       set {        this.currentData._t_brDodPoloz = value; }
    }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 40 */public decimal T_koefBruto1
    {
       get { return this.currentData._t_koefBruto1; }
@@ -702,8 +709,11 @@ public class Ptrans : VvTransRecord
 
    /* 43 */public decimal T_brutoDodSt2 { get { return this.currentData._t_brutoDodSt2; } set { this.currentData._t_brutoDodSt2 = value; } }
    /* 44 */public decimal T_brutoDodSt3 { get { return this.currentData._t_brutoDodSt3; } set { this.currentData._t_brutoDodSt3 = value; } }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 45 */public decimal T_pr3mjBruto  { get { return this.currentData._t_pr3mjBruto ; } set { this.currentData._t_pr3mjBruto  = value; } }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 46 */public decimal T_brutoKorekc { get { return this.currentData._t_brutoKorekc; } set { this.currentData._t_brutoKorekc = value; } }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 47 */public decimal T_dopZdr2020  { get { return this.currentData._t_dopZdr2020 ; } set { this.currentData._t_dopZdr2020  = value; } }
 
    /* */
@@ -3783,6 +3793,28 @@ public class Ptrans : VvTransRecord
    public override void TakeInBackupData_CurrentDataFrom(VvDataRecord vvDataRecord)
    {
       this.backupData = ((Ptrans)vvDataRecord).currentData;
+   }
+
+   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
    }
 
    #endregion VvDataRecordFactory

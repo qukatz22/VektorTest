@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 #region struct PlacaStruct
 
@@ -841,6 +843,7 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._stpor4; }
       set {        this.currentData._pRules._stpor4 = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 21 */ public decimal Rule_OsnOdb
    {
       get { return this.currentData._pRules._osnOdb; }
@@ -876,26 +879,31 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._stZapII; }
       set {        this.currentData._pRules._stZapII = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 28 */ public decimal Rule_MinMioOsn
    {
       get { return this.currentData._pRules._minMioOsn; }
       set {        this.currentData._pRules._minMioOsn = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 29 */ public decimal Rule_MaxMioOsn
    {
       get { return this.currentData._pRules._maxMioOsn; }
       set {        this.currentData._pRules._maxMioOsn = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 30 */ public decimal Rule_MaxPorOsn1
    {
       get { return this.currentData._pRules._maxPorOsn1; }
       set {        this.currentData._pRules._maxPorOsn1 = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 31 */ public decimal Rule_MaxPorOsn2
    {
       get { return this.currentData._pRules._maxPorOsn2; }
       set {        this.currentData._pRules._maxPorOsn2 = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 32 */ public decimal Rule_MaxPorOsn3
    {
       get { return this.currentData._pRules._maxPorOsn3; }
@@ -962,6 +970,7 @@ public class Placa : VvPolyDocumRecord
       set {        this.currentData._pRules._stMioNa2B4 = value; }
    }
    
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 45 */ public decimal Rule_ProsPlaca
    {
       get { return this.currentData._pRules._prosPlaca; }
@@ -972,6 +981,7 @@ public class Placa : VvPolyDocumRecord
    /// FUSE! 31.01.2017. NOT FUSE anymore 
    /// </summary>
  //public decimal Rule_StMioNa2B5
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal Rule_OsnDopClUp
    {
       get { return this.currentData._pRules._stMioNa2B5; }
@@ -987,6 +997,7 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._stKrizPor2; }
       set {        this.currentData._pRules._stKrizPor2 = value; }
    }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 50 */ public decimal Rule_VrKoefBr1
    {
       get { return this.currentData._pRules._vrKoefBr1; }
@@ -1698,6 +1709,29 @@ public class Placa : VvPolyDocumRecord
    {
       return new Ptrans();
    }
+
+   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
+   }
+
 
    #endregion VvDataRecordFactory
 
