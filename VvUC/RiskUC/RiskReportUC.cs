@@ -5056,7 +5056,15 @@ public class ArtiklSifrarFilterUC : VvFilterUC
          text = Fld_KupDobCdAsTxt + " " + Fld_KupDobTicker + " " + Fld_KupDobNaziv;
          if(numOD.NotZero())
          {
-            theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "Partner", numOD, text, "Za partnera:", " = ", ""));
+            if(ZXC.IsSvDUH && theRptFilter.KD_naziv.Length == 1)
+            {
+               theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ZXC.KupdobSchemaRows[ZXC.KpdbCI.isMtr ], false, "isMtr" , true,                  "",                    "",                " = ", Kupdob.recordName));
+               theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ZXC.KupdobSchemaRows[ZXC.KpdbCI.ulica1], false, "ulica1", theRptFilter.KD_naziv, theRptFilter.KD_naziv, "Zavod / klinika", " = ", Kupdob.recordName));
+            }
+            else // classic 
+            {
+               theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "Partner", numOD, text, "Za partnera:", " = ", ""));
+            }
          }
       }
       // Fld_DokNumOdDo                                                                                                                                     
