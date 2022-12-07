@@ -4369,7 +4369,7 @@ public class ArtiklSifrarFilterUC : VvFilterUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isRobKartica = hamper.CreateVvCheckBox_OLD(0, 0, new EventHandler(IsRobnaKartica_Checked), "Samo ulazni i izlazni dokumenti", System.Windows.Forms.RightToLeft.No);
+      cbx_isRobKartica = hamper.CreateVvCheckBox_OLD(0, 0, new EventHandler(IsRobnaKartica_Checked), "Robna kartica (a ne transakcije)", System.Windows.Forms.RightToLeft.No);
       
       cbx_isRobKartica.Checked = true;
 
