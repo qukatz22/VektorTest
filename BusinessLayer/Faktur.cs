@@ -3899,7 +3899,11 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
             if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
             {
-               pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+               try
+               {
+                  pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+               }
+               catch { }
             }
          }
       }
@@ -3907,6 +3911,31 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       return this.EditedHasChanges();
    }
 
+   public override bool Convert_Euro_To_Kuna_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               try
+               {
+                  pInfo.SetValue(this, ZXC.KuneIzEURa_HRD_((decimal)pInfo.GetValue(this)));
+               }
+               catch { }
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
+   }
 
    #endregion VvDataRecordFactory
    
