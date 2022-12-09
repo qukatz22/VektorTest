@@ -1824,7 +1824,7 @@ public sealed class ZbrojniNalogZaPrijenos
 
       // ___ 301 _______________________________________________________
       Dict301["S301IBANPLAT"].FldValue = VirmanList[0].Ziro1;
-      Dict301["S301VALPL"   ].FldValue = "HRK";
+      Dict301["S301VALPL"   ].FldValue = /*"HRK"*/ ZXC.EURorHRKstr;
       Dict301["S301RNNAK"   ].FldValue = "";
       Dict301["S301VALNAK"  ].FldValue = "";
     //Dict301["S301BRNALUK" ].FldValue = VirmanList[0].Mjesto1;
@@ -2295,7 +2295,7 @@ public /*struct*/ class VirmanStruct
       // Ukupno znakova 273
 
       string fld_ZAGLAVLJE = "HRVHUB30"                       ;
-      string fld_VALUTA    = "HRK"                            ;
+      string fld_VALUTA    = /*"HRK"*/ ZXC.EURorHRKstr        ;
       string fld_IZNOS     = VvImpExp.ImpExpField.SetDecimalFldValue_Static(this.Money, 15);
       string fld_PLAT1     = this.Plat1; //ZXC.CURR_prjkt_rec.Naziv       ;
       string fld_PLAT2     = this.Plat2; //ZXC.CURR_prjkt_rec.Ulica1      ;

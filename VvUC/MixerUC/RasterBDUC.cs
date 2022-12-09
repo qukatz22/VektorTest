@@ -124,8 +124,8 @@ public class RasterBDUC : MixerDUC
       if(CtrlOK(tbx_ValName   )) Fld_DevName    = mixer_rec.DevName;
       if(CtrlOK(tbx_ObjektName)) Fld_ObjektName = mixer_rec.StrC_32;
 
-      if(Fld_DevName.NotEmpty() && Fld_DevName != "HRK") Fld_DevTecaj = mixer_rec.DevTecaj;
-      else                                               Fld_DevTecaj = 0.00M;
+      if(Fld_DevName.NotEmpty() && Fld_DevName != /*"HRK"*/ ZXC.EURorHRKstr) Fld_DevTecaj = mixer_rec.DevTecaj;
+      else                                                                   Fld_DevTecaj = 0.00M;
 
       Fld_TtOpis = ZXC.luiListaMixerType.GetNameForThisCd(mixer_rec.TT);
 

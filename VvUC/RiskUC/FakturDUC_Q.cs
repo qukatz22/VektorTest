@@ -1520,7 +1520,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          if(faktur_rec.TtInfo.IsPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV &&
             faktur_rec.TrnNonDel.Any(rtrans => rtrans.T_pdvSt.IsZero() && rtrans.T_kol.NotZero()) &&
             ((this as FakturExtDUC).Fld_DevNameAsEnum == ZXC.ValutaNameEnum.EMPTY ||
-             (this as FakturExtDUC).Fld_DevNameAsEnum == ZXC.ValutaNameEnum.HRK))
+             (this as FakturExtDUC).Fld_DevNameAsEnum == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum))
          {
             //01.10.2018. ako je projekt auto kuca grupa/Tip = "A" pustamo da moze bez oznake kolone kada je stopa 0
             //if(faktur_rec.TtInfo.IsIzlazniPdvTT && ZXC.VvDeploymentSite != ZXC.VektorSiteEnum.KROVAL                              // KROVAL-a pustamo da ipak moze (30.11.2016) 
@@ -4601,7 +4601,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       if(theFaktExtDUC != null &&
          theFaktExtDUC.Fld_DevNameAsEnum != ZXC.ValutaNameEnum.EMPTY &&
-         theFaktExtDUC.Fld_DevNameAsEnum != ZXC.ValutaNameEnum.HRK)
+         theFaktExtDUC.Fld_DevNameAsEnum != /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum)
       {
          isDevizniDokument = true;
       }
@@ -4945,8 +4945,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    {
       ValutaNameInUse = Fld_ShowInValutaLookUp;
 
-      if(ValutaNameInUse == ZXC.ValutaNameEnum.EMPTY || ValutaNameInUse == ZXC.ValutaNameEnum.HRK) IsShowingConvertedMoney = false;
-      else                                                                                         IsShowingConvertedMoney = true;
+      if(ValutaNameInUse == ZXC.ValutaNameEnum.EMPTY || ValutaNameInUse == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum) IsShowingConvertedMoney = false;
+      else                                                                                                                  IsShowingConvertedMoney = true;
 
       if(IsShowingConvertedMoney == true) // idemo iz kuna u neku drugu valutu 
       {
@@ -4962,7 +4962,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    internal decimal VvCurrency(decimal _money)
    {
       if(ValutaNameInUse         == ZXC.ValutaNameEnum.EMPTY ||
-         ValutaNameInUse         == ZXC.ValutaNameEnum.HRK   ||
+         ValutaNameInUse         == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum   ||
          IsShowingConvertedMoney == false)
       {
          return _money;
@@ -5944,7 +5944,7 @@ public partial class FakturExtDUC : FakturDUC
       }
 
       if(Fld_DevNameAsEnum != ZXC.ValutaNameEnum.EMPTY &&
-         Fld_DevNameAsEnum != ZXC.ValutaNameEnum.HRK)
+         Fld_DevNameAsEnum != /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum)
       {
          // jer ako je RecID 0, onda znaci da smo dosli iz 'ClearAllKupdobFields()', tj. ovdje se kod kopiraj dolazi davput (prvo clear, onda put) pa se ovo toggla 2 puta pa je to dreku pljuska... 
          if(kupdob_rec.RecID.NotZero())

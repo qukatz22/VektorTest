@@ -636,8 +636,8 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
       if(vvtb.EditedHasChanges() == false) return;
 
-      if(Fld_DevNameAsEnum == ZXC.ValutaNameEnum.EMPTY || Fld_DevNameAsEnum == ZXC.ValutaNameEnum.HRK) IsShowingConvertedMoney = false;
-      else                                                                                             IsShowingConvertedMoney = true;
+      if(Fld_DevNameAsEnum == ZXC.ValutaNameEnum.EMPTY || Fld_DevNameAsEnum == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum) IsShowingConvertedMoney = false;
+      else                                                                                                                      IsShowingConvertedMoney = true;
 
       ValutaNameInUse = Fld_DevNameAsEnum;
 
@@ -1353,7 +1353,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       #region ToggleDeviza Additions
 
       if(nalog_rec.DevName.NotEmpty() &&
-         nalog_rec.DevName != ZXC.ValutaNameEnum.HRK.ToString())
+         nalog_rec.DevName != /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum.ToString())
 
          TheVvTabPage.TheVvForm.NAL_ToggleKnDeviza(null, EventArgs.Empty);
 
@@ -1891,7 +1891,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
    internal decimal VvCurrency(decimal _money)
    {
       if(ValutaNameInUse         == ZXC.ValutaNameEnum.EMPTY ||
-         ValutaNameInUse         == ZXC.ValutaNameEnum.HRK   ||
+         ValutaNameInUse         == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum   ||
          IsShowingConvertedMoney == false)
       {
          return _money;

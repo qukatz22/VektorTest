@@ -3643,7 +3643,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is FakturExtDUC &&
          ((Faktur)_faktur).DevName.NotEmpty() &&
-         ((Faktur)_faktur).DevName != ZXC.ValutaNameEnum.HRK.ToString())
+         ((Faktur)_faktur).DevName != /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum.ToString())
 
          TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
 
@@ -7893,7 +7893,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(vvtb.EditedHasChanges() == false) return;
 
-      if(Fld_DevNameAsEnum == ZXC.ValutaNameEnum.EMPTY || Fld_DevNameAsEnum == ZXC.ValutaNameEnum.HRK) IsShowingConvertedMoney = false;
+      if(Fld_DevNameAsEnum == ZXC.ValutaNameEnum.EMPTY || Fld_DevNameAsEnum == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum) IsShowingConvertedMoney = false;
       else IsShowingConvertedMoney = true;
 
       /*ValutaNameInUse = */

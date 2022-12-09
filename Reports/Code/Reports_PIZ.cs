@@ -6726,7 +6726,7 @@ public class RptP_SEPA : RptP_Virmani
        //((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).SchmeNm.Item = "Cd";
 
          pmtInf.DbtrAcct.Id.IBAN = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
-         pmtInf.DbtrAcct.Ccy     = "HRK";
+         pmtInf.DbtrAcct.Ccy     = /*"HRK"*/ ZXC.EURorHRKstr;
        //pmtInf.DbtrAgt.FinInstnId.Item = "NOTPROVIDED";
          pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
 
@@ -6848,7 +6848,7 @@ public class RptP_SEPA : RptP_Virmani
 
       theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
 
-      theTx.Amt.InstdAmt.Ccy   = "HRK";
+      theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
     //theTx.Amt.InstdAmt.Value = virman_rec.Money;
       theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
 

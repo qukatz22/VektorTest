@@ -3516,7 +3516,7 @@ public partial class RiskFilterUC : VvFilterUC
          {
             text = ""; // faktur_rec.DevName != ""; 
             theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DevName1", text, text, "Za valutu plaćanja:", " != ", ""));
-            text = "HRK"; // faktur_rec.DevName != "HRK"; 
+            text = /*"HRK"*/ ZXC.EURorHRKstr; // faktur_rec.DevName != "HRK"; 
             theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DevName2", text, text, "Za valutu plaćanja:", " != ", ""));
          }
 

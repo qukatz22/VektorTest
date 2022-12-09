@@ -1432,7 +1432,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       get 
       { 
-         if(DevName.IsEmpty()) return ZXC.ValutaNameEnum.HRK.ToString();
+         if(DevName.IsEmpty()) return /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum.ToString();
          else                  return DevName;
       }
    }
@@ -4086,7 +4086,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    private decimal ConvertToOtherValuta(decimal money, decimal tecaj, ZXC.ValutaNameEnum presentValutaEnum)
    {
       if(presentValutaEnum == ZXC.ValutaNameEnum.EMPTY ||
-         presentValutaEnum == ZXC.ValutaNameEnum.HRK)
+         presentValutaEnum == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum)
       {
          return money * tecaj;
       }
