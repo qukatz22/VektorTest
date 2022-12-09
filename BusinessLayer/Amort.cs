@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 
 #region struct AmortStruct
@@ -518,6 +520,49 @@ public class Amort : VvDocumentRecord
       return DeserializeFromXmlFile<Amort>(fileName);
    }
 
+   public override bool Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
+   }
+
+   public override bool Convert_Euro_To_Kuna_ForAllMoneyPropertiez_JOB(XSqlConnection conn)
+   {
+      //if(this.Tip != "MT") return false;
+
+      foreach(PropertyInfo pInfo in this.GetType().GetProperties())
+      {
+         if(pInfo.PropertyType != typeof(decimal)) continue;
+
+         foreach(Attribute attr in pInfo.GetCustomAttributes(typeof(VvIsDevizaConvertibileAttribute), false))
+         {
+            VvIsDevizaConvertibileAttribute isConvertibileAttr = attr as VvIsDevizaConvertibileAttribute;
+
+            if(isConvertibileAttr != null && isConvertibileAttr.JeLiJeTakav == ZXC.JeliJeTakav.JE_TAKAV)
+            {
+               pInfo.SetValue(this, ZXC.KuneIzEURa_HRD_((decimal)pInfo.GetValue(this)));
+            }
+         }
+      }
+
+      return this.EditedHasChanges();
+   }
 
    #endregion VvDataRecordFactory
 
