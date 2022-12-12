@@ -1431,17 +1431,23 @@ public class Ptrans : VvTransRecord
       placa_rec           = _vvDocumentRecord as Placa;
       /*!!*/PrulesStruct pRules = placa_rec.Prules;
 
-      // 09.12.2022. - MinMioOSn na prijelazu iz 22 u 23 stvara pomutnju ako bi netko išao u ispravak prve plaće u EURima koja ja prebacena iz kunske place ili ako bi netko isao raditi obr pl u 23
-      if(ZXC.projectYearAsInt == 2023 && placa_rec.MMYYYY == "122022") // ovdje smo u eurima
+
+      // 09.12.2022. !!!!!! start  - MinMioOSn na prijelazu iz 22 u 23 stvara pomutnju ako bi netko išao u ispravak prve plaće u EURima koja ja prebacena iz kunske place ili ako bi netko isao raditi obr pl u 23
+      decimal minMioOsn2022 = 3624.06M;
+      decimal osnOdb2022    = 2500.00M;
+
+      if(ZXC.projectYearAsInt == 2023 && placa_rec.MMYYYY == "122022") // ovdje smo u EURIMA u 2023 godini a isplacujemo placu za 122022 - a mozda bi trebalo i za ostale stare place!!!
       {
-         pRules._minMioOsn = ZXC.EURiIzKuna_HRD_(3624.06M);
-         pRules._osnOdb    = ZXC.EURiIzKuna_HRD_(2500.00M);
+         pRules._minMioOsn = ZXC.EURiIzKuna_HRD_(minMioOsn2022);
+         pRules._osnOdb    = ZXC.EURiIzKuna_HRD_(osnOdb2022)   ;
       }
-      if(ZXC.projectYearAsInt == 2022 && placa_rec.MMYYYY == "122022")// ovdje smo u kunama
+      if(ZXC.projectYearAsInt == 2022 && placa_rec.MMYYYY == "122022")// ovdje smo u KUNAMA u 2022 godini a obracunavamo placu u kunama koja ce se pretvoriti u eure     
       {
-         pRules._osnOdb    = 2500.00M;
-         pRules._minMioOsn = 3624.06M;
+         pRules._minMioOsn = minMioOsn2022;
+         pRules._osnOdb    = osnOdb2022   ;
       }
+      // 09.12.2022. !!!!!! end  - MinMioOSn na prijelazu iz 22 u 23 stvara pomutnju ako bi netko išao u ispravak prve plaće u EURima koja ja prebacena iz kunske place ili ako bi netko isao raditi obr pl u 23
+
 
       // 14.02.2014: 
       //ptranEsOfThisPtrans = placa_rec.Transes2.Where(ptrane => ptrane.T_personCD == this.T_personCD)                                   .ToArray();
