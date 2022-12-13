@@ -215,16 +215,35 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       // ovisno o senderu, ovdje filtriramo one koji trzaju ili na 'U mjesecu' ili na 'ZA mjesec',  
       var pRulesLUitems_distinctCd = luiList.Distinct().Where(lui => (lui.Flag != isMMYYYY)).Select(lui => lui.Cd);
 
+      #region 2022 ---> 2023 additions
+
+      var EURtwin_CdList = pRulesLUitems_distinctCd.Where(pr => pr.EndsWith("_EUR")).ToList();
+    //var KNtwin_CdList  = new List<string>(EURtwin_CdList.Select(pr => pr.Replace("_EUR", "")));
+
+      bool isEURtwin;
+      bool isKNtwin;
+
+      #endregion 2022 ---> 2023 additions
+
       foreach(string distinctCd in pRulesLUitems_distinctCd)
       {
          pInfo = plType.GetProperty("Fld_" + distinctCd);
 
+         #region 2022 ---> 2023 additions
+
+         isEURtwin = distinctCd.EndsWith("_EUR");
+         isKNtwin  = EURtwin_CdList.Contains(distinctCd + "_EUR");
+
+         #endregion 2022 ---> 2023 additions
+
          if(pInfo == null)
          {
-          //if(distinctCd != "StMioNaB5"                              ) ZXC.aim_emsg("Clear All First: Set_PlacaRules via VvLookupList ERROR!\n\nNe postoji PROPERTY naziva [" + distinctCd + "]!");
             if(distinctCd != "StMioNaB5" && distinctCd != "StMioNa2B5") ZXC.aim_emsg("Clear All First: Set_PlacaRules via VvLookupList ERROR!\n\nNe postoji PROPERTY naziva [" + distinctCd + "]!");
             continue;
          }
+
+         if(ZXC.projectYearAsInt <= 2022 && isEURtwin) continue; // stara kune era 
+         if(ZXC.projectYearAsInt >= 2023 && isKNtwin)  continue; // nova  euri era 
 
          if(pInfo.PropertyType == typeof(uint)) pInfo.SetValue(this, (uint)0    , null);
          else                                   pInfo.SetValue(this,       0.00M, null);
@@ -245,6 +264,13 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
          pInfo = plType.GetProperty("Fld_" + lui.Cd);
 
+         #region 2022 ---> 2023 additions
+
+         isEURtwin = lui.Cd.EndsWith("_EUR");
+         isKNtwin  = EURtwin_CdList.Contains(lui.Cd + "_EUR");
+
+         #endregion 2022 ---> 2023 additions
+
          if(pInfo == null)
          {
           // 01.02.2017.
@@ -253,6 +279,9 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
  
             continue;
          }
+
+         if(ZXC.projectYearAsInt <= 2022 && isEURtwin) continue; // stara kune era 
+         if(ZXC.projectYearAsInt >= 2023 && isKNtwin)  continue; // nova  euri era 
 
          if(pInfo.PropertyType == typeof(uint)) pInfo.SetValue(this, (uint)lui.Number, null);
          else                                   pInfo.SetValue(this,       lui.Number, null);

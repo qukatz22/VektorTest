@@ -2905,6 +2905,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       get { return tbx_osnOdb.GetDecimalField(); }
       set { tbx_osnOdb.PutDecimalField(value); }
    }
+   public decimal Fld_OsnOdb_EUR
+   {
+      get { return tbx_osnOdb.GetDecimalField(); }
+      set { tbx_osnOdb.PutDecimalField(value); }
+   }
    /* 22 */
    public decimal Fld_StMioIz
    {
@@ -2947,8 +2952,18 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       get { return tbx_minMioOsn.GetDecimalField(); }
       set { tbx_minMioOsn.PutDecimalField(value); }
    }
+   public decimal Fld_MinMioOsn_EUR
+   {
+      get { return tbx_minMioOsn.GetDecimalField(); }
+      set { tbx_minMioOsn.PutDecimalField(value); }
+   }
    /* 29 */
    public decimal Fld_MaxMioOsn
+   {
+      get { return tbx_maxMioOsn.GetDecimalField(); }
+      set { tbx_maxMioOsn.PutDecimalField(value); }
+   }
+   public decimal Fld_MaxMioOsn_EUR
    {
       get { return tbx_maxMioOsn.GetDecimalField(); }
       set { tbx_maxMioOsn.PutDecimalField(value); }
@@ -2959,14 +2974,29 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       get { return tbx_maxPorOsn1.GetDecimalField(); }
       set { tbx_maxPorOsn1.PutDecimalField(value); }
    }
+   public decimal Fld_MaxPorOsn1_EUR
+   {
+      get { return tbx_maxPorOsn1.GetDecimalField(); }
+      set { tbx_maxPorOsn1.PutDecimalField(value); }
+   }
    /* 31 */
    public decimal Fld_MaxPorOsn2
    {
       get { return tbx_maxPorOsn2.GetDecimalField(); }
       set { tbx_maxPorOsn2.PutDecimalField(value); }
    }
+   public decimal Fld_MaxPorOsn2_EUR
+   {
+      get { return tbx_maxPorOsn2.GetDecimalField(); }
+      set { tbx_maxPorOsn2.PutDecimalField(value); }
+   }
    /* 32 */
    public decimal Fld_MaxPorOsn3
+   {
+      get { return tbx_maxPorOsn3.GetDecimalField(); }
+      set { tbx_maxPorOsn3.PutDecimalField(value); }
+   }
+   public decimal Fld_MaxPorOsn3_EUR
    {
       get { return tbx_maxPorOsn3.GetDecimalField(); }
       set { tbx_maxPorOsn3.PutDecimalField(value); }
@@ -3052,8 +3082,18 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       get { return tbx_prosPlaca.GetDecimalField(); }
       set { tbx_prosPlaca.PutDecimalField(value); }
    }
+   public decimal Fld_ProsPlaca_EUR
+   {
+      get { return tbx_prosPlaca.GetDecimalField(); }
+      set { tbx_prosPlaca.PutDecimalField(value); }
+   }
    /* 46 */
    public decimal Fld_OsnDopClUp
+   {
+      get { return tbx_stMioNa2B5.GetDecimalField(); }
+      set { tbx_stMioNa2B5.PutDecimalField(value); }
+   }
+   public decimal Fld_OsnDopClUp_EUR
    {
       get { return tbx_stMioNa2B5.GetDecimalField(); }
       set { tbx_stMioNa2B5.PutDecimalField(value); }
@@ -3131,22 +3171,39 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
          tbx_napomena.TextAsToolTip(toolTip);
 
-         Fld_StPor1     = placa_rec.Rule_StPor1;
+         if(ZXC.projectYearAsInt <= 2022) // old kune era 
+         {
+            Fld_OsnOdb     = placa_rec.Rule_OsnOdb    ;
+            Fld_MinMioOsn  = placa_rec.Rule_MinMioOsn ;
+            Fld_MaxMioOsn  = placa_rec.Rule_MaxMioOsn ;
+            Fld_MaxPorOsn1 = placa_rec.Rule_MaxPorOsn1;
+            Fld_MaxPorOsn2 = placa_rec.Rule_MaxPorOsn2;
+            Fld_MaxPorOsn3 = placa_rec.Rule_MaxPorOsn3;
+            Fld_ProsPlaca  = placa_rec.Rule_ProsPlaca ;
+            Fld_OsnDopClUp = placa_rec.Rule_OsnDopClUp;
+         }
+         else // ZXC.projectYearAsInt >= 2023 ... new euro era 
+         {
+            Fld_OsnOdb_EUR     = placa_rec.Rule_OsnOdb    ;
+            Fld_MinMioOsn_EUR  = placa_rec.Rule_MinMioOsn ;
+            Fld_MaxMioOsn_EUR  = placa_rec.Rule_MaxMioOsn ;
+            Fld_MaxPorOsn1_EUR = placa_rec.Rule_MaxPorOsn1;
+            Fld_MaxPorOsn2_EUR = placa_rec.Rule_MaxPorOsn2;
+            Fld_MaxPorOsn3_EUR = placa_rec.Rule_MaxPorOsn3;
+            Fld_ProsPlaca_EUR  = placa_rec.Rule_ProsPlaca ;
+            Fld_OsnDopClUp_EUR = placa_rec.Rule_OsnDopClUp;
+         }
+
+         Fld_StPor1 = placa_rec.Rule_StPor1;
          Fld_StPor2     = placa_rec.Rule_StPor2;
          Fld_StPor3     = placa_rec.Rule_StPor3;
          Fld_StPor4     = placa_rec.Rule_StPor4;
-         Fld_OsnOdb     = placa_rec.Rule_OsnOdb;
          Fld_StMioIz    = placa_rec.Rule_StMio1stup;
          Fld_StMioIz2   = placa_rec.Rule_StMio2stup;
          Fld_StZdrNa    = placa_rec.Rule_StZdrNa;
          Fld_StZorNa    = placa_rec.Rule_StZorNa;
          Fld_StZapNa    = placa_rec.Rule_StZapNa;
          Fld_StZapII    = placa_rec.Rule_StZapII;
-         Fld_MinMioOsn  = placa_rec.Rule_MinMioOsn;
-         Fld_MaxMioOsn  = placa_rec.Rule_MaxMioOsn;
-         Fld_MaxPorOsn1 = placa_rec.Rule_MaxPorOsn1;
-         Fld_MaxPorOsn2 = placa_rec.Rule_MaxPorOsn2;
-         Fld_MaxPorOsn3 = placa_rec.Rule_MaxPorOsn3;
          Fld_StZpi      = placa_rec.Rule_StZpi;
          Fld_StOthOlak  = placa_rec.Rule_StOthOlak;
          Fld_StDodStaz  = placa_rec.Rule_StDodStaz;
@@ -3160,9 +3217,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          Fld_StMioNa2B3 = placa_rec.Rule_StMioNa2B3;
          Fld_StMioNaB4  = placa_rec.Rule_StMioNaB4;
          Fld_StMioNa2B4 = placa_rec.Rule_StMioNa2B4;
-         Fld_ProsPlaca  = placa_rec.Rule_ProsPlaca;
-       //Fld_StMioNa2B5 = placa_rec.Rule_OsnDopClUp;
-         Fld_OsnDopClUp = placa_rec.Rule_OsnDopClUp;
 
          Fld_StKrizPor1 = placa_rec.Rule_StKrizPor1;
          Fld_StKrizPor2 = placa_rec.Rule_StKrizPor2;
@@ -3220,23 +3274,39 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       placa_rec.IsTrgFondSati = Fld_IsTrgFondSati;
       placa_rec.IsLocked      = Fld_IsLocked;
 
+      if(ZXC.projectYearAsInt <= 2022) // old kune era 
+      {
+         placa_rec.Rule_OsnOdb     = Fld_OsnOdb    ;
+         placa_rec.Rule_MinMioOsn  = Fld_MinMioOsn ;
+         placa_rec.Rule_MaxMioOsn  = Fld_MaxMioOsn ;
+         placa_rec.Rule_MaxPorOsn1 = Fld_MaxPorOsn1;
+         placa_rec.Rule_MaxPorOsn2 = Fld_MaxPorOsn2;
+         placa_rec.Rule_MaxPorOsn3 = Fld_MaxPorOsn3;
+         placa_rec.Rule_ProsPlaca  = Fld_ProsPlaca ;
+         placa_rec.Rule_OsnDopClUp = Fld_OsnDopClUp;
+      }
+      else // ZXC.projectYearAsInt >= 2023 ... new euro era 
+      {
+         placa_rec.Rule_OsnOdb     = Fld_OsnOdb_EUR    ;
+         placa_rec.Rule_MinMioOsn  = Fld_MinMioOsn_EUR ;
+         placa_rec.Rule_MaxMioOsn  = Fld_MaxMioOsn_EUR ;
+         placa_rec.Rule_MaxPorOsn1 = Fld_MaxPorOsn1_EUR;
+         placa_rec.Rule_MaxPorOsn2 = Fld_MaxPorOsn2_EUR;
+         placa_rec.Rule_MaxPorOsn3 = Fld_MaxPorOsn3_EUR;
+         placa_rec.Rule_ProsPlaca  = Fld_ProsPlaca_EUR ;
+         placa_rec.Rule_OsnDopClUp = Fld_OsnDopClUp_EUR;
+      }
 
       placa_rec.Rule_StPor1     = Fld_StPor1;
       placa_rec.Rule_StPor2     = Fld_StPor2;
       placa_rec.Rule_StPor3     = Fld_StPor3;
       placa_rec.Rule_StPor4     = Fld_StPor4;
-      placa_rec.Rule_OsnOdb     = Fld_OsnOdb;
       placa_rec.Rule_StMio1stup = Fld_StMioIz;
       placa_rec.Rule_StMio2stup = Fld_StMioIz2;
       placa_rec.Rule_StZdrNa    = Fld_StZdrNa;
       placa_rec.Rule_StZorNa    = Fld_StZorNa;
       placa_rec.Rule_StZapNa    = Fld_StZapNa;
       placa_rec.Rule_StZapII    = Fld_StZapII;
-      placa_rec.Rule_MinMioOsn  = Fld_MinMioOsn;
-      placa_rec.Rule_MaxMioOsn  = Fld_MaxMioOsn;
-      placa_rec.Rule_MaxPorOsn1 = Fld_MaxPorOsn1;
-      placa_rec.Rule_MaxPorOsn2 = Fld_MaxPorOsn2;
-      placa_rec.Rule_MaxPorOsn3 = Fld_MaxPorOsn3;
       placa_rec.Rule_StZpi      = Fld_StZpi;
       placa_rec.Rule_StOthOlak  = Fld_StOthOlak;
       placa_rec.Rule_StDodStaz  = Fld_StDodStaz;
@@ -3250,8 +3320,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       placa_rec.Rule_StMioNa2B3 = Fld_StMioNa2B3;
       placa_rec.Rule_StMioNaB4  = Fld_StMioNaB4;
       placa_rec.Rule_StMioNa2B4 = Fld_StMioNa2B4;
-      placa_rec.Rule_ProsPlaca  = Fld_ProsPlaca;
-      placa_rec.Rule_OsnDopClUp = Fld_OsnDopClUp;
 
       placa_rec.Rule_StKrizPor1 = Fld_StKrizPor1;
       placa_rec.Rule_StKrizPor2 = Fld_StKrizPor2;

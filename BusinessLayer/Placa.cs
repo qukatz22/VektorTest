@@ -897,13 +897,13 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._maxPorOsn1; }
       set {        this.currentData._pRules._maxPorOsn1 = value; }
    }
-   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
+   //[VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 31 */ public decimal Rule_MaxPorOsn2
    {
       get { return this.currentData._pRules._maxPorOsn2; }
       set {        this.currentData._pRules._maxPorOsn2 = value; }
    }
-   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
+   //[VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 32 */ public decimal Rule_MaxPorOsn3
    {
       get { return this.currentData._pRules._maxPorOsn3; }

@@ -1432,6 +1432,7 @@ public class Ptrans : VvTransRecord
       /*!!*/PrulesStruct pRules = placa_rec.Prules;
 
 
+#if nekatamtamproba
       // 09.12.2022. !!!!!! start  - MinMioOSn na prijelazu iz 22 u 23 stvara pomutnju ako bi netko išao u ispravak prve plaće u EURima koja ja prebacena iz kunske place ili ako bi netko isao raditi obr pl u 23
       decimal minMioOsn2022 = 3624.06M;
       decimal osnOdb2022    = 2500.00M;
@@ -1447,7 +1448,7 @@ public class Ptrans : VvTransRecord
          pRules._osnOdb    = osnOdb2022   ;
       }
       // 09.12.2022. !!!!!! end  - MinMioOSn na prijelazu iz 22 u 23 stvara pomutnju ako bi netko išao u ispravak prve plaće u EURima koja ja prebacena iz kunske place ili ako bi netko isao raditi obr pl u 23
-
+#endif
 
       // 14.02.2014: 
       //ptranEsOfThisPtrans = placa_rec.Transes2.Where(ptrane => ptrane.T_personCD == this.T_personCD)                                   .ToArray();
