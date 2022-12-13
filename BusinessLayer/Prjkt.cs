@@ -806,6 +806,7 @@ public class Prjkt : Kupdob
  //public string SkyPassword { get { return this.currentExtData._skyPassword; } set { this.currentExtData._skyPassword = value; } }
    public string SkyVvDomena { get { return this.currentExtData._skyVvDomena; } set { this.currentExtData._skyVvDomena = value; } }
 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    public decimal VrKoefBr1  { get { return this.currentExtData._vrKoefBr1  ; } set { this.currentExtData._vrKoefBr1   = value; } }
 
  //public decimal StStz2029       { get { return this.currentExtData._stStz2029      ; } set { this.currentExtData._stStz2029      = value; } }     

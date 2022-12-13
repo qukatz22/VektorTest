@@ -694,6 +694,10 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
          pi.Name.Contains("RecVer") ||
          pi.Name.Contains("Ar"    ) ||
 
+         pi.Name.Contains("TheLogo") ||
+         pi.Name.Contains("CertFile") ||
+         pi.Name.Contains("ESgnCertifikat") ||
+
          pi.Name.ToLower().Contains("astext") ||
 
        //pi.Name.StartsWith("S_"    ) ||

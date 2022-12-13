@@ -3299,11 +3299,10 @@ public class Ptrans : VvTransRecord
          decimal alfa = ZXC.Ron((pR._osnOdb * koefZaOsnOdb) / 100M, 0) * 100M; // alfa = osnOdb2017 x 1.5 ... zaokruzen na 100 kn = 3.800 , od 01.01.2020. je 1.6 sto daje 4.000
          decimal beta =          pR._osnOdb * (T_koef - 1.00M)               ; // beta = osnOdb2017 x koefOvisanOdDjece                                                         
 
-       //15.11.2022.Danijel ima da je T_koef manji od 1 i onda krivo racuna
-       //R_Odbitak    = T_koef.NotZero() ? alfa + beta : 0.00M;
-             if(T_koef < 1.00M)  R_Odbitak = ZXC.Ron2(alfa * T_koef);
-       else if (T_koef.IsZero()) R_Odbitak = 0.00M                  ;
-       else                      R_Odbitak = alfa + beta            ;
+       //15.11.2022.Danijel ima da je T_koef manji od 1 i onda krivo racuna   
+       //                 R_Odbitak = T_koef.NotZero() ? alfa + beta : 0.00M; 
+       if(T_koef < 1.00M) R_Odbitak = ZXC.Ron2(alfa * T_koef);
+       else               R_Odbitak = alfa + beta            ;
       }// kuna era
       else // EURO era
       {
