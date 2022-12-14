@@ -986,7 +986,7 @@ public static class VvSkyLab
 
     //artikl_rec.SkladCD    = "SVPS";
 
-      artikl_rec.MadeIn     = "HRD2EUR"                         ; // za lakse filtriranje u SQL recenicama 
+      artikl_rec.MadeIn     = VvForm.artMadeIn_EUR              ; // za lakse filtriranje u SQL recenicama 
       artikl_rec.Placement  = rootName                          ; // rootName                              
       artikl_rec.Starost    = ZXC.KuneIzEURa_HRD_(niceEuroMoney); // kune                                  
       artikl_rec.ImportCij  =                     niceEuroMoney ; // euri                                  
@@ -1014,7 +1014,7 @@ public static class VvSkyLab
    // Voila: 
    internal static Artikl Get_newNiceEuroArtikl(string oldNiceKunaArtiklCD, List<Artikl> artiklSifrar)
    {
-      Artikl oldKunaArtikl_rec = artiklSifrar.Where(a => a.MadeIn == "OLD_HRD").SingleOrDefault(a => a.ArtiklCD == oldNiceKunaArtiklCD);
+      Artikl oldKunaArtikl_rec = artiklSifrar.Where(a => a.MadeIn == VvForm.artMadeIn_Kuna).SingleOrDefault(a => a.ArtiklCD == oldNiceKunaArtiklCD);
 
       if(oldKunaArtikl_rec == null) { ZXC.aim_emsg("nemoguce OLD_HRD"); return null; }
 
@@ -1023,7 +1023,7 @@ public static class VvSkyLab
       try
       {
          newEuroArtikl_rec =
-            artiklSifrar.Where(a => a.MadeIn == "HRD2EUR" &&
+            artiklSifrar.Where(a => a.MadeIn == VvForm.artMadeIn_EUR &&
                                     a.Placement == oldKunaArtikl_rec.Placement &&
                                     a.ImportCij > ZXC.EURiIzKuna_HRD_(oldKunaArtikl_rec.Starost))
                                     .OrderBy(a => a.ImportCij).First();
