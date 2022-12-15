@@ -2625,6 +2625,25 @@ public class RptR_StandardRiskReport : VvRiskReport
          }
       }
 
+      // 15.12.2022: one time only; TH provjera ima li neki s ArtiklCD2 praznim 
+      if(RptFilter.IsChk0 == true && ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2022)
+      {
+         var ErrorsList = new List<string>();
+
+         foreach(Artikl artikl in TheArtiklList.Where(art => art.Grupa3CD == "PRKOM" || (art.Grupa3CD == "NBiPR" && art.Grupa1CD != "Akat" && art.ArtiklCD.Length == 6) && art.AS_StanjeKol.NotZero()))
+         {
+            if(artikl.ArtiklCD2.IsEmpty())
+            {
+               ErrorsList.Add(String.Format("{0} NEMA newEuroArtikl_rec", artikl));
+            }
+         }
+
+         if(ErrorsList.NotEmpty())
+         {
+            ZXC.aim_emsg_List(string.Format("{0} Nema NEW_EURO artikla.", ErrorsList.Count), ErrorsList);
+         }
+      }
+
    } // private  void GetArtiklWithArtstatList() 
 
    private void Create_HALMED_errorTxtFile(List<string> errMessageList, string errFileName)
