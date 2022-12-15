@@ -3331,6 +3331,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
          foreach(VvLookUpItem lui in skladListW_sklNum)
          {
+            // if(lui.Cd != "32M5") continue;
             ArtiklDao.GetArtiklWithArtstatList(prevYconn, theArtiklWithArtstatList, lui.Cd, rptFilter.DatumDo, rptFilter, "", "artiklName ");
 
             if(theArtiklWithArtstatList.Count.NotZero())
@@ -3362,6 +3363,15 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       bool isVelepSkl = !_isMalopSkl;
 
       bool SVD_hasNoKolHasCijenaOnly_ButNoPrometEither;
+
+      // some check: 
+      if(ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2023)
+      {
+         // provjeri ima li ijedan da je 
+         // 1. artikl_rec.MadeIn == VvForm.artMadeIn_Kuna
+         // 2. artikl_rec.ArtiklCD2.IsEmpty()
+         // pa ako ima ... VAN! 
+      }
 
       foreach(Artikl artikl_rec in theArtiklWithArtstatList)
       {
@@ -3396,6 +3406,16 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
             rtrans_rec.T_artiklCD   = artikl_rec.ArtiklCD;
             rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
             rtrans_rec.T_jedMj      = artikl_rec.JedMj;
+
+            #region TH only HRD 2022 ---> 2023 
+
+            if(ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2023 && artikl_rec.MadeIn == VvForm.artMadeIn_Kuna) // artikl_rec je iz prevYearConn! 
+            {
+               rtrans_rec.T_artiklCD   = artikl_rec.ArtiklCD2  ;
+               rtrans_rec.T_artiklName = artikl_rec.ArtiklName2;
+            }
+
+            #endregion TH only HRD 2022 ---> 2023 
 
             rtrans_rec.T_kol  = artikl_rec.AS_StanjeKol ;
             rtrans_rec.T_kol2 = artikl_rec.AS_StanjeKol2;
