@@ -1190,7 +1190,11 @@ namespace EN16931.UBL
             case "BT013"         : theString = faktur_rec.OpciAvalue                                                     ; break; //BT-13 OrderReference - narudzbenica 
             case "BT022 napomena": theString = faktur_rec.Napomena                                                       ; break; //BT-22 napomena                                   
             case "BT022 operater": theString = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) + "#Oznaka operatera" ; break; //BT-22 operater                                   
-            case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
+
+            // 16.12.2022: MojEracun nam kaze da se TISAK buni kad ucitava dragicin eRacun jer je time hh:mm a oni ocekuju hh:mm:ss, pa ih evo uslisujemo ?! 
+          //case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat ) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
+            case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
+
             case "BT022 opis"    : theString = faktur_rec.Opis                                                           ; break;
             case "BT023"         : theString = "P" + (faktur_rec.PdvKolTip_u.ToString())                                 ; break; //BT-23 Vrsta poslovnog procesa ProfileID
             case "BT024"         : theString = VvUBL_CustomizationID                                                     ; break; //BT-24 Identifikator specifikacije                          
