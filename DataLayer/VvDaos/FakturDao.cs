@@ -3331,7 +3331,6 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
          foreach(VvLookUpItem lui in skladListW_sklNum)
          {
-            // if(lui.Cd != "32M5") continue;
             ArtiklDao.GetArtiklWithArtstatList(prevYconn, theArtiklWithArtstatList, lui.Cd, rptFilter.DatumDo, rptFilter, "", "artiklName ");
 
             if(theArtiklWithArtstatList.Count.NotZero())
@@ -3362,7 +3361,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       decimal klippingSum = 0.00M, finStSum = 0.00M;
       bool isVelepSkl = !_isMalopSkl;
 
-      bool SVD_hasNoKolHasCijenaOnly_ButNoPrometEither;
+      bool thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither;
 
       // some check: 
       if(ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2023)
@@ -3391,15 +3390,16 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
             // 07.09.2022: BIG NEWS!                                                                                                        
             // NEMOJ više prebacivati bazuvjetno one koji NEMAJU StanjeKol a imaju 'cijenu' ... a za potrebe povrata kao prvog prometa u NG 
             // nego povjeri prija da li imaju ikakav promet u PG                                                                            
+            // 20.12.2022: dodatno na ovo gasimo IsSvDUH uvjet te preskacemo PS takvih i za sve ostale, a ne samo SvDUH
 
-            SVD_hasNoKolHasCijenaOnly_ButNoPrometEither = 
-               ZXC.IsSvDUH &&
+            thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither = 
+             //ZXC.IsSvDUH &&
                artikl_rec.AS_StanjeKol .IsZero() &&
                artikl_rec.AS_UkPstKol  .IsZero() &&
                artikl_rec.AS_UkUlazKol .IsZero() && 
                artikl_rec.AS_UkIzlazKol.IsZero();
 
-            if(SVD_hasNoKolHasCijenaOnly_ButNoPrometEither) continue;
+            if(thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither) continue;
 
             finStSum += artikl_rec.TheAsEx.StanjeFinKNJ;
 

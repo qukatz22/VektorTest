@@ -2630,7 +2630,7 @@ public class RptR_StandardRiskReport : VvRiskReport
       {
          var ErrorsList = new List<string>();
 
-         foreach(Artikl artikl in TheArtiklList.Where(art => art.Grupa3CD == "PRKOM" || (art.Grupa3CD == "NBiPR" && art.Grupa1CD != "Akat" && art.ArtiklCD.Length == 6) && art.AS_StanjeKol.NotZero()))
+         foreach(Artikl artikl in TheArtiklList.Where(art => (art.Grupa3CD == "PRKOM" || (art.Grupa3CD == "NBiPR" && art.Grupa1CD != "Akat" && art.ArtiklCD.Length == 6)) && art.AS_StanjeKol.NotZero()))
          {
             if(artikl.ArtiklCD2.IsEmpty())
             {
@@ -2642,6 +2642,20 @@ public class RptR_StandardRiskReport : VvRiskReport
          {
             ZXC.aim_emsg_List(string.Format("{0} Nema NEW_EURO artikla.", ErrorsList.Count), ErrorsList);
          }
+      }
+
+      if(/*isKurac*/false)
+      {
+         TheArtiklList.ForEach(art => 
+         { 
+            art.AS_UkPstFinNBC   = ZXC.KuneIzEURa_HRD_(art.AS_UkPstFinNBC  ); 
+            art.AS_UkUlazFinNBC  = ZXC.KuneIzEURa_HRD_(art.AS_UkUlazFinNBC ); 
+            art.AS_UkIzlazFinNBC = ZXC.KuneIzEURa_HRD_(art.AS_UkIzlazFinNBC); 
+
+            art.AS_UkPstFinMPC   = ZXC.KuneIzEURa_HRD_(art.AS_UkPstFinMPC  ); 
+            art.AS_UkUlazFinMPC  = ZXC.KuneIzEURa_HRD_(art.AS_UkUlazFinMPC ); 
+            art.AS_UkIzlazFinMPC = ZXC.KuneIzEURa_HRD_(art.AS_UkIzlazFinMPC); 
+         });
       }
 
    } // private  void GetArtiklWithArtstatList() 
