@@ -922,7 +922,9 @@ public class RptR_ArtiklKartica  : VvRiskReport
       #endregion Fill eventual last is missing cache (because this rtransTT is NOT cacheable)
 
       // 27.07.2022: 
-      if(ZXC.IsSvDUH) TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_NRD);
+      // 21.12.2022: 
+    //if(ZXC.IsSvDUH) TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_NRD);
+      if(ZXC.IsSvDUH) TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_NRD || rtr.T_TT == Faktur.TT_INV || rtr.T_TT == Faktur.TT_ZAH);
 
       return TheRtransList.Count;
    }
