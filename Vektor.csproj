@@ -1926,12 +1926,6 @@
       <DependentUpon>CR_SVD_HALMED.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\RIZ\CR_SVD_IzlKlGrpSkl_New.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CR_SVD_IzlKlGrpSkl_New.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Reports\RIZ\CR_SVD_NRD.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3715,10 +3709,6 @@
     <EmbeddedResource Include="Reports\RIZ\CR_SVD_HALMED.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_SVD_HALMED.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\RIZ\CR_SVD_IzlKlGrpSkl_New.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>CR_SVD_IzlKlGrpSkl_New.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_SVD_NRD.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
