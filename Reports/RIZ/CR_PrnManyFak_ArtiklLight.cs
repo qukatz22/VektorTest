@@ -410,7 +410,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_R_Ira_NV {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_DvojnaEuroEraPrikazKn {
             get {
                 return this.ReportDefinition.Sections[45];
             }
@@ -418,7 +418,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_TextualniIznos {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_R_Ira_NV {
             get {
                 return this.ReportDefinition.Sections[46];
             }
@@ -426,7 +426,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_RekapPodjedMjere {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_TextualniIznos {
             get {
                 return this.ReportDefinition.Sections[47];
             }
@@ -434,7 +434,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_PDVnaMarzu {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_RekapPodjedMjere {
             get {
                 return this.ReportDefinition.Sections[48];
             }
@@ -442,7 +442,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_FiskalDodatak {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_PDVnaMarzu {
             get {
                 return this.ReportDefinition.Sections[49];
             }
@@ -450,7 +450,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_OTS_Saldo {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_FiskalDodatak {
             get {
                 return this.ReportDefinition.Sections[50];
             }
@@ -458,7 +458,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_subreportMigratori {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_OTS_Saldo {
             get {
                 return this.ReportDefinition.Sections[51];
             }
@@ -466,7 +466,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_OpisFromFaktur {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_subreportMigratori {
             get {
                 return this.ReportDefinition.Sections[52];
             }
@@ -474,7 +474,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_TekstOsobodjenPDV {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_OpisFromFaktur {
             get {
                 return this.ReportDefinition.Sections[53];
             }
@@ -482,7 +482,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_BelowGrid {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_TekstOsobodjenPDV {
             get {
                 return this.ReportDefinition.Sections[54];
             }
@@ -490,7 +490,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_PostotakOpis {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_BelowGrid {
             get {
                 return this.ReportDefinition.Sections[55];
             }
@@ -498,7 +498,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_Personi {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_PostotakOpis {
             get {
                 return this.ReportDefinition.Sections[56];
             }
@@ -506,7 +506,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooter_PersonLine {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_Personi {
             get {
                 return this.ReportDefinition.Sections[57];
             }
@@ -514,7 +514,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_BarkodPDF417 {
+        public CrystalDecisions.CrystalReports.Engine.Section ReportFooter_PersonLine {
             get {
                 return this.ReportDefinition.Sections[58];
             }
@@ -522,7 +522,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_OnLineFISK {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_BarkodPDF417 {
             get {
                 return this.ReportDefinition.Sections[59];
             }
@@ -530,7 +530,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_PotpisPecatPicture {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_OnLineFISK {
             get {
                 return this.ReportDefinition.Sections[60];
             }
@@ -538,7 +538,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_PotvrdaNarudzbe {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_PotpisPecatPicture {
             get {
                 return this.ReportDefinition.Sections[61];
             }
@@ -546,7 +546,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_empty {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_PotvrdaNarudzbe {
             get {
                 return this.ReportDefinition.Sections[62];
             }
@@ -554,7 +554,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section PF_PageNum {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_empty {
             get {
                 return this.ReportDefinition.Sections[63];
             }
@@ -562,7 +562,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section PF_MemoLogo2 {
+        public CrystalDecisions.CrystalReports.Engine.Section PF_PageNum {
             get {
                 return this.ReportDefinition.Sections[64];
             }
@@ -570,7 +570,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section PF_Memo {
+        public CrystalDecisions.CrystalReports.Engine.Section PF_MemoLogo2 {
             get {
                 return this.ReportDefinition.Sections[65];
             }
@@ -578,7 +578,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section PF_VirmaniRazmak {
+        public CrystalDecisions.CrystalReports.Engine.Section PF_Memo {
             get {
                 return this.ReportDefinition.Sections[66];
             }
@@ -586,9 +586,17 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section PF_VirmaniSubreport {
+        public CrystalDecisions.CrystalReports.Engine.Section PF_VirmaniRazmak {
             get {
                 return this.ReportDefinition.Sections[67];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section PF_VirmaniSubreport {
+            get {
+                return this.ReportDefinition.Sections[68];
             }
         }
     }
