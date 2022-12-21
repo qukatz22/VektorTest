@@ -178,7 +178,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_RekapPDV {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_OldKune {
             get {
                 return this.ReportDefinition.Sections[16];
             }
@@ -186,7 +186,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_UmjetninaTekst {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_RekapPDV {
             get {
                 return this.ReportDefinition.Sections[17];
             }
@@ -194,7 +194,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection3 {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_UmjetninaTekst {
             get {
                 return this.ReportDefinition.Sections[18];
             }
@@ -202,7 +202,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Placeno {
+        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection3 {
             get {
                 return this.ReportDefinition.Sections[19];
             }
@@ -210,7 +210,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_OnLineFISK {
+        public CrystalDecisions.CrystalReports.Engine.Section Placeno {
             get {
                 return this.ReportDefinition.Sections[20];
             }
@@ -218,7 +218,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_textDodatniPOS {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_OnLineFISK {
             get {
                 return this.ReportDefinition.Sections[21];
             }
@@ -226,7 +226,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection4 {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_textDodatniPOS {
             get {
                 return this.ReportDefinition.Sections[22];
             }
@@ -234,7 +234,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_Kupon {
+        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection4 {
             get {
                 return this.ReportDefinition.Sections[23];
             }
@@ -242,9 +242,17 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section RF_Kupon {
             get {
                 return this.ReportDefinition.Sections[24];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[25];
             }
         }
     }
