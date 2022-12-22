@@ -19702,7 +19702,7 @@ public class SVD_PotrosnjaInfoUC : VvOtherUC
 
 }
 
-public class SVD_INV_Poravnanje_Dlg : VvDialog
+public class INV_Poravnanje_Dlg : VvDialog
 {
    #region Filedz
 
@@ -19716,7 +19716,7 @@ public class SVD_INV_Poravnanje_Dlg : VvDialog
 
    #region Constructor
 
-   public SVD_INV_Poravnanje_Dlg()
+   public INV_Poravnanje_Dlg()
    {
       this.StartPosition = FormStartPosition.CenterScreen;
       this.Text = "Poravnanje Inventure";
@@ -19782,7 +19782,7 @@ public class SVD_INV_Poravnanje_Dlg : VvDialog
 
    #region Fld_
 
-   public DateTime Fld_InventuraDate
+   public DateTime Fld_InventuraDate_real
    {
       get { return dtp_inventuraDate.Value; }
       set
@@ -19793,7 +19793,7 @@ public class SVD_INV_Poravnanje_Dlg : VvDialog
          }
       }
    }
-   public DateTime Fld_InventuraDate2
+   public DateTime Fld_InventuraDate_wanted
    {
       get { return dtp_inventuraDate2.Value; }
       set
