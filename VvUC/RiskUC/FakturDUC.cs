@@ -19702,4 +19702,110 @@ public class SVD_PotrosnjaInfoUC : VvOtherUC
 
 }
 
+public class SVD_INV_Poravnanje_Dlg : VvDialog
+{
+   #region Filedz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+   private VvTextBox        tbx_inventuraDate, tbx_inventuraDate2;
+   private VvDateTimePicker dtp_inventuraDate, dtp_inventuraDate2;
+
+   #endregion Filedz
+
+   #region Constructor
+
+   public SVD_INV_Poravnanje_Dlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Poravnanje Inventure";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_inventuraDate , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_inventuraDate2, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+   #endregion Constructor
+
+   #region hamper
+
+   private void CreateHamper()
+   {
+      hamper          = new VvHamper(2, 2, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q8un, ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = 0;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                          hamper.CreateVvLabel  (0, 0, "Datum inventure:", ContentAlignment.MiddleRight);
+      tbx_inventuraDate = hamper.CreateVvTextBox(1, 0, "tbx_inventuraDate","Datum inventure");
+      tbx_inventuraDate.JAM_IsForDateTimePicker = true;
+      dtp_inventuraDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_inventuraDate);
+      dtp_inventuraDate.Name = "dtp_inventuraDate";
+      tbx_inventuraDate.JAM_Highlighted = true;
+
+
+                           hamper.CreateVvLabel  (0, 1, "Datum poravnanja inventure:", ContentAlignment.MiddleRight);
+      tbx_inventuraDate2 = hamper.CreateVvTextBox(1, 1, "tbx_inventuraDate2","Datum inventure");
+      tbx_inventuraDate2.JAM_IsForDateTimePicker = true;
+      dtp_inventuraDate2 = hamper.CreateVvDateTimePicker(1, 1, "", tbx_inventuraDate2);
+      dtp_inventuraDate2.Name = "dtp_inventuraDate2";
+      tbx_inventuraDate2.JAM_Highlighted = true;
+
+
+   }
+
+   #endregion hamper
+
+   #region Button_Click
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+   #endregion Button_Click
+
+   #region Fld_
+
+   public DateTime Fld_InventuraDate
+   {
+      get { return dtp_inventuraDate.Value; }
+      set
+      {
+         if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
+         {
+            dtp_inventuraDate.Value = value;
+         }
+      }
+   }
+   public DateTime Fld_InventuraDate2
+   {
+      get { return dtp_inventuraDate2.Value; }
+      set
+      {
+         if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
+         {
+            dtp_inventuraDate2.Value = value;
+         }
+      }
+   }
+
+   #endregion Fld_
+}
+
 #endregion Other RISK Dialogs and UserControls
