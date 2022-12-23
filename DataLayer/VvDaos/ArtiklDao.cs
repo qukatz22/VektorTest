@@ -1732,12 +1732,16 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
    #region GetArtiklWithArtstatList for RiskReport
 
-   internal static void GetArtiklWithArtstatList(XSqlConnection conn, List<Artikl> artiklList, string _skladCD, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter, /*fuse*/ string artiklColumns, string orderBy)
+   // 23.12.2022: 
+ //internal static void         GetArtiklWithArtstatList(XSqlConnection conn, List<Artikl> artiklList, string _skladCD, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter, /*fuse*/ string artiklColumns, string orderBy)
+   internal static List<Artikl> GetArtiklWithArtstatList(XSqlConnection conn, List<Artikl> artiklList, string _skladCD, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter, /*fuse*/ string artiklColumns, string orderBy)
    {
       bool success = true;
       Artikl artikl_rec;
 
       ZXC.sqlErrNo = 0;
+
+      List<Artikl> thisPassArtiklList = new List<Artikl>();
 
       using(XSqlCommand cmd = (VvSQL.GetArtiklWithArtstatList_Command(conn, _skladCD, _dateDo, RptFilter, artiklColumns, orderBy)))
       {
@@ -1754,7 +1758,8 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
                   ZXC.ArtiklDao .FillFromDataReader(artikl_rec,         reader, false);
                   ZXC.ArtStatDao.FillFromDataReader(artikl_rec.TheAsEx, reader, false, ArtiklDao.lastArtiklCI + 1);
 
-                  artiklList.Add(artikl_rec);
+                  artiklList        .Add(artikl_rec); // ova je kumulativna 
+                  thisPassArtiklList.Add(artikl_rec); // ova je this pass   
                }
                reader.Close();
             }
@@ -1767,6 +1772,8 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
             ZXC.sqlErrNo = ex.Number;
          }
       } // using 
+
+      return thisPassArtiklList;
    }
 
    internal static void GetKretanjeSkladList(XSqlConnection conn, List<ZXC.VvUtilDataPackage> theList, /*string _skladCD, DateTime _dateOd, DateTime _dateDo,*/ VvRpt_RiSk_Filter RptFilter, string ulazClause, string izlazClause)

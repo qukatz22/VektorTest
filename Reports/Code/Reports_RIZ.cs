@@ -1895,7 +1895,10 @@ public class RptR_StandardRiskReport : VvRiskReport
          if(RptFilter.SkladFilter == ZXC.KomisijaKindEnum.VELEPRODAJNA) skladListW_sklNum.RemoveAll(s => s.Flag == true );
          if(RptFilter.SkladFilter == ZXC.KomisijaKindEnum.MALOPRODAJNA) skladListW_sklNum.RemoveAll(s => s.Flag == false);
 
-       //foreach(string skladCD in skladList)
+         // 23.12.2022:
+         List<Artikl> thisPassArtiklList;
+
+         //foreach(string skladCD in skladList)
          foreach(VvLookUpItem lui in skladListW_sklNum)
          {
             // 15.08.2012: VelaGospa, bijo danas na Grobniku...
@@ -1922,10 +1925,30 @@ public class RptR_StandardRiskReport : VvRiskReport
             }
             else // classic 
             {
-               ArtiklDao.GetArtiklWithArtstatList(TheDbConnection, TheArtiklList, lui.Cd, RptFilter.DatumDo, RptFilter, /*fuse*/ "", ArtiklOrderBy);
+               thisPassArtiklList = ArtiklDao.GetArtiklWithArtstatList(TheDbConnection, TheArtiklList, lui.Cd, RptFilter.DatumDo, RptFilter, /*fuse*/ "", ArtiklOrderBy);
+
+               // 15.12.2022: one time only; TH provjera ima li neki s ArtiklCD2 praznim 
+               if(RptFilter.IsChk0 == true && ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2022)
+               {
+                  var ErrorsList = new List<string>();
+
+                  foreach(Artikl artikl in /*TheArtiklList*/thisPassArtiklList.Where(art => (art.Grupa3CD == "PRKOM" || (art.Grupa3CD == "NBiPR" && art.Grupa1CD != "Akat" && art.ArtiklCD.Length == 6)) && art.AS_StanjeKol.NotZero()))
+                  {
+                     if(artikl.ArtiklCD2.IsEmpty())
+                     {
+                        ErrorsList.Add(String.Format("{0} {1} {2} NEMA newEuroArtikl_rec", lui.Cd, lui.Name, artikl));
+                     }
+                  }
+
+                  if(ErrorsList.NotEmpty())
+                  {
+                     ZXC.aim_emsg_List(string.Format("{0} Nema NEW_EURO artikla.", ErrorsList.Count), ErrorsList);
+                  }
+               }
+
 
                // 29.10.2019: otkrili da ovo smeta za webShopExport: 
-             //if(ZXC.IsTEMBO                                              ) // TEMBO svedi na OrgPak = 1 sve NE 'litre' PodJM 
+               //if(ZXC.IsTEMBO                                              ) // TEMBO svedi na OrgPak = 1 sve NE 'litre' PodJM 
                if(ZXC.IsTEMBO && (this is RptR_TemboWebShopExport) == false) // TEMBO svedi na OrgPak = 1 sve NE 'litre' PodJM 
                {
                   foreach(Artikl artikl_rec in TheArtiklList)
@@ -2624,25 +2647,6 @@ public class RptR_StandardRiskReport : VvRiskReport
             artikl.ImportCij = ZXC.EURiIzKuna_HRD_(artikl.Starost)                                                     ; // EUR po fix tecaju     
             artikl.MadeIn    = lastDobavNaziv                                                                          ; // DobavName             
             artikl.CarTarifa = Faktur.Set_TT_And_TtNum(lastMalopUlaz_rtrans_rec.T_TT, lastMalopUlaz_rtrans_rec.T_ttNum); // TipBr                 
-         }
-      }
-
-      // 15.12.2022: one time only; TH provjera ima li neki s ArtiklCD2 praznim 
-      if(RptFilter.IsChk0 == true && ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2022)
-      {
-         var ErrorsList = new List<string>();
-
-         foreach(Artikl artikl in TheArtiklList.Where(art => (art.Grupa3CD == "PRKOM" || (art.Grupa3CD == "NBiPR" && art.Grupa1CD != "Akat" && art.ArtiklCD.Length == 6)) && art.AS_StanjeKol.NotZero()))
-         {
-            if(artikl.ArtiklCD2.IsEmpty())
-            {
-               ErrorsList.Add(String.Format("{0} NEMA newEuroArtikl_rec", artikl));
-            }
-         }
-
-         if(ErrorsList.NotEmpty())
-         {
-            ZXC.aim_emsg_List(string.Format("{0} Nema NEW_EURO artikla.", ErrorsList.Count), ErrorsList);
          }
       }
 
