@@ -6785,7 +6785,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
-         hamper.VvColWdt[i]    = ZXC.Q10un + ZXC.Q5un;
+         hamper.VvColWdt[i]    = ZXC.Q10un + ZXC.Q10un;
          hamper.VvSpcBefCol[i] = ZXC.Qun4;
       }
       hamper.VvRightMargin = hamper.VvLeftMargin;
@@ -6812,15 +6812,15 @@ public class FakturDocFilterUC    : VvFilterUC
       cbx_centarNapKaoNaslov = hamper.CreateVvCheckBox_OLD(0, 11, null, "Napomena kao 'naslov'"     , RightToLeft.No);
       cbx_ocuIspisPrjktBr    = hamper.CreateVvCheckBox_OLD(0, 12, null, "Projekta"                  , RightToLeft.No);
       
-      cbx_OcuRokIsporDokDate = hamper.CreateVvCheckBox_OLD(0, 13, null, "Rok isporuke isti kao datum dokumenta"     , RightToLeft.No);
-      cbx_OcuMtrosName       = hamper.CreateVvCheckBox_OLD(0, 14, null, "Naziv Mjesta Troška uz OpćiB"              , RightToLeft.No);
-      cbx_OcuPomakVirmana    = hamper.CreateVvCheckBox_OLD(0, 15, null, "Pomak ispisa HUB3 obrasca"                 , RightToLeft.No);
-      cbx_OcuDatumRacuna     = hamper.CreateVvCheckBox_OLD(0, 16, null, "Ispiši i Datum računa"                     , RightToLeft.No);
-      cbx_Ocu_OTS_saldo      = hamper.CreateVvCheckBox_OLD(0, 17, null, "Ispiši stanje duga partnera"               , RightToLeft.No);
-      cbx_Ocu_BarkodTtNum    = hamper.CreateVvCheckBox_OLD(0, 18, null, "Prikaži barkod broja računa"               , RightToLeft.No);
-      cbx_necuFiskalDodatak  = hamper.CreateVvCheckBox_OLD(0, 19, null, "Ne prikazuj Fiskal dodatak"                , RightToLeft.No);
-      cbx_Ocu_BarKodPDF417   = hamper.CreateVvCheckBox_OLD(0, 20, null, "Prikaži barkod podataka za plaćanje računa", RightToLeft.No);
-      cbx_Necu_prikazEUR     = hamper.CreateVvCheckBox_OLD(0, 21, null, "Ne prikazuj iznos u EUR po fiksnom tečaju" , RightToLeft.No);
+      cbx_OcuRokIsporDokDate = hamper.CreateVvCheckBox_OLD(0, 13, null, "Rok isporuke isti kao datum dokumenta"                           , RightToLeft.No);
+      cbx_OcuMtrosName       = hamper.CreateVvCheckBox_OLD(0, 14, null, "Naziv Mjesta Troška uz OpćiB"                                    , RightToLeft.No);
+      cbx_OcuPomakVirmana    = hamper.CreateVvCheckBox_OLD(0, 15, null, "Pomak ispisa HUB3 obrasca"                                       , RightToLeft.No);
+      cbx_OcuDatumRacuna     = hamper.CreateVvCheckBox_OLD(0, 16, null, "Ispiši i Datum računa"                                           , RightToLeft.No);
+      cbx_Ocu_OTS_saldo      = hamper.CreateVvCheckBox_OLD(0, 17, null, "Ispiši stanje duga partnera"                                     , RightToLeft.No);
+      cbx_Ocu_BarkodTtNum    = hamper.CreateVvCheckBox_OLD(0, 18, null, "Prikaži barkod broja računa"                                     , RightToLeft.No);
+      cbx_necuFiskalDodatak  = hamper.CreateVvCheckBox_OLD(0, 19, null, "Ne prikazuj Fiskal dodatak"                                      , RightToLeft.No);
+      cbx_Ocu_BarKodPDF417   = hamper.CreateVvCheckBox_OLD(0, 20, null, "Prikaži barkod podataka za plaćanje računa"                      , RightToLeft.No);
+      cbx_Necu_prikazEUR     = hamper.CreateVvCheckBox_OLD(0, 21, null, "Ne prikazuj dvojno iskazivanje ukupnog iznosa po fiksnom tečaju" , RightToLeft.No);
 
 
       if(TheVvUC is BlgIsplatDUC || TheVvUC is BlgUplatDUC || TheVvUC is BlgUplat_M_DUC || TheVvUC is BlgIsplat_M_DUC)
