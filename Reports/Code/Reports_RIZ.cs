@@ -1539,6 +1539,7 @@ public /*partial*/ class RptR_IRA : VvRiskReport
 
 public class RptR_StandardRiskReport : VvRiskReport
 {
+   protected bool HRDweWant = true; // DELLME LATTER!!! 
    public RptR_StandardRiskReport(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl) : base(_reportDocument, _reportName, _rptFilter,
          _rptNeeds_ArtWars   , // ArtiklWithArtstat         
          _rptNeeds_ArtStat   , // ArtStat        
@@ -1837,6 +1838,10 @@ public class RptR_StandardRiskReport : VvRiskReport
          f.KupdobName = f.PosJedName; 
       });
 
+      if(HRDweWant && year <= 2022)
+      {
+         TheFakturList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+      }
    }
 
    /*private*/protected void GetRtransWithArtstatList()
@@ -2650,17 +2655,17 @@ public class RptR_StandardRiskReport : VvRiskReport
          }
       }
 
-      if(/*isKurac*/false)
+      if(HRDweWant)
       {
          TheArtiklList.ForEach(art => 
          { 
-            art.AS_UkPstFinNBC   = ZXC.KuneIzEURa_HRD_(art.AS_UkPstFinNBC  ); 
-            art.AS_UkUlazFinNBC  = ZXC.KuneIzEURa_HRD_(art.AS_UkUlazFinNBC ); 
-            art.AS_UkIzlazFinNBC = ZXC.KuneIzEURa_HRD_(art.AS_UkIzlazFinNBC); 
-
-            art.AS_UkPstFinMPC   = ZXC.KuneIzEURa_HRD_(art.AS_UkPstFinMPC  ); 
-            art.AS_UkUlazFinMPC  = ZXC.KuneIzEURa_HRD_(art.AS_UkUlazFinMPC ); 
-            art.AS_UkIzlazFinMPC = ZXC.KuneIzEURa_HRD_(art.AS_UkIzlazFinMPC); 
+            art.AS_UkPstFinNBC   = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(art.AS_UkPstFinNBC  ); 
+            art.AS_UkUlazFinNBC  = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(art.AS_UkUlazFinNBC ); 
+            art.AS_UkIzlazFinNBC = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(art.AS_UkIzlazFinNBC); 
+                                       
+            art.AS_UkPstFinMPC   = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(art.AS_UkPstFinMPC  ); 
+            art.AS_UkUlazFinMPC  = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(art.AS_UkUlazFinMPC ); 
+            art.AS_UkIzlazFinMPC = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(art.AS_UkIzlazFinMPC); 
          });
       }
 
@@ -4451,7 +4456,12 @@ public class RptR_RekapCompare      : RptR_RekapFaktur
 
       VvDaoBase.LoadGenericVvDataRecordList(isSomeOtherYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturBBBList, fmArray.ToList(), "", FakturOrderBy, true);
 
-#endregion Get PRETHODNO razdoblje TheFakturPRList
+      if(HRDweWant && year <= 2022)
+      {
+         TheFakturBBBList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+      }
+
+      #endregion Get PRETHODNO razdoblje TheFakturPRList
 
       if(IsGroupingChronologically(FakturGR)) // Kronolosko grupiranje 
       {
