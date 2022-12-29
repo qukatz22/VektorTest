@@ -1539,7 +1539,7 @@ public /*partial*/ class RptR_IRA : VvRiskReport
 
 public class RptR_StandardRiskReport : VvRiskReport
 {
-   protected bool HRDweWant = true; // DELLME LATTER!!! 
+   protected bool HRDweWant = false; // DELLME LATTER!!! 
    public RptR_StandardRiskReport(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl) : base(_reportDocument, _reportName, _rptFilter,
          _rptNeeds_ArtWars   , // ArtiklWithArtstat         
          _rptNeeds_ArtStat   , // ArtStat        

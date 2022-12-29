@@ -2370,7 +2370,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
                      if(faktur_rec.TT == Faktur.TT_ZAH)
                      {
                       //faktur_rec.                           Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null);
-                        faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                      //faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                        faktur_rec.Transes.ForEach(rtr => rtr.T_cij = ZXC.DivSafe(rtr.T_cij, ZXC.HRD_tecaj)/*.Ron2()*/);
                         faktur_rec.Transes.ForEach(rtr => rtr.CalcTransResults(faktur_rec));
                         faktur_rec.TakeTransesSumToDokumentSum(true);
                      }
@@ -2381,15 +2382,20 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
                      if(faktur_rec.TtInfo.IsProjektTT)
                      {
-                        faktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null);
-
                         faktur_rec.SomeMoney = faktur_rec.SomeMoney.EURiIzKuna_HRD_();
                         faktur_rec.Decimal01 = faktur_rec.Decimal01.EURiIzKuna_HRD_();
                         faktur_rec.Decimal02 = faktur_rec.Decimal02.EURiIzKuna_HRD_();
 
                         if(faktur_rec.TT == Faktur.TT_UGO) // SVD 
                         {
-                           faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
+                         //faktur_rec.Transes.ForEach(rtr => rtr.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null)    );
+                           faktur_rec.Transes.ForEach(rtr => rtr.T_cij = ZXC.DivSafe(rtr.T_cij, ZXC.HRD_tecaj)/*.Ron2()*/);
+                           faktur_rec.Transes.ForEach(rtr => rtr.CalcTransResults(faktur_rec));
+                           faktur_rec.TakeTransesSumToDokumentSum(true);
+                        }
+                        else // ovi nemaju Rtrans stavaka 
+                        {
+                           faktur_rec.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null);
                         }
                      }
 
