@@ -4422,7 +4422,7 @@ public class RptR_RekapFaktur       : RptR_StandardRiskReport
 
          TheFakturLightList = new List<FakturLight>();
 
-         TheFakturLightList.Add(new FakturLight() { Decim03 = S_ukKCRP_EUR - TH_Blg_uKunama_EUR } );
+         TheFakturLightList.Add(new FakturLight() { Decim03 = S_ukKCRP_EUR - TH_Blg_uKunama_EUR, DokDate = RptFilter.DatumOd } );
       }
 
       return 0;

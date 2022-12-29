@@ -1145,7 +1145,7 @@ public partial class RiskFilterUC : VvFilterUC
       cbx_isChkO      = hamper.CreateVvCheckBox_OLD(0, 6, null, "Chk0"       , System.Windows.Forms.RightToLeft.No);
       cbx_isMpskPoNBC = hamper.CreateVvCheckBox_OLD(2, 6, null, 1, 0, "MPSK po NBC", System.Windows.Forms.RightToLeft.No);
 
-      lbl_ThKune = hamper.CreateVvLabel  (0, 6, "Iznos u kunama:", 1, 0, ContentAlignment.MiddleRight);
+      lbl_ThKune = hamper.CreateVvLabel  (0, 6, "Kune u Blagajni:", 1, 0, ContentAlignment.MiddleRight);
       tbx_ThKune = hamper.CreateVvTextBox(2, 6, "tbx_ThKune", "Iznos u kunama", 12, 1, 0);
       tbx_ThKune.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       lbl_ThKune.Visible = tbx_ThKune.Visible = ZXC.IsTEXTHOany2;
