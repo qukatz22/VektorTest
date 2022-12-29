@@ -4415,6 +4415,16 @@ public class RptR_RekapFaktur       : RptR_StandardRiskReport
     //}
     //// 28.04.2016: Crvenilo handling / reporting ___  END  ___ 
 
+      if(isRptR_RekapIRMasBlagIzvj /*&& ZXC.projectYearAsInt == 2023*/ && RptFilter.TH_Blg_uKunama.NotZero())
+      {
+         decimal S_ukKCRP_EUR       = TheFakturList.Sum(f => f.S_ukKCRP);
+         decimal TH_Blg_uKunama_EUR = ZXC.EURiIzKuna_HRD_(RptFilter.TH_Blg_uKunama);
+
+         TheFakturLightList = new List<FakturLight>();
+
+         TheFakturLightList.Add(new FakturLight() { Decim03 = S_ukKCRP_EUR - TH_Blg_uKunama_EUR } );
+      }
+
       return 0;
    }
 
