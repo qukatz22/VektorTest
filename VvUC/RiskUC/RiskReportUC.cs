@@ -301,10 +301,10 @@ public partial class RiskFilterUC : VvFilterUC
                     cbx_isPoslJed, cbx_isPecatPotpis, cbx_onlyArtiklSaStanjem, cbx_isForceOtsByDokDate, cbx_isRashodTT, cbx_isChkO, cbx_isOpzStatVezDok, cbx_IsBlgInIzvVal,
                     cbx_FRUF_BiloGdjeU, cbx_uvozIzvozOnly;
 
-   private Label lbl_grupa, lbl_grupa_skl2;
+   private Label lbl_grupa, lbl_grupa_skl2, lbl_ThKune;
 
    private Button btn_macroPrint, btn_macroNew, btn_macroDel, btn_macroRename;
-   private VvTextBox tbx_DatumOTS;
+   private VvTextBox tbx_DatumOTS, tbx_ThKune;
    private VvDateTimePicker dtp_DatumOTS, dtp_compDateOd, dtp_compDateDo;
    private ComboBox combbx_macro;
    private CheckBox[] cbx_sklad;
@@ -1145,9 +1145,14 @@ public partial class RiskFilterUC : VvFilterUC
       cbx_isChkO      = hamper.CreateVvCheckBox_OLD(0, 6, null, "Chk0"       , System.Windows.Forms.RightToLeft.No);
       cbx_isMpskPoNBC = hamper.CreateVvCheckBox_OLD(2, 6, null, 1, 0, "MPSK po NBC", System.Windows.Forms.RightToLeft.No);
 
+      lbl_ThKune = hamper.CreateVvLabel  (0, 6, "Iznos u kunama:", 1, 0, ContentAlignment.MiddleRight);
+      tbx_ThKune = hamper.CreateVvTextBox(2, 6, "tbx_ThKune", "Iznos u kunama", 12, 1, 0);
+      tbx_ThKune.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      lbl_ThKune.Visible = tbx_ThKune.Visible = ZXC.IsTEXTHOany2;
+
+
       if(ZXC.IsSvDUH) cbx_IsBlgInIzvVal = hamper.CreateVvCheckBox_OLD(0, 6, null, 3, 0, "Alternativa" , System.Windows.Forms.RightToLeft.No);
       else            cbx_IsBlgInIzvVal = hamper.CreateVvCheckBox_OLD(2, 6, null, 1, 0, "BLG u IzvVal", System.Windows.Forms.RightToLeft.Yes);
-
 
       if(ZXC.IsSvDUH)
       {
@@ -2743,11 +2748,9 @@ public partial class RiskFilterUC : VvFilterUC
 
    }
 
-
-
-
-
    public bool Fld_UvozIzvozOnly { get { return cbx_uvozIzvozOnly.Checked; } set { cbx_uvozIzvozOnly.Checked = value; } }
+
+   public decimal Fld_TH_Kune { get { return tbx_ThKune.GetDecimalField(); } set { tbx_ThKune.PutDecimalField(value); } }
 
    #endregion Fld_
 
@@ -2912,7 +2915,7 @@ public partial class RiskFilterUC : VvFilterUC
        //Fld_SVD_IsDonacSklad   = TheRtransFilter.SVD_IsDonacSklad;
 
          Fld_UvozIzvozOnly          = TheRtransFilter.UvozIzvozOnly;
-
+         Fld_TH_Kune                = TheRtransFilter.TH_Blg_uKunama;
       }
 
       // Za JAM_... : 
@@ -3061,8 +3064,9 @@ public partial class RiskFilterUC : VvFilterUC
       TheRtransFilter.SVD_KnjBr_OD           = Fld_SVD_KnjBr_OD     ;
       TheRtransFilter.SVD_KnjBr_DO           = Fld_SVD_KnjBr_DO     ;
       TheRtransFilter.SVD_LiP                = Fld_SVD_LiP          ;
-      TheRtransFilter.SVD_IsDonacSklad   = Fld_SVD_IsDonacSklad;
+      TheRtransFilter.SVD_IsDonacSklad       = Fld_SVD_IsDonacSklad;
       TheRtransFilter.UvozIzvozOnly          = Fld_UvozIzvozOnly;
+      TheRtransFilter.TH_Blg_uKunama                = Fld_TH_Kune ;
 
    }
 
