@@ -1518,11 +1518,16 @@ public class TH_PriceRuleForCycleMoment
 
       List<TH_PriceRuleForCycleMoment> TH_PriceRuleList_WX_CY;
 
+      // 30.12.2022: 
+      List<DateTime> breakDateList = _TH_Cjenik_Kind_BreakDates_XY.Keys.ToList();
+      DateTime       prevBreakDate = breakDateList.Where(date => date < ZXC.projectYearFirstDay).Max();
+
       bool thisIsBreakDate;
 
     //for(DateTime theDate = ZXC.projectYearFirstDay                                                     ; theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
     //for(DateTime theDate = ZXC.projectYearFirstDay - ZXC.ThreeWeekSpan                                 ; theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
-      for(DateTime theDate = /*ZXC.projectYearFirstDay - Get_TH_MaxNumOfWeeks_forCjenikKind(currCjenikKind)*/new DateTime(2022, 10, 01); theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
+    //for(DateTime theDate = ZXC.projectYearFirstDay - Get_TH_MaxNumOfWeeks_forCjenikKind(currCjenikKind); theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
+      for(DateTime theDate = prevBreakDate                                                               ; theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
       {
          thisIsBreakDate = _TH_Cjenik_Kind_BreakDates_XY.TryGetValue(theDate, out newCjenikKind);
 
