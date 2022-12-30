@@ -1499,8 +1499,9 @@ public class TH_PriceRuleForCycleMoment
 
    public static void Init_TH_Calendar()
    {
-      ZXC.TH_Cjenik_Calendar_2Week_PON = Init_TH_Calendar_JOB(TH_Cjenik_Kind._2WShop_PON_2WCjenik_, TH_Cjenik_Kind_BreakDates_2Week_PON);
-      ZXC.TH_Cjenik_Calendar_2Week_SRI = Init_TH_Calendar_JOB(TH_Cjenik_Kind._2WShop_SRI_2WCjenik_, TH_Cjenik_Kind_BreakDates_2Week_SRI);
+      // 30.12. 2022: komentiramo TH_Cjenik_Kind_ koije se vise ne upotrebljavaju 
+    //ZXC.TH_Cjenik_Calendar_2Week_PON = Init_TH_Calendar_JOB(TH_Cjenik_Kind._2WShop_PON_2WCjenik_, TH_Cjenik_Kind_BreakDates_2Week_PON);
+    //ZXC.TH_Cjenik_Calendar_2Week_SRI = Init_TH_Calendar_JOB(TH_Cjenik_Kind._2WShop_SRI_2WCjenik_, TH_Cjenik_Kind_BreakDates_2Week_SRI);
       ZXC.TH_Cjenik_Calendar_5Week     = Init_TH_Calendar_JOB(TH_Cjenik_Kind._5WShop_5WCjenik_    , TH_Cjenik_Kind_BreakDates_5Week    );
       ZXC.TH_Cjenik_Calendar_3Week_SRI = Init_TH_Calendar_JOB(TH_Cjenik_Kind._3WShop_SRI_3WCjenik_, TH_Cjenik_Kind_BreakDates_3Week_SRI);
 
@@ -1521,7 +1522,7 @@ public class TH_PriceRuleForCycleMoment
 
     //for(DateTime theDate = ZXC.projectYearFirstDay                                                     ; theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
     //for(DateTime theDate = ZXC.projectYearFirstDay - ZXC.ThreeWeekSpan                                 ; theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
-      for(DateTime theDate = ZXC.projectYearFirstDay - Get_TH_MaxNumOfWeeks_forCjenikKind(currCjenikKind); theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
+      for(DateTime theDate = /*ZXC.projectYearFirstDay - Get_TH_MaxNumOfWeeks_forCjenikKind(currCjenikKind)*/new DateTime(2022, 10, 01); theDate <= ZXC.projectYearLastDay; theDate += ZXC.OneDaySpan, ruleIDX++)
       {
          thisIsBreakDate = _TH_Cjenik_Kind_BreakDates_XY.TryGetValue(theDate, out newCjenikKind);
 
