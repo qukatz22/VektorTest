@@ -947,6 +947,16 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
       return vvDataRecord.Convert_Euro_To_Kuna_ForAllMoneyPropertiez_JOB/*<T>*/(conn/*, vvDataRecord*/);
    }
 
+   public virtual bool Convert_HRDkontra_ForAllMoneyPropertiez(XSqlConnection conn)
+   {
+      bool isHrkEra  = ZXC.projectYearAsInt <= 2022;
+      bool isEuroEra = ZXC.projectYearAsInt >= 2023;
+
+      if(isHrkEra) return Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(conn);
+      else         return Convert_Euro_To_Kuna_ForAllMoneyPropertiez_JOB(conn);
+
+   }
+
    #endregion Convert All Money Propertiez of VvDataRecord
 
 }

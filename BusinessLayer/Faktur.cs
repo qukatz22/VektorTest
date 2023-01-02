@@ -3901,6 +3901,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
             {
                try
                {
+                  if(IsExtendable == false && pInfo.Name != "S_ukKC") continue;
+
                   pInfo.SetValue(this, ZXC.EURiIzKuna_HRD_((decimal)pInfo.GetValue(this)));
                }
                catch { }
@@ -3927,6 +3929,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
             {
                try
                {
+                  if(IsExtendable == false && pInfo.Name != "S_ukKC") continue;
+
                   pInfo.SetValue(this, ZXC.KuneIzEURa_HRD_((decimal)pInfo.GetValue(this)));
                }
                catch { }
