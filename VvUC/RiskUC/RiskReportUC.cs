@@ -2149,6 +2149,11 @@ public partial class RiskFilterUC : VvFilterUC
       get { return cb_zaExport.Checked; }
       set {        cb_zaExport.Checked = value; }
    }
+   public bool Fld_IsHRDkontra 
+   {
+      get { return cb_isHrdKontra.Checked; }
+      set {        cb_isHrdKontra.Checked = value; }
+   }
 
    public string Fld_GrupiranjeDok
    {
@@ -2800,8 +2805,9 @@ public partial class RiskFilterUC : VvFilterUC
          Fld_ArtiklSort             = TheRtransFilter.SorterType_Sifrar;
          Fld_NeedsHorizontalLine    = TheRtransFilter.NeedsHorizontalLine;
          Fld_ZaExportToExcel        = TheRtransFilter.ZaExportToExcel;
+         Fld_IsHRDkontra            = TheRtransFilter.IsHRDkontra;
 
-         Fld_IsOtsAnalitKontre      = TheRtransFilter.IsOtsAnalitKontre;
+         Fld_IsOtsAnalitKontre = TheRtransFilter.IsOtsAnalitKontre;
          Fld_IsOtsDospjecaPoDan     = TheRtransFilter.IsOtsDospjecaPoDan;
          Fld_IsOtsKontakt           = TheRtransFilter.IsOtsKontakt;
          Fld_IsOtsLineTipBr         = TheRtransFilter.IsOtsLineTipBr;
@@ -3013,6 +3019,7 @@ public partial class RiskFilterUC : VvFilterUC
 
       TheRtransFilter.NeedsHorizontalLine    = Fld_NeedsHorizontalLine;
       TheRtransFilter.ZaExportToExcel        = Fld_ZaExportToExcel;
+      TheRtransFilter.IsHRDkontra            = Fld_IsHRDkontra;
 
       TheRtransFilter.Pdv_Fof_III5           = Fld_Pdv_Fof_III5  ;
       TheRtransFilter.Pdv_Fof_III6           = Fld_Pdv_Fof_III6  ;
