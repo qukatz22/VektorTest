@@ -238,6 +238,7 @@ public abstract partial class VvRiskReport : VvReport
                                          ThePosJedList        = new List<Kupdob       >( ); if(VvUserControl.KupdobSifrar == null) theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); }
       if(ReportNeeds_Prjkt_List        ){ThePrjktList         = new List<Prjkt        >(1); ThePrjktList.Add(ZXC.CURR_prjkt_rec); }
 
+      IsHRDkontra = _rptFilter.IsBlgInIzvVal; // TODO 
    }
 
    public override void TheReportLists_Clear()
@@ -1539,7 +1540,6 @@ public /*partial*/ class RptR_IRA : VvRiskReport
 
 public class RptR_StandardRiskReport : VvRiskReport
 {
-   protected bool HRDweWant = false; // DELLME LATTER!!! 
    public RptR_StandardRiskReport(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl) : base(_reportDocument, _reportName, _rptFilter,
          _rptNeeds_ArtWars   , // ArtiklWithArtstat         
          _rptNeeds_ArtStat   , // ArtStat        
@@ -1838,7 +1838,7 @@ public class RptR_StandardRiskReport : VvRiskReport
          f.KupdobName = f.PosJedName; 
       });
 
-      if(HRDweWant && year <= 2022)
+      if(IsHRDkontra && year <= 2022)
       {
          TheFakturList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
       }
@@ -2655,7 +2655,7 @@ public class RptR_StandardRiskReport : VvRiskReport
          }
       }
 
-      if(HRDweWant)
+      if(IsHRDkontra)
       {
          TheArtiklList.ForEach(art => 
          { 
@@ -4466,7 +4466,7 @@ public class RptR_RekapCompare      : RptR_RekapFaktur
 
       VvDaoBase.LoadGenericVvDataRecordList(isSomeOtherYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturBBBList, fmArray.ToList(), "", FakturOrderBy, true);
 
-      if(HRDweWant && year <= 2022)
+      if(IsHRDkontra && year <= 2022)
       {
          TheFakturBBBList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
       }

@@ -3734,8 +3734,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                            }
                            else /* user ne koristi CjenikDUC nego cijene drzi na samoj skladisnoj kartici (npr. zbog importa) */
                            {
-                              decimal theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
-                                      theMPC = ZXC.VvGet_125_on_100(theVPC              , faktur_rec.CommonPdvSt);
+                              // 02.01.2023: 
+                              if(ZXC.IsTEXTHOany == false)
+                              {
+                                 decimal theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
+                                 theMPC = ZXC.VvGet_125_on_100(theVPC, faktur_rec.CommonPdvSt);
+                              }
 
                               decimal theCijPop = ZXC.VvGet_90_from_100(theMPC, TheG.GetDecimalCell(ci.iT_rbt1St, currRow, false));
 

@@ -3464,7 +3464,8 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
                   decimal euroMP_cij = ZXC.DivSafe(rtrans_rec.R_CIJ_MSK, ZXC.HRD_tecaj); // this IS NOT Ron2() 
 
                 //rtrans_rec.T_wanted = euroMP_cij/*.Ron2()*/;
-                  rtrans_rec.T_wanted = euroMP_cij.Ron(4);
+                  rtrans_rec.T_wanted = euroMP_cij/*.Ron(4)*/; // svejedno je nezaokruzeno ili Ron4 kada u datalayeru pamti samo 4 decimale 
+                                                               // ak ce se nako buniti onda mu u DL dignuti precision sa 12,4 na 16.8       
                }
 
                rtrans_rec.CalcTransResults(null);
