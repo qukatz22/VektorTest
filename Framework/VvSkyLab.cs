@@ -324,6 +324,53 @@ public static class VvSkyLab
       return srvRecIDactions;
    }
 
+   public static List<ZXC.DBactionForSrvRecID> Setup_AfterInitNY_Synchronization(List<VvSQL.VvLanLogEntry> vvLanLogList)
+   {
+
+      if(vvLanLogList == null || vvLanLogList.Count.IsZero()) return null; // there's NO NEWS 
+
+      var recIDsDistinct = vvLanLogList.Select(entry => entry.recID).Distinct(); 
+
+      List<ZXC.DBactionForSrvRecID> recIDactions = new List<ZXC.DBactionForSrvRecID>();
+
+      bool isADD, isRWT, isDEL;
+
+      foreach(uint recID in recIDsDistinct)
+      {
+         var thisRecIDLogEntries = vvLanLogList.Where(log => log.recID == recID);
+
+         isADD = thisRecIDLogEntries.Any(log => log.action == VvSQL.DB_RW_ActionType.ADD);
+         isRWT = thisRecIDLogEntries.Any(log => log.action == VvSQL.DB_RW_ActionType.RWT);
+         isDEL = thisRecIDLogEntries.Any(log => log.action == VvSQL.DB_RW_ActionType.DEL);
+
+         VvSQL.DB_RW_ActionType actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.NONE;
+
+         if( isADD && !isRWT && !isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.ADD ;
+         if( isADD &&  isRWT && !isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.ADD ;
+         if(!isADD &&  isRWT && !isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.RWT ;
+         if(!isADD &&  isRWT &&  isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.DEL ;
+         if(!isADD && !isRWT &&  isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.DEL ;
+         if( isADD && !isRWT &&  isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.NONE;
+         if( isADD &&  isRWT &&  isDEL) actionToTakeOnSyncTaker = VvSQL.DB_RW_ActionType.NONE;
+
+
+         if(actionToTakeOnSyncTaker != VvSQL.DB_RW_ActionType.NONE)
+         recIDactions.Add
+            (
+               new ZXC.DBactionForSrvRecID
+                  (
+                     vvLanLogList.First(entry => entry.recID == recID).recID    , 
+                     vvLanLogList.First(entry => entry.recID == recID).origSrvID, 
+                     vvLanLogList.First(entry => entry.recID == recID).origRecID, 
+                     actionToTakeOnSyncTaker
+                  )
+            );
+
+      } // foreach(uint recID in recIDsDistinct) 
+
+      return recIDactions;
+   }
+
    public static bool ExecuteSynchronization(XSqlConnection connSyncSENDER, XSqlConnection connSyncRECEIVER, SkyRule skyRule_rec, List<ZXC.DBactionForSrvRecID> recIDactions, DateTime prevSyncTS, DateTime thisSyncTS, List<VvSQL.VvLanLogEntry> vvLanLogList, ZXC.SkyOperation wantedOperation, List<VvSyncInfo> syncInfoList, bool isCheckOnly)
    {
       bool OK = true;

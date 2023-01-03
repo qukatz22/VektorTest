@@ -238,7 +238,7 @@ public abstract partial class VvRiskReport : VvReport
                                          ThePosJedList        = new List<Kupdob       >( ); if(VvUserControl.KupdobSifrar == null) theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); }
       if(ReportNeeds_Prjkt_List        ){ThePrjktList         = new List<Prjkt        >(1); ThePrjktList.Add(ZXC.CURR_prjkt_rec); }
 
-      IsHRDkontra = _rptFilter.IsBlgInIzvVal; // TODO 
+      IsHRDkontra = _rptFilter.IsHRDkontra;
    }
 
    public override void TheReportLists_Clear()
