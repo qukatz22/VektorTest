@@ -4497,6 +4497,20 @@ public static class VvSQL
         return (cmd);
    }
 
+   public static XSqlCommand Get_AfterInitNY_LANchanges_LogList_Command(XSqlConnection conn, DateTime nyTableCreationTime, string tableName)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      string dbName = conn.Database;
+         
+          cmd.CommandText = "SELECT LAN.* FROM "  + dbName + "." + ZXC.vvDB_LANlogTableName + " LAN"                + " \n" +
+                            "WHERE record = '"    + tableName                                                       + "'\n" +
+                            "AND   LAN.logTS > '" + nyTableCreationTime.ToString(ZXC.VvDateYyyyMmDdMySQL_TS_Format) + "'\n" +
+  
+                            "ORDER BY LAN.logTS ASC";
+        return (cmd);
+   }
+
    public static XSqlCommand SetMe_LanLogEntry_byLogID_Command(XSqlConnection conn, uint logID)
    {
       XSqlCommand cmd = InitCommand(conn);
@@ -6587,6 +6601,20 @@ public static class VvSQL
 
       return (cmd);
    }
+
+   public static XSqlCommand Get_TABLE_Create_Time_Command(XSqlConnection conn, string dbName, string tblname)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      cmd.CommandText = 
+
+         "SELECT create_time FROM INFORMATION_SCHEMA.TABLES " + " \n" +
+         "WHERE table_schema = '" + dbName                    + "'\n" +
+         "AND table_name     = '" + tblname                   + "'\n" ;
+
+      return (cmd);
+   }
+
 
    #endregion COPY_TABLE_Command
 
