@@ -78,7 +78,7 @@ public class UFADUC              : FakturExtDUC
       R_mtros_tk_CreateColumn      (ZXC.Q3un            , ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška"   , "Tiker Mjesta troška"               );
       T_kol_CreateColumn           (ZXC.Q3un,          2, isVisible, "Kol"             , "Količina"                                         );
       T_jedMj_CreateColumn         (ZXC.Q2un            , isVisible, "JM"              , "Jedinica mjere"                                   );
-      T_cij_CreateColumn           (ZXC.Q4un,          2, isVisible, "Cijena"          , "Jedinična cijena"                                 );
+      T_cij_CreateColumn           (ZXC.Q4un,          4, isVisible, "Cijena"          , "Jedinična cijena"                                 );
       T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"             , "Stopa rabata 1"                                   );
     //T_rbt2St_CreateColumn        (ZXC.Q2un,          0, isVisible, "Rb2"             , "Stopa rabata 2"                                   );
       R_KCR_CreateColumn           (ZXC.Q4un,          2, isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a"                           );
@@ -174,7 +174,7 @@ public class UPADUC              : FakturExtDUC
       T_konto_CreateColumn         (ZXC.Q3un            , isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_jedMj_CreateColumn         (ZXC.Q2un            , isVisible, "JM"         , "Jedinica mjere"                                   );
       T_kol_CreateColumn           (ZXC.Q3un,          2, isVisible, "Kol"        , "Količina"                                         );
-      T_cij_CreateColumn           (ZXC.Q4un,          2, isVisible, "Cijena"     , "Jedinična cijena"                                 );
+      T_cij_CreateColumn           (ZXC.Q4un,          4, isVisible, "Cijena"     , "Jedinična cijena"                                 );
     //  T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1"                                   );
     //T_rbt2St_CreateColumn        (ZXC.Q2un,          0, isVisible, "Rb2"        , "Stopa rabata 2"                                   );
       R_KCR_CreateColumn           (ZXC.Q4un,          2, isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a"                           );
@@ -286,7 +286,7 @@ public class UFMDUC              : FakturExtDUC
       T_konto_CreateColumn         (ZXC.Q3un            , isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn           (ZXC.Q3un,          2, isVisible, "Kol"        , "Količina"                                         );
       T_jedMj_CreateColumn         (ZXC.Q2un            , isVisible, "JM"         , "Jedinica mjere"                                   );
-      T_cij_CreateColumn           (ZXC.Q4un,          2, isVisible, "Cijena"     , "Jedinična cijena"                                 );
+      T_cij_CreateColumn           (ZXC.Q4un,          4, isVisible, "Cijena"     , "Jedinična cijena"                                 );
       T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1"                                   );
     //T_rbt2St_CreateColumn        (ZXC.Q2un,          0, isVisible, "Rb2"        , "Stopa rabata 2"                                   );
       R_KCR_CreateColumn           (ZXC.Q4un,          2, isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a"                           );
@@ -526,7 +526,7 @@ public class URMDUC              : FakturExtDUC
       T_artiklCD_CreateColumn  (ZXC.Q4un   , isVisible     , "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(         isVisible     , "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, /*2*/3, isVisible, "Kol"        , "Količina"      );
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible     , "Cijena"     , "Jedinična 'FAKTURNA' cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible     , "Cijena"     , "Jedinična 'FAKTURNA' cijena");
       T_rbt1St_CreateColumn    (ZXC.Q4un, 2, isVisible     , "Rabat %"    , "Stopa rabata 1");
       T_pdvSt_CreateColumn     (ZXC.Q3un, 0, isVisible     , "Pdv %"      , "Stopa PDV-a"           );
       T_pdvKolTip_CreateColumn (ZXC.QUN,     isVisible);
@@ -575,7 +575,7 @@ public class URMDUC_2            : URMDUC
     //T_artiklName_CreateColumnFill(         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, /*2*/ 3, isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   , isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
     //R_KC_CreateColumn        (ZXC.Q4un, 2, isVisible, "FAK Vrij"   , "Iznos FAK");
       T_rbt1St_CreateColumn    (ZXC.Q4un, 2, isVisible, "Rabat %"    , "Stopa rabata 1");
     //R_rbt1_CreateColumn      (ZXC.Q4un, 2, isVisible, "IznosRab1"  , "Iznos rabata 1");
@@ -887,7 +887,7 @@ public class KalkulacijaMpDUC    : FakturExtDUC
       T_artiklCD_CreateColumn  (ZXC.Q4un   , isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"        , "Količina"      );
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
       T_rbt1St_CreateColumn    (ZXC.Q4un, 2, isVisible, "Rabat %"    , "Stopa rabata 1");
       T_pdvSt_CreateColumn     (ZXC.Q3un, 0, isVisible, "Pdv %"      , "Stopa PDV-a"           );
       T_pdvKolTip_CreateColumn (ZXC.QUN    ,          isVisible);
@@ -935,7 +935,7 @@ public class KalkulacijaMpDUC_2  : KalkulacijaMpDUC
     //T_artiklName_CreateColumnFill(         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   , isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
     //R_KC_CreateColumn        (ZXC.Q4un, 2, isVisible, "FAK Vrij"   , "Iznos FAK");
       T_rbt1St_CreateColumn    (ZXC.Q4un, 2, isVisible, "Rabat %"    , "Stopa rabata 1");
     //R_rbt1_CreateColumn      (ZXC.Q4un, 2, isVisible, "IznosRab1"  , "Iznos rabata 1");
@@ -1068,7 +1068,7 @@ public class KKMDUC              : FakturExtDUC
       T_artiklName_CreateColumnFill(         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   , isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
     //R_KC_CreateColumn        (ZXC.Q4un, 2, isVisible, "FAK Vrij"   , "Iznos FAK");
     //T_rbt1St_CreateColumn    (ZXC.Q4un, 1, isVisible, "Rabat %"    , "Stopa rabata 1");
     //R_rbt1_CreateColumn      (ZXC.Q4un, 2, isVisible, "IznosRab1"  , "Iznos rabata 1");
@@ -1173,7 +1173,7 @@ public class PovratDobMalDUC     : FakturExtDUC
       T_artiklCD_CreateColumn  (ZXC.Q4un   , isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"        , "Količina"      );
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena"     , "Jedinična 'FAKTURNA' cijena");
       T_rbt1St_CreateColumn    (ZXC.Q4un, 2, isVisible, "Rabat %"    , "Stopa rabata 1");
       T_pdvSt_CreateColumn     (ZXC.Q3un, 0, isVisible, "Pdv %"      , "Stopa PDV-a"           );
       T_pdvKolTip_CreateColumn (ZXC.QUN    ,          isVisible);
@@ -1297,7 +1297,7 @@ public class IFADUC              : FakturExtDUC
       T_konto_CreateColumn         (ZXC.Q3un   ,                        isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_jedMj_CreateColumn         (ZXC.Q2un   ,                        isVisible, "JM"         , "Jedinica mjere");
       T_kol_CreateColumn           (ZXC.Q3un, 2,                        isVisible, "Kol"        , "Količina"      );
-      T_cij_CreateColumn           (ZXC.Q4un, 2,                        isVisible, "Cijena"     , "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q4un, 4,                        isVisible, "Cijena"     , "Jedinična cijena");
       T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2,               isVisible, "Rb1"        , "Stopa rabata 1");
       R_KCR_CreateColumn           (ZXC.Q4un, 2,                        isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
       T_pdvSt_CreateColumn         (ZXC.Q2un, 0,                        isVisible, "PdvSt"      , "Stopa PDV-a"           );
@@ -1434,7 +1434,7 @@ public class IRADUC              : FakturExtDUC
       T_kol2_CreateColumn          (ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces         , ZXC.RRD.Dsc_IsKol2Visible, "AmbKol"     , "Ambalažna količina");
       T_kol_CreateColumn           (ZXC.Q3un, 2,                                                             isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,                                                             isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn           (ZXC.Q4un, /*4*/2,                                                        isVisible, "Cijena"     , "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q4un, 4,                                                        isVisible, "Cijena"     , "Jedinična cijena");
 
       R_kolOP_CreateColumn         (ZXC.Q3un, 2,                                  ZXC.RRD.Dsc_IsOrgPakVisible, R_kolOP_ColName, "Količina originalnog pakiranja");
       R_cijOP_CreateColumn         (ZXC.Q4un, 2,                                  ZXC.RRD.Dsc_IsOrgPakVisible, R_cijOP_ColName, "Cijena originalnog pakiranja");
@@ -2211,7 +2211,7 @@ public class OdobrKupcuDUC       : FakturExtDUC
       T_konto_CreateColumn    (ZXC.Q2un   ,           isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn      (ZXC.Q3un, 2,           isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn    (ZXC.Q2un   ,           isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn      (ZXC.Q4un, 2,           isVisible, "Cijena"     , "Jedinična cijena");
+      T_cij_CreateColumn      (ZXC.Q4un, 4,           isVisible, "Cijena"     , "Jedinična cijena");
       T_rbt1St_CreateColumn   (ZXC.Q3un-ZXC.Qun4, 2,  isVisible, "Rb1"        , "Stopa rabata 1");
     //T_rbt2St_CreateColumn   (ZXC.Q2un, 0,           isVisible, "Rb2"        , "Stopa rabata 2");
       R_KCR_CreateColumn      (ZXC.Q4un, 2,           isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
@@ -2400,7 +2400,7 @@ public class OdobrDobavDUC       : FakturExtDUC
       T_konto_CreateColumn     (ZXC.Q2un   ,          isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Cijena"     , "Jedinična cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
       T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
     //T_rbt2St_CreateColumn    (ZXC.Q2un, 0,          isVisible, "Rb2"        , "Stopa rabata 2");
       R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
@@ -3511,7 +3511,7 @@ public class BlgUplatDUC         : FakturExtDUC
       R_mtros_tk_CreateColumn      (ZXC.Q3un   , ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška", "Tiker Mjesta troška" );
       T_jedMj_CreateColumn         (ZXC.Q4un   , isVisible,                     "Račun"   , "Broj računa");
       T_kol_CreateColumn           (ZXC.Q3un, 0, isVisible,                     "Kol"     , "Količina");
-      T_cij_CreateColumn           (ZXC.Q5un, 2, isVisible,                     "Cijena"  , "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q5un, 4, isVisible,                     "Cijena"  , "Jedinična cijena");
       R_KC_CreateColumn            (ZXC.Q5un, 2, isVisible,                     "Iznos"   , "Iznos");
    }
 
@@ -3595,7 +3595,7 @@ public class BlgUplat_M_DUC      : FakturExtDUC
       R_mtros_tk_CreateColumn      (ZXC.Q3un,    ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška", "Tiker Mjesta troška");
       T_jedMj_CreateColumn         (ZXC.Q4un,    isVisible                    , "Račun", "Broj računa");
       T_kol_CreateColumn           (ZXC.Q3un, 0, isVisible                    , "Kol", "Količina");
-      T_cij_CreateColumn           (ZXC.Q5un, 2, isVisible                    , "Cijena", "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q5un, 4, isVisible                    , "Cijena", "Jedinična cijena");
       R_KC_CreateColumn            (ZXC.Q5un, 2, isVisible                    , "Iznos", "Iznos");
    }
 
@@ -3681,7 +3681,7 @@ public class BlgIsplatDUC        : FakturExtDUC
       R_mtros_tk_CreateColumn      (ZXC.Q3un   , ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška"   , "Tiker Mjesta troška"               );
       T_jedMj_CreateColumn         (ZXC.Q4un   , isVisible, "Račun" , "Broj računa");
       T_kol_CreateColumn           (ZXC.Q3un, 0, isVisible, "Kol"   , "Količina"      );
-      T_cij_CreateColumn           (ZXC.Q5un, 2, isVisible, "Cijena", "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q5un, 4, isVisible, "Cijena", "Jedinična cijena");
       R_KC_CreateColumn            (ZXC.Q5un, 2, isVisible, "Iznos" , "Iznos");
  }
 
@@ -3765,7 +3765,7 @@ public class BlgIsplat_M_DUC     : FakturExtDUC
       R_mtros_tk_CreateColumn      (ZXC.Q3un   , ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška"   , "Tiker Mjesta troška"               );
       T_jedMj_CreateColumn         (ZXC.Q4un   , isVisible, "Račun" , "Broj računa");
       T_kol_CreateColumn           (ZXC.Q3un, 0, isVisible, "Kol"   , "Količina"      );
-      T_cij_CreateColumn           (ZXC.Q5un, 2, isVisible, "Cijena", "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q5un, 4, isVisible, "Cijena", "Jedinična cijena");
       R_KC_CreateColumn            (ZXC.Q5un, 2, isVisible, "Iznos" , "Iznos");
  }
 
@@ -5136,7 +5136,7 @@ public class NivelacijaDUC       : FakturExtDUC
       T_artiklName_CreateColumnFill(         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"  , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un,    isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "NBC"        , "Jedinična 'FAKTURNA' cijena");//"Cijena"
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "NBC"        , "Jedinična 'FAKTURNA' cijena");//"Cijena"
       //R_cij_kcr_CreateColumn   (ZXC.Q4un, 2, isVisible, "NBC"        , "Cijena NAB");
       T_pdvSt_CreateColumn     (ZXC.Q3un, 0, isVisible, "Pdv %"      , "Stopa PDV-a");
       T_mrzSt_CreateColumn     (ZXC.Q4un, 2, isVisible, "New Marža %", "Stopa marže");
@@ -5616,7 +5616,7 @@ public class InventuraMPDUC      : FakturExtDUC
       //T_artiklName_CreateColumn(ZXC.Q5un, isVisible, "Naziv", "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   , isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 2, isVisible, "Cijena", "Jedinična cijena");
+      T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena", "Jedinična cijena");
       R_KCRP_CreateColumn      (ZXC.Q5un, 2, isVisible, "Iznos", "Iznos");
 
       vvtbT_cij.JAM_ReadOnly = true;
@@ -7062,7 +7062,7 @@ public class WYRNDUC             : FakturExtDUC
       R_mtros_tk_CreateColumn      (ZXC.Q3un            , ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška"   , "Tiker Mjesta troška"               );
       T_kol_CreateColumn           (ZXC.Q3un,          2, isVisible, "Kol"             , "Količina"                                         );
       T_jedMj_CreateColumn         (ZXC.Q2un            , isVisible, "JM"              , "Jedinica mjere"                                   );
-      T_cij_CreateColumn           (ZXC.Q4un,          2, isVisible, "Cijena"          , "Jedinična cijena"                                 );
+      T_cij_CreateColumn           (ZXC.Q4un,          4, isVisible, "Cijena"          , "Jedinična cijena"                                 );
       T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"             , "Stopa rabata 1"                                   );
       R_KCR_CreateColumn           (ZXC.Q4un,          2, isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a"                           );
       T_pdvSt_CreateColumn         (ZXC.Q2un,          0, isVisible, "PdvSt"           , "Stopa PDV-a"                                      );
@@ -7158,7 +7158,7 @@ public class CjenikKupca_DUC         : FakturExtDUC
       T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra"   , "Šifra artikla"         );
       T_artiklName_CreateColumnFill(             true, "Naziv"   , "Naziv artikla"         );
       T_jedMj_CreateColumn         (ZXC.Q2un,    true, "JM"      , "Jedinica mjere"        );
-      T_cij_CreateColumn           (ZXC.Q4un, 2, true, "Cijena"  , "Jedinična cijena"      );
+      T_cij_CreateColumn           (ZXC.Q4un, 4, true, "Cijena"  , "Jedinična cijena"      );
    }
 
    #endregion TheG_Specific_Columns
@@ -7262,7 +7262,7 @@ public class URA_SVD_DUC         : FakturExtDUC
       T_artiklName_CreateColumnFill (                        true, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       R_ORG_T_doCijMal_CreateColumn (ZXC.Q3un           , 0, true, "ORG"        , "Originalno pakiranje");
       R_BOP_CreateColumn            (ZXC.Q4un           , 2, true, "BOP"        , "Broj Originalnog pakiranja");
-      R_COP_CreateColumn            (ZXC.Q4un           , 2, true, "COP"        , "Cijena Originalnog pakiranja");
+      R_COP_CreateColumn            (ZXC.Q4un           , 4, true, "COP"        , "Cijena Originalnog pakiranja");
       T_kol_CreateColumn            (ZXC.Q4un           , 2, true, "Količina"   , "Količina"      );
       T_jedMj_CreateColumn          (ZXC.Q2un           ,    true, "JM"         , "Jedinica mjere"        );
       T_cij_CreateColumn            (ZXC.Q4un           , 4, true, "Cijena"     , "Jedinična cijena");
@@ -7507,7 +7507,7 @@ public class NRD_SVD_DUC         : FakturExtDUC
       T_artiklName_CreateColumnFill (                        true, "Naziv"       , "Naziv artikla ili proizvoljan opis");
       R_ORG_T_doCijMal_CreateColumn (ZXC.Q3un           , 0, true, "ORG"         , "Originalno pakiranje");
       R_BOP_CreateColumn            (ZXC.Q4un           , 2, true, "BOP"         , "Broj Originalnog pakiranja");
-      R_COP_CreateColumn            (ZXC.Q4un           , 2, true, "COP"         , "Cijena Originalnog pakiranja");
+      R_COP_CreateColumn            (ZXC.Q4un           , 4, true, "COP"         , "Cijena Originalnog pakiranja");
       T_kol_CreateColumn            (ZXC.Q4un           , 2, true, "Količina"    , "Količina");
       T_jedMj_CreateColumn          (ZXC.Q2un,               true, "JM"          , "Jedinica mjere"        );
       T_cij_CreateColumn            (ZXC.Q4un           , 4, true, "Cijena"      , "Jedinična cijena");
