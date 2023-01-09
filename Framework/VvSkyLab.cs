@@ -541,6 +541,36 @@ public static class VvSkyLab
       return OK;
    }
 
+   public static bool Execute_AfterInitNY_Synchronization(XSqlConnection conn, List<ZXC.DBactionForSrvRecID> recIDactions)
+   {
+      bool OK = true;
+
+      ZXC.sqlErrNo = 0;
+      ZXC.sqlErrMessage = "";
+
+      VvDataRecord vvDataRecord = null;
+
+      foreach(ZXC.DBactionForSrvRecID srvRecIDaction in recIDactions)
+      {
+         if(srvRecIDaction.action != VvSQL.DB_RW_ActionType.NONE)
+         {
+            // TODO: tu si stao
+          //vvDataRecord = VvDaoBase.GetVvDataRecordByLanSrvIDAndLanRecID(conn, vvDataRecord.VirtualRecordName, srvRecIDaction.lanSrvID, srvRecIDaction.lanRecID, srvRecIDaction.action, true);
+
+            OK = vvDataRecord != null;
+
+            // TODO: tu si stao
+          ///* === */  if(OK) OK = VvDaoBase.ExecuteSKY_DB_RW_Action(conn, vvDataRecord, srvRecIDaction.action, false);
+
+         } // if(srvRecIDaction.action != VvSQL.DB_RW_ActionType.NONE) 
+
+         else { ZXC.sqlErrNo = 0; ZXC.sqlErrMessage = ""; }
+
+      } // foreach(ZXC.DBactionForRecID recIDaction in recIDactions) 
+
+      return OK;
+   }
+
    internal static void OpenSyncTransaction(XSqlConnection connSyncSENDER, uint lanSrvID, uint lanRecID, VvSQL.VvLanLogEntry lanLogEntry, DateTime thisSyncTS, DateTime prevSyncTS) 
    { //return;
 

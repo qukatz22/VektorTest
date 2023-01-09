@@ -2608,6 +2608,16 @@ public class RptR_StandardRiskReport : VvRiskReport
          TheArtiklList.RemoveAll(art => art.HasInvVisOrManj == false);
       }
 
+      // 09.01.2023: SVD novootkriveni problem jer je RISK_SVD_INV subModulAkcija nepravedno preskakao one koji su imali 'AS_HasUselessPST' na stari KRIVI način  
+      // a imali su pojavu na prethodnoj 30.06 inventuri                                                                                                          
+      // pa ih se mora izbaciti iz INV izvjestaja                                                                                                                 
+      if(isInventuraReport && ZXC.IsSvDUH)
+      {
+         DateTime invDate = RptFilter.DatumDo;
+
+         TheArtiklList.RemoveAll(art => art.AS_DateZadInv.NotEmpty() && art.AS_DateZadInv.Date != invDate.Date);
+      }
+
       // 06.07.2022: 
       if(isPrmRazdoblja) 
       {
