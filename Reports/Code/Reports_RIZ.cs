@@ -2615,6 +2615,10 @@ public class RptR_StandardRiskReport : VvRiskReport
       {
          DateTime invDate = RptFilter.DatumDo;
 
+       //var kurac = TheArtiklList.Where(art => art.AS_DateZadInv.NotEmpty() && art.AS_DateZadInv.Date != invDate.Date);
+       //var pivka = kurac.Where(x => x.AS_StanjeKol.NotZero());
+       //TheArtiklList.RemoveAll(art => (art.AS_DateZadInv.NotEmpty() && art.AS_DateZadInv.Date != invDate.Date)==false);
+
          TheArtiklList.RemoveAll(art => art.AS_DateZadInv.NotEmpty() && art.AS_DateZadInv.Date != invDate.Date);
       }
 
@@ -2702,23 +2706,28 @@ public class RptR_StandardRiskReport : VvRiskReport
       string invTT = lui.Flag ? Faktur.TT_INM : Faktur.TT_INV;
       string mnjTT = lui.Flag ? Faktur.TT_IZM : Faktur.TT_IZD;
       string visTT = lui.Flag ? Faktur.TT_KLK : Faktur.TT_PRI;
-      DateTime dateInv;
-      try
-      {
-         dateInv = TheArtiklList.Count.NotZero() ? TheArtiklList.Where(art => art.AS_DateZadInv.NotEmpty()).FirstOrDefault().AS_DateZadInv : DateTime.MinValue;
-      }
-      catch(NullReferenceException /*ex*/)
-      {
-         ZXC.aim_emsg(MessageBoxIcon.Warning, "Za sklad [{0}] nema dokumenta inventure", lui.Cd);
-         //dateInv = RptFilter.DatumDo;
-         return false;
-      }
+
+      // 10.01.2023: 
+    //DateTime dateInv;
+    //
+    //try
+    //{
+    //   dateInv = TheArtiklList.Count.NotZero() ? TheArtiklList.Where(art => art.AS_DateZadInv.NotEmpty()).FirstOrDefault().AS_DateZadInv : DateTime.MinValue;
+    //
+    //}
+    //catch(NullReferenceException /*ex*/)
+    //{
+    //   ZXC.aim_emsg(MessageBoxIcon.Warning, "Za sklad [{0}] nema dokumenta inventure", lui.Cd);
+    //   //dateInv = RptFilter.DatumDo;
+    //   return false;
+    //}
+      DateTime dateInv = RptFilter.DatumDo;
 
       // 05.07.2022: modificirana ova metoda nanacinda Transovi inv_mnj_vis nisu vise samo od 1 dokumenta 
       // nego je za ocekivati i vise njih                                                                 
-    //Faktur fakturINV_rec = new Faktur(); // INVENTURA dokument 
-    //Faktur fakturMNJ_rec = new Faktur(); // IZD/IZM MANJKA     
-    //Faktur fakturVIS_rec = new Faktur(); // PRI/KLK VISKA      
+      //Faktur fakturINV_rec = new Faktur(); // INVENTURA dokument 
+      //Faktur fakturMNJ_rec = new Faktur(); // IZD/IZM MANJKA     
+      //Faktur fakturVIS_rec = new Faktur(); // PRI/KLK VISKA      
       //bool invDocFound = FakturDao.SetMeFaktur_BySklad_And_TT_And_Date(TheDbConnection, fakturINV_rec, lui.Cd, invTT, dateInv, true);
       //bool mnjDocFound = FakturDao.SetMeFaktur_BySklad_And_TT_And_Date(TheDbConnection, fakturMNJ_rec, lui.Cd, mnjTT, dateInv, true);
       //bool visDocFound = FakturDao.SetMeFaktur_BySklad_And_TT_And_Date(TheDbConnection, fakturVIS_rec, lui.Cd, visTT, dateInv, true);
@@ -2735,6 +2744,12 @@ public class RptR_StandardRiskReport : VvRiskReport
       lui.R_Bool = thisSkladHasVisManjDocs;
 
       bool isStanje_isNotRazlike = !RptFilter.IsTrue;
+
+      // 10.01.2023: 
+      if(isStanje_isNotRazlike && thisSkladHasVisManjDocs == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Za skladište {0}\n\r\n\r\'Inventurno Stanje\' nema smisla gledati prije provedene procedure \'Višak / Manjak\'!", lui.Cd);
+      }
 
       if(invDocFound)
       {
@@ -2813,6 +2828,11 @@ public class RptR_StandardRiskReport : VvRiskReport
          } // if(badList.Count.NotZero()) // znaci, IMA problema 
 
       } // if(invDocFound)
+      else
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "Za sklad [{0}] nema dokumenta inventure", lui.Cd);
+         return false;
+      }
 
       return hasInvProblems;
    }

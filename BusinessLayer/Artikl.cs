@@ -1503,7 +1503,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       return ppmvIznos;
    }
 
-   internal static decimal GetMotoPpmv2017(decimal theCM3, ZXC.EuroNormaEnum theEN)
+   // 11.01.2023: ovo postaje _OLD 
+   internal static decimal GetMotoPpmv2017_OLD(decimal theCM3, ZXC.EuroNormaEnum theEN)
    {
       decimal ppmvIznos = 0;
 
@@ -1533,6 +1534,46 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       else if( 301M <= theCM3 && theCM3 <=  700M) KO =  7.0M;
       else if( 701M <= theCM3 && theCM3 <= 1000M) KO =  8.0M;
       else if(                   theCM3 >= 1001M) KO = 10.0M;
+                                                  
+      else                                        KO =  0.0M;
+
+      KO += GetPpmvStopaFor_EuroNorma_OLD(theEN);
+
+      ppmvIznos = O * KO;
+
+      return ppmvIznos;
+   }
+
+   internal static decimal GetMotoPpmv2017(decimal theCM3, ZXC.EuroNormaEnum theEN)
+   {
+      decimal ppmvIznos = 0;
+
+      // Motocikli i ATV vozila
+      // Na novi motocikl i ATV vozilo posebni porez se plaća prema izrazu O x KO, u kojem je:
+      // O – obujam motora u kubičnim centimetrima (cm³)
+      // KO – koeficijent obujma motora prema Tablici 4 koji se uvećava ovisno o razini emisije ispušnih plinova na način da se za razinu emisije ispušnih plinova: EURO III uvećava za 5, EURO II uvećava za 10 i EURO I uvećava za 15.
+      // Tablica 4 – obujam motora
+
+      // Obujam motora u kub cm     KO 
+      //   51  do   125              4 
+      //  126  do   300              6 
+      //  301  do   700              7 
+      //  701  do  1000              8 
+      // 1001  do                   10 
+
+      // Ako na primjer obujam novog motocikla u kubičnim centimetrima iznosi 750 cm3 te 
+      // razina emisije ispušnih plinova EURO III, posebni porez ćete za novi motocikl platiti u 
+      // iznosu od 9.750,00 kuna (750 x (8+5) = 9.750,00).
+
+      decimal KO = 0     ;
+      decimal O  = theCM3;
+
+      // Novost u 2023 je da su ovi stari KO-ovi preracunati u eure 
+           if(  51M <= theCM3 && theCM3 <=  125M) KO = /* 4.0M*/ 0.53M;
+      else if( 126M <= theCM3 && theCM3 <=  300M) KO = /* 6.0M*/ 0.80M;
+      else if( 301M <= theCM3 && theCM3 <=  700M) KO = /* 7.0M*/ 0.93M;
+      else if( 701M <= theCM3 && theCM3 <= 1000M) KO = /* 8.0M*/ 1.06M;
+      else if(                   theCM3 >= 1001M) KO = /*10.0M*/ 1.33M;
                                                   
       else                                        KO =  0.0M;
 
@@ -1568,7 +1609,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    }
 
    // Moto 
-   public static decimal GetPpmvStopaFor_EuroNorma(ZXC.EuroNormaEnum theEN)
+   // 11.01.2023: ovo postaje _OLD 
+   public static decimal GetPpmvStopaFor_EuroNorma_OLD(ZXC.EuroNormaEnum theEN)
    {
       decimal stopa2;
 
@@ -1582,6 +1624,27 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
          case ZXC.EuroNormaEnum.EuroIII: stopa2 =  5.00M; break;
          case ZXC.EuroNormaEnum.EuroII : stopa2 = 10.00M; break;
          case ZXC.EuroNormaEnum.EuroI  : stopa2 = 15.00M; break;
+
+         default: stopa2 = 0; break;
+      }
+
+      return stopa2;
+   }
+
+   public static decimal GetPpmvStopaFor_EuroNorma(ZXC.EuroNormaEnum theEN)
+   {
+      decimal stopa2;
+
+      // 10.01.2017: da se ne zbunis...               
+      // do 2017 je stopa2 bila zaista stopa          
+      // a od 2017 je stopa2 uvecanje KO za Moto ppmv 
+      // tako da ti ista metoda koristi i za 2017     
+      switch(theEN)
+      {
+         case ZXC.EuroNormaEnum.EuroIV : stopa2 = /* 0.00M*/  0.00M; break;
+         case ZXC.EuroNormaEnum.EuroIII: stopa2 = /* 5.00M*/  0.66M; break;
+         case ZXC.EuroNormaEnum.EuroII : stopa2 = /*10.00M*/  1.33M; break;
+         case ZXC.EuroNormaEnum.EuroI  : stopa2 = /*15.00M*/  1.99M; break;
 
          default: stopa2 = 0; break;
       }
