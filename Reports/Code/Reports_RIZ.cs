@@ -2662,8 +2662,13 @@ public class RptR_StandardRiskReport : VvRiskReport
 
           //artikl.Starost   = lastMalopUlaz_rtrans_rec.T_cij                                                          ; // MPC sa URM-a u kunama 
           //artikl.Starost   = lastMalopUlaz_rtrans_rec.T_wanted                                                       ; // MPC sa URM-a u kunama je T_wanted 
-            artikl.Starost   = lastMalopUlaz_rtrans_rec.R_CIJ_MSK                                                      ; // MPC sa URM-a u kunama 
-            artikl.ImportCij = ZXC.EURiIzKuna_HRD_(artikl.Starost)                                                     ; // EUR po fix tecaju     
+          //11.01.2023. zamjena mjesta eur/kn 
+          //artikl.Starost   = lastMalopUlaz_rtrans_rec.R_CIJ_MSK                                                      ; // MPC sa URM-a u kunama 
+          //artikl.ImportCij = ZXC.EURiIzKuna_HRD_(artikl.Starost)                                                     ; // EUR po fix tecaju     
+            artikl.Starost   = ZXC.KuneIzEURa_HRD_(lastMalopUlaz_rtrans_rec.R_CIJ_MSK);                                  // kune po fix tecaju     
+            artikl.ImportCij = lastMalopUlaz_rtrans_rec.R_CIJ_MSK;                                                       // MPC sa URM-a u eurima 
+
+
             artikl.MadeIn    = lastDobavNaziv                                                                          ; // DobavName             
             artikl.CarTarifa = Faktur.Set_TT_And_TtNum(lastMalopUlaz_rtrans_rec.T_TT, lastMalopUlaz_rtrans_rec.T_ttNum); // TipBr                 
          }
