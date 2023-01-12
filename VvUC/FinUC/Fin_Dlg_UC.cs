@@ -7300,9 +7300,12 @@ public class NiceKnDlg : VvDialog
       tbx_artiklCD.  Text  = artiklCD  ;
       tbx_artiklName.Text  = artiklName;
 
+      string lblVPC = ZXC.IsEURoERA_projectYear ? "EUR VPC" : "Kn VPC";
+      string lblMPC = ZXC.IsEURoERA_projectYear ? "EUR MPC" : "Kn MPC";
+
       lbl_ValutaName = hamper.CreateVvLabel(1, 4, devName   , ContentAlignment.MiddleRight);
-                       hamper.CreateVvLabel(2, 4, "Kn VPC"      , ContentAlignment.MiddleRight);
-                       hamper.CreateVvLabel(3, 4, "Kn MPC"     , ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel(2, 4, lblVPC      , ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel(3, 4, lblMPC     , ContentAlignment.MiddleRight);
                        hamper.CreateVvLabel(4, 4, "Promjena", ContentAlignment.MiddleRight);
                        
                        hamper.CreateVvLabel(0, 5, "MSRP" , ContentAlignment.MiddleRight);
@@ -7358,14 +7361,25 @@ public class NiceKnDlg : VvDialog
       VvTextBox tbx = sender as VvTextBox;
       bool isZadanoMPC = (bool)tbx.Tag;
 
+      bool isUseless_EURoDevName = false;
+      bool isUseless_KuneDevName = devName.ToUpper() == "HRK";
+
+      // 12.01.2023: HB Tamsi :-) 
+      if(ZXC.IsEURoERA_projectYear) // >= 2023 
+      {
+         if(devName.ToUpper() == "EUR") isUseless_EURoDevName = true ;
+      }
+
+      bool isUselessDevName = isUseless_EURoDevName || isUseless_KuneDevName;
+
       if(isZadanoMPC)
       {
          Fld_ZadanoVPC = ZXC.VvGet_100_from_125(Fld_ZadanoMPC, Faktur.CommonPdvStForThisDate(dokDate));
-         Fld_ZadanoEUR = ZXC.DivSafe(Fld_ZadanoVPC, devTecaj);
+         Fld_ZadanoEUR = ZXC.DivSafe(Fld_ZadanoVPC, (isUselessDevName ? 1.00M : devTecaj));
       }
       else
       {
-         Fld_MsrpVPC = Fld_MsrpEUR * devTecaj;
+         Fld_MsrpVPC = Fld_MsrpEUR * (isUselessDevName ? 1.00M : devTecaj);
          Fld_MsrpMPC = ZXC.VvGet_125_on_100(Fld_MsrpVPC, Faktur.CommonPdvStForThisDate(dokDate));
       }
 

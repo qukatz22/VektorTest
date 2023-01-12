@@ -381,7 +381,6 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    public decimal GetHnbTecaj(ZXC.ValutaNameEnum valuta, DateTime forThisDate)
    {
-      // 06.05.2016: 
       if(valuta == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum || valuta == ZXC.ValutaNameEnum.EMPTY) return 1.00M;
 
       return GetTecaj(ZXC.TheMainDbConnection, ZXC.BankaEnum.HNB, valuta, ZXC.TipTecajaEnum.SREDNJI, forThisDate);

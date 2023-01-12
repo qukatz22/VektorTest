@@ -438,7 +438,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 81 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.Drzava  ,  TheSchemaTable.Rows[CI.drzava  ]);  
       /* 82 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.Swift   ,  TheSchemaTable.Rows[CI.swift   ]);  
       /* 83 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.Iban    ,  TheSchemaTable.Rows[CI.iban    ]);  
-      /* 84 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.DevName ,  TheSchemaTable.Rows[CI.devName ]);  
+    ///* 84 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.DevName ,  TheSchemaTable.Rows[CI.devName ]);  
+      /* 84 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.DevName_OLD ,  TheSchemaTable.Rows[CI.devName ]);  
       /* 85 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.FinLimit,  TheSchemaTable.Rows[CI.finLimit]);  
       /* 86 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.UgovorNo,  TheSchemaTable.Rows[CI.ugovorNo]);  
       /* 87 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.Komisija,  TheSchemaTable.Rows[CI.komisija]);  

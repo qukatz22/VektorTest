@@ -1191,8 +1191,8 @@ public decimal  AS_HalmedCOP                 { get { return this.TheAsEx.HalmedC
 public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedBOP            ; }                                             }
 
    // 09.01.2023: 
-//public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero(); } }
-  public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero() && this.TheAsEx.TT == Faktur.TT_PST; } }
+//public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero()                                                                          ; } }
+  public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero() && (this.TheAsEx.TT == Faktur.TT_PST || this.TheAsEx.TT == Faktur.TT_INV); } }
 
    #endregion Artstat propertiz
 

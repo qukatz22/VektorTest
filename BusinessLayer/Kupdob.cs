@@ -970,8 +970,25 @@ public class Kupdob : VvSifrarRecord
 
    /* 84 */ public string DevName
    {
-      get { return this.currentData._devName; }
+      // 12.01.2023: HB Tamsi :-) 
+    //get { return this.currentData._devName; }
+      get 
+      {
+         bool isUseless_EURoDevName = (ZXC.IsEURoERA_projectYear && currentData._devName.ToUpper() == "EUR") ? true : false;
+         bool isUseless_KuneDevName =                               currentData._devName.ToUpper() == "HRK";
+
+         bool isUselessDevName = isUseless_EURoDevName || isUseless_KuneDevName;
+
+         return isUselessDevName ? "" : this.currentData._devName; 
+      }
+
       set {        this.currentData._devName = value; }
+   }
+
+   /* 84 */ public string DevName_OLD
+   {
+      get {return this.currentData._devName;         }
+      set {       this.currentData._devName = value; }
    }
 
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] 
