@@ -2636,13 +2636,15 @@ public class RptR_StandardRiskReport : VvRiskReport
          string lastDobavNaziv;
 
          bool lastMalopUlaz_rtrans_Found;
+         
+         decimal theMPC;
 
          foreach(Artikl artikl in TheArtiklList)
          {
             lastMalopUlaz_rtrans_rec = new Rtrans();
 
             lastMalopUlaz_rtrans_Found = FakturDao.SetMeLastRtransForArtiklAnd_anyOfTheseTTs(TheDbConnection, lastMalopUlaz_rtrans_rec,
-               new string[] { Faktur.TT_PSM, Faktur.TT_KLK, Faktur.TT_URM }, artikl.ArtiklCD, /*false*/true);
+               new string[] { Faktur.TT_ZPC, Faktur.TT_PSM, Faktur.TT_KLK, Faktur.TT_URM }, artikl.ArtiklCD, /*false*/true);
 
             if(lastMalopUlaz_rtrans_Found == false) continue;
 
@@ -2655,18 +2657,26 @@ public class RptR_StandardRiskReport : VvRiskReport
                lastURM_kupdob_rec = TheReportUC.Get_Kupdob_FromVvUcSifrar(lastMalopUlaz_rtrans_rec.T_kupdobCD);
 
                if(lastURM_kupdob_rec != null) lastDobavNaziv = lastURM_kupdob_rec.Naziv;
-               else                           lastDobavNaziv = "nepoznato";
+             //else                           lastDobavNaziv = "nepoznato";
+               else                           lastDobavNaziv = ""         ;
             }
 
             lastMalopUlaz_rtrans_rec.CalcTransResults(null);
 
+            theMPC = lastMalopUlaz_rtrans_rec.R_CIJ_MSK;
+
+            if(lastMalopUlaz_rtrans_rec.T_TT == Faktur.TT_ZPC)
+            {
+               theMPC = lastMalopUlaz_rtrans_rec.T_noCijMal;
+            }
+
           //artikl.Starost   = lastMalopUlaz_rtrans_rec.T_cij                                                          ; // MPC sa URM-a u kunama 
           //artikl.Starost   = lastMalopUlaz_rtrans_rec.T_wanted                                                       ; // MPC sa URM-a u kunama je T_wanted 
           //11.01.2023. zamjena mjesta eur/kn 
-          //artikl.Starost   = lastMalopUlaz_rtrans_rec.R_CIJ_MSK                                                      ; // MPC sa URM-a u kunama 
+          //artikl.Starost   = theMPC                                                      ; // MPC sa URM-a u kunama 
           //artikl.ImportCij = ZXC.EURiIzKuna_HRD_(artikl.Starost)                                                     ; // EUR po fix tecaju     
-            artikl.Starost   = ZXC.KuneIzEURa_HRD_(lastMalopUlaz_rtrans_rec.R_CIJ_MSK);                                  // kune po fix tecaju     
-            artikl.ImportCij = lastMalopUlaz_rtrans_rec.R_CIJ_MSK;                                                       // MPC sa URM-a u eurima 
+            artikl.Starost   = ZXC.KuneIzEURa_HRD_(theMPC);                                  // kune po fix tecaju     
+            artikl.ImportCij = theMPC;                                                       // MPC sa URM-a u eurima 
 
 
             artikl.MadeIn    = lastDobavNaziv                                                                          ; // DobavName             
@@ -3889,6 +3899,10 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
       decimal NC_OP, M_OP, WebCa_OP, WebCb_OP, WebCc_OP, WebCg_OP;
       decimal NC   ,       WebCa   , WebCb   , WebCc   , WebCg   ;
 
+      decimal marzaB = 1.00M;
+      decimal marzaC = 1.00M;
+      decimal marzaG = 3.00M;
+
       bool pakManjeOd1;
 
       foreach(Artikl artikl_rec in TheArtiklList)
@@ -3899,12 +3913,20 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
          NC_OP = artikl_rec.AS_PrNabCijOP;
          M_OP  = ZXC.luiListaGrupa2Artikla.GetNumberForThisCd(artikl_rec.Grupa2CD);
 
+         if(ZXC.IsEURoERA_projectYear)
+         {
+            M_OP   = ZXC.EURiIzKuna_HRD_(M_OP  );
+            marzaB = ZXC.EURiIzKuna_HRD_(marzaB);
+            marzaC = ZXC.EURiIzKuna_HRD_(marzaC);
+            marzaG = ZXC.EURiIzKuna_HRD_(marzaG);
+         }
+
          if(pakManjeOd1 == false) // normal case 
          {
             WebCa_OP = NC_OP    + M_OP;
-            WebCb_OP = WebCa_OP + 1M  ;
-            WebCc_OP = WebCb_OP + 1M  ;
-            WebCg_OP = WebCc_OP + 3M  ;
+            WebCb_OP = WebCa_OP + /*1M*/ marzaB;
+            WebCc_OP = WebCb_OP + /*1M*/ marzaC;
+            WebCg_OP = WebCc_OP + /*3M*/ marzaG;
 
             WebCa    = WebCa_OP * artikl_rec.AS_OrgPak;
             WebCb    = WebCb_OP * artikl_rec.AS_OrgPak;
@@ -3914,9 +3936,9 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
          else // pakiranje JE manje od 1 litre 
          { 
             WebCa    = NC    + M_OP;
-            WebCb    = WebCa + 1M  ;
-            WebCc    = WebCb + 1M  ;
-            WebCg    = WebCc + 3M  ;
+            WebCb    = WebCa + /*1M*/ marzaB;
+            WebCc    = WebCb + /*1M*/ marzaC;
+            WebCg    = WebCc + /*3M*/ marzaG;
 
             WebCa_OP = ZXC .DivSafe(WebCa, artikl_rec.AS_OrgPak);
             WebCb_OP = ZXC .DivSafe(WebCb, artikl_rec.AS_OrgPak);

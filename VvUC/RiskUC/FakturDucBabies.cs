@@ -5141,9 +5141,9 @@ public class NivelacijaDUC       : FakturExtDUC
       T_pdvSt_CreateColumn     (ZXC.Q3un, 0, isVisible, "Pdv %"      , "Stopa PDV-a");
       T_mrzSt_CreateColumn     (ZXC.Q4un, 2, isVisible, "New Marža %", "Stopa marže");
       R_cij_kcrm_CreateColumn  (ZXC.Q4un, 2, isVisible, "New VPC"    , "Cijena nakon utjecaja marže");
-      T_doCijMal_CreateColumn  (ZXC.Q4un, 2, isVisible, "Old MPC"    , "Stara Cijena");
+      T_doCijMal_CreateColumn  (ZXC.Q4un, 4, isVisible, "Old MPC"    , "Stara Cijena");
     //R_zpc_diff_CreateColumn  (ZXC.Q4un, 2, isVisible, "RazlikaCij" , "");
-      R_cij_MSK_CreateColumn   (ZXC.Q4un, 2, isVisible, "RazlikaCij" , "");
+      R_cij_MSK_CreateColumn   (ZXC.Q4un, 4, isVisible, "RazlikaCij" , "");
       T_noCijMal_CreateColumn  (ZXC.Q4un, 2, isVisible, "New MPC"    , "Nova Cijena");
 
       vvtbR_cij_MSK.JAM_ReadOnly =
