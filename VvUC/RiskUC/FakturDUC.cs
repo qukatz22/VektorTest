@@ -19387,7 +19387,7 @@ public class SVD_Odobrenje_Dlg : VvDialog
 
    private void ChangePassword_Click(object sender, EventArgs e)
    {
-      // tu si stao ... ovdje si dosao kao obican (npr 'A10') user                                    
+      // ovdje si dosao kao obican (npr 'A10') user                                    
       // AAA odobravatelj si tu sad hoce promijebniti password                                        
       // ZXC.vvDB_User je, dakle, "A10" a ti zelis u vvSD_vektor user tablici RWTREC ati "AAA" usera  
       // PRIVREMENU konekciju pak zelis kreirati za "superuser" usera (i password) da bi ti MySQL dao 

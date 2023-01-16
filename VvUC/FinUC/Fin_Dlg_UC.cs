@@ -7193,7 +7193,8 @@ public class NiceKnDlg : VvDialog
       artiklCD   = _artiklCD         ;
       artiklName = _artiklName       ;
       devName    = _devName          ;
-      devTecaj   = _devTecaj         ;
+    //devTecaj   = _devTecaj         ;
+      devTecaj   = _devTecaj.NotZero() ? _devTecaj : 1.00M;
       dokDate    = _dokDate          ;
       theMSRP    = _theMSRP          ;
 
