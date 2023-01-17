@@ -361,7 +361,7 @@ public static class VvSkyLab
                   (
                      vvLanLogList.First(entry => entry.recID == recID).recID    , 
                      vvLanLogList.First(entry => entry.recID == recID).origSrvID, 
-                     vvLanLogList.First(entry => entry.recID == recID).origRecID, 
+                     vvLanLogList.First(entry => entry.recID == recID)./*origRecID*/recID, 
                      actionToTakeOnSyncTaker
                   )
             );
@@ -541,34 +541,37 @@ public static class VvSkyLab
       return OK;
    }
 
-   public static bool Execute_AfterInitNY_Synchronization(XSqlConnection conn, List<ZXC.DBactionForSrvRecID> recIDactions)
+   public static int Execute_AfterInitNY_Synchronization(XSqlConnection prevYearDbConn, XSqlConnection thisYearDbConn, List<ZXC.DBactionForSrvRecID> recIDactions, string tableName)
    {
       bool OK = true;
 
       ZXC.sqlErrNo = 0;
       ZXC.sqlErrMessage = "";
 
-      VvDataRecord vvDataRecord = null;
+      int debugCount = 0;
+
+      VvDataRecord vvDataRecordPrevYear;
 
       foreach(ZXC.DBactionForSrvRecID srvRecIDaction in recIDactions)
       {
-         if(srvRecIDaction.action != VvSQL.DB_RW_ActionType.NONE)
+         if(srvRecIDaction.action == VvSQL.DB_RW_ActionType.ADD)
          {
-            // TODO: tu si stao
-          //vvDataRecord = VvDaoBase.GetVvDataRecordByLanSrvIDAndLanRecID(conn, vvDataRecord.VirtualRecordName, srvRecIDaction.lanSrvID, srvRecIDaction.lanRecID, srvRecIDaction.action, true);
+            vvDataRecordPrevYear = ZXC.GetNewVvDataRecordObject(tableName, srvRecIDaction.recID, 0, 0);
 
-            OK = vvDataRecord != null;
+            OK = vvDataRecordPrevYear.VvDao.SetMe_Record_byRecID(prevYearDbConn, vvDataRecordPrevYear, srvRecIDaction.recID, false);
 
-            // TODO: tu si stao
-          ///* === */  if(OK) OK = VvDaoBase.ExecuteSKY_DB_RW_Action(conn, vvDataRecord, srvRecIDaction.action, false);
+            vvDataRecordPrevYear.VirtualLanRecID = srvRecIDaction.recID; /*ako kasnije u NY zatreba debug odakle je dosao*/
 
-         } // if(srvRecIDaction.action != VvSQL.DB_RW_ActionType.NONE) 
+            if(OK) OK = vvDataRecordPrevYear.VvDao.ADDREC(thisYearDbConn, vvDataRecordPrevYear, false, false, false, false, true); // isSkyTraffic == true da zapamti origRecID u LanRecID 
+
+            if(OK) debugCount++;
+         }
 
          else { ZXC.sqlErrNo = 0; ZXC.sqlErrMessage = ""; }
 
       } // foreach(ZXC.DBactionForRecID recIDaction in recIDactions) 
 
-      return OK;
+      return debugCount;
    }
 
    internal static void OpenSyncTransaction(XSqlConnection connSyncSENDER, uint lanSrvID, uint lanRecID, VvSQL.VvLanLogEntry lanLogEntry, DateTime thisSyncTS, DateTime prevSyncTS) 
