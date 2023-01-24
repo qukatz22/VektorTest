@@ -461,7 +461,8 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
          ZXC.HtransList.Clear();
       }
 
-      VvDaoBase.LoadGenericVvDataRecordList<Htrans>(conn, ZXC.HtransList, null, "t_tt, t_valName, t_dokDate");
+    //VvDaoBase.LoadGenericVvDataRecordList<Htrans>(conn, ZXC.HtransList, null, "t_tt, t_valName, t_dokDate"          );
+      VvDaoBase.LoadGenericVvDataRecordList<Htrans>(conn, ZXC.HtransList, null, "t_tt,            t_dokDate, t_serial");
    }
 
    // 11.04.2012: dodan ovaj try-catch 
@@ -571,8 +572,10 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       Uri    theUri;
       string localDirectory  = GetLocalDirectoryForDownload();
       string localFileName   = GetLocalHNBfileName(dokDate);
-      string remoteDirectory = @"http://www.hnb.hr/tecajn";
-      string remoteFileName  = GetRemoteHNBfileName(dokDate);
+      // 18.01.2023: 
+    //string remoteDirectory = @"http://www.hnb.hr/tecajn"     ;
+      string remoteDirectory = @"https://www.hnb.hr/tecajn-eur";
+      string remoteFileName  = GetRemoteHNBfileName(dokDate)   ;
       string localFilePath;
       string remoteFilePath;
 
@@ -649,7 +652,8 @@ public sealed class HNB_DevTecImportFile
    {
       new VvImpExp.ImpExpField("TR_SifVal", 01,   0,   3), 
       new VvImpExp.ImpExpField("TR_OznVal", 02,   0,   3), 
-      new VvImpExp.ImpExpField("TR_BrJed" , 03,   0,   3), 
+      // u 2023: 
+    //new VvImpExp.ImpExpField("TR_BrJed" , 03,   0,   3), 
       new VvImpExp.ImpExpField("TR_KupTec", 04,   0,  15), 
       new VvImpExp.ImpExpField("TR_SreTec", 05,   0,  15), 
       new VvImpExp.ImpExpField("TR_ProTec", 06,   0,  15), 
@@ -662,7 +666,9 @@ public sealed class HNB_DevTecImportFile
    public Dictionary<string, VvImpExp.ImpExpField> LeadDict   { get; set; }
    public Dictionary<string, VvImpExp.ImpExpField> TransDict  { get; set; }
 
-   public const int lineFixedLength = 54;
+   // 2023: 
+ //public const int lineFixedLength = 54; 
+   public const int lineFixedLength = 51;
 
    string[] txtLines;
 

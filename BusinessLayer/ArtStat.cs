@@ -1200,7 +1200,9 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
 
          bool isInventurnaPrimka = (this.TT == Faktur.TT_PRI && this.SkladDate == this.DateZadInv);
 
-         if(isInventurnaPrimka)
+         // 23.01.2023: 
+       //if(isInventurnaPrimka)
+         if(isInventurnaPrimka && PrNabCij.NotZero())
          {
             RtrUlazCijNBC = this.PrNabCij;
          }
@@ -1209,11 +1211,21 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
 
          #region    STORNO ULAZA - POVRAT kao zadnja stavka kartice (KolSaldo ide na nulu - FinSaldo ne ode inace na nulu)
 
-         // 08.09.2017: 
-
+#if DEBUG
+         // DEBUG ONLY !!! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
          bool isKolSt_ZERO_AfterPovrat = rtr.T_kol.IsNegative() && (StanjeKol + rtr.T_kol).IsZero();
+         
+         bool povratCijNotEqualPrNabCij = rtr.R_CIJ_KCR.Ron2() != PrNabCij.Ron2();
 
-         if(isKolSt_ZERO_AfterPovrat)
+         if(isKolSt_ZERO_AfterPovrat && povratCijNotEqualPrNabCij)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Exclamation, "KolSt je NULA nakon Ulaza sa negativnom količinom!\n\r\n\r{0}", this);
+         }
+         // DEBUG ONLY !!! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+#endif
+
+         //if(  isKolSt_ZERO_AfterPovrat        )
+         if(/*isKolSt_ZERO_AfterPovrat*/ false)
          {
             RtrUlazCijNBC = this.PrNabCij;
          }
@@ -1240,8 +1252,9 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
          // popravljas RtrUlazCijNBC (a njome i RtrCijenaNBC) ALI JU DALJE NE KORISTIS!                                                    
          // RtrUlazVrjNBC i dalje punis preko rtr.R_CIJ_KCR ... pa treba i RtrUlazVrjNBC korigirati                                        
 
-       //if(isInventurnaPrimka                        ) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC; 
-         if(isInventurnaPrimka || isKolSt_ZERO_AfterPovrat) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC;
+       //if(isInventurnaPrimka                            ) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC; 
+       //if(isInventurnaPrimka || isKolSt_ZERO_AfterPovrat) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC; 
+         if(isInventurnaPrimka && PrNabCij.NotZero()      ) RtrUlazVrjNBC = rtr.T_kol * this.PrNabCij     ;
 
          UkUlazFinNBC += RtrUlazVrjNBC;
          UkUlazFinMPC += RtrUlazVrjMPC;
@@ -1365,6 +1378,14 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
 #if(DEBUG)
          //Console.WriteLine("{0,6:N} {1,6:N} {2,10:N} {3,6:N} {4,6:N} {5,10:N} {6,6:N} {7,6:N} {8,10:N}",
          //   RtrUlazKol, RtrCijena, RtrUlazVrjKNJ, RtrIzlazKol, RtrCijena, RtrIzlazVrjKNJ, StanjeKol, PrNabCij, StanjeFinKNJ);
+
+         //bool nijeSveNaNuli = StanjeKol.IsZero() && (!StanjeFinNBC.AlmostZero() /*|| (isMalopSkl && !artikl.AS_StanjeFinMPC.AlmostZero())*/);
+         //if(nijeSveNaNuli)
+         //{
+         // //if(isMalopSkl) ZXC.aim_emsg(MessageBoxIcon.Error, "On artstat [{4}]\n\nArtikl [{0}] na sklad [{3}]\n\nima količinsko stanje nula a financijsko različito od nule!\n\nFinSt NBC: {1}\n\nFinSt MPC: {2}", artikl.ArtiklCD, artikl.AS_StanjeFinNBC.ToStringVv(), artikl.AS_StanjeFinMPC.ToStringVv(), artikl.AS_SkladCD, artikl.TheAsEx.ToString());
+         // /*else*/         ZXC.aim_emsg(MessageBoxIcon.Error, "On artstat [{4}]\n\nArtikl [{0}] na sklad [{3}]\n\nima količinsko stanje nula a financijsko različito od nule!\n\nFinSt NBC: {1}", ArtiklCD, StanjeFinNBC.ToStringVv(), StanjeFinMPC.ToStringVv(), SkladCD, this.ToString());
+         //}
+
 #endif
          #endregion #if(DEBUG)
       }
@@ -1380,17 +1401,16 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
          if(TtInfo.IsStornoTT == false && ((StanjeKol - rtr.T_kol).IsNegative() || StanjKolFisycal.IsNegative())) // Znaci, ovaj ce izlaz proizvesti minus! (a ne provjeravaj ako je storno, jer to je u biti ulaz na skladiste a ne izlaz)
          {
             if(isReslovingMinusInProgress == false) ZXC.TheVvForm.ReportArtiklMinusManager(this, false);
-
             if(recalcAfterMinusForReportList                   ||
-             //rtrans.MinusStatus == ZXC.MinusTrouble.IN_TROUBLE  ||
-               rtr.MinusStatus == ZXC.MinusTrouble.REPAIRED) 
+            //rtrans.MinusStatus == ZXC.MinusTrouble.IN_TROUBLE  ||
+               rtr.MinusStatus == ZXC.MinusTrouble.REPAIRED)
             {
                isInMinus = true; // if recalcAfterMinusForReportList is in progress or irreparable, fall down for recalculation 
-            } 
+            }
             else
             {
                /*isInMinus = true;*/ // For classic, break after found minus 
-               return true; 
+               return true;
             } 
          } // Odosmo u MINUS 
 

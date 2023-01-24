@@ -1433,6 +1433,8 @@ public class TH_PriceRuleForCycleMoment
 
    private static Dictionary<DateTime, TH_Cjenik_Kind> TH_Cjenik_Kind_BreakDates_3Week_SRI = new Dictionary<DateTime, TH_Cjenik_Kind>
    {
+      { new DateTime(2014, 12, 31), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },  // DUMMY START samo da da dummy break date 
+
       { new DateTime(2020, 08, 26), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },  // POCETAK 3WShop 'SRI' cjenika 
       
       { new DateTime(2020, 12, 09), TH_Cjenik_Kind._3WShop_SRI_5WCjenik_ }, 

@@ -3059,10 +3059,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // 20.08.2011: 
       if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij)
       {
-         // 13.01.2023: da ubrzamo nekad (npr. Metaflex PSM to ZPC)
-         DialogResult result = MessageBox.Show("Da li zelite RecalcPrNabCijAndResultFields?\n\r\n\rMožda dugo traje.",
-            "RecalcPrNabCijAndResultFields?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-         if(result != DialogResult.OK) return; 
+       //// 13.01.2023: privremeno bili stavili ovo pitanje da ubrzamo (npr. Metaflex PSM to ZPC)
+       //DialogResult result = MessageBox.Show("Da li zelite RecalcPrNabCijAndResultFields?\n\r\n\rMožda dugo traje.",
+       //   "RecalcPrNabCijAndResultFields?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+       //if(result != DialogResult.OK) return; 
 
          RecalcPrNabCijAndResultFields();
       }

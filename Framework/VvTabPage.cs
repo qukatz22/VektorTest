@@ -247,6 +247,8 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
 
    private List<TsbEnabled> RecordTSB_EnabledStateList { get; set; }
 
+   private int ArhivaTabPageSelectedIndex { get; set; }
+
    #endregion Propertiz
 
    #region Fld_
@@ -562,7 +564,22 @@ be_fast:
 
       #endregion VvXmlDocumentDR AUTO RECOVERY
 
+      // 24.01.2023: 
+      this.Validating += VvTabPage_Validating;
+      ArhivaTabPageSelectedIndex = -1;
+
    } // Constructor 
+
+   private void VvTabPage_Validating(object sender, CancelEventArgs e)
+   {
+      if(IsArhivaTabPage)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Izaðite, najprije, iz Arhive.");
+         TheVvForm.TheTabControl.SelectedIndex = ArhivaTabPageSelectedIndex;
+
+         e.Cancel = true;
+      }
+   }
 
 
    #endregion Constructor()
@@ -789,6 +806,9 @@ be_fast:
    {
       if(this.Visible == false) // ovaj, dakle, upravo GUBI visibility (napustamo ga, vec je prije otvoren) 
       {
+         if(IsArhivaTabPage) ArhivaTabPageSelectedIndex = TheVvForm.TheTabControl.SelectedIndex;
+         else                ArhivaTabPageSelectedIndex = -1;
+
          thisIsFirstAppereance = false;
 
          GetTSB_EnabledStateSnapshot();
