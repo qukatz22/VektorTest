@@ -1867,8 +1867,9 @@ public class RptR_StandardRiskReport : VvRiskReport
       bool isPrmRazdoblja = (reportDocument is Vektor.Reports.RIZ.CR_PrometRazdoblja   ) || 
                             (reportDocument is Vektor.Reports.RIZ.CR_PrometRazdoblja_OP)  ;
 
-//  bool*/ shouldGetArtstatListForRekapTT   = (reportDocument is Vektor.Reports.RIZ.CR_StanjeSklad_B                  ) && RptFilter.IsChk0 == true;
-  /*bool*/ shouldGetArtstatListForRekapTT   = (reportDocument is Vektor.Reports.RIZ.CR_StanjeSklad_B || isPrmRazdoblja) && RptFilter.IsChk0 == true;
+   // shouldGetArtstatListForRekapTT   = (reportDocument is Vektor.Reports.RIZ.CR_StanjeSklad_B                  ) && RptFilter.IsChk0 == true;
+   // shouldGetArtstatListForRekapTT   = (reportDocument is Vektor.Reports.RIZ.CR_StanjeSklad_B || isPrmRazdoblja) && RptFilter.IsChk0 == true;
+      shouldGetArtstatListForRekapTT   = (reportDocument is Vektor.Reports.RIZ.CR_StanjeSklad_B || isPrmRazdoblja)                            ; // po novome, uvijek - i bez IsChk0 
       
       bool isForceMPSK_by_NBC = RptFilter.FuseBool1; // RptFilter.FuseBool1 je Fld_IsNbcZaMPSK 
 
@@ -3903,6 +3904,13 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
       decimal marzaC = 1.00M;
       decimal marzaG = 3.00M;
 
+      if(ZXC.IsEURoERA_projectYear)
+      {
+         marzaB = ZXC.EURiIzKuna_HRD_(marzaB);
+         marzaC = ZXC.EURiIzKuna_HRD_(marzaC);
+         marzaG = ZXC.EURiIzKuna_HRD_(marzaG);
+      }
+
       bool pakManjeOd1;
 
       foreach(Artikl artikl_rec in TheArtiklList)
@@ -3915,10 +3923,7 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
 
          if(ZXC.IsEURoERA_projectYear)
          {
-            M_OP   = ZXC.EURiIzKuna_HRD_(M_OP  );
-            marzaB = ZXC.EURiIzKuna_HRD_(marzaB);
-            marzaC = ZXC.EURiIzKuna_HRD_(marzaC);
-            marzaG = ZXC.EURiIzKuna_HRD_(marzaG);
+            M_OP = ZXC.EURiIzKuna_HRD_(M_OP);
          }
 
          if(pakManjeOd1 == false) // normal case 
