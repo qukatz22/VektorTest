@@ -748,7 +748,8 @@ public partial class PutNalDUC : MixerDUC
       if(CtrlOK(tbx_trskTerete)) Fld_TrskTeret = "Poslodavca";
     
     //if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = 170.00m; od 01.09.2019. je 200kn
-      if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = 200.00M;
+    //if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = 200.00M;
+      if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M : 26.55M; //euro dnevnica 25.01.2023.?!
    }
 
    /*protected*/public override void PutSpecificsFld()

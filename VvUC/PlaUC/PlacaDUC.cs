@@ -5400,7 +5400,7 @@ public class Placa2NalogRulesUC : VvOtherUC
                      tbx_NP60_jubi_D, tbx_NP60_jubi_P
                      ;
 
-   private CheckBox cbx_visibleVrKoefBruto1, cxb_isObustOsnDohodak;
+   private CheckBox cbx_visibleVrKoefBruto1, cxb_isObustOsnDohodak, cxb_isNPnaRR_Umjesecu;
 
    public KtoShemaPlacaDsc KSP { get; set; }
 
@@ -6495,18 +6495,20 @@ public class Placa2NalogRulesUC : VvOtherUC
 
    private void InitializeHamper_IsOsnovObDoh(out VvHamper hamper)
    {
-      hamper          = new VvHamper(1, 1, "", this, false);
+      hamper          = new VvHamper(1, 2, "", this, false);
       hamper.Location = new Point(hamp_CR_OP.Left, hamp_CR_OP.Bottom + ZXC.QunMrgn);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un * 3 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8      };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2, ZXC.Qun2 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       cxb_isObustOsnDohodak = hamper.CreateVvCheckBox_OLD(0, 0, null, "Osnovica za obračun obustave na osnovu postotka je Dohodak (standardna osnovica je Neto)", System.Windows.Forms.RightToLeft.No);
+     
+      cxb_isNPnaRR_Umjesecu   = hamper.CreateVvCheckBox_OLD(0, 1, null, "Mjesec (datum od i do na Joppd obrascu) za NeoPrim na obračunu plaće (RR) je mjesec U KOJEM JE ISPLATA (standardno je kao i plaća tj. za mjesec)", System.Windows.Forms.RightToLeft.No);
    
    }
 
@@ -6692,6 +6694,7 @@ public class Placa2NalogRulesUC : VvOtherUC
 
    public bool Fld_CR_IsVrKfBrt1     { get { return cbx_visibleVrKoefBruto1.Checked; } set { cbx_visibleVrKoefBruto1.Checked = value; } }
    public bool Fld_IsObustOsnDoh     { get { return cxb_isObustOsnDohodak  .Checked; } set { cxb_isObustOsnDohodak  .Checked = value; } }
+   public bool Fld_IsNPnaRR_U_mj { get { return cxb_isNPnaRR_Umjesecu  .Checked; } set { cxb_isNPnaRR_Umjesecu.Checked = value; } }
 
    public string Fld_NP63_nagr_D { get { return tbx_NP63_nagr_D.Text; } set { tbx_NP63_nagr_D.Text = value; } }
    public string Fld_NP65_preh_D { get { return tbx_NP65_preh_D.Text; } set { tbx_NP65_preh_D.Text = value; } }
@@ -6885,6 +6888,7 @@ public class Placa2NalogRulesUC : VvOtherUC
       Fld_SD_ZOR_P       = KSP.Dsc_ZOR_SD_P      ;
       Fld_SD_ZAP_p       = KSP.Dsc_ZAP_SD_P      ;
       Fld_IsObustOsnDoh  = KSP.Dsc_IsObustOsnDoh ;
+      Fld_IsNPnaRR_U_mj  = KSP.Dsc_IsNPnaRR_U_mj ;
       Fld_AhMIO_I_P      = KSP.Dsc_AhMIO_I_P     ;
       Fld_AhMIO_II_P     = KSP.Dsc_AhMIO_II_P    ;
       Fld_AhZdrOsig_P    = KSP.Dsc_AhZdrOsig_P   ;
@@ -6910,7 +6914,9 @@ public class Placa2NalogRulesUC : VvOtherUC
       Fld_NP21_darD_P    = KSP.Dsc_NP21_darD_P   ;
       Fld_NP22_regB_P    = KSP.Dsc_NP22_regB_P   ;
       Fld_NP26_otpr_P    = KSP.Dsc_NP26_otpr_P   ;
-      Fld_NP60_jubi_P    = KSP.Dsc_NP60_jubi_P;
+      Fld_NP60_jubi_P    = KSP.Dsc_NP60_jubi_P   ;
+
+
    }
 
    public void GetKtoShemaPlacaDscFields()
@@ -7081,6 +7087,7 @@ public class Placa2NalogRulesUC : VvOtherUC
        KSP.Dsc_ZOR_SD_P       = Fld_SD_ZOR_P      ;
        KSP.Dsc_ZAP_SD_P       = Fld_SD_ZAP_p      ;
        KSP.Dsc_IsObustOsnDoh  = Fld_IsObustOsnDoh ;
+       KSP.Dsc_IsNPnaRR_U_mj  = Fld_IsNPnaRR_U_mj;
        KSP.Dsc_AhMIO_I_P      = Fld_AhMIO_I_P     ;
        KSP.Dsc_AhMIO_II_P     = Fld_AhMIO_II_P    ;
        KSP.Dsc_AhZdrOsig_P    = Fld_AhZdrOsig_P   ;
@@ -7283,6 +7290,7 @@ public class KtoShemaPlacaDsc : VvLookupAsDsc
    public string Dsc_ZOR_SD_P       { get; set; }
    public string Dsc_ZAP_SD_P       { get; set; }
    public bool   Dsc_IsObustOsnDoh  { get; set; }
+   public bool   Dsc_IsNPnaRR_U_mj  { get; set; }
    public string Dsc_AhMIO_I_P      { get; set; }
    public string Dsc_AhMIO_II_P     { get; set; }
    public string Dsc_AhZdrOsig_P    { get; set; }
@@ -7493,6 +7501,7 @@ public class KtoShemaPlacaDsc : VvLookupAsDsc
       Dsc_ZOR_SD_P         = "";
       Dsc_ZAP_SD_P         = "";
       Dsc_IsObustOsnDoh    = false;
+      Dsc_IsNPnaRR_U_mj    = false;
       Dsc_AhMIO_I_P        = "";
       Dsc_AhMIO_II_P       = "";
       Dsc_AhZdrOsig_P      = "";

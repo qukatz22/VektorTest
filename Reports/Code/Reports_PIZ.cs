@@ -3605,6 +3605,15 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_rsODcr    = Placa.GetDateTimeFromMMYYYY(ptransRow.t_mmyyyy, false).ToString(ZXC.VvDateFormat);
       jpdBstranaRow.b_rsDOcr    = Placa.GetDateTimeFromMMYYYY(ptransRow.t_mmyyyy, true ).ToString(ZXC.VvDateFormat);
 
+    //20.01.2023. Danijel i jos neki - da za neoporezive primitke mjesec ide sa datumom U mjesecu,  kada su na RR dok placa ide ZA mjesec
+      KtoShemaPlacaDsc ksPl = new KtoShemaPlacaDsc(ZXC.dscLuiLst_KtoShemaPlaca);
+      if(ksPl.Dsc_IsNPnaRR_U_mj)
+      { 
+         jpdBstranaRow.b_rsOD      = Placa.GetDateTimeFromMMYYYY(placaSumTable[0].X_uMMYYYY, false).ToString("s").Substring(0, 10); // na bazi punog mjeseca
+         jpdBstranaRow.b_rsDO      = Placa.GetDateTimeFromMMYYYY(placaSumTable[0].X_uMMYYYY, true ).ToString("s").Substring(0, 10); // na bazi punog mjeseca
+         jpdBstranaRow.b_rsODcr    = Placa.GetDateTimeFromMMYYYY(placaSumTable[0].X_uMMYYYY, false).ToString(ZXC.VvDateFormat);
+         jpdBstranaRow.b_rsDOcr    = Placa.GetDateTimeFromMMYYYY(placaSumTable[0].X_uMMYYYY, true ).ToString(ZXC.VvDateFormat);
+      }
       
       jpdBstranaRow.b_pocKrajCD = "0";
       jpdBstranaRow.b_sati      = 0;
