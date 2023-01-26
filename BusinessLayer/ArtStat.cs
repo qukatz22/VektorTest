@@ -1198,14 +1198,29 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
 
          #region 2015-16 INVENTURNA PRIMKA
 
-         bool isInventurnaPrimka = (this.TT == Faktur.TT_PRI && this.SkladDate == this.DateZadInv);
+         // 25.01.2023: zakljucili da na primjeru SvDUH-a ovo samo radi probleme i ugasili
+         // ubuduce, ako treba prNabCij osvjeziti na PRI viska, napravi se to sa PrNabCij sub modul akcijom
+         // a mozda u dogledno vrijeme uvedemo dedicirane TT-ove koji bi kao i MSI, ... bili podlozni ChkPrNabCij proceduri 
+
+         bool isInventurnaPrimka = false;// (this.TT == Faktur.TT_PRI && this.SkladDate == this.DateZadInv);
+       //bool isInventurnaPrimka = (this.TT == Faktur.TT_PRI && this.SkladDate == ZXC.Date30062022);
 
          // 23.01.2023: 
        //if(isInventurnaPrimka)
          if(isInventurnaPrimka && PrNabCij.NotZero())
          {
-            RtrUlazCijNBC = this.PrNabCij;
+            RtrUlazCijNBC = PrNabCij;
+#if DEBUG
+            if(!ZXC.AlmostEqual(rtr.R_CIJ_KCR.Ron2(), PrNabCij.Ron2(), 0.02M)) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "isInventurnaPrimka R_CIJ_KCR {0} != PrNabCij {1}!\n\r\n\r{2}", rtr.R_CIJ_KCR.Ron2(), PrNabCij.Ron2(), this);
+#endif
          }
+
+#if DEBUG
+         else if(isInventurnaPrimka)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Exclamation, "isInventurnaPrimka PrNabCij je NULA pa uzimam R_CIJ_KCR {1}!\n\r\n\r{0}", this, RtrUlazCijNBC);
+         }
+#endif
 
          #endregion 2015-16 INVENTURNA PRIMKA
 
@@ -1254,7 +1269,7 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
 
        //if(isInventurnaPrimka                            ) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC; 
        //if(isInventurnaPrimka || isKolSt_ZERO_AfterPovrat) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC; 
-         if(isInventurnaPrimka && PrNabCij.NotZero()      ) RtrUlazVrjNBC = rtr.T_kol * this.PrNabCij     ;
+         if(isInventurnaPrimka && RtrUlazCijNBC.NotZero() ) RtrUlazVrjNBC = rtr.T_kol * this.RtrUlazCijNBC;
 
          UkUlazFinNBC += RtrUlazVrjNBC;
          UkUlazFinMPC += RtrUlazVrjMPC;

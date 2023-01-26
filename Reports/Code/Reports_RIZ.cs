@@ -2159,6 +2159,9 @@ public class RptR_StandardRiskReport : VvRiskReport
          VvManyDecimalsReportSourceRow manyDecimalsReportSourceRow;
          string theSkladCD;
 
+         // izbaci INV, NRD, i jos ako se pojavi irelevantan TT 
+         TheArtStatList.RemoveAll(ast => ast.TT == Faktur.TT_INV || ast.TT == Faktur.TT_NRD);
+
          foreach(var artiklList in TheArtiklList.GroupBy(art => art.AS_SkladCD))
          {
             theSkladCD = artiklList.First().AS_SkladCD;
