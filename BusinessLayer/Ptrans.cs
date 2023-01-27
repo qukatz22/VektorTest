@@ -3306,9 +3306,17 @@ public class Ptrans : VvTransRecord
       }// kuna era
       else // EURO era
       {
+         //26.01.2023. porezna hice zaokruzene eure zbrajati al u 1 mj 23 je vec otislo kako je pa to treba ostaviti tako
+         // treb a pod ron2 staviti pR._osnOdb, alfa i beta
+         bool dokDate_isFirstMonthEuro = T_dokDate < new DateTime(2023, 01, 31);
+         pR._osnOdb = dokDate_isFirstMonthEuro ? pR._osnOdb : pR._osnOdb.Ron2();
+
          decimal koefZaOsnOdb = 1.60M; 
          decimal alfa         = pR._osnOdb * koefZaOsnOdb    ; // ovdje ga ne zaokruzujemo jer je on yapravo = 4.000 kn pa ga treba samo preracunati u eur-e tj u pR._osnOdb vec jesu euri 
          decimal beta         = pR._osnOdb * (T_koef - 1.00M); // beta = osnOdb x koefOvisanOdDjece                                                         
+
+         alfa = dokDate_isFirstMonthEuro ? alfa : alfa.Ron2();
+         beta = dokDate_isFirstMonthEuro ? beta : beta.Ron2();
 
          if(T_koef < 1.00M) R_Odbitak = ZXC.Ron2(alfa * T_koef);
          else               R_Odbitak = alfa + beta            ;
