@@ -42,7 +42,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
 
    #region CreateTableArtStat
 
-   public static   uint TableVersionStatic { get { return 22; } }
+   public static   uint TableVersionStatic { get { return 24; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -155,6 +155,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
 /*101 */" invFinDiff        decimal(12,4)          NOT NULL default '0.00',\n" + // invFinDiffNBC
 /*102 */" invFinDiffMPC     decimal(12,4)          NOT NULL default '0.00',\n" +
 /*103 */" invFinMPC         decimal(12,4)          NOT NULL default '0.00',\n" +
+/*104 */" prNBCBefThisUlaz  decimal(12,4)          NOT NULL default '0.00',\n" +
 
          //CreateTable_ArhivaExtensionDefinition(isArhiva) +
 
@@ -222,6 +223,10 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
                           "ADD COLUMN invFinMPC         decimal(12,4)          NOT NULL default '0.00' AFTER invFinDiffMPC; \n");
 
          case 22: return ("VvRECREATE"); // Dakle, kada zelis force-ati regeneraciju cache-a samo gore inkrementiras 'TableVersion' i tu dodas noci case da returna "VvRECREATE" 
+
+         case 23: return ("ADD COLUMN prNBCBefThisUlaz     decimal(12,4)          NOT NULL default '0.00' AFTER invFinMPC;  \n");
+
+         case 24: return ("VvRECREATE"); // Dakle, kada zelis force-ati regeneraciju cache-a samo gore inkrementiras 'TableVersion' i tu dodas noci case da returna "VvRECREATE" 
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -359,6 +364,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
          VvSQL.CreateCommandParameter(cmd, preffix, artstat.InvFinDiffNBC     , TheSchemaTable.Rows[CI.invFinDiffNBC    ]);
          VvSQL.CreateCommandParameter(cmd, preffix, artstat.InvFinDiffMPC     , TheSchemaTable.Rows[CI.invFinDiffMPC    ]);
          VvSQL.CreateCommandParameter(cmd, preffix, artstat.InvFinMPC         , TheSchemaTable.Rows[CI.invFinMPC        ]);
+         VvSQL.CreateCommandParameter(cmd, preffix, artstat.PrNBCBefThisUlaz  , TheSchemaTable.Rows[CI.prNBCBefThisUlaz ]);
       }
 
    }
@@ -490,6 +496,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
          rdrData._invFinDiff        = reader.GetDecimal(CI.invFinDiffNBC     + ciOffset);
          rdrData._invFinDiffMPC     = reader.GetDecimal(CI.invFinDiffMPC     + ciOffset);
          rdrData._invFinMPC         = reader.GetDecimal(CI.invFinMPC         + ciOffset);
+         rdrData._prNBCBefThisUlaz  = reader.GetDecimal(CI.prNBCBefThisUlaz  + ciOffset);
 
       }
       catch(SqlNullValueException) // kada pri join-u sa rtrans-om nema pripadajuceg artstat recorda 
@@ -635,6 +642,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
       internal int invFinDiffNBC    ;
       internal int invFinDiffMPC    ;
       internal int invFinMPC        ;
+      internal int prNBCBefThisUlaz ;
    }
 
    /// <summary>
@@ -751,6 +759,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
       CI.invFinDiffNBC     = GetSchemaColumnIndex("invFinDiff");
       CI.invFinDiffMPC     = GetSchemaColumnIndex("invFinDiffMPC");
       CI.invFinMPC         = GetSchemaColumnIndex("invFinMPC");
+      CI.prNBCBefThisUlaz  = GetSchemaColumnIndex("prNBCBefThisUlaz");
    }
 
    #endregion FtrCI struct & InitializeSchemaColumnIndexes()
@@ -767,10 +776,11 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
 
       bool isForceMPSK_by_NBC = RptFilter.FuseBool1; // RptFilter.FuseBool1 je Fld_IsNbcZaMPSK 
 
-      string ulazShadowTT_IN_Clause  = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsUlazniShadowTT ).Select(tti => tti.TheTT).ToArray());
-      string izlazShadowTT_IN_Clause = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsIzlazniShadowTT).Select(tti => tti.TheTT).ToArray());
+      string ulazShadowTT_IN_Clause       = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsUlazniShadowTT   ).Select(tti => tti.TheTT).ToArray());
+      string izlazShadowTT_IN_Clause      = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsIzlazniShadowTT  ).Select(tti => tti.TheTT).ToArray());
+      string uraPovratShadowTT_IN_Clause  = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsUraPovratShadowTT).Select(tti => tti.TheTT).ToArray());
 
-      using(XSqlCommand cmd = (VvSQL.GetArtstat_SUM_list_Command(conn, isPrmRazdoblja, _skladCD, _dateOd, _dateDo, RptFilter, ulazShadowTT_IN_Clause, izlazShadowTT_IN_Clause, isForceMPSK_by_NBC)))
+      using(XSqlCommand cmd = (VvSQL.GetArtstat_SUM_list_Command(conn, isPrmRazdoblja, _skladCD, _dateOd, _dateDo, RptFilter, ulazShadowTT_IN_Clause, izlazShadowTT_IN_Clause, uraPovratShadowTT_IN_Clause, isForceMPSK_by_NBC)))
       {
          try
          {
@@ -802,6 +812,9 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
                   if(artstat_rec.TT == Faktur.TT_NUV && artstat_rec.RtrUlazVrjMPC .IsZero() // nemoj ubacivati NUV/NIV ako nemaju sto za reci 
                      ||
                      artstat_rec.TT == Faktur.TT_NIV && artstat_rec.RtrIzlazVrjMPC.IsZero()) continue;
+
+                  // 01.02.2023: 
+                  if(artstat_rec.TT == Faktur.TT_NUP && artstat_rec.RtrUlazVrjNBC.IsZero()) continue;
 
                   artstatList.Add(artstat_rec);
                }

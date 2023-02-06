@@ -7,6 +7,7 @@ using Vektor.DataLayer.DS_Reports;
 using System.Linq;
 using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
+using static RtransDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -886,7 +887,9 @@ public class RptR_ArtiklKartica  : VvRiskReport
          {
             if(TheRtransList[i].TtInfo.HasShadowTT == false) continue;
 
-            shadowRtrans_rec = CreateRtransShadow(TheRtransList[i], i);
+            // 2023: dodano URA_Povrat. Prije bio samo CreateRtransShadow 
+            if(TheRtransList[i].Is_URA_Povrat) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
+            else                               shadowRtrans_rec = CreateRtransShadow_Malop     (TheRtransList[i], i);
 
             //UndoShadowResultsForRealRtrans(TheRtransList[i]);
 
@@ -930,14 +933,53 @@ public class RptR_ArtiklKartica  : VvRiskReport
       return TheRtransList.Count;
    }
 
-   private Rtrans CreateRtransShadow(Rtrans rtrans, int i)
+   private Rtrans CreateRtransShadow_URA_Povrat(Rtrans rtrans, int i)
+   {
+      decimal DiffPovratCij         = rtrans.A_RtrUlazCijNBC - rtrans.A_PrNBCBefThisUlaz;
+    //decimal NivelacUlazPovVrj     = rtrans.A_RtrUlazKol    * DiffPovratCij;
+      decimal NivelacUlazPovVrj     = rtrans.A_PrevKolStanje * DiffPovratCij;
+
+      // Do we need this, enivej?
+    if((rtrans.A_PrevKolStanje.Ron2().IsZero() /*&& rtrans.A_MalopCij.Ron2().IsZero()*/) ||
+        DiffPovratCij.Ron2().IsZero()                                       ||
+        i.IsZero() // prva stavka robne kartice 
+       ) return null; // ili je prevKol nula ili je novaCijena = staraCijena 
+
+      Rtrans shadowRtrans_rec = new Rtrans();
+
+      //shadowRtrans_rec.TheAsEx = rtrans.TheAsEx;
+
+      shadowRtrans_rec.T_TT = shadowRtrans_rec.AS_TT = Faktur.TT_NUP;
+
+
+    //shadowRtrans_rec.T_ttNum  =
+    //shadowRtrans_rec.AS_TtNum = rtrans.T_ttNum;
+      shadowRtrans_rec.T_skladDate  =
+      shadowRtrans_rec.AS_SkladDate = rtrans.T_skladDate;
+      shadowRtrans_rec.T_artiklCD   =
+      shadowRtrans_rec.AS_ArtiklCD  = rtrans.T_artiklCD;
+      shadowRtrans_rec.T_skladCD    = 
+      shadowRtrans_rec.AS_SkladCD   = rtrans.T_skladCD;
+
+      shadowRtrans_rec.A_UkUlazKol  = rtrans.A_PrevKolStanje;
+
+    //UkUlazFinNBC                 += NivelacUlazPovVrj;
+
+      shadowRtrans_rec.A_UkUlazFinNBC   =  rtrans.A_StanjeFinNBC - rtrans.A_RtrUlazVrjNBC;
+                                        
+      shadowRtrans_rec.A_RtrCijenaNBC   =
+      shadowRtrans_rec.A_RtrUlazCijNBC  = DiffPovratCij    ;
+      shadowRtrans_rec.A_RtrUlazVrjNBC  = NivelacUlazPovVrj;
+
+      shadowRtrans_rec.R_kupdobName = "Niv za kol: " + rtrans.A_PrevKolStanje.ToStringVv() + " i ruc: " + DiffPovratCij.ToStringVv();
+
+      return shadowRtrans_rec;
+   }
+   private Rtrans CreateRtransShadow_Malop(Rtrans rtrans, int i)
    {
       // Do we need this, enivej?
-      // 24.03.2014: 
-    //if( rtrans.A_PrevKolStanje.Ron2().IsZero()                                       ||
       if((rtrans.A_PrevKolStanje.Ron2().IsZero() && rtrans.A_MalopCij.Ron2().IsZero()) ||
           rtrans.A_DiffMalopCij .Ron2().IsZero()                                       ||
-      // 08.01.2016: 
           i.IsZero() // prva stavka robne kartice 
          ) return null; // ili je prevKol nula ili je novaCijena = staraCijena 
 
@@ -945,11 +987,8 @@ public class RptR_ArtiklKartica  : VvRiskReport
 
       //shadowRtrans_rec.TheAsEx = rtrans.TheAsEx;
 
-      // 04.11.2016: 
-    //shadowRtrans_rec.T_TT  =
-    //shadowRtrans_rec.AS_TT = Faktur.TT_NIV;
-           if(rtrans.TtInfo.IsMalopFin_I) { shadowRtrans_rec.T_TT = shadowRtrans_rec.AS_TT = Faktur.TT_NIV; }
-      else if(rtrans.TtInfo.IsMalopFin_U) { shadowRtrans_rec.T_TT = shadowRtrans_rec.AS_TT = Faktur.TT_NUV; }
+           if(rtrans.TtInfo.IsMalopFin_I)   { shadowRtrans_rec.T_TT = shadowRtrans_rec.AS_TT = Faktur.TT_NIV; }
+      else if(rtrans.TtInfo.IsMalopFin_U)   { shadowRtrans_rec.T_TT = shadowRtrans_rec.AS_TT = Faktur.TT_NUV; }
       else throw new Exception("CreateFakturShadow: Niti U niti I");
 
 
@@ -994,7 +1033,6 @@ public class RptR_ArtiklKartica  : VvRiskReport
 
       return shadowRtrans_rec;
    }
-
    private string GetSkladCD_AsKupdobCD_ForInternDocuments(Rtrans rtrans_rec)
    {
       string skladCD_AsKupdobCD;
@@ -1838,13 +1876,22 @@ public class RptR_StandardRiskReport : VvRiskReport
          f.KupdobName = f.PosJedName; 
       });
 
-      if(IsHRDkontra && year <= 2022)
+      bool isHRDkontraAndNeedsPast = IsHRDkontra               && year <= 2022;
+      bool euroEraNeedsPast        = ZXC.IsEURoERA_projectYear && year <= 2022;
+      bool euroEraNeedsKuna        = ZXC.IsEURoERA_projectYear && IsHRDkontra ;
+
+      if(isHRDkontraAndNeedsPast || euroEraNeedsPast)
       {
          TheFakturList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Kuna_To_Euro_ForAllMoneyPropertiez_JOB(null));
       }
+      if(euroEraNeedsKuna)
+      {
+         TheFakturList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Euro_To_Kuna_ForAllMoneyPropertiez_JOB(null));
+      }
    }
 
-   /*private*/protected void GetRtransWithArtstatList()
+   /*private*/
+   protected void GetRtransWithArtstatList()
    {
       GetRtransWithArtstatList(ZXC.projectYearFirstDay.Year);
    }

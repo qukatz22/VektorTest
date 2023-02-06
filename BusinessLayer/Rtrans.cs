@@ -5,6 +5,7 @@ using Vektor.DataLayer.DS_Reports;
 using System.Data;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using System.Reflection;
+using Microsoft.Office.Interop.Excel;
 
 #region struct RtransStruct
 
@@ -1733,6 +1734,8 @@ public decimal  A_UkUlazKolBOP              { get { return this.TheAsEx.UkUlazKo
 public decimal  A_UkIzlazKolBOP             { get { return this.TheAsEx.UkIzlazKolBOP        ; }                                                   } 
 public decimal  A_PrNabCijCOP               { get { return this.TheAsEx.PrNabCijCOP          ; }                                                   }
 
+public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBefThisUlaz    ; } set { this.TheAsEx.PrNBCBefThisUlaz   = value; } }
+
    #endregion TheAsEx - Artstat propertiz
 
    public bool IsSvdArtGR_Ljek_ { get { return IsSvdArtGR_Ljek(this.A_ArtGrCd1); } }
@@ -1753,6 +1756,8 @@ public decimal  A_PrNabCijCOP               { get { return this.TheAsEx.PrNabCij
    }
 
    public bool A_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero(); } }
+
+   public bool Is_URA_Povrat { get { return this.T_TT == Faktur.TT_URA && this.R_kol.IsNegative(); } }
 
    #endregion Propertiz
 

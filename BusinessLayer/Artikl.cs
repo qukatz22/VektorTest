@@ -1193,6 +1193,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    // 09.01.2023: 
 //public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero()                                                                          ; } }
   public bool     AS_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero() && (this.TheAsEx.TT == Faktur.TT_PST || this.TheAsEx.TT == Faktur.TT_INV); } }
+  public decimal AS_PrNBCBefThisUlaz { get { return this.TheAsEx.PrNBCBefThisUlaz; } set { this.TheAsEx.PrNBCBefThisUlaz = value; } }
 
    #endregion Artstat propertiz
 

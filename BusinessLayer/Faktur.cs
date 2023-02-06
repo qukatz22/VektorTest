@@ -282,6 +282,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_UFM = "UFM"; // Ulazni Racun NE Sklad - mALOP 
 
    public const string TT_URA = "URA"; // Ulazni Racun u VELEP + Primka 
+   public const string TT_NUP = "NUP"; // Implicitna Nivelacija - ULAZ Povrata  
    public const string TT_PRI = "PRI"; // Primka u Veleprodaju NE Pdv 
    public const string TT_PIP = "PIP"; // Primka iz PROIZVODNJE 
 

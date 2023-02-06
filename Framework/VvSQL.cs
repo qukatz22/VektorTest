@@ -3710,7 +3710,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   internal static XSqlCommand GetArtstat_SUM_list_Command(XSqlConnection conn, bool isPrmRazdoblja, string _skladCD, DateTime _dateOd, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter, string ulazShadowTT_IN_Clause, string izlazShadowTT_IN_Clause, bool isForceMPSK_by_NBC)
+   internal static XSqlCommand GetArtstat_SUM_list_Command(XSqlConnection conn, bool isPrmRazdoblja, string _skladCD, DateTime _dateOd, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter, string ulazShadowTT_IN_Clause, string izlazShadowTT_IN_Clause, string uraPovratShadowTT_IN_Clause, bool isForceMPSK_by_NBC)
    {
       XSqlCommand cmd = InitCommand(conn);
 
@@ -3734,6 +3734,18 @@ public static class VvSQL
 
          (
          isForceMPSK_by_NBC ? "" : // ako je isForceMPSK_by_NBC, tada NE trebamo UNION za implicitne nivelacije
+
+         // uraPovratShadowTT_IN_Clause 
+         "UNION                                                                                                     \n" +
+         "SELECT 'NUP', t_skladCD AS SkladCD, 0, 0, 0, 0, SUM(((pstKol+ulazKol-izlazKol)-(rtrUlazKol))*(rtrCijenaNBC-prNBCBefThisUlaz)), 0, 0, 0, 0 \n" +
+         "FROM artstat a                                                                                            \n" +
+         "WHERE   t_skladCD  = ?prm_AS_t_skladCD                                                                    \n" +
+         "AND   t_skladDate <= ?prm_AS_t_skladDate                                                                  \n" +
+ /*!!!*/ "AND   rtrUlazKol  < 0                                                                                     \n" + // !!!
+         "AND t_tt IN " + uraPovratShadowTT_IN_Clause +                                                            "\n" +
+         (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "")                                           + " \n" +
+         "GROUP BY t_skladCD                                                                                        \n" +
+
          // ulazShadowTT_IN_Clause 
          "UNION                                                                                                     \n" +
          "SELECT 'NUV', t_skladCD AS SkladCD, 0, 0, 0, 0, 0, 0, 0, SUM(((pstKol+ulazKol-izlazKol)-(rtrPstKol + rtrUlazKol-rtrIzlazKol))*(rtrCijenaMPC-prevMalopCij)), 0 \n" +
@@ -3743,6 +3755,7 @@ public static class VvSQL
          "AND t_tt IN " + ulazShadowTT_IN_Clause +                                                                 "\n" +
          (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "")                                           + " \n" +
          "GROUP BY t_skladCD                                                                                        \n" +
+
          // izlazShadowTT_IN_Clause 
          "UNION                                                                                                     \n" +
          "SELECT 'NIV', t_skladCD AS SkladCD, 0, 0, 0, 0, 0, 0, 0, 0, - SUM(rtrIzlazKol*(rtrCijenaMPC-prevMalopCij))\n" + // ! pazi na ovaj * -1 predznak 

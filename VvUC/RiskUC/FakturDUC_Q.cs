@@ -51,8 +51,9 @@ public struct TtInfo
    /// </summary>
    public bool HasShadowTT { get { return ShadowTT.NotEmpty(); } } // Implicitne Nivelacije VMU namjerno nije ovdje, do dalnjega 
 
-   public bool IsIzlazniShadowTT { get { return HasShadowTT && ShadowTT == Faktur.TT_NIV; } }
-   public bool IsUlazniShadowTT  { get { return HasShadowTT && ShadowTT == Faktur.TT_NUV; } }
+   public bool IsIzlazniShadowTT   { get { return HasShadowTT && ShadowTT == Faktur.TT_NIV; } }
+   public bool IsUlazniShadowTT    { get { return HasShadowTT && ShadowTT == Faktur.TT_NUV; } }
+   public bool IsUraPovratShadowTT { get { return HasShadowTT && ShadowTT == Faktur.TT_NUP; } }
 
    public bool IsPreDef        { get; set; }
    public bool IsRezervKol     { get; set; }
@@ -1054,6 +1055,8 @@ public struct TtInfo
       if(TheTT == Faktur.TT_MVI) ShadowTT = Faktur.TT_NIV; // tek od 09.12.2015: 
       if(TheTT == Faktur.TT_MMI) ShadowTT = Faktur.TT_NIV;
       if(TheTT == Faktur.TT_MMU) ShadowTT = Faktur.TT_NUV;
+
+      if(TheTT == Faktur.TT_URA) ShadowTT = Faktur.TT_NUP;
 
       // observacija od 07.11.2016:
       // TT_VMU namjerno ne ide u 'HasShadowTT' zbog prirode rada 'Pretank'-a 

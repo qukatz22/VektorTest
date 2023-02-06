@@ -119,6 +119,9 @@ public struct ArtStatStruct
    /*102 */ internal decimal  _invFinDiffMPC    ; // news 4 new inventuraDiff system 
    /*103 */ internal decimal  _invFinMPC        ; // od ranije postoji _invFin koji ce odsada biti _invFinNBC 
 
+   // 2023: 
+   /*104 */ internal decimal  _prNBCBefThisUlaz ; // za NUP shadow rtrans 
+
 }
 
 #endregion struct ArtStatStruct
@@ -311,6 +314,7 @@ public class ArtStat : VvDataRecord, IComparable<ArtStat>, IVvExtenderDataRecord
                this.currentData._invFinDiff     = 0.00M;
                this.currentData._invFinDiffMPC     = 0.00M;
                this.currentData._invFinMPC         = 0.00M;
+               this.currentData._prNBCBefThisUlaz  = 0.00M;
 
    }
 
@@ -658,6 +662,8 @@ public DateTime DateZadUlaz       { get { return this.currentData._dateZadUlaz; 
 public DateTime DateZadIzlaz      { get { return this.currentData._dateZadIzlaz;     } set { this.currentData._dateZadIzlaz     = value; } }
 public DateTime DateZadPst        { get { return this.currentData._dateZadPst;       } set { this.currentData._dateZadPst       = value; } }
 public DateTime DateZadInv        { get { return this.currentData._dateZadInv;       } set { this.currentData._dateZadInv       = value; } }
+
+public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUlaz; } set { this.currentData._prNBCBefThisUlaz = value; } } // za NUP shadow rtrans 
 
    #endregion DataLayer Propertiz
 
@@ -1152,6 +1158,8 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
 
       else if(TtInfo.IsFinKol_U)
       {
+         PrNBCBefThisUlaz  = this.PrNabCij;
+
          #region IsStornoTT additions
 
          if(TtInfo.IsStornoTT && (StanjeKol - rtr.T_kol).IsNegative()) // Znaci, ovaj ce storno ulaza proizvesti minus! 
@@ -1348,7 +1356,7 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
             if(firstUlazEver) PrevMalopCij = rtr.T_doCijMal;
          }
 
-         #endregion Nivelacija
+         #endregion Explicitna Nivelacija
 
          if(TtInfo.IsAllSkladFinKol_U)
          {
@@ -1369,7 +1377,7 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
             UkUlazKolFisycal += RtrUlazKol;
          }
 
-         #region SHADOW Trans - Implicitna Nivelacija
+         #region SHADOW Trans - Implicitna Nivelacija Malop Ulaza
 
          // 26.02.2013: ova potreba za VvLookUpListom RiskRulesDsc (ZXC.RRD) DIZE TheDbConnection EXCEPTION
          // kada ide RenewCache iz nekog razloga. Do dalnjega stopamo provjeru 'Dsc_IsSupressSHADOWing' 
@@ -1388,6 +1396,19 @@ public DateTime DateZadInv        { get { return this.currentData._dateZadInv;  
          }
 
          #endregion SHADOW Trans - Implicitna Nivelacija
+
+         #region SHADOW Trans - Implicitna Nivelacija Velep Ulaznog Povrata
+
+         // 01.02.2023: big news 
+         if(rtr.Is_URA_Povrat) 
+         {
+            decimal DiffPovratCij     = RtrUlazCijNBC - PrNBCBefThisUlaz;
+          //decimal NivelacUlazPovVrj = RtrUlazKol    * DiffPovratCij;
+            decimal NivelacUlazPovVrj = PrevKolStanje * DiffPovratCij;
+            UkUlazFinNBC             += NivelacUlazPovVrj;
+         }
+
+         #endregion SHADOW Trans - Implicitna Nivelacija Velep Ulaznog Povrata
 
          #region #if(DEBUG)
 #if(DEBUG)
