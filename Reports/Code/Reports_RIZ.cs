@@ -7079,7 +7079,6 @@ public class RptR_PDV_Knjiga         : RptR_PDV
          racunLine.R5  = TheFakturList[i].KdAdresa     ;
          racunLine.R6  = Get_ID_Type(TheFakturList[i].KupdobCD);
          racunLine.R7  = TheFakturList[i].KdOib;
-       //if(PdvSchema_2023)racunLine.R19  = TheFakturList[i].S_ukOsn0;
          racunLine.R8  = TheFakturList[i].R_ukOsn05.Ron2();
          racunLine.R9  = TheFakturList[i].R_ukOsn10.Ron2();
          racunLine.R10 = (TheFakturList[i].R_ukOsn22 + TheFakturList[i].R_ukOsn23 + TheFakturList[i].R_ukOsn25).Ron2();
@@ -7091,6 +7090,8 @@ public class RptR_PDV_Knjiga         : RptR_PDV
          racunLine.R16 = TheFakturList[i].S_ukPdv10n.Ron2();
          racunLine.R17 = (TheFakturList[i].S_ukPdv22m + TheFakturList[i].S_ukPdv23m + TheFakturList[i].S_ukPdv25m).Ron2();
          racunLine.R18 = (TheFakturList[i].S_ukPdv22n + TheFakturList[i].S_ukPdv23n + TheFakturList[i].S_ukPdv25n).Ron2();
+
+         if(PdvSchema_2023) racunLine.R19  = TheFakturList[i].S_ukOsn0;
       }
 
       theURA.Tijelo.Ukupno = new PDV_URA.sRacuniUkupno()

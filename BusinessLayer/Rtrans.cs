@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Vektor.DataLayer.DS_Reports;
-using System.Data;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using System.Reflection;
-using Microsoft.Office.Interop.Excel;
 
 #region struct RtransStruct
 
