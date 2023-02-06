@@ -6771,9 +6771,14 @@ public struct PdvObrazacData
 
 #endregion news 2015
 
+#region news 2023
+
+      this.sumI     += _faktur_rec_SumaRazdoblja_IRA.S_ukOsn0;
+      this.sumIiII  += _faktur_rec_SumaRazdoblja_IRA.S_ukOsn0;
+
+#endregion news 2023
 
    }
-
 }
 
 public class RptR_PDV                : RptR_StandardRiskReport
@@ -7074,6 +7079,7 @@ public class RptR_PDV_Knjiga         : RptR_PDV
          racunLine.R5  = TheFakturList[i].KdAdresa     ;
          racunLine.R6  = Get_ID_Type(TheFakturList[i].KupdobCD);
          racunLine.R7  = TheFakturList[i].KdOib;
+       //if(PdvSchema_2023)racunLine.R19  = TheFakturList[i].S_ukOsn0;
          racunLine.R8  = TheFakturList[i].R_ukOsn05.Ron2();
          racunLine.R9  = TheFakturList[i].R_ukOsn10.Ron2();
          racunLine.R10 = (TheFakturList[i].R_ukOsn22 + TheFakturList[i].R_ukOsn23 + TheFakturList[i].R_ukOsn25).Ron2();
@@ -7608,7 +7614,7 @@ public class RptR_PDV_PDV            : RptR_PDV
 
 #region Init variablez
          
-         decimal p000, p100, p110, p120, p121, p122, p123, p124, p130;
+         decimal p000, p100, p110, p111=0.00M, p120, p121, p122, p123, p124, p130;
          decimal p200vr, p200pdv, p210vr, p210pdv, p220vr, p220pdv, p230vr, p230pdv, p240vr, p240pdv;
          decimal p300vr, p300pdv, p310vr, p310pdv, p320vr, p320pdv, p330vr, p330pdv, p340vr, p340pdv, p350vr, p350pdv, p360vr, p360pdv, p370vr, p370pdv, p380;
          decimal p400  , p500   , p600;
@@ -7616,10 +7622,11 @@ public class RptR_PDV_PDV            : RptR_PDV
 
          decimal k710=0.00M, k711=0.00M, k712=0.00M, k713=0.00M, k714=0.00M, k715=0.00M, k716=0.00M, k720=0.00M, k730=0.00M, k740=0.00M, k750=0.00M, k760=0.00M,
                  PretporezOdb=0.00M; //11.02.2013. novi podatak
-         decimal k810=0.00M, k811=0.00M, k812=0.00M, k813=0.00M, k814=0.00M, k815=0.00M, k816=0.00M, k820=0.00M, k830=0.00M, k840=0.00M;
+         decimal k810 = 0.00M, k811 = 0.00M, k812 = 0.00M, k813 = 0.00M, k814 = 0.00M, k815 = 0.00M, k816 = 0.00M, k820 = 0.00M, k830 = 0.00M, k840 = 0.00M,
+                 k610 = 0.00M, k611 = 0.00M, k612 = 0.00M, k613 = 0.00M, k614 = 0.00M, k615 = 0.00M, k620 = 0.00M, k630 = 0.00M, k640 = 0.00M, k650 = 0.00M; 
          decimal k831vr=0.00M, k832vr=0.00M, k833vr=0.00M, k850=0.00M, k860=0.00M; 
          int     k831br=0, k832br=0, k833br=0; 
-         bool    k870=false;
+         bool    k870=false, k660=false;
 
          decimal
             p101     = 0.00M,
@@ -7993,7 +8000,7 @@ public class RptR_PDV_PDV            : RptR_PDV
          // PDV 2014 --------- END ----------------------------------------
 
          // PDV 2015 --------- START ---------------------------------------
-         else /*if(PdvSchema_2015)*/
+         else if(PdvSchema_2015)
          {
 #region PdvSchema_2015
 
@@ -8107,6 +8114,127 @@ public class RptR_PDV_PDV            : RptR_PDV
 #endregion PdvSchema_2015
          }
          // PDV 2015 --------- END ----------------------------------------
+
+         // PDV 2023 --------- START ---------------------------------------
+         else /*if(PdvSchema_2023)*/
+         {
+#region PdvSchema_2023
+
+            p000   =  p100    =  p110   =  p120    =  p121   =  p122    =  p123   =  p124    =  p130 =
+            p200vr =  p200pdv =  p210vr =  p210pdv =  p220vr =  p220pdv =  p230vr =  p230pdv =  p240vr =  p240pdv =
+            p300vr =  p300pdv =  p310vr =  p310pdv =  p320vr =  p320pdv =  p330vr =  p330pdv =  p340vr =  p340pdv =  p350vr =  p350pdv =  p360vr =  p360pdv =  p370vr =  p370pdv =  p380=
+            p400   =  p500 =  p600 =
+            p350nePdv =  p360nePdv =  p370nePdv = 0.00M;
+            p111 =
+            k610 =
+            k611 =
+            k612 =
+            k613 =
+            k614 =
+            k615 =
+            k620 =
+            k630 =
+            k640 =
+            k650 = 0.00M;
+
+            p000     = pdv.sumIiII                                .Ron2();
+            p100     = pdv.sumI                                   .Ron2();
+            p101     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn07     .Ron2(); 
+            p102     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn08     .Ron2();
+            p103     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn09     .Ron2();
+            p104     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn10     .Ron2();
+            p105     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn11     .Ron2();
+            p106     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn12     .Ron2();
+            p107     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn13     .Ron2();
+            p108     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn14     .Ron2();
+            p109     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn15     .Ron2();
+            p110     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn16     .Ron2();
+            p111     = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn0      .Ron2(); //!!!!!news
+            p200vr   = pdv.sumIIOsn                               .Ron2();
+            p200pdv  = pdv.sumIIPdv                               .Ron2();
+            p201vr   = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m    .Ron2();
+            p201pdv  = Faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m    .Ron2();
+            p202vr   = Faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m    .Ron2();
+            p202pdv  = Faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m    .Ron2();
+            p203vr   = pdv.ukOsn222325_HR                         .Ron2();
+            p203pdv  = pdv.ukPdv222325_HR                         .Ron2();
+            p204vr   = pdv.ukOsn25mn_TP                           .Ron2();
+            p204pdv  = pdv.ukPdv25mn_TP                           .Ron2();
+            p205vr   = pdv.ukOsnR05mn_EU                          .Ron2();
+            p205pdv  = pdv.ukPdvR05mn_EU                          .Ron2();
+            p206vr   = pdv.ukOsnR10mn_EU                          .Ron2();
+            p206pdv  = pdv.ukPdvR10mn_EU                          .Ron2();
+            p207vr   = pdv.ukOsnR25mn_EU                          .Ron2();
+            p207pdv  = pdv.ukPdvR25mn_EU                          .Ron2();
+            p208vr   = pdv.ukOsnU05mn_EU                          .Ron2();
+            p208pdv  = pdv.ukPdvU05mn_EU                          .Ron2();
+            p209vr   = pdv.ukOsnU10mn_EU                          .Ron2();
+            p209pdv  = pdv.ukPdvU10mn_EU                          .Ron2();
+            p210vr   = pdv.ukOsnU25mn_EU                          .Ron2();
+            p210pdv  = pdv.ukPdvU25mn_EU                          .Ron2();
+            p211vr   = 0.00M; // TODO: !!!  S_ukOsn05m_BS + S_ukOsn05n_BS;
+            p211pdv  = 0.00M; // TODO: !!!  S_ukPdv05m_BS + S_ukPdv05n_BS;
+            p212vr   = pdv.ukOsn10mn_BS                           .Ron2();
+            p212pdv  = pdv.ukPdv10mn_BS                           .Ron2();
+            p213vr   = pdv.ukOsn25mn_BS                           .Ron2();
+            p213pdv  = pdv.ukPdv25mn_BS                           .Ron2();
+            p214vr   = pdv.ukOsnPdvF_obrII4                       .Ron2();
+            p214pdv  = pdv.ukPdvPdvF_obrII4                       .Ron2();
+            p215vr   = pdv.ukOsnObr_WO                            .Ron2();
+            p215pdv  = pdv.ukPdvObr_WO                            .Ron2();
+            p300vr   = pdv.sumIIIOsn                              .Ron2();
+            p300pdv  = pdv.sumIIIPdv                              .Ron2();
+            p301vr   = pdv.ukUlazOsn05_HR                         .Ron2();
+            p301pdv  = pdv.ukUlazPdv05_HR                         .Ron2();
+            p302vr   = pdv.ukUlazOsn13_HR                         .Ron2();
+            p302pdv  = pdv.ukUlazPdv13_HR                         .Ron2();
+            p303vr   = pdv.ukUlazOsn25_HR                         .Ron2();
+            p303pdv  = pdv.ukUlazPdv25_HR                         .Ron2();
+            p304vr   = pdv.ukOsnm_TP                              .Ron2();
+            p304pdv  = pdv.ukPdvm_TP                              .Ron2();
+            p305vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU.Ron2();
+            p305pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdvR05m_EU.Ron2();
+            p306vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU.Ron2();
+            p306pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdvR10m_EU.Ron2();
+            p307vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU.Ron2();
+            p307pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdvR25m_EU.Ron2();
+            p308vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU.Ron2();
+            p308pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdvU05m_EU.Ron2();
+            p309vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU.Ron2();
+            p309pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdvU10m_EU.Ron2();
+            p310vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU.Ron2();
+            p310pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdvU25m_EU.Ron2();
+            p311vr   = 0.00M; // TODO: !!!  S_ukOsn05m_BS
+            p311pdv  = 0.00M; // TODO: !!!  S_ukPdv05m_BS
+            p312vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS .Ron2();
+            p312pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdv10m_BS .Ron2();
+            p313vr   = Faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS .Ron2();
+            p313pdv  = Faktur_rec_SumaRazdoblja_URA.S_ukPdv25m_BS .Ron2();
+            p314vr   = pdv.ukOsn_WO                               .Ron2();
+            p314pdv  = pdv.ukPdv_WO                               .Ron2();
+            p315     = pdv.pdvIspravak_obrIII8                    .Ron2();
+            p400     = pdv.obvezaPDV                              .Ron2();
+            
+            p500     = pdv.redakVII                               .Ron2();  // !!!news old p700
+
+            k610   = pdv.pdv_810_sum .Ron2();// news - old k810     
+            k611   = pdv.pdv_811     .Ron2();// news - old k811   
+            k612   = pdv.pdv_812     .Ron2();// news - old k812   
+            k613   = pdv.pdv_813     .Ron2();// news - old k813   
+            k614   = pdv.pdv_814     .Ron2();// news - old k814   
+            k615   = pdv.pdv_815     .Ron2();// news - old k815   
+            k620   = pdv.pdv_820     .Ron2();// news - old k820   
+            k630   = pdv.pdv_840_sum .Ron2();// news - old k840     
+            k640   = pdv.pdv_850_sum .Ron2();// news - old k850     
+            k650   = pdv.pdv_860     .Ron2();// news - old k860   
+            k660   = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? true : false; // da li ide po naplacenom 
+
+
+
+#endregion PdvSchema_2023
+         }
+         // PDV 2023 --------- END ----------------------------------------
+
 
 #endregion SET Tijelo Values
 
@@ -8541,6 +8669,7 @@ public class RptR_PDV_PDV            : RptR_PDV
                writer.WriteElementString("Podatak108", p108.ToStringVv_NoGroup_ForceDot());
                writer.WriteElementString("Podatak109", p109.ToStringVv_NoGroup_ForceDot());
                writer.WriteElementString("Podatak110", p110.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak111", p111.ToStringVv_NoGroup_ForceDot());
             writer.WriteStartElement("Podatak200");
                writer.WriteElementString("Vrijednost", p200vr .ToStringVv_NoGroup_ForceDot());
                writer.WriteElementString("Porez"     , p200pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
@@ -8637,32 +8766,35 @@ public class RptR_PDV_PDV            : RptR_PDV
             writer.WriteElementString("Podatak315", p315.ToStringVv_NoGroup_ForceDot());
             writer.WriteElementString("Podatak400", p400.ToStringVv_NoGroup_ForceDot());
             writer.WriteElementString("Podatak500", p500.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak600", p600.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak700", p700.ToStringVv_NoGroup_ForceDot());
             
-            writer.WriteElementString("Podatak810", k810.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak811", k811.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak812", k812.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak813", k813.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak814", k814.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak815", k815.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak820", k820.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak830", k830.ToStringVv_NoGroup_ForceDot());
-            writer.WriteStartElement("Podatak831");
-               writer.WriteElementString("Vrijednost", k831vr.ToStringVv_NoGroup_ForceDot());
-               writer.WriteElementString("Broj"      , k831br.ToString()                   ); writer.WriteEndElement();
-            writer.WriteStartElement("Podatak832");
-               writer.WriteElementString("Vrijednost", k832vr.ToStringVv_NoGroup_ForceDot());
-               writer.WriteElementString("Broj"      , k832br.ToString()                   ); writer.WriteEndElement();
-            writer.WriteStartElement("Podatak833");
-               writer.WriteElementString("Vrijednost", k833vr.ToStringVv_NoGroup_ForceDot());
-               writer.WriteElementString("Broj"      , k833br.ToString()                   ); writer.WriteEndElement();
-            writer.WriteElementString("Podatak840", k840.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak850", k850.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak860", k860.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("Podatak870", k870.ToString().ToLower()                   );
+            writer.WriteElementString("Podatak610", k610.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak611", k611.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak612", k612.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak613", k613.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak614", k614.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak615", k615.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak620", k620.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak630", k630.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak640", k640.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak650", k650.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak660", k660.ToString().ToLower());
 
-#endregion PdvSchema_2023
+            if(RptFilter.PdvPovrat.NotZero())
+            {
+               writer.WriteElementString("Povrat", RptFilter.PdvPovrat.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("PovratIBAN", ZXC.GetIBANfromOldZiro(ZXC.CURR_prjkt_rec.Ziro1));
+            }
+            if(RptFilter.PdvPredujam.NotZero())
+            {
+               writer.WriteElementString("Predujam", RptFilter.PdvPredujam.ToStringVv_NoGroup_ForceDot());
+            }
+            if(RptFilter.PdvUstup.NotZero())
+            {
+               writer.WriteElementString("Predujam", RptFilter.PdvUstup.ToStringVv_NoGroup_ForceDot());
+            }
+
+
+            #endregion PdvSchema_2023
          } // else // PdvSchema_2023 
 
          if(IsPdvK)
