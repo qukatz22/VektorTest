@@ -412,6 +412,13 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
          if(ZXC.DevTecRec != null)
          {
+            //06.02.2023: 
+            if(ZXC.DevTecRec.Transes.IsEmpty())
+            {
+               ZXC.DevTecRec.VvDao.LoadTranses(/*conn*/ZXC.PrjConnection, ZXC.DevTecRec, false);
+               ZXC.SetMainDbConnDatabaseName(origDBname);
+            }
+
             htrans_rec = ZXC.DevTecRec.Transes.SingleOrDefault
                (htr => htr.T_TT == banka.ToString() &&
                         htr.T_ValName == valuta.ToString() &&

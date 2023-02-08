@@ -3307,7 +3307,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
    #region PS_RISK
 
-   internal static bool PS_RISK(XSqlConnection thisYconn, string pgDBname, string pgYear)
+   internal static bool PS_RISK(XSqlConnection thisYconn, string pgDBname, string pgYear/*, bool isPrNBConly*/)
    {
       using(XSqlConnection prevYconn = VvSQL.CREATE_TEMP_XSqlConnection(pgDBname))
       {
@@ -3335,7 +3335,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
             if(theArtiklWithArtstatList.Count.NotZero())
             {
-               CreatePsFaktur(thisYconn /*!*/, theArtiklWithArtstatList, lui.Cd, lui.Flag, ZXC.projectYearFirstDay);
+               CreatePsFaktur(thisYconn /*!*/, theArtiklWithArtstatList, lui.Cd, lui.Flag, ZXC.projectYearFirstDay/*, isPrNBConly*/);
 
                theArtiklWithArtstatList.Clear();
 
@@ -3350,7 +3350,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       return true;
    }
 
-   private static void CreatePsFaktur(XSqlConnection conn, List<Artikl> theArtiklWithArtstatList, string _skladCD, bool _isMalopSkl, DateTime _dokDate)
+   private static void CreatePsFaktur(XSqlConnection conn, List<Artikl> theArtiklWithArtstatList, string _skladCD, bool _isMalopSkl, DateTime _dokDate/*, bool isPrNBConly*/)
    {
       #region Set RtransList
 
@@ -3362,6 +3362,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       bool isVelepSkl = !_isMalopSkl;
 
       bool thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither;
+    //bool thisArtikl_isTembo_BUG_zbogPrelaskaNaEuro;
 
       // some check: 
       if(ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2023)
@@ -3399,7 +3400,15 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
                artikl_rec.AS_UkUlazKol .IsZero() && 
                artikl_rec.AS_UkIzlazKol.IsZero();
 
-            if(thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither) continue;
+          //thisArtikl_isTembo_BUG_zbogPrelaskaNaEuro = // stanje im je nula a imaju promet u pg. ... nisu presli prvobitno zbog BUGa 'euroR_KC' 
+          //
+          //    artikl_rec.AS_StanjeKol.IsZero() &&
+          //   (artikl_rec.AS_UkPstKol.NotZero() || artikl_rec.AS_UkUlazKol .NotZero() || artikl_rec.AS_UkIzlazKol.NotZero());
+
+          //if(isPrNBConly)  { if(thisArtikl_isTembo_BUG_zbogPrelaskaNaEuro          == false) continue; } 
+          //else /*classic*/ { if(thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither == true ) continue; } // preskaci one bez stanja - classic,     isPrNBConly je false 
+
+            if(thisArtikl_hasNoKolHasCijenaOnly_ButNoPrometEither == true) continue;
 
             finStSum += artikl_rec.TheAsEx.StanjeFinKNJ;
 
@@ -3456,6 +3465,8 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
                decimal euroR_KC  = ZXC.DivSafe(rtrans_rec.R_KC, ZXC.HRD_tecaj); // this IS NOT Ron2() 
 
                decimal euroT_cij = ZXC.DivSafe(euroR_KC, rtrans_rec.T_kol)/*.Ron2()*/;
+
+             //if(isPrNBConly) euroT_cij = ZXC.DivSafe(rtrans_rec.T_cij, ZXC.HRD_tecaj);
 
                rtrans_rec.T_cij = euroT_cij/*.Ron2()*/;
 
