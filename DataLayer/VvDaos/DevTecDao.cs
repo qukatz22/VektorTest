@@ -818,9 +818,9 @@ public sealed class HNB_DevTecImportFile
          {
             case 2: transes[serial]._t_valName = field; break;
 
-            case 4: transes[serial]._t_kupovni  = ValOrZero_Decimal_HNB(field); break;
-            case 5: transes[serial]._t_srednji  = ValOrZero_Decimal_HNB(field); break;
-            case 6: transes[serial]._t_prodajni = ValOrZero_Decimal_HNB(field); break;
+            case 3: transes[serial]._t_kupovni  = ValOrZero_Decimal_HNB(field); break;
+            case 4: transes[serial]._t_srednji  = ValOrZero_Decimal_HNB(field); break;
+            case 5: transes[serial]._t_prodajni = ValOrZero_Decimal_HNB(field); break;
 
          } // switch(colNum) 
 
