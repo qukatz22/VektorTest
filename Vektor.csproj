@@ -1458,6 +1458,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_PDVobrazac_2023.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PDVobrazac_2023.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_PDVorazac_EU2013.cs">
       <DependentUpon>CR_PDVorazac_EU2013.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3397,6 +3403,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_PDVobrazac_2014.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_PDVobrazac_2014.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_PDVobrazac_2023.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PDVobrazac_2023.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_PDVorazac_EU2013.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
