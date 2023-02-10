@@ -571,6 +571,9 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
             htrans_rec._t_prodajni);
       }
 
+      // 09.02.2023: 
+      ZXC.DevTecRec.VvDao.LoadTranses(/*conn*//*ZXC.PrjConnection*/ZXC.TheSecondDbConn_OtherDB(ZXC.TheVvForm.GetvvDB_prjktDB_name()), ZXC.DevTecRec, false);
+
       return true;
    }
 
