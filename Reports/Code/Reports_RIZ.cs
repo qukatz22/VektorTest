@@ -3904,12 +3904,15 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
       bool is_Jeftinije_hr = this.reportDocument is Vektor.Reports.RIZ.CR_Jeftinije_hr_Export; 
       bool is_TemboWebShop = !is_Jeftinije_hr;
 
-#region SUM As Kumulativ Stanja na svim skladistima
+      #region SUM As Kumulativ Stanja na svim skladistima
 
       // List<Artikl> analiticArtiklList = TheArtiklList.ToList(); // ...a li ovo ti je primjer kako nabrzake klonirati listu .clone 
 
+      // 08.02.2023: 
+      TheArtiklList.RemoveAll(art => art.AS_StanjeKol.IsZeroOrNegative() && art.AS_PrNabCij.IsZero());
+
       var artiklGroups = is_TemboWebShop ? TheArtiklList.Where(art => art.Grupa2CD.NotEmpty()).GroupBy(art => art.ArtiklCD).ToList() :
-                        /* jeftinije.hr */ TheArtiklList.Where(art => art.Grupa3CD.NotEmpty()).GroupBy(art => art.ArtiklCD).ToList() ; // ToList() da prekine shallow copy 
+                        /* jeftinije.hr */ TheArtiklList.Where(art => art.Grupa3CD.NotEmpty()).GroupBy(art => art.ArtiklCD).ToList(); // ToList() da prekine shallow copy 
 
       TheArtiklList.Clear();
 
@@ -3969,11 +3972,21 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
 
          NC    = artikl_rec.AS_PrNabCij  ;
          NC_OP = artikl_rec.AS_PrNabCijOP;
-         M_OP  = ZXC.luiListaGrupa2Artikla.GetNumberForThisCd(artikl_rec.Grupa2CD);
+
+         M_OP = ZXC.luiListaGrupa2Artikla.GetNumberForThisCd(artikl_rec.Grupa2CD);
 
          if(ZXC.IsEURoERA_projectYear)
          {
             M_OP = ZXC.EURiIzKuna_HRD_(M_OP);
+         }
+
+         // 07.02.2023: 
+         if(NC.IsZero())
+         {
+            M_OP   = 0.00M;
+            marzaB = 0.00M;
+            marzaC = 0.00M;
+            marzaG = 0.00M;
          }
 
          if(pakManjeOd1 == false) // normal case 
