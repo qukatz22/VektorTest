@@ -941,7 +941,7 @@ public class RptR_ArtiklKartica  : VvRiskReport
 
       // Do we need this, enivej?
     if((rtrans.A_PrevKolStanje.Ron2().IsZero() /*&& rtrans.A_MalopCij.Ron2().IsZero()*/) ||
-        DiffPovratCij.Ron2().IsZero()                                       ||
+        DiffPovratCij./*Ron2()*/Ron(4).IsZero()                                       ||
         i.IsZero() // prva stavka robne kartice 
        ) return null; // ili je prevKol nula ili je novaCijena = staraCijena 
 

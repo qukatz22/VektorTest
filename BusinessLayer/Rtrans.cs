@@ -2540,6 +2540,14 @@ struct IRA   *iraPtr;
       return true;
    }
 
+   public bool BudeLiOvajRedakRobneKarticeIskazaoMinus(ZXC.WriteMode writeMode, decimal kolStBeforeThisChange, out decimal deltaKol)
+   {
+      deltaKol = GetDeltaKol2023(writeMode);
+
+      decimal kolStAfterThisChange = kolStBeforeThisChange + deltaKol;
+
+      return kolStAfterThisChange.IsNegative();
+   }
    public decimal GetDeltaKol(ZXC.WriteMode writeMode)
    {
       decimal thisRtransKol = (TtInfo.IsStornoTT ? ForceNegative_T_kol     /* always negativno */ : T_kol    );
@@ -2558,6 +2566,29 @@ struct IRA   *iraPtr;
          case ZXC.WriteMode.Delete: deltaKol = -thisRtransKol;               break;
          case ZXC.WriteMode.Edit  : deltaKol = thisRtransKol - oldRtransKol; break;
          default                  : deltaKol = 0.00M;                        break;
+      }
+
+      return deltaKol;
+   }
+
+   public decimal GetDeltaKol2023(ZXC.WriteMode writeMode)
+   {
+      decimal thisRtransKol = (TtInfo.IsStornoTT ? ForceNegative_T_kol     /* always negativno */ : T_kol    );
+    //decimal oldRtransKol  = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
+      decimal deltaKol;
+
+      if(TtInfo.IsFinKol_I)
+      {
+         thisRtransKol = -thisRtransKol;
+       //oldRtransKol  = -oldRtransKol ;
+      }
+
+      switch(writeMode)
+      {
+         case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;                   break;
+         case ZXC.WriteMode.Delete: deltaKol = /*-thisRtransKol*/ 0M;            break; // !!! drugacije nego u GetDeltaKol() 
+         case ZXC.WriteMode.Edit  : deltaKol = thisRtransKol /*- oldRtransKol*/; break;
+         default                  : deltaKol = 0.00M;                            break;
       }
 
       return deltaKol;
