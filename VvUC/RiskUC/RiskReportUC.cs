@@ -1819,6 +1819,8 @@ public partial class RiskFilterUC : VvFilterUC
 
       int pomak1 = 0;
       int pomak2 = 0;
+      int pomak3 = 0;
+      int pomak4 = 0;
                             hamper.CreateVvLabel      (0, 0, "Knjiga IRA / URA:", 1, 0, ContentAlignment.MiddleRight);
                             hamper.CreateVvLabel      (0, 1, "Knjiga URA:"      , 1, 0, ContentAlignment.MiddleRight);
      
@@ -1850,7 +1852,7 @@ public partial class RiskFilterUC : VvFilterUC
 
       // dodano 09.06.2020. - do corone se nije nista desavalo sa redkom III.14, ukOsnObr_WO i ukPdvObr_WO su bili 0, pa neka sada svak stavi kaj mu treba
 
-                     hamper.CreateVvLabel (0, 6, "III.14.Pretp pri uvozu:"  , 1, 0, ContentAlignment.MiddleRight);
+                     hamper.CreateVvLabel (0, 6, "II.15.Pretp pri uvozu:"  , 1, 0, ContentAlignment.MiddleRight);
       tbx_PretpPriUvz_Osn = hamper.CreateVvTextBox(2, 6, "tbx_314_Osn", "Porezna osnovica: Pretporez pri uvozu", 12);
       tbx_PretpPriUvz_Pdv = hamper.CreateVvTextBox(3, 6, "tbx_314_Pdv", "Iznos poreza: Pretporez pri uvozu", 12, 1, 0);
 
@@ -1859,6 +1861,7 @@ public partial class RiskFilterUC : VvFilterUC
 
 
       #region bef2015
+
       Label lbl0   = hamper.CreateVvLabel  (0, 6, "PdvObr", ContentAlignment.MiddleLeft);
       Label lbl1   = hamper.CreateVvLabel  (1, 6, "III.5", ContentAlignment.MiddleLeft);
       Label lbl2   = hamper.CreateVvLabel  (2, 6, "III.6", ContentAlignment.MiddleLeft);
@@ -1877,34 +1880,42 @@ public partial class RiskFilterUC : VvFilterUC
          pomak1 = 2;
          pomak2 = 6;
       }
+
       #endregion bef2015
 
+      bool isNewEuroEra2023 = ZXC.projectYearAsInt > 2022;
 
                         hamper.CreateVvLabel  (0, 9-pomak1, "III.15. Ipravci pretpor:", 1, 0, ContentAlignment.MiddleRight);
       tbx_pdvIspravak = hamper.CreateVvTextBox(2, 9-pomak1, "tbx_pdvIspravak", "Ispravci pretporeza", 12);
       tbx_pdvIspravak.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
-                      hamper.CreateVvLabel  (0, 10-pomak1, "Porezni kredit:", 1, 0, ContentAlignment.MiddleRight);
+      Label lblPorK = hamper.CreateVvLabel  (0, 10-pomak1, "Porezni kredit:", 1, 0, ContentAlignment.MiddleRight);
       tbx_pdvKredit = hamper.CreateVvTextBox(2, 10-pomak1, "tbx_pdvKredir", "Pdv V.Po prethodnom obr: neuplaćeno, više uplaćeno - poreyni kredit //  Pdv-K V. Uplaćeno da odana podnošenja prijave", 12);
       tbx_pdvKredit.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
-      Label lbl8   = hamper.CreateVvLabel  (0, 9, "VII ", ContentAlignment.MiddleRight);
-      tbx_redakVII = hamper.CreateVvTextBox(1, 9, "tbx_redakVII ", "redakVII ", 12);
+      if(isNewEuroEra2023)
+      {
+         lblPorK.Visible = tbx_pdvKredit.Visible = false;
+         pomak3 = 1;
+      }
+
+      Label lbl8   = hamper.CreateVvLabel  (0, 9-pomak3, isNewEuroEra2023 ? "V." : "VII ", ContentAlignment.MiddleRight);
+      tbx_redakVII = hamper.CreateVvTextBox(1, 9-pomak3, "tbx_redakVII ", "redakVII ", 12);
       
-      Label lbl9    = hamper.CreateVvLabel  (0, 10, "VIII.1.1.", ContentAlignment.MiddleRight);
-      Label lbl10   = hamper.CreateVvLabel  (2, 10, "VIII.1.2.", ContentAlignment.MiddleRight);
-      tbx_pdv_811   = hamper.CreateVvTextBox(1, 10, "tbx_pdv_811  ", "pdv_811  ", 12);
-      tbx_pdv_812   = hamper.CreateVvTextBox(3, 10, "tbx_pdv_812  ", "pdv_812  ", 12, 1, 0);
+      Label lbl9    = hamper.CreateVvLabel  (0, 10-pomak3, isNewEuroEra2023 ? "VI.1.1" : "VIII.1.1.", ContentAlignment.MiddleRight);
+      Label lbl10   = hamper.CreateVvLabel  (2, 10-pomak3, isNewEuroEra2023 ? "VI.1.2" : "VIII.1.2.", ContentAlignment.MiddleRight);
+      tbx_pdv_811   = hamper.CreateVvTextBox(1, 10-pomak3, "tbx_pdv_811  ", "pdv_811  ", 12);
+      tbx_pdv_812   = hamper.CreateVvTextBox(3, 10-pomak3, "tbx_pdv_812  ", "pdv_812  ", 12, 1, 0);
       
-      Label lbl11   = hamper.CreateVvLabel  (0, 11, "VIII.1.3.", ContentAlignment.MiddleRight);
-      Label lbl12   = hamper.CreateVvLabel  (2, 11, "VIII.1.4.", ContentAlignment.MiddleRight);
-      tbx_pdv_813   = hamper.CreateVvTextBox(1, 11, "tbx_pdv_813  ", "pdv_813  ", 12);
-      tbx_pdv_814   = hamper.CreateVvTextBox(3, 11, "tbx_pdv_814  ", "pdv_814  ", 12, 1, 0);
+      Label lbl11   = hamper.CreateVvLabel  (0, 11-pomak3, isNewEuroEra2023 ? "VI.1.3" : "VIII.1.3.", ContentAlignment.MiddleRight);
+      Label lbl12   = hamper.CreateVvLabel  (2, 11-pomak3, isNewEuroEra2023 ? "VI.1.4" : "VIII.1.4.", ContentAlignment.MiddleRight);
+      tbx_pdv_813   = hamper.CreateVvTextBox(1, 11-pomak3, "tbx_pdv_813  ", "pdv_813  ", 12);
+      tbx_pdv_814   = hamper.CreateVvTextBox(3, 11-pomak3, "tbx_pdv_814  ", "pdv_814  ", 12, 1, 0);
       
-      Label lbl13   = hamper.CreateVvLabel  (0, 12, "VIII.1.5.", ContentAlignment.MiddleRight);
-      Label lbl14   = hamper.CreateVvLabel  (2, 12, "VIII.2.0.", ContentAlignment.MiddleRight);
-      tbx_pdv_815   = hamper.CreateVvTextBox(1, 12, "tbx_pdv_815  ", "pdv_815  ", 12);
-      tbx_pdv_820   = hamper.CreateVvTextBox(3, 12, "tbx_pdv_820  ", "pdv_820  ", 12, 1, 0);
+      Label lbl13   = hamper.CreateVvLabel  (0, 12-pomak3, isNewEuroEra2023 ? "VI.1.5" : "VIII.1.5.", ContentAlignment.MiddleRight);
+      Label lbl14   = hamper.CreateVvLabel  (2, 12-pomak3, isNewEuroEra2023 ? "VI.2.0" : "VIII.2.0.", ContentAlignment.MiddleRight);
+      tbx_pdv_815   = hamper.CreateVvTextBox(1, 12-pomak3, "tbx_pdv_815  ", "pdv_815  ", 12);
+      tbx_pdv_820   = hamper.CreateVvTextBox(3, 12-pomak3, "tbx_pdv_820  ", "pdv_820  ", 12, 1, 0);
 
       Label lbl15   = hamper.CreateVvLabel  (0, 13, "VIII.3.1.v", ContentAlignment.MiddleRight);
       Label lbl16   = hamper.CreateVvLabel  (2, 13, "VIII.3.1.b", ContentAlignment.MiddleRight);
@@ -1921,11 +1932,18 @@ public partial class RiskFilterUC : VvFilterUC
       tbx_pdv_833vr = hamper.CreateVvTextBox(1, 15, "tbx_pdv_833vr", "pdv_833vr", 12);
       tbx_pdv_833br = hamper.CreateVvTextBox(3, 15, "tbx_pdv_833br", "pdv_833br", 12, 1, 0);
 
-      Label lbl21   = hamper.CreateVvLabel  (0, 16, "VIII.6.  ", ContentAlignment.MiddleRight);
-      tbx_pdv_860   = hamper.CreateVvTextBox(1, 16, "tbx_pdv_860  ", "pdv_860  ", 12);
+      if(isNewEuroEra2023)
+      {
+         lbl15.Visible = lbl16.Visible = lbl17.Visible = lbl18.Visible = lbl19.Visible = lbl20.Visible =
+         tbx_pdv_831vr.Visible = tbx_pdv_831br.Visible = tbx_pdv_832vr.Visible = tbx_pdv_832br.Visible = tbx_pdv_833vr.Visible = tbx_pdv_833br.Visible = false;
+         pomak4 = 4;
+      }
 
-      Label lbl22   = hamper.CreateVvLabel  (2, 16, "VIII.4.  ", ContentAlignment.MiddleRight);
-      tbx_pdv_840   = hamper.CreateVvTextBox(3, 16, "tbx_pdv_840  ", "pdv_840  ", 12, 1, 0);
+      Label lbl21   = hamper.CreateVvLabel  (0, 16-pomak4, isNewEuroEra2023 ? "VI.5." : "VIII.6", ContentAlignment.MiddleRight);
+      tbx_pdv_860   = hamper.CreateVvTextBox(1, 16-pomak4, "tbx_pdv_860  ", "pdv_860  ", 12);
+
+      Label lbl22   = hamper.CreateVvLabel  (2, 16-pomak4, isNewEuroEra2023 ? "VI.3." : "VIII.4.", ContentAlignment.MiddleRight);
+      tbx_pdv_840   = hamper.CreateVvTextBox(3, 16-pomak4, "tbx_pdv_840  ", "pdv_840  ", 12, 1, 0);
 
       tbx_redakVII.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_pdv_811   .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
@@ -1966,32 +1984,38 @@ public partial class RiskFilterUC : VvFilterUC
       }
 
 
-      hamper.CreateVvLabel(0, 11+pomak2, "PdvObr:" , ContentAlignment.MiddleLeft);
-      hamper.CreateVvLabel(1, 11+pomak2, "Povrat"  , ContentAlignment.MiddleLeft);
-      hamper.CreateVvLabel(2, 11+pomak2, "Predujam", ContentAlignment.MiddleLeft);
-      hamper.CreateVvLabel(3, 11+pomak2, "Ustup"   , 1, 0, ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(0, 11+(isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "PdvObr:" , ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(1, 11+(isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "Povrat"  , ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(2, 11+(isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "Predujam", ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(3, 11+(isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "Ustup"   , 1, 0, ContentAlignment.MiddleLeft);
 
-      tbx_pdvPovrat   = hamper.CreateVvTextBox(1, 12+pomak2, "tbx_pdvPovrat"  , "Povrat"       , 12);
-      tbx_pdvPredujam = hamper.CreateVvTextBox(2, 12+pomak2, "tbx_pdvPredujam", "Predujam"     , 12);
-      tbx_pdvUstup    = hamper.CreateVvTextBox(3, 12+pomak2, "tbx_pdvUstup"   , "Ustup povrata", 12, 1, 0);
+      tbx_pdvPovrat   = hamper.CreateVvTextBox(1, 12 + (isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "tbx_pdvPovrat"  , "Povrat"       , 12);
+      tbx_pdvPredujam = hamper.CreateVvTextBox(2, 12 + (isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "tbx_pdvPredujam", "Predujam"     , 12);
+      tbx_pdvUstup    = hamper.CreateVvTextBox(3, 12 + (isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "tbx_pdvUstup"   , "Ustup povrata", 12, 1, 0);
 
       tbx_pdvPovrat  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_pdvPredujam.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_pdvUstup   .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
-                            hamper.CreateVvLabel       (0, 13+pomak2, "Sastav.:", 0, 0, ContentAlignment.MiddleLeft);
-      cbx_isCurrUser      = hamper.CreateVvCheckBox_OLD(1, 13+pomak2, null, "User", System.Windows.Forms.RightToLeft.No);
-      tbx_obrazacSastavio = hamper.CreateVvTextBox     (2, 13+pomak2, "tbx_obrazacSastavio", "Obračun sastavio ", 32, 2, 0);
+                            hamper.CreateVvLabel       (0, 13 + (isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "Sastav.:", 0, 0, ContentAlignment.MiddleLeft);
+      cbx_isCurrUser      = hamper.CreateVvCheckBox_OLD(1, 13 + (isNewEuroEra2023 ? pomak2-pomak4 : pomak2), null, "User", System.Windows.Forms.RightToLeft.No);
+      tbx_obrazacSastavio = hamper.CreateVvTextBox     (2, 13 + (isNewEuroEra2023 ? pomak2-pomak4 : pomak2), "tbx_obrazacSastavio", "Obračun sastavio ", 32, 2, 0);
 
-                        hamper.CreateVvLabel       (0, 14+pomak2,             "IzPrj:", ContentAlignment.MiddleLeft);
+      Label lblTelFax = hamper.CreateVvLabel       (0, 14+pomak2,             "IzPrj:", ContentAlignment.MiddleLeft);
       cbx_isPrjktTel  = hamper.CreateVvCheckBox_OLD(1, 14+pomak2, null,       "Tel"   , System.Windows.Forms.RightToLeft.No);
       cbx_isPrjktFax  = hamper.CreateVvCheckBox_OLD(2, 14+pomak2, null,       "Fax"   , System.Windows.Forms.RightToLeft.No);
       cbx_IsPrjktMail = hamper.CreateVvCheckBox_OLD(3, 14+pomak2, null, 1, 0, "Mail"  , System.Windows.Forms.RightToLeft.No);
+      Label lblkont   = hamper.CreateVvLabel  (0, 15+pomak2, "Kontakt:", ContentAlignment.MiddleLeft);
+      tbx_tel         = hamper.CreateVvTextBox(1, 15+pomak2, "tbx_tel" , "Kontak telefon");
+      tbx_fax         = hamper.CreateVvTextBox(2, 15+pomak2, "tbx_fax" , "Kontakt fax");
+      tbx_mail        = hamper.CreateVvTextBox(3, 15+pomak2, "tbx_mail", "Kontakt mail", 42, 1, 0);
 
-                 hamper.CreateVvLabel  (0, 15+pomak2, "Kontakt:", ContentAlignment.MiddleLeft);
-      tbx_tel  = hamper.CreateVvTextBox(1, 15+pomak2, "tbx_tel" , "Kontak telefon");
-      tbx_fax  = hamper.CreateVvTextBox(2, 15+pomak2, "tbx_fax" , "Kontakt fax");
-      tbx_mail = hamper.CreateVvTextBox(3, 15+pomak2, "tbx_mail", "Kontakt mail", 42, 1, 0);
+      if(isNewEuroEra2023)
+      {
+         lblTelFax.Visible = cbx_isPrjktTel.Visible = cbx_isPrjktFax.Visible = cbx_IsPrjktMail.Visible =
+         lblkont.Visible = tbx_tel.Visible = tbx_fax.Visible = tbx_mail.Visible = false;
+      }   
+
 
       //VvHamper.HamperStyling(hamper);
       VvHamper.AddLabelLine(hamper);
