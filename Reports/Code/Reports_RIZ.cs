@@ -7081,46 +7081,137 @@ public class RptR_PDV_Knjiga         : RptR_PDV
 
       theURA.Tijelo.Racuni = new PDV_URA.sRacun[TheFakturList.Count];
 
-      for(int i = 0; i < theURA.Tijelo.Racuni.Length; ++i)
+      //for(int i = 0; i < theURA.Tijelo.Racuni.Length; ++i)
+      //{
+      //   racunLine = theURA.Tijelo.Racuni[i] = new PDV_URA.sRacun();
+
+      //   racunLine.R1  = TheFakturList[i].X_PdvNum.ToString();
+      //   racunLine.R2  = TheFakturList[i].VezniDok          ;
+      //   racunLine.R3  = TheFakturList[i].DokDate.Date;
+      //   racunLine.R4  = TheFakturList[i].KupdobName     ;
+      //   racunLine.R5  = TheFakturList[i].KdAdresa     ;
+      //   racunLine.R6  = Get_ID_Type(TheFakturList[i].KupdobCD);
+      //   racunLine.R7  = TheFakturList[i].KdOib;
+      //   racunLine.R8  = TheFakturList[i].R_ukOsn05.Ron2();
+      //   racunLine.R9  = TheFakturList[i].R_ukOsn10.Ron2();
+      //   racunLine.R10 = (TheFakturList[i].R_ukOsn22 + TheFakturList[i].R_ukOsn23 + TheFakturList[i].R_ukOsn25).Ron2();
+      //   racunLine.R11 = TheFakturList[i].R_ukKCRPwoPr.Ron2();
+      //   racunLine.R12 = TheFakturList[i].S_ukPdv.Ron2();
+      //   racunLine.R13 = TheFakturList[i].S_ukPdv05m.Ron2();
+      //   racunLine.R14 = TheFakturList[i].S_ukPdv05n.Ron2();
+      //   racunLine.R15 = TheFakturList[i].S_ukPdv10m.Ron2();
+      //   racunLine.R16 = TheFakturList[i].S_ukPdv10n.Ron2();
+      //   racunLine.R17 = (TheFakturList[i].S_ukPdv22m + TheFakturList[i].S_ukPdv23m + TheFakturList[i].S_ukPdv25m).Ron2();
+      //   racunLine.R18 = (TheFakturList[i].S_ukPdv22n + TheFakturList[i].S_ukPdv23n + TheFakturList[i].S_ukPdv25n).Ron2();
+
+      //   if(PdvSchema_2023) racunLine.R19  = TheFakturList[i].S_ukOsn0;
+      //}
+
+      if(PdvSchema_2015)// old
       {
-         racunLine = theURA.Tijelo.Racuni[i] = new PDV_URA.sRacun();
+         for(int i = 0; i < theURA.Tijelo.Racuni.Length; ++i)
+         {
+            racunLine = theURA.Tijelo.Racuni[i] = new PDV_URA.sRacun();
 
-         racunLine.R1  = TheFakturList[i].X_PdvNum.ToString();
-         racunLine.R2  = TheFakturList[i].VezniDok          ;
-         racunLine.R3  = TheFakturList[i].DokDate.Date;
-         racunLine.R4  = TheFakturList[i].KupdobName     ;
-         racunLine.R5  = TheFakturList[i].KdAdresa     ;
-         racunLine.R6  = Get_ID_Type(TheFakturList[i].KupdobCD);
-         racunLine.R7  = TheFakturList[i].KdOib;
-         racunLine.R8  = TheFakturList[i].R_ukOsn05.Ron2();
-         racunLine.R9  = TheFakturList[i].R_ukOsn10.Ron2();
-         racunLine.R10 = (TheFakturList[i].R_ukOsn22 + TheFakturList[i].R_ukOsn23 + TheFakturList[i].R_ukOsn25).Ron2();
-         racunLine.R11 = TheFakturList[i].R_ukKCRPwoPr.Ron2();
-         racunLine.R12 = TheFakturList[i].S_ukPdv.Ron2();
-         racunLine.R13 = TheFakturList[i].S_ukPdv05m.Ron2();
-         racunLine.R14 = TheFakturList[i].S_ukPdv05n.Ron2();
-         racunLine.R15 = TheFakturList[i].S_ukPdv10m.Ron2();
-         racunLine.R16 = TheFakturList[i].S_ukPdv10n.Ron2();
-         racunLine.R17 = (TheFakturList[i].S_ukPdv22m + TheFakturList[i].S_ukPdv23m + TheFakturList[i].S_ukPdv25m).Ron2();
-         racunLine.R18 = (TheFakturList[i].S_ukPdv22n + TheFakturList[i].S_ukPdv23n + TheFakturList[i].S_ukPdv25n).Ron2();
+            racunLine.R1 = TheFakturList[i].X_PdvNum.ToString();
+            racunLine.R2 = TheFakturList[i].VezniDok;
+            racunLine.R3 = TheFakturList[i].DokDate.Date;
+            racunLine.R4 = TheFakturList[i].KupdobName;
+            racunLine.R5 = TheFakturList[i].KdAdresa;
+            racunLine.R6 = Get_ID_Type(TheFakturList[i].KupdobCD);
+            racunLine.R7 = TheFakturList[i].KdOib;
+            racunLine.R8 = TheFakturList[i].R_ukOsn05.Ron2();
+            racunLine.R9 = TheFakturList[i].R_ukOsn10.Ron2();
+            racunLine.R10 = (TheFakturList[i].R_ukOsn22 + TheFakturList[i].R_ukOsn23 + TheFakturList[i].R_ukOsn25).Ron2();
+            racunLine.R11 = TheFakturList[i].R_ukKCRPwoPr.Ron2();
+            racunLine.R12 = TheFakturList[i].S_ukPdv.Ron2();
+            racunLine.R13 = TheFakturList[i].S_ukPdv05m.Ron2();
+            racunLine.R14 = TheFakturList[i].S_ukPdv05n.Ron2();
+            racunLine.R15 = TheFakturList[i].S_ukPdv10m.Ron2();
+            racunLine.R16 = TheFakturList[i].S_ukPdv10n.Ron2();
+            racunLine.R17 = (TheFakturList[i].S_ukPdv22m + TheFakturList[i].S_ukPdv23m + TheFakturList[i].S_ukPdv25m).Ron2();
+            racunLine.R18 = (TheFakturList[i].S_ukPdv22n + TheFakturList[i].S_ukPdv23n + TheFakturList[i].S_ukPdv25n).Ron2();
+         }
+      }
+      else
+      { 
+         for(int i = 0; i < theURA.Tijelo.Racuni.Length; ++i)
+         {
+            racunLine = theURA.Tijelo.Racuni[i] = new PDV_URA.sRacun();
 
-         if(PdvSchema_2023) racunLine.R19  = TheFakturList[i].S_ukOsn0;
+            racunLine.R1  = TheFakturList[i].X_PdvNum.ToString();
+            racunLine.R2  = TheFakturList[i].VezniDok;
+            racunLine.R3  = TheFakturList[i].DokDate.Date;
+            racunLine.R4  = TheFakturList[i].KupdobName;
+            racunLine.R5  = TheFakturList[i].KdAdresa;
+            racunLine.R6  = Get_ID_Type(TheFakturList[i].KupdobCD);
+            racunLine.R7  = TheFakturList[i].KdOib;
+            racunLine.R19 = TheFakturList[i].S_ukOsn0;
+            racunLine.R8  = TheFakturList[i].R_ukOsn05.Ron2();
+            racunLine.R9  = TheFakturList[i].R_ukOsn10.Ron2();
+            racunLine.R10 = (TheFakturList[i].R_ukOsn22 + TheFakturList[i].R_ukOsn23 + TheFakturList[i].R_ukOsn25).Ron2();
+            racunLine.R11 = TheFakturList[i].R_ukKCRPwoPr.Ron2();
+            racunLine.R12 = TheFakturList[i].S_ukPdv.Ron2();
+            racunLine.R13 = TheFakturList[i].S_ukPdv05m.Ron2();
+            racunLine.R14 = TheFakturList[i].S_ukPdv05n.Ron2();
+            racunLine.R15 = TheFakturList[i].S_ukPdv10m.Ron2();
+            racunLine.R16 = TheFakturList[i].S_ukPdv10n.Ron2();
+            racunLine.R17 = (TheFakturList[i].S_ukPdv22m + TheFakturList[i].S_ukPdv23m + TheFakturList[i].S_ukPdv25m).Ron2();
+            racunLine.R18 = (TheFakturList[i].S_ukPdv22n + TheFakturList[i].S_ukPdv23n + TheFakturList[i].S_ukPdv25n).Ron2();
+
+         }
       }
 
-      theURA.Tijelo.Ukupno = new PDV_URA.sRacuniUkupno()
+      //theURA.Tijelo.Ukupno = new PDV_URA.sRacuniUkupno()
+      //{
+      //   U8  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn05.Ron2(),
+      //   U9  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn10.Ron2(),
+      //   U10 = (this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn25 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn23 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn22).Ron2(),
+      //   U11 = this.Faktur_rec_SumaRazdoblja_URA.R_ukKCRPwoPr.Ron2(),
+      //   U12 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv     .Ron2(),
+      //   U13 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05m  .Ron2(),
+      //   U14 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05n  .Ron2(),
+      //   U15 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10m  .Ron2(),
+      //   U16 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10n  .Ron2(),
+      //   U17 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22m).Ron2(),
+      //   U18 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22n).Ron2(),
+      //};
+
+      if(PdvSchema_2015)// old
       {
-         U8  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn05.Ron2(),
-         U9  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn10.Ron2(),
-         U10 = (this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn25 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn23 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn22).Ron2(),
-         U11 = this.Faktur_rec_SumaRazdoblja_URA.R_ukKCRPwoPr.Ron2(),
-         U12 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv     .Ron2(),
-         U13 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05m  .Ron2(),
-         U14 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05n  .Ron2(),
-         U15 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10m  .Ron2(),
-         U16 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10n  .Ron2(),
-         U17 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22m).Ron2(),
-         U18 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22n).Ron2(),
-      };
+         theURA.Tijelo.Ukupno = new PDV_URA.sRacuniUkupno()
+         {
+            U8  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn05.Ron2(),
+            U9  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn10.Ron2(),
+            U10 = (this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn25 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn23 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn22).Ron2(),
+            U11 = this.Faktur_rec_SumaRazdoblja_URA.R_ukKCRPwoPr.Ron2(),
+            U12 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv.Ron2(),
+            U13 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05m.Ron2(),
+            U14 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05n.Ron2(),
+            U15 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10m.Ron2(),
+            U16 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10n.Ron2(),
+            U17 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22m).Ron2(),
+            U18 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22n).Ron2(),
+         };
+      }
+      else // new PdvSchema_2023
+      {
+         theURA.Tijelo.Ukupno = new PDV_URA.sRacuniUkupno()
+         {
+            U19 = this.Faktur_rec_SumaRazdoblja_URA.S_ukOsn0.Ron2(),
+            U8  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn05.Ron2(),
+            U9  = this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn10.Ron2(),
+            U10 = (this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn25 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn23 + this.Faktur_rec_SumaRazdoblja_URA.R_ukOsn22).Ron2(),
+            U11 = this.Faktur_rec_SumaRazdoblja_URA.R_ukKCRPwoPr.Ron2(),
+            U12 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv.Ron2(),
+            U13 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05m.Ron2(),
+            U14 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv05n.Ron2(),
+            U15 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10m.Ron2(),
+            U16 = this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv10n.Ron2(),
+            U17 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23m + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22m).Ron2(),
+            U18 = (this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv25n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv23n + this.Faktur_rec_SumaRazdoblja_URA.S_ukPdv22n).Ron2(),
+         };
+      }
 
 #endregion Tijelo
 
