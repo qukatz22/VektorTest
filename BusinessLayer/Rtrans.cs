@@ -2585,10 +2585,31 @@ struct IRA   *iraPtr;
 
       switch(writeMode)
       {
-         case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;                   break;
-         case ZXC.WriteMode.Delete: deltaKol = /*-thisRtransKol*/ 0M;            break; // !!! drugacije nego u GetDeltaKol() 
-         case ZXC.WriteMode.Edit  : deltaKol = thisRtransKol /*- oldRtransKol*/; break;
-         default                  : deltaKol = 0.00M;                            break;
+         case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;                    break;
+         case ZXC.WriteMode.Delete: deltaKol = /*-thisRtransKol*/ 0M;             break; // !!! drugacije nego u GetDeltaKol() 
+         case ZXC.WriteMode.Edit  : deltaKol = +thisRtransKol /*- oldRtransKol*/; break;
+         default                  : deltaKol = 0.00M;                             break;
+      }
+
+      return deltaKol;
+   }
+
+   public decimal GetDeltaKol2023_BCKP(ZXC.WriteMode writeMode)
+   {
+      decimal thisRtransBCKPkol = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
+      decimal deltaKol;
+
+      if(TtInfo.IsFinKol_I)
+      {
+         thisRtransBCKPkol = -thisRtransBCKPkol;
+      }
+
+      switch(writeMode)
+      {
+         case ZXC.WriteMode.Add   : deltaKol = +thisRtransBCKPkol; break;
+         case ZXC.WriteMode.Delete: deltaKol =                 0M; break; 
+         case ZXC.WriteMode.Edit  : deltaKol = +thisRtransBCKPkol; break;
+         default: deltaKol = 0.00M; break;
       }
 
       return deltaKol;
