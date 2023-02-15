@@ -559,6 +559,8 @@ public partial class sRacuniUkupno
 
    private decimal u19Field;
 
+   private bool u19FieldSpecified;
+
    private decimal u8Field;
 
    private decimal u9Field;
@@ -591,6 +593,19 @@ public partial class sRacuniUkupno
       set
       {
          this.u19Field = value;
+      }
+   }
+
+   [System.Xml.Serialization.XmlIgnoreAttribute()]
+   public bool U19Specified
+   {
+      get
+      {
+         return this.u19FieldSpecified;
+      }
+      set
+      {
+         this.u19FieldSpecified = value;
       }
    }
 
@@ -763,6 +778,8 @@ public partial class sRacun
 
    private decimal r19Field;
 
+   private bool r19FieldSpecified;
+
    private decimal r8Field;
 
    private decimal r9Field;
@@ -888,6 +905,19 @@ public partial class sRacun
       set
       {
          this.r19Field = value;
+      }
+   }
+
+   [System.Xml.Serialization.XmlIgnoreAttribute()]
+   public bool R19Specified
+   {
+      get
+      {
+         return this.r19FieldSpecified;
+      }
+      set
+      {
+         this.r19FieldSpecified = value;
       }
    }
 
