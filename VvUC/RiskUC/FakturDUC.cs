@@ -2131,7 +2131,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                pdvColTip != ZXC.PdvKolTipEnum.KOL13 &&
                pdvColTip != ZXC.PdvKolTipEnum.KOL14 &&
                pdvColTip != ZXC.PdvKolTipEnum.KOL15 &&
-               pdvColTip != ZXC.PdvKolTipEnum.KOL16)
+               pdvColTip != ZXC.PdvKolTipEnum.KOL16 &&
+               //15.02.2023
+               pdvColTip != ZXC.PdvKolTipEnum.PROLAZ
+               )
             {
                if(Fld_TT != Faktur.TT_IRA) // za spec potrebe knjig. servisa cemo dozvoliti praznu PK kolonu i pdvSt 0 
                {
@@ -10307,8 +10310,8 @@ public partial class FakturExtDUC : FakturDUC
          tbx_S_ukPdv10n.Visible =
          tbx_S_ukOsn05n.Visible =
          tbx_S_ukPdv05n.Visible =
-         tbx_S_ukOsnPr.Visible =
-         lbl_prolSt.Visible = false;
+         /*tbx_S_ukOsnPr.Visible =
+         lbl_prolSt.Visible 15.02.2023=*/ false;
 
          lbl_s_ukOsn07.Visible =
          lbl_s_ukOsn08.Visible =

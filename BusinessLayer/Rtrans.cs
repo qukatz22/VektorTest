@@ -1155,8 +1155,10 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
             return
              //this.T_pdvColTip == ZXC.PdvKolTipEnum.NIJE   ||
                this.T_pdvColTip == ZXC.PdvKolTipEnum.MOZE   ||
-               this.T_pdvColTip == ZXC.PdvKolTipEnum.NEMOZE ||
-               this.T_pdvColTip == ZXC.PdvKolTipEnum.PROLAZ  ;
+               this.T_pdvColTip == ZXC.PdvKolTipEnum.NEMOZE //||
+               //15.02.2023. za prolazni 0% pdv povratna ambalaža
+             //this.T_pdvColTip == ZXC.PdvKolTipEnum.PROLAZ  
+               ;
          }
          else if(this.TtInfo.IsUlazniPdvTT)
          {
