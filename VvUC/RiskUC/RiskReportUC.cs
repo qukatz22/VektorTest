@@ -3258,7 +3258,9 @@ public partial class RiskFilterUC : VvFilterUC
       if(theVvRiskReport.VirtualReportDocument is Vektor.Reports.RIZ.CR_ProvizijaKomerc) // force lowest dateOD, highest dateDO 
       { // ovdje, dakle, kronolosko ogranicenje ne smije trzati na fakture nego samo na uplate 
          theRptFilter.Date3 = theRptFilter.DatumOd;
-         theRptFilter.DatumOd = dateOD = /*DateTime.MinValue*/ZXC.Date01012014;
+         // 16.02.2023: 
+       //theRptFilter.DatumOd = dateOD = /*DateTime.MinValue*/ZXC.Date01012014;
+         theRptFilter.DatumOd = dateOD = /*DateTime.MinValue*/ZXC.Date01012018;
          dateDO = ZXC.projectYearLastDay;
       }
 
