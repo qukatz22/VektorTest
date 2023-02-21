@@ -493,7 +493,7 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
    public uint       T_BCKPttNum     { get { return this.backupData._t_ttNum    ; } set { this.backupData._t_ttNum     = value; } }
    public ushort     T_BCKPserial    { get { return this.backupData._t_serial   ; } set { this.backupData._t_serial    = value; } }
 
-   public decimal    T_BCKPkol       { get { return this.backupData._t_kol ; } }
+   public decimal    T_BCKPkol       { get { return this.backupData._t_kol ; } set { this.backupData._t_kol = value; } } // set komponenta tek od 2023 za CheckForMinus23 !? 
    public decimal    T_BCKPkol2      { get { return this.backupData._t_kol2; } }
 
    #endregion Some Backup Values (For DeleteFromCache)
@@ -2615,6 +2615,25 @@ struct IRA   *iraPtr;
       }
 
       return deltaKol;
+   }
+
+   /// <summary>
+   /// Sluzi samo za Check For Minus
+   /// </summary>
+   public DateTime DatumPocetkaPromjeneRobnojKartici
+   {
+      get
+      {
+         switch(SaveTransesWriteMode)
+         {
+            case ZXC.WriteMode.Add   : 
+            case ZXC.WriteMode.Delete: return T_skladDate;
+
+            case ZXC.WriteMode.Edit  : return (T_skladDate < T_BCKPskladDate ? T_skladDate : T_BCKPskladDate);
+
+            default                  : return T_skladDate;
+         }
+      }
    }
 
    #endregion CheckForMinus
