@@ -101,7 +101,7 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
    public const string recordNameArhiva = recordName + VvDataRecord.ArhRecNameExstension;
 
    /*private*/ public RtransStruct currentData;
-   private RtransStruct backupData;
+   /*private*/ public RtransStruct backupData;
 
    /*private*/ public RtransResultStruct _rtrResults;
 
