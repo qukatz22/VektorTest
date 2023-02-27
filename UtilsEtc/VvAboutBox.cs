@@ -626,11 +626,11 @@ public class VvMessageBoxDLG :  VvDialog
    public Button okButton;
    private int dlgWidth, dlgHeight;
 
-   public VvMessageBoxDLG(bool _smallFont)
+   public VvMessageBoxDLG(bool _smallFont, ZXC.VvmBoxKind vvmBoxKind)
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new VvMessageBox_UC(this, _smallFont, this is VvMessageBoxForm);
+      TheUC = new VvMessageBox_UC(this, _smallFont, this is VvMessageBoxForm, vvmBoxKind);
 
       SuspendLayout();
 
@@ -691,12 +691,13 @@ public class VvMessageBox_UC : UserControl
    int colWidth = 0;
    private bool smallFont;
    private bool isMultiColumn;
+   private ZXC.VvmBoxKind vvmBoxKind;
 
    #endregion Fieldz
 
    #region Constructor
 
-   public VvMessageBox_UC(Control _parent, bool _smallFont, bool _isMultiColumn)
+   public VvMessageBox_UC(Control _parent, bool _smallFont, bool _isMultiColumn, ZXC.VvmBoxKind _vvmBoxKind)
    {
       this.SuspendLayout();
 
@@ -704,6 +705,7 @@ public class VvMessageBox_UC : UserControl
 
       this.smallFont     = _smallFont    ;
       this.isMultiColumn = _isMultiColumn;
+      this.vvmBoxKind    = _vvmBoxKind   ;
 
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
 
@@ -1074,7 +1076,7 @@ public class VvMessageBox_UC : UserControl
 
 public class VvMessageBoxForm : VvMessageBoxDLG
 {
-   public VvMessageBoxForm(bool _smallFont) : base(_smallFont)
+   public VvMessageBoxForm(bool _smallFont, ZXC.VvmBoxKind vvmBoxKind) : base(_smallFont, vvmBoxKind)
    {
      
       this.okButton.Click += OkButton_Click;
