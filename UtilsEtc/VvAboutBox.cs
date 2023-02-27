@@ -785,7 +785,7 @@ public class VvMessageBox_UC : UserControl
       else if(vvmBoxKind == ZXC.VvmBoxKind.RobnaKartica)
       {
          CreateMultiColumn_Minus(TheGrid);
-         TheGrid.Width  = ZXC.Q10un * 5 + ZXC.Q2un + TheGrid.RowHeadersWidth;
+         TheGrid.Width  = ZXC.Q10un * 4 + ZXC.Q2un + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
       else
@@ -1051,20 +1051,18 @@ public class VvMessageBox_UC : UserControl
       {
          TheGrid.Rows.Add();
 
-         TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate   );
-         TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1   );
-         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobCD  );
-         TheGrid.PutCell(ci.iT_ulaz   , rowIdx, messageList[rowIdx].TheMoney  );
-         TheGrid.PutCell(ci.iT_izlaz  , rowIdx, messageList[rowIdx].TheMoney2 );
-         TheGrid.PutCell(ci.iT_stanje , rowIdx, messageList[rowIdx].TheSaldo  );
+         TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate.Day);
+         TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1    );
+         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobName );
+         TheGrid.PutCell(ci.iT_ulaz   , rowIdx, messageList[rowIdx].TheMoney   );
+         TheGrid.PutCell(ci.iT_izlaz  , rowIdx, messageList[rowIdx].TheMoney2  );
+         TheGrid.PutCell(ci.iT_stanje , rowIdx, messageList[rowIdx].TheSaldo   );
 
          if(messageList[rowIdx].TheSaldo.IsNegative()) TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red  );
          else                                          TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
-
-      //this.Parent.Text = "ROBNA KARTICA artikla " + messageList[0].ArtiklGrCD + " " + messageList[0].ArtiklGrName + " na skladištu " + messageList[0].String2;
 
       TheGrid.ClearSelection();
    }
