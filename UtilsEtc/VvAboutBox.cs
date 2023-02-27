@@ -785,7 +785,7 @@ public class VvMessageBox_UC : UserControl
       else if(vvmBoxKind == ZXC.VvmBoxKind.RobnaKartica)
       {
          CreateMultiColumn_Minus(TheGrid);
-         TheGrid.Width  = ZXC.Q10un * 4 + ZXC.Q2un + TheGrid.RowHeadersWidth;
+         TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Q5un + ZXC.Qun8 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
       else
@@ -834,12 +834,12 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_Minus(VvDataGridView theGrid)
    {
-      CreateColumn_datum  (theGrid, "Datum"  , ZXC.Q5un);
-      CreateColumn_tipBr  (theGrid, "TipBr"  , ZXC.Q4un);
-      CreateColumn_partner(theGrid, "Partner", ZXC.Q7un);
-      CreateColumn_ulaz   (theGrid, "Ulaz"   , ZXC.Q4un);
-      CreateColumn_izlaz  (theGrid, "Izlaz"  , ZXC.Q4un);
-      CreateColumn_stanje (theGrid, "Stanje" , ZXC.Q4un);
+      CreateColumn_datum  (theGrid, "Datum"  , ZXC.Q5un            );
+      CreateColumn_tipBr  (theGrid, "TipBr"  , ZXC.Q5un            );
+      CreateColumn_partner(theGrid, "Partner", ZXC.Q10un + ZXC.Q2un);
+      CreateColumn_ulaz   (theGrid, "Ulaz"   , ZXC.Q4un            );
+      CreateColumn_izlaz  (theGrid, "Izlaz"  , ZXC.Q4un            );
+      CreateColumn_stanje (theGrid, "Stanje" , ZXC.Q4un            );
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -1051,12 +1051,12 @@ public class VvMessageBox_UC : UserControl
       {
          TheGrid.Rows.Add();
 
-         TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate.Day);
-         TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1    );
-         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobName );
-         TheGrid.PutCell(ci.iT_ulaz   , rowIdx, messageList[rowIdx].TheMoney   );
-         TheGrid.PutCell(ci.iT_izlaz  , rowIdx, messageList[rowIdx].TheMoney2  );
-         TheGrid.PutCell(ci.iT_stanje , rowIdx, messageList[rowIdx].TheSaldo   );
+         TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate.ToString(ZXC.VvDateFormat));
+         TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1                           );
+         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobName                        );
+         TheGrid.PutCell(ci.iT_ulaz   , rowIdx, messageList[rowIdx].TheMoney                          );
+         TheGrid.PutCell(ci.iT_izlaz  , rowIdx, messageList[rowIdx].TheMoney2                         );
+         TheGrid.PutCell(ci.iT_stanje , rowIdx, messageList[rowIdx].TheSaldo                          );
 
          if(messageList[rowIdx].TheSaldo.IsNegative()) TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red  );
          else                                          TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
