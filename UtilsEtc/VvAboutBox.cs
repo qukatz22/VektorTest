@@ -651,9 +651,6 @@ public class VvMessageBoxDLG :  VvDialog
 
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
-   
-
-
       AddOkButton(out okButton, dlgWidth, dlgHeight);
       okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
@@ -685,13 +682,9 @@ public class VvMessageBox_UC : UserControl
 
    public VvDataGridView TheGrid { get; set; }
 
-   private VvTextBox vvtb_message   ,
-                     vvtb_barkod    ,
-                     vvtb_kol,
-                     vvtb_artiklCd  ,
-                     vvtb_artiklName,
-                     vvtb_tserial   ,
-                     vvtb_status    ;
+   private VvTextBox vvtb_message,
+                     vvtb_barkod, vvtb_kol, vvtb_artiklCd, vvtb_artiklName, vvtb_tserial, vvtb_status,
+                     vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje;
 
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
@@ -712,7 +705,6 @@ public class VvMessageBox_UC : UserControl
       this.smallFont     = _smallFont    ;
       this.isMultiColumn = _isMultiColumn;
 
-    //colWidth = ZXC.Q10un * 3 + ZXC.Q5un;
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
 
       CreateTheGrid();
@@ -729,12 +721,8 @@ public class VvMessageBox_UC : UserControl
 
    private void CalcLocationAndSize(/*bool _smallFont*/bool _isMultiColumn)
    {
-      //19.3.2019
-      //this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 3);
-
       if(_isMultiColumn) this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 2);
       else               this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 3);
-
 
       TheGrid.Height = this.Size.Height - ZXC.Q2un;
    }
@@ -789,7 +777,8 @@ public class VvMessageBox_UC : UserControl
       //TheGrid.Height = this.Size.Height - ZXC.QUN;
       if(isMultiColumn)
       {
-         CreateMultiColumn(TheGrid);
+       //CreateMultiColumn(TheGrid);
+         CreateMultiColumn_Minus(TheGrid);
          TheGrid.Width  = ZXC.Q10un * 6 + ZXC.Q2un + TheGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4 - ZXC.Q2un;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
 
@@ -827,7 +816,7 @@ public class VvMessageBox_UC : UserControl
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
-   private void CreateMultiColumn(VvDataGridView theGrid)
+   private void CreateMultiColumn_Barkod(VvDataGridView theGrid)
    {
       CreateColumn_barkod    (theGrid, "Barkod"      , ZXC.Q5un              );
       CreateColumn_kol       (theGrid, "Kol"         , ZXC.Q3un              );
@@ -840,6 +829,19 @@ public class VvMessageBox_UC : UserControl
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
+   private void CreateMultiColumn_Minus(VvDataGridView theGrid)
+   {
+      CreateColumn_datum  (theGrid, "Datum"  , ZXC.Q5un);
+      CreateColumn_tipBr  (theGrid, "TipBr"  , ZXC.Q4un);
+      CreateColumn_partner(theGrid, "Partner", ZXC.Q7un);
+      CreateColumn_ulaz   (theGrid, "Ulaz"   , ZXC.Q4un);
+      CreateColumn_izlaz  (theGrid, "Izlaz"  , ZXC.Q4un);
+      CreateColumn_stanje (theGrid, "Stanje" , ZXC.Q4un);
+
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+   }
+
+   #region barkodColumns
    private void CreateColumn_barkod(VvDataGridView theGrid, string header, int colWidth)
    {
       vvtb_barkod = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_barkod", null, -12, header);
@@ -892,6 +894,52 @@ public class VvMessageBox_UC : UserControl
       colVvText.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
    }
 
+   #endregion barkodColumns
+
+   #region minus Columns
+
+   private void CreateColumn_datum(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_datum = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_datum", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_datum, null, "R_datum", header, colWidth);
+      vvtb_datum.JAM_ReadOnly = true;
+   }
+
+   private void CreateColumn_tipBr(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_tipBr = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_tipBr", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tipBr, null, "R_tipBr", header, colWidth);
+      vvtb_tipBr.JAM_ReadOnly = true;
+   }
+   private void CreateColumn_partner(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_partner = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_partner", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner, null, "R_partner", header, colWidth);
+      vvtb_partner.JAM_ReadOnly = true;
+   }
+
+   private void CreateColumn_ulaz(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_ulaz = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_ulaz", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ulaz, null, "R_ulaz", header, colWidth);
+      vvtb_ulaz.JAM_ReadOnly = true;
+   }
+
+   private void CreateColumn_izlaz(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_izlaz = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_izlaz", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_izlaz, null, "R_izlaz", header, colWidth);
+      vvtb_izlaz.JAM_ReadOnly = true;
+   }
+   private void CreateColumn_stanje(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_stanje = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_stanje", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stanje, null, "R_stanje", header, colWidth);
+      vvtb_stanje.JAM_ReadOnly = true;
+   }
+
+   #endregion minus Columns
+
    #endregion TheGridColumn
 
    #region SetColumnIndexes()
@@ -907,6 +955,14 @@ public class VvMessageBox_UC : UserControl
       internal int iT_artiklName;
       internal int iT_tserial   ;
       internal int iT_status    ;
+
+      internal int iT_datum     ;
+      internal int iT_tipBr     ;
+      internal int iT_partner   ;
+      internal int iT_ulaz      ;
+      internal int iT_izlaz     ;
+      internal int iT_stanje    ;
+
    }
 
    private void SetColumnIndexes()
@@ -920,6 +976,13 @@ public class VvMessageBox_UC : UserControl
       ci.iT_artiklName = TheGrid.IdxForColumn("R_artiklName");
       ci.iT_tserial    = TheGrid.IdxForColumn("R_tserial"   );
       ci.iT_status     = TheGrid.IdxForColumn("R_status"    );
+
+      ci.iT_datum   = TheGrid.IdxForColumn("R_datum")  ;
+      ci.iT_tipBr   = TheGrid.IdxForColumn("R_tipBr")  ;
+      ci.iT_partner = TheGrid.IdxForColumn("R_partner");
+      ci.iT_ulaz    = TheGrid.IdxForColumn("R_ulaz")   ;
+      ci.iT_izlaz   = TheGrid.IdxForColumn("R_izlaz")  ;
+      ci.iT_stanje  = TheGrid.IdxForColumn("R_stanje") ;
    }
 
    #endregion SetColumnIndexes()
@@ -952,22 +1015,40 @@ public class VvMessageBox_UC : UserControl
       {
          TheGrid.Rows.Add();
 
-         TheGrid.PutCell(ci.iT_barkod    , rowIdx, messageList[rowIdx].TheCD       );
-         TheGrid.PutCell(ci.iT_kol       , rowIdx, messageList[rowIdx].Kol         );
-         TheGrid.PutCell(ci.iT_artiklCd  , rowIdx, messageList[rowIdx].ArtiklGrCD  );
-         TheGrid.PutCell(ci.iT_artiklName, rowIdx, messageList[rowIdx].ArtiklGrName);
-         TheGrid.PutCell(ci.iT_tserial   , rowIdx, messageList[rowIdx].Count       );
-         TheGrid.PutCell(ci.iT_status    , rowIdx, messageList[rowIdx].DevName     );
-         TheGrid.PutCell(ci.iT_message   , rowIdx, messageList[rowIdx].KupdobName  );
+      //   #region barkod
+      //
+      //   TheGrid.PutCell(ci.iT_barkod    , rowIdx, messageList[rowIdx].TheCD       );
+      //   TheGrid.PutCell(ci.iT_kol       , rowIdx, messageList[rowIdx].Kol         );
+      //   TheGrid.PutCell(ci.iT_artiklCd  , rowIdx, messageList[rowIdx].ArtiklGrCD  );
+      //   TheGrid.PutCell(ci.iT_artiklName, rowIdx, messageList[rowIdx].ArtiklGrName);
+      //   TheGrid.PutCell(ci.iT_tserial   , rowIdx, messageList[rowIdx].Count       );
+      //   TheGrid.PutCell(ci.iT_status    , rowIdx, messageList[rowIdx].DevName     );
+      //   TheGrid.PutCell(ci.iT_message   , rowIdx, messageList[rowIdx].KupdobName  );
+      //
+      //   switch(messageList[rowIdx].DevName)
+      //   {
+      //      case "NEPOZNAT": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red       ); break;
+      //      case "NEMA GA" : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkViolet); break;
+      //      case "MINUS"   : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Green     ); break;
+      //      case "NEPOTPUN": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkBlue  ); break;
+      //      default        : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black     ); break;
+      //   }
 
-         switch(messageList[rowIdx].DevName)
-         {
-            case "NEPOZNAT": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red       ); break;
-            case "NEMA GA" : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkViolet); break;
-            case "MINUS"   : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Green     ); break;
-            case "NEPOTPUN": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkBlue  ); break;
-            default        : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black     ); break;
-         }
+      //   #endregion barkod
+
+         #region minus
+
+         TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate   );
+         TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1   );
+         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobCD  );
+         TheGrid.PutCell(ci.iT_ulaz   , rowIdx, messageList[rowIdx].TheMoney  );
+         TheGrid.PutCell(ci.iT_izlaz  , rowIdx, messageList[rowIdx].TheMoney2 );
+         TheGrid.PutCell(ci.iT_stanje , rowIdx, messageList[rowIdx].TheSaldo  );
+
+         if(messageList[rowIdx].TheSaldo.IsNegative()) TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red  );
+         else                                          TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
+
+         #endregion minus
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }

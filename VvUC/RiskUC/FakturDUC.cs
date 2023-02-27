@@ -14269,7 +14269,7 @@ public class Fak2NalogRulesUC : VvOtherUC
                        rbt_odmahS, rbt_zaSatS, rbt_sutraS, rbt_nikadS;
    public CheckBox cbx_hocuRealizac, cbx_grupPoNacPlac, cbx_sumMjescno, cbx_automatUrmSkl, cbx_automatIrmSkl, cbx_prihodLikeSklad, cbx_IsCheckAvanses,
                    cbx_isVisibleColPozicija, cbx_isVisibleColPozName, cbx_isVisibleColMtrosCD, cbx_isVisibleColMtrosTK, cbx_isVisibleColProjekt, cbx_isVisibleColFond, cbx_isVisibleColFondName, cbx_isVisibleColObrpdv, cbx_isVisibleColObr037,
-                   cbx_isPlanViaMtros, cbx_noPrintPozicCd, cbx_isVisibleColProgAkt, cbx_extValidation, cbx_IsNeGrupTrosak, cbx_IsOnlyIOSknjizenje, cbx_ForceIRMkaoIRA, cbx_isIFAtoUPL_napomena, cbx_Is_OTSviaMtrosCD;
+                   cbx_isPlanViaMtros, cbx_noPrintPozicCd, cbx_isVisibleColProgAkt, cbx_extValidation, cbx_IsNeGrupTrosak, cbx_IsOnlyIOSknjizenje, cbx_ForceIRMkaoIRA, cbx_isIFAtoUPL_napomena, cbx_Is_OTSviaMtrosCD, cbx_NePrikazujKDC;
 
    public KtoShemaDsc KSD { get; set; }
 
@@ -15343,7 +15343,7 @@ public class Fak2NalogRulesUC : VvOtherUC
 
    private void InitializeHamper_nzkCol(out VvHamper hamper)
    {
-      hamper = new VvHamper(13, 10, "", this, false);
+      hamper = new VvHamper(13, 11, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, hamp_IzdIzm.Bottom);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
@@ -15388,6 +15388,8 @@ public class Fak2NalogRulesUC : VvOtherUC
       cbx_isIFAtoUPL_napomena = hamper.CreateVvCheckBox_OLD(0, 8, null, 4, 0, "Napomena sa IFA/IRA kao svrha uplate na UPL", System.Windows.Forms.RightToLeft.No);// da na UPL dođe u svrhu Napomena a ne ono što mi pišemo
 
       cbx_Is_OTSviaMtrosCD    = hamper.CreateVvCheckBox_OLD(0, 9, null, 5, 0, "Da li mjesto troška utječe na otvorene stavke", System.Windows.Forms.RightToLeft.No);// da li mjesto troška utječe na otvorene stavke kod prijenos aPS
+     
+      cbx_NePrikazujKDC       = hamper.CreateVvCheckBox_OLD(0, 10, null, 5, 0, "Ne prikazuj Kontakte na tabu Osnovno Partnera", System.Windows.Forms.RightToLeft.No);// da se Kontakti ne prikazuju na Osnovnom od Partnera
    }
 
    #endregion Hampers ShemaKonta
@@ -15694,6 +15696,7 @@ public class Fak2NalogRulesUC : VvOtherUC
    public bool   Fld_ForceIRMkaoIRA       { get { return cbx_ForceIRMkaoIRA       .Checked; } set { cbx_ForceIRMkaoIRA      .Checked = value; } }
    public bool   Fld_IsIFAtoUPL_napomena  { get { return cbx_isIFAtoUPL_napomena  .Checked; } set { cbx_isIFAtoUPL_napomena .Checked = value; } }
    public bool   Fld_Is_OTSviaMtrosCD     { get { return cbx_Is_OTSviaMtrosCD     .Checked; } set { cbx_Is_OTSviaMtrosCD    .Checked = value; } }
+   public bool   Fld_NePrikazujKDC        { get { return cbx_NePrikazujKDC        .Checked; } set { cbx_NePrikazujKDC       .Checked = value; } }
 
    #endregion Fld_
 
@@ -15894,6 +15897,7 @@ public class Fak2NalogRulesUC : VvOtherUC
       Fld_ForceIRMkaoIRA       = KSD.Dsc_ForceIRMkaoIRA      ;
       Fld_IsIFAtoUPL_napomena  = KSD.Dsc_IsIFAtoUPL_napomena ;
       Fld_Is_OTSviaMtrosCD     = KSD.Dsc_Is_OTSviaMtrosCD    ;
+      Fld_NePrikazujKDC        = KSD.Dsc_NePrikazujKDC       ;
 
    }
 
@@ -16094,6 +16098,7 @@ public class Fak2NalogRulesUC : VvOtherUC
 
       KSD.Dsc_IsIFAtoUPL_napomena  = Fld_IsIFAtoUPL_napomena ;
       KSD.Dsc_Is_OTSviaMtrosCD     = Fld_Is_OTSviaMtrosCD    ;
+      KSD.Dsc_NePrikazujKDC        = Fld_NePrikazujKDC       ;
 
       KSD.SaveDscToLookUpItemList();
    }

@@ -7550,6 +7550,7 @@ public class KtoShemaDsc : VvLookupAsDsc
    public bool Dsc_IsIFAtoUPL_napomena  { get; set; }
    public bool Dsc_Is_OTSviaMtrosCD     { get; set; }
    public bool Dsc_ForceIRMkaoIRA       { get; set; }
+   public bool Dsc_NePrikazujKDC { get; set; }
 
    #endregion KontoSchema
 
@@ -7814,6 +7815,7 @@ public class KtoShemaDsc : VvLookupAsDsc
       Dsc_IsNeGrupTrosak       = 
       Dsc_IsOnlyIOSknjizenje   = 
       Dsc_ForceIRMkaoIRA       = 
+      Dsc_NePrikazujKDC        = 
       Dsc_IsIFAtoUPL_napomena  = false;
       Dsc_Is_OTSviaMtrosCD     = false;
 
