@@ -661,7 +661,7 @@ public class VvMessageBoxDLG :  VvDialog
       TheUC.Anchor         =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.TheGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
-      if(this is VvMessageBoxForm)
+      if(vvmBoxKind == ZXC.VvmBoxKind.BarCodeInfo)
       {
          this.StartPosition = FormStartPosition.Manual;
          this.Location = new Point(ZXC.TheVvForm.Right - dlgWidth - ZXC.QUN, 0);
@@ -710,8 +710,9 @@ public class VvMessageBox_UC : UserControl
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
 
       CreateTheGrid();
-      CalcLocationAndSize(/*_smallFont*/_isMultiColumn);
+      CalcLocationAndSize(vvmBoxKind);
       //PutDgvFields();
+
       this.ResumeLayout();
 
       SetColumnIndexes();
@@ -721,10 +722,11 @@ public class VvMessageBox_UC : UserControl
 
    #region CalcLocationAndSize
 
-   private void CalcLocationAndSize(/*bool _smallFont*/bool _isMultiColumn)
+   private void CalcLocationAndSize(ZXC.VvmBoxKind vvmBoxKind)
    {
-      if(_isMultiColumn) this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 2);
-      else               this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 3);
+           if(vvmBoxKind == ZXC.VvmBoxKind.BarCodeInfo ) this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 2);
+      else if(vvmBoxKind == ZXC.VvmBoxKind.RobnaKartica) this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 2);
+      else                                               this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 3);
 
       TheGrid.Height = this.Size.Height - ZXC.Q2un;
    }
@@ -774,16 +776,17 @@ public class VvMessageBox_UC : UserControl
          TheGrid.RowHeadersDefaultCellStyle   .Font = ZXC.vvFont.SmallFont;
       }
 
-
-      //TheGrid.Width = colWidth + TheGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
-      //TheGrid.Height = this.Size.Height - ZXC.QUN;
-      if(isMultiColumn)
+      if(vvmBoxKind == ZXC.VvmBoxKind.BarCodeInfo)
       {
-       //CreateMultiColumn(TheGrid);
-         CreateMultiColumn_Minus(TheGrid);
+         CreateMultiColumn_Barkod(TheGrid);
          TheGrid.Width  = ZXC.Q10un * 6 + ZXC.Q2un + TheGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4 - ZXC.Q2un;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
-
+      }
+      else if(vvmBoxKind == ZXC.VvmBoxKind.RobnaKartica)
+      {
+         CreateMultiColumn_Minus(TheGrid);
+         TheGrid.Width  = ZXC.Q10un * 5 + ZXC.Q2un + TheGrid.RowHeadersWidth;
+         TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
       else
       {
@@ -792,14 +795,12 @@ public class VvMessageBox_UC : UserControl
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
 
-
       // micanje tamnoplavog polja iz datagrida 
       //
       TheGrid.TabStop = false;
       TheGrid.ClearSelection();
       //
       //                                         
-
    }
 
    #endregion TheGrid
@@ -1007,7 +1008,7 @@ public class VvMessageBox_UC : UserControl
       TheGrid.ClearSelection();
    }
 
-   public void PutDgvFields(List<VvReportSourceUtil> messageList)
+   public void PutDgvFields_BarCodeInfo(List<VvReportSourceUtil> messageList)
    {
       int rowIdx;
 
@@ -1017,28 +1018,38 @@ public class VvMessageBox_UC : UserControl
       {
          TheGrid.Rows.Add();
 
-      //   #region barkod
-      //
-      //   TheGrid.PutCell(ci.iT_barkod    , rowIdx, messageList[rowIdx].TheCD       );
-      //   TheGrid.PutCell(ci.iT_kol       , rowIdx, messageList[rowIdx].Kol         );
-      //   TheGrid.PutCell(ci.iT_artiklCd  , rowIdx, messageList[rowIdx].ArtiklGrCD  );
-      //   TheGrid.PutCell(ci.iT_artiklName, rowIdx, messageList[rowIdx].ArtiklGrName);
-      //   TheGrid.PutCell(ci.iT_tserial   , rowIdx, messageList[rowIdx].Count       );
-      //   TheGrid.PutCell(ci.iT_status    , rowIdx, messageList[rowIdx].DevName     );
-      //   TheGrid.PutCell(ci.iT_message   , rowIdx, messageList[rowIdx].KupdobName  );
-      //
-      //   switch(messageList[rowIdx].DevName)
-      //   {
-      //      case "NEPOZNAT": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red       ); break;
-      //      case "NEMA GA" : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkViolet); break;
-      //      case "MINUS"   : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Green     ); break;
-      //      case "NEPOTPUN": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkBlue  ); break;
-      //      default        : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black     ); break;
-      //   }
+         TheGrid.PutCell(ci.iT_barkod    , rowIdx, messageList[rowIdx].TheCD       );
+         TheGrid.PutCell(ci.iT_kol       , rowIdx, messageList[rowIdx].Kol         );
+         TheGrid.PutCell(ci.iT_artiklCd  , rowIdx, messageList[rowIdx].ArtiklGrCD  );
+         TheGrid.PutCell(ci.iT_artiklName, rowIdx, messageList[rowIdx].ArtiklGrName);
+         TheGrid.PutCell(ci.iT_tserial   , rowIdx, messageList[rowIdx].Count       );
+         TheGrid.PutCell(ci.iT_status    , rowIdx, messageList[rowIdx].DevName     );
+         TheGrid.PutCell(ci.iT_message   , rowIdx, messageList[rowIdx].KupdobName  );
+         
+         switch(messageList[rowIdx].DevName)
+         {
+            case "NEPOZNAT": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red       ); break;
+            case "NEMA GA" : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkViolet); break;
+            case "MINUS"   : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Green     ); break;
+            case "NEPOTPUN": TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.DarkBlue  ); break;
+            default        : TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black     ); break;
+         }
 
-      //   #endregion barkod
+         TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+      }
 
-         #region minus
+      TheGrid.ClearSelection();
+   }
+
+   public void PutDgvFields_RobnaKartica(List<VvReportSourceUtil> messageList)
+   {
+      int rowIdx;
+
+      TheGrid.Rows.Clear();
+
+      for(rowIdx = 0; rowIdx < messageList.Count; ++rowIdx)
+      {
+         TheGrid.Rows.Add();
 
          TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate   );
          TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1   );
@@ -1050,10 +1061,10 @@ public class VvMessageBox_UC : UserControl
          if(messageList[rowIdx].TheSaldo.IsNegative()) TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red  );
          else                                          TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
 
-         #endregion minus
-
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
+
+      //this.Parent.Text = "ROBNA KARTICA artikla " + messageList[0].ArtiklGrCD + " " + messageList[0].ArtiklGrName + " na skladištu " + messageList[0].String2;
 
       TheGrid.ClearSelection();
    }
