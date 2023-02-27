@@ -432,13 +432,27 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
          }
       }
 
-      switch(tipTecaja)
+      if(ZXC.IsEURoERA_projectYear)
       {
-         case ZXC.TipTecajaEnum.KUPOVNI : return htrans_rec.T_Kupovni ;
-         case ZXC.TipTecajaEnum.SREDNJI : return htrans_rec.T_Srednji ;
-         case ZXC.TipTecajaEnum.PRODAJNI: return htrans_rec.T_Prodajni;
+         switch(tipTecaja)
+         {
+            case ZXC.TipTecajaEnum.KUPOVNI : return 1.00M / htrans_rec.T_Kupovni ; // recipročno u odnosu na stare 'kunske' godine 
+            case ZXC.TipTecajaEnum.SREDNJI : return 1.00M / htrans_rec.T_Srednji ; // recipročno u odnosu na stare 'kunske' godine 
+            case ZXC.TipTecajaEnum.PRODAJNI: return 1.00M / htrans_rec.T_Prodajni; // recipročno u odnosu na stare 'kunske' godine 
 
-         default: throw new Exception("DevTecDao.GetTecaj(): koji tecaj?");
+            default: throw new Exception("DevTecDao.GetTecaj(): koji tecaj?");
+         }
+      }
+      else // staro, 'KuneERA_projectYear' 
+      { 
+         switch(tipTecaja)
+         {
+            case ZXC.TipTecajaEnum.KUPOVNI : return htrans_rec.T_Kupovni ;
+            case ZXC.TipTecajaEnum.SREDNJI : return htrans_rec.T_Srednji ;
+            case ZXC.TipTecajaEnum.PRODAJNI: return htrans_rec.T_Prodajni;
+
+            default: throw new Exception("DevTecDao.GetTecaj(): koji tecaj?");
+         }
       }
 
    }
