@@ -684,7 +684,7 @@ public class VvMessageBox_UC : UserControl
 
    private VvTextBox vvtb_message,
                      vvtb_barkod, vvtb_kol, vvtb_artiklCd, vvtb_artiklName, vvtb_tserial, vvtb_status,
-                     vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje;
+                     vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje, vvtb_tmpMinus;
 
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
@@ -785,7 +785,7 @@ public class VvMessageBox_UC : UserControl
       else if(vvmBoxKind == ZXC.VvmBoxKind.RobnaKartica)
       {
          CreateMultiColumn_Minus(TheGrid);
-         TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Q5un + ZXC.Qun8 + TheGrid.RowHeadersWidth;
+         TheGrid.Width  = ZXC.Q10un * 4 + ZXC.Q3un - ZXC.Qun2 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
       else
@@ -834,12 +834,13 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_Minus(VvDataGridView theGrid)
    {
-      CreateColumn_datum  (theGrid, "Datum"  , ZXC.Q5un            );
-      CreateColumn_tipBr  (theGrid, "TipBr"  , ZXC.Q5un            );
-      CreateColumn_partner(theGrid, "Partner", ZXC.Q10un + ZXC.Q2un);
-      CreateColumn_ulaz   (theGrid, "Ulaz"   , ZXC.Q4un            );
-      CreateColumn_izlaz  (theGrid, "Izlaz"  , ZXC.Q4un            );
-      CreateColumn_stanje (theGrid, "Stanje" , ZXC.Q4un            );
+      CreateColumn_datum   (theGrid, "Datum"            , ZXC.Q5un            );
+      CreateColumn_tipBr   (theGrid, "Dokument"         , ZXC.Q5un            );
+      CreateColumn_partner (theGrid, "Partner"          , ZXC.Q10un + ZXC.Q3un);
+      CreateColumn_ulaz    (theGrid, "Ulaz"             , ZXC.Q4un            );
+      CreateColumn_izlaz   (theGrid, "Izlaz"            , ZXC.Q4un            );
+      CreateColumn_stanje  (theGrid, "Stanje"           , ZXC.Q4un            );
+      CreateColumn_tmpMinus(theGrid, "Minus=NovoStanje" , ZXC.Q6un            );
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -938,7 +939,17 @@ public class VvMessageBox_UC : UserControl
    {
       vvtb_stanje = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_stanje", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stanje, null, "R_stanje", header, colWidth);
+      colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_stanje.JAM_NumberOfDecimalPlaces, false, false); // da prikaze 0.00
       vvtb_stanje.JAM_ReadOnly = true;
+   }
+
+   private void CreateColumn_tmpMinus(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_tmpMinus = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_tmpMinus", null, -12, header);
+      colVvText    = theGrid.CreateVvTextBoxColumn(vvtb_tmpMinus, null, "R_tmpMinus", header, colWidth);
+      vvtb_tmpMinus.JAM_ReadOnly = true;
+      vvtb_tmpMinus.JAM_ForeColor = Color.Red;
+      colVvText.DefaultCellStyle.ForeColor = Color.Red;
    }
 
    #endregion minus Columns
@@ -965,7 +976,7 @@ public class VvMessageBox_UC : UserControl
       internal int iT_ulaz      ;
       internal int iT_izlaz     ;
       internal int iT_stanje    ;
-
+      internal int iT_tmpMinus  ;
    }
 
    private void SetColumnIndexes()
@@ -980,12 +991,13 @@ public class VvMessageBox_UC : UserControl
       ci.iT_tserial    = TheGrid.IdxForColumn("R_tserial"   );
       ci.iT_status     = TheGrid.IdxForColumn("R_status"    );
 
-      ci.iT_datum   = TheGrid.IdxForColumn("R_datum")  ;
-      ci.iT_tipBr   = TheGrid.IdxForColumn("R_tipBr")  ;
-      ci.iT_partner = TheGrid.IdxForColumn("R_partner");
-      ci.iT_ulaz    = TheGrid.IdxForColumn("R_ulaz")   ;
-      ci.iT_izlaz   = TheGrid.IdxForColumn("R_izlaz")  ;
-      ci.iT_stanje  = TheGrid.IdxForColumn("R_stanje") ;
+      ci.iT_datum    = TheGrid.IdxForColumn("R_datum")  ;
+      ci.iT_tipBr    = TheGrid.IdxForColumn("R_tipBr")  ;
+      ci.iT_partner  = TheGrid.IdxForColumn("R_partner");
+      ci.iT_ulaz     = TheGrid.IdxForColumn("R_ulaz")   ;
+      ci.iT_stanje   = TheGrid.IdxForColumn("R_stanje") ;
+      ci.iT_izlaz    = TheGrid.IdxForColumn("R_izlaz")  ;
+      ci.iT_tmpMinus = TheGrid.IdxForColumn("R_tmpMinus") ;
    }
 
    #endregion SetColumnIndexes()
@@ -1051,15 +1063,19 @@ public class VvMessageBox_UC : UserControl
       {
          TheGrid.Rows.Add();
 
-         TheGrid.PutCell(ci.iT_datum  , rowIdx, messageList[rowIdx].TheDate.ToString(ZXC.VvDateFormat));
-         TheGrid.PutCell(ci.iT_tipBr  , rowIdx, messageList[rowIdx].String1                           );
-         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobName                        );
-         TheGrid.PutCell(ci.iT_ulaz   , rowIdx, messageList[rowIdx].TheMoney                          );
-         TheGrid.PutCell(ci.iT_izlaz  , rowIdx, messageList[rowIdx].TheMoney2                         );
-         TheGrid.PutCell(ci.iT_stanje , rowIdx, messageList[rowIdx].TheSaldo                          );
+         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].TheDate.ToString(ZXC.VvDateFormat));
+         TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].String1                           );
+         TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName                        );
+         TheGrid.PutCell(ci.iT_ulaz    , rowIdx, messageList[rowIdx].TheMoney                          );
+         TheGrid.PutCell(ci.iT_izlaz   , rowIdx, messageList[rowIdx].TheMoney2                         );
+         TheGrid.PutCell(ci.iT_stanje  , rowIdx, messageList[rowIdx].TheSaldo                          );
+         TheGrid.PutCell(ci.iT_tmpMinus, rowIdx, messageList[rowIdx].TheKoef                           );
 
-         if(messageList[rowIdx].TheSaldo.IsNegative()) TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Red  );
-         else                                          TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
+              if(messageList[rowIdx].IsNekakav            ) TheGrid.SetDgvRowColor(rowIdx, Color.Beige    , Color.Black);
+         else if(messageList[rowIdx].TheSaldo.IsNegative() ||
+                 messageList[rowIdx].TheKoef.NotZero()    ) TheGrid.SetDgvRowColor(rowIdx, Color.White    , Color.Red  );
+         else if(messageList[rowIdx].TheSaldo.IsZero()    ) TheGrid.SetDgvRowColor(rowIdx, Color.AliceBlue, Color.Black);
+         else                                               TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
