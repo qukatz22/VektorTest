@@ -4963,6 +4963,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(IsShowingConvertedMoney == true) // idemo iz kuna u neku drugu valutu 
       {
          DevTecaj = ZXC.DevTecDao.GetHnbTecaj(ValutaNameInUse, Fld_DokDate);
+
+         if(ZXC.RISK_DisableCacheTemporarily) DevTecaj = 1.00M / ZXC.DevTecDao.GetHnbTecaj(ValutaNameInUse, Fld_DokDate);
       }
 
       PutFields(faktur_rec, false);
@@ -4974,8 +4976,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    internal decimal VvCurrency(decimal _money)
    {
       if(ValutaNameInUse         == ZXC.ValutaNameEnum.EMPTY ||
-         ValutaNameInUse         == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum   ||
-         IsShowingConvertedMoney == false)
+         ValutaNameInUse         == ZXC.EURorHRK_NameEnum    ||
+         IsShowingConvertedMoney == false                     )
       {
          return _money;
       }
