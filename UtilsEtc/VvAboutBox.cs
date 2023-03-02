@@ -696,7 +696,6 @@ public class VvMessageBox_UC : UserControl
    #endregion Fieldz
 
    #region Constructor
-
    public VvMessageBox_UC(Control _parent, bool _smallFont, bool _isMultiColumn, ZXC.VvmBoxKind _vvmBoxKind)
    {
       this.SuspendLayout();
@@ -721,7 +720,6 @@ public class VvMessageBox_UC : UserControl
    #endregion Constructor
 
    #region CalcLocationAndSize
-
    private void CalcLocationAndSize(ZXC.VvmBoxKind vvmBoxKind)
    {
            if(vvmBoxKind == ZXC.VvmBoxKind.BarCodeInfo ) this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 2);
@@ -734,7 +732,6 @@ public class VvMessageBox_UC : UserControl
    #endregion CalcLocationAndSize
 
    #region TheGrid
-
    private void CreateTheGrid()
    {
       TheGrid          = new VvDataGridView();
@@ -785,7 +782,7 @@ public class VvMessageBox_UC : UserControl
       else if(vvmBoxKind == ZXC.VvmBoxKind.RobnaKartica)
       {
          CreateMultiColumn_Minus(TheGrid);
-         TheGrid.Width  = ZXC.Q10un * 4 + ZXC.Q3un - ZXC.Qun2 + TheGrid.RowHeadersWidth;
+         TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Q7un - ZXC.Qun2 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
       else
@@ -840,8 +837,7 @@ public class VvMessageBox_UC : UserControl
       CreateColumn_ulaz    (theGrid, "Ulaz"             , ZXC.Q4un            );
       CreateColumn_izlaz   (theGrid, "Izlaz"            , ZXC.Q4un            );
       CreateColumn_stanje  (theGrid, "Stanje"           , ZXC.Q4un            );
-      CreateColumn_tmpMinus(theGrid, "Minus=NovoStanje" , ZXC.Q6un            );
-
+      
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
@@ -943,15 +939,6 @@ public class VvMessageBox_UC : UserControl
       vvtb_stanje.JAM_ReadOnly = true;
    }
 
-   private void CreateColumn_tmpMinus(VvDataGridView theGrid, string header, int colWidth)
-   {
-      vvtb_tmpMinus = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_tmpMinus", null, -12, header);
-      colVvText    = theGrid.CreateVvTextBoxColumn(vvtb_tmpMinus, null, "R_tmpMinus", header, colWidth);
-      vvtb_tmpMinus.JAM_ReadOnly = true;
-      vvtb_tmpMinus.JAM_ForeColor = Color.Red;
-      colVvText.DefaultCellStyle.ForeColor = Color.Red;
-   }
-
    #endregion minus Columns
 
    #endregion TheGridColumn
@@ -976,7 +963,6 @@ public class VvMessageBox_UC : UserControl
       internal int iT_ulaz      ;
       internal int iT_izlaz     ;
       internal int iT_stanje    ;
-      internal int iT_tmpMinus  ;
    }
 
    private void SetColumnIndexes()
@@ -997,7 +983,6 @@ public class VvMessageBox_UC : UserControl
       ci.iT_ulaz     = TheGrid.IdxForColumn("R_ulaz")   ;
       ci.iT_stanje   = TheGrid.IdxForColumn("R_stanje") ;
       ci.iT_izlaz    = TheGrid.IdxForColumn("R_izlaz")  ;
-      ci.iT_tmpMinus = TheGrid.IdxForColumn("R_tmpMinus") ;
    }
 
    #endregion SetColumnIndexes()
@@ -1069,11 +1054,8 @@ public class VvMessageBox_UC : UserControl
          TheGrid.PutCell(ci.iT_ulaz    , rowIdx, messageList[rowIdx].TheMoney                          );
          TheGrid.PutCell(ci.iT_izlaz   , rowIdx, messageList[rowIdx].TheMoney2                         );
          TheGrid.PutCell(ci.iT_stanje  , rowIdx, messageList[rowIdx].TheSaldo                          );
-         TheGrid.PutCell(ci.iT_tmpMinus, rowIdx, messageList[rowIdx].TheKoef                           );
 
               if(messageList[rowIdx].IsNekakav            ) TheGrid.SetDgvRowColor(rowIdx, Color.Beige    , Color.Black);
-         else if(messageList[rowIdx].TheSaldo.IsNegative() ||
-                 messageList[rowIdx].TheKoef.NotZero()    ) TheGrid.SetDgvRowColor(rowIdx, Color.White    , Color.Red  );
          else if(messageList[rowIdx].TheSaldo.IsZero()    ) TheGrid.SetDgvRowColor(rowIdx, Color.AliceBlue, Color.Black);
          else                                               TheGrid.SetDgvRowColor(rowIdx, Color.White, Color.Black);
 
