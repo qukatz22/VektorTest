@@ -388,10 +388,6 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    public decimal GetTecaj(XSqlConnection conn, ZXC.BankaEnum banka, ZXC.ValutaNameEnum valuta, ZXC.TipTecajaEnum tipTecaja, DateTime forThisDate)
    {
-      return GetTecaj(conn, banka, valuta, tipTecaja, forThisDate, false);
-   }
-   public decimal GetTecaj(XSqlConnection conn, ZXC.BankaEnum banka, ZXC.ValutaNameEnum valuta, ZXC.TipTecajaEnum tipTecaja, DateTime forThisDate, bool is2023BUG)
-   {
       if(valuta == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum || valuta == ZXC.ValutaNameEnum.EMPTY) return 1.00M;
 
       DateTime validHNBdate = GetValidHNBdate(forThisDate);
@@ -436,7 +432,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
          }
       }
 
-      if(ZXC.IsEURoERA_projectYear && !is2023BUG)
+      if(ZXC.IsEURoERA_projectYear)
       {
          switch(tipTecaja)
          {
