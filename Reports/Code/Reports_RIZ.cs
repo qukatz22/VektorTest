@@ -6838,11 +6838,92 @@ public class RptR_PDV                : RptR_StandardRiskReport
       // 17.02.2014: za MakeDeepCoopy da budu IsExtendable = true 
       faktur_rec.TT = (isURA ? "URA" : "IRA");
 
+      // 06.03.2023: friziranja osnovica 
+      Friziranje_PDV_Osnovica(faktur_rec, isURA);
+
       return faktur_rec;
 
    }
 
-#endregion LoadPdvSume
+   private void Friziranje_PDV_Osnovica(Faktur faktur, bool isURA)
+   {
+      #region Init
+
+      bool hasDiscrepancy = false;
+      decimal correctOsnovica;
+      List<string> discrepancyList = new List<string>();
+    //string intro = "Uslijed velikog broja zaokruživanja osnovica ne odgovara iznosu PDV-a\n";
+      string redakIntro = "Razlika ";
+      string theStopaStr;
+      decimal thePdv, theOsn, theStopa;
+      decimal tolerancy = 0.00M;
+
+      #endregion Init
+
+      #region Navođenje stopa i kategorija
+
+      // 25% moze 
+      faktur.S_ukPdv25m =  25.00M; // BRISI ME!!! 
+      faktur.S_ukOsn25m =  99.98M; // BRISI ME!!! 
+      thePdv   = faktur.S_ukPdv25m ;
+      theOsn   = faktur.S_ukOsn25m ;
+      theStopa =               25M ;
+      theStopaStr =          @"25%";
+
+      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
+
+      //  5% moze 
+      faktur.S_ukPdv05m =   5.00M; // BRISI ME!!! 
+      faktur.S_ukOsn05m =  99.93M; // BRISI ME!!! 
+      thePdv   = faktur.S_ukPdv05m ;
+      theOsn   = faktur.S_ukOsn05m ;
+      theStopa =                5M ;
+      theStopaStr =           @"5%";
+
+      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
+
+      #endregion navođenje stopa i kategorija
+
+      #region Finish
+
+      if(hasDiscrepancy)
+      {
+         string dialogIntro = isURA ?
+            "III. Neusklađenost osnovica obračunanog pretporeza " : // URA 
+            "II.  Neusklađenost osnovica oporezivih transakcija " ; // IRA 
+          
+         ZXC.aim_emsg_List(dialogIntro + "i pdv-a zbog velikog broja zaokruživanja", discrepancyList);
+         DialogResult result = MessageBox.Show("Da li želite korigirati osnovice?",
+            "Potvrdite Korekciju Osnovica?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+         if(result != DialogResult.Yes) return;
+
+         ZXC.aim_emsg("Korekcija izvršena."/*, debugCount*/);
+      }
+
+      #endregion Finish
+
+   }
+
+   private string ErrMsgBuilder(decimal correctOsnovica, string intro, string theStopaStr, decimal theOsn)
+   {
+      return (intro + "po stopi " + theStopaStr + ": zbroj osnovica je " + theOsn.ToStringVv() + " a 'točna' osnovica " + correctOsnovica.ToStringVv() + " razlika: " + (theOsn - correctOsnovica).ToStringVv());
+   }
+
+   private bool GetDiscrepancyInfo(decimal thePdv, decimal theStopa, decimal theOsn, decimal tolerancy, string redakIntro, string theStopaStr, List<string> discrepancyList)
+   {
+      decimal correctOsnovica = ZXC.VvGet_100_from_25and25(thePdv, theStopa);
+
+      if(ZXC.AlmostEqual(correctOsnovica, theOsn, tolerancy) == false) 
+      { 
+         discrepancyList.Add(ErrMsgBuilder(correctOsnovica, redakIntro, theStopaStr, theOsn));
+         return true;
+      }
+
+      return false;
+   }
+
+   #endregion LoadPdvSume
 
 }
 

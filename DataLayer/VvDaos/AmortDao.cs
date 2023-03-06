@@ -401,7 +401,7 @@ public sealed class AmortDao : VvDaoBase, IVvDao
 
    #region Amortize
 
-   public static bool Amortize(XSqlConnection dbConnection, DateTime _dateAmort, string _opis, ZXC.AmortRazdoblje _amortRazdoblje)
+   public static bool Amortize(XSqlConnection dbConnection, DateTime _dateAmort, string _opis, ZXC.AmortRazdoblje _amortRazdoblje, bool _isNivelirajEURoNeravnotezu)
    {
       ushort line       = 0;
       bool   isNotEmpty = false;
@@ -416,7 +416,9 @@ public sealed class AmortDao : VvDaoBase, IVvDao
       // dobije se isto. Ne kuzim ovo inner / outer sequence razliku 
       // var osredRichList2= osrStatList.Join(osredList, o => o.OsredCD, s => s.OsredCD, (o, s) => new { o, s });
 
-      //foreach(Osred osredRich_rec in osredList)
+      // 06.03.2023: pri prelasku na EURo dobila se prividna neravnoteza ukNab - ukAmort 
+      bool isNivelirajEURoNeravnotezu = /*ZXC.RISK_DisableCacheTemporarily*/_isNivelirajEURoNeravnotezu;
+
       foreach(var osredRich_rec in osredRichList)
       {
          if(osredRich_rec.o.IsRashod == true)  continue;
@@ -425,6 +427,9 @@ public sealed class AmortDao : VvDaoBase, IVvDao
          amortResults = GetNewAmort(dbConnection, osredRich_rec.o, osredRich_rec.s, _dateAmort); // !!! 
 
          if(amortResults.justCalculatedNewAmort.IsZero()) continue;
+
+         // 06.03.2023: pri prelasku na EURo dobila se prividna neravnoteza ukNab - ukAmort 
+         if(isNivelirajEURoNeravnotezu && !amortResults.justCalculatedNewAmort.AlmostZero(0.05M)) continue;
 
          if(!isNotEmpty) isNotEmpty = true;
 

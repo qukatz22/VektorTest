@@ -969,6 +969,7 @@ public class AmortizacijaDLG : VvDialog
    private VvTextBox      tbx_opis, tbx_datum;
    private DateTimePicker dtp_datum;
    private ComboBox       cbx_razd;
+   private CheckBox       chkBox_isNiv;
 
    #endregion Fieldz
 
@@ -997,15 +998,15 @@ public class AmortizacijaDLG : VvDialog
 
    private void CreateHamper()
    {
-      hamper          = new VvHamper(3, 3, "", this, false);
+      hamper          = new VvHamper(3, 4, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
       hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q5un, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN, ZXC.QUN, ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2, ZXC.Qun2, ZXC.Qun2};
+      hamper.VvRowHgt       = new int[] { ZXC.QUN, ZXC.QUN  , ZXC.QUN , ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2, ZXC.Qun2, ZXC.Qun2, ZXC.Qun2 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lbRazd, lbDat, lbOpis;
@@ -1031,6 +1032,8 @@ public class AmortizacijaDLG : VvDialog
       cbx_razd.DataSource = Enum.GetValues(typeof(ZXC.AmortRazdoblje));
       //cbx_razd.SelectedIndex = 0;
       cbx_razd.SelectedItem = ZXC.AmortRazdoblje.GODINA;
+
+      chkBox_isNiv = hamper.CreateVvCheckBox_OLD(0, 3, null, "Nivelacija konverzije", RightToLeft.No);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
 
@@ -1071,6 +1074,12 @@ public class AmortizacijaDLG : VvDialog
    {
       get { return (ZXC.AmortRazdoblje)cbx_razd.SelectedItem; }
       set { cbx_razd.SelectedItem = value; }
+   }
+
+   public bool Fld_isNivelirajEURoNeravnotezu
+   {
+      get { return chkBox_isNiv.Checked;         }
+      set {        chkBox_isNiv.Checked = value; }
    }
 
    #endregion Fld_
