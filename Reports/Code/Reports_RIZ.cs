@@ -6520,7 +6520,7 @@ public struct PdvObrazacData
                               _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10 + 
                               _faktur_rec_SumaRazdoblja_IRA.S_ukOsn11 ;
                             
-      this.ukOsnPdvObrI     = ukOsnPdvObrI2                                  + 
+      this.ukOsnPdvObrI     = ukOsnPdvObrI2                           + 
                               _faktur_rec_SumaRazdoblja_IRA.S_ukOsn0  + 
                               _faktur_rec_SumaRazdoblja_IRA.S_ukOsn07 ;
 
@@ -6789,9 +6789,43 @@ public struct PdvObrazacData
       this.sumI     += _faktur_rec_SumaRazdoblja_IRA.S_ukOsn0;
       this.sumIiII  += _faktur_rec_SumaRazdoblja_IRA.S_ukOsn0;
 
-#endregion news 2023
+      #endregion news 2023
+
+      #region Check & Repair Osnovica vs Pdv in 2023
+
+      _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m, _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m, 5.00M, "II.1. ");
+      // tu si stala 
+
+      #endregion Check & Repair Osnovica vs Pdv in 2023
 
    }
+
+   private decimal CheckAndRepair_Osnovica_vs_Pdv(decimal theOsn, decimal thePdv, decimal theStopa, string XYinfo)
+   {
+      // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
+      decimal correctOsnovica = ZXC.VvGet_100_from_25and25(thePdv, theStopa);
+      // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
+
+      decimal tolerancy = 0.00M;
+
+      if(ZXC.AlmostEqual(correctOsnovica, theOsn, tolerancy)) return theOsn;
+
+      string errMsg = ErrMsgBuilder(correctOsnovica, theOsn, theStopa, XYinfo);
+
+      DialogResult result = MessageBox.Show("Da li želite korigirati osnovice?", errMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+      if(result != DialogResult.Yes) return theOsn         ;
+      return                                correctOsnovica; // tu se izvrsi korekcija 
+   }
+
+   private string ErrMsgBuilder(decimal correctOsnovica, decimal theOsn, decimal theStopa, string XYinfo)
+   {
+      string introStr    = "Razlika ";
+      string theStopaStr = theStopa.ToStringVv();
+
+      return (introStr + "po stopi " + theStopaStr + ": zbroj osnovica je " + theOsn.ToStringVv() + " a 'točna' osnovica " + correctOsnovica.ToStringVv() + " razlika: " + (theOsn - correctOsnovica).ToStringVv());
+   }
+
 }
 
 public class RptR_PDV                : RptR_StandardRiskReport
@@ -6838,240 +6872,8 @@ public class RptR_PDV                : RptR_StandardRiskReport
       // 17.02.2014: za MakeDeepCoopy da budu IsExtendable = true 
       faktur_rec.TT = (isURA ? "URA" : "IRA");
 
-      // 06.03.2023: friziranja osnovica 
-      Friziranje_PDV_Osnovica(faktur_rec, isURA);
-
       return faktur_rec;
 
-   }
-
-   private void Friziranje_PDV_Osnovica(Faktur faktur, bool isURA)
-   {
-      #region Init
-
-      bool hasDiscrepancy = false;
-      decimal correctOsnovica;
-      List<string> discrepancyList = new List<string>();
-    //string intro = "Uslijed velikog broja zaokruživanja osnovica ne odgovara iznosu PDV-a\n";
-      string redakIntro = "Razlika ";
-      string theStopaStr;
-      decimal thePdv, theOsn, theStopa;
-      decimal tolerancy = 0.00M;
-      string redakPdvObr = "";
-
-      #endregion Init
-
-      #region Navođenje stopa i kategorija
-
-      #region HR
-      
-      //  5% HR III.1.
-      thePdv      = faktur.S_ukPdv05m ;
-      theOsn      = faktur.S_ukOsn05m ;
-      theStopa    =                5M ;
-      theStopaStr =              @"5%";
-      redakPdvObr = isURA ? "III.1. " : "II.1. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      // 13% HR III.2.
-      thePdv      = faktur.S_ukPdv10m ;
-      theOsn      = faktur.S_ukOsn10m ;
-      theStopa    =               13M ;
-      theStopaStr =             @"13%";
-      redakPdvObr = isURA ? "III.2. ": "II.2.";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-     
-      // 25% HR III.3.
-      thePdv      = faktur.S_ukPdv25m ;
-      theOsn      = faktur.S_ukOsn25m ;
-      theStopa    =               25M ;
-      theStopaStr =             @"25%";
-      redakPdvObr = isURA ? "III.3. " : "II.1.";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion HR
-
-      #region TP
-
-      // 25% TP 
-      thePdv      = faktur.S_ukPdv25m_TP ;
-      theOsn      = faktur.S_ukOsn25m_TP ;
-      theStopa    =                  25M ;
-      theStopaStr =                @"25%";
-      redakPdvObr = "II.4. i III.4. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion TP
-
-      #region EU roba
-
-      //  5% EU roba 
-      thePdv      = faktur.S_ukPdvR05m_EU ;
-      theOsn      = faktur.S_ukOsnR05m_EU ;
-      theStopa    =                    5M ;
-      theStopaStr =                  @"5%";
-      redakPdvObr = "II.5. i III.5. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      // 13% EU roba 
-      thePdv      = faktur.S_ukPdvR10m_EU;
-      theOsn      = faktur.S_ukOsnR10m_EU;
-      theStopa    =                  13M ;
-      theStopaStr =                @"13%";
-      redakPdvObr = "II.6. i III.6. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      // 25% EU roba 
-      thePdv      = faktur.S_ukPdvR25m_EU;
-      theOsn      = faktur.S_ukOsnR25m_EU;
-      theStopa    =                  25M ;
-      theStopaStr =                @"25%";
-      redakPdvObr = "II.7. i III.7. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion EU roba
-
-      #region EU usluga
-
-      //  5% EU usluga 
-      thePdv      = faktur.S_ukPdvU05m_EU ;
-      theOsn      = faktur.S_ukOsnU05m_EU ;
-      theStopa    =                    5M ;
-      theStopaStr =                  @"5%";
-      redakPdvObr = "II.8. i III.8. ";
-
-      // 13% EU usluga 
-      thePdv = faktur.S_ukPdvU10m_EU;
-      theOsn      = faktur.S_ukOsnU10m_EU;
-      theStopa    =                  13M ;
-      theStopaStr =                @"13%";
-      redakPdvObr = "II.9. i III.9. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-      // 25% EU usluga 
-      thePdv      = faktur.S_ukPdvU25m_EU;
-      theOsn      = faktur.S_ukOsnU25m_EU;
-      theStopa    =                  25M ;
-      theStopaStr =                @"25%";
-      redakPdvObr = "II.10. i III.10. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion EU usluga
-
-      #region BS
-
-      // 13% BS 
-      thePdv      = faktur.S_ukPdv10m_BS ;
-      theOsn      = faktur.S_ukOsn10m_BS ;
-      theStopa    =                  13M ;
-      theStopaStr =                @"13%";
-      redakPdvObr = "II.12. i III.12. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      // 25% BS 
-      thePdv      = faktur.S_ukPdv25m_BS ;
-      theOsn      = faktur.S_ukOsn25m_BS ;
-      theStopa    =                  25M ;
-      theStopaStr =                @"25%";
-      redakPdvObr = "II.13. i III.13. ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion BS
-
-      #region Uvoz roba
-
-      // 25% Ur III.14
-      thePdv      = faktur.S_ukPdvUr25 ;
-      theOsn      = faktur.S_ukOsnUr25 ;
-      theStopa    =                25M ;
-      theStopaStr =              @"25%";
-      redakPdvObr = "III.14 ";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      // 13% Ur ?
-      thePdv      = faktur.S_ukPdvUr05 ;
-      theOsn      = faktur.S_ukOsnUr05 ;
-      theStopa    =                 5M ;
-      theStopaStr =               @"5%";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion Uvoz roba
-
-      #region Uvoz usluga ?
-
-      // 25% Uu 
-      thePdv      = faktur.S_ukPdvUu25 ;
-      theOsn      = faktur.S_ukOsnUu25 ;
-      theStopa    =                25M ;
-      theStopaStr =              @"25%";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      // 13% Uu 
-      thePdv      = faktur.S_ukPdvUu10 ;
-      theOsn      = faktur.S_ukOsnUu10 ;
-      theStopa    =                13M ;
-      theStopaStr =              @"13%";
-
-      if(GetDiscrepancyInfo(thePdv, theStopa, theOsn, tolerancy, redakIntro, theStopaStr, discrepancyList)) hasDiscrepancy = true;
-
-      #endregion Uvoz usluga
-
-
-      #endregion navođenje stopa i kategorija
-
-      #region Finish
-
-      if(hasDiscrepancy)
-      {
-         string dialogIntro = isURA ?
-            "III. Neusklađenost osnovica obračunanog pretporeza " : // URA 
-            "II.  Neusklađenost osnovica oporezivih transakcija " ; // IRA 
-          
-         ZXC.aim_emsg_List(dialogIntro + "i pdv-a zbog velikog broja zaokruživanja", discrepancyList);
-         DialogResult result = MessageBox.Show("Da li želite korigirati osnovice?",
-            "Potvrdite Korekciju Osnovica?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-         if(result != DialogResult.Yes) return;
-
-         ZXC.aim_emsg("Korekcija izvršena."/*, debugCount*/);
-      }
-
-      #endregion Finish
-
-   }
-
-   private string ErrMsgBuilder(decimal correctOsnovica, string intro, string theStopaStr, decimal theOsn)
-   {
-      return (intro + "po stopi " + theStopaStr + ": zbroj osnovica je " + theOsn.ToStringVv() + " a 'točna' osnovica " + correctOsnovica.ToStringVv() + " razlika: " + (theOsn - correctOsnovica).ToStringVv());
-   }
-
-   private bool GetDiscrepancyInfo(decimal thePdv, decimal theStopa, decimal theOsn, decimal tolerancy, string redakIntro, string theStopaStr, List<string> discrepancyList)
-   {
-      decimal correctOsnovica = ZXC.VvGet_100_from_25and25(thePdv, theStopa);
-
-      if(ZXC.AlmostEqual(correctOsnovica, theOsn, tolerancy) == false) 
-      { 
-         discrepancyList.Add(ErrMsgBuilder(correctOsnovica, redakIntro, theStopaStr, theOsn));
-         return true;
-      }
-
-      return false;
    }
 
    #endregion LoadPdvSume
