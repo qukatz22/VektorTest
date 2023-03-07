@@ -6702,6 +6702,7 @@ public struct PdvObrazacData
       this.ukOsn_WO      = this.ukOsnUr23i25i05 /*+ _faktur_rec_SumaRazdoblja_URA.S_ukOsnUu10 + _faktur_rec_SumaRazdoblja_URA.S_ukOsnUu25*/;
       this.ukPdv_WO      = this.ukPdvUr23i25i05 /*+ _faktur_rec_SumaRazdoblja_URA.S_ukPdvUu10 + _faktur_rec_SumaRazdoblja_URA.S_ukPdvUu25*/;
 
+
       // SUME *******************************************************************************************************************************
 
       this.sumI          = _faktur_rec_SumaRazdoblja_IRA.S_ukOsn07 + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn08 + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn09 +
@@ -6827,6 +6828,26 @@ public struct PdvObrazacData
 
       #endregion Check & Repair Osnovica vs Pdv in 2023
 
+
+      #region SUME
+
+      this.sumIIOsn = _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m + /*_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m*/ukOsn222325_HR +
+                      _faktur_rec_SumaRazdoblja_IRA.S_ukOsn23m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn22m +
+                      this.ukOsn25mn_TP  + this.ukOsn10mn_BS  + this.ukOsn25mn_BS  + 
+                      this.ukOsnR05mn_EU + this.ukOsnR10mn_EU + this.ukOsnR25mn_EU +
+                      this.ukOsnU05mn_EU + this.ukOsnU10mn_EU + this.ukOsnU25mn_EU +
+                      this.ukOsnObr_WO   + this.ukOsnPdvF_obrII4                   ;
+
+      this.sumIiII = this.sumI + this.sumIIOsn;
+
+      this.sumIIIOsn = /*this.ukOsn_HR + this.ukOsnRm_EU + this.ukOsnUm_EU + this.ukOsnm_BS + this.ukOsn_WO  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_TP*/
+         ukUlazOsn05_HR + ukUlazOsn13_HR + ukUlazOsn25_HR + ukOsnm_TP      +
+         _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU +
+         _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU +
+         _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS  +  ukOsn_WO;
+
+      #endregion SUME
+
    }
 
    private decimal CheckAndRepair_Osnovica_vs_Pdv(decimal theOsn, decimal thePdv, decimal theStopa, string XYinfo)
@@ -6850,7 +6871,7 @@ public struct PdvObrazacData
 
    private string ErrMsgBuilder(decimal correctOsnovica, decimal theOsn, decimal theStopa, string XYinfo)
    {
-      string introStr    = "Razlika u redku " + XYinfo;
+      string introStr    = "Razlika u retku " + XYinfo;
       string theStopaStr = theStopa.ToStringVv();
 
       return (introStr + "po stopi " + theStopaStr + "\nzbroj osnovica je " + theOsn.ToStringVv() + "\na 'točna' osnovica " + correctOsnovica.ToStringVv() + "\nrazlika: " + (theOsn - correctOsnovica).ToStringVv());
