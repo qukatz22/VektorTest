@@ -1748,11 +1748,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          // 02.01.2015: od ssada ovako: 
          // 06.08.2015: za intervencije u slucaju 'Nekonzistentnost brojeva racuna' 
          //Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
-         if((ZXC.IsTEXTHOshop && ZXC.CurrUserHasSuperPrivileges) == false) // dakle, samo za superuser@TEXTHOshop se DOZVOLJAVA rucni datum, tj. ovo dole se NE izvodi 
+       //if((ZXC.IsTEXTHOshop && ZXC.CurrUserHasSuperPrivileges                    ) == false) // dakle, samo za superuser@TEXTHOshop se DOZVOLJAVA rucni datum, tj. ovo dole se NE izvodi 
+         if((ZXC.IsTEXTHOshop && ZXC.CURR_userName == ZXC.vvDB_programSuperUserName) == false) // dakle, samo za superuser@TEXTHOshop se DOZVOLJAVA rucni datum, tj. ovo dole se NE izvodi 
          {
             // provjera dodana TEK 07.01.2016: 
             if(serverNow.Year != ZXC.projectYearFirstDay.Year) ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu postaviti datum dokumenta na godinu koja nije 'ProjektYear'!");
-            //else                                               Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+          //else                                              Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
             else if(ZXC.RISK_FiskParagon_InProgress == false) Fld_DokDate = VvSQL.GetServer_DateTime_Now(TheDbConnection);
          }
 

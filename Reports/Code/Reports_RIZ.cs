@@ -6856,7 +6856,7 @@ public struct PdvObrazacData
       decimal correctOsnovica = ZXC.VvGet_100_from_25and25(thePdv, theStopa);
       // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
 
-      decimal tolerancy = 0.00M;
+      decimal tolerancy = 0.09M;
 
       if(ZXC.AlmostEqual(correctOsnovica, theOsn, tolerancy)) return theOsn;
 
