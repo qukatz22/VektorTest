@@ -7932,6 +7932,8 @@ public class RiskRulesDsc : VvLookupAsDsc
    public string Dsc_OpcinaCd_PNP              { get; set; }
    public bool Dsc_NOcheckDupUbyKMD            { get; set; } //check duplicate URA/UFA by kcd date money
 
+   public decimal Dsc_PdvMathTolerancy         { get; set; }
+
    #endregion DataLayer Propertiz
 
    #region Constructor
@@ -8012,7 +8014,9 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_IsSintArt4Print          = false;
 
       Dsc_PreferedSkladOnUCLoad    = "";
-      
+
+      Dsc_PdvMathTolerancy         = 0.99M;
+
       #endregion defautValue
    }
 

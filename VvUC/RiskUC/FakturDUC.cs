@@ -16169,7 +16169,7 @@ public class RiskRulesUC : VvOtherUC
    private VvHamper  hamp_mpc, hamp_kupdobNaziv, hamp_ciljaniMPC, hamp_numDecmal, hamp_fiskal;
    private VvTextBox tbx_VpcMpcMarza, tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName, tbx_kolNumDecimal, tbx_ambKolNumDecimal, tbx_cekanjeFiskal,
                      tbx_pnpSt, tbx_komercProvSt, tbx_rucGranica, tbx_omjerPdv, tbx_blgMin, tbx_OrgPakText, tbx_koefPlanCijProizv,
-                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP;
+                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy;
 
    protected RadioButton rbt_stMarze, rbt_vpc, rbt_mpc, rbt_ciljMPCknjigMPC, rbt_ciljMPCrabat;
    protected CheckBox    cbx_VpcMpcMarzaTheSame4VPC, cbx_IsSupressSHADOWing, cbx_IsBarCode, cbx_IsPkVisible, cbx_IsZtrViaOrgPak,
@@ -16333,6 +16333,11 @@ public class RiskRulesUC : VvOtherUC
                      hamper.CreateVvLabel  (1, 22, "Blagajnički minimum za BlgIzvjIRM ", 1, 0, ContentAlignment.MiddleLeft);
       tbx_blgMin   = hamper.CreateVvTextBox(3, 22, "tbx_blgMin", "BlgMin", 12);
       tbx_blgMin.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
+                               hamper.CreateVvLabel  (4, 22, "PdvTolerancija", ContentAlignment.MiddleRight);
+      tbx_PdvMathTolerancy   = hamper.CreateVvTextBox(5, 22, "tbx_PdvMathTolerancy", "PdvTolerancija", 12);
+      tbx_PdvMathTolerancy.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
 
       cbx_isVisibleSerlotCol = hamper.CreateVvCheckBox_OLD(1, 23, null, 1, 0, "Prikaži kolonu Serlot", RightToLeft.No);
 
@@ -16582,6 +16587,8 @@ public class RiskRulesUC : VvOtherUC
 
    public bool Fld_NOcheckDupUbyKMD            { get { return cbx_NOcheckDupUbyKMD.Checked; } set { cbx_NOcheckDupUbyKMD.Checked = value; } } // NO check duplicate URA/UFA by kcd date money
 
+   public decimal Fld_PdvMathTolerancy         { get { return tbx_PdvMathTolerancy.GetDecimalField(); } set { tbx_PdvMathTolerancy.PutDecimalField(value); } }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -16646,8 +16653,8 @@ public class RiskRulesUC : VvOtherUC
                                    
       Fld_OpcinaCd_PNP             = RRD.Dsc_OpcinaCd_PNP;
       Fld_NOcheckDupUbyKMD         = RRD.Dsc_NOcheckDupUbyKMD;
-
       Fld_NorKolNumOfDecimalPlaces = (uint)RRD.Dsc_NorKolNumOfDecimalPlaces;
+      Fld_PdvMathTolerancy         = RRD.Dsc_PdvMathTolerancy;
 
    }
 
@@ -16704,7 +16711,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_IsSintArt4Print          = Fld_IsSintArt4Print ;
       ZXC.RRD.Dsc_OpcinaCd_PNP             = Fld_OpcinaCd_PNP ;
       ZXC.RRD.Dsc_NOcheckDupUbyKMD         = Fld_NOcheckDupUbyKMD ;
-
+      ZXC.RRD.Dsc_PdvMathTolerancy         = Fld_PdvMathTolerancy ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
 
