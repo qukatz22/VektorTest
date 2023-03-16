@@ -6799,7 +6799,7 @@ public struct PdvObrazacData
 
    /*   _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m    ,  5.00M, "II.1. " );
    /*   _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m    , 13.00M, "II.2. " );
-   /* //_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m    , 25.00M, "II.3. " );
+   //_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m    , 25.00M, "II.3. " );
    /*    ukOsn222325_HR                              */ ukPdv222325_HR                               = CheckAndRepair_Osnovica_vs_Pdv(ukOsn222325_HR                              , ukPdv222325_HR                              , 25.00M, "II.3. " );                         
    /*    ukOsn25mn_TP                                */ ukPdv25mn_TP                                 = CheckAndRepair_Osnovica_vs_Pdv(ukOsn25mn_TP                                , ukPdv25mn_TP                                , 25.00M, "II.4. " );                         
    /*    ukOsnR05mn_EU                               */ ukPdvR05mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnR05mn_EU                               , ukPdvR05mn_EU                               ,  5.00M, "II.5. " );                         
@@ -6831,23 +6831,41 @@ public struct PdvObrazacData
 
       #endregion Check & Repair Osnovica vs Pdv in 2023
 
-
       #region SUME
 
-      this.sumIIOsn = _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m + /*_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m*/ukOsn222325_HR +
-                      _faktur_rec_SumaRazdoblja_IRA.S_ukOsn23m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn22m +
-                      this.ukOsn25mn_TP  + this.ukOsn10mn_BS  + this.ukOsn25mn_BS  + 
-                      this.ukOsnR05mn_EU + this.ukOsnR10mn_EU + this.ukOsnR25mn_EU +
-                      this.ukOsnU05mn_EU + this.ukOsnU10mn_EU + this.ukOsnU25mn_EU +
-                      this.ukOsnObr_WO   + this.ukOsnPdvF_obrII4                   ;
+      //this.sumIIOsn = _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m + /*_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m*/ukOsn222325_HR +
+      //                _faktur_rec_SumaRazdoblja_IRA.S_ukOsn23m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn22m +
+      //                this.ukOsn25mn_TP  + this.ukOsn10mn_BS  + this.ukOsn25mn_BS  + 
+      //                this.ukOsnR05mn_EU + this.ukOsnR10mn_EU + this.ukOsnR25mn_EU +
+      //                this.ukOsnU05mn_EU + this.ukOsnU10mn_EU + this.ukOsnU25mn_EU +
+      //                this.ukOsnObr_WO   + this.ukOsnPdvF_obrII4                   ;
 
-      this.sumIiII = this.sumI + this.sumIIOsn;
+      //this.sumIiII = this.sumI + this.sumIIOsn;
 
-      this.sumIIIOsn = /*this.ukOsn_HR + this.ukOsnRm_EU + this.ukOsnUm_EU + this.ukOsnm_BS + this.ukOsn_WO  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_TP*/
-         ukUlazOsn05_HR + ukUlazOsn13_HR + ukUlazOsn25_HR + ukOsnm_TP      +
-         _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU +
-         _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU +
-         _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS  +  ukOsn_WO;
+      //this.sumIIIOsn = /*this.ukOsn_HR + this.ukOsnRm_EU + this.ukOsnUm_EU + this.ukOsnm_BS + this.ukOsn_WO  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_TP*/
+      //   ukUlazOsn05_HR + ukUlazOsn13_HR + ukUlazOsn25_HR + ukOsnm_TP      +
+      //   _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU +
+      //   _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU +
+      //   _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS  +  ukOsn_WO;
+
+      this.sumIIPdv      =  _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m + _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m + //_faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m + _faktur_rec_SumaRazdoblja_IRA.S_ukPdv23m + _faktur_rec_SumaRazdoblja_IRA.S_ukPdv22m +
+                            this.ukPdv222325_HR +
+                            this.ukPdv25mn_TP  + 
+                            this.ukPdv10mn_BS  + this.ukPdv25mn_BS  + 
+                            this.ukPdvR05mn_EU + this.ukPdvR10mn_EU + this.ukPdvR25mn_EU +
+                            this.ukPdvU05mn_EU + this.ukPdvU10mn_EU + this.ukPdvU25mn_EU +
+                            this.ukPdvObr_WO   + 
+                            this.ukPdvPdvF_obrII4                   ;
+                         
+      this.sumIIIPdv     = ukUlazPdv05_HR + ukUlazPdv13_HR + ukUlazPdv25_HR +
+                           ukPdvm_TP +
+                           _faktur_rec_SumaRazdoblja_URA.S_ukPdvR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvR25m_EU +
+                           _faktur_rec_SumaRazdoblja_URA.S_ukPdvU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvU25m_EU +
+                           _faktur_rec_SumaRazdoblja_URA.S_ukPdv10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukPdv25m_BS +
+                           ukPdv_WO +
+                           pdvIspravak_obrIII8;
+
+      this.obvezaPDV     = this.sumIIPdv - this.sumIIIPdv;        
 
       #endregion SUME
 
