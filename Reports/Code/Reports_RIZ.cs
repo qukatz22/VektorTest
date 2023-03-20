@@ -6797,81 +6797,65 @@ public struct PdvObrazacData
 
       #region Check & Repair Osnovica vs Pdv in 2023
 
-   /*   _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m    ,  5.00M, "II.1. " );
-   /*   _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m    , 13.00M, "II.2. " );
-   //_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m     */ _faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m     = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m    , 25.00M, "II.3. " );
-   /*    ukOsn222325_HR                              */ ukPdv222325_HR                               = CheckAndRepair_Osnovica_vs_Pdv(ukOsn222325_HR                              , ukPdv222325_HR                              , 25.00M, "II.3. " );                         
-   /*    ukOsn25mn_TP                                */ ukPdv25mn_TP                                 = CheckAndRepair_Osnovica_vs_Pdv(ukOsn25mn_TP                                , ukPdv25mn_TP                                , 25.00M, "II.4. " );                         
-   /*    ukOsnR05mn_EU                               */ ukPdvR05mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnR05mn_EU                               , ukPdvR05mn_EU                               ,  5.00M, "II.5. " );                         
-   /*    ukOsnR10mn_EU                               */ ukPdvR10mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnR10mn_EU                               , ukPdvR10mn_EU                               , 13.00M, "II.6. " );                         
-   /*    ukOsnR25mn_EU                               */ ukPdvR25mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnR25mn_EU                               , ukPdvR25mn_EU                               , 25.00M, "II.7. " );                         
-   /*    ukOsnU05mn_EU                               */ ukPdvU05mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnU05mn_EU                               , ukPdvU05mn_EU                               ,  5.00M, "II.8. " );                         
-   /*    ukOsnU10mn_EU                               */ ukPdvU10mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnU10mn_EU                               , ukPdvU10mn_EU                               , 13.00M, "II.9. " );
-   /*    ukOsnU25mn_EU                               */ ukPdvU25mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv(ukOsnU25mn_EU                               , ukPdvU25mn_EU                               , 25.00M, "II.10. ");                         
-   //  //TODO: !!!  S_ukOsn05m_BS + S_ukOsn05n_BS;   */                                        //      // TODO: !!!  S_ukPdv05m_BS + S_ukPdv05n_BS;                                                                        //    ,  5.00M, "II.11 "
-   /*    ukOsn10mn_BS                                */ ukPdv10mn_BS                                 = CheckAndRepair_Osnovica_vs_Pdv(ukOsn10mn_BS                                , ukPdv10mn_BS                                , 13.00M, "II.12. "); 
-   /*    ukOsn25mn_BS                                */ ukPdv25mn_BS                                 = CheckAndRepair_Osnovica_vs_Pdv(ukOsn25mn_BS                                , ukPdv25mn_BS                                , 25.00M, "II.13. "); 
-   /*  //ukOsnPdvF_obrII4                            */ ukPdvPdvF_obrII4                             = CheckAndRepair_Osnovica_vs_Pdv(ukOsnPdvF_obrII4                            , ukPdvPdvF_obrII4                            , 25.00M, "II.14. "); 
-   /*  //ukOsnObr_WO                                 */ ukPdvObr_WO                                  = CheckAndRepair_Osnovica_vs_Pdv(ukOsnObr_WO                                 , ukPdvObr_WO                                 , 25.00M, "II.15. "); 
-   /*                                                */                                                                                                                                                                         
-   /*    ukUlazOsn05_HR                              */ ukUlazPdv05_HR                               = CheckAndRepair_Osnovica_vs_Pdv(ukUlazOsn05_HR                              , ukUlazPdv05_HR                              ,  5.00M, "III.1. "); 
-   /*    ukUlazOsn13_HR                              */ ukUlazPdv13_HR                               = CheckAndRepair_Osnovica_vs_Pdv(ukUlazOsn13_HR                              , ukUlazPdv13_HR                              , 13.00M, "III.2. "); 
-   /*    ukUlazOsn25_HR                              */ ukUlazPdv25_HR                               = CheckAndRepair_Osnovica_vs_Pdv(ukUlazOsn25_HR                              , ukUlazPdv25_HR                              , 25.00M, "III.3. "); 
-   /*    ukOsnm_TP                                   */ ukPdvm_TP                                    = CheckAndRepair_Osnovica_vs_Pdv(ukOsnm_TP                                   , ukPdvm_TP                                   , 25.00M, "III.4. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU*/ _faktur_rec_SumaRazdoblja_URA.S_ukPdvR05m_EU = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvR05m_EU,  5.00M, "III.5. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU*/ _faktur_rec_SumaRazdoblja_URA.S_ukPdvR10m_EU = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvR10m_EU, 13.00M, "III.6. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU*/ _faktur_rec_SumaRazdoblja_URA.S_ukPdvR25m_EU = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvR25m_EU, 25.00M, "III.7. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU*/ _faktur_rec_SumaRazdoblja_URA.S_ukPdvU05m_EU = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvU05m_EU,  5.00M, "III.8. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU*/ _faktur_rec_SumaRazdoblja_URA.S_ukPdvU10m_EU = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvU10m_EU, 13.00M, "III.9. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU*/ _faktur_rec_SumaRazdoblja_URA.S_ukPdvU25m_EU = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvU25m_EU, 25.00M, "III.10. ");
-   // // TODO: !!!  S_ukOsn05m_BS            p311pdv */                                              = 0.00M; // TODO: !!!  S_ukPdv05m_BS                                                                                       ,  5.00M, "III.11. ");     
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS */ _faktur_rec_SumaRazdoblja_URA.S_ukPdv10m_BS  = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS , _faktur_rec_SumaRazdoblja_URA.S_ukPdv10m_BS , 13.00M, "III.12. ");
-   /*    _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS */ _faktur_rec_SumaRazdoblja_URA.S_ukPdv25m_BS  = CheckAndRepair_Osnovica_vs_Pdv(_faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS , _faktur_rec_SumaRazdoblja_URA.S_ukPdv25m_BS , 25.00M, "III.13. ");
-   /*     ukOsn_WO                                   */ ukPdv_WO                                     = CheckAndRepair_Osnovica_vs_Pdv( ukOsn_WO                                   , ukPdv_WO                                    , 25.00M, "III.14. ");
+      // op. a.                                                                                                            
+      // prvo smo krenuli metodom štelanja (Alteriranja) osnovice, pa promjenili da se štela iznos pdv-a                   
+      // pa onda ipak vratili na štelanje osnovice jerbo se je fiskalizacijom prijavio PDV kojeg treba sad pak obrazložiti 
+
+      _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m      = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m    ,  5.00M, "II.1. " );
+      _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m      = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m    , _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m    , 13.00M, "II.2. " );
+       ukOsn222325_HR                               = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsn222325_HR                              , ukPdv222325_HR                              , 25.00M, "II.3. " );                         
+       ukOsn25mn_TP                                 = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsn25mn_TP                                , ukPdv25mn_TP                                , 25.00M, "II.4. " );                         
+       ukOsnR05mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnR05mn_EU                               , ukPdvR05mn_EU                               ,  5.00M, "II.5. " );                         
+       ukOsnR10mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnR10mn_EU                               , ukPdvR10mn_EU                               , 13.00M, "II.6. " );                         
+       ukOsnR25mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnR25mn_EU                               , ukPdvR25mn_EU                               , 25.00M, "II.7. " );                         
+       ukOsnU05mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnU05mn_EU                               , ukPdvU05mn_EU                               ,  5.00M, "II.8. " );                         
+       ukOsnU10mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnU10mn_EU                               , ukPdvU10mn_EU                               , 13.00M, "II.9. " );
+       ukOsnU25mn_EU                                = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnU25mn_EU                               , ukPdvU25mn_EU                               , 25.00M, "II.10. ");                         
+     //TODO: !!!  S_ukOsn05m_BS + S_ukOsn05n_BS;      // TODO: !!!  S_ukPdv05m_BS + S_ukPdv05n_BS;                                                                        //    ,  5.00M, "II.11 "
+       ukOsn10mn_BS                                 = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsn10mn_BS                                , ukPdv10mn_BS                                , 13.00M, "II.12. "); 
+       ukOsn25mn_BS                                 = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsn25mn_BS                                , ukPdv25mn_BS                                , 25.00M, "II.13. "); 
+     //ukOsnPdvF_obrII4                             = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnPdvF_obrII4                            , ukPdvPdvF_obrII4                            , 25.00M, "II.14. "); 
+     //ukOsnObr_WO                                  = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnObr_WO                                 , ukPdvObr_WO                                 , 25.00M, "II.15. "); 
+                                                                                                                                                                               
+       ukUlazOsn05_HR                               = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukUlazOsn05_HR                              , ukUlazPdv05_HR                              ,  5.00M, "III.1. "); 
+       ukUlazOsn13_HR                               = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukUlazOsn13_HR                              , ukUlazPdv13_HR                              , 13.00M, "III.2. "); 
+       ukUlazOsn25_HR                               = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukUlazOsn25_HR                              , ukUlazPdv25_HR                              , 25.00M, "III.3. "); 
+       ukOsnm_TP                                    = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(ukOsnm_TP                                   , ukPdvm_TP                                   , 25.00M, "III.4. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvR05m_EU,  5.00M, "III.5. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvR10m_EU, 13.00M, "III.6. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvR25m_EU, 25.00M, "III.7. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvU05m_EU,  5.00M, "III.8. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvU10m_EU, 13.00M, "III.9. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU, _faktur_rec_SumaRazdoblja_URA.S_ukPdvU25m_EU, 25.00M, "III.10. ");
+    // TODO: !!!  S_ukOsn05m_BS            p311pdv  = 0.00M; // TODO: !!!  S_ukPdv05m_BS                                                                                       ,  5.00M, "III.11. ");     
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS  = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS , _faktur_rec_SumaRazdoblja_URA.S_ukPdv10m_BS , 13.00M, "III.12. ");
+       _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS  = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(_faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS , _faktur_rec_SumaRazdoblja_URA.S_ukPdv25m_BS , 25.00M, "III.13. ");
+        ukOsn_WO                                    = CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV( ukOsn_WO                                   , ukPdv_WO                                    , 25.00M, "III.14. ");
 
       #endregion Check & Repair Osnovica vs Pdv in 2023
 
       #region SUME
 
-      //this.sumIIOsn = _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m + /*_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m*/ukOsn222325_HR +
-      //                _faktur_rec_SumaRazdoblja_IRA.S_ukOsn23m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn22m +
-      //                this.ukOsn25mn_TP  + this.ukOsn10mn_BS  + this.ukOsn25mn_BS  + 
-      //                this.ukOsnR05mn_EU + this.ukOsnR10mn_EU + this.ukOsnR25mn_EU +
-      //                this.ukOsnU05mn_EU + this.ukOsnU10mn_EU + this.ukOsnU25mn_EU +
-      //                this.ukOsnObr_WO   + this.ukOsnPdvF_obrII4                   ;
+      this.sumIIOsn = _faktur_rec_SumaRazdoblja_IRA.S_ukOsn05m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn10m + /*_faktur_rec_SumaRazdoblja_IRA.S_ukOsn25m*/ukOsn222325_HR +
+                      _faktur_rec_SumaRazdoblja_IRA.S_ukOsn23m + _faktur_rec_SumaRazdoblja_IRA.S_ukOsn22m +
+                      this.ukOsn25mn_TP  + this.ukOsn10mn_BS  + this.ukOsn25mn_BS  + 
+                      this.ukOsnR05mn_EU + this.ukOsnR10mn_EU + this.ukOsnR25mn_EU +
+                      this.ukOsnU05mn_EU + this.ukOsnU10mn_EU + this.ukOsnU25mn_EU +
+                      this.ukOsnObr_WO   + this.ukOsnPdvF_obrII4                   ;
 
-      //this.sumIiII = this.sumI + this.sumIIOsn;
+      this.sumIiII = this.sumI + this.sumIIOsn;
 
-      //this.sumIIIOsn = /*this.ukOsn_HR + this.ukOsnRm_EU + this.ukOsnUm_EU + this.ukOsnm_BS + this.ukOsn_WO  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_TP*/
-      //   ukUlazOsn05_HR + ukUlazOsn13_HR + ukUlazOsn25_HR + ukOsnm_TP      +
-      //   _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU +
-      //   _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU +
-      //   _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS  +  ukOsn_WO;
-
-      this.sumIIPdv      =  _faktur_rec_SumaRazdoblja_IRA.S_ukPdv05m + _faktur_rec_SumaRazdoblja_IRA.S_ukPdv10m + //_faktur_rec_SumaRazdoblja_IRA.S_ukPdv25m + _faktur_rec_SumaRazdoblja_IRA.S_ukPdv23m + _faktur_rec_SumaRazdoblja_IRA.S_ukPdv22m +
-                            this.ukPdv222325_HR +
-                            this.ukPdv25mn_TP  + 
-                            this.ukPdv10mn_BS  + this.ukPdv25mn_BS  + 
-                            this.ukPdvR05mn_EU + this.ukPdvR10mn_EU + this.ukPdvR25mn_EU +
-                            this.ukPdvU05mn_EU + this.ukPdvU10mn_EU + this.ukPdvU25mn_EU +
-                            this.ukPdvObr_WO   + 
-                            this.ukPdvPdvF_obrII4                   ;
-                         
-      this.sumIIIPdv     = ukUlazPdv05_HR + ukUlazPdv13_HR + ukUlazPdv25_HR +
-                           ukPdvm_TP +
-                           _faktur_rec_SumaRazdoblja_URA.S_ukPdvR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvR25m_EU +
-                           _faktur_rec_SumaRazdoblja_URA.S_ukPdvU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukPdvU25m_EU +
-                           _faktur_rec_SumaRazdoblja_URA.S_ukPdv10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukPdv25m_BS +
-                           ukPdv_WO +
-                           pdvIspravak_obrIII8;
-
-      this.obvezaPDV     = this.sumIIPdv - this.sumIIIPdv;        
+      this.sumIIIOsn = /*this.ukOsn_HR + this.ukOsnRm_EU + this.ukOsnUm_EU + this.ukOsnm_BS + this.ukOsn_WO  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_TP*/
+         ukUlazOsn05_HR + ukUlazOsn13_HR + ukUlazOsn25_HR + ukOsnm_TP      +
+         _faktur_rec_SumaRazdoblja_URA.S_ukOsnR05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnR25m_EU +
+         _faktur_rec_SumaRazdoblja_URA.S_ukOsnU05m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU10m_EU + _faktur_rec_SumaRazdoblja_URA.S_ukOsnU25m_EU +
+         _faktur_rec_SumaRazdoblja_URA.S_ukOsn10m_BS  + _faktur_rec_SumaRazdoblja_URA.S_ukOsn25m_BS  +  ukOsn_WO;
 
       #endregion SUME
 
    }
 
-   private decimal CheckAndRepair_Osnovica_vs_Pdv_OLD(decimal theOsn, decimal thePdv, decimal theStopa, string XYinfo)
+   private decimal CheckAndRepair_Osnovica_vs_Pdv_AlterOsnovica(decimal theOsn, decimal thePdv, decimal theStopa, string XYinfo)
    {
       // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
       decimal correctOsnovica = ZXC.VvGet_100_from_25and25(thePdv, theStopa);
@@ -6882,7 +6866,7 @@ public struct PdvObrazacData
 
       if(ZXC.AlmostEqual(correctOsnovica, theOsn, tolerancy)) return theOsn;
 
-      string errMsg = ErrMsgBuilderOLD(correctOsnovica, theOsn, theStopa, XYinfo);
+      string errMsg = ErrMsgBuilder_AlterOsnovica(correctOsnovica, theOsn, theStopa, XYinfo);
 
     //DialogResult result = MessageBox.Show("Da li želite korigirati osnovice?", errMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
       DialogResult result = MessageBox.Show(errMsg + "\n\nDa li želite korigirati osnovice?", "Redak obrasca" + XYinfo, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -6891,7 +6875,7 @@ public struct PdvObrazacData
       return                                correctOsnovica; // tu se izvrsi korekcija 
    }
 
-   private decimal CheckAndRepair_Osnovica_vs_Pdv(decimal theOsn, decimal thePdv, decimal theStopa, string XYinfo)
+   private decimal CheckAndRepair_Osnovica_vs_Pdv_AlterThePDV(decimal theOsn, decimal thePdv, decimal theStopa, string XYinfo)
    {
       // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
       decimal correctThePdv   = ZXC.VvGet_25_of_100       (theOsn, theStopa);
@@ -6901,7 +6885,7 @@ public struct PdvObrazacData
 
       if(ZXC.AlmostEqual(correctThePdv, thePdv, tolerancy)) return thePdv;
 
-      string errMsg = ErrMsgBuilder(correctThePdv, thePdv, theStopa, XYinfo);
+      string errMsg = ErrMsgBuilder_AlterThePDV(correctThePdv, thePdv, theStopa, XYinfo);
 
       DialogResult result = MessageBox.Show(errMsg + "\n\nDa li želite korigirati iznos PDV-a?", "Redak obrasca" + XYinfo, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -6909,7 +6893,7 @@ public struct PdvObrazacData
       return                                correctThePdv; // tu se izvrsi korekcija 
    }
 
-   private string ErrMsgBuilderOLD(decimal correctOsnovica, decimal theOsn, decimal theStopa, string XYinfo)
+   private string ErrMsgBuilder_AlterOsnovica(decimal correctOsnovica, decimal theOsn, decimal theStopa, string XYinfo)
    {
       string introStr    = "Razlika u retku " + XYinfo;
       string theStopaStr = theStopa.ToStringVv();
@@ -6917,7 +6901,7 @@ public struct PdvObrazacData
       return (introStr + "po stopi " + theStopaStr + "\nzbroj osnovica je " + theOsn.ToStringVv() + "\na 'točna' osnovica " + correctOsnovica.ToStringVv() + "\nrazlika: " + (theOsn - correctOsnovica).ToStringVv());
    }
 
-   private string ErrMsgBuilder(decimal correctOsnovica, decimal theOsn, decimal theStopa, string XYinfo)
+   private string ErrMsgBuilder_AlterThePDV(decimal correctOsnovica, decimal theOsn, decimal theStopa, string XYinfo)
    {
       string introStr    = "Otkrivena je razlika u retku: " + XYinfo;
       string theStopaStr = theStopa.ToStringVv();
