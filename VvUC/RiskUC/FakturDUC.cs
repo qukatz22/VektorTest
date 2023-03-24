@@ -12763,7 +12763,7 @@ public partial class FakturExtDUC : FakturDUC
       //if(CtrlOK(tbx_twinS_ukPdv  )) Fld_TwinS_ukPdv    = Pdv;   
 
       //13.03.2023: gabi th pojava 0,01 razlike pri raspoređivanju ztr-a 
-      if(faktur_rec.IsZtrPresent)
+      if(faktur_rec.IsZtrPresent && faktur_rec.TtInfo.IsMalopTT == false) // dakle, nemoj ovo za maloprodaju 
       { 
          if(CtrlOK(tbx_S_ukKCR )) Fld_S_ukKCR  = Fld_TwinS_ukKCR  = Fld_S_ukKC - Fld_S_ukRbt1 + Fld_S_ukZtr;
          if(CtrlOK(tbx_S_ukKCRM)) Fld_S_ukKCRM = Fld_TwinS_ukKCRM = Fld_S_ukKCR;
