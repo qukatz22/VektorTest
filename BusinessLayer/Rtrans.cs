@@ -2301,7 +2301,39 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
          R_KCRP_usl = R_KCRP;
       }
 
+      decimal a = R_KCR ;
+      decimal b = R_pdv ;
+      decimal c = R_KCRP;
+      decimal b1 = ZXC.VvGet_25_of_100(a, T_pdvSt).Ron2();
+
+      if(b != b1)
+      {
+         Adjust_A_and_B(ref a, ref b, T_pdvSt, c);
+
+         R_KCR = a;
+         R_pdv = b;
+      }
+
    } // CalcTrans_MALOP_Results_IZLAZ 
+
+   private void Adjust_A_and_B(ref decimal a, ref decimal b, decimal pdvSt, decimal c)
+   {
+      int i = 0;
+      decimal bi;
+
+      for(decimal ai = a; i < 10; i++, ai -= 0.01M)
+      {
+         bi = ZXC.VvGet_25_of_100(ai, pdvSt).Ron2();
+         
+         if(ai + bi == c) 
+         {
+            a = ai;
+            b = bi;
+            return;
+         } 
+            
+      }
+   }
 
    // 08.05.2020: 'Dubravko na ispisu racuna treba pravi VPC' 
    // Uspjeli pokusaj da iz Malop calc-a dobijemo VPC
