@@ -2262,7 +2262,11 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
       if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN       )   pdvBruto = R_KCRPwoPPMV - T_ppmvOsn; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
       else                                                      pdvBruto = R_KCRPwoPPMV - R_Pnp    ;
-      R_pdv       = ZXC.VvGet_25_from_125(pdvBruto,    T_pdvSt ).Ron2(); // the PDV                                                                                     
+
+      // 27.03.2023: HUGEst NEWS. zasto smo li ikad zaokruzivali? 
+    //R_pdv       = ZXC.VvGet_25_from_125(pdvBruto,    T_pdvSt ).Ron2(); // the PDV                                                                                     
+      R_pdv       = ZXC.VvGet_25_from_125(pdvBruto,    T_pdvSt )       ; // the PDV                                                                                     
+      if(this.T_skladDate < ZXC.Date01042023) R_pdv = R_pdv     .Ron2(); // za stare podatke po starom                                                                  
 
       if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN       )   mskPdvBruto = R_KC   - T_ppmvOsn; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
       else                                                      mskPdvBruto = R_KC   - R_mskPnp ; 
