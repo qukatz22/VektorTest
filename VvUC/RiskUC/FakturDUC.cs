@@ -12770,6 +12770,22 @@ public partial class FakturExtDUC : FakturDUC
          if(CtrlOK(tbx_S_ukKCRP)) Fld_S_ukKCRP = Fld_TwinS_ukKCRP = Fld_S_ukKCR;
       }
 
+      //if(true) // todo1: uvjet, todo2: po stopama 
+      //{ 
+      //   decimal a = Fld_S_ukKCR ;
+      //   decimal b = Fld_S_ukPdv ;
+      //   decimal c = Fld_S_ukKCRP;
+      //   decimal pdvSt = 25.00M  ;
+      //   decimal b1 = ZXC.VvGet_25_of_100(a, pdvSt).Ron2();
+      //
+      //   if(b != b1)
+      //   {
+      //      ZXC.Synchronise_A_and_B(ref a, ref b, pdvSt, c);
+      //
+      //      Fld_S_ukKCR = a;
+      //      Fld_S_ukPdv = b;
+      //   }
+      //}
    }
 
    internal void GetFaktExtFields()

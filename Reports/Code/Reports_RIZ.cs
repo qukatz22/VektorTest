@@ -2418,6 +2418,9 @@ public class RptR_StandardRiskReport : VvRiskReport
 
             s_lio_OK = false; // s_lio_OK ce biti false: ili ako je AtestBr prazan ili ako je neprazan ali ne postoji u tekucoj halmedovoj tablici 
 
+            // pocisti vrijednosti koje u rpt-u ocekujemo kao podmetnute, tako da ako je s_lio.Empty da ne podmecemo nist jer nema halmedArtikl-a 
+            Podmetni_HalmedDAta_ToSome_ArtiklData(TheArtiklList[i], new Halmed_SVD.HALMEDartikl()); // clear some Artikl fields 
+
             if(TheArtiklList[i].AtestBr.NotEmpty()) // znaci, vektorovom artiklu je pridruzen s_lio 
             {
                halmedArtikl = halmedArtiklList.SingleOrDefault(ha => ha.s_lio == TheArtiklList[i].AtestBr);
@@ -2426,26 +2429,29 @@ public class RptR_StandardRiskReport : VvRiskReport
 
                if(s_lio_OK) 
                {
-                  TheArtiklList[i].AS_HalmedORG = ZXC.ValOrZero_Decimal(halmedArtikl.br_pak, 2);
-
-                  TheArtiklList[i].SerNo       = halmedArtikl.s_atk    ; // S_ATK      
-                  TheArtiklList[i].Placement   = halmedArtikl.naziv    ; // NAZIV      
-                  TheArtiklList[i].Boja        = halmedArtikl.br_pak   ; // BR_PAK     
-                  TheArtiklList[i].MadeIn      = halmedArtikl.doza     ; // DOZA       
-                  TheArtiklList[i].Url         = halmedArtikl.opis_doze; // OPIS_DOZE  
-                  TheArtiklList[i].CarTarifa   = halmedArtikl.mj_ozn   ; // MJ_OZN     
-                  TheArtiklList[i].PartNo      = halmedArtikl.obl_ozn  ; // OBL_OZN    
-                  TheArtiklList[i].LinkArtCD   = halmedArtikl.s_mj     ; // s_mj       
-                  TheArtiklList[i].PdvKat      = halmedArtikl.s_obl    ; // s_obl      
-                  TheArtiklList[i].LongOpis    = halmedArtikl.s_par_pro; // s_par_pro  
-                  TheArtiklList[i].PrefValName = halmedArtikl.par_naziv; // par_naziv  
-
-                  // 11.03.2022:
-                  TheArtiklList[i].SnagaJM     = halmedArtikl.hzzo_kind; // novo!      
-                  TheArtiklList[i].PromjerJM   = halmedArtikl.s_lio    ; // novo!      za saznavanje da li s_lio jos uvijek postoji:          
-                                                                         // AtestBr == PromjerJM ---> sve OK                                  
-                                                                         // AtestBr.NotEmpty() && PromjerJM.IsEmpty() ---> lose/krovi upareno 
-                                                                         // s_lio nje postoji u novoj halmedovoj tablici                      
+                  // prebacili u metodu: start 
+                  //TheArtiklList[i].AS_HalmedORG = ZXC.ValOrZero_Decimal(halmedArtikl.br_pak, 2);
+                  //
+                  //TheArtiklList[i].SerNo       = halmedArtikl.s_atk    ; // S_ATK      
+                  //TheArtiklList[i].Placement   = halmedArtikl.naziv    ; // NAZIV      
+                  //TheArtiklList[i].Boja        = halmedArtikl.br_pak   ; // BR_PAK     
+                  //TheArtiklList[i].MadeIn      = halmedArtikl.doza     ; // DOZA       
+                  //TheArtiklList[i].Url         = halmedArtikl.opis_doze; // OPIS_DOZE  
+                  //TheArtiklList[i].CarTarifa   = halmedArtikl.mj_ozn   ; // MJ_OZN     
+                  //TheArtiklList[i].PartNo      = halmedArtikl.obl_ozn  ; // OBL_OZN    
+                  //TheArtiklList[i].LinkArtCD   = halmedArtikl.s_mj     ; // s_mj       
+                  //TheArtiklList[i].PdvKat      = halmedArtikl.s_obl    ; // s_obl      
+                  //TheArtiklList[i].LongOpis    = halmedArtikl.s_par_pro; // s_par_pro  
+                  //TheArtiklList[i].PrefValName = halmedArtikl.par_naziv; // par_naziv  
+                  //
+                  //// 11.03.2022:
+                  //TheArtiklList[i].SnagaJM     = halmedArtikl.hzzo_kind; // novo!      
+                  //TheArtiklList[i].PromjerJM   = halmedArtikl.s_lio    ; // novo!      za saznavanje da li s_lio jos uvijek postoji:          
+                  //                                                       // AtestBr == PromjerJM ---> sve OK                                  
+                  //                                                       // AtestBr.NotEmpty() && PromjerJM.IsEmpty() ---> lose/krovi upareno 
+                  //                                                       // s_lio nje postoji u novoj halmedovoj tablici                      
+                  // prebacili u metodu: end 
+                  Podmetni_HalmedDAta_ToSome_ArtiklData(TheArtiklList[i], halmedArtikl);
 
                   if(TheArtiklList[i].ArtiklCD2.SubstringSafe(0, 7) != halmedArtikl.s_atk)
                   {
@@ -2751,6 +2757,28 @@ public class RptR_StandardRiskReport : VvRiskReport
 
    } // private  void GetArtiklWithArtstatList() 
 
+   private void Podmetni_HalmedDAta_ToSome_ArtiklData(Artikl artikl_rec, Halmed_SVD.HALMEDartikl halmedArtikl)
+   {
+      artikl_rec.AS_HalmedORG = ZXC.ValOrZero_Decimal(halmedArtikl.br_pak, 2);
+      artikl_rec.SerNo        = halmedArtikl.s_atk    ; // S_ATK      
+      artikl_rec.Placement    = halmedArtikl.naziv    ; // NAZIV      
+      artikl_rec.Boja         = halmedArtikl.br_pak   ; // BR_PAK     
+      artikl_rec.MadeIn       = halmedArtikl.doza     ; // DOZA       
+      artikl_rec.Url          = halmedArtikl.opis_doze; // OPIS_DOZE  
+      artikl_rec.CarTarifa    = halmedArtikl.mj_ozn   ; // MJ_OZN     
+      artikl_rec.PartNo       = halmedArtikl.obl_ozn  ; // OBL_OZN    
+      artikl_rec.LinkArtCD    = halmedArtikl.s_mj     ; // s_mj       
+      artikl_rec.PdvKat       = halmedArtikl.s_obl    ; // s_obl      
+      artikl_rec.LongOpis     = halmedArtikl.s_par_pro; // s_par_pro  
+      artikl_rec.PrefValName  = halmedArtikl.par_naziv; // par_naziv  
+
+      // 11.03.2022:
+      artikl_rec.SnagaJM     = halmedArtikl.hzzo_kind; // novo!      
+      artikl_rec.PromjerJM   = halmedArtikl.s_lio    ; // novo!      za saznavanje da li s_lio jos uvijek postoji:          
+                                                       // AtestBr == PromjerJM ---> sve OK                                  
+                                                       // AtestBr.NotEmpty() && PromjerJM.IsEmpty() ---> lose/krovi upareno 
+                                                       // s_lio nje postoji u novoj halmedovoj tablici                      
+   }
    private void Create_HALMED_errorTxtFile(List<string> errMessageList, string errFileName)
    {
       if(errMessageList.NotEmpty())
