@@ -3665,10 +3665,35 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       faktur_rec.TakeTransesFrom2(fakturLocal_rec);
       faktur_rec.TakeTransesFrom3(fakturLocal_rec);
 
+      bool IsShowingConvertedMoney_BUG_Repair_InProgress = false; // ShowingConvertedMoney_BUG_Repair 
+
       if(fakturLocal_rec != null)
       {
+         #region ShowingConvertedMoney_BUG_Repair
+
+         // new order 2023: !!! 
+         // Mijenjamo logiku 'VvCurrency'  pri odlasku u 'zeleno' tj prikazivanja konvertirane NON data layer vrijednosti                   
+         // necemo vise jedan po jedan novcani iznos (cijena, ukupno, ...) konvertirati nego cemo samo cijenu, pa pozvati calc svega nanovo 
+         if(IsShowingConvertedMoney) // ShowingConvertedMoney_BUG_Repair 
+         {
+            IsShowingConvertedMoney_BUG_Repair_InProgress = true;
+
+            fakturLocal_rec.Transes.ForEach(rtr => 
+               { 
+                  rtr.T_cij = VvCurrency(rtr.T_cij); 
+                  rtr.CalcTransResults(null); 
+               } 
+            );
+
+            fakturLocal_rec.TakeTransesSumToDokumentSum(true);
+
+            IsShowingConvertedMoney = false; // privremeno! 
+         }
+
+         #endregion ShowingConvertedMoney_BUG_Repair
+
          // 23.01.2018: 
-       //if(ZXC.IsTEXTHOany                  )
+         //if(ZXC.IsTEXTHOany                  )
          if(ZXC.IsTEXTHOany && this is IRMDUC)
          {
             // THPR news: 
@@ -3855,6 +3880,26 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          DecideIfShouldLoad_VvReport(null, null, null);
 
          SetWarningColorsAndLabel();
+
+         #region ShowingConvertedMoney_BUG_Repair
+
+         if(IsShowingConvertedMoney_BUG_Repair_InProgress) // ShowingConvertedMoney_BUG_Repair 
+         {
+            fakturLocal_rec.Transes.ForEach(rtr => 
+               { 
+                //rtr.T_cij = VvCurrency(rtr.T_cij); 
+                  rtr.T_cij =           (rtr.T_cij * DevTecaj); 
+                  rtr.CalcTransResults(null); 
+               } 
+            );
+
+            fakturLocal_rec.TakeTransesSumToDokumentSum(true);
+
+            IsShowingConvertedMoney = true; // vrati na true 
+         }
+
+         #endregion ShowingConvertedMoney_BUG_Repair
+
       }
 
       TheG.ClearSelection();
@@ -12548,7 +12593,7 @@ public partial class FakturExtDUC : FakturDUC
       decimal pdvSt = 25.00M  ;
       decimal b1 = ZXC.VvGet_25_of_100(a, pdvSt).Ron2();
       
-      if(b != b1)
+      if(/*b != b1*/false)
       {
          ZXC.aim_emsg(MessageBoxIcon.Warning, "25% od {0} nije {1} nego {2}", a, b, b1);
          //ZXC.Synchronise_A_and_B(ref a, ref b, pdvSt, c);
