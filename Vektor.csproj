@@ -20,7 +20,7 @@
     <SccProvider>
     </SccProvider>
     <ApplicationIcon>Vektor.ico</ApplicationIcon>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -33,9 +33,9 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
     <TargetFrameworkProfile />
-    <PublishUrl>\\RIPLEY22\Deployed\Vektor\</PublishUrl>
+    <PublishUrl>\\RIPLEY22\Deployed\VektorSVD_8\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
+    <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -43,15 +43,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.viper.hr/vektor/</InstallUrl>
-    <UpdateUrl>http://www.viper.hr/vektor/</UpdateUrl>
+    <InstallUrl>\\APOTEKA1\VektorClientDeploy_8\</InstallUrl>
+    <UpdateUrl>\\APOTEKA1\VektorClientDeploy_8\</UpdateUrl>
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
     <MinimumRequiredVersion>8.0.0.62</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>62</ApplicationRevision>
+    <ApplicationRevision>63</ApplicationRevision>
     <ApplicationVersion>8.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
