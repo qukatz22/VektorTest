@@ -1101,7 +1101,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       else hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "IntBr:", ContentAlignment.MiddleRight);
+      string text = (this is URA_SVD_DUC) ? "" : "IntBr:";
+
+      hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
 
       tbx_DokNum = hamper.CreateVvTextBox(1, 0, "tbx_dokNum", "Ovo bolje ostavi kako je...", 6);
       tbx_DokNum.JAM_FillCharacter = '0';
@@ -7648,7 +7650,8 @@ public partial class FakturExtDUC : FakturDUC
     //hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
       if(this is URA_SVD_DUC)
       {
-        hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q3un, ZXC.Q6un};
+      //hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q3un, ZXC.Q6un};
+        hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4- faBefCol, 0 };
       }
       else
       {
