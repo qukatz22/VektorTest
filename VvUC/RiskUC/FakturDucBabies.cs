@@ -367,7 +367,6 @@ public class URADUC              : FakturExtDUC
    #endregion Constructor
   
    #region HamperLocation
-
    protected override void SetLocationAndParentOfHampersOnBaby()
    {
       CreateArrOfHampers();
@@ -7200,7 +7199,6 @@ public class URA_SVD_DUC         : FakturExtDUC
    #endregion Constructor
   
    #region HamperLocation
-
    protected override void SetLocationAndParentOfHampersOnBaby()
    {
       CreateArrOfHampers();
@@ -7213,12 +7211,14 @@ public class URA_SVD_DUC         : FakturExtDUC
            
       SetSumeHampers(true, true, true, false);
 
-      hamp_dokNum   .Location = new Point(hamp_kupdobNaziv.Right - hamp_dokNum.Width    , hamp_kupdobNaziv.Bottom - ZXC.Qun4);
-      hamp_pdvZPkind.Location = new Point(hamp_kupdobNaziv.Right - hamp_pdvZPkind.Width , hamp_dokNum     .Bottom - ZXC.Qun4);
+      hamp_dokNum   .Location = new Point(hamp_kupdobNaziv.Right - hamp_dokNum.Width    , hamp_dokDate    .Bottom - ZXC.Qun4);
+      hamp_SkladDate.Location = new Point(hamp_kupdobNaziv.Right - hamp_SkladDate.Width , hamp_kupdobNaziv.Bottom - ZXC.Qun4);
+    //hamp_pdvZPkind.Location = new Point(hamp_kupdobNaziv.Right - hamp_pdvZPkind.Width , hamp_dokNum     .Bottom - ZXC.Qun4);
       hamp_vezniDok .Location = new Point(hamp_kupdobNaziv.Left                         , hamp_dokDate    .Bottom - ZXC.Qun4);
       hamp_PDV      .Location = new Point(hamp_kupdobNaziv.Left                         , hamp_vezniDok   .Bottom - ZXC.Qun4);
 
       hamp_VezniDok2.Location = new Point(hamp_dokDate.Left                          , hamp_dokDate    .Bottom - ZXC.Qun8);
+      hamp_pdvZPkind.Location = new Point(hamp_VezniDok2.Right                       , hamp_dokDate    .Bottom - ZXC.Qun4);
       hamp_napomena .Location = new Point(hamp_PDV     .Right                        , hamp_vezniDok   .Bottom - ZXC.Qun4);
 
       hamp_napomena.VvColWdt[1] = hamp_kupdobNaziv.Width - ZXC.Q4un + ZXC.Qun4 + ZXC.Qun8 - hamp_PDV.Width;
@@ -7232,7 +7232,7 @@ public class URA_SVD_DUC         : FakturExtDUC
    private void CreateArrOfHampers()
    {
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_kupdobOther, 
-                                    hamp_dokDate, hamp_vezniDok, hamp_VezniDok2, /*hamp_projekt,*/hamp_pdvZPkind, hamp_PDV,
+                                    hamp_dokDate, hamp_SkladDate, hamp_vezniDok, hamp_VezniDok2, /*hamp_projekt,*/hamp_pdvZPkind, hamp_PDV,
                                     hamp_dokNum, hamp_napomena, 
                                     hamp_skladCd, hamp_v1TT, hamp_v2TT /*, hamp_v3TT  , hamp_v4TT*/
                                   };
