@@ -1245,7 +1245,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       set {        this.currentData._v2_tt = value; }
    }
    /* 20 */ public uint   V2_ttNum
-   {
+   {  
       get { return this.currentData._v2_ttNum; }
       set {        this.currentData._v2_ttNum = value; }
    }

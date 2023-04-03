@@ -3867,7 +3867,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          IfShould_Load_PTG_UNA_ANA_Grid(null, null, null);
          IfShould_Load_PTG_UNA_SIN_Grid(null, null, null);
 
-       //PutDgvFields();
+         // 13.09.2021: start za PTG ove kompozitne TtNum-ove stavljamo sami u sebe svoje baze kakve su i dalje u sljedbenicima - ovisnicima (u istim tim V1/V2 poljima) 
+         if(faktur_rec.TT == Faktur.TT_KUG && faktur_rec.V1_ttNum != faktur_rec.TtNum                                     ) ZXC.aim_emsg(MessageBoxIcon.Warning, "faktur_rec.V1_ttNum != faktur_rec.TtNum                                     ");
+         if(faktur_rec.TT == Faktur.TT_UGN && faktur_rec.V2_ttNum != faktur_rec.TtNum                                     ) ZXC.aim_emsg(MessageBoxIcon.Warning, "faktur_rec.V2_ttNum != faktur_rec.TtNum                                     ");
+         if(faktur_rec.TT == Faktur.TT_AUN && faktur_rec.V2_ttNum != ZXC.GetDesnoOdZareza_asUint(faktur_rec.TtNum, 100000)) ZXC.aim_emsg(MessageBoxIcon.Warning, "faktur_rec.V2_ttNum != ZXC.GetDesnoOdZareza_asUint(faktur_rec.TtNum, 100000)");
+         // 13.09.2021:  end  
+
+         //PutDgvFields();
 
          // 03.02.2012:
          if(fakturLocal_rec.IsExtendable) PutExtFields_RUC_Values(fakturLocal_rec);
