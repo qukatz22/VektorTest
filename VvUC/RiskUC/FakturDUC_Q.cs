@@ -5573,6 +5573,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    #endregion ORG BOP COP + SVD Grid_CellMouseDoubleClick
 
+   public virtual bool HasRtrans_SkladCD_Exposed { get { return false; } }
+
 }
 
 public partial class FakturExtDUC : FakturDUC
