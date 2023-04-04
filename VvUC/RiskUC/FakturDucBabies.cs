@@ -7218,7 +7218,7 @@ public class URA_SVD_DUC         : FakturExtDUC
       hamp_PDV      .Location = new Point(hamp_kupdobNaziv.Left                         , hamp_vezniDok   .Bottom - ZXC.Qun4);
 
       hamp_VezniDok2.Location = new Point(hamp_dokDate.Left                          , hamp_dokDate    .Bottom - ZXC.Qun8);
-      hamp_pdvZPkind.Location = new Point(hamp_VezniDok2.Right                       , hamp_dokDate    .Bottom - ZXC.Qun4);
+      hamp_pdvZPkind.Location = new Point(hamp_VezniDok2.Right + ZXC.QUN - ZXC.Qun4  , hamp_dokDate    .Bottom - ZXC.Qun4);
       hamp_napomena .Location = new Point(hamp_PDV     .Right                        , hamp_vezniDok   .Bottom - ZXC.Qun4);
 
       hamp_napomena.VvColWdt[1] = hamp_kupdobNaziv.Width - ZXC.Q4un + ZXC.Qun4 + ZXC.Qun8 - hamp_PDV.Width;
