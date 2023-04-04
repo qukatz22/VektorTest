@@ -342,6 +342,9 @@ public partial class KOP_PTG_DUC : MixerDUC
                dgv.Rows[i].Cells[ci.iT_isXxx].Value != null && dgv.Rows[i].Cells[ci.iT_isXxx].Value.ToString() == "X")//isFakStop
             {
                dgv.Rows[i].Cells[j].Style.BackColor = Color.FromArgb(255, 164, 164);
+             //dgv.Rows[i].Cells[j].Style.BackColor = Color.FromArgb(164, 255, 164);
+
+               
             }
             else if(dgv.Rows[i].Cells[ci.iT_intB ].Value != null && dgv.Rows[i].Cells[ci.iT_intB ].Value is false &&
                     dgv.Rows[i].Cells[ci.iT_isXxx].Value != null && dgv.Rows[i].Cells[ci.iT_isXxx].Value.ToString() == "X")//only KOP
