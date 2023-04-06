@@ -61,7 +61,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_mtros_cd, vvtbT_mtros_tk,
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
-                       vvtbT_skladDate, tbx_Konto;
+                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -2256,6 +2256,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklTS, null, "R_RoArtiklTS", _colHeader, _width);
    }
 
+   // PTG news 
+   protected void T_skladCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_skladCD = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_skladCD", TheVvDaoTrans, DB_Tci.t_skladCD, _statusText);
+      //vvtbT_artiklTS.JAM_ReadOnly = true;
+      colVvText.Visible = isVisible;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_skladCD, TheVvDaoTrans, DB_Tci.t_skladCD, _colHeader, ZXC.Q3un);
+   }
+
    protected void T_isIrmUsluga_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_isIrmUslug = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_isIrmUslug", TheVvDaoTrans, DB_Tci.t_isIrmUslug, _statusText);
@@ -2917,6 +2927,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_SVDartRealizOGkol;
       internal int iT_utilString;
       internal int iT_utilUint  ;
+      internal int iT_skladCD;
    }
 
    private void SetRtransColumnIndexes()
@@ -2988,6 +2999,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_SVDartRealizOGkol = TheG.IdxForColumn("R_SVDRealizKol");
       ci.iT_utilString        = TheG.IdxForColumn("R_utilString");
       ci.iT_utilUint          = TheG.IdxForColumn("R_utilUint")  ;
+      ci.iT_skladCD           = TheG.IdxForColumn("T_skladCD");
+
    }
 
    #endregion SetRtransColumnIndexes()
@@ -4294,6 +4307,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       TheG.PutCell(ci.iT_mtros_cd  , rowIdx,            rtrans_rec.T_mtrosCD);
       TheG.PutCell(ci.iT_serlot    , rowIdx,            rtrans_rec.T_serlot);
 
+      if(HasRtrans_SkladCD_Exposed)
+      {
+         TheG.PutCell(ci.iT_skladCD, rowIdx, rtrans_rec.T_skladCD);
+      }
+
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrans_rec.T_mtrosCD);
 
       if(kupdobSifrar_rec != null) TheG.PutCell(ci.iT_mtros_tk, rowIdx, kupdobSifrar_rec.Ticker);
@@ -5006,14 +5024,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       bool isProductLineChecked = VvCheckBox.GetBool4String(TheG.GetStringCell(ci.iT_isProductLine, rIdx, dirtyFlagging));
 
-      dgvRtrans_rec.T_serial = (ushort)(rIdx + 1);
+          dgvRtrans_rec.T_serial = (ushort)(rIdx + 1);
       if(DB_RWT) db_rec.T_serial = dgvRtrans_rec.T_serial;
 
-      dgvRtrans_rec.T_dokNum = faktur_rec.DokNum;
+          dgvRtrans_rec.T_dokNum = faktur_rec.DokNum;
       if(DB_RWT) db_rec.T_dokNum = dgvRtrans_rec.T_dokNum;
 
       if(faktur_rec.TtInfo.IsSkladDateTT) dgvRtrans_rec.T_skladDate = faktur_rec.SkladDate;
-      else dgvRtrans_rec.T_skladDate = faktur_rec.DokDate;
+      else                                dgvRtrans_rec.T_skladDate = faktur_rec.DokDate  ;
       // 29.10.2014: 
       if(DoesSkl_2_exists &&
          CtrlOK(tbx_DokDate2) &&
@@ -5027,7 +5045,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(faktur_rec.IsExtendable)
       {
-         dgvRtrans_rec.T_kupdobCD = faktur_rec.KupdobCD;
+             dgvRtrans_rec.T_kupdobCD = faktur_rec.KupdobCD;
          if(DB_RWT) db_rec.T_kupdobCD = dgvRtrans_rec.T_kupdobCD;
       }
 
@@ -5038,7 +5056,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       else
       {
          if(isProductLineChecked) dgvRtrans_rec.T_TT = faktur_rec.TtInfo.SplitTT;
-         else dgvRtrans_rec.T_TT = faktur_rec.TT;
+         else                     dgvRtrans_rec.T_TT = faktur_rec.TT;
       }
 
       if(DB_RWT) db_rec.T_TT = dgvRtrans_rec.T_TT;
@@ -5052,6 +5070,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(faktur_rec.TtInfo.HasSplitTT == false) // Classic case 
       {
          dgvRtrans_rec.T_skladCD = faktur_rec.SkladCD;
+
+         // PTG news 
+         if(HasRtrans_SkladCD_Exposed)
+         {
+            dgvRtrans_rec.T_skladCD = TheG.GetStringCell(ci.iT_skladCD, rIdx, dirtyFlagging);
+         }
       }
       else
       {

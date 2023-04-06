@@ -1342,11 +1342,13 @@ public class UGNorAUN_PTG_DUC : FakturExtDUC//, IVvOtplatanFakturDUC
 
    #region TheG_Specific_Columns
 
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                        true, "Naziv"   , "Naziv artikla ili proizvoljan opis");
       T_serlot_CreateColumn        (ZXC.Q6un,               true, "SerBroj" , "Serijski broj artikla");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "Sklad"   , "Izlazno skladište");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 2, true, "Cijena"  , "Jedinična cijena"                  );
