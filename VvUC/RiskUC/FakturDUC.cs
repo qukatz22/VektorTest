@@ -6010,11 +6010,11 @@ if(isRNM) { colOp = AddDGVColum_Decimal_4GridReadOnly (RealizacGrid, R_cijOP_Col
 
    #region TabPageName
 
-   internal const string ptgOsn_TabPageName = ".  UGAN STAVKE  .";
+   internal const string ptgOsn_TabPageName = ". STAVKE UGOVORA .";
    internal const string ptgOpl_TabPageName = ". OTPLATNI PLAN .";
-   internal const string ptgDod_TabPageName = ".    DODACI     .";
-   internal const string ptgUna_Ana_TabPageName = ".  U NAJMU ANA  .";
-   internal const string ptgUna_Sin_TabPageName = ".  U NAJMU SIN  .";
+   internal const string ptgDod_TabPageName = ". STAVKE DODATAKA .";
+   internal const string ptgUna_Ana_TabPageName = ". SVE STAVKE .";
+   internal const string ptgUna_Sin_TabPageName = ". STANJE NAJMA .";
 
    #endregion TabPageName
 

@@ -1036,6 +1036,7 @@ public class Prjkt : Kupdob
    public string   FiskalCertifikat_Issuer  { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.IssuerName.Name          ); } }
    public string   FiskalCertifikat_Subject { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.Subject                  ); } }
    public string   FiskalCertifikat_Expire  { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.GetExpirationDateString()); } }
+   public DateTime FiskalCertifikat_ExpireD { get { return (FiskalCertifikat == null ? DateTime.MinValue : FiskalCertifikat.NotAfter); } }
 
    #endregion FiskalCertifikat
 
