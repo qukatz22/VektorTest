@@ -706,9 +706,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       string text = "";
 
       if(IsRadNalog && this is RNMDUC == false) text = "Datum izrade ugovora:";
-      else if(this is BORDUC) text = "Odlazak:";
-      else if(this is RNZDUC) text = "Datum od:";
-      else text = "Datum:";
+      else if(this is BORDUC                  ) text = "Odlazak:";
+      else if(this is RNZDUC                  ) text = "Datum od:";
+      else if(this is URA_SVD_DUC             ) text = "DatumRn:";
+      else                                      text = "Datum:";
 
 
       Label lbl = hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);

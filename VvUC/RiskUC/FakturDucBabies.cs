@@ -7226,6 +7226,8 @@ public class URA_SVD_DUC         : FakturExtDUC
       
       nextY = hamp_napomena.Bottom;
 
+      tbx_SkladDate.JAM_ReadOnly = !ZXC.CurrUserHasSuperPrivileges;
+
       hamp_IznosUvaluti.Visible = false;
    }
 
