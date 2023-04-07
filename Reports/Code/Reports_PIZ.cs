@@ -4088,6 +4088,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdBstranaRow.b_Netto     = ptransRow.t_netoAdd;
          jpdBstranaRow.b_ObrPrimPl = 0.00M;
          jpdBstranaRow.b_satiNeRad = 0;
+
+         //06.04.2023. kada je neoporeyiv primitak i nema isplate (0) tada u koloni 16.2. treba biti 0.00, ta se kolona nikuda ni ne zbaraja
+         if(ptransRow.t_nacIsplCD == "0") jpdBstranaRow.b_Netto = 0.00M;
       }
 
       #endregion else if(ptransRow.t_tt == Placa.TT_NEOPOREZPRIM)
