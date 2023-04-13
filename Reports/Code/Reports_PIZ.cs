@@ -1101,6 +1101,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.porP11 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
                                                            jpdBrow.b_tt == Placa.TT_PLACAUNARAVI ||
                                                            jpdBrow.b_tt == Placa.TT_BIVSIRADNIK  || //23.12.2019.
+                                                           jpdBrow.b_tt == Placa.TT_IZASLANIRAD  || //13.04.2023.
                                                            jpdBrow.b_tt == Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_PorPrir);
          jpdStrA.porP12 = 0.00M;
          jpdStrA.porP01 = jpdStrA.porP11 + jpdStrA.porP12;
@@ -1125,6 +1126,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.mio1P01 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
+                                                            jpdBrow.b_tt == Placa.TT_IZASLANIRAD || //13.04.2023.
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_Mio1stup);
 
          jpdStrA.mio1P02 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_AUTORHONOR   ||
@@ -1148,6 +1150,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.mio2P01 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
+                                                            jpdBrow.b_tt == Placa.TT_IZASLANIRAD || //13.04.2023.
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_Mio2stup);
 
          jpdStrA.mio2P02 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_AUTORHONOR   ||
@@ -1171,10 +1174,12 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.zdrP01  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
+                                                            jpdBrow.b_tt == Placa.TT_IZASLANIRAD  || //13.04.2023.
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_ZdrNa);
          jpdStrA.zdrP02  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
+                                                            jpdBrow.b_tt == Placa.TT_IZASLANIRAD  || //13.04.2023.
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_ZorNa);
          jpdStrA.zdrP03  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_ZdrNa);
          jpdStrA.zdrP04  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_ZorNa);
@@ -2629,6 +2634,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
        //case Placa.TT_REDOVANRAD  : //23.12.2019.
          case Placa.TT_REDOVANRAD  :
          case Placa.TT_BIVSIRADNIK :
+         case Placa.TT_IZASLANIRAD : //13.04.2023.
          case Placa.TT_PODUZETPLACA: // dodano 10.03.2021.
                  if(     ziroSubStr == Zastic_IBAN_root) return "-110";
                  else if(ziroSubStr == Normal_IBAN_root) return "-100";
@@ -3587,10 +3593,15 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_prezime    = ptransRow.t_prezime;
       jpdBstranaRow.b_oib        = personRow.oib;
       
-      // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
+    // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
       string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+    
+    // 13.04.2023. dodan i prefix2 jer onaj prvi može biti 0 a drugi 9 
+      string prefix2            = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+    //jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix  + ptransRow.t_opcRadCD : "00000";
+      jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3666,10 +3677,15 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_prezime    = ptransRow.t_prezime;
       jpdBstranaRow.b_oib        = personRow.oib;
       
-      // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
+    // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
       string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+
+    // 13.04.2023. dodan i prefix2 jer onaj prvi može biti 0 a drugi 9 
+      string prefix2 = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+    //jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix  + ptransRow.t_opcRadCD : "00000";
+      jpdBstranaRow.b_opcRadCD = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3738,10 +3754,15 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_prezime    = ptransRow.t_prezime;
       jpdBstranaRow.b_oib        = personRow.oib;
       
-      // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
+    // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
       string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+      
+    // 13.04.2023. dodan i prefix2 jer onaj prvi može biti 0 a drugi 9 
+      string prefix2            = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+    //jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix  + ptransRow.t_opcRadCD : "00000";
+      jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+      
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3807,10 +3828,15 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_prezime    = ptransRow.t_prezime;
       jpdBstranaRow.b_oib        = personRow.oib;
       
-      // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
+    // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
       string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+      
+    // 13.04.2023. dodan i prefix2 jer onaj prvi može biti 0 a drugi 9 
+      string prefix2            = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+    //jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix  + ptransRow.t_opcRadCD : "00000";
+      jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+      
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3969,6 +3995,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             t_rsOO = "10";
             t_stjecatCD = "0201"; t_primDohCD = "0402"; t_pocKrajCD = "0"; t_sati = 0;
             break;
+         case Placa.TT_IZASLANIRAD: //13.04.2023.
+            t_rsOO = "10";
+            t_stjecatCD = "0005"; t_primDohCD = "0001"; t_pocKrajCD = "3"; t_sati = ptransRow.R_SatiUk;
+            break;
 
 
          default: ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Za TT [" + ptransRow.t_tt + "] nedefiniran T_rsOO!"); 
@@ -4014,23 +4044,27 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       DateTime dateDO = new DateTime(yyyy, mm, t_rsDO);
 
       //21.04.2016. ako je 2 ili 3 vrstaJoppd onda ide broj rbrJop a inace ++jpdRbr
-    //jpdBstranaRow.b_rbr        = ++jpdRbr; 
-      jpdBstranaRow.b_rbr        = vrstaJoppd == "1" ? ++jpdRbr : rbrJop;
+    //jpdBstranaRow.b_rbr       = ++jpdRbr; 
+      jpdBstranaRow.b_rbr       = vrstaJoppd == "1" ? ++jpdRbr : rbrJop;
 
-
-      jpdBstranaRow.b_tt         = ptransRow.t_tt;
-      jpdBstranaRow.b_personCD   = ptransRow.t_personCD;
-      jpdBstranaRow.b_ime        = ptransRow.t_ime + " " + ptransRow.t_prezime;
-      jpdBstranaRow.b_prezime    = ptransRow.t_prezime;
-      jpdBstranaRow.b_oib        = personRow.oib;
+      jpdBstranaRow.b_tt        = ptransRow.t_tt;
+      jpdBstranaRow.b_personCD  = ptransRow.t_personCD;
+      jpdBstranaRow.b_ime       = ptransRow.t_ime + " " + ptransRow.t_prezime;
+      jpdBstranaRow.b_prezime   = ptransRow.t_prezime;
+      jpdBstranaRow.b_oib       = personRow.oib;
       
-      // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
-      string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
-      jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
-      jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
-      jpdBstranaRow.b_rsOO       = t_rsOO;
-      jpdBstranaRow.b_satiNeRad  = ptransRow.R_SatiNeR;
+    // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
+      string prefix             = ptransRow.t_opcCD   .StartsWith("9") ? "9" : "0";
+      jpdBstranaRow.b_opcCD     = ptransRow.t_opcCD.NotEmpty()    ? prefix  + ptransRow.t_opcCD    : "00000";
+
+    // 13.04.2023. dodan i prefix2 jer onaj prvi može biti 0 a drugi 9 
+      string prefix2            = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+    //jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix  + ptransRow.t_opcRadCD : "00000";
+      jpdBstranaRow.b_opcRadCD  = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
+      jpdBstranaRow.b_rsB       = ptransRow.t_rsB.ToString();
+      jpdBstranaRow.b_rsOO      = t_rsOO;
+      jpdBstranaRow.b_satiNeRad = ptransRow.R_SatiNeR;
 
       #region if(isDrugiDohodak)
 

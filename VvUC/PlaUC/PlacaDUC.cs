@@ -4514,7 +4514,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       //PlacaDokumentFilter placaFilter = (PlacaDokumentFilter)vvRptFilter;
       VvRpt_Placa_Filter placaFilter = (VvRpt_Placa_Filter)vvRptFilter;
-      if(this.Fld_TT == Placa.TT_PODUZETPLACA || this.Fld_TT == Placa.TT_REDOVANRAD)
+      if(this.Fld_TT == Placa.TT_PODUZETPLACA || this.Fld_TT == Placa.TT_REDOVANRAD || this.Fld_TT == Placa.TT_IZASLANIRAD) // 13.04.2023. dodan iyaslani radnici
        //return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace  (), new ZXC.VvRptExternTblChooser_Placa(true , false, false, false, false), reportName, placaFilter);
        //return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, false, false), reportName, placaFilter);
          return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, true, true ), reportName, placaFilter);
@@ -4815,7 +4815,8 @@ public partial class Placa2014DUC : PlacaBaseDUC
             Placa.TT_AUVECASTOPA ,
             Placa.TT_NR1_PX1NEDOP,
             Placa.TT_NR2_P01NEDOP,
-            Placa.TT_NR3_PX1DADOP
+            Placa.TT_NR3_PX1DADOP,
+            Placa.TT_IZASLANIRAD
          });
    }
 

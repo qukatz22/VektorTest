@@ -3169,6 +3169,10 @@ public class Ptrans : VvTransRecord
       // 21.12.2013: 
       if(placaTT == Placa.TT_PLACAUNARAVI) osnovicaDop = R_MioOsn = R_TheBruto;
 
+      //13.04.2023.
+      if(placaTT == Placa.TT_IZASLANIRAD) osnovicaDop = R_MioOsn = R_TheBruto + ZXC.VvGet_25_of_100(R_TheBruto, 20M);
+
+
       if(T_isMioII == true) // covjek JE u II MIO stupu 
       {
          R_Mio1stup = R_MioOsn * pR._stMio1stup / 100.00M;

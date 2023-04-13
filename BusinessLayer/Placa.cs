@@ -168,6 +168,7 @@ public class Placa : VvPolyDocumRecord
    public const string TT_NR3_PX1DADOP = "N3"; // NEREZIDENTI porez X 10% bez pausala, doprinosi na osn umanjenu za pausal 30% 
 
    public const string TT_BIVSIRADNIK  = "BR"; // 23.12.2019. Obračun primitaka prema kojima se doprinosi obračunavaju na način koji ima obilježje drugog dohotka, a porez na dohodak prema primitcima od kojih se utvrđuje dohodak od nesamostalnog rada
+   public const string TT_IZASLANIRAD  = "IR"; // 13.04.2023. Izaslani radnik - osnovica za doprinose se uvećava za 20%  
 
    // 30.03.2021: za potrebe 'GetAlreadySpentPtransInThisMonth' da/ne, a i za eventualne buduce                     
    // ovo je lista placa_TT ova koji se odnose na zaposlene a ne neke 'vanjske' oblike angazmana koje treba platiti 
@@ -177,6 +178,7 @@ public class Placa : VvPolyDocumRecord
       Placa.TT_PLACAUNARAVI /*"PN"*/, // placa u naravi                                                           
       Placa.TT_NEPLACDOPUST /*"ND"*/, // 25.11.14. neplaceni dopust                                               
       Placa.TT_BIVSIRADNIK  /*"BR"*/, // 23.12.2019. Obračun primitaka prema kojima se doprinosi obračunavaju na način koji ima obilježje drugog dohotka, a porez na dohodak prema primitcima od kojih se utvrđuje dohodak od nesamostalnog rada
+      Placa.TT_IZASLANIRAD  /*"IR"*/, // 13.04.2023. izaslani radnik ima sve isto osim 20% veću osnovicu za doprinose
    };
    /// <summary>
    /// RR, PP, PN, ND, BR
