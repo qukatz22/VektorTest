@@ -3588,9 +3588,13 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_oib        = personRow.oib;
       
       // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
-      string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
+      string prefix              = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+
+      //14.04.2023. i za opcRadCD treba poseban prefix jer onaj opcCD može biti 0 a ovaj 9
+      string prefix2           = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+      jpdBstranaRow.b_opcRadCD = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3667,9 +3671,13 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_oib        = personRow.oib;
       
       // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
-      string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
+      string prefix              = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+
+      //14.04.2023. i za opcRadCD treba poseban prefix jer onaj opcCD može biti 0 a ovaj 9
+      string prefix2           = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+      jpdBstranaRow.b_opcRadCD = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3739,9 +3747,13 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_oib        = personRow.oib;
       
       // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
-      string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
+      string prefix              = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+
+      //14.04.2023. i za opcRadCD treba poseban prefix jer onaj opcCD može biti 0 a ovaj 9
+      string prefix2           = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+      jpdBstranaRow.b_opcRadCD = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3808,9 +3820,13 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_oib        = personRow.oib;
       
       // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
-      string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
+      string prefix              = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+
+      //14.04.2023. i za opcRadCD treba poseban prefix jer onaj opcCD može biti 0 a ovaj 9
+      string prefix2           = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+      jpdBstranaRow.b_opcRadCD = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = "0";
       jpdBstranaRow.b_satiNeRad  = 0M;
@@ -3876,11 +3892,15 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       bool      isBezStaza = (ptransRow.t_spc == (byte)Ptrans.SpecEnum.NOVOZAPOSL || ptransRow.t_spc == (byte)Ptrans.SpecEnum.NOVO_MINMIONE); //18.12.2019.
       bool      isClanUprv = (ptransRow.t_spc == (byte)Ptrans.SpecEnum.CLANUPRAVE); //30.01.2017.
       bool      isBef2017  = (ptransRow.t_dokDate < ZXC.Date01012017);
+      bool      isIzaslrad = (ptransRow.t_spc == (byte)Ptrans.SpecEnum.IZASLANRADNIK); //14.04.2023.
 
       switch(ptransRow.t_tt)
       {
          case Placa.TT_REDOVANRAD  : t_rsOO = "10"; // ovo ostavljam jer je jednoznacan i oznacava mi RR
-            t_stjecatCD = "0001"; t_primDohCD = isClanUprv ? "0005" : "0001"; t_pocKrajCD = "3"; t_sati = ptransRow.R_SatiUk;  
+            t_stjecatCD = isIzaslrad ? "0005" : "0001"; 
+            t_primDohCD = isClanUprv ? "0005" : "0001"; 
+            t_pocKrajCD = "3"; 
+            t_sati      = ptransRow.R_SatiUk;  
             break;
 
          case Placa.TT_PODUZETPLACA: t_rsOO = "16";
@@ -4025,9 +4045,13 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_oib        = personRow.oib;
       
       // 01.04.2014. stranci pocinju sa 99 a kod nas nema sifre opcine koja pocinje sa 9 pa se to zasada tako radi
-      string prefix = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
+      string prefix              = ptransRow.t_opcCD.StartsWith("9") ? "9" : "0";
       jpdBstranaRow.b_opcCD      = ptransRow.t_opcCD.NotEmpty()    ? prefix + ptransRow.t_opcCD    : "00000";
-      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix + ptransRow.t_opcRadCD : "00000";
+      
+     //14.04.2023. i za opcRadCD treba poseban prefix jer onaj opcCD može biti 0 a ovaj 9
+      string prefix2             = ptransRow.t_opcRadCD.StartsWith("9") ? "9" : "0";
+      jpdBstranaRow.b_opcRadCD   = ptransRow.t_opcRadCD.NotEmpty() ? prefix2 + ptransRow.t_opcRadCD : "00000";
+      
       jpdBstranaRow.b_rsB        = ptransRow.t_rsB.ToString();
       jpdBstranaRow.b_rsOO       = t_rsOO;
       jpdBstranaRow.b_satiNeRad  = ptransRow.R_SatiNeR;

@@ -898,9 +898,9 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    /*15*/
    protected void T_spc_CreateColumn(int _width)
    {
-      vvtbT_spc = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_spc", TheVvDaoTrans, DB_Tci.t_spc, "Spec: N-novozaposleni radnik, U-umirovljenik, M-zanemari MinMioOsn: obr. na zadani Bruto, X-Novoza i Minmio, O-zanemari MaxMioOsn, obr.na zadani bruto, C-clan uprave, manji ili jednaki bruto od osnovice za doprinose");
+      vvtbT_spc = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_spc", TheVvDaoTrans, DB_Tci.t_spc, "Spec: N-novozaposleni radnik, U-umirovljenik, M-zanemari MinMioOsn: obr. na zadani Bruto, X-Novoza i Minmio, O-zanemari MaxMioOsn, obr.na zadani bruto, C-Clan uprave, manji ili jednaki bruto od osnovice za doprinose, I-Izaslan Radnik");
     //vvtbT_spc.JAM_AllowedInputCharacters = "UNMO"; 30.01.2017. clan uprave ima drugaciju mio osnovicu
-      vvtbT_spc.JAM_AllowedInputCharacters = "UNMOCX";
+      vvtbT_spc.JAM_AllowedInputCharacters = "UNMOCXI";
       vvtbT_spc.JAM_CharacterCasing = CharacterCasing.Upper;
       vvtbT_spc.JAM_ShouldCalcTrans = true;
 

@@ -341,6 +341,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          case Ptrans.SpecEnum.MAXMIONE     : return "O"; 
          case Ptrans.SpecEnum.CLANUPRAVE   : return "C"; 
          case Ptrans.SpecEnum.NOVO_MINMIONE: return "X";
+         case Ptrans.SpecEnum.IZASLANRADNIK: return "I";
 
          default: return "";  
       }
@@ -356,6 +357,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          case "O": return Ptrans.SpecEnum.MAXMIONE;
          case "C": return Ptrans.SpecEnum.CLANUPRAVE;
          case "X": return Ptrans.SpecEnum.NOVO_MINMIONE;
+         case "I": return Ptrans.SpecEnum.IZASLANRADNIK;
 
          default: return Ptrans.SpecEnum.XNIJE;
       }

@@ -213,9 +213,10 @@ public class Ptrans : VvTransRecord
    //MINMIONE - ne uzima minMioOsn vec stvarin bruto koji je u biti manji od MinMioOSn
    //CLANUPRAVE - ako ima manji ili jednak bruto propisanom min osnovici za doprinose
    //NOVO_MINMIONE - novozaposleni kojem se ne smije uzeti minimalna mio osnovica već stvarni bruto (koji je obično manji od minmio osnovice)18.12.2019.
+   //IZASLANRADNIK - izaslani radnik u ino - osnovica doprinosa mu se povecava za 20% 14.04.2023
    public enum SpecEnum
    {
-      NOVOZAPOSL, PENZ, XNIJE, MINMIONE, MAXMIONE, CLANUPRAVE, NOVO_MINMIONE
+      NOVOZAPOSL, PENZ, XNIJE, MINMIONE, MAXMIONE, CLANUPRAVE, NOVO_MINMIONE, IZASLANRADNIK
    }
    public enum InvalidEnum
    {
@@ -2594,6 +2595,7 @@ public class Ptrans : VvTransRecord
 
          this.T_spc != SpecEnum.NOVOZAPOSL    &&
          this.T_spc != SpecEnum.NOVO_MINMIONE && //18.12.2019
+         this.T_spc != SpecEnum.IZASLANRADNIK && //14.03.2023
          this.T_spc != SpecEnum.PENZ)
       {
          return;
@@ -3154,6 +3156,10 @@ public class Ptrans : VvTransRecord
          else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.CLANUPRAVE) // 30.01.2017. ako je clan  uprave i bruto mu je manji ili jednak propisanoj osnovici za doprinose takvih onda mu uzimaj to za osnovicu ali trebalo bi izci u omjeru sati
          {
             osnovicaDop = R_MioOsn = razmjerniDioMinMioOsnZaClUpr;
+         }
+         else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.IZASLANRADNIK) // 14.04.2023. izaslani radnik ima 20% veću osnovicu za doprinose
+         {
+            osnovicaDop = R_MioOsn = ZXC.VvGet_125_on_100(R_TheBruto, 20.00M);
          }
          else
          { //qweqwe
