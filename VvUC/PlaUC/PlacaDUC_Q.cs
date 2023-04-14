@@ -112,7 +112,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       if(Fld_TT.IsEmpty()) return;
 
-      Fld_VrstaObr = ((Fld_TT == Placa.TT_REDOVANRAD || Fld_TT == Placa.TT_PODUZETPLACA || Fld_TT == Placa.TT_NEOPOREZPRIM || Fld_TT == Placa.TT_IZASLANIRAD) ? "01" : "03");
+      Fld_VrstaObr = ((Fld_TT == Placa.TT_REDOVANRAD || Fld_TT == Placa.TT_PODUZETPLACA || Fld_TT == Placa.TT_NEOPOREZPRIM) ? "01" : "03");
 
       switch(Fld_TT)
       {
