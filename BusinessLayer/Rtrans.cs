@@ -2274,7 +2274,20 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       R_mskPdv    = ZXC.VvGet_25_from_125(mskPdvBruto, T_pdvSt ).Ron2(); // porez u razduzenju skladista                                                                
       R_rbtPdv    = R_mskPdv     - R_pdv                               ; // porez u rabatu                                                                              
       R_KCR       = R_KCRPwoPPMV - R_pdv - R_Pnp                       ; // kupacPlatijo pa bez pdv.                              ("ja zaradijo")                       
-                  
+
+      // 17.04.2023: 
+      if(ShouldAdjust_2i7_MalopCij) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
+      {
+         R_rbt1 += 0.01M;
+         R_KCRP -= 0.01M;
+
+         R_pdv = ZXC.VvGet_25_from_125(R_KCRP, T_pdvSt);
+         R_KCR = R_KCRP - R_pdv                        ;
+
+         R_rbtPdv = R_mskPdv - R_pdv; // ponavljamo zbog novog R_pdv-a                                                                              
+      }
+
+
       R_KCRM      = R_KCR;
                   
       R_MSK       = R_KC; // !!! 
@@ -2303,16 +2316,6 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       {
          R_KCR_usl  = R_KCR;
          R_KCRP_usl = R_KCRP;
-      }
-
-      // 17.04.2023: 
-      if(ShouldAdjust_2i7_MalopCij) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
-      {
-         R_rbt1 += 0.01M;
-         R_KCRP -= 0.01M;
-
-         R_pdv = ZXC.VvGet_25_from_125(R_KCRP, T_pdvSt);
-         R_KCR = R_KCRP - R_pdv                        ;
       }
 
    } // CalcTrans_MALOP_Results_IZLAZ 
