@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using Crownwood.DotNetMagic.Controls;
 using System.Linq;
+using System.ComponentModel;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1145,8 +1146,31 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
       }
       
       ResumeLayout();
+
+      NeedsAutoRefresh = false;
+
+      #region Auto Refresh Via Timer Tick
+
+      //NeedsAutoRefresh = true; // todo odremarkiraj ovo kada slozis uvjet 
+
+      if(NeedsAutoRefresh) 
+      {
+         int seconds = 4; // todo 
+
+         AutoRefreshTimer = new System.Windows.Forms.Timer();
+         AutoRefreshTimer.Interval = seconds * 1000; // milliseconds 
+         AutoRefreshTimer.Tick += new System.EventHandler(autoRefreshTimer_Tick);
+         AutoRefreshTimer.Start();
+      }
+
+      #endregion Auto Refresh Via Timer Tick
    }
 
+   private void autoRefreshTimer_Tick(object sender, EventArgs e)
+   {
+    //button_Go_Prev_Next_Action(this, EventArgs.Empty);
+      button_GO_Click           (this, EventArgs.Empty);
+   }
    private void VvRecListUC_Resize(object sender, EventArgs e)
    {
       CalcFillColumnHamperSizeAndLeftanchor();
@@ -1315,6 +1339,10 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    public bool Supress_ImaLiIjedan_StartField_Neprazan_Action { get; set; }
 
    public DataGridViewColumn TheFillColumn { get; set; }
+
+   public bool NeedsAutoRefresh { get; set; }
+
+   private System.Windows.Forms.Timer AutoRefreshTimer;
 
    #endregion Common Propertiz
 
@@ -3169,6 +3197,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
             TheDataTable.Dispose();
             VirtualUntypedDataSet.Dispose();
+
+            if(NeedsAutoRefresh && AutoRefreshTimer != null) AutoRefreshTimer.Stop();// Dispose();
 
             //===================================================
 

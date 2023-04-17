@@ -2305,7 +2305,41 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
          R_KCRP_usl = R_KCRP;
       }
 
+      // 17.04.2023: 
+      if(ShouldAdjust_2i7_MalopCij) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
+      {
+         R_rbt1 += 0.01M;
+         R_KCRP -= 0.01M;
+
+         R_pdv = ZXC.VvGet_25_from_125(R_KCRP, T_pdvSt);
+         R_KCR = R_KCRP - R_pdv                        ;
+      }
+
    } // CalcTrans_MALOP_Results_IZLAZ 
+
+   private bool ShouldAdjust_2i7_MalopCij
+   {
+      get 
+      { 
+         return 
+            T_skladDate > ZXC.Date17042023 &&
+          //ZXC.IsTEXTHOany                && 
+            T_pdvSt == 25.00M              &&
+            R_rbt1.NotZero()               &&
+            R_KCRP_endsWith_2or7();
+      }
+   }
+
+   private bool R_KCRP_endsWith_2or7()
+   {
+      int kcrp_x_100_as_int = (int)(Math.Floor(R_KCRP * 100.00M));
+
+      string kcrp_x_100_as_str = kcrp_x_100_as_int.ToString();
+
+      char lastChar = ZXC.GetStringsLastChar(kcrp_x_100_as_str);
+
+      return lastChar == '2' || lastChar == '7';
+   }
 
    // 08.05.2020: 'Dubravko na ispisu racuna treba pravi VPC' 
    // Uspjeli pokusaj da iz Malop calc-a dobijemo VPC

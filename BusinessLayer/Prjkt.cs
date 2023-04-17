@@ -1009,7 +1009,8 @@ public class Prjkt : Kupdob
    {
       get 
       { 
-       if(FiskalCertifikatLoadedFromBLOB) return fiskalCertifikat;
+     //if(FiskalCertifikatLoadedFromBLOB                            ) return fiskalCertifikat;
+       if(FiskalCertifikatLoadedFromBLOB && fiskalCertifikat != null) return fiskalCertifikat;
 
        FiskalCertifikatLoadedFromBLOB = true;
 
