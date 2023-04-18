@@ -3940,7 +3940,7 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
       TheArtiklList.RemoveAll(art => art.AS_StanjeKol.IsZeroOrNegative() && art.AS_PrNabCij.IsZero());
 
       var artiklGroups = is_TemboWebShop ? TheArtiklList.Where(art => art.Grupa2CD.NotEmpty()).GroupBy(art => art.ArtiklCD).ToList() :
-                        /* jeftinije.hr */ TheArtiklList.Where(art => art.Grupa3CD.NotEmpty()).GroupBy(art => art.ArtiklCD).ToList(); // ToList() da prekine shallow copy 
+                        /* jeftinije.hr */ TheArtiklList.Where(art => art.Grupa3CD.NotEmpty()).GroupBy(art => art.ArtiklCD).ToList() ; // ToList() da prekine shallow copy 
 
       TheArtiklList.Clear();
 
@@ -3991,6 +3991,8 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
          marzaC = ZXC.EURiIzKuna_HRD_(marzaC);
          marzaG = ZXC.EURiIzKuna_HRD_(marzaG);
       }
+
+#if OLDTEMBOMARZE
 
       bool pakManjeOd1;
 
@@ -4051,6 +4053,38 @@ public class RptR_TemboWebShopExport : RptR_StandardRiskReport
          artikl_rec.AS_InvKol2Diff   = WebCb   ;
          artikl_rec.AS_InvFinDiffNBC = WebCc   ;
          artikl_rec.AS_InvFinDiffMPC = WebCg   ;
+      }
+
+#endif
+
+      foreach(Artikl artikl_rec in TheArtiklList)
+      {
+         NC    = artikl_rec.AS_PrNabCij  ;
+         NC_OP = artikl_rec.AS_PrNabCijOP;
+
+         if(NC.IsZero())
+         {
+            artikl_rec.AS_PreDefVpc1    = 
+            artikl_rec.AS_PreDefVpc2    = 
+            artikl_rec.AS_PreDefMpc1    = 
+            artikl_rec.AS_PreDefDevc    = 
+            artikl_rec.AS_InvKolDiff    = 
+            artikl_rec.AS_InvKol2Diff   = 
+            artikl_rec.AS_InvFinDiffNBC = 
+            artikl_rec.AS_InvFinDiffMPC = 0.00M;
+         }
+         else
+         { 
+            artikl_rec.AS_PreDefVpc1    = ZXC.VvGet_125_on_100(NC_OP, 20.00M); // prva  se dize za 20% 
+            artikl_rec.AS_PreDefVpc2    =                                      // druga se dize za 40% 
+            artikl_rec.AS_PreDefMpc1    =                                      // druga se dize za 40% 
+            artikl_rec.AS_PreDefDevc    = ZXC.VvGet_125_on_100(NC_OP, 40.00M); // druga se dize za 40% 
+                                                                                                       
+            artikl_rec.AS_InvKolDiff    = ZXC.VvGet_125_on_100(NC,    20.00M); // prva  se dize za 20% 
+            artikl_rec.AS_InvKol2Diff   =                                      // druga se dize za 40% 
+            artikl_rec.AS_InvFinDiffNBC =                                      // druga se dize za 40% 
+            artikl_rec.AS_InvFinDiffMPC = ZXC.VvGet_125_on_100(NC,    40.00M); // druga se dize za 40% 
+         }
       }
 
       return 0;
