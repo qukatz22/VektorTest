@@ -2234,6 +2234,15 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
    private void CalcTrans_MALOP_Results_IZLAZ(Faktur faktur_rec)
    {
+#if DEBUG
+
+      // !!! 
+      // svaki this Rtrans property koji se ne saznaje sa grida nego preuzima sa zaglavlja moze ovdje u nekom trentuku biti kriv!     
+      // ako u ovome calc-u nesto ovisi o takvom podatku (preuzetom sa zaglavlja), trebalo bi ga u GetDgvLineFields-u preuzimati sa   
+      // zaglavlje 'Fld_'-a kao sto si napravio sa T_skladDate-om                                                                     
+      // ako zelis jednom popraviti ... bug (prazan T_skladDate) se dobije kada si TH Shop 
+      if(T_skladDate.IsEmpty()) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "T_skladDate.IsEmpty!\n\r\n\r{0}", this);
+#endif
       decimal pdvBruto, mskPdvBruto, mskPnpOsnovica;
 
       INIT_Memset0Rtrans_GetZtr(faktur_rec);

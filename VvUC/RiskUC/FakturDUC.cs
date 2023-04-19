@@ -5031,9 +5031,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
           dgvRtrans_rec.T_dokNum = faktur_rec.DokNum;
       if(DB_RWT) db_rec.T_dokNum = dgvRtrans_rec.T_dokNum;
 
-      if(faktur_rec.TtInfo.IsSkladDateTT) dgvRtrans_rec.T_skladDate = faktur_rec.SkladDate;
-      else                                dgvRtrans_rec.T_skladDate = faktur_rec.DokDate  ;
-      // 29.10.2014: 
+      // 19.04.2023: isplivalo je da je cijela ova ovdje upotreba faktur_rec-a dubiozna, u nekim slucajevima je on prazan (vidi CalcTrans_MALOP_Results_IZLAZ)      
+      // ako se grid podaci vade iz grid fldova, zasto se i 'zaglavlje' podaci Rtrans-a ne vade iz fldova zaglavlja?!                                               
+    //if(faktur_rec.TtInfo.IsSkladDateTT) dgvRtrans_rec.T_skladDate =                                   faktur_rec.SkladDate                                       ;
+    //else                                dgvRtrans_rec.T_skladDate =                                   faktur_rec.DokDate                                         ;
+      if(faktur_rec.TtInfo.IsSkladDateTT) {
+         FakturExtDUC theExtDUC = (this as FakturExtDUC);
+           dgvRtrans_rec.T_skladDate = faktur_rec.SkladDate.NotEmpty() ? faktur_rec.SkladDate : CtrlOK(theExtDUC.tbx_SkladDate) ? theExtDUC.Fld_SkladDate : Fld_DokDate; }
+      else dgvRtrans_rec.T_skladDate = faktur_rec.DokDate  .NotEmpty() ? faktur_rec.DokDate   :                                                             Fld_DokDate;
+
+            // 29.10.2014: 
       if(DoesSkl_2_exists &&
          CtrlOK(tbx_DokDate2) &&
          //faktur_rec.TtInfo.IsDokDate2TT && 
