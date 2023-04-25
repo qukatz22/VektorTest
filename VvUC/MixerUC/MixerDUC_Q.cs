@@ -1329,16 +1329,17 @@ public class SVD_RptLine
                                           /* SklGr_90 */ "90",
                                           /* SklGr_88 */ "88" };
 
-   public static string[] SVD_LegalSkl2022 = {
-                                          /* SklGr_10 */ "10", 
-                                          /* SklGr_20 */ "20", 
-                                          /* SklGr_22 */ "22", 
-                                          /* SklGr_24 */ "24", 
-                                          /* SklGr_30 */ "30", 
-                                          /* SklGr_40 */ "40", 
-                                          /* SklGr_50 */ "50", 
-                                          /* SklGr_80 */ "80" };
-
+   // 25.04.2023: ovo vise ne treba 
+ //public static string[] SVD_LegalSkl2022 = {
+ //                                       /* SklGr_10 */ "10", 
+ //                                       /* SklGr_20 */ "20", 
+ //                                       /* SklGr_22 */ "22", 
+ //                                       /* SklGr_24 */ "24", 
+ //                                       /* SklGr_30 */ "30", 
+ //                                       /* SklGr_40 */ "40", 
+ //                                       /* SklGr_50 */ "50", 
+ //                                       /* SklGr_80 */ "80" };
+ //
 public SVD_RptLine(XSqlConnection conn, List<Rtrans> rtransList, Kupdob kupdob_rec, bool isByAgr, bool isTOPlista, bool isNEW_4KNJ, DateTime dateOD, DateTime dateDO, bool isChk0, decimal totalReportSUM_LJ, decimal totalReportSUM_PM, string skladCD)
    {
       GrupCD   = kupdob_rec.Ulica1;

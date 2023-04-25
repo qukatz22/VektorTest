@@ -8,6 +8,7 @@ using System.Linq;
 using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
 using static RtransDao;
+using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1983,19 +1984,19 @@ public class RptR_StandardRiskReport : VvRiskReport
                // 15.12.2022: one time only; TH provjera ima li neki s ArtiklCD2 praznim 
                if(RptFilter.IsChk0 == true && ZXC.IsTEXTHOany && ZXC.projectYearAsInt == 2022)
                {
-                  var ErrorsList = new List<string>();
+                  var errorsList = new List<string>();
 
                   foreach(Artikl artikl in /*TheArtiklList*/thisPassArtiklList.Where(art => (art.Grupa3CD == "PRKOM" || (art.Grupa3CD == "NBiPR" && art.Grupa1CD != "Akat" && art.ArtiklCD.Length == 6)) && art.AS_StanjeKol.NotZero()))
                   {
                      if(artikl.ArtiklCD2.IsEmpty())
                      {
-                        ErrorsList.Add(String.Format("{0} {1} {2} NEMA newEuroArtikl_rec", lui.Cd, lui.Name, artikl));
+                        errorsList.Add(String.Format("{0} {1} {2} NEMA newEuroArtikl_rec", lui.Cd, lui.Name, artikl));
                      }
                   }
 
-                  if(ErrorsList.NotEmpty())
+                  if(errorsList.NotEmpty())
                   {
-                     ZXC.aim_emsg_List(string.Format("{0} Nema NEW_EURO artikla.", ErrorsList.Count), ErrorsList);
+                     ZXC.aim_emsg_List(string.Format("{0} Nema NEW_EURO artikla.", errorsList.Count), errorsList);
                   }
                }
 
@@ -4592,15 +4593,30 @@ public class RptR_RekapFaktur       : RptR_StandardRiskReport
       TheFakturLightList = TheFakturList.Select(faktur => isRptR_RekapIRMasBlagIzvj ? new FakturLight(RptFilter.FuseBool3, faktur, GetFakGRdata(FakturGR, faktur), true ) : 
                                                                                       new FakturLight(RptFilter.FuseBool3, faktur, GetFakGRdata(FakturGR, faktur), false)).ToList();
 
-    //// 28.04.2016: Crvenilo handling / reporting ___ START ___ 
-    //if(TheFakturList.Any(f => f.Has_TrnSum_vs_S_Sum_Discrepancy.NotEmpty()))
-    //{
-    //   foreach(var fak in TheFakturList.Where(f => f.Has_TrnSum_vs_S_Sum_Discrepancy.NotEmpty()))
-    //   {
-    //      ZXC.aim_emsg(MessageBoxIcon.Warning ,"TrnSum_vs_S_Sum_Discrepancy\n\n{0}\n\n{1}", fak.TT_And_TtNum, fak.Has_TrnSum_vs_S_Sum_Discrepancy);
-    //   }
-    //}
-    //// 28.04.2016: Crvenilo handling / reporting ___  END  ___ 
+      // ... just for some debug purposes 
+      //TheFakturLightList.RemoveAll(fak => ZXC.IsThisMoneyPdvRon2Problematical(fak.Decim05) == false);
+
+      if(RptFilter.IsChk0 == true)
+      {
+         // 28.04.2016: Crvenilo handling / reporting ___ START ___ 
+         if(TheFakturList.Any(f => f.Has_TrnSum_vs_S_Sum_Discrepancy.NotEmpty()))
+         {
+            var errorsList = new List<string>();
+
+            foreach(var fak in TheFakturList.Where(f => f.Has_TrnSum_vs_S_Sum_Discrepancy.NotEmpty()))
+            {
+               errorsList.Add(String.Format("{0}: {1}", fak.TT_And_TtNum, fak.Has_TrnSum_vs_S_Sum_Discrepancy));
+
+               //ZXC.aim_emsg(MessageBoxIcon.Warning, "TrnSum_vs_S_Sum_Discrepancy\n\n{0}\n\n{1}", fak.TT_And_TtNum, fak.Has_TrnSum_vs_S_Sum_Discrepancy);
+            }
+
+            if(errorsList.NotEmpty())
+            {
+               ZXC.aim_emsg_List(string.Format("{0} TrnSum_vs_S_Sum_Discrepancy", errorsList.Count), errorsList);
+            }
+         }
+         // 28.04.2016: Crvenilo handling / reporting ___  END  ___ 
+      }
 
       if(isRptR_RekapIRMasBlagIzvj /*&& ZXC.projectYearAsInt == 2023*/ && RptFilter.TH_Blg_uKunama.NotZero())
       {

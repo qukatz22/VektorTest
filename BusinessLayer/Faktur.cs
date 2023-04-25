@@ -2826,7 +2826,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       decimal tolerancy = 0.00M;
 
-      if(TtInfo.IsMalopTT) tolerancy = 0.01M;
+    //if(TtInfo.IsMalopTT) tolerancy = 0.01M; // od 20.04.2023.: 
+      if(TtInfo.IsMalopTT) tolerancy = 0.00M;
 
       /*    */ if(!ZXC.AlmostEqual(S_ukK       .Ron2(), TrnSum_K      .Ron2(), tolerancy)) return "S-uk " + S_ukK       .ToStringVv() + " ≠ TrnSum " + TrnSum_K      .ToStringVv() + " (S_ukK) suma količina"  ;
     ///*    */ if(!ZXC.AlmostEqual(S_ukK2      .Ron2(), TrnSum_K2     .Ron2(), tolerancy)) return "S-uk " + S_ukK2      .ToStringVv() + " ≠ TrnSum " + TrnSum_K2     .ToStringVv() + " (S_ukK2) suma količina2" ;

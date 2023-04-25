@@ -2603,11 +2603,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          // 20.06.2022: 
          // ovo bi, mozda, trebalo ugasiti nakon sto smo uveli da je 
          // ZXC.luiListaSkladista postala IsYearDependent = true     
-         if(!SVD_RptLine.SVD_LegalSkl2022.Contains(Fld_SkladCD))
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljeno skladište! Skl: [{0}]", Fld_SkladCD);
-            e.Cancel = true;
-         }
+
+         // 25.04.2023: pa smo to sad i napravili 
+       //if(!SVD_RptLine.SVD_LegalSkl2022.Contains(Fld_SkladCD))
+       //{
+       //   ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljeno skladište! Skl: [{0}]", Fld_SkladCD);
+       //   e.Cancel = true;
+       //}
       }
 
       #endregion Check Dupla Pojava Artikla ... tamo gdje to smeta 
