@@ -1308,14 +1308,26 @@ public /*partial*/ class RptR_IRA : VvRiskReport
          {
             isSomePreviousYear = year < ZXC.projectYearFirstDay.Year;
 
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dirT, filterMembers_FTR_dirT, "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_indT, filterMembers_FTR_indT, "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_priA, filterMembers_FTR_priA, "");
+            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dirT , filterMembers_FTR_dirT , "");
+            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_indT , filterMembers_FTR_indT , "");
+            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_priA , filterMembers_FTR_priA , "");
             VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_kupRn, filterMembers_FTR_kupRn, "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_danA, filterMembers_FTR_danA, "");
+            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_danA , filterMembers_FTR_danA , "");
             VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dobRn, filterMembers_FTR_dobRn, "");
 
             VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturList, filterMembers_FAK, "", "", true);
+
+            if(year < 2023)
+            {
+               foreach(Ftrans ftr in ftransList_dirT ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+               foreach(Ftrans ftr in ftransList_indT ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+               foreach(Ftrans ftr in ftransList_priA ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+               foreach(Ftrans ftr in ftransList_kupRn) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+               foreach(Ftrans ftr in ftransList_danA ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+               foreach(Ftrans ftr in ftransList_dobRn) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+
+               foreach(Faktur fak in TheFakturList) { if(fak.S_ukKCRP.NotZero()) fak.S_ukKCRP = ZXC.EURiIzKuna_HRD_(fak.S_ukKCRP);}
+            }
          }
 
          TheFakturList.RemoveAll(fak => fak.TT != Faktur.TT_NRD && fak.TT != Faktur.TT_NRS && fak.TT != Faktur.TT_NRU);
@@ -1325,8 +1337,8 @@ public /*partial*/ class RptR_IRA : VvRiskReport
 #region TheManyDecimalsList - report source
 
          DateTime datObracuna = DateTime.Now; // !! todo? 
-         DateTime datUgovora = faktur_rec.DospDate;
-         DateTime datOtvRNP = faktur_rec.DokDate; // !! todo? 
+         DateTime datUgovora  = faktur_rec.DospDate;
+         DateTime datOtvRNP   = faktur_rec.DokDate; // !! todo? 
 
          string brojRNP = faktur_rec.TT_And_TtNum;
          string partner = faktur_rec.KupdobName;
@@ -1340,33 +1352,33 @@ public /*partial*/ class RptR_IRA : VvRiskReport
          foreach(Ftrans ftr in ftransList_dobRn)
          {
             if(ftr.T_konto.StartsWith("220")) domDob += (ZXC.VvGet_100_from_125(ftr.T_dug, Faktur.CommonPdvStForThisDate(ftr.T_dokDate)));
-            else inoDob += ftr.T_dug;
+            else                              inoDob += ftr.T_dug;
          }
          foreach(Ftrans ftr in ftransList_kupRn)
          {
             if(ftr.T_konto.StartsWith("120")) domKup += (ZXC.VvGet_100_from_125(ftr.T_pot, Faktur.CommonPdvStForThisDate(ftr.T_dokDate)));
-            else inoKup += ftr.T_pot;
+            else                              inoKup += ftr.T_pot;
          }
          // 11.11.2016. dodano - moglo bi se i  tako da se gore rade dvije liste posebno za domace a posebno za ino kup/dob
 
 
-         decimal ugCijena = faktur_rec.SomeMoney;
-         decimal naplAvansom = ftransList_priA.Sum(f => f.R_PotMinusDug);
-         //decimal  naplRacunom = ftransList_kupRn.Sum(f => f.T_pot        ); 11.11.2016.
-         decimal naplRacunom = domKup + inoKup;
-         decimal dirTrsk = ftransList_dirT.Sum(f => f.T_dug);
-         decimal indTrsk = ftransList_indT.Sum(f => f.T_dug);
-         decimal placAvansom = ftransList_danA.Sum(f => f.R_DugMinusPot);
-         //decimal  placRacunom = ftransList_dobRn.Sum(f => f.T_dug        ); 11.11.2016.
-         decimal placRacunom = domDob + inoDob;
-         decimal rezTrsk = faktur_rec.Decimal01;
-         decimal rezAmort = faktur_rec.Decimal02;
-         decimal rezervac1 = ((FakturDocFilter)RptFilter).RNP_Rezervacija1;
-         decimal rezervac2 = ((FakturDocFilter)RptFilter).RNP_Rezervacija2;
-         decimal izdaneNrd = TheFakturList.Sum(fak => fak.S_ukKCRP);
+         decimal ugCijena     = faktur_rec.SomeMoney;
+         decimal naplAvansom  = ftransList_priA.Sum(f => f.R_PotMinusDug);
+       //decimal  naplRacunom = ftransList_kupRn.Sum(f => f.T_pot        ); 11.11.2016.
+         decimal naplRacunom  = domKup + inoKup;
+         decimal dirTrsk      = ftransList_dirT.Sum(f => f.T_dug);
+         decimal indTrsk      = ftransList_indT.Sum(f => f.T_dug);
+         decimal placAvansom  = ftransList_danA.Sum(f => f.R_DugMinusPot);
+       //decimal  placRacunom = ftransList_dobRn.Sum(f => f.T_dug        ); 11.11.2016.
+         decimal placRacunom  = domDob + inoDob;
+         decimal rezTrsk      = faktur_rec.Decimal01;
+         decimal rezAmort     = faktur_rec.Decimal02;
+         decimal rezervac1    = ((FakturDocFilter)RptFilter).RNP_Rezervacija1;
+         decimal rezervac2    = ((FakturDocFilter)RptFilter).RNP_Rezervacija2;
+         decimal izdaneNrd    = TheFakturList.Sum(fak => fak.S_ukKCRP);
 
-         decimal ukupTrsk = dirTrsk + indTrsk + rezTrsk + rezAmort + rezervac1 + rezervac2;
-         decimal budOckTrsk = izdaneNrd > (placAvansom + placRacunom) ? izdaneNrd - placAvansom - placRacunom : 0.00M;
+         decimal ukupTrsk    = dirTrsk + indTrsk + rezTrsk + rezAmort + rezervac1 + rezervac2;
+         decimal budOckTrsk  = izdaneNrd > (placAvansom + placRacunom) ? izdaneNrd - placAvansom - placRacunom : 0.00M;
          decimal ukNaplaceno = naplAvansom + naplRacunom;
 
          TheManyDecimalsList = new List<VvManyDecimalsReportSourceRow>(1);
