@@ -224,7 +224,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
    // 28.12.2012: 
  //const string standardGovernmentZiroRacun = "1001005-1863000160";
-   protected const string standardGovernmentZiroRacun = "HR1210010051863000160";
+   public const string standardGovernmentZiroRacun = "HR1210010051863000160";
 
    public const string Normal_IBAN_root = "32";
    public const string Zastic_IBAN_root = "35";

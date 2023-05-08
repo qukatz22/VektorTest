@@ -1784,6 +1784,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(this is NORDUC) numOfDecimalPlaces = ZXC.RRD.Dsc_NorKolNumOfDecimalPlaces;
       else numOfDecimalPlaces = ZXC.RRD.Dsc_KolNumOfDecimalPlaces;
 
+      //08.05.2023: 
+      if(ZXC.IsTEXTHOany2 && this is IRMDUC)
+      {
+         numOfDecimalPlaces = 0;
+      }
+
       vvtbT_kol = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_kol", TheVvDaoTrans, DB_Tci.t_kol, _statusText);
 
       vvtbT_kol.JAM_ShouldCalcTransAndSumGrid = true;
