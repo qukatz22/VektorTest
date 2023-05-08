@@ -6679,6 +6679,10 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.PmtTpInf.InstrPrtySpecified = true;
          // 05.11.2019: RBA se buni, pa je ovo 1. pokusaj zadovoljenja ___  END  ___ 
 
+         // 08.05.2023: neki njemacki klijent rozel-a treba sepu a njem. banka se buni da ovo fali pa dodajemo: 
+         pmtInf.PmtTpInf.SvcLvl.Cd = "SEPA";
+       //pmtInf.PmtTpInf.SvcLvlSpecified = true;
+
          pmtInf.ReqdExctnDt      = executionDate           ;
        
          pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;

@@ -131,7 +131,8 @@ public partial class MixerDUC : VvPolyDocumRecordUC
 
                   //e.Cancel = true;
                }
-               else if(ZXC.CompareStrings(primNaziv, kupdob_rec.Naziv).NotZero())
+             //else if(ZXC.CompareStrings(primNaziv, kupdob_rec.Naziv).NotZero()                                                         )
+               else if(ZXC.CompareStrings(primNaziv, kupdob_rec.Naziv).NotZero() && primIBAN != VvPlacaReport.standardGovernmentZiroRacun)
                {
                   ZXC.aim_emsg(MessageBoxIcon.Warning, "Za zadani IBAN [{0}]\n\nNaziv primatelja na virmanu\n\n[{1}]\n\nse ne podudara sa nazivom partnera iz adresara.\n\n[{2}]\n\nRedak {3}",
                      primIBAN, primNaziv, kupdob_rec.Naziv, rowIdx + 1);
