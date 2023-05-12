@@ -2266,11 +2266,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    // PTG news 
    protected void T_skladCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_skladCD = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_skladCD", TheVvDaoTrans, DB_Tci.t_skladCD, _statusText);
+      vvtbT_skladCD = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_skladCD", TheVvDaoTrans, DB_Tci.t_skladCD, _statusText);
       //vvtbT_artiklTS.JAM_ReadOnly = true;
       colVvText.Visible = isVisible;
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_skladCD, TheVvDaoTrans, DB_Tci.t_skladCD, _colHeader, ZXC.Q3un);
+      vvtbT_skladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+            
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_skladCD, TheVvDaoTrans, DB_Tci.t_skladCD, _colHeader, _width);
    }
 
    protected void T_isIrmUsluga_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
@@ -5096,7 +5098,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          if(isProductLineChecked) dgvRtrans_rec.T_skladCD = faktur_rec.SkladCD2;
          else                     dgvRtrans_rec.T_skladCD = faktur_rec.SkladCD;
       }
-      if(DB_RWT) db_rec.T_skladCD = dgvRtrans_rec.T_skladCD;
+      if(DB_RWT)  db_rec.T_skladCD = dgvRtrans_rec.T_skladCD;
 
       if(TheG.CI_OK(ci.iT_artiklCD))
       {
