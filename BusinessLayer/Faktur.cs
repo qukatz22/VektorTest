@@ -335,11 +335,16 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_UGO = "UGO"; // Ugovor - Tender - SvDUH ...
    public const string TT_ZAH = "ZAH"; // Zahtjevnica     - SvDUH ...
 
-   public const string TT_KUG = "KUG"; // PTG - Krovni  Ugovor  za najam  
-   public const string TT_AUN = "AUN"; // PTG - Aneks   Ugovora za najam  
-   public const string TT_UGN = "UGN"; // PTG -         Ugovor  za najam  
-   public const string TT_DOD = "DOD"; // PTG - Dodatak Ugovoru za najam  
- //public const string TT_KOP = "KOP"; // PTG - Korekcija Otplatnog plana  preseljeno u Mixer
+   public const string TT_KUG = "KUG"; // PTG - Krovni  Ugovor  za najam                        
+   public const string TT_AUN = "AUN"; // PTG - Aneks   Ugovora za najam  - međuskladišni IZLAZ 
+   public const string TT_UGN = "UGN"; // PTG -         Ugovor  za najam  - međuskladišni IZLAZ 
+   public const string TT_DOD = "DOD"; // PTG - Dodatak Ugovoru za najam  - međuskladišni IZLAZ 
+   public const string TT_AU2 = "AU2"; // PTG - Aneks   Ugovora za najam  - međuskladišni ULAZ  
+   public const string TT_UG2 = "UG2"; // PTG -         Ugovor  za najam  - međuskladišni ULAZ  
+   public const string TT_DO2 = "DO2"; // PTG - Dodatak Ugovoru za najam  - međuskladišni ULAZ  
+   public const string TT_PV2 = "PV2"; // PTG - Povrat po Ugovoru za najam- međuskladišni IZLAZ 
+   public const string TT_PVR = "PVR"; // PTG - Povrat po Ugovora za najam- međuskladišni ULAZ  
+                                       //public const string TT_KOP = "KOP"; // PTG - Korekcija Otplatnog plana  preseljeno u Mixer
 
    public const string TT_MSI = "MSI"; // Meduskladisnica VELEP - IZLAZ 
    public const string TT_MSU = "MSU"; // Meduskladisnica VELEP - ULAZ  

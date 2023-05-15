@@ -178,6 +178,11 @@ public struct TtInfo
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DOD, // PCTGO tt 
+      Faktur.TT_PV2, // PCTGO tt 
+      Faktur.TT_AU2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_UG2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_DO2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_PVR, // PCTGO tt ovo je mozda visak, al ziheraski 
 
       Faktur.TT_KIZ,
       Faktur.TT_KUL,
@@ -254,6 +259,11 @@ public struct TtInfo
 
             case Faktur.TT_CKP:
 
+            case Faktur.TT_AUN:
+            case Faktur.TT_UGN:
+            case Faktur.TT_DOD:
+            case Faktur.TT_PV2:
+
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
 
 //case Faktur.TT_IZD: // SVD TEMP!!!
@@ -319,6 +329,11 @@ public struct TtInfo
       // 22.04.2013: ipak 
       Faktur.TT_PON,
       Faktur.TT_PNM,
+
+      Faktur.TT_AUN,
+      Faktur.TT_UGN,
+      Faktur.TT_DOD,
+      Faktur.TT_PV2,
    };
 
    public bool IsIRArucableTT { get { return arrayIRArucables.Contains(TheTT); } }
@@ -349,6 +364,11 @@ public struct TtInfo
       Faktur.TT_RVU,
       Faktur.TT_KLK,
       Faktur.TT_KKM,
+
+      Faktur.TT_AUN,
+      Faktur.TT_UGN,
+      Faktur.TT_DOD,
+      Faktur.TT_PV2,
    };
    /// <summary>
    /// Ovi TT-ovi u T_skladDate napucavaju F_skladDate a ne F_dokDate
@@ -402,7 +422,12 @@ public struct TtInfo
       Faktur.TT_NOR, 
       Faktur.TT_TRI, 
       //07.07.2015.
-      Faktur.TT_PSM, 
+      Faktur.TT_PSM,
+
+      Faktur.TT_AUN,
+      Faktur.TT_UGN,
+      Faktur.TT_DOD,
+      Faktur.TT_PV2,
    };
    // Za sada ovo sluzi samo pri 'AnyArtiklTextBox_OnGrid_Leave' na FakturDUC-u 
    /// <summary>
@@ -466,6 +491,10 @@ public struct TtInfo
       Faktur.TT_VMU, 
       Faktur.TT_MVU, 
     //Faktur.TT_PUL, 
+      Faktur.TT_AU2,
+      Faktur.TT_UG2,
+      Faktur.TT_DO2,
+      Faktur.TT_PVR,
    };
    /// <summary>
    /// Ovaj TT utjece na FinSt skladista po PrNabCij koja je iskalkulirana po linkanomIzlazu (cijena na Ulaznoj Medjuskladisnici je PrNabCij sa njegove Izlazne Medjusklad. 'sestre'
@@ -937,11 +966,16 @@ public struct TtInfo
    #region IsV1andV2specialUse ... PTG ...
 
    private static string[] isV1andV2specialUseTT = new string[] {
+      Mixer .TT_KOP, // PCTGO tt 
       Faktur.TT_KUG, // PCTGO tt 
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DOD, // PCTGO tt 
-      Mixer .TT_KOP, // PCTGO tt 
+      Faktur.TT_PV2, // PCTGO tt 
+      Faktur.TT_AU2, // PCTGO tt 
+      Faktur.TT_UG2, // PCTGO tt 
+      Faktur.TT_DO2, // PCTGO tt 
+      Faktur.TT_PVR, // PCTGO tt 
    };
    public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
 
@@ -1019,6 +1053,15 @@ public struct TtInfo
       if(TheTT == Faktur.TT_PIK) TwinTT        = Faktur.TT_PUK;
       if(TheTT == Faktur.TT_PUK) LinkedIzlazTT = Faktur.TT_PIK;
 
+      if(TheTT == Faktur.TT_UGN) TwinTT        = Faktur.TT_UG2;
+      if(TheTT == Faktur.TT_UG2) LinkedIzlazTT = Faktur.TT_UGN;
+      if(TheTT == Faktur.TT_AUN) TwinTT        = Faktur.TT_AU2;
+      if(TheTT == Faktur.TT_AU2) LinkedIzlazTT = Faktur.TT_AUN;
+      if(TheTT == Faktur.TT_DOD) TwinTT        = Faktur.TT_DO2;
+      if(TheTT == Faktur.TT_DO2) LinkedIzlazTT = Faktur.TT_DOD;
+      if(TheTT == Faktur.TT_PV2) TwinTT        = Faktur.TT_PVR;
+      if(TheTT == Faktur.TT_PVR) LinkedIzlazTT = Faktur.TT_PV2;
+
       #endregion Meduskladisnice
 
       #region Proizvodnja - SplitTrans Technology
@@ -1087,7 +1130,7 @@ public struct TtInfo
 
       #endregion IsYearInTtNum
 
-      if(IsFinKol_U == true && IsFinKol_I == true) throw new Exception("Ama nemre " + TheTT + " biti i ulaz i izlaz?!");
+      if(IsFinKol_U == true  && IsFinKol_I == true ) throw new Exception("Ama nemre " + TheTT + " biti i ulaz i izlaz?!");
     //if(IsFinKol_U == false && IsFinKol_I == false) throw new Exception("Ama nemre " + TheTT + " biti niti ulaz niti izlaz?!");
    }
 
@@ -4305,6 +4348,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          #endregion CKP Additions (FRAG - Cjenik kupca)
+
+         #region HasRtrans_SkladCD_Exposed
+
+         if(HasRtrans_SkladCD_Exposed)
+         {
+            theGrid.PutCell(ci.iT_skladCD, currRow, Fld_SkladCD);
+         }
+
+         #endregion HasRtrans_SkladCD_Exposed
 
       } // if(artikl_rec != null) 
 

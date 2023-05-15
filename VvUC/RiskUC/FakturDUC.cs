@@ -3502,6 +3502,39 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                Fld_SkladBR2   = (uint)luiSklad2.Integer;
             }
 
+            if(ZXC.IsPCTOGO)
+            {
+               VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd("ZNJ");
+               VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd("UNJ");
+
+               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DOD))
+               {
+                  Fld_SkladCD    =       luiSkladZNJ.Cd     ;
+                  Fld_SkladOpis  =       luiSkladZNJ.Name   ;
+                  Fld_SkladBR    = (uint)luiSkladZNJ.Integer;
+               }
+               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_PV2))
+               {
+                  Fld_SkladCD2   =       luiSkladZNJ.Cd     ;
+                  Fld_Sklad2Opis =       luiSkladZNJ.Name   ;
+                  Fld_SkladBR2   = (uint)luiSkladZNJ.Integer;
+               }
+
+               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DOD))
+               {
+                  Fld_SkladCD2   =       luiSkladUNJ.Cd     ;
+                  Fld_Sklad2Opis =       luiSkladUNJ.Name   ;
+                  Fld_SkladBR2   = (uint)luiSkladUNJ.Integer;
+               }
+               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_PV2))
+               {
+                  Fld_SkladCD    =       luiSkladUNJ.Cd     ;
+                  Fld_SkladOpis  =       luiSkladUNJ.Name   ;
+                  Fld_SkladBR    = (uint)luiSkladUNJ.Integer;
+               }
+
+            } //if(ZXC.IsPCTOGO) 
+
          } // if(ZXC.RISK_CopyToOtherDUC_inProgress == false) 
       }
 
