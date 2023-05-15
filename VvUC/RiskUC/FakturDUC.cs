@@ -61,7 +61,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_mtros_cd, vvtbT_mtros_tk,
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
-                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD, vvtbT_ptgRAM;
+                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -1655,7 +1655,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
 
    }
-
    protected void T_artiklCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_artiklCD = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_artiklCD", TheVvDaoTrans, DB_Tci.t_artiklCD, _statusText);
@@ -1880,11 +1879,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
-   protected void T_doCijMal_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void T_doCijMal_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText, bool isReadOnly)
    {
       vvtbT_doCijMal = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_doCijMal", TheVvDaoTrans, DB_Tci.t_doCijMal, _statusText);
       vvtbT_doCijMal.JAM_ShouldCalcTrans = true;
-      vvtbT_doCijMal.JAM_ReadOnly = true;
+      vvtbT_doCijMal.JAM_ReadOnly = isReadOnly/*true*/;
+      
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_doCijMal, TheVvDaoTrans, DB_Tci.t_doCijMal, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
@@ -2275,15 +2275,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_skladCD, TheVvDaoTrans, DB_Tci.t_skladCD, _colHeader, _width);
    }
 
-   protected void T_ptgRAM_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
-   {
-      vvtbT_ptgRAM = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_ptgRAM", TheVvDaoTrans, -12/* DB_Tci.t_mCalcKind*/, "");
-
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ptgRAM, TheVvDaoTrans, 4/*DB_Tci.t_mCalcKind*/, _colHeader, _width);
-      colVvText.Visible = isVisible;
-   }
-
-
    protected void T_isIrmUsluga_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_isIrmUslug = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_isIrmUslug", TheVvDaoTrans, DB_Tci.t_isIrmUslug, _statusText);
@@ -2344,13 +2335,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected void T_mtros_cd_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_mtros_cd = TheG.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColT_mtros_cd", TheVvDaoTrans, DB_Tci.t_mtrosCD, _statusText);
-
-      if(this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC) { }
-      else
-      {
-         vvtbT_mtros_cd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyMtrosTextBoxLeave));
-         //if(ZXC.CURR_prjkt_rec.IsNeprofit == false) vvtbT_mtros_cd.JAM_ShouldCopyPrevRowUnCond = true;
-      }
+      
+      vvtbT_mtros_cd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyMtrosTextBoxLeave));
+      //if(ZXC.CURR_prjkt_rec.IsNeprofit == false) vvtbT_mtros_cd.JAM_ShouldCopyPrevRowUnCond = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mtros_cd, TheVvDaoTrans, DB_Tci.t_mtrosCD, _colHeader, _width);
       colVvText.Visible = isVisible;
