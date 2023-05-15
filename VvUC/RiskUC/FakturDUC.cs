@@ -61,7 +61,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_mtros_cd, vvtbT_mtros_tk,
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
-                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD;
+                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD, vvtbT_ptgRAM;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -71,8 +71,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    public VvCheckBox vvcbx_isProdukt;
    private VvCheckBoxColumn colCbox;
    private CheckBox cbx_isHappyHour;
-   
-      /*protected*/
+
+   /*protected*/
    public ZXC.DbNavigationRestrictor dbNavigationRestrictor_TT;
 
    public string Default_TT
@@ -127,20 +127,20 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected VvDataGridViewFind fakLinkGrid;  // 22.04.2016. veze
    protected bool fakLinkLoaded;  // 22.04.2016. veze
 
-   public    VvDataGridViewFind PTG_OplGrid;
-   protected VvDataGridView     PTG_OplGrid_SumGrid;
+   public VvDataGridViewFind PTG_OplGrid;
+   protected VvDataGridView PTG_OplGrid_SumGrid;
    protected bool PTG_OplLoaded;
 
-   public    VvDataGridViewFind PTG_DodGrid;
-   protected VvDataGridView     PTG_DodGrid_SumGrid;
+   public VvDataGridViewFind PTG_DodGrid;
+   protected VvDataGridView PTG_DodGrid_SumGrid;
    protected bool PTG_DOD_Grid_Loaded;
    protected bool PTG_DOD_rtransList_Loaded;
 
-   public    VvDataGridViewFind PTG_UNA_ANA_Grid;
+   public VvDataGridViewFind PTG_UNA_ANA_Grid;
    protected VvDataGridView PTG_Una_Ana_Grid_SumGrid;
    protected bool PTG_Una_Ana_Loaded;
 
-   public    VvDataGridViewFind PTG_UNA_SIN_Grid;
+   public VvDataGridViewFind PTG_UNA_SIN_Grid;
    protected VvDataGridView PTG_Una_Sin_Grid_SumGrid;
    protected bool PTG_Una_Sin_Loaded;
 
@@ -650,12 +650,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       hamper = new VvHamper(2, 1, "", ThePolyGridTabControl.TabPages[0], false);
 
-      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun4 };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, ZXC.Qun4 };
+      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun4 };
+      hamper.VvSpcBefCol = new int[] { faBefFirstCol, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt     = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow   = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       hamper.CreateVvLabel(0, 0, "Iznosi u:", ContentAlignment.MiddleRight);
@@ -685,9 +685,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                  this is IZMDUC ||
                  this is OdobrKupcuDUC ||
                  this is PovratKupcaDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.QUN + ZXC.Qun2 };
-         else if(this is IRMDUC)         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
-         else if(this is RNZDUC)         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
-         else                            hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4 };
+         else if(this is IRMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
+         else if(this is RNZDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
+         else hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4 };
 
          hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
       }
@@ -699,17 +699,17 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       string text = "";
 
       if(IsRadNalog && this is RNMDUC == false) text = "Datum izrade ugovora:";
-      else if(this is BORDUC                  ) text = "Odlazak:";
-      else if(this is RNZDUC                  ) text = "Datum od:";
-      else if(this is URA_SVD_DUC             ) text = "DatumRn:";
-      else                                      text = "Datum:";
+      else if(this is BORDUC) text = "Odlazak:";
+      else if(this is RNZDUC) text = "Datum od:";
+      else if(this is URA_SVD_DUC) text = "DatumRn:";
+      else text = "Datum:";
 
 
       Label lbl = hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
@@ -944,20 +944,20 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          if(this is BlgUplatDUC || this is BlgIsplatDUC ||
             this is BlgUplat_M_DUC || this is BlgIsplat_M_DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - 4 * ZXC.Qun8 - 2 * ZXC.Qun8 + 2 * faBefCol };
-         else if(this is IRMDUC)                               hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
-         else if(this is PIMDUC)                               hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
-         else if(this is PIZpDUC)                              hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q4un + ZXC.Qun8 };
+         else if(this is IRMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
+         else if(this is PIMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
+         else if(this is PIZpDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q4un + ZXC.Qun8 };
          else if(this is MedjuSkladVMIuDUC || this is MedjuSkladVMI2DUC ||
                  this is MedjuSkladMVIDUC || this is MedjuSkladMVI2DUC ||
-                 this is MedjuSkladMMIDUC)                     hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
+                 this is MedjuSkladMMIDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
          else if(this is PocetnoStanjeMPDUC || this is NivelacijaDUC ||
-                 this is InventuraMPDUC)                       hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un };
-         else if(this is WYRNDUC)                              hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun2 };
-         else if(this is RNZDUC)                               hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
-         else if(this is URMDUC && IsAutoKucaProjekt)          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
-         else if(this is ZAH_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
-       //else if(this is IZD_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un  + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
-         else                                                  hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
+                 this is InventuraMPDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un };
+         else if(this is WYRNDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun2 };
+         else if(this is RNZDUC) hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
+         else if(this is URMDUC && IsAutoKucaProjekt) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
+         else if(this is ZAH_SVD_DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
+         //else if(this is IZD_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un  + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
+         else hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
       }
       else if(this is MedjuSkladDUC || this is MedjuSklad2DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
       else hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
@@ -1023,12 +1023,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       hamper = new VvHamper(4, 1, "", null, false);
 
-      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q4un - ZXC.Qun4 };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
+      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q4un - ZXC.Qun4 };
+      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN + ZXC.Qun8 };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt = new int[] { ZXC.QUN + ZXC.Qun8 };
+      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       hamper.CreateVvLabel(0, 0, "TipTrans:", ContentAlignment.MiddleRight);
@@ -1667,21 +1667,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       else // classic 
       {
          // 02.05.2022: 
-       //vvtbT_artiklCD.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType,                                                new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
+         //vvtbT_artiklCD.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType,                                                new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
          vvtbT_artiklCD.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType, ZXC.AutoCompleteRestrictor.ART_NonRashod_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
 
 
-       //vvtbT_artiklCD.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterBCode.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterBCode), new EventHandler(AnyArtiklTextBoxLeave));
+         //vvtbT_artiklCD.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterBCode.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterBCode), new EventHandler(AnyArtiklTextBoxLeave));
       }
 
       if(this is KKMDUC ||
-         this is URA_SVD_DUC || 
+         this is URA_SVD_DUC ||
          this is NRD_SVD_DUC ||
-         this is IZD_SVD_DUC || 
+         this is IZD_SVD_DUC ||
          this is UGODUC ||
-         this is ZAH_SVD_DUC)                 colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, _width);
+         this is ZAH_SVD_DUC) colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, _width);
       else if(this is IFADUC && ZXC.IsPCTOGO) colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, ZXC.Q2un);
-      else                                    colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, ZXC.Q6un);
+      else colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, ZXC.Q6un);
 
       colVvText.Visible = isVisible;
 
@@ -1693,7 +1693,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbT_artiklName = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_artiklName", TheVvDaoTrans, DB_Tci.t_artiklName, _statusText);
 
       // 02.05.2022: 
-    //vvtbT_artiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType,                                                new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
+      //vvtbT_artiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType,                                                new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
       vvtbT_artiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType, ZXC.AutoCompleteRestrictor.ART_NonRashod_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklName, TheVvDaoTrans, DB_Tci.t_artiklName, _colHeader, this is UGODUC ? ZXC.Q8un : 0);
@@ -1714,7 +1714,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbT_artiklName = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_artiklName", TheVvDaoTrans, DB_Tci.t_artiklName, _statusText);
 
       // 02.05.2022: 
-    //vvtbT_artiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType,                                                new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
+      //vvtbT_artiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType,                                                new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
       vvtbT_artiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType, ZXC.AutoCompleteRestrictor.ART_NonRashod_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklName, TheVvDaoTrans, DB_Tci.t_artiklName, _colHeader, _width);
@@ -2271,9 +2271,18 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
 
       vvtbT_skladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-            
+
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_skladCD, TheVvDaoTrans, DB_Tci.t_skladCD, _colHeader, _width);
    }
+
+   protected void T_ptgRAM_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ptgRAM = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_ptgRAM", TheVvDaoTrans, -12/* DB_Tci.t_mCalcKind*/, "");
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ptgRAM, TheVvDaoTrans, 4/*DB_Tci.t_mCalcKind*/, _colHeader, _width);
+      colVvText.Visible = isVisible;
+   }
+
 
    protected void T_isIrmUsluga_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
@@ -2335,8 +2344,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected void T_mtros_cd_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_mtros_cd = TheG.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColT_mtros_cd", TheVvDaoTrans, DB_Tci.t_mtrosCD, _statusText);
-      vvtbT_mtros_cd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyMtrosTextBoxLeave));
-      //if(ZXC.CURR_prjkt_rec.IsNeprofit == false) vvtbT_mtros_cd.JAM_ShouldCopyPrevRowUnCond = true;
+
+      if(this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC) { }
+      else
+      {
+         vvtbT_mtros_cd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyMtrosTextBoxLeave));
+         //if(ZXC.CURR_prjkt_rec.IsNeprofit == false) vvtbT_mtros_cd.JAM_ShouldCopyPrevRowUnCond = true;
+      }
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mtros_cd, TheVvDaoTrans, DB_Tci.t_mtrosCD, _colHeader, _width);
       colVvText.Visible = isVisible;

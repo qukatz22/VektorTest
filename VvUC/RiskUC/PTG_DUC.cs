@@ -1347,6 +1347,8 @@ public class UGNorAUN_PTG_DUC : FakturExtDUC//, IVvOtplatanFakturDUC
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                        true, "Naziv"   , "Naziv artikla ili proizvoljan opis");
+      T_ptgRAM_CreateColumn        (ZXC.Q3un,               true, "RAM", "RAM");
+      T_mtros_cd_CreateColumn      (ZXC.Q3un,               true, "HDD", "HDD");
       T_skladCD_CreateColumn       (ZXC.Q3un,               true, "Sklad"   , "Izlazno skladište");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
@@ -1355,10 +1357,10 @@ public class UGNorAUN_PTG_DUC : FakturExtDUC//, IVvOtplatanFakturDUC
       R_cij_kcr_CreateColumn       (ZXC.Q4un           , 2, true, "CijSRbt" , "Cijena s rabatom");
       R_rbt1_CreateColumn          (ZXC.Q4un           , 2, true, "IznosRbt", "Iznos rabata");
       R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos"   , "Ukupan iznos bez PDV-a");
-    //R_NC_CreateColumn            (ZXC.Q4un           , 2, true, "NabCij"  , "Nabavna cijena");
-    //R_NV_CreateColumn            (ZXC.Q4un           , 2, true, "NabVri"  , "Nabavna vrijednost");
-    //R_RUC_CreateColumn           (ZXC.Q4un           , 2, true, "RUC"     , "RUC - razlika u cijeni");
-    //R_RUV_CreateColumn           (ZXC.Q4un           , 2, true, "RUV"     , "RUV - razlika u vrijednosti");
+      R_NC_CreateColumn            (ZXC.Q4un           , 2, true, "NabCij"  , "Nabavna cijena");
+      R_NV_CreateColumn            (ZXC.Q4un           , 2, true, "NabVri"  , "Nabavna vrijednost");
+      R_RUC_CreateColumn           (ZXC.Q4un           , 2, true, "RUC"     , "RUC - razlika u cijeni");
+      R_RUV_CreateColumn           (ZXC.Q4un           , 2, true, "RUV"     , "RUV - razlika u vrijednosti");
    }
 
    #endregion TheG_Specific_Columns
