@@ -2267,7 +2267,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected void T_skladCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_skladCD = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_skladCD", TheVvDaoTrans, DB_Tci.t_skladCD, _statusText);
-      //vvtbT_artiklTS.JAM_ReadOnly = true;
+      vvtbT_skladCD.JAM_CharacterCasing = CharacterCasing.Upper;
       colVvText.Visible = isVisible;
 
       vvtbT_skladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);

@@ -1308,23 +1308,34 @@ public /*partial*/ class RptR_IRA : VvRiskReport
          {
             isSomePreviousYear = year < ZXC.projectYearFirstDay.Year;
 
+          //15.05.2023. za ono sto dolazi preko naloga PS (sve osim 4 i 7) nema potrebe ici u prethodne godine jer je iskazano na pocetnom stanju
+          //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dirT , filterMembers_FTR_dirT , "");
+          //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_indT , filterMembers_FTR_indT , "");
+          //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_priA , filterMembers_FTR_priA , "");
+          //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_kupRn, filterMembers_FTR_kupRn, "");
+          //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_danA , filterMembers_FTR_danA , "");
+          //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dobRn, filterMembers_FTR_dobRn, "");
             VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dirT , filterMembers_FTR_dirT , "");
             VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_indT , filterMembers_FTR_indT , "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_priA , filterMembers_FTR_priA , "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_kupRn, filterMembers_FTR_kupRn, "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_danA , filterMembers_FTR_danA , "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dobRn, filterMembers_FTR_dobRn, "");
+            
+            if(year == ZXC.projectYearFirstDay.Year)
+            { 
+               VvDaoBase.LoadGenericVvDataRecordList(/*isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : */TheDbConnection, ftransList_priA , filterMembers_FTR_priA , "");
+               VvDaoBase.LoadGenericVvDataRecordList(/*isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : */TheDbConnection, ftransList_kupRn, filterMembers_FTR_kupRn, "");
+               VvDaoBase.LoadGenericVvDataRecordList(/*isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : */TheDbConnection, ftransList_danA , filterMembers_FTR_danA , "");
+               VvDaoBase.LoadGenericVvDataRecordList(/*isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : */TheDbConnection, ftransList_dobRn, filterMembers_FTR_dobRn, "");
+            }
 
             VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturList, filterMembers_FAK, "", "", true);
 
             if(year < 2023)
             {
-               foreach(Ftrans ftr in ftransList_dirT ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
-               foreach(Ftrans ftr in ftransList_indT ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
-               foreach(Ftrans ftr in ftransList_priA ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
-               foreach(Ftrans ftr in ftransList_kupRn) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
-               foreach(Ftrans ftr in ftransList_danA ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
-               foreach(Ftrans ftr in ftransList_dobRn) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+               foreach(Ftrans ftr in ftransList_dirT ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); /*if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot);*/ }
+               foreach(Ftrans ftr in ftransList_indT ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); /*if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot);*/ }
+             //foreach(Ftrans ftr in ftransList_priA ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+             //foreach(Ftrans ftr in ftransList_kupRn) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+             //foreach(Ftrans ftr in ftransList_danA ) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
+             //foreach(Ftrans ftr in ftransList_dobRn) { if(ftr.T_dug.NotZero()) ftr.T_dug = ZXC.EURiIzKuna_HRD_(ftr.T_dug); if(ftr.T_pot.NotZero()) ftr.T_pot = ZXC.EURiIzKuna_HRD_(ftr.T_pot); }
 
                foreach(Faktur fak in TheFakturList) { if(fak.S_ukKCRP.NotZero()) fak.S_ukKCRP = ZXC.EURiIzKuna_HRD_(fak.S_ukKCRP);}
             }

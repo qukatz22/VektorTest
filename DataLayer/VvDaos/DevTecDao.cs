@@ -392,6 +392,9 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
       DateTime validHNBdate = GetValidHNBdate(forThisDate);
 
+      //15.05.2023.
+      if(forThisDate.Date == ZXC.Date01012023) validHNBdate = ZXC.Date01012023;
+
       string origDBname = conn.Database;
       Prepare_ZXC_HtransList(conn);
       ZXC.SetMainDbConnDatabaseName(origDBname);
