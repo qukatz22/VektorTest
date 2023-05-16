@@ -373,7 +373,23 @@ public struct TtInfo
    /// <summary>
    /// Ovi TT-ovi u T_skladDate napucavaju F_skladDate a ne F_dokDate
    /// </summary>
-   public bool IsSkladDateTT { get { return arraySkladDateTT.Contains(TheTT); } }
+ //public bool IsSkladDateTT { get { return arraySkladDateTT.Contains(TheTT); } } // 16.05.2023; 
+   public bool IsSkladDateTT 
+   { 
+      get 
+      {
+         bool twinTTisSkladDateTT = false;
+
+         if(LinkedIzlazTT.NotEmpty())
+         {
+            TtInfo linkedIzlazttInfo = ZXC.TtInfo(LinkedIzlazTT);
+
+            twinTTisSkladDateTT = linkedIzlazttInfo.IsSkladDateTT;
+         }
+
+         return arraySkladDateTT.Contains(TheTT) || twinTTisSkladDateTT; 
+      } 
+   }
 
    #endregion IsSkladDateTT
 
