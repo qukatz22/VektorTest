@@ -1260,6 +1260,7 @@ public class SVD_RptLine
    public decimal SklGr_20 { get; set; }
    public decimal SklGr_22 { get; set; }
    public decimal SklGr_24 { get; set; }
+   public decimal SklGr_26 { get; set; }
    public decimal SklGr_30 { get; set; }
    public decimal SklGr_40 { get; set; }
    public decimal SklGr_50 { get; set; }
@@ -1275,6 +1276,7 @@ public class SVD_RptLine
    public decimal SklPosto_20 { get { return ZXC.DivSafe(SklGr_20, ALL_GrSUM) * 100M; } } 
    public decimal SklPosto_22 { get { return ZXC.DivSafe(SklGr_22, ALL_GrSUM) * 100M; } } 
    public decimal SklPosto_24 { get { return ZXC.DivSafe(SklGr_24, ALL_GrSUM) * 100M; } } 
+   public decimal SklPosto_26 { get { return ZXC.DivSafe(SklGr_26, ALL_GrSUM) * 100M; } } 
    public decimal SklPosto_30 { get { return ZXC.DivSafe(SklGr_30, ALL_GrSUM) * 100M; } } 
    public decimal SklPosto_40 { get { return ZXC.DivSafe(SklGr_40, ALL_GrSUM) * 100M; } } 
    public decimal SklPosto_50 { get { return ZXC.DivSafe(SklGr_50, ALL_GrSUM) * 100M; } }
@@ -1292,7 +1294,7 @@ public class SVD_RptLine
       {
          return
                ArtGr_00 + ArtGr_10 + ArtGr_20 + ArtGr_30 + ArtGr_40 +  ArtGr_50 + ArtGr_60 + ArtGr_70 + ArtGr_80 + ArtGr_90 + ArtGr_A0 + ArtGr_N0 + ArtGr_LP +
-               SklGr_10 + SklGr_20 + SklGr_22 + SklGr_24 + SklGr_30 + SklGr_40 +  SklGr_50 + SklGr_60 + SklGr_61 + SklGr_70 + SklGr_77 + SklGr_80 + SklGr_90 + SklGr_88;
+               SklGr_10 + SklGr_20 + SklGr_22 + SklGr_24 + SklGr_26 + SklGr_30 + SklGr_40 +  SklGr_50 + SklGr_60 + SklGr_61 + SklGr_70 + SklGr_77 + SklGr_80 + SklGr_90 + SklGr_88;
       }
    }
 
@@ -1319,6 +1321,7 @@ public class SVD_RptLine
                                           /* SklGr_20 */ "20", 
                                           /* SklGr_22 */ "22", 
                                           /* SklGr_24 */ "24", 
+                                          /* SklGr_26 */ "26", 
                                           /* SklGr_30 */ "30", 
                                           /* SklGr_40 */ "40", 
                                           /* SklGr_50 */ "50", 
@@ -1473,6 +1476,7 @@ public SVD_RptLine(XSqlConnection conn, List<Rtrans> rtransList, Kupdob kupdob_r
       SklGr_20 = rtransList.Where(r => r.T_skladCD == "20").Sum(r => r.R_KCRP);
       SklGr_22 = rtransList.Where(r => r.T_skladCD == "22").Sum(r => r.R_KCRP);
       SklGr_24 = rtransList.Where(r => r.T_skladCD == "24").Sum(r => r.R_KCRP);
+      SklGr_26 = rtransList.Where(r => r.T_skladCD == "26").Sum(r => r.R_KCRP);
       SklGr_30 = rtransList.Where(r => r.T_skladCD == "30").Sum(r => r.R_KCRP);
       SklGr_40 = rtransList.Where(r => r.T_skladCD == "40").Sum(r => r.R_KCRP);
       SklGr_50 = rtransList.Where(r => r.T_skladCD == "50").Sum(r => r.R_KCRP);
@@ -1525,6 +1529,7 @@ public class SVD_SubRptLine
    public decimal SklGr_20 { get; set; }
    public decimal SklGr_22 { get; set; }
    public decimal SklGr_24 { get; set; }
+   public decimal SklGr_26 { get; set; }
    public decimal SklGr_30 { get; set; }
  //public decimal SklGr_40 { get; set; }
    public decimal SklGr_40 { get; set; }
@@ -1542,6 +1547,7 @@ public class SVD_SubRptLine
    public decimal SklPosto_20 { get { return ZXC.DivSafe(SklGr_20, ALL_GrSUM) * 100M; } }
    public decimal SklPosto_22 { get { return ZXC.DivSafe(SklGr_22, ALL_GrSUM) * 100M; } }
    public decimal SklPosto_24 { get { return ZXC.DivSafe(SklGr_24, ALL_GrSUM) * 100M; } }
+   public decimal SklPosto_26 { get { return ZXC.DivSafe(SklGr_26, ALL_GrSUM) * 100M; } }
    public decimal SklPosto_30 { get { return ZXC.DivSafe(SklGr_30, ALL_GrSUM) * 100M; } }
    public decimal SklPosto_40 { get { return ZXC.DivSafe(SklGr_40, ALL_GrSUM) * 100M; } }
    public decimal SklPosto_50 { get { return ZXC.DivSafe(SklGr_50, ALL_GrSUM) * 100M; } }
@@ -1563,8 +1569,8 @@ public class SVD_SubRptLine
       get
       {
          return
-               ArtGr_00 + ArtGr_10 + ArtGr_20 + ArtGr_30 + ArtGr_40 + ArtGr_50 + ArtGr_60 +            ArtGr_70 + ArtGr_80 + ArtGr_90 + ArtGr_A0 + ArtGr_N0 + ArtGr_LP +
-               SklGr_10 + SklGr_20 + SklGr_22 + SklGr_24 + SklGr_30 +            SklGr_40 + SklGr_50 + SklGr_60 + SklGr_61 + SklGr_70 + SklGr_77 + SklGr_80 + SklGr_90 + SklGr_88;
+               ArtGr_00 + ArtGr_10 + ArtGr_20 + ArtGr_30 + ArtGr_40 + ArtGr_50 + ArtGr_60 + ArtGr_70 + ArtGr_80 + ArtGr_90 + ArtGr_A0 + ArtGr_N0 + ArtGr_LP +
+               SklGr_10 + SklGr_20 + SklGr_22 + SklGr_24 + SklGr_26 + SklGr_30 + SklGr_40 + SklGr_50 + SklGr_60 + SklGr_61 + SklGr_70 + SklGr_77 + SklGr_80 + SklGr_90 + SklGr_88;
       }
    }
 
@@ -1631,6 +1637,7 @@ public class SVD_SubRptLine
       SklGr_20 = rtransList.Where(r => r.T_skladCD == "20").Sum(r => r.R_KCRP);
       SklGr_22 = rtransList.Where(r => r.T_skladCD == "22").Sum(r => r.R_KCRP);
       SklGr_24 = rtransList.Where(r => r.T_skladCD == "24").Sum(r => r.R_KCRP);
+      SklGr_26 = rtransList.Where(r => r.T_skladCD == "26").Sum(r => r.R_KCRP);
       SklGr_30 = rtransList.Where(r => r.T_skladCD == "30").Sum(r => r.R_KCRP);
 
     //SklGr_40 = rtransList.Where(r => r.T_skladCD == "40").Sum(r => r.R_KCRP);
