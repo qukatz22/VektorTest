@@ -6348,9 +6348,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
       decimal sumaRata = 0.00M, sumaUGAN=0.00M, sumaDOD= 0.00M;
 
-    //IVvOtplatanFakturDUC otplatanFakturDUC = this as IVvOtplatanFakturDUC;
-    //PTG_Ugovor           ugan_rec          = otplatanFakturDUC.ThePtgUgovor_rec;
-      PTG_Ugovor           ugan_rec          = new PTG_Ugovor(faktur_rec);
+      PTG_Ugovor ugan_rec = new PTG_Ugovor(faktur_rec);
 
       PTG_OplLoaded = true;
       PTG_OplGrid.Rows.Clear();

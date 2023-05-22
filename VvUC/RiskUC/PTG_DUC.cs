@@ -187,7 +187,7 @@ public class A1_KUG_PTG_DUC : KUG_PTG_DUC
 }
 
 
-public class UGNorAUN_PTG_DUC : FakturExtDUC//, IVvOtplatanFakturDUC
+public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC 
 {
    internal PTG_Ugovor   PtgUgovor_rec     { get; set; }
    internal List<Rtrans> RtransList_allDOD { get; set; }
@@ -1509,7 +1509,7 @@ public class A1_ANU_PTG_DUC : UGNorAUN_PTG_DUC
    #endregion Constructor
 }
 
-public class DOD_PTG_DUC : FakturExtDUC
+public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
 {
    #region Constructor
 
