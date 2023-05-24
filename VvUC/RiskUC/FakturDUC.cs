@@ -13543,7 +13543,7 @@ public class FakturPDUC           : FakturExtDUC
 
    protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName,
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
-                       vvtbT_kolG2, vvtbR_jm;
+                       vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2;
    private VvCheckBox  vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
@@ -13572,7 +13572,8 @@ public class FakturPDUC           : FakturExtDUC
 
       CalcLocationSizeAnchor_TheDGVAndTheSumGrid_NEW(TheG2, ZXC.QunMrgn, ZXC.QunMrgn);
 
-      ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = Color.Sienna; //ZXC.vvColors.tabPage4TheG3_BackColor;
+    //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = Color.Sienna; //ZXC.vvColors.tabPage4TheG3_BackColor;
+      ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO ? Color.Beige : Color.Sienna; 
 
       VvHamper.Open_Close_Fields_ForWriting(TheG2, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
 
@@ -13707,6 +13708,17 @@ public class FakturPDUC           : FakturExtDUC
       //colCbox.VvSupressClearingOnClearAllRowValues = true;
 
       colCbox.Visible = isVisible;
+   }
+
+   protected void T_skladCD2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_skladCD2 = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_skladCD2", TheVvDaoTrans2, DB_Tci2.t_skladCD, _statusText);
+      vvtbT_skladCD2.JAM_CharacterCasing = CharacterCasing.Upper;
+      colVvText.Visible = isVisible;
+
+      vvtbT_skladCD2.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD2, TheVvDaoTrans2, DB_Tci2.t_skladCD, _colHeader, _width);
    }
 
    #endregion TheGrid2_Columns
@@ -14131,7 +14143,7 @@ public class FakturPDUC           : FakturExtDUC
 
    public override string TabPageTitle2
    {
-      get { return "Detalji"; }
+      get { return ZXC.IsPCTOGO ? ". SERIJSKI BROJEVI ." : "Detalji"; }
    }
 
    #endregion TabPageTitle2

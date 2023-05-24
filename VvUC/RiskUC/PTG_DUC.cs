@@ -621,7 +621,9 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       dtp_DokDate.Name = "dtp_DokDate";
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
 
-    //10.06.2022. zamjenil smo mjesta tbx-ovima i vazan je PTG_BrojRata/rokPonude jer na osnovu njega racunam o opl a ovaj drugi je samo informativan
+      dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
+
+      //10.06.2022. zamjenil smo mjesta tbx-ovima i vazan je PTG_BrojRata/rokPonude jer na osnovu njega racunam o opl a ovaj drugi je samo informativan
       hamper.CreateVvLabel  (4, 0, "TrajanjeUg:", ContentAlignment.MiddleRight);
       tbx_RokPonude = hamper.CreateVvTextBox(5, 0, "tbx_RokPonude", "Broj rata", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.rokPonude)); //PTG_BrojRata
       tbx_RokPonude.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
@@ -660,8 +662,6 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    {
       if(Fld_RokPonude.NotZero()) Fld_PTG_trajanjeUgovora = (uint)Fld_RokPonude;
    }
-
-
 
    private void InitializeHamper_UgovorPotpisan_PTG(out VvHamper hamper)
    {
@@ -739,12 +739,14 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       tbx_DospDate.JAM_IsForDateTimePicker = true;
       dtp_DospDate = hamper.CreateVvDateTimePicker(1, 2, "", tbx_DospDate);//PTG_DatPrvogRn
       dtp_DospDate.Name = "dtp_DospDate";
+      tbx_DospDate.JAM_ReadOnly = true;
 
                       hamper.CreateVvLabel  (0, 3, "DatZadRn:", ContentAlignment.MiddleRight);
       tbx_PonudDate = hamper.CreateVvTextBox(1, 3, "tbx_PonudDate", "Datum zadnjeg računa");
       tbx_PonudDate.JAM_IsForDateTimePicker = true;
       dtp_PonudDate = hamper.CreateVvDateTimePicker(1, 3, "", tbx_PonudDate);//PTG_DatZadnjegRn   
       dtp_PonudDate.Name = "dtp_PonudDate";
+      tbx_PonudDate.JAM_ReadOnly = true;
 
                        hamper.CreateVvLabel  (0, 4, "DatIsteka:", ContentAlignment.MiddleRight);
       tbx_RokIspDate = hamper.CreateVvTextBox(1, 4, "tbx_RokIspDate", "Datum isteka ugovora/aneksa");
@@ -1365,6 +1367,20 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
    #endregion TheG_Specific_Columns
 
+   #region TheG_Specific_Columns2
+
+   protected override void InitializeDUC_Specific_Columns2()
+   {
+      bool isVisible = true;
+
+      T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
+      T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište");
+      T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
+   }
+
+   #endregion TheG_Specific_Columns2
+
    #region Colors
 
    protected override void AddColorsToBaby()
@@ -1527,7 +1543,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
    #region Fieldz
 
    public VvHamper hamp_partner_PTG, hamp_TT_PTG, hamp_v1TT_PTG, hamp_v2TT_PTG, hamp_KUGpartner_PTG, hamp_DodNum_PTG,
-                   hamp_Dodatak_PTG, hamp_napomena_PTG;
+                   hamp_Dodatak_PTG, hamp_napomena_PTG, hamp_sklad_PTG;
    public RadioButton rbt_mjIsp_Korisnik, rbt_mjIsp_PcToGo, rbt_mjIsp_KorisOvers;
 
    #endregion Fieldz
@@ -1543,8 +1559,8 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
       InitializeHamper_DODnum_PTG    (out hamp_DodNum_PTG    );
       InitializeHamper_KUGpartner_PTG(out hamp_KUGpartner_PTG);
       InitializeHamper_Dodatak_PTG   (out hamp_Dodatak_PTG   );
-      InitializeHamper_Napomena_PTG  (out hamp_napomena_PTG);
-
+      InitializeHamper_Napomena_PTG  (out hamp_napomena_PTG  );
+      InitializeHamper_Skladista_PTG (out hamp_sklad_PTG     );
       CreateArrOfHampers();
 
       SetParentOfHamperLeftHampers();
@@ -1571,6 +1587,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
       hamp_napomena_PTG.Location = new Point(hamp_partner_PTG.Left, hamp_partner_PTG.Bottom);
 
     //hamp_KUGpartner_PTG.Visible  = (this.Fld_V1_ttNum.NotZero()) ? true : false;
+      hamp_sklad_PTG.Location = new Point(hamp_Dodatak_PTG.Left + ZXC.Q10un + ZXC.Qun2, hamp_Dodatak_PTG.Bottom);
 
       nextY = hamp_napomena_PTG.Bottom;
    }
@@ -1580,7 +1597,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
 
       hamperLeft = new VvHamper[] { hamp_TT_PTG, hamp_partner_PTG, hamp_dokDate, hamp_dokNum,
                                     hamp_v1TT_PTG, hamp_v2TT_PTG, hamp_DodNum_PTG, hamp_KUGpartner_PTG,
-                                    hamp_Dodatak_PTG, hamp_napomena_PTG
+                                    hamp_Dodatak_PTG, hamp_napomena_PTG, hamp_sklad_PTG
                                   };
    }
 
@@ -1870,6 +1887,55 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
 
    }
 
+   private void InitializeHamper_Skladista_PTG(out VvHamper hamper)
+   {
+      hamper = new VvHamper(4, 2, "", null, false);
+
+      hamper.VvColWdt      = new int[] { labelWidth - ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un - ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                      hamper.CreateVvLabel        (0, 0, "IzlSkl:", ContentAlignment.MiddleRight);
+      tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište u najam");
+      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpiS", "");
+      tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
+      tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_SkladCd.JAM_DataRequired = true;
+      tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
+
+      tbx_SkladCd  .JAM_ReadOnly = true;
+      tbx_SkladOpis.JAM_ReadOnly = true;
+      tbx_SkladBR  .JAM_ReadOnly = true;
+
+      tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
+      tbx_SkladCd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladBR.JAM_Name;
+      tbx_SkladCd.VVtag2 = true;
+
+                      hamper.CreateVvLabel         (0, 1, "UlzSkl:", ContentAlignment.MiddleRight);
+      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_SkladCd", "Skladište povrata iy najma");
+      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpiS", "");
+      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr", "");
+      tbx_Sklad2Cd.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_Sklad2Cd.JAM_DataRequired = true;
+      tbx_Sklad2Cd.JAM_MustTabOutBeforeSubmit = true;
+
+      tbx_Sklad2Cd  .JAM_ReadOnly = true;
+      tbx_Sklad2Opis.JAM_ReadOnly = true;
+      tbx_SkladRbr2.JAM_ReadOnly = true;
+
+      tbx_Sklad2Cd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_Sklad2Cd.JAM_lui_NameTaker_JAM_Name = tbx_Sklad2Opis.JAM_Name;
+      tbx_Sklad2Cd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladRbr2.JAM_Name;
+      tbx_Sklad2Cd.VVtag2 = true;
+
+   }
+
+
    //public void GoTo_UGAN_Dokument_Click(object sender, EventArgs e)
    //{
    //   Point vvSubModulXY;
@@ -1948,7 +2014,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
    #endregion Fld
 
    #region TheG_Specific_Columns
-
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
@@ -1971,6 +2037,21 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
    }
 
    #endregion TheG_Specific_Columns
+
+   #region TheG_Specific_Columns2
+
+   protected override void InitializeDUC_Specific_Columns2()
+   {
+      bool isVisible = true;
+
+      T_artiklCD2_CreateColumn      (ZXC.Q5un, isVisible, "Šifra"        , "Šifra artikla"                     );
+      T_artiklName2_CreateColumnFill(          isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      T_skladCD2_CreateColumn       (ZXC.Q3un, isVisible, "Sklad"        , "Izlazno skladište"                 );
+      T_serno_CreateColumn          (ZXC.Q8un, isVisible, "Serijski broj", "Serijski broj artikla"             );
+   }
+
+   #endregion TheG_Specific_Columns2
+
 
    protected override void AddColorsToBaby()
    {

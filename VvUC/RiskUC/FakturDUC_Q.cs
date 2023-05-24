@@ -3150,7 +3150,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       }
    }
 
-   private void dtp_DokDate_ValueChanged_SetSkladAndPdvDate(object sender, EventArgs e)
+   public /*private*/ void dtp_DokDate_ValueChanged_SetSkladAndPdvDate(object sender, EventArgs e)
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
