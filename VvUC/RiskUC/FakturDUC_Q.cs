@@ -2707,6 +2707,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    {
       if(ukRbt1.IsZero()) return false;
 
+      ukKC = Math.Abs(ukKC); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
+      ukK  = Math.Abs(ukK ); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
+
       if(skladCD == "20M5" || skladCD == "74M5") // Velika Gorica i Koprivnica imaju pravilo 'bar 2 komada'
       {
          if(ukK >= 2) return false;
