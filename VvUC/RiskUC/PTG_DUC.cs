@@ -223,6 +223,8 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    private void ThePolyGridTabControl_SelectionChanged_DisableALL_ButFirstTabPage(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       if(!newPage.Enabled) sender.SelectedIndex = 0; // odi na prvi tab 
+
+      //TODO tu bi trebalo staviti readOnly hampere koji su vezani uz rtran i rtrano !!!!
    }
 
 

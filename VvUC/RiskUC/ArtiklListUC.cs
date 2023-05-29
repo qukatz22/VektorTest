@@ -132,20 +132,20 @@ public class ArtiklListUC : VvRecLstUC
       }
       else
       {
-         colWidth = ZXC.Q7un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Šifra"   , colWidth, false, "artiklCD");
-         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Naziv"   , colWidth, true, "artiklName");
-         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Tip"     , colWidth, false, "ts");
-         colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Gr1"     , colWidth, false, "grupa1CD");
+         colWidth = ZXC.Q7un;            sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Šifra"     , colWidth, false, "artiklCD");
+         colWidth = ZXC.Q2un;            sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Naziv"     , colWidth, true, "artiklName");
+         colWidth = ZXC.Q2un;            sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Tip"       , colWidth, false, "ts");
+         colWidth = ZXC.Q2un;            sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Gr1"       , colWidth, false, "grupa1CD");
          // 18.04.2018: 
-         //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "VPC1"  , colWidth, 2,      "ext_preDefVpc1");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "PrNBC"   , colWidth, 2, "ext_lastPrNabCij");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, @"RucVp%" , colWidth, 0, "ext_RucVpc1");
-         //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "MPC1"     , colWidth, 2,      "ext_preDefMpc1");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "MPC1"     , colWidth, 2, "ext_lastMalopCij");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "KnjKolSt" , colWidth, 0, "ext_kolSt");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "FizKolSt" , colWidth, 0, "ext_kolFisycal");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "Rezervac" , colWidth, 0, "ext_Kolreserve");
-         colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "RaspKolSt", colWidth, 0, "ext_kolFree");
+         //colWidth = ZXC.Q3un;          sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "VPC1"  ¸  , colWidth, 2,      "ext_preDefVpc1");
+         colWidth = ZXC.Q3un;            sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "PrNBC"    , colWidth, 2, "ext_lastPrNabCij");
+         colWidth = ZXC.Q3un;            sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, @"RucVp%"  , colWidth, 0, "ext_RucVpc1");
+         //colWidth = ZXC.Q3un;          sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "MPC1"     , colWidth, 2,      "ext_preDefMpc1");
+         colWidth = ZXC.Q3un;            sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "MPC1"     , colWidth, 2, "ext_lastMalopCij");
+         colWidth = ZXC.Q3un + ZXC.Qun2; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "KnjKolSt" , colWidth, ZXC.RRD.Dsc_KolNumOfDecimalPlaces/* 0*/, "ext_kolSt");
+         colWidth = ZXC.Q3un + ZXC.Qun2; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "FizKolSt" , colWidth, ZXC.RRD.Dsc_KolNumOfDecimalPlaces/* 0*/, "ext_kolFisycal");
+         colWidth = ZXC.Q3un + ZXC.Qun2; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "Rezervac" , colWidth, ZXC.RRD.Dsc_KolNumOfDecimalPlaces/* 0*/, "ext_Kolreserve");
+         colWidth = ZXC.Q3un + ZXC.Qun2; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly(TheGrid, "RaspKolSt", colWidth, ZXC.RRD.Dsc_KolNumOfDecimalPlaces/* 0*/, "ext_kolFree");
       }
       colWidth = ZXC.Q3un;                            AddDGVColum_RecID_4GridReadOnly  (TheGrid, "RecID"   , colWidth, false, 0, "recID");
 
