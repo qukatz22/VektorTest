@@ -888,9 +888,10 @@ public class RptR_ArtiklKartica  : VvRiskReport
          {
             if(TheRtransList[i].TtInfo.HasShadowTT == false) continue;
 
-            // 2023: dodano URA_Povrat. Prije bio samo CreateRtransShadow 
-            if(TheRtransList[i].Is_URA_Povrat) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
-            else                               shadowRtrans_rec = CreateRtransShadow_Malop     (TheRtransList[i], i);
+            // 2023: dodano URA_Povrat. Prije bio samo CreateRtransShadow ... a 06.06.2023. dorađeno 
+          //if(TheRtransList[i].Is_URA_wMinusKol                        ) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
+            if(TheRtransList[i].Is_AfterURA_wMinusKol_StanjeKol_GoesZero) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
+            else                                                          shadowRtrans_rec = CreateRtransShadow_Malop     (TheRtransList[i], i);
 
             //UndoShadowResultsForRealRtrans(TheRtransList[i]);
 

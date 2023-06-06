@@ -1756,7 +1756,8 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
    public bool A_HasUselessPST { get { return this.TheAsEx.DateZadPst.NotEmpty() && this.TheAsEx.UkPstKol.IsZero() && this.TheAsEx.UkUlazKol.IsZero() && this.TheAsEx.UkIzlazKol.IsZero(); } }
 
-   public bool Is_URA_Povrat { get { return this.T_TT == Faktur.TT_URA && this.R_kol.IsNegative(); } }
+   public bool Is_URA_wMinusKol { get { return this.T_TT == Faktur.TT_URA && this.R_kol.IsNegative(); } }
+   public bool Is_AfterURA_wMinusKol_StanjeKol_GoesZero { get { return Is_URA_wMinusKol && A_StanjeKol.IsZero(); } } // NUP_DILEMA! 2. od 2 dileme 
 
    #endregion Propertiz
 

@@ -1399,8 +1399,9 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #region SHADOW Trans - Implicitna Nivelacija Velep Ulaznog Povrata
 
-         // 01.02.2023: big news 
-         if(rtr.Is_URA_Povrat) 
+         // 01.02.2023: big news ... a 06.06.2023 dorađeno 
+       //if(rtr.Is_URA_wMinusKol                        ) 
+         if(rtr.Is_URA_wMinusKol && StanjeKol.IsZero()) // NUP_DILEMA! 1. od 2 dileme 
          {
             decimal DiffPovratCij     = RtrUlazCijNBC - PrNBCBefThisUlaz;
           //decimal NivelacUlazPovVrj = RtrUlazKol    * DiffPovratCij;
