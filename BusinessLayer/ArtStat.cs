@@ -1399,14 +1399,21 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #region SHADOW Trans - Implicitna Nivelacija Velep Ulaznog Povrata
 
-         // 01.02.2023: big news ... a 06.06.2023 dorađeno 
-       //if(rtr.Is_URA_wMinusKol                        ) 
-         if(rtr.Is_URA_wMinusKol && StanjeKol.IsZero()) // NUP_DILEMA! 1. od 2 dileme 
+         // 01.02.2023: big news ... a 06.06.2023 dorađeno                              
+       //if(rtr.Is_URA_wMinusKol                        )                               
+       //if(rtr.Is_URA_wMinusKol && StanjeKol.IsZero()  ) // NUP_DILEMA! 1. od 2 dileme 
+         if(rtr.Is_URA_wMinusKol                        ) 
          {
-            decimal DiffPovratCij     = RtrUlazCijNBC - PrNBCBefThisUlaz;
-          //decimal NivelacUlazPovVrj = RtrUlazKol    * DiffPovratCij;
-            decimal NivelacUlazPovVrj = PrevKolStanje * DiffPovratCij;
-            UkUlazFinNBC             += NivelacUlazPovVrj;
+            bool isThisDirektStornoRtrans = Get_isThisDirektStornoRtrans(ArtiklCD, SkladCD,  rtr); 
+
+            if(isThisDirektStornoRtrans == false) // NUP-aj samo ako ovo nije storno neposredno prethodnog redka robne kartice (npr. SVD odmah stornira krivu URA-u) 
+                                                  // ali ako i je storno ali naknadni (nepriljubljeni redci) onda ipak NUP-aj                                        
+            { 
+               decimal DiffPovratCij     = RtrUlazCijNBC - PrNBCBefThisUlaz;
+             //decimal NivelacUlazPovVrj = RtrUlazKol    * DiffPovratCij;
+               decimal NivelacUlazPovVrj = PrevKolStanje * DiffPovratCij;
+               UkUlazFinNBC             += NivelacUlazPovVrj;
+            }
          }
 
          #endregion SHADOW Trans - Implicitna Nivelacija Velep Ulaznog Povrata
@@ -1425,7 +1432,8 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
 #endif
          #endregion #if(DEBUG)
-      }
+
+      } // else if(TtInfo.IsFinKol_U) 
 
       #endregion FIN KOL ULAZ
 
@@ -1695,6 +1703,21 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
       #endregion PreDefined Values (VPC, MPC, RBT, ...)
 
       return isInMinus;
+   }
+
+   /*private*/ public static bool Get_isThisDirektStornoRtrans(string artiklCD, string skladCD, Rtrans forThisRtrans_rec)
+   {
+      Rtrans prevRtrans_rec = FakturDao.SetMePreviousRtransForArtiklRobnaKarticaRtrans(ZXC.TheThirdDbConn_SameDB, artiklCD, skladCD, forThisRtrans_rec);
+
+      if(prevRtrans_rec == null) return false;
+
+      if(forThisRtrans_rec.T_TT != prevRtrans_rec.T_TT) return false;
+
+      prevRtrans_rec.CalcTransResults(null);
+
+      if(ZXC.AlmostEqual(-1.00M * forThisRtrans_rec.R_KCRP, prevRtrans_rec.R_KCRP, 0.009M)) return true; // DA. ovo je direktni storno. kcrp-ovi se poništavaju 
+
+      return false; 
    }
 
    #region Small UTIL Methodz

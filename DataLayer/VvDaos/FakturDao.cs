@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
+using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1092,6 +1093,28 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
       }
 
       return success;
+   }
+
+   public static /*bool*/Rtrans SetMePreviousRtransForArtiklRobnaKarticaRtrans(XSqlConnection conn, string artiklCD, string skladCD, Rtrans forThisRtrans_rec)
+   {
+      bool success = true;
+
+      Rtrans prevRtrans_rec = new Rtrans();
+
+      using(XSqlCommand cmd = VvSQL.SetMePreviousRtransForArtiklRobnaKarticaRtrans_Command(conn, artiklCD, skladCD, forThisRtrans_rec))
+      {
+         success = ZXC.RtransDao.ExecuteSingleFillFromDataReader(prevRtrans_rec, false, cmd, false);
+      } // using cmd 
+
+      //if(!success && !_shouldBeSilent)
+      //{
+      //   VvSQL.ReportGeneric_DB_Error("", "Podatak: [" + artiklCD + " - " + _tt + "] ne postoji u datoteci [" + Rtrans.recordName + ".", System.Windows.Forms.MessageBoxButtons.OK);
+      //}
+
+      //return success;
+
+      if(!success) return null          ;
+      else         return prevRtrans_rec;
    }
 
    #endregion Find Faktur by tt + ttNum

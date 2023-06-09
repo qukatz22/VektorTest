@@ -4,6 +4,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
+using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -6487,7 +6488,32 @@ public static class VvSQL
                         "OR                                        \n" +
                         "(projektCD = ?projektCD                 ) \n" :
                         ""                                            );
+      return (cmd);
+   }
 
+   public static XSqlCommand SetMePreviousRtransForArtiklRobnaKarticaRtrans_Command(XSqlConnection conn, string artiklCD, string skladCD, Rtrans forThisRtrans_rec)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "artCD" , /*forThisRtrans_rec.T_*/artiklCD  , ZXC.RtransSchemaRows[ZXC.RtrCI.t_artiklCD ]); // = 
+      CreateCommandNamedParameter(cmd, "", "sklCD" , /*forThisRtrans_rec.T_*/skladCD   , ZXC.RtransSchemaRows[ZXC.RtrCI.t_skladCD  ]); // = 
+
+      CreateCommandNamedParameter(cmd, "", "ttSort", forThisRtrans_rec.T_ttSort        , ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttSort   ]); // prev 
+      CreateCommandNamedParameter(cmd, "", "ttNum" , forThisRtrans_rec.T_ttNum         , ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum    ]); // prev 
+      CreateCommandNamedParameter(cmd, "", "date"  , forThisRtrans_rec.T_skladDate     , ZXC.RtransSchemaRows[ZXC.RtrCI.t_skladDate]); // prev 
+      CreateCommandNamedParameter(cmd, "", "serial", forThisRtrans_rec.T_serial        , ZXC.RtransSchemaRows[ZXC.RtrCI.t_serial   ]); // prev 
+
+      cmd.CommandText = "SELECT * FROM " + Rtrans.recordName + "\n" +
+
+                        " WHERE " + "t_artiklCD = ?artCD AND t_skladCD = ?sklCD AND " + "\n" +
+
+                        "((                                                                 T_skladDate < ?date) OR " + "\n" +
+                        " (                                           T_ttSort < ?ttSort && T_skladDate = ?date) OR " + "\n" +
+                        " (                       T_ttNum < ?ttNum && T_ttSort = ?ttSort && T_skladDate = ?date) OR " + "\n" +
+                      //" (T_serial <= ?serial && T_ttNum = ?ttNum && T_ttSort = ?ttSort && T_skladDate = ?date))   " + "\n" +
+                        " (T_serial <  ?serial && T_ttNum = ?ttNum && T_ttSort = ?ttSort && T_skladDate = ?date))   " + "\n" +
+
+                        "ORDER BY " + Rtrans.artiklOrderBy_DESC + " LIMIT 1";
       return (cmd);
    }
 

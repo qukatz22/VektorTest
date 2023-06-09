@@ -9,6 +9,7 @@ using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
 using static RtransDao;
 using static ArtiklDao;
+using Microsoft.Office.Interop.Excel;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -889,10 +890,26 @@ public class RptR_ArtiklKartica  : VvRiskReport
             if(TheRtransList[i].TtInfo.HasShadowTT == false) continue;
 
             // 2023: dodano URA_Povrat. Prije bio samo CreateRtransShadow ... a 06.06.2023. dorađeno 
-          //if(TheRtransList[i].Is_URA_wMinusKol                        ) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
-            if(TheRtransList[i].Is_AfterURA_wMinusKol_StanjeKol_GoesZero) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
-            else                                                          shadowRtrans_rec = CreateRtransShadow_Malop     (TheRtransList[i], i);
+            //if(TheRtransList[i].Is_URA_wMinusKol                        ) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
+            //if(TheRtransList[i].Is_AfterURA_wMinusKol_StanjeKol_GoesZero) shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
+            if(TheRtransList[i].Is_URA_wMinusKol                          )
+            {
+               bool isThisDirektStornoRtrans = ArtStat.Get_isThisDirektStornoRtrans(TheRtransList[i].T_artiklCD, TheRtransList[i].T_skladCD, TheRtransList[i]);
 
+               if(isThisDirektStornoRtrans == false) // NUP-aj samo ako ovo nije storno neposredno prethodnog redka robne kartice (npr. SVD odmah stornira krivu URA-u) 
+                                                     // ali ako i je storno ali naknadni (nepriljubljeni redci) onda ipak NUP-aj                                        
+               {
+                  shadowRtrans_rec = CreateRtransShadow_URA_Povrat(TheRtransList[i], i);
+               }
+               else // ovo je direktni storno neposredno prethodnog redka 
+               {
+                  shadowRtrans_rec = null;
+               }
+            }
+            else
+            { 
+               shadowRtrans_rec = CreateRtransShadow_Malop(TheRtransList[i], i);
+            }
             //UndoShadowResultsForRealRtrans(TheRtransList[i]);
 
             if(shadowRtrans_rec != null) // ako je null znaci da nema potrebe za nivelacijom jer ili je prevKol nula ili je novaCijena = staraCijena 
