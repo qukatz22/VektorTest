@@ -4436,7 +4436,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(ZXC.RRD.Dsc_IsRbtFromPartner)
       {
          if(this is FakturExtDUC && 
-            (faktur_rec.TtInfo.IsPrihodTT || faktur_rec.TtInfo.IsPonudaTT))
+            (faktur_rec.TtInfo.IsPrihodTT || faktur_rec.TtInfo.IsPonudaTT ||
+             this is UGNorAUN_PTG_DUC     || this is DOD_PTG_DUC)
+            )
          {
             Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
 

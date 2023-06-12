@@ -14972,9 +14972,9 @@ public class Fak2NalogRulesUC : VvOtherUC
                               hamper.CreateVvLabel  (9, 1, "UslugaDP"        ,  ContentAlignment.MiddleLeft);
       tbx_RKtoOsnIra_UslgDP = hamper.CreateVvTextBox(9, 2, "tbx_RKtoOsnIra_UslugaDP", "Konto izlaza usluge za daljnju prodaju", 8);
 
-      cbx_prihodLikeSklad   = hamper.CreateVvCheckBox_OLD(1, 4, null, 10, 0, "Za IRA: Nastavak konta prihoda (ako počinje sa 76) jednak kao i nastavak konta skladišta (npr.za skladište konta 660035 konto prihoda bio bi 760035)", System.Windows.Forms.RightToLeft.No);
+      cbx_prihodLikeSklad   = hamper.CreateVvCheckBox_OLD(1, 4, null, 10, 0, "Za IRA: Nastavak konta prihoda (ako počinje sa 76) jednak kao i nastavak konta skladišta (npr.za skladište konta 660035 konto prihoda 760035)", System.Windows.Forms.RightToLeft.No);
     // tamara + dodaj da isto vrijedi i za realizaciju
-                              hamper.CreateVvLabel(1, 5, "     i za nastavak konta realizacije (ako počinje sa 70) jednak kao i nastavak konta skladišta (npr.za skladište konta 660035 konto realizacije bio bi 700035)", 10, 0, ContentAlignment.MiddleLeft);
+                              hamper.CreateVvLabel(1, 5, "     i za nastavak konta realizacije (ako počinje sa 70) jednak kao i nastavak konta skladišta (npr.za skladište konta 660035 konto realizacije 700035)", 10, 0, ContentAlignment.MiddleLeft);
 
       cbx_IsCheckAvanses    = hamper.CreateVvCheckBox_OLD(0, 6, null, 10, 0, "Provjera nezatvorenih avansa kod automatskog učitavanja računa", System.Windows.Forms.RightToLeft.No);
 

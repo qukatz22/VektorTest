@@ -405,14 +405,15 @@ public class URADUC              : FakturExtDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-
    protected override void InitializeDUC_Specific_Columns()
    {
       bool isVisible = true;
 
       T_artiklCD_CreateColumn  (ZXC.Q4un   ,             isVisible                  , "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                     isVisible                  , "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_serlot_CreateColumn        (ZXC.Q4un, ZXC.RRD.Dsc_IsSerlotVisible, "RGC/LOT", "Serlot : Broj registra cijevi / Broj Lota");
+      T_doCijMal_CreateColumn  (ZXC.Q3un, 0,          ZXC.IsPCTOGO,                   "RAM", "RAM", false);
+      T_noCijMal_CreateColumn  (ZXC.Q3un, 0,          ZXC.IsPCTOGO,                   "HDD", "HDD");
+      T_serlot_CreateColumn    (ZXC.Q4un, ZXC.RRD.Dsc_IsSerlotVisible, "RGC/LOT", "Serlot : Broj registra cijevi / Broj Lota");
       T_isIrmUsluga_CreateColumn(ZXC.QUN + ZXC.Qun4,     isVisible                  , "Usl"        , "Usluga");
       T_konto_CreateColumn     (ZXC.Q2un ,               isVisible                  , "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol2_CreateColumn      (ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible, "AmbKol"     , "Ambalažna količina");
@@ -701,6 +702,8 @@ public class PrimkaVpDUC         : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un   ,          isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "RAM", "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "HDD", "HDD");
       T_serlot_CreateColumn        (ZXC.Q4un, ZXC.RRD.Dsc_IsSerlotVisible, "RGC/LOT", "Serlot : Broj registra cijevi / Broj Lota");
       T_kol2_CreateColumn          (ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible, "AmbKol", "Ambalažna količina");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
@@ -749,13 +752,14 @@ public class PrimkaBcDUC         : PrimkaVpDUC
    #endregion Constructor
    
    #region TheG_Specific_Columns
-
    protected override void InitializeDUC_Specific_Columns()
    {
       bool isVisible = true;
 
       T_artiklCD_CreateColumn      (ZXC.Q4un, isVisible   , "Šifra", "Šifra artikla" );
       T_artiklName_CreateColumnFill(          isVisible   , "Naziv", "Naziv artikla" );
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "RAM", "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "HDD", "HDD");
       T_serlot_CreateColumn        (ZXC.Q4un, ZXC.RRD.Dsc_IsSerlotVisible, "RGC/LOT", "Serlot : Broj registra cijevi / Broj Lota");
       T_artiklTS_CreateColumn      (ZXC.Q2un, isVisible   , "TS"   , "Tip artikla"   );
       T_kol_CreateColumn           (ZXC.Q3un, 2, isVisible, "Kol"  , "Količina"      );
@@ -786,13 +790,14 @@ public class PrimkaDevDUC        : PrimkaVpDUC
    #endregion Constructor
 
    #region TheG_Specific_Columns
-
    protected override void InitializeDUC_Specific_Columns()
    {
       bool isVisible = true;
 
       T_artiklCD_CreateColumn      (ZXC.Q4un                                    ,                 isVisible, "Šifra"  , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                                              isVisible, "Naziv"  , "Naziv artikla ili proizvoljan opis");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "RAM", "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "HDD", "HDD");
       T_serlot_CreateColumn        (ZXC.Q4un,                                   ZXC.RRD.Dsc_IsSerlotVisible, "RGC/LOT", "Serlot : Broj registra cijevi / Broj Lota");
  
       T_kol2_CreateColumn      (ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible  , "AmbKol" , "Ambalažna količina");
@@ -4584,13 +4589,14 @@ public class PocetnoStanjeDUC    : FakturDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-
    protected override void InitializeDUC_Specific_Columns()
    {
       bool isVisible = true;
 
       T_artiklCD_CreateColumn      (ZXC.Q3un,             isVisible, "Šifra" , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                isVisible, "Naziv" , "Naziv artikla ili proizvoljan opis");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "RAM", "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "HDD", "HDD");
       T_serlot_CreateColumn        (ZXC.Q4un, ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible, "Šarža/LOT RGC", "Broj Šarže/Lota, RGC");
 
       T_kol2_CreateColumn(ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible, "AmbKol", "Ambalažna količina");
@@ -4662,13 +4668,14 @@ public class InventuraDUC        : FakturDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-
    protected override void InitializeDUC_Specific_Columns()
    {
       bool isVisible = true;
 
       T_artiklCD_CreateColumn(ZXC.Q3un,            isVisible, "Šifra" , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(               isVisible, "Naziv" , "Naziv artikla ili proizvoljan opis");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "RAM", "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "HDD", "HDD");
 
       T_kol2_CreateColumn (ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible, "AmbKol", "Ambalažna količina");
       T_kol_CreateColumn  (ZXC.Q4un,         2, isVisible, "Kol", "Količina");
@@ -4715,7 +4722,6 @@ public class MedjuSkladDUC       : FakturDUC
    #endregion Constructor
    
    #region HamperLocation
-
    protected override void SetLocationAndParentOfHampersOnBaby()
    {
       CreateArrOfHampers();
@@ -4749,13 +4755,14 @@ public class MedjuSkladDUC       : FakturDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-
-   protected override void InitializeDUC_Specific_Columns()
+      protected override void InitializeDUC_Specific_Columns()
    {
       CreateAllwaysInvisibleDataGridViewColumn(TheG, "t_twinID");
       bool isVisible = true;
       T_artiklCD_CreateColumn       (ZXC.Q3un           , isVisible, "Šifra"  , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"  , "Naziv artikla ili proizvoljan opis");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "RAM", "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,       ZXC.IsPCTOGO, "HDD", "HDD");
       T_serlot_CreateColumn        (ZXC.Q4un, ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible, "Šarža/LOT/ RGC", "Broj Šarže/Lota, RGC");
 
       T_kol2_CreateColumn(ZXC.Q3un            , ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible,      "AmbKol" , "Ambalažna količina");

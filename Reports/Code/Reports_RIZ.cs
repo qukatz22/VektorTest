@@ -9,7 +9,7 @@ using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
 using static RtransDao;
 using static ArtiklDao;
-using Microsoft.Office.Interop.Excel;
+
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
