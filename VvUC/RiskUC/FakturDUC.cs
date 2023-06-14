@@ -158,6 +158,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private VvDateTimePickerColumn colDate;
 
+   protected bool IsPTG_UgAnDo_DUC { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
+
    #endregion Fieldz
 
    #region Virtual Metodz
@@ -13635,7 +13637,11 @@ public class FakturPDUC           : FakturExtDUC
       else
       {
          vvtbT_serno = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
-         vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
+
+         if(IsPTG_UgAnDo_DUC == false)
+         {
+            vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
+         }
       }
       
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_serno, TheVvDaoTrans2, DB_Tci2.t_serno, _colHeader, _width);
@@ -13797,6 +13803,8 @@ public class FakturPDUC           : FakturExtDUC
       internal int iT_grCD      ;
       internal int iR_grName    ;
       internal int iT_isKomDummy;
+
+      internal int iT_skladCD   ;
    }
 
    private void SetRtranoColumnIndexes()
@@ -13818,6 +13826,7 @@ public class FakturPDUC           : FakturExtDUC
       ci2.iT_grCD       = TheG2.IdxForColumn("T_grCD");
       ci2.iR_grName     = TheG2.IdxForColumn("R_grName");
       ci2.iT_isKomDummy = TheG2.IdxForColumn("T_isKomDummy");
+      ci2.iT_skladCD    = TheG2.IdxForColumn("T_skladCD");
 
    }
 
@@ -13901,7 +13910,9 @@ public class FakturPDUC           : FakturExtDUC
     //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
       TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, VvCheckBox.GetString4Bool(rtrano_rec.T_isKomDummy));
 
-// 23.12.2013. proba
+      TheG2.PutCell(ci2.iT_skladCD, rowIdx, rtrano_rec.T_skladCD);
+
+      // 23.12.2013. proba
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrano_rec.T_paletaNo);
 
       if(kupdobSifrar_rec != null) TheG2.PutCell(ci2.iR_grName, rowIdx, kupdobSifrar_rec.Naziv);
@@ -14047,6 +14058,11 @@ public class FakturPDUC           : FakturExtDUC
       if(DB_RWT) db_rec.T_ttSort = dgvRtrano_rec.T_ttSort;
 
                                     dgvRtrano_rec.T_skladCD = faktur_rec.SkladCD;
+                                    // PTG news 
+                                    if(HasRtrano_SkladCD_Exposed)
+                                    {
+                                       dgvRtrano_rec.T_skladCD = TheG2.GetStringCell(ci2.iT_skladCD, rIdx, dirtyFlagging);
+                                    }
       if(DB_RWT) db_rec.T_skladCD = dgvRtrano_rec.T_skladCD;
 
                                      dgvRtrano_rec.T_kupdobCD = faktur_rec.KupdobCD;

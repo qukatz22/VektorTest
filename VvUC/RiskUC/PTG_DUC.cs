@@ -1347,6 +1347,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    #region TheG_Specific_Columns
 
    public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
@@ -2029,6 +2030,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
 
    #region TheG_Specific_Columns
    public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
