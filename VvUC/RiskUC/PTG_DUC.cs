@@ -1474,6 +1474,18 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       {
          ThePolyGridTabControl.SelectedIndex = 0; // odi na prvi tab 
       }
+
+      if(ZXC.RISK_Edit_RtranoOnly_InProgress)
+      {
+         //this.TheVvPolyDocumRecordUC.ThePolyGridTabControl.TabPages[1].Enabled = true;
+         //this.TheVvPolyDocumRecordUC.ThePolyGridTabControl.TabPages[0].Enabled = false;
+         //this.TheVvPolyDocumRecordUC.ThePolyGridTabControl.SelectedIndex = 1;
+
+         ThePolyGridTabControl.TabPages[1].Enabled = true ;
+         ThePolyGridTabControl.TabPages[0].Enabled = false;
+         ThePolyGridTabControl.SelectedIndex       = 1    ;
+      }
+
    }
 }
 
