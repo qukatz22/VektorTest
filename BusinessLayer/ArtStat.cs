@@ -1645,23 +1645,32 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
          //public decimal InvKol_Manjk_AFT { get { return (InvKol - StanjeKol   ).IsNegative() ? -(InvKol - StanjeKol   ) : 0M; } }
          //public decimal InvFin_Visak_AFT { get { return (InvFin - StanjeFinKNJ).IsPositive() ?  (InvFin - StanjeFinKNJ) : 0M; } }
          //public decimal InvFin_Manjk_AFT { get { return (InvFin - StanjeFinKNJ).IsNegative() ? -(InvFin - StanjeFinKNJ) : 0M; } }
-         
+
          //public decimal InvKol_Visak_BEF { get { return (InvKolDiff).IsPositive() ?  (InvKolDiff) : 0M; } }
          //public decimal InvKol_Manjk_BEF { get { return (InvKolDiff).IsNegative() ? -(InvKolDiff) : 0M; } }
          //public decimal InvFin_Visak_BEF { get { return (InvFinDiff).IsPositive() ?  (InvFinDiff) : 0M; } }
          //public decimal InvFin_Manjk_BEF { get { return (InvFinDiff).IsNegative() ? -(InvFinDiff) : 0M; } }
-         
+
          //public decimal StanjeKol_INV { get { return StanjeKol    - InvKolDiff; } }
          //public decimal StanjeFin_INV { get { return StanjeFinKNJ - InvFinDiff; } }
 
+         // 19.06.2023: dodajemo mogucnost kumulativne inventure ali NA ISTI DATUM 
+         if(DateZadInv == rtr.T_skladDate) // ovo je, dakle, druga ili treca ili ... inventura na isti datum 
+         {
+            InvKol  += rtr.T_kol ; // NotBene: JE kumulativ 
+            InvKol2 += rtr.T_kol2; // NotBene: JE kumulativ 
 
-         InvKol  /*+*/= rtr.T_kol ; // NotBene: nije kumulativ 
-         InvKol2 /*+*/= rtr.T_kol2; // NotBene: nije kumulativ 
+            InvFinNBC += InvKol * this.PrNabCij; // NotBene: JE kumulativ 
+            InvFinMPC += InvKol * this.MalopCij; // NotBene: JE kumulativ 
+         }
+         else // classic, NIJE kumulativ (ovako je bilo do 19.06.2023)
+         { 
+            InvKol  /*+*/= rtr.T_kol ; // NotBene: nije kumulativ 
+            InvKol2 /*+*/= rtr.T_kol2; // NotBene: nije kumulativ 
 
-         // 07.01.2015: 
-       //InvFin    /*+*/= rtr.R_KCR             ; // NotBene: nije kumulativ 
-         InvFinNBC /*+*/= InvKol * this.PrNabCij; // NotBene: nije kumulativ 
-         InvFinMPC /*+*/= InvKol * this.MalopCij; // NotBene: nije kumulativ 
+            InvFinNBC /*+*/= InvKol * this.PrNabCij; // NotBene: nije kumulativ 
+            InvFinMPC /*+*/= InvKol * this.MalopCij; // NotBene: nije kumulativ 
+         }
 
          // 10.01.2017: 
        //if(ZXC.AlmostEqual(StanjeFinNBC, InvFinNBC, 0.0555M)) InvFinNBC = StanjeFinNBC;

@@ -2869,8 +2869,8 @@ public class RptR_StandardRiskReport : VvRiskReport
       //bool visDocFound = FakturDao.SetMeFaktur_BySklad_And_TT_And_Date(TheDbConnection, fakturVIS_rec, lui.Cd, visTT, dateInv, true);
 
       List<Rtrans> INV_Transes = RtransDao.Get_RtransList_For_Sklad_And_TT_And_Date(TheDbConnection, lui.Cd, invTT, dateInv);
-      List<Rtrans> MNJ_Transes = RtransDao.Get_RtransList_For_Sklad_And_TT_And_Date(TheDbConnection, lui.Cd, mnjTT, dateInv); ;
-      List<Rtrans> VIS_Transes = RtransDao.Get_RtransList_For_Sklad_And_TT_And_Date(TheDbConnection, lui.Cd, visTT, dateInv); ;
+      List<Rtrans> MNJ_Transes = RtransDao.Get_RtransList_For_Sklad_And_TT_And_Date(TheDbConnection, lui.Cd, mnjTT, dateInv);
+      List<Rtrans> VIS_Transes = RtransDao.Get_RtransList_For_Sklad_And_TT_And_Date(TheDbConnection, lui.Cd, visTT, dateInv);
 
       bool invDocFound = INV_Transes.NotEmpty();
       bool mnjDocFound = MNJ_Transes.NotEmpty();
