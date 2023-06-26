@@ -1342,6 +1342,18 @@ public static class VvSQL
       //   //paramValue = encoding1250.GetString(bytes);
       //}
 
+      // 26.06.2023: 'devtec mnozenje' peripetije od pocetka 2023
+      if(paramValue.GetType() == typeof(decimal))
+      {
+         decimal origValue = (decimal)paramValue;
+         decimal roundValue = ZXC.Ron(origValue, 8);
+
+         if(origValue != roundValue)
+         {
+            paramValue = roundValue; // NEW rounded paramValue! 
+         }
+      }
+
       XSqlParameter theParameter =
          new XSqlParameter("?" + preffix + paramName, dbType, size, ParameterDirection.Input, isNullable, precision, scale, paramName, DataRowVersion.Original, paramValue);
 

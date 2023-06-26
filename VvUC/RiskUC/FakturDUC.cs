@@ -3740,9 +3740,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             fakturLocal_rec.Transes.ForEach(rtr => 
                { 
-                  // 26.06.2023: 
-                //rtr.T_cij =         VvCurrency(rtr.T_cij)    ;
-                  rtr.T_cij = ZXC.Ron(VvCurrency(rtr.T_cij), 4); 
+                  rtr.T_cij = VvCurrency(rtr.T_cij);
+
                   rtr.CalcTransResults(null); 
                } 
             );
