@@ -443,9 +443,9 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
           //case ZXC.TipTecajaEnum.KUPOVNI : return         1.00M / htrans_rec.T_Kupovni           ; // recipročno u odnosu na stare 'kunske' godine 
           //case ZXC.TipTecajaEnum.SREDNJI : return         1.00M / htrans_rec.T_Srednji           ; // recipročno u odnosu na stare 'kunske' godine 
           //case ZXC.TipTecajaEnum.PRODAJNI: return         1.00M / htrans_rec.T_Prodajni          ; // recipročno u odnosu na stare 'kunske' godine 
-            case ZXC.TipTecajaEnum.KUPOVNI : return ZXC.Ron(1.00M / htrans_rec.T_Kupovni , /*8*/ 6); // recipročno u odnosu na stare 'kunske' godine 
-            case ZXC.TipTecajaEnum.SREDNJI : return ZXC.Ron(1.00M / htrans_rec.T_Srednji , /*8*/ 6); // recipročno u odnosu na stare 'kunske' godine 
-            case ZXC.TipTecajaEnum.PRODAJNI: return ZXC.Ron(1.00M / htrans_rec.T_Prodajni, /*8*/ 6); // recipročno u odnosu na stare 'kunske' godine 
+            case ZXC.TipTecajaEnum.KUPOVNI : return ZXC.Ron(1.00M / htrans_rec.T_Kupovni , 8); // recipročno u odnosu na stare 'kunske' godine 
+            case ZXC.TipTecajaEnum.SREDNJI : return ZXC.Ron(1.00M / htrans_rec.T_Srednji , 8); // recipročno u odnosu na stare 'kunske' godine 
+            case ZXC.TipTecajaEnum.PRODAJNI: return ZXC.Ron(1.00M / htrans_rec.T_Prodajni, 8); // recipročno u odnosu na stare 'kunske' godine 
 
             default: throw new Exception("DevTecDao.GetTecaj(): koji tecaj?");
          }
