@@ -1486,6 +1486,12 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
          ThePolyGridTabControl.TabPages[0].Enabled = false;
          ThePolyGridTabControl.SelectedIndex       = 1    ;
       }
+      else if(writeMode != ZXC.WriteMode.None) // idemo u žuto a nije rtrano nego classic add or edit 
+      {
+         ThePolyGridTabControl.TabPages[0].Enabled = true ;
+         ThePolyGridTabControl.TabPages[1].Enabled = false;
+         ThePolyGridTabControl.SelectedIndex       = 0    ;
+      }
 
    }
 }

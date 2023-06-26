@@ -43,7 +43,7 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
    #region CreateTableArtikl
 
-   public static   uint TableVersionStatic { get { return 10; } }
+   public static   uint TableVersionStatic { get { return 11; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -82,14 +82,14 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 /* 26 */" isRashod      tinyint(1)     unsigned NOT NULL default '0',\n" +
 /* 27 */" isAkcija      tinyint(1)     unsigned NOT NULL default '0',\n" +
 /* 28 */" isMaster      tinyint(1)     unsigned NOT NULL default '0',\n" +
-/* 29 */" masaNetto     decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 30 */" masaBruto     decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 31 */" promjer       decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 32 */" povrsina      decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 33 */" zapremina     decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 34 */" duljina       decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 35 */" sirina        decimal(10,2)           NOT NULL default '0.00',\n" +   
-/* 36 */" visina        decimal(10,2)           NOT NULL default '0.00',\n" +   
+/* 29 */" masaNetto     decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 30 */" masaBruto     decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 31 */" promjer       decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 32 */" povrsina      decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 33 */" zapremina     decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 34 */" duljina       decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 35 */" sirina        decimal(10,3)           NOT NULL default '0.00',\n" +   
+/* 36 */" visina        decimal(10,3)           NOT NULL default '0.00',\n" +   
 /* 37 */" starost       decimal(10,2)           NOT NULL default '0.00',\n" +   
 /* 38 */" boja          varchar(8)              NOT NULL default ''    ,\n" +   
 /* 39 */" spol          tinyint(1)     unsigned NOT NULL default '0'   ,\n" +
@@ -158,6 +158,15 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
                          "ADD COLUMN euroNorma     tinyint(1)     unsigned NOT NULL default '0' AFTER emisCO2;\n");
 
          case 10: return AlterTable_LanSrvID_And_LanRecID_Columns;
+
+         case 11: return ("MODIFY COLUMN masaNetto     decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN masaBruto     decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN promjer       decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN povrsina      decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN zapremina     decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN duljina       decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN sirina        decimal(10,3)           NOT NULL default '0.00', " +
+                          "MODIFY COLUMN visina        decimal(10,3)           NOT NULL default '0.00';\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
