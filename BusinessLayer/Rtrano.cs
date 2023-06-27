@@ -63,6 +63,29 @@ public class Rtrano : VvTransRecord
       Memset0(ID);
    }
 
+   public Rtrano(Rtrans rtrans_rec, ushort newSerial) : base()
+   {
+      this.currentData = new RtranoStruct();
+
+      Memset0(0);
+
+      this.T_serial     = newSerial              ; 
+
+      this.T_parentID   = rtrans_rec.T_parentID  ;
+      this.T_dokNum     = rtrans_rec.T_dokNum    ;
+      this.T_skladDate  = rtrans_rec.T_skladDate ;
+      this.T_TT         = rtrans_rec.T_TT        ;
+      this.T_ttNum      = rtrans_rec.T_ttNum     ;
+      this.T_ttSort     = rtrans_rec.T_ttSort    ;
+      this.T_artiklCD   = rtrans_rec.T_artiklCD  ;
+      this.T_skladCD    = rtrans_rec.T_skladCD   ;
+      this.T_artiklName = rtrans_rec.T_artiklName;
+      this.T_kupdobCD   = rtrans_rec.T_kupdobCD  ;
+
+      this.T_paletaNo   = rtrans_rec.T_serial    ; // ! veza
+
+   }
+
    public override void Memset0(uint ID)
    {
       this.currentData._recID = ID;
