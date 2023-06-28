@@ -1343,7 +1343,7 @@ public static class VvSQL
       //}
 
       // 26.06.2023: 'devtec mnozenje' peripetije od pocetka 2023
-      if(paramValue.GetType() == typeof(decimal))
+      if(paramValue != null && paramValue.GetType() == typeof(decimal))
       {
          decimal origValue = (decimal)paramValue;
          decimal roundValue = ZXC.Ron(origValue, 8);

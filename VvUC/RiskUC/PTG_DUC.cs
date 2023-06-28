@@ -1378,7 +1378,8 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
       T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište");
+      T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "Stavka"       , "UGANDO stavka"                     );
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište"                 );
       T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
    }
 

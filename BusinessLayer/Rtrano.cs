@@ -63,13 +63,13 @@ public class Rtrano : VvTransRecord
       Memset0(ID);
    }
 
-   public Rtrano(Rtrans rtrans_rec, ushort newSerial) : base()
+   public Rtrano(Rtrans rtrans_rec/*, ushort newSerial*/) : base()
    {
       this.currentData = new RtranoStruct();
 
       Memset0(0);
 
-      this.T_serial     = newSerial              ; 
+    //this.T_serial     = newSerial              ; 
 
       this.T_parentID   = rtrans_rec.T_parentID  ;
       this.T_dokNum     = rtrans_rec.T_dokNum    ;
