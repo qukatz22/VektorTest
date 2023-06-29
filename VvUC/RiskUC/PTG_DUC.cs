@@ -1487,30 +1487,12 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
          ThePolyGridTabControl.TabPages[0].Enabled = false;
          ThePolyGridTabControl.SelectedIndex       = 1    ;
 
-         foreach(VvHamper hamper in hamperLeft)
-         {
-            if(hamper.IsDUMMY) continue;
-
-            VvHamper.Open_Close_Fields_ForWriting(TheTabControl.TabPages[0], ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
-         }
-         VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
-
       }
       else if(writeMode != ZXC.WriteMode.None) // idemo u žuto a nije rtrano nego classic add or edit 
       {
          ThePolyGridTabControl.TabPages[0].Enabled = true ;
          ThePolyGridTabControl.TabPages[1].Enabled = false;
          ThePolyGridTabControl.SelectedIndex       = 0    ;
-
-         foreach(VvHamper hamper in hamperLeft)
-         {
-            if(hamper.IsDUMMY) continue;
-
-            VvHamper.Open_Close_Fields_ForWriting(TheTabControl.TabPages[0], ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
-         }
-
-         VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
-
 
       }
 

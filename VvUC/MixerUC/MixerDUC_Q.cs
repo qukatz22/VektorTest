@@ -1655,3 +1655,73 @@ public class SVD_SubRptLine
    }
 
 }
+
+public class PCK_InfoLine
+{
+   public string  PCK_ArtCD    { get; set; }
+   public string  PCK_ArtName  { get; set; }
+   public string  PCK_ArtKlasa { get; set; }
+   public string  PCK_SklCD    { get; set; }
+   public decimal PCK_RAM      { get; set; }
+   public decimal PCK_HDD      { get; set; }
+
+ //public PCK_InfoLine() : this("", "", "", "", 0.00M, 0.00M) {}
+
+   public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_ArtKlasa, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
+   {
+      this.PCK_ArtCD    = _PCK_ArtCD   ;
+      this.PCK_ArtName  = _PCK_ArtName ;
+      this.PCK_ArtKlasa = _PCK_ArtKlasa;
+      this.PCK_SklCD    = _PCK_SklCD   ;
+      this.PCK_RAM      = _PCK_RAM     ;
+      this.PCK_HDD      = _PCK_HDD     ;
+   }
+
+   public override string ToString()
+   {
+      return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_ArtKlasa + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb HDD: " + PCK_HDD.ToString0Vv() + " Gb";
+   }
+}
+public class PCK_Info
+{
+   public List<PCK_InfoLine> PCK_InfoLines { get; set; }
+
+   public PCK_Info(XSqlConnection conn, string _PCK_ArtCD, string _PCK_sklCD, string _PCK_ArtKlasa)// : base()
+   {
+      List<Artikl> PCKartikls = 
+         
+         _PCK_ArtCD   .NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.ArtiklCD == _PCK_ArtCD   ).ToList() :
+         _PCK_ArtKlasa.NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.Grupa3CD == _PCK_ArtKlasa).ToList() :
+                                    VvUserControl.ArtiklSifrar.Where(art => art.TS       == "PCK"        ).ToList() ;
+
+      List<Rtrans> ALL_ArtiklRtranses = new List<Rtrans>();
+      List<Rtrans> thisArtiklRtranses;
+
+      foreach(Artikl artikl in PCKartikls)
+      {
+         thisArtiklRtranses = GetArtiklRtranses(conn, artikl.ArtiklCD, _PCK_sklCD);
+
+         ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
+      }
+   }
+
+   List<Rtrans> GetArtiklRtranses(XSqlConnection conn, string artiklCD, string skladCD)
+   {
+      List<Rtrans> rtranses = new List<Rtrans>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.RtransDao.TheSchemaTable.Rows[ZXC.RtransDao.CI.t_skladDate], "elDateOd", dateOd,   " >= "));
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.RtransDao.TheSchemaTable.Rows[ZXC.RtransDao.CI.t_skladDate], "elDateDo", dateDo,   " <= "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransDao.TheSchemaTable.Rows[ZXC.RtransDao.CI.t_artiklCD ], false, "elArtCD", artiklCD, "", "", " = ", "", "R"));
+      if(skladCD.NotEmpty())
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransDao.TheSchemaTable.Rows[ZXC.RtransDao.CI.t_skladCD  ], false, "elSklCD", skladCD,  "", "", " = ", "", "R"));
+
+      string orderBy = Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_");
+
+      RtransDao.GetRtransWithArtstatList(conn, rtranses, "", filterMembers, Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_"));
+
+      return rtranses;
+   }
+
+}
