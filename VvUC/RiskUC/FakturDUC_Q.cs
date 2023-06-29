@@ -3203,11 +3203,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       #endregion TRI - TRM
 
 
-
       FakturDUC fakturDUC = this as FakturDUC;
 
       //26.05.2015.
-      if(CtrlOK(fakturDUC.tbx_DokDate2)) fakturDUC.Fld_DokDate2 = Fld_DokDate;
+    //27.06.2023.
+    //if(CtrlOK(fakturDUC.tbx_DokDate2)        ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
+      if(CtrlOK(fakturDUC.tbx_DokDate2)     &&
+          this is UGNorAUN_PTG_DUC == false &&
+          this is DOD_PTG_DUC      == false    ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
+
 
       if(this is FakturExtDUC == false) return;
       FakturExtDUC fakturExtDUC = this as FakturExtDUC;

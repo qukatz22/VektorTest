@@ -12584,6 +12584,7 @@ public partial class FakturExtDUC : FakturDUC
       {
          UGNorAUN_PTG_DUC ptgDUC        = this as UGNorAUN_PTG_DUC;
          PTG_Ugovor       ptgUgovor_rec = new PTG_Ugovor(faktur);
+         PTG_OtplatniPlan ptgOtplPlan   = new PTG_OtplatniPlan(TheDbConnection, ptgUgovor_rec);
 
          if(CtrlOK(ptgDUC.tbx_DanFakturiranja)) ptgDUC.Fld_PTG_DanFakturiranjaString   = ptgUgovor_rec.PTG_DanFakturiranjaString;
                                                 ptgDUC.Fld_PTG_DanFakturiranjaOpis     = ZXC.luiListaPTG_DanZaFaktur.GetNameForThisCd(ptgUgovor_rec.PTG_DanFakturiranjaString);
@@ -12595,9 +12596,9 @@ public partial class FakturExtDUC : FakturDUC
 
          if(CtrlOK(ptgDUC.tbx_DokDate2  )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
          if(CtrlOK(ptgDUC.tbx_SkladDate )) ptgDUC.Fld_PTG_DatSkidSaSklad  = ptgUgovor_rec.PTG_DatSkidSaSklad; 
-         if(CtrlOK(ptgDUC.tbx_DospDate  )) ptgDUC.Fld_PTG_DatPrvogRn      = ptgUgovor_rec.PTG_DatPrvogRn    ; 
-         if(CtrlOK(ptgDUC.tbx_PonudDate )) ptgDUC.Fld_PTG_DatZadnjegRn    = ptgUgovor_rec.PTG_DatZadnjegRn  ; 
-         if(CtrlOK(ptgDUC.tbx_RokIspDate)) ptgDUC.Fld_PTG_datIstekaUg     = ptgUgovor_rec.PTG_datIstekaUg   ; 
+         if(CtrlOK(ptgDUC.tbx_DospDate  )) ptgDUC.Fld_PTG_DatPrvogRn      = ptgOtplPlan.DatumPrveRate   /*ptgUgovor_rec.PTG_DatPrvogRn  */; 
+         if(CtrlOK(ptgDUC.tbx_PonudDate )) ptgDUC.Fld_PTG_DatZadnjegRn    = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_DatZadnjegRn*/; 
+         if(CtrlOK(ptgDUC.tbx_RokIspDate)) ptgDUC.Fld_PTG_datIstekaUg     = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_datIstekaUg */; 
          if(CtrlOK(ptgDUC.tbx_dateX     )) ptgDUC.Fld_PTG_DatPovrataOpr   = ptgUgovor_rec.PTG_DatPovrataOpr ;
 
          if(CtrlOK(ptgDUC.tbx_Napomena_PTG)) ptgDUC.Fld_PTG_Napomena      = ptgUgovor_rec.PTG_Napomena ;
