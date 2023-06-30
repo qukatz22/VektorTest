@@ -1660,18 +1660,18 @@ public class PCK_InfoLine
 {
    public string  PCK_ArtCD    { get; set; }
    public string  PCK_ArtName  { get; set; }
-   public string  PCK_ArtKlasa { get; set; }
+   public string  PCK_RAMkind  { get; set; }
    public string  PCK_SklCD    { get; set; }
    public decimal PCK_RAM      { get; set; }
    public decimal PCK_HDD      { get; set; }
 
  //public PCK_InfoLine() : this("", "", "", "", 0.00M, 0.00M) {}
 
-   public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_ArtKlasa, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
+   public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
    {
       this.PCK_ArtCD    = _PCK_ArtCD   ;
       this.PCK_ArtName  = _PCK_ArtName ;
-      this.PCK_ArtKlasa = _PCK_ArtKlasa;
+      this.PCK_RAMkind  = _PCK_RAMkind ;
       this.PCK_SklCD    = _PCK_SklCD   ;
       this.PCK_RAM      = _PCK_RAM     ;
       this.PCK_HDD      = _PCK_HDD     ;
@@ -1679,14 +1679,14 @@ public class PCK_InfoLine
 
    public override string ToString()
    {
-      return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_ArtKlasa + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb HDD: " + PCK_HDD.ToString0Vv() + " Gb";
+      return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb HDD: " + PCK_HDD.ToString0Vv() + " Gb";
    }
 }
-public class PCK_Info
+public class PCK_Dao
 {
    public List<PCK_InfoLine> PCK_InfoLines { get; set; }
 
-   public PCK_Info(XSqlConnection conn, string _PCK_ArtCD, string _PCK_sklCD, string _PCK_ArtKlasa)// : base()
+   public PCK_Dao(XSqlConnection conn, string _PCK_ArtCD, string _PCK_sklCD, string _PCK_ArtKlasa)// : base()
    {
       List<Artikl> PCKartikls = 
          

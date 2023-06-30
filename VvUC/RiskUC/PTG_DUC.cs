@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
+using Crownwood.DotNetMagic.Controls;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -217,14 +218,15 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
       hamp_DodAndKopCount.Location = new Point(TheG.Left, ZXC.Qun4);
 
-      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_DisableALL_ButFirstTabPage;
+      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
    }
 
-   private void ThePolyGridTabControl_SelectionChanged_DisableALL_ButFirstTabPage(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      if(!newPage.Enabled) sender.SelectedIndex = 0; // odi na prvi tab 
-
-      //TODO tu bi trebalo staviti readOnly hampere koji su vezani uz rtran i rtrano !!!!
+      if(newPage.Enabled == false)
+      { 
+         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
+      }
    }
 
 
@@ -1465,38 +1467,30 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
    public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
    {
-      // 09.06.2022: togglamo 'Enabled' bool property kojeg se pita "smije li ovaj Tab biti selektiran?" u SelectionChanged eventu 
-      for(int i = 1 /*!*/; i < ThePolyGridTabControl.TabPages.Count; ++i)
+      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+      bool idemoUbijelo = !idemoUzuto                    ;
+
+      bool isRtranO_zuto = idemoUzuto && ZXC.RISK_Edit_RtranoOnly_InProgress;
+      bool isRtranS_zuto = idemoUzuto && isRtranO_zuto == false;
+
+      int rtranStabIdx = 0;
+      int rtranOtabIdx = 1;
+
+      if(isRtranS_zuto) ThePolyGridTabControl.SelectedIndex = rtranStabIdx;
+      if(isRtranO_zuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+
+      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
       {
-         ThePolyGridTabControl.TabPages[i].Enabled = (writeMode == ZXC.WriteMode.None);
+         if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
+         else // idemoUzuto 
+         {
+                 if(i == rtranStabIdx && isRtranS_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else if(i == rtranOtabIdx && isRtranO_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else                                        ThePolyGridTabControl.TabPages[i].Enabled = false;
+         }
       }
 
-      // 09.06.2022: kod Novi i Ispravi tjeramo ga na prvi polyTab 
-      if(writeMode != ZXC.WriteMode.None && ThePolyGridTabControl.SelectedIndex.NotZero())
-      {
-         ThePolyGridTabControl.SelectedIndex = 0; // odi na prvi tab 
-      }
-
-      if(ZXC.RISK_Edit_RtranoOnly_InProgress)
-      {
-         //this.TheVvPolyDocumRecordUC.ThePolyGridTabControl.TabPages[1].Enabled = true;
-         //this.TheVvPolyDocumRecordUC.ThePolyGridTabControl.TabPages[0].Enabled = false;
-         //this.TheVvPolyDocumRecordUC.ThePolyGridTabControl.SelectedIndex = 1;
-
-         ThePolyGridTabControl.TabPages[1].Enabled = true ;
-         ThePolyGridTabControl.TabPages[0].Enabled = false;
-         ThePolyGridTabControl.SelectedIndex       = 1    ;
-
-      }
-      else if(writeMode != ZXC.WriteMode.None) // idemo u žuto a nije rtrano nego classic add or edit 
-      {
-         ThePolyGridTabControl.TabPages[0].Enabled = true ;
-         ThePolyGridTabControl.TabPages[1].Enabled = false;
-         ThePolyGridTabControl.SelectedIndex       = 0    ;
-
-      }
-
-   }
+   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 }
 
 // staru nomenklaturu "UGO" (nova je UGN) smo morali ostaviti kod naziva DUC-a jer je vec otislo u vvusercontrol 
