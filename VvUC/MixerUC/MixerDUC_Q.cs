@@ -1665,7 +1665,12 @@ public class PCK_InfoLine
    public decimal PCK_RAM      { get; set; }
    public decimal PCK_HDD      { get; set; }
 
- //public PCK_InfoLine() : this("", "", "", "", 0.00M, 0.00M) {}
+   public decimal UkPstKol     { get; set; }
+   public decimal UkUlazKol    { get; set; }
+   public decimal UkIzlazKol   { get; set; }
+   public decimal StanjeKol    { get { return /* UkPstKol + */ UkUlazKol - UkIzlazKol; } }
+
+   //public PCK_InfoLine() : this("", "", "", "", 0.00M, 0.00M) {}
 
    public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
    {
@@ -1684,15 +1689,17 @@ public class PCK_InfoLine
 }
 public class PCK_Dao
 {
-   public List<PCK_InfoLine> PCK_InfoLines { get; set; }
+   public List<PCK_InfoLine> PCK_Lines { get; set; }
 
    public PCK_Dao(XSqlConnection conn, string _PCK_ArtCD, string _PCK_sklCD, string _PCK_ArtKlasa)// : base()
    {
       List<Artikl> PCKartikls = 
          
-         _PCK_ArtCD   .NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.ArtiklCD == _PCK_ArtCD   ).ToList() :
-         _PCK_ArtKlasa.NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.Grupa3CD == _PCK_ArtKlasa).ToList() :
-                                    VvUserControl.ArtiklSifrar.Where(art => art.TS       == "PCK"        ).ToList() ;
+         _PCK_ArtCD   .NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.ArtiklCD == _PCK_ArtCD                      ).ToList() :
+         _PCK_ArtKlasa.NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.Grupa3CD == _PCK_ArtKlasa && art.TS == "PCK").ToList() :
+                                    VvUserControl.ArtiklSifrar.Where(art =>                                  art.TS == "PCK").ToList() ;
+
+      PCK_Lines = new List<PCK_InfoLine>();
 
       List<Rtrans> ALL_ArtiklRtranses = new List<Rtrans>();
       List<Rtrans> thisArtiklRtranses;
@@ -1701,7 +1708,11 @@ public class PCK_Dao
       {
          thisArtiklRtranses = GetArtiklRtranses(conn, artikl.ArtiklCD, _PCK_sklCD);
 
+         thisArtiklRtranses.ForEach(rtr => rtr.T_konto = artikl.Grupa3CD); // klasa, RAM kind 
+
          ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
+
+         PCK_Lines.AddRange(GetThisArtiklsPCKlines(thisArtiklRtranses));
       }
    }
 
@@ -1723,5 +1734,29 @@ public class PCK_Dao
 
       return rtranses;
    }
+
+   // Voila! 
+   private List<PCK_InfoLine> GetThisArtiklsPCKlines(List<Rtrans> thisArtiklRtranses)
+   {
+      var anaGRps = thisArtiklRtranses.GroupBy(rtr => rtr.T_doCijMal.ToString0Vv() + " / " + rtr.T_noCijMal.ToString0Vv());
+
+      List<PCK_InfoLine> thisArtiklsPCKlines = new List<PCK_InfoLine>();
+
+      PCK_InfoLine pck_rec;
+
+      foreach(var anaGR in anaGRps)
+      {
+         pck_rec = new PCK_InfoLine(anaGR.First().T_artiklCD, anaGR.First().T_artiklName, anaGR.First().T_konto, anaGR.First().T_skladCD, anaGR.First().T_doCijMal, anaGR.First().T_noCijMal);
+
+         pck_rec.UkPstKol   = anaGR.Where(r => r.TtInfo.IsFinKol_PS).Sum(r => r.T_kol);
+         pck_rec.UkUlazKol  = anaGR.Where(r => r.TtInfo.IsFinKol_U ).Sum(r => r.T_kol);
+         pck_rec.UkIzlazKol = anaGR.Where(r => r.TtInfo.IsFinKol_I ).Sum(r => r.T_kol);
+
+         thisArtiklsPCKlines.Add(pck_rec);
+      }
+
+      return thisArtiklsPCKlines;
+   }
+
 
 }
