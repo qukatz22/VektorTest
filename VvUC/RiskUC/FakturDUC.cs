@@ -12601,7 +12601,8 @@ public partial class FakturExtDUC : FakturDUC
          if(CtrlOK(ptgDUC.tbx_RokIspDate)) ptgDUC.Fld_PTG_datIstekaUg     = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_datIstekaUg */; 
          if(CtrlOK(ptgDUC.tbx_dateX     )) ptgDUC.Fld_PTG_DatPovrataOpr   = ptgUgovor_rec.PTG_DatPovrataOpr ;
 
-         if(CtrlOK(ptgDUC.tbx_Napomena_PTG)) ptgDUC.Fld_PTG_Napomena      = ptgUgovor_rec.PTG_Napomena ;
+         if(CtrlOK(ptgDUC.tbx_Napomena_PTG     )) ptgDUC.Fld_PTG_Napomena      = ptgUgovor_rec.PTG_Napomena ;
+         if(CtrlOK(ptgDUC.tbx_opaskaServisa_PTG)) ptgDUC.Fld_PTG_OpaskaServisa = ptgUgovor_rec.PTG_OpaskaServisa ;
 
          if(CtrlOK(ptgDUC.tbx_R_DodCount  )) ptgDUC.Fld_PTG_DodCount        = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD);
          if(CtrlOK(ptgDUC.tbx_R_KopCount  )) ptgDUC.Fld_PTG_KopCount        = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Mixer .TT_KOP);
@@ -13230,7 +13231,8 @@ public partial class FakturExtDUC : FakturDUC
          if(CtrlOK(ptgDUC.tbx_RokIspDate)) ptgUgovor_rec.PTG_datIstekaUg    = ptgDUC.Fld_PTG_datIstekaUg    ; 
          if(CtrlOK(ptgDUC.tbx_dateX     )) ptgUgovor_rec.PTG_DatPovrataOpr  = ptgDUC.Fld_PTG_DatPovrataOpr  ;
 
-         if(CtrlOK(ptgDUC.tbx_Napomena_PTG)) ptgUgovor_rec.PTG_Napomena = ptgDUC.Fld_PTG_Napomena ;
+         if(CtrlOK(ptgDUC.tbx_Napomena_PTG     )) ptgUgovor_rec.PTG_Napomena      = ptgDUC.Fld_PTG_Napomena      ;
+         if(CtrlOK(ptgDUC.tbx_opaskaServisa_PTG)) ptgUgovor_rec.PTG_OpaskaServisa = ptgDUC.Fld_PTG_OpaskaServisa ;
 
          if(CtrlOK(ptgDUC.tbx_korekcijaRata_PTG  )) ptgUgovor_rec.PTG_BrojNovihRata = ptgDUC.Fld_PTG_KorekcijaRata  ;
          if(CtrlOK(ptgDUC.tbx_trajanjeUgovora_PTG)) ptgUgovor_rec.PTG_TrajanjeUg    = ptgDUC.Fld_PTG_trajanjeUgovora;

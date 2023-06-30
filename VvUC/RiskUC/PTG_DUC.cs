@@ -242,7 +242,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    public VvTextBox tbx_R_iznosOtkupa, tbx_KDCFunkc_PTG, tbx_KDCEmail_PTG, tbx_KDCTel_PTG, tbx_KDCnaziv_PTG,
                     tbx_NajamNaRok, tbx_NajamNaRokOpis, tbx_DanFakturiranja, tbx_DanFakturiranjaOpis, tbx_vrstaNajma, tbx_vrstaNajmaOpis,
                     tbx_R_iznosUGAN, tbx_R_iznosRate, tbx_R_iznosUGAN_NV,
-                    tbx_R_DodCount, tbx_R_KopCount, tbx_Napomena_PTG, tbx_opaskaServisa, tbx_R_DodCount_2, tbx_R_KopCount_2,
+                    tbx_R_DodCount, tbx_R_KopCount, tbx_Napomena_PTG, tbx_opaskaServisa_PTG, tbx_R_DodCount_2, tbx_R_KopCount_2,
                     tbx_OrigNV, tbx_OrigIznos, tbx_OrigRata, tbx_IznosNV, tbx_UkIznos, tbx_Rata, tbx_korekcijaRata_PTG, tbx_trajanjeUgovora_PTG, tbx_fakRate_PTG, tbx_neFakrate_PTG,
                     tbx_OsigPlacanja, tbx_PTG_OsigPlOpis,
                     tbx_NumOf_OtPlan_Rows_UK, tbx_NumOf_OtPlan_Rows_UgPredRata, tbx_NumOf_OtPlan_Rows_UgBrojRata, tbx_NumOf_OtPlan_Rows_DodPredRata, tbx_NumOf_OtPlan_Rows_KorekRata, 
@@ -902,10 +902,10 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       tbx_Napomena_PTG.ScrollBars = ScrollBars.Both;
 
                           hamper.CreateVvLabel  (0, 3, "Opaska Statusa Servisa:", ContentAlignment.MiddleLeft);
-      tbx_opaskaServisa = hamper.CreateVvTextBox(0, 4, "tbx_opaskaServisa", "Opaska statusa servisa", 246, 0, 1);
-      tbx_opaskaServisa.Font = ZXC.vvFont.SmallFont;
-      tbx_opaskaServisa.Multiline = true;
-      tbx_opaskaServisa.ScrollBars = ScrollBars.Both;
+      tbx_opaskaServisa_PTG = hamper.CreateVvTextBox(0, 4, "tbx_opaskaServisa", "Opaska statusa servisa", GetDB_ColumnSize(DB_ci.napomena), 0, 1);
+      tbx_opaskaServisa_PTG.Font = ZXC.vvFont.SmallFont;
+      tbx_opaskaServisa_PTG.Multiline = true;
+      tbx_opaskaServisa_PTG.ScrollBars = ScrollBars.Both;
     //tbx_opaskaServisa.JAM_ReadOnly = true;
 
                                  hamper.CreateVvLabel  (2, 3, "Napomena sa Partnera:"       , ContentAlignment.MiddleLeft); 
@@ -1298,6 +1298,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    public PTG_OtplatniPlan TheOtplatniPlan { get { return this.PtgUgovor_rec.TheOtplatniPlan; } set { this.PtgUgovor_rec.TheOtplatniPlan = value; } }
 
    public string Fld_PTG_Napomena   { get { return tbx_Napomena_PTG.Text; } set { tbx_Napomena_PTG.Text = value; } }
+   public string Fld_PTG_OpaskaServisa   { get { return tbx_opaskaServisa_PTG.Text; } set { tbx_opaskaServisa_PTG.Text = value; } }
 
    public string Fld_NapFromPartner_PTG { set { tbx_R_napFromPartner_PTG.Text = value; } }
    public string Fld_PTG_KugPartner     { set { tbx_PTG_KugPartner      .Text = value; } }
@@ -1488,6 +1489,21 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
             else if(i == rtranOtabIdx && isRtranO_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
             else                                        ThePolyGridTabControl.TabPages[i].Enabled = false;
          }
+      }
+
+      if(isRtranO_zuto)
+      {
+         foreach(VvHamper hamper in hamperLeft)
+         {
+            if(hamper.IsDUMMY) continue;
+            VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+         }
+
+         VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
+      }
+      else
+      {
+         VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
       }
 
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
@@ -3069,4 +3085,254 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 
    #endregion Fld_
 
+}
+
+
+public partial class PCK_InfoDLG :  VvDialog
+{
+   public PCK_Info_UC TheUC { get; set; }
+   private Button okButton, cancelButton;
+   private int dlgWidth, dlgHeight;
+
+   public PCK_InfoDLG()
+   {
+      ZXC.CurrentForm = this;
+
+      TheUC = new PCK_Info_UC(this);
+
+      SuspendLayout();
+
+      this.Font        = ZXC.vvFont.BaseFont;
+      this.Style       = ZXC.vvColors.vvform_VisualStyle;
+      this.BackColor   = ZXC.vvColors.userControl_BackColor;
+
+      this.StartPosition = FormStartPosition.Manual;
+      this.Text = "PCK_ARTIKLI";
+
+      TheUC.Parent   = this;
+      TheUC.Location = new Point(ZXC.Qun8, ZXC.Qun8);
+      
+      dlgWidth  = TheUC.Width;
+      dlgHeight = TheUC.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+
+      this.MaximizeBox = true;
+
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      this.AcceptButton = okButton;
+
+      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      TheUC.Anchor         =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+      TheUC.TheGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+      
+      this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
+
+      ResumeLayout();
+
+   }
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+}
+
+public class PCK_Info_UC : UserControl
+{
+   #region Fieldz
+
+   public VvDataGridView TheGrid { get; set; }
+
+   private VvTextBox
+         vvtb_PCK_ArtCD  ,  
+         vvtb_PCK_ArtName,  
+         vvtb_PCK_RAMkind,  
+         vvtb_PCK_SklCD  ,  
+         vvtb_PCK_RAM    ,  
+         vvtb_PCK_HDD    ,  
+         vvtb_UkPstKol   ,  
+         vvtb_UkUlazKol  ,  
+         vvtb_UkIzlazKol ,
+         vvtb_StanjeKol  ;
+
+   private VvTextBoxColumn colVvText;
+   private DataGridViewTextBoxColumn colScrol;
+
+   #endregion Fieldz
+
+   #region Constructor
+
+   public PCK_Info_UC(Control _parent)
+   {
+      this.SuspendLayout();
+
+      this.Parent = _parent;
+
+      CreateTheGrid();
+      CalcLocationAndSize();
+
+      this.ResumeLayout();
+
+      SetPKCColumnIndexes();
+
+   }
+
+   #endregion Constructor
+
+   #region CalcLocationAndSize
+
+   private void CalcLocationAndSize()
+   {
+      this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, SystemInformation.WorkingArea.Height - ZXC.Q5un);
+      TheGrid.Height = this.Size.Height - ZXC.Q2un;
+   }
+
+   #endregion CalcLocationAndSize
+
+   #region TheGrid
+
+   private void CreateTheGrid()
+   {
+      TheGrid          = new VvDataGridView();
+      TheGrid.Parent   = this;
+      TheGrid.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+
+      TheGrid.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+      TheGrid.AutoGenerateColumns                  = false;
+
+      TheGrid.RowHeadersBorderStyle = TheGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+      TheGrid.ColumnHeadersHeight   = ZXC.QUN - ZXC.Qun8;
+      TheGrid.RowTemplate.Height    = ZXC.QUN - ZXC.Qun8;
+      TheGrid.RowHeadersWidth       = ZXC.Q4un;
+      TheGrid.Height                = TheGrid.ColumnHeadersHeight + TheGrid.RowTemplate.Height;
+
+      TheGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
+
+      VvHamper.ApplyVVColorAndStyleTabCntrolChange(TheGrid);
+
+      TheGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
+      TheGrid.Validating += new System.ComponentModel.CancelEventHandler(VvDocumentRecordUC.grid_Validating);
+
+      VvHamper.ApplyVVColorAndStyleTabCntrolChange(TheGrid);
+      VvHamper.Open_Close_Fields_ForWriting(TheGrid, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvOtherUC);
+
+      TheGrid.AllowUserToAddRows       =
+      TheGrid.AllowUserToDeleteRows    =
+      TheGrid.AllowUserToOrderColumns  =
+      TheGrid.AllowUserToResizeColumns =
+      TheGrid.AllowUserToResizeRows    = false;
+
+      TheGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
+      TheGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+      TheGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
+      TheGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
+
+      TheGrid.ColumnHeadersDefaultCellStyle.Font = ZXC.vvFont.SmallFont;
+      TheGrid.RowsDefaultCellStyle         .Font = ZXC.vvFont.SmallFont;
+      TheGrid.RowHeadersDefaultCellStyle   .Font = ZXC.vvFont.SmallFont;
+
+      CreateColumn(TheGrid);
+      int sumoOfColumns = 0;
+      foreach(DataGridViewColumn dc in TheGrid.Columns)
+      {
+         sumoOfColumns += dc.Width;
+      }
+
+      TheGrid.Width = sumoOfColumns + TheGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
+      TheGrid.Height = this.Size.Height - ZXC.QUN;
+   }
+
+   #endregion TheGrid
+
+   #region TheGridColumn
+
+   private void CreateColumn(VvDataGridView theGrid)
+   {
+      vvtb_PCK_ArtCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_ArtCD"  , null, -12, "Šifra"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_ArtCD   , null, "R_PCK_ArtCD"  , "Šifra"  , ZXC.Q6un); vvtb_PCK_ArtCD   .JAM_ReadOnly = true; 
+      vvtb_PCK_ArtName = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_ArtName", null, -12, "Naziv"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_ArtName , null, "R_PCK_ArtName", "Naziv"  , ZXC.Q3un); vvtb_PCK_ArtName .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q10un + ZXC.Qun5;
+      vvtb_PCK_RAMkind = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_RAMkind", null, -12, "RAM kind" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAMkind , null, "R_PCK_RAMkind", "RAMkind", ZXC.Q4un); vvtb_PCK_RAMkind .JAM_ReadOnly = true;
+      vvtb_PCK_SklCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_SklCD"  , null, -12, "Skladište"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_SklCD   , null, "R_PCK_SklCD"  , "Sklad"  , ZXC.Q3un); vvtb_PCK_SklCD   .JAM_ReadOnly = true;
+      vvtb_PCK_RAM     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_RAM"    , null, -12, "RAM"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAM     , null, "R_PCK_RAM"    , "RAM"    , ZXC.Q3un); vvtb_PCK_RAM     .JAM_ReadOnly = true;
+      vvtb_PCK_HDD     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_HDD"    , null, -12, "HDD"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDD     , null, "R_PCK_HDD"    , "HDD"    , ZXC.Q3un); vvtb_PCK_HDD     .JAM_ReadOnly = true;
+      vvtb_UkPstKol    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkPstKol"   , null, -12, "PstKol"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkPstKol    , null, "R_UkPstKol"   , "Pst"    , ZXC.Q4un); vvtb_UkPstKol    .JAM_ReadOnly = true; 
+      vvtb_UkUlazKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkUlazKol"  , null, -12, "UlazKol"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkUlazKol   , null, "R_UkUlazKol"  , "Ulaz"   , ZXC.Q4un); vvtb_UkUlazKol   .JAM_ReadOnly = true;
+      vvtb_UkIzlazKol  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkIzlazKol" , null, -12, "IzlazKol" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkIzlazKol  , null, "R_UkIzlazKol" , "Izlaz"  , ZXC.Q4un); vvtb_UkIzlazKol  .JAM_ReadOnly = true;
+      vvtb_StanjeKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_StanjeKol"  , null, -12, "StanjeKol"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_StanjeKol   , null, "R_StanjeKol"  , "Stanje" , ZXC.Q4un); vvtb_StanjeKol   .JAM_ReadOnly = true;
+
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+
+   }
+
+   #endregion TheGridColumn
+
+   #region SetColumnIndexes()
+
+   private PCKInfo_colIdx ci;
+   public PCKInfo_colIdx DgvCI { get { return ci; } }
+   public struct PCKInfo_colIdx
+   {
+      internal int iT_PCK_ArtCD  ;
+      internal int iT_PCK_ArtName;
+      internal int iT_PCK_RAMkind;
+      internal int iT_PCK_SklCD  ;
+      internal int iT_PCK_RAM    ;
+      internal int iT_PCK_HDD    ;
+      internal int iT_UkPstKol   ;
+      internal int iT_UkUlazKol  ;
+      internal int iT_UkIzlazKol ;
+      internal int iT_StanjeKol  ;
+   }
+
+   private void SetPKCColumnIndexes()
+   {
+      ci = new PCKInfo_colIdx();
+
+      ci.iT_PCK_ArtCD   = TheGrid.IdxForColumn("R_PCK_ArtCD"  );
+      ci.iT_PCK_ArtName = TheGrid.IdxForColumn("R_PCK_ArtName");
+      ci.iT_PCK_RAMkind = TheGrid.IdxForColumn("R_PCK_RAMkind");
+      ci.iT_PCK_SklCD   = TheGrid.IdxForColumn("R_PCK_SklCD"  );
+      ci.iT_PCK_RAM     = TheGrid.IdxForColumn("R_PCK_RAM"    );
+      ci.iT_PCK_HDD     = TheGrid.IdxForColumn("R_PCK_HDD"    );
+      ci.iT_UkPstKol    = TheGrid.IdxForColumn("R_UkPstKol"   );
+      ci.iT_UkUlazKol   = TheGrid.IdxForColumn("R_UkUlazKol"  );
+      ci.iT_UkIzlazKol  = TheGrid.IdxForColumn("R_UkIzlazKol" );
+      ci.iT_StanjeKol   = TheGrid.IdxForColumn("R_StanjeKol"  );
+   }
+
+   #endregion SetColumnIndexes()
+
+   public void PutDgvFields(List<PCK_InfoLine> PCK_Lines)
+   {
+      int rowIdx;
+
+      TheGrid.Rows.Clear();
+
+      if(PCK_Lines != null)
+      {
+         for(rowIdx = 0; rowIdx < PCK_Lines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         {
+            TheGrid.Rows.Add();
+
+            PutDgvLineFields(rowIdx, PCK_Lines[rowIdx]);
+
+            TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         }
+      }
+   }
+
+   private void PutDgvLineFields(int rowIdx, PCK_InfoLine PCK_Line)
+   {
+      TheGrid.PutCell(ci.iT_PCK_ArtCD   , rowIdx, PCK_Line.PCK_ArtCD  );
+      TheGrid.PutCell(ci.iT_PCK_ArtName , rowIdx, PCK_Line.PCK_ArtName);
+      TheGrid.PutCell(ci.iT_PCK_RAMkind , rowIdx, PCK_Line.PCK_RAMkind);
+      TheGrid.PutCell(ci.iT_PCK_SklCD   , rowIdx, PCK_Line.PCK_SklCD  );
+      TheGrid.PutCell(ci.iT_PCK_RAM     , rowIdx, PCK_Line.PCK_RAM    );
+      TheGrid.PutCell(ci.iT_PCK_HDD     , rowIdx, PCK_Line.PCK_HDD    );
+      TheGrid.PutCell(ci.iT_UkPstKol    , rowIdx, PCK_Line.UkPstKol   );
+      TheGrid.PutCell(ci.iT_UkUlazKol   , rowIdx, PCK_Line.UkUlazKol  );
+      TheGrid.PutCell(ci.iT_UkIzlazKol  , rowIdx, PCK_Line.UkIzlazKol );
+      TheGrid.PutCell(ci.iT_StanjeKol   , rowIdx, PCK_Line.StanjeKol  );
+   }
 }

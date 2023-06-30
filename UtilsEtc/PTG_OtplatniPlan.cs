@@ -1307,10 +1307,12 @@ public class PTG_Ugovor : Faktur
    public string PTG_Narudzba       { get { return this.TheEx.currentData._opciAlabel;   } set { this.TheEx.currentData._opciAlabel   = value; } }
    public string PTG_Lokacija       { get { return this.TheEx.currentData._dostAddr;     } set { this.TheEx.currentData._dostAddr     = value; } }
    public string PTG_TekstZaRn      { get { return this.TheEx.currentData._napomena2;    } set { this.TheEx.currentData._napomena2    = value; } }
- //ovo je R public string PTG_OpaskaStatServ { get { return this.      currentData._napomena;         } set { this.      currentData._napomena         = value; } }
    public string PTG_PTG_KDCnaziv   { get { return this.TheEx.currentData._odgvPersName; } set { this.TheEx.currentData._odgvPersName = value; } }
 
-   public string PTG_Napomena { get { return this.currentData._opis; } set { this.currentData._opis = value; } }
+   public string PTG_Napomena       { get { return this.currentData._opis;                } set { this.currentData._opis              = value; } }
+
+   public string PTG_OpaskaServisa  { get { return this.currentData._napomena;            } set { this.currentData._napomena          = value; } }
+
 
    // Korisnik je KupDob i sve sto ide sa njime, Valuta je Valuta, Napomena je Napomena ...
    // Da li je Poslovnica = Poslovna Jedinica ????
