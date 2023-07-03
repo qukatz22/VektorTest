@@ -32,6 +32,9 @@ public class ArtiklListUC : VvRecLstUC
    private Artikl      artikl_rec;
    private RadioButton rbt_akcijaDa, rbt_akcijaNe, rbt_akcijaNebitno, rbt_rashodDa, rbt_rashodNe, rbt_rashodNebitno;
 
+   private Button btn_pckInfo;
+   private VvHamper hamp_pckInfo;
+
    #endregion Fieldz
 
    #region Constructor
@@ -68,6 +71,8 @@ public class ArtiklListUC : VvRecLstUC
       Fld_IsIzuzet           = ZXC.JeliJeTakav.NIJE_TAKAV;
 
       SetControlForInitialFocus();
+
+      if(ZXC.IsPCTOGO) CreateBtnPCKinfo();
 
    }
 
@@ -396,10 +401,28 @@ public class ArtiklListUC : VvRecLstUC
 
    }
 
+   private void CreateBtnPCKinfo()
+   {
+      hamp_pckInfo = new VvHamper(1, 1, "", this, false);
+
+      hamp_pckInfo.VvColWdt      = new int[] { ZXC.QunBtnW };
+      hamp_pckInfo.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+      hamp_pckInfo.VvRightMargin = hamp_pckInfo.VvLeftMargin;
+
+      hamp_pckInfo.VvRowHgt       = new int[] { ZXC.QunBtnH };
+      hamp_pckInfo.VvSpcBefRow    = new int[] { ZXC.Qun2    };
+      hamp_pckInfo.VvBottomMargin = hamp_pckInfo.VvTopMargin;
+
+      btn_pckInfo = hamp_pckInfo.CreateVvButton(0, 0, new EventHandler(btn_PCKinfo_Click), "PCK Info");
+
+      hamp_pckInfo.Location = new Point(hampIzlistaj.Left, hampIzlistaj.Bottom);
+      hamp_pckInfo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+   }
+
    #endregion Hamper
 
    #region Eveniti
-
    private void radioButtonSortByName_Click(object sender, System.EventArgs e)
    {
       RadioButton rbt   = sender as RadioButton;
@@ -497,7 +520,20 @@ public class ArtiklListUC : VvRecLstUC
       ZXC.TheVvForm.VvPref.findArtikl.IsStatus = Fld_IsShowSomeOfStatusData;
    }
 
+   public void btn_PCKinfo_Click(object sender, EventArgs e)
+   {
+      string currArtiklCD = Fld_FromArtiklCD.NotEmpty() ? Fld_FromArtiklCD : "";
+      
+      PCK_Dao info = new PCK_Dao(TheDbConnection, currArtiklCD, "ZNJ", "");
    
+      PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
+   
+      pckDaoDlg.TheUC.PutDgvFields(info.PCK_Lines);
+      pckDaoDlg.ShowDialog();
+      pckDaoDlg.Dispose();      
+
+   }
+
    #endregion Eveniti
 
    #region HamperFilter

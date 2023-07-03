@@ -82,6 +82,9 @@ public class ArtiklUC : VvSifrarRecordUC
    
    private Button btn_numCd, btn_proj, btn_openExLinkURL, btn_openExLinkNap;
 
+   private PCK_Info_UC pcKInfoUC;
+   protected bool PTG_PCKinfoLoaded;
+
    #endregion Fieldz
 
    #region Constructor
@@ -174,8 +177,17 @@ public class ArtiklUC : VvSifrarRecordUC
       {
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(rtrans_TabPageName, "", ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
       }
+
+      if(ZXC.IsPCTOGO)
+      { 
+         TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.ReportViewer_TabPage));
+         
+         pcKInfoUC = new PCK_Info_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
+
+         TheTabControl.SelectionChanged += DecideIfShouldLoad_PCKinfo;
+      }
    }
- 
+
    #endregion TabPages
 
    #region  HAMPER
@@ -2425,9 +2437,15 @@ public class ArtiklUC : VvSifrarRecordUC
 
          SetToolTipsForPredugackys();
 
-       //Rtrans UGOrtrans_rec = new Rtrans();
-       //bool found = FakturDao.SetMeLastRtransForArtiklAndTT(TheDbConnection, UGOrtrans_rec, Faktur.TT_IZD/*UGO*/, artikl_rec.ArtiklCD, true);
-       //if(found) ZXC.aim_emsg("{0}", UGOrtrans_rec);
+         if(ZXC.IsPCTOGO)
+         {
+            PTG_PCKinfoLoaded = false;
+            DecideIfShouldLoad_PCKinfo(null, null, null);//03.07.2023
+         }
+
+         //Rtrans UGOrtrans_rec = new Rtrans();
+         //bool found = FakturDao.SetMeLastRtransForArtiklAndTT(TheDbConnection, UGOrtrans_rec, Faktur.TT_IZD/*UGO*/, artikl_rec.ArtiklCD, true);
+         //if(found) ZXC.aim_emsg("{0}", UGOrtrans_rec);
       }
    }
 
@@ -2799,7 +2817,8 @@ public class ArtiklUC : VvSifrarRecordUC
 
    #region Put Trans DGV Fileds
 
-   private const string rtrans_TabPageName = "RTrans";
+   private const string rtrans_TabPageName  = "RTrans";
+   private const string pckInfo_TabPageName = "PCKinfo";
 
    // Tu dolazimo na 1 nacin: 1. Classic PutFields 
    private void InitializeFilterUCFields()
@@ -3254,7 +3273,31 @@ public class ArtiklUC : VvSifrarRecordUC
       }
    }
 
+   public void DecideIfShouldLoad_PCKinfo(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      bool PCKinfo_TabPageIsVisible = TheTabControl.SelectedTab.Name == pckInfo_TabPageName;
 
+      if(PTG_PCKinfoLoaded == false && this.artikl_rec.TS == "PCK" && PCKinfo_TabPageIsVisible)
+      {
+         PTG_PCKinfoLoaded = true;
+         pcKInfoUC.TheGrid.Rows.Clear();
+
+         PCK_Dao info = new PCK_Dao(TheDbConnection, this.artikl_rec.ArtiklCD, "ZNJ", "");
+
+         pcKInfoUC.PutDgvFields(info.PCK_Lines);
+
+       //pcKInfoUC.Size = new Size(pcKInfoUC.TheGrid.Width + 2 * ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.Q5un);
+       //pcKInfoUC.TheGrid.Height = pcKInfoUC.Size.Height - ZXC.Q2un;
+         pcKInfoUC.Size           = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
+         pcKInfoUC.TheGrid.Height = pcKInfoUC.Size.Height - ZXC.QunMrgn;
+
+         pcKInfoUC.TabStop = false;
+      }
+      else
+      {
+         pcKInfoUC.TheGrid.Rows.Clear();
+      }
+   }
 }
 
 public class VvRenameArtiklDlg : VvDialog

@@ -3107,7 +3107,7 @@ public partial class PCK_InfoDLG :  VvDialog
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;
-      this.Text = "PCK_ARTIKLI";
+      this.Text = "PCK INFO";
 
       TheUC.Parent   = this;
       TheUC.Location = new Point(ZXC.Qun8, ZXC.Qun8);
@@ -3187,6 +3187,16 @@ public class PCK_Info_UC : UserControl
    {
       this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, SystemInformation.WorkingArea.Height - ZXC.Q5un);
       TheGrid.Height = this.Size.Height - ZXC.Q2un;
+
+      //if(this.Parent is VvDialog)
+      //{
+      //   this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, SystemInformation.WorkingArea.Height - ZXC.Q5un);
+      //   TheGrid.Height = this.Size.Height - ZXC.Q2un;
+      //}
+      //else
+      //{
+      //   TheGrid.Dock = DockStyle.Fill;
+      //}
    }
 
    #endregion CalcLocationAndSize
@@ -3209,10 +3219,6 @@ public class PCK_Info_UC : UserControl
       TheGrid.Height                = TheGrid.ColumnHeadersHeight + TheGrid.RowTemplate.Height;
 
       TheGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
-
-      VvHamper.ApplyVVColorAndStyleTabCntrolChange(TheGrid);
-
-      TheGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
       TheGrid.Validating += new System.ComponentModel.CancelEventHandler(VvDocumentRecordUC.grid_Validating);
 
       VvHamper.ApplyVVColorAndStyleTabCntrolChange(TheGrid);
@@ -3229,9 +3235,9 @@ public class PCK_Info_UC : UserControl
       TheGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
       TheGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
 
-      TheGrid.ColumnHeadersDefaultCellStyle.Font = ZXC.vvFont.SmallFont;
-      TheGrid.RowsDefaultCellStyle         .Font = ZXC.vvFont.SmallFont;
-      TheGrid.RowHeadersDefaultCellStyle   .Font = ZXC.vvFont.SmallFont;
+    //TheGrid.ColumnHeadersDefaultCellStyle.Font = ZXC.vvFont.BaseFont;
+    //TheGrid.RowsDefaultCellStyle         .Font = ZXC.vvFont.BaseFont;
+    //TheGrid.RowHeadersDefaultCellStyle   .Font = ZXC.vvFont.BaseFont;
 
       CreateColumn(TheGrid);
       int sumoOfColumns = 0;
@@ -3252,17 +3258,16 @@ public class PCK_Info_UC : UserControl
    {
       vvtb_PCK_ArtCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_ArtCD"  , null, -12, "Šifra"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_ArtCD   , null, "R_PCK_ArtCD"  , "Šifra"  , ZXC.Q6un); vvtb_PCK_ArtCD   .JAM_ReadOnly = true; 
       vvtb_PCK_ArtName = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_ArtName", null, -12, "Naziv"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_ArtName , null, "R_PCK_ArtName", "Naziv"  , ZXC.Q3un); vvtb_PCK_ArtName .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q10un + ZXC.Qun5;
-      vvtb_PCK_RAMkind = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_RAMkind", null, -12, "RAM kind" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAMkind , null, "R_PCK_RAMkind", "RAMkind", ZXC.Q4un); vvtb_PCK_RAMkind .JAM_ReadOnly = true;
+      vvtb_PCK_RAMkind = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_RAMkind", null, -12, "Klasa"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAMkind , null, "R_PCK_RAMkind", "Klasa"  , ZXC.Q4un); vvtb_PCK_RAMkind .JAM_ReadOnly = true;
       vvtb_PCK_SklCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_SklCD"  , null, -12, "Skladište"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_SklCD   , null, "R_PCK_SklCD"  , "Sklad"  , ZXC.Q3un); vvtb_PCK_SklCD   .JAM_ReadOnly = true;
-      vvtb_PCK_RAM     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_RAM"    , null, -12, "RAM"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAM     , null, "R_PCK_RAM"    , "RAM"    , ZXC.Q3un); vvtb_PCK_RAM     .JAM_ReadOnly = true;
-      vvtb_PCK_HDD     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_HDD"    , null, -12, "HDD"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDD     , null, "R_PCK_HDD"    , "HDD"    , ZXC.Q3un); vvtb_PCK_HDD     .JAM_ReadOnly = true;
-      vvtb_UkPstKol    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkPstKol"   , null, -12, "PstKol"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkPstKol    , null, "R_UkPstKol"   , "Pst"    , ZXC.Q4un); vvtb_UkPstKol    .JAM_ReadOnly = true; 
-      vvtb_UkUlazKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkUlazKol"  , null, -12, "UlazKol"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkUlazKol   , null, "R_UkUlazKol"  , "Ulaz"   , ZXC.Q4un); vvtb_UkUlazKol   .JAM_ReadOnly = true;
-      vvtb_UkIzlazKol  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkIzlazKol" , null, -12, "IzlazKol" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkIzlazKol  , null, "R_UkIzlazKol" , "Izlaz"  , ZXC.Q4un); vvtb_UkIzlazKol  .JAM_ReadOnly = true;
+      vvtb_PCK_RAM     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_RAM"    , null, -12, "RAM"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAM     , null, "R_PCK_RAM"    , "RAM"    , ZXC.Q3un); vvtb_PCK_RAM     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      vvtb_PCK_HDD     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_HDD"    , null, -12, "HDD"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDD     , null, "R_PCK_HDD"    , "HDD"    , ZXC.Q3un); vvtb_PCK_HDD     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+    //vvtb_UkPstKol    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkPstKol"   , null, -12, "PstKol"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkPstKol    , null, "R_UkPstKol"   , "Pst"    , ZXC.Q4un); vvtb_UkPstKol    .JAM_ReadOnly = true; 
+    //vvtb_UkUlazKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkUlazKol"  , null, -12, "UlazKol"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkUlazKol   , null, "R_UkUlazKol"  , "Ulaz"   , ZXC.Q4un); vvtb_UkUlazKol   .JAM_ReadOnly = true;
+    //vvtb_UkIzlazKol  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkIzlazKol" , null, -12, "IzlazKol" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkIzlazKol  , null, "R_UkIzlazKol" , "Izlaz"  , ZXC.Q4un); vvtb_UkIzlazKol  .JAM_ReadOnly = true;
       vvtb_StanjeKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_StanjeKol"  , null, -12, "StanjeKol"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_StanjeKol   , null, "R_StanjeKol"  , "Stanje" , ZXC.Q4un); vvtb_StanjeKol   .JAM_ReadOnly = true;
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
-
    }
 
    #endregion TheGridColumn
@@ -3330,9 +3335,9 @@ public class PCK_Info_UC : UserControl
       TheGrid.PutCell(ci.iT_PCK_SklCD   , rowIdx, PCK_Line.PCK_SklCD  );
       TheGrid.PutCell(ci.iT_PCK_RAM     , rowIdx, PCK_Line.PCK_RAM    );
       TheGrid.PutCell(ci.iT_PCK_HDD     , rowIdx, PCK_Line.PCK_HDD    );
-      TheGrid.PutCell(ci.iT_UkPstKol    , rowIdx, PCK_Line.UkPstKol   );
-      TheGrid.PutCell(ci.iT_UkUlazKol   , rowIdx, PCK_Line.UkUlazKol  );
-      TheGrid.PutCell(ci.iT_UkIzlazKol  , rowIdx, PCK_Line.UkIzlazKol );
+    //TheGrid.PutCell(ci.iT_UkPstKol    , rowIdx, PCK_Line.UkPstKol   );
+    //TheGrid.PutCell(ci.iT_UkUlazKol   , rowIdx, PCK_Line.UkUlazKol  );
+    //TheGrid.PutCell(ci.iT_UkIzlazKol  , rowIdx, PCK_Line.UkIzlazKol );
       TheGrid.PutCell(ci.iT_StanjeKol   , rowIdx, PCK_Line.StanjeKol  );
    }
 }
