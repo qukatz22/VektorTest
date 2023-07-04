@@ -522,16 +522,21 @@ public class ArtiklListUC : VvRecLstUC
 
    public void btn_PCKinfo_Click(object sender, EventArgs e)
    {
-      string currArtiklCD = Fld_FromArtiklCD.NotEmpty() ? Fld_FromArtiklCD : "";
-      
-      PCK_Dao info = new PCK_Dao(TheDbConnection, currArtiklCD, "ZNJ", "");
-   
-      PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
-   
-      pckDaoDlg.TheUC.PutDgvFields(info.PCK_Lines);
-      pckDaoDlg.ShowDialog();
-      pckDaoDlg.Dispose();      
+      //ArtiklListUC theDUC = ZXC.TheVvForm.TheVvRecLstUC as ArtiklListUC;
+      int currRowIdx = TheGrid.CurrentRow.Index;
 
+      string currArtiklCD = TheGrid.GetStringCell(0, currRowIdx, false);
+      string artiklTS     = TheGrid.GetStringCell(2, currRowIdx, false);
+
+      if(currArtiklCD.NotEmpty() && artiklTS == "PCK")
+      {
+         PCK_Dao info = new PCK_Dao(TheDbConnection, currArtiklCD, "ZNJ", "");
+
+         PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
+         pckDaoDlg.TheUC.PutDgvFields(info.PCK_Lines);
+         pckDaoDlg.ShowDialog();
+         pckDaoDlg.Dispose();
+      }
    }
 
    #endregion Eveniti

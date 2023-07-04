@@ -1355,6 +1355,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                        true, "Naziv"   , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
       T_skladCD_CreateColumn       (ZXC.Q3un,               true, "Sklad"   , "Izlazno skladište");
@@ -3143,8 +3144,7 @@ public class PCK_Info_UC : UserControl
 {
    #region Fieldz
 
-   public VvDataGridView TheGrid { get; set; }
-
+   public VvDataGridView TheGrid   { get; set; }
    private VvTextBox
          vvtb_PCK_ArtCD  ,  
          vvtb_PCK_ArtName,  
@@ -3197,6 +3197,7 @@ public class PCK_Info_UC : UserControl
       //{
       //   TheGrid.Dock = DockStyle.Fill;
       //}
+
    }
 
    #endregion CalcLocationAndSize
@@ -3215,7 +3216,7 @@ public class PCK_Info_UC : UserControl
       TheGrid.RowHeadersBorderStyle = TheGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
       TheGrid.ColumnHeadersHeight   = ZXC.QUN - ZXC.Qun8;
       TheGrid.RowTemplate.Height    = ZXC.QUN - ZXC.Qun8;
-      TheGrid.RowHeadersWidth       = ZXC.Q4un;
+      TheGrid.RowHeadersWidth       = ZXC.Q2un;
       TheGrid.Height                = TheGrid.ColumnHeadersHeight + TheGrid.RowTemplate.Height;
 
       TheGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
@@ -3240,6 +3241,7 @@ public class PCK_Info_UC : UserControl
     //TheGrid.RowHeadersDefaultCellStyle   .Font = ZXC.vvFont.BaseFont;
 
       CreateColumn(TheGrid);
+
       int sumoOfColumns = 0;
       foreach(DataGridViewColumn dc in TheGrid.Columns)
       {
