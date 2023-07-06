@@ -1099,7 +1099,6 @@ public class RptR_ArtiklKartica  : VvRiskReport
 
 public class RptR_ArtiklRtranses : VvRiskReport
 {
-   bool isPCKinfo;
    public RptR_ArtiklRtranses(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter) : base(_reportDocument, _reportName, _rptFilter,
          false, // ArtWars         
          false, // ArtStat        
@@ -1111,7 +1110,6 @@ public class RptR_ArtiklRtranses : VvRiskReport
          false) // Artikl         
 
    {
-      this.isPCKinfo = _reportDocument is Vektor.Reports.RIZ.CR_PTG_PCKinfo;
    }
 
    public override int FillRiskReportLists()
@@ -1133,9 +1131,6 @@ public class RptR_ArtiklRtranses : VvRiskReport
       //VvDaoBase.LoadGenericVvDataRecordList<Faktur>(conn, TheFakturList = new List<Faktur>(), null, "", "", true);
       // ovo 'TheFakturList = new List<Faktur>()' ti je trebalo jer ovaj izvj po defaultu ne treba TheFakturList pa je inace ovdje null
       // VAZNO, idijote!, da ne zaboravis; ovo ti je primjer kako si uspio napraviti da sa standardnim 'LoadGenericVvDataRecordList' dohvatis i Faktur i FaktEx dataLayer!!!!!!!!!!
-
-      if(isPCKinfo) ThePTG_PCK_RptLineList = new List<PCK_InfoLine>();
-
 
       return TheRtransList.Count;
    }
@@ -1194,6 +1189,8 @@ public class RptR_PTG_Artikl_PCK_info : VvRiskReport
 
       // TheArtiklList
       TheArtiklList.Add(theUC.artikl_rec);
+
+      if(theUC.artikl_rec.TS != "PCK") return 0;
 
       PCK_Dao pck_info = new PCK_Dao(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, "");
 

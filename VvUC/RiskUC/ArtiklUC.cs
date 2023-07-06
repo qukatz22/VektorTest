@@ -3042,16 +3042,16 @@ public class ArtiklUC : VvSifrarRecordUC
 
       switch(artiklCardFilter.ArtiklCards)
       {
-         case ArtiklCardFilter.ArtiklCardsEnum.Artikl        : return new RptR_ArtiklMaticni (new Vektor.Reports.RIZ.CR_ArtiklCard()            , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.ArtiklL       : return new RptR_ArtiklMaticni (new Vektor.Reports.RIZ.CR_ArtiklCard()            , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RobKartA      : return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKartica_A()        , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RobKartAP     : return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKarica_AP()        , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RobKartB      : return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKartica_B()        , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RobKartKol    : return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKarticaKOL()       , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RekapTrans    : return new RptR_ArtiklRtranses(new Vektor.Reports.RIZ.CR_RekapTrans()            , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RbKrtKolSerlot: return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKarticaKOL_Serlot(), reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.RobKartAMB    : return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKartica_AMB()      , reportName, artiklCardFilter);
-         case ArtiklCardFilter.ArtiklCardsEnum.PCKinfo       : return new RptR_ArtiklRtranses(new Vektor.Reports.RIZ.CR_PTG_PCKinfo()          , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.Artikl        : return new RptR_ArtiklMaticni      (new Vektor.Reports.RIZ.CR_ArtiklCard()            , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.ArtiklL       : return new RptR_ArtiklMaticni      (new Vektor.Reports.RIZ.CR_ArtiklCard()            , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RobKartA      : return new RptR_ArtiklKartica      (new Vektor.Reports.RIZ.CR_RobnaKartica_A()        , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RobKartAP     : return new RptR_ArtiklKartica      (new Vektor.Reports.RIZ.CR_RobnaKarica_AP()        , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RobKartB      : return new RptR_ArtiklKartica      (new Vektor.Reports.RIZ.CR_RobnaKartica_B()        , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RobKartKol    : return new RptR_ArtiklKartica      (new Vektor.Reports.RIZ.CR_RobnaKarticaKOL()       , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RekapTrans    : return new RptR_ArtiklRtranses     (new Vektor.Reports.RIZ.CR_RekapTrans()            , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RbKrtKolSerlot: return new RptR_ArtiklKartica      (new Vektor.Reports.RIZ.CR_RobnaKarticaKOL_Serlot(), reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.RobKartAMB    : return new RptR_ArtiklKartica      (new Vektor.Reports.RIZ.CR_RobnaKartica_AMB()      , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.PCKinfo       : return new RptR_PTG_Artikl_PCK_info(new Vektor.Reports.RIZ.CR_PTG_PCKinfo()          , reportName, artiklCardFilter);
 
          default: ZXC.aim_emsg("{0}\nPrintSomeArtiklDocumentrd <{1}> undone!", ZXC.GetMethodNameDaStack(), artiklCardFilter.ArtiklCards); return null;
       }
@@ -3284,8 +3284,10 @@ public class ArtiklUC : VvSifrarRecordUC
          //PTG_PCKinfoLoaded = true;
 
          pcKInfoUC.ThePCKGrid.Rows.Clear();
-        
-         PCK_Dao info = new PCK_Dao(TheDbConnection, this.artikl_rec.ArtiklCD, "ZNJ", "");
+
+         string skladCD = this.TheCurrentSkladCD;
+
+         PCK_Dao info = new PCK_Dao(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD, "");
 
          pcKInfoUC.PutDgvFields(info.PCK_Lines);
 

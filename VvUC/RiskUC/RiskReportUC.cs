@@ -4287,7 +4287,7 @@ public class ArtiklSifrarFilterUC : VvFilterUC
                      tbx_kupDobCD, tbx_kupDobTiker, tbx_kupDobNaziv,
                      tbx_grupaPart, tbx_vezniDok, tbx_nacinPl, tbx_napomena;
 
-   private RadioButton rbt_artikL, rbt_artikP, rbt_robKartA, rbt_robKartAP, rbt_robKartB, rbt_robKartKol, rbt_transakc, rbt_rbKrtKolSerlot, rbt_robKartAMB, rbt_PCKinfo;
+   public RadioButton rbt_artikL, rbt_artikP, rbt_robKartA, rbt_robKartAP, rbt_robKartB, rbt_robKartKol, rbt_transakc, rbt_rbKrtKolSerlot, rbt_robKartAMB, rbt_PCKinfo;
 
    private CheckBox cbx_biloGdjeUnapomeni, cbx_grupaPoStr, cbx_MPSkpoNBC;
    public  CheckBox cbx_isRobKartica;
@@ -4445,7 +4445,7 @@ public class ArtiklSifrarFilterUC : VvFilterUC
      rbt_transakc.Enabled = !enable;
      rbt_transakc.Checked = !enable;
 
-      rbt_PCKinfo.Enabled = ZXC.IsPCTOGO;
+      rbt_PCKinfo.Enabled = 
       rbt_PCKinfo.Visible = ZXC.IsPCTOGO;
    }
 

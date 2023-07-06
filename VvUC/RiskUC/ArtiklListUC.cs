@@ -522,7 +522,6 @@ public class ArtiklListUC : VvRecLstUC
 
    public void btn_PCKinfo_Click(object sender, EventArgs e)
    {
-      //ArtiklListUC theDUC = ZXC.TheVvForm.TheVvRecLstUC as ArtiklListUC;
       int currRowIdx = TheGrid.CurrentRow.Index;
 
       string currArtiklCD = TheGrid.GetStringCell(0, currRowIdx, false);
@@ -530,7 +529,7 @@ public class ArtiklListUC : VvRecLstUC
 
       if(currArtiklCD.NotEmpty() && artiklTS == "PCK")
       {
-         PCK_Dao info = new PCK_Dao(TheDbConnection, currArtiklCD, "ZNJ", "");
+         PCK_Dao info = new PCK_Dao(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD /*"ZNJ"*/, "");
 
          PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
          pckDaoDlg.TheUC.PutDgvFields(info.PCK_Lines);
