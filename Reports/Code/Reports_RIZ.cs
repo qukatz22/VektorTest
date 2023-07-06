@@ -212,6 +212,9 @@ public abstract partial class VvRiskReport : VvReport
 
    public Rtrans TheRtrans_AllSkladSUM { get; set; }
 
+   public List<PCK_InfoLine> ThePTG_PCK_RptLineList { get; set; }
+
+
    //public VvRiskReport() { }
 
    public VvRiskReport(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl) 
@@ -1096,6 +1099,7 @@ public class RptR_ArtiklKartica  : VvRiskReport
 
 public class RptR_ArtiklRtranses : VvRiskReport
 {
+   bool isPCKinfo;
    public RptR_ArtiklRtranses(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter) : base(_reportDocument, _reportName, _rptFilter,
          false, // ArtWars         
          false, // ArtStat        
@@ -1107,6 +1111,7 @@ public class RptR_ArtiklRtranses : VvRiskReport
          false) // Artikl         
 
    {
+      this.isPCKinfo = _reportDocument is Vektor.Reports.RIZ.CR_PTG_PCKinfo;
    }
 
    public override int FillRiskReportLists()
@@ -1128,6 +1133,9 @@ public class RptR_ArtiklRtranses : VvRiskReport
       //VvDaoBase.LoadGenericVvDataRecordList<Faktur>(conn, TheFakturList = new List<Faktur>(), null, "", "", true);
       // ovo 'TheFakturList = new List<Faktur>()' ti je trebalo jer ovaj izvj po defaultu ne treba TheFakturList pa je inace ovdje null
       // VAZNO, idijote!, da ne zaboravis; ovo ti je primjer kako si uspio napraviti da sa standardnim 'LoadGenericVvDataRecordList' dohvatis i Faktur i FaktEx dataLayer!!!!!!!!!!
+
+      if(isPCKinfo) ThePTG_PCK_RptLineList = new List<PCK_InfoLine>();
+
 
       return TheRtransList.Count;
    }

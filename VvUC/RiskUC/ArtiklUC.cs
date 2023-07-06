@@ -2437,11 +2437,12 @@ public class ArtiklUC : VvSifrarRecordUC
 
          SetToolTipsForPredugackys();
 
-         if(ZXC.IsPCTOGO)
-         {
-            PTG_PCKinfoLoaded = false;
-            DecideIfShouldLoad_PCKinfo(null, null, null);//03.07.2023
-         }
+       //PTG_PCKinfoLoaded = false;
+       if(ZXC.IsPCTOGO)
+       {
+          //PTG_PCKinfoLoaded = false;
+          DecideIfShouldLoad_PCKinfo(null, null, null);//03.07.2023
+       }
 
          //Rtrans UGOrtrans_rec = new Rtrans();
          //bool found = FakturDao.SetMeLastRtransForArtiklAndTT(TheDbConnection, UGOrtrans_rec, Faktur.TT_IZD/*UGO*/, artikl_rec.ArtiklCD, true);
@@ -3050,6 +3051,7 @@ public class ArtiklUC : VvSifrarRecordUC
          case ArtiklCardFilter.ArtiklCardsEnum.RekapTrans    : return new RptR_ArtiklRtranses(new Vektor.Reports.RIZ.CR_RekapTrans()            , reportName, artiklCardFilter);
          case ArtiklCardFilter.ArtiklCardsEnum.RbKrtKolSerlot: return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKarticaKOL_Serlot(), reportName, artiklCardFilter);
          case ArtiklCardFilter.ArtiklCardsEnum.RobKartAMB    : return new RptR_ArtiklKartica (new Vektor.Reports.RIZ.CR_RobnaKartica_AMB()      , reportName, artiklCardFilter);
+         case ArtiklCardFilter.ArtiklCardsEnum.PCKinfo       : return new RptR_ArtiklRtranses(new Vektor.Reports.RIZ.CR_PTG_PCKinfo()          , reportName, artiklCardFilter);
 
          default: ZXC.aim_emsg("{0}\nPrintSomeArtiklDocumentrd <{1}> undone!", ZXC.GetMethodNameDaStack(), artiklCardFilter.ArtiklCards); return null;
       }
@@ -3276,26 +3278,29 @@ public class ArtiklUC : VvSifrarRecordUC
    public void DecideIfShouldLoad_PCKinfo(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       bool PCKinfo_TabPageIsVisible = TheTabControl.SelectedTab.Name == pckInfo_TabPageName;
-
-      if(PTG_PCKinfoLoaded == false && this.artikl_rec.TS == "PCK" && PCKinfo_TabPageIsVisible)
+     
+      if(/*PTG_PCKinfoLoaded == false && */this.artikl_rec.TS == "PCK" && PCKinfo_TabPageIsVisible)
       {
-         PTG_PCKinfoLoaded = true;
-         pcKInfoUC.TheGrid.Rows.Clear();
+         //PTG_PCKinfoLoaded = true;
 
+         pcKInfoUC.ThePCKGrid.Rows.Clear();
+        
          PCK_Dao info = new PCK_Dao(TheDbConnection, this.artikl_rec.ArtiklCD, "ZNJ", "");
 
          pcKInfoUC.PutDgvFields(info.PCK_Lines);
 
-       //pcKInfoUC.Size = new Size(pcKInfoUC.TheGrid.Width + 2 * ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.Q5un);
-       //pcKInfoUC.TheGrid.Height = pcKInfoUC.Size.Height - ZXC.Q2un;
-         pcKInfoUC.Size           = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
-         pcKInfoUC.TheGrid.Height = pcKInfoUC.Size.Height - ZXC.QunMrgn;
-
-         pcKInfoUC.TabStop = false;
+         pcKInfoUC.Size = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
+         pcKInfoUC.ThePCKGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKSumGrid.Height - ZXC.Q2un;
+         
+         pcKInfoUC.ThePCKSumGrid.Width = pcKInfoUC.ThePCKGrid.Width;
+         pcKInfoUC.ThePCKSumGrid.Location = new Point(pcKInfoUC.ThePCKGrid.Location.X, pcKInfoUC.ThePCKGrid.Bottom + ZXC.Qun12);
+         pcKInfoUC.ThePCKSumGrid.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+         
+         pcKInfoUC.Visible = true;
       }
       else
       {
-         pcKInfoUC.TheGrid.Rows.Clear();
+         pcKInfoUC.Visible = false;
       }
    }
 }
