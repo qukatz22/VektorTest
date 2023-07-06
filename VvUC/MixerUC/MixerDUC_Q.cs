@@ -1661,6 +1661,7 @@ public class PCK_InfoLine
    public string  PCK_ArtCD    { get; set; }
    public string  PCK_ArtName  { get; set; }
    public string  PCK_RAMkind  { get; set; }
+   public string  PCK_HDDkind  { get; set; }
    public string  PCK_SklCD    { get; set; }
    public decimal PCK_RAM      { get; set; }
    public decimal PCK_HDD      { get; set; }
@@ -1672,11 +1673,12 @@ public class PCK_InfoLine
 
    //public PCK_InfoLine() : this("", "", "", "", 0.00M, 0.00M) {}
 
-   public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
+   public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
    {
       this.PCK_ArtCD    = _PCK_ArtCD   ;
       this.PCK_ArtName  = _PCK_ArtName ;
       this.PCK_RAMkind  = _PCK_RAMkind ;
+      this.PCK_HDDkind  = _PCK_HDDkind ;
       this.PCK_SklCD    = _PCK_SklCD   ;
       this.PCK_RAM      = _PCK_RAM     ;
       this.PCK_HDD      = _PCK_HDD     ;
@@ -1684,7 +1686,7 @@ public class PCK_InfoLine
 
    public override string ToString()
    {
-      return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb HDD: " + PCK_HDD.ToString0Vv() + " Gb";
+      return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";
    }
 }
 public class PCK_Dao
@@ -1701,19 +1703,24 @@ public class PCK_Dao
 
       PCK_Lines = new List<PCK_InfoLine>();
 
-      List<Rtrans> ALL_ArtiklRtranses = new List<Rtrans>();
+      //List<Rtrans> ALL_ArtiklRtranses = new List<Rtrans>();
       List<Rtrans> thisArtiklRtranses;
 
       foreach(Artikl artikl in PCKartikls)
       {
          thisArtiklRtranses = GetArtiklRtranses(conn, artikl.ArtiklCD, _PCK_sklCD);
 
-         thisArtiklRtranses.ForEach(rtr => rtr.T_konto = artikl.Grupa3CD); // klasa, RAM kind 
+         thisArtiklRtranses.ForEach(rtr => 
+         { 
+            rtr.T_konto  = artikl.Grupa2CD; // RAM klasa, RAM kind 
+            rtr.T_serlot = artikl.Grupa3CD; // HDD klasa, HDD kind 
+         } ); 
 
-         ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
+         //ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
 
          PCK_Lines.AddRange(GetThisArtiklsPCKlines(thisArtiklRtranses));
       }
+
    }
 
    List<Rtrans> GetArtiklRtranses(XSqlConnection conn, string artiklCD, string skladCD)
@@ -1746,7 +1753,7 @@ public class PCK_Dao
 
       foreach(var anaGR in anaGRps)
       {
-         pck_rec = new PCK_InfoLine(anaGR.First().T_artiklCD, anaGR.First().T_artiklName, anaGR.First().T_konto, anaGR.First().T_skladCD, anaGR.First().T_doCijMal, anaGR.First().T_noCijMal);
+         pck_rec = new PCK_InfoLine(anaGR.First().T_artiklCD, anaGR.First().T_artiklName, anaGR.First().T_konto, anaGR.First().T_serlot, anaGR.First().T_skladCD, anaGR.First().T_doCijMal, anaGR.First().T_noCijMal);
 
          pck_rec.UkPstKol   = anaGR.Where(r => r.TtInfo.IsFinKol_PS).Sum(r => r.T_kol);
          pck_rec.UkUlazKol  = anaGR.Where(r => r.TtInfo.IsFinKol_U ).Sum(r => r.T_kol);

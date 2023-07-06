@@ -1170,6 +1170,49 @@ public class RptR_ArtiklMaticni  : VvRiskReport
    }
 }
 
+public class RptR_PTG_Artikl_PCK_info : VvRiskReport
+{
+   public RptR_PTG_Artikl_PCK_info(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter) : base(_reportDocument, _reportName, _rptFilter, 
+         true , // ArtWars        
+         true , // ArtStat        
+         false, // Faktur         
+         false, // Rtrans         
+         false, // Kupdob         
+         false, // Prjkt          
+         false, // Rtrans4ruc     
+         false) // Artikl         
+
+   {
+   }
+
+   public override int FillRiskReportLists()
+   {
+      ArtiklUC theUC = ((ArtiklCardFilter)RptFilter).theArtiklUC;
+
+      // TheArStatList
+      TheArtStatList.Add(ArtiklDao.GetArtiklStatus(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, theUC.Fld_NaDan));
+
+      // TheArtiklList
+      TheArtiklList.Add(theUC.artikl_rec);
+
+      PCK_Dao pck_info = new PCK_Dao(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, "");
+
+      TheDeviznaSumaList = pck_info.PCK_Lines.Select(pck_line => new VvReportSourceUtil()
+      {
+         ArtiklGrCD   = pck_line.PCK_ArtCD  ,
+         ArtiklGrName = pck_line.PCK_ArtName,
+         String1      = pck_line.PCK_RAMkind,
+         String2      = pck_line.PCK_HDDkind,
+         TheCD        = pck_line.PCK_SklCD  ,
+         TheMoney     = pck_line.PCK_RAM    ,
+         TheMoney2    = pck_line.PCK_HDD    ,
+         Kol          = pck_line.StanjeKol    
+      }).ToList();
+
+      return TheDeviznaSumaList.Count;
+   }
+}
+
 #endregion ArtiklUC's PrintRecordReports for Single Artikl
 
 #region FakturDUC's PrintRecordReports for Single Faktur
