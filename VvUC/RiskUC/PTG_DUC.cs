@@ -3017,6 +3017,84 @@ public class FUG_PTG_UC : VvUserControl
 
 }
 
+
+public class MOD_PTG_DUC : FakturPDUC
+{
+   #region Constructor
+
+   public MOD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+      (Faktur.tt_colName, new string[]
+      {
+         Faktur.TT_MOD 
+      });
+
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+      SetParentOfHamperLeftHampers();
+      panel_MigratorsLeftB.SendToBack();
+
+
+      hamp_dokDate.Location = new Point(                            0, 0);
+      hamp_tt     .Location = new Point(hamp_dokDate.Right - ZXC.Qun2, 0);
+      hamp_skladCd.Location = new Point(hamp_tt.Right - ZXC.Qun4     , 0);
+      hamp_dokNum .Location = new Point(hamp_skladCd.Right - ZXC.Qun4, 0);
+     // hamp_SkladDate.Location = new Point(hamp_dokNum.Right - ZXC.Qun4, 0);
+
+      hamp_napomena.Location = new Point(0, hamp_dokDate.Bottom + ZXC.Qun4);
+
+      nextY = hamp_napomena.Bottom + ZXC.QUN;
+      
+      hamp_IznosUvaluti.Visible = false;
+
+      SetSumeHampers(false, false, false, false);
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_skladCd, hamp_tt, //hamp_SkladDate,
+                                    hamp_dokDate, hamp_dokNum, hamp_napomena
+                                   };
+   }
+
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool IsRtransTT_MOD_kindDependable { get { return true; } }
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra", "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(             true, "Naziv", "Naziv artikla ili proizvoljan opis");
+      R_ramKlasa_CreateColumn      (ZXC.Q3un, 0, true, "Mem"  , "RAM klasa");
+      R_hddKlasa_CreateColumn      (ZXC.Q3un, 0, true, "Disk" , "HDD klasa");
+      T_skladCD_CreateColumn       (ZXC.Q3un,    true, "Sklad", "Ulazno ili izlazno skladište");
+      T_kol_CreateColumn           (ZXC.Q3un, 0, true, "Kol"  , "Količina"      );
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0, true, "RAM"  , "RAM", false);
+      T_ramPlus_CreateColumn       (ZXC.Q3un, 0, true, "RAM +", "RAM +");
+      T_ramMinus_CreateColumn      (ZXC.Q3un, 0, true, "RAM -", "RAM -");
+      R_ramTarget_CreateColumn     (ZXC.Q3un, 0, true, "RAM"  , "RAM"  );
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0, true, "HDD"  , "HDD"  );
+      T_hddPlus_CreateColumn       (ZXC.Q3un, 0, true, "HDD +", "HDD +");
+      T_hddMinus_CreateColumn      (ZXC.Q3un, 0, true, "HDD -", "HDD -");
+      R_hddTarget_CreateColumn     (ZXC.Q3un, 0, true, "HDD"  , "HDD"  );
+   }
+
+   #endregion TheG_Specific_Columns
+
+
+
+}
+
 public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 {
    #region Filedz

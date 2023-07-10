@@ -62,7 +62,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_mtros_cd, vvtbT_mtros_tk,
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
-                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD;
+                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD,
+                        vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramTarget,vvtbT_hddTarget,vvtbT_ramKlasa ,vvtbT_hddKlasa;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -2864,6 +2865,80 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    #endregion SvDuh - ORG, BOP, COP, LongOpis
 
+   #region PTG
+
+   protected void T_ramPlus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ramPlus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramPlus", TheVvDaoTrans, DB_Tci.t_wanted, _statusText);
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramPlus, TheVvDaoTrans, DB_Tci.t_wanted, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void T_ramMinus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ramMinus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramMinus", TheVvDaoTrans, DB_Tci.t_ztr, _statusText);
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramMinus, TheVvDaoTrans, DB_Tci.t_ztr, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void T_hddPlus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_hddPlus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddPlus", TheVvDaoTrans, DB_Tci.t_kol2, _statusText);
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddPlus, TheVvDaoTrans, DB_Tci.t_kol2, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void T_hddMinus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_hddMinus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddMinus", TheVvDaoTrans, DB_Tci.t_ppmvOsn, _statusText);
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddMinus, TheVvDaoTrans, DB_Tci.t_ppmvOsn, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+
+   protected void R_ramTarget_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ramTarget = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramTarget", TheVvDaoTrans, -12, _statusText);
+      vvtbT_ramTarget.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramTarget, TheVvDaoTrans, "R_ramTarget", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void R_hddTarget_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_hddTarget = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddTarget", TheVvDaoTrans, -12, _statusText);
+      vvtbT_hddTarget.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddTarget, TheVvDaoTrans, "R_hddTarget", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+
+   protected void R_ramKlasa_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ramKlasa = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramKlasa", TheVvDaoTrans, -12, _statusText);
+      vvtbT_ramKlasa.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramKlasa, TheVvDaoTrans, "R_ramKlasa", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void R_hddKlasa_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_hddKlasa = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddKlasa", TheVvDaoTrans, -12, _statusText);
+      vvtbT_hddKlasa.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddKlasa, TheVvDaoTrans, "R_hddKlasa", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   #endregion PTG
+
    #endregion TheGrid_Columns
 
    #region SetRtransColumnIndexes()
@@ -2945,6 +3020,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_ramMinus; // t_ztr     
       internal int iT_hddPlus ; // t_kol2    
       internal int iT_hddMinus; // t_ppmvOsn 
+      internal int iT_ramTarget; 
+      internal int iT_ramKlasa ; 
+      internal int iT_hddTarget; 
+      internal int iT_hddKlasa ; 
+
    }
 
    private void SetRtransColumnIndexes()
@@ -3022,6 +3102,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_ramMinus          = TheG.IdxForColumn("T_ramMinus"); // t_ztr     
       ci.iT_hddPlus           = TheG.IdxForColumn("T_hddPlus" ); // t_kol2    
       ci.iT_hddMinus          = TheG.IdxForColumn("T_hddMinus"); // t_ppmvOsn 
+
+      ci.iT_ramTarget         = TheG.IdxForColumn("R_ramTarget"); 
+      ci.iT_ramKlasa          = TheG.IdxForColumn("R_ramKlasa"); 
+      ci.iT_hddTarget         = TheG.IdxForColumn("R_hddTarget"); 
+      ci.iT_hddKlasa          = TheG.IdxForColumn("R_hddKlasa"); 
 
    }
 
