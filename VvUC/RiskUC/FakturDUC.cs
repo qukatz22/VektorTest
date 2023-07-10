@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Data;
+using ICSharpCode.SharpZipLib.Encryption;
 
 #if MICROSOFT
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -5104,7 +5105,40 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(faktur_rec.TtInfo.HasSplitTT == false) // Classic case 
       {
-         dgvRtrans_rec.T_TT = faktur_rec.TT;
+         // PTG news 
+       //dgvRtrans_rec.T_TT = faktur_rec.TT;
+         if(IsRtransTT_MOD_kindDependable) // MOD / MOU / MOI 
+         {
+            dgvRtrans_rec.T_TT = faktur_rec.TT;
+
+            #region Set MOD / MOU / MOI 
+
+            string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, rIdx, dirtyFlagging);
+
+            Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD);
+
+            if(artikl_rec != null)
+            {
+               if(artikl_rec.TS == "PCK")
+               {
+                  dgvRtrans_rec.T_TT = Faktur.TT_MOD;
+               }
+               else
+               {
+                  bool isUlaz = true; // !!! TODO
+
+                  if(isUlaz) dgvRtrans_rec.T_TT = Faktur.TT_MOU; // ULAZ  
+                  else       dgvRtrans_rec.T_TT = Faktur.TT_MOI; // IZLAZ 
+               }
+            }
+
+            #endregion Set MOD / MOU / MOI 
+
+         }
+         else // Classic case 
+         { 
+            dgvRtrans_rec.T_TT = faktur_rec.TT;
+         }
       }
       else
       {

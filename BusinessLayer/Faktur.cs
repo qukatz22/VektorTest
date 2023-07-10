@@ -344,7 +344,10 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_DO2 = "DO2"; // PTG - Dodatak Ugovoru za najam  - međuskladišni ULAZ  
    public const string TT_PV2 = "PV2"; // PTG - Povrat po Ugovoru za najam- međuskladišni IZLAZ 
    public const string TT_PVR = "PVR"; // PTG - Povrat po Ugovora za najam- međuskladišni ULAZ  
-                                       //public const string TT_KOP = "KOP"; // PTG - Korekcija Otplatnog plana  preseljeno u Mixer
+ //public const string TT_KOP = "KOP"; // PTG - Korekcija Otplatnog plana  preseljeno u Mixer   
+   public const string TT_MOD = "MOD"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) - npr. modidiciramo kapacitet RAM-a računalu - skladišni NEUTRAL  
+   public const string TT_MOU = "MOU"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) - npr. memorija sa skl rez. djelova - ULAZ,  nije međuskladišnica 
+   public const string TT_MOI = "MOI"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) - npr. memorija sa skl rez. djelova - IZLAZ, nije međuskladišnica 
 
    public const string TT_MSI = "MSI"; // Meduskladisnica VELEP - IZLAZ 
    public const string TT_MSU = "MSU"; // Meduskladisnica VELEP - ULAZ  
