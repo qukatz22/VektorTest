@@ -1703,23 +1703,32 @@ public class PCK_Dao
 
       PCK_Lines = new List<PCK_InfoLine>();
 
-      //List<Rtrans> ALL_ArtiklRtranses = new List<Rtrans>();
       List<Rtrans> thisArtiklRtranses;
+
+      List<string> skladCDlist;
 
       foreach(Artikl artikl in PCKartikls)
       {
-         thisArtiklRtranses = GetArtiklRtranses(conn, artikl.ArtiklCD, _PCK_sklCD);
+         if(_PCK_sklCD.NotEmpty()) skladCDlist = new List<string> { _PCK_sklCD };
+         else                      skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl.ArtiklCD);
 
-         thisArtiklRtranses.ForEach(rtr => 
-         { 
-            rtr.T_konto  = artikl.Grupa2CD; // RAM klasa, RAM kind 
-            rtr.T_serlot = artikl.Grupa3CD; // HDD klasa, HDD kind 
-         } ); 
+         foreach(string currSkladCD in skladCDlist)
+         {
+            thisArtiklRtranses = GetArtiklRtranses(conn, artikl.ArtiklCD, /*_PCK_sklCD*/currSkladCD);
 
-         //ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
+            thisArtiklRtranses.ForEach(rtr => 
+            { 
+               rtr.T_konto  = artikl.Grupa2CD; // RAM klasa, RAM kind 
+               rtr.T_serlot = artikl.Grupa3CD; // HDD klasa, HDD kind 
+            } ); 
 
-         PCK_Lines.AddRange(GetThisArtiklsPCKlines(thisArtiklRtranses));
-      }
+            //ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
+
+            PCK_Lines.AddRange(GetThisArtiklsPCKlines(thisArtiklRtranses));
+
+         } // foreach(string currSkladCD in skladCDlist)
+
+      } // foreach(Artikl artikl in PCKartikls) 
 
    }
 
