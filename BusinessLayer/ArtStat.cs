@@ -1199,6 +1199,10 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #endregion InternUlaz_From One or Many Izlaz
 
+         else if(TtInfo.IsMODulazTT)
+         {
+            RtrUlazCijNBC = PrNBCBefThisUlaz; // jer TT_MOU nema t_cij nit' na gridu nit' u dataLayer-u 
+         }
          else
          {
             RtrUlazCijNBC = rtr.R_CIJ_KCR; // ex 'nab'

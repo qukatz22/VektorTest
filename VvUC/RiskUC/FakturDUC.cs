@@ -2941,6 +2941,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_utilString;
       internal int iT_utilUint  ;
       internal int iT_skladCD;
+      internal int iT_ramPlus ; // t_wanted  
+      internal int iT_ramMinus; // t_ztr     
+      internal int iT_hddPlus ; // t_kol2    
+      internal int iT_hddMinus; // t_ppmvOsn 
    }
 
    private void SetRtransColumnIndexes()
@@ -3013,6 +3017,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_utilString        = TheG.IdxForColumn("R_utilString");
       ci.iT_utilUint          = TheG.IdxForColumn("R_utilUint")  ;
       ci.iT_skladCD           = TheG.IdxForColumn("T_skladCD");
+
+      ci.iT_ramPlus           = TheG.IdxForColumn("T_ramPlus" ); // t_wanted  
+      ci.iT_ramMinus          = TheG.IdxForColumn("T_ramMinus"); // t_ztr     
+      ci.iT_hddPlus           = TheG.IdxForColumn("T_hddPlus" ); // t_kol2    
+      ci.iT_hddMinus          = TheG.IdxForColumn("T_hddMinus"); // t_ppmvOsn 
 
    }
 
@@ -5125,7 +5134,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                }
                else
                {
-                  bool isUlaz = true; // !!! TODO
+                  bool isUlaz = IsMODulaz(rIdx, dirtyFlagging); // !!! TODO
 
                   if(isUlaz) dgvRtrans_rec.T_TT = Faktur.TT_MOU; // ULAZ  
                   else       dgvRtrans_rec.T_TT = Faktur.TT_MOI; // IZLAZ 
@@ -5233,9 +5242,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          switch(Fld_MalopCalcKind)
          {
-            case ZXC.MalopCalcKind.By_MARZA: dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_mrzSt, rIdx, dirtyFlagging, true); break;
-            case ZXC.MalopCalcKind.By_VPC: dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_cij_kcrm, rIdx, dirtyFlagging, true); break;
-            case ZXC.MalopCalcKind.By_MPC: dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_cij_MSK, rIdx, dirtyFlagging, true); break;
+            case ZXC.MalopCalcKind.By_MARZA: dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_mrzSt   , rIdx, dirtyFlagging, true); break;
+            case ZXC.MalopCalcKind.By_VPC  : dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_cij_kcrm, rIdx, dirtyFlagging, true); break;
+            case ZXC.MalopCalcKind.By_MPC  : dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_cij_MSK , rIdx, dirtyFlagging, true); break;
          }
          if(DB_RWT) db_rec.T_wanted = dgvRtrans_rec.T_wanted;
       }
@@ -5330,7 +5339,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
 
       return dgvRtrans_rec;
-   }
+
+   } // GetDgvLineFields1 
 
    protected virtual void GetDgvFields2(bool dirtyFlagging) { }
    protected virtual void GetDgvFields3(bool dirtyFlagging) { }
@@ -5620,6 +5630,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    }
 
    //public RiskRulesDsc RRD { get; set; }
+
+   private bool IsMODulaz(int rIdx, bool dirtyFlagging)
+   {
+      if(TheG.GetDecimalCell(ci.iT_ramPlus , rIdx, dirtyFlagging).NotZero()) return true ;
+      if(TheG.GetDecimalCell(ci.iT_ramMinus, rIdx, dirtyFlagging).NotZero()) return false;
+      if(TheG.GetDecimalCell(ci.iT_hddPlus , rIdx, dirtyFlagging).NotZero()) return true ;
+      if(TheG.GetDecimalCell(ci.iT_hddMinus, rIdx, dirtyFlagging).NotZero()) return false;
+
+      return false;
+   }
 
    #endregion Overriders and specifics
 

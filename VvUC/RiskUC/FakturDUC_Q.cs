@@ -54,6 +54,7 @@ public struct TtInfo
    public bool IsIzlazniShadowTT   { get { return HasShadowTT && ShadowTT == Faktur.TT_NIV; } }
    public bool IsUlazniShadowTT    { get { return HasShadowTT && ShadowTT == Faktur.TT_NUV; } }
    public bool IsUraPovratShadowTT { get { return HasShadowTT && ShadowTT == Faktur.TT_NUP; } }
+   public bool IsMODulazTT         { get { return this.TheTT == Faktur.TT_MOU; } }
 
    public bool IsPreDef        { get; set; }
    public bool IsRezervKol     { get; set; }
@@ -183,6 +184,8 @@ public struct TtInfo
       Faktur.TT_UG2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_DO2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_PVR, // PCTGO tt ovo je mozda visak, al ziheraski 
+
+      Faktur.TT_MOD, // PCTGO tt ovo je mozda visak, al ziheraski 
 
       Faktur.TT_KIZ,
       Faktur.TT_KUL,
@@ -444,6 +447,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DOD,
       Faktur.TT_PV2,
+      Faktur.TT_MOI,
    };
    // Za sada ovo sluzi samo pri 'AnyArtiklTextBox_OnGrid_Leave' na FakturDUC-u 
    /// <summary>
@@ -511,6 +515,7 @@ public struct TtInfo
       Faktur.TT_UG2,
       Faktur.TT_DO2,
       Faktur.TT_PVR,
+      Faktur.TT_MOU,
    };
    /// <summary>
    /// Ovaj TT utjece na FinSt skladista po PrNabCij koja je iskalkulirana po linkanomIzlazu (cijena na Ulaznoj Medjuskladisnici je PrNabCij sa njegove Izlazne Medjusklad. 'sestre'
@@ -546,6 +551,7 @@ public struct TtInfo
     //Faktur.TT_IMM, 
       Faktur.TT_PPR, 
       Faktur.TT_POV, 
+      Faktur.TT_MOI,
    };
    public bool IsInternIzlaz { get { return arrayIsInternIzlazTT.Contains(TheTT); } }
 
@@ -992,6 +998,7 @@ public struct TtInfo
       Faktur.TT_UG2, // PCTGO tt 
       Faktur.TT_DO2, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_MOD, // PCTGO tt 
    };
    public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
 
