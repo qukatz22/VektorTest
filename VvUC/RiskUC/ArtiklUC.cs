@@ -3283,6 +3283,8 @@ public class ArtiklUC : VvSifrarRecordUC
       {
          //PTG_PCKinfoLoaded = true;
 
+         TheArtiklFilterUC.rbt_PCKinfo.Checked = true;
+
          pcKInfoUC.ThePCKGrid.Rows.Clear();
 
          string skladCD = this.TheCurrentSkladCD;
@@ -3302,6 +3304,9 @@ public class ArtiklUC : VvSifrarRecordUC
       }
       else
       {
+         //TheArtiklFilterUC.rbt_PCKinfo.Checked = false;
+         TheArtiklFilterUC.rbt_robKartA.Checked = true;
+
          pcKInfoUC.Visible = false;
       }
    }
