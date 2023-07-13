@@ -27,6 +27,10 @@ public struct RtranoStruct
    /* 18 */  /*internal*/ public decimal   _t_kol       ;
    /* 19 */  /*internal*/ public string    _t_grCD      ;
    /* 20 */  /*internal*/ public bool      _t_isKomDummy;
+   /* 21 */  /*internal*/ public decimal   _t_decA      ;
+   /* 22 */  /*internal*/ public decimal   _t_decB      ;
+   /* 23 */  /*internal*/ public decimal   _t_decC      ;
+   /* 24 */  /*internal*/ public uint      _t_rtrRecID  ;
 
              //internal RtransResultStruct _ptrResult;
 
@@ -113,6 +117,10 @@ public class Rtrano : VvTransRecord
       /* 18 */   this.currentData._t_kol       = 0.00M;
       /* 19 */   this.currentData._t_grCD      = "";
       /* 20 */   this.currentData._t_isKomDummy= false;
+      /* 21 */   this.currentData._t_decA      = 0.00M;
+      /* 22 */   this.currentData._t_decB      = 0.00M;
+      /* 23 */   this.currentData._t_decC      = 0.00M;
+      /* 24 */   this.currentData._t_rtrRecID  = 0;
 
 
    }
@@ -359,6 +367,27 @@ public class Rtrano : VvTransRecord
 
          return T_dimX * T_dimY / pretvornik;
       }
+   }
+
+   /* 21 */ public decimal T_decA
+   {
+      get { return this.currentData._t_decA; }
+      set {        this.currentData._t_decA = value; }
+   }
+   /* 22 */ public decimal T_decB
+   {
+      get { return this.currentData._t_decB; }
+      set {        this.currentData._t_decB = value; }
+   }
+   /* 23 */ public decimal T_decC
+   {
+      get { return this.currentData._t_decC; }
+      set {        this.currentData._t_decC = value; }
+   }
+   /* 24 */ public uint T_rtrRecID
+   {
+      get { return this.currentData._t_rtrRecID; }
+      set {        this.currentData._t_rtrRecID = value; }
    }
 
    #endregion propertiz 

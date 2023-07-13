@@ -42,7 +42,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
    #region CreateTableRtrano
 
-   public static   uint TableVersionStatic { get { return 7; } }
+   public static   uint TableVersionStatic { get { return 8; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -70,7 +70,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          /* 18 */  "t_kol        decimal(12,4)         NOT NULL default '0.00',\n" +
          /* 19 */  "t_grCD       varchar(16)           NOT NULL default ''    ,\n" +
          /* 20 */  "t_isKomDummy tinyint(1)   unsigned NOT NULL default '0'   ,\n" +
-         
+         /* 21 */  "t_decA       decimal(12,4)         NOT NULL default '0.00',\n" +
+         /* 22 */  "t_decB       decimal(12,4)         NOT NULL default '0.00',\n" +
+         /* 23 */  "t_decC       decimal(12,4)         NOT NULL default '0.00',\n" +
+         /* 24 */  "t_rtrRecID   int(10)      unsigned NOT NULL               ,\n" +
+
           "PRIMARY KEY                   (recID)                                                          ,\n" +
           /*"UNIQUE*/" KEY BY_LINKER     (t_parentID, t_serial)                                           ,\n" +
           /*"UNIQUE*/" KEY BY_ARTIKL     (t_artiklCD, t_skladCD, t_skladDate, t_ttSort, t_ttNum, t_serial),\n" +
@@ -102,6 +106,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          case 6: return ("ADD COLUMN t_isKomDummy tinyint(1)  unsigned NOT NULL default '0' AFTER t_grCD ;\n");
 
          case 7: return ("MODIFY COLUMN t_ttSort  tinyint(4)           NOT NULL default '0'   ;");
+
+         case 8: return ("ADD COLUMN t_decA       decimal(12,4)         NOT NULL default '0.00' AFTER t_isKomDummy,    " +
+                         "ADD COLUMN t_decB       decimal(12,4)         NOT NULL default '0.00' AFTER t_decA      ,    " +
+                         "ADD COLUMN t_decC       decimal(12,4)         NOT NULL default '0.00' AFTER t_decB      ,    " +
+                         "ADD COLUMN t_rtrRecID   int(10)      unsigned NOT NULL                AFTER t_decC      ;\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -153,6 +162,10 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       /* 18 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_kol         , TheSchemaTable.Rows[CI.t_kol       ]);
       /* 19 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_grCD        , TheSchemaTable.Rows[CI.t_grCD      ]);
       /* 20 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_isKomDummy  , TheSchemaTable.Rows[CI.t_isKomDummy]);
+      /* 21 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_decA        , TheSchemaTable.Rows[CI.t_decA      ]);
+      /* 22 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_decB        , TheSchemaTable.Rows[CI.t_decB      ]);
+      /* 23 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_decC        , TheSchemaTable.Rows[CI.t_decC      ]);
+      /* 24 */ VvSQL.CreateCommandParameter(cmd, preffix, rtrano.T_rtrRecID    , TheSchemaTable.Rows[CI.t_rtrRecID  ]);
 
       }
 
@@ -195,6 +208,10 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       /* 19 */ rdrData._t_grCD       = reader.GetString  (CI.t_grCD        );
       /* 19 */ rdrData._t_grCD       = reader.GetString  (CI.t_grCD        );
       /* 20 */ rdrData._t_isKomDummy = reader.GetBoolean (CI.t_isKomDummy  );
+      /* 21 */ rdrData._t_decA       = reader.GetDecimal (CI.t_decA        );
+      /* 22 */ rdrData._t_decB       = reader.GetDecimal (CI.t_decB        );
+      /* 23 */ rdrData._t_decC       = reader.GetDecimal (CI.t_decC        );
+      /* 24 */ rdrData._t_rtrRecID   = reader.GetUInt32  (CI.t_rtrRecID    );
 
       ((Rtrano)vvDataRecord).CurrentData = rdrData;
 
@@ -231,6 +248,10 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       /* 02 */  internal int t_kol       ;
       /* 02 */  internal int t_grCD      ;
       /* 20 */  internal int t_isKomDummy;
+      /* 02 */  internal int t_decA      ;
+      /* 02 */  internal int t_decB      ;
+      /* 02 */  internal int t_decC      ;
+      /* 02 */  internal int t_rtrRecID  ;
 
    }
 
@@ -260,14 +281,18 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       /* 11 */ CI.t_kupdobCD     = GetSchemaColumnIndex("t_kupdob_cd" );
       /* 12 */ CI.t_serno        = GetSchemaColumnIndex("t_serno"     );
 
-      /* 08 */ CI.t_paletaNo     = GetSchemaColumnIndex("t_paletaNo"  );
-      /* 08 */ CI.t_dimX         = GetSchemaColumnIndex("t_dimX"      );
-      /* 08 */ CI.t_dimY         = GetSchemaColumnIndex("t_dimY"      );
-      /* 08 */ CI.t_dimZ         = GetSchemaColumnIndex("t_dimZ"      );
-      /* 08 */ CI.t_komada       = GetSchemaColumnIndex("t_komada"    );
-      /* 08 */ CI.t_kol          = GetSchemaColumnIndex("t_kol"       );
-      /* 08 */ CI.t_grCD         = GetSchemaColumnIndex("t_grCD"      );
+      /* 13 */ CI.t_paletaNo     = GetSchemaColumnIndex("t_paletaNo"  );
+      /* 14 */ CI.t_dimX         = GetSchemaColumnIndex("t_dimX"      );
+      /* 15 */ CI.t_dimY         = GetSchemaColumnIndex("t_dimY"      );
+      /* 16 */ CI.t_dimZ         = GetSchemaColumnIndex("t_dimZ"      );
+      /* 17 */ CI.t_komada       = GetSchemaColumnIndex("t_komada"    );
+      /* 18 */ CI.t_kol          = GetSchemaColumnIndex("t_kol"       );
+      /* 19 */ CI.t_grCD         = GetSchemaColumnIndex("t_grCD"      );
       /* 20 */ CI.t_isKomDummy   = GetSchemaColumnIndex("t_isKomDummy");
+      /* 21 */ CI.t_decA         = GetSchemaColumnIndex("t_decA"      );
+      /* 22 */ CI.t_decB         = GetSchemaColumnIndex("t_decB"      );
+      /* 23 */ CI.t_decC         = GetSchemaColumnIndex("t_decC"      );
+      /* 24 */ CI.t_rtrRecID     = GetSchemaColumnIndex("t_rtrRecID"  );
 
    }
 
