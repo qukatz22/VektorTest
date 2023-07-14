@@ -63,7 +63,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
                        vvtbT_skladDate, tbx_Konto, vvtbT_skladCD,
-                        vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramTarget,vvtbT_hddTarget,vvtbT_ramKlasa ,vvtbT_hddKlasa;
+                       vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramTarget,vvtbT_hddTarget,vvtbT_ramKlasa ,vvtbT_hddKlasa;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -948,20 +948,20 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          if(this is BlgUplatDUC || this is BlgIsplatDUC ||
             this is BlgUplat_M_DUC || this is BlgIsplat_M_DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - 4 * ZXC.Qun8 - 2 * ZXC.Qun8 + 2 * faBefCol };
-         else if(this is IRMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
-         else if(this is PIMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
-         else if(this is PIZpDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q4un + ZXC.Qun8 };
+         else if(this is PIMDUC)                               hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
+         else if(this is IRMDUC)                               hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 };
+         else if(this is PIZpDUC)                              hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q4un + ZXC.Qun8 };
          else if(this is MedjuSkladVMIuDUC || this is MedjuSkladVMI2DUC ||
                  this is MedjuSkladMVIDUC || this is MedjuSkladMVI2DUC ||
-                 this is MedjuSkladMMIDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
+                 this is MedjuSkladMMIDUC)                     hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
          else if(this is PocetnoStanjeMPDUC || this is NivelacijaDUC ||
-                 this is InventuraMPDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un };
-         else if(this is WYRNDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun2 };
-         else if(this is RNZDUC) hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
-         else if(this is URMDUC && IsAutoKucaProjekt) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
-         else if(this is ZAH_SVD_DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
-         //else if(this is IZD_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un  + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
-         else hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
+                 this is InventuraMPDUC)                       hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un };
+         else if(this is WYRNDUC)                              hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun2 };
+         else if(this is RNZDUC)                               hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
+         else if(this is URMDUC && IsAutoKucaProjekt)          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
+         else if(this is ZAH_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
+         else if(this is MOD_PTG_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 3 + ZXC.Q9un - ZXC.Qun4 };
+         else                                                  hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
       }
       else if(this is MedjuSkladDUC || this is MedjuSklad2DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
       else hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
@@ -1597,34 +1597,67 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private void InitializeHamper_decimal(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 3, "", null, false);
+      if(this is MOD_PTG_DUC)
+      { 
+         hamper = new VvHamper(2, 2, "", null, false);
 
-      hamper.VvColWdt = new int[] { ZXC.Q7un, ZXC.Q4un };
-      hamper.VvSpcBefCol = new int[] { ZXC.Qun4, ZXC.Qun4 };
-      hamper.VvRightMargin = hamper.VvLeftMargin;
+         hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q3un};
+         hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8};
+         hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      for(int i = 0; i < hamper.VvNumOfRows; i++)
-      {
-         hamper.VvRowHgt[i] = ZXC.QUN;
-         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+         hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+
+
+         hamper.CreateVvLabel(0, 0, "RAM", ContentAlignment.MiddleRight);
+         hamper.CreateVvLabel(1, 0, "HDD", ContentAlignment.MiddleRight);
+
+         tbx_decimal01 = hamper.CreateVvTextBox(0, 1, "tbx_decimal01", "", GetDB_ColumnSize(DB_ci.decimal01));
+         tbx_decimal02 = hamper.CreateVvTextBox(1, 1, "tbx_decimal02", "", GetDB_ColumnSize(DB_ci.decimal02));
+
+         tbx_decimal01.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, true);
+         tbx_decimal02.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, true);
+
+         tbx_decimal01.JAM_Highlighted = true;
+         tbx_decimal02.JAM_Highlighted = true;
+
+         tbx_decimal01.JAM_ForeColor = Color.Orange;
+         tbx_decimal02.JAM_ForeColor = Color.MediumSeaGreen;
+
+
       }
-      hamper.VvBottomMargin = hamper.VvTopMargin;
+      else
+      {
+         hamper = new VvHamper(2, 3, "", null, false);
 
-      Label lbl = hamper.CreateVvLabel(0, 0, (ZXC.IsRNMnotRNP) ? "IZNOSI PRETHODNIH GODINA:" : "TROŠKOVI PRETHODNIH GODINA:", 1, 0, ContentAlignment.MiddleLeft);
-      lbl.Font = ZXC.vvFont.SmallBoldFont;
+         hamper.VvColWdt = new int[] { ZXC.Q7un, ZXC.Q4un };
+         hamper.VvSpcBefCol = new int[] { ZXC.Qun4, ZXC.Qun4 };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.CreateVvLabel(0, 1, (ZXC.IsRNMnotRNP) ? "Utrošeno financijski (PPR):" : "Režija:", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 2, (ZXC.IsRNMnotRNP) ? "Proizvedeno " + ZXC.RRD.Dsc_OrgPakText + " (PIP):" : "Amortizacija:", ContentAlignment.MiddleRight);
+         for(int i = 0; i < hamper.VvNumOfRows; i++)
+         {
+            hamper.VvRowHgt[i] = ZXC.QUN;
+            hamper.VvSpcBefRow[i] = ZXC.Qun8;
+         }
+         hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      tbx_decimal01 = hamper.CreateVvTextBox(1, 1, "tbx_decimal01", "", GetDB_ColumnSize(DB_ci.decimal01));
-      tbx_decimal02 = hamper.CreateVvTextBox(1, 2, "tbx_decimal02", "", GetDB_ColumnSize(DB_ci.decimal02));
+         Label lbl = hamper.CreateVvLabel(0, 0, (ZXC.IsRNMnotRNP) ? "IZNOSI PRETHODNIH GODINA:" : "TROŠKOVI PRETHODNIH GODINA:", 1, 0, ContentAlignment.MiddleLeft);
+         lbl.Font = ZXC.vvFont.SmallBoldFont;
 
-      tbx_decimal01.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_decimal02.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+         hamper.CreateVvLabel(0, 1, (ZXC.IsRNMnotRNP) ? "Utrošeno financijski (PPR):" : "Režija:", ContentAlignment.MiddleRight);
+         hamper.CreateVvLabel(0, 2, (ZXC.IsRNMnotRNP) ? "Proizvedeno " + ZXC.RRD.Dsc_OrgPakText + " (PIP):" : "Amortizacija:", ContentAlignment.MiddleRight);
 
-      if(this is RNMDUC) tbx_decimal02.JAM_BackColor = Color.PaleGreen;
+         tbx_decimal01 = hamper.CreateVvTextBox(1, 1, "tbx_decimal01", "", GetDB_ColumnSize(DB_ci.decimal01));
+         tbx_decimal02 = hamper.CreateVvTextBox(1, 2, "tbx_decimal02", "", GetDB_ColumnSize(DB_ci.decimal02));
 
-      //hamper.Visible = false;
+         tbx_decimal01.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+         tbx_decimal02.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
+         if(this is RNMDUC) tbx_decimal02.JAM_BackColor = Color.PaleGreen;
+
+         //hamper.Visible = false;
+      }
    }
 
    #endregion Hampers
@@ -2869,33 +2902,33 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    protected void T_ramPlus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_ramPlus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramPlus", TheVvDaoTrans, DB_Tci.t_wanted, _statusText);
+      vvtbT_ramPlus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramPlus", TheVvDaoTrans, /*DB_Tci.t_wanted*/-12, _statusText);
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramPlus, TheVvDaoTrans, DB_Tci.t_wanted, _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramPlus, TheVvDaoTrans, /*DB_Tci.t_wanted*/"T_ramPlus", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
    protected void T_ramMinus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_ramMinus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramMinus", TheVvDaoTrans, DB_Tci.t_ztr, _statusText);
+      vvtbT_ramMinus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramMinus", TheVvDaoTrans, /*DB_Tci.t_ztr*/-12, _statusText);
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramMinus, TheVvDaoTrans, DB_Tci.t_ztr, _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramMinus, TheVvDaoTrans, /*DB_Tci.t_ztr*/"T_ramMinus", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
    protected void T_hddPlus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_hddPlus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddPlus", TheVvDaoTrans, DB_Tci.t_kol2, _statusText);
+      vvtbT_hddPlus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddPlus", TheVvDaoTrans, /*DB_Tci.t_kol2*/-12, _statusText);
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddPlus, TheVvDaoTrans, DB_Tci.t_kol2, _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddPlus, TheVvDaoTrans, /*DB_Tci.t_kol2*/ "T_hddPlus", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
    protected void T_hddMinus_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_hddMinus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddMinus", TheVvDaoTrans, DB_Tci.t_ppmvOsn, _statusText);
+      vvtbT_hddMinus = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddMinus", TheVvDaoTrans, /*DB_Tci.t_ppmvOsn*/-12, _statusText);
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddMinus, TheVvDaoTrans, DB_Tci.t_ppmvOsn, _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddMinus, TheVvDaoTrans, /*DB_Tci.t_ppmvOsn*/ "T_hddMinus", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
@@ -4451,6 +4484,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(HasRtrans_SkladCD_Exposed)
       {
          TheG.PutCell(ci.iT_skladCD, rowIdx, rtrans_rec.T_skladCD);
+      }
+
+      if(artikl_rec != null && artikl_rec.TS == "PCK")
+      {
+         TheG.PutCell(ci.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
+         TheG.PutCell(ci.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
       }
 
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrans_rec.T_mtrosCD);
@@ -8345,11 +8384,11 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(3, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un, ZXC.Q8un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q4un, ZXC.Q8un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
+      hamper.VvRowHgt    = new int[] { ZXC.QUN };
       hamper.VvSpcBefRow = new int[] { ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
@@ -8358,11 +8397,11 @@ public partial class FakturExtDUC : FakturDUC
       if(this is RNMDUC)                          text = "NZI br:";
       if(IsRadNalog && (this is RNMDUC) == false) text = "Zapisnik:";
       
-      hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
+                                               hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
       if(IsRadNalog == false) tbx_OpciAlabel = hamper.CreateVvTextBox(1, 0, "tbx_OpciAlabel", "Unos labele za ispis na računu", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAlabel));
 
       if(IsRadNalog) tbx_OpciAvalue = hamper.CreateVvTextBox(1, 0, "tbx_OpciAvalue", "Unos teksta za ispis na računu", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue), 1, 0);
-      else tbx_OpciAvalue = hamper.CreateVvTextBox(2, 0, "tbx_OpciAvalue", "Unos teksta za ispis na računu", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue));
+      else           tbx_OpciAvalue = hamper.CreateVvTextBox(2, 0, "tbx_OpciAvalue", "Unos teksta za ispis na računu", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.opciAvalue));
       //tbx_OpciAlabel.JAM_ReadOnly = true;
 
       hamper.Name = "AOpciA:";
@@ -9008,6 +9047,8 @@ public partial class FakturExtDUC : FakturDUC
 
    private void InitializeHamper_prjArtName(out VvHamper hamper)
    {
+      bool isMOD_PTG = (this is MOD_PTG_DUC);
+
       if(this is NORDUC)
       { 
          hamper               = new VvHamper(7, 1, "", null, false);
@@ -9041,6 +9082,18 @@ public partial class FakturExtDUC : FakturDUC
          hamper.VvBottomMargin = hamper.VvTopMargin;
 
       }
+      else if(isMOD_PTG)
+      { 
+         hamper               = new VvHamper(2, 2, "", null, false);
+         hamper.VvColWdt      = new int[] {     ZXC.Q5un , ZXC.Q10un + ZXC.Q2un };
+         hamper.VvSpcBefCol   = new int[] { faBefFirstCol,             faBefCol };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
+
+         hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10           };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+      }
+
       else
       {
          hamper = new VvHamper(3, 1, "", null, false);
@@ -9053,13 +9106,21 @@ public partial class FakturExtDUC : FakturDUC
          hamper.VvBottomMargin = hamper.VvTopMargin;
 
       }
- 
-                          hamper.CreateVvLabel  (0, 0, "Objekt:", ContentAlignment.MiddleRight);
-         tbx_prjArtCD   = hamper.CreateVvTextBox(1, 0, "tbx_prjArtCD  ", "Sifra objekta radnog naloga", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.prjArtCD));
-         tbx_prjArtName = hamper.CreateVvTextBox(2, 0, "tbx_prjArtName", "Naziv objekta radnog naloga", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.prjArtName));
+
+      string objektText = isMOD_PTG ? "TARGET PCK artikl:" : "Objekt:";
       
-         tbx_prjArtCD  .JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType  , new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnZaglavlje_Leave));
-         tbx_prjArtName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName) , new EventHandler(AnyArtiklTextBox_OnZaglavlje_Leave));
+                       hamper.CreateVvLabel  (0, 0, objektText, isMOD_PTG ? 1 :0, 0, isMOD_PTG ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight);
+      tbx_prjArtCD   = hamper.CreateVvTextBox(isMOD_PTG ? 0 : 1, isMOD_PTG? 1 : 0, "tbx_prjArtCD  ", "Sifra objekta radnog naloga", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.prjArtCD));
+      tbx_prjArtName = hamper.CreateVvTextBox(isMOD_PTG ? 1 : 2, isMOD_PTG? 1 : 0, "tbx_prjArtName", "Naziv objekta radnog naloga", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.prjArtName));
+
+      if(this is MOD_PTG_DUC)
+      {
+         tbx_prjArtCD  .JAM_Highlighted = true;
+         tbx_prjArtName.JAM_Highlighted = true;
+      }
+
+      tbx_prjArtCD  .JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType  , new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnZaglavlje_Leave));
+      tbx_prjArtName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterName) , new EventHandler(AnyArtiklTextBox_OnZaglavlje_Leave));
    }
 
    private void InitializeHamper_somePercent(out VvHamper hamper)
@@ -9089,22 +9150,42 @@ public partial class FakturExtDUC : FakturDUC
    }
    private void InitializeHamper_someMoney(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 1, "", null, false);
+      if(this is MOD_PTG_DUC)
+      {
+         hamper = new VvHamper(1, 2, "", null, false);
 
-      hamper.VvColWdt      = new int[] { (this is UGODUC)? labelWidth : ZXC.Q7un, ZXC.Q5un };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
-      hamper.VvRightMargin = hamper.VvLeftMargin;
+         hamper.VvColWdt      = new int[] { ZXC.Q3un };
+         hamper.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
-      hamper.VvBottomMargin = hamper.VvTopMargin;
+         hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      string tekst = (this is UGODUC) ? "Ostvareno:" : "Planirana Prodajna Cijena:";
-                      hamper.CreateVvLabel  (0, 0, tekst, ContentAlignment.MiddleRight);
-      tbx_someMoney = hamper.CreateVvTextBox(1, 0, "tbx_someMoney", "", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.someMoney));
-      tbx_someMoney.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+                         hamper.CreateVvLabel  (0, 0, "Količina", ContentAlignment.MiddleRight);
+         tbx_someMoney = hamper.CreateVvTextBox(0, 1, "tbx_someMoney", "", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.someMoney));
+         tbx_someMoney.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, true);
+         tbx_someMoney.JAM_Highlighted = true;
+      }
+      else
+      {
+         hamper = new VvHamper(2, 1, "", null, false);
+
+         hamper.VvColWdt      = new int[] { (this is UGODUC) ? labelWidth : ZXC.Q7un, ZXC.Q5un };
+         hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
+
+         hamper.VvRowHgt       = new int[] { ZXC.QUN };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+
+         string tekst = (this is UGODUC) ? "Ostvareno:" : "Planirana Prodajna Cijena:";
+         hamper.CreateVvLabel(0, 0, tekst, ContentAlignment.MiddleRight);
+         tbx_someMoney = hamper.CreateVvTextBox(1, 0, "tbx_someMoney", "", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.someMoney));
+         tbx_someMoney.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+        
+      }
    }
-
 
    private void CreateMigratorPanels_LeftAndRight()
    {
@@ -9280,9 +9361,9 @@ public partial class FakturExtDUC : FakturDUC
 
    }
 
-   #endregion Hampers
+#endregion Hampers
 
-   #region SvDuh UGO hamper
+#region SvDuh UGO hamper
 
     private void InitializeHamper_PlnRlz_UGO(out VvHamper hamper)
    {
@@ -9344,9 +9425,9 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Visible = false;
    }
 
-   #endregion SvDuh UGO hamper
+#endregion SvDuh UGO hamper
 
-   #region hamper KPN
+#region hamper KPN
 
    private void InitializeHamper_IrmKupon_OUT(out VvHamper hamper)
    {
@@ -9493,9 +9574,9 @@ public partial class FakturExtDUC : FakturDUC
       }
    }
 
-   #endregion hamper KPN
+#endregion hamper KPN
 
-   #region hampers PIX
+#region hampers PIX
 
    private void InitializeHamper_S_PIZ_PIX_TRI(out VvHamper hamper)
    {
@@ -9727,9 +9808,9 @@ public partial class FakturExtDUC : FakturDUC
    }
 
 
-   #endregion hampers PIX
+#endregion hampers PIX
 
-   #region FISKAL hamper
+#region FISKAL hamper
 
    private void InitializeHamper_FiskalJIR(out VvHamper hamper)
    {
@@ -9872,9 +9953,9 @@ public partial class FakturExtDUC : FakturDUC
    }
 
 
-   #endregion FISKAL hamper
+#endregion FISKAL hamper
 
-   #region Hamper Sume
+#region Hamper Sume
 
    private void InitializeHamper_S_uk(out VvHamper hamper)
    {
@@ -10787,9 +10868,9 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Visible = false;
    }
 
-   #endregion Hamper Sume
+#endregion Hamper Sume
 
-   #region AllHampersLocations
+#region AllHampersLocations
 
    private void SetLocationToHamperOnAllDuc()
    {
@@ -11040,9 +11121,9 @@ public partial class FakturExtDUC : FakturDUC
       }
    }
 
-   #endregion AllHampersLocations
+#endregion AllHampersLocations
 
-   #region SetLocationMigrators
+#region SetLocationMigrators
 
    public void SetLocationMigrators()
    {
@@ -11252,9 +11333,9 @@ public partial class FakturExtDUC : FakturDUC
       hamp_ValName.BringToFront();
    }
 
-   #endregion SetLocationMigrators
+#endregion SetLocationMigrators
 
-   #region Document_Database_ColumnIndexes
+#region Document_Database_ColumnIndexes
 
    /// <summary>
    /// Column Index U DataBase (NE na DataGridView-u to ti je 'ci')
@@ -11265,9 +11346,9 @@ public partial class FakturExtDUC : FakturDUC
       get { return ZXC.FexCI; }
    }
 
-   #endregion Document_Database_ColumnIndexes
+#endregion Document_Database_ColumnIndexes
 
-   #region Fld_
+#region Fld_
 
    public uint Fld_KupdobCd
    {
@@ -11704,7 +11785,7 @@ public partial class FakturExtDUC : FakturDUC
       set { tbx_S_ukProlazne.PutDecimalField(value); }
    }
 
-   #region 2013 EU PDV NEWS
+#region 2013 EU PDV NEWS
 
    public decimal Fld_S_ukOsnR25m_EU { get { return tbx_S_ukOsnR25m_EU.GetDecimalField(); } set { tbx_S_ukOsnR25m_EU.PutDecimalField(value); } }
    public decimal Fld_S_ukOsnR25n_EU { get { return tbx_S_ukOsnR25n_EU.GetDecimalField(); } set { tbx_S_ukOsnR25n_EU.PutDecimalField(value); } }
@@ -11752,7 +11833,7 @@ public partial class FakturExtDUC : FakturDUC
    public decimal Fld_S_ukOsnK15 { get { return tbx_s_ukOsn15.GetDecimalField(); } set { tbx_s_ukOsn15.PutDecimalField(value); } }
    public decimal Fld_S_ukOsnK16 { get { return tbx_s_ukOsn16.GetDecimalField(); } set { tbx_s_ukOsn16.PutDecimalField(value); } }
 
-   #endregion 2013 EU PDV NEWS
+#endregion 2013 EU PDV NEWS
 
    public decimal Fld_S_ukPdv25m { get { return tbx_S_ukPdv25m.GetDecimalField(); } set { tbx_S_ukPdv25m.PutDecimalField(value); } }
    public decimal Fld_S_ukPdv25n { get { return tbx_S_ukPdv25n.GetDecimalField(); } set { tbx_S_ukPdv25n.PutDecimalField(value); } }
@@ -12159,9 +12240,9 @@ public partial class FakturExtDUC : FakturDUC
       set { tbx_eRprocOpis.Text = value; }
    }
 
-   #endregion Fld_
+#endregion Fld_
 
-   #region PutExtFields(), GetExtFields() PutTransSumToDocumentSumFields_Ext()
+#region PutExtFields(), GetExtFields() PutTransSumToDocumentSumFields_Ext()
 
    protected override void SetDefaulFakExDucFields()
    {
@@ -12507,7 +12588,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_dateX)) Fld_DateX = faktEx.DateX;
 
 
-      #region ZPC overridnig values
+#region ZPC overridnig values
 
       //if(faktur.TtInfo.IsNivelacijaZPC)
       //{
@@ -12523,7 +12604,7 @@ public partial class FakturExtDUC : FakturDUC
       //   if(CtrlOK(tbx_S_ukMSK     )) Fld_S_ukMSK      = VvCurrency(faktur.R_ZpcVrj     );
       //}
 
-      #endregion ZPC overridnig values
+#endregion ZPC overridnig values
 
       if(CtrlOK(tbx_Urm_NV)) Fld_UrM_NV = VvCurrency(faktEx.S_ukKCR);
 
@@ -12602,7 +12683,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_PdvGEOkind)) Fld_PdvGEOkind = faktur.PdvGEOkind;
       if(CtrlOK(tbx_PdvZPkind )) Fld_PdvZPkind  = faktur.PdvZPkind;
 
-      #region 2013 EU PDV NEWS
+#region 2013 EU PDV NEWS
 
       if(CtrlOK(tbx_S_ukOsnR25m_EU)) Fld_S_ukOsnR25m_EU = VvCurrency(faktEx.S_ukOsnR25m_EU).Ron2();
       if(CtrlOK(tbx_S_ukOsnR25n_EU)) Fld_S_ukOsnR25n_EU = VvCurrency(faktEx.S_ukOsnR25n_EU).Ron2();
@@ -12649,7 +12730,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_s_ukOsn15     )) Fld_S_ukOsnK15     = VvCurrency(faktEx.S_ukOsn15).Ron2();
       if(CtrlOK(tbx_s_ukOsn16     )) Fld_S_ukOsnK16     = VvCurrency(faktEx.S_ukOsn16).Ron2();
 
-      #endregion 2013 EU PDV NEWS
+#endregion 2013 EU PDV NEWS
 
       // ---  2013 EU PDV NEWS
 
@@ -12709,7 +12790,7 @@ public partial class FakturExtDUC : FakturDUC
       //fransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable       // 28.05.2012. premjesteno
       //DecideIfShouldLoad_TransDGV(null, null, null);
 
-      #region PTG Additions
+#region PTG Additions
 
       if(this is KUG_PTG_DUC)
       {
@@ -12806,6 +12887,17 @@ public partial class FakturExtDUC : FakturDUC
          if(CtrlOK(ptgDUC.tbx_DokDate2      )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
          if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
          if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
+      }
+      if(this is MOD_PTG_DUC)
+      {
+         MOD_PTG_DUC modDUC = this as MOD_PTG_DUC;
+
+       //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
+         Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == faktEx.PrjArtCD);
+         if(artikl_rec != null)
+
+         modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD;
+         modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD;
       }
 
       #endregion PTG Additions
@@ -12975,7 +13067,7 @@ public partial class FakturExtDUC : FakturDUC
       }
       // --- PPMV shit end   
 
-      #region 2013 EU PDV NEWS
+#region 2013 EU PDV NEWS
 
       if(CtrlOK(tbx_S_ukOsnR25m_EU)) Fld_S_ukOsnR25m_EU = VvCurrency(faktur_rec.TrnSum_OsnR25m_EU).Ron2();
       if(CtrlOK(tbx_S_ukOsnR25n_EU)) Fld_S_ukOsnR25n_EU = VvCurrency(faktur_rec.TrnSum_OsnR25n_EU).Ron2();
@@ -13025,7 +13117,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_s_ukOsn15))   Fld_S_ukOsnK15 = VvCurrency(faktur_rec.TrnSum_Osn15).Ron2();
       if(CtrlOK(tbx_s_ukOsn16))   Fld_S_ukOsnK16 = VvCurrency(faktur_rec.TrnSum_Osn16).Ron2();
 
-      #endregion 2013 EU PDV NEWS
+#endregion 2013 EU PDV NEWS
 
 
 
@@ -13284,7 +13376,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_PdvGEOkind)) faktur_rec.PdvGEOkind = Fld_PdvGEOkind;
       if(CtrlOK(tbx_PdvZPkind))  faktur_rec.PdvZPkind  = Fld_PdvZPkind;
 
-      #region 2013 EU PDV NEWS
+#region 2013 EU PDV NEWS
 
       if(CtrlOK(tbx_S_ukOsnR25m_EU))  faktur_rec.S_ukOsnR25m_EU = Fld_S_ukOsnR25m_EU ;
       if(CtrlOK(tbx_S_ukOsnR25n_EU))  faktur_rec.S_ukOsnR25n_EU = Fld_S_ukOsnR25n_EU ;
@@ -13331,7 +13423,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_s_ukOsn15     ))  faktur_rec.S_ukOsn15      = Fld_S_ukOsnK15     ;
       if(CtrlOK(tbx_s_ukOsn16     ))  faktur_rec.S_ukOsn16      = Fld_S_ukOsnK16     ;
 
-      #endregion 2013 EU PDV NEWS
+#endregion 2013 EU PDV NEWS
 
       // ---  2013 EU PDV NEWS
 
@@ -13345,7 +13437,7 @@ public partial class FakturExtDUC : FakturDUC
       //22.11.2018.
       if(CtrlOK(tbx_eRproc)) faktur_rec.PdvKolTip = Fld_eRproc;
 
-      #region PTG Additions
+#region PTG Additions
 
       if(this is KUG_PTG_DUC)
       {
@@ -13412,12 +13504,12 @@ public partial class FakturExtDUC : FakturDUC
       }
 
 
-      #endregion PTG Additions
+#endregion PTG Additions
    }
 
-   #endregion PutExtFields(), GetExtFields()
+#endregion PutExtFields(), GetExtFields()
 
-   #region Eventi
+#region Eventi
 
    private void AnyMtrosTextBoxLeave(object sender, EventArgs e)
    {
@@ -13523,9 +13615,9 @@ public partial class FakturExtDUC : FakturDUC
       else Fld_RokIspDate = Fld_DokDate;
    }
 
-   #endregion Eventi
+#endregion Eventi
 
-   #region InitializeAndPutMigratorsStates
+#region InitializeAndPutMigratorsStates
 
    protected override void InitializeAndPutMigratorsStates()
    {
@@ -13537,7 +13629,7 @@ public partial class FakturExtDUC : FakturDUC
       ZXC.TheVvForm.PutFieldsInProgress = false;
    }
 
-   #endregion InitializeAndPutMigratorsStates
+#endregion InitializeAndPutMigratorsStates
 
    //#region DataGridView
 
@@ -13682,31 +13774,33 @@ public partial class FakturExtDUC : FakturDUC
 
 }
 
-public class FakturPDUC           : FakturExtDUC
+public class FakturPDUC : FakturExtDUC
 {
-   #region Fieldz
+#region Fieldz
 
    protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName,
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
-                       vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2;
-   private VvCheckBox  vvcbx_isKomDummy;
+                       vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2,
+                       vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
+                       vvtbT_ramTarget2, vvtbT_hddTarget2, vvtbT_ramKlasa2, vvtbT_hddKlasa2;
+   private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
    protected virtual void InitializeDUC_Specific_Columns2() { }
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public FakturPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       SuspendLayout();
 
-      #region TheG2
+#region TheG2
 
 
-      TheG2       = CreateVvDataGridView(ThePolyGridTabControl.TabPages[1], "Rtrano Grid");
+      TheG2 = CreateVvDataGridView(ThePolyGridTabControl.TabPages[1], "Rtrano Grid");
       TheSumGrid2 = CreateSumGrid(TheG2, ThePolyGridTabControl.TabPages[1], "SUM Rtrano Grid");
       InitializeDUC_Specific_Columns2();
 
@@ -13717,21 +13811,21 @@ public class FakturPDUC           : FakturExtDUC
 
       CalcLocationSizeAnchor_TheDGVAndTheSumGrid_NEW(TheG2, ZXC.QunMrgn, ZXC.QunMrgn);
 
-    //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = Color.Sienna; //ZXC.vvColors.tabPage4TheG3_BackColor;
-      ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO ? Color.Beige : Color.Sienna; 
+      //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = Color.Sienna; //ZXC.vvColors.tabPage4TheG3_BackColor;
+      ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO ? Color.Beige : Color.Sienna;
 
       VvHamper.Open_Close_Fields_ForWriting(TheG2, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
 
       SetRtranoColumnIndexes();
 
-      #endregion TheG2
+#endregion TheG2
 
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region TheGrid2_Columns
+#region TheGrid2_Columns
 
    protected void T_artiklCD2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13768,9 +13862,9 @@ public class FakturPDUC           : FakturExtDUC
 
    protected void T_serno_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
-       //vvtbT_serno = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
-       //vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
-      
+      //vvtbT_serno = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
+      //vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
+
       if(this is BORDUC)
       {
          vvtbT_serno = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
@@ -13786,17 +13880,18 @@ public class FakturPDUC           : FakturExtDUC
             vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
          }
       }
-      
+
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_serno, TheVvDaoTrans2, DB_Tci2.t_serno, _colHeader, _width);
       colVvText.Visible = isVisible;
    }
-
    protected void T_paletaNo_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_paletaNo = TheG2.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb4ColT_paletaNo", TheVvDaoTrans2, DB_Tci2.t_paletaNo, _statusText);
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_paletaNo, TheVvDaoTrans2, DB_Tci2.t_paletaNo, _colHeader, _width);
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC || IsPTG_UgAnDo_DUC == true) colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
    }
    protected void T_dimX_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13806,6 +13901,8 @@ public class FakturPDUC           : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_dimX, TheVvDaoTrans2, DB_Tci2.t_dimX, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC || IsPTG_UgAnDo_DUC == true) colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
    }
    protected void T_dimY_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13834,7 +13931,6 @@ public class FakturPDUC           : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
-
    protected void T_grCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_grCD = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_grCD", TheVvDaoTrans2, DB_Tci2.t_grCD, _statusText);
@@ -13843,13 +13939,11 @@ public class FakturPDUC           : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_grCD, TheVvDaoTrans2, DB_Tci2.t_grCD, _colHeader, _width);
       colVvText.Visible = isVisible;
    }
-
    public void ColumnForScroll_CreateColumn2(int _width)
    {
       colScrol = TheG2.CreateScrollColumn("scrol", _width);
       colScrol.ReadOnly = true;
    }
-
    protected void T_isKomDummy_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvcbx_isKomDummy = new VvCheckBox();
@@ -13858,7 +13952,6 @@ public class FakturPDUC           : FakturExtDUC
 
       colCbox.Visible = isVisible;
    }
-
    protected void T_skladCD2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_skladCD2 = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_skladCD2", TheVvDaoTrans2, DB_Tci2.t_skladCD, _statusText);
@@ -13869,10 +13962,45 @@ public class FakturPDUC           : FakturExtDUC
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD2, TheVvDaoTrans2, DB_Tci2.t_skladCD, _colHeader, _width);
    }
+   protected void T_decA_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_decA = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decA", TheVvDaoTrans2, DB_Tci2.t_decA, _statusText);
+    //vvtbT_decA.JAM_ShouldCalcTrans = true;
 
-   #endregion TheGrid2_Columns
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decA, TheVvDaoTrans2, DB_Tci2.t_decA, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
 
-   #region R_Columns2
+      if(this is MOD_PTG_DUC || IsPTG_UgAnDo_DUC == true) colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+   }
+   protected void T_decB_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_decB = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decB", TheVvDaoTrans2, DB_Tci2.t_decB, _statusText);
+    //vvtbT_decB.JAM_ShouldCalcTrans = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decB, TheVvDaoTrans2, DB_Tci2.t_decB, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void T_decC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_decC = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decC", TheVvDaoTrans2, DB_Tci2.t_decC, _statusText);
+    //vvtbT_decC.JAM_ShouldCalcTrans = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decC, TheVvDaoTrans2, DB_Tci2.t_decC, _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
+   protected void T_rtrRecID_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_rtrRecID = TheG2.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb4ColT_rtrRecID", TheVvDaoTrans2, DB_Tci2.t_rtrRecID, _statusText);
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_rtrRecID, TheVvDaoTrans2, DB_Tci2.t_rtrRecID, _colHeader, _width);
+   }
+
+#endregion TheGrid2_Columns
+
+#region R_Columns2
 
    protected void T_kolG2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13910,6 +14038,51 @@ public class FakturPDUC           : FakturExtDUC
       colVvText.Visible = isVisible;
    }
 
+   protected void R_ramKlasa2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ramKlasa2 = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_ramKlasa2", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_ramKlasa2.JAM_ReadOnly = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramKlasa2, TheVvDaoTrans2, "R_ramKlasa", _colHeader, _width);
+      colVvText.MinimumWidth = _width;
+      colVvText.Visible = isVisible;
+   }
+   protected void R_hddKlasa2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_hddKlasa2 = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_hddKlasa2", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_hddKlasa2.JAM_ReadOnly = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddKlasa2, TheVvDaoTrans2, "R_hddKlasa", _colHeader, _width);
+      colVvText.MinimumWidth = _width;
+      colVvText.Visible = isVisible;
+   }
+   protected void T_ramTarget2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_ramTarget2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramTarget2", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_ramTarget2.JAM_ReadOnly = true;
+
+      //vvtbT_RAM_target.JAM_ShouldCalcTrans = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramTarget2, TheVvDaoTrans2, "R_ramTarget", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+
+   }
+   protected void T_hddTarget2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_hddTarget2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddTarget2", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_hddTarget2.JAM_ReadOnly = true;
+
+    //vvtbT_HDD_target.JAM_ShouldCalcTrans = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddTarget2, TheVvDaoTrans2, "R_hddTarget", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+
+   }
+
    #endregion R_Columns2
 
    #region Transes_Database_ColumnIndexes
@@ -13922,9 +14095,9 @@ public class FakturPDUC           : FakturExtDUC
       get { return ZXC.RtoCI; }
    }
 
-   #endregion Transes_Database_ColumnIndexes
+#endregion Transes_Database_ColumnIndexes
 
-   #region SetRtranoColumnIndexes()
+#region SetRtranoColumnIndexes()
 
    protected Rtrano_colIdx ci2;
    public Rtrano_colIdx DgvCI2 { get { return ci2; } }
@@ -13946,8 +14119,15 @@ public class FakturPDUC           : FakturExtDUC
       internal int iT_grCD      ;
       internal int iR_grName    ;
       internal int iT_isKomDummy;
-
       internal int iT_skladCD   ;
+      internal int iT_decA      ;
+      internal int iT_decB      ;
+      internal int iT_decC      ;
+      internal int iT_rtrRecID  ;
+      internal int iT_ramTarget ;
+      internal int iT_hddTarget ;
+      internal int iT_ramKlasa  ;
+      internal int iT_hddKlasa  ;
    }
 
    private void SetRtranoColumnIndexes()
@@ -13970,12 +14150,19 @@ public class FakturPDUC           : FakturExtDUC
       ci2.iR_grName     = TheG2.IdxForColumn("R_grName");
       ci2.iT_isKomDummy = TheG2.IdxForColumn("T_isKomDummy");
       ci2.iT_skladCD    = TheG2.IdxForColumn("T_skladCD");
-
+      ci2.iT_decA       = TheG2.IdxForColumn("T_decA");
+      ci2.iT_decB       = TheG2.IdxForColumn("T_decB");
+      ci2.iT_decC       = TheG2.IdxForColumn("T_decC");
+      ci2.iT_rtrRecID   = TheG2.IdxForColumn("T_rtrRecID");
+      ci2.iT_ramTarget  = TheG2.IdxForColumn("R_ramTarget");
+      ci2.iT_hddTarget  = TheG2.IdxForColumn("R_hddTarget");
+      ci2.iT_ramKlasa   = TheG2.IdxForColumn("R_ramKlasa");
+      ci2.iT_hddKlasa   = TheG2.IdxForColumn("R_hddKlasa");
    }
 
-   #endregion SetRtranoColumnIndexes()
+#endregion SetRtranoColumnIndexes()
 
-   #region PutDgvFields2(), GetDgvFields2()
+#region PutDgvFields2(), GetDgvFields2()
 
    protected override void PutDgvFields2()
    {
@@ -13989,14 +14176,14 @@ public class FakturPDUC           : FakturExtDUC
 
       idxCorrector = GetDGVsIdxCorrrector(TheG2);
 
-      #region 13.6.2013 Additions bikoz of ToggleKunaDeviza
+#region 13.6.2013 Additions bikoz of ToggleKunaDeviza
 
       List<Rtrano> rtranoList = faktur_rec.Transes2;
 
       if(TheVvTabPage.WriteMode != ZXC.WriteMode.None) // znaci, PutFields dignut u 'žutome' stanju, probably smo u ToggleKunaDeviza pa je Transes malo chuspajzovit! 
          rtranoList = faktur_rec.Transes2.Where(rtrn => rtrn.SaveTransesWriteMode != ZXC.WriteMode.Delete).OrderBy(rtrn => rtrn.T_serial).ToList();
 
-      #endregion 13.6.2013 Additions bikoz of ToggleKunaDeviza
+#endregion 13.6.2013 Additions bikoz of ToggleKunaDeviza
 
     //if(faktur_rec.Transes2 != null)
       if(rtranoList != null)
@@ -14052,14 +14239,24 @@ public class FakturPDUC           : FakturExtDUC
       TheG2.PutCell(ci2.iR_grName    , rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
     //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
       TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, VvCheckBox.GetString4Bool(rtrano_rec.T_isKomDummy));
-
       TheG2.PutCell(ci2.iT_skladCD, rowIdx, rtrano_rec.T_skladCD);
+      TheG2.PutCell(ci2.iT_decA      , rowIdx, rtrano_rec.T_decA);
+      TheG2.PutCell(ci2.iT_decB      , rowIdx, rtrano_rec.T_decB);
+      TheG2.PutCell(ci2.iT_decC      , rowIdx, rtrano_rec.T_decC);
 
       // 23.12.2013. proba
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrano_rec.T_paletaNo);
 
       if(kupdobSifrar_rec != null) TheG2.PutCell(ci2.iR_grName, rowIdx, kupdobSifrar_rec.Naziv);
       else                         TheG2.PutCell(ci2.iR_grName, rowIdx,                     "");
+
+
+      Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrano_rec.T_artiklCD);
+      if(artikl_rec != null && artikl_rec.TS == "PCK")
+      {
+         TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
+         TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
+      }
 
    }
 
@@ -14178,7 +14375,7 @@ public class FakturPDUC           : FakturExtDUC
       dgvRtrano_rec.T_recID    = recID;
       dgvRtrano_rec.T_parentID = faktur_rec.RecID;
 
-      #region GetColumns
+#region GetColumns
 
                                    dgvRtrano_rec.T_serial = (ushort)(rIdx + 1);
       if(DB_RWT) db_rec.T_serial = dgvRtrano_rec.T_serial;
@@ -14272,7 +14469,23 @@ public class FakturPDUC           : FakturExtDUC
          if(DB_RWT) db_rec.T_isKomDummy = dgvRtrano_rec.T_isKomDummy;
       }
 
-      #endregion GetColumns
+      if(TheG2.CI_OK(ci2.iT_decA))
+      {
+                                    dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_decA, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_decA = dgvRtrano_rec.T_decA;
+      }
+      if(TheG2.CI_OK(ci2.iT_decB))
+      {
+                                    dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_decB, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_decB = dgvRtrano_rec.T_decB;
+      }
+      if(TheG2.CI_OK(ci2.iT_decC))
+      {
+                                    dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_decC = dgvRtrano_rec.T_decC;
+      }
+
+#endregion GetColumns
 
       if(dgvRtrano_rec.T_recID == 0) // ADDED NEW, FRESH Ftrans             
       {
@@ -14296,16 +14509,16 @@ public class FakturPDUC           : FakturExtDUC
       return dgvRtrano_rec;
    }
 
-   #endregion PutDgvFields2(), GetDgvFields2()
+#endregion PutDgvFields2(), GetDgvFields2()
 
-   #region TabPageTitle2
+#region TabPageTitle2
 
    public override string TabPageTitle2
    {
       get { return ZXC.IsPCTOGO ? ". SERIJSKI BROJEVI ." : "Detalji"; }
    }
 
-   #endregion TabPageTitle2
+#endregion TabPageTitle2
 
 }
 
@@ -14313,7 +14526,7 @@ public class FakturPDUC           : FakturExtDUC
 
 public class VvCopyInNewTTDlg : VvDialog
 {
-   #region Fieldz
+#region Fieldz
 
    private Button       okButton, cancelButton;
    private VvHamper     hamper;
@@ -14323,9 +14536,9 @@ public class VvCopyInNewTTDlg : VvDialog
 
    private VvDocumentRecordUC TheDUC;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public VvCopyInNewTTDlg(VvDocumentRecordUC theDUC)
    {
@@ -14346,9 +14559,9 @@ public class VvCopyInNewTTDlg : VvDialog
       cancelButton.BringToFront();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -14436,20 +14649,20 @@ public class VvCopyInNewTTDlg : VvDialog
       
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Event cancelButton
+#region Event cancelButton
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Event cancelButton
+#endregion Event cancelButton
 
-   #region Fld_
+#region Fld_
 
-   #endregion Fld_
+#endregion Fld_
 
    private void OnRbChecked_SpecifyVvSubModul(object sender, EventArgs e)
    {
@@ -14462,15 +14675,15 @@ public class VvCopyInNewTTDlg : VvDialog
 
 public class VvStartLinkDlg : VvDialog
 {
-   #region Fieldz
+#region Fieldz
 
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public VvStartLinkDlg()
    {
@@ -14488,9 +14701,9 @@ public class VvStartLinkDlg : VvDialog
    
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -14509,16 +14722,16 @@ public class VvStartLinkDlg : VvDialog
       hamper.CreateVvLabel(0, 1, "Na ekranu gdje je prikazan taj drugi dokument kliknite 'EndLink'", ContentAlignment.MiddleCenter);
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Event cancelButton
+#region Event cancelButton
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Event cancelButton
+#endregion Event cancelButton
 
 
 }
@@ -14572,7 +14785,7 @@ public class Fak2NalogRulesDlg : VvDialog
 
 public class Fak2NalogRulesUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper  hamp_ShemaURA , hamp_ShemaIRA , hamp_ShemaBLG , hamp_ShemaIRM ,
                      hamp_2nalogURA, hamp_2nalogIRA, hamp_2nalogBLG, hamp_2nalogIRM, hamp_2nalogINT,
@@ -14615,9 +14828,9 @@ public class Fak2NalogRulesUC : VvOtherUC
 
    public KtoShemaDsc KSD { get; set; }
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public Fak2NalogRulesUC()
    {
@@ -14643,9 +14856,9 @@ public class Fak2NalogRulesUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hampers ShemaKonta
+#region Hampers ShemaKonta
   
    private void CreateShemaKontoHampers()
    {
@@ -15734,9 +15947,9 @@ public class Fak2NalogRulesUC : VvOtherUC
       cbx_NePrikazujKDC       = hamper.CreateVvCheckBox_OLD(0, 10, null, 5, 0, "Ne prikazuj Kontakte na tabu Osnovno Partnera", System.Windows.Forms.RightToLeft.No);// da se Kontakti ne prikazuju na Osnovnom od Partnera
    }
 
-   #endregion Hampers ShemaKonta
+#endregion Hampers ShemaKonta
 
-   #region Fld_
+#region Fld_
 
    public string Fld_RKto_Kupca       {  get { return tbx_RKtoKupca        .Text; } set { tbx_RKtoKupca        .Text = value; } }
    public string Fld_RKto_Osn_Ira     {  get { return tbx_RKtoOsnIra_Usluga.Text; } set { tbx_RKtoOsnIra_Usluga.Text = value; } }
@@ -16040,9 +16253,9 @@ public class Fak2NalogRulesUC : VvOtherUC
    public bool   Fld_Is_OTSviaMtrosCD     { get { return cbx_Is_OTSviaMtrosCD     .Checked; } set { cbx_Is_OTSviaMtrosCD    .Checked = value; } }
    public bool   Fld_NePrikazujKDC        { get { return cbx_NePrikazujKDC        .Checked; } set { cbx_NePrikazujKDC       .Checked = value; } }
 
-   #endregion Fld_
+#endregion Fld_
 
-   #region PutShemaKontoFields(), GetShemaKontoFields()
+#region PutShemaKontoFields(), GetShemaKontoFields()
 
    private void PutKtoShemaDscFields(KtoShemaDsc KSD)
    {
@@ -16445,7 +16658,7 @@ public class Fak2NalogRulesUC : VvOtherUC
       KSD.SaveDscToLookUpItemList();
    }
 
-   #endregion PutShemaKontoFields(), GetShemaKontoFields()
+#endregion PutShemaKontoFields(), GetShemaKontoFields()
 }
 
 
@@ -16497,7 +16710,7 @@ public class RiskRulesDlg : VvDialog
 
 public class RiskRulesUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper  hamp_mpc, hamp_kupdobNaziv, hamp_ciljaniMPC, hamp_numDecmal, hamp_fiskal;
    private VvTextBox tbx_VpcMpcMarza, tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName, tbx_kolNumDecimal, tbx_ambKolNumDecimal, tbx_cekanjeFiskal,
@@ -16514,9 +16727,9 @@ public class RiskRulesUC : VvOtherUC
 
    //public RiskRulesDsc RRD { get; set; }
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public RiskRulesUC()
    {
@@ -16541,9 +16754,9 @@ public class RiskRulesUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hampers 
+#region Hampers 
 
    private void CreateHampers()
    {
@@ -16811,9 +17024,9 @@ public class RiskRulesUC : VvOtherUC
 
 
 
-   #endregion Hampers 
+#endregion Hampers 
 
-   #region Fld_
+#region Fld_
    
    public ZXC.MalopCalcKind Fld_MalopCalcKind
    {
@@ -16922,9 +17135,9 @@ public class RiskRulesUC : VvOtherUC
 
    public decimal Fld_PdvMathTolerancy         { get { return tbx_PdvMathTolerancy.GetDecimalField(); } set { tbx_PdvMathTolerancy.PutDecimalField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
-   #region PutFields(), GetFields()
+#region PutFields(), GetFields()
 
    private void PutDscFields(RiskRulesDsc RRD)
    {
@@ -17051,7 +17264,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.SetMalopKupdob_rec(null);
    }
 
-   #endregion PutFields(), GetFields()
+#endregion PutFields(), GetFields()
 }
 
 
@@ -17103,16 +17316,16 @@ public class FiskalizePoslProstorDlg : VvDialog
 
 public class FiskalizePoslProstorUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper  hamper;
    private VvTextBox tbx_oib, tbx_skladCd, tbx_skladName, tbx_skladBr, tbx_ulica, tbx_kbr, tbx_dodKbr, tbx_pb,
                      tbx_naselje, tbx_opcina, tbx_radVrij, tbx_dateStart, tbx_oibSw;
    private VvDateTimePicker dtp_dateStart;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public FiskalizePoslProstorUC()
    {
@@ -17127,9 +17340,9 @@ public class FiskalizePoslProstorUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hampers 
+#region Hampers 
 
    private void CreateHampers()
    {
@@ -17199,9 +17412,9 @@ public class FiskalizePoslProstorUC : VvOtherUC
 
    }
    
-   #endregion Hampers 
+#endregion Hampers 
 
-   #region Fld_
+#region Fld_
    
    public DateTime Fld_DateStart { get { return dtp_dateStart.Value; }  set { if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime) { dtp_dateStart.Value = value; } } }
                                                                                                                                      
@@ -17218,23 +17431,23 @@ public class FiskalizePoslProstorUC : VvOtherUC
    public string Fld_Opcina      { get { return tbx_opcina .Text;                     } set { tbx_opcina   .Text = value;            } }
    public string Fld_RadVrij     { get { return tbx_radVrij.Text;                     } set { tbx_radVrij  .Text = value;            } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 
 public class VvNewRabatDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button okButton, cancelButton;
    private VvHamper hamper;
    private int dlgWidth, dlgHeight;
    private VvTextBox tbx_newRabat;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvNewRabatDlg()
    {
@@ -17253,9 +17466,9 @@ public class VvNewRabatDlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_newRabat, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -17277,22 +17490,22 @@ public class VvNewRabatDlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public decimal Fld_NewRabat { get { return tbx_newRabat.GetDecimalField(); } set { tbx_newRabat.PutDecimalField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
@@ -17345,14 +17558,14 @@ public class AddArtiklUMJDlg : VvDialog
 
 public class AddArtiklUMJUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper  hamp_artiklSpecif ;
    private VvTextBox tbx_grupa2CD, tbx_grupa2Opis, tbx_artiklName, tbx_format;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public AddArtiklUMJUC()
    {
@@ -17368,9 +17581,9 @@ public class AddArtiklUMJUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hampers ShemaKonta
+#region Hampers ShemaKonta
 
    private void InitializeHamper(out VvHamper hamper)
    {
@@ -17401,15 +17614,15 @@ public class AddArtiklUMJUC : VvOtherUC
 
    }
    
-   #endregion Hampers ShemaKonta
+#endregion Hampers ShemaKonta
 
-   #region Fld_
+#region Fld_
 
    public string Fld_ArtiklName { get { return tbx_artiklName.Text; } set { tbx_artiklName.Text = value; } }
    public string Fld_GrupaB     { get { return tbx_grupa2CD  .Text; } set { tbx_grupa2CD  .Text = value; } }
    public string Fld_Format     { get { return tbx_format    .Text; } set { tbx_format    .Text = value; } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
@@ -17465,7 +17678,7 @@ public class ShowArtiklInfoDlg : VvDialog
 
 public class ShowArtiklInfoUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper hamp_artiklInfo, hamp_promjena, hamp_rezultat;
 
@@ -17497,9 +17710,9 @@ public class ShowArtiklInfoUC : VvOtherUC
    private decimal orgPak;
    bool doWeWant_OP;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public ShowArtiklInfoUC(bool _doWeWant_OP, decimal _orgPak, string _jedJM, string _orgPakJM)
    {
@@ -17530,9 +17743,9 @@ public class ShowArtiklInfoUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hamper
+#region Hamper
 
    private void InitializeHamper_Info(out VvHamper hamper)
    {
@@ -17865,9 +18078,9 @@ public class ShowArtiklInfoUC : VvOtherUC
       hamper.BackColor = colorCalc;
   }
 
-   #endregion Hamper
+#endregion Hamper
 
-   #region Fld_
+#region Fld_
 
    public decimal Fld_UlazProsCij      { get { return tbx_ulazProsCij     .GetDecimalField(); } set { tbx_ulazProsCij     .PutDecimalField(value); } }
    public decimal Fld_UlazProsCijOP    { get { return tbx_ulazProsCijOP   .GetDecimalField(); } set { tbx_ulazProsCijOP   .PutDecimalField(value); } }
@@ -18055,9 +18268,9 @@ public class ShowArtiklInfoUC : VvOtherUC
       }
    }
 
-   #endregion Fld_
+#endregion Fld_
 
-   #region Eveniti
+#region Eveniti
 
    private void rbtInfo_checked(object sender, EventArgs e)
    {
@@ -18121,7 +18334,7 @@ public class ShowArtiklInfoUC : VvOtherUC
       }
    }
 
-   #endregion Eveniti
+#endregion Eveniti
 
 }
 
@@ -18174,14 +18387,14 @@ public class PutAndCalcOtpadPiljDlg : VvDialog
 
 public class PutAndCalcOtpadPiljUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper  hamp_artiklSpecif ;
    private VvTextBox tbx_cijenaOtpada, tbx_cijenaPiljevine, tbx_udioPiljUOtpadu;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public PutAndCalcOtpadPiljUC()
    {
@@ -18197,9 +18410,9 @@ public class PutAndCalcOtpadPiljUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hamper
+#region Hamper
 
    private void InitializeHamper(out VvHamper hamper)
    {
@@ -18230,15 +18443,15 @@ public class PutAndCalcOtpadPiljUC : VvOtherUC
 
    }
    
-   #endregion Hamper
+#endregion Hamper
 
-   #region Fld_
+#region Fld_
 
    public decimal Fld_CijOtpada { get { return tbx_cijenaOtpada   .GetDecimalField(); } set { tbx_cijenaOtpada   .PutDecimalField(value); } }
    public decimal Fld_CijPiljev { get { return tbx_cijenaPiljevine.GetDecimalField(); } set { tbx_cijenaPiljevine.PutDecimalField(value); } }
    public decimal Fld_UdioPuO   { get { return tbx_udioPiljUOtpadu.GetDecimalField(); } set { tbx_udioPiljUOtpadu.PutDecimalField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
@@ -18306,7 +18519,7 @@ public class Create_manyZPCDlg : VvDialog
 
 public class Create_manyZPCUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper  hamp_artiklSpecif ;
 
@@ -18319,9 +18532,9 @@ public class Create_manyZPCUC : VvOtherUC
  //public bool is5week;
    public ZXC.TH_ShopWeekKind shopWeekKind;
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public Create_manyZPCUC(DateTime _nextZPCDate, /*bool _is5week*/ZXC.TH_ShopWeekKind _shopWeekKind)
    {
@@ -18343,9 +18556,9 @@ public class Create_manyZPCUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hampers
+#region Hampers
 
    private void InitializeHamper(out VvHamper hamper)
    {
@@ -18463,9 +18676,9 @@ public class Create_manyZPCUC : VvOtherUC
       Fld_nextZPCDate =                      (Fld_nextZPCDate.Date);
    }
    
-   #endregion Hampers ShemaKonta
+#endregion Hampers ShemaKonta
 
-   #region Fld_
+#region Fld_
 
    public DateTime Fld_nextZPCDate
    {
@@ -18498,13 +18711,13 @@ public class Create_manyZPCUC : VvOtherUC
       }
    }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 public class VvRetMoneyCalcDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button okButton, cancelButton;
    private VvHamper hamper;
@@ -18513,9 +18726,9 @@ public class VvRetMoneyCalcDlg : VvDialog
    private VvTextBox tbx_gotMoney_2;
    private Label lbl_Kn, lbl_EUR, lbl_KnAndEur1, lbl_KnAndEur2;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvRetMoneyCalcDlg(ZXC.GotMoneyKind gotMoneyKind, string captionText, string labelText)
    {
@@ -18535,9 +18748,9 @@ public class VvRetMoneyCalcDlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_gotMoney_2, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper(string labelText, ZXC.GotMoneyKind gotMoneyKind)
    {
@@ -18614,38 +18827,38 @@ public class VvRetMoneyCalcDlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public decimal Fld_GotMoney_1 { get { return tbx_gotMoney_1.GetDecimalField(); } set { tbx_gotMoney_1.PutDecimalField(value); } }
    public decimal Fld_GotMoney_2 { get { return tbx_gotMoney_2.GetDecimalField(); } set { tbx_gotMoney_2.PutDecimalField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 public class VvReturnMoneyDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
    public  Label     lbl_strMoney, lbl_decMoney, lbl_strRetMoney, lbl_decRetMoney, lbl_strS_ukKCRP, lbl_decS_ukKCRP;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvReturnMoneyDlg()
    {
@@ -18664,9 +18877,9 @@ public class VvReturnMoneyDlg : VvDialog
       this.BackColor = Color.Aquamarine;
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -18698,27 +18911,27 @@ public class VvReturnMoneyDlg : VvDialog
       lbl_strRetMoney.ForeColor = lbl_decRetMoney.ForeColor = Color.Red;
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button    okButton, mixButton;
    private VvHamper  hamper;
@@ -18730,9 +18943,9 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
    private readonly decimal fakMoney_EUR;
    private readonly decimal gotMoney;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
    public VvReturnMoney_KNorEUR_Dlg(bool _isEURinput, decimal _fakMoney_EUR, decimal _gotMoney)
    {
       this.isEURinput   = _isEURinput  ;
@@ -18761,9 +18974,9 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       okButton.Select();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -18896,9 +19109,9 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
    public void MixaniPovratKNiEUR(object sender, EventArgs e)
    {
       Button btn = sender as Button;
@@ -18960,14 +19173,14 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
       }
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public decimal Fld_RetMoneyKN  { get { return tbx_decRetMoney_KN.GetDecimalField(); } set { tbx_decRetMoney_KN.PutDecimalField(value); } }
    public decimal Fld_RetMoneyEUR { get { return tbx_decRetMoney_EUR.GetDecimalField(); } set { tbx_decRetMoney_EUR.PutDecimalField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
@@ -18975,7 +19188,7 @@ public class VvReturnMoney_KNorEUR_Dlg : VvDialog
 
 public class VvFiskParagonDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
@@ -18983,9 +19196,9 @@ public class VvFiskParagonDlg : VvDialog
    private VvTextBox        tbx_startDate, tbx_lastOK_IRM_Date;
    private VvDateTimePicker dtp_startDate, dtp_lastOK_IRM_Date;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvFiskParagonDlg(string captionText)
    {
@@ -19007,9 +19220,9 @@ public class VvFiskParagonDlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(dtp_lastOK_IRM_Date, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -19044,18 +19257,18 @@ public class VvFiskParagonDlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public DateTime Fld_StartDate
    {
@@ -19082,7 +19295,7 @@ public class VvFiskParagonDlg : VvDialog
    }
 
    
-   #endregion Fld_
+#endregion Fld_
 
 }
 
@@ -19117,7 +19330,7 @@ public class VvFiskParagonDlg : VvDialog
 
 public class VvTakeRowsFromManyDocumentsDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button           okButton, cancelButton;
    private VvHamper         hamper;
@@ -19125,9 +19338,9 @@ public class VvTakeRowsFromManyDocumentsDlg : VvDialog
    private VvDateTimePicker dtp_DatumOD, dtp_DatumDO;
    private VvTextBox        tbx_DatumOD, tbx_DatumDO, tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvTakeRowsFromManyDocumentsDlg(string text, uint kupdobCd, string kupDobTK, string kupdobName, DateTime datumOd, DateTime datumDo)
    {
@@ -19156,9 +19369,9 @@ public class VvTakeRowsFromManyDocumentsDlg : VvDialog
 
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -19203,7 +19416,7 @@ public class VvTakeRowsFromManyDocumentsDlg : VvDialog
       tbx_DatumDO.ContextMenu = dtp_DatumDO.ContextMenu = CreateNewContexMenu_Date();
 
    }
-      #region Datumi_ContexMenu
+#region Datumi_ContexMenu
 
    private VvStandardTextBoxContextMenu CreateNewContexMenu_Date()
    {
@@ -19309,20 +19522,20 @@ public class VvTakeRowsFromManyDocumentsDlg : VvDialog
 
    }
 
-   #endregion Datumi_ContexMenu
+#endregion Datumi_ContexMenu
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public DateTime Fld_DatumOd
    {
@@ -19354,23 +19567,23 @@ public class VvTakeRowsFromManyDocumentsDlg : VvDialog
    public string Fld_KupdobTk   { set { tbx_KupdobTk  .Text            = value ; } }
    public string Fld_KupdobName { set { tbx_KupdobName.Text            = value ; } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 
 public class VvUn_MarkAsDISPATCHedDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button okButton, cancelButton;
    private VvHamper hamper;
    private int dlgWidth, dlgHeight;
    private VvTextBox tbx_ShopOrCentrNum;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvUn_MarkAsDISPATCHedDlg()
    {
@@ -19389,9 +19602,9 @@ public class VvUn_MarkAsDISPATCHedDlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_ShopOrCentrNum, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -19412,29 +19625,29 @@ public class VvUn_MarkAsDISPATCHedDlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public int Fld_ServerID { get { return tbx_ShopOrCentrNum.GetIntField(); } set { tbx_ShopOrCentrNum.PutIntField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 
 public class VvPromjenaNacPlacDlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button okButton, cancelButton;
    private VvHamper hamper;
@@ -19442,9 +19655,9 @@ public class VvPromjenaNacPlacDlg : VvDialog
    private VvTextBox tbx_NacPlac;
    private CheckBox cbx_isCash;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public VvPromjenaNacPlacDlg()
    {
@@ -19463,9 +19676,9 @@ public class VvPromjenaNacPlacDlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_NacPlac, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -19490,30 +19703,30 @@ public class VvPromjenaNacPlacDlg : VvDialog
       tbx_NacPlac.JAM_lui_FlagTaker_JAM_Name = cbx_isCash.Name;
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public string Fld_NacPlac  { get { return tbx_NacPlac.Text;   } set { tbx_NacPlac.Text   = value; } }
    public bool   Fld_IsNpCash { get { return cbx_isCash.Checked; } set { cbx_isCash.Checked = value; } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 
 public class SVD_INV_Dlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
@@ -19521,9 +19734,9 @@ public class SVD_INV_Dlg : VvDialog
    private VvTextBox        tbx_inventuraDate, tbx_maxPageSize;
    private VvDateTimePicker dtp_inventuraDate;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public SVD_INV_Dlg()
    {
@@ -19543,9 +19756,9 @@ public class SVD_INV_Dlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_maxPageSize  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -19573,18 +19786,18 @@ public class SVD_INV_Dlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public DateTime Fld_InventuraDate
    {
@@ -19600,13 +19813,13 @@ public class SVD_INV_Dlg : VvDialog
 
    public int Fld_MaxPageSize { get { return tbx_maxPageSize.GetIntField(); } set { tbx_maxPageSize.PutIntField(value); } }
 
-   #endregion Fld_
+#endregion Fld_
 
 }
 
 public class SVD_Odobrenje_Dlg : VvDialog
 {
-   #region Fieldz
+#region Fieldz
 
    public  Button   okButton, cancelButton, changeButton;
    private VvHamper hampOdobrenje;
@@ -19616,9 +19829,9 @@ public class SVD_Odobrenje_Dlg : VvDialog
 
    private string KupdobTKfirstLetter { get; set; }
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
 
    public SVD_Odobrenje_Dlg(string _kupdobTKfirstLetter)
@@ -19689,9 +19902,9 @@ public class SVD_Odobrenje_Dlg : VvDialog
    }
 
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Fld_
+#region Fld_
 
    public string Fld_UserName { get { return combbx_user .Text; } set { combbx_user .SelectedItem = value; } }
    public string Fld_Password { get { return tbx_password.Text; } set { tbx_password.Text =         value; } }
@@ -19702,9 +19915,9 @@ public class SVD_Odobrenje_Dlg : VvDialog
       set {                      combbx_user.DataSource = value; }
    }
 
-   #endregion Fld_
+#endregion Fld_
 
-   #region hamper
+#region hamper
 
    private void CreateOdobrenjeHamper(out VvHamper hamper)
    {
@@ -19740,7 +19953,7 @@ public class SVD_Odobrenje_Dlg : VvDialog
       this.ClientSize = new Size(dlgWidth, dlgHeight);
    }
 
-   #endregion hamper
+#endregion hamper
 
    private void ChangePassword_Click(object sender, EventArgs e)
    {
@@ -19886,7 +20099,7 @@ public class SVD_PotrosnjaInfoDlg : VvDialog
 
 public class SVD_PotrosnjaInfoUC : VvOtherUC
 {
-   #region Fieldz
+#region Fieldz
 
    private VvHamper hamp_potrosnjaInfo;
    private ZXC.SVD_PotrosnjaInfo potrosnjaInfo;
@@ -19895,9 +20108,9 @@ public class SVD_PotrosnjaInfoUC : VvOtherUC
    private Color colorKom, colorOP, colorCalc, colorOpFc;
 
 
-   #endregion Fieldz
+#endregion Fieldz
 
-   #region Constructor
+#region Constructor
 
    public SVD_PotrosnjaInfoUC(ZXC.SVD_PotrosnjaInfo _SVD_PotrosnjaInfo)
    {
@@ -19919,9 +20132,9 @@ public class SVD_PotrosnjaInfoUC : VvOtherUC
       ResumeLayout();
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region Hamper
+#region Hamper
 
    private void InitializeHamper_PotrosnjaInfo(out VvHamper hamper)
    {
@@ -20042,9 +20255,9 @@ public class SVD_PotrosnjaInfoUC : VvOtherUC
       //l1O.BackColor = colorOP;
    }
 
-   #endregion Hamper
+#endregion Hamper
 
-   #region Eveniti
+#region Eveniti
 
    private void AddColors()
    {
@@ -20055,13 +20268,13 @@ public class SVD_PotrosnjaInfoUC : VvOtherUC
       colorOpFc = Color.FromArgb( 28, 100, 164);
    }
 
-   #endregion Eveniti
+#endregion Eveniti
 
 }
 
 public class INV_Poravnanje_Dlg : VvDialog
 {
-   #region Filedz
+#region Filedz
 
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
@@ -20069,9 +20282,9 @@ public class INV_Poravnanje_Dlg : VvDialog
    private VvTextBox        tbx_inventuraDate, tbx_inventuraDate2;
    private VvDateTimePicker dtp_inventuraDate, dtp_inventuraDate2;
 
-   #endregion Filedz
+#endregion Filedz
 
-   #region Constructor
+#region Constructor
 
    public INV_Poravnanje_Dlg()
    {
@@ -20091,9 +20304,9 @@ public class INV_Poravnanje_Dlg : VvDialog
       VvHamper.Open_Close_Fields_ForWriting(tbx_inventuraDate2, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
-   #endregion Constructor
+#endregion Constructor
 
-   #region hamper
+#region hamper
 
    private void CreateHamper()
    {
@@ -20126,18 +20339,18 @@ public class INV_Poravnanje_Dlg : VvDialog
 
    }
 
-   #endregion hamper
+#endregion hamper
 
-   #region Button_Click
+#region Button_Click
 
    void cancelButton_Click(object sender, EventArgs e)
    {
       this.Close();
    }
 
-   #endregion Button_Click
+#endregion Button_Click
 
-   #region Fld_
+#region Fld_
 
    public DateTime Fld_InventuraDate_real
    {
@@ -20162,7 +20375,7 @@ public class INV_Poravnanje_Dlg : VvDialog
       }
    }
 
-   #endregion Fld_
+#endregion Fld_
 }
 
 #endregion Other RISK Dialogs and UserControls

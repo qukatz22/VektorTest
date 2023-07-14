@@ -3528,6 +3528,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          theGrid.PutCell(ci2.iT_artiklName , currRow, artikl_rec.ArtiklName);
          theGrid.PutCell(ci2.iT_jm         , currRow, artikl_rec.JedMj     );
       }
+
+      if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
+      {
+         theGrid.PutCell(ci2.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
+         theGrid.PutCell(ci2.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
+      }
+
    }
 
    // ****** 
@@ -3671,14 +3678,20 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             theGrid.PutCell(ci.iT_konto, currRow, artikl_rec.Konto);
          }
 
+         if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
+         { 
+            theGrid.PutCell(ci.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
+            theGrid.PutCell(ci.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
+         }
+
          #endregion ArtiklCD, ArtiklName, JedMj, Konto
 
          #region PdvSt, PdvKolTip
 
          // 26.02.2016: 
-       //if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false                                          ))
-       //21.03.2018:                                                                                                                                                                 
-       //if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false && isIzvozniRacun == false               ))
+         //if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false                                          ))
+         //21.03.2018:                                                                                                                                                                 
+         //if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false && isIzvozniRacun == false               ))
          if(faktur_rec.TtInfo.IsMalopTT || (ZXC.CURR_prjkt_rec.IS_IN_PDV && faktur_rec.IsExtendable && isOutsideEU_DevizniDokument == false && isIzvozniRacun == false) || ZXC.IsSvDUH)
          {
             if(artikl_rec.PdvKat.NotEmpty())
@@ -4428,6 +4441,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          #endregion HasRtrans_SkladCD_Exposed
+         
 
       } // if(artikl_rec != null) 
 
@@ -6218,6 +6232,13 @@ public partial class FakturExtDUC : FakturDUC
                Fld_PrjArtOP   = artikl_rec.R_orgPak;
                Fld_PrjArtOpJM = artikl_rec.R_orgPakJM;
             }
+
+            if(this is MOD_PTG_DUC)
+            {
+               (this as MOD_PTG_DUC).Fld_PTG_RamKlasa = artikl_rec.Grupa2CD;
+               (this as MOD_PTG_DUC).Fld_PTG_HddKlasa = artikl_rec.Grupa3CD;
+            }
+
          }
          else if(this.sifrarSorterType == VvSQL.SorterType.Name && tb.Text != "") // ako smo dosli iz naziva, a artikl_rec je null, to je onda 'qwe' pattern (ne postoji kao sifrar) 
          {
