@@ -113,7 +113,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected string specificFakturReportName;
 
    public Color clr_Izlaz, clr_Ulaz, clr_None, clr_Sklad, clr_komis, clr_PDV, clr_PdvSklad, clr_RUC, clr_RN, clr_malop, clr_klkPri, clr_UPA,
-                clr_UGAN_PTG, clr_DOD_PTG, clr_KOP_PTG, clr_OPL_PTG, clr_KOPLine_PTG;
+                clr_UGAN_PTG, clr_DOD_PTG, clr_KOP_PTG, clr_OPL_PTG, clr_KOPLine_PTG, clr_RAM_PTG, clr_HDD_PTG;
    public bool IsRadNalog = false;
    public bool IsSklCD2 = false;
 
@@ -233,6 +233,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ThePrefferedRecordSorter = VirtualDataRecord.DefaultSorter;
 
       this.TheSubModul = vvSubModul;
+
+      Set_PTG_Colors();
 
       CreateTabPages();
 
@@ -1622,8 +1624,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          tbx_decimal01.JAM_Highlighted = true;
          tbx_decimal02.JAM_Highlighted = true;
 
-         tbx_decimal01.JAM_ForeColor = Color.Orange;
-         tbx_decimal02.JAM_ForeColor = Color.MediumSeaGreen;
+         tbx_decimal01.JAM_ForeColor = clr_RAM_PTG;
+         tbx_decimal02.JAM_ForeColor = clr_HDD_PTG;
 
 
       }
@@ -1925,6 +1927,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_doCijMal, TheVvDaoTrans, DB_Tci.t_doCijMal, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(ZXC.IsPCTOGO) vvtbT_doCijMal.JAM_ForeColor = clr_RAM_PTG;
    }
    protected void T_noCijMal_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -1934,6 +1938,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_noCijMal, TheVvDaoTrans, DB_Tci.t_noCijMal, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(ZXC.IsPCTOGO) vvtbT_noCijMal.JAM_ForeColor = clr_HDD_PTG;
+
    }
    protected void T_pdvKolTip_CreateColumn(int _width, bool isVisible)
    {
@@ -6078,6 +6085,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       clr_KOPLine_PTG = Color.FromArgb(255, 164, 164);
    }
 
+   private void Set_PTG_Colors()
+   {
+      clr_RAM_PTG = Color.FromArgb(179, 0, 0);
+      clr_HDD_PTG = Color.FromArgb(38, 0, 153);
+   }
    public void SetUpColor(Color clrTampHeader, Color lblCrta, Color tabPagePoly)
    {
 
@@ -9107,7 +9119,7 @@ public partial class FakturExtDUC : FakturDUC
 
       }
 
-      string objektText = isMOD_PTG ? "TARGET PCK artikl:" : "Objekt:";
+      string objektText = isMOD_PTG ? "Cilj Modifikacije:" : "Objekt:";
       
                        hamper.CreateVvLabel  (0, 0, objektText, isMOD_PTG ? 1 :0, 0, isMOD_PTG ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight);
       tbx_prjArtCD   = hamper.CreateVvTextBox(isMOD_PTG ? 0 : 1, isMOD_PTG? 1 : 0, "tbx_prjArtCD  ", "Sifra objekta radnog naloga", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.prjArtCD));
@@ -13891,7 +13903,12 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_paletaNo, TheVvDaoTrans2, DB_Tci2.t_paletaNo, _colHeader, _width);
       colVvText.Visible = isVisible;
 
-      if(this is MOD_PTG_DUC || IsPTG_UgAnDo_DUC == true) colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      if(ZXC.IsPCTOGO)
+      {
+         vvtbT_paletaNo.JAM_ReadOnly = true;
+         colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      }
+
    }
    protected void T_dimX_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13902,7 +13919,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      if(this is MOD_PTG_DUC || IsPTG_UgAnDo_DUC == true) colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      if(ZXC.IsPCTOGO) vvtbT_dimX.JAM_ForeColor = clr_RAM_PTG;
    }
    protected void T_dimY_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13971,7 +13988,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      if(this is MOD_PTG_DUC || IsPTG_UgAnDo_DUC == true) colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      if(ZXC.IsPCTOGO) vvtbT_decA.JAM_ForeColor = clr_HDD_PTG;
    }
    protected void T_decB_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14068,6 +14085,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText.Visible = isVisible;
       colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
 
+      if(ZXC.IsPCTOGO) vvtbT_ramTarget2.JAM_ForeColor = clr_RAM_PTG;
    }
    protected void T_hddTarget2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14080,6 +14098,8 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
       colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+
+      if(ZXC.IsPCTOGO) vvtbT_hddTarget2.JAM_ForeColor = clr_HDD_PTG;
 
    }
 
