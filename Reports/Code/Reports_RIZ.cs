@@ -212,7 +212,7 @@ public abstract partial class VvRiskReport : VvReport
 
    public Rtrans TheRtrans_AllSkladSUM { get; set; }
 
-   public List<PCK_InfoLine> ThePTG_PCK_RptLineList { get; set; }
+   public List<PCK_ArtiklInfo_Line> ThePTG_PCK_RptLineList { get; set; }
 
 
    //public VvRiskReport() { }
@@ -1192,9 +1192,9 @@ public class RptR_PTG_Artikl_PCK_info : VvRiskReport
 
       if(theUC.artikl_rec.TS != "PCK") return 0;
 
-      PCK_Dao pck_info = new PCK_Dao(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, "");
+      PCK_ArtiklInfo_Dao pck_info = new PCK_ArtiklInfo_Dao(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, "");
 
-      TheDeviznaSumaList = pck_info.PCK_Lines.Select(pck_line => new VvReportSourceUtil()
+      TheDeviznaSumaList = pck_info.PCK_ArtiklInfo_Lines.Select(pck_line => new VvReportSourceUtil()
       {
          ArtiklGrCD   = pck_line.PCK_ArtCD  ,
          ArtiklGrName = pck_line.PCK_ArtName,

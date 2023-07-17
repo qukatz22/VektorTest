@@ -3606,7 +3606,7 @@ public class PCK_Info_UC : UserControl
 
    #endregion SetColumnIndexes()
 
-   public void PutDgvFields(List<PCK_InfoLine> PCK_Lines)
+   public void PutDgvFields(List<PCK_ArtiklInfo_Line> PCK_Lines)
    {
       int rowIdx;
 
@@ -3629,7 +3629,7 @@ public class PCK_Info_UC : UserControl
 
    }
 
-   private void PutDgvLineFields(int rowIdx, PCK_InfoLine PCK_Line)
+   private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line PCK_Line)
    {
       ThePCKGrid.PutCell(ci.iT_PCK_ArtCD   , rowIdx, PCK_Line.PCK_ArtCD  );
       ThePCKGrid.PutCell(ci.iT_PCK_ArtName , rowIdx, PCK_Line.PCK_ArtName);
@@ -3644,7 +3644,7 @@ public class PCK_Info_UC : UserControl
       ThePCKGrid.PutCell(ci.iT_StanjeKol   , rowIdx, PCK_Line.StanjeKol  );
    }
 
-   private void PutDgvSumFields(List<PCK_InfoLine> PCK_Lines)
+   private void PutDgvSumFields(List<PCK_ArtiklInfo_Line> PCK_Lines)
    {
       ThePCKSumGrid.PutCell(ci.iT_PCK_RAM  , 0, PCK_Lines.Sum(pck => pck.PCK_RAM  ));
       ThePCKSumGrid.PutCell(ci.iT_PCK_HDD  , 0, PCK_Lines.Sum(pck => pck.PCK_HDD  ));

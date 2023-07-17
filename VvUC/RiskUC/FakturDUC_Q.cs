@@ -3527,12 +3527,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          theGrid.PutCell(ci2.iT_artiklCD   , currRow, artikl_rec.ArtiklCD  );
          theGrid.PutCell(ci2.iT_artiklName , currRow, artikl_rec.ArtiklName);
          theGrid.PutCell(ci2.iT_jm         , currRow, artikl_rec.JedMj     );
-      }
 
-      if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
-      {
-         theGrid.PutCell(ci2.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
-         theGrid.PutCell(ci2.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
+         if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
+         {
+            theGrid.PutCell(ci2.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
+            theGrid.PutCell(ci2.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
+         }
       }
 
    }

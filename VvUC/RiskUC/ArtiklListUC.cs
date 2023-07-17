@@ -529,10 +529,10 @@ public class ArtiklListUC : VvRecLstUC
 
       if(currArtiklCD.NotEmpty() && artiklTS == "PCK")
       {
-         PCK_Dao info = new PCK_Dao(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD /*"ZNJ"*/, "");
+         PCK_ArtiklInfo_Dao info = new PCK_ArtiklInfo_Dao(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD /*"ZNJ"*/, "");
 
          PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
-         pckDaoDlg.TheUC.PutDgvFields(info.PCK_Lines);
+         pckDaoDlg.TheUC.PutDgvFields(info.PCK_ArtiklInfo_Lines);
          pckDaoDlg.ShowDialog();
          pckDaoDlg.Dispose();
       }

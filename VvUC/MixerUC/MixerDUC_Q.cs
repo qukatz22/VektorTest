@@ -7,6 +7,7 @@ using System.Xml.Schema;
 using System.Xml;
 using System.Collections;
 using System.ComponentModel;
+using static ArtiklDao;
 #if MICROSOFT
 using                  System.Data.SqlClient;
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -1656,7 +1657,7 @@ public class SVD_SubRptLine
 
 }
 
-public class PCK_InfoLine
+public abstract class PCK_BASE_InfoLine
 {
    public string  PCK_ArtCD    { get; set; }
    public string  PCK_ArtName  { get; set; }
@@ -1666,14 +1667,7 @@ public class PCK_InfoLine
    public decimal PCK_RAM      { get; set; }
    public decimal PCK_HDD      { get; set; }
 
-   public decimal UkPstKol     { get; set; }
-   public decimal UkUlazKol    { get; set; }
-   public decimal UkIzlazKol   { get; set; }
-   public decimal StanjeKol    { get { return /* UkPstKol + */ UkUlazKol - UkIzlazKol; } }
-
-   //public PCK_InfoLine() : this("", "", "", "", 0.00M, 0.00M) {}
-
-   public PCK_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)// : base()
+   public PCK_BASE_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)
    {
       this.PCK_ArtCD    = _PCK_ArtCD   ;
       this.PCK_ArtName  = _PCK_ArtName ;
@@ -1684,16 +1678,59 @@ public class PCK_InfoLine
       this.PCK_HDD      = _PCK_HDD     ;
    }
 
+   //public override string ToString()
+   //{
+   //   return @""" + PCK_Serno + @"" " +  PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";
+   //}
+}
+
+/// <summary>
+/// From Rtrans 
+/// </summary>
+public class PCK_ArtiklInfo_Line : PCK_BASE_InfoLine
+{
+   public decimal UkPstKol     { get; set; }
+   public decimal UkUlazKol    { get; set; }
+   public decimal UkIzlazKol   { get; set; }
+   public decimal StanjeKol    { get { return /* UkPstKol + */ UkUlazKol - UkIzlazKol; } }
+
+   public PCK_ArtiklInfo_Line(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD) : 
+                                base(_PCK_ArtCD,        _PCK_ArtName,        _PCK_RAMkind,        _PCK_HDDkind,        _PCK_SklCD,         _PCK_RAM,         _PCK_HDD)
+   {
+   }
+
    public override string ToString()
    {
       return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";
    }
 }
-public class PCK_Dao
-{
-   public List<PCK_InfoLine> PCK_Lines { get; set; }
 
-   public PCK_Dao(XSqlConnection conn, string _PCK_ArtCD, string _PCK_sklCD, string _PCK_ArtKlasa)// : base()
+/// <summary>
+/// From Rtrano 
+/// </summary>
+public class PCK_SernoInfo_Line : PCK_BASE_InfoLine
+{
+   public string PCK_Serno     { get; set; }
+   public PCK_SernoInfo_Line(string _PCK_serno, string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD) : 
+                                                  base(_PCK_ArtCD,        _PCK_ArtName,        _PCK_RAMkind,        _PCK_HDDkind,        _PCK_SklCD,         _PCK_RAM,         _PCK_HDD)
+   {
+      this.PCK_Serno = _PCK_serno;
+   }
+
+   public override string ToString()
+   {
+      return @"{" + PCK_Serno + @"} " +  PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";
+   }
+}
+
+/// <summary>
+/// From Rtrans 
+/// </summary>
+public class PCK_ArtiklInfo_Dao
+{
+   public List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_Lines { get; set; }
+
+   public PCK_ArtiklInfo_Dao(XSqlConnection conn, string _PCK_ArtCD, string _PCK_sklCD, string _PCK_ArtKlasa)// : base()
    {
       List<Artikl> PCKartikls = 
          
@@ -1701,7 +1738,7 @@ public class PCK_Dao
          _PCK_ArtKlasa.NotEmpty() ? VvUserControl.ArtiklSifrar.Where(art => art.Grupa3CD == _PCK_ArtKlasa && art.TS == "PCK").ToList() :
                                     VvUserControl.ArtiklSifrar.Where(art =>                                  art.TS == "PCK").ToList() ;
 
-      PCK_Lines = new List<PCK_InfoLine>();
+      PCK_ArtiklInfo_Lines = new List<PCK_ArtiklInfo_Line>();
 
       List<Rtrans> thisArtiklRtranses;
 
@@ -1724,7 +1761,7 @@ public class PCK_Dao
 
             //ALL_ArtiklRtranses.AddRange(thisArtiklRtranses);
 
-            PCK_Lines.AddRange(GetThisArtiklsPCKlines(thisArtiklRtranses));
+            PCK_ArtiklInfo_Lines.AddRange(GetThisArtikls_PCK_ArtiklInfo_lines(thisArtiklRtranses));
 
          } // foreach(string currSkladCD in skladCDlist)
 
@@ -1746,23 +1783,23 @@ public class PCK_Dao
 
       string orderBy = Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_");
 
-      RtransDao.GetRtransWithArtstatList(conn, rtranses, "", filterMembers, Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_"));
+      RtransDao.GetRtransWithArtstatList(conn, rtranses, "", filterMembers, orderBy);
 
       return rtranses;
    }
 
    // Voila! 
-   private List<PCK_InfoLine> GetThisArtiklsPCKlines(List<Rtrans> thisArtiklRtranses)
+   private List<PCK_ArtiklInfo_Line> GetThisArtikls_PCK_ArtiklInfo_lines(List<Rtrans> thisArtiklRtranses)
    {
       var anaGRps = thisArtiklRtranses.GroupBy(rtr => rtr.T_doCijMal.ToString0Vv() + " / " + rtr.T_noCijMal.ToString0Vv());
 
-      List<PCK_InfoLine> thisArtiklsPCKlines = new List<PCK_InfoLine>();
+      List<PCK_ArtiklInfo_Line> thisArtiklsPCKlines = new List<PCK_ArtiklInfo_Line>();
 
-      PCK_InfoLine pck_rec;
+      PCK_ArtiklInfo_Line pck_rec;
 
       foreach(var anaGR in anaGRps)
       {
-         pck_rec = new PCK_InfoLine(anaGR.First().T_artiklCD, anaGR.First().T_artiklName, anaGR.First().T_konto, anaGR.First().T_serlot, anaGR.First().T_skladCD, anaGR.First().T_doCijMal, anaGR.First().T_noCijMal);
+         pck_rec = new PCK_ArtiklInfo_Line(anaGR.First().T_artiklCD, anaGR.First().T_artiklName, anaGR.First().T_konto, anaGR.First().T_serlot, anaGR.First().T_skladCD, anaGR.First().T_doCijMal, anaGR.First().T_noCijMal);
 
          pck_rec.UkPstKol   = anaGR.Where(r => r.TtInfo.IsFinKol_PS).Sum(r => r.T_kol);
          pck_rec.UkUlazKol  = anaGR.Where(r => r.TtInfo.IsFinKol_U ).Sum(r => r.T_kol);
@@ -1774,5 +1811,58 @@ public class PCK_Dao
       return thisArtiklsPCKlines;
    }
 
+}
+
+/// <summary>
+/// From Rtrano
+/// </summary>
+public class PCK_SernoInfo_Dao
+{
+   public List<PCK_SernoInfo_Line> PCK_SernoInfo_Lines { get; set; }
+
+   public PCK_SernoInfo_Dao(XSqlConnection conn, string _PCK_Serno)
+   {
+      PCK_SernoInfo_Lines = new List<PCK_SernoInfo_Line>();
+
+      List<Rtrano> thisSernoRtranos;
+
+      thisSernoRtranos = GetSernoRtranos(conn, _PCK_Serno);
+
+      if(thisSernoRtranos.IsEmpty()) return;
+
+      Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == thisSernoRtranos.First().T_artiklCD);
+
+      if(artikl_rec == null)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "PCK_SernoInfo_Dao: nema artikla za rtrano\n\r\n\r{0}", thisSernoRtranos.First());
+         return;
+      }
+
+      PCK_SernoInfo_Line theLine;
+
+      foreach(Rtrano rtrano_rec in thisSernoRtranos)
+      {
+         theLine = new PCK_SernoInfo_Line(_PCK_Serno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.T_dimZ, rtrano_rec.T_decC);
+
+         PCK_SernoInfo_Lines.Add(theLine);
+      }
+
+   }
+
+   List<Rtrano> GetSernoRtranos(XSqlConnection conn, string _PCK_Serno)
+   {
+      List<Rtrano> rtranos = new List<Rtrano>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(1);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoDao.TheSchemaTable.Rows[ZXC.RtranoDao.CI.t_serno], false, "theSerno", _PCK_Serno, "", "", " = ", "", "R"));
+
+      string orderBy = Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_");
+
+    //VvDaoBase.LoadGenericVvDataRecordList(conn, rtranos, "", filterMembers, Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_"));
+
+      return rtranos;
+   }
 
 }
+

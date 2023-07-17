@@ -348,27 +348,6 @@ public class Rtrano : VvTransRecord
       get { return this.currentData._t_isKomDummy; }
       set {        this.currentData._t_isKomDummy = value; }
    }
-
-   #endregion DataLayer Propertiez
-
-   public string R_artCDAndGrCD
-   {
-      get
-      {
-         return T_artiklCD + T_grCD;
-      }
-   }
-
-   public decimal R_povrsina
-   {
-      get
-      {
-         decimal pretvornik = 1000.00M;
-
-         return T_dimX * T_dimY / pretvornik;
-      }
-   }
-
    /* 21 */ public decimal T_decA
    {
       get { return this.currentData._t_decA; }
@@ -389,6 +368,28 @@ public class Rtrano : VvTransRecord
       get { return this.currentData._t_rtrRecID; }
       set {        this.currentData._t_rtrRecID = value; }
    }
+   #endregion DataLayer Propertiez
+
+   public string R_artCDAndGrCD
+   {
+      get
+      {
+         return T_artiklCD + T_grCD;
+      }
+   }
+
+   public decimal R_povrsina
+   {
+      get
+      {
+         decimal pretvornik = 1000.00M;
+
+         return T_dimX * T_dimY / pretvornik;
+      }
+   }
+
+   //public string R_PCK_RAMkind { get; set; }
+   //public string R_PCK_HDDkind { get; set; }
 
    #endregion propertiz 
 
