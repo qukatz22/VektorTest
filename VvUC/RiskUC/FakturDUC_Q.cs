@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -2084,7 +2085,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region Check Empty Kupdob
 
-      if(this is FakturExtDUC)
+    //if(this is FakturExtDUC)
+      if(this is FakturExtDUC && ((this is MOD_PTG_DUC) == false))
       {
          FakturExtDUC theFakturExtDUC = this as FakturExtDUC;
 

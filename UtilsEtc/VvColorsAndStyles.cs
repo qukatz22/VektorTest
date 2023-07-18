@@ -61,7 +61,8 @@ public struct VvColorsAndStyles
 
                   tabPage4TheG_BackColor,
                   tabPage4TheG2_BackColor,
-                  tabPage4TheG3_BackColor;
+                  tabPage4TheG3_BackColor,
+                  clr_RAM_PTG, clr_HDD_PTG;
 
    public int  modulPanel_BackColorArgb, splitter_BackColorArgb,
                userControl_BackColorArgb,
