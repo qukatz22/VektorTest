@@ -955,6 +955,12 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
          TheReportViewer.Zoom(/*VirtualRptFilter.PrintZoom*/ ZXC.TheVvForm.VvPref.reportPrefs.ZoomFactor);
 
+         //17.07.2023.TAM provjeri
+         if(ZXC.IsPCTOGO && TheVvReport is RptR_PTG_Artikl_PCK_info)
+         {
+            ArtiklUC artiklUC = this as ArtiklUC;
+            artiklUC.DecideIfShouldLoad_PCKinfo(null, null, null);
+         }
 
       }
       else // QuickPrintRecord 

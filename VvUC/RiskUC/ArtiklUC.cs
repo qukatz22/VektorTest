@@ -180,7 +180,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
       if(ZXC.IsPCTOGO)
       { 
-         TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.ReportViewer_TabPage));
+         TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
          
          pcKInfoUC = new PCK_Info_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
 
@@ -3300,6 +3300,11 @@ public class ArtiklUC : VvSifrarRecordUC
          pcKInfoUC.ThePCKSumGrid.Location = new Point(pcKInfoUC.ThePCKGrid.Location.X, pcKInfoUC.ThePCKGrid.Bottom + ZXC.Qun12);
          pcKInfoUC.ThePCKSumGrid.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
          
+         pcKInfoUC.ThePCKGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
+         pcKInfoUC.ThePCKGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+         pcKInfoUC.ThePCKGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
+         pcKInfoUC.ThePCKGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
+
          pcKInfoUC.Visible = true;
       }
       else
