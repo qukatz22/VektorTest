@@ -6132,7 +6132,15 @@ public class PRIpDUC             : FakturPDUC
 
       T_artiklCD_CreateColumn  (ZXC.Q4un   , isVisible, "Šifra" , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(         isVisible, "Naziv" , "Naziv artikla ili proizvoljan opis");
-      T_konto_CreateColumn     (ZXC.Q2un   , isVisible, "Konto" , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      if(ZXC.IsPCTOGO == false) T_konto_CreateColumn     (ZXC.Q2un   , ZXC.IsPCTOGO ? false : true, "Konto" , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      
+      if(ZXC.IsPCTOGO)
+      {
+         T_artiklTS_CreateColumn(ZXC.Q2un,    true, "Tip", "Tip artikla");
+         T_doCijMal_CreateColumn(ZXC.Q3un, 0, true, "RAM", "RAM", false);
+         T_noCijMal_CreateColumn(ZXC.Q3un, 0, true, "HDD", "HDD");
+      }
+
       T_kol_CreateColumn       (ZXC.Q3un, 2, isVisible, "Kol"   , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   , isVisible, "JM"    , "Jedinica mjere");
       T_cij_CreateColumn       (ZXC.Q4un, 4, isVisible, "Cijena", "Jedinična cijena");
@@ -6148,13 +6156,29 @@ public class PRIpDUC             : FakturPDUC
    {
       bool isVisible = true;
 
-      T_artiklCD2_CreateColumn      (ZXC.Q4un,    isVisible, "Šifra"   , "Šifra artikla"                     );
-      T_artiklName2_CreateColumnFill(             isVisible, "Naziv"   , "Naziv artikla ili proizvoljan opis");
-      T_serno_CreateColumn          (ZXC.Q6un,    isVisible, "SerBroj" , "Serijski broj artikla"             );
-      D_JM_CreateColumn             (ZXC.Q3un,    isVisible, "JM"      , "Jedinica mjere"                    );
-      T_dimX_CreateColumn           (ZXC.Q3un, 2, isVisible, "Duljina" , "Duljina"                           );
-      T_dimZ_CreateColumn           (ZXC.Q3un, 2, isVisible, "Promjer" , "Promjer"                           );
-      T_kolG2_CreateColumn          (ZXC.Q3un, /* 3 ??? */ 2, isVisible, "Količina", "Količina"              );
+      if(ZXC.IsPCTOGO)
+      { 
+         T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
+         T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
+         T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+         R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
+         R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa");
+         R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa");
+         T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište"                 );
+         T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"         , "RAM"                           );
+         T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"         , "HDD old"                           );
+         T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "Stavka"       , "UGANDO stavka"                     );
+      }
+      else //PPUK
+      { 
+         T_artiklCD2_CreateColumn      (ZXC.Q4un,    isVisible, "Šifra"   , "Šifra artikla"                     );
+         T_artiklName2_CreateColumnFill(             isVisible, "Naziv"   , "Naziv artikla ili proizvoljan opis");
+         T_serno_CreateColumn          (ZXC.Q6un,    isVisible, "SerBroj" , "Serijski broj artikla"             );
+         D_JM_CreateColumn             (ZXC.Q3un,    isVisible, "JM"      , "Jedinica mjere"                    );
+         T_dimX_CreateColumn           (ZXC.Q3un, 2, isVisible, "Duljina" , "Duljina"                           );
+         T_dimZ_CreateColumn           (ZXC.Q3un, 2, isVisible, "Promjer" , "Promjer"                           );
+         T_kolG2_CreateColumn          (ZXC.Q3un, /* 3 ??? */ 2, isVisible, "Količina", "Količina"              );
+      }
    }
 
    #endregion TheG_Specific_Columns2

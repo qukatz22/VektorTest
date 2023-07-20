@@ -88,6 +88,9 @@ public class Rtrano : VvTransRecord
 
       this.T_paletaNo   = rtrans_rec.T_serial    ; // ! veza
 
+      this.T_dimZ       = rtrans_rec.T_doCijMal  ;
+      this.T_decC       = rtrans_rec.T_noCijMal  ;
+
    }
 
    public override void Memset0(uint ID)

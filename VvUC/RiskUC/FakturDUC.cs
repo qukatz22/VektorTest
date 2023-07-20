@@ -63,7 +63,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
                        vvtbT_skladDate, tbx_Konto, vvtbT_skladCD,
-                       vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramTarget,vvtbT_hddTarget,vvtbT_ramKlasa ,vvtbT_hddKlasa;
+                       vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramOld,vvtbT_hddOld,vvtbT_ramKlasa ,vvtbT_hddKlasa;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -1713,9 +1713,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is NRD_SVD_DUC ||
          this is IZD_SVD_DUC ||
          this is UGODUC ||
-         this is ZAH_SVD_DUC) colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, _width);
+         this is ZAH_SVD_DUC)                 colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, _width);
       else if(this is IFADUC && ZXC.IsPCTOGO) colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, ZXC.Q2un);
-      else colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, ZXC.Q6un);
+      else                                    colVvText = TheG.CreateVvTextBoxColumn(vvtbT_artiklCD, TheVvDaoTrans, DB_Tci.t_artiklCD, _colHeader, ZXC.Q6un);
 
       colVvText.Visible = isVisible;
 
@@ -1924,7 +1924,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      if(ZXC.IsPCTOGO) vvtbT_doCijMal.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
+      if(ZXC.IsPCTOGO)
+      {
+         vvtbT_doCijMal.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
+
+         colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      } 
    }
    protected void T_noCijMal_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -1935,8 +1940,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      if(ZXC.IsPCTOGO) vvtbT_noCijMal.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
-
+      if(ZXC.IsPCTOGO)
+      {
+         vvtbT_noCijMal.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
+     
+         colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      }
    }
    protected void T_pdvKolTip_CreateColumn(int _width, bool isVisible)
    {
@@ -2936,21 +2945,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
-   protected void R_ramTarget_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void R_ramOld_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_ramTarget = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramTarget", TheVvDaoTrans, -12, _statusText);
-      vvtbT_ramTarget.JAM_ReadOnly = true;
+      vvtbT_ramOld = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramOld", TheVvDaoTrans, -12, _statusText);
+      //vvtbT_ramTarget.JAM_ReadOnly = true;
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramTarget, TheVvDaoTrans, "R_ramTarget", _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_ramOld, TheVvDaoTrans, "R_ramOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
-   protected void R_hddTarget_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void R_hddOld_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_hddTarget = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddTarget", TheVvDaoTrans, -12, _statusText);
-      vvtbT_hddTarget.JAM_ReadOnly = true;
+      vvtbT_hddOld = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddOld", TheVvDaoTrans, -12, _statusText);
+      //vvtbT_hddTarget.JAM_ReadOnly = true;
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddTarget, TheVvDaoTrans, "R_hddTarget", _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_hddOld, TheVvDaoTrans, "R_hddOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
@@ -3056,9 +3065,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_ramMinus; // t_ztr     
       internal int iT_hddPlus ; // t_kol2    
       internal int iT_hddMinus; // t_ppmvOsn 
-      internal int iT_ramTarget; 
+      internal int iT_ramOld; 
       internal int iT_ramKlasa ; 
-      internal int iT_hddTarget; 
+      internal int iT_hddOld; 
       internal int iT_hddKlasa ; 
 
    }
@@ -3139,9 +3148,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_hddPlus           = TheG.IdxForColumn("T_hddPlus" ); // t_kol2    
       ci.iT_hddMinus          = TheG.IdxForColumn("T_hddMinus"); // t_ppmvOsn 
 
-      ci.iT_ramTarget         = TheG.IdxForColumn("R_ramTarget"); 
+      ci.iT_ramOld            = TheG.IdxForColumn("R_ramOld"); 
       ci.iT_ramKlasa          = TheG.IdxForColumn("R_ramKlasa"); 
-      ci.iT_hddTarget         = TheG.IdxForColumn("R_hddTarget"); 
+      ci.iT_hddOld            = TheG.IdxForColumn("R_hddOld"); 
       ci.iT_hddKlasa          = TheG.IdxForColumn("R_hddKlasa"); 
 
    }
@@ -13789,7 +13798,7 @@ public class FakturPDUC : FakturExtDUC
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
-                       vvtbT_ramOld, vvtbT_hddOld, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2;
+                       vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
@@ -13934,7 +13943,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(ZXC.IsPCTOGO)
       {
-         vvtbT_dimZ.JAM_ReadOnly  = true;
+       //vvtbT_dimZ.JAM_ReadOnly  = true;
          vvtbT_dimZ.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
 
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
@@ -14001,7 +14010,7 @@ public class FakturPDUC : FakturExtDUC
    protected void T_decC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_decC = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decC", TheVvDaoTrans2, DB_Tci2.t_decC, _statusText);
-      vvtbT_decC.JAM_ReadOnly = true;
+      //vvtbT_decC.JAM_ReadOnly = true;
       //vvtbT_decC.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decC, TheVvDaoTrans2, DB_Tci2.t_decC, _colHeader, _width);
@@ -14010,7 +14019,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(ZXC.IsPCTOGO)
       {
-         vvtbT_decC.JAM_ReadOnly = true;
+         //vvtbT_decC.JAM_ReadOnly = true;
          vvtbT_decC.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
 
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
@@ -14088,28 +14097,28 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;
       colVvText.Visible = isVisible;
    }
-   protected void R_ramOld_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void R_ramOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_ramOld = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramOld", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_ramOld2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramOld2", TheVvDaoTrans2, -12, _statusText);
       
     //vvtbT_ramOLD.JAM_ShouldCalcTrans = true;
 
-      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramOld, TheVvDaoTrans2, "R_ramOld", _colHeader, _width);
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramOld2, TheVvDaoTrans2, "R_ramOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
       
-      vvtbT_ramOld.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
+      vvtbT_ramOld2.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
    }
-   protected void R_hddOld_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void R_hddOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_hddOld = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddOld", TheVvDaoTrans2, -12, _statusText);
-    //vvtbT_hddOld.JAM_ShouldCalcTrans = true;
+      vvtbT_hddOld2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddOld2", TheVvDaoTrans2, -12, _statusText);
+    //vvtbT_hddOld2.JAM_ShouldCalcTrans = true;
 
-      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddOld, TheVvDaoTrans2, "R_hddOld", _colHeader, _width);
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddOld2, TheVvDaoTrans2, "R_hddOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
       
-      vvtbT_hddOld.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
+      vvtbT_hddOld2.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
    }
    protected void R_artiklTS_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)//"TS"
    {
@@ -14298,6 +14307,8 @@ public class FakturPDUC : FakturExtDUC
          TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
          TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
          TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS      );
+
+         SetColorsPCKartikl();
       }
    }
 
@@ -14550,9 +14561,37 @@ public class FakturPDUC : FakturExtDUC
       return dgvRtrano_rec;
    }
 
-#endregion PutDgvFields2(), GetDgvFields2()
+   public void SetColorsPCKartikl()
+   {
+      VvDataGridView dgv = TheG2;
+      int rowIdx;
+      for(int i = 0; i < dgv.Rows.Count; i++)
+      {
+         rowIdx = i;
 
-#region TabPageTitle2
+         foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
+         {
+            if(dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value.ToString() == "PCK")
+            {
+               tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
+            }
+            //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "S")
+            //{
+            //   tbxCell.Style.BackColor = Color.PaleGreen;
+            //}
+            //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "O")
+            //{
+            //   tbxCell.Style.BackColor = Color.LightGray;
+            //}
+
+         }
+      }
+   }
+
+
+   #endregion PutDgvFields2(), GetDgvFields2()
+
+   #region TabPageTitle2
 
    public override string TabPageTitle2
    {
