@@ -1192,9 +1192,9 @@ public class RptR_PTG_Artikl_PCK_info : VvRiskReport
 
       if(theUC.artikl_rec.TS != "PCK") return 0;
 
-      PCK_ArtiklInfo_Dao pck_info = new PCK_ArtiklInfo_Dao(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, "");
+      List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD);
 
-      TheDeviznaSumaList = pck_info.PCK_ArtiklInfo_Lines.Select(pck_line => new VvReportSourceUtil()
+      TheDeviznaSumaList = PCK_ArtiklInfo_List.Select(pck_line => new VvReportSourceUtil()
       {
          ArtiklGrCD   = pck_line.PCK_ArtCD  ,
          ArtiklGrName = pck_line.PCK_ArtName,

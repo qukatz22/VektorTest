@@ -180,11 +180,11 @@ public struct TtInfo
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DOD, // PCTGO tt 
-      Faktur.TT_PV2, // PCTGO tt 
+      Faktur.TT_PVR, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_UG2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_DO2, // PCTGO tt ovo je mozda visak, al ziheraski 
-      Faktur.TT_PVR, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_PV2, // PCTGO tt ovo je mozda visak, al ziheraski 
 
       Faktur.TT_MOD, // PCTGO tt ovo je mozda visak, al ziheraski 
 
@@ -266,7 +266,7 @@ public struct TtInfo
             case Faktur.TT_AUN:
             case Faktur.TT_UGN:
             case Faktur.TT_DOD:
-            case Faktur.TT_PV2:
+            case Faktur.TT_PVR:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
 
@@ -337,7 +337,7 @@ public struct TtInfo
       Faktur.TT_AUN,
       Faktur.TT_UGN,
       Faktur.TT_DOD,
-      Faktur.TT_PV2,
+      Faktur.TT_PVR,
    };
 
    public bool IsIRArucableTT { get { return arrayIRArucables.Contains(TheTT); } }
@@ -372,7 +372,7 @@ public struct TtInfo
       Faktur.TT_AUN,
       Faktur.TT_UGN,
       Faktur.TT_DOD,
-      Faktur.TT_PV2,
+      Faktur.TT_PVR,
    };
    /// <summary>
    /// Ovi TT-ovi u T_skladDate napucavaju F_skladDate a ne F_dokDate
@@ -447,7 +447,7 @@ public struct TtInfo
       Faktur.TT_AUN,
       Faktur.TT_UGN,
       Faktur.TT_DOD,
-      Faktur.TT_PV2,
+      Faktur.TT_PVR,
       Faktur.TT_MOI,
    };
    // Za sada ovo sluzi samo pri 'AnyArtiklTextBox_OnGrid_Leave' na FakturDUC-u 
@@ -515,7 +515,7 @@ public struct TtInfo
       Faktur.TT_AU2,
       Faktur.TT_UG2,
       Faktur.TT_DO2,
-      Faktur.TT_PVR,
+      Faktur.TT_PV2,
       Faktur.TT_MOU,
    };
    /// <summary>
@@ -994,11 +994,11 @@ public struct TtInfo
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DOD, // PCTGO tt 
-      Faktur.TT_PV2, // PCTGO tt 
+      Faktur.TT_PVR, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt 
       Faktur.TT_UG2, // PCTGO tt 
       Faktur.TT_DO2, // PCTGO tt 
-      Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_PV2, // PCTGO tt 
       Faktur.TT_MOD, // PCTGO tt 
    };
    public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
@@ -1083,8 +1083,8 @@ public struct TtInfo
       if(TheTT == Faktur.TT_AU2) LinkedIzlazTT = Faktur.TT_AUN;
       if(TheTT == Faktur.TT_DOD) TwinTT        = Faktur.TT_DO2;
       if(TheTT == Faktur.TT_DO2) LinkedIzlazTT = Faktur.TT_DOD;
-      if(TheTT == Faktur.TT_PV2) TwinTT        = Faktur.TT_PVR;
-      if(TheTT == Faktur.TT_PVR) LinkedIzlazTT = Faktur.TT_PV2;
+      if(TheTT == Faktur.TT_PVR) TwinTT        = Faktur.TT_PV2;
+      if(TheTT == Faktur.TT_PV2) LinkedIzlazTT = Faktur.TT_PVR;
 
       #endregion Meduskladisnice
 

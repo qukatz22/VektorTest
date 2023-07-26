@@ -6284,6 +6284,26 @@ public static class VvSQL
       return (cmd);
    }
 
+   internal static XSqlCommand GetDistinctRtranoSernoForArtiklAndSklad_Command(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
+   {
+      #region local variablez 
+
+      XSqlCommand cmd = InitCommand(conn);
+
+      string               preffix = "prm_";
+      DataRowCollection    rows    = ZXC.RtranoDao.TheSchemaTable.Rows;
+      RtranoDao.RtranoCI   ci      = ZXC.RtoCI;
+
+      #endregion local variablez
+
+      cmd.CommandText = "SELECT DISTINCT t_serno FROM " + Rtrano.recordName + " WHERE t_skladCD = ?prm_t_skladCD AND t_artiklCD = ?prm_t_artiklCD\n";
+
+      VvSQL.CreateCommandParameter(cmd, preffix, _PCK_SklCD, rows[ci.t_skladCD] );
+      VvSQL.CreateCommandParameter(cmd, preffix, _PCK_ArtCD, rows[ci.t_artiklCD]);
+
+      return (cmd);
+   }
+
    #endregion The ARTIKL STATUS CACHE! OvoOno_Commands
 
    internal static XSqlCommand CountNOTfiskalizedRns_Command(XSqlConnection conn, string fiskTTList)

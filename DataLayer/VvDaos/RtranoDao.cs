@@ -388,4 +388,74 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
    #endregion GetRtranoList_For_SERNO  or t_paletaNo
 
+   #region Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
+
+   public static List<PCK_ArtiklInfo_Line> Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
+   {
+      if(_PCK_ArtCD.IsEmpty()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Zadajte artikl!"); return null; }
+
+      List<string> skladCDlist;
+
+      if(_PCK_SklCD.NotEmpty()) skladCDlist = new List<string> { _PCK_SklCD };
+      else                      skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, _PCK_ArtCD);
+
+      List<PCK_ArtiklInfo_Line>  ALL_SklCD_ArtiklInfo_List = new List<PCK_ArtiklInfo_Line>();
+      List<PCK_ArtiklInfo_Line>  currSklCD_ArtiklInfo_List;
+      List<PCK_SernoInfo_Line >  currSklCD_SernoInfo_List ;
+
+      foreach(string currSkladCD in skladCDlist)
+      {
+         currSklCD_ArtiklInfo_List = new List<PCK_ArtiklInfo_Line>();
+         currSklCD_SernoInfo_List  = new List<PCK_SernoInfo_Line >();
+         
+         List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(conn, _PCK_ArtCD, currSkladCD);
+
+         Rtrano rtrano_rec;
+         
+         PCK_ArtiklInfo_Line artiklInfoLine;
+         PCK_SernoInfo_Line  sernoInfoLine ;
+
+         Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == _PCK_ArtCD);
+
+         foreach(string theSerno in theSernoList)
+         {
+            rtrano_rec = new Rtrano();
+
+            MixerDao.Get_LastRtrano_ForSerno(conn, rtrano_rec, theSerno);
+
+            if(rtrano_rec.T_skladCD == currSkladCD && // ovo izbacuje serno-ove rtrano-e koji nisu      na zadanom skladistu 
+               rtrano_rec.TtInfo.IsFinKol_U         ) // ovo izbacuje serno-ove rtrano-e koji nisu ULAZ na zadanom skladistu 
+            {
+
+               if(artikl_rec == null)
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "PCK_SernoInfo_Dao: nema artikla za rtrano\n\r\n\r{0}", rtrano_rec);
+                  return null;
+               }
+
+               sernoInfoLine = new PCK_SernoInfo_Line(theSerno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.T_dimZ, rtrano_rec.T_decC);
+
+               currSklCD_SernoInfo_List.Add(sernoInfoLine);
+            }
+         }
+
+         var sernoInfo_GRoups = currSklCD_SernoInfo_List.GroupBy(sil => sil.PCK_RAM.ToString0Vv() + " / " + sil.PCK_HDD.ToString0Vv());
+
+         foreach(var sernoInfo_GR in sernoInfo_GRoups)
+         {
+            artiklInfoLine = new PCK_ArtiklInfo_Line(_PCK_ArtCD, artikl_rec.ArtiklName, sernoInfo_GR.First().PCK_RAMkind, sernoInfo_GR.First().PCK_HDDkind, currSkladCD, sernoInfo_GR.First().PCK_RAM, sernoInfo_GR.First().PCK_HDD);
+
+            artiklInfoLine.PCK_SernoInfo_List = sernoInfo_GR.ToList();
+
+            currSklCD_ArtiklInfo_List.Add(artiklInfoLine);
+         }
+
+         ALL_SklCD_ArtiklInfo_List.AddRange(currSklCD_ArtiklInfo_List);
+
+      } // foreach(string currSkladCD in skladCDlist) 
+
+      return ALL_SklCD_ArtiklInfo_List;
+   }
+
+   #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
 }

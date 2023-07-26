@@ -3289,9 +3289,9 @@ public class ArtiklUC : VvSifrarRecordUC
 
          string skladCD = this.TheCurrentSkladCD;
 
-         PCK_ArtiklInfo_Dao info = new PCK_ArtiklInfo_Dao(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD, "");
+         List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD);
 
-         pcKInfoUC.PutDgvFields(info.PCK_ArtiklInfo_Lines);
+         pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
          pcKInfoUC.Size = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
          pcKInfoUC.ThePCKGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKSumGrid.Height - ZXC.Q2un;

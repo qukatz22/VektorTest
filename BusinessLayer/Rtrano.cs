@@ -67,7 +67,11 @@ public class Rtrano : VvTransRecord
       Memset0(ID);
    }
 
-   public Rtrano(Rtrans rtrans_rec/*, ushort newSerial*/) : base()
+   /// <summary>
+   /// RISK_PTG_AddRtrano
+   /// </summary>
+   /// <param name="rtrans_rec"></param>
+   public Rtrano(Rtrans rtrans_rec) : base() // PTG ONLY! 
    {
       this.currentData = new RtranoStruct();
 

@@ -8,6 +8,7 @@ using System.Xml;
 using System.Collections;
 using System.ComponentModel;
 using static ArtiklDao;
+using Microsoft.Office.Interop.Excel;
 #if MICROSOFT
 using                  System.Data.SqlClient;
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -1684,15 +1685,15 @@ public abstract class PCK_BASE_InfoLine
    //}
 }
 
-/// <summary>
-/// From Rtrans 
-/// </summary>
 public class PCK_ArtiklInfo_Line : PCK_BASE_InfoLine
 {
-   public decimal UkPstKol     { get; set; }
-   public decimal UkUlazKol    { get; set; }
-   public decimal UkIzlazKol   { get; set; }
-   public decimal StanjeKol    { get { return /* UkPstKol + */ UkUlazKol - UkIzlazKol; } }
+   //public decimal UkPstKol     { get; set; }
+   //public decimal UkUlazKol    { get; set; }
+   //public decimal UkIzlazKol   { get; set; }
+   //public decimal StanjeKol    { get { return /* UkPstKol + */ UkUlazKol - UkIzlazKol; } }
+   public int StanjeKol { get { return PCK_SernoInfo_List.Count; } }
+
+   public List<PCK_SernoInfo_Line> PCK_SernoInfo_List { get; set; }
 
    public PCK_ArtiklInfo_Line(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD) : 
                                 base(_PCK_ArtCD,        _PCK_ArtName,        _PCK_RAMkind,        _PCK_HDDkind,        _PCK_SklCD,         _PCK_RAM,         _PCK_HDD)
@@ -1705,9 +1706,6 @@ public class PCK_ArtiklInfo_Line : PCK_BASE_InfoLine
    }
 }
 
-/// <summary>
-/// From Rtrano 
-/// </summary>
 public class PCK_SernoInfo_Line : PCK_BASE_InfoLine
 {
    public string PCK_Serno     { get; set; }
@@ -1723,9 +1721,8 @@ public class PCK_SernoInfo_Line : PCK_BASE_InfoLine
    }
 }
 
-/// <summary>
-/// From Rtrans 
-/// </summary>
+#if NEYNAM_KAJCEMIOVO
+
 public class PCK_ArtiklInfo_Dao
 {
    public List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_Lines { get; set; }
@@ -1813,20 +1810,19 @@ public class PCK_ArtiklInfo_Dao
 
 }
 
-/// <summary>
-/// From Rtrano
-/// </summary>
 public class PCK_SernoInfo_Dao
 {
-   public List<PCK_SernoInfo_Line> PCK_SernoInfo_Lines { get; set; }
 
-   public PCK_SernoInfo_Dao(XSqlConnection conn, string _PCK_Serno)
+   public List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List { get; set; }
+   public List<PCK_SernoInfo_Line>  PCK_SernoInfo_List  { get; set; }
+
+   public PCK_SernoInfo_Dao(XSqlConnection conn, string _PCK_Serno, string _PCK_SklCD)
    {
-      PCK_SernoInfo_Lines = new List<PCK_SernoInfo_Line>();
+      PCK_SernoInfo_List = new List<PCK_SernoInfo_Line>();
 
       List<Rtrano> thisSernoRtranos;
 
-      thisSernoRtranos = GetSernoRtranos(conn, _PCK_Serno);
+      thisSernoRtranos = GetSernoRtranosForSklad(conn, _PCK_Serno, _PCK_SklCD);
 
       if(thisSernoRtranos.IsEmpty()) return;
 
@@ -1844,25 +1840,27 @@ public class PCK_SernoInfo_Dao
       {
          theLine = new PCK_SernoInfo_Line(_PCK_Serno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.T_dimZ, rtrano_rec.T_decC);
 
-         PCK_SernoInfo_Lines.Add(theLine);
+         PCK_SernoInfo_List.Add(theLine);
       }
 
    }
 
-   List<Rtrano> GetSernoRtranos(XSqlConnection conn, string _PCK_Serno)
+   private List<Rtrano> GetSernoRtranosForSklad(XSqlConnection conn, string _PCK_Serno, string _PCK_SklCD)
    {
       List<Rtrano> rtranos = new List<Rtrano>();
 
-      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(1);
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
 
-      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoDao.TheSchemaTable.Rows[ZXC.RtranoDao.CI.t_serno], false, "theSerno", _PCK_Serno, "", "", " = ", "", "R"));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoDao.TheSchemaTable.Rows[ZXC.RtranoDao.CI.t_serno  ], false, "theSerno", _PCK_Serno, "", "", " = ", "", "R"));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoDao.TheSchemaTable.Rows[ZXC.RtranoDao.CI.t_skladCD], false, "theSklCD", _PCK_SklCD, "", "", " = ", "", "R"));
 
       string orderBy = Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_");
 
-    //VvDaoBase.LoadGenericVvDataRecordList(conn, rtranos, "", filterMembers, Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_"));
+      VvDaoBase.LoadGenericVvDataRecordList(conn, rtranos, filterMembers, orderBy);
 
       return rtranos;
    }
 
 }
+#endif
 

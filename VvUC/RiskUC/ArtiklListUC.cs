@@ -3,6 +3,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Generic;
 
 public class ArtiklListUC : VvRecLstUC
 {
@@ -529,10 +530,10 @@ public class ArtiklListUC : VvRecLstUC
 
       if(currArtiklCD.NotEmpty() && artiklTS == "PCK")
       {
-         PCK_ArtiklInfo_Dao info = new PCK_ArtiklInfo_Dao(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD /*"ZNJ"*/, "");
+         List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD);
 
          PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
-         pckDaoDlg.TheUC.PutDgvFields(info.PCK_ArtiklInfo_Lines);
+         pckDaoDlg.TheUC.PutDgvFields(PCK_ArtiklInfo_List);
          pckDaoDlg.ShowDialog();
          pckDaoDlg.Dispose();
       }
