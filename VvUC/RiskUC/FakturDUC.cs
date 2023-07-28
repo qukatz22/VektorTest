@@ -13872,6 +13872,9 @@ public class FakturPDUC : FakturExtDUC
 
       string theTT = Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD);
 
+      SetColors_MOD_PTG_DUC(theTT, rowIdx);
+
+
       int a = 8;
    }
 
@@ -13879,7 +13882,8 @@ public class FakturPDUC : FakturExtDUC
    {
     //Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD); if(artikl_rec == null) return "";
     //bool isPCK = artikl_rec.TS     == "PCK";
-      bool isPCK = rtrano_rec.T_grCD == "PCK"; // OVO TU NIJE DOBRO I TREBA Provjeriti!!!
+    //bool isPCK = rtrano_rec.T_grCD == "PCK"; // OVO TU NIJE DOBRO I TREBA Provjeriti!!!
+      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
 
       bool isMOC = isPCK && MOC_RAM == rtrano_rec.T_dimZ && MOC_HDD == rtrano_rec.T_decC;
 
@@ -13896,11 +13900,14 @@ public class FakturPDUC : FakturExtDUC
 
       // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
 
-      bool isMOI = RAMplus.NotZero() || HDDplus.NotZero(); // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
+    //bool isMOI = RAMplus .NotZero() || HDDplus. NotZero(); // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
+      bool isMOI = RAMminus.NotZero() || HDDminus.NotZero(); 
 
       if(isMOI) return Faktur.TT_MOI;
       else      return Faktur.TT_MOU;
 
+      // A STO KADA JE SU SVI NULA - NA PO;ETKU KOD zADAVANJA A I KASNIJE KOD KONTROLE
+      // JER OVAKO DOBIVA DA JE MOU!!!
    }
 
    protected void T_artiklName2_CreateColumnFill(bool isVisible, string _colHeader, string _statusText)
@@ -13973,6 +13980,12 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_dimX, TheVvDaoTrans2, DB_Tci2.t_dimX, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_dimX.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+      }
+
    }
    protected void T_dimY_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13982,6 +13995,12 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_dimY, TheVvDaoTrans2, DB_Tci2.t_dimY, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_dimY.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+      }
+
    }
    protected void T_dimZ_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -13994,11 +14013,14 @@ public class FakturPDUC : FakturExtDUC
 
       if(ZXC.IsPCTOGO)
       {
-       //vvtbT_dimZ.JAM_ReadOnly  = true;
          vvtbT_dimZ.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
-
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       }
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+      }
+
    }
    protected void T_komada_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14043,26 +14065,35 @@ public class FakturPDUC : FakturExtDUC
    protected void T_decA_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_decA = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decA", TheVvDaoTrans2, DB_Tci2.t_decA, _statusText);
-    //vvtbT_decA.JAM_ShouldCalcTrans = true;
+      vvtbT_decA.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decA, TheVvDaoTrans2, DB_Tci2.t_decA, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_decA.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+      }
    }
    protected void T_decB_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_decB = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decB", TheVvDaoTrans2, DB_Tci2.t_decB, _statusText);
-    //vvtbT_decB.JAM_ShouldCalcTrans = true;
+      vvtbT_decB.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decB, TheVvDaoTrans2, DB_Tci2.t_decB, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_decB.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+      }
    }
    protected void T_decC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_decC = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_decC", TheVvDaoTrans2, DB_Tci2.t_decC, _statusText);
-      //vvtbT_decC.JAM_ReadOnly = true;
-      //vvtbT_decC.JAM_ShouldCalcTrans = true;
+      vvtbT_decC.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_decC, TheVvDaoTrans2, DB_Tci2.t_decC, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
@@ -14070,12 +14101,13 @@ public class FakturPDUC : FakturExtDUC
 
       if(ZXC.IsPCTOGO)
       {
-         //vvtbT_decC.JAM_ReadOnly = true;
-         vvtbT_decC.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
-
+         vvtbT_decC.JAM_ForeColor        = ZXC.vvColors.clr_HDD_PTG;
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       }
-
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_decC.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+      }
    }
    protected void T_rtrRecID_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14628,25 +14660,48 @@ public class FakturPDUC : FakturExtDUC
       {
          rowIdx = i;
 
-         foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
-         {
-            if(dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value.ToString() == "PCK")
-            {
-               tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
-            }
-            //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "S")
-            //{
-            //   tbxCell.Style.BackColor = Color.PaleGreen;
-            //}
-            //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "O")
-            //{
-            //   tbxCell.Style.BackColor = Color.LightGray;
-            //}
-
-         }
+         //foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
+         //{
+         //   if(dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value.ToString() == Faktur.TT_MOC)
+         //   {
+         //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
+         //   }
+         //
+         //
+         //   if(dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value.ToString() == "PCK")
+         //   {
+         //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
+         //   }
+         //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "S")
+         //   //{
+         //   //   tbxCell.Style.BackColor = Color.PaleGreen;
+         //   //}
+         //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "O")
+         //   //{
+         //   //   tbxCell.Style.BackColor = Color.LightGray;
+         //   //}
+         //
+         //}
       }
    }
 
+   private void SetColors_MOD_PTG_DUC(string TT, int rowIdx)
+   {
+      VvDataGridView dgv = TheG2;
+
+      foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
+      {
+         switch(TT)
+         {
+            case Faktur.TT_MOC: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG     ; break;
+            case Faktur.TT_MOS: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
+            case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
+            case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
+            
+            default:            tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+         }
+      }
+   }
 
    #endregion PutDgvFields2(), GetDgvFields2()
 
