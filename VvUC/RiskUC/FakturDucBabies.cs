@@ -6264,6 +6264,14 @@ public class IRPDUC              : FakturPDUC
       T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"         , "Usluga");
       T_konto_CreateColumn     (ZXC.Q3un   ,          isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+     
+      if(ZXC.IsPCTOGO)
+      {
+         T_artiklTS_CreateColumn(ZXC.Q2un,    true, "Tip", "Tip artikla");
+         T_doCijMal_CreateColumn(ZXC.Q3un, 0, true, "RAM", "RAM", false);
+         T_noCijMal_CreateColumn(ZXC.Q3un, 0, true, "HDD", "HDD");
+      }
+      
       T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
       T_cij_CreateColumn       (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
@@ -6293,18 +6301,34 @@ public class IRPDUC              : FakturPDUC
    {
       bool isVisible = true;
 
-      T_artiklCD2_CreateColumn      (ZXC.Q4un,    isVisible, "Šifra"   , "Šifra artikla"                     );
-      T_artiklName2_CreateColumnFill(             isVisible, "Naziv"   , "Naziv artikla ili proizvoljan opis");
-      T_grCD_CreateColumn           (ZXC.Q4un,    isVisible, "Grupa"   , "Oznaka za grupiranje"              );
-      R_grNameG2_CreateColumn       (ZXC.Q8un,    isVisible, "Opis"    , "Opis grupe"                        );
-      T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "Paleta"  , "Broj palete"                       );
-      D_JM_CreateColumn             (ZXC.Q3un,    isVisible, "JM"      , "Jedinica mjere"                    );
-      T_dimX_CreateColumn           (ZXC.Q3un, 2, isVisible, "Duljina" , "Duljina"                           );
-      T_dimY_CreateColumn           (ZXC.Q3un, 2, isVisible, "Širina"  , "Širina"                            );
-      T_dimZ_CreateColumn           (ZXC.Q3un, 2, isVisible, "Debljina", "Debljina"                          );
-      T_komada_CreateColumn         (ZXC.Q3un, 2, isVisible, "Komada"  , "Komada"                            );
-      T_kolG2_CreateColumn          (ZXC.Q3un, 3, isVisible, "Količina", "Količina"                          );
-      T_isKomDummy_CreateColumn     (ZXC.Q3un   , isVisible, "Kom=1"   , "Komada=1"                          );
+      if(ZXC.IsPCTOGO)
+      { 
+         T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
+         T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
+         T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+         R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
+         R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa");
+         R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa");
+         T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište"                 );
+         T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"         , "RAM"                           );
+         T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"         , "HDD old"                           );
+         T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "Stavka"       , "UGANDO stavka"                     );
+      }
+      else //PPUK
+      {
+         T_artiklCD2_CreateColumn      (ZXC.Q4un,    isVisible, "Šifra"   , "Šifra artikla"                     );
+         T_artiklName2_CreateColumnFill(             isVisible, "Naziv"   , "Naziv artikla ili proizvoljan opis");
+         T_grCD_CreateColumn           (ZXC.Q4un,    isVisible, "Grupa"   , "Oznaka za grupiranje"              );
+         R_grNameG2_CreateColumn       (ZXC.Q8un,    isVisible, "Opis"    , "Opis grupe"                        );
+         T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "Paleta"  , "Broj palete"                       );
+         D_JM_CreateColumn             (ZXC.Q3un,    isVisible, "JM"      , "Jedinica mjere"                    );
+         T_dimX_CreateColumn           (ZXC.Q3un, 2, isVisible, "Duljina" , "Duljina"                           );
+         T_dimY_CreateColumn           (ZXC.Q3un, 2, isVisible, "Širina"  , "Širina"                            );
+         T_dimZ_CreateColumn           (ZXC.Q3un, 2, isVisible, "Debljina", "Debljina"                          );
+         T_komada_CreateColumn         (ZXC.Q3un, 2, isVisible, "Komada"  , "Komada"                            );
+         T_kolG2_CreateColumn          (ZXC.Q3un, 3, isVisible, "Količina", "Količina"                          );
+         T_isKomDummy_CreateColumn     (ZXC.Q3un   , isVisible, "Kom=1"   , "Komada=1"                          );
+      }
    }
 
    #endregion TheG_Specific_Columns2

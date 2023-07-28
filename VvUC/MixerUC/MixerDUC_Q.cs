@@ -8,7 +8,7 @@ using System.Xml;
 using System.Collections;
 using System.ComponentModel;
 using static ArtiklDao;
-using Microsoft.Office.Interop.Excel;
+//using Microsoft.Office.Interop.Excel;
 #if MICROSOFT
 using                  System.Data.SqlClient;
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
