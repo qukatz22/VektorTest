@@ -13851,7 +13851,58 @@ public class FakturPDUC : FakturExtDUC
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_artiklCD2, TheVvDaoTrans2, DB_Tci2.t_artiklCD, _colHeader, ZXC.Q6un);
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_artiklCD2.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color);
+      }
    }
+
+   private void SetRow_TT_and_Color(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      int rowIdx = TheG2.CurrentRow.Index;
+
+      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+      string artiklCD = Fld_PrjArtCD ;
+      decimal PCK_RAM = Fld_Decimal01;
+      decimal PCK_HDD = Fld_Decimal02;
+
+      string theTT = Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD);
+
+      int a = 8;
+   }
+
+   private string Get_MOD_RtranoTT(int rowIdx, Rtrano rtrano_rec, string artiklCD, decimal MOC_RAM, decimal MOC_HDD)
+   {
+    //Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD); if(artikl_rec == null) return "";
+    //bool isPCK = artikl_rec.TS     == "PCK";
+      bool isPCK = rtrano_rec.T_grCD == "PCK"; // OVO TU NIJE DOBRO I TREBA Provjeriti!!!
+
+      bool isMOC = isPCK && MOC_RAM == rtrano_rec.T_dimZ && MOC_HDD == rtrano_rec.T_decC;
+
+      if(isPCK)
+      {
+         if(isMOC) return Faktur.TT_MOC;
+         else      return Faktur.TT_MOS;
+      }
+
+      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false);
+      decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false);
+      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
+      decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false);
+
+      // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
+
+      bool isMOI = RAMplus.NotZero() || HDDplus.NotZero(); // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
+
+      if(isMOI) return Faktur.TT_MOI;
+      else      return Faktur.TT_MOU;
+
+   }
+
    protected void T_artiklName2_CreateColumnFill(bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_artiklName2 = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_artiklName2", TheVvDaoTrans2, DB_Tci2.t_artiklName, _statusText);
@@ -14442,7 +14493,15 @@ public class FakturPDUC : FakturExtDUC
                                dgvRtrano_rec.T_TT = faktur_rec.TT;
       if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
 
-                                  dgvRtrano_rec.T_ttNum = faktur_rec.TtNum;
+      // 2023 PTG news ... TT Rtrano-a, ili bilo koje druge medjuskladisnice?!, 
+      // treba postati twinTT, tj. 'kasniji' događaj                            
+      if(faktur_rec.TtInfo.TwinTT.NotEmpty())
+      {
+                                  dgvRtrano_rec.T_TT = faktur_rec.TtInfo.TwinTT;
+         if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
+      }   
+
+          dgvRtrano_rec.T_ttNum = faktur_rec.TtNum;
       if(DB_RWT) db_rec.T_ttNum = dgvRtrano_rec.T_ttNum;
 
       // ttSort, skladCD, kupdobCD dodani tek 29.12.2013!!! 

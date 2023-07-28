@@ -2285,7 +2285,7 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       R_rbtPdv    = R_mskPdv     - R_pdv                               ; // porez u rabatu                                                                              
       R_KCR       = R_KCRPwoPPMV - R_pdv - R_Pnp                       ; // kupacPlatijo pa bez pdv.                              ("ja zaradijo")                       
 
-      // 17.04.2023: ... a 05.06.2023: jos doradili 
+      // 17.04.2023: ... a 05.06.2023: jos doradili ... a 27.07.2023: jos doradili da smo umj. R_KCRP stavili pdvBruto
     //if(ShouldAdjust_2i7_MalopCij                                  ) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
       if(ShouldAdjust_2i7_MalopCij && T_skladDate > ZXC.Date17042023) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
       {
@@ -2293,17 +2293,21 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
          if(T_skladDate > ZXC.Date06062023)
          {
-            R_rbt1 += 0.02M;
-            R_KCRP -= 0.02M;
+            R_rbt1   += 0.02M;
+            R_KCRP   -= 0.02M;
+            pdvBruto -= 0.02M;
          }
          else
          {
-            R_rbt1 += 0.01M;
-            R_KCRP -= 0.01M;
+            R_rbt1   += 0.01M;
+            R_KCRP   -= 0.01M;
+            pdvBruto -= 0.01M;
          }
 
-         R_pdv = ZXC.VvGet_25_from_125(R_KCRP, T_pdvSt);
-         R_KCR = R_KCRP - R_pdv                        ;
+       //R_pdv = ZXC.VvGet_25_from_125(R_KCRP  , T_pdvSt);
+         R_pdv = ZXC.VvGet_25_from_125(pdvBruto, T_pdvSt);
+       //R_KCR = R_KCRP   - R_pdv                        ;
+         R_KCR = pdvBruto - R_pdv                        ;
 
          R_rbtPdv = R_mskPdv - R_pdv; // ponavljamo zbog novog R_pdv-a                                                                              
       }

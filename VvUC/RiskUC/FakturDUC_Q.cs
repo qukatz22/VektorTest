@@ -56,6 +56,8 @@ public struct TtInfo
    public bool IsUlazniShadowTT    { get { return HasShadowTT && ShadowTT == Faktur.TT_NUV; } }
    public bool IsUraPovratShadowTT { get { return HasShadowTT && ShadowTT == Faktur.TT_NUP; } }
    public bool IsMODulazTT         { get { return this.TheTT == Faktur.TT_MOU; } }
+   public bool Is_MOC_or_MOS_TT    { get { return this.TheTT == Faktur.TT_MOC || 
+                                                  this.TheTT == Faktur.TT_MOS; } }
 
    public bool IsPreDef        { get; set; }
    public bool IsRezervKol     { get; set; }

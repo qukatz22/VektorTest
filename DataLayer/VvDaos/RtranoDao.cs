@@ -406,16 +406,18 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       foreach(string currSkladCD in skladCDlist)
       {
          currSklCD_ArtiklInfo_List = new List<PCK_ArtiklInfo_Line>();
-         currSklCD_SernoInfo_List  = new List<PCK_SernoInfo_Line >();
-         
+         currSklCD_SernoInfo_List = new List<PCK_SernoInfo_Line>();
+
          List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(conn, _PCK_ArtCD, currSkladCD);
 
          Rtrano rtrano_rec;
-         
+
          PCK_ArtiklInfo_Line artiklInfoLine;
-         PCK_SernoInfo_Line  sernoInfoLine ;
+         PCK_SernoInfo_Line sernoInfoLine;
 
          Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == _PCK_ArtCD);
+
+         bool isTT_ulaz_or_MOC_or_MOS;
 
          foreach(string theSerno in theSernoList)
          {
@@ -423,8 +425,10 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
             MixerDao.Get_LastRtrano_ForSerno(conn, rtrano_rec, theSerno);
 
-            if(rtrano_rec.T_skladCD == currSkladCD && // ovo izbacuje serno-ove rtrano-e koji nisu      na zadanom skladistu 
-               rtrano_rec.TtInfo.IsFinKol_U         ) // ovo izbacuje serno-ove rtrano-e koji nisu ULAZ na zadanom skladistu 
+            isTT_ulaz_or_MOC_or_MOS = rtrano_rec.TtInfo.IsFinKol_U || rtrano_rec.TtInfo.Is_MOC_or_MOS_TT;
+
+            if(rtrano_rec.T_skladCD == currSkladCD && // ovo izbacuje serno-ove rtrano-e koji nisu                        na zadanom skladistu 
+               isTT_ulaz_or_MOC_or_MOS              ) // ovo izbacuje serno-ove rtrano-e koji nisu (ULAZ ili MOC ili MOS) na zadanom skladistu 
             {
 
                if(artikl_rec == null)

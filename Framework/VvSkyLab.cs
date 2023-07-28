@@ -1299,6 +1299,8 @@ public class TH_PriceRuleForCycleMoment
 
    private static Dictionary<DateTime, TH_Cjenik_Kind> TH_Cjenik_Kind_BreakDates_2Week_PON = new Dictionary<DateTime, TH_Cjenik_Kind>
    {
+      { new DateTime(2014, 12, 31), TH_Cjenik_Kind._2WShop_PON_3WCjenik_ },  // DUMMY START samo da da dummy break date 
+
       { new DateTime(2016, 12, 19), TH_Cjenik_Kind._2WShop_PON_3WCjenik_ },
       { new DateTime(2017, 01, 09), TH_Cjenik_Kind._2WShop_PON_2WCjenik_ },
 
@@ -1338,6 +1340,8 @@ public class TH_PriceRuleForCycleMoment
     //{ new DateTime(2018, 06, 18), TH_Cjenik_Kind._2WShop_PON_3WCjenik_ },
     //{ new DateTime(2018, 07, 09), TH_Cjenik_Kind._2WShop_PON_2WCjenik_ },
 
+      { new DateTime(2014, 12, 31), TH_Cjenik_Kind._2WShop_SRI_2WCjenik_ },  // DUMMY START samo da da dummy break date 
+
       { new DateTime(2018, 10, 03), TH_Cjenik_Kind._2WShop_SRI_2WCjenik_ }, // PRAPOCETAK 2WShop 'SRI' cjenika 
 
       { new DateTime(2018, 12, 19), TH_Cjenik_Kind._2WShop_SRI_3WCjenik_ },
@@ -1376,6 +1380,8 @@ public class TH_PriceRuleForCycleMoment
 
    private static Dictionary<DateTime, TH_Cjenik_Kind> TH_Cjenik_Kind_BreakDates_5Week = new Dictionary<DateTime, TH_Cjenik_Kind>
    {
+      { new DateTime(2014, 12, 31), TH_Cjenik_Kind._5WShop_5WCjenik_ },  // DUMMY START samo da da dummy break date 
+
       { new DateTime(2015, 07, 13), TH_Cjenik_Kind._5WShop_6WCjenik_ },
       { new DateTime(2015, 08, 24), TH_Cjenik_Kind._5WShop_5WCjenik_ },
 
