@@ -3604,7 +3604,7 @@ public class PCK_Info_UC : UserControl
     //vvtb_UkPstKol    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkPstKol"   , null, -12, "PstKol"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkPstKol    , null, "R_UkPstKol"   , "Pst"      , ZXC.Q4un); vvtb_UkPstKol    .JAM_ReadOnly = true; 
     //vvtb_UkUlazKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkUlazKol"  , null, -12, "UlazKol"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkUlazKol   , null, "R_UkUlazKol"  , "Ulaz"     , ZXC.Q4un); vvtb_UkUlazKol   .JAM_ReadOnly = true;
     //vvtb_UkIzlazKol  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkIzlazKol" , null, -12, "IzlazKol" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkIzlazKol  , null, "R_UkIzlazKol" , "Izlaz"    , ZXC.Q4un); vvtb_UkIzlazKol  .JAM_ReadOnly = true;
-      vvtb_StanjeKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_StanjeKol"  , null, -12, "StanjeKol"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_StanjeKol   , null, "R_StanjeKol"  , "Stanje"   , ZXC.Q4un); vvtb_StanjeKol   .JAM_ReadOnly = true;
+      vvtb_StanjeKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_StanjeKol"  , null, -12, "StanjeKol"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_StanjeKol   , null, "R_StanjeKol"  , "Stanje"   , ZXC.Q4un); vvtb_StanjeKol   .JAM_ReadOnly = true;
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
 
