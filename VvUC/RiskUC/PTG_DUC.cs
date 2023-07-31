@@ -3225,6 +3225,7 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       TheG2.ColumnHeadersHeight = ZXC.Q2un;
 
+      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"                     );
       T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla"             );
       T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(                  true, "Naziv"        , "Naziv artikla ili proizvoljan opis");
@@ -3233,11 +3234,11 @@ public class MOD_PTG_DUC : FakturPDUC
       R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"                         );
       T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"                 );
       T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"                          );
-      R_ramOld2_CreateColumn         (ZXC.Q3un     , 0, true, "RAM  old"     , "RAM old"                           );
+      R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM  old"     , "RAM old"                           );
       T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                             );
       T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                             );
       T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"                           );
-      R_hddOld2_CreateColumn         (ZXC.Q3un     , 0, true, "HDD   old"    , "HDD old"                           );
+      R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD   old"    , "HDD old"                           );
       T_decA_CreateColumn           (ZXC.Q3un     , 0, true, "HDD +"        , "HDD +"                             );
       T_decB_CreateColumn           (ZXC.Q3un     , 0, true, "HDD -"        , "HDD -"                             );
       T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"                           );

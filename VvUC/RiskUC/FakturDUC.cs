@@ -13793,13 +13793,13 @@ public partial class FakturExtDUC : FakturDUC
 
 public class FakturPDUC : FakturExtDUC
 {
-#region Fieldz
+   #region Fieldz
 
    protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName,
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
-                       vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2;
+                       vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
@@ -13807,7 +13807,7 @@ public class FakturPDUC : FakturExtDUC
 
 #endregion Fieldz
 
-#region Constructor
+   #region Constructor
 
    public FakturPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
@@ -13842,7 +13842,7 @@ public class FakturPDUC : FakturExtDUC
 
 #endregion Constructor
 
-#region TheGrid2_Columns
+   #region TheGrid2_Columns
 
    protected void T_artiklCD2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14126,10 +14126,18 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
+   protected void T_TT_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_TT = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_TT", TheVvDaoTrans2, DB_Tci2.t_tt, _statusText);
+      vvtbT_TT.JAM_ReadOnly = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_TT, TheVvDaoTrans2, DB_Tci2.t_tt, _colHeader, _width);
+      colVvText.Visible = isVisible;
+   }
 
 #endregion TheGrid2_Columns
 
-#region R_Columns2
+   #region R_Columns2
 
    protected void T_kolG2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14228,7 +14236,7 @@ public class FakturPDUC : FakturExtDUC
 
 #endregion Transes_Database_ColumnIndexes
 
-#region SetRtranoColumnIndexes()
+   #region SetRtranoColumnIndexes()
 
    protected Rtrano_colIdx ci2;
    public Rtrano_colIdx DgvCI2 { get { return ci2; } }
@@ -14260,6 +14268,7 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_ramKlasa  ;
       internal int iT_hddKlasa  ;
       internal int iT_artiklTS  ;
+      internal int iT_TT        ;
    }
 
    private void SetRtranoColumnIndexes()
@@ -14291,13 +14300,12 @@ public class FakturPDUC : FakturExtDUC
       ci2.iT_ramKlasa   = TheG2.IdxForColumn("R_ramKlasa");
       ci2.iT_hddKlasa   = TheG2.IdxForColumn("R_hddKlasa");
       ci2.iT_artiklTS   = TheG2.IdxForColumn("R_artiklTS");
-
-      
+      ci2.iT_TT         = TheG2.IdxForColumn("T_TT");
    }
 
 #endregion SetRtranoColumnIndexes()
 
-#region PutDgvFields2(), GetDgvFields2()
+   #region PutDgvFields2(), GetDgvFields2()
 
    protected override void PutDgvFields2()
    {
