@@ -3194,6 +3194,7 @@ public class MOD_PTG_DUC : FakturPDUC
    #region TheG_Specific_Columns
    public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
    public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_TT_Exposed      { get { return true; } }
    public override bool IsRtransTT_MOD_kindDependable { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {

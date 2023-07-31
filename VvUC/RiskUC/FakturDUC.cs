@@ -6,6 +6,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Data;
 using ICSharpCode.SharpZipLib.Encryption;
+using static ArtiklDao;
 
 #if MICROSOFT
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -13870,7 +13871,7 @@ public class FakturPDUC : FakturExtDUC
       decimal PCK_RAM = Fld_Decimal01;
       decimal PCK_HDD = Fld_Decimal02;
 
-      string theTT = Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD);
+      string theTT = Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
 
       SetColors_MOD_PTG_DUC(theTT, rowIdx);
 
@@ -13878,11 +13879,8 @@ public class FakturPDUC : FakturExtDUC
       int a = 8;
    }
 
-   private string Get_MOD_RtranoTT(int rowIdx, Rtrano rtrano_rec, string artiklCD, decimal MOC_RAM, decimal MOC_HDD)
+   private string Get_MOD_RtranoTT(int rowIdx, Rtrano rtrano_rec, string artiklCD, decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
    {
-    //Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD); if(artikl_rec == null) return "";
-    //bool isPCK = artikl_rec.TS     == "PCK";
-    //bool isPCK = rtrano_rec.T_grCD == "PCK"; // OVO TU NIJE DOBRO I TREBA Provjeriti!!!
       bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
 
       bool isMOC = isPCK && MOC_RAM == rtrano_rec.T_dimZ && MOC_HDD == rtrano_rec.T_decC;
@@ -13898,16 +13896,20 @@ public class FakturPDUC : FakturExtDUC
       decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
       decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false);
 
-      // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
-
-    //bool isMOI = RAMplus .NotZero() || HDDplus. NotZero(); // OVO TU NIJE DOBRO I TREBA PONOVITI!!!
       bool isMOI = RAMminus.NotZero() || HDDminus.NotZero(); 
+      bool isMOU = RAMplus .NotZero() || HDDplus. NotZero(); 
 
-      if(isMOI) return Faktur.TT_MOI;
-      else      return Faktur.TT_MOU;
+           if(isMOI) return Faktur.TT_MOI;
+      else if(isMOU) return Faktur.TT_MOU;
+      else
+      {
+         if(shouldWarn)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnije niti MOU niti MOI jer ima nedefinirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
+         }
+         return Faktur.TT_MOU;
+      }
 
-      // A STO KADA JE SU SVI NULA - NA PO;ETKU KOD zADAVANJA A I KASNIJE KOD KONTROLE
-      // JER OVAKO DOBIVA DA JE MOU!!!
    }
 
    protected void T_artiklName2_CreateColumnFill(bool isVisible, string _colHeader, string _statusText)
@@ -14253,11 +14255,11 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_decB      ;
       internal int iT_decC      ;
       internal int iT_rtrRecID  ;
-      internal int iT_ramOld ;
-      internal int iT_hddOld ;
+      internal int iT_ramOld    ;
+      internal int iT_hddOld    ;
       internal int iT_ramKlasa  ;
       internal int iT_hddKlasa  ;
-      internal int iT_artiklTS;
+      internal int iT_artiklTS  ;
    }
 
    private void SetRtranoColumnIndexes()
@@ -14372,7 +14374,7 @@ public class FakturPDUC : FakturExtDUC
       TheG2.PutCell(ci2.iR_grName    , rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
     //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
       TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, VvCheckBox.GetString4Bool(rtrano_rec.T_isKomDummy));
-      TheG2.PutCell(ci2.iT_skladCD, rowIdx, rtrano_rec.T_skladCD);
+      TheG2.PutCell(ci2.iT_skladCD   , rowIdx, rtrano_rec.T_skladCD);
       TheG2.PutCell(ci2.iT_decA      , rowIdx, rtrano_rec.T_decA);
       TheG2.PutCell(ci2.iT_decB      , rowIdx, rtrano_rec.T_decB);
       TheG2.PutCell(ci2.iT_decC      , rowIdx, rtrano_rec.T_decC);
@@ -14523,7 +14525,20 @@ public class FakturPDUC : FakturExtDUC
       if(DB_RWT) db_rec.T_skladDate =     dgvRtrano_rec.T_skladDate;
 
                                dgvRtrano_rec.T_TT = faktur_rec.TT;
+                                    // PTG news 
+                                    if(HasRtrano_TT_Exposed)
+      {
+                                       dgvRtrano_rec.T_TT = "MOD";//Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
+      }
       if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
+
+                                   dgvRtrano_rec.T_ttSort = faktur_rec.TtSort;
+                                    // PTG news 
+                                    if(HasRtrano_TT_Exposed)
+      {
+                                       dgvRtrano_rec.T_ttSort = ZXC.TtInfo(dgvRtrano_rec.T_TT).TtSort;
+      }
+      if(DB_RWT) db_rec.T_ttSort = dgvRtrano_rec.T_ttSort;
 
       // 2023 PTG news ... TT Rtrano-a, ili bilo koje druge medjuskladisnice?!, 
       // treba postati twinTT, tj. 'kasniji' događaj                            
@@ -14535,10 +14550,6 @@ public class FakturPDUC : FakturExtDUC
 
           dgvRtrano_rec.T_ttNum = faktur_rec.TtNum;
       if(DB_RWT) db_rec.T_ttNum = dgvRtrano_rec.T_ttNum;
-
-      // ttSort, skladCD, kupdobCD dodani tek 29.12.2013!!! 
-                                   dgvRtrano_rec.T_ttSort = faktur_rec.TtSort;
-      if(DB_RWT) db_rec.T_ttSort = dgvRtrano_rec.T_ttSort;
 
                                     dgvRtrano_rec.T_skladCD = faktur_rec.SkladCD;
                                     // PTG news 

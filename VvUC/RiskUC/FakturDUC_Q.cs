@@ -5723,6 +5723,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    public virtual bool HasRtrans_SkladCD_Exposed     { get { return false; } }
    public virtual bool HasRtrano_SkladCD_Exposed     { get { return false; } }
+   public virtual bool HasRtrano_TT_Exposed          { get { return false; } }
    public virtual bool IsRtransTT_MOD_kindDependable { get { return false; } }
 
 }
