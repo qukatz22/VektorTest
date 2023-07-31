@@ -3538,7 +3538,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             theGrid.PutCell(ci2.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
             theGrid.PutCell(ci2.iT_artiklTS, currRow, artikl_rec.TS      );
 
-            (this as FakturPDUC).SetColorsPCKartikl();
+            //(this as FakturPDUC).SetColorsPCKartikl();
          }
       }
 

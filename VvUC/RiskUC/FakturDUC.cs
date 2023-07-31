@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using ICSharpCode.SharpZipLib.Encryption;
 using static ArtiklDao;
+using FinaInvoiceB2GENClient.FinaInvoiceWS;
 
 #if MICROSOFT
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -13873,6 +13874,8 @@ public class FakturPDUC : FakturExtDUC
 
       string theTT = Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
 
+      TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
+
       SetColors_MOD_PTG_DUC(theTT, rowIdx);
 
 
@@ -13910,6 +13913,25 @@ public class FakturPDUC : FakturExtDUC
          return Faktur.TT_MOU;
       }
 
+   }
+
+   private void Check_MOD_plusMinus_errors(int rowIdx, Rtrano rtrano_rec)
+   {
+      // samo kao podsjetnik: 
+      // decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false); 
+      // decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false); 
+      // decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false); 
+      // decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false); 
+
+      uint numOfPlusMinusUnosa = 0;
+
+      if(rtrano_rec.T_dimX.NotZero()) numOfPlusMinusUnosa++;
+      if(rtrano_rec.T_dimY.NotZero()) numOfPlusMinusUnosa++;
+      if(rtrano_rec.T_decA.NotZero()) numOfPlusMinusUnosa++;
+      if(rtrano_rec.T_decB.NotZero()) numOfPlusMinusUnosa++;
+
+      if(numOfPlusMinusUnosa < 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnema definirane RAM/HDD plus/minus količine?!"          , rowIdx + 1, rtrano_rec);
+      if(numOfPlusMinusUnosa > 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rima višestruko definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
    }
 
    protected void T_artiklName2_CreateColumnFill(bool isVisible, string _colHeader, string _statusText)
@@ -14393,15 +14415,30 @@ public class FakturPDUC : FakturExtDUC
       if(kupdobSifrar_rec != null) TheG2.PutCell(ci2.iR_grName, rowIdx, kupdobSifrar_rec.Naziv);
       else                         TheG2.PutCell(ci2.iR_grName, rowIdx,                     "");
 
-
-      Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrano_rec.T_artiklCD);
-      if(artikl_rec != null && artikl_rec.TS == "PCK")
+      if(HasRtrano_TT_Exposed)
       {
-         TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
-         TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
-         TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS      );
+         TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
+      }
 
-         SetColorsPCKartikl();
+      if(ZXC.IsPCTOGO)
+      {
+         Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrano_rec.T_artiklCD);
+
+         if(artikl_rec != null && artikl_rec.TS == "PCK")
+         {
+            TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
+            TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
+            TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
+
+            //SetColorsPCKartikl();
+         }
+
+         SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
+
+         if(rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU)
+         {
+            Check_MOD_plusMinus_errors(rowIdx, rtrano_rec);
+         }
       }
    }
 
@@ -14532,19 +14569,29 @@ public class FakturPDUC : FakturExtDUC
       else                                dgvRtrano_rec.T_skladDate = faktur_rec.DokDate;
       if(DB_RWT) db_rec.T_skladDate =     dgvRtrano_rec.T_skladDate;
 
-                               dgvRtrano_rec.T_TT = faktur_rec.TT;
-                                    // PTG news 
-                                    if(HasRtrano_TT_Exposed)
+
+      dgvRtrano_rec.T_TT = faktur_rec.TT;
+      // PTG news 
+      if(HasRtrano_TT_Exposed)
       {
-                                       dgvRtrano_rec.T_TT = "MOD";//Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
+         string artiklCD = Fld_PrjArtCD ;
+         decimal PCK_RAM = Fld_Decimal01;
+         decimal PCK_HDD = Fld_Decimal02;
+
+         // ova 2 GetDecimalCell-a ovdje preduhitrujemo jer nam trebaju u dgvRtrano_rec-u za Get_MOD_RtranoTT 
+         // dole nize ce se oni jos jednom, defaultno ponasanje, pokupiti                                     
+         dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_dimZ, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
+
+         dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, dgvRtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
       }
       if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
 
-                                   dgvRtrano_rec.T_ttSort = faktur_rec.TtSort;
-                                    // PTG news 
-                                    if(HasRtrano_TT_Exposed)
+      dgvRtrano_rec.T_ttSort = faktur_rec.TtSort;
+      // PTG news 
+      if(HasRtrano_TT_Exposed)
       {
-                                       dgvRtrano_rec.T_ttSort = ZXC.TtInfo(dgvRtrano_rec.T_TT).TtSort;
+         dgvRtrano_rec.T_ttSort = ZXC.TtInfo(dgvRtrano_rec.T_TT).TtSort;
       }
       if(DB_RWT) db_rec.T_ttSort = dgvRtrano_rec.T_ttSort;
 
@@ -14671,38 +14718,38 @@ public class FakturPDUC : FakturExtDUC
       return dgvRtrano_rec;
    }
 
-   public void SetColorsPCKartikl()
-   {
-      VvDataGridView dgv = TheG2;
-      int rowIdx;
-      for(int i = 0; i < dgv.Rows.Count; i++)
-      {
-         rowIdx = i;
-
-         //foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
-         //{
-         //   if(dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value.ToString() == Faktur.TT_MOC)
-         //   {
-         //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
-         //   }
-         //
-         //
-         //   if(dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value.ToString() == "PCK")
-         //   {
-         //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
-         //   }
-         //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "S")
-         //   //{
-         //   //   tbxCell.Style.BackColor = Color.PaleGreen;
-         //   //}
-         //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "O")
-         //   //{
-         //   //   tbxCell.Style.BackColor = Color.LightGray;
-         //   //}
-         //
-         //}
-      }
-   }
+   //public void SetColorsPCKartikl()
+   //{
+   //   VvDataGridView dgv = TheG2;
+   //   int rowIdx;
+   //   for(int i = 0; i < dgv.Rows.Count; i++)
+   //   {
+   //      rowIdx = i;
+   //
+   //      //foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
+   //      //{
+   //      //   if(dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value.ToString() == Faktur.TT_MOC)
+   //      //   {
+   //      //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
+   //      //   }
+   //      //
+   //      //
+   //      //   if(dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value.ToString() == "PCK")
+   //      //   {
+   //      //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
+   //      //   }
+   //      //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "S")
+   //      //   //{
+   //      //   //   tbxCell.Style.BackColor = Color.PaleGreen;
+   //      //   //}
+   //      //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "O")
+   //      //   //{
+   //      //   //   tbxCell.Style.BackColor = Color.LightGray;
+   //      //   //}
+   //      //
+   //      //}
+   //   }
+   //}
 
    private void SetColors_MOD_PTG_DUC(string TT, int rowIdx)
    {
@@ -14712,10 +14759,10 @@ public class FakturPDUC : FakturExtDUC
       {
          switch(TT)
          {
-            case Faktur.TT_MOC: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG     ; break;
-            case Faktur.TT_MOS: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
-            case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
-            case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
+            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG     ; break;
+            case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
+            case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
+            case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
             
             default:            tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
          }
