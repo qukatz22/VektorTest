@@ -3086,7 +3086,7 @@ public class MOD_PTG_DUC : FakturPDUC
       
       hamp_IznosUvaluti.Visible = false;
 
-      this.ControlForInitialFocus = tbx_prjArtName;
+      this.ControlForInitialFocus = tbx_Napomena; // tamara ... todo? 
 
       SetSumeHampers(false, false, false, false);
    }
@@ -3715,10 +3715,10 @@ public class VvModificiraj_PTG_Dlg : VvDialog
 
    #region Constructor
 
-   public VvModificiraj_PTG_Dlg()
+   public VvModificiraj_PTG_Dlg(string currArtiklCD)
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "Modificiraj artikle";
+      this.Text = "Modificiraj " + currArtiklCD + " PCK artikle";
 
       CreateHamper();
 
@@ -3768,7 +3768,7 @@ public class VvModificiraj_PTG_Dlg : VvDialog
 
    #region Fld_
 
-   public int Fld_PTG_MODkomada { get { return tbx_komada.GetIntField(); } set { tbx_komada.PutIntField(value); } }
+   public decimal Fld_PTG_MODkomada { get { return tbx_komada.GetDecimalField(); } set { tbx_komada.PutDecimalField(value); } }
 
    #endregion Fld_
 

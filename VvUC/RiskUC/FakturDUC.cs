@@ -4114,6 +4114,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       TheG.ClearSelection();
       TheSumGrid.ClearSelection();
 
+      // 01.08.2023: 
+      if(this is FakturPDUC)
+      {
+         TheG2.ClearSelection();
+      }
+
       ftransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable
       DecideIfShouldLoad_TransDGV(null, null, null);
 
