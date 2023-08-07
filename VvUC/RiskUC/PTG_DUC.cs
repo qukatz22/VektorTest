@@ -3177,8 +3177,9 @@ public class MOD_PTG_DUC : FakturPDUC
       hamp_semafor.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
       hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
 
-      lbl_semafor = hamp_semafor.CreateVvLabel(0, 0, "", 0, 1, ContentAlignment.MiddleRight);
+      lbl_semafor = hamp_semafor.CreateVvLabel(0, 0, "", 0, 1, ContentAlignment.MiddleCenter);
       lbl_semafor.BackColor = Color.Red;
+      lbl_semafor.ForeColor = Color.Yellow;
    }
 
    #endregion HamperLocation
@@ -3246,6 +3247,26 @@ public class MOD_PTG_DUC : FakturPDUC
    }
 
    #endregion TheG2_Specific_Columns2
+
+   /// <summary>
+   /// Primjer za tuple return value example
+   /// </summary>
+   /// <param name="MOD_RAM_saldo"></param>
+   /// <param name="MOD_HDD_saldo"></param>
+   /// <returns></returns>
+   public (Color theColor, string theMSG) GetSemaforColor(decimal MOD_RAM_saldo, decimal MOD_HDD_saldo)
+   {
+      if(MOD_RAM_saldo.IsZero () && MOD_HDD_saldo.IsZero()) return (Color.Green  , "");
+
+      else if(MOD_RAM_saldo.NotZero())
+      {
+         if(MOD_HDD_saldo.NotZero())   return (Color.Red    , "RAM\nHDD");
+         else                          return (Color.DarkRed, "RAM"     );
+      }
+      else if(MOD_HDD_saldo.NotZero()) return (Color.DarkRed, "HDD"     );
+
+      else return (Color.Aqua, "");
+   }
 }
 
 public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog

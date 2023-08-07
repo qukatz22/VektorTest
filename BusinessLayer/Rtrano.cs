@@ -1,4 +1,5 @@
 ﻿using System;
+using ikvm.lang;
 
 #region struct RtranoStruct
 
@@ -397,6 +398,40 @@ public class Rtrano : VvTransRecord
 
    //public string R_PCK_RAMkind { get; set; }
    //public string R_PCK_HDDkind { get; set; }
+
+   public decimal R_RAM_old
+   {
+      get
+      {
+         if(this.TtInfo.Is_MOC_or_MOS_TT)
+         {
+            return T_dimZ - T_dimX + T_dimY;
+         }
+            
+         return 0M;
+      }
+   }
+
+   public decimal R_HDD_old
+   {
+      get
+      {
+         if(this.TtInfo.Is_MOC_or_MOS_TT)
+         {
+            return T_decC - T_decA + T_decB;
+         }
+
+         return 0M;
+      }
+   }
+
+   public string PCK_ArtiklInfo_Signature
+   {
+      get
+      {
+         return T_artiklCD + " / " + T_dimZ.ToString0Vv() + " / " + T_decC.ToString0Vv();
+      }
+   }
 
    #endregion propertiz 
 

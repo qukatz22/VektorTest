@@ -12920,8 +12920,13 @@ public partial class FakturExtDUC : FakturDUC
             modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD;
          }
 
-         if(modDUC.Fld_KupdobName.IsEmpty()) modDUC.lbl_semafor.BackColor = Color.Red;
-         else                                modDUC.lbl_semafor.BackColor = Color.Green;
+         if(CtrlOK(modDUC.lbl_semafor))
+         {
+            (Color theColor, string theMSG) = modDUC.GetSemaforColor(faktur_rec.TrnSum2_MOD_RAM_saldo, faktur_rec.TrnSum2_MOD_HDD_saldo);
+
+            modDUC.lbl_semafor.BackColor = theColor;
+            modDUC.lbl_semafor.Text      = theMSG  ;
+         }
       }
 
       #endregion PTG Additions
@@ -13191,6 +13196,20 @@ public partial class FakturExtDUC : FakturDUC
       //      Fld_S_ukPdv = b;
       //   }
       //}
+
+      if(this is MOD_PTG_DUC)
+      {
+         MOD_PTG_DUC modDUC = (this as MOD_PTG_DUC);
+
+         if(CtrlOK(modDUC.lbl_semafor))
+         {
+            (Color theColor, string theMSG) = modDUC.GetSemaforColor(faktur_rec.TrnSum2_MOD_RAM_saldo, faktur_rec.TrnSum2_MOD_HDD_saldo);
+
+            modDUC.lbl_semafor.BackColor = theColor;
+            modDUC.lbl_semafor.Text      = theMSG  ;
+
+         }
+      }
 
    }
 
@@ -14451,6 +14470,12 @@ public class FakturPDUC : FakturExtDUC
    public override void PutDgvLineResultsFields2(int rowIdx, VvTransRecord trans_rec, bool passPtrResultsToZaglavljeTranses)
    {
       Rtrano rtrano_rec = trans_rec as Rtrano;
+
+      if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
+      {
+         TheG2.PutCell(ci2.iT_ramOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_RAM_old));
+         TheG2.PutCell(ci2.iT_hddOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_HDD_old));
+      }
 
       //if(passPtrResultsToZaglavljeTranses == true)
       //{

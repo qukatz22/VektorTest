@@ -680,7 +680,7 @@ public sealed class MixerDao : VvDaoBase, IVvDao
 
       filterMembers.Add(new VvSqlFilterMember(RtoSch[RtoCI.t_serno], "theSerno", _theSerno, " = "));
 
-      string orderBy = Rtrans.artiklOrderBy_DESC.Replace("t_serial DESC ", "t_serial "); ;
+      string orderBy = Rtrans.artiklOrderBy_DESC.Replace("t_serial DESC ", "t_serial "); // jer VvSql.GetLastRecordBySomeOrder_Command doda "DESC LIMIT 1" 
 
       success = ZXC.RtranoDao.GetLastRecordBySomeOrder(conn, rtrano_rec, filterMembers, orderBy, false, false);
 

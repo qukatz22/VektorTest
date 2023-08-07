@@ -150,6 +150,7 @@ public partial class MixerDUC : VvPolyDocumRecordUC
 
 }
 
+#region FINA GFI
 public class FINA_STAT_Row
 {
    public int                   AOP          { get; set; }
@@ -763,6 +764,8 @@ public partial class GFI_TSI_DUC : MixerDUC
 
 }
 
+#endregion FINA GFI
+
 public /*struct*/ class VvManyDecimalsReportSourceRow
 {
    #region Propertiz
@@ -1227,6 +1230,7 @@ public class PozicijaPlana
 
 }
 
+#region SVD_RptLine,  SVD_SubRptLine
 public class SVD_RptLine
 {
    public string  GrupCD   { get; set; }
@@ -1658,6 +1662,9 @@ public class SVD_SubRptLine
 
 }
 
+#endregion SVD_RptLine,  SVD_SubRptLine
+
+#region PCTOGO PCK_ArtiklInfo, PCK_SernoInfo
 public abstract class PCK_BASE_InfoLine
 {
    public string  PCK_ArtCD    { get; set; }
@@ -1719,6 +1726,9 @@ public class PCK_SernoInfo_Line : PCK_BASE_InfoLine
    {
       return @"{" + PCK_Serno + @"} " +  PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";
    }
+
+   public List<Rtrano> PCK_SernoInfo_RtranoList { get; set; }
+
 }
 
 #if NEYNAM_KAJCEMIOVO
@@ -1864,3 +1874,4 @@ public class PCK_SernoInfo_Dao
 }
 #endif
 
+#endregion PCTOGO PCK_ArtiklInfo, PCK_SernoInfo

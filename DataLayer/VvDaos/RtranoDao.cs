@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Data.Common;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -406,14 +407,14 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       foreach(string currSkladCD in skladCDlist)
       {
          currSklCD_ArtiklInfo_List = new List<PCK_ArtiklInfo_Line>();
-         currSklCD_SernoInfo_List = new List<PCK_SernoInfo_Line>();
+         currSklCD_SernoInfo_List  = new List<PCK_SernoInfo_Line> ();
 
          List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(conn, _PCK_ArtCD, currSkladCD);
 
          Rtrano rtrano_rec;
 
          PCK_ArtiklInfo_Line artiklInfoLine;
-         PCK_SernoInfo_Line sernoInfoLine;
+         PCK_SernoInfo_Line  sernoInfoLine ;
 
          Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == _PCK_ArtCD);
 
@@ -424,6 +425,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
             rtrano_rec = new Rtrano();
 
             MixerDao.Get_LastRtrano_ForSerno(conn, rtrano_rec, theSerno);
+
+            if(rtrano_rec.T_artiklCD != artikl_rec.ArtiklCD) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Zadnja pojava serijskog broja [{0}] NIJE za artikl [{1}]\n\r\n\r{2}", theSerno, _PCK_ArtCD, rtrano_rec);
 
             isTT_ulaz_or_MOC_or_MOS = rtrano_rec.TtInfo.IsFinKol_U || rtrano_rec.TtInfo.Is_MOC_or_MOS_TT;
 
@@ -461,5 +464,46 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return ALL_SklCD_ArtiklInfo_List;
    }
 
+   public static PCK_SernoInfo_Line Get_PCK_SernoInfo_Line_ByLastRtrano(XSqlConnection conn, string _theSerno)
+   {
+      List<Rtrano> thisSerno_All_RtranoList = GetRtranoList_For_SERNO(conn, _theSerno);
+
+      if(thisSerno_All_RtranoList.IsEmpty()) return null;
+
+      Rtrano firstRtrano_rec = thisSerno_All_RtranoList.First();
+      Rtrano lastRtrano_rec  = thisSerno_All_RtranoList.Last ();
+
+      Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == lastRtrano_rec.T_artiklCD);
+
+      PCK_SernoInfo_Line sernoInfoLine_byLastRtrano = new PCK_SernoInfo_Line(_theSerno, lastRtrano_rec.T_artiklCD, lastRtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, lastRtrano_rec.T_skladCD, lastRtrano_rec.T_dimZ, lastRtrano_rec.T_decC);
+
+      sernoInfoLine_byLastRtrano.PCK_SernoInfo_RtranoList = thisSerno_All_RtranoList;
+
+      #region Check For Errors or Indiscrepancy
+
+      string currSernoSignature = firstRtrano_rec.PCK_ArtiklInfo_Signature;
+      string currSernoArtiklCD  = firstRtrano_rec.T_artiklCD              ;
+
+      foreach(Rtrano rtrano in thisSerno_All_RtranoList)
+      {
+         if(currSernoArtiklCD != rtrano.T_artiklCD)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serijskom broju: [{3}]\n\r\n\rje izmijenjen Artikl!!!\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}", currSernoArtiklCD, rtrano, rtrano.T_artiklCD, _theSerno);
+         }
+         else if(currSernoSignature != rtrano.PCK_ArtiklInfo_Signature && !rtrano.TtInfo.Is_MOC_or_MOS_TT)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Serijskom broju: [{3}]\n\r\n\rPCK 'potpis' je izmijenjen bez modifikacije.\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}", currSernoSignature, rtrano, rtrano.PCK_ArtiklInfo_Signature, _theSerno);
+         }
+
+         currSernoArtiklCD  = rtrano.T_artiklCD              ;
+         currSernoSignature = rtrano.PCK_ArtiklInfo_Signature;
+      }
+
+      #endregion Check For Errors or Indiscrepancy
+
+      return sernoInfoLine_byLastRtrano;
+   }
+
    #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
+
 }

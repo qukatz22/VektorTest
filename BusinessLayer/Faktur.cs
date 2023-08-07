@@ -2374,6 +2374,25 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal TrnSum_K     { get { return this.TrnNonDel .Sum(rtrn  => rtrn .T_kol)  ; } }
    public decimal TrnSum_K2    { get { return this.TrnNonDel .Sum(rtrn  => rtrn .T_kol2) ; } }
    public decimal TrnSum2_K    { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_kol)  ; } }
+   public decimal TrnSum2_MOD_RAM_saldo
+   { 
+      get 
+      {
+         if(this.TT != Faktur.TT_MOD) return 0M;
+
+         return this.TrnNonDel2.Sum(rtrno => rtrno.T_dimX) - this.TrnNonDel2.Sum(rtrno => rtrno.T_dimY); 
+      } 
+   }
+
+   public decimal TrnSum2_MOD_HDD_saldo
+   {
+      get
+      {
+         if(this.TT != Faktur.TT_MOD) return 0M;
+
+         return this.TrnNonDel2.Sum(rtrno => rtrno.T_decA) - this.TrnNonDel2.Sum(rtrno => rtrno.T_decB);
+      }
+   }
 
    #region AVANS_STORNO
 
