@@ -13985,23 +13985,25 @@ public class FakturPDUC : FakturExtDUC
 
    protected void T_serno_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
-      //vvtbT_serno = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
+      vvtbT_serno = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
       //vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
 
       if(this is BORDUC)
       {
-         vvtbT_serno = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
          vvtbT_serno.JAM_Set_LookUpTable(ZXC.luiListaBrojSobe, (int)ZXC.Kolona.prva);
          //vvtbT_serno.JAM_lookUp_NOTobligatory = true;
       }
-      else
+      else if(IsPTG_UgAnDo_DUC) // PCK serno handling 
       {
-         vvtbT_serno = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_serno", TheVvDaoTrans2, DB_Tci2.t_serno, _statusText);
-
-         if(IsPTG_UgAnDo_DUC == false)
-         {
-            vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
-         }
+         vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExit_Update_PCK_Serno);
+      }
+      else if(this is MOD_PTG_DUC) // PCK serno handling for MOC/MOS rtrano row 
+      {
+         vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExit_Update_PCK_Serno);
+      }
+      else // old, default PPUK 
+      {
+         vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExitT_Update_SERNO);
       }
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_serno, TheVvDaoTrans2, DB_Tci2.t_serno, _colHeader, _width);

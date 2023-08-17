@@ -464,11 +464,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return ALL_SklCD_ArtiklInfo_List;
    }
 
-   public static PCK_SernoInfo_Line Get_PCK_SernoInfo_Line_ByLastRtrano(XSqlConnection conn, string _theSerno)
+   public static (PCK_SernoInfo_Line sernoInfo, Rtrano lastRtrano_rec) Get_PCK_SernoInfo_Line_ByLastRtrano(XSqlConnection conn, string _theSerno)
    {
       List<Rtrano> thisSerno_All_RtranoList = GetRtranoList_For_SERNO(conn, _theSerno);
 
-      if(thisSerno_All_RtranoList.IsEmpty()) return null;
+      if(thisSerno_All_RtranoList.IsEmpty()) return (null, null);
 
       Rtrano firstRtrano_rec = thisSerno_All_RtranoList.First();
       Rtrano lastRtrano_rec  = thisSerno_All_RtranoList.Last ();
@@ -501,7 +501,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       #endregion Check For Errors or Indiscrepancy
 
-      return sernoInfoLine_byLastRtrano;
+      return (sernoInfoLine_byLastRtrano, lastRtrano_rec);
    }
 
    #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad

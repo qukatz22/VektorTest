@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -4885,6 +4886,56 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       Rtrano firstFoundRtrano_rec = rtranoList.First();
 
       PutDgvLineFields2(firstFoundRtrano_rec, currRow, true);
+
+      ZXC.TheVvForm.SetDirtyFlag(sender);
+   }
+
+   protected void OnExit_Update_PCK_Serno(object sender, EventArgs e)
+   {
+      #region Init stuff
+
+      if(isPopulatingSifrar)                           return;
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvTextBoxEditingControl vvtb_editingControl = sender as VvTextBoxEditingControl;
+
+      if(vvtb_editingControl == null) return;
+
+      if(vvtb_editingControl.Text.IsEmpty())            return;
+      if(vvtb_editingControl.Text == this.originalText) return;
+
+      VvDataGridView theGrid = ((VvDataGridView)vvtb_editingControl.EditingControlDataGridView);
+
+      this.originalText = vvtb_editingControl.Text;
+      
+      int currRow = vvtb_editingControl.EditingControlRowIndex;
+
+      #endregion Init stuff
+
+      string theSerno = vvtb_editingControl.Text;
+
+      PCK_SernoInfo_Line sernoInfo     ;
+      Rtrano             lastRtrano_rec;
+
+      (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_ByLastRtrano(TheDbConnection, theSerno);
+
+      if(sernoInfo == null) return; // nije naso nist po tom serno-u 
+
+      string artiklCD = theGrid.GetStringCell(ci.iT_artiklCD, currRow, false);
+
+      bool wasEmptyRow = artiklCD.IsEmpty();
+
+      if(wasEmptyRow)
+      {
+         theGrid.ClearRowContent(currRow);
+
+         // tu si stao ... sad tu treba revidirati kolonu po kolonu koji podatak ide a koji ne na ovaj MOC/MOS redak 
+         PutDgvLineFields2(lastRtrano_rec, currRow, true);
+      }
+      else // upisan je serno nakon zadavanja artikla ili ispravljamo sadrzaj retka 
+      {
+
+      }
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
