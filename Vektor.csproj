@@ -1002,6 +1002,12 @@
       <DependentUpon>CR_ObrazacIP1.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\PIZ\CR_ObrazacIP1_1023.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ObrazacIP1_1023.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\PIZ\CR_ObrazacNP1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1589,6 +1595,12 @@
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\RIZ\CR_PrometArtikla_GrMalopU.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_PrometArtikla_GrMalopU.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\RIZ\CR_PrometArtikla_Grup.cs">
       <DependentUpon>CR_PrometArtikla_Grup.rpt</DependentUpon>
@@ -3106,6 +3118,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_ObrazacIP1.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_ObrazacIP1_1023.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ObrazacIP1_1023.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PIZ\CR_ObrazacNP1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_ObrazacNP1.cs</LastGenOutput>
@@ -3497,6 +3513,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_Proizvodnja_PIX.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_Proizvodnja_PIX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_PrometArtikla_GrMalopU.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_PrometArtikla_GrMalopU.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_PrometArtikla_Grup.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
