@@ -11608,6 +11608,14 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
          }
       }
 
+      // 29.08.2023: razgranicavamo za novu potrebu Malop ulaza 
+      if(ZXC.TtInfo(RptFilter.TT).IsMalopFin_U)
+      {
+         TheDeviznaSumaList = Get_deviznaSumaList_ForMalopUlaz();
+
+         return TheDeviznaSumaList.Count;
+      }
+
 #region FakturGR.NotEmpty()
 
       if(FakturGR.NotEmpty()) // Grupiramo po necemu sto je Faktur ili Rtrans podatak 
@@ -11840,7 +11848,9 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
       #endregion NO Groupping at all
 
-#if DEBUG//_SVDsamoLijekovi_23_11_2021_zaUpravnoVijece
+#if DEBUG
+
+      //_SVDsamoLijekovi_23_11_2021_zaUpravnoVijece
 
       // upali ako ikad opet zatreba. a sta? nem pojma
       //Artikl artikl_rec;
@@ -11850,7 +11860,6 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       //   if(artikl_rec != null) rsuLine.KupdobName = artikl_rec.ArtiklName2;
       //   else                   rsuLine.KupdobName = ""                    ;
       //}
-
 
 #endif
 
@@ -11914,6 +11923,159 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       #endregion SVD_PrmArt4Nabava
 
       return TheDeviznaSumaList.Count;
+   }
+
+   private List<VvReportSourceUtil> Get_deviznaSumaList_ForMalopUlaz()
+   {
+      List<VvReportSourceUtil> localDeviznaSumaList = new List<VvReportSourceUtil>();
+
+#region FakturGR.NotEmpty()
+
+      if(FakturGR.NotEmpty()) // Grupiramo po necemu sto je Faktur ili Rtrans podatak 
+      {
+         if(IsFakGrDataInFakturBussiness(FakturGR)) // Dakle, grupiramo po necemu sto se nalazi u pripadajucem FAKTUR podatku 
+         {
+            localDeviznaSumaList =
+
+               TheRtransList
+               .Join(TheFakturList, Rtr => Rtr.T_parentID, Fak => Fak.RecID, (Rtr, Fak) => new { R = Rtr, FakGRdata = GetFakGRdata(FakturGR, Fak) })
+               .GroupBy(theJoin => new { theJoin.FakGRdata, theJoin.R.T_artiklCD })
+               .Select(grp => new VvReportSourceUtil
+                  (/* DevName      */ grp.First().R.T_artiklName,
+                   /* TheCD        */ grp.Key.T_artiklCD,
+                   /* Count        */ grp.Count(),
+                   /* Kol          */ grp.Sum(theJoin => IsOrgPak ? theJoin.R.R_kolOP   : theJoin.R.R_kol),
+                   /* TheMoneyKCR  */ grp.Sum(theJoin => (theJoin.R.R_KCR)), // NAB vrj 
+                   /* TheMoney     */ grp.Sum(theJoin => theJoin.R.R_MSK  ), // MP  vrj 
+                   /* TheMoney2    */ grp.Sum(theJoin => theJoin.R.R_mrz  ), // Mrz vrj 
+                   /* FakturGR     */ grp.First().FakGRdata,
+                   /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, grp.Key.T_artiklCD),
+                   /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key.T_artiklCD),
+                   /* TheSaldo     */ grp.Sum(theJoin => theJoin.R.R_KC   )  // FAK vrj 
+                  )
+                     {
+                        Dec01    = grp.Sum(theJoin => theJoin.R.R_rbt1),     // RBT vrj 
+                        Dec02    = grp.Sum(theJoin => theJoin.R.T_ztr ),     // ZTR vrj 
+
+                        // Prosjecna stopa marze 
+                        TheKoef  = ZXC.StopaPromjene(grp.Sum(theJoin => (theJoin.R.R_KCR)), grp.Sum(theJoin => (theJoin.R.R_KCRM))),
+                     }  
+                  )
+               .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+               .ToList();
+         }
+         else // Dakle, grupiramo po necemu sto se nalazi u samom RTRANS podatku 
+         {
+            localDeviznaSumaList = 
+               
+               TheRtransList 
+               .Select(Rtr => new { R = Rtr, FakGRdata = GetFakGRdata(FakturGR, Rtr) })
+               .GroupBy(RichR => new { RichR.FakGRdata, RichR.R.T_artiklCD })
+               .Select(grp => new VvReportSourceUtil
+                  (/* DevName      */ grp.First().R.T_artiklName, 
+                   /* TheCD        */ grp.Key.T_artiklCD, 
+                   /* Count        */ grp.Count(), 
+                   /* Kol          */ grp.Sum(gr => IsOrgPak ? gr.R.R_kolOP   : gr.R.R_kol ),
+                   /* TheMoneyKCR  */ grp.Sum(gr => (                           gr.R.R_KCR)), // NAB vrj 
+                   /* TheMoney     */ grp.Sum(gr => (                           gr.R.R_MSK)), // MP  vrj 
+                   /* TheMoney2    */ grp.Sum(gr =>                             gr.R.R_mrz ), // Mrz vrj 
+                   /* FakturGR     */ grp.First().FakGRdata,
+                   /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, grp.Key.T_artiklCD),
+                   /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key.T_artiklCD),
+                   /* TheSaldo     */ grp.Sum(gr =>                             gr.R.R_KC  ) // FAK vrj 
+            
+                  )
+                     {
+                        Dec01    = grp.Sum(gr => gr.R.R_rbt1),                               // RBT vrj 
+                        Dec02    = grp.Sum(gr => gr.R.T_ztr ),                               // ZTR vrj 
+
+                        // Prosjecna stopa marze 
+                        TheKoef  = ZXC.StopaPromjene(grp.Sum(gr => (gr.R.R_KCR)), grp.Sum(gr => (gr.R.R_KCRM))),
+                     }  
+                  )
+               .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+               .ToList();
+         }
+      }
+
+#endregion FakturGR.NotEmpty()
+
+#region ArtiklGR.NotEmpty()
+
+      else if(ArtiklGR.NotEmpty()) // Grupiramo po necemu sto je Artikl podatak 
+      {
+         InitLuiList(ArtiklGR);
+
+         localDeviznaSumaList = 
+
+            TheRtransList 
+            .GroupBy(R => R.T_artiklCD)
+            .Select(grp => new VvReportSourceUtil
+               (/* DevName      */ grp.First().T_artiklName, 
+                /* TheCD        */ grp.Key, 
+                /* Count        */ grp.Count(), 
+                /* Kol          */ grp.Sum(R => IsOrgPak ? R.R_kolOP   : R.R_kol ),
+                /* TheMoneyKCR  */ grp.Sum(R => (                        R.R_KCR)), // NAB vrj 
+                /* TheMoney     */ grp.Sum(R => (                        R.R_MSK)), // MP  vrj 
+                /* TheMoney2    */ grp.Sum(R =>                          R.R_mrz ), // Mrz vrj 
+                /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, grp.Key),
+                /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key),
+                /* TheSaldo     */ grp.Sum(R =>                          R.R_KC  )  // FAK vrj 
+               )
+                     {
+                        Dec01    = grp.Sum(R => R.R_rbt1),                          // RBT vrj 
+                        Dec02    = grp.Sum(R => R.T_ztr ),                          // ZTR vrj 
+
+                        // Prosjecna stopa marze 
+                        TheKoef  = ZXC.StopaPromjene(grp.Sum(R => (R.R_KCR)), grp.Sum(R => (R.R_KCRM))),
+                     }  
+               )
+            .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+            .ToList();
+      }
+
+#endregion ArtiklGR.NotEmpty()
+
+#region NO Groupping at all
+
+      else // Dakle NEMA grupiranja uopce 
+      {
+
+         if(RptFilter.IsFor_SVD_CheckUgovor == false)// 19.08.2022: dodan if, false je classic 
+         { 
+            localDeviznaSumaList = 
+
+            TheRtransList 
+            .GroupBy(R => R.T_artiklCD)
+            .Select(grp => new VvReportSourceUtil
+               (/* DevName   */ grp.First().T_artiklName, 
+                /* TheCD     */ grp.Key, 
+                /* Count     */ grp.Count(), 
+                /* Kol       */ grp.Sum(R => IsOrgPak ? R.R_kolOP   : R.R_kol ),
+                /*TheMoneyKCR*/ grp.Sum(R => (                        R.R_KCR)), // NAB vrj 
+                /* TheMoney  */ grp.Sum(R => (                        R.R_MSK)), // MP  vrj 
+                /* TheMoney2 */ grp.Sum(R =>                          R.R_mrz ), // Mrz vrj 
+                /* TheSaldo  */ grp.Sum(R =>                          R.R_KC  )  // FAK vrj 
+
+               )
+                     {
+                        Dec01    = grp.Sum(R => R.R_rbt1),                       // RBT vrj 
+                        Dec02    = grp.Sum(R => R.T_ztr ),                       // ZTR vrj 
+
+                        // Prosjecna stopa marze 
+                        TheKoef  = ZXC.StopaPromjene(grp.Sum(R => (R.R_KCR)), grp.Sum(R => (R.R_KCRM))),
+                     }  
+               )
+            .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+            .ToList();
+
+         } // if NOT IsFor_SVD_CheckUgovor - classic 
+
+      }
+
+      #endregion NO Groupping at all
+
+      return localDeviznaSumaList;
    }
 
    private void InitLuiList(string artiklGRtype)

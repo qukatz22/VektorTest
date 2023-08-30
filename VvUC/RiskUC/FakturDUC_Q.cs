@@ -872,6 +872,19 @@ public struct TtInfo
 
    #endregion IsRashodTT
 
+   #region IsMalopUlazForPrmArtTT
+
+   private static string[] arrayMalopUlazForPrmArtTT = new string[] { 
+      Faktur.TT_KLK,
+      Faktur.TT_URM,
+   };
+   public bool IsMalopUlazForPrmArtTT { get { return arrayMalopUlazForPrmArtTT.Contains(TheTT); } }
+
+   public static string MalopUlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arrayMalopUlazForPrmArtTT); } }
+
+
+   #endregion IsMalopUlazForPrmArtTT
+
    #region IsZavisniTT
 
    private static string[] arrayZavisniTT = new string[] { 

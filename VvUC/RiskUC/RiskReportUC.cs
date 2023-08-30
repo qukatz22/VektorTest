@@ -3432,12 +3432,31 @@ public partial class RiskFilterUC : VvFilterUC
        //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "prihod", IN_clause, "Prihod - IFA, IRA, IRM, IOD, IPV", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
       }
-      else if(theRptFilter.IsRashodTT                                             ) // UFA, URA, URM, UOD, UPV, UPM, UFM, UPA 
+      else if(theRptFilter.IsRashodTT                                             ) // UFA, URA, URM, UOD, UPV, UPM, UFM, UPA    
       {
          string IN_clause = TtInfo.Rashod_IN_Clause;
 
        //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "rashod", IN_clause, "Rashod - UFA, URA, URM, UOD, UPV, UPM, UFM, UPA", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+      }
+      else if(theRptFilter.IsMalopUlazForPrmArtTT) // KLK, URM ... ali samo za 'Promet Artikla' 
+      {
+         if(theVvRiskReport is RptR_PrometArtikla)
+         { 
+            string IN_clause = TtInfo.MalopUlazForPrmArt_IN_Clause;
+   
+          //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
+            theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "MalopUlazForPrmArt", IN_clause, "MalopUlazForPrmArt - KLK, URM", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+         }
+         else // oznacio je 'MalopUlazForPrmArtTT' a nije odabrao Promet Artikla ... vratik ga na 'URM' 
+         {
+            drSchema = ZXC.FakturSchemaRows[ZXC.FakCI.tt];
+
+            text = /*theRptFilter.TT*/Faktur.TT_URM;
+            if(text.NotEmpty()) { theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TT", text, text, "Za tip:", " = ", "")); }
+
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "MalopUlazForPrmArt filter dozvoljen je samo za izvještaj 'Promet Artikla'\n\r\n\rpostavljam filter TipTrans na {0}", text);
+         }
       }
       else // Classic, just one/all TT filter 
       {
