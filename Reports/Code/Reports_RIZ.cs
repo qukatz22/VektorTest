@@ -12107,9 +12107,10 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       bool OK = true;
       VvRpt_RiSk_Filter filter = reportUC.TheRptFilter;
 
-      if(filter.TT.IsEmpty() && filter.IsPrihodTT == false)
+    //if(filter.TT.IsEmpty() && filter.IsPrihodTT == false)
+      if(filter.TT.IsEmpty() && filter.IsPrihodTT == false && filter.IsRashodTT == false && filter.IsMalopUlazForPrmArtTT == false)
       {
-         ZXC.aim_emsg("Molim, zadajte Tip Transakcije ili oznacite 'Prihod: IFA, IRA, IRM, IOD, IPV'.");
+         ZXC.aim_emsg("Molim, zadajte Tip Transakcije ili oznacite 'Prihod: IFA, IRA, IRM, IOD, IPV' ili 'Rashod: UFA, URA, URM, UOD, UPV' ili 'MalopUlaz PrmArt: URM, KLK' .");
          return false;
       }
 

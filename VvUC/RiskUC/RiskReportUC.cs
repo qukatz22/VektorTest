@@ -299,7 +299,7 @@ public partial class RiskFilterUC : VvFilterUC
                     cbx_isVisibleTT, cbx_isVisibleAdress, cbx_isCurrUser,
                     cbx_otsAnalitika, cbx_otsDospjeca, cbx_otsKontakt, cbx_otsLineTipBr, cbx_otsDospjelo, cbx_isPrihodTT, cbx_isMpskPoNBC, cbx_isNoColor, cbx_isOtsNevezano,
                     cbx_isPoslJed, cbx_isPecatPotpis, cbx_onlyArtiklSaStanjem, cbx_isForceOtsByDokDate, cbx_isRashodTT, cbx_isChkO, cbx_isOpzStatVezDok, cbx_IsBlgInIzvVal,
-                    cbx_FRUF_BiloGdjeU, cbx_uvozIzvozOnly;
+                    cbx_FRUF_BiloGdjeU, cbx_uvozIzvozOnly, cbx_IsMalopUlazForPrmArtTT;
 
    private Label lbl_grupa, lbl_grupa_skl2, lbl_ThKune;
 
@@ -1077,7 +1077,7 @@ public partial class RiskFilterUC : VvFilterUC
 
    private void InitializeHamper_TTSklad(out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 8, "", this, false);
+      hamper = new VvHamper(4, /*8*/9, "", this, false);
 
       hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q2un + ZXC.Qun2, ZXC.Q3un, ZXC.Q3un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,            ZXC.Qun8, ZXC.Qun8, ZXC.Qun8};
@@ -1089,7 +1089,7 @@ public partial class RiskFilterUC : VvFilterUC
          hamper.VvSpcBefRow[i] = ZXC.Qun8;
       }
       hamper.VvRowHgt[0] = ZXC.QUN - ZXC.Qun8;
-      hamper.VvRowHgt[3] = ZXC.Qun8;
+      hamper.VvRowHgt[4] = ZXC.Qun8;
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       cbx_isPrihodTT = hamper.CreateVvCheckBox_OLD(0, 0, null, 3, 0, "Prihod: IFA, IRA, IRM, IOD, IPV", System.Windows.Forms.RightToLeft.No);
@@ -1098,22 +1098,25 @@ public partial class RiskFilterUC : VvFilterUC
       cbx_isRashodTT = hamper.CreateVvCheckBox_OLD(0, 1, null, 3, 0, "Rashod: UFA, URA, URM, UOD, UPV", System.Windows.Forms.RightToLeft.No);
       cbx_isRashodTT.CheckedChanged += new EventHandler(IsRashodTT_Checked);
 
-                     hamper.CreateVvLabel        (0, ZXC.IsSvDUH ? 0 : 2, "TipTrans:", ContentAlignment.MiddleRight);
-      tbxLookUp_TT = hamper.CreateVvTextBoxLookUp(1, ZXC.IsSvDUH ? 0 : 2, "tbxLookUp_TT", "Tip transakcije");
-      tbx_TTOpis   = hamper.CreateVvTextBox      (2, ZXC.IsSvDUH ? 0 : 2, "tbx_TTOpis_InVisible", "Opis tipa transkacije", 32, 1, 0);
+      cbx_IsMalopUlazForPrmArtTT = hamper.CreateVvCheckBox_OLD(0, 2, null, 3, 0, "MalopUlaz PrmArt: URM, KLK", System.Windows.Forms.RightToLeft.No);
+      cbx_IsMalopUlazForPrmArtTT.CheckedChanged += new EventHandler(IsMalopUlazForPrmArtTT_Checked);
+
+                     hamper.CreateVvLabel        (0, ZXC.IsSvDUH ? 0 : /*2*/3, "TipTrans:", ContentAlignment.MiddleRight);
+      tbxLookUp_TT = hamper.CreateVvTextBoxLookUp(1, ZXC.IsSvDUH ? 0 : /*2*/3, "tbxLookUp_TT", "Tip transakcije");
+      tbx_TTOpis   = hamper.CreateVvTextBox      (2, ZXC.IsSvDUH ? 0 : /*2*/3, "tbx_TTOpis_InVisible", "Opis tipa transkacije", 32, 1, 0);
       tbxLookUp_TT.JAM_CharacterCasing = CharacterCasing.Upper;
       tbxLookUp_TT.JAM_Set_LookUpTable(ZXC.luiListaFakturType, (int)ZXC.Kolona.prva);
       tbxLookUp_TT.JAM_lui_NameTaker_JAM_Name = tbx_TTOpis.JAM_Name;
       tbx_TTOpis.JAM_ReadOnly = true;
       tbx_TTOpis.Tag = ZXC.vvColors.userControl_BackColor;
       //     tbxLookUp_TT.JAM_DataRequired = true;
-      Label lbCrta = hamper.CreateVvLabel(0, 3, "", ContentAlignment.MiddleLeft);
+      Label lbCrta = hamper.CreateVvLabel(0, /*3*/4, "", ContentAlignment.MiddleLeft);
       lbCrta.Size = new System.Drawing.Size(ZXC.Q10un + ZXC.Q5un, ZXC.Qun12);
       lbCrta.BackColor = Color.DarkGray;
 
-                      hamper.CreateVvLabel        (0, ZXC.IsSvDUH ? 2 : 4, "Sklad1:", ContentAlignment.MiddleRight);
-      tbx_skladCd   = hamper.CreateVvTextBoxLookUp(1, ZXC.IsSvDUH ? 2 : 4, "tbx_skladCd", "Šifra skladišta");
-      tbx_skladOpis = hamper.CreateVvTextBox      (2, ZXC.IsSvDUH ? 2 : 4, "tbx_skladOpis_InVisible", "Naziv skladišta", 32, 1, 0);
+                      hamper.CreateVvLabel        (0, ZXC.IsSvDUH ? 2 : /*4*/5, "Sklad1:", ContentAlignment.MiddleRight);
+      tbx_skladCd   = hamper.CreateVvTextBoxLookUp(1, ZXC.IsSvDUH ? 2 : /*4*/5, "tbx_skladCd", "Šifra skladišta");
+      tbx_skladOpis = hamper.CreateVvTextBox      (2, ZXC.IsSvDUH ? 2 : /*4*/5, "tbx_skladOpis_InVisible", "Naziv skladišta", 32, 1, 0);
       tbx_skladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_skladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       tbx_skladCd.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis.JAM_Name;
@@ -1123,9 +1126,9 @@ public partial class RiskFilterUC : VvFilterUC
       tbx_skladOpis.JAM_ReadOnly = true;
       tbx_skladOpis.Tag = ZXC.vvColors.userControl_BackColor;
       
-      lbl_grupa_skl2 = hamper.CreateVvLabel        (0, 5, "Sklad2:", ContentAlignment.MiddleRight);
-      tbx_skladCd2   = hamper.CreateVvTextBoxLookUp(1, 5, "tbx_skladCd2"  , "Šifra skladišta2");
-      tbx_skladOpis2 = hamper.CreateVvTextBox      (2, 5, "tbx_skladOpis2", "Naziv skladišta2", 32, 1, 0);
+      lbl_grupa_skl2 = hamper.CreateVvLabel        (0, /*5*/6, "Sklad2:", ContentAlignment.MiddleRight);
+      tbx_skladCd2   = hamper.CreateVvTextBoxLookUp(1, /*5*/6, "tbx_skladCd2"  , "Šifra skladišta2");
+      tbx_skladOpis2 = hamper.CreateVvTextBox      (2, /*5*/6, "tbx_skladOpis2", "Naziv skladišta2", 32, 1, 0);
       tbx_skladCd2.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_skladCd2.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       tbx_skladCd2.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis2.JAM_Name;
@@ -1134,31 +1137,31 @@ public partial class RiskFilterUC : VvFilterUC
       tbx_skladOpis2.Tag = ZXC.vvColors.userControl_BackColor;
 
 
-      rbt_svaSklad = hamper.CreateVvRadioButton(0, 5, null, "SvaSkl", TextImageRelation.ImageBeforeText);
+      rbt_svaSklad = hamper.CreateVvRadioButton(0, /*5*/6, null, "SvaSkl", TextImageRelation.ImageBeforeText);
       rbt_svaSklad.Checked = true;
       rbt_svaSklad.Tag = true;
 
-      rbt_onlyVelepSkl = hamper.CreateVvRadioButton(1, 5, null, "Velep", TextImageRelation.ImageBeforeText);
-      rbt_onlyMalopSkl = hamper.CreateVvRadioButton(2, 5, null, "Malop", TextImageRelation.ImageBeforeText);
-      rbt_TMB_VpskVps2 = hamper.CreateVvRadioButton(3, 5, null, "TMB"  , TextImageRelation.ImageBeforeText);
+      rbt_onlyVelepSkl = hamper.CreateVvRadioButton(1, /*5*/6, null, "Velep", TextImageRelation.ImageBeforeText);
+      rbt_onlyMalopSkl = hamper.CreateVvRadioButton(2, /*5*/6, null, "Malop", TextImageRelation.ImageBeforeText);
+      rbt_TMB_VpskVps2 = hamper.CreateVvRadioButton(3, /*5*/6, null, "TMB"  , TextImageRelation.ImageBeforeText);
 
-      cbx_isChkO      = hamper.CreateVvCheckBox_OLD(0, 6, null, "Chk0"       , System.Windows.Forms.RightToLeft.No);
-      cbx_isMpskPoNBC = hamper.CreateVvCheckBox_OLD(2, 6, null, 1, 0, "MPSK po NBC", System.Windows.Forms.RightToLeft.No);
+      cbx_isChkO      = hamper.CreateVvCheckBox_OLD(0, /*6*/7, null, "Chk0"       , System.Windows.Forms.RightToLeft.No);
+      cbx_isMpskPoNBC = hamper.CreateVvCheckBox_OLD(2, /*6*/7, null, 1, 0, "MPSK po NBC", System.Windows.Forms.RightToLeft.No);
 
-      lbl_ThKune = hamper.CreateVvLabel  (0, 6, "Kune u Blagajni:", 1, 0, ContentAlignment.MiddleRight);
-      tbx_ThKune = hamper.CreateVvTextBox(2, 6, "tbx_ThKune", "Iznos u kunama", 12, 1, 0);
+      lbl_ThKune = hamper.CreateVvLabel  (0, /*6*/7, "Kune u Blagajni:", 1, 0, ContentAlignment.MiddleRight);
+      tbx_ThKune = hamper.CreateVvTextBox(2, /*6*/7, "tbx_ThKune", "Iznos u kunama", 12, 1, 0);
       tbx_ThKune.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       lbl_ThKune.Visible = tbx_ThKune.Visible = ZXC.IsTEXTHOany2;
 
 
-      if(ZXC.IsSvDUH) cbx_IsBlgInIzvVal = hamper.CreateVvCheckBox_OLD(0, 6, null, 3, 0, "Alternativa" , System.Windows.Forms.RightToLeft.No);
-      else            cbx_IsBlgInIzvVal = hamper.CreateVvCheckBox_OLD(2, 6, null, 1, 0, "BLG u IzvVal", System.Windows.Forms.RightToLeft.Yes);
+      if(ZXC.IsSvDUH) cbx_IsBlgInIzvVal = hamper.CreateVvCheckBox_OLD(0, /*6*/7, null, 3, 0, "Alternativa" , System.Windows.Forms.RightToLeft.No);
+      else            cbx_IsBlgInIzvVal = hamper.CreateVvCheckBox_OLD(2, /*6*/7, null, 1, 0, "BLG u IzvVal", System.Windows.Forms.RightToLeft.Yes);
 
       if(ZXC.IsSvDUH)
       {
-         cbx_isPrihodTT.Visible = cbx_isRashodTT.Visible   = tbx_skladCd2.Visible     = lbl_grupa_skl2.Visible   = 
-         rbt_svaSklad.Visible   = rbt_onlyVelepSkl.Visible = rbt_onlyMalopSkl.Visible = rbt_TMB_VpskVps2.Visible = 
-         cbx_isChkO.Visible     = cbx_isMpskPoNBC.Visible  = false;
+         cbx_isPrihodTT   .Visible = cbx_isRashodTT  .Visible  = tbx_skladCd2             .Visible = lbl_grupa_skl2  .Visible = 
+         rbt_svaSklad     .Visible = rbt_onlyVelepSkl.Visible = rbt_onlyMalopSkl          .Visible = rbt_TMB_VpskVps2.Visible = 
+         cbx_isChkO       .Visible = cbx_isMpskPoNBC .Visible = cbx_IsMalopUlazForPrmArtTT.Visible = false;
          cbx_IsBlgInIzvVal.Visible = false; // 04.12.2019. ovo vise ne koristimo za ista pa je bolje da se ne vidi da ne zbunjuje
       }
 
@@ -1206,15 +1209,18 @@ public partial class RiskFilterUC : VvFilterUC
       {
          VvHamper.Open_Close_Fields_ForWriting(tbxLookUp_TT, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvReportUC);
          Fld_TT = "";
-         cbx_isRashodTT.Enabled = false;
+         cbx_isRashodTT            .Enabled = 
+         cbx_IsMalopUlazForPrmArtTT.Enabled = false;
       }
       else
       {
          VvHamper.Open_Close_Fields_ForWriting(tbxLookUp_TT, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);
          Fld_TT = ZXC.TheVvForm.VvPref.reportPrefs.RiskTT;
-         cbx_isRashodTT.Enabled = true;
-
+         cbx_isRashodTT            .Enabled = 
+         cbx_IsMalopUlazForPrmArtTT.Enabled = true;
       }
+      
+      cBox.Enabled = true;
    }
    public void IsRashodTT_Checked(object sender, EventArgs ea)
    {
@@ -1223,16 +1229,36 @@ public partial class RiskFilterUC : VvFilterUC
       {
          VvHamper.Open_Close_Fields_ForWriting(tbxLookUp_TT, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvReportUC);
          Fld_TT = "";
+         cbx_isPrihodTT            .Enabled = 
+         cbx_IsMalopUlazForPrmArtTT.Enabled = false;
+      }
+      else
+      {
+         VvHamper.Open_Close_Fields_ForWriting(tbxLookUp_TT, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);
+         Fld_TT = ZXC.TheVvForm.VvPref.reportPrefs.RiskTT;
+         cbx_isPrihodTT            .Enabled = 
+         cbx_IsMalopUlazForPrmArtTT.Enabled = true;
+      }
+      cBox.Enabled = true;
+   }
+   public void IsMalopUlazForPrmArtTT_Checked(object sender, EventArgs ea)
+   {
+      CheckBox cBox = sender as CheckBox;
+      if(cBox.Checked)
+      {
+         VvHamper.Open_Close_Fields_ForWriting(tbxLookUp_TT, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvReportUC);
+         Fld_TT = "";
          cbx_isPrihodTT.Enabled = false;
-
+         cbx_isRashodTT.Enabled = false;
       }
       else
       {
          VvHamper.Open_Close_Fields_ForWriting(tbxLookUp_TT, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);
          Fld_TT = ZXC.TheVvForm.VvPref.reportPrefs.RiskTT;
          cbx_isPrihodTT.Enabled = true;
-
+         cbx_isRashodTT.Enabled = true;
       }
+      cBox.Enabled = true;
    }
 
    private void InitializeHamper_Sort(out VvHamper hamper)
@@ -2623,8 +2649,6 @@ public partial class RiskFilterUC : VvFilterUC
    public bool   Fld_IsPrihodTT { get { return cbx_isPrihodTT.Checked; } set { cbx_isPrihodTT.Checked = value; } }
    public bool   Fld_OcuGraf    { get { return cbx_ocuGraf.Checked; } set { cbx_ocuGraf.Checked = value; } }
    public string Fld_Status     { get { return tbx_Status.Text; } set { tbx_Status.Text = value; } }
-
-
    public DateTime Fld_CompDateOd
    {
       get
@@ -2675,6 +2699,7 @@ public partial class RiskFilterUC : VvFilterUC
    public string Fld_RptNaziv    { get { return tbx_rptNaziv   .Text; } set { tbx_rptNaziv   .Text = value; } }
 
    public bool Fld_IsRashodTT { get { return cbx_isRashodTT.Checked; } set { cbx_isRashodTT.Checked = value; } }
+   public bool Fld_IsMalopUlazForPrmArtTT { get { return cbx_IsMalopUlazForPrmArtTT.Checked; } set { cbx_IsMalopUlazForPrmArtTT.Checked = value; } }
 
    public int     Fld_Pdv_831br { get { return tbx_pdv_831br.GetIntField();     } set { tbx_pdv_831br.PutIntField    (value); } }
    public int     Fld_Pdv_832br { get { return tbx_pdv_832br.GetIntField();     } set { tbx_pdv_832br.PutIntField    (value); } }
@@ -2946,6 +2971,9 @@ public partial class RiskFilterUC : VvFilterUC
 
          Fld_UvozIzvozOnly          = TheRtransFilter.UvozIzvozOnly;
          Fld_TH_Kune                = TheRtransFilter.TH_Blg_uKunama;
+
+         Fld_IsMalopUlazForPrmArtTT = TheRtransFilter.IsMalopUlazForPrmArtTT;
+
       }
 
       // Za JAM_... : 
@@ -2986,7 +3014,10 @@ public partial class RiskFilterUC : VvFilterUC
       ZXC.TheVvForm.VvPref.reportPrefs.RiskTT     = TheRtransFilter.TT = Fld_TT;
       ZXC.TheVvForm.VvPref.reportPrefs.IsPrihodTT = TheRtransFilter.IsPrihodTT = Fld_IsPrihodTT;
       ZXC.TheVvForm.VvPref.reportPrefs.IsRashodTT = TheRtransFilter.IsRashodTT = Fld_IsRashodTT;
-      ZXC.TheVvForm.VvPref.reportPrefs.MacroName  = TheRtransFilter.MacroName = Fld_MacroName;
+      ZXC.TheVvForm.VvPref.reportPrefs.MacroName  = TheRtransFilter.MacroName  = Fld_MacroName;
+
+      TheRtransFilter.IsMalopUlazForPrmArtTT = Fld_IsMalopUlazForPrmArtTT ;
+
 
       TheRtransFilter.SkladCD  = Fld_SkladCD;
       TheRtransFilter.SkladCD2 = Fld_SkladCD2;
@@ -3097,7 +3128,7 @@ public partial class RiskFilterUC : VvFilterUC
       TheRtransFilter.SVD_LiP                = Fld_SVD_LiP          ;
       TheRtransFilter.SVD_IsDonacSklad       = Fld_SVD_IsDonacSklad;
       TheRtransFilter.UvozIzvozOnly          = Fld_UvozIzvozOnly;
-      TheRtransFilter.TH_Blg_uKunama                = Fld_TH_Kune ;
+      TheRtransFilter.TH_Blg_uKunama         = Fld_TH_Kune ;
 
    }
 
