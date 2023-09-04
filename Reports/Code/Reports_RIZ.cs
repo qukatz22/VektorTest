@@ -6436,6 +6436,11 @@ public class RptR_Ira_Ruc            : RptR_StandardRiskReport
 
          /* remarck this zagrada line for non parallel*///);
 
+         if(ZXC.IsEURoERA_projectYear)
+         {
+            TheFakturList.Where(f => f.DokDate.Year <= 2022).ToList().ForEach(f => { f.Ira_ROB_PV = ZXC.EURiIzKuna_HRD_(f.Ira_ROB_PV); f.Ira_ROB_NV = ZXC.EURiIzKuna_HRD_(f.Ira_ROB_NV); });
+         }
+
          TheDeviznaSumaList =
 
             faktursWithFtransesList
@@ -11609,7 +11614,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       }
 
       // 29.08.2023: razgranicavamo za novu potrebu Malop ulaza 
-      if(ZXC.TtInfo(RptFilter.TT).IsMalopFin_U)
+      if(ZXC.TtInfo(RptFilter.TT).IsMalopFin_U || RptFilter.IsMalopUlazForPrmArtTT)
       {
          TheDeviznaSumaList = Get_deviznaSumaList_ForMalopUlaz();
 
