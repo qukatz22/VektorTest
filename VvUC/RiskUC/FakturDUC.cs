@@ -14070,6 +14070,7 @@ public class FakturPDUC : FakturExtDUC
       if(this is MOD_PTG_DUC)
       {
          vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         //vvtbT_dimZ.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, false);
       }
 
    }
@@ -14242,8 +14243,7 @@ public class FakturPDUC : FakturExtDUC
    protected void R_ramOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_ramOld2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramOld2", TheVvDaoTrans2, -12, _statusText);
-      
-    //vvtbT_ramOLD.JAM_ShouldCalcTrans = true;
+      vvtbT_ramOld2.JAM_ReadOnly = true;
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramOld2, TheVvDaoTrans2, "R_ramOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
@@ -14254,7 +14254,7 @@ public class FakturPDUC : FakturExtDUC
    protected void R_hddOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_hddOld2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddOld2", TheVvDaoTrans2, -12, _statusText);
-    //vvtbT_hddOld2.JAM_ShouldCalcTrans = true;
+      vvtbT_hddOld2.JAM_ReadOnly = true;
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddOld2, TheVvDaoTrans2, "R_hddOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
@@ -14523,8 +14523,15 @@ public class FakturPDUC : FakturExtDUC
    {
       // 03.02.2014: 
     //TheSumGrid2[ci2.iT_kol, 0].Value = faktur_rec.TrnSum2_K;
-      TheSumGrid2.PutCell(ci2.iT_kol, 0, faktur_rec.TrnSum2_K);
+      TheSumGrid2.PutCell(ci2.iT_kol , 0, faktur_rec.TrnSum2_K);
 
+      if(this.Fld_TT == Faktur.TT_MOD) 
+      { 
+         TheSumGrid2.PutCell(ci2.iT_dimX, 0, faktur_rec.TrnSum2_dimX);
+         TheSumGrid2.PutCell(ci2.iT_dimY, 0, faktur_rec.TrnSum2_dimY);
+         TheSumGrid2.PutCell(ci2.iT_decA, 0, faktur_rec.TrnSum2_decA);
+         TheSumGrid2.PutCell(ci2.iT_decB, 0, faktur_rec.TrnSum2_decB);
+      }   
    }
   
    protected override void GetDgvFields2(bool dirtyFlagging)

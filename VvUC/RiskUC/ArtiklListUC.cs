@@ -1993,7 +1993,6 @@ public class RtransListUC : VvDocumRecLstUC
 
    #endregion Constructor
 
-
    #region Hamperi
 
    private void SetControlForInitialFocus()
@@ -2450,3 +2449,168 @@ public class RtransListUC : VvDocumRecLstUC
 
 }
 
+
+public class RtranoListUC : VvDocumRecLstUC
+{
+   #region Fieldz
+
+   protected Rtrano rtrano_rec;
+   public VvTextBox tbx_serno, tbx_TT;
+   
+   #endregion Fieldz
+
+   #region Constructor
+
+   public RtranoListUC(Control parent, Rtrano _rtrano, VvForm.VvSubModul vvSubModul ) : base(parent)
+   {
+      this.rtrano_rec  = _rtrano;
+      this.Parent.Text = "Lista serno";
+
+      this.MasterSubModulEnum = ZXC.VvSubModulEnum.ART;
+      this.TheSubModul = vvSubModul;
+
+      TheFilterMembers = new System.Collections.Generic.List<VvSqlFilterMember>(); // namoj tamo di ne treba (npr Kplan) 
+
+      hampOpenUtil.Visible = hampUtil.Visible = false;
+
+      SetControlForInitialFocus();
+
+   }
+
+   protected override void InitializeFindFormSpecifics()
+   {
+      recordSorter = Rtrans.sorterTtNum;
+
+      this.ds_rtrans = new Vektor.DataLayer.DS_FindRecord.DS_findRtrans();
+
+      this.Name = "RtransListUC";
+      this.Text = "RtransListUC";
+   }
+
+   #endregion Constructor
+
+   #region Hamperi
+
+   private void SetControlForInitialFocus()
+   {
+      this.ControlForInitialFocus = tbx_serno;
+   }
+
+   protected override void CreateHamperSpecifikum()
+   {
+      hampSpecifikum = new VvHamper(2, 1, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
+      //                                              0       1     
+      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un};
+      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
+      hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
+
+      hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN };
+      hampSpecifikum.VvSpcBefRow    = new int[] { ZXC.Qun4};
+      hampSpecifikum.VvBottomMargin = hampSpecifikum.VvTopMargin;
+
+                  hampSpecifikum.CreateVvLabel   (0, 0, "Serijski broj:", ContentAlignment.MiddleRight);
+      tbx_serno = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_serno", "", 32);
+      tbx_serno.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
+       
+      tbx_TT = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_TT", "", 32);
+      tbx_TT.Visible = false;
+      VvHamper.Open_Close_Fields_ForWriting(tbx_serno     , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
+   }
+
+   #endregion Hamperi
+
+   #region Eveniti
+
+   #endregion Eveniti
+
+   #region DataGridView
+   protected override void CreateDataGridViewColumn()
+   {
+      int sumOfColWidth = 0, colWidth;
+      int colDateWidth = ZXC.Q4un;
+      int colSif6Width = ZXC.Q3un + ZXC.Qun2;
+
+      sumOfColWidth += TheGrid.RowHeadersWidth;
+
+      if(IsArhivaTabPage)
+      {
+         AddDGV_ArhivaColumns(ref sumOfColWidth);
+      }
+
+      
+      colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RecID"    , colWidth, false, 0, "recID");
+
+      colWidth = ZXC.Q6un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
+      colWidth = ZXC.Q9un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
+      colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Serlot"          , colWidth, false  , "t_serlot"    );
+      colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" );
+      colWidth = ZXC.Q7un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
+      colWidth = ZXC.Q2un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
+      colWidth = ZXC.Q3un          ; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
+      colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
+
+      colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentRecID"    , colWidth, false, 0, "t_parentID");
+
+      grid_Width = sumOfColWidth + ZXC.QUN;
+   }
+
+   #endregion DataGridView
+
+   #region Fld_
+
+   public string Fld_SerNo { get { return tbx_serno.Text ; } set { tbx_serno.Text  = value; } }
+
+   #endregion Fld_
+
+   #region Overriders and specifics
+
+   public override VvDataRecord VirtualDataRecord
+   {
+      get { return this.rtrano_rec; }
+      set {        this.rtrano_rec = (Rtrano)value; }
+   }
+
+   public override VvDaoBase TheVvDao
+   {
+      get { return ZXC.RtranoDao; }
+   }
+
+   private Vektor.DataLayer.DS_FindRecord.DS_findRtrans ds_rtrans;
+
+   protected override DataSet VirtualUntypedDataSet { get { return ds_rtrans; } }
+
+   protected override object[] From_IndexSegmentValues
+   {
+      get
+      {
+         switch(recordSorter.SortType)
+         {
+          //case VvSQL.SorterType.Code    : return new object[] { Fld_FromArtiklCD, "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+          //case VvSQL.SorterType.Name    : return new object[] { Fld_FromArtName ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+          //case VvSQL.SorterType.TtNum   : return new object[] {                                             ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+          //case VvSQL.SorterType.DokDate : return new object[] {                       Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+          //case VvSQL.SorterType.KpdbName: return new object[] { Fld_PartnerCD   ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 }; // nije name nego cd ! 
+          //case VvSQL.SorterType.Serlot  : return new object[] { Fld_FromSerlot  , "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+  
+            default: ZXC.aim_emsg("Q42: SortType [{0}] undifajnd in property 'From_IndexSegmentValues'", recordSorter.SortType); return null;
+         }
+      }
+   }
+
+   public override void SetListFilterRecordDependentDefaults()
+   {
+      //if(Default_TT == "UNDEF") Fld_FromTT = Fld_FilterTT = "";
+      //else                      Fld_FromTT = Fld_FilterTT = Default_TT;
+   }
+
+   protected override VvTextBox VvTbx_Virtual_TT       { get { return this.tbx_TT; } }
+   protected override VvTextBox VvTbx_VirtualFilter_TT { get { return this.tbx_TT; } set { this.tbx_TT = value; } }
+
+   #endregion Overriders and specifics
+
+
+   #region AddFilterMemberz()
+
+   #endregion AddFilterMemberz()
+
+}
