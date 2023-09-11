@@ -4915,7 +4915,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(vvtb_editingControl == null) return;
 
       if(vvtb_editingControl.Text.IsEmpty())            return;
-      if(vvtb_editingControl.Text == this.originalText) return;
+    //if(vvtb_editingControl.Text == this.originalText) return; namjerno ugaseno 
 
       VvDataGridView theGrid = ((VvDataGridView)vvtb_editingControl.EditingControlDataGridView);
 

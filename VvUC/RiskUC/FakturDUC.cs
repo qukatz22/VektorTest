@@ -13889,28 +13889,52 @@ public class FakturPDUC : FakturExtDUC
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
-      int rowIdx = TheG2.CurrentRow.Index;
+      int rowIdx = TheG2.CurrentRow .Index      ;
+      int colIdx = TheG2.CurrentCell.ColumnIndex;
+
+      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
-      string artiklCD = Fld_PrjArtCD ;
-      decimal PCK_RAM = Fld_Decimal01;
-      decimal PCK_HDD = Fld_Decimal02;
+    //string MOC_artiklCD = Fld_PrjArtCD ;
+      decimal MOC_PCK_RAM = Fld_Decimal01;
+      decimal MOC_PCK_HDD = Fld_Decimal02;
 
-      string theTT = Get_MOD_RtranoTT(rowIdx, rtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
+      string theTT = Get_MOD_RtranoTT(rowIdx, isPCK, rtrano_rec, /*MOC_artiklCD,*/ MOC_PCK_RAM, MOC_PCK_HDD, false);
 
       TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
 
       SetColors_MOD_PTG_DUC(theTT, rowIdx);
 
+      if(isPCK == false) // MOU / MOI stavke (komponente PCK-a) 
+      {
+         // provjeravaj ovo samo za kolone RAM+/- i HDD+/- 
+         if(colIdx != ci2.iT_dimX &&
+            colIdx != ci2.iT_dimY &&
+            colIdx != ci2.iT_decA &&
+            colIdx != ci2.iT_decB) return;
 
-      int a = 8;
+       //VvDataGridView dgv  = sender             as VvDataGridView;
+       //VvTextBox vvTextBox = dgv.EditingControl as VvTextBox     ;
+         VvTextBox vvTextBox = sender as VvTextBox                 ;
+
+         Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+         if(vvTextBox is null || artikl_rec is null) return;
+
+         decimal enteredKapacitet = ZXC.ValOrZero_Decimal(vvTextBox.Text, 0);
+
+         decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina ;
+
+         if(enteredKapacitet != kolPutaKapacitet)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
+         }
+      }
    }
 
-   private string Get_MOD_RtranoTT(int rowIdx, Rtrano rtrano_rec, string artiklCD, decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
+   private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
    {
-      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
-
       bool isMOC = isPCK && MOC_RAM == rtrano_rec.T_dimZ && MOC_HDD == rtrano_rec.T_decC;
 
       if(isPCK)
@@ -14607,7 +14631,7 @@ public class FakturPDUC : FakturExtDUC
       // PTG news 
       if(HasRtrano_TT_Exposed)
       {
-         string artiklCD = Fld_PrjArtCD ;
+       //string artiklCD = Fld_PrjArtCD ;
          decimal PCK_RAM = Fld_Decimal01;
          decimal PCK_HDD = Fld_Decimal02;
 
@@ -14616,7 +14640,9 @@ public class FakturPDUC : FakturExtDUC
          dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_dimZ, rIdx, dirtyFlagging);
          dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
 
-         dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, dgvRtrano_rec, artiklCD, PCK_RAM, PCK_HDD, false);
+         bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == "PCK";
+
+         dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, /*artiklCD,*/ PCK_RAM, PCK_HDD, false);
       }
       if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
 
