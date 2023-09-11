@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
 using System.Linq;
+using System.ServiceModel;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -945,8 +946,10 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.Name = name;
       hamper.VvInitialHamperLocation = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
-   
-              hamper.CreateVvLabel  (0, 0, name, ContentAlignment.MiddleRight);
+
+      string lblText = (name == "AZapremina:" && ZXC.IsPCTOGO == true) ? "Kapacit:" : name;
+
+              hamper.CreateVvLabel   (0, 0, /*name*/ lblText, ContentAlignment.MiddleRight);
       tbx   = hamper.CreateVvTextBox (1, 0, "tbx_"   + name, name, dbci);
       tbxJM = hamper.CreateVvTextBox (2, 0, "tbxJM_" + name, name, dbciJM);
 

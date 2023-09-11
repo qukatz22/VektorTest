@@ -2394,6 +2394,15 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       }
    }
 
+   public decimal TrnSum2_dimX { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_dimX); } }
+   public decimal TrnSum2_dimY { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_dimY); } }
+   public decimal TrnSum2_decA { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_decA); } }
+   public decimal TrnSum2_decB { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_decB); } }
+
+
+
+
+
    #region AVANS_STORNO
 
    public decimal R_ukKC_AVANS_STORNO      { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Sum(rtrn => rtrn.R_KC  ); } }
