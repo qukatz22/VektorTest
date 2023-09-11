@@ -340,6 +340,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DS_findRtrans.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DataLayer\DS_FindRecord\DS_findSernoRtrano.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DS_findSernoRtrano.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DataLayer\DS_FindRecord\DS_findSkyRule.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -4226,6 +4231,17 @@
     </None>
     <None Include="DataLayer\DS_FindRecord\DS_findRtrans.xss">
       <DependentUpon>DS_findRtrans.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findSernoRtrano.xsc">
+      <DependentUpon>DS_findSernoRtrano.xsd</DependentUpon>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findSernoRtrano.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DS_findSernoRtrano.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataLayer\DS_FindRecord\DS_findSernoRtrano.xss">
+      <DependentUpon>DS_findSernoRtrano.xsd</DependentUpon>
     </None>
     <None Include="DataLayer\DS_FindRecord\DS_findSkyRule.xsc">
       <DependentUpon>DS_findSkyRule.xsd</DependentUpon>

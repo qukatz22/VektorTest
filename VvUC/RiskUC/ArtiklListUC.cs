@@ -2450,7 +2450,7 @@ public class RtransListUC : VvDocumRecLstUC
 }
 
 
-public class RtranoListUC : VvDocumRecLstUC
+public class RtranoListUC : VvRecLstUC
 {
    #region Fieldz
 
@@ -2479,12 +2479,12 @@ public class RtranoListUC : VvDocumRecLstUC
 
    protected override void InitializeFindFormSpecifics()
    {
-      recordSorter = Rtrans.sorterTtNum;
+      recordSorter = Rtrano.sorterSerno;
 
-      this.ds_rtrans = new Vektor.DataLayer.DS_FindRecord.DS_findRtrans();
+      this.ds_sernoRtrano = new Vektor.DataLayer.DS_FindRecord.DS_findSernoRtrano();
 
-      this.Name = "RtransListUC";
-      this.Text = "RtransListUC";
+      this.Name = "SernoRtranoListUC";
+      this.Text = "SernoRtranoListUC";
    }
 
    #endregion Constructor
@@ -2539,17 +2539,19 @@ public class RtranoListUC : VvDocumRecLstUC
 
       
       colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RecID"    , colWidth, false, 0, "recID");
+      
+      colWidth = ZXC.Q5un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Serno"           , colWidth, false  , "t_serno"     );
+      colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
+      colWidth = ZXC.Q9un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "RAM"             , colWidth, false  , "t_dimZ"      );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "HDD"             , colWidth, false  , "t_decC"      );
+      colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" );
+      colWidth = ZXC.Q7un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
+      colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
+      colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
 
-      colWidth = ZXC.Q6un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
-      colWidth = ZXC.Q9un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
-      colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Serlot"          , colWidth, false  , "t_serlot"    );
-      colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" );
-      colWidth = ZXC.Q7un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
-      colWidth = ZXC.Q2un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
-      colWidth = ZXC.Q3un          ; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
-      colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
-
-      colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentRecID"    , colWidth, false, 0, "t_parentID");
+      colWidth = colSif6Width;                        AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RtrRecID"       , colWidth, false, 0, "t_rtrRecID");
 
       grid_Width = sumOfColWidth + ZXC.QUN;
    }
@@ -2575,9 +2577,9 @@ public class RtranoListUC : VvDocumRecLstUC
       get { return ZXC.RtranoDao; }
    }
 
-   private Vektor.DataLayer.DS_FindRecord.DS_findRtrans ds_rtrans;
+   private Vektor.DataLayer.DS_FindRecord.DS_findSernoRtrano ds_sernoRtrano;
 
-   protected override DataSet VirtualUntypedDataSet { get { return ds_rtrans; } }
+   protected override DataSet VirtualUntypedDataSet { get { return ds_sernoRtrano; } }
 
    protected override object[] From_IndexSegmentValues
    {
@@ -2585,13 +2587,14 @@ public class RtranoListUC : VvDocumRecLstUC
       {
          switch(recordSorter.SortType)
          {
-          //case VvSQL.SorterType.Code    : return new object[] { Fld_FromArtiklCD, "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
-          //case VvSQL.SorterType.Name    : return new object[] { Fld_FromArtName ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
-          //case VvSQL.SorterType.TtNum   : return new object[] {                                             ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
-          //case VvSQL.SorterType.DokDate : return new object[] {                       Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
-          //case VvSQL.SorterType.KpdbName: return new object[] { Fld_PartnerCD   ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 }; // nije name nego cd ! 
-          //case VvSQL.SorterType.Serlot  : return new object[] { Fld_FromSerlot  , "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
-  
+            //case VvSQL.SorterType.Code    : return new object[] { Fld_FromArtiklCD, "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+            //case VvSQL.SorterType.Name    : return new object[] { Fld_FromArtName ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+            //case VvSQL.SorterType.TtNum   : return new object[] {                                             ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+            //case VvSQL.SorterType.DokDate : return new object[] {                       Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+            //case VvSQL.SorterType.KpdbName: return new object[] { Fld_PartnerCD   ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 }; // nije name nego cd ! 
+            //case VvSQL.SorterType.Serlot  : return new object[] { Fld_FromSerlot  , "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
+              case VvSQL.SorterType.Serno   : return new object[] { Fld_SerNo, DateTime.MinValue, 0, 0, 0 };
+
             default: ZXC.aim_emsg("Q42: SortType [{0}] undifajnd in property 'From_IndexSegmentValues'", recordSorter.SortType); return null;
          }
       }
@@ -2603,8 +2606,8 @@ public class RtranoListUC : VvDocumRecLstUC
       //else                      Fld_FromTT = Fld_FilterTT = Default_TT;
    }
 
-   protected override VvTextBox VvTbx_Virtual_TT       { get { return this.tbx_TT; } }
-   protected override VvTextBox VvTbx_VirtualFilter_TT { get { return this.tbx_TT; } set { this.tbx_TT = value; } }
+   //protected override VvTextBox VvTbx_Virtual_TT       { get { return this.tbx_TT; } }
+   //protected override VvTextBox VvTbx_VirtualFilter_TT { get { return this.tbx_TT; } set { this.tbx_TT = value; } }
 
    #endregion Overriders and specifics
 

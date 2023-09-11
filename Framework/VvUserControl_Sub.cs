@@ -1684,6 +1684,22 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
             } // else if(this is RtransListUC) 
 
+            // 11.09.2023: 
+            else if(this is RtranoListUC)
+            {
+               string selectedTT       = ((RtranoListUC)this).SelectedTT      ;
+               uint   selectedParentID = ((RtranoListUC)this).SelectedParentID;
+               bool rtoFound = selectedTT.NotEmpty() && selectedParentID.NotZero();
+
+               if(rtoFound)
+               {
+                  xy = ZXC.TheVvForm.GetSubModulXY(ZXC.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(selectedTT));
+                  
+                  recIDforOpenNewRecordTabPage = (uint?)selectedParentID;
+               }
+
+            } // else if(this is RtransListUC) 
+
             else
             {
                xy = ZXC.TheVvForm.GetSubModulXY(this.MasterSubModulEnum);
@@ -2979,6 +2995,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
          if(this is FakturListUC) extendedColumnNamesList = VvSQL.GetAllDataTableColumnNames_4Select(TheDataTable, "ext", IsArhivaTabPage, "ext_");
 
          if(this is RtransListUC) extendedColumnNamesList = "naziv as ext_kpdbName ";
+
+         if(this is RtranoListUC) extendedColumnNamesList = "naziv as ext_kpdbName ";
 
          return 
             VvSQL.GetAllDataTableColumnNames_4Select(TheDataTable, TheDataTable.TableName, /*false*/"ext_", IsArhivaTabPage) +

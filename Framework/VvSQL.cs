@@ -279,7 +279,7 @@ public static class VvSQL
 
    #region RecordSorter
 
-   public enum SorterType { None, /*RecID, */Code, Ticker, Matbr, Name, DokNum, DokDate, TtNum, TtNum2, Person, City, Konto, KontoNaziv, OIB, BarCode, KpdbName, ArtStat, ArtTopByKol, ArtTopByFin, ArtTopByRuc, Serlot, NewRecID, s_lio, KCDnaziv, Name2, Code2 };
+   public enum SorterType { None, /*RecID, */Code, Ticker, Matbr, Name, DokNum, DokDate, TtNum, TtNum2, Person, City, Konto, KontoNaziv, OIB, BarCode, KpdbName, ArtStat, ArtTopByKol, ArtTopByFin, ArtTopByRuc, Serlot, NewRecID, s_lio, KCDnaziv, Name2, Code2, Serno };
 
    public enum RptOrderBy 
    { 
@@ -803,6 +803,8 @@ public static class VvSQL
                #region Rtrans's Kupdob additions (17.3.2016)
 
                (tableName.StartsWith(Rtrans.recordName) ? "LEFT JOIN " + Kupdob.recordName + " ext ON " + sorter.RecName + ".t_kupdob_CD = ext.kupdobCD \n" : "") +
+
+               (tableName.StartsWith(Rtrano.recordName) ? "LEFT JOIN " + Kupdob.recordName + " ext ON " + sorter.RecName + ".t_kupdob_CD = ext.kupdobCD \n" : "") +
                
                #endregion Rtrans's Kupdob additions (17.3.2016)
 

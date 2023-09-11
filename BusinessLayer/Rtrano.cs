@@ -137,7 +137,22 @@ public class Rtrano : VvTransRecord
 
    #region Sorters
 
-   private VvSQL.RecordSorter[] _sorters = null;
+   public static VvSQL.RecordSorter sorterSerno = new VvSQL.RecordSorter(Rtrano.recordName, Rtrano.recordNameArhiva, new VvSQL.IndexSegment[]
+      {
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.t_serno    ]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.t_skladDate ]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.t_ttSort    ]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.t_ttNum     ]),
+         new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.t_serial    ]),
+       //new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer      ] , true)
+      }, "SerNo", VvSQL.SorterType.Serno, false);
+
+ //private VvSQL.RecordSorter[] _sorters = null;
+   private VvSQL.RecordSorter[] _sorters =
+      new VvSQL.RecordSorter[]
+      {
+         sorterSerno
+      };
 
    public override VvSQL.RecordSorter[] Sorters
    {
@@ -145,9 +160,20 @@ public class Rtrano : VvTransRecord
    }
 
 
+   //public override object[] SorterCurrVal(VvSQL.SorterType sortType)
+   //{
+   //   throw new Exception("Mislim da se ovo nema zasto ikada pozivati?!. not really sure yet.");
+   //}
+
    public override object[] SorterCurrVal(VvSQL.SorterType sortType)
    {
-      throw new Exception("Mislim da se ovo nema zasto ikada pozivati?!. not really sure yet.");
+      switch(sortType)
+      {
+         case VvSQL.SorterType.Serno  : return new object[] { T_serno, T_skladDate, T_ttSort, T_ttNum, T_serial };
+
+         default: ZXC.aim_emsg(recordName + " Nema definiran sorter " + sortType.ToString());
+            return null;
+      }
    }
 
    public override VvSQL.RecordSorter DefaultSorter
@@ -155,7 +181,10 @@ public class Rtrano : VvTransRecord
       //get { return Rtrano.sorter_Person_DokDate_DokNum; }
       get 
       { 
-         return Rtrans.sorterArtiklCD;
+         // 11.09.2023: 
+       //return Rtrans.sorterArtiklCD;
+         return Rtrano.sorterSerno;
+
          //throw new Exception("Mislim da se ovo nema zasto ikada pozivati?!. not really sure yet."); 
          /*return new VvSQL.RecordSorter();*/ 
       }

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DS_findSernoRtrano" targetNamespace="http://tempuri.org/DS_findSernoRtrano.xsd" xmlns:mstns="http://tempuri.org/DS_findSernoRtrano.xsd" xmlns="http://tempuri.org/DS_findSernoRtrano.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DS_findSernoRtrano" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="DS_findSernoRtrano" msprop:Generator_DataSetName="DS_findSernoRtrano">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="rtrano" msprop:Generator_RowEvHandlerName="rtranoRowChangeEventHandler" msprop:Generator_RowDeletedName="rtranoRowDeleted" msprop:Generator_RowDeletingName="rtranoRowDeleting" msprop:Generator_RowEvArgName="rtranoRowChangeEvent" msprop:Generator_TablePropName="rtrano" msprop:Generator_RowChangedName="rtranoRowChanged" msprop:Generator_RowChangingName="rtranoRowChanging" msprop:Generator_TableClassName="rtranoDataTable" msprop:Generator_RowClassName="rtranoRow" msprop:Generator_TableVarName="tablertrano" msprop:Generator_UserTableName="rtrano">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="recID" msprop:Generator_ColumnPropNameInRow="recID" msprop:Generator_ColumnPropNameInTable="recIDColumn" msprop:Generator_ColumnVarNameInTable="columnrecID" msprop:Generator_UserColumnName="recID" type="xs:unsignedInt" />
+              <xs:element name="t_parentID" msprop:Generator_ColumnPropNameInRow="t_parentID" msprop:Generator_ColumnPropNameInTable="t_parentIDColumn" msprop:Generator_ColumnVarNameInTable="columnt_parentID" msprop:Generator_UserColumnName="t_parentID" type="xs:unsignedInt" />
+              <xs:element name="t_dokNum" msprop:Generator_ColumnPropNameInRow="t_dokNum" msprop:Generator_ColumnPropNameInTable="t_dokNumColumn" msprop:Generator_ColumnVarNameInTable="columnt_dokNum" msprop:Generator_UserColumnName="t_dokNum" type="xs:unsignedInt" />
+              <xs:element name="t_serial" msprop:Generator_ColumnPropNameInRow="t_serial" msprop:Generator_ColumnPropNameInTable="t_serialColumn" msprop:Generator_ColumnVarNameInTable="columnt_serial" msprop:Generator_UserColumnName="t_serial" type="xs:unsignedShort" />
+              <xs:element name="t_skladDate" msprop:Generator_ColumnPropNameInRow="t_skladDate" msprop:Generator_ColumnPropNameInTable="t_skladDateColumn" msprop:Generator_ColumnVarNameInTable="columnt_skladDate" msprop:Generator_UserColumnName="t_skladDate" type="xs:dateTime" />
+              <xs:element name="t_tt" msprop:Generator_ColumnPropNameInRow="t_tt" msprop:Generator_ColumnPropNameInTable="t_ttColumn" msprop:Generator_ColumnVarNameInTable="columnt_tt" msprop:Generator_UserColumnName="t_tt">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_ttNum" msprop:Generator_ColumnPropNameInRow="t_ttNum" msprop:Generator_ColumnPropNameInTable="t_ttNumColumn" msprop:Generator_ColumnVarNameInTable="columnt_ttNum" msprop:Generator_UserColumnName="t_ttNum" type="xs:unsignedInt" />
+              <xs:element name="t_ttSort" msprop:Generator_ColumnPropNameInRow="t_ttSort" msprop:Generator_ColumnPropNameInTable="t_ttSortColumn" msprop:Generator_ColumnVarNameInTable="columnt_ttSort" msprop:Generator_UserColumnName="t_ttSort" type="xs:byte" />
+              <xs:element name="t_artiklCD" msprop:Generator_ColumnPropNameInRow="t_artiklCD" msprop:Generator_ColumnPropNameInTable="t_artiklCDColumn" msprop:Generator_ColumnVarNameInTable="columnt_artiklCD" msprop:Generator_UserColumnName="t_artiklCD">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="32" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_skladCD" msprop:Generator_ColumnPropNameInRow="t_skladCD" msprop:Generator_ColumnPropNameInTable="t_skladCDColumn" msprop:Generator_ColumnVarNameInTable="columnt_skladCD" msprop:Generator_UserColumnName="t_skladCD">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_artiklName" msprop:Generator_ColumnPropNameInRow="t_artiklName" msprop:Generator_ColumnPropNameInTable="t_artiklNameColumn" msprop:Generator_ColumnVarNameInTable="columnt_artiklName" msprop:Generator_UserColumnName="t_artiklName">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="80" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kupdob_cd" msprop:Generator_ColumnPropNameInRow="t_kupdob_cd" msprop:Generator_ColumnPropNameInTable="t_kupdob_cdColumn" msprop:Generator_ColumnVarNameInTable="columnt_kupdob_cd" msprop:Generator_UserColumnName="t_kupdob_cd" type="xs:unsignedInt" />
+              <xs:element name="t_serno" msprop:Generator_ColumnPropNameInRow="t_serno" msprop:Generator_ColumnPropNameInTable="t_sernoColumn" msprop:Generator_ColumnVarNameInTable="columnt_serno" msprop:Generator_UserColumnName="t_serno">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="64" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="t_kol" msprop:Generator_ColumnPropNameInRow="t_kol" msprop:Generator_ColumnPropNameInTable="t_kolColumn" msprop:Generator_ColumnVarNameInTable="columnt_kol" msprop:Generator_UserColumnName="t_kol" type="xs:decimal" />
+              <xs:element name="t_dimX" msprop:Generator_ColumnPropNameInRow="t_dimX" msprop:Generator_ColumnPropNameInTable="t_dimXColumn" msprop:Generator_ColumnVarNameInTable="columnt_dimX" msprop:Generator_UserColumnName="t_dimX" type="xs:decimal" />
+              <xs:element name="t_dimY" msprop:Generator_ColumnPropNameInRow="t_dimY" msprop:Generator_ColumnPropNameInTable="t_dimYColumn" msprop:Generator_ColumnVarNameInTable="columnt_dimY" msprop:Generator_UserColumnName="t_dimY" type="xs:decimal" />
+              <xs:element name="t_dimZ" msprop:Generator_ColumnPropNameInRow="t_dimZ" msprop:Generator_ColumnPropNameInTable="t_dimZColumn" msprop:Generator_ColumnVarNameInTable="columnt_dimZ" msprop:Generator_UserColumnName="t_dimZ" type="xs:decimal" />
+              <xs:element name="t_decA" msprop:Generator_ColumnPropNameInRow="t_decA" msprop:Generator_ColumnPropNameInTable="t_decAColumn" msprop:Generator_ColumnVarNameInTable="columnt_decA" msprop:Generator_UserColumnName="t_decA" type="xs:decimal" />
+              <xs:element name="t_decB" msprop:Generator_ColumnPropNameInRow="t_decB" msprop:Generator_ColumnPropNameInTable="t_decBColumn" msprop:Generator_ColumnVarNameInTable="columnt_decB" msprop:Generator_UserColumnName="t_decB" type="xs:decimal" />
+              <xs:element name="t_decC" msprop:Generator_ColumnPropNameInRow="t_decC" msprop:Generator_ColumnPropNameInTable="t_decCColumn" msprop:Generator_ColumnVarNameInTable="columnt_decC" msprop:Generator_UserColumnName="t_decC" type="xs:decimal" />
+              <xs:element name="t_komada" msprop:Generator_ColumnPropNameInRow="t_komada" msprop:Generator_ColumnPropNameInTable="t_komadaColumn" msprop:Generator_ColumnVarNameInTable="columnt_komada" msprop:Generator_UserColumnName="t_komada" type="xs:decimal" />
+              <xs:element name="t_rtrRecID" msprop:Generator_ColumnPropNameInRow="t_rtrRecID" msprop:Generator_ColumnPropNameInTable="t_rtrRecIDColumn" msprop:Generator_ColumnVarNameInTable="columnt_rtrRecID" msprop:Generator_UserColumnName="t_rtrRecID" type="xs:unsignedInt" />
+              <xs:element name="t_paletaNo" msprop:Generator_ColumnPropNameInRow="t_paletaNo" msprop:Generator_ColumnPropNameInTable="t_paletaNoColumn" msprop:Generator_ColumnVarNameInTable="columnt_paletaNo" msprop:Generator_UserColumnName="t_paletaNo" type="xs:unsignedInt" />
+              <xs:element name="t_isKomDummy" msprop:Generator_ColumnPropNameInRow="t_isKomDummy" msprop:Generator_ColumnPropNameInTable="t_isKomDummyColumn" msprop:Generator_ColumnVarNameInTable="columnt_isKomDummy" msprop:Generator_UserColumnName="t_isKomDummy" type="xs:unsignedByte" />
+              <xs:element name="t_grCD" msprop:Generator_ColumnPropNameInRow="t_grCD" msprop:Generator_ColumnPropNameInTable="t_grCDColumn" msprop:Generator_ColumnVarNameInTable="columnt_grCD" msprop:Generator_UserColumnName="t_grCD">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="16" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ext_kpdbName" msprop:Generator_ColumnPropNameInTable="ext_kpdbNameColumn" msprop:nullValue="&quot;&quot;" msprop:Generator_ColumnPropNameInRow="ext_kpdbName" msprop:Generator_UserColumnName="ext_kpdbName" msprop:Generator_ColumnVarNameInTable="columnext_kpdbName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:rtrano" />
+      <xs:field xpath="mstns:recID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>
