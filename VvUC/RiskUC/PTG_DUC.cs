@@ -3742,7 +3742,6 @@ public class PCK_Info_UC : UserControl
 
 }
 
-
 public class VvModificiraj_PTG_Dlg : VvDialog
 {
    #region Filedz
@@ -3812,5 +3811,219 @@ public class VvModificiraj_PTG_Dlg : VvDialog
    public decimal Fld_PTG_MODkomada { get { return tbx_komada.GetDecimalField(); } set { tbx_komada.PutDecimalField(value); } }
 
    #endregion Fld_
+
+}
+
+public partial class PCK_SernoDLG :  VvDialog
+{
+   public PCK_Serno_UC TheUC { get; set; }
+   private Button okButton, cancelButton;
+   private int dlgWidth, dlgHeight;
+
+   public PCK_SernoDLG()
+   {
+      ZXC.CurrentForm = this;
+
+      TheUC = new PCK_Serno_UC(this);
+
+      SuspendLayout();
+
+      this.Font        = ZXC.vvFont.BaseFont;
+      this.Style       = ZXC.vvColors.vvform_VisualStyle;
+      this.BackColor   = ZXC.vvColors.userControl_BackColor;
+
+      this.StartPosition = FormStartPosition.Manual;
+      this.Text = "PCK serno info";
+
+      TheUC.Parent   = this;
+      TheUC.Location = new Point(ZXC.Qun8, ZXC.Qun8);
+      
+      dlgWidth  = TheUC.Width;
+      dlgHeight = TheUC.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+
+      this.MaximizeBox = true;
+
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      this.AcceptButton = okButton;
+
+      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      TheUC.Anchor         =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+      TheUC.TheSernoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+      
+      this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
+
+      ResumeLayout();
+
+   }
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+}
+
+public class PCK_Serno_UC : UserControl
+{
+   #region Fieldz
+
+   public VvDataGridView TheSernoGrid { get; set; }
+   private VvTextBox vvtb_PCK_serno;
+
+   private VvTextBoxColumn colVvText;
+   private DataGridViewTextBoxColumn colScrol;
+
+   #endregion Fieldz
+
+   #region Constructor
+
+   public PCK_Serno_UC(Control _parent)
+   {
+      this.SuspendLayout();
+
+      this.Parent = _parent;
+
+      CreateTheGrid();
+
+      GridLocationAndSize_Grids(TheSernoGrid);
+
+      CalcLocationAndSize();
+
+      this.ResumeLayout();
+
+      SetPKCColumnIndexes();
+
+   }
+
+   #endregion Constructor
+
+   #region CalcLocationAndSize
+
+   private void CalcLocationAndSize()
+   {
+      if(this.Parent is VvDialog)
+      {
+         this.Size = new Size(TheSernoGrid.Width + 2 * ZXC.QunMrgn, SystemInformation.WorkingArea.Height - 2 * ZXC.Q10un);
+         TheSernoGrid.Height = this.Size.Height - ZXC.Q2un;
+      }
+   }
+
+   #endregion CalcLocationAndSize
+
+   #region TheGrid
+
+   private void CreateTheGrid()
+   {
+      TheSernoGrid = new VvDataGridView();
+      TheSernoGrid.Parent = this;
+      TheSernoGrid.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+
+      TheSernoGrid.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+      TheSernoGrid.AutoGenerateColumns = false;
+
+      TheSernoGrid.RowHeadersBorderStyle = TheSernoGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+      TheSernoGrid.ColumnHeadersHeight = ZXC.QUN - ZXC.Qun8;
+      TheSernoGrid.RowTemplate.Height = ZXC.QUN - ZXC.Qun8;
+      TheSernoGrid.RowHeadersWidth = ZXC.Q2un;
+      TheSernoGrid.Height = TheSernoGrid.ColumnHeadersHeight + TheSernoGrid.RowTemplate.Height;
+
+      TheSernoGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
+      TheSernoGrid.Validating += new System.ComponentModel.CancelEventHandler(VvDocumentRecordUC.grid_Validating);
+
+      TheSernoGrid.ReadOnly = true;
+
+      VvHamper.ApplyVVColorAndStyleTabCntrolChange(TheSernoGrid);
+      VvHamper.Open_Close_Fields_ForWriting(TheSernoGrid, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvOtherUC);
+
+      TheSernoGrid.AllowUserToAddRows =
+      TheSernoGrid.AllowUserToDeleteRows =
+      TheSernoGrid.AllowUserToOrderColumns =
+      TheSernoGrid.AllowUserToResizeColumns =
+      TheSernoGrid.AllowUserToResizeRows = false;
+
+      TheSernoGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
+      TheSernoGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+      TheSernoGrid.RowHeadersDefaultCellStyle.BackColor = Color.PowderBlue; //Color.FloralWhite;
+      TheSernoGrid.RowHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+
+      //TheGrid.ColumnHeadersDefaultCellStyle.Font = ZXC.vvFont.BaseFont;
+      //TheGrid.RowsDefaultCellStyle         .Font = ZXC.vvFont.BaseFont;
+      //TheGrid.RowHeadersDefaultCellStyle   .Font = ZXC.vvFont.BaseFont;
+
+      CreateColumn(TheSernoGrid);
+
+      int sumoOfColumns = 0;
+      foreach(DataGridViewColumn dc in TheSernoGrid.Columns)
+      {
+         sumoOfColumns += dc.Width;
+      }
+
+      TheSernoGrid.Width = sumoOfColumns + TheSernoGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
+      TheSernoGrid.Height = this.Size.Height - ZXC.QUN;
+   }
+
+   private void GridLocationAndSize_Grids(VvDataGridView theGrid)
+   {
+      theGrid.Height = this.Height - ZXC.Q2un;
+   }
+
+   #endregion TheGrid
+
+   #region TheGridColumn
+
+   private void CreateColumn(VvDataGridView theGrid)
+   {
+      vvtb_PCK_serno = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_PCK_serno", null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_serno, null, "R_PCK_Serno", "Serijski broj", ZXC.Q10un + ZXC.Q5un); vvtb_PCK_serno.JAM_ReadOnly = true;
+
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+
+   }
+
+   #endregion TheGridColumn
+
+   #region SetColumnIndexes()
+
+   private PCKInfo_colIdx ci;
+   public PCKInfo_colIdx DgvCI { get { return ci; } }
+   public struct PCKInfo_colIdx
+   {
+      internal int iT_PCK_serno;
+   }
+
+   public void SetPKCColumnIndexes()
+   {
+      ci = new PCKInfo_colIdx();
+
+      ci.iT_PCK_serno = TheSernoGrid.IdxForColumn("R_PCK_Serno");
+   }
+
+   #endregion SetColumnIndexes()
+
+   public void PutDgvFields(List<PCK_ArtiklInfo_Line> PCK_Lines)
+   {
+      int rowIdx;
+
+      TheSernoGrid.Rows.Clear();
+
+      if(PCK_Lines != null)
+      {
+         for(rowIdx = 0; rowIdx < PCK_Lines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         {
+            TheSernoGrid.Rows.Add();
+
+            PutDgvLineFields(rowIdx, PCK_Lines[rowIdx]);
+
+            TheSernoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         }
+      }
+
+   }
+
+   private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line PCK_Line)
+   {
+      TheSernoGrid.PutCell(ci.iT_PCK_serno, rowIdx, ""/* PCK_Line.PCK_ArtCD*/  );
+   }
 
 }
