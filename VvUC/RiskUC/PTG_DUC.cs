@@ -3415,6 +3415,8 @@ public class PCK_Info_UC : UserControl
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
 
+   List<PCK_ArtiklInfo_Line> PCK_Lines;
+
    #endregion Fieldz
 
    #region Constructor
@@ -3675,26 +3677,28 @@ public class PCK_Info_UC : UserControl
 
    #endregion SetColumnIndexes()
 
-   public void PutDgvFields(List<PCK_ArtiklInfo_Line> PCK_Lines)
+   public void PutDgvFields(List<PCK_ArtiklInfo_Line> _PCK_Lines)
    {
+      this.PCK_Lines = _PCK_Lines;
+
       int rowIdx;
 
       ThePCKGrid.Rows.Clear();
 
-      if(PCK_Lines != null)
+      if(_PCK_Lines != null)
       {
-         for(rowIdx = 0; rowIdx < PCK_Lines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         for(rowIdx = 0; rowIdx < _PCK_Lines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             ThePCKGrid.Rows.Add();
 
-            PutDgvLineFields(rowIdx, PCK_Lines[rowIdx]);
+            PutDgvLineFields(rowIdx, _PCK_Lines[rowIdx]);
 
             ThePCKGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
          }
          //PutDgvSumFields(PCK_Lines);
       }
 
-      PutDgvSumFields(PCK_Lines);
+      PutDgvSumFields(_PCK_Lines);
 
    }
 
@@ -3713,13 +3717,29 @@ public class PCK_Info_UC : UserControl
       ThePCKGrid.PutCell(ci.iT_StanjeKol   , rowIdx, PCK_Line.StanjeKol  );
    }
 
-   private void PutDgvSumFields(List<PCK_ArtiklInfo_Line> PCK_Lines)
+   private void PutDgvSumFields(List<PCK_ArtiklInfo_Line> _PCK_Lines)
    {
-      ThePCKSumGrid.PutCell(ci.iT_PCK_RAM  , 0, PCK_Lines.Sum(pck => pck.PCK_RAM  ));
-      ThePCKSumGrid.PutCell(ci.iT_PCK_HDD  , 0, PCK_Lines.Sum(pck => pck.PCK_HDD  ));
-      ThePCKSumGrid.PutCell(ci.iT_StanjeKol, 0, PCK_Lines.Sum(pck => pck.StanjeKol));
+      ThePCKSumGrid.PutCell(ci.iT_PCK_RAM  , 0, _PCK_Lines.Sum(pck => pck.PCK_RAM  ));
+      ThePCKSumGrid.PutCell(ci.iT_PCK_HDD  , 0, _PCK_Lines.Sum(pck => pck.PCK_HDD  ));
+      ThePCKSumGrid.PutCell(ci.iT_StanjeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
 
    }
+
+   private void TheG_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      string tipBr = theG.GetStringCell(ci2.iT_brRacuna, rowIdx, false);
+
+      ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+
+   }
+
+
 }
 
 
