@@ -532,7 +532,7 @@ public class ArtiklListUC : VvRecLstUC
       {
          List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD);
 
-         PCK_InfoDLG pckDaoDlg = new PCK_InfoDLG();
+         PCK_ArtiklInfo_Dlg pckDaoDlg = new PCK_ArtiklInfo_Dlg();
          pckDaoDlg.TheUC.PutDgvFields(PCK_ArtiklInfo_List);
          pckDaoDlg.ShowDialog();
          pckDaoDlg.Dispose();

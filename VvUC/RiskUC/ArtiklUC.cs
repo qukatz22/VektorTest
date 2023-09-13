@@ -83,7 +83,7 @@ public class ArtiklUC : VvSifrarRecordUC
    
    private Button btn_numCd, btn_proj, btn_openExLinkURL, btn_openExLinkNap;
 
-   private PCK_Info_UC pcKInfoUC;
+   private PCK_ArtiklInfo_UC pcKInfoUC;
    protected bool PTG_PCKinfoLoaded;
 
    #endregion Fieldz
@@ -183,7 +183,7 @@ public class ArtiklUC : VvSifrarRecordUC
       { 
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
          
-         pcKInfoUC = new PCK_Info_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
+         pcKInfoUC = new PCK_ArtiklInfo_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
 
          TheTabControl.SelectionChanged += DecideIfShouldLoad_PCKinfo;
       }

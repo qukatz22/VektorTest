@@ -3341,18 +3341,17 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 
 }
 
-
-public partial class PCK_InfoDLG :  VvDialog
+public partial class PCK_ArtiklInfo_Dlg :  VvDialog
 {
-   public PCK_Info_UC TheUC { get; set; }
+   public PCK_ArtiklInfo_UC TheUC { get; set; }
    private Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
-   public PCK_InfoDLG()
+   public PCK_ArtiklInfo_Dlg()
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new PCK_Info_UC(this);
+      TheUC = new PCK_ArtiklInfo_UC(this);
 
       SuspendLayout();
 
@@ -3393,7 +3392,7 @@ public partial class PCK_InfoDLG :  VvDialog
    }
 }
 
-public class PCK_Info_UC : UserControl
+public class PCK_ArtiklInfo_UC : UserControl
 {
    #region Fieldz
 
@@ -3421,7 +3420,7 @@ public class PCK_Info_UC : UserControl
 
    #region Constructor
 
-   public PCK_Info_UC(Control _parent)
+   public PCK_ArtiklInfo_UC(Control _parent)
    {
       this.SuspendLayout();
 
@@ -3438,6 +3437,8 @@ public class PCK_Info_UC : UserControl
       this.ResumeLayout();
 
       SetPKCColumnIndexes();
+
+      ThePCKGrid.CellMouseDoubleClick += ThePCKSumGrid_CellMouseDoubleClick_OpenSernoList;
 
    }
 
@@ -3702,19 +3703,19 @@ public class PCK_Info_UC : UserControl
 
    }
 
-   private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line PCK_Line)
+   private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line _PCK_Line)
    {
-      ThePCKGrid.PutCell(ci.iT_PCK_ArtCD   , rowIdx, PCK_Line.PCK_ArtCD  );
-      ThePCKGrid.PutCell(ci.iT_PCK_ArtName , rowIdx, PCK_Line.PCK_ArtName);
-      ThePCKGrid.PutCell(ci.iT_PCK_RAMkind , rowIdx, PCK_Line.PCK_RAMkind);
-      ThePCKGrid.PutCell(ci.iT_PCK_HDDkind , rowIdx, PCK_Line.PCK_HDDkind);
-      ThePCKGrid.PutCell(ci.iT_PCK_SklCD   , rowIdx, PCK_Line.PCK_SklCD  );
-      ThePCKGrid.PutCell(ci.iT_PCK_RAM     , rowIdx, PCK_Line.PCK_RAM    );
-      ThePCKGrid.PutCell(ci.iT_PCK_HDD     , rowIdx, PCK_Line.PCK_HDD    );
-    //TheGrid.PutCell(ci.iT_UkPstKol    , rowIdx, PCK_Line.UkPstKol   );
-    //TheGrid.PutCell(ci.iT_UkUlazKol   , rowIdx, PCK_Line.UkUlazKol  );
-    //TheGrid.PutCell(ci.iT_UkIzlazKol  , rowIdx, PCK_Line.UkIzlazKol );
-      ThePCKGrid.PutCell(ci.iT_StanjeKol   , rowIdx, PCK_Line.StanjeKol  );
+      ThePCKGrid.PutCell(ci.iT_PCK_ArtCD   , rowIdx, _PCK_Line.PCK_ArtCD  );
+      ThePCKGrid.PutCell(ci.iT_PCK_ArtName , rowIdx, _PCK_Line.PCK_ArtName);
+      ThePCKGrid.PutCell(ci.iT_PCK_RAMkind , rowIdx, _PCK_Line.PCK_RAMkind);
+      ThePCKGrid.PutCell(ci.iT_PCK_HDDkind , rowIdx, _PCK_Line.PCK_HDDkind);
+      ThePCKGrid.PutCell(ci.iT_PCK_SklCD   , rowIdx, _PCK_Line.PCK_SklCD  );
+      ThePCKGrid.PutCell(ci.iT_PCK_RAM     , rowIdx, _PCK_Line.PCK_RAM    );
+      ThePCKGrid.PutCell(ci.iT_PCK_HDD     , rowIdx, _PCK_Line.PCK_HDD    );
+    //TheGrid.PutCell(ci.iT_UkPstKol       , rowIdx, PCK_Line.UkPstKol   );
+    //TheGrid.PutCell(ci.iT_UkUlazKol      , rowIdx, PCK_Line.UkUlazKol  );
+    //TheGrid.PutCell(ci.iT_UkIzlazKol     , rowIdx, PCK_Line.UkIzlazKol );
+      ThePCKGrid.PutCell(ci.iT_StanjeKol   , rowIdx, _PCK_Line.StanjeKol  );
    }
 
    private void PutDgvSumFields(List<PCK_ArtiklInfo_Line> _PCK_Lines)
@@ -3725,7 +3726,7 @@ public class PCK_Info_UC : UserControl
 
    }
 
-   private void TheG_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+   private void ThePCKSumGrid_CellMouseDoubleClick_OpenSernoList(object sender, DataGridViewCellMouseEventArgs e)
    {
       VvDataGridView theG = sender as VvDataGridView;
 
@@ -3733,12 +3734,13 @@ public class PCK_Info_UC : UserControl
 
       if(rowIdx.IsNegative()) return;
 
-      string tipBr = theG.GetStringCell(ci2.iT_brRacuna, rowIdx, false);
+      PCK_ArtiklInfo_Line PCK_Line = PCK_Lines[rowIdx];
 
-      ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
-
+      PCK_SernoList_Dlg pCK_SernoDLG = new PCK_SernoList_Dlg();
+      pCK_SernoDLG.TheUC.PutDgvFields(PCK_Line.PCK_SernoInfo_List);
+      pCK_SernoDLG.ShowDialog();
+      pCK_SernoDLG.Dispose();
    }
-
 
 }
 
@@ -3814,17 +3816,17 @@ public class VvModificiraj_PTG_Dlg : VvDialog
 
 }
 
-public partial class PCK_SernoDLG :  VvDialog
+public partial class PCK_SernoList_Dlg :  VvDialog
 {
-   public PCK_Serno_UC TheUC { get; set; }
+   public PCK_SernoList_UC TheUC { get; set; }
    private Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
-   public PCK_SernoDLG()
+   public PCK_SernoList_Dlg()
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new PCK_Serno_UC(this);
+      TheUC = new PCK_SernoList_UC(this);
 
       SuspendLayout();
 
@@ -3865,12 +3867,12 @@ public partial class PCK_SernoDLG :  VvDialog
    }
 }
 
-public class PCK_Serno_UC : UserControl
+public class PCK_SernoList_UC : UserControl
 {
    #region Fieldz
 
    public VvDataGridView TheSernoGrid { get; set; }
-   private VvTextBox vvtb_PCK_serno;
+   private VvTextBox vvtb_PCK_theSerno, vvtb_PCK_sernoRtranoCount;
 
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
@@ -3879,7 +3881,7 @@ public class PCK_Serno_UC : UserControl
 
    #region Constructor
 
-   public PCK_Serno_UC(Control _parent)
+   public PCK_SernoList_UC(Control _parent)
    {
       this.SuspendLayout();
 
@@ -3895,6 +3897,7 @@ public class PCK_Serno_UC : UserControl
 
       SetPKCColumnIndexes();
 
+      TheSernoGrid.CellMouseDoubleClick += TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList;
    }
 
    #endregion Constructor
@@ -3975,7 +3978,8 @@ public class PCK_Serno_UC : UserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      vvtb_PCK_serno = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_PCK_serno", null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_serno, null, "R_PCK_Serno", "Serijski broj", ZXC.Q10un + ZXC.Q5un); vvtb_PCK_serno.JAM_ReadOnly = true;
+      vvtb_PCK_theSerno         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (       "vvtb_PCK_theSerno"        , null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSerno        , null, "R_PCK_Serno"     , "Serijski broj", ZXC.Q10un + ZXC.Q5un); vvtb_PCK_theSerno        .JAM_ReadOnly = true;
+    //vvtb_PCK_sernoRtranoCount = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb_PCK_sernoRtranoCount", null, -12, "Broj stavaka" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_sernoRtranoCount, null, "R_PCK_SernoCount", "Rtr"          ,             ZXC.Q3un); vvtb_PCK_sernoRtranoCount.JAM_ReadOnly = true;
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
 
@@ -3989,31 +3993,33 @@ public class PCK_Serno_UC : UserControl
    public PCKInfo_colIdx DgvCI { get { return ci; } }
    public struct PCKInfo_colIdx
    {
-      internal int iT_PCK_serno;
+      internal int iT_PCK_theSerno;
+    //internal int iT_PCK_sernoCount;
    }
 
    public void SetPKCColumnIndexes()
    {
       ci = new PCKInfo_colIdx();
 
-      ci.iT_PCK_serno = TheSernoGrid.IdxForColumn("R_PCK_Serno");
+      ci.iT_PCK_theSerno   = TheSernoGrid.IdxForColumn("R_PCK_Serno");
+    //ci.iT_PCK_sernoCount = TheSernoGrid.IdxForColumn("R_PCK_SernoCount");
    }
 
    #endregion SetColumnIndexes()
 
-   public void PutDgvFields(List<PCK_ArtiklInfo_Line> PCK_Lines)
+   public void PutDgvFields(List<PCK_SernoInfo_Line> PCK_SernoInfoLines)
    {
       int rowIdx;
 
       TheSernoGrid.Rows.Clear();
 
-      if(PCK_Lines != null)
+      if(PCK_SernoInfoLines != null)
       {
-         for(rowIdx = 0; rowIdx < PCK_Lines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         for(rowIdx = 0; rowIdx < PCK_SernoInfoLines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             TheSernoGrid.Rows.Add();
 
-            PutDgvLineFields(rowIdx, PCK_Lines[rowIdx]);
+            PutDgvLineFields(rowIdx, PCK_SernoInfoLines[rowIdx]);
 
             TheSernoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
          }
@@ -4021,9 +4027,30 @@ public class PCK_Serno_UC : UserControl
 
    }
 
-   private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line PCK_Line)
+   private void PutDgvLineFields(int rowIdx, PCK_SernoInfo_Line _PCK_SernoInfoLine)
    {
-      TheSernoGrid.PutCell(ci.iT_PCK_serno, rowIdx, ""/* PCK_Line.PCK_ArtCD*/  );
+      TheSernoGrid.PutCell(ci.iT_PCK_theSerno  , rowIdx, _PCK_SernoInfoLine.PCK_Serno);
+    //TheSernoGrid.PutCell(ci.iT_PCK_sernoCount, rowIdx, _PCK_SernoInfoLine.PCK_SernoInfo_RtranoList.Count);
+   }
+
+   private void TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      string theSerno = theG.GetStringCell(ci.iT_PCK_theSerno, rowIdx, false);
+
+      // =============================== 
+      ZXC.TheVvForm.OpenNew_RecLst_TabPage(ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.LsRTO), null);
+
+      RtranoListUC rtranoListUC = ZXC.TheVvForm.TheVvRecLstUC as RtranoListUC;
+      rtranoListUC.Fld_SerNo    = theSerno;
+
+      rtranoListUC.button_GO.PerformClick();
+      // =============================== 
    }
 
 }
