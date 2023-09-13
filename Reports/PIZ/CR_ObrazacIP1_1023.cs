@@ -282,7 +282,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection4 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection47 {
             get {
                 return this.ReportDefinition.Sections[29];
             }
@@ -290,7 +290,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection14 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection4 {
             get {
                 return this.ReportDefinition.Sections[30];
             }
@@ -298,7 +298,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection13 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection46 {
             get {
                 return this.ReportDefinition.Sections[31];
             }
@@ -306,7 +306,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection12 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection14 {
             get {
                 return this.ReportDefinition.Sections[32];
             }
@@ -314,7 +314,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection11 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection13 {
             get {
                 return this.ReportDefinition.Sections[33];
             }
@@ -322,7 +322,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection10 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection12 {
             get {
                 return this.ReportDefinition.Sections[34];
             }
@@ -330,7 +330,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection17 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection11 {
             get {
                 return this.ReportDefinition.Sections[35];
             }
@@ -338,7 +338,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection16 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection10 {
             get {
                 return this.ReportDefinition.Sections[36];
             }
@@ -346,7 +346,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection15 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection17 {
             get {
                 return this.ReportDefinition.Sections[37];
             }
@@ -354,7 +354,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection16 {
             get {
                 return this.ReportDefinition.Sections[38];
             }
@@ -362,7 +362,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection20 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection15 {
             get {
                 return this.ReportDefinition.Sections[39];
             }
@@ -370,7 +370,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection19 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
             get {
                 return this.ReportDefinition.Sections[40];
             }
@@ -378,7 +378,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection24 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection20 {
             get {
                 return this.ReportDefinition.Sections[41];
             }
@@ -386,7 +386,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection23 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection19 {
             get {
                 return this.ReportDefinition.Sections[42];
             }
@@ -394,7 +394,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection26 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection24 {
             get {
                 return this.ReportDefinition.Sections[43];
             }
@@ -402,7 +402,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection25 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection23 {
             get {
                 return this.ReportDefinition.Sections[44];
             }
@@ -410,7 +410,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection22 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection26 {
             get {
                 return this.ReportDefinition.Sections[45];
             }
@@ -418,7 +418,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection29 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection25 {
             get {
                 return this.ReportDefinition.Sections[46];
             }
@@ -426,7 +426,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection28 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection22 {
             get {
                 return this.ReportDefinition.Sections[47];
             }
@@ -434,7 +434,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection27 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection29 {
             get {
                 return this.ReportDefinition.Sections[48];
             }
@@ -442,7 +442,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection21 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection28 {
             get {
                 return this.ReportDefinition.Sections[49];
             }
@@ -450,7 +450,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection44 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection27 {
             get {
                 return this.ReportDefinition.Sections[50];
             }
@@ -458,7 +458,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection41 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection21 {
             get {
                 return this.ReportDefinition.Sections[51];
             }
@@ -466,7 +466,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection18 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection44 {
             get {
                 return this.ReportDefinition.Sections[52];
             }
@@ -474,7 +474,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection40 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection41 {
             get {
                 return this.ReportDefinition.Sections[53];
             }
@@ -482,7 +482,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_RezKonObr {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection18 {
             get {
                 return this.ReportDefinition.Sections[54];
             }
@@ -490,7 +490,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GF_KonacniObracun {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection40 {
             get {
                 return this.ReportDefinition.Sections[55];
             }
@@ -498,7 +498,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_RezKonObr {
             get {
                 return this.ReportDefinition.Sections[56];
             }
@@ -506,7 +506,7 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section GF_KonacniObracun {
             get {
                 return this.ReportDefinition.Sections[57];
             }
@@ -514,9 +514,25 @@ namespace Vektor.Reports.PIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
             get {
                 return this.ReportDefinition.Sections[58];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+            get {
+                return this.ReportDefinition.Sections[59];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[60];
             }
         }
     }

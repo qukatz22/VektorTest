@@ -2455,7 +2455,7 @@ public class RtranoListUC : VvRecLstUC
    #region Fieldz
 
    protected Rtrano rtrano_rec;
-   public VvTextBox tbx_serno, tbx_TT;
+   public VvTextBox tbx_serno;
    
    #endregion Fieldz
 
@@ -2464,14 +2464,15 @@ public class RtranoListUC : VvRecLstUC
    public RtranoListUC(Control parent, Rtrano _rtrano, VvForm.VvSubModul vvSubModul ) : base(parent)
    {
       this.rtrano_rec  = _rtrano;
-      this.Parent.Text = "Lista serno";
+      this.Parent.Text = "Serno info";
 
       this.MasterSubModulEnum = ZXC.VvSubModulEnum.ART;
-      this.TheSubModul = vvSubModul;
+      this.TheSubModul        = vvSubModul;
 
       TheFilterMembers = new System.Collections.Generic.List<VvSqlFilterMember>(); // namoj tamo di ne treba (npr Kplan) 
 
-      hampOpenUtil.Visible = hampUtil.Visible = false;
+      hampOpenUtil.Visible   = hampUtil.Visible = hampListaRastePada.Visible =  false;
+      grBoxLimitiraj.Visible = false;
 
       SetControlForInitialFocus();
 
@@ -2498,7 +2499,7 @@ public class RtranoListUC : VvRecLstUC
 
    protected override void CreateHamperSpecifikum()
    {
-      hampSpecifikum = new VvHamper(2, 1, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
+      hampSpecifikum = new VvHamper(2, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
       //                                              0       1     
       hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un};
       hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
@@ -2512,8 +2513,8 @@ public class RtranoListUC : VvRecLstUC
       tbx_serno = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_serno", "", 32);
       tbx_serno.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
        
-      tbx_TT = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_TT", "", 32);
-      tbx_TT.Visible = false;
+      //tbx_sernoFilter = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_sernoFilter", "", 32);
+      //tbx_sernoFilter.Visible = false;
       VvHamper.Open_Close_Fields_ForWriting(tbx_serno     , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
    }
 
@@ -2543,15 +2544,15 @@ public class RtranoListUC : VvRecLstUC
       colWidth = ZXC.Q5un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Serno"           , colWidth, false  , "t_serno"     );
       colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
       colWidth = ZXC.Q9un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "RAM"             , colWidth, false  , "t_dimZ"      );
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "HDD"             , colWidth, false  , "t_decC"      );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "t_dimZ"      );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "t_decC"      );
       colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" );
       colWidth = ZXC.Q7un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
       colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
       colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
       colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
 
-      colWidth = colSif6Width;                        AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RtrRecID"       , colWidth, false, 0, "t_rtrRecID");
+      colWidth = colSif6Width;                        AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentID"       , colWidth, false, 0, "t_parentID");
 
       grid_Width = sumOfColWidth + ZXC.QUN;
    }
@@ -2560,7 +2561,29 @@ public class RtranoListUC : VvRecLstUC
 
    #region Fld_
 
-   public string Fld_SerNo { get { return tbx_serno.Text ; } set { tbx_serno.Text  = value; } }
+   public string Fld_SerNo       { get { return tbx_serno.Text; } set { tbx_serno.Text = value; } }
+
+   public string SelectedTT
+   {
+      get
+      {
+         if(TheGrid.CurrentRow != null)
+            return (TheGrid.CurrentRow.Cells["t_tt"].Value.ToString());
+         else
+            return "";
+      }
+   }
+
+   public uint SelectedParentID
+   {
+      get
+      {
+         if(TheGrid.CurrentRow != null)
+            return ZXC.ValOrZero_UInt(TheGrid.CurrentRow.Cells["t_parentID"].Value.ToString());
+         else
+            return 0 ;
+      }
+   }
 
    #endregion Fld_
 
@@ -2593,7 +2616,8 @@ public class RtranoListUC : VvRecLstUC
             //case VvSQL.SorterType.DokDate : return new object[] {                       Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
             //case VvSQL.SorterType.KpdbName: return new object[] { Fld_PartnerCD   ,     Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 }; // nije name nego cd ! 
             //case VvSQL.SorterType.Serlot  : return new object[] { Fld_FromSerlot  , "", Fld_FromDokDate.Date, ZXC.TtInfo(Fld_FromTT).TtSort, Fld_FromTtNum, 0 };
-              case VvSQL.SorterType.Serno   : return new object[] { Fld_SerNo, DateTime.MinValue, 0, 0, 0 };
+                        
+            case VvSQL.SorterType.Serno   : return new object[] { Fld_SerNo,            DateTime.MinValue, 0, 0, 0 };
 
             default: ZXC.aim_emsg("Q42: SortType [{0}] undifajnd in property 'From_IndexSegmentValues'", recordSorter.SortType); return null;
          }
@@ -2611,8 +2635,35 @@ public class RtranoListUC : VvRecLstUC
 
    #endregion Overriders and specifics
 
-
    #region AddFilterMemberz()
+   public DataRowCollection RtranoSchemaRows
+   {
+      get { return ZXC.RtranoDao.TheSchemaTable.Rows; }
+   }
+
+   public RtranoDao.RtranoCI RtranoCI
+   {
+      get { return ZXC.RtranoDao.CI; }
+   }
+
+   public override void AddFilterMemberz()
+   {
+      string text;
+      
+      DataRow drSchema;
+
+      this.TheFilterMembers.Clear();
+
+      // Fld_FilterTT                                                                                                                                          
+
+      drSchema = RtranoSchemaRows[RtranoCI.t_serno];
+      text = Fld_SerNo;
+
+      if(text.NotEmpty())
+      {
+         this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "Serno", text, " = "));
+      }
+   }
 
    #endregion AddFilterMemberz()
 

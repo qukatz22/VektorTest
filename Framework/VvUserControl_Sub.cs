@@ -2886,7 +2886,9 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    {
       int heightRecListUC;
 
-      // 15.04.2022: 
+      grBoxLimitBottom = (this is RtranoListUC) ? hampIzlistaj.Bottom : grBoxLimitBottom;
+
+         // 15.04.2022: 
       if(this is KDC_ListUC)
       {
          this.Parent.Height = SystemInformation.WorkingArea.Height;
