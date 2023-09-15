@@ -13831,7 +13831,7 @@ public class FakturPDUC : FakturExtDUC
 
    protected virtual void InitializeDUC_Specific_Columns2() { }
 
-#endregion Fieldz
+   #endregion Fieldz
 
    #region Constructor
 
@@ -13840,7 +13840,7 @@ public class FakturPDUC : FakturExtDUC
    {
       SuspendLayout();
 
-#region TheG2
+      #region TheG2
 
 
       TheG2 = CreateVvDataGridView(ThePolyGridTabControl.TabPages[1], "Rtrano Grid");
@@ -13861,12 +13861,17 @@ public class FakturPDUC : FakturExtDUC
 
       SetRtranoColumnIndexes();
 
-#endregion TheG2
+      if(ZXC.IsPCTOGO)
+      {
+         TheG2.CellMouseDoubleClick += TheG2_CellMouseDoubleClick_OpenSomeDUCorDialog;
+      }
+
+      #endregion TheG2
 
       ResumeLayout();
    }
 
-#endregion Constructor
+   #endregion Constructor
 
    #region TheGrid2_Columns
 
@@ -13889,14 +13894,14 @@ public class FakturPDUC : FakturExtDUC
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
-      int rowIdx = TheG2.CurrentRow .Index      ;
+      int rowIdx = TheG2.CurrentRow.Index;
       int colIdx = TheG2.CurrentCell.ColumnIndex;
 
       bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
-    //string MOC_artiklCD = Fld_PrjArtCD ;
+      //string MOC_artiklCD = Fld_PrjArtCD ;
       decimal MOC_PCK_RAM = Fld_Decimal01;
       decimal MOC_PCK_HDD = Fld_Decimal02;
 
@@ -13914,9 +13919,9 @@ public class FakturPDUC : FakturExtDUC
             colIdx != ci2.iT_decA &&
             colIdx != ci2.iT_decB) return;
 
-       //VvDataGridView dgv  = sender             as VvDataGridView;
-       //VvTextBox vvTextBox = dgv.EditingControl as VvTextBox     ;
-         VvTextBox vvTextBox = sender as VvTextBox                 ;
+         //VvDataGridView dgv  = sender             as VvDataGridView;
+         //VvTextBox vvTextBox = dgv.EditingControl as VvTextBox     ;
+         VvTextBox vvTextBox = sender as VvTextBox;
 
          Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
 
@@ -13924,7 +13929,7 @@ public class FakturPDUC : FakturExtDUC
 
          decimal enteredKapacitet = ZXC.ValOrZero_Decimal(vvTextBox.Text, 0);
 
-         decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina ;
+         decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
 
          if(enteredKapacitet != kolPutaKapacitet)
          {
@@ -13940,18 +13945,18 @@ public class FakturPDUC : FakturExtDUC
       if(isPCK)
       {
          if(isMOC) return Faktur.TT_MOC;
-         else      return Faktur.TT_MOS;
+         else return Faktur.TT_MOS;
       }
 
-      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false);
+      decimal RAMplus = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false);
       decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false);
-      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
+      decimal HDDplus = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
       decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false);
 
-      bool isMOI = RAMminus.NotZero() || HDDminus.NotZero(); 
-      bool isMOU = RAMplus .NotZero() || HDDplus. NotZero(); 
+      bool isMOI = RAMminus.NotZero() || HDDminus.NotZero();
+      bool isMOU = RAMplus.NotZero() || HDDplus.NotZero();
 
-           if(isMOI) return Faktur.TT_MOI;
+      if(isMOI) return Faktur.TT_MOI;
       else if(isMOU) return Faktur.TT_MOU;
       else
       {
@@ -13979,7 +13984,7 @@ public class FakturPDUC : FakturExtDUC
       if(rtrano_rec.T_decA.NotZero()) numOfPlusMinusUnosa++;
       if(rtrano_rec.T_decB.NotZero()) numOfPlusMinusUnosa++;
 
-      if(numOfPlusMinusUnosa < 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnema definirane RAM/HDD plus/minus količine?!"          , rowIdx + 1, rtrano_rec);
+      if(numOfPlusMinusUnosa < 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnema definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
       if(numOfPlusMinusUnosa > 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rima višestruko definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
    }
 
@@ -14177,7 +14182,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(ZXC.IsPCTOGO)
       {
-         vvtbT_decC.JAM_ForeColor        = ZXC.vvColors.clr_HDD_PTG;
+         vvtbT_decC.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       }
       if(this is MOD_PTG_DUC)
@@ -14209,7 +14214,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText.Visible = isVisible;
    }
 
-#endregion TheGrid2_Columns
+   #endregion TheGrid2_Columns
 
    #region R_Columns2
 
@@ -14243,7 +14248,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_grName, null, "R_grName", _colHeader, _width);
 
       if(this is BORDUC) { }
-      else               vvtbT_grCD.JAM_lui_NameTaker_JAM_Name = "R_grName";
+      else vvtbT_grCD.JAM_lui_NameTaker_JAM_Name = "R_grName";
       colVvText.Visible = isVisible;
    }
    protected void R_ramKlasa2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
@@ -14272,7 +14277,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramOld2, TheVvDaoTrans2, "R_ramOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
-      
+
       vvtbT_ramOld2.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
    }
    protected void R_hddOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -14283,7 +14288,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddOld2, TheVvDaoTrans2, "R_hddOld", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
-      
+
       vvtbT_hddOld2.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
    }
    protected void R_artiklTS_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)//"TS"
@@ -14307,7 +14312,7 @@ public class FakturPDUC : FakturExtDUC
       get { return ZXC.RtoCI; }
    }
 
-#endregion Transes_Database_ColumnIndexes
+   #endregion Transes_Database_ColumnIndexes
 
    #region SetRtranoColumnIndexes()
 
@@ -14316,67 +14321,67 @@ public class FakturPDUC : FakturExtDUC
 
    public struct Rtrano_colIdx
    {
-      internal int iT_recID     ;
-      internal int iT_serial    ;
-      internal int iT_artiklCD  ;
+      internal int iT_recID;
+      internal int iT_serial;
+      internal int iT_artiklCD;
       internal int iT_artiklName;
-      internal int iT_serno     ;
-      internal int iT_paletaNo  ;
-      internal int iT_dimX      ;
-      internal int iT_dimY      ;
-      internal int iT_dimZ      ;
-      internal int iT_komada    ;
-      internal int iT_jm        ;
-      internal int iT_kol       ;
-      internal int iT_grCD      ;
-      internal int iR_grName    ;
+      internal int iT_serno;
+      internal int iT_paletaNo;
+      internal int iT_dimX;
+      internal int iT_dimY;
+      internal int iT_dimZ;
+      internal int iT_komada;
+      internal int iT_jm;
+      internal int iT_kol;
+      internal int iT_grCD;
+      internal int iR_grName;
       internal int iT_isKomDummy;
-      internal int iT_skladCD   ;
-      internal int iT_decA      ;
-      internal int iT_decB      ;
-      internal int iT_decC      ;
-      internal int iT_rtrRecID  ;
-      internal int iT_ramOld    ;
-      internal int iT_hddOld    ;
-      internal int iT_ramKlasa  ;
-      internal int iT_hddKlasa  ;
-      internal int iT_artiklTS  ;
-      internal int iT_TT        ;
+      internal int iT_skladCD;
+      internal int iT_decA;
+      internal int iT_decB;
+      internal int iT_decC;
+      internal int iT_rtrRecID;
+      internal int iT_ramOld;
+      internal int iT_hddOld;
+      internal int iT_ramKlasa;
+      internal int iT_hddKlasa;
+      internal int iT_artiklTS;
+      internal int iT_TT;
    }
 
    private void SetRtranoColumnIndexes()
    {
       ci2 = new Rtrano_colIdx();
 
-      ci2.iT_recID      = TheG2.IdxForColumn("T_recID");
-      ci2.iT_serial     = TheG2.IdxForColumn("T_serial");
-      ci2.iT_artiklCD   = TheG2.IdxForColumn("T_artiklCD");
+      ci2.iT_recID = TheG2.IdxForColumn("T_recID");
+      ci2.iT_serial = TheG2.IdxForColumn("T_serial");
+      ci2.iT_artiklCD = TheG2.IdxForColumn("T_artiklCD");
       ci2.iT_artiklName = TheG2.IdxForColumn("T_artiklName");
-      ci2.iT_serno      = TheG2.IdxForColumn("T_serno");
-      ci2.iT_paletaNo   = TheG2.IdxForColumn("T_paletaNo");
-      ci2.iT_dimX       = TheG2.IdxForColumn("T_dimX");
-      ci2.iT_dimY       = TheG2.IdxForColumn("T_dimY");
-      ci2.iT_dimZ       = TheG2.IdxForColumn("T_dimZ");
-      ci2.iT_komada     = TheG2.IdxForColumn("T_komada");
-      ci2.iT_jm         = TheG2.IdxForColumn("D_jm");
-      ci2.iT_kol        = TheG2.IdxForColumn("T_kol");
-      ci2.iT_grCD       = TheG2.IdxForColumn("T_grCD");
-      ci2.iR_grName     = TheG2.IdxForColumn("R_grName");
+      ci2.iT_serno = TheG2.IdxForColumn("T_serno");
+      ci2.iT_paletaNo = TheG2.IdxForColumn("T_paletaNo");
+      ci2.iT_dimX = TheG2.IdxForColumn("T_dimX");
+      ci2.iT_dimY = TheG2.IdxForColumn("T_dimY");
+      ci2.iT_dimZ = TheG2.IdxForColumn("T_dimZ");
+      ci2.iT_komada = TheG2.IdxForColumn("T_komada");
+      ci2.iT_jm = TheG2.IdxForColumn("D_jm");
+      ci2.iT_kol = TheG2.IdxForColumn("T_kol");
+      ci2.iT_grCD = TheG2.IdxForColumn("T_grCD");
+      ci2.iR_grName = TheG2.IdxForColumn("R_grName");
       ci2.iT_isKomDummy = TheG2.IdxForColumn("T_isKomDummy");
-      ci2.iT_skladCD    = TheG2.IdxForColumn("T_skladCD");
-      ci2.iT_decA       = TheG2.IdxForColumn("T_decA");
-      ci2.iT_decB       = TheG2.IdxForColumn("T_decB");
-      ci2.iT_decC       = TheG2.IdxForColumn("T_decC");
-      ci2.iT_rtrRecID   = TheG2.IdxForColumn("T_rtrRecID");
-      ci2.iT_ramOld     = TheG2.IdxForColumn("R_ramOld");
-      ci2.iT_hddOld     = TheG2.IdxForColumn("R_hddOld");
-      ci2.iT_ramKlasa   = TheG2.IdxForColumn("R_ramKlasa");
-      ci2.iT_hddKlasa   = TheG2.IdxForColumn("R_hddKlasa");
-      ci2.iT_artiklTS   = TheG2.IdxForColumn("R_artiklTS");
-      ci2.iT_TT         = TheG2.IdxForColumn("T_TT");
+      ci2.iT_skladCD = TheG2.IdxForColumn("T_skladCD");
+      ci2.iT_decA = TheG2.IdxForColumn("T_decA");
+      ci2.iT_decB = TheG2.IdxForColumn("T_decB");
+      ci2.iT_decC = TheG2.IdxForColumn("T_decC");
+      ci2.iT_rtrRecID = TheG2.IdxForColumn("T_rtrRecID");
+      ci2.iT_ramOld = TheG2.IdxForColumn("R_ramOld");
+      ci2.iT_hddOld = TheG2.IdxForColumn("R_hddOld");
+      ci2.iT_ramKlasa = TheG2.IdxForColumn("R_ramKlasa");
+      ci2.iT_hddKlasa = TheG2.IdxForColumn("R_hddKlasa");
+      ci2.iT_artiklTS = TheG2.IdxForColumn("R_artiklTS");
+      ci2.iT_TT = TheG2.IdxForColumn("T_TT");
    }
 
-#endregion SetRtranoColumnIndexes()
+   #endregion SetRtranoColumnIndexes()
 
    #region PutDgvFields2(), GetDgvFields2()
 
@@ -14387,26 +14392,26 @@ public class FakturPDUC : FakturExtDUC
       int rowIdx, idxCorrector;
 
       TheG2.RowsRemoved -= new DataGridViewRowsRemovedEventHandler(grid_RowsRemoved);
-      TheG2.RowsAdded   -= new DataGridViewRowsAddedEventHandler  (grid_RowsAdded);
+      TheG2.RowsAdded -= new DataGridViewRowsAddedEventHandler(grid_RowsAdded);
       TheG2.Rows.Clear();
 
       idxCorrector = GetDGVsIdxCorrrector(TheG2);
 
-#region 13.6.2013 Additions bikoz of ToggleKunaDeviza
+      #region 13.6.2013 Additions bikoz of ToggleKunaDeviza
 
       List<Rtrano> rtranoList = faktur_rec.Transes2;
 
       if(TheVvTabPage.WriteMode != ZXC.WriteMode.None) // znaci, PutFields dignut u 'žutome' stanju, probably smo u ToggleKunaDeviza pa je Transes malo chuspajzovit! 
          rtranoList = faktur_rec.Transes2.Where(rtrn => rtrn.SaveTransesWriteMode != ZXC.WriteMode.Delete).OrderBy(rtrn => rtrn.T_serial).ToList();
 
-#endregion 13.6.2013 Additions bikoz of ToggleKunaDeviza
+      #endregion 13.6.2013 Additions bikoz of ToggleKunaDeviza
 
-    //if(faktur_rec.Transes2 != null)
+      //if(faktur_rec.Transes2 != null)
       if(rtranoList != null)
       {
          //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
 
-       //foreach(Rtrano rtrano_rec in faktur_rec.Transes2)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         //foreach(Rtrano rtrano_rec in faktur_rec.Transes2)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          foreach(Rtrano rtrano_rec in rtranoList)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             TheG2.Rows.Add();
@@ -14422,7 +14427,7 @@ public class FakturPDUC : FakturExtDUC
          }
       }
 
-      TheG2.RowsAdded   += new DataGridViewRowsAddedEventHandler  (grid_RowsAdded);
+      TheG2.RowsAdded += new DataGridViewRowsAddedEventHandler(grid_RowsAdded);
       TheG2.RowsRemoved += new DataGridViewRowsRemovedEventHandler(grid_RowsRemoved);
 
       RenumerateLineNumbers(TheG2, 0);
@@ -14438,33 +14443,33 @@ public class FakturPDUC : FakturExtDUC
 
       if(skipRecID_andSerial_Columns == false)
       {
-         TheG2.PutCell(ci2.iT_recID,  rowIdx, rtrano_rec.T_recID);
+         TheG2.PutCell(ci2.iT_recID, rowIdx, rtrano_rec.T_recID);
          TheG2.PutCell(ci2.iT_serial, rowIdx, rtrano_rec.T_serial);
       }
 
-      TheG2.PutCell(ci2.iT_artiklCD  , rowIdx, rtrano_rec.T_artiklCD);
+      TheG2.PutCell(ci2.iT_artiklCD, rowIdx, rtrano_rec.T_artiklCD);
       TheG2.PutCell(ci2.iT_artiklName, rowIdx, rtrano_rec.T_artiklName);
-      TheG2.PutCell(ci2.iT_serno     , rowIdx, rtrano_rec.T_serno);
-      TheG2.PutCell(ci2.iT_paletaNo  , rowIdx, rtrano_rec.T_paletaNo);
-      TheG2.PutCell(ci2.iT_dimX      , rowIdx, rtrano_rec.T_dimX);
-      TheG2.PutCell(ci2.iT_dimY      , rowIdx, rtrano_rec.T_dimY);
-      TheG2.PutCell(ci2.iT_dimZ      , rowIdx, rtrano_rec.T_dimZ);
-      TheG2.PutCell(ci2.iT_komada    , rowIdx, rtrano_rec.T_komada);
-      TheG2.PutCell(ci2.iT_kol       , rowIdx, rtrano_rec.T_kol);
-      TheG2.PutCell(ci2.iT_grCD      , rowIdx, rtrano_rec.T_grCD);
-      TheG2.PutCell(ci2.iR_grName    , rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
-    //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
+      TheG2.PutCell(ci2.iT_serno, rowIdx, rtrano_rec.T_serno);
+      TheG2.PutCell(ci2.iT_paletaNo, rowIdx, rtrano_rec.T_paletaNo);
+      TheG2.PutCell(ci2.iT_dimX, rowIdx, rtrano_rec.T_dimX);
+      TheG2.PutCell(ci2.iT_dimY, rowIdx, rtrano_rec.T_dimY);
+      TheG2.PutCell(ci2.iT_dimZ, rowIdx, rtrano_rec.T_dimZ);
+      TheG2.PutCell(ci2.iT_komada, rowIdx, rtrano_rec.T_komada);
+      TheG2.PutCell(ci2.iT_kol, rowIdx, rtrano_rec.T_kol);
+      TheG2.PutCell(ci2.iT_grCD, rowIdx, rtrano_rec.T_grCD);
+      TheG2.PutCell(ci2.iR_grName, rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
+      //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
       TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, VvCheckBox.GetString4Bool(rtrano_rec.T_isKomDummy));
-      TheG2.PutCell(ci2.iT_skladCD   , rowIdx, rtrano_rec.T_skladCD);
-      TheG2.PutCell(ci2.iT_decA      , rowIdx, rtrano_rec.T_decA);
-      TheG2.PutCell(ci2.iT_decB      , rowIdx, rtrano_rec.T_decB);
-      TheG2.PutCell(ci2.iT_decC      , rowIdx, rtrano_rec.T_decC);
+      TheG2.PutCell(ci2.iT_skladCD, rowIdx, rtrano_rec.T_skladCD);
+      TheG2.PutCell(ci2.iT_decA, rowIdx, rtrano_rec.T_decA);
+      TheG2.PutCell(ci2.iT_decB, rowIdx, rtrano_rec.T_decB);
+      TheG2.PutCell(ci2.iT_decC, rowIdx, rtrano_rec.T_decC);
 
       // 23.12.2013. proba
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrano_rec.T_paletaNo);
 
       if(kupdobSifrar_rec != null) TheG2.PutCell(ci2.iR_grName, rowIdx, kupdobSifrar_rec.Naziv);
-      else                         TheG2.PutCell(ci2.iR_grName, rowIdx,                     "");
+      else TheG2.PutCell(ci2.iR_grName, rowIdx, "");
 
       if(HasRtrano_TT_Exposed)
       {
@@ -14546,18 +14551,18 @@ public class FakturPDUC : FakturExtDUC
    public override void PutDgvTransSumFields2()
    {
       // 03.02.2014: 
-    //TheSumGrid2[ci2.iT_kol, 0].Value = faktur_rec.TrnSum2_K;
-      TheSumGrid2.PutCell(ci2.iT_kol , 0, faktur_rec.TrnSum2_K);
+      //TheSumGrid2[ci2.iT_kol, 0].Value = faktur_rec.TrnSum2_K;
+      TheSumGrid2.PutCell(ci2.iT_kol, 0, faktur_rec.TrnSum2_K);
 
-      if(this.Fld_TT == Faktur.TT_MOD) 
-      { 
+      if(this.Fld_TT == Faktur.TT_MOD)
+      {
          TheSumGrid2.PutCell(ci2.iT_dimX, 0, faktur_rec.TrnSum2_dimX);
          TheSumGrid2.PutCell(ci2.iT_dimY, 0, faktur_rec.TrnSum2_dimY);
          TheSumGrid2.PutCell(ci2.iT_decA, 0, faktur_rec.TrnSum2_decA);
          TheSumGrid2.PutCell(ci2.iT_decB, 0, faktur_rec.TrnSum2_decB);
-      }   
+      }
    }
-  
+
    protected override void GetDgvFields2(bool dirtyFlagging)
    {
       if(TheG2 == null) return;
@@ -14580,7 +14585,7 @@ public class FakturPDUC : FakturExtDUC
       }
 
       if(TheG2.RowCount > 0) recIDtable = new uint[TheG2.RowCount - 1];
-      else                   recIDtable = null;
+      else recIDtable = null;
 
       faktur_rec.DiscardPreviouslyAddedTranses2();
 
@@ -14594,8 +14599,8 @@ public class FakturPDUC : FakturExtDUC
 
    public override VvTransRecord GetDgvLineFields2(int rIdx, bool dirtyFlagging, uint[] recIDtable)
    {
-      uint   recID;
-      bool   DB_RWT;
+      uint recID;
+      bool DB_RWT;
       Rtrano db_rec;
 
       // dgvAtrans_rec: buffer za GetField iz DataGridWievRow-a                                        
@@ -14618,27 +14623,27 @@ public class FakturPDUC : FakturExtDUC
 
       DB_RWT = (db_rec != null);
 
-      dgvRtrano_rec.T_recID    = recID;
+      dgvRtrano_rec.T_recID = recID;
       dgvRtrano_rec.T_parentID = faktur_rec.RecID;
 
-#region GetColumns
+      #region GetColumns
 
-                                   dgvRtrano_rec.T_serial = (ushort)(rIdx + 1);
+      dgvRtrano_rec.T_serial = (ushort)(rIdx + 1);
       if(DB_RWT) db_rec.T_serial = dgvRtrano_rec.T_serial;
 
-                                   dgvRtrano_rec.T_dokNum = faktur_rec.DokNum;
+      dgvRtrano_rec.T_dokNum = faktur_rec.DokNum;
       if(DB_RWT) db_rec.T_dokNum = dgvRtrano_rec.T_dokNum;
 
       if(faktur_rec.TtInfo.IsSkladDateTT) dgvRtrano_rec.T_skladDate = faktur_rec.SkladDate;
-      else                                dgvRtrano_rec.T_skladDate = faktur_rec.DokDate;
-      if(DB_RWT) db_rec.T_skladDate =     dgvRtrano_rec.T_skladDate;
+      else dgvRtrano_rec.T_skladDate = faktur_rec.DokDate;
+      if(DB_RWT) db_rec.T_skladDate = dgvRtrano_rec.T_skladDate;
 
 
       dgvRtrano_rec.T_TT = faktur_rec.TT;
       // PTG news 
       if(HasRtrano_TT_Exposed)
       {
-       //string artiklCD = Fld_PrjArtCD ;
+         //string artiklCD = Fld_PrjArtCD ;
          decimal PCK_RAM = Fld_Decimal01;
          decimal PCK_HDD = Fld_Decimal02;
 
@@ -14665,27 +14670,27 @@ public class FakturPDUC : FakturExtDUC
       // treba postati twinTT, tj. 'kasniji' događaj                            
       if(faktur_rec.TtInfo.TwinTT.NotEmpty())
       {
-                                  dgvRtrano_rec.T_TT = faktur_rec.TtInfo.TwinTT;
+         dgvRtrano_rec.T_TT = faktur_rec.TtInfo.TwinTT;
          if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
-      }   
+      }
 
-          dgvRtrano_rec.T_ttNum = faktur_rec.TtNum;
+      dgvRtrano_rec.T_ttNum = faktur_rec.TtNum;
       if(DB_RWT) db_rec.T_ttNum = dgvRtrano_rec.T_ttNum;
 
-                                    dgvRtrano_rec.T_skladCD = faktur_rec.SkladCD;
-                                    // PTG news 
-                                    if(HasRtrano_SkladCD_Exposed)
-                                    {
-                                       dgvRtrano_rec.T_skladCD = TheG2.GetStringCell(ci2.iT_skladCD, rIdx, dirtyFlagging);
-                                    }
+      dgvRtrano_rec.T_skladCD = faktur_rec.SkladCD;
+      // PTG news 
+      if(HasRtrano_SkladCD_Exposed)
+      {
+         dgvRtrano_rec.T_skladCD = TheG2.GetStringCell(ci2.iT_skladCD, rIdx, dirtyFlagging);
+      }
       if(DB_RWT) db_rec.T_skladCD = dgvRtrano_rec.T_skladCD;
 
-                                     dgvRtrano_rec.T_kupdobCD = faktur_rec.KupdobCD;
+      dgvRtrano_rec.T_kupdobCD = faktur_rec.KupdobCD;
       if(DB_RWT) db_rec.T_kupdobCD = dgvRtrano_rec.T_kupdobCD;
 
       if(TheG2.CI_OK(ci2.iT_serno))
       {
-                                     dgvRtrano_rec.T_serno = TheG2.GetStringCell(ci2.iT_serno, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_serno = TheG2.GetStringCell(ci2.iT_serno, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_serno = dgvRtrano_rec.T_serno;
       }
       // 20.03.2013. u ptrane se koristi ci a ne ci2 za persona (linija 3663) i kaj da onda tu koristimo a postoji i ci2
@@ -14693,37 +14698,37 @@ public class FakturPDUC : FakturExtDUC
       // sto je sa ostalim rtrano stvarima
       if(TheG2.CI_OK(ci2.iT_artiklCD))
       {
-                                        dgvRtrano_rec.T_artiklCD = TheG2.GetStringCell(ci2.iT_artiklCD, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_artiklCD = TheG2.GetStringCell(ci2.iT_artiklCD, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_artiklCD = dgvRtrano_rec.T_artiklCD;
       }
       if(TheG2.CI_OK(ci2.iT_artiklName))
       {
-                                          dgvRtrano_rec.T_artiklName = TheG2.GetStringCell(ci2.iT_artiklName, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_artiklName = TheG2.GetStringCell(ci2.iT_artiklName, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_artiklName = dgvRtrano_rec.T_artiklName;
       }
       if(TheG2.CI_OK(ci2.iT_paletaNo))
       {
-                                        dgvRtrano_rec.T_paletaNo = TheG2.GetUint32Cell(ci2.iT_paletaNo, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_paletaNo = TheG2.GetUint32Cell(ci2.iT_paletaNo, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_paletaNo = dgvRtrano_rec.T_paletaNo;
       }
       if(TheG2.CI_OK(ci2.iT_dimX))
       {
-                                    dgvRtrano_rec.T_dimX = TheG2.GetDecimalCell(ci2.iT_dimX, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimX = TheG2.GetDecimalCell(ci2.iT_dimX, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_dimX = dgvRtrano_rec.T_dimX;
       }
       if(TheG2.CI_OK(ci2.iT_dimY))
       {
-                                    dgvRtrano_rec.T_dimY = TheG2.GetDecimalCell(ci2.iT_dimY, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimY = TheG2.GetDecimalCell(ci2.iT_dimY, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_dimY = dgvRtrano_rec.T_dimY;
       }
       if(TheG2.CI_OK(ci2.iT_dimZ))
       {
-                                    dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_dimZ, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_dimZ, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_dimZ = dgvRtrano_rec.T_dimZ;
       }
       if(TheG2.CI_OK(ci2.iT_komada))
       {
-                                      dgvRtrano_rec.T_komada = TheG2.GetDecimalCell(ci2.iT_komada, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_komada = TheG2.GetDecimalCell(ci2.iT_komada, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_komada = dgvRtrano_rec.T_komada;
       }
 
@@ -14734,33 +14739,33 @@ public class FakturPDUC : FakturExtDUC
       }
       if(TheG2.CI_OK(ci2.iT_grCD))
       {
-                                    dgvRtrano_rec.T_grCD = TheG2.GetStringCell(ci2.iT_grCD, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_grCD = TheG2.GetStringCell(ci2.iT_grCD, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_grCD = dgvRtrano_rec.T_grCD;
       }
       if(TheG2.CI_OK(ci2.iT_isKomDummy))
       {
-                                        //dgvRtrano_rec.T_isKomDummy = TheG2.GetBoolCell(ci2.iT_isKomDummy, rIdx, dirtyFlagging);
-                                          dgvRtrano_rec.T_isKomDummy = VvCheckBox.GetBool4String(TheG2.GetStringCell(ci2.iT_isKomDummy, rIdx, dirtyFlagging));
+         //dgvRtrano_rec.T_isKomDummy = TheG2.GetBoolCell(ci2.iT_isKomDummy, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_isKomDummy = VvCheckBox.GetBool4String(TheG2.GetStringCell(ci2.iT_isKomDummy, rIdx, dirtyFlagging));
          if(DB_RWT) db_rec.T_isKomDummy = dgvRtrano_rec.T_isKomDummy;
       }
 
       if(TheG2.CI_OK(ci2.iT_decA))
       {
-                                    dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_decA, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_decA, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_decA = dgvRtrano_rec.T_decA;
       }
       if(TheG2.CI_OK(ci2.iT_decB))
       {
-                                    dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_decB, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_decB, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_decB = dgvRtrano_rec.T_decB;
       }
       if(TheG2.CI_OK(ci2.iT_decC))
       {
-                                    dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_decC = dgvRtrano_rec.T_decC;
       }
 
-#endregion GetColumns
+      #endregion GetColumns
 
       if(dgvRtrano_rec.T_recID == 0) // ADDED NEW, FRESH Ftrans             
       {
@@ -14825,12 +14830,12 @@ public class FakturPDUC : FakturExtDUC
       {
          switch(TT)
          {
-            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG     ; break;
+            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG; break;
             case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
             case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
             case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
-            
-            default:            tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+
+            default: tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
          }
       }
    }
@@ -14844,7 +14849,68 @@ public class FakturPDUC : FakturExtDUC
       get { return ZXC.IsPCTOGO ? ". SERIJSKI BROJEVI ." : "Detalji"; }
    }
 
-#endregion TabPageTitle2
+   #endregion TabPageTitle2
+
+   private void TheG2_CellMouseDoubleClick_OpenSomeDUCorDialog(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG2 = sender as VvDataGridView;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      if(e.ColumnIndex == ci2.iT_artiklCD || e.ColumnIndex == ci2.iT_artiklName)
+      { 
+         string artiklCD   = theG2.GetStringCell(ci2.iT_artiklCD  , rowIdx, false);
+
+         if(artiklCD.IsEmpty()) return; // znaci da smo u zutome probali doubleclickom inicirati editiranje cell-a 
+
+         SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+
+         Artikl artikl_rec;
+         try
+         {
+            artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD).MakeDeepCopy();
+         }
+         catch(Exception ex)
+         {
+            artikl_rec = null;
+         }
+
+         if(artikl_rec != null)
+         {
+            TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(TheVvTabPage.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.ART), artikl_rec);
+         }
+      }
+      else if(e.ColumnIndex == ci2.iT_serno)
+      {
+         VvDataGridView theG = sender as VvDataGridView;
+
+         string theSerno = theG.GetStringCell(ci2.iT_serno, rowIdx, false);
+
+         VvFindDialog dlg = new VvFindDialog();
+
+         dlg.TheRecListUC = new RtranoListUC(dlg, new Rtrano(), ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsRTO));
+         ((RtranoListUC)(dlg.TheRecListUC)).Fld_SerNo = theSerno;
+
+         if(dlg.ShowDialog() == DialogResult.OK)
+         {
+            string selectedTT     = ((RtranoListUC)dlg.TheRecListUC).SelectedTT;
+            uint selectedParentID = ((RtranoListUC)dlg.TheRecListUC).SelectedParentID;
+            bool rtrFound         = selectedTT.NotEmpty() && selectedParentID.NotZero();
+
+            if(rtrFound)
+            {
+               Point xy = ZXC.TheVvForm.GetSubModulXY(ZXC.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(selectedTT));
+               ZXC.TheVvForm.OpenNew_Record_TabPage(xy, selectedParentID);
+            }
+         }
+         dlg.Dispose();
+      }
+      else
+      { }
+
+   }
 
 }
 

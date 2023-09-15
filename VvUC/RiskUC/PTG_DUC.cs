@@ -3438,8 +3438,7 @@ public class PCK_ArtiklInfo_UC : UserControl
 
       SetPKCColumnIndexes();
 
-      ThePCKGrid.CellMouseDoubleClick += ThePCKSumGrid_CellMouseDoubleClick_OpenSernoList;
-
+      ThePCKGrid.CellMouseDoubleClick += ThePCKGrid_CellMouseDoubleClick_OpenSernoList;
    }
 
    #endregion Constructor
@@ -3568,7 +3567,6 @@ public class PCK_ArtiklInfo_UC : UserControl
       theSumGrid.HorizontalScrollingOffset = theGrid.HorizontalScrollingOffset;
 
    }
-
 
    private void Initialize_SumGrid_Columns(VvDataGridView theGrid)
    {
@@ -3726,20 +3724,34 @@ public class PCK_ArtiklInfo_UC : UserControl
 
    }
 
-   private void ThePCKSumGrid_CellMouseDoubleClick_OpenSernoList(object sender, DataGridViewCellMouseEventArgs e)
+   private void ThePCKGrid_CellMouseDoubleClick_OpenSernoList(object sender, DataGridViewCellMouseEventArgs e)
    {
       VvDataGridView theG = sender as VvDataGridView;
-
+      
       int rowIdx = e.RowIndex;
 
       if(rowIdx.IsNegative()) return;
 
       PCK_ArtiklInfo_Line PCK_Line = PCK_Lines[rowIdx];
 
-      PCK_SernoList_Dlg pCK_SernoDLG = new PCK_SernoList_Dlg();
-      pCK_SernoDLG.TheUC.PutDgvFields(PCK_Line.PCK_SernoInfo_List);
-      pCK_SernoDLG.ShowDialog();
-      pCK_SernoDLG.Dispose();
+      PCK_SernoList_UC pckSernoListUC = new PCK_SernoList_UC(theG.Parent);
+    //PCK_SernoList_UC pckSernoListUC = (PCK_SernoList_UC)this.Tag;
+    //pckSernoListUC.TheSernoGrid.Rows.Clear();
+    //pckSernoListUC.Visible = true;
+
+      pckSernoListUC.PutDgvFields(PCK_Line.PCK_SernoInfo_List);
+
+      pckSernoListUC.Location = new Point(theG.Right, 0);
+      pckSernoListUC.Height   = this.Size.Height - ZXC.QUN;
+      pckSernoListUC.Width    = ZXC.Q10un + ZXC.Q7un;
+      pckSernoListUC.TheSernoGrid.Height = this.ThePCKGrid.Height;
+      pckSernoListUC.TheSernoGrid.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+
+
+      //PCK_SernoList_Dlg pCK_SernoDLG = new PCK_SernoList_Dlg();
+      //pCK_SernoDLG.TheUC.PutDgvFields(PCK_Line.PCK_SernoInfo_List);
+      //pCK_SernoDLG.ShowDialog();
+      //pCK_SernoDLG.Dispose();
    }
 
 }
@@ -3965,6 +3977,8 @@ public class PCK_SernoList_UC : UserControl
 
       TheSernoGrid.Width = sumoOfColumns + TheSernoGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
       TheSernoGrid.Height = this.Size.Height - ZXC.QUN;
+
+    //TheSernoGrid.Visible = false;
    }
 
    private void GridLocationAndSize_Grids(VvDataGridView theGrid)
@@ -3978,7 +3992,7 @@ public class PCK_SernoList_UC : UserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      vvtb_PCK_theSerno         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (       "vvtb_PCK_theSerno"        , null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSerno        , null, "R_PCK_Serno"     , "Serijski broj", ZXC.Q10un + ZXC.Q5un); vvtb_PCK_theSerno        .JAM_ReadOnly = true;
+      vvtb_PCK_theSerno         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (       "vvtb_PCK_theSerno"        , null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSerno        , null, "R_PCK_Serno"     , "Serijski broj", ZXC.Q10un + ZXC.Q3un); vvtb_PCK_theSerno        .JAM_ReadOnly = true;
     //vvtb_PCK_sernoRtranoCount = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb_PCK_sernoRtranoCount", null, -12, "Broj stavaka" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_sernoRtranoCount, null, "R_PCK_SernoCount", "Rtr"          ,             ZXC.Q3un); vvtb_PCK_sernoRtranoCount.JAM_ReadOnly = true;
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
