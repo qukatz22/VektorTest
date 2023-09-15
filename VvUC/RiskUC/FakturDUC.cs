@@ -163,6 +163,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    private VvDateTimePickerColumn colDate;
 
    internal bool IsPTG_UgAnDo_DUC { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
+   internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || this is MOD_PTG_DUC); } } // todo; dodati ih jos 
 
    #endregion Fieldz
 

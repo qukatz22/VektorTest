@@ -3648,8 +3648,21 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // ##################################################################### 
       if(isRtranoSecondGrid) // ############################################## 
       {
-         theGrid.ClearRowContent(currRow);
+         if(IsPTG_WithSerno_DUC)
+         {
+            FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
+
+            string theSerno = TheG2.GetStringCell(ci2.iT_serno, currRow, false);
+            theGrid.ClearRowContent(currRow);
+            if(theSerno.NotEmpty()) theGrid.PutCell(ci2.iT_serno, currRow, theSerno);
+         }
+         else // classic 
+         {
+            theGrid.ClearRowContent(currRow);
+         }
+
          AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+
          return;
       }
       // ##################################################################### 
