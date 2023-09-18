@@ -14025,11 +14025,11 @@ public class FakturPDUC : FakturExtDUC
       }
       else if(IsPTG_UgAnDo_DUC) // PCK serno handling 
       {
-         vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExit_Update_PCK_Serno);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno);
       }
       else if(this is MOD_PTG_DUC) // PCK serno handling for MOC/MOS rtrano row 
       {
-         vvtbT_serno.JAM_FieldExitMethod = new EventHandler(OnExit_Update_PCK_Serno);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno);
       }
       else // old, default PPUK 
       {
