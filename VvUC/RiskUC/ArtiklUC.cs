@@ -3288,7 +3288,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
          TheArtiklFilterUC.rbt_PCKinfo.Checked = true;
 
-         pcKInfoUC.ThePCKGrid.Rows.Clear();
+         pcKInfoUC.ThePCKInfoGrid.Rows.Clear();
 
          string skladCD = this.TheCurrentSkladCD;
 
@@ -3297,16 +3297,24 @@ public class ArtiklUC : VvSifrarRecordUC
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
          pcKInfoUC.Size = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
-         pcKInfoUC.ThePCKGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKSumGrid.Height - ZXC.Q2un;
+         pcKInfoUC.ThePCKInfoGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKInfoSumGrid.Height - ZXC.Q2un;
+         pcKInfoUC.TheSernoGrid  .Height = pcKInfoUC.ThePCKInfoGrid.Height + pcKInfoUC.ThePCKInfoSumGrid.Height/* - ZXC.Q2un*/;
          
-         pcKInfoUC.ThePCKSumGrid.Width = pcKInfoUC.ThePCKGrid.Width;
-         pcKInfoUC.ThePCKSumGrid.Location = new Point(pcKInfoUC.ThePCKGrid.Location.X, pcKInfoUC.ThePCKGrid.Bottom + ZXC.Qun12);
-         pcKInfoUC.ThePCKSumGrid.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+         pcKInfoUC.ThePCKInfoSumGrid.Width = pcKInfoUC.ThePCKInfoGrid.Width;
+         pcKInfoUC.ThePCKInfoSumGrid.Location = new Point(pcKInfoUC.ThePCKInfoGrid.Location.X, pcKInfoUC.ThePCKInfoGrid.Bottom + ZXC.Qun12);
+         pcKInfoUC.ThePCKInfoSumGrid.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
          
-         pcKInfoUC.ThePCKGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
-         pcKInfoUC.ThePCKGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
-         pcKInfoUC.ThePCKGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
-         pcKInfoUC.ThePCKGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
+         pcKInfoUC.ThePCKInfoGrid.ColumnHeadersDefaultCellStyle.BackColor = pcKInfoUC.TheSernoGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
+         pcKInfoUC.ThePCKInfoGrid.ColumnHeadersDefaultCellStyle.ForeColor = pcKInfoUC.TheSernoGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+         pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.BackColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
+         pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.ForeColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
+
+         if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga jer ne znam kak da ga praznim
+         {
+            PCK_ArtiklInfo_Line PCK_Line = PCK_ArtiklInfo_List[0];
+
+            pcKInfoUC.PutDgv2Fields(PCK_Line.PCK_SernoInfo_List);
+         }
 
          pcKInfoUC.Visible = true;
       }
