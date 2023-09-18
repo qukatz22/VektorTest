@@ -397,7 +397,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       } // if(this is UGNorAUN_PTG_DUC) 
 
-
       if(this is KUG_PTG_DUC) ThePolyGridTabControl.Visible = false;
 
       #endregion PTG DataGrid
@@ -3317,8 +3316,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       get { return tbx_v1_ttNum.GetUintField(); }
       set
       {
-         if(faktur_rec.TtInfo.IsV1andV2specialUseTT) tbx_v1_ttNum.Text = value.ToString("00");
-         else                                        tbx_v1_ttNum.PutUintField(value);
+         if(faktur_rec.TtInfo.IsV1andV2specialUseTT && faktur_rec.TT != Faktur.TT_MOD) tbx_v1_ttNum.Text = value.ToString("00");
+         else                                                                          tbx_v1_ttNum.PutUintField(value);
       }
    }
    public string Fld_V1_ttOpis

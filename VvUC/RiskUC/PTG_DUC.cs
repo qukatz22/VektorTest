@@ -3051,6 +3051,17 @@ public class MOD_PTG_DUC : FakturPDUC
       });
 
       ThePolyGridTabControl.SelectedIndex = 1;
+
+      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
+
+   }
+
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      if(newPage.Enabled == false)
+      {
+         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
+      }
    }
 
    #endregion Constructor
@@ -3267,6 +3278,28 @@ public class MOD_PTG_DUC : FakturPDUC
 
       else return (Color.Aqua, "");
    }
+
+   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
+   {
+      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+      bool idemoUbijelo = !idemoUzuto                    ;
+
+      int rtranStabIdx = 0;
+      int rtranOtabIdx = 1;
+
+      if(idemoUzuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+
+      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
+      {
+         if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
+         else // idemoUzuto 
+         {
+            if(i == rtranOtabIdx) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else                  ThePolyGridTabControl.TabPages[i].Enabled = false;
+         }
+      }
+   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+
 }
 
 public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
