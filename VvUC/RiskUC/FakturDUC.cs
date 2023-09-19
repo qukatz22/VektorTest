@@ -13825,7 +13825,7 @@ public class FakturPDUC : FakturExtDUC
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
-                       vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT;
+                       vvtbT_ramNew2, vvtbT_hddNew2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
@@ -13940,23 +13940,23 @@ public class FakturPDUC : FakturExtDUC
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
    {
-      bool isMOC = isPCK && MOC_RAM == rtrano_rec.T_dimZ && MOC_HDD == rtrano_rec.T_decC;
+      bool isMOC = isPCK && MOC_RAM == rtrano_rec./*T_dimZ*/R_RAM_new && MOC_HDD == rtrano_rec./*T_decC*/R_HDD_new;
 
       if(isPCK)
       {
          if(isMOC) return Faktur.TT_MOC;
-         else return Faktur.TT_MOS;
+         else      return Faktur.TT_MOS;
       }
 
-      decimal RAMplus = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false);
+      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false);
       decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false);
-      decimal HDDplus = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
+      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
       decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false);
 
       bool isMOI = RAMminus.NotZero() || HDDminus.NotZero();
-      bool isMOU = RAMplus.NotZero() || HDDplus.NotZero();
+      bool isMOU = RAMplus .NotZero() || HDDplus .NotZero();
 
-      if(isMOI) return Faktur.TT_MOI;
+           if(isMOI) return Faktur.TT_MOI;
       else if(isMOU) return Faktur.TT_MOU;
       else
       {
@@ -14269,27 +14269,27 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;
       colVvText.Visible = isVisible;
    }
-   protected void R_ramOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void R_ramNew2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_ramOld2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramOld2", TheVvDaoTrans2, -12, _statusText);
-      vvtbT_ramOld2.JAM_ReadOnly = true;
+      vvtbT_ramNew2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_ramNew2", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_ramNew2.JAM_ReadOnly = true;
 
-      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramOld2, TheVvDaoTrans2, "R_ramOld", _colHeader, _width);
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_ramNew2, TheVvDaoTrans2, "R_ramNew", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      vvtbT_ramOld2.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
+      vvtbT_ramNew2.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
    }
-   protected void R_hddOld2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   protected void R_hddNew2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_hddOld2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddOld2", TheVvDaoTrans2, -12, _statusText);
-      vvtbT_hddOld2.JAM_ReadOnly = true;
+      vvtbT_hddNew2 = TheG2.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_hddNew2", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_hddNew2.JAM_ReadOnly = true;
 
-      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddOld2, TheVvDaoTrans2, "R_hddOld", _colHeader, _width);
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_hddNew2, TheVvDaoTrans2, "R_hddNew", _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      vvtbT_hddOld2.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
+      vvtbT_hddNew2.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
    }
    protected void R_artiklTS_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)//"TS"
    {
@@ -14341,8 +14341,8 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_decB;
       internal int iT_decC;
       internal int iT_rtrRecID;
-      internal int iT_ramOld;
-      internal int iT_hddOld;
+      internal int iT_ramNew;
+      internal int iT_hddNew;
       internal int iT_ramKlasa;
       internal int iT_hddKlasa;
       internal int iT_artiklTS;
@@ -14373,8 +14373,8 @@ public class FakturPDUC : FakturExtDUC
       ci2.iT_decB = TheG2.IdxForColumn("T_decB");
       ci2.iT_decC = TheG2.IdxForColumn("T_decC");
       ci2.iT_rtrRecID = TheG2.IdxForColumn("T_rtrRecID");
-      ci2.iT_ramOld = TheG2.IdxForColumn("R_ramOld");
-      ci2.iT_hddOld = TheG2.IdxForColumn("R_hddOld");
+      ci2.iT_ramNew = TheG2.IdxForColumn("R_ramNew");
+      ci2.iT_hddNew = TheG2.IdxForColumn("R_hddNew");
       ci2.iT_ramKlasa = TheG2.IdxForColumn("R_ramKlasa");
       ci2.iT_hddKlasa = TheG2.IdxForColumn("R_hddKlasa");
       ci2.iT_artiklTS = TheG2.IdxForColumn("R_artiklTS");
@@ -14504,8 +14504,8 @@ public class FakturPDUC : FakturExtDUC
 
       if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
       {
-         TheG2.PutCell(ci2.iT_ramOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_RAM_old));
-         TheG2.PutCell(ci2.iT_hddOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_HDD_old));
+         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_RAM_new));
+         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_HDD_new));
       }
 
       //if(passPtrResultsToZaglavljeTranses == true)
@@ -14647,9 +14647,13 @@ public class FakturPDUC : FakturExtDUC
          decimal PCK_RAM = Fld_Decimal01;
          decimal PCK_HDD = Fld_Decimal02;
 
-         // ova 2 GetDecimalCell-a ovdje preduhitrujemo jer nam trebaju u dgvRtrano_rec-u za Get_MOD_RtranoTT 
+         // ove GetDecimalCell-ove ovdje preduhitrujemo jer nam trebaju u dgvRtrano_rec-u za Get_MOD_RtranoTT 
          // dole nize ce se oni jos jednom, defaultno ponasanje, pokupiti                                     
+         dgvRtrano_rec.T_dimX = TheG2.GetDecimalCell(ci2.iT_dimX, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimY = TheG2.GetDecimalCell(ci2.iT_dimY, rIdx, dirtyFlagging);
          dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_dimZ, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_decA, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_decB, rIdx, dirtyFlagging);
          dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
 
          bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == "PCK";

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using static ArtiklDao;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Runtime.CompilerServices;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -61,6 +62,9 @@ public struct TtInfo
    public bool Is_MOC_or_MOS_TT    { get { return this.TheTT == Faktur.TT_MOC || 
                                                   this.TheTT == Faktur.TT_MOS; } }
 
+   public bool Is_MOD_or_MOC_or_MOS_TT { get { return this.TheTT == Faktur.TT_MOD ||
+                                                      this.TheTT == Faktur.TT_MOC ||
+                                                      this.TheTT == Faktur.TT_MOS; } }
    public bool IsPreDef        { get; set; }
    public bool IsRezervKol     { get; set; }
    public bool IsInventura     { get; set; }
@@ -5013,7 +5017,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
 
-   private void Put_PCK_info_DgvLineFields2(Rtrano lastRtrano_rec, int currRow)
+   private bool thisIs_MOC_rowIndex(int rIdx)
+   {
+      int numOfExpected_MOC_rows = (int)(this as MOD_PTG_DUC).Fld_someMoney;
+
+      return rIdx < numOfExpected_MOC_rows;
+   }
+   private void Put_PCK_info_DgvLineFields2(Rtrano lastRtrano_rec, int rIdx)
    {
       lastRtrano_rec.T_skladCD = Fld_SkladCD;
 
@@ -5024,7 +5034,43 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       lastRtrano_rec.T_decA    = 
       lastRtrano_rec.T_decB    = 0M;
 
-      PutDgvLineFields2(lastRtrano_rec, currRow, true);
+      if(thisIs_MOC_rowIndex(rIdx))
+      {
+         lastRtrano_rec.T_TT = Faktur.TT_MOC;
+
+         MOD_PTG_DUC theMOD_DUC = this as MOD_PTG_DUC;
+
+         // ram ______________________________________________ 
+         decimal ciljRAM = theMOD_DUC.Fld_Decimal01;
+         decimal oldRAM  = lastRtrano_rec.T_dimZ;
+
+         decimal ramPlus  = ciljRAM - oldRAM;
+         decimal ramMinus = 0M;
+         if(ramPlus.IsNegative())
+         {
+            ramMinus = -1M * ramPlus;
+            ramPlus  = 0M;
+         }
+         lastRtrano_rec.T_dimX = ramPlus ;
+         lastRtrano_rec.T_dimY = ramMinus;
+
+         // hdd ______________________________________________ 
+         decimal ciljHDD = theMOD_DUC.Fld_Decimal02;
+         decimal oldHDD  = lastRtrano_rec.T_decC;
+
+         decimal hddPlus  = ciljHDD - oldHDD;
+         decimal hddMinus = 0M;
+         if(hddPlus.IsNegative())
+         {
+            hddMinus = -1M * hddPlus;
+            hddPlus  = 0M;
+         }
+         lastRtrano_rec.T_decA = hddPlus ;
+         lastRtrano_rec.T_decB = hddMinus;
+      }
+
+      PutDgvLineFields2(lastRtrano_rec, rIdx, true);
+      PutDgvLineResultsFields2(rIdx, lastRtrano_rec, false); // RAMnew, HDDnew 
    }
 
    #endregion Update_SERNO

@@ -428,26 +428,28 @@ public class Rtrano : VvTransRecord
    //public string R_PCK_RAMkind { get; set; }
    //public string R_PCK_HDDkind { get; set; }
 
-   public decimal R_RAM_old
+   public decimal R_RAM_new
    {
       get
       {
-         if(this.TtInfo.Is_MOC_or_MOS_TT)
+       //if(this.TtInfo.Is_MOC_or_MOS_TT)
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
          {
-            return T_dimZ - T_dimX + T_dimY;
+            return T_dimZ + T_dimX - T_dimY;
          }
             
          return 0M;
       }
    }
 
-   public decimal R_HDD_old
+   public decimal R_HDD_new
    {
       get
       {
-         if(this.TtInfo.Is_MOC_or_MOS_TT)
+       //if(this.TtInfo.Is_MOC_or_MOS_TT)
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
          {
-            return T_decC - T_decA + T_decB;
+            return T_decC + T_decA - T_decB;
          }
 
          return 0M;

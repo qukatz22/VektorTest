@@ -3246,14 +3246,14 @@ public class MOD_PTG_DUC : FakturPDUC
       R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"                         );
       T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"                 );
       T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"                          );
-      R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM  old"     , "RAM old"                           );
+      T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM OLD"      , "RAM OLD"                           );
       T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                             );
       T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                             );
-      T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"                           );
-      R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD   old"    , "HDD old"                           );
+      R_ramNew2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM new"                           );
+      T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD OLD"      , "HDD OLD"                           );
       T_decA_CreateColumn           (ZXC.Q3un     , 0, true, "HDD +"        , "HDD +"                             );
       T_decB_CreateColumn           (ZXC.Q3un     , 0, true, "HDD -"        , "HDD -"                             );
-      T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"                           );
+      R_hddNew2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD new"                           );
       T_paletaNo_CreateColumn       (ZXC.Q3un     ,    true, "Stavka"       , "Osnovno stavka"                    );
    }
 
