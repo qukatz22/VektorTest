@@ -250,7 +250,7 @@ public static class VvUcList_Ex
 
 public static class VvUcList_AddNew
 {
-   public static uint TableVersionStatic_VEKTOR { get { return 286/*229*/; } }
+   public static uint TableVersionStatic_VEKTOR { get { return 290/*229*/; } }
 
    public static string AddNewVvUserControl_CommandText_VEKTOR(uint catchingVersion)
    {
@@ -666,6 +666,11 @@ public static class VvUcList_AddNew
          case 285: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_MOD_PTG.ToString(), "1", "2", "MOD_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          case 286: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.LsRTO.ToString()    , "1", "4", "RtranOListUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+
+         case 287: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PRI_PTG.ToString(), "1", "2", "PRI_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 288: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_IZD_PTG.ToString(), "1", "2", "IZD_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 289: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_MSI_PTG.ToString(), "1", "2", "MSI_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 290: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PST_PTG.ToString(), "1", "2", "PST_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          // SV DUH: rucno, kao i one prethodne, onemoguciti svaki novi UC koji njima ne treba! 
 

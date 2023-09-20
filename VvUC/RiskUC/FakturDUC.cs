@@ -1312,9 +1312,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                                  this is URA_SVD_DUC == false && this is NRD_SVD_DUC == false && this is IZD_SVD_DUC == false &&
                                  this is UGODUC == false && this is CjenikKupca_DUC == false && this is ZAH_SVD_DUC == false)
       {
-         if(this is IRMDUC) hamper = new VvHamper(1, 3, "", null, false);
+              if(this is IRMDUC)                   hamper = new VvHamper(1, 3, "", null, false);
          else if(this is KIZDUC || this is PIKDUC) hamper = new VvHamper(1, 5, "", null, false);
-         else hamper = new VvHamper(1, 7, "", null, false);
+         else                                      hamper = new VvHamper(1, 7, "", null, false);
 
          hamper.VvColWdt = new int[] { ZXC.Q10un + 2 * faBefCol + ZXC.QUN + ZXC.Qun4 };
          hamper.VvSpcBefCol = new int[] { faBefFirstCol };
