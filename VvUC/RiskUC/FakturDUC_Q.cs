@@ -3660,14 +3660,53 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             string theSerno = TheG2.GetStringCell(ci2.iT_serno, currRow, false);
             theGrid.ClearRowContent(currRow);
-            if(theSerno.NotEmpty()) theGrid.PutCell(ci2.iT_serno, currRow, theSerno);
-         }
+
+            if(theSerno.NotEmpty())
+            {
+               (PCK_SernoInfo_Line sernoInfo, Rtrano lastRtrano_rec) sernoData = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+
+               if(sernoData != (null, null))
+               {
+                  if(sernoData.sernoInfo.PCK_ArtCD == artikl_rec.ArtiklCD)
+                  {
+                     theGrid.PutCell(ci2.iT_serno, currRow, theSerno);
+                  }
+                  else
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "Prethodno upisani serijski broj [{0}] ne odgovara artiklu [{1}]\n\r\n\rnego artiklu [{2}]\n\r\n\rZadajte serijski broj ponovo.",
+                        theSerno, artikl_rec.ArtiklCD, sernoData.sernoInfo.PCK_ArtCD);
+                  }
+
+               } // if(sernoData != (null, null))
+               else // novo uparivanje 
+               {
+                  theGrid.PutCell(ci2.iT_serno, currRow, theSerno);
+               }
+
+               if(artikl_rec.TS == "PCK")
+               {
+                  AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+               }
+               else
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema smisla uparivati serijski broj sa komponentom (NE PCK artiklom)");
+               }
+
+            } // if(theSerno.NotEmpty())
+
+            else // theSerno je empty, .. nije zadan 
+            {
+               AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+            }
+
+         } // if(IsPTG_WithSerno_DUC)
+
          else // classic 
          {
             theGrid.ClearRowContent(currRow);
-         }
 
-         AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+            AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+         }
 
          return;
       }
@@ -4984,9 +5023,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       PCK_SernoInfo_Line sernoInfo     ;
       Rtrano             lastRtrano_rec;
 
-      (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_ByLastRtrano(TheDbConnection, theSerno);
+      (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
 
-      if(sernoInfo == null) return; // nije naso nist po tom serno-u 
+      if(sernoInfo == null) return; // NOVI serno, ... nije naso nist po tom serno-u 
 
       string upisaniArtiklCD = theGrid.GetStringCell(ci2.iT_artiklCD, currRowIdx, false);
 

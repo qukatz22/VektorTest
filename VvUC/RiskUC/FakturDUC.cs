@@ -14029,6 +14029,7 @@ public class FakturPDUC : FakturExtDUC
       else if(this is MOD_PTG_DUC) // PCK serno handling for MOC/MOS rtrano row 
       {
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno);
+         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler(SetRow_TT_and_Color    );
       }
       else // old, default PPUK 
       {

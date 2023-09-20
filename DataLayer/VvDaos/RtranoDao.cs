@@ -464,7 +464,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return ALL_SklCD_ArtiklInfo_List;
    }
 
-   public static (PCK_SernoInfo_Line sernoInfo, Rtrano lastRtrano_rec) Get_PCK_SernoInfo_Line_ByLastRtrano(XSqlConnection conn, string _theSerno)
+   public static (PCK_SernoInfo_Line sernoInfo, Rtrano lastRtrano_rec) Get_PCK_SernoInfo_Line_And_LastRtrano(XSqlConnection conn, string _theSerno)
    {
       List<Rtrano> thisSerno_All_RtranoList = GetRtranoList_For_SERNO(conn, _theSerno);
 
