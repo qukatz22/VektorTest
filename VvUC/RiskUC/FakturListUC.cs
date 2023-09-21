@@ -60,7 +60,8 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       this.Parent.Text        = this.TheSubModul.subModul_name;
 
 
-      if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_bc || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRIdev || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_P)
+    //if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_bc || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRIdev || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_P)
+      if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_bc || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRIdev || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_P || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PRI_PTG)
          this.Default_TT = Faktur.TT_PRI;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_UFAdev)
          this.Default_TT = Faktur.TT_UFA;
@@ -72,7 +73,8 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.Default_TT = Faktur.TT_KLK;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IRM_2)
          this.Default_TT = Faktur.TT_IRM;
-      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_MSI_2)
+    //else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_MSI_2)
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_MSI_2 || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_MSI_PTG)
          this.Default_TT = Faktur.TT_MSI;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_MVI_2)
          this.Default_TT = Faktur.TT_MVI;
@@ -86,12 +88,15 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.Default_TT = Faktur.TT_PIX;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZM || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZM_2)
          this.Default_TT = Faktur.TT_IZM;
-      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD_SVD)
+    //else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD_SVD)
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD_SVD || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD_PTG)
          this.Default_TT = Faktur.TT_IZD;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_NRD || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_NRD_SVD)
          this.Default_TT = Faktur.TT_NRD;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_ZAH_SVD)
          this.Default_TT = Faktur.TT_ZAH;
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PST || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PST_PTG)
+         this.Default_TT = Faktur.TT_PST;
       else
          this.Default_TT = vvMasterSubModul.subModul_shortName;
 

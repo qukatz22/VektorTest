@@ -163,7 +163,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    private VvDateTimePickerColumn colDate;
 
    internal bool IsPTG_UgAnDo_DUC { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
-   internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || this is MOD_PTG_DUC); } } // todo; dodati ih jos 
+ //internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || this is MOD_PTG_DUC); } } // todo; dodati ih jos 
+   internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || this is MOD_PTG_DUC || this is PRI_PTG_DUC || this is IZD_PTG_DUC || this is PST_PTG_DUC || this is MSI_PTG_DUC); } } // todo; dodati ih jos 
 
    #endregion Fieldz
 
@@ -3496,6 +3497,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          Faktur.IsFiskalDutyTT(Fld_DokDate, Fld_TT) ||
          Fld_TT == Faktur.TT_PON ||
          Fld_TT == Faktur.TT_NRD ||
+         Fld_TT == Faktur.TT_MOD ||
          Fld_TT == Faktur.TT_ZAH ||
          Fld_TT == Faktur.TT_PNM)
       {
@@ -14354,32 +14356,32 @@ public class FakturPDUC : FakturExtDUC
    {
       ci2 = new Rtrano_colIdx();
 
-      ci2.iT_recID = TheG2.IdxForColumn("T_recID");
-      ci2.iT_serial = TheG2.IdxForColumn("T_serial");
-      ci2.iT_artiklCD = TheG2.IdxForColumn("T_artiklCD");
+      ci2.iT_recID      = TheG2.IdxForColumn("T_recID");
+      ci2.iT_serial     = TheG2.IdxForColumn("T_serial");
+      ci2.iT_artiklCD   = TheG2.IdxForColumn("T_artiklCD");
       ci2.iT_artiklName = TheG2.IdxForColumn("T_artiklName");
-      ci2.iT_serno = TheG2.IdxForColumn("T_serno");
-      ci2.iT_paletaNo = TheG2.IdxForColumn("T_paletaNo");
-      ci2.iT_dimX = TheG2.IdxForColumn("T_dimX");
-      ci2.iT_dimY = TheG2.IdxForColumn("T_dimY");
-      ci2.iT_dimZ = TheG2.IdxForColumn("T_dimZ");
-      ci2.iT_komada = TheG2.IdxForColumn("T_komada");
-      ci2.iT_jm = TheG2.IdxForColumn("D_jm");
-      ci2.iT_kol = TheG2.IdxForColumn("T_kol");
-      ci2.iT_grCD = TheG2.IdxForColumn("T_grCD");
-      ci2.iR_grName = TheG2.IdxForColumn("R_grName");
+      ci2.iT_serno      = TheG2.IdxForColumn("T_serno");
+      ci2.iT_paletaNo   = TheG2.IdxForColumn("T_paletaNo");
+      ci2.iT_dimX       = TheG2.IdxForColumn("T_dimX");
+      ci2.iT_dimY       = TheG2.IdxForColumn("T_dimY");
+      ci2.iT_dimZ       = TheG2.IdxForColumn("T_dimZ");
+      ci2.iT_komada     = TheG2.IdxForColumn("T_komada");
+      ci2.iT_jm         = TheG2.IdxForColumn("D_jm");
+      ci2.iT_kol        = TheG2.IdxForColumn("T_kol");
+      ci2.iT_grCD       = TheG2.IdxForColumn("T_grCD");
+      ci2.iR_grName     = TheG2.IdxForColumn("R_grName");
       ci2.iT_isKomDummy = TheG2.IdxForColumn("T_isKomDummy");
-      ci2.iT_skladCD = TheG2.IdxForColumn("T_skladCD");
-      ci2.iT_decA = TheG2.IdxForColumn("T_decA");
-      ci2.iT_decB = TheG2.IdxForColumn("T_decB");
-      ci2.iT_decC = TheG2.IdxForColumn("T_decC");
-      ci2.iT_rtrRecID = TheG2.IdxForColumn("T_rtrRecID");
-      ci2.iT_ramNew = TheG2.IdxForColumn("R_ramNew");
-      ci2.iT_hddNew = TheG2.IdxForColumn("R_hddNew");
-      ci2.iT_ramKlasa = TheG2.IdxForColumn("R_ramKlasa");
-      ci2.iT_hddKlasa = TheG2.IdxForColumn("R_hddKlasa");
-      ci2.iT_artiklTS = TheG2.IdxForColumn("R_artiklTS");
-      ci2.iT_TT = TheG2.IdxForColumn("T_TT");
+      ci2.iT_skladCD    = TheG2.IdxForColumn("T_skladCD");
+      ci2.iT_decA       = TheG2.IdxForColumn("T_decA");
+      ci2.iT_decB       = TheG2.IdxForColumn("T_decB");
+      ci2.iT_decC       = TheG2.IdxForColumn("T_decC");
+      ci2.iT_rtrRecID   = TheG2.IdxForColumn("T_rtrRecID");
+      ci2.iT_ramNew     = TheG2.IdxForColumn("R_ramNew");
+      ci2.iT_hddNew     = TheG2.IdxForColumn("R_hddNew");
+      ci2.iT_ramKlasa   = TheG2.IdxForColumn("R_ramKlasa");
+      ci2.iT_hddKlasa   = TheG2.IdxForColumn("R_hddKlasa");
+      ci2.iT_artiklTS   = TheG2.IdxForColumn("R_artiklTS");
+      ci2.iT_TT         = TheG2.IdxForColumn("T_TT");
    }
 
    #endregion SetRtranoColumnIndexes()
@@ -14448,29 +14450,29 @@ public class FakturPDUC : FakturExtDUC
          TheG2.PutCell(ci2.iT_serial, rowIdx, rtrano_rec.T_serial);
       }
 
-      TheG2.PutCell(ci2.iT_artiklCD, rowIdx, rtrano_rec.T_artiklCD);
+      TheG2.PutCell(ci2.iT_artiklCD  , rowIdx, rtrano_rec.T_artiklCD);
       TheG2.PutCell(ci2.iT_artiklName, rowIdx, rtrano_rec.T_artiklName);
-      TheG2.PutCell(ci2.iT_serno, rowIdx, rtrano_rec.T_serno);
-      TheG2.PutCell(ci2.iT_paletaNo, rowIdx, rtrano_rec.T_paletaNo);
-      TheG2.PutCell(ci2.iT_dimX, rowIdx, rtrano_rec.T_dimX);
-      TheG2.PutCell(ci2.iT_dimY, rowIdx, rtrano_rec.T_dimY);
-      TheG2.PutCell(ci2.iT_dimZ, rowIdx, rtrano_rec.T_dimZ);
-      TheG2.PutCell(ci2.iT_komada, rowIdx, rtrano_rec.T_komada);
-      TheG2.PutCell(ci2.iT_kol, rowIdx, rtrano_rec.T_kol);
-      TheG2.PutCell(ci2.iT_grCD, rowIdx, rtrano_rec.T_grCD);
-      TheG2.PutCell(ci2.iR_grName, rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
-      //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
+      TheG2.PutCell(ci2.iT_serno     , rowIdx, rtrano_rec.T_serno);
+      TheG2.PutCell(ci2.iT_paletaNo  , rowIdx, rtrano_rec.T_paletaNo);
+      TheG2.PutCell(ci2.iT_dimX      , rowIdx, rtrano_rec.T_dimX);
+      TheG2.PutCell(ci2.iT_dimY      , rowIdx, rtrano_rec.T_dimY);
+      TheG2.PutCell(ci2.iT_dimZ      , rowIdx, rtrano_rec.T_dimZ);
+      TheG2.PutCell(ci2.iT_komada    , rowIdx, rtrano_rec.T_komada);
+      TheG2.PutCell(ci2.iT_kol       , rowIdx, rtrano_rec.T_kol);
+      TheG2.PutCell(ci2.iT_grCD      , rowIdx, rtrano_rec.T_grCD);
+      TheG2.PutCell(ci2.iR_grName    , rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
+    //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
       TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, VvCheckBox.GetString4Bool(rtrano_rec.T_isKomDummy));
-      TheG2.PutCell(ci2.iT_skladCD, rowIdx, rtrano_rec.T_skladCD);
-      TheG2.PutCell(ci2.iT_decA, rowIdx, rtrano_rec.T_decA);
-      TheG2.PutCell(ci2.iT_decB, rowIdx, rtrano_rec.T_decB);
-      TheG2.PutCell(ci2.iT_decC, rowIdx, rtrano_rec.T_decC);
+      TheG2.PutCell(ci2.iT_skladCD   , rowIdx, rtrano_rec.T_skladCD);
+      TheG2.PutCell(ci2.iT_decA      , rowIdx, rtrano_rec.T_decA);
+      TheG2.PutCell(ci2.iT_decB      , rowIdx, rtrano_rec.T_decB);
+      TheG2.PutCell(ci2.iT_decC      , rowIdx, rtrano_rec.T_decC);
 
       // 23.12.2013. proba
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrano_rec.T_paletaNo);
 
       if(kupdobSifrar_rec != null) TheG2.PutCell(ci2.iR_grName, rowIdx, kupdobSifrar_rec.Naziv);
-      else TheG2.PutCell(ci2.iR_grName, rowIdx, "");
+      else                         TheG2.PutCell(ci2.iR_grName, rowIdx, "");
 
       if(HasRtrano_TT_Exposed)
       {

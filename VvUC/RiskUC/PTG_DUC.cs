@@ -3334,6 +3334,8 @@ public class PRI_PTG_DUC : FakturPDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
 
    protected override void InitializeDUC_Specific_Columns()
    {
@@ -3449,6 +3451,8 @@ public class IZD_PTG_DUC : FakturPDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
 
    protected override void InitializeDUC_Specific_Columns()
    {

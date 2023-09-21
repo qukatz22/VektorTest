@@ -3560,8 +3560,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             //(this as FakturPDUC).SetColorsPCKartikl();
          }
-      }
 
+         #region HasRtrano_SkladCD_Exposed
+
+         if(HasRtrano_SkladCD_Exposed)
+         {
+            theGrid.PutCell(ci2.iT_skladCD, currRow, Fld_SkladCD);
+         }
+
+         #endregion HasRtrano_SkladCD_Exposed
+      }
    }
 
    // ****** 
