@@ -440,7 +440,16 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
                   return null;
                }
 
-               sernoInfoLine = new PCK_SernoInfo_Line(theSerno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.T_dimZ, rtrano_rec.T_decC);
+               decimal PCK_RAM = rtrano_rec.T_dimZ;
+               decimal PCK_HDD = rtrano_rec.T_decC;
+               
+               if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT) // jer se na MOC / MOS theRAM i theHDD ne nalazi u T_dimZ i T_decC nego u R_RAM_new i R_HDD_new
+               {
+                  PCK_RAM = rtrano_rec.R_RAM_new;
+                  PCK_HDD = rtrano_rec.R_HDD_new;
+               }
+
+               sernoInfoLine = new PCK_SernoInfo_Line(theSerno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", PCK_RAM, PCK_HDD);
 
                currSklCD_SernoInfo_List.Add(sernoInfoLine);
             }

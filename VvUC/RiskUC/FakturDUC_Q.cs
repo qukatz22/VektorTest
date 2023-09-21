@@ -3580,17 +3580,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       VvDataGridView theGrid = ((VvDataGridView)vvtb_editingControl.EditingControlDataGridView);
 
-      int currRow = vvtb_editingControl.EditingControlRowIndex;
+      int currRowIdx = vvtb_editingControl.EditingControlRowIndex;
 
       this.originalText = vvtb_editingControl.Text;
       Artikl artikl_rec = ArtiklSifrar.Find(FoundInSifrar<Artikl>);
 
       // 28.10.2014: 
-      if(CheckIsArtiklKindAdequate(currRow) == false) return; // !!! 
+      if(CheckIsArtiklKindAdequate(currRowIdx) == false) return; // !!! 
 
       // 14.12.2016: THSHOP na INM/INV MORA prvo stisnuti SubModulAkciju 'Artikli' 
       // pa to pokusavamo detektirati da li je poceo rucno zadavati artikl na prvom redku 
-      if(ZXC.IsTEXTHOany && currRow.IsZero() && faktur_rec.TtInfo.IsInventura)
+      if(ZXC.IsTEXTHOany && currRowIdx.IsZero() && faktur_rec.TtInfo.IsInventura)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Ručno dodavati artikle možete tek nakon akcije 'Artikli'\n\nI to samo artikle koji su, eventualno,\n\npronađeni u skladištu a po programskom stanju ih uopće nema.");
          return;
@@ -3658,8 +3658,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          {
             FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
-            string theSerno = TheG2.GetStringCell(ci2.iT_serno, currRow, false);
-            theGrid.ClearRowContent(currRow);
+            string theSerno = TheG2.GetStringCell(ci2.iT_serno, currRowIdx, false);
+            theGrid.ClearRowContent(currRowIdx);
 
             if(theSerno.NotEmpty())
             {
@@ -3669,7 +3669,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                {
                   if(sernoData.sernoInfo.PCK_ArtCD == artikl_rec.ArtiklCD)
                   {
-                     theGrid.PutCell(ci2.iT_serno, currRow, theSerno);
+                     theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
                   }
                   else
                   {
@@ -3680,12 +3680,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                } // if(sernoData != (null, null))
                else // novo uparivanje 
                {
-                  theGrid.PutCell(ci2.iT_serno, currRow, theSerno);
+                  theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
                }
 
                if(artikl_rec.TS == "PCK")
                {
-                  AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+                  AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRowIdx, artikl_rec);
                }
                else
                {
@@ -3696,16 +3696,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             else // theSerno je empty, .. nije zadan 
             {
-               AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+               AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRowIdx, artikl_rec);
             }
 
          } // if(IsPTG_WithSerno_DUC)
 
          else // classic 
          {
-            theGrid.ClearRowContent(currRow);
+            theGrid.ClearRowContent(currRowIdx);
 
-            AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRow, artikl_rec);
+            AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRowIdx, artikl_rec);
          }
 
          return;
@@ -3717,7 +3717,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region Reset row results, recalc document results (in case this is old DGV row - zamjena artikla na stavci)
 
-      theGrid.ClearRowContent(currRow);
+      theGrid.ClearRowContent(currRowIdx);
 
       PutDgvTransSumFields();
       
@@ -3727,24 +3727,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region if(artikl_rec != null)
 
-      TtInfo TtInfoOfThisRow = GetTtInfoOfThisRow(currRow);
+      TtInfo TtInfoOfThisRow = GetTtInfoOfThisRow(currRowIdx);
 
       if(artikl_rec != null)
       {
          #region ArtiklCD, ArtiklName, JedMj, Konto, BarCode1
 
-         theGrid.PutCell(ci.iT_artiklCD   , currRow, artikl_rec.ArtiklCD  );
-         theGrid.PutCell(ci.iT_artiklName , currRow, artikl_rec.ArtiklName);
-         theGrid.PutCell(ci.iT_barCode1   , currRow, artikl_rec.BarCode1  );
+         theGrid.PutCell(ci.iT_artiklCD   , currRowIdx, artikl_rec.ArtiklCD  );
+         theGrid.PutCell(ci.iT_artiklName , currRowIdx, artikl_rec.ArtiklName);
+         theGrid.PutCell(ci.iT_barCode1   , currRowIdx, artikl_rec.BarCode1  );
 
-         theGrid.PutCell(ci.iT_jedMj      , currRow, artikl_rec.JedMj     );
-         theGrid.PutCell(ci.iT_isIrmUsluga, currRow, VvCheckBox.GetString4Bool(artikl_rec.IsMinusOK_or_UDP_Artikl));
+         theGrid.PutCell(ci.iT_jedMj      , currRowIdx, artikl_rec.JedMj     );
+         theGrid.PutCell(ci.iT_isIrmUsluga, currRowIdx, VvCheckBox.GetString4Bool(artikl_rec.IsMinusOK_or_UDP_Artikl));
 
          // 25.01.2017: 
          if(ZXC.IsRNMnotRNP) // metaflex
          {
           //theGrid.PutCell(ci.iT_ppmvOsn, currRow, artikl_rec.MasaNetto);
-            theGrid.PutCell(ci.iT_ppmvOsn, currRow, artikl_rec.R_orgPak );
+            theGrid.PutCell(ci.iT_ppmvOsn, currRowIdx, artikl_rec.R_orgPak );
          }
 
          // 11.3.2011:
@@ -3754,13 +3754,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
          else
          {
-            theGrid.PutCell(ci.iT_konto, currRow, artikl_rec.Konto);
+            theGrid.PutCell(ci.iT_konto, currRowIdx, artikl_rec.Konto);
          }
 
          if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
          { 
-            theGrid.PutCell(ci.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
-            theGrid.PutCell(ci.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
+            theGrid.PutCell(ci.iT_ramKlasa, currRowIdx, artikl_rec.Grupa2CD);
+            theGrid.PutCell(ci.iT_hddKlasa, currRowIdx, artikl_rec.Grupa3CD);
          }
 
          #endregion ArtiklCD, ArtiklName, JedMj, Konto
@@ -3776,12 +3776,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             if(artikl_rec.PdvKat.NotEmpty())
             {
                VvLookUpItem lui = ZXC.luiListaPdvKat.GetLuiForThisCd(artikl_rec.PdvKat);
-               theGrid.PutCell(ci.iT_pdvSt, currRow, lui.Number);
+               theGrid.PutCell(ci.iT_pdvSt, currRowIdx, lui.Number);
             }
           //else   if(currRow == 0)
             else /*if(currRow == 0)*/ // 19.02.2012: uvijek stavi 25 
             {
-               theGrid.PutCell(ci.iT_pdvSt, currRow, faktur_rec.CommonPdvSt);
+               theGrid.PutCell(ci.iT_pdvSt, currRowIdx, faktur_rec.CommonPdvSt);
             }
 
             //theGrid.PutCell(ci.iT_pdvKolTip, currRow, GetOneLetter4PdvKolTip(faktur_rec.PdvKolTip));
@@ -3789,7 +3789,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             // 14.12.2013: 
             if(artikl_rec.IsPNP)
             {
-               theGrid.PutCell(ci.iT_pnpSt, currRow, ZXC.RRD.Dsc_PnpSt);
+               theGrid.PutCell(ci.iT_pnpSt, currRowIdx, ZXC.RRD.Dsc_PnpSt);
             }
          }
 
@@ -3811,7 +3811,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          if(faktur_rec.TtInfo.IsArtStatInfoNeededTT) // Ili zbog cjenika ili zbog max Izlaz Kol, ... 
          {
-            ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
+            ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRowIdx, false, null));
 
             if(artStat_rec != null)
             {
@@ -3822,12 +3822,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                   if(faktur_rec.TT == Faktur.TT_IRM && ((this as FakturExtDUC).Fld_NacPlacRbt).NotZero())
                   {
-                     theGrid.PutCell(ci.iT_rbt1St, currRow, (this as FakturExtDUC).Fld_NacPlacRbt);
+                     theGrid.PutCell(ci.iT_rbt1St, currRowIdx, (this as FakturExtDUC).Fld_NacPlacRbt);
                   }
                   else
                   {
-                     theGrid.PutCell(ci.iT_rbt1St, currRow, artStat_rec.PreDefRbt1);
-                     theGrid.PutCell(ci.iT_rbt2St, currRow, artStat_rec.PreDefRbt2);
+                     theGrid.PutCell(ci.iT_rbt1St, currRowIdx, artStat_rec.PreDefRbt1);
+                     theGrid.PutCell(ci.iT_rbt2St, currRowIdx, artStat_rec.PreDefRbt2);
                   }
 
                   // rabat ovisan o cycle momentu 
@@ -3838,7 +3838,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                      // 20.12.2017: izloirano u zasebnu metodu. 
                      decimal TH_IRM_Rabat = Get_TH_IRM_Rabat(faktur_rec.SkladCD, faktur_rec.DokDate, artikl_rec);
 
-                     if(TH_IRM_Rabat.NotZero()) theGrid.PutCell(ci.iT_rbt1St, currRow, TH_IRM_Rabat);
+                     if(TH_IRM_Rabat.NotZero()) theGrid.PutCell(ci.iT_rbt1St, currRowIdx, TH_IRM_Rabat);
 
                      //QQQ  20.12.2017: Comment START 
                      //QQQ ZXC.TH_CycleMoment TH_CycleMoment = ZXC.TH_GetCycleMoment(faktur_rec.DokDate, ZXC.IsTH_5WeekShop(faktur_rec.SkladCD), faktur_rec.SkladCD);
@@ -3878,7 +3878,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                   if(artikl_rec.Vpc1Policy == ZXC.ArtiklVpc1Policy.MARZA)
                   {
-                     theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCijPlusMarza);
+                     theGrid.PutCell(ci.iT_cij, currRowIdx, artStat_rec.PrNabCijPlusMarza);
                   }
 
                   #endregion Vpc1Policy is PrNabCij uvecana za marzu
@@ -3897,19 +3897,19 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                            if(isSklKomisija)
                            {
-                              string komArtCD = ((Rtrans)GetDgvLineFields1(currRow, false, null)).T_artiklCD;
+                              string komArtCD = ((Rtrans)GetDgvLineFields1(currRowIdx, false, null)).T_artiklCD;
 
                               VvLookUpItem baseSkladLUI = ZXC.luiListaSkladista.GetBaseSkladLUI(skladLUI); // glavno skladiste 
                               string mainSkladCD = baseSkladLUI.Cd;
 
                               ArtStat komisArtStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, komArtCD, mainSkladCD, Fld_DokDate);
 
-                              theGrid.PutCell(ci.iT_cij, currRow, komisArtStat_rec.PreDefVpc1);
+                              theGrid.PutCell(ci.iT_cij, currRowIdx, komisArtStat_rec.PreDefVpc1);
                            }
                            // 09.06.2014: end __________________________________________________________________________________ 
                            else if(artStat_rec.PreDefVpc1.NotZero())
                            {
-                              theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PreDefVpc1);
+                              theGrid.PutCell(ci.iT_cij, currRowIdx, artStat_rec.PreDefVpc1);
                            }
                            else /* user ne koristi CjenikDUC nego cijene drzi na samoj skladisnoj kartici (npr. zbog importa) */
                            {
@@ -3923,21 +3923,21 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                                  decimal rbtSt = ZXC.VvGet_rbtSt_100to90(theVPC, artikl_rec.ImportCij);
 
-                                 theGrid.PutCell(ci.iT_rbt1St, currRow, rbtSt);
+                                 theGrid.PutCell(ci.iT_rbt1St, currRowIdx, rbtSt);
                               }
 
                               #endregion I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
 
-                              theGrid.PutCell(ci.iT_cij, currRow, /*artikl_rec.ImportCij*/ theVPC);
+                              theGrid.PutCell(ci.iT_cij, currRowIdx, /*artikl_rec.ImportCij*/ theVPC);
                            }
                            break;
 
                         case Faktur.TT_CJ_VP2: // VELEPRODAJNI cjenik 2 
 
                            Rtrans rtransVP2_rec = new Rtrans();
-                           string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRow, false);
+                           string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRowIdx, false);
                            bool success = FakturDao.SetMeLastRtransForArtiklAndTtNum(TheDbConnection, rtransVP2_rec, faktur_rec.CjenikTT, faktur_rec.CjenTTnum, artiklCD, false);
-                           if(success) theGrid.PutCell(ci.iT_cij, currRow, rtransVP2_rec.T_cij);
+                           if(success) theGrid.PutCell(ci.iT_cij, currRowIdx, rtransVP2_rec.T_cij);
                            break;
 
                         case Faktur.TT_CJ_MP: // MALOPRODAJNI cjenik 
@@ -3958,9 +3958,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                                  theMPC = ZXC.VvGet_125_on_100(theVPC, faktur_rec.CommonPdvSt);
                               }
 
-                              decimal theCijPop = ZXC.VvGet_90_from_100(theMPC, TheG.GetDecimalCell(ci.iT_rbt1St, currRow, false));
+                              decimal theCijPop = ZXC.VvGet_90_from_100(theMPC, TheG.GetDecimalCell(ci.iT_rbt1St, currRowIdx, false));
 
-                              theGrid.PutCell(ci.iT_cij_kcrp, currRow, theCijPop); // IRM! 
+                              theGrid.PutCell(ci.iT_cij_kcrp, currRowIdx, theCijPop); // IRM! 
 
                            }
 
@@ -3969,7 +3969,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                               theMPC = artStat_rec.LastUlazMPC;
                            }
 
-                           theGrid.PutCell(ci.iT_cij,     currRow, theMPC);
+                           theGrid.PutCell(ci.iT_cij,     currRowIdx, theMPC);
 
                            // 24.09.2018: cijela regija 'UMJETNINA' preseljena van switch-a 
                            #region UMJETNINA set T_ppmvOsn(tj. nabCij)
@@ -3995,7 +3995,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                      // 01.10.2018: vracamo samo na IRM
                    //if(artikl_rec.IsUMJETNINA &&  faktur_rec.TT == Faktur.TT_IRM                                   ) // UMJETNINA               na MALOP IRA 
                      {
-                        theGrid.PutCell(ci.iT_ppmvOsn, currRow, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
+                        theGrid.PutCell(ci.iT_ppmvOsn, currRowIdx, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
                      }
 
                      #endregion UMJETNINA set T_ppmvOsn(tj. nabCij)
@@ -4008,19 +4008,19 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                else if(TtInfoOfThisRow.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij)
                {
-                  theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCij);
+                  theGrid.PutCell(ci.iT_cij, currRowIdx, artStat_rec.PrNabCij);
 
                   // ZPC additions START ______________________________
                   if(TtInfoOfThisRow.IsNivelacijaZPC)
                   {
-                     theGrid.PutCell(ci.iT_kol     , currRow, artStat_rec.StanjeKol);
-                     theGrid.PutCell(ci.iT_doCijMal, currRow, artStat_rec.MalopCij );
-                     theGrid.PutCell(ci.iT_noCijMal, currRow, artStat_rec.MalopCij );
+                     theGrid.PutCell(ci.iT_kol     , currRowIdx, artStat_rec.StanjeKol);
+                     theGrid.PutCell(ci.iT_doCijMal, currRowIdx, artStat_rec.MalopCij );
+                     theGrid.PutCell(ci.iT_noCijMal, currRowIdx, artStat_rec.MalopCij );
 
                      ZXC.RISK_InitZPCvalues_InProgress = true;
                      ZXC.MalopCalcKind bckpKind = Fld_MalopCalcKind;
                      Fld_MalopCalcKind = ZXC.MalopCalcKind.By_MPC;
-                     GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+                     GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRowIdx);
                      Fld_MalopCalcKind = bckpKind;
                      ZXC.RISK_InitZPCvalues_InProgress = false;
 
@@ -4036,7 +4036,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                            if(artStat_rec.PreDefVpc1.NotZero())
                            {
-                              theGrid.PutCell(ci.iT_noCijMal, currRow, artStat_rec.PreDefVpc1);
+                              theGrid.PutCell(ci.iT_noCijMal, currRowIdx, artStat_rec.PreDefVpc1);
                            }
                            else /* user ne koristi CjenikDUC nego cijene drzi na samoj skladisnoj kartici (npr. zbog importa) */
                            {
@@ -4055,16 +4055,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                               #endregion I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
 
-                              theGrid.PutCell(ci.iT_noCijMal, currRow, /*artikl_rec.ImportCij*/ theVPC);
+                              theGrid.PutCell(ci.iT_noCijMal, currRowIdx, /*artikl_rec.ImportCij*/ theVPC);
                            }
                            break;
 
                         case Faktur.TT_CJ_VP2: // VELEPRODAJNI cjenik 2 
 
                            Rtrans rtransVP2_rec = new Rtrans();
-                           string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRow, false);
+                           string artiklCD = TheG.GetStringCell(ci.iT_artiklCD, currRowIdx, false);
                            bool success = FakturDao.SetMeLastRtransForArtiklAndTtNum(TheDbConnection, rtransVP2_rec, faktur_rec.CjenikTT, faktur_rec.CjenTTnum, artiklCD, false);
-                           if(success) theGrid.PutCell(ci.iT_noCijMal, currRow, rtransVP2_rec.T_cij);
+                           if(success) theGrid.PutCell(ci.iT_noCijMal, currRowIdx, rtransVP2_rec.T_cij);
                            break;
                      } // switch 
                   } // if(TtInfoOfThisRow.IsKomisExtraProdCij)
@@ -4092,7 +4092,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                      bool noGoodMPC = false;
                      if(artStat_rec != null)
                      {
-                        theGrid.PutCell(ci.iT_cij_MSK, currRow, artStat_rec.LastUlazMPC);
+                        theGrid.PutCell(ci.iT_cij_MSK, currRowIdx, artStat_rec.LastUlazMPC);
                         if(artStat_rec.LastUlazMPC.IsZero()) noGoodMPC = true;
                      }
                      else noGoodMPC = true;
@@ -4108,7 +4108,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                      bool noGoodMPC = false;
                      if(artStatTRM_rec != null)
                      {
-                        theGrid.PutCell(ci.iT_cij_MSK, currRow, artStatTRM_rec.LastUlazMPC);
+                        theGrid.PutCell(ci.iT_cij_MSK, currRowIdx, artStatTRM_rec.LastUlazMPC);
                         if(artStatTRM_rec.LastUlazMPC.IsZero()) noGoodMPC = true;
                      }
                      else noGoodMPC = true;
@@ -4125,18 +4125,18 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   if(IsShowingConvertedMoney)
                   {
                      decimal theCij = artStat_rec.LastUlazMPC;
-                     /* daj kune u devizu */ TheG.PutCell(ci.iT_cij_MSK, currRow, ZXC.DivSafe(theCij, DevTecaj));
+                     /* daj kune u devizu */ TheG.PutCell(ci.iT_cij_MSK, currRowIdx, ZXC.DivSafe(theCij, DevTecaj));
                   }
                   else
                   {
-                     theGrid.PutCell(ci.iT_cij_MSK, currRow, artStat_rec.LastUlazMPC); // propose do_cij_mal as no_cij_mal 
+                     theGrid.PutCell(ci.iT_cij_MSK, currRowIdx, artStat_rec.LastUlazMPC); // propose do_cij_mal as no_cij_mal 
                   }
 
                   // 17.09.2018: 
                 //if(artikl_rec.IsUMJETNINA && faktur_rec.TT == Faktur.TT_UPM) // UMJETNINA               na MALOP POVRAT DOBAVLJACU 
                   if(artikl_rec.IsPDVonRUC  && faktur_rec.TT == Faktur.TT_UPM) // UMJETNINA ili RabVozilo na MALOP POVRAT DOBAVLJACU 
                   {
-                     theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
+                     theGrid.PutCell(ci.iT_cij, currRowIdx, artStat_rec.PrNabCij); // (ovo - theMPC) = osnovica za PDV 
                   }
 
                }
@@ -4148,7 +4148,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   bool noGoodMPC = false;
                   if(artStatTRM_rec != null)
                   {
-                     theGrid.PutCell(ci.iT_cij_MSK, currRow, artStatTRM_rec.LastUlazMPC);
+                     theGrid.PutCell(ci.iT_cij_MSK, currRowIdx, artStatTRM_rec.LastUlazMPC);
                      if(artStatTRM_rec.LastUlazMPC.IsZero()) noGoodMPC = true;
                   }
                   else noGoodMPC = true;
@@ -4184,7 +4184,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                   #endregion ČPP or ČNP
 
-                  theGrid.PutCell(ci.iT_cij, currRow, theMPC);
+                  theGrid.PutCell(ci.iT_cij, currRowIdx, theMPC);
                }
                else if(faktur_rec.TT == Faktur.TT_PNM || faktur_rec.TT == Faktur.TT_INM) 
                {
@@ -4195,7 +4195,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   decimal theVPC = ZXC.VvGet_125_on_100(artikl_rec.ImportCij, ZXC.RRD.Dsc_VpcMpcMarza);
                   decimal theMPC = ZXC.VvGet_125_on_100(theVPC              , faktur_rec.CommonPdvSt ); 
 
-                  theGrid.PutCell(ci.iT_cij, currRow, theMPC);
+                  theGrid.PutCell(ci.iT_cij, currRowIdx, theMPC);
                }
                else
                {
@@ -4209,20 +4209,20 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                      decimal rbtSt = ZXC.VvGet_rbtSt_100to90(theVPC, artikl_rec.ImportCij);
 
-                     theGrid.PutCell(ci.iT_rbt1St, currRow, rbtSt);
+                     theGrid.PutCell(ci.iT_rbt1St, currRowIdx, rbtSt);
                   }
 
                   #endregion I u veleprodaji odglumi mpc politiku: digni za VpcMpcMarza pa rabatom spusti nazad
 
                   if(faktur_rec.TtInfo.ProposeCijenaKind == ZXC.TtProposeCijenaKindEnum.Propose_CJENIK) // ovaj if dodan tek 19.01.2012 
                   {
-                     theGrid.PutCell(ci.iT_cij, currRow, /*artikl_rec.ImportCij*/ theVPC);
+                     theGrid.PutCell(ci.iT_cij, currRowIdx, /*artikl_rec.ImportCij*/ theVPC);
                   }
                }
 
                if(faktur_rec.TT == Faktur.TT_IRM && ((this as FakturExtDUC).Fld_NacPlacRbt).NotZero())
                {
-                  theGrid.PutCell(ci.iT_rbt1St, currRow, (this as FakturExtDUC).Fld_NacPlacRbt);
+                  theGrid.PutCell(ci.iT_rbt1St, currRowIdx, (this as FakturExtDUC).Fld_NacPlacRbt);
                }
             }
 
@@ -4276,7 +4276,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
        //if(artikl_rec.IsUMJETNINA) 
          if(artikl_rec.IsPDVonRUC )
          {
-            theGrid.PutCell(ci.iT_pdvKolTip, currRow, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.UMJETN));
+            theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.UMJETN));
          }
 
          #endregion UMJETNINA set T_pdvColTip = PdvKolTipEnum.UMJETN
@@ -4285,7 +4285,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          if(artikl_rec.IsGlass && faktur_rec.TtInfo.IsMalopFin_I)
          {
-            theGrid.PutCell(ci.iT_pdvKolTip, currRow, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.GlassOnIRM));
+            theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.GlassOnIRM));
          }
          //// 13.01.2014: 
          //else if(artikl_rec.TS == "RPP" && artikl_rec.Grupa1CD == "PIĆ" && artikl_rec.Grupa2CD == "ŽAP" && faktur_rec.TtInfo.IsMalopFin_I)
@@ -4305,8 +4305,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          // 02.01.2014: bio bug 
          if(this is ProizvodnjaDUC == false && this is PIZpDUC == false && this is PIMDUC == false && this is TransformDUC == false && TtInfoOfThisRow.IsNivelacijaZPC == false)
          {
-            theGrid.PutCell(ci.iT_kol, currRow, 1.00M); 
-            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+            theGrid.PutCell(ci.iT_kol, currRowIdx, 1.00M); 
+            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRowIdx);
          }
 
          #region Get PMV Xtrans data for this Artikl
@@ -4319,8 +4319,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                decimal osnovica, stopa1i2;
                osnovica = Artikl.GetMotoPpmv2017(artikl_rec.Zapremina, artikl_rec.EuroNorma);
                stopa1i2 = 100M;
-               theGrid.PutCell(ci.iT_ppmvOsn, currRow, osnovica);
-               theGrid.PutCell(ci.iT_ppmvSt1i2, currRow, stopa1i2);
+               theGrid.PutCell(ci.iT_ppmvOsn, currRowIdx, osnovica);
+               theGrid.PutCell(ci.iT_ppmvSt1i2, currRowIdx, stopa1i2);
 
                if(this is IRMDUC_2)
                {
@@ -4362,8 +4362,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   }
                   // 10.01.2017: overriding old-Bef2017 rules with 2017 rules ___  END  ___ 
 
-                  theGrid.PutCell(ci.iT_ppmvOsn, currRow, osnovica);
-                  theGrid.PutCell(ci.iT_ppmvSt1i2, currRow, stopa1i2);
+                  theGrid.PutCell(ci.iT_ppmvOsn, currRowIdx, osnovica);
+                  theGrid.PutCell(ci.iT_ppmvSt1i2, currRowIdx, stopa1i2);
 
                   if(this is IRMDUC_2)
                   {
@@ -4376,7 +4376,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                } // if(xtrans_rec != null) 
             } // not tembo
 
-            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRow);
+            GetLineFlds_CalcTrans_PutLineResultFlds_PutTransSumFlds(currRowIdx);
 
          } // if(artikl_rec.IsPPMV) 
          else
@@ -4429,24 +4429,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             if(this is UGODUC)
             {
-               theGrid.PutCell(ci.iT_artiklLongOpis, currRow, artikl_rec.LongOpis);
+               theGrid.PutCell(ci.iT_artiklLongOpis, currRowIdx, artikl_rec.LongOpis);
             }
             if(this is IZD_SVD_DUC || this is ZAH_SVD_DUC)
             {
-               theGrid.PutCell(ci.iT_kol, currRow, 0.00M); // overrajdanje prethodne jedinice 
+               theGrid.PutCell(ci.iT_kol, currRowIdx, 0.00M); // overrajdanje prethodne jedinice 
 
-               ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
+               ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRowIdx, false, null));
 
                if(artStat_rec != null)
                {
-                  theGrid.PutCell(ci.iT_cij, currRow, artStat_rec.PrNabCij);
+                  theGrid.PutCell(ci.iT_cij, currRowIdx, artStat_rec.PrNabCij);
                }
             }
             if(this.HasOrgBopCop)
             {
                theORG = Get_SVD_theORG(TheDbConnection, artikl_rec.ArtiklCD, false);
 
-               theGrid.PutCell(ci.iT_doCijMal, currRow, theORG);
+               theGrid.PutCell(ci.iT_doCijMal, currRowIdx, theORG);
 
                // 30.01.2019: 
                     if(artikl_rec.IsSvdArtGR_Ljek_) (this as FakturExtDUC).Fld_PdvZPkind = ZXC.PdvZPkindEnum.SVD_LJEK;
@@ -4472,9 +4472,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
                if(UGOrtransFound)
                {
-                  theGrid.PutCell(ci.iT_cij  , currRow, UGOrtrans_rec.T_cij         );
-                  theGrid.PutCell(ci.iT_cop  , currRow, UGOrtrans_rec.T_cij * theORG);
-                  theGrid.PutCell(ci.iT_pdvSt, currRow, UGOrtrans_rec.T_pdvSt       );
+                  theGrid.PutCell(ci.iT_cij  , currRowIdx, UGOrtrans_rec.T_cij         );
+                  theGrid.PutCell(ci.iT_cop  , currRowIdx, UGOrtrans_rec.T_cij * theORG);
+                  theGrid.PutCell(ci.iT_pdvSt, currRowIdx, UGOrtrans_rec.T_pdvSt       );
                }
             }
 
@@ -4506,7 +4506,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
              // 19.04.2021. kad je u cjeniku devizna cjena a IRA je kunska
              //theGrid.PutCell(ci.iT_cij, currRow, theCij);
-               theGrid.PutCell(ci.iT_cij, currRow, theCij.Ron2());
+               theGrid.PutCell(ci.iT_cij, currRowIdx, theCij.Ron2());
             }
          }
 
@@ -4516,7 +4516,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          if(HasRtrans_SkladCD_Exposed)
          {
-            theGrid.PutCell(ci.iT_skladCD, currRow, Fld_SkladCD);
+            theGrid.PutCell(ci.iT_skladCD, currRowIdx, Fld_SkladCD);
          }
 
          #endregion HasRtrans_SkladCD_Exposed
@@ -4526,9 +4526,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       else if(this.sifrarSorterType == VvSQL.SorterType.Name && vvtb_editingControl.Text != "") // ako smo dosli iz naziva, a artikl_rec je null, to je onda 'qwe' pattern (ne postoji kao sifrar) 
       {
-         theGrid.PutCell(ci.iT_artiklName, currRow, vvtb_editingControl.Text);
+         theGrid.PutCell(ci.iT_artiklName, currRowIdx, vvtb_editingControl.Text);
 
-         if(ZXC.CURR_prjkt_rec.IS_IN_PDV && isOutsideEU_DevizniDokument == false) theGrid.PutCell(ci.iT_pdvSt, currRow, faktur_rec.CommonPdvSt);
+         if(ZXC.CURR_prjkt_rec.IS_IN_PDV && isOutsideEU_DevizniDokument == false) theGrid.PutCell(ci.iT_pdvSt, currRowIdx, faktur_rec.CommonPdvSt);
       }
 
       #endregion if(artikl_rec != null)
@@ -4548,7 +4548,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             if(kupdob_rec != null && kupdob_rec.StRbt1.NotZero())
             {
-               theGrid.PutCell(ci.iT_rbt1St, currRow, kupdob_rec.StRbt1);
+               theGrid.PutCell(ci.iT_rbt1St, currRowIdx, kupdob_rec.StRbt1);
             }
          }
       }
@@ -5025,9 +5025,23 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
 
-      if(sernoInfo == null) return; // NOVI serno, ... nije naso nist po tom serno-u 
-
       string upisaniArtiklCD = theGrid.GetStringCell(ci2.iT_artiklCD, currRowIdx, false);
+
+      if(sernoInfo == null)
+      {
+         if(upisaniArtiklCD.NotEmpty())
+         {
+            string upisaniArtiklTS = theGrid.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
+            if(upisaniArtiklTS != "PCK")
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema smisla uparivati serijski broj sa komponentom (NE PCK artiklom)");
+               theGrid.ClearRowContent(currRowIdx);
+               theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
+            }
+         }
+
+         return; // NOVI serno, ... nije naso nist po tom serno-u 
+      }
 
       bool wasEmptyRow = upisaniArtiklCD.IsEmpty();
 
