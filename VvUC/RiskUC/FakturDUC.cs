@@ -13942,7 +13942,7 @@ public class FakturPDUC : FakturExtDUC
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
    {
-      bool isMOC = isPCK && MOC_RAM == rtrano_rec./*T_dimZ*/R_RAM_new && MOC_HDD == rtrano_rec./*T_decC*/R_HDD_new;
+      bool isMOC = isPCK && MOC_RAM == rtrano_rec./*T_dimZ*/R_MOD_RAM_new && MOC_HDD == rtrano_rec./*T_decC*/R_MOD_HDD_new;
 
       if(isPCK)
       {
@@ -14507,8 +14507,8 @@ public class FakturPDUC : FakturExtDUC
 
       if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
       {
-         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_RAM_new));
-         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_HDD_new));
+         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new));
+         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new));
       }
 
       //if(passPtrResultsToZaglavljeTranses == true)

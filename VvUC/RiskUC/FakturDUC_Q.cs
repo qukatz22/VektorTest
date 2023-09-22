@@ -5011,7 +5011,23 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
     //string theSerno = vvtb_editingControl.Text;
       string theSerno = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, true);
 
-      if(theSerno.IsEmpty()) return;
+      if(theSerno.IsEmpty())
+      {
+         theGrid.PutCell(ci2.iT_TT    , currRowIdx, "");
+         theGrid.PutCell(ci2.iT_kol   , currRowIdx, 0M);
+                                      
+         theGrid.PutCell(ci2.iT_dimX  , currRowIdx, 0M);
+         theGrid.PutCell(ci2.iT_dimY  , currRowIdx, 0M);
+         theGrid.PutCell(ci2.iT_decA  , currRowIdx, 0M);
+         theGrid.PutCell(ci2.iT_decB  , currRowIdx, 0M);
+
+         theGrid.PutCell(ci2.iT_ramNew, currRowIdx, 0M);
+         theGrid.PutCell(ci2.iT_hddNew, currRowIdx, 0M);
+         theGrid.PutCell(ci2.iT_dimZ  , currRowIdx, 0M);
+         theGrid.PutCell(ci2.iT_decC  , currRowIdx, 0M);
+
+         return;
+      }
 
       #region Check for double serno entry
 
@@ -5095,7 +5111,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       lastRtrano_rec.T_decA    = 
       lastRtrano_rec.T_decB    = 0M;
 
-      if(thisIs_MOC_rowIndex(rIdx))
+      if(this is MOD_PTG_DUC && thisIs_MOC_rowIndex(rIdx))
       {
          lastRtrano_rec.T_TT = Faktur.TT_MOC;
 

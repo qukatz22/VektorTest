@@ -428,7 +428,7 @@ public class Rtrano : VvTransRecord
    //public string R_PCK_RAMkind { get; set; }
    //public string R_PCK_HDDkind { get; set; }
 
-   public decimal R_RAM_new
+   public decimal R_MOD_RAM_new
    {
       get
       {
@@ -442,7 +442,7 @@ public class Rtrano : VvTransRecord
       }
    }
 
-   public decimal R_HDD_new
+   public decimal R_MOD_HDD_new
    {
       get
       {
@@ -456,11 +456,41 @@ public class Rtrano : VvTransRecord
       }
    }
 
+   public decimal R_PCK_RAM
+   {
+      get
+      {
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
+         {
+            return R_MOD_RAM_new;
+         }
+         else
+         {
+            return T_dimZ;
+         }
+      }
+   }
+
+   public decimal R_PCK_HDD
+   {
+      get
+      {
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
+         {
+            return R_MOD_HDD_new;
+         }
+         else
+         {
+            return T_decC;
+         }
+      }
+   }
+
    public string PCK_ArtiklInfo_Signature
    {
       get
       {
-         return T_artiklCD + " / " + T_dimZ.ToString0Vv() + " / " + T_decC.ToString0Vv();
+         return T_artiklCD + " / " + R_PCK_RAM.ToString0Vv() + " / " + R_PCK_HDD.ToString0Vv();
       }
    }
 
