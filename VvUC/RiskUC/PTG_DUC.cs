@@ -3803,6 +3803,8 @@ public partial class PCK_ArtiklInfo_Dlg :  VvDialog
       TheUC.TheSernoGrid  .Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       
       this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
+     
+      this.Location = new Point(SystemInformation.WorkingArea.Width - this.Width, (SystemInformation.WorkingArea.Height - this.Height)/2);
 
       ResumeLayout();
 

@@ -1309,16 +1309,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    }
    private void InitializeHamper_opis(out VvHamper hamper)
    {
-      if(this is FakturExtDUC && this is PIZpDUC == false && this is ProizvodnjaDUC == false && this is RNZDUC == false &&
-                                 this is URA_SVD_DUC == false && this is NRD_SVD_DUC == false && this is IZD_SVD_DUC == false &&
-                                 this is UGODUC == false && this is CjenikKupca_DUC == false && this is ZAH_SVD_DUC == false)
+      if(this is FakturExtDUC && this is PIZpDUC     == false && this is ProizvodnjaDUC  == false && this is RNZDUC == false &&
+                                 this is URA_SVD_DUC == false && this is NRD_SVD_DUC     == false && this is IZD_SVD_DUC == false &&
+                                 this is UGODUC      == false && this is CjenikKupca_DUC == false && this is ZAH_SVD_DUC == false && this is PST_PTG_DUC == false && this is MSI_PTG_DUC == false)
       {
               if(this is IRMDUC)                   hamper = new VvHamper(1, 3, "", null, false);
          else if(this is KIZDUC || this is PIKDUC) hamper = new VvHamper(1, 5, "", null, false);
          else                                      hamper = new VvHamper(1, 7, "", null, false);
 
-         hamper.VvColWdt = new int[] { ZXC.Q10un + 2 * faBefCol + ZXC.QUN + ZXC.Qun4 };
-         hamper.VvSpcBefCol = new int[] { faBefFirstCol };
+         hamper.VvColWdt      = new int[] { ZXC.Q10un + 2 * faBefCol + ZXC.QUN + ZXC.Qun4 };
+         hamper.VvSpcBefCol   = new int[] { faBefFirstCol };
          hamper.VvRightMargin = hamper.VvLeftMargin;
 
          for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -1329,9 +1329,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          hamper.VvBottomMargin = hamper.VvTopMargin;
 
          hamper.CreateVvLabel(0, 0, "Opis:", ContentAlignment.MiddleLeft);
-         if(this is IRMDUC) tbx_Opis = hamper.CreateVvTextBox(0, 1, "tbx_Opis", "Opis - dodatni opis potreban za ispis na računu", GetDB_ColumnSize(DB_ci.opis), 0, 1);
+              if(this is IRMDUC)                   tbx_Opis = hamper.CreateVvTextBox(0, 1, "tbx_Opis", "Opis - dodatni opis potreban za ispis na računu", GetDB_ColumnSize(DB_ci.opis), 0, 1);
          else if(this is KIZDUC || this is PIKDUC) tbx_Opis = hamper.CreateVvTextBox(0, 1, "tbx_Opis", "Opis - dodatni opis potreban za ispis na računu", GetDB_ColumnSize(DB_ci.opis), 0, 3);
-         else tbx_Opis = hamper.CreateVvTextBox(0, 1, "tbx_Opis", "Opis - dodatni opis potreban za ispis na računu", GetDB_ColumnSize(DB_ci.opis), 0, 5);
+         else                                      tbx_Opis = hamper.CreateVvTextBox(0, 1, "tbx_Opis", "Opis - dodatni opis potreban za ispis na računu", GetDB_ColumnSize(DB_ci.opis), 0, 5);
          tbx_Opis.Font = ZXC.vvFont.SmallFont;
          tbx_Opis.Multiline = true;
          tbx_Opis.ScrollBars = ScrollBars.Both;
@@ -5996,7 +5996,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          hamp_vezniDok.Location = new Point(hamp_napomena.Right - hamp_vezniDok.Width, hamp_dokNum.Bottom - ZXC.Qun4);
       }
       else if(this is MedjuSkladVMIuDUC || this is MedjuSkladVMI2DUC || this is MedjuSkladMVIDUC || this is MedjuSkladMVI2DUC || 
-              this is MedjuSkladMMIDUC  || this is MedjuSkladDUC     || this is TransformDUC)
+              this is MedjuSkladMMIDUC  || this is MedjuSkladDUC     || this is TransformDUC     || this is MSI_PTG_DUC)
       {
          hamp_dokNum.Location = new Point(hamp_projekt.Right - hamp_dokNum.Width - ZXC.QUN + ZXC.Qun8, 0);
 
