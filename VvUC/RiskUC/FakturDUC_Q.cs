@@ -3662,7 +3662,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // ##################################################################### 
       if(isRtranoSecondGrid) // ############################################## 
       {
-         if(IsPTG_WithSerno_DUC)
+         if(IsPTG_WithSerno_DUC && artikl_rec != null)
          {
             FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
@@ -5102,6 +5102,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    }
    private void Put_PCK_info_DgvLineFields2(Rtrano lastRtrano_rec, int rIdx)
    {
+      lastRtrano_rec.T_dimZ = lastRtrano_rec.R_PCK_RAM;
+      lastRtrano_rec.T_decC = lastRtrano_rec.R_PCK_HDD;
+
       lastRtrano_rec.T_skladCD = Fld_SkladCD;
 
       lastRtrano_rec.T_TT      = "";

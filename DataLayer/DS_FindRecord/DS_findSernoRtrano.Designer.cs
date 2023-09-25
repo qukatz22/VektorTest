@@ -331,6 +331,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             private global::System.Data.DataColumn columnext_kpdbName;
             
+            private global::System.Data.DataColumn columnext_PCK_RAM;
+            
+            private global::System.Data.DataColumn columnext_PCK_HDD;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public rtranoDataTable() {
@@ -574,6 +578,22 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_PCK_RAMColumn {
+                get {
+                    return this.columnext_PCK_RAM;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_PCK_HDDColumn {
+                get {
+                    return this.columnext_PCK_HDD;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -635,7 +655,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         uint t_paletaNo, 
                         byte t_isKomDummy, 
                         string t_grCD, 
-                        string ext_kpdbName) {
+                        string ext_kpdbName, 
+                        decimal ext_PCK_RAM, 
+                        decimal ext_PCK_HDD) {
                 rtranoRow rowrtranoRow = ((rtranoRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         recID,
@@ -663,7 +685,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         t_paletaNo,
                         t_isKomDummy,
                         t_grCD,
-                        ext_kpdbName};
+                        ext_kpdbName,
+                        ext_PCK_RAM,
+                        ext_PCK_HDD};
                 rowrtranoRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowrtranoRow);
                 return rowrtranoRow;
@@ -719,6 +743,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnt_isKomDummy = base.Columns["t_isKomDummy"];
                 this.columnt_grCD = base.Columns["t_grCD"];
                 this.columnext_kpdbName = base.Columns["ext_kpdbName"];
+                this.columnext_PCK_RAM = base.Columns["ext_PCK_RAM"];
+                this.columnext_PCK_HDD = base.Columns["ext_PCK_HDD"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -776,6 +802,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 base.Columns.Add(this.columnt_grCD);
                 this.columnext_kpdbName = new global::System.Data.DataColumn("ext_kpdbName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnext_kpdbName);
+                this.columnext_PCK_RAM = new global::System.Data.DataColumn("ext_PCK_RAM", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_PCK_RAM);
+                this.columnext_PCK_HDD = new global::System.Data.DataColumn("ext_PCK_HDD", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_PCK_HDD);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnrecID}, true));
                 this.columnrecID.AllowDBNull = false;
@@ -810,6 +840,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnt_isKomDummy.AllowDBNull = false;
                 this.columnt_grCD.AllowDBNull = false;
                 this.columnt_grCD.MaxLength = 16;
+                this.columnext_PCK_RAM.AllowDBNull = false;
+                this.columnext_PCK_HDD.AllowDBNull = false;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1238,6 +1270,28 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 }
                 set {
                     this[this.tablertrano.ext_kpdbNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal ext_PCK_RAM {
+                get {
+                    return ((decimal)(this[this.tablertrano.ext_PCK_RAMColumn]));
+                }
+                set {
+                    this[this.tablertrano.ext_PCK_RAMColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal ext_PCK_HDD {
+                get {
+                    return ((decimal)(this[this.tablertrano.ext_PCK_HDDColumn]));
+                }
+                set {
+                    this[this.tablertrano.ext_PCK_HDDColumn] = value;
                 }
             }
             

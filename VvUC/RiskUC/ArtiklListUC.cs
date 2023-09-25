@@ -2544,8 +2544,10 @@ public class RtranoListUC : VvRecLstUC
       colWidth = ZXC.Q5un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Serno"           , colWidth, false  , "t_serno"     );
       colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
       colWidth = ZXC.Q9un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "t_dimZ"      );
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "t_decC"      );
+    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "t_dimZ"      );
+    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "t_decC"      );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "ext_PCK_RAM" );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "ext_PCK_HDD" );
       colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" );
       colWidth = ZXC.Q7un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
       colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );

@@ -2998,7 +2998,10 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
          if(this is RtransListUC) extendedColumnNamesList = "naziv as ext_kpdbName ";
 
-         if(this is RtranoListUC) extendedColumnNamesList = "naziv as ext_kpdbName ";
+       //if(this is RtranoListUC) extendedColumnNamesList = "naziv as ext_kpdbName ";
+         if(this is RtranoListUC) extendedColumnNamesList = "naziv as ext_kpdbName, " + 
+               "IF(t_tt = 'MOD' OR t_tt = 'MOC' OR t_tt = 'MOS', T_dimZ + T_dimX - T_dimY, t_dimZ) as ext_PCK_RAM, " + 
+               "IF(t_tt = 'MOD' OR t_tt = 'MOC' OR t_tt = 'MOS', T_decC + T_decA - T_decB, t_decC) as ext_PCK_HDD  ";
 
          return 
             VvSQL.GetAllDataTableColumnNames_4Select(TheDataTable, TheDataTable.TableName, /*false*/"ext_", IsArhivaTabPage) +
