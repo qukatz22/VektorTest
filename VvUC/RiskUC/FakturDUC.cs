@@ -13942,7 +13942,10 @@ public class FakturPDUC : FakturExtDUC
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
    {
-      bool isMOC = isPCK && MOC_RAM == rtrano_rec./*T_dimZ*/R_MOD_RAM_new && MOC_HDD == rtrano_rec./*T_decC*/R_MOD_HDD_new;
+      bool isMOC = isPCK                                         && 
+                   MOC_RAM == rtrano_rec./*T_dimZ*/R_MOD_RAM_new && 
+                   MOC_HDD == rtrano_rec./*T_decC*/R_MOD_HDD_new &&
+                   thisIs_MOC_rowIndex(rowIdx); // ovo je novododano 25.09.2023 
 
       if(isPCK)
       {
@@ -14463,7 +14466,12 @@ public class FakturPDUC : FakturExtDUC
       TheG2.PutCell(ci2.iR_grName    , rowIdx, ZXC.luiListaRtranoGr.GetNameForThisCd(rtrano_rec.T_grCD));
     //TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, rtrano_rec.T_isKomDummy);
       TheG2.PutCell(ci2.iT_isKomDummy, rowIdx, VvCheckBox.GetString4Bool(rtrano_rec.T_isKomDummy));
-      TheG2.PutCell(ci2.iT_skladCD   , rowIdx, rtrano_rec.T_skladCD);
+
+      if(HasRtrano_SkladCD_Exposed)
+      {
+         TheG2.PutCell(ci2.iT_skladCD, rowIdx, rtrano_rec.T_skladCD);
+      }
+
       TheG2.PutCell(ci2.iT_decA      , rowIdx, rtrano_rec.T_decA);
       TheG2.PutCell(ci2.iT_decB      , rowIdx, rtrano_rec.T_decB);
       TheG2.PutCell(ci2.iT_decC      , rowIdx, rtrano_rec.T_decC);

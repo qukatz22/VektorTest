@@ -5094,7 +5094,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
 
-   private bool thisIs_MOC_rowIndex(int rIdx)
+   protected bool thisIs_MOC_rowIndex(int rIdx)
    {
       int numOfExpected_MOC_rows = (int)(this as MOD_PTG_DUC).Fld_someMoney;
 
