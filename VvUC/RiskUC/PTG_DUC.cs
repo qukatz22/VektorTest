@@ -3277,6 +3277,31 @@ public class MOD_PTG_DUC : FakturPDUC
       }
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 
+   internal void SintRtranoToRtransOnMOD(VvForm theVvForm)
+   {
+      foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
+      {
+         modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
+      }
+
+      //MOD_PTG_DUC theDUC = TheVvDocumentRecordUC as MOD_PTG_DUC;
+
+      List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
+      List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
+
+      Rtrans rtrans_rec;
+
+      foreach(Rtrano rtrano_rec in mou_list)
+      {
+         rtrans_rec = new Rtrans(rtrano_rec);
+
+         rtrano_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
+      }
+
+      theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
+   }
+
+
 }
 
 public class PRI_PTG_DUC : FakturPDUC
@@ -3334,8 +3359,8 @@ public class PRI_PTG_DUC : FakturPDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return false; } }
 
    protected override void InitializeDUC_Specific_Columns()
    {
@@ -3451,8 +3476,8 @@ public class IZD_PTG_DUC : FakturPDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return false; } }
 
    protected override void InitializeDUC_Specific_Columns()
    {
