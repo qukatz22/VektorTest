@@ -64,7 +64,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_mtros_cd, vvtbT_mtros_tk,
                        vvtbR_kiz_KC, vvtbR_kiz_KCR, vvtbR_kiz_rbt1,
                        vvtbT_serlot, vvtbR_artiklLongOpis,
-                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD,
+                       vvtbT_skladDate, tbx_Konto, vvtbT_skladCD, vvtbT_TT1,
                        vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramOld,vvtbT_hddOld,vvtbT_ramKlasa ,vvtbT_hddKlasa;
 
    /*public*/
@@ -2437,6 +2437,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
    }
 
+   protected void T_TT_CreateColumnG1(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_TT1 = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_TT1", TheVvDaoTrans, DB_Tci.t_tt, _statusText);
+      vvtbT_TT1.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_TT1, TheVvDaoTrans, DB_Tci.t_tt, _colHeader, _width);
+      colVvText.Visible = isVisible;
+   }
+
+
    #endregion T_Columns
 
    #region R_Columns
@@ -3071,7 +3081,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_ramOld; 
       internal int iT_ramKlasa ; 
       internal int iT_hddOld; 
-      internal int iT_hddKlasa ; 
+      internal int iT_hddKlasa ;
+      internal int iT_TT       ; 
 
    }
 
@@ -3155,6 +3166,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_ramKlasa          = TheG.IdxForColumn("R_ramKlasa"); 
       ci.iT_hddOld            = TheG.IdxForColumn("R_hddOld"); 
       ci.iT_hddKlasa          = TheG.IdxForColumn("R_hddKlasa"); 
+      
+      ci.iT_TT                = TheG.IdxForColumn("T_TT"); 
 
    }
 
@@ -4517,7 +4530,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       Kupdob kupdobSifrar_rec = KupdobSifrar.SingleOrDefault(vvDR => vvDR.KupdobCD == rtrans_rec.T_mtrosCD);
 
       if(kupdobSifrar_rec != null) TheG.PutCell(ci.iT_mtros_tk, rowIdx, kupdobSifrar_rec.Ticker);
-      else TheG.PutCell(ci.iT_mtros_tk, rowIdx, "");
+      else                         TheG.PutCell(ci.iT_mtros_tk, rowIdx, "");
 
 
       TheG.PutCell(ci.iT_isIrmUsluga, rowIdx, VvCheckBox.GetString4Bool(rtrans_rec.T_isIrmUsluga));

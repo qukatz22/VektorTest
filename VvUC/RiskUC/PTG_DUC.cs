@@ -3189,6 +3189,7 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       TheG.ColumnHeadersHeight = ZXC.Q2un;
 
+      T_TT_CreateColumnG1          (ZXC.Q2un,    true, "TT"       , "Tip dokumenta");
       T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra"    , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(             true, "Naziv"    , "Naziv artikla ili proizvoljan opis");
       T_artiklTS_CreateColumn      (ZXC.Q2un,    true, "Tip"      , "Tip artikla");
