@@ -3285,19 +3285,37 @@ public class MOD_PTG_DUC : FakturPDUC
          modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
       }
 
-      //MOD_PTG_DUC theDUC = TheVvDocumentRecordUC as MOD_PTG_DUC;
+    //List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
+    //List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
 
-      List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
-      List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
+      List<Rtrano> mou_moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU || rto.T_TT == Faktur.TT_MOI).ToList();
 
-      Rtrans rtrans_rec;
+      Rtrans  rtrans_rec   ;
+      Artikl  artikl_rec   ;
+      string  t_jedMj      ;
+      ushort  t_serial =  0;
+      decimal theCij   = 0M;
 
-      foreach(Rtrano rtrano_rec in mou_list)
+      foreach(Rtrano rtrano_rec in mou_moi_list)
       {
-         rtrans_rec = new Rtrans(rtrano_rec);
+         artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+         if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
+         else                   t_jedMj = ""              ;
+
+         rtrans_rec = new Rtrans(rtrano_rec, theCij, t_jedMj, ++t_serial);
 
          rtrano_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
       }
+
+      theVvForm.BeginEdit(faktur_rec);
+
+      faktur_rec.TakeTransesSumToDokumentSum(false);
+
+      bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
+
+      if(!OK) { theVvForm.CancelEdit(faktur_rec); return; }
+
+      theVvForm.EndEdit(faktur_rec);
 
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
    }

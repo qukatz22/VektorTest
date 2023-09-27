@@ -4615,6 +4615,25 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          if(datZadByART > SVD_UGO_datZadByART) SVD_UGO_datZadByART = datZadByART; // !!! 
       }
+
+      if(this is MOD_PTG_DUC)
+      {
+         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
+
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         {
+            switch(rtrans_rec.T_TT)
+            {
+               case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG; break;
+               case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
+               case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
+               case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
+
+               default: tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+            }
+         }
+      }
+
    }
 
    public static decimal GetDiffKol_PlanVsRealizacijaPIPR(string artiklCD, List<Rtrans> realizacijaRtransList, decimal planKol)
@@ -14858,7 +14877,7 @@ public class FakturPDUC : FakturExtDUC
       {
          switch(TT)
          {
-            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG; break;
+            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG     ; break;
             case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
             case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
             case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;

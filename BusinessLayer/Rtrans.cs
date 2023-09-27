@@ -127,13 +127,13 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
       Memset0(ID);
    }
 
-   public Rtrans(Rtrano rtrano_rec) : base() // PTG ONLY! 
+   public Rtrans(Rtrano rtrano_rec, decimal _t_cij, string _t_jedMj, ushort _t_serial) : base() // PTG ONLY! 
    {
       this.currentData = new RtransStruct();
 
       Memset0(0);
 
-    //this.T_serial     = newSerial              ; 
+      this.T_serial     = _t_serial              ; 
 
       this.T_parentID   = rtrano_rec.T_parentID  ;
       this.T_dokNum     = rtrano_rec.T_dokNum    ;
@@ -145,8 +145,12 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
       this.T_skladCD    = rtrano_rec.T_skladCD   ;
       this.T_artiklName = rtrano_rec.T_artiklName;
       this.T_kupdobCD   = rtrano_rec.T_kupdobCD  ;
+      this.T_kol        = rtrano_rec.T_kol       ;
+      this.T_jedMj      = _t_jedMj               ;
 
-   }
+      this.T_cij        = _t_cij                 ;
+
+      }
 
    public override void Memset0(uint ID)
    {
