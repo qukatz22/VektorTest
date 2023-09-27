@@ -524,7 +524,7 @@ public struct TtInfo
       Faktur.TT_UG2,
       Faktur.TT_DO2,
       Faktur.TT_PV2,
-      Faktur.TT_MOU,
+    //Faktur.TT_MOU,
    };
    /// <summary>
    /// Ovaj TT utjece na FinSt skladista po PrNabCij koja je iskalkulirana po linkanomIzlazu (cijena na Ulaznoj Medjuskladisnici je PrNabCij sa njegove Izlazne Medjusklad. 'sestre'
@@ -768,6 +768,7 @@ public struct TtInfo
    private static string[] arrayProizvodnjaIzlazTT = new string[] { 
       Faktur.TT_PPR,
       Faktur.TT_POV,
+      Faktur.TT_MOI,
    };
    public bool IsProizvodnjaIzlazTT { get { return arrayProizvodnjaIzlazTT.Contains(TheTT); } }
 
