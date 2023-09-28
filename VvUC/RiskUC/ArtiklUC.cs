@@ -947,7 +947,7 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
 
-      string lblText = (name == "AZapremina:" && ZXC.IsPCTOGO == true) ? "Kapacit:" : name;
+      string lblText = (name == "AZapremina:" && ZXC.IsPCTOGO == true) ? "AKapacitet:" : name;
 
               hamper.CreateVvLabel   (0, 0, /*name*/ lblText, ContentAlignment.MiddleRight);
       tbx   = hamper.CreateVvTextBox (1, 0, "tbx_"   + name, name, dbci);

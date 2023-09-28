@@ -2101,7 +2101,6 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
 
    #endregion TheG_Specific_Columns2
 
-
    protected override void AddColorsToBaby()
    {
       SetUpColor(clr_DOD_PTG, Color.Empty, clr_DOD_PTG);
@@ -3077,6 +3076,8 @@ public class MOD_PTG_DUC : FakturPDUC
       this.ControlForInitialFocus = tbx_Napomena; // tamara ... todo? 
 
       SetSumeHampers(false, false, false, false);
+
+      hamp_twin.Visible = false;
    }
    private void CreateArrOfHampers()
    {
@@ -3193,18 +3194,11 @@ public class MOD_PTG_DUC : FakturPDUC
       T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra"    , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(             true, "Naziv"    , "Naziv artikla ili proizvoljan opis");
       T_artiklTS_CreateColumn      (ZXC.Q2un,    true, "Tip"      , "Tip artikla");
-      R_ramKlasa_CreateColumn      (ZXC.Q3un, 0, true, "RAM klasa", "RAM klasa");
-      R_hddKlasa_CreateColumn      (ZXC.Q3un, 0, true, "HDD klasa", "HDD klasa");
       T_skladCD_CreateColumn       (ZXC.Q3un,    true, "Sklad"    , "Ulazno ili izlazno skladište");
       T_kol_CreateColumn           (ZXC.Q3un, 0, true, "Kol"      , "Količina"      );
-      R_ramOld_CreateColumn        (ZXC.Q3un, 0, true, "RAM   old", "RAM old"  );
-      T_ramPlus_CreateColumn       (ZXC.Q3un, 0, true, "RAM +"    , "RAM +");
-      T_ramMinus_CreateColumn      (ZXC.Q3un, 0, true, "RAM -"    , "RAM -");
-      T_doCijMal_CreateColumn      (ZXC.Q3un, 0, true, "RAM NEW"  , "RAM", false);
-      R_hddOld_CreateColumn        (ZXC.Q3un, 0, true, "HDD   old", "HDD old"  );
-      T_hddPlus_CreateColumn       (ZXC.Q3un, 0, true, "HDD +"    , "HDD +");
-      T_hddMinus_CreateColumn      (ZXC.Q3un, 0, true, "HDD -"    , "HDD -");
-      T_noCijMal_CreateColumn      (ZXC.Q3un, 0, true, "HDD NEW"  , "HDD NEW"  );
+      T_jedMj_CreateColumn         (ZXC.Q2un   , true, "JM"       , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 4, true, "Cijena"   , "Jedinična cijena");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2, true, "Iznos"    , "Iznos");
    }
 
    #endregion TheG_Specific_Columns
@@ -3327,6 +3321,11 @@ public class MOD_PTG_DUC : FakturPDUC
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
    }
 
+   //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO? Color.Beige
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(Color.Beige, Color.Empty, Color.Beige);
+   }
 
 }
 
