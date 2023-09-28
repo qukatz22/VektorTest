@@ -13961,7 +13961,10 @@ public class FakturPDUC : FakturExtDUC
 
          if(vvTextBox is null || artikl_rec is null) return;
 
-         decimal enteredKapacitet = ZXC.ValOrZero_Decimal(vvTextBox.Text, 0);
+         bool isRAM = colIdx == ci2.iT_dimX || colIdx == ci2.iT_dimY;
+         bool isHDD = !isRAM;
+
+         decimal enteredKapacitet = isRAM ? rtrano_rec.T_dimX + rtrano_rec.T_dimY : rtrano_rec.T_decA + rtrano_rec.T_decB;
 
          decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
 
@@ -13970,6 +13973,44 @@ public class FakturPDUC : FakturExtDUC
             ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
          }
       }
+   }
+
+   private void Set_MOU_MOI_RAMorHDD_minus(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      int rowIdx = TheG2.CurrentRow.Index;
+      int colIdx = TheG2.CurrentCell.ColumnIndex;
+
+      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
+
+      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+      if(isPCK == true) return; // NIJE moi mou 
+
+      VvTextBox vvTextBox = sender as VvTextBox;
+
+      Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+      if(vvTextBox is null || artikl_rec is null) return;
+
+      if(artikl_rec.Zapremina.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
+         return;
+      }
+
+    //decimal enteredKapacitet = ZXC.ValOrZero_Decimal(vvTextBox.Text, 0);
+
+      decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
+
+      bool isRAM = colIdx == ci2.iT_dimX || colIdx == ci2.iT_dimY;
+      bool isHDD = !isRAM;
+
+      if(isRAM) TheG2.PutCell(ci2.iT_dimY, rowIdx, kolPutaKapacitet);
+      else      TheG2.PutCell(ci2.iT_decB, rowIdx, kolPutaKapacitet);
+
+      SetRow_TT_and_Color(sender, e);
    }
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
@@ -14242,6 +14283,12 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_kolg2, TheVvDaoTrans2, DB_Tci2.t_kol, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
+
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_kolg2.JAM_FieldExitMethod = new EventHandler(Set_MOU_MOI_RAMorHDD_minus);
+      }
+
    }
    protected void T_TT_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {

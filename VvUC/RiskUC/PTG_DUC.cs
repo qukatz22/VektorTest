@@ -3245,14 +3245,17 @@ public class MOD_PTG_DUC : FakturPDUC
    /// <returns></returns>
    public (Color theColor, string theMSG) GetSemaforColor(decimal MOD_RAM_saldo, decimal MOD_HDD_saldo)
    {
+      string RAMstring = "RAM " + MOD_RAM_saldo.ToString0Vv();
+      string HDDstring = "HDD " + MOD_HDD_saldo.ToString0Vv();
+
       if(MOD_RAM_saldo.IsZero () && MOD_HDD_saldo.IsZero()) return (Color.Green  , "");
 
       else if(MOD_RAM_saldo.NotZero())
       {
-         if(MOD_HDD_saldo.NotZero())   return (Color.Red    , "RAM\nHDD");
-         else                          return (Color.DarkRed, "RAM"     );
+         if(MOD_HDD_saldo.NotZero())   return (Color.Red    , RAMstring + "\n" + HDDstring);
+         else                          return (Color.DarkRed, RAMstring);
       }
-      else if(MOD_HDD_saldo.NotZero()) return (Color.DarkRed, "HDD"     );
+      else if(MOD_HDD_saldo.NotZero()) return (Color.DarkRed, HDDstring);
 
       else return (Color.Aqua, "");
    }
@@ -3285,6 +3288,8 @@ public class MOD_PTG_DUC : FakturPDUC
          modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
       }
 
+      faktur_rec.InvokeTransClear();
+
     //List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
     //List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
 
@@ -3305,6 +3310,8 @@ public class MOD_PTG_DUC : FakturPDUC
          rtrans_rec = new Rtrans(rtrano_rec, theCij, t_jedMj, ++t_serial);
 
          rtrano_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
+
+         faktur_rec.Transes.Add(rtrans_rec);
       }
 
       theVvForm.BeginEdit(faktur_rec);
