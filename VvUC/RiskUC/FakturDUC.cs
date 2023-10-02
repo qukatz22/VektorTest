@@ -4165,6 +4165,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    public override void SetWarningColorsAndLabel()
    {
+      if(this is MOD_PTG_DUC) return;
+
       #region Set Warning Colors And Label
 
       if(faktur_rec.Napomena.NullSafe().ToUpper().Contains("STORNO")) // daj STORNO BOJE i labelu
@@ -4180,7 +4182,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       //else if(faktur_rec.Has_TrnSum_vs_S_Sum_Discrepancy().NotEmpty()) // daj nejednake sume boje i labelu 
       else if(faktur_rec.Has_TrnSum_vs_S_Sum_Discrepancy.NotEmpty()) // daj nejednake sume boje i labelu 
       {
-         string preffix = TheVvTabPage.TheVvForm.Width > 1280 ? "RAZLIKA SUMA: " : "";
+         string preffix = TheVvTabPage.TheVvForm.Width > 1280 ? "1RAZLIKA SUMA: " : "";
 
          TheVvTabPage.labDeviza.Visible = true;
          //TheVvTabPage.labDeviza.Text = preffix + faktur_rec.Has_TrnSum_vs_S_Sum_Discrepancy();
@@ -4521,7 +4523,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          TheG.PutCell(ci.iT_skladCD, rowIdx, rtrans_rec.T_skladCD);
       }
 
-      if(artikl_rec != null && artikl_rec.TS == "PCK")
+      if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
       {
          TheG.PutCell(ci.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
          TheG.PutCell(ci.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
@@ -5306,7 +5308,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             if(artikl_rec != null)
             {
-               if(artikl_rec.TS == "PCK")
+               if(artikl_rec.TS == ZXC.PCK_TS)
                {
                   dgvRtrans_rec.T_TT = Faktur.TT_MOD;
                }
@@ -12948,7 +12950,7 @@ public partial class FakturExtDUC : FakturDUC
 
        //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
          Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == faktEx.PrjArtCD);
-         if(artikl_rec != null && artikl_rec.TS == "PCK")
+         if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
          {
             modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD;
             modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD;
@@ -13931,7 +13933,7 @@ public class FakturPDUC : FakturExtDUC
       int rowIdx = TheG2.CurrentRow.Index;
       int colIdx = TheG2.CurrentCell.ColumnIndex;
 
-      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
+      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
@@ -13980,13 +13982,20 @@ public class FakturPDUC : FakturExtDUC
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
       int rowIdx = TheG2.CurrentRow.Index;
-      int colIdx = TheG2.CurrentCell.ColumnIndex;
 
-      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == "PCK";
+      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
-      if(isPCK == true) return; // NIJE moi mou 
+      if(isPCK == true)
+      {
+         if(rtrano_rec.T_kol != 1.00M)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Besmislena je količina različita od 1.");
+            TheG2.PutCell(ci2.iT_kol, rowIdx, 1M);
+         }
+         return; // NIJE moi mou 
+      }
 
       VvTextBox vvTextBox = sender as VvTextBox;
 
@@ -14000,15 +14009,13 @@ public class FakturPDUC : FakturExtDUC
          return;
       }
 
-    //decimal enteredKapacitet = ZXC.ValOrZero_Decimal(vvTextBox.Text, 0);
-
       decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
 
-      bool isRAM = colIdx == ci2.iT_dimX || colIdx == ci2.iT_dimY;
-      bool isHDD = !isRAM;
+      bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
+      bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
 
       if(isRAM) TheG2.PutCell(ci2.iT_dimY, rowIdx, kolPutaKapacitet);
-      else      TheG2.PutCell(ci2.iT_decB, rowIdx, kolPutaKapacitet);
+      if(isHDD) TheG2.PutCell(ci2.iT_decB, rowIdx, kolPutaKapacitet);
 
       SetRow_TT_and_Color(sender, e);
    }
@@ -14033,6 +14040,9 @@ public class FakturPDUC : FakturExtDUC
 
       bool isMOI = RAMminus.NotZero() || HDDminus.NotZero();
       bool isMOU = RAMplus .NotZero() || HDDplus .NotZero();
+
+      if(isMOI && (RAMplus  + HDDplus ).NotZero()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Komponenta u {0}. retku ima zadanu i plus i minus količinu!?", rowIdx + 1);
+      if(isMOU && (RAMminus + HDDminus).NotZero()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Komponenta u {0}. retku ima zadanu i plus i minus količinu!?", rowIdx + 1);
 
            if(isMOI) return Faktur.TT_MOI;
       else if(isMOU) return Faktur.TT_MOU;
@@ -14570,7 +14580,7 @@ public class FakturPDUC : FakturExtDUC
       {
          Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrano_rec.T_artiklCD);
 
-         if(artikl_rec != null && artikl_rec.TS == "PCK")
+         if(artikl_rec != null && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {
             TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
             TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
@@ -14746,7 +14756,7 @@ public class FakturPDUC : FakturExtDUC
          dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_decB, rIdx, dirtyFlagging);
          dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
 
-         bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == "PCK";
+         bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == ZXC.PCK_TS;
 
          dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, /*artiklCD,*/ PCK_RAM, PCK_HDD, false);
       }
@@ -14882,39 +14892,6 @@ public class FakturPDUC : FakturExtDUC
 
       return dgvRtrano_rec;
    }
-
-   //public void SetColorsPCKartikl()
-   //{
-   //   VvDataGridView dgv = TheG2;
-   //   int rowIdx;
-   //   for(int i = 0; i < dgv.Rows.Count; i++)
-   //   {
-   //      rowIdx = i;
-   //
-   //      //foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
-   //      //{
-   //      //   if(dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_grCD].Value.ToString() == Faktur.TT_MOC)
-   //      //   {
-   //      //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
-   //      //   }
-   //      //
-   //      //
-   //      //   if(dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value != null && dgv.Rows[rowIdx].Cells[ci2.iT_artiklTS].Value.ToString() == "PCK")
-   //      //   {
-   //      //      tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;
-   //      //   }
-   //      //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "S")
-   //      //   //{
-   //      //   //   tbxCell.Style.BackColor = Color.PaleGreen;
-   //      //   //}
-   //      //   //else if(dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value != null && dgv.Rows[rowIdx].Cells[ci.iT_strA_2].Value.ToString() == "O")
-   //      //   //{
-   //      //   //   tbxCell.Style.BackColor = Color.LightGray;
-   //      //   //}
-   //      //
-   //      //}
-   //   }
-   //}
 
    private void SetColors_MOD_PTG_DUC(string TT, int rowIdx)
    {

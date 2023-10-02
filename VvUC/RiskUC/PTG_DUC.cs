@@ -3301,9 +3301,20 @@ public class MOD_PTG_DUC : FakturPDUC
          if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
          else                   t_jedMj = ""              ;
 
+         ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
+
+         theCij = artStat != null ? artStat.PrNabCij : 0.00M;
+
+         if(theCij.IsZero())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r{0}", artikl_rec);
+         }
+
          rtrans_rec = new Rtrans(rtrano_rec, theCij, t_jedMj, ++t_serial);
 
-         rtrano_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
+         rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
+
+         rtrans_rec.CalcTransResults(null);
 
          faktur_rec.Transes.Add(rtrans_rec);
       }

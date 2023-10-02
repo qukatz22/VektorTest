@@ -3282,7 +3282,7 @@ public class ArtiklUC : VvSifrarRecordUC
    {
       bool PCKinfo_TabPageIsVisible = TheTabControl.SelectedTab.Name == pckInfo_TabPageName;
      
-      if(/*PTG_PCKinfoLoaded == false && */this.artikl_rec.TS == "PCK" && PCKinfo_TabPageIsVisible)
+      if(/*PTG_PCKinfoLoaded == false && */this.artikl_rec.TS == ZXC.PCK_TS && PCKinfo_TabPageIsVisible)
       {
          //PTG_PCKinfoLoaded = true;
 

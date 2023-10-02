@@ -2862,6 +2862,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       if(ZXC.RISK_CopyToOtherDUC_inProgress) return "";
 
+      if(this.TT == Faktur.TT_MOD) return "";
+
       decimal tolerancy = 0.00M;
 
     //if(TtInfo.IsMalopTT) tolerancy = 0.01M; // od 20.04.2023.: 

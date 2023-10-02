@@ -1190,7 +1190,7 @@ public class RptR_PTG_Artikl_PCK_info : VvRiskReport
       // TheArtiklList
       TheArtiklList.Add(theUC.artikl_rec);
 
-      if(theUC.artikl_rec.TS != "PCK") return 0;
+      if(theUC.artikl_rec.TS != ZXC.PCK_TS) return 0;
 
       List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD);
 

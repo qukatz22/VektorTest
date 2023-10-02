@@ -528,7 +528,7 @@ public class ArtiklListUC : VvRecLstUC
       string currArtiklCD = TheGrid.GetStringCell(0, currRowIdx, false);
       string artiklTS     = TheGrid.GetStringCell(2, currRowIdx, false);
 
-      if(currArtiklCD.NotEmpty() && artiklTS == "PCK")
+      if(currArtiklCD.NotEmpty() && artiklTS == ZXC.PCK_TS)
       {
          List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, currArtiklCD, Fld_SituacijaZaSkladCD);
 

@@ -305,6 +305,9 @@ public struct TtInfo
 
             case Faktur.TT_MVI: // !!! 
 
+            //case Faktur.TT_MOI: 
+            //case Faktur.TT_MOU: 
+
                return ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij;
 
             case Faktur.TT_PUL: // Proizvodnja ulaz 
@@ -3552,7 +3555,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          theGrid.PutCell(ci2.iT_artiklName , currRow, artikl_rec.ArtiklName);
          theGrid.PutCell(ci2.iT_jm         , currRow, artikl_rec.JedMj     );
 
-         if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
+         if(ZXC.IsPCTOGO && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {
             theGrid.PutCell(ci2.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
             theGrid.PutCell(ci2.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
@@ -3692,7 +3695,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
                }
 
-               if(artikl_rec.TS == "PCK")
+               if(artikl_rec.TS == ZXC.PCK_TS)
                {
                   AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRowIdx, artikl_rec);
                }
@@ -3766,7 +3769,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             theGrid.PutCell(ci.iT_konto, currRowIdx, artikl_rec.Konto);
          }
 
-         if(ZXC.IsPCTOGO && artikl_rec.TS == "PCK")
+         if(ZXC.IsPCTOGO && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          { 
             theGrid.PutCell(ci.iT_ramKlasa, currRowIdx, artikl_rec.Grupa2CD);
             theGrid.PutCell(ci.iT_hddKlasa, currRowIdx, artikl_rec.Grupa3CD);
@@ -5057,7 +5060,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          if(upisaniArtiklCD.NotEmpty())
          {
             string upisaniArtiklTS = theGrid.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
-            if(upisaniArtiklTS != "PCK")
+            if(upisaniArtiklTS != ZXC.PCK_TS)
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema smisla uparivati serijski broj sa komponentom (NE PCK artiklom)");
                theGrid.ClearRowContent(currRowIdx);
