@@ -3030,6 +3030,8 @@ public class MOD_PTG_DUC : FakturPDUC
 
       ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
 
+      TheSumGrid.Visible = false;
+
    }
 
    private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
@@ -3197,7 +3199,7 @@ public class MOD_PTG_DUC : FakturPDUC
       T_skladCD_CreateColumn       (ZXC.Q3un,    true, "Sklad"    , "Ulazno ili izlazno skladište");
       T_kol_CreateColumn           (ZXC.Q3un, 0, true, "Kol"      , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   , true, "JM"       , "Jedinica mjere");
-      T_cij_CreateColumn           (ZXC.Q4un, 4, true, "Cijena"   , "Jedinična cijena");
+      T_cij_CreateColumn           (ZXC.Q4un, 2, true, "Cijena"   , "Jedinična cijena");
       R_KCRM_CreateColumn          (ZXC.Q4un, 2, true, "Iznos"    , "Iznos");
    }
 
@@ -3409,8 +3411,8 @@ public class PRI_PTG_DUC : FakturPDUC
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0, isVisible, "HDD"   , "HDD");
       T_kol_CreateColumn           (ZXC.Q3un, 2, isVisible, "Kol"   , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   , isVisible, "JM"    , "Jedinica mjere");
-      T_cij_CreateColumn           (ZXC.Q4un, 4, isVisible, "Cijena", "Jedinična cijena");
-      T_rbt1St_CreateColumn        (ZXC.Q3un, 4, isVisible, "Rb1"   , "Stopa rabata 1");
+      T_cij_CreateColumn           (ZXC.Q4un, 2, isVisible, "Cijena", "Jedinična cijena");
+      T_rbt1St_CreateColumn        (ZXC.Q3un, 2, isVisible, "Rb1"   , "Stopa rabata 1");
       R_KCRM_CreateColumn          (ZXC.Q4un, 2, isVisible, "Iznos" , "Iznos");
    }
 
@@ -3428,7 +3430,7 @@ public class PRI_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
+    //T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "Stavka"       , "UGANDO stavka"                     );
@@ -3519,15 +3521,15 @@ public class IZD_PTG_DUC : FakturPDUC
    {
       bool isVisible = true;
 
-      T_artiklCD_CreateColumn      (ZXC.Q4un,    isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(             isVisible, "Naziv"      , "Naziv artikla");
-      T_doCijMal_CreateColumn      (ZXC.Q3un, 0, isVisible, "RAM"   , "RAM", false);
-      T_noCijMal_CreateColumn      (ZXC.Q3un, 0, isVisible, "HDD"   , "HDD");
-      T_kol_CreateColumn           (ZXC.Q3un, 2, isVisible, "Kol", "Količina");
-      T_jedMj_CreateColumn         (ZXC.Q2un,    isVisible, "JM", "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
-      T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
-      R_KCRM_CreateColumn      (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv", "Ukupan iznos bez PDV-a");
+      T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,          isVisible, "RAM"        , "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,          isVisible, "HDD"        , "HDD");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina");
+      T_jedMj_CreateColumn         (ZXC.Q2un,             isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 2,          isVisible, "Cijena"     , "Jedinična cijena");
+      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
 
       R_NC_CreateColumn (ZXC.Q4un, 2, false, "NabCij", "Nabavna cijena");
       R_NV_CreateColumn (ZXC.Q4un, 2, false, "NabVri", "Nabavna vrijednost");
@@ -3550,7 +3552,7 @@ public class IZD_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
+    //T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "Stavka"       , "UGANDO stavka"                     );
@@ -3968,7 +3970,7 @@ public class PCK_ArtiklInfo_UC : UserControl
       theGrid.RowHeadersBorderStyle = theGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
       theGrid.ColumnHeadersHeight   = ZXC.QUN - ZXC.Qun8;
       theGrid.RowTemplate.Height    = ZXC.QUN - ZXC.Qun8;
-      theGrid.RowHeadersWidth       = ZXC.Q2un;
+      theGrid.RowHeadersWidth       = ZXC.Q3un;
       theGrid.Height                = theGrid.ColumnHeadersHeight + theGrid.RowTemplate.Height;
 
       theGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
@@ -4261,6 +4263,8 @@ public class PCK_ArtiklInfo_UC : UserControl
             TheSernoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
          }
       }
+
+      TheSernoGrid.ClearSelection();
    }
 
    private void PutDgv2LineFields(int rowIdx, PCK_SernoInfo_Line _PCK_SernoInfoLine)
@@ -4495,9 +4499,9 @@ public class PCK_SernoList_UC : UserControl
       TheSernoGrid.AutoGenerateColumns = false;
 
       TheSernoGrid.RowHeadersBorderStyle = TheSernoGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-      TheSernoGrid.ColumnHeadersHeight = ZXC.QUN - ZXC.Qun8;
-      TheSernoGrid.RowTemplate.Height = ZXC.QUN - ZXC.Qun8;
-      TheSernoGrid.RowHeadersWidth = ZXC.Q2un;
+      TheSernoGrid.ColumnHeadersHeight   = ZXC.QUN - ZXC.Qun8;
+      TheSernoGrid.RowTemplate.Height    = ZXC.QUN - ZXC.Qun8;
+      TheSernoGrid.RowHeadersWidth       = ZXC.Q4un;
       TheSernoGrid.Height = TheSernoGrid.ColumnHeadersHeight + TheSernoGrid.RowTemplate.Height;
 
       TheSernoGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);

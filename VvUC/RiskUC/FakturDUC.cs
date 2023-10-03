@@ -14183,7 +14183,7 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          vvtbT_dimZ.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
-         colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+       //colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       }
       if(this is MOD_PTG_DUC)
       {
@@ -14272,7 +14272,7 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          vvtbT_decC.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
-         colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+       //colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       }
       if(this is MOD_PTG_DUC)
       {
@@ -14373,7 +14373,9 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      vvtbT_ramNew2.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
+      vvtbT_ramNew2.JAM_ForeColor     = ZXC.vvColors.clr_RAM_PTG;
+      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+
    }
    protected void R_hddNew2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14384,7 +14386,9 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
 
-      vvtbT_hddNew2.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
+      vvtbT_hddNew2.JAM_ForeColor     = ZXC.vvColors.clr_HDD_PTG;
+      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+
    }
    protected void R_artiklTS_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)//"TS"
    {
@@ -14901,12 +14905,12 @@ public class FakturPDUC : FakturExtDUC
       {
          switch(TT)
          {
-            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG     ; break;
-            case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
-            case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
-            case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
+            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;                                                                                       break;
+            case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); tbxCell.Style.ForeColor = Color.Black; tbxCell.Style.Font = ZXC.vvFont.BaseFont; break;
+            case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); tbxCell.Style.ForeColor = Color.Black; tbxCell.Style.Font = ZXC.vvFont.BaseFont; break;
+            case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153);                                                                                  break;
 
-            default: tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+            default:            tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
          }
       }
    }
