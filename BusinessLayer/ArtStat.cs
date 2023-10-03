@@ -1422,6 +1422,19 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #endregion SHADOW Trans - Implicitna Nivelacija Velep Ulaznog Povrata
 
+         #region MOU ... vrednuj FIN po PrNBCBefThisUlaz
+
+         if(TtInfo.IsMODulazTT)
+         {
+            UkUlazFinNBC      -=             RtrUlazVrjNBC   ;
+            UkUlazFinNBC      += rtr.T_kol * PrNBCBefThisUlaz;
+            UkUlazFirmaFinNBC -=             RtrUlazVrjNBC   ;
+            UkUlazFirmaFinNBC += rtr.T_kol * PrNBCBefThisUlaz;
+            RtrUlazVrjNBC      = rtr.T_kol * RtrUlazCijNBC   ;
+         }
+
+         #endregion MOU ... vrednuj FIN po PrNBCBefThisUlaz
+
          #region #if(DEBUG)
 #if(DEBUG)
          //Console.WriteLine("{0,6:N} {1,6:N} {2,10:N} {3,6:N} {4,6:N} {5,10:N} {6,6:N} {7,6:N} {8,10:N}",

@@ -305,8 +305,8 @@ public struct TtInfo
 
             case Faktur.TT_MVI: // !!! 
 
-            //case Faktur.TT_MOI: 
-            //case Faktur.TT_MOU: 
+            case Faktur.TT_MOI: 
+            case Faktur.TT_MOU: 
 
                return ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij;
 
@@ -3562,6 +3562,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             theGrid.PutCell(ci2.iT_artiklTS, currRow, artikl_rec.TS      );
             theGrid.PutCell(ci2.iT_kol, currRow, 1.00M);
 
+            if(artikl_rec.TS == ZXC.KMP_TS)
+            {
+               decimal kolPutaKapacitet = /*rtrano_rec.T_kol **/ artikl_rec.Zapremina;
+
+               bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
+               bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
+
+               if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRow, kolPutaKapacitet);
+               if(isHDD) TheG2.PutCell(ci2.iT_decB, currRow, kolPutaKapacitet);
+            }
             //(this as FakturPDUC).SetColorsPCKartikl();
          }
 
