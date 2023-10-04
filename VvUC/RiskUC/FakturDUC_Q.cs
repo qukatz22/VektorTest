@@ -194,7 +194,9 @@ public struct TtInfo
       Faktur.TT_DO2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_PV2, // PCTGO tt ovo je mozda visak, al ziheraski 
 
-      Faktur.TT_MOD, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_MOD, // PCTGO tt 
+      Faktur.TT_MOI, // PCTGO tt 
+      Faktur.TT_MOU, // PCTGO tt 
 
       Faktur.TT_KIZ,
       Faktur.TT_KUL,

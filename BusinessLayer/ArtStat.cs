@@ -1431,6 +1431,8 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
             UkUlazFirmaFinNBC -=             RtrUlazVrjNBC   ;
             UkUlazFirmaFinNBC += rtr.T_kol * PrNBCBefThisUlaz;
             RtrUlazVrjNBC      = rtr.T_kol * RtrUlazCijNBC   ;
+
+            LastPrNabCij       = /*PrNabCij*/ZXC.DivSafe(StanjeFinNBC, StanjeKol);
          }
 
          #endregion MOU ... vrednuj FIN po PrNBCBefThisUlaz
@@ -1729,9 +1731,11 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
       #endregion PreDefined Values (VPC, MPC, RBT, ...)
 
       return isInMinus;
-   }
 
-   /*private*/ public static bool Get_isThisDirektStornoRtrans(string artiklCD, string skladCD, Rtrans forThisRtrans_rec)
+   } // public bool SumFromRtrans(Rtrans rtr, string _artiklCD, string _skladCD, bool isReslovingMinusInProgress, bool recalcAfterMinusForReportList) 
+
+   /*private*/
+   public static bool Get_isThisDirektStornoRtrans(string artiklCD, string skladCD, Rtrans forThisRtrans_rec)
    {
       Rtrans prevRtrans_rec = FakturDao.SetMePreviousRtransForArtiklRobnaKarticaRtrans(ZXC.TheThirdDbConn_SameDB, artiklCD, skladCD, forThisRtrans_rec);
 
