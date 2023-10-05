@@ -3556,6 +3556,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          theGrid.PutCell(ci2.iT_artiklCD   , currRow, artikl_rec.ArtiklCD  );
          theGrid.PutCell(ci2.iT_artiklName , currRow, artikl_rec.ArtiklName);
          theGrid.PutCell(ci2.iT_jm         , currRow, artikl_rec.JedMj     );
+         theGrid.PutCell(ci2.iT_artiklTS   , currRow, artikl_rec.TS        );
 
          if(ZXC.IsPCTOGO && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {

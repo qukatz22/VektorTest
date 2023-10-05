@@ -4133,6 +4133,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(this is FakturPDUC)
       {
          TheG2.ClearSelection();
+         TheSumGrid2.ClearSelection();
+
       }
 
       ftransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable
@@ -13879,7 +13881,7 @@ public class FakturPDUC : FakturExtDUC
       #region TheG2
 
 
-      TheG2 = CreateVvDataGridView(ThePolyGridTabControl.TabPages[1], "Rtrano Grid");
+      TheG2       = CreateVvDataGridView(ThePolyGridTabControl.TabPages[1], "Rtrano Grid");
       TheSumGrid2 = CreateSumGrid(TheG2, ThePolyGridTabControl.TabPages[1], "SUM Rtrano Grid");
       InitializeDUC_Specific_Columns2();
 
@@ -13945,7 +13947,7 @@ public class FakturPDUC : FakturExtDUC
 
       TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
 
-      SetColors_MOD_PTG_DUC(theTT, rowIdx);
+      if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(theTT, rowIdx);
 
       if(isPCK == false) // MOU / MOI stavke (komponente PCK-a) 
       {
@@ -14588,12 +14590,13 @@ public class FakturPDUC : FakturExtDUC
          {
             TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
             TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
-            TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
-
+          //TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
             //SetColorsPCKartikl();
          }
+         
+         TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
 
-         SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
+         if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
 
          if(rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU)
          {
