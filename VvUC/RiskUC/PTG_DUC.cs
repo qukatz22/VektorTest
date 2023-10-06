@@ -4043,6 +4043,7 @@ public class PCK_ArtiklInfo_UC : UserControl
       theSumGrid.RowTemplate.Height = theGrid.RowTemplate.Height;
 
       theSumGrid.ScrollBars = ScrollBars.None;
+      theSumGrid.ClearSelection();
 
       //theSumGrid.Location = new Point(theGrid.Left, theGrid.Bottom);
 
@@ -4219,8 +4220,9 @@ public class PCK_ArtiklInfo_UC : UserControl
          //PutDgvSumFields(PCK_Lines);
       }
 
-      PutDgvSumFields(_PCK_Lines);
+      ThePCKInfoSumGrid.ClearSelection();
 
+      PutDgvSumFields(_PCK_Lines);
    }
 
    private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line _PCK_Line)
@@ -4243,7 +4245,6 @@ public class PCK_ArtiklInfo_UC : UserControl
       ThePCKInfoSumGrid.PutCell(ci.iT_PCK_RAM  , 0, _PCK_Lines.Sum(pck => pck.PCK_RAM  ));
       ThePCKInfoSumGrid.PutCell(ci.iT_PCK_HDD  , 0, _PCK_Lines.Sum(pck => pck.PCK_HDD  ));
       ThePCKInfoSumGrid.PutCell(ci.iT_StanjeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
-
    }
 
    public void PutDgv2Fields(List<PCK_SernoInfo_Line> PCK_SernoInfoLines)

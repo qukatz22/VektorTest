@@ -14590,17 +14590,23 @@ public class FakturPDUC : FakturExtDUC
          {
             TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
             TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
-          //TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
+            TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
             //SetColorsPCKartikl();
          }
          
-         TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
+       //TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
 
          if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
 
          if(rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU)
          {
             Check_MOD_plusMinus_errors(rowIdx, rtrano_rec);
+         }
+
+         if(artikl_rec != null && (artikl_rec.TS == ZXC.PCK_TS))
+         { 
+            TheG2.PutCell(ci2.iT_dimZ, rowIdx, (rtrano_rec.T_dimZ).ToString0Vv());
+            TheG2.PutCell(ci2.iT_decC, rowIdx, (rtrano_rec.T_decC).ToString0Vv());
          }
       }
    }
@@ -14611,8 +14617,8 @@ public class FakturPDUC : FakturExtDUC
 
       if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
       {
-         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new));
-         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new));
+         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new).ToString0Vv());
+         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new).ToString0Vv());
       }
 
       //if(passPtrResultsToZaglavljeTranses == true)
