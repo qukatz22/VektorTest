@@ -194,6 +194,11 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    internal PTG_Ugovor   PtgUgovor_rec     { get; set; }
    internal List<Rtrans> RtransList_allDOD { get; set; }
 
+   internal static string PCK_Signature_ToString(decimal RAM, decimal HDD)
+   {
+      return "RAM: " + RAM.ToString0Vv() + " HDD: " + HDD.ToString0Vv();
+   }
+
    #region Constructor
 
    public UGNorAUN_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
@@ -1511,6 +1516,18 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       else
       {
          VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+      }
+
+      /*rtzrtz*/
+      if(isRtranS_zuto)
+      {
+         this.tbx_KupdobName.Select();
+      }
+
+      if(isRtranO_zuto)
+      {
+         this.TheG2.Select();
+
       }
 
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
