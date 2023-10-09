@@ -14185,14 +14185,14 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          vvtbT_dimZ.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
-       //colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
-      }
-      if(this is MOD_PTG_DUC)
-      {
-         vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
-         //vvtbT_dimZ.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, false);
-      }
 
+         if(this is MOD_PTG_DUC) 
+         {
+            vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         }
+
+         if(IsPTG_UgAnDo_DUC) vvtbT_dimZ.JAM_ReadOnly = true;
+      }
    }
    protected void T_komada_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14233,6 +14233,9 @@ public class FakturPDUC : FakturExtDUC
       vvtbT_skladCD2.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD2, TheVvDaoTrans2, DB_Tci2.t_skladCD, _colHeader, _width);
+
+      if(ZXC.IsPCTOGO && IsPTG_UgAnDo_DUC) vvtbT_skladCD2.JAM_ReadOnly = true;
+
    }
    protected void T_decA_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14274,11 +14277,13 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          vvtbT_decC.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
-       //colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
-      }
-      if(this is MOD_PTG_DUC)
-      {
-         vvtbT_decC.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+       
+         if(this is MOD_PTG_DUC)
+         {
+            vvtbT_decC.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         }
+
+         if(IsPTG_UgAnDo_DUC) vvtbT_decC.JAM_ReadOnly = true;
       }
    }
    protected void T_rtrRecID_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
