@@ -1833,6 +1833,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       vvtbT_kol.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExitT_Kol_ValidateCheckMinus);
 
+      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
+      vvtbT_kol.JAM_FieldEntryMethod = new EventHandler(OnEntryT_Kol_ForEditWriteMode_Get_dataLayerT_kol);
+
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_kol, TheVvDaoTrans, DB_Tci.t_kol, _colHeader, _width);
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;

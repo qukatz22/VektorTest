@@ -2736,8 +2736,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
 
-   protected string oldSkladCD, oldSkladCD2, oldVezniDok;
-   private   uint   oldTtNum;
+   protected string  oldSkladCD, oldSkladCD2, oldVezniDok;
+   private   uint    oldTtNum;
+
+   // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
+   private decimal dataLayerT_kol;
 
    private bool TexthoRabatIsNeopravdan(string skladCD, decimal ukRbt1, decimal ukKC, decimal ukK)
    {
@@ -3433,6 +3436,32 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    #region MinusPolicy OvoOno, CheckPrevCij
 
+   // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
+   public void OnEntryT_Kol_ForEditWriteMode_Get_dataLayerT_kol(object sender, EventArgs e)
+   {
+      VvTextBox vvtb = sender as VvTextBox;
+
+      if(TheVvTabPage.WriteMode  != ZXC.WriteMode.Edit) return;
+      if(vvtb                    == null              ) return;
+    //if(vvtb.Text               == this.originalText ) return;
+    //if(vvtb.EditedHasChanges() == false             ) return;
+      if(vvtb.Text.              IsEmpty()            ) return;
+      if(faktur_rec.TtInfo.IsFinKol_TT == false       ) return;
+
+    //this.dataLayerT_kol = ZXC.ValOrZero_Decimal(vvtb.Text, 8);
+
+      uint rtransRecID = TheG.GetUint32Cell(ci.iT_recID, TheG.CurrentRow.Index, false);
+
+      if(rtransRecID.IsZero()) return;
+
+      Rtrans rtrans_rec = new Rtrans(rtransRecID);
+
+      rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, rtrans_rec, rtransRecID, false);
+
+      this.dataLayerT_kol = rtrans_rec.T_kol;
+      
+   }
+
    public void OnExitT_Cij_CheckPrevCij(object sender, EventArgs e)
    {
       bool isSvdNrd    = ZXC.IsSvDUH && Fld_TT == Faktur.TT_NRD;
@@ -3502,14 +3531,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    private bool ThisRowWillProduceMinusKolSt(int rowIdx, string artiklCD, ref decimal kolStBeforeThisChange, ref decimal t_kol)
    {
-      // 06.04.2018: 
-    //                         return false; 
-      if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
-
-      // TODO: !!!!! ovo ne radi zbog toga sto
-      // Rtrans rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, /*false*/true, null);
-      // pri 'Ispravi' u T_BCKPkol nikada nema zaista beckup vrijednost jer BeginEdit never tuk plejs!
-      // kako li je ovo ikada radilo za 'Ispravi' 
+      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: palimo svima, a ne samo SvDUH-u 
+    //if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
 
       Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
 
@@ -3533,11 +3556,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       Rtrans rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, /*false*/true, null);
 
-      decimal deltaKol = rtrans_rec.GetDeltaKol(thisRtransWriteMode);
+      decimal deltaKol = rtrans_rec.GetDeltaKol(thisRtransWriteMode, this.dataLayerT_kol);
 
       t_kol = rtrans_rec.T_kol;
 
       decimal newKolSt = kolStBeforeThisChange + deltaKol;
+
+      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: 
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && recID.IsPositive()) // znaci, ovo smo u ispravi i ovo je stari record 
+      {
+         kolStBeforeThisChange += this.dataLayerT_kol;
+      }
 
       return (newKolSt.IsNegative());
    }

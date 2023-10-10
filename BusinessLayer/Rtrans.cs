@@ -2592,21 +2592,21 @@ struct IRA   *iraPtr;
 
    #region CheckForMinus
 
-   public bool ThisRtransPovecavaStanje(ZXC.WriteMode writeMode)
+   public bool ThisRtransPovecavaStanje(ZXC.WriteMode writeMode, decimal oldRtransKol)
    {
-      return GetDeltaKol(writeMode).IsZeroOrPositive();
+      return GetDeltaKol(writeMode, oldRtransKol).IsZeroOrPositive();
    }
 
-   public bool ThisRtransSmanjujeStanje(ZXC.WriteMode writeMode)
+   public bool ThisRtransSmanjujeStanje(ZXC.WriteMode writeMode, decimal oldRtransKol)
    {
-      return !ThisRtransPovecavaStanje(writeMode);
+      return !ThisRtransPovecavaStanje(writeMode, oldRtransKol);
    }
 
    public bool ThisRtransAddrecPovecavaStanje
    {
       get
       {
-         return ThisRtransPovecavaStanje(ZXC.WriteMode.Add);
+         return ThisRtransPovecavaStanje(ZXC.WriteMode.Add, 0M);
       }
    }
 
@@ -2614,37 +2614,40 @@ struct IRA   *iraPtr;
    {
       get
       {
-         return !ThisRtransPovecavaStanje(ZXC.WriteMode.Add);
+         return !ThisRtransPovecavaStanje(ZXC.WriteMode.Add, 0M);
       }
    }
 
    // PAZI!!! Ovo ne provjerava promjenu datuma 
-   public bool AfterThisRtransMinusWillBeWorse(ZXC.WriteMode writeMode, decimal kolStBeforeThisChange, out decimal deltaKol)
-   {
-      deltaKol = GetDeltaKol(writeMode);
+   //public bool AfterThisRtransMinusWillBeWorse(ZXC.WriteMode writeMode, decimal kolStBeforeThisChange, out decimal deltaKol)
+   //{
+   //   deltaKol = GetDeltaKol(writeMode);
+   //
+   //   // promjena kolicine povecava kolicinsko stanje 
+   //   if(deltaKol.IsZeroOrPositive()) return false;
+   //
+   //   // promjena kolicine umanjuje kolicinsko stanje, ali je nakon promjene stanje jos uvijek pozitivno ili nula  
+   //   if((kolStBeforeThisChange + deltaKol).IsZeroOrPositive()) return false;
+   //
+   //   // promjena kolicine umanjuje kolicinsko stanje, te je nakon promjene stvoren minus ili je uvecan odprije postojeci minus 
+   //   return true;
+   //}
 
-      // promjena kolicine povecava kolicinsko stanje 
-      if(deltaKol.IsZeroOrPositive()) return false;
-
-      // promjena kolicine umanjuje kolicinsko stanje, ali je nakon promjene stanje jos uvijek pozitivno ili nula  
-      if((kolStBeforeThisChange + deltaKol).IsZeroOrPositive()) return false;
-
-      // promjena kolicine umanjuje kolicinsko stanje, te je nakon promjene stvoren minus ili je uvecan odprije postojeci minus 
-      return true;
-   }
-
-   public bool BudeLiOvajRedakRobneKarticeIskazaoMinus(ZXC.WriteMode writeMode, decimal kolStBeforeThisChange, out decimal deltaKol)
-   {
-      deltaKol = GetDeltaKol2023(writeMode);
-
-      decimal kolStAfterThisChange = kolStBeforeThisChange + deltaKol;
-
-      return kolStAfterThisChange.IsNegative();
-   }
-   public decimal GetDeltaKol(ZXC.WriteMode writeMode)
+   //public bool BudeLiOvajRedakRobneKarticeIskazaoMinus(ZXC.WriteMode writeMode, decimal kolStBeforeThisChange, out decimal deltaKol)
+   //{
+   //   deltaKol = GetDeltaKol2023(writeMode);
+   //
+   //   decimal kolStAfterThisChange = kolStBeforeThisChange + deltaKol;
+   //
+   //   return kolStAfterThisChange.IsNegative();
+   //}
+   public decimal GetDeltaKol(ZXC.WriteMode writeMode, decimal oldRtransKol)
    {
       decimal thisRtransKol = (TtInfo.IsStornoTT ? ForceNegative_T_kol     /* always negativno */ : T_kol    );
-      decimal oldRtransKol  = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
+
+      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
+    //decimal oldRtransKol  = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
+
       decimal deltaKol;
 
       if(TtInfo.IsFinKol_I)
@@ -2664,49 +2667,49 @@ struct IRA   *iraPtr;
       return deltaKol;
    }
 
-   public decimal GetDeltaKol2023(ZXC.WriteMode writeMode)
-   {
-      decimal thisRtransKol = (TtInfo.IsStornoTT ? ForceNegative_T_kol     /* always negativno */ : T_kol    );
-    //decimal oldRtransKol  = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
-      decimal deltaKol;
+   //public decimal GetDeltaKol2023(ZXC.WriteMode writeMode)
+   //{
+   //   decimal thisRtransKol = (TtInfo.IsStornoTT ? ForceNegative_T_kol     /* always negativno */ : T_kol    );
+   // //decimal oldRtransKol  = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
+   //   decimal deltaKol;
+   //
+   //   if(TtInfo.IsFinKol_I)
+   //   {
+   //      thisRtransKol = -thisRtransKol;
+   //    //oldRtransKol  = -oldRtransKol ;
+   //   }
+   //
+   //   switch(writeMode)
+   //   {
+   //      case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;                    break;
+   //      case ZXC.WriteMode.Delete: deltaKol = /*-thisRtransKol*/ 0M;             break; // !!! drugacije nego u GetDeltaKol() 
+   //      case ZXC.WriteMode.Edit  : deltaKol = +thisRtransKol /*- oldRtransKol*/; break;
+   //      default                  : deltaKol = 0.00M;                             break;
+   //   }
+   //
+   //   return deltaKol;
+   //}
 
-      if(TtInfo.IsFinKol_I)
-      {
-         thisRtransKol = -thisRtransKol;
-       //oldRtransKol  = -oldRtransKol ;
-      }
-
-      switch(writeMode)
-      {
-         case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;                    break;
-         case ZXC.WriteMode.Delete: deltaKol = /*-thisRtransKol*/ 0M;             break; // !!! drugacije nego u GetDeltaKol() 
-         case ZXC.WriteMode.Edit  : deltaKol = +thisRtransKol /*- oldRtransKol*/; break;
-         default                  : deltaKol = 0.00M;                             break;
-      }
-
-      return deltaKol;
-   }
-
-   public decimal GetDeltaKol2023_BCKP(ZXC.WriteMode writeMode)
-   {
-      decimal thisRtransBCKPkol = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
-      decimal deltaKol;
-
-      if(TtInfo.IsFinKol_I)
-      {
-         thisRtransBCKPkol = -thisRtransBCKPkol;
-      }
-
-      switch(writeMode)
-      {
-         case ZXC.WriteMode.Add   : deltaKol = +thisRtransBCKPkol; break;
-         case ZXC.WriteMode.Delete: deltaKol =                 0M; break; 
-         case ZXC.WriteMode.Edit  : deltaKol = +thisRtransBCKPkol; break;
-         default: deltaKol = 0.00M; break;
-      }
-
-      return deltaKol;
-   }
+   //public decimal GetDeltaKol2023_BCKP(ZXC.WriteMode writeMode)
+   //{
+   //   decimal thisRtransBCKPkol = (TtInfo.IsStornoTT ? ForceNegative_T_BCKPkol /* always negativno */ : T_BCKPkol);
+   //   decimal deltaKol;
+   //
+   //   if(TtInfo.IsFinKol_I)
+   //   {
+   //      thisRtransBCKPkol = -thisRtransBCKPkol;
+   //   }
+   //
+   //   switch(writeMode)
+   //   {
+   //      case ZXC.WriteMode.Add   : deltaKol = +thisRtransBCKPkol; break;
+   //      case ZXC.WriteMode.Delete: deltaKol =                 0M; break; 
+   //      case ZXC.WriteMode.Edit  : deltaKol = +thisRtransBCKPkol; break;
+   //      default: deltaKol = 0.00M; break;
+   //   }
+   //
+   //   return deltaKol;
+   //}
 
    /// <summary>
    /// Sluzi samo za Check For Minus
