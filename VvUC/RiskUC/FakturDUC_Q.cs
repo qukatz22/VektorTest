@@ -3525,8 +3525,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          return;
       }
 
-      ZXC.aim_emsg(MessageBoxIcon.Error, "U MINUSU!\n\nRedak: {0}\n\nArtikl: '{1} {4}'\n\nMaksimalna kol: {2}\n\nZadana kol: {3}",
-         rowIdx + 1, artiklCD, oldKolSt.ToStringVv(), t_kol.ToStringVv(), artiklName);
+      string minOrMaxStr = faktur_rec.TtInfo.IsFinKol_U ? "Minimalna" : "Maksimalna";
+
+      ZXC.aim_emsg(MessageBoxIcon.Error, "U MINUSU!\n\nRedak: {0}\n\nArtikl: '{1} {4}'\n\n{5} kol: {2}\n\nZadana kol: {3}",
+         rowIdx + 1, artiklCD, oldKolSt.ToStringVv(), t_kol.ToStringVv(), artiklName, minOrMaxStr);
    }
 
    private bool ThisRowWillProduceMinusKolSt(int rowIdx, string artiklCD, ref decimal kolStBeforeThisChange, ref decimal t_kol)
@@ -5180,26 +5182,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       
       #endregion Init stuff
 
-      //string theSerno = vvtb_editingControl.Text;
+    //string theSerno = vvtb_editingControl.Text;
       string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
-
-      if(theSerno.IsEmpty())
-      {
-         theGrid2.PutCell(ci2.iT_TT    , currRowIdx, "");
-         theGrid2.PutCell(ci2.iT_kol   , currRowIdx, 0M);
-                                      
-         theGrid2.PutCell(ci2.iT_dimX  , currRowIdx, 0M);
-         theGrid2.PutCell(ci2.iT_dimY  , currRowIdx, 0M);
-         theGrid2.PutCell(ci2.iT_decA  , currRowIdx, 0M);
-         theGrid2.PutCell(ci2.iT_decB  , currRowIdx, 0M);
-
-         theGrid2.PutCell(ci2.iT_ramNew, currRowIdx, 0M);
-         theGrid2.PutCell(ci2.iT_hddNew, currRowIdx, 0M);
-         theGrid2.PutCell(ci2.iT_dimZ  , currRowIdx, 0M);
-         theGrid2.PutCell(ci2.iT_decC  , currRowIdx, 0M);
-
-         return;
-      }
 
       #region Check for double serno entry
 
