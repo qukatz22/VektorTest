@@ -14306,7 +14306,9 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_kolg2.JAM_FieldExitMethod = new EventHandler(Set_MOU_MOI_RAMorHDD_minus);
+         vvtbT_kolg2.JAM_FieldEntryMethod              = new       EventHandler(OnEntryT_Kolg2_ForEditWriteMode_Get_dataLayerT_kolg2);
+         vvtbT_kolg2.JAM_FieldExitMethod               = new       EventHandler(Set_MOU_MOI_RAMorHDD_minus                          );
+         vvtbT_kolg2.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExitT_Kolg2_ValidateCheckMinus                    );
       }
 
    }

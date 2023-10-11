@@ -3437,7 +3437,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    #region MinusPolicy OvoOno, CheckPrevCij
 
    // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
-   public void OnEntryT_Kol_ForEditWriteMode_Get_dataLayerT_kol(object sender, EventArgs e)
+   public void OnEntryT_Kol_ForEditWriteMode_Get_dataLayerT_kol    (object sender, EventArgs e)
    {
       VvTextBox vvtb = sender as VvTextBox;
 
@@ -3459,9 +3459,156 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, rtrans_rec, rtransRecID, false);
 
       this.dataLayerT_kol = rtrans_rec.T_kol;
-      
    }
 
+   public void OnEntryT_Kolg2_ForEditWriteMode_Get_dataLayerT_kolg2(object sender, EventArgs e) // RTRANO !!! 
+   {
+      FakturPDUC theDUC = this as FakturPDUC;
+
+      VvTextBox vvtb = sender as VvTextBox;
+
+      if(TheVvTabPage.WriteMode  != ZXC.WriteMode.Edit) return;
+      if(vvtb                    == null              ) return;
+    //if(vvtb.Text               == this.originalText ) return;
+    //if(vvtb.EditedHasChanges() == false             ) return;
+      if(vvtb.Text.              IsEmpty()            ) return;
+
+      string rtranoTT = TheG2.GetStringCell(theDUC.DgvCI2.iT_TT, TheG2.CurrentRow.Index, false);
+
+      if(rtranoTT != Faktur.TT_MOI) return;
+
+    //this.dataLayerT_kol = ZXC.ValOrZero_Decimal(vvtb.Text, 8);
+
+      uint rtranoRecID = TheG2.GetUint32Cell(theDUC.DgvCI2.iT_recID, TheG2.CurrentRow.Index, false);
+
+      if(rtranoRecID.IsZero()) return;
+
+      Rtrano rtrano_rec = new Rtrano(rtranoRecID);
+
+      rtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, rtrano_rec, rtranoRecID, false);
+
+      this.dataLayerT_kol = rtrano_rec.T_kol;
+   }
+   private   void OnExitT_Kol_ValidateCheckMinus  (object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      if(faktur_rec.TtInfo.IsFinKol_TT == false) return;
+
+      decimal maxKol=0, t_kol=0;
+      int rowIdx = TheG.CurrentRow.Index;
+
+      string artiklCD   = TheG.GetStringCell(ci.iT_artiklCD  , rowIdx, false);
+      string artiklName = TheG.GetStringCell(ci.iT_artiklName, rowIdx, false);
+
+      string skladCD    = HasRtrans_SkladCD_Exposed ? TheG.GetStringCell(ci.iT_skladCD, rowIdx, false) : Fld_SkladCD;
+
+      if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, skladCD, ref maxKol, ref t_kol, false))
+      {
+         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx);
+
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL) e.Cancel = true;
+
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT == false) e.Cancel = true; // ZABRANA samo za VELEP 
+      }
+   }
+
+   protected void OnExitT_Kolg2_ValidateCheckMinus(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      FakturPDUC theDUC = this as FakturPDUC;
+
+      string rtranoTT = TheG2.GetStringCell(theDUC.DgvCI2.iT_TT, TheG2.CurrentRow.Index, false);
+
+    //if(faktur_rec.TtInfo.IsFinKol_TT == false) return;
+      if(rtranoTT != Faktur.TT_MOI) return;
+
+      decimal maxKol =0, t_kol=0;
+      int rowIdx = TheG2.CurrentRow.Index;
+
+      string artiklCD   = TheG2.GetStringCell(theDUC.DgvCI2.iT_artiklCD  , rowIdx, false);
+      string artiklName = TheG2.GetStringCell(theDUC.DgvCI2.iT_artiklName, rowIdx, false);
+
+      string skladCD    = HasRtrano_SkladCD_Exposed ? TheG2.GetStringCell(theDUC.DgvCI2.iT_skladCD, rowIdx, false) : Fld_SkladCD;
+
+      if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, skladCD, ref maxKol, ref t_kol, true))
+      {
+         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx);
+
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL) e.Cancel = true;
+
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT == false) e.Cancel = true; // ZABRANA samo za VELEP 
+      }
+   }
+
+   private void Issue_ArtiklIsInMinus_ErrorMessage(string artiklCD, string artiklName, decimal oldKolSt, decimal t_kol, int rowIdx)
+   {
+      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT) // npr. Zagria, za MAL niti ne javljaj minuse 
+      {
+         return;
+      }
+      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG) // npr. Zagria, za MAL niti ne javljaj minuse 
+      {
+         return;
+      }
+
+      string minOrMaxStr = faktur_rec.TtInfo.IsFinKol_U ? "Minimalna" : "Maksimalna";
+
+      ZXC.aim_emsg(MessageBoxIcon.Error, "U MINUSU!\n\nRedak: {0}\n\nArtikl: '{1} {4}'\n\n{5} kol: {2}\n\nZadana kol: {3}",
+         rowIdx + 1, artiklCD, oldKolSt.ToStringVv(), t_kol.ToStringVv(), artiklName, minOrMaxStr);
+   }
+
+   private bool ThisRowWillProduceMinusKolSt(int rowIdx, string artiklCD, string skladCD, ref decimal kolStBeforeThisChange, ref decimal t_kol, bool isRtrano)
+   {
+      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: palimo svima, a ne samo SvDUH-u 
+    //if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
+
+      Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      if(artikl_rec == null) return false;
+
+      if(artiklCD.IsEmpty() || artikl_rec == null || artikl_rec.IsAllowMinus || artikl_rec.IsMinusOK) return false;
+
+      ArtStat artstat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, artiklCD, /*Fld_SkladCD*/ skladCD);
+
+      if(artstat_rec != null) kolStBeforeThisChange = artstat_rec.StanjeKolFree;
+      else                    kolStBeforeThisChange = 0.00M;
+
+      uint recID = isRtrano? TheG2.GetUint32Cell((this as FakturPDUC).DgvCI2.iT_recID, rowIdx, false) : 
+                             TheG .GetUint32Cell(                         ci.iT_recID, rowIdx, false) ;
+
+      ZXC.WriteMode thisRtransWriteMode = ZXC.WriteMode.Add;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && recID.IsPositive()) // znaci, ovo smo u ispravi i ovo je stari record 
+      {
+         thisRtransWriteMode = ZXC.WriteMode.Edit;
+      }
+
+      Rtrans rtrans_rec;
+
+      if(isRtrano == false) // Rtrans! 
+      {
+         rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, /*false*/true, null);
+      }
+      else // Rtrano! 
+      {
+         Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, /*false*/true, null);
+
+         rtrans_rec = new Rtrans(rtrano_rec, 0M, "", 0);
+      }
+
+      decimal deltaKol = rtrans_rec.GetDeltaKol(thisRtransWriteMode, this.dataLayerT_kol);
+
+      t_kol = rtrans_rec.T_kol;
+
+      decimal newKolSt = kolStBeforeThisChange + deltaKol;
+
+      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: 
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && recID.IsPositive()) // znaci, ovo smo u ispravi i ovo je stari record 
+      {
+         kolStBeforeThisChange += this.dataLayerT_kol;
+      }
+
+      return (newKolSt.IsNegative());
+   }
+      
    public void OnExitT_Cij_CheckPrevCij(object sender, EventArgs e)
    {
       bool isSvdNrd    = ZXC.IsSvDUH && Fld_TT == Faktur.TT_NRD;
@@ -3494,85 +3641,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       }
    }
 
-   private void OnExitT_Kol_ValidateCheckMinus(object sender, System.ComponentModel.CancelEventArgs e)
-   {
-      if(faktur_rec.TtInfo.IsFinKol_TT == false) return;
-
-      decimal maxKol=0, t_kol=0;
-      int rowIdx = TheG.CurrentRow.Index;
-
-      string artiklCD   = TheG.GetStringCell(ci.iT_artiklCD  , rowIdx, false);
-      string artiklName = TheG.GetStringCell(ci.iT_artiklName, rowIdx, false);
-
-      if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, ref maxKol, ref t_kol))
-      {
-         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx);
-
-         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL) e.Cancel = true;
-
-         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT == false) e.Cancel = true; // ZABRANA samo za VELEP 
-      }
-   }
-
-   private void Issue_ArtiklIsInMinus_ErrorMessage(string artiklCD, string artiklName, decimal oldKolSt, decimal t_kol, int rowIdx)
-   {
-      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT) // npr. Zagria, za MAL niti ne javljaj minuse 
-      {
-         return;
-      }
-      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG) // npr. Zagria, za MAL niti ne javljaj minuse 
-      {
-         return;
-      }
-
-      string minOrMaxStr = faktur_rec.TtInfo.IsFinKol_U ? "Minimalna" : "Maksimalna";
-
-      ZXC.aim_emsg(MessageBoxIcon.Error, "U MINUSU!\n\nRedak: {0}\n\nArtikl: '{1} {4}'\n\n{5} kol: {2}\n\nZadana kol: {3}",
-         rowIdx + 1, artiklCD, oldKolSt.ToStringVv(), t_kol.ToStringVv(), artiklName, minOrMaxStr);
-   }
-
-   private bool ThisRowWillProduceMinusKolSt(int rowIdx, string artiklCD, ref decimal kolStBeforeThisChange, ref decimal t_kol)
-   {
-      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: palimo svima, a ne samo SvDUH-u 
-    //if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
-
-      Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
-
-      if(artikl_rec == null) return false;
-
-      if(artiklCD.IsEmpty() || artikl_rec == null || artikl_rec.IsAllowMinus || artikl_rec.IsMinusOK) return false;
-
-    //maxKol = ArtiklDao.GetArtiklStatus(conn, (Rtrans)GetDgvLineFields1(rowIdx, false, null)).StanjeKolFree;
-      ArtStat artstat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, artiklCD, Fld_SkladCD);
-      if(artstat_rec != null) kolStBeforeThisChange = artstat_rec.StanjeKolFree;
-      else                    kolStBeforeThisChange = 0.00M;
-
-      uint recID = TheG.GetUint32Cell(ci.iT_recID, rowIdx, false);
-
-      ZXC.WriteMode thisRtransWriteMode = ZXC.WriteMode.Add;
-
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && recID.IsPositive()) // znaci, ovo smo u ispravi i ovo je stari record 
-      {
-         thisRtransWriteMode = ZXC.WriteMode.Edit;
-      }
-
-      Rtrans rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, /*false*/true, null);
-
-      decimal deltaKol = rtrans_rec.GetDeltaKol(thisRtransWriteMode, this.dataLayerT_kol);
-
-      t_kol = rtrans_rec.T_kol;
-
-      decimal newKolSt = kolStBeforeThisChange + deltaKol;
-
-      // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: 
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Edit && recID.IsPositive()) // znaci, ovo smo u ispravi i ovo je stari record 
-      {
-         kolStBeforeThisChange += this.dataLayerT_kol;
-      }
-
-      return (newKolSt.IsNegative());
-   }
-      
    #endregion MinusPolicy OvoOno
 
    #region UpdateArtikl
@@ -3753,6 +3821,38 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             else // theSerno je empty, .. nije zadan 
             {
                AnyArtiklTextBox_OnGrid2_Leave(sender, e, theGrid, currRowIdx, artikl_rec);
+
+               if(this is MOD_PTG_DUC)
+               {
+                  #region Check For Minus
+
+                  //TtInfo ttInfoOfThisRow = GetTtInfoOfThisRow(currRow);
+
+                  Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
+
+                //if(GetTtInfoOfThisRow(currRowIdx).IsFinKol_I)
+                  if(rtrano_rec.T_TT == Faktur.TT_MOI)
+                  {
+                     Rtrans olfaRtrans_rec = new Rtrans(rtrano_rec, 0M, "", 0);
+
+                     ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, olfaRtrans_rec);
+
+                     if((artStat_rec == null && artikl_rec .IsMinusNotOK) ||
+                        (artStat_rec != null && artStat_rec.StanjeKolFree.IsZeroOrNegative() && artStat_rec.IsMinusNotOK))
+                     {
+                        if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT) goto skiMessageLabel; // NE javljaj ako je malop i DENY_VEL_ALLOW_MAL ('Zagria pattern')
+                        if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG                                  ) goto skiMessageLabel; // NE javljaj ako je malop i DENY_VEL_ALLOW_MAL ('Zagria pattern')
+                        if(artikl_rec.IsGlass                                                                                 ) goto skiMessageLabel; // NE javljaj ako je čaša u ugostiteljstvu 
+
+                        ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Zadali ste artikl [" + artikl_rec.ArtiklCD + "] kojega nema na stanju skladišta '" + Fld_SkladCD + "'.");
+
+                        skiMessageLabel: ;
+
+                     }
+                  }
+
+                  #endregion Check For Minus
+               }
             }
 
          } // if(IsPTG_WithSerno_DUC)
@@ -3766,7 +3866,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          return;
       }
-      // ##################################################################### 
       // ##################################################################### 
 
       #endregion Init stuff
@@ -4295,7 +4394,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG                                  ) goto skiMessageLabel; // NE javljaj ako je malop i DENY_VEL_ALLOW_MAL ('Zagria pattern')
                   if(artikl_rec.IsGlass                                                                                 ) goto skiMessageLabel; // NE javljaj ako je čaša u ugostiteljstvu 
 
-                //ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Zadali ste artikl                               kojega nema na stanju skladišta '" + Fld_SkladCD + "'.");
                   ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Zadali ste artikl [" + artikl_rec.ArtiklCD + "] kojega nema na stanju skladišta '" + Fld_SkladCD + "'.");
 
                   skiMessageLabel: ;
@@ -5303,7 +5401,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       lastRtrano_rec.T_dimZ = lastRtrano_rec.R_PCK_RAM;
       lastRtrano_rec.T_decC = lastRtrano_rec.R_PCK_HDD;
 
-      lastRtrano_rec.T_skladCD = Fld_SkladCD;
+    //lastRtrano_rec.T_skladCD = Fld_SkladCD;
 
       lastRtrano_rec.T_TT      = "";
       lastRtrano_rec.T_kol     = 1M;
