@@ -14143,6 +14143,7 @@ public class FakturPDUC : FakturExtDUC
       {
          vvtbT_paletaNo.JAM_ReadOnly = true;
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+         colVvText.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
       }
 
    }
@@ -14158,6 +14159,7 @@ public class FakturPDUC : FakturExtDUC
       if(this is MOD_PTG_DUC)
       {
          vvtbT_dimX.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_dimX.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       }
 
    }
@@ -14173,6 +14175,8 @@ public class FakturPDUC : FakturExtDUC
       if(this is MOD_PTG_DUC)
       {
          vvtbT_dimY.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_dimY.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
       }
 
    }
@@ -14193,6 +14197,7 @@ public class FakturPDUC : FakturExtDUC
          {
             vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
          }
+         vvtbT_dimZ.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
          if(IsPTG_UgAnDo_DUC) vvtbT_dimZ.JAM_ReadOnly = true;
       }
@@ -14252,6 +14257,8 @@ public class FakturPDUC : FakturExtDUC
       if(this is MOD_PTG_DUC)
       {
          vvtbT_decA.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_decA.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
       }
    }
    protected void T_decB_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -14266,6 +14273,8 @@ public class FakturPDUC : FakturExtDUC
       if(this is MOD_PTG_DUC)
       {
          vvtbT_decB.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_decB.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
       }
    }
    protected void T_decC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -14285,6 +14294,8 @@ public class FakturPDUC : FakturExtDUC
          {
             vvtbT_decC.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
          }
+
+         vvtbT_decC.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
          if(IsPTG_UgAnDo_DUC) vvtbT_decC.JAM_ReadOnly = true;
       }

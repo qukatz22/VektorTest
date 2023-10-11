@@ -2553,6 +2553,7 @@ public class RtranoListUC : VvRecLstUC
       colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
       colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
       colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
+      colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Sklad"           , colWidth, false  , "t_skladCD");
 
       colWidth = colSif6Width;                        AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentID"       , colWidth, false, 0, "t_parentID");
 
