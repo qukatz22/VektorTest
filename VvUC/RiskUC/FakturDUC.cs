@@ -13866,7 +13866,7 @@ public class FakturPDUC : FakturExtDUC
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
-                       vvtbT_ramNew2, vvtbT_hddNew2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT;
+                       vvtbT_ramNew2, vvtbT_hddNew2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT, vvtbT_skladCD1;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
@@ -13929,6 +13929,8 @@ public class FakturPDUC : FakturExtDUC
       {
          vvtbT_artiklCD2.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color);
       }
+
+      if(IsPTG_UgAnDo_DUC) vvtbT_artiklCD2.JAM_ReadOnly = true;
    }
 
    private void SetRow_TT_and_Color(object sender, EventArgs e)
@@ -14092,6 +14094,8 @@ public class FakturPDUC : FakturExtDUC
       colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       colVvText.MinimumWidth = ZXC.Q5un;
       colVvText.Visible = isVisible;
+
+      if(IsPTG_UgAnDo_DUC) vvtbT_artiklName2.JAM_ReadOnly = true;
 
    }
    protected void T_artiklName2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
@@ -14421,6 +14425,14 @@ public class FakturPDUC : FakturExtDUC
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_artiklTS2, null, "R_artiklTS", _colHeader, _width);
    }
+   protected void R_skladCD1_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)//"TS"
+   {
+      vvtbT_skladCD1 = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_skladCD1", null, -12, _statusText);
+      vvtbT_skladCD1.JAM_ReadOnly = true;
+      colVvText.Visible = isVisible;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD1, null, "R_skladCD1", _colHeader, _width);
+   }
 
    #endregion R_Columns2
 
@@ -14469,6 +14481,7 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_hddKlasa;
       internal int iT_artiklTS;
       internal int iT_TT;
+      internal int iT_skladCD1;
    }
 
    private void SetRtranoColumnIndexes()
@@ -14501,6 +14514,8 @@ public class FakturPDUC : FakturExtDUC
       ci2.iT_hddKlasa   = TheG2.IdxForColumn("R_hddKlasa");
       ci2.iT_artiklTS   = TheG2.IdxForColumn("R_artiklTS");
       ci2.iT_TT         = TheG2.IdxForColumn("T_TT");
+      ci2.iT_skladCD1   = TheG2.IdxForColumn("R_skladCD1");
+
    }
 
    #endregion SetRtranoColumnIndexes()
@@ -14628,6 +14643,12 @@ public class FakturPDUC : FakturExtDUC
          { 
             TheG2.PutCell(ci2.iT_dimZ, rowIdx, (rtrano_rec.T_dimZ).ToString0Vv());
             TheG2.PutCell(ci2.iT_decC, rowIdx, (rtrano_rec.T_decC).ToString0Vv());
+         }
+
+         if(IsPTG_UgAnDo_DUC)
+         {
+            string skladCD1 = TheG.GetStringCell(ci.iT_skladCD, (int)rtrano_rec.T_paletaNo - 1, false);
+            TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
          }
       }
    }

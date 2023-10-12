@@ -1392,7 +1392,8 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište"                 );
+      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                           );
       T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
       T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "UgnSt"        , "UGANDO stavka"                     );
