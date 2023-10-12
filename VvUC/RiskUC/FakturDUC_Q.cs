@@ -5222,7 +5222,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       {
          theGrid.ClearRowContent(currRowIdx);
 
-         // tu si stao ... sad tu treba revidirati kolonu po kolonu koji podatak ide a koji ne na ovaj MOC/MOS redak 
          Put_PCK_info_DgvLineFields2(lastRtrano_rec, currRowIdx);
       }
       else // upisan je serno nakon zadavanja artikla ili ispravljamo sadrzaj retka 
@@ -5325,42 +5324,40 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       bool wasEmptyRow = upisaniArtiklCD.IsEmpty();
 
       // Provjera da li upisani serno odgovara UgAnDo rtrans izlaznom skladistu i UgAnDo rtrans PCK potpisu 
-      if(IsPTG_UgAnDo_DUC) // dakle, samo za UgAnDo. NE i za MOD 
+
+      uint rtransov_t_serial_od_ovog_rtranoa = theGrid2.GetUint32Cell (ci2.iT_paletaNo, currRowIdx, false);
+      string izlaz_sklCD_ovog_rtranoa        = theGrid2.GetStringCell (ci2.iT_skladCD , currRowIdx, false);
+      decimal PCK_RAM_ovog_rtranoa           = theGrid2.GetDecimalCell(ci2.iT_dimZ    , currRowIdx, false);
+      decimal PCK_HDD_ovog_rtranoa           = theGrid2.GetDecimalCell(ci2.iT_decC    , currRowIdx, false);
+
+      Rtrans rtrans_od_ovog_rtranoa = faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == rtransov_t_serial_od_ovog_rtranoa);
+
+      if(rtrans_od_ovog_rtranoa != null) // sad provjeri konzistentnost skladista i PCK potpisa 
       {
-         uint rtransov_t_serial_od_ovog_rtranoa = theGrid2.GetUint32Cell (ci2.iT_paletaNo, currRowIdx, false);
-       //string izlaz_sklCD_ovog_rtranoa        = theGrid2.GetStringCell (ci2.iT_skladCD , currRowIdx, false);
-         decimal PCK_RAM_ovog_rtranoa           = theGrid2.GetDecimalCell(ci2.iT_dimZ    , currRowIdx, false);
-         decimal PCK_HDD_ovog_rtranoa           = theGrid2.GetDecimalCell(ci2.iT_decC    , currRowIdx, false);
-
-         Rtrans rtrans_od_ovog_rtranoa = faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == rtransov_t_serial_od_ovog_rtranoa);
-
-         if(rtrans_od_ovog_rtranoa != null) // sad provjeri konzistentnost skladista i PCK potpisa 
+         if(PCK_RAM_ovog_rtranoa != sernoInfo.PCK_RAM ||
+            PCK_HDD_ovog_rtranoa != sernoInfo.PCK_HDD)
          {
-            if(rtrans_od_ovog_rtranoa.T_skladCD != sernoInfo.PCK_SklCD)
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Stop, "Ovaj serijski broj je zatečen na skladistu [{0}]\n\r\n\rkoje ne odgovara skladištu sa stavke ugovora [{1}]", sernoInfo.PCK_SklCD, rtrans_od_ovog_rtranoa.T_skladCD);
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ovaj serijski broj je zatečen sa PCK potpisom\n\r\n\r[{0}]\n\r\n\rkoji ne odgovara PCK potpisu sa stavke ugovora\n\r\n\r[{1}]",
+               UGNorAUN_PTG_DUC.PCK_Signature_ToString(sernoInfo.PCK_RAM   , sernoInfo.PCK_HDD   ), 
+               UGNorAUN_PTG_DUC.PCK_Signature_ToString(PCK_RAM_ovog_rtranoa, PCK_HDD_ovog_rtranoa));
 
-               //theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
-               theGrid2.EditingControl.Text = "";
-               return;
-            }
-
-            if(PCK_RAM_ovog_rtranoa != sernoInfo.PCK_RAM ||
-               PCK_HDD_ovog_rtranoa != sernoInfo.PCK_HDD)
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Stop, "Ovaj serijski broj je zatečen sa PCK potpisom\n\r\n\r[{0}]\n\r\n\rkoji ne odgovara PCK potpisu sa stavke ugovora\n\r\n\r[{1}]",
-                  UGNorAUN_PTG_DUC.PCK_Signature_ToString(sernoInfo.PCK_RAM   , sernoInfo.PCK_HDD   ), 
-                  UGNorAUN_PTG_DUC.PCK_Signature_ToString(PCK_RAM_ovog_rtranoa, PCK_HDD_ovog_rtranoa));
-
-               //theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
-               theGrid2.EditingControl.Text = "";
-               return;
-            }
+            //theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            theGrid2.EditingControl.Text = "";
+            return;
          }
-         else
+
+         if(rtrans_od_ovog_rtranoa.T_skladCD != sernoInfo.PCK_SklCD)
          {
-            // ?! 
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ovaj serijski broj je zatečen na skladistu [{0}]\n\r\n\rkoje ne odgovara skladištu sa stavke ugovora [{1}]", sernoInfo.PCK_SklCD, rtrans_od_ovog_rtranoa.T_skladCD);
+
+            //theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            theGrid2.EditingControl.Text = "";
+            return;
          }
+      }
+      else
+      {
+         // ?! 
       }
 
       if(wasEmptyRow)
@@ -5401,16 +5398,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       lastRtrano_rec.T_dimZ = lastRtrano_rec.R_PCK_RAM;
       lastRtrano_rec.T_decC = lastRtrano_rec.R_PCK_HDD;
 
-    //lastRtrano_rec.T_skladCD = Fld_SkladCD;
+      //lastRtrano_rec.T_skladCD = Fld_SkladCD;
 
-      lastRtrano_rec.T_TT      = "";
+      lastRtrano_rec.T_TT      = Faktur.TT_MOS;
       lastRtrano_rec.T_kol     = 1M;
       lastRtrano_rec.T_dimX    = 
       lastRtrano_rec.T_dimY    =
       lastRtrano_rec.T_decA    = 
       lastRtrano_rec.T_decB    = 0M;
 
-      if(this is MOD_PTG_DUC && thisIs_MOC_rowIndex(rIdx))
+      if(this is MOD_PTG_DUC && thisIs_MOC_rowIndex(rIdx) && (this as MOD_PTG_DUC).Fld_PrjArtCD == lastRtrano_rec.T_artiklCD)
       {
          lastRtrano_rec.T_TT = Faktur.TT_MOC;
 

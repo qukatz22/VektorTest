@@ -13942,11 +13942,11 @@ public class FakturPDUC : FakturExtDUC
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
-      //string MOC_artiklCD = Fld_PrjArtCD ;
-      decimal MOC_PCK_RAM = Fld_Decimal01;
-      decimal MOC_PCK_HDD = Fld_Decimal02;
+    //string MOC_artiklCD = Fld_PrjArtCD ;
+      decimal MOC_wanted_NEW_RAM = Fld_Decimal01;
+      decimal MOC_wanted_NEW_HDD = Fld_Decimal02;
 
-      string theTT = Get_MOD_RtranoTT(rowIdx, isPCK, rtrano_rec, /*MOC_artiklCD,*/ MOC_PCK_RAM, MOC_PCK_HDD, false);
+      string theTT = Get_MOD_RtranoTT(rowIdx, isPCK, rtrano_rec, /*MOC_artiklCD,*/ MOC_wanted_NEW_RAM, MOC_wanted_NEW_HDD, false);
 
       TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
 
