@@ -14121,6 +14121,7 @@ public class FakturPDUC : FakturExtDUC
       }
       else if(IsPTG_UgAnDo_DUC) // PCK serno handling 
       {
+         vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(OnEntry_UgAnDo_Serno_Cell);
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno_For_UgAnDo);
       }
       else if(this is MOD_PTG_DUC) // PCK serno handling for MOC/MOS rtrano row 
@@ -14645,10 +14646,10 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iT_decC, rowIdx, (rtrano_rec.T_decC).ToString0Vv());
          }
 
-         if(IsPTG_UgAnDo_DUC)
+         if(IsPTG_UgAnDo_DUC && rtrano_rec.T_paletaNo.IsPositive())
          {
-            string skladCD1 = TheG.GetStringCell(ci.iT_skladCD, (int)rtrano_rec.T_paletaNo - 1, false);
-            TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
+            string skladCD1 = TheG.GetStringCell(ci.iT_skladCD, (int)rtrano_rec.T_paletaNo - 1, false); // rtrans-ov skladCD 
+            if(skladCD1 != null) TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
          }
       }
    }

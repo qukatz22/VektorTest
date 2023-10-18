@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using static ArtiklDao;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Runtime.CompilerServices;
+using ikvm.lang;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -5213,6 +5214,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             }
          }
 
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Obavili ste inicijalno uparivanje ovog serijskog broja.");
+
          return; // NOVI serno, ... nije naso nist po tom serno-u 
       }
 
@@ -5228,7 +5231,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       {
          if(upisaniArtiklCD == sernoInfo.PCK_ArtCD) // vec prethodno (dobro) uparen sa upisanimArtiklCD-om 
          {
-            ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovaj serijski broj je već ranije bio uparen sa ovim artiklom.");
+          //ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovaj serijski broj je već ranije bio uparen sa ovim artiklom.");
             Put_PCK_info_DgvLineFields2(lastRtrano_rec, currRowIdx); // da eventualno osvježi točan PCK_info signature 
          }
          else // vec prethodno uparen sa artiklom RAZLICITIM od upisanimArtiklCD-om 
@@ -5241,6 +5244,53 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
+
+   public void OnEntry_UgAnDo_Serno_Cell(object sender, EventArgs e) // RTRANO !!! 
+   {
+      FakturPDUC theDUC = this as FakturPDUC;
+
+      VvTextBox vvtb = sender as VvTextBox;
+
+      if(TheVvTabPage.WriteMode  != ZXC.WriteMode.Edit) return;
+      if(vvtb                    == null              ) return;
+    //if(vvtb.Text               == this.originalText ) return;
+    //if(vvtb.EditedHasChanges() == false             ) return;
+    //if(vvtb.Text.              IsEmpty()            ) return;
+
+      int rowIdx = TheG2.CurrentRow.Index;
+
+      uint rtransov_t_serial_od_ovog_rtranoa = TheG2.GetUint32Cell(theDUC.DgvCI2.iT_paletaNo, rowIdx, false);
+
+      if(rtransov_t_serial_od_ovog_rtranoa.IsPositive() == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema rtrans serial-a?!");
+         return;
+      }
+
+      Rtrans rtrans_rec_od_ovog_rtranoa = faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == rtransov_t_serial_od_ovog_rtranoa);
+
+      if(rtrans_rec_od_ovog_rtranoa == null)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema rtrans-a?!");
+         return;
+      }
+
+      Rtrano ovaj_rtrano_rec           = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+      Rtrano kakavTrebaBiti_rtrano_rec = new Rtrano(rtrans_rec_od_ovog_rtranoa);
+
+      if(ovaj_rtrano_rec.T_artiklCD != kakavTrebaBiti_rtrano_rec .T_artiklCD) ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl ovog retka\n\r{0}\n\rse ne podudara sa artiklom retka ugovora\n\r{1}"     , ovaj_rtrano_rec.T_artiklCD, kakavTrebaBiti_rtrano_rec .T_artiklCD);
+      if(ovaj_rtrano_rec.T_skladCD  != Fld_SkladCD2                         ) ZXC.aim_emsg(MessageBoxIcon.Error, "Skladiste ovog retka\n\r{0}\n\rse ne podudara sa skladistem retka ugovora\n\r{1}", ovaj_rtrano_rec.T_skladCD , Fld_SkladCD2                         );
+      
+      decimal PCK_RAM_ovog_rtranoa = ovaj_rtrano_rec          .T_dimZ;
+      decimal PCK_HDD_ovog_rtranoa = ovaj_rtrano_rec          .T_decC;
+      decimal PCK_RAM_rtransa      = kakavTrebaBiti_rtrano_rec.T_dimZ;
+      decimal PCK_HDD_rtransa      = kakavTrebaBiti_rtrano_rec.T_decC;
+
+      if(PCK_RAM_ovog_rtranoa != PCK_RAM_rtransa) ZXC.aim_emsg(MessageBoxIcon.Error, "PCK_RAM ovog retka\n\r{0}\n\rse ne podudara sa PCK_RAM-om retka ugovora\n\r{1}", PCK_RAM_ovog_rtranoa.ToString0Vv(), PCK_RAM_rtransa.ToString0Vv());
+      if(PCK_HDD_ovog_rtranoa != PCK_HDD_rtransa) ZXC.aim_emsg(MessageBoxIcon.Error, "PCK_HDD ovog retka\n\r{0}\n\rse ne podudara sa PCK_HDD-om retka ugovora\n\r{1}", PCK_HDD_ovog_rtranoa.ToString0Vv(), PCK_HDD_rtransa.ToString0Vv());
+
+   }
+
    protected void OnExit_Update_PCK_Serno_For_UgAnDo(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff OLD
@@ -5318,6 +5368,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             }
          }
 
+         if(theSerno.NotEmpty()) ZXC.aim_emsg(MessageBoxIcon.Information, "Obavili ste inicijalno uparivanje ovog serijskog broja.");
+
          return; // NOVI serno, ... nije naso nist po tom serno-u 
       }
 
@@ -5348,7 +5400,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          if(rtrans_od_ovog_rtranoa.T_skladCD != sernoInfo.PCK_SklCD)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ovaj serijski broj je zatečen na skladistu [{0}]\n\r\n\rkoje ne odgovara skladištu sa stavke ugovora [{1}]", sernoInfo.PCK_SklCD, rtrans_od_ovog_rtranoa.T_skladCD);
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ovaj serijski broj je zatečen na skladistu [{0}]\n\r\n\rkoje ne odgovara izlaznom skladištu stavke ugovora [{1}]", sernoInfo.PCK_SklCD, rtrans_od_ovog_rtranoa.T_skladCD);
 
             //theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
             theGrid2.EditingControl.Text = "";
@@ -5362,26 +5414,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       if(wasEmptyRow)
       {
-         theGrid2.ClearRowContent(currRowIdx);
-
-         Put_PCK_info_DgvLineFields2(lastRtrano_rec_ovog_sernoa, currRowIdx);
+         throw new Exception("Nemoguce?! ... wasEmptyRow is true");
+         //theGrid2.ClearRowContent(currRowIdx);
+         //
+         //Put_PCK_info_DgvLineFields2(lastRtrano_rec_ovog_sernoa, currRowIdx);
       }
-      else // upisan je serno nakon zadavanja artikla ili ispravljamo sadrzaj retka 
+      else // konzumiramo prethodno upareni serijski broj 
       {
          if(upisaniArtiklCD == sernoInfo.PCK_ArtCD) // vec prethodno (dobro) uparen sa upisanimArtiklCD-om 
          {
-            ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovaj serijski broj je već ranije bio uparen sa ovim artiklom.");
+          //ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovaj serijski broj je već ranije bio uparen sa ovim artiklom.");
 
             lastRtrano_rec_ovog_sernoa.T_skladCD = Fld_SkladCD2;
-
-            // tu smo stali. za MOD je ovo ok ali za UgAnDo ne bi trebalo nista?
-            Put_PCK_info_DgvLineFields2(lastRtrano_rec_ovog_sernoa, currRowIdx); // da eventualno osvježi točan PCK_info signature 
          }
          else // vec prethodno uparen sa artiklom RAZLICITIM od upisanimArtiklCD-om 
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Ovaj serijski broj je već ranije bio uparen sa DRUGIM artiklom!?\n\r\n\rSerno [{0}]\n\r\n\rUparujete sa[{1}]\n\r\n\rA prethodno je uparen sa [{2}]\n\r\n\rPOSTAVLJAM PRETHODNO UPARENI ARTIKL!",
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Ovaj serijski broj je već ranije bio uparen sa DRUGIM artiklom!?\n\r\n\rSerno [{0}]\n\r\n\rUparujete sa[{1}]\n\r\n\rA prethodno je uparen sa [{2}]\n\r\n\rOdbijeno.",
                sernoInfo.PCK_Serno, upisaniArtiklCD, sernoInfo.PCK_ArtCD);
-            Put_PCK_info_DgvLineFields2(lastRtrano_rec_ovog_sernoa, currRowIdx); // da eventualno osvježi točan PCK_info signature 
+            theGrid2.EditingControl.Text = "";
          }
       }
 

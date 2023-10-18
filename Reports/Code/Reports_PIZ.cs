@@ -20,6 +20,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vektor;
 using PAIN_001_001_03;
+//using PAIN_001_001_09;
 #endif
 
 // 17.02.2011: Za Report-e, daj Distinct-ivne Ptrans-e po t_personCd-u
@@ -6565,6 +6566,7 @@ public class RptP_SEPA : RptP_Virmani
       // 20.05.2019: 
     //valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.03", @"XSD\sepa.hr.pain.001.001.03_07052015.xsd"));
       valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.03", @"XSD\sepa.hr.pain.001.001.03.NOVA.xsd"    ));
+    //valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.03", @"XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd"));
 
     //valDataList.Add(new VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacDI/v1-0", @"XSD\ObrazacDI-v1-0.xsd"));
     //valDataList.Add(new VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacDI/v1-0", @"XSD\ObrazacDItipovi-v1-0.xsd"));
@@ -6584,7 +6586,14 @@ public class RptP_SEPA : RptP_Virmani
 
    public static bool ExecuteExportSEPA(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
+      // 16.10.2023: tu si stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
+      // pa gore ugasiti nepotreban 'using PAIN_001_001_03;'                                    
+      // pa u ExecuteExportValidationSEPA ugasiti                                               
+      // sepa.hr.pain.001.001.03.NOVA                                                           
+      // a upaliti                                                                              
+      // sepa.hr.pain.001.001.09_11-2023-2                                                      
       Document sepa = new Document();
+    //Document_PAIN_001_001_09 sepa = new Document_PAIN_001_001_09();
 
       #region GrpHdr
 

@@ -2381,6 +2381,7 @@
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceOperation.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\Outgoing_eRacun_parameters.cs" />
     <Compile Include="UtilsEtc\PTG_OtplatniPlan.cs" />
+    <Compile Include="UtilsEtc\sepa_hr_pain_001_001_09_11-2023-2.cs" />
     <Compile Include="UtilsEtc\Vv_WebService _Utils.cs" />
     <Compile Include="UtilsEtc\Fiskalizacija\CentralniInformacijskiSustav.cs" />
     <Compile Include="UtilsEtc\Fiskalizacija\CentralniInformacijskiSustavEventArgs.cs" />
@@ -2662,7 +2663,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <Compile Include="UtilsEtc\pain.002.001.03.designer.cs" />
     <Compile Include="zVvForm\Initializations_Settings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -4688,10 +4688,6 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Content Include="XSD\pain.002.001.03.xsd">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="XSD\ObrazacDI-v2-0.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -4844,6 +4840,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\ToolStrip_Modul\fromUnix.ico" />
