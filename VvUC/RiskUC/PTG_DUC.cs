@@ -1364,7 +1364,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "Sklad"   , "Izlazno skladište");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSkl"  , "Izlazno skladište");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 2, true, "Cijena"  , "Jedinična cijena"                  );
@@ -2082,7 +2082,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
       T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "Sklad"   , "Izlazno skladište");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSk"   , "Izlazno skladište");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"  , "Jedinična cijena"                  );
@@ -2111,10 +2111,11 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "Sklad"        , "Izlazno skladište"                 );
-      T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"         , "RAM"                           );
-      T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"         , "HDD old"                           );
-      T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "DodSt"       , "UGANDO stavka"                     );
+      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
+      T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                           );
+      T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
+      T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "DodSt"        , "UGANDO stavka"                     );
    }
 
    #endregion TheG_Specific_Columns2
@@ -3030,7 +3031,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    public  VvHamper  hamp_klase, hamp_ugando, hamp_semafor;
    private VvTextBox tbx_ramKlasa, tbx_hddKlasa;
-   public  Label     lbl_semafor;
+   public  Label     lbl_semafor, lbl_MOC, lbl_RAM, lbl_HDD;
 
    #endregion Fieldz
 
@@ -3087,7 +3088,7 @@ public class MOD_PTG_DUC : FakturPDUC
       hamp_decimal   .Location = new Point(hamp_klase     .Right, hamp_napomena.Bottom + ZXC.Qun4);
       hamp_someMoney .Location = new Point(hamp_decimal   .Right, hamp_napomena.Bottom + ZXC.Qun4);
 
-      hamp_semafor   .Location = new Point(hamp_someMoney.Right + ZXC.Q3un, hamp_napomena.Bottom + ZXC.Qun4);
+      hamp_semafor   .Location = new Point(hamp_someMoney.Right + ZXC.Q2un, hamp_napomena.Top + ZXC.QUN - ZXC.Qun8);
 
       nextY = hamp_prjArtName.Bottom + ZXC.QUN;
       
@@ -3175,20 +3176,30 @@ public class MOD_PTG_DUC : FakturPDUC
 
    private void CreateHamperSemafor()
    {
-      hamp_semafor = new VvHamper(1, 2, "", null, false);
+      hamp_semafor = new VvHamper(1, 3, "", null, false);
       hamp_semafor.Parent = TheTabControl.TabPages[0];
 
-      hamp_semafor.VvColWdt      = new int[] { ZXC.Q3un - ZXC.Qun4};
+      hamp_semafor.VvColWdt      = new int[] { ZXC.Q4un};
       hamp_semafor.VvSpcBefCol   = new int[] { 0};
       hamp_semafor.VvRightMargin = hamp_semafor.VvLeftMargin;
 
-      hamp_semafor.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
-      hamp_semafor.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
+      hamp_semafor.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun8 , ZXC.QUN + ZXC.Qun8, ZXC.QUN + ZXC.Qun8 };
+      hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0 };
       hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
 
       lbl_semafor = hamp_semafor.CreateVvLabel(0, 0, "", 0, 1, ContentAlignment.MiddleCenter);
       lbl_semafor.BackColor = Color.Red;
       lbl_semafor.ForeColor = Color.Yellow;
+
+      lbl_MOC = hamp_semafor.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
+      lbl_RAM = hamp_semafor.CreateVvLabel(0, 1, "", ContentAlignment.MiddleCenter);
+      lbl_HDD = hamp_semafor.CreateVvLabel(0, 2, "", ContentAlignment.MiddleCenter);
+
+      lbl_MOC.BackColor = Color.Red   ;
+      lbl_RAM.BackColor = Color.Yellow;
+      lbl_HDD.BackColor = Color.Green ;
+
+      lbl_semafor.Visible = false;
    }
 
    #endregion HamperLocation
@@ -3417,7 +3428,7 @@ public class PRI_PTG_DUC : FakturPDUC
 
    #region TheG_Specific_Columns
    public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return false; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
 
    protected override void InitializeDUC_Specific_Columns()
    {
@@ -3449,10 +3460,12 @@ public class PRI_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-    //T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
+      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "PriSt"       , "UGANDO stavka"                     );
+
+      vvtbT_skladCD2.JAM_ReadOnly = true;
    }
 
    #endregion TheG_Specific_Columns2
@@ -3534,7 +3547,7 @@ public class IZD_PTG_DUC : FakturPDUC
 
    #region TheG_Specific_Columns
    public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return false; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
 
    protected override void InitializeDUC_Specific_Columns()
    {
@@ -3571,10 +3584,13 @@ public class IZD_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-    //T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
+      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "IzlSkl"       , "Izlazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
-      T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "IzdSt"       , "UGANDO stavka"                     );
+      T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "IzdSt"        , "UGANDO stavka"                     );
+
+      vvtbT_skladCD2.JAM_ReadOnly = true;
+
    }
 
    #endregion TheG2_Specific_Columns2
@@ -3887,6 +3903,8 @@ public partial class PCK_ArtiklInfo_Dlg :  VvDialog
       this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
      
       this.Location = new Point(SystemInformation.WorkingArea.Width - this.Width, (SystemInformation.WorkingArea.Height - this.Height)/2);
+
+      TheUC.ThePCKInfoSumGrid.ClearSelection();
 
       ResumeLayout();
 
@@ -4239,9 +4257,12 @@ public class PCK_ArtiklInfo_UC : UserControl
          //PutDgvSumFields(PCK_Lines);
       }
 
-      ThePCKInfoSumGrid.ClearSelection();
+      //ThePCKInfoSumGrid.ClearSelection();
 
       PutDgvSumFields(_PCK_Lines);
+
+      ThePCKInfoSumGrid.ClearSelection();
+
    }
 
    private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line _PCK_Line)
