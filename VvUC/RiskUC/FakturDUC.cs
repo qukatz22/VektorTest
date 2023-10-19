@@ -12963,7 +12963,7 @@ public partial class FakturExtDUC : FakturDUC
 
          if(CtrlOK(modDUC.lbl_semafor))
          {
-            (Color theColor, string theMSG) = modDUC.GetSemaforColor(faktur_rec.TrnSum2_MOD_RAM_saldo, faktur_rec.TrnSum2_MOD_HDD_saldo);
+            (Color theColor, string theMSG) = modDUC.GetSemaforColorAndMessage(faktur_rec.TrnSum2_MOD_RAM_saldo, faktur_rec.TrnSum2_MOD_HDD_saldo);
 
             modDUC.lbl_semafor.BackColor = theColor;
             modDUC.lbl_semafor.Text      = theMSG  ;
@@ -13244,7 +13244,7 @@ public partial class FakturExtDUC : FakturDUC
 
          if(CtrlOK(modDUC.lbl_semafor))
          {
-            (Color theColor, string theMSG) = modDUC.GetSemaforColor(faktur_rec.TrnSum2_MOD_RAM_saldo, faktur_rec.TrnSum2_MOD_HDD_saldo);
+            (Color theColor, string theMSG) = modDUC.GetSemaforColorAndMessage(faktur_rec.TrnSum2_MOD_RAM_saldo, faktur_rec.TrnSum2_MOD_HDD_saldo);
 
             modDUC.lbl_semafor.BackColor = theColor;
             modDUC.lbl_semafor.Text      = theMSG  ;

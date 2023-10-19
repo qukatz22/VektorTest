@@ -3257,12 +3257,13 @@ public class MOD_PTG_DUC : FakturPDUC
    /// <param name="MOD_RAM_saldo"></param>
    /// <param name="MOD_HDD_saldo"></param>
    /// <returns></returns>
-   public (Color theColor, string theMSG) GetSemaforColor(decimal MOD_RAM_saldo, decimal MOD_HDD_saldo)
+   public (Color theColor, string theMSG) GetSemaforColorAndMessage(decimal MOD_RAM_saldo, decimal MOD_HDD_saldo/* Todo: , decimal MOC_KOL_saldo*/)
    {
+    //string MOCstring = "MOC " + MOC_KOL_saldo.ToString0Vv();
       string RAMstring = "RAM " + MOD_RAM_saldo.ToString0Vv();
       string HDDstring = "HDD " + MOD_HDD_saldo.ToString0Vv();
 
-      if(MOD_RAM_saldo.IsZero () && MOD_HDD_saldo.IsZero()) return (Color.Green  , "");
+      if(/*MOC_KOL_saldo.IsZero() &&*/ MOD_RAM_saldo.IsZero () && MOD_HDD_saldo.IsZero()) return (Color.Green  , "");
 
       else if(MOD_RAM_saldo.NotZero())
       {
