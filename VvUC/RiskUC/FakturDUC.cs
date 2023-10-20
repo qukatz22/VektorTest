@@ -12938,6 +12938,10 @@ public partial class FakturExtDUC : FakturDUC
 
          //if(CtrlOK(ptgDUC.tbx_OdgodaPl   )) ptgDUC.Fld_PTG_OdgodaPl = ptgUgovor_rec.PTG_OdgodaPl;
 
+         int sernoDif = ptgUgovor_rec.PTG_NEEDS_This_RtranoWith_Serno_Count - ptgUgovor_rec.PTG_HAS_This_RtranoWith_Serno_Count;
+         string textSernoDif = "SerNo " + ptgUgovor_rec.PTG_HAS_This_RtranoWith_Serno_Count + "/" + ptgUgovor_rec.PTG_NEEDS_This_RtranoWith_Serno_Count;
+
+         SetMODsemaforLabelColorAndText(ptgDUC.lbl_serNoOk, sernoDif.NotZero() ? Color.Red : Color.Green, sernoDif.NotZero() ? textSernoDif : ""); 
       }
 
       if(this is DOD_PTG_DUC)

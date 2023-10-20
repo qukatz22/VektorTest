@@ -939,7 +939,8 @@ public partial class PutNalDUC : MixerDUC
       }
       else
       {
-         Fld_IznosDnev = 200.00M;
+       //Fld_IznosDnev = 200.00M;
+         Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M : 26.55M; //euro dnevnica 25.01.2023.?
       }
    }
 

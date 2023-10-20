@@ -243,7 +243,8 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    public VvHamper hamp_TT_PTG, hamp_v1TT_PTG, hamp_v2TT_PTG, hamp_partner_PTG, hamp_ugovor_PTG, hamp_zaFaktur_PTG, 
                    hamp_ugovorCbx_PTG, hamp_KUGpartner_PTG, hamp_kontakt_PTG, hamp_napomena_PTG,
                    hamp_sklad_PTG, hamp_R_iznosi_PTG, hamp_R_DodKop_PTG, hamp_datumi_PTG, hamp_mjIsporuke_PTG,
-                   hamp_potpisan_PTG, hamp_tekstZaRacun_PTG, hamp_posredProviz_PTG, hamp_DodAndKopCount/*, hamp_otPlanRows*/;
+                   hamp_potpisan_PTG, hamp_tekstZaRacun_PTG, hamp_posredProviz_PTG, hamp_DodAndKopCount/*, hamp_otPlanRows*/,
+                   hamp_semafor;
 
    public VvTextBox tbx_R_iznosOtkupa, tbx_KDCFunkc_PTG, tbx_KDCEmail_PTG, tbx_KDCTel_PTG, tbx_KDCnaziv_PTG,
                     tbx_NajamNaRok, tbx_NajamNaRokOpis, tbx_DanFakturiranja, tbx_DanFakturiranjaOpis, tbx_vrstaNajma, tbx_vrstaNajmaOpis,
@@ -280,6 +281,10 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
                      tbx_PTG_7_isOtkup        ,
                      tbx_PTG_8_isIspisnoRj
                      ;
+
+
+   public  Label     lbl_serNoOk;
+
    #endregion Fieldz
 
    #region Hampers
@@ -304,6 +309,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       InitializeHamper_UgovorPotpisan_PTG(out hamp_potpisan_PTG);
       InitializeHamper_PosredProviz_PTG  (out hamp_posredProviz_PTG);
       InitializeHamper_TekstZaRacun_PTG  (out hamp_tekstZaRacun_PTG);
+      InitializeHamper_Semafor           (out hamp_semafor);
 
       CreateArrOfHampers();
 
@@ -318,12 +324,6 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       hamp_datumi_PTG    .Location = new Point(hamp_partner_PTG .Left , hamp_partner_PTG.Bottom);
       hamp_TT_PTG        .Location = new Point(hamp_partner_PTG .Right,                        0);
 
-    //int hamp_v2TT_PTGLeft = hamp_TT_PTG.Right - hamp_v2TT_PTG.Width;
-    //int hamp_v1TT_PTGLeft = hamp_TT_PTG.Right - hamp_v2TT_PTG.Width - hamp_v1TT_PTG.Width;
-      
-    //hamp_v2TT_PTG      .Location = new Point(hamp_v2TT_PTGLeft      , hamp_TT_PTG      .Bottom);
-    //hamp_v1TT_PTG      .Location = new Point(hamp_v1TT_PTGLeft      , hamp_TT_PTG      .Bottom);
-    //hamp_ugovor_PTG    .Location = new Point(hamp_TT_PTG       .Left, hamp_v2TT_PTG    .Bottom);
       hamp_ugovor_PTG    .Location = new Point(hamp_TT_PTG       .Left, hamp_TT_PTG    .Bottom);
       hamp_zaFaktur_PTG  .Location = new Point(hamp_ugovor_PTG   .Left, hamp_ugovor_PTG  .Bottom);
       hamp_ugovorCbx_PTG .Location = new Point(hamp_datumi_PTG    .Right, hamp_datumi_PTG .Top);
@@ -333,6 +333,8 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       hamp_R_DodKop_PTG.BringToFront();
 
       hamp_potpisan_PTG.Location = new Point(hamp_R_DodKop_PTG.Right, hamp_R_DodKop_PTG.Top);
+      
+      hamp_semafor.Location = new Point(hamp_potpisan_PTG.Right - hamp_semafor.Width, hamp_potpisan_PTG.Bottom);
 
       hamp_tekstZaRacun_PTG.Location = new Point(hamp_napomena_PTG.Right, hamp_napomena_PTG.Bottom - hamp_tekstZaRacun_PTG.Height);
       hamp_posredProviz_PTG.Location = new Point(hamp_tekstZaRacun_PTG.Right - hamp_posredProviz_PTG.Width, hamp_zaFaktur_PTG.Bottom);
@@ -340,12 +342,6 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       hamp_kontakt_PTG.Location = new Point(hamp_potpisan_PTG.Right - hamp_kontakt_PTG.Width, hamp_zaFaktur_PTG.Top);
 
       hamp_sklad_PTG.Location = new Point(hamp_potpisan_PTG.Right - hamp_sklad_PTG.Width, hamp_kontakt_PTG.Bottom + ZXC.Qun2);
-    
-      //hamp_R_iznosi_PTG.Location = new Point(hamp_kontakt_PTG.Right - hamp_R_iznosi_PTG.Width, hamp_kontakt_PTG.Bottom);
-
-      //hamp_dokNum.Location = new Point(hamp_R_iznosi_PTG.Right, hamp_TT_PTG.Top);
-
-    //hamp_KUGpartner_PTG.Location = new Point(hamp_TT_PTG.Left, hamp_TT_PTG.Bottom);
 
       nextY = hamp_napomena_PTG.Bottom;
 
@@ -359,7 +355,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_partner_PTG, hamp_mjIsporuke_PTG, hamp_TT_PTG, hamp_dokNum, //hamp_v1TT_PTG, hamp_v2TT_PTG,
                                     hamp_ugovor_PTG, hamp_datumi_PTG, hamp_zaFaktur_PTG, hamp_ugovorCbx_PTG, 
                                     /*hamp_KUGpartner_PTG,*/ hamp_kontakt_PTG, hamp_napomena_PTG,
-                                    hamp_sklad_PTG,/* hamp_R_iznosi_PTG,*/ hamp_R_DodKop_PTG, hamp_potpisan_PTG, hamp_posredProviz_PTG, hamp_tekstZaRacun_PTG
+                                    hamp_sklad_PTG,/* hamp_R_iznosi_PTG,*/ hamp_R_DodKop_PTG, hamp_potpisan_PTG, hamp_semafor, hamp_posredProviz_PTG, hamp_tekstZaRacun_PTG
                                   };
    }
 
@@ -1162,6 +1158,23 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       //tbx_R_KopCount_2.JAM_ForeColor = Color.Red;
    }
 
+   private void InitializeHamper_Semafor(out VvHamper hamper)
+   {
+      hamper = new VvHamper(1, 1, "", null, false);
+      
+      hamper.VvColWdt     = new int[] { ZXC.Q4un      };
+      hamper.VvSpcBefCol  = new int[] { faBefFirstCol };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN + ZXC.Qun8};
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8};
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      lbl_serNoOk =  hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
+      lbl_serNoOk.BackColor = Color.Green;
+      lbl_serNoOk.ForeColor = Color.Yellow;
+
+   }
 
    #endregion Hampers
 
@@ -3031,7 +3044,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    public  VvHamper  hamp_klase, hamp_ugando, hamp_semafor;
    private VvTextBox tbx_ramKlasa, tbx_hddKlasa;
-   public  Label     lbl_MOC, lbl_RAM, lbl_HDD;
+   public  Label     lbl_MOC, lbl_SER, lbl_RAM, lbl_HDD;
 
    #endregion Fieldz
 
@@ -3083,12 +3096,12 @@ public class MOD_PTG_DUC : FakturPDUC
       hamp_ugando     .Location = new Point(hamp_kupdobNaziv.Right , hamp_dokDate.Bottom + ZXC.Qun8);
       hamp_napomena   .Location = new Point(                 0, hamp_ugando .Bottom + ZXC.Qun8);
 
-      hamp_prjArtName.Location = new Point(           labelWidth, hamp_napomena.Bottom + ZXC.Qun4);
-      hamp_klase     .Location = new Point(hamp_prjArtName.Right, hamp_napomena.Bottom + ZXC.Qun4);
-      hamp_decimal   .Location = new Point(hamp_klase     .Right, hamp_napomena.Bottom + ZXC.Qun4);
-      hamp_someMoney .Location = new Point(hamp_decimal   .Right, hamp_napomena.Bottom + ZXC.Qun4);
+      hamp_prjArtName.Location = new Point(           labelWidth, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_klase     .Location = new Point(hamp_prjArtName.Right, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_decimal   .Location = new Point(hamp_klase     .Right, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_someMoney .Location = new Point(hamp_decimal   .Right, hamp_napomena.Bottom + ZXC.Qun2);
 
-      hamp_semafor   .Location = new Point(hamp_someMoney.Right + ZXC.Q2un, hamp_napomena.Top + ZXC.QUN - ZXC.Qun8);
+      hamp_semafor   .Location = new Point(hamp_someMoney.Right + ZXC.Q2un, hamp_napomena.Top + ZXC.Qun4);
 
       nextY = hamp_prjArtName.Bottom + ZXC.QUN;
       
@@ -3176,30 +3189,31 @@ public class MOD_PTG_DUC : FakturPDUC
 
    private void CreateHamperSemafor()
    {
-      hamp_semafor = new VvHamper(1, 3, "", null, false);
+      hamp_semafor = new VvHamper(1, 4, "", null, false);
       hamp_semafor.Parent = TheTabControl.TabPages[0];
 
       hamp_semafor.VvColWdt      = new int[] { ZXC.Q4un};
       hamp_semafor.VvSpcBefCol   = new int[] { 0};
       hamp_semafor.VvRightMargin = hamp_semafor.VvLeftMargin;
 
-      hamp_semafor.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun8 , ZXC.QUN + ZXC.Qun8, ZXC.QUN + ZXC.Qun8 };
-      hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0 };
+      hamp_semafor.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun12, ZXC.QUN + ZXC.Qun12, ZXC.QUN + ZXC.Qun12, ZXC.QUN + ZXC.Qun12 };
+      hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0, 0 };
       hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
 
-      //lbl_semafor = hamp_semafor.CreateVvLabel(0, 0, "", 0, 1, ContentAlignment.MiddleCenter);
-      //lbl_semafor.BackColor = Color.Red;
-      //lbl_semafor.ForeColor = Color.Yellow;
-
       lbl_MOC = hamp_semafor.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
-      lbl_RAM = hamp_semafor.CreateVvLabel(0, 1, "", ContentAlignment.MiddleCenter);
-      lbl_HDD = hamp_semafor.CreateVvLabel(0, 2, "", ContentAlignment.MiddleCenter);
+      lbl_SER = hamp_semafor.CreateVvLabel(0, 1, "SerNo?!", ContentAlignment.MiddleCenter);
+      lbl_RAM = hamp_semafor.CreateVvLabel(0, 2, "", ContentAlignment.MiddleCenter);
+      lbl_HDD = hamp_semafor.CreateVvLabel(0, 3, "", ContentAlignment.MiddleCenter);
 
-      lbl_MOC.BackColor = Color.Red   ;
-      lbl_RAM.BackColor = Color.Yellow;
-      lbl_HDD.BackColor = Color.Green ;
+      lbl_MOC.BackColor = Color.Green;
+      lbl_SER.BackColor = Color.Green;
+      lbl_RAM.BackColor = Color.Green;
+      lbl_HDD.BackColor = Color.Green;
 
-      //lbl_semafor.Visible = false;
+      lbl_MOC.ForeColor = Color.Yellow;
+      lbl_SER.ForeColor = Color.Yellow;
+      lbl_RAM.ForeColor = Color.Yellow;
+      lbl_HDD.ForeColor = Color.Yellow;
    }
 
    #endregion HamperLocation
