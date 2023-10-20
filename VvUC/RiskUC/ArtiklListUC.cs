@@ -2455,7 +2455,13 @@ public class RtranoListUC : VvRecLstUC
    #region Fieldz
 
    protected Rtrano rtrano_rec;
-   public VvTextBox tbx_serno;
+   public VvTextBox tbx_serno,
+      tbx_artiklCD  , 
+      tbx_artiklName,
+      tbx_PCK_RAM ,
+      tbx_PCK_HDD ,
+      tbx_skladDate ,
+      tbx_skladCD   ;
    
    #endregion Fieldz
 
@@ -2499,10 +2505,10 @@ public class RtranoListUC : VvRecLstUC
 
    protected override void CreateHamperSpecifikum()
    {
-      hampSpecifikum = new VvHamper(2, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
-      //                                              0       1     
-      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un};
-      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
+      hampSpecifikum = new VvHamper(8, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
+
+      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un,ZXC.Q6un, ZXC.Q9un,ZXC.Q3un, ZXC.Q3un,ZXC.Q4un, ZXC.Q4un };
+      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4 };
       hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
 
       hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN };
@@ -2512,10 +2518,21 @@ public class RtranoListUC : VvRecLstUC
                   hampSpecifikum.CreateVvLabel   (0, 0, "Serijski broj:", ContentAlignment.MiddleRight);
       tbx_serno = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_serno", "", 32);
       tbx_serno.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
-       
-      //tbx_sernoFilter = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_sernoFilter", "", 32);
-      //tbx_sernoFilter.Visible = false;
+
+      tbx_artiklCD   = hampSpecifikum.CreateVvTextBox(2, 0, "tbx_artiklCD"  , "", 32);
+      tbx_artiklName = hampSpecifikum.CreateVvTextBox(3, 0, "tbx_artiklName", "", 32);
+      tbx_PCK_RAM    = hampSpecifikum.CreateVvTextBox(4, 0, "tbx_PCK_RAM"   , "", 32);
+      tbx_PCK_HDD    = hampSpecifikum.CreateVvTextBox(5, 0, "tbx_PCK_HDD"   , "", 32);
+      tbx_skladDate  = hampSpecifikum.CreateVvTextBox(6, 0, "tbx_skladDate" , "", 32);
+      tbx_skladCD    = hampSpecifikum.CreateVvTextBox(7, 0, "tbx_skladCD"   , "", 32);
+
       VvHamper.Open_Close_Fields_ForWriting(tbx_serno     , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_RAM   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_HDD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_skladDate , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_skladCD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
    }
 
    #endregion Hamperi
@@ -2564,7 +2581,13 @@ public class RtranoListUC : VvRecLstUC
 
    #region Fld_
 
-   public string Fld_SerNo       { get { return tbx_serno.Text; } set { tbx_serno.Text = value; } }
+   public string Fld_SerNo      { get { return tbx_serno.Text; } set { tbx_serno.Text = value; } }
+   public string Fld_ArtiklCD   { get { return tbx_artiklCD  .Text; } set { tbx_artiklCD.Text = value; } }
+   public string Fld_ArtiklName { get { return tbx_artiklName.Text; } set { tbx_artiklName.Text = value; } }
+   public string Fld_PCK_RAM    { get { return tbx_PCK_RAM   .Text; } set { tbx_PCK_RAM   .Text = value; } }
+   public string Fld_PCK_HDD    { get { return tbx_PCK_HDD   .Text; } set { tbx_PCK_HDD   .Text = value; } }
+   public string Fld_SkladDate  { get { return tbx_skladDate .Text; } set { tbx_skladDate .Text = value; } }
+   public string Fld_SkladCD    { get { return tbx_skladCD   .Text; } set { tbx_skladCD   .Text = value; } }
 
    public string SelectedTT
    {

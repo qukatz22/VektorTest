@@ -963,7 +963,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is RNZDUC)                               hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
          else if(this is URMDUC && IsAutoKucaProjekt)          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
          else if(this is ZAH_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
-         else if(this is MOD_PTG_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 3 + ZXC.Q9un - ZXC.Qun4 };
+         else if(this is MOD_PTG_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 3 + ZXC.Q4un - ZXC.Qun8 };
          else                                                  hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
       }
       else if(this is MedjuSkladDUC || this is MedjuSklad2DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
