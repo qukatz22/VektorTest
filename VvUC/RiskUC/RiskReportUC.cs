@@ -5618,7 +5618,7 @@ public class FakturDocFilterUC    : VvFilterUC
     //minFilterWidth = hamp_ChoseIra.Width + 2 * razmakIzmjedjuHampera;
       if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is URMDUC || (FakturDUC)TheVvUC is KalkulacijaMpDUC))
          minFilterWidth = hamp_KLK_URM.Width + ZXC.QUN;
-      else if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is UGNorAUN_PTG_DUC))
+      else if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is UGNorAUN_PTG_DUC) && hamp_UGANducPTG != null)
          minFilterWidth = hamp_UGANducPTG.Width + ZXC.Qun4;
       else
          minFilterWidth = hamp_ChoseIra.Width + 2 * razmakIzmjedjuHampera;
