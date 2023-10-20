@@ -1419,5 +1419,8 @@ public class PTG_Ugovor : Faktur
       else        return                                                0.00M;
    }
 
+   internal int PTG_NEEDS_This_RtranoWith_Serno_Count { get { return this.TrnNonDel .Count(rtr => VvForm.Does_thisRtransNeeds_RtranoRow_ForSerno(rtr.T_artiklCD)); } }
+   internal int PTG_HAS_This_RtranoWith_Serno_Count   { get { return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty()                                        ); } }
+
 }
 

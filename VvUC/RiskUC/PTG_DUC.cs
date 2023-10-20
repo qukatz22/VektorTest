@@ -3031,7 +3031,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    public  VvHamper  hamp_klase, hamp_ugando, hamp_semafor;
    private VvTextBox tbx_ramKlasa, tbx_hddKlasa;
-   public  Label     lbl_semafor, lbl_MOC, lbl_RAM, lbl_HDD;
+   public  Label     lbl_MOC, lbl_RAM, lbl_HDD;
 
    #endregion Fieldz
 
@@ -3187,9 +3187,9 @@ public class MOD_PTG_DUC : FakturPDUC
       hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0 };
       hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
 
-      lbl_semafor = hamp_semafor.CreateVvLabel(0, 0, "", 0, 1, ContentAlignment.MiddleCenter);
-      lbl_semafor.BackColor = Color.Red;
-      lbl_semafor.ForeColor = Color.Yellow;
+      //lbl_semafor = hamp_semafor.CreateVvLabel(0, 0, "", 0, 1, ContentAlignment.MiddleCenter);
+      //lbl_semafor.BackColor = Color.Red;
+      //lbl_semafor.ForeColor = Color.Yellow;
 
       lbl_MOC = hamp_semafor.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
       lbl_RAM = hamp_semafor.CreateVvLabel(0, 1, "", ContentAlignment.MiddleCenter);
@@ -3199,7 +3199,7 @@ public class MOD_PTG_DUC : FakturPDUC
       lbl_RAM.BackColor = Color.Yellow;
       lbl_HDD.BackColor = Color.Green ;
 
-      lbl_semafor.Visible = false;
+      //lbl_semafor.Visible = false;
    }
 
    #endregion HamperLocation
@@ -3268,24 +3268,6 @@ public class MOD_PTG_DUC : FakturPDUC
    /// <param name="MOD_RAM_saldo"></param>
    /// <param name="MOD_HDD_saldo"></param>
    /// <returns></returns>
-   public (Color theColor, string theMSG) GetSemaforColorAndMessage(decimal MOD_RAM_saldo, decimal MOD_HDD_saldo/* Todo: , decimal MOC_KOL_saldo*/)
-   {
-    //string MOCstring = "MOC " + MOC_KOL_saldo.ToString0Vv();
-      string RAMstring = "RAM " + MOD_RAM_saldo.ToString0Vv();
-      string HDDstring = "HDD " + MOD_HDD_saldo.ToString0Vv();
-
-      if(/*MOC_KOL_saldo.IsZero() &&*/ MOD_RAM_saldo.IsZero () && MOD_HDD_saldo.IsZero()) return (Color.Green  , "");
-
-      else if(MOD_RAM_saldo.NotZero())
-      {
-         if(MOD_HDD_saldo.NotZero())   return (Color.Red    , RAMstring + "\n" + HDDstring);
-         else                          return (Color.DarkRed, RAMstring);
-      }
-      else if(MOD_HDD_saldo.NotZero()) return (Color.DarkRed, HDDstring);
-
-      else return (Color.Aqua, "");
-   }
-
    public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
    {
       bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
