@@ -1031,6 +1031,21 @@ public struct TtInfo
    };
    public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
 
+   private static string[] hasRtranoForSernoTT = new string[] {
+      Faktur.TT_AUN, // PCTGO tt 
+      Faktur.TT_UGN, // PCTGO tt 
+      Faktur.TT_DOD, // PCTGO tt 
+      Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_PRI, // PCTGO tt 
+      Faktur.TT_IZD, // PCTGO tt 
+      Faktur.TT_URA, // PCTGO tt 
+      Faktur.TT_IRA, // PCTGO tt 
+    //Faktur.TT_MOD, // PCTGO tt NE - namjerno 
+
+      // tu jos nismo gotovi ... 
+   };
+   public bool HasRtranoForSernoTT { get { return hasRtranoForSernoTT.Contains(TheTT); } }
+
    #endregion IsV1andV2specialUse ... PTG ...
 
    #region Constructors

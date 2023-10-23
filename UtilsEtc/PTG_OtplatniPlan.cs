@@ -1172,6 +1172,7 @@ public class PTG_Ugovor : Faktur
       this.      CurrentData = faktur_rec.      CurrentData;
       this.TheEx.CurrentData = faktur_rec.TheEx.CurrentData;
       this.Transes           = faktur_rec.Transes;
+      this.Transes2          = faktur_rec.Transes2; // ali fali ti tu ove eksplicitne kao za trans1
 
       // !!! NOTA BENE + PAZI for future; VvDataRecord.Clone() ti ne klonira eventualne property-e koji nisu u currentData strukturi, a zivi su podatak a ne izvedenice npr: 
 
@@ -1416,11 +1417,8 @@ public class PTG_Ugovor : Faktur
    internal decimal GetOtkupArtiklMoney(decimal artiklRataMoney)
    {
       if(HasOtkup) return ZXC.VvGet_25_of_100(artiklRataMoney, PTG_OtkupPosto);
-      else        return                                                0.00M;
+      else         return                                                0.00M;
    }
-
-   internal int PTG_NEEDS_This_RtranoWith_Serno_Count { get { return this.TrnNonDel .Count(rtr => VvForm.Does_thisRtransNeeds_RtranoRow_ForSerno(rtr.T_artiklCD)); } }
-   internal int PTG_HAS_This_RtranoWith_Serno_Count   { get { return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty()                                        ); } }
 
 }
 

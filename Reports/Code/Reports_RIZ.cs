@@ -5759,7 +5759,9 @@ public class RptR_SVD_FinIzlaz : RptR_StandardRiskReport
 
          kupdob_rec = TheKupdobList.SingleOrDefault(k => k.KupdobCD == theKCD);
 
-         if(theKCD.IsZero())
+         //23.10.2023: 
+       //if(theKCD.IsZero())
+         if(theKCD.IsZero() || kupdob_rec == null)
          {
             List<uint> badTtNums = rtrGR.Select(g => g.T_ttNum).Distinct().ToList();
             string errMsg = "";

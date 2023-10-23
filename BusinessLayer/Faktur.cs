@@ -3726,6 +3726,40 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       }
    }
 
+   #region PCTOGO / PTG
+
+   internal int PTG_NEEDS_This_RtranoWith_Serno_Count 
+   { 
+      get 
+      {
+         if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
+
+         return (int)this.TrnNonDel.Where(rtr => VvForm.Does_thisRtransNeeds_RtranoRow_ForSerno(rtr.T_artiklCD)).Sum(rtr => rtr.T_kol); 
+      } 
+   }
+   internal int PTG_HAS_This_RtranoWith_Serno_Count 
+   { 
+      get 
+      {
+         if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
+
+         return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty()); 
+      } 
+   }
+
+   /// <summary>
+   /// koliko ih nedostaje
+   /// </summary>
+   internal int PTG_MISSES_This_RtranoWith_Serno_Count
+   {
+      get
+      {
+         return PTG_NEEDS_This_RtranoWith_Serno_Count - PTG_HAS_This_RtranoWith_Serno_Count;
+      }
+   }
+
+   #endregion PCTOGO / PTG
+
    #endregion Propertiz
 
    #region ToString
