@@ -241,12 +241,18 @@ public class RptX_Virman : VvMixerReport
 
    private bool ExecuteExport_SEPA(string fullPathFileName)
    {
-      return RptP_SEPA.ExecuteExportSEPA(fullPathFileName, TheVirmanList, ZnpDate, ZXC.VirmanBtchBookgKind.ALL, false);
+      // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
+
+    //return RptP_SEPA.ExecuteExportSEPA_001_001_03(fullPathFileName, TheVirmanList, ZnpDate, ZXC.VirmanBtchBookgKind.ALL, false);
+      return RptP_SEPA.ExecuteExportSEPA_001_001_09(fullPathFileName, TheVirmanList, ZnpDate, ZXC.VirmanBtchBookgKind.ALL, false);
    }
 
    public override bool ExecuteExportValidation(string fileName)
    {
-      return RptP_SEPA.ExecuteExportValidationSEPA(fileName, this);
+      // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
+
+    //return RptP_SEPA.ExecuteExportValidationSEPA_001_001_003(fileName, this);
+      return RptP_SEPA.ExecuteExportValidationSEPA_001_001_009(fileName, this);
    }
 }
 
