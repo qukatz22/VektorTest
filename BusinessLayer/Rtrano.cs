@@ -93,8 +93,8 @@ public class Rtrano : VvTransRecord
 
       this.T_paletaNo   = rtrans_rec.T_serial    ; // ! veza
 
-      this.T_dimZ       = rtrans_rec.T_doCijMal  ;
-      this.T_decC       = rtrans_rec.T_noCijMal  ;
+      this.T_PCK_RAM    = rtrans_rec.T_doCijMal  ;
+      this.T_PCK_HDD    = rtrans_rec.T_noCijMal  ;
 
    }
 
@@ -362,6 +362,12 @@ public class Rtrano : VvTransRecord
       get { return this.currentData._t_dimZ; }
       set {        this.currentData._t_dimZ = value; }
    }
+   public decimal T_PCK_RAM
+   {
+      get { return this.currentData._t_dimZ; }
+      set {        this.currentData._t_dimZ = value; }
+   }
+
    /* 17 */ public decimal T_komada
    {
       get { return this.currentData._t_komada; }
@@ -400,6 +406,12 @@ public class Rtrano : VvTransRecord
       get { return this.currentData._t_decC; }
       set {        this.currentData._t_decC = value; }
    }
+   public decimal T_PCK_HDD
+   {
+      get { return this.currentData._t_decC; }
+      set {        this.currentData._t_decC = value; }
+   }
+
    /* 24 */ public uint T_rtrRecID
    {
       get { return this.currentData._t_rtrRecID; }
@@ -407,6 +419,7 @@ public class Rtrano : VvTransRecord
    }
    #endregion DataLayer Propertiez
 
+   #region PPUK propertiz
    public string R_artCDAndGrCD
    {
       get
@@ -425,9 +438,11 @@ public class Rtrano : VvTransRecord
       }
    }
 
-   //public string R_PCK_RAMkind { get; set; }
-   //public string R_PCK_HDDkind { get; set; }
+   #endregion PPUK propertiz
 
+   #region PCTOGO propertiz
+
+#if PUSE
    public decimal R_MOD_RAM_new
    {
       get
@@ -435,7 +450,7 @@ public class Rtrano : VvTransRecord
        //if(this.TtInfo.Is_MOC_or_MOS_TT)
          if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
          {
-            return T_dimZ + T_dimX - T_dimY;
+            return T_PCK_RAM + T_dimX - T_dimY;
          }
             
          return 0M;
@@ -449,10 +464,24 @@ public class Rtrano : VvTransRecord
        //if(this.TtInfo.Is_MOC_or_MOS_TT)
          if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
          {
-            return T_decC + T_decA - T_decB;
+            return T_PCK_HDD + T_decA - T_decB;
          }
 
          return 0M;
+      }
+   }
+
+   public string R_MOD_ArtiklCD_new
+   {
+      get
+      {
+       //if(this.TtInfo.Is_MOC_or_MOS_TT)
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
+         {
+            return "";// T_dimZ + T_dimX - T_dimY;
+         }
+            
+         return "";
       }
    }
 
@@ -466,7 +495,7 @@ public class Rtrano : VvTransRecord
          }
          else
          {
-            return T_dimZ;
+            return T_PCK_RAM;
          }
       }
    }
@@ -481,8 +510,53 @@ public class Rtrano : VvTransRecord
          }
          else
          {
-            return T_decC;
+            return T_PCK_HDD;
          }
+      }
+   }
+
+   public string R_PCK_ArtiklCD
+   {
+      get
+      {
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
+         {
+            return R_MOD_ArtiklCD_new;
+         }
+         else
+         {
+            return T_artiklCD;
+         }
+      }
+   }
+
+#endif
+
+   public decimal R_MOD_RAM_old
+   {
+      get
+      {
+       //if(this.TtInfo.Is_MOC_or_MOS_TT)
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
+         {
+            return T_PCK_RAM - T_dimX + T_dimY;
+         }
+            
+         return 0M;
+      }
+   }
+
+   public decimal R_MOD_HDD_old
+   {
+      get
+      {
+       //if(this.TtInfo.Is_MOC_or_MOS_TT)
+         if(this.TtInfo.Is_MOD_or_MOC_or_MOS_TT)
+         {
+            return T_PCK_HDD - T_decA + T_decB;
+         }
+            
+         return 0M;
       }
    }
 
@@ -490,9 +564,12 @@ public class Rtrano : VvTransRecord
    {
       get
       {
-         return T_artiklCD + " / " + R_PCK_RAM.ToString0Vv() + " / " + R_PCK_HDD.ToString0Vv();
+       //return /*T_artiklCD*/R_PCK_ArtiklCD + " / " + R_PCK_RAM.ToString0Vv() + " / " + R_PCK_HDD.ToString0Vv();
+         return /*T_artiklCD*/T_artiklCD     + " / " + T_PCK_RAM.ToString0Vv() + " / " + T_PCK_HDD.ToString0Vv();
       }
    }
+
+   #endregion PCTOGO propertiz
 
    #endregion propertiz 
 

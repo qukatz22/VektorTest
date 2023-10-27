@@ -440,7 +440,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
                   return null;
                }
 
-               sernoInfoLine = new PCK_SernoInfo_Line(theSerno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.R_PCK_RAM, rtrano_rec.R_PCK_HDD);
+             //sernoInfoLine = new PCK_SernoInfo_Line(theSerno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.R_PCK_RAM, rtrano_rec.R_PCK_HDD);
+               sernoInfoLine = new PCK_SernoInfo_Line(theSerno, rtrano_rec.T_artiklCD, rtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, "", rtrano_rec.T_PCK_RAM, rtrano_rec.T_PCK_HDD);
 
                currSklCD_SernoInfo_List.Add(sernoInfoLine);
             }
@@ -475,7 +476,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == lastRtrano_rec.T_artiklCD);
 
-      PCK_SernoInfo_Line sernoInfoLine_byLastRtrano = new PCK_SernoInfo_Line(_theSerno, lastRtrano_rec.T_artiklCD, lastRtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, lastRtrano_rec.T_skladCD, lastRtrano_rec.R_PCK_RAM, lastRtrano_rec.R_PCK_HDD);
+    //PCK_SernoInfo_Line sernoInfoLine_byLastRtrano = new PCK_SernoInfo_Line(_theSerno, lastRtrano_rec.T_artiklCD, lastRtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, lastRtrano_rec.T_skladCD, lastRtrano_rec.R_PCK_RAM, lastRtrano_rec.R_PCK_HDD);
+      PCK_SernoInfo_Line sernoInfoLine_byLastRtrano = new PCK_SernoInfo_Line(_theSerno, lastRtrano_rec.T_artiklCD, lastRtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, lastRtrano_rec.T_skladCD, lastRtrano_rec.T_PCK_RAM, lastRtrano_rec.T_PCK_HDD);
 
       sernoInfoLine_byLastRtrano.PCK_SernoInfo_RtranoList = thisSerno_All_RtranoList;
 
