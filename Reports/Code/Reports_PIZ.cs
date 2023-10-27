@@ -6588,7 +6588,7 @@ public class RptP_SEPA : RptP_Virmani
       // 20.05.2019: 
     //valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.03", @"XSD\sepa.hr.pain.001.001.03_07052015.xsd"));
     //valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.03", @"XSD\sepa.hr.pain.001.001.03.NOVA.xsd"    ));
-      valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.03", @"XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd"));
+      valDataList.Add(new ZXC.VvXmlValidationData(@"urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.09", @"XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd"));
 
     //valDataList.Add(new VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacDI/v1-0", @"XSD\ObrazacDI-v1-0.xsd"));
     //valDataList.Add(new VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacDI/v1-0", @"XSD\ObrazacDItipovi-v1-0.xsd"));
@@ -6855,7 +6855,7 @@ public class RptP_SEPA : RptP_Virmani
       // a upaliti                                                                              
       // sepa.hr.pain.001.001.09_11-2023-2                                                      
       //Document sepa = new Document();
-      Document_PAIN_001_001_09 sepa = new Document_PAIN_001_001_09();
+      Document sepa = new Document();
 
       #region GrpHdr
 
@@ -6882,31 +6882,22 @@ public class RptP_SEPA : RptP_Virmani
 
       string izvorDokumenta = "";
 
-    //string  theMsgId   = ExportFileName.Replace(".xml", "").Replace(".", "") + izvorDokumenta;
       System.IO.DirectoryInfo dInfo = new System.IO.DirectoryInfo(fullPathFileName);
       string  theMsgId   = dInfo.Name.Replace(".xml", "").Replace(".", "") + izvorDokumenta;
       string  theCreDtTm = _znpDate.ToString("s");
       string  theNbOfTxs = _theVirmanList.Count.ToString();
-    //string  theCtrlSum = _theVirmanList.Sum(virman_rec => virman_rec.Money).ToStringVv_NoGroup_ForceDot();
-    //decimal theCtrlSum = _theVirmanList.Sum(virman_rec => virman_rec.Money);
       decimal theCtrlSum = _theVirmanList.Sum(virman_rec => virman_rec.Money).Ron2();
 
+      sepa.CstmrCdtTrfInitn.GrpHdr             = new GroupHeader85()     ;
       sepa.CstmrCdtTrfInitn.GrpHdr.MsgId       = theMsgId                ;
-      sepa.CstmrCdtTrfInitn.GrpHdr.CreDtTm     = /*theCreDtTm*/_znpDate   ;
+      sepa.CstmrCdtTrfInitn.GrpHdr.CreDtTm     = /*theCreDtTm*/_znpDate  ;
       sepa.CstmrCdtTrfInitn.GrpHdr.NbOfTxs     = theNbOfTxs              ;
-      sepa.CstmrCdtTrfInitn.GrpHdr.CtrlSumSpecified = true               ;
+  //sepa.CstmrCdtTrfInitn.GrpHdr.CtrlSumSpecified = true               ;  //!!!Specified
       sepa.CstmrCdtTrfInitn.GrpHdr.CtrlSum     = theCtrlSum              ;
 
+      sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty    = new PartyIdentification135_2();
       sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.Nm = ZXC.CURR_prjkt_rec.Naziv;
-    //sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.PstlAdr.AdrLine.Add(ZXC.CURR_prjkt_rec.Ulica1);
-    //sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.PstlAdr.AdrLine.Add(ZXC.CURR_prjkt_rec.Grad);
-
-      sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.IdSpecified = false;
-    //sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.IdSpecified = true;
-    //sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.Id.Item = new OrganisationIdentification4();
-    //(sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.Id.Item as OrganisationIdentification4).Item = new GenericOrganisationIdentification1();
-    //((GenericOrganisationIdentification1)(sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.Id.Item as OrganisationIdentification4).Item).Id = ZXC.CURR_prjkt_rec.Oib;
-    //((GenericOrganisationIdentification1)(sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.Id.Item as OrganisationIdentification4).Item).SchmeNm.Item = "Cd";
+  //sepa.CstmrCdtTrfInitn.GrpHdr.InitgPty.IdSpecified = false;  //!!!Specified
 
       #endregion GrpHdr
 
@@ -6916,9 +6907,8 @@ public class RptP_SEPA : RptP_Virmani
 
       List<string> PmtInf_btchBookgIDlist = _theVirmanList.Where(v => v.BtchBookgID.NotEmpty()).Select(v => v.BtchBookgID).Distinct().ToList();
 
-      CreditTransferTransactionInformation10 theTx;
-      //PaymentInstructionInformation3         pmtInf;
-      PaymentInstruction30 pmtInf;
+      CreditTransferTransaction34 theTx;
+      PaymentInstruction30        pmtInf;
 
       DateTime executionDate = _theVirmanList[0].DateValuta.NotEmpty() ? _theVirmanList[0].DateValuta : _znpDate; // TODO: check zis! 
       string   dbtrIBAN      = _theVirmanList[0].Ziro1;
@@ -6929,15 +6919,13 @@ public class RptP_SEPA : RptP_Virmani
 
       if(/*RptFilter.VirmanGroup*/_virmanGroup != ZXC.VirmanBtchBookgKind.BtchBookg_ONLY) // nemoj raditi GRUPA1 (NON batching) - ako zelimo samo BtchBookg_ONLY 
       {
-         pmtInf = new PaymentInstructionInformation3();
+         pmtInf = new PaymentInstruction30();
        
-       //pmtInf.PmtTpInfSpecified  =
-         pmtInf.UltmtDbtrSpecified = false;
-       
-         pmtInf.CtrlSumSpecified  = true ; // ! 
+//pmtInf.UltmtDbtrSpecified = false;     //!!!Specified
+
+//pmtInf.CtrlSumSpecified  = true ; // ! //!!!Specified
        
          theNbOfTxs = _theVirmanList.Where(v => v.BtchBookgID.IsEmpty()).Count().ToString();
-       //theCtrlSum = _theVirmanList.Where(v => v.BtchBookgID.IsEmpty()).Sum(virman_rec => virman_rec.Money);
          theCtrlSum = _theVirmanList.Where(v => v.BtchBookgID.IsEmpty()).Sum(virman_rec => virman_rec.Money).Ron2();
        
          pmtInf.PmtInfId         = (PmtInf_btchBookgIDlist.Count.IsZero()) ? "GRUPA" : "POREZI I DOPRINOSI";
@@ -6946,55 +6934,65 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.CtrlSum          = theCtrlSum              ;
 
          // 05.11.2019: RBA se buni, pa je ovo 1. pokusaj zadovoljenja ___ START ___ 
-         pmtInf.PmtTpInf                    = new PaymentTypeInformation19_1();
+         pmtInf.PmtTpInf                    = new PaymentTypeInformation26PmtInf();
          pmtInf.PmtTpInf.InstrPrty          = Priority2Code.NORM;
          pmtInf.PmtTpInf.InstrPrtySpecified = true;
          // 05.11.2019: RBA se buni, pa je ovo 1. pokusaj zadovoljenja ___  END  ___ 
 
          // 08.05.2023: neki njemacki klijent rozel-a treba sepu a njem. banka se buni da ovo fali pa dodajemo: 
+         pmtInf.PmtTpInf.SvcLvl    = new ServiceLevel8Choice();
          pmtInf.PmtTpInf.SvcLvl.Cd = "SEPA";
        //pmtInf.PmtTpInf.SvcLvlSpecified = true;
 
-         pmtInf.ReqdExctnDt      = executionDate           ;
+         pmtInf.ReqdExctnDt    = new DateAndDateTime2Choice();
+         pmtInf.ReqdExctnDt.Dt = executionDate           ; //!!! nemam pojma kaj s time
        
-         pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
-         pmtInf.Dbtr.PstlAdr.AdrLine.Add(ZXC.CURR_prjkt_rec.Ulica1);
-         pmtInf.Dbtr.PstlAdr.AdrLine.Add(ZXC.CURR_prjkt_rec.Grad);
-       
-         pmtInf.Dbtr.IdSpecified = true;
-         pmtInf.Dbtr.Id.Item = new OrganisationIdentification4();
-         (pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item = new GenericOrganisationIdentification1();
-         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).Id = ZXC.CURR_prjkt_rec.Oib;
-         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).SchmeNmSpecified = false;
-       //((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).SchmeNm.Item = "Cd";
-       
+         pmtInf.Dbtr                 = new PartyIdentification135_1();
+         pmtInf.Dbtr.Nm              = ZXC.CURR_prjkt_rec.Naziv;
+         pmtInf.Dbtr.PstlAdr         = new PostalAddress24();
+         pmtInf.Dbtr.PstlAdr.StrtNm  = ZXC.CURR_prjkt_rec.UlicaBezBroja_1;
+         pmtInf.Dbtr.PstlAdr.BldgNb  = ZXC.CURR_prjkt_rec.UlicniBroj_1;
+         pmtInf.Dbtr.PstlAdr.PstCd   = ZXC.CURR_prjkt_rec.PostaBr;
+         pmtInf.Dbtr.PstlAdr.TwnNm   = ZXC.CURR_prjkt_rec.Grad;
+         pmtInf.Dbtr.PstlAdr.Ctry    = ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty; //novo - ovo jos provjeri
+       //pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
+
+//pmtInf.Dbtr.IdSpecified = true;  //!!!Specified
+//pmtInf.Dbtr.Id          = new Party38Choice();
+//pmtInf.Dbtr.Id.Item     = new OrganisationIdentification29();
+//(pmtInf.Dbtr.Id.Item      as  OrganisationIdentification29).Item = new GenericOrganisationIdentification1();
+//((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).Id = ZXC.CURR_prjkt_rec.Oib;
+//         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).SchmeNmSpecified = false;     //!!!Specified 
+  
+         pmtInf.DbtrAcct         = new CashAccount38Dbtr();
+         pmtInf.DbtrAcct.Id      = new AccountIdentification4Choice();
          pmtInf.DbtrAcct.Id.IBAN = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
-       //pmtInf.DbtrAgt.FinInstnId.Item = "NOTPROVIDED";
+         
+         pmtInf.DbtrAgt                 = new BranchAndFinancialInstitutionIdentification6DbtrAgt();
+         pmtInf.DbtrAgt.FinInstnId      = new FinancialInstitutionIdentification18DbtrAgt();
          pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
 
       #endregion GRUPA1 (NON batching) PmtInf - header (everything bef transactions)
 
       #region GRUPA1 (NON batching) Transactions LOOP ===========================================================================================
 
-         pmtInf.CdtTrfTxInf = new List<CreditTransferTransactionInformation10>(_theVirmanList.Count);
+       //pmtInf.CdtTrfTxInf = new List<CreditTransferTransaction34>(_theVirmanList.Count);
+         pmtInf.CdtTrfTxInf = new CreditTransferTransaction34[_theVirmanList.Count];
 
-         //int virRbr = 0;
-
+         int i = 0;
          foreach(VirmanStruct virman_rec in _theVirmanList) // CdtTrfTxInf
          {
-            //virRbr++;
-
-            //CheckSomeSEPAvalues(virRbr, virman_rec);
-
             if(virman_rec.BtchBookgID.NotEmpty()) continue; // this virman goes down, in some Batch Group 
 
-            theTx = Get_SEPATx_placa(virman_rec);
+            theTx = Get_SEPATx_placa_2023(virman_rec);
 
-            pmtInf.CdtTrfTxInf.Add(theTx);
+          //pmtInf.CdtTrfTxInf.Add(theTx);
+            pmtInf.CdtTrfTxInf[i++] =theTx;
 
          } // foreach(VirmanStruct virman_rec in _theVirmanList) // CdtTrfTxInf
 
-         sepa.CstmrCdtTrfInitn.PmtInf.Add(pmtInf); // !!! 
+       //sepa.CstmrCdtTrfInitn.PmtInf.Add(pmtInf); // !!! 
+         sepa.CstmrCdtTrfInitn.PmtInf = new PaymentInstruction30[] { pmtInf }; // !!! 
 
       } // if(RptFilter.VirmanGroup != ZXC.VirmanBtchBookgKind.BtchBookg_ONLY) 
 
@@ -7004,68 +7002,67 @@ public class RptP_SEPA : RptP_Virmani
       {
          #region CURR-btchBookgID PmtInf - header (everything bef transactions)
 
-         pmtInf = new PaymentInstructionInformation3();
+         pmtInf = new PaymentInstruction30();
 
          pmtInf.BtchBookgSpecified = true; // !!! 
          pmtInf.BtchBookg          = true; // !!! 
 
-       //pmtInf.PmtTpInfSpecified  = false;
-       //pmtInf.UltmtDbtrSpecified = false;
-
-         pmtInf.CtrlSumSpecified  = true ; // ! 
+//         pmtInf.CtrlSumSpecified  = true ; // ! 
 
          theNbOfTxs = _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID).Count().ToString();
-       //theCtrlSum = _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID).Sum(virman_rec => virman_rec.Money);
          theCtrlSum = _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID).Sum(virman_rec => virman_rec.Money).Ron2();
 
-         pmtInf.PmtTpInf.CtgyPurp.Cd = "SALA";
+//         pmtInf.PmtTpInf.CtgyPurp.Cd = "SALA";
 
          pmtInf.PmtInfId         = currBtchBookgID         ;
          pmtInf.PmtMtd           = PaymentMethod3Code.TRF  ;
          pmtInf.NbOfTxs          = theNbOfTxs              ;
          pmtInf.CtrlSum          = theCtrlSum              ;
-         pmtInf.ReqdExctnDt      = executionDate           ;
+
+         pmtInf.ReqdExctnDt    = new DateAndDateTime2Choice();
+//         pmtInf.ReqdExctnDt      = executionDate           ;
+         pmtInf.ReqdExctnDt.Dt   = executionDate           ;
 
          pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
-         pmtInf.Dbtr.PstlAdr.AdrLine.Add(ZXC.CURR_prjkt_rec.Ulica1);
-         pmtInf.Dbtr.PstlAdr.AdrLine.Add(ZXC.CURR_prjkt_rec.Grad);
+         pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
 
-         pmtInf.Dbtr.IdSpecified = true;
-         pmtInf.Dbtr.Id.Item = new OrganisationIdentification4();
-         (pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item = new GenericOrganisationIdentification1();
-         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).Id = ZXC.CURR_prjkt_rec.Oib;
-         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).SchmeNmSpecified = false;
-       //((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification4).Item).SchmeNm.Item = "Cd";
+//pmtInf.Dbtr.IdSpecified = true;
+//pmtInf.Dbtr.Id.Item = new OrganisationIdentification29();
+//(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item = new GenericOrganisationIdentification1();
+//((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).Id = ZXC.CURR_prjkt_rec.Oib;
+//         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).SchmeNmSpecified = false;
 
-         pmtInf.DbtrAcct.Id.IBAN = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
-         pmtInf.DbtrAcct.Ccy     = /*"HRK"*/ ZXC.EURorHRKstr;
-       //pmtInf.DbtrAgt.FinInstnId.Item = "NOTPROVIDED";
+         pmtInf.DbtrAcct.Id.IBAN        = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
+         pmtInf.DbtrAcct.Ccy            = /*"HRK"*/ ZXC.EURorHRKstr;
          pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
 
-         pmtInf.UltmtDbtrSpecified    = 
-         pmtInf.UltmtDbtr.IdSpecified = true;
+//         pmtInf.UltmtDbtrSpecified    = 
+//         pmtInf.UltmtDbtr.IdSpecified = true;
 
-         pmtInf.UltmtDbtr.Id.Item = new OrganisationIdentification4();
-         (pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification4).Item = new GenericOrganisationIdentification1();
-         ((GenericOrganisationIdentification1)(pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification4).Item).Id = ZXC.CURR_prjkt_rec.Oib;
-         ((GenericOrganisationIdentification1)(pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification4).Item).SchmeNmSpecified = false;
-       //((GenericOrganisationIdentification1)(pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification4).Item).SchmeNm.Item = "Cd";
+//pmtInf.UltmtDbtr.Id.Item = new OrganisationIdentification29();
+//(pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification29).Item = new GenericOrganisationIdentification1();
+//((GenericOrganisationIdentification1)(pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification29).Item).Id = ZXC.CURR_prjkt_rec.Oib;
+//         ((GenericOrganisationIdentification1)(pmtInf.UltmtDbtr.Id.Item as OrganisationIdentification29).Item).SchmeNmSpecified = false;
 
          #endregion CURR-btchBookgID  PmtInf - header (everything bef transactions)
 
          #region CURR-btchBookgID  Transactions LOOP ===========================================================================================
 
-         pmtInf.CdtTrfTxInf = new List<CreditTransferTransactionInformation10>(_theVirmanList.Count);
+         //pmtInf.CdtTrfTxInf = new List<CreditTransferTransaction34>(_theVirmanList.Count);
+         pmtInf.CdtTrfTxInf = new CreditTransferTransaction34[_theVirmanList.Count];
 
+         int i = 0;
          foreach(VirmanStruct virman_rec in _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID)) // CdtTrfTxInf
          {
-            theTx = Get_SEPATx_placa(virman_rec);
+            theTx = Get_SEPATx_placa_2023(virman_rec);
 
-            pmtInf.CdtTrfTxInf.Add(theTx);
+          //pmtInf.CdtTrfTxInf.Add(theTx);
+            pmtInf.CdtTrfTxInf[i++] = theTx;
 
          } // foreach(VirmanStruct virman_rec in _theVirmanList) // CdtTrfTxInf
 
-         sepa.CstmrCdtTrfInitn.PmtInf.Add(pmtInf); // !!! 
+       //sepa.CstmrCdtTrfInitn.PmtInf.Add(pmtInf); // !!! 
+         sepa.CstmrCdtTrfInitn.PmtInf = new PaymentInstruction30[] { pmtInf }; // !!! 
 
          #endregion CURR-btchBookgID  Transactions LOOP ========================================================================================
 
@@ -7148,44 +7145,97 @@ public class RptP_SEPA : RptP_Virmani
       return message;
    }
 
-   private static CreditTransferTransactionInformation10 Get_SEPATx_placa(VirmanStruct virman_rec)
+   //private static CreditTransferTransactionInformation10 Get_SEPATx_placa(VirmanStruct virman_rec)
+   //{
+   //   CreditTransferTransactionInformation10 theTx = new CreditTransferTransactionInformation10();
+
+   //   theTx.PmtTpInfSpecified  = 
+   //   theTx.UltmtDbtrSpecified = 
+   //   theTx.UltmtCdtrSpecified = 
+   //   theTx.PurpSpecified      = false;
+   //   theTx.CdtrAgtSpecified   = false;
+
+   //   theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
+
+   //   theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
+   // //theTx.Amt.InstdAmt.Value = virman_rec.Money;
+   //   theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
+
+   //   theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
+
+   //   theTx.Cdtr.Nm          = virman_rec.Prim1;
+   //   theTx.Cdtr.IdSpecified = false;
+   //   theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
+   //   if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
+
+   //   theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
+
+   //   theTx.RmtInf.Item = new StructuredRemittanceInformation7();
+   //   (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
+   //   (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
+   //   (theTx.RmtInf.Item as StructuredRemittanceInformation7).AddtlRmtInf                = virman_rec.OpisPl;
+
+   //   if(virman_rec.BtchBookgID.NotEmpty() || virman_rec.IsSALA) // ??? !!! ??? 
+   //   {
+   //      theTx.PurpSpecified = true;
+   //      theTx.Purp.Cd       = "SALA";
+   //   }
+
+   //   return theTx;
+   //}
+
+   private static CreditTransferTransaction34 Get_SEPATx_placa_2023(VirmanStruct virman_rec)
    {
-      CreditTransferTransactionInformation10 theTx = new CreditTransferTransactionInformation10();
+      CreditTransferTransaction34 theTx = new CreditTransferTransaction34();
 
-      theTx.PmtTpInfSpecified  = 
-      theTx.UltmtDbtrSpecified = 
-      theTx.UltmtCdtrSpecified = 
-      theTx.PurpSpecified      = false;
-      theTx.CdtrAgtSpecified   = false;
+//    theTx.PmtTpInfSpecified  = 
+//    theTx.UltmtDbtrSpecified = 
+//    theTx.UltmtCdtrSpecified = 
+//    theTx.PurpSpecified      = false;
+//    theTx.CdtrAgtSpecified   = false;
 
+      theTx.PmtId            = new PaymentIdentification6();
       theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
 
+      theTx.Amt              = new AmountType4Choice();
+      theTx.Amt.InstdAmt     = new ActiveOrHistoricCurrencyAndAmount();
       theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
-    //theTx.Amt.InstdAmt.Value = virman_rec.Money;
       theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
 
       theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
 
-      theTx.Cdtr.Nm          = virman_rec.Prim1;
-      theTx.Cdtr.IdSpecified = false;
-      theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
-      if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
+      theTx.Cdtr    = new PartyIdentification135_1();
+      theTx.Cdtr.Nm = virman_rec.Prim1;
+//      theTx.Cdtr.IdSpecified = false;
 
+    //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
+    //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
+      theTx.Cdtr.PstlAdr         = new PostalAddress24();
+      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : "" };
+
+      theTx.CdtrAcct         = new CashAccount38Cdtr();
+      theTx.CdtrAcct.Id      = new AccountIdentification4Choice_2();
       theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
 
-      theTx.RmtInf.Item = new StructuredRemittanceInformation7();
-      (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
-      (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
-      (theTx.RmtInf.Item as StructuredRemittanceInformation7).AddtlRmtInf                = virman_rec.OpisPl;
+      theTx.RmtInf      = new RemittanceInformation16();
+      theTx.RmtInf.Item = new StructuredRemittanceInformation16();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf                 = new CreditorReferenceInformation2();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp              = new CreditorReferenceType2();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp.CdOrPrtry    = new CreditorReferenceType1Choice();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).AddtlRmtInf                = virman_rec.OpisPl;
 
       if(virman_rec.BtchBookgID.NotEmpty() || virman_rec.IsSALA) // ??? !!! ??? 
       {
-         theTx.PurpSpecified = true;
+//         theTx.PurpSpecified = true;
+         theTx.Purp          = new Purpose2Choice();
          theTx.Purp.Cd       = "SALA";
       }
 
       return theTx;
    }
+
 }
 
 //[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+] 

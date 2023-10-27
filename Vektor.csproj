@@ -4840,9 +4840,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd">
+    <Content Include="XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd">
       <SubType>Designer</SubType>
-    </None>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\ToolStrip_Modul\fromUnix.ico" />

@@ -26,7 +26,7 @@ namespace PAIN_001_001_09
    [System.ComponentModel.DesignerCategoryAttribute("code")]
    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.09")]
    [System.Xml.Serialization.XmlRootAttribute(Namespace = "urn:iso:std:iso:20022:tech:xsd:scthr:pain.001.001.09", IsNullable = false)]
-   public partial class Document_PAIN_001_001_09
+   public partial class Document
    {
 
       private CustomerCreditTransferInitiationV09 cstmrCdtTrfInitnField;
@@ -46,7 +46,7 @@ namespace PAIN_001_001_09
 
       #region Ovu regiju kopipejstas rucno u nove code from xsd ... ex 'Serialize/Deserialize'
 
-      public Document_PAIN_001_001_09()
+      public Document()
       {
          this.cstmrCdtTrfInitnField = new CustomerCreditTransferInitiationV09();
       }
@@ -58,7 +58,7 @@ namespace PAIN_001_001_09
          {
             if((serializer == null))
             {
-               serializer = new System.Xml.Serialization.XmlSerializer(typeof(Document_PAIN_001_001_09));
+               serializer = new System.Xml.Serialization.XmlSerializer(typeof(Document));
             }
             return serializer;
          }
@@ -111,10 +111,10 @@ namespace PAIN_001_001_09
       /// <param name="obj">Output Document object</param>
       /// <param name="exception">output Exception value if deserialize failed</param>
       /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
-      public static bool Deserialize(string xml, out Document_PAIN_001_001_09 obj, out System.Exception exception)
+      public static bool Deserialize(string xml, out Document obj, out System.Exception exception)
       {
          exception = null;
-         obj = default(Document_PAIN_001_001_09);
+         obj = default(Document);
          try
          {
             obj = Deserialize(xml);
@@ -127,19 +127,19 @@ namespace PAIN_001_001_09
          }
       }
 
-      public static bool Deserialize(string xml, out Document_PAIN_001_001_09 obj)
+      public static bool Deserialize(string xml, out Document obj)
       {
          System.Exception exception = null;
          return Deserialize(xml, out obj, out exception);
       }
 
-      public static Document_PAIN_001_001_09 Deserialize(string xml)
+      public static Document Deserialize(string xml)
       {
          System.IO.StringReader stringReader = null;
          try
          {
             stringReader = new System.IO.StringReader(xml);
-            return ((Document_PAIN_001_001_09)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            return ((Document)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
          }
          finally
          {
@@ -207,10 +207,10 @@ namespace PAIN_001_001_09
       /// <param name="obj">Output Document object</param>
       /// <param name="exception">output Exception value if deserialize failed</param>
       /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
-      public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out Document_PAIN_001_001_09 obj, out System.Exception exception)
+      public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out Document obj, out System.Exception exception)
       {
          exception = null;
-         obj = default(Document_PAIN_001_001_09);
+         obj = default(Document);
          try
          {
             obj = LoadFromFile(fileName, encoding);
@@ -223,23 +223,23 @@ namespace PAIN_001_001_09
          }
       }
 
-      public static bool LoadFromFile(string fileName, out Document_PAIN_001_001_09 obj, out System.Exception exception)
+      public static bool LoadFromFile(string fileName, out Document obj, out System.Exception exception)
       {
          return LoadFromFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM, out obj, out exception);
       }
 
-      public static bool LoadFromFile(string fileName, out Document_PAIN_001_001_09 obj)
+      public static bool LoadFromFile(string fileName, out Document obj)
       {
          System.Exception exception = null;
          return LoadFromFile(fileName, out obj, out exception);
       }
 
-      public static Document_PAIN_001_001_09 LoadFromFile(string fileName)
+      public static Document LoadFromFile(string fileName)
       {
          return LoadFromFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
       }
 
-      public static Document_PAIN_001_001_09 LoadFromFile(string fileName, System.Text.Encoding encoding)
+      public static Document LoadFromFile(string fileName, System.Text.Encoding encoding)
       {
          System.IO.FileStream file = null;
          System.IO.StreamReader sr = null;
@@ -1813,6 +1813,9 @@ namespace PAIN_001_001_09
             this.pstlAdrField = value;
          }
       }
+
+      [System.Xml.Serialization.XmlIgnoreAttribute()] // byQ 
+      public bool IdSpecified { get; set; }
 
       /// <remarks/>
       public Party38Choice Id
