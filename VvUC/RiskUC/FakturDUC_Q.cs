@@ -3680,15 +3680,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             theGrid.PutCell(ci2.iT_artiklTS, currRow, artikl_rec.TS      );
             theGrid.PutCell(ci2.iT_kol, currRow, 1.00M);
 
-            if(artikl_rec.TS == ZXC.KMP_TS)
+            if(artikl_rec.TS == ZXC.PCK_TS)
             {
-               decimal kolPutaKapacitet = /*rtrano_rec.T_kol **/ artikl_rec.Zapremina;
+               theGrid.PutCell(ci2.iT_dimZ, currRow, artikl_rec.Zapremina);
+               theGrid.PutCell(ci2.iT_decC, currRow, artikl_rec.Duljina  );
+            }
 
+            if(artikl_rec.TS == ZXC.KMP_TS)
+               {
                bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
                bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
 
-               if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRow, kolPutaKapacitet);
-               if(isHDD) TheG2.PutCell(ci2.iT_decB, currRow, kolPutaKapacitet);
+             //decimal kolPutaKapacitet = /*rtrano_rec.T_kol **/ artikl_rec.Zapremina;
+             //
+             //if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRow, kolPutaKapacitet);
+             //if(isHDD) TheG2.PutCell(ci2.iT_decB, currRow, kolPutaKapacitet);
+
+               if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRow, artikl_rec.Zapremina);
+               if(isHDD) TheG2.PutCell(ci2.iT_decB, currRow, artikl_rec.Duljina  );
             }
             //(this as FakturPDUC).SetColorsPCKartikl();
          }
@@ -3932,6 +3941,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          { 
             theGrid.PutCell(ci.iT_ramKlasa, currRowIdx, artikl_rec.Grupa2CD);
             theGrid.PutCell(ci.iT_hddKlasa, currRowIdx, artikl_rec.Grupa3CD);
+
+            theGrid.PutCell(ci.iT_doCijMal, currRowIdx, artikl_rec.PCK_RAM);
+            theGrid.PutCell(ci.iT_noCijMal, currRowIdx, artikl_rec.PCK_HDD);
+
          }
 
          #endregion ArtiklCD, ArtiklName, JedMj, Konto
@@ -5214,7 +5227,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
 
-      string upisaniArtiklCD = theGrid.GetStringCell(ci2.iT_artiklCD, currRowIdx, false);
+    //string upisaniArtiklCD = theGrid.GetStringCell(ci2.iT_artiklCD    , currRowIdx, false);
+      string upisaniArtiklCD = theGrid.GetStringCell(ci2.iR_artiklCD_Old, currRowIdx, false);
 
       if(sernoInfo == null)
       {
@@ -5227,9 +5241,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                theGrid.ClearRowContent(currRowIdx);
                theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
             }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Information, "Obavili ste inicijalno uparivanje ovog serijskog broja.");
+            }
          }
-
-         ZXC.aim_emsg(MessageBoxIcon.Information, "Obavili ste inicijalno uparivanje ovog serijskog broja.");
 
          return; // NOVI serno, ... nije naso nist po tom serno-u 
       }
@@ -5240,20 +5256,20 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       {
          theGrid.ClearRowContent(currRowIdx);
 
-         Put_PCK_info_DgvLineFields2(lastRtrano_rec, currRowIdx);
+         Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec, currRowIdx);
       }
       else // upisan je serno nakon zadavanja artikla ili ispravljamo sadrzaj retka 
       {
          if(upisaniArtiklCD == sernoInfo.PCK_ArtCD) // vec prethodno (dobro) uparen sa upisanimArtiklCD-om 
          {
           //ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovaj serijski broj je već ranije bio uparen sa ovim artiklom.");
-            Put_PCK_info_DgvLineFields2(lastRtrano_rec, currRowIdx); // da eventualno osvježi točan PCK_info signature 
+            Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec, currRowIdx); // da eventualno osvježi točan PCK_info signature 
          }
          else // vec prethodno uparen sa artiklom RAZLICITIM od upisanimArtiklCD-om 
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Ovaj serijski broj je već ranije bio uparen sa DRUGIM artiklom!?\n\r\n\rSerno [{0}]\n\r\n\rUparujete sa[{1}]\n\r\n\rA prethodno je uparen sa [{2}]\n\r\n\rPOSTAVLJAM PRETHODNO UPARENI ARTIKL!",
                sernoInfo.PCK_Serno, upisaniArtiklCD, sernoInfo.PCK_ArtCD);
-            Put_PCK_info_DgvLineFields2(lastRtrano_rec, currRowIdx); // da eventualno osvježi točan PCK_info signature 
+            Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec, currRowIdx); // da eventualno osvježi točan PCK_info signature 
          }
       }
 
@@ -5296,10 +5312,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(ovaj_rtrano_rec.T_artiklCD != kakavTrebaBiti_rtrano_rec .T_artiklCD) ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl ovog retka\n\r{0}\n\rse ne podudara sa artiklom retka ugovora\n\r{1}"     , ovaj_rtrano_rec.T_artiklCD, kakavTrebaBiti_rtrano_rec .T_artiklCD);
       if(ovaj_rtrano_rec.T_skladCD  != Fld_SkladCD2                         ) ZXC.aim_emsg(MessageBoxIcon.Error, "Skladiste ovog retka\n\r{0}\n\rse ne podudara sa skladistem retka ugovora\n\r{1}", ovaj_rtrano_rec.T_skladCD , Fld_SkladCD2                         );
       
-      decimal PCK_RAM_ovog_rtranoa = ovaj_rtrano_rec          .T_dimZ;
-      decimal PCK_HDD_ovog_rtranoa = ovaj_rtrano_rec          .T_decC;
-      decimal PCK_RAM_rtransa      = kakavTrebaBiti_rtrano_rec.T_dimZ;
-      decimal PCK_HDD_rtransa      = kakavTrebaBiti_rtrano_rec.T_decC;
+      decimal PCK_RAM_ovog_rtranoa = ovaj_rtrano_rec          .T_PCK_RAM;
+      decimal PCK_HDD_ovog_rtranoa = ovaj_rtrano_rec          .T_PCK_HDD;
+      decimal PCK_RAM_rtransa      = kakavTrebaBiti_rtrano_rec.T_PCK_RAM;
+      decimal PCK_HDD_rtransa      = kakavTrebaBiti_rtrano_rec.T_PCK_HDD;
 
       if(PCK_RAM_ovog_rtranoa != PCK_RAM_rtransa) ZXC.aim_emsg(MessageBoxIcon.Error, "PCK_RAM ovog retka\n\r{0}\n\rse ne podudara sa PCK_RAM-om retka ugovora\n\r{1}", PCK_RAM_ovog_rtranoa.ToString0Vv(), PCK_RAM_rtransa.ToString0Vv());
       if(PCK_HDD_ovog_rtranoa != PCK_HDD_rtransa) ZXC.aim_emsg(MessageBoxIcon.Error, "PCK_HDD ovog retka\n\r{0}\n\rse ne podudara sa PCK_HDD-om retka ugovora\n\r{1}", PCK_HDD_ovog_rtranoa.ToString0Vv(), PCK_HDD_rtransa.ToString0Vv());
@@ -5458,29 +5474,37 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       return rIdx < numOfExpected_MOC_rows;
    }
-   private void Put_PCK_info_DgvLineFields2(Rtrano lastRtrano_rec, int rIdx)
+   private void Put_PCK_info_MOD_DgvLineFields2(Rtrano lastRtrano_rec, int rIdx)
    {
-      lastRtrano_rec.T_dimZ = lastRtrano_rec.R_PCK_RAM;
-      lastRtrano_rec.T_decC = lastRtrano_rec.R_PCK_HDD;
+      MOD_PTG_DUC theMOD_DUC = this as MOD_PTG_DUC;
+
+      Rtrano newRtrano_rec = lastRtrano_rec.MakeDeepCopy();
+
+    //lastRtrano_rec.T_PCK_RAM = lastRtrano_rec.R_PCK_RAM;
+    //lastRtrano_rec.T_PCK_HDD = lastRtrano_rec.R_PCK_HDD;
 
       //lastRtrano_rec.T_skladCD = Fld_SkladCD;
 
-      lastRtrano_rec.T_TT      = Faktur.TT_MOS;
-      lastRtrano_rec.T_kol     = 1M;
-      lastRtrano_rec.T_dimX    = 
-      lastRtrano_rec.T_dimY    =
-      lastRtrano_rec.T_decA    = 
-      lastRtrano_rec.T_decB    = 0M;
+      newRtrano_rec.T_TT      = Faktur.TT_MOS;
+      newRtrano_rec.T_kol     = 1M;
+      newRtrano_rec.T_dimX    = 
+      newRtrano_rec.T_dimY    =
+      newRtrano_rec.T_decA    = 
+      newRtrano_rec.T_decB    = 0M;
 
-      if(this is MOD_PTG_DUC && thisIs_MOC_rowIndex(rIdx) && (this as MOD_PTG_DUC).Fld_PrjArtCD == lastRtrano_rec.T_artiklCD)
+      decimal ciljRAM = theMOD_DUC.Fld_Decimal01;
+      decimal ciljHDD = theMOD_DUC.Fld_Decimal02;
+
+      string MOC_ArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(lastRtrano_rec.T_artiklCD, ciljRAM, ciljHDD);
+
+      bool isMOCrow = (this is MOD_PTG_DUC && thisIs_MOC_rowIndex(rIdx) && (this as MOD_PTG_DUC).Fld_PrjArtCD == MOC_ArtiklCD);
+         
+      if(isMOCrow)
       {
-         lastRtrano_rec.T_TT = Faktur.TT_MOC;
-
-         MOD_PTG_DUC theMOD_DUC = this as MOD_PTG_DUC;
+         newRtrano_rec.T_TT = Faktur.TT_MOC;
 
          // ram ______________________________________________ 
-         decimal ciljRAM = theMOD_DUC.Fld_Decimal01;
-         decimal oldRAM  = lastRtrano_rec.T_dimZ;
+         decimal oldRAM  = newRtrano_rec.T_PCK_RAM;
 
          decimal ramPlus  = ciljRAM - oldRAM;
          decimal ramMinus = 0M;
@@ -5489,12 +5513,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             ramMinus = -1M * ramPlus;
             ramPlus  = 0M;
          }
-         lastRtrano_rec.T_dimX = ramPlus ;
-         lastRtrano_rec.T_dimY = ramMinus;
+         newRtrano_rec.T_dimX = ramPlus ;
+         newRtrano_rec.T_dimY = ramMinus;
 
          // hdd ______________________________________________ 
-         decimal ciljHDD = theMOD_DUC.Fld_Decimal02;
-         decimal oldHDD  = lastRtrano_rec.T_decC;
+         decimal oldHDD  = newRtrano_rec.T_PCK_HDD;
 
          decimal hddPlus  = ciljHDD - oldHDD;
          decimal hddMinus = 0M;
@@ -5503,12 +5526,21 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             hddMinus = -1M * hddPlus;
             hddPlus  = 0M;
          }
-         lastRtrano_rec.T_decA = hddPlus ;
-         lastRtrano_rec.T_decB = hddMinus;
+         newRtrano_rec.T_decA = hddPlus ;
+         newRtrano_rec.T_decB = hddMinus;
       }
 
-      PutDgvLineFields2(lastRtrano_rec, rIdx, true);
-      PutDgvLineResultsFields2(rIdx, lastRtrano_rec, false); // RAMnew, HDDnew 
+      PutDgvLineFields2(newRtrano_rec, rIdx, true);
+      PutDgvLineResultsFields2(rIdx, newRtrano_rec, false); // RAMnew, HDDnew 
+
+      // ArtiklCD_OLD 
+      TheG2.PutCell((this as FakturPDUC).DgvCI2.iR_artiklCD_Old, rIdx, lastRtrano_rec.T_artiklCD);
+
+      // ArtiklCD_NEW 
+      if(isMOCrow)
+      {
+         TheG2.PutCell((this as FakturPDUC).DgvCI2.iT_artiklCD, rIdx, MOC_ArtiklCD);
+      }
    }
 
    #endregion Update_SERNO PTG

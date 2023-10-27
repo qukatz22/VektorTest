@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using MySql.Data.MySqlClient;
+using static ArtiklDao;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
 #region struct ArtiklStruct
@@ -1464,6 +1465,60 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
                  AS_InvFinKNJ_Visak_BEF).NotZero();
       }
    }
+
+   public static string Get_ArtiklCD_PTG_root(string artiklCD)
+   {
+      if(ZXC.IsPCTOGO == false) return artiklCD;
+
+      string[] tokens = artiklCD.Replace(" ", "").Split("@".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+
+      if(tokens.Length.IsZero()) return artiklCD;
+
+      return tokens[0];
+   }
+
+   public string ArtiklCD_PTG_root
+   {
+      get
+      {
+         return Get_ArtiklCD_PTG_root(this.ArtiklCD);
+      }
+   }
+
+   public static (decimal PCK_RAM, decimal PCK_HDD) Get_PTG_RAM_HDD_From_ArtiklCD(string artiklCD)
+   {
+      if(ZXC.IsPCTOGO == false) return (0, 0);
+
+      //  nadi cio artiklCD_rec i vrati njegove zapremina, diuljina
+
+      //string[] tokens = artiklCD.Replace(" ", "").Split("@".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+
+      //if(tokens.Length.IsZero()) return artiklCD;
+      //
+      return (0, 0);
+   }
+
+   public static string Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(string senderArtiklCD, decimal newPCK_RAM, decimal newPCK_HDD)
+   {
+      if(ZXC.IsPCTOGO == false) return senderArtiklCD;
+
+      Artikl origArtikl_rec = ZXC.TheVvForm.TheVvUC.Get_Artikl_FromVvUcSifrar(senderArtiklCD);
+
+      if(origArtikl_rec == null) return "";
+
+      Artikl newArtikl_rec = VvUserControl.ArtiklSifrar
+         ./*Single*/FirstOrDefault(a => a.ArtiklCD_PTG_root.ToUpper() == origArtikl_rec.ArtiklCD_PTG_root.ToUpper() && 
+                                        a.Zapremina                   == newPCK_RAM                                 && 
+                                        a.Duljina                     == newPCK_HDD                                  );
+
+      if(newArtikl_rec == null) return "";
+
+      return newArtikl_rec.ArtiklCD;
+   }
+
+
+   public decimal PCK_RAM { get { if(ZXC.IsPCTOGO == false) return 0M; return Zapremina; } }
+   public decimal PCK_HDD { get { if(ZXC.IsPCTOGO == false) return 0M; return Duljina  ; } }
 
    #endregion Some Util - Results propertiz
 

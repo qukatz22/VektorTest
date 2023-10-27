@@ -3256,8 +3256,9 @@ public class MOD_PTG_DUC : FakturPDUC
 
       T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"                     );
       T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla"             );
-      T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Šifra"        , "Šifra artikla"                     );
-      T_artiklName2_CreateColumnFill(                  true, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      R_artiklCD2_OLD_CreateColumn  (ZXC.Q5un,         true, "ArtiklCdOld"  , "Šifra artikla"                     );
+      T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "ArtiklCdNew"  , "Šifra artikla"                     );
+    //T_artiklName2_CreateColumnFill(                  true, "Naziv"        , "Naziv artikla ili proizvoljan opis");
       R_artiklTS_CreateColumn       (ZXC.Q2un,         true, "Tip"          , "Tip artikla"                       );
       R_ramKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "RAM klasa"    , "RAM klasa"                         );
       R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"                         );

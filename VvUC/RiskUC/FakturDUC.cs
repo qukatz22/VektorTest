@@ -13873,7 +13873,7 @@ public class FakturPDUC : FakturExtDUC
 {
    #region Fieldz
 
-   protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName,
+   protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklCD2_Old, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName,
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
@@ -13938,7 +13938,8 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_artiklCD2.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color);
+       //vvtbT_artiklCD2.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_artiklCD2.JAM_ReadOnly = true;
       }
 
       if(IsPTG_UgAnDo_DUC) vvtbT_artiklCD2.JAM_ReadOnly = true;
@@ -14040,9 +14041,13 @@ public class FakturPDUC : FakturExtDUC
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
    {
-      bool isMOC = isPCK                                         && 
-                   MOC_RAM == rtrano_rec./*T_dimZ*/R_MOD_RAM_new && 
-                   MOC_HDD == rtrano_rec./*T_decC*/R_MOD_HDD_new &&
+    //bool isMOC = isPCK                                         && 
+    //             MOC_RAM == rtrano_rec./*T_dimZ*/R_MOD_RAM_new && 
+    //             MOC_HDD == rtrano_rec./*T_decC*/R_MOD_HDD_new &&
+    //             thisIs_MOC_rowIndex(rowIdx); // ovo je novododano 25.09.2023 
+      bool isMOC = isPCK &&
+                   MOC_RAM == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
+                   MOC_HDD == rtrano_rec./*T_decC*/T_PCK_HDD &&
                    thisIs_MOC_rowIndex(rowIdx); // ovo je novododano 25.09.2023 
 
       if(isPCK)
@@ -14211,7 +14216,8 @@ public class FakturPDUC : FakturExtDUC
 
          if(this is MOD_PTG_DUC) 
          {
-            vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+          //vvtbT_dimZ.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+            vvtbT_dimZ.JAM_ReadOnly = true;
          }
          vvtbT_dimZ.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
@@ -14308,7 +14314,8 @@ public class FakturPDUC : FakturExtDUC
        
          if(this is MOD_PTG_DUC)
          {
-            vvtbT_decC.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+          //vvtbT_decC.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+            vvtbT_decC.JAM_ReadOnly = true;
          }
 
          vvtbT_decC.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
@@ -14446,6 +14453,21 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD1, null, "R_skladCD1", _colHeader, _width);
    }
 
+   protected void R_artiklCD2_OLD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_artiklCD2_Old = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_artiklCD2_Old", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_artiklCD2_Old.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_artiklCD2_Old, TheVvDaoTrans2, "R_artiklCD_Old", _colHeader, ZXC.Q6un);
+      colVvText.Visible = isVisible;
+
+    //if(this is MOD_PTG_DUC)
+    //{
+    //   vvtbT_artiklCD2_Old.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color);
+    //}
+
+   }
+
    #endregion R_Columns2
 
    #region Transes_Database_ColumnIndexes
@@ -14494,39 +14516,41 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_artiklTS;
       internal int iT_TT;
       internal int iT_skladCD1;
+      internal int iR_artiklCD_Old;
    }
 
    private void SetRtranoColumnIndexes()
    {
       ci2 = new Rtrano_colIdx();
 
-      ci2.iT_recID      = TheG2.IdxForColumn("T_recID");
-      ci2.iT_serial     = TheG2.IdxForColumn("T_serial");
-      ci2.iT_artiklCD   = TheG2.IdxForColumn("T_artiklCD");
-      ci2.iT_artiklName = TheG2.IdxForColumn("T_artiklName");
-      ci2.iT_serno      = TheG2.IdxForColumn("T_serno");
-      ci2.iT_paletaNo   = TheG2.IdxForColumn("T_paletaNo");
-      ci2.iT_dimX       = TheG2.IdxForColumn("T_dimX");
-      ci2.iT_dimY       = TheG2.IdxForColumn("T_dimY");
-      ci2.iT_dimZ       = TheG2.IdxForColumn("T_dimZ");
-      ci2.iT_komada     = TheG2.IdxForColumn("T_komada");
-      ci2.iT_jm         = TheG2.IdxForColumn("D_jm");
-      ci2.iT_kol        = TheG2.IdxForColumn("T_kol");
-      ci2.iT_grCD       = TheG2.IdxForColumn("T_grCD");
-      ci2.iR_grName     = TheG2.IdxForColumn("R_grName");
-      ci2.iT_isKomDummy = TheG2.IdxForColumn("T_isKomDummy");
-      ci2.iT_skladCD    = TheG2.IdxForColumn("T_skladCD");
-      ci2.iT_decA       = TheG2.IdxForColumn("T_decA");
-      ci2.iT_decB       = TheG2.IdxForColumn("T_decB");
-      ci2.iT_decC       = TheG2.IdxForColumn("T_decC");
-      ci2.iT_rtrRecID   = TheG2.IdxForColumn("T_rtrRecID");
-      ci2.iT_ramNew     = TheG2.IdxForColumn("R_ramNew");
-      ci2.iT_hddNew     = TheG2.IdxForColumn("R_hddNew");
-      ci2.iT_ramKlasa   = TheG2.IdxForColumn("R_ramKlasa");
-      ci2.iT_hddKlasa   = TheG2.IdxForColumn("R_hddKlasa");
-      ci2.iT_artiklTS   = TheG2.IdxForColumn("R_artiklTS");
-      ci2.iT_TT         = TheG2.IdxForColumn("T_TT");
-      ci2.iT_skladCD1   = TheG2.IdxForColumn("R_skladCD1");
+      ci2.iT_recID        = TheG2.IdxForColumn("T_recID");
+      ci2.iT_serial       = TheG2.IdxForColumn("T_serial");
+      ci2.iT_artiklCD     = TheG2.IdxForColumn("T_artiklCD");
+      ci2.iT_artiklName   = TheG2.IdxForColumn("T_artiklName");
+      ci2.iT_serno        = TheG2.IdxForColumn("T_serno");
+      ci2.iT_paletaNo     = TheG2.IdxForColumn("T_paletaNo");
+      ci2.iT_dimX         = TheG2.IdxForColumn("T_dimX");
+      ci2.iT_dimY         = TheG2.IdxForColumn("T_dimY");
+      ci2.iT_dimZ         = TheG2.IdxForColumn("T_dimZ");
+      ci2.iT_komada       = TheG2.IdxForColumn("T_komada");
+      ci2.iT_jm           = TheG2.IdxForColumn("D_jm");
+      ci2.iT_kol          = TheG2.IdxForColumn("T_kol");
+      ci2.iT_grCD         = TheG2.IdxForColumn("T_grCD");
+      ci2.iR_grName       = TheG2.IdxForColumn("R_grName");
+      ci2.iT_isKomDummy   = TheG2.IdxForColumn("T_isKomDummy");
+      ci2.iT_skladCD      = TheG2.IdxForColumn("T_skladCD");
+      ci2.iT_decA         = TheG2.IdxForColumn("T_decA");
+      ci2.iT_decB         = TheG2.IdxForColumn("T_decB");
+      ci2.iT_decC         = TheG2.IdxForColumn("T_decC");
+      ci2.iT_rtrRecID     = TheG2.IdxForColumn("T_rtrRecID");
+      ci2.iT_ramNew       = TheG2.IdxForColumn("R_ramNew");
+      ci2.iT_hddNew       = TheG2.IdxForColumn("R_hddNew");
+      ci2.iT_ramKlasa     = TheG2.IdxForColumn("R_ramKlasa");
+      ci2.iT_hddKlasa     = TheG2.IdxForColumn("R_hddKlasa");
+      ci2.iT_artiklTS     = TheG2.IdxForColumn("R_artiklTS");
+      ci2.iT_TT           = TheG2.IdxForColumn("T_TT");
+      ci2.iT_skladCD1     = TheG2.IdxForColumn("R_skladCD1");
+      ci2.iR_artiklCD_Old = TheG2.IdxForColumn("R_artiklCD_Old");
 
    }
 
@@ -14662,7 +14686,15 @@ public class FakturPDUC : FakturExtDUC
             string skladCD1 = TheG.GetStringCell(ci.iT_skladCD, (int)rtrano_rec.T_paletaNo - 1, false); // rtrans-ov skladCD 
             if(skladCD1 != null) TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
          }
-      }
+
+         if(rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS)
+         {
+            string origArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(rtrano_rec.T_artiklCD, rtrano_rec.R_MOD_RAM_old, rtrano_rec.R_MOD_HDD_old);
+
+            TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, origArtiklCD);
+         }
+
+      } // if(ZXC.IsPCTOGO) 
    }
 
    public override void PutDgvLineResultsFields2(int rowIdx, VvTransRecord trans_rec, bool passPtrResultsToZaglavljeTranses)
@@ -14671,8 +14703,10 @@ public class FakturPDUC : FakturExtDUC
 
       if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
       {
-         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new).ToString0Vv());
-         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new).ToString0Vv());
+       //TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new).ToString0Vv());
+       //TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new).ToString0Vv());
+         TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.T_PCK_RAM    ).ToString0Vv());
+         TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.T_PCK_HDD    ).ToString0Vv());
       }
 
       //if(passPtrResultsToZaglavljeTranses == true)
