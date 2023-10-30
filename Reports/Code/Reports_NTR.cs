@@ -320,8 +320,14 @@ public class RptF_KPI : VvFinReport
 
       cmd.CommandText =
 
-         "SELECT t_dokNum, t_dokDate, t_konto, t_tipBr, t_opis, t_tt, t_pdv, t_037, t_dug, t_pot \n" +
+         // 30.10.2023:
+       //"SELECT        t_dokNum, t_dokDate, t_konto, t_tipBr, t_opis, t_tt, t_pdv, t_037, t_dug, t_pot \n" +
+         "SELECT ttNum, t_dokNum, t_dokDate, t_konto, t_tipBr, t_opis, t_tt, t_pdv, t_037, t_dug, t_pot \n" +
          "FROM " + Ftrans.recordName + "\n" +
+
+         // 30.10.2023:
+         (this is RptF_KPI || this is RptF_KPI_orig ? "RIGHT JOIN nalog n ON n.recID = t_parentID" : "") + "\n" +
+
          VvSQL.EventualRelatedTblName_ForWhereClause_FromFilterMembers(RptFilter) +
          VvSQL.ParameterizedWhereClauseFromVvSqlFilter(RptFilter.FilterMembers, false) +
 
@@ -460,6 +466,13 @@ public class RptF_KPI : VvFinReport
 
       if(kpiLui != null)
       {
+         // 30.10.2023:
+         bool trebamoLiTtNum = true /*dataRow.t_tt == "IZ"*/; // todo ... sad je uvijek byQ 
+         if(trebamoLiTtNum)
+         {
+            dataRow.t_tt += ("-" + dataRow.ttNum.ToString());
+         }
+
          idx = ZXC.ValOrZero_Int_wDot(kpiLui.Cd);
          luiDOP = kpiLui.Integer == 1 ? ZXC.SaldoOrDugOrPot.DUG : kpiLui.Integer == 2 ? ZXC.SaldoOrDugOrPot.POT : ZXC.SaldoOrDugOrPot.NULL;
 

@@ -331,6 +331,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnt_16;
             
+            private global::System.Data.DataColumn columnttNum;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public IzvjTableDataTable() {
@@ -574,6 +576,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ttNumColumn {
+                get {
+                    return this.columnttNum;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -635,7 +645,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         decimal t_13, 
                         decimal t_14, 
                         decimal t_15, 
-                        decimal t_16) {
+                        decimal t_16, 
+                        uint ttNum) {
                 IzvjTableRow rowIzvjTableRow = ((IzvjTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         t_dokNum,
@@ -663,7 +674,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         t_13,
                         t_14,
                         t_15,
-                        t_16};
+                        t_16,
+                        ttNum};
                 rowIzvjTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowIzvjTableRow);
                 return rowIzvjTableRow;
@@ -712,6 +724,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_14 = base.Columns["t_14"];
                 this.columnt_15 = base.Columns["t_15"];
                 this.columnt_16 = base.Columns["t_16"];
+                this.columnttNum = base.Columns["ttNum"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -769,10 +782,12 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnt_15);
                 this.columnt_16 = new global::System.Data.DataColumn("t_16", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnt_16);
+                this.columnttNum = new global::System.Data.DataColumn("ttNum", typeof(uint), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnttNum);
                 this.columnt_konto.MaxLength = 6;
                 this.columnt_tipBr.MaxLength = 40;
                 this.columnt_opis.MaxLength = 32;
-                this.columnt_tt.MaxLength = 3;
+                this.columnt_tt.MaxLength = 8;
                 this.columnt_pdv.MaxLength = 1;
                 this.columnt_037.MaxLength = 1;
                 this.columnt_01.DefaultValue = ((decimal)(0m));
@@ -1349,6 +1364,22 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public uint ttNum {
+                get {
+                    try {
+                        return ((uint)(this[this.tableIzvjTable.ttNumColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ttNum\' in table \'IzvjTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableIzvjTable.ttNumColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool Ist_dokNumNull() {
                 return this.IsNull(this.tableIzvjTable.t_dokNumColumn);
             }
@@ -1657,6 +1688,18 @@ namespace Vektor.DataLayer.DS_Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void Sett_16Null() {
                 this[this.tableIzvjTable.t_16Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsttNumNull() {
+                return this.IsNull(this.tableIzvjTable.ttNumColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetttNumNull() {
+                this[this.tableIzvjTable.ttNumColumn] = global::System.Convert.DBNull;
             }
         }
         

@@ -20,8 +20,8 @@ using System.Text;
 using System.Windows.Forms;
 using Vektor;
 // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
-//using PAIN_001_001_03;
-using PAIN_001_001_09;
+using PAIN_001_001_03;
+//using PAIN_001_001_09;
 #endif
 
 // 17.02.2011: Za Report-e, daj Distinct-ivne Ptrans-e po t_personCd-u
@@ -6559,8 +6559,8 @@ public class RptP_SEPA : RptP_Virmani
    {
       // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
 
-    //return ExecuteExportValidationSEPA_001_001_003(fileName, this);
-      return ExecuteExportValidationSEPA_001_001_009(fileName, this);
+      return ExecuteExportValidationSEPA_001_001_003(fileName, this);
+    //return ExecuteExportValidationSEPA_001_001_009(fileName, this);
    }
 
    public static bool ExecuteExportValidationSEPA_001_001_003(string fileName, VvReport theReport)
@@ -6605,11 +6605,11 @@ public class RptP_SEPA : RptP_Virmani
    {
       // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
 
-    //return ExecuteExportSEPA_001_001_03(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
-      return ExecuteExportSEPA_001_001_09(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
+      return ExecuteExportSEPA_001_001_03(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
+    //return ExecuteExportSEPA_001_001_09(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
    }
 
-#if SEPA_001_001_03
+//#if SEPA_001_001_03
    public static bool ExecuteExportSEPA_001_001_03(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
       // 16.10.2023: tu si stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
@@ -6751,7 +6751,7 @@ public class RptP_SEPA : RptP_Virmani
 
             if(virman_rec.BtchBookgID.NotEmpty()) continue; // this virman goes down, in some Batch Group 
 
-            theTx = Get_SEPATx_placa(virman_rec);
+            theTx = Get_SEPATx_placa_001_001_03(virman_rec);
 
             pmtInf.CdtTrfTxInf.Add(theTx);
 
@@ -6822,7 +6822,7 @@ public class RptP_SEPA : RptP_Virmani
 
          foreach(VirmanStruct virman_rec in _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID)) // CdtTrfTxInf
          {
-            theTx = Get_SEPATx_placa(virman_rec);
+            theTx = Get_SEPATx_placa_001_001_03(virman_rec);
 
             pmtInf.CdtTrfTxInf.Add(theTx);
 
@@ -6845,7 +6845,49 @@ public class RptP_SEPA : RptP_Virmani
       return true;
    }
 
-#endif
+   private static CreditTransferTransactionInformation10 Get_SEPATx_placa_001_001_03(VirmanStruct virman_rec)
+   {
+      CreditTransferTransactionInformation10 theTx = new CreditTransferTransactionInformation10();
+
+      theTx.PmtTpInfSpecified  = 
+      theTx.UltmtDbtrSpecified = 
+      theTx.UltmtCdtrSpecified = 
+      theTx.PurpSpecified      = false;
+      theTx.CdtrAgtSpecified   = false;
+
+      theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
+
+      theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
+    //theTx.Amt.InstdAmt.Value = virman_rec.Money;
+      theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
+
+      theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
+
+      theTx.Cdtr.Nm          = virman_rec.Prim1;
+      theTx.Cdtr.IdSpecified = false;
+      theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
+      if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
+
+      theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
+
+      theTx.RmtInf.Item = new StructuredRemittanceInformation7();
+      (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
+      (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
+      (theTx.RmtInf.Item as StructuredRemittanceInformation7).AddtlRmtInf                = virman_rec.OpisPl;
+
+      if(virman_rec.BtchBookgID.NotEmpty() || virman_rec.IsSALA) // ??? !!! ??? 
+      {
+         theTx.PurpSpecified = true;
+         theTx.Purp.Cd       = "SALA";
+      }
+
+      return theTx;
+   }
+
+//#endif
+
+#if SEPA_001_001_09
+
    public static bool ExecuteExportSEPA_001_001_09(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
       // 16.10.2023: tu si stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
@@ -6984,7 +7026,7 @@ public class RptP_SEPA : RptP_Virmani
          {
             if(virman_rec.BtchBookgID.NotEmpty()) continue; // this virman goes down, in some Batch Group 
 
-            theTx = Get_SEPATx_placa_2023(virman_rec);
+            theTx = Get_SEPATx_placa_001_001_09(virman_rec);
 
           //pmtInf.CdtTrfTxInf.Add(theTx);
             pmtInf.CdtTrfTxInf[i++] =theTx;
@@ -7054,7 +7096,7 @@ public class RptP_SEPA : RptP_Virmani
          int i = 0;
          foreach(VirmanStruct virman_rec in _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID)) // CdtTrfTxInf
          {
-            theTx = Get_SEPATx_placa_2023(virman_rec);
+            theTx = Get_SEPATx_placa_001_001_09(virman_rec);
 
           //pmtInf.CdtTrfTxInf.Add(theTx);
             pmtInf.CdtTrfTxInf[i++] = theTx;
@@ -7078,6 +7120,60 @@ public class RptP_SEPA : RptP_Virmani
 
       return true;
    }
+
+   private static CreditTransferTransaction34 Get_SEPATx_placa_001_001_09(VirmanStruct virman_rec)
+   {
+      CreditTransferTransaction34 theTx = new CreditTransferTransaction34();
+
+//    theTx.PmtTpInfSpecified  = 
+//    theTx.UltmtDbtrSpecified = 
+//    theTx.UltmtCdtrSpecified = 
+//    theTx.PurpSpecified      = false;
+//    theTx.CdtrAgtSpecified   = false;
+
+      theTx.PmtId            = new PaymentIdentification6();
+      theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
+
+      theTx.Amt              = new AmountType4Choice();
+      theTx.Amt.InstdAmt     = new ActiveOrHistoricCurrencyAndAmount();
+      theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
+      theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
+
+      theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
+
+      theTx.Cdtr    = new PartyIdentification135_1();
+      theTx.Cdtr.Nm = virman_rec.Prim1;
+//      theTx.Cdtr.IdSpecified = false;
+
+    //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
+    //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
+      theTx.Cdtr.PstlAdr         = new PostalAddress24();
+      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : "" };
+
+      theTx.CdtrAcct         = new CashAccount38Cdtr();
+      theTx.CdtrAcct.Id      = new AccountIdentification4Choice_2();
+      theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
+
+      theTx.RmtInf      = new RemittanceInformation16();
+      theTx.RmtInf.Item = new StructuredRemittanceInformation16();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf                 = new CreditorReferenceInformation2();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp              = new CreditorReferenceType2();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp.CdOrPrtry    = new CreditorReferenceType1Choice();
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
+      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).AddtlRmtInf                = virman_rec.OpisPl;
+
+      if(virman_rec.BtchBookgID.NotEmpty() || virman_rec.IsSALA) // ??? !!! ??? 
+      {
+//         theTx.PurpSpecified = true;
+         theTx.Purp          = new Purpose2Choice();
+         theTx.Purp.Cd       = "SALA";
+      }
+
+      return theTx;
+   }
+
+#endif
 
    private static object Get_DbtrAgt_BIC(string IBAN)
    {
@@ -7143,97 +7239,6 @@ public class RptP_SEPA : RptP_Virmani
       ZXC.aim_emsg(MessageBoxIcon.Warning, message);
 
       return message;
-   }
-
-   //private static CreditTransferTransactionInformation10 Get_SEPATx_placa(VirmanStruct virman_rec)
-   //{
-   //   CreditTransferTransactionInformation10 theTx = new CreditTransferTransactionInformation10();
-
-   //   theTx.PmtTpInfSpecified  = 
-   //   theTx.UltmtDbtrSpecified = 
-   //   theTx.UltmtCdtrSpecified = 
-   //   theTx.PurpSpecified      = false;
-   //   theTx.CdtrAgtSpecified   = false;
-
-   //   theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
-
-   //   theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
-   // //theTx.Amt.InstdAmt.Value = virman_rec.Money;
-   //   theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
-
-   //   theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
-
-   //   theTx.Cdtr.Nm          = virman_rec.Prim1;
-   //   theTx.Cdtr.IdSpecified = false;
-   //   theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
-   //   if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
-
-   //   theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
-
-   //   theTx.RmtInf.Item = new StructuredRemittanceInformation7();
-   //   (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
-   //   (theTx.RmtInf.Item as StructuredRemittanceInformation7).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
-   //   (theTx.RmtInf.Item as StructuredRemittanceInformation7).AddtlRmtInf                = virman_rec.OpisPl;
-
-   //   if(virman_rec.BtchBookgID.NotEmpty() || virman_rec.IsSALA) // ??? !!! ??? 
-   //   {
-   //      theTx.PurpSpecified = true;
-   //      theTx.Purp.Cd       = "SALA";
-   //   }
-
-   //   return theTx;
-   //}
-
-   private static CreditTransferTransaction34 Get_SEPATx_placa_2023(VirmanStruct virman_rec)
-   {
-      CreditTransferTransaction34 theTx = new CreditTransferTransaction34();
-
-//    theTx.PmtTpInfSpecified  = 
-//    theTx.UltmtDbtrSpecified = 
-//    theTx.UltmtCdtrSpecified = 
-//    theTx.PurpSpecified      = false;
-//    theTx.CdtrAgtSpecified   = false;
-
-      theTx.PmtId            = new PaymentIdentification6();
-      theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
-
-      theTx.Amt              = new AmountType4Choice();
-      theTx.Amt.InstdAmt     = new ActiveOrHistoricCurrencyAndAmount();
-      theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
-      theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
-
-      theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
-
-      theTx.Cdtr    = new PartyIdentification135_1();
-      theTx.Cdtr.Nm = virman_rec.Prim1;
-//      theTx.Cdtr.IdSpecified = false;
-
-    //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
-    //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
-      theTx.Cdtr.PstlAdr         = new PostalAddress24();
-      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : "" };
-
-      theTx.CdtrAcct         = new CashAccount38Cdtr();
-      theTx.CdtrAcct.Id      = new AccountIdentification4Choice_2();
-      theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
-
-      theTx.RmtInf      = new RemittanceInformation16();
-      theTx.RmtInf.Item = new StructuredRemittanceInformation16();
-      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf                 = new CreditorReferenceInformation2();
-      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp              = new CreditorReferenceType2();
-      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp.CdOrPrtry    = new CreditorReferenceType1Choice();
-      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Tp.CdOrPrtry.Cd = DocumentType3Code.SCOR;
-      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).CdtrRefInf.Ref             = virman_rec.PnboMod + virman_rec.Pnbo; // poziv na broj primatelja
-      (theTx.RmtInf.Item   as StructuredRemittanceInformation16).AddtlRmtInf                = virman_rec.OpisPl;
-
-      if(virman_rec.BtchBookgID.NotEmpty() || virman_rec.IsSALA) // ??? !!! ??? 
-      {
-//         theTx.PurpSpecified = true;
-         theTx.Purp          = new Purpose2Choice();
-         theTx.Purp.Cd       = "SALA";
-      }
-
-      return theTx;
    }
 
 }
