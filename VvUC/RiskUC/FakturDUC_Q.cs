@@ -5199,8 +5199,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          theGrid.PutCell(ci2.iT_decA  , currRowIdx, 0M);
          theGrid.PutCell(ci2.iT_decB  , currRowIdx, 0M);
 
-         theGrid.PutCell(ci2.iT_ramNew, currRowIdx, 0M);
-         theGrid.PutCell(ci2.iT_hddNew, currRowIdx, 0M);
+         theGrid.PutCell(ci2.iR_ramOld, currRowIdx, 0M);
+         theGrid.PutCell(ci2.iR_hddOld, currRowIdx, 0M);
          theGrid.PutCell(ci2.iT_dimZ  , currRowIdx, 0M);
          theGrid.PutCell(ci2.iT_decC  , currRowIdx, 0M);
 
