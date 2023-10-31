@@ -3441,6 +3441,7 @@ public class PRI_PTG_DUC : FakturPDUC
       T_cij_CreateColumn           (ZXC.Q4un, 2, isVisible, "Cijena", "Jedinična cijena");
       T_rbt1St_CreateColumn        (ZXC.Q3un, 2, isVisible, "Rb1"   , "Stopa rabata 1");
       R_KCRM_CreateColumn          (ZXC.Q4un, 2, isVisible, "Iznos" , "Iznos");
+   
    }
 
    #endregion TheG_Specific_Columns
@@ -4426,58 +4427,58 @@ public class VvModificiraj_PTG_Dlg : VvDialog
 }
 
 
-public partial class PCK_SernoList_Dlg :  VvDialog
-{
-   public PCK_SernoList_UC TheUC { get; set; }
-   private Button okButton, cancelButton;
-   private int dlgWidth, dlgHeight;
+//public partial class PCK_SernoList_Dlg :  VvDialog
+//{
+//   public PCK_SernoList_UC TheUC { get; set; }
+//   private Button okButton, cancelButton;
+//   private int dlgWidth, dlgHeight;
+//
+//   public PCK_SernoList_Dlg()
+// {
+//    ZXC.CurrentForm = this;
+//
+//    TheUC = new PCK_SernoList_UC(this);
+//
+//    SuspendLayout();
+//
+//    this.Font        = ZXC.vvFont.BaseFont;
+//    this.Style       = ZXC.vvColors.vvform_VisualStyle;
+//    this.BackColor   = ZXC.vvColors.userControl_BackColor;
+//
+//    this.StartPosition = FormStartPosition.Manual;
+//    this.Text = "PCK serno info";
+//
+//    TheUC.Parent   = this;
+//    TheUC.Location = new Point(ZXC.Qun8, ZXC.Qun8);
+//    
+//    dlgWidth  = TheUC.Width;
+//    dlgHeight = TheUC.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+//
+//    this.MaximizeBox = true;
+//
+//    this.ClientSize = new Size(dlgWidth, dlgHeight);
+//    AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+//    okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+//
+//    this.AcceptButton = okButton;
+//
+//    okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+//
+//    TheUC.Anchor         =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+//    TheUC.TheSernoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+//    
+//    this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
+//
+//    ResumeLayout();
+//
+// }
+//   void cancelButton_Click(object sender, EventArgs e)
+// {
+//    this.Close();
+// }
+//}
 
-   public PCK_SernoList_Dlg()
-   {
-      ZXC.CurrentForm = this;
-
-      TheUC = new PCK_SernoList_UC(this);
-
-      SuspendLayout();
-
-      this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
-      this.BackColor   = ZXC.vvColors.userControl_BackColor;
-
-      this.StartPosition = FormStartPosition.Manual;
-      this.Text = "PCK serno info";
-
-      TheUC.Parent   = this;
-      TheUC.Location = new Point(ZXC.Qun8, ZXC.Qun8);
-      
-      dlgWidth  = TheUC.Width;
-      dlgHeight = TheUC.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
-
-      this.MaximizeBox = true;
-
-      this.ClientSize = new Size(dlgWidth, dlgHeight);
-      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
-      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-      this.AcceptButton = okButton;
-
-      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-      TheUC.Anchor         =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      TheUC.TheSernoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      
-      this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
-
-      ResumeLayout();
-
-   }
-   void cancelButton_Click(object sender, EventArgs e)
-   {
-      this.Close();
-   }
-}
-
-public class PCK_SernoList_UC : UserControl
+/*public class PCK_SernoList_UC : UserControl
 {
    #region Fieldz
 
@@ -4665,4 +4666,4 @@ public class PCK_SernoList_UC : UserControl
       // =============================== 
    }
 
-}
+}*/
