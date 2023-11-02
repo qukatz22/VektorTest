@@ -1933,7 +1933,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(ZXC.IsPCTOGO)
       {
          vvtbT_doCijMal.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
-
+         vvtbT_doCijMal.JAM_ReadOnly  = true;
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       } 
    }
@@ -1949,7 +1949,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(ZXC.IsPCTOGO)
       {
          vvtbT_noCijMal.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
-     
+         vvtbT_noCijMal.JAM_ReadOnly  = true;
          colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       }
    }
@@ -14221,7 +14221,7 @@ public class FakturPDUC : FakturExtDUC
          }
          vvtbT_dimZ.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
-         if(IsPTG_UgAnDo_DUC) vvtbT_dimZ.JAM_ReadOnly = true;
+         /*if(IsPTG_UgAnDo_DUC)*/ vvtbT_dimZ.JAM_ReadOnly = true;
       }
    }
    protected void T_komada_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -14320,7 +14320,7 @@ public class FakturPDUC : FakturExtDUC
 
          vvtbT_decC.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
-         if(IsPTG_UgAnDo_DUC) vvtbT_decC.JAM_ReadOnly = true;
+         /*if(IsPTG_UgAnDo_DUC)*/ vvtbT_decC.JAM_ReadOnly = true;
       }
    }
    protected void T_rtrRecID_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)

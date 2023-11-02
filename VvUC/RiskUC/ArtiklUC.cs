@@ -947,7 +947,8 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
 
-      string lblText = (name == "AZapremina:" && ZXC.IsPCTOGO == true) ? "AKapacitet:" : name;
+      string lblText = (name == "AZapremina:" && ZXC.IsPCTOGO == true) ? "ARAM:" :
+                      ((name == "ADuljina:"   && ZXC.IsPCTOGO == true) ? "AHDD:" : name);
 
               hamper.CreateVvLabel   (0, 0, /*name*/ lblText, ContentAlignment.MiddleRight);
       tbx   = hamper.CreateVvTextBox (1, 0, "tbx_"   + name, name, dbci);
@@ -3309,11 +3310,15 @@ public class ArtiklUC : VvSifrarRecordUC
          pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.BackColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
          pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.ForeColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
 
-         if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga jer ne znam kak da ga praznim
+         if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga a ako je empty da ga prazni
          {
             PCK_ArtiklInfo_Line PCK_Line = PCK_ArtiklInfo_List[0];
 
             pcKInfoUC.PutDgv2Fields(PCK_Line.PCK_SernoInfo_List);
+         }
+         else 
+         {
+            pcKInfoUC.TheSernoGrid.Rows.Clear();
          }
 
          pcKInfoUC.Visible = true;
