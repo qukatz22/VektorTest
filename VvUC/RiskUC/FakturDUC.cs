@@ -14704,15 +14704,15 @@ public class FakturPDUC : FakturExtDUC
    {
       Rtrano rtrano_rec = trans_rec as Rtrano;
 
-      if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
-      {
-       //TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new).ToString0Vv());
-       //TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new).ToString0Vv());
-         TheG2.PutCell(ci2.iR_ramOld, rowIdx, /*VvCurrency*/(rtrano_rec.T_PCK_RAM    ).ToString0Vv());
-         TheG2.PutCell(ci2.iR_hddOld, rowIdx, /*VvCurrency*/(rtrano_rec.T_PCK_HDD    ).ToString0Vv());
-       //TheG2.PutCell(ci2.iR_ramOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_old).ToString0Vv());
-       //TheG2.PutCell(ci2.iR_hddOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_old).ToString0Vv());
-      }
+      //if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT)
+      //{
+      // //TheG2.PutCell(ci2.iT_ramNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_new).ToString0Vv());
+      // //TheG2.PutCell(ci2.iT_hddNew, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_new).ToString0Vv());
+      //   TheG2.PutCell(ci2.iR_ramOld, rowIdx, /*VvCurrency*/(rtrano_rec.T_PCK_RAM    ).ToString0Vv());
+      //   TheG2.PutCell(ci2.iR_hddOld, rowIdx, /*VvCurrency*/(rtrano_rec.T_PCK_HDD    ).ToString0Vv());
+      // //TheG2.PutCell(ci2.iR_ramOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_RAM_old).ToString0Vv());
+      // //TheG2.PutCell(ci2.iR_hddOld, rowIdx, /*VvCurrency*/(rtrano_rec.R_MOD_HDD_old).ToString0Vv());
+      //}
 
       //if(passPtrResultsToZaglavljeTranses == true)
       //{

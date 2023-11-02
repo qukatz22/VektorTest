@@ -9,6 +9,7 @@ using static ArtiklDao;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Runtime.CompilerServices;
 using ikvm.lang;
+using static FakturPDUC;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -5492,12 +5493,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       newRtrano_rec.T_decA    = 
       newRtrano_rec.T_decB    = 0M;
 
-      decimal ciljRAM = theMOD_DUC.Fld_Decimal01;
-      decimal ciljHDD = theMOD_DUC.Fld_Decimal02;
+      decimal cilj_MOC_RAM      = theMOD_DUC.Fld_Decimal01;
+      decimal cilj_MOC_HDD      = theMOD_DUC.Fld_Decimal02;
+      string  cilj_MOC_ArtiklCD = theMOD_DUC.Fld_PrjArtCD ;
 
-      string MOC_ArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(lastRtrano_rec.T_artiklCD, ciljRAM, ciljHDD);
+      // tu si stao 
 
-      bool isMOCrow = (this is MOD_PTG_DUC && thisIs_MOC_rowIndex(rIdx) && (this as MOD_PTG_DUC).Fld_PrjArtCD == MOC_ArtiklCD);
+      string MOC_ArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(lastRtrano_rec.T_artiklCD, cilj_MOC_RAM, cilj_MOC_HDD);
+
+      bool isMOCrow = (thisIs_MOC_rowIndex(rIdx) && theMOD_DUC.Fld_PrjArtCD == cilj_MOC_ArtiklCD);
          
       if(isMOCrow)
       {
@@ -5506,7 +5510,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          // ram ______________________________________________ 
          decimal oldRAM  = newRtrano_rec.T_PCK_RAM;
 
-         decimal ramPlus  = ciljRAM - oldRAM;
+         decimal ramPlus  = cilj_MOC_RAM - oldRAM;
          decimal ramMinus = 0M;
          if(ramPlus.IsNegative())
          {
@@ -5515,11 +5519,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
          newRtrano_rec.T_dimX = ramPlus ;
          newRtrano_rec.T_dimY = ramMinus;
+         newRtrano_rec.T_dimZ = cilj_MOC_RAM ; // !!! 
 
          // hdd ______________________________________________ 
          decimal oldHDD  = newRtrano_rec.T_PCK_HDD;
 
-         decimal hddPlus  = ciljHDD - oldHDD;
+         decimal hddPlus  = cilj_MOC_HDD - oldHDD;
          decimal hddMinus = 0M;
          if(hddPlus.IsNegative())
          {
@@ -5528,18 +5533,26 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
          newRtrano_rec.T_decA = hddPlus ;
          newRtrano_rec.T_decB = hddMinus;
+         newRtrano_rec.T_decC = cilj_MOC_HDD ; // !!! 
       }
 
-      PutDgvLineFields2(newRtrano_rec, rIdx, true);
-      PutDgvLineResultsFields2(rIdx, newRtrano_rec, false); // RAMnew, HDDnew 
+      PutDgvLineFields2(newRtrano_rec, rIdx, true); // classic 
+    //PutDgvLineResultsFields2(rIdx, newRtrano_rec, false); // RAMnew, HDDnew 
+
+      Rtrano_colIdx localCi2 = (this as FakturPDUC).DgvCI2;
+
+    //TheG2.PutCell(localCi2.iT_ramNew, rIdx, /*VvCurrency*/(newRtrano_rec.R_MOD_RAM_new).ToString0Vv());
+    //TheG2.PutCell(localCi2.iT_hddNew, rIdx, /*VvCurrency*/(newRtrano_rec.R_MOD_HDD_new).ToString0Vv());
+      TheG2.PutCell(localCi2.iR_ramOld, rIdx, /*VvCurrency*/(newRtrano_rec.T_PCK_RAM    ).ToString0Vv());
+      TheG2.PutCell(localCi2.iR_hddOld, rIdx, /*VvCurrency*/(newRtrano_rec.T_PCK_HDD    ).ToString0Vv());
 
       // ArtiklCD_OLD 
-      TheG2.PutCell((this as FakturPDUC).DgvCI2.iR_artiklCD_Old, rIdx, lastRtrano_rec.T_artiklCD);
+      TheG2.PutCell(localCi2.iR_artiklCD_Old, rIdx, lastRtrano_rec.T_artiklCD);
 
       // ArtiklCD_NEW 
       if(isMOCrow)
       {
-         TheG2.PutCell((this as FakturPDUC).DgvCI2.iT_artiklCD, rIdx, MOC_ArtiklCD);
+         TheG2.PutCell(localCi2.iT_artiklCD, rIdx, cilj_MOC_ArtiklCD);
       }
    }
 
