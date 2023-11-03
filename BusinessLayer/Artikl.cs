@@ -1466,7 +1466,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       }
    }
 
-   public static string Get_ArtiklCD_PTG_root(string artiklCD)
+   public static string Get_ArtiklCD_PCK_base(string artiklCD)
    {
       if(ZXC.IsPCTOGO == false) return artiklCD;
 
@@ -1477,12 +1477,17 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       return tokens[0];
    }
 
-   public string ArtiklCD_PTG_root
+   public string ArtiklCD_PCK_base
    {
       get
       {
-         return Get_ArtiklCD_PTG_root(this.ArtiklCD);
+         return Get_ArtiklCD_PCK_base(this.ArtiklCD);
       }
+   }
+
+   public static bool Has_equal_PCK_base(string artiklCD1, string artiklCD2)
+   {
+      return Get_ArtiklCD_PCK_base(artiklCD1) == Get_ArtiklCD_PCK_base(artiklCD2);
    }
 
    public static (decimal PCK_RAM, decimal PCK_HDD) Get_PTG_RAM_HDD_From_ArtiklCD(string artiklCD)
@@ -1507,7 +1512,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       if(origArtikl_rec == null) return "";
 
       Artikl newArtikl_rec = VvUserControl.ArtiklSifrar
-         ./*Single*/FirstOrDefault(a => a.ArtiklCD_PTG_root.ToUpper() == origArtikl_rec.ArtiklCD_PTG_root.ToUpper() && 
+         ./*Single*/FirstOrDefault(a => a.ArtiklCD_PCK_base.ToUpper() == origArtikl_rec.ArtiklCD_PCK_base.ToUpper() && 
                                         a.Zapremina                   == newPCK_RAM                                 && 
                                         a.Duljina                     == newPCK_HDD                                  );
 

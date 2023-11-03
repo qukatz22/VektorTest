@@ -13952,27 +13952,52 @@ public class FakturPDUC : FakturExtDUC
       int rowIdx = TheG2.CurrentRow.Index;
       int colIdx = TheG2.CurrentCell.ColumnIndex;
 
-      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
+      bool isPCKartikl        = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
+      bool isKomponentaArtikl = !isPCKartikl;
+
+      bool isPlusOrMinusCol =
+           (colIdx == ci2.iT_dimX ||
+            colIdx == ci2.iT_dimY ||
+            colIdx == ci2.iT_decA ||
+            colIdx == ci2.iT_decB) ;
+
+      string oldArtiklCD = "";
+
+      if(isPlusOrMinusCol && isPCKartikl)
+      {
+         decimal oldRAM   = TheG2.GetDecimalCell(ci2.iR_ramOld, rowIdx, false);
+         decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_dimX  , rowIdx, false);
+         decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_dimY  , rowIdx, false);
+         decimal newRAM   = oldRAM + plusRAM - minusRAM;
+         TheG2.PutCell(ci2.iT_dimZ, rowIdx, newRAM);
+
+         decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld, rowIdx, false);
+         decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_decA  , rowIdx, false);
+         decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_decB  , rowIdx, false);
+         decimal newHDD   = oldHDD + plusHDD - minusHDD;
+         TheG2.PutCell(ci2.iT_decC, rowIdx, newHDD);
+
+         oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
+      }
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
-    //string MOC_artiklCD = Fld_PrjArtCD ;
-      decimal MOC_wanted_NEW_RAM = Fld_Decimal01;
-      decimal MOC_wanted_NEW_HDD = Fld_Decimal02;
+      string  MOC_wanted_ArtiklCD = Fld_PrjArtCD ;
+      decimal MOC_wanted_NEW_RAM  = Fld_Decimal01;
+      decimal MOC_wanted_NEW_HDD  = Fld_Decimal02;
 
-      string theTT = Get_MOD_RtranoTT(rowIdx, isPCK, rtrano_rec, /*MOC_artiklCD,*/ MOC_wanted_NEW_RAM, MOC_wanted_NEW_HDD, false);
+      bool isMOC_PCK_base = Artikl.Has_equal_PCK_base(MOC_wanted_ArtiklCD, oldArtiklCD);
+
+      string theTT = Get_MOD_RtranoTT(rowIdx, isPCKartikl, rtrano_rec, isMOC_PCK_base, MOC_wanted_NEW_RAM, MOC_wanted_NEW_HDD, false);
 
       TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
 
       if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(theTT, rowIdx);
 
-      if(isPCK == false) // MOU / MOI stavke (komponente PCK-a) 
+      if(isKomponentaArtikl) // MOU / MOI stavke (komponente PCK-a) 
       {
          // provjeravaj ovo samo za kolone RAM+/- i HDD+/- 
-         if(colIdx != ci2.iT_dimX &&
-            colIdx != ci2.iT_dimY &&
-            colIdx != ci2.iT_decA &&
-            colIdx != ci2.iT_decB) return;
+         if(isPlusOrMinusCol == false) return;
 
          //VvDataGridView dgv  = sender             as VvDataGridView;
          //VvTextBox vvTextBox = dgv.EditingControl as VvTextBox     ;
@@ -13993,7 +14018,9 @@ public class FakturPDUC : FakturExtDUC
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
          }
+
       }
+
    }
 
    private void Set_MOU_MOI_RAMorHDD_minus(object sender, EventArgs e)
@@ -14039,16 +14066,13 @@ public class FakturPDUC : FakturExtDUC
       SetRow_TT_and_Color(sender, e);
    }
 
-   private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, /*string MOC_artiklCD,*/ decimal MOC_RAM, decimal MOC_HDD, bool shouldWarn)
+   private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, bool isMOC_PCK_base, decimal MOC_wanted_NEW_RAM, decimal MOC_wanted_NEW_HDD, bool shouldWarn)
    {
-    //bool isMOC = isPCK                                         && 
-    //             MOC_RAM == rtrano_rec./*T_dimZ*/R_MOD_RAM_new && 
-    //             MOC_HDD == rtrano_rec./*T_decC*/R_MOD_HDD_new &&
-    //             thisIs_MOC_rowIndex(rowIdx); // ovo je novododano 25.09.2023 
       bool isMOC = isPCK &&
-                   MOC_RAM == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
-                   MOC_HDD == rtrano_rec./*T_decC*/T_PCK_HDD &&
-                   thisIs_MOC_rowIndex(rowIdx); // ovo je novododano 25.09.2023 
+                   MOC_wanted_NEW_RAM  == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
+                   MOC_wanted_NEW_HDD  == rtrano_rec./*T_decC*/T_PCK_HDD &&
+                   isMOC_PCK_base                                        &&
+                   thisIs_MOC_rowIndex(rowIdx); 
 
       if(isPCK)
       {
@@ -14864,7 +14888,14 @@ public class FakturPDUC : FakturExtDUC
 
          bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == ZXC.PCK_TS;
 
-         dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, /*artiklCD,*/ PCK_RAM, PCK_HDD, false);
+         bool isMOC_PCK_base = false;
+         if(isPCK)
+         {
+            string oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rIdx, false);
+            isMOC_PCK_base     = Artikl.Has_equal_PCK_base(Fld_PrjArtCD, oldArtiklCD);
+         }
+
+         dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, isMOC_PCK_base, PCK_RAM, PCK_HDD, false);
       }
       if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
 
