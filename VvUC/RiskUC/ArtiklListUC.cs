@@ -2481,6 +2481,7 @@ public class RtranoListUC : VvRecLstUC
       grBoxLimitiraj.Visible = false;
 
       SetControlForInitialFocus();
+      
 
    }
 
@@ -2535,6 +2536,7 @@ public class RtranoListUC : VvRecLstUC
       VvHamper.Open_Close_Fields_ForWriting(tbx_skladCD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
    }
 
+   
    #endregion Hamperi
 
    #region Eveniti
@@ -2575,7 +2577,23 @@ public class RtranoListUC : VvRecLstUC
       colWidth = colSif6Width;                        AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentID"       , colWidth, false, 0, "t_parentID");
 
       grid_Width = sumOfColWidth + ZXC.QUN;
+
    }
+
+   public void PutLastSernoInfo(int rowIdx)
+   {
+      if(rowIdx.IsNegative()) return;
+
+    //if(rowIdx > TheGrid.RowCount - 1) return;
+
+      Fld_ArtiklCD   = TheGrid[ 2, rowIdx].Value.ToString();
+      Fld_ArtiklName = TheGrid[ 3, rowIdx].Value.ToString();
+      Fld_PCK_RAM    = TheGrid[ 4, rowIdx].Value.ToString();
+      Fld_PCK_HDD    = TheGrid[ 5, rowIdx].Value.ToString();
+      Fld_SkladDate  = TheGrid[10, rowIdx].Value.ToString();
+      Fld_SkladCD    = TheGrid[11, rowIdx].Value.ToString();
+   }
+
 
    #endregion DataGridView
 

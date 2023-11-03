@@ -13877,7 +13877,7 @@ public class FakturPDUC : FakturExtDUC
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
-                       vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT, vvtbT_skladCD1;
+                       vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT, vvtbT_skladCD1, vvtbT_PCK_baza;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
 
@@ -14492,6 +14492,15 @@ public class FakturPDUC : FakturExtDUC
 
    }
 
+   protected void R_PCK_baza_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_PCK_baza = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_PCK_baza", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_PCK_baza.JAM_ReadOnly = true;
+
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_PCK_baza, TheVvDaoTrans2, "R_PCK_baza", _colHeader, _width);
+      colVvText.Visible = isVisible;
+   }
+
    #endregion R_Columns2
 
    #region Transes_Database_ColumnIndexes
@@ -14541,6 +14550,7 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_TT;
       internal int iT_skladCD1;
       internal int iR_artiklCD_Old;
+      internal int iR_PCK_baza;
    }
 
    private void SetRtranoColumnIndexes()
@@ -14575,7 +14585,7 @@ public class FakturPDUC : FakturExtDUC
       ci2.iT_TT           = TheG2.IdxForColumn("T_TT");
       ci2.iT_skladCD1     = TheG2.IdxForColumn("R_skladCD1");
       ci2.iR_artiklCD_Old = TheG2.IdxForColumn("R_artiklCD_Old");
-
+      ci2.iR_PCK_baza     = TheG2.IdxForColumn("R_PCK_baza");
    }
 
    #endregion SetRtranoColumnIndexes()
@@ -14718,7 +14728,8 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, origArtiklCD);
           //TheG2.PutCell(ci2.iT_dimZ, rowIdx, rtrano_rec.T_PCK_RAM);
           //TheG2.PutCell(ci2.iT_dimZ, rowIdx, rtrano_rec.T_PCK_HDD);
-
+            
+            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, Artikl.Get_ArtiklCD_PCK_base(origArtiklCD));
          }
 
       } // if(ZXC.IsPCTOGO) 

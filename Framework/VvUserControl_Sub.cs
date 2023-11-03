@@ -3130,6 +3130,11 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
       if(rowIdx > TheGrid.RowCount-1) return;
 
       Fld_FillColumn = TheGrid[TheFillColumn.Index, rowIdx].Value.ToString();
+
+      if(ZXC.IsPCTOGO && this is RtranoListUC)
+      {
+         (this as RtranoListUC).PutLastSernoInfo(TheGrid.RowCount - 1);
+      }
    }
 
    public void InitializeStartValue()

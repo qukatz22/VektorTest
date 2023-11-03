@@ -959,6 +959,9 @@ public class ArtiklUC : VvSifrarRecordUC
       //else if(isDecimal)                      tbx.JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, decimal.MinValue, true);
       tbx.JAM_MarkAsNumericTextBox(3, false, decimal.MaxValue, decimal.MinValue, true);
 
+      
+      if(name == "AZapremina:" && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = Color.Red  ; tbxJM.JAM_ForeColor = Color.Red  ; }
+      if(name == "ADuljina:"   && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = Color.Green; tbxJM.JAM_ForeColor = Color.Green; }
    }
 
    private void Initialize_ArtiklCD2Hamper(out VvHamper hamper, string name, int _nextX, int _nextY) 
