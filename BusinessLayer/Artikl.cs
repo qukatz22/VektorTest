@@ -1470,7 +1470,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       if(ZXC.IsPCTOGO == false) return artiklCD;
 
-      string[] tokens = artiklCD.Replace(" ", "").Split("@".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+      string[] tokens = artiklCD.Replace(" ", "").Split(new char[] { '.', '@' }, StringSplitOptions.RemoveEmptyEntries);
 
       if(tokens.Length.IsZero()) return artiklCD;
 

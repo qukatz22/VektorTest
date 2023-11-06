@@ -13963,6 +13963,11 @@ public class FakturPDUC : FakturExtDUC
 
       string oldArtiklCD = "";
 
+      if(isPCKartikl)
+      {
+         oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
+      }
+
       if(isPlusOrMinusCol && isPCKartikl)
       {
          decimal oldRAM   = TheG2.GetDecimalCell(ci2.iR_ramOld, rowIdx, false);
@@ -13976,8 +13981,6 @@ public class FakturPDUC : FakturExtDUC
          decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_decB  , rowIdx, false);
          decimal newHDD   = oldHDD + plusHDD - minusHDD;
          TheG2.PutCell(ci2.iT_decC, rowIdx, newHDD);
-
-         oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
       }
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
@@ -14725,13 +14728,14 @@ public class FakturPDUC : FakturExtDUC
 
          if(rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS)
          {
-            string origArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(rtrano_rec.T_artiklCD, rtrano_rec.R_MOD_RAM_old, rtrano_rec.R_MOD_HDD_old);
+            string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(rtrano_rec.T_artiklCD, rtrano_rec.R_MOD_RAM_old, rtrano_rec.R_MOD_HDD_old);
 
-            TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, origArtiklCD);
-          //TheG2.PutCell(ci2.iT_dimZ, rowIdx, rtrano_rec.T_PCK_RAM);
-          //TheG2.PutCell(ci2.iT_dimZ, rowIdx, rtrano_rec.T_PCK_HDD);
+            TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, oldArtiklCD);
             
-            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, Artikl.Get_ArtiklCD_PCK_base(origArtiklCD));
+            TheG2.PutCell(ci2.iR_ramOld, rowIdx, rtrano_rec.R_MOD_RAM_old);
+            TheG2.PutCell(ci2.iR_hddOld, rowIdx, rtrano_rec.R_MOD_HDD_old);
+
+            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, Artikl.Get_ArtiklCD_PCK_base(oldArtiklCD));
          }
 
       } // if(ZXC.IsPCTOGO) 
