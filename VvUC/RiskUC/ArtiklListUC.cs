@@ -2551,6 +2551,8 @@ public class RtranoListUC : VvRecLstUC
    #region DataGridView
    protected override void CreateDataGridViewColumn()
    {
+      DataGridViewTextBoxColumn col;
+
       int sumOfColWidth = 0, colWidth;
       int colDateWidth = ZXC.Q4un;
       int colSif6Width = ZXC.Q3un + ZXC.Qun2;
@@ -2564,21 +2566,21 @@ public class RtranoListUC : VvRecLstUC
       
       colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RecID"    , colWidth, false, 0, "recID");
       
-      colWidth = ZXC.Q5un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Serno"           , colWidth, false  , "t_serno"     );
-      colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
-      colWidth = ZXC.Q9un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
-    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "t_dimZ"      );
-    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "t_decC"      );
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "ext_PCK_RAM" );
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "ext_PCK_HDD" );
-      colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" );
-      colWidth = ZXC.Q7un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
-      colWidth = ZXC.Q2un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
-      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
-      colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
-      colWidth = ZXC.Q4un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Sklad"           , colWidth, false  , "t_skladCD");
+      colWidth = ZXC.Q5un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Serno"           , colWidth, false  , "t_serno"     );
+      colWidth = ZXC.Q6un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
+      colWidth = ZXC.Q9un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "t_dimZ"      ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_RAM_PTG;
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "t_decC"      ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_HDD_PTG;
+    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "ext_PCK_RAM" ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_RAM_PTG;
+    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "ext_PCK_HDD" ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_HDD_PTG;
+      colWidth = ZXC.Q4un; sumOfColWidth += colWidth;       AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" ); 
+      colWidth = ZXC.Q7un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
+      colWidth = ZXC.Q2un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
+      colWidth = ZXC.Q3un; sumOfColWidth += colWidth;       AddDGVColum_Integer_4GridReadOnly (TheGrid, "TT Broj"         , colWidth, true, 6, "t_ttNum"     );
+      colWidth = ZXC.Q4un; sumOfColWidth += colWidth;       AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"           , colWidth         , "t_skladDate" );
+      colWidth = ZXC.Q4un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Sklad"           , colWidth, false  , "t_skladCD");
 
-      colWidth = colSif6Width;                        AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentID"       , colWidth, false, 0, "t_parentID");
+      colWidth = colSif6Width;                              AddDGVColum_RecID_4GridReadOnly   (TheGrid, "ParentID"       , colWidth, false, 0, "t_parentID");
 
       grid_Width = sumOfColWidth + ZXC.QUN;
 

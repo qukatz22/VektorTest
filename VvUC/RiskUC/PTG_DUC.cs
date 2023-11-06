@@ -3254,26 +3254,28 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       TheG2.ColumnHeadersHeight = ZXC.Q2un;
 
-      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"                     );
-      T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla"             );
-      R_artiklCD2_OLD_CreateColumn  (ZXC.Q5un,         true, "Artikl OLD"   , "Šifra artikla"                     );
-      R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM OLD"      , "RAM OLD"                           );
-      R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD OLD"      , "HDD OLD"                           );
-      R_PCK_baza_CreateColumn       (ZXC.Q4un         ,true, "PCK baza"     , "PCK baza"                         );
-      R_artiklTS_CreateColumn       (ZXC.Q2un,         true, "Tip"          , "Tip artikla"                       );
-      R_ramKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "RAM klasa"    , "RAM klasa"                         );
-      R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"                         );
-      T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"                 );
-      T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"                          );
+      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        );
+      T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla");
 
-      T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                             );
-      T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                             );
-      T_decA_CreateColumn           (ZXC.Q3un     , 0, true, "HDD +"        , "HDD +"                             );
-      T_decB_CreateColumn           (ZXC.Q3un     , 0, true, "HDD -"        , "HDD -"                             );
+      R_PCK_baza_CreateColumn       (ZXC.Q4un         ,true, "PCK baza"     , "PCK baza"             );
+      R_artiklTS_CreateColumn       (ZXC.Q2un,         true, "Tip"          , "Tip artikla"          );
+      R_ramKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "RAM klasa"    , "RAM klasa"            );
+      R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"            );
+      T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"    );
 
-      T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Artikl NEW"   , "Šifra artikla"                     );
-      T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"                           );
-      T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"                           );
+      R_artiklCD2_OLD_CreateColumn  (ZXC.Q5un,         true, "Artikl OLD"   , "Šifra artikla"        );
+      T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"             );
+      R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM OLD"      , "RAM OLD"              );
+      R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD OLD"      , "HDD OLD"              );
+
+      T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                );
+      T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                );
+      T_decA_CreateColumn           (ZXC.Q3un     , 0, true, "HDD +"        , "HDD +"                );
+      T_decB_CreateColumn           (ZXC.Q3un     , 0, true, "HDD -"        , "HDD -"                );
+
+      T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Artikl NEW"   , "Šifra artikla"        );
+      T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"              );
+      T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"              );
 
 
 
@@ -4171,8 +4173,8 @@ public class PCK_ArtiklInfo_UC : UserControl
          vvtb_PCK_RAMkind = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_RAMkind", null, -12, "RAM Klasa"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAMkind , null, "R_PCK_RAMkind", "Mem"      , ZXC.Q3un); vvtb_PCK_RAMkind .JAM_ReadOnly = true;
          vvtb_PCK_HDDkind = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_HDDkind", null, -12, "HDD Klasa"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDDkind , null, "R_PCK_HDDkind", "Disk"     , ZXC.Q3un); vvtb_PCK_HDDkind .JAM_ReadOnly = true;
          vvtb_PCK_SklCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_SklCD"  , null, -12, "Skladište"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_SklCD   , null, "R_PCK_SklCD"  , "Sklad"    , ZXC.Q3un); vvtb_PCK_SklCD   .JAM_ReadOnly = true;
-         vvtb_PCK_RAM     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_RAM"    , null, -12, "RAM"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAM     , null, "R_PCK_RAM"    , "RAM"      , ZXC.Q3un); vvtb_PCK_RAM     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont; colVvText.DefaultCellStyle.ForeColor = Color.FromArgb(179, 0, 0);
-         vvtb_PCK_HDD     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_HDD"    , null, -12, "HDD"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDD     , null, "R_PCK_HDD"    , "HDD"      , ZXC.Q3un); vvtb_PCK_HDD     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont; colVvText.DefaultCellStyle.ForeColor = Color.FromArgb(38, 0, 153);
+         vvtb_PCK_RAM     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_RAM"    , null, -12, "RAM"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAM     , null, "R_PCK_RAM"    , "RAM"      , ZXC.Q3un); vvtb_PCK_RAM     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont; colVvText.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_RAM_PTG;
+         vvtb_PCK_HDD     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_HDD"    , null, -12, "HDD"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDD     , null, "R_PCK_HDD"    , "HDD"      , ZXC.Q3un); vvtb_PCK_HDD     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont; colVvText.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_HDD_PTG;
     //   vvtb_UkPstKol    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkPstKol"   , null, -12, "PstKol"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkPstKol    , null, "R_UkPstKol"   , "Pst"      , ZXC.Q4un); vvtb_UkPstKol    .JAM_ReadOnly = true; 
     //   vvtb_UkUlazKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkUlazKol"  , null, -12, "UlazKol"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkUlazKol   , null, "R_UkUlazKol"  , "Ulaz"     , ZXC.Q4un); vvtb_UkUlazKol   .JAM_ReadOnly = true;
     //   vvtb_UkIzlazKol  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkIzlazKol" , null, -12, "IzlazKol" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkIzlazKol  , null, "R_UkIzlazKol" , "Izlaz"    , ZXC.Q4un); vvtb_UkIzlazKol  .JAM_ReadOnly = true;

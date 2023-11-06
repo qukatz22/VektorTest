@@ -14015,15 +14015,14 @@ public class FakturPDUC : FakturExtDUC
 
          decimal enteredKapacitet = isRAM ? rtrano_rec.T_dimX + rtrano_rec.T_dimY : rtrano_rec.T_decA + rtrano_rec.T_decB;
 
-         decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
+       //decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
+         decimal kolPutaKapacitet = isRAM ? rtrano_rec.T_kol * artikl_rec.Zapremina : rtrano_rec.T_kol * artikl_rec.Duljina;
 
          if(enteredKapacitet != kolPutaKapacitet)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
          }
-
       }
-
    }
 
    private void Set_MOU_MOI_RAMorHDD_minus(object sender, EventArgs e)
@@ -14052,19 +14051,26 @@ public class FakturPDUC : FakturExtDUC
 
       if(vvTextBox is null || artikl_rec is null) return;
 
-      if(artikl_rec.Zapremina.IsZero())
+      bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
+      bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
+
+      if(isRAM && artikl_rec.Zapremina.IsZero())
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
          return;
       }
 
-      decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
+      if(isHDD && artikl_rec.Duljina.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
+         return;
+      }
 
-      bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
-      bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
+      decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
+      decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Duljina;
 
-      if(isRAM) TheG2.PutCell(ci2.iT_dimY, rowIdx, kolPutaKapacitet);
-      if(isHDD) TheG2.PutCell(ci2.iT_decB, rowIdx, kolPutaKapacitet);
+      TheG2.PutCell(ci2.iT_dimY, rowIdx, ram_kolPutaKapacitet);
+      TheG2.PutCell(ci2.iT_decB, rowIdx, hdd_kolPutaKapacitet);
 
       SetRow_TT_and_Color(sender, e);
    }
@@ -14712,6 +14718,7 @@ public class FakturPDUC : FakturExtDUC
          if(rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU)
          {
             Check_MOD_plusMinus_errors(rowIdx, rtrano_rec);
+            TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, rtrano_rec.T_artiklCD);
          }
 
          if(artikl_rec != null && (artikl_rec.TS == ZXC.PCK_TS))
