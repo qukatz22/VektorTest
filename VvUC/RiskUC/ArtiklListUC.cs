@@ -2527,6 +2527,11 @@ public class RtranoListUC : VvRecLstUC
       tbx_skladDate  = hampSpecifikum.CreateVvTextBox(6, 0, "tbx_skladDate" , "", 32);
       tbx_skladCD    = hampSpecifikum.CreateVvTextBox(7, 0, "tbx_skladCD"   , "", 32);
 
+      tbx_PCK_RAM.JAM_ForeColor   = Color.Red  ;
+      tbx_PCK_HDD.JAM_ForeColor   = Color.Green;
+      tbx_PCK_RAM.JAM_Highlighted = true;
+      tbx_PCK_HDD.JAM_Highlighted = true;
+
       VvHamper.Open_Close_Fields_ForWriting(tbx_serno     , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
@@ -2556,7 +2561,6 @@ public class RtranoListUC : VvRecLstUC
       {
          AddDGV_ArhivaColumns(ref sumOfColWidth);
       }
-
       
       colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RecID"    , colWidth, false, 0, "recID");
       
@@ -2584,16 +2588,18 @@ public class RtranoListUC : VvRecLstUC
    {
       if(rowIdx.IsNegative()) return;
 
-    //if(rowIdx > TheGrid.RowCount - 1) return;
+      //if(rowIdx > TheGrid.RowCount - 1) return;
+      Rtrano rtrano_rec = new Rtrano();
 
-      Fld_ArtiklCD   = TheGrid[ 2, rowIdx].Value.ToString();
-      Fld_ArtiklName = TheGrid[ 3, rowIdx].Value.ToString();
-      Fld_PCK_RAM    = TheGrid[ 4, rowIdx].Value.ToString();
-      Fld_PCK_HDD    = TheGrid[ 5, rowIdx].Value.ToString();
-      Fld_SkladDate  = TheGrid[10, rowIdx].Value.ToString();
-      Fld_SkladCD    = TheGrid[11, rowIdx].Value.ToString();
+      MixerDao.Get_LastRtrano_ForSerno(TheDbConnection, rtrano_rec, Fld_SerNo);
+
+      Fld_ArtiklCD   = rtrano_rec.T_artiklCD                            ;  //TheGrid[ 2, rowIdx].Value.ToString();
+      Fld_ArtiklName = rtrano_rec.T_artiklName                          ;  //TheGrid[ 3, rowIdx].Value.ToString();
+      Fld_PCK_RAM    = rtrano_rec.T_PCK_RAM.ToString0Vv()               ;  //((decimal)TheGrid[ 4, rowIdx].Value).ToString0Vv();
+      Fld_PCK_HDD    = rtrano_rec.T_PCK_HDD.ToString0Vv()               ;  //((decimal)TheGrid[ 5, rowIdx].Value).ToString0Vv();
+      Fld_SkladDate  = rtrano_rec.T_skladDate.ToString(ZXC.VvDateFormat);  //TheGrid[10, rowIdx].Value.ToString();
+      Fld_SkladCD    = rtrano_rec.T_skladCD                             ;  //TheGrid[11, rowIdx].Value.ToString();
    }
-
 
    #endregion DataGridView
 

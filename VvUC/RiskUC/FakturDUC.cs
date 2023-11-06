@@ -14237,6 +14237,7 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          vvtbT_dimZ.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
+         vvtbT_dimZ.JAM_Highlighted = true;
 
          if(this is MOD_PTG_DUC) 
          {
@@ -14335,6 +14336,7 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          vvtbT_decC.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
+         vvtbT_decC.JAM_Highlighted = true;
        
          if(this is MOD_PTG_DUC)
          {

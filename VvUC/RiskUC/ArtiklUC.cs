@@ -960,8 +960,8 @@ public class ArtiklUC : VvSifrarRecordUC
       tbx.JAM_MarkAsNumericTextBox(3, false, decimal.MaxValue, decimal.MinValue, true);
 
       
-      if(name == "AZapremina:" && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = Color.Red  ; tbxJM.JAM_ForeColor = Color.Red  ; }
-      if(name == "ADuljina:"   && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = Color.Green; tbxJM.JAM_ForeColor = Color.Green; }
+      if(name == "AZapremina:" && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = tbxJM.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG; tbx.JAM_Highlighted = true; }
+      if(name == "ADuljina:"   && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = tbxJM.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG; tbx.JAM_Highlighted = true; }
    }
 
    private void Initialize_ArtiklCD2Hamper(out VvHamper hamper, string name, int _nextX, int _nextY) 
