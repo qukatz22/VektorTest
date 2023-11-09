@@ -208,7 +208,16 @@ public class ArtiklUC : VvSifrarRecordUC
    {
       nextX = 0;
       nextY = 0;
-      InitializeNazivHamper(out hamp_naziv);
+
+      if(ZXC.IsPCTOGO)
+      {
+         InitializeNazivHamper_PTG(out hamp_naziv);
+      }
+      else
+      { 
+         InitializeNazivHamper(out hamp_naziv);
+      }
+   
       nextY = hamp_naziv.Bottom + razmakHamp;
 
       CreateResultPanel();
@@ -320,6 +329,132 @@ public class ArtiklUC : VvSifrarRecordUC
       tbx_longOpis.Multiline = true;
       tbx_longOpis.ScrollBars = ScrollBars.Vertical;
 
+
+      this.ControlForInitialFocus = tbx_artiklName;
+   }
+
+   private void InitializeNazivHamper_PTG(out VvHamper hamper)
+   {
+      hamper = new VvHamper(11, 6, "", TheTabControl.TabPages[0], false, nextX, nextY, razmakHamp);
+
+      //                                       0                 1                     2                3             4           5        6         7         8                   9             10            
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth + ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q2un, ZXC.Q2un, ZXC.Q2un, ZXC.Q2un-ZXC.Qun2, ZXC.Q10un + ZXC.Q5un };
+      hamper.VvSpcBefCol   = new int[] {   ZXC.Qun4,            ZXC.Qun4,            ZXC.Qun4,                 0,                     0,            ZXC.Qun8, ZXC.Qun8,        0,       0,         ZXC.Qun12,  ZXC.Qun4             };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun4;
+      } 
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                       hamper.CreateVvLabel  (0, 0, "Naziv:", ContentAlignment.MiddleRight);
+      tbx_artiklName = hamper.CreateVvTextBox(1, 0, "tbx_artiklName", "Naziv artikla", GetDB_ColumnSize(DB_ci.artiklName), 8, 0);
+      tbx_artiklName.JAM_Highlighted = true;
+      tbx_artiklName.JAM_DataRequired = true;
+      
+                     hamper.CreateVvLabel  (0, 1, "Šifra:", ContentAlignment.MiddleRight);
+      tbx_artiklCD = hamper.CreateVvTextBox(1, 1, "tbx_artiklCD", "Šifra artikla", GetDB_ColumnSize(DB_ci.artiklCD), 1, 0);
+      tbx_artiklCD.JAM_Highlighted = true;
+      tbx_artiklCD.JAM_DataRequired = true;
+
+      btn_numCd = hamper.CreateVvButton(3, 1, new EventHandler(GetNextSifraWroot_String_btnClick), "");
+      btn_numCd.Name = "btn_goExLinkNewNum";
+      btn_numCd.FlatStyle = FlatStyle.Flat;
+      btn_numCd.FlatAppearance.BorderColor = ZXC.vvColors.userControl_BackColor;
+      btn_numCd.Image = VvIco.TriangleGreenL24/*new Icon((ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.bullet_triangle_greenLeft.ico")), 24, 24)*/.ToBitmap();
+      btn_numCd.TabStop = false;
+      btn_numCd.Visible = false;
+
+               hamper.CreateVvLabel        (0, 2, "Tip:", ContentAlignment.MiddleRight);
+      tbx_ts = hamper.CreateVvTextBoxLookUp(1, 2, "tbx_ts", "Tip (kategorija) artikla roba, mater, vlproizv, usluga, ambalaza, uzorak, prolazna stavka, takse", GetDB_ColumnSize(DB_ci.ts));
+      tbx_tsOpis = hamper.CreateVvTextBox  (2, 2, "tbx_tsOpis", "", 32);
+      tbx_tsOpis.JAM_ReadOnly = true;
+      tbx_ts.JAM_Set_LookUpTable(ZXC.luiListaArtiklTS, (int)ZXC.Kolona.prva);
+      tbx_ts.JAM_lui_NameTaker_JAM_Name = tbx_tsOpis.JAM_Name;
+
+                       hamper.CreateVvLabel        (0, 3, "Grupa A:", ContentAlignment.MiddleRight);
+      tbx_grupa1CD   = hamper.CreateVvTextBoxLookUp(1, 3, "tbx_grupa1CD", "", GetDB_ColumnSize(DB_ci.grupa1CD));
+      tbx_grupa1Opis = hamper.CreateVvTextBox      (2, 3, "tbx_grupa1Opis", "", 32);
+      tbx_grupa1Opis.JAM_ReadOnly = true;
+      tbx_grupa1CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
+      tbx_grupa1CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa1Opis.JAM_Name;
+
+                       hamper.CreateVvLabel        (0, 4, "Gr RAM:", ContentAlignment.MiddleRight);
+      tbx_grupa2CD   = hamper.CreateVvTextBoxLookUp(1, 4, "tbx_grupa2CD", "", GetDB_ColumnSize(DB_ci.grupa2CD));
+      tbx_grupa2Opis = hamper.CreateVvTextBox      (2, 4, "tbx_grupa2Opis", "", 32);
+      tbx_grupa2Opis.JAM_ReadOnly = true;
+      tbx_grupa2CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+      tbx_grupa2CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa2Opis.JAM_Name;
+
+                       hamper.CreateVvLabel        (0, 5, "Gr HDD:", ContentAlignment.MiddleRight);
+      tbx_grupa3CD   = hamper.CreateVvTextBoxLookUp(1, 5, "tbx_grupa3CD", "", GetDB_ColumnSize(DB_ci.grupa3CD));
+      tbx_grupa3Opis = hamper.CreateVvTextBox      (2, 5, "tbx_grupa3Opis", "", 32);
+      tbx_grupa3Opis.JAM_ReadOnly = true;
+      tbx_grupa3CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
+      tbx_grupa3CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa3Opis.JAM_Name;
+
+
+                      hamper.CreateVvLabel  (4, 1, "PCK baza:", ContentAlignment.MiddleRight);
+      tbx_carTarifa = hamper.CreateVvTextBox(5, 1, "tbx_CarTarifa", "PCK baza", GetDB_ColumnSize(DB_ci.carTarifa), 1, 0);
+
+                        hamper.CreateVvLabel   (7, 1, "RAM:", ContentAlignment.MiddleRight);
+      tbx_zapremina   = hamper.CreateVvTextBox (8, 1, "tbx_zapremina"  , "RAM"   , GetDB_ColumnSize(DB_ci.zapremina));
+      tbx_zapreminaJM = hamper.CreateVvTextBox (9, 1, "tbx_zapreminaJM", "RAM JM", GetDB_ColumnSize(DB_ci.zapreminaJM));
+      tbx_zapremina.JAM_ForeColor = tbx_zapreminaJM.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG; 
+      tbx_zapremina.JAM_Highlighted = true;
+      tbx_zapremina.JAM_MarkAsNumericTextBox(0, false, decimal.MaxValue, decimal.MinValue, true);
+
+                      hamper.CreateVvLabel   (7, 2, "HDD:", ContentAlignment.MiddleRight);
+      tbx_duljina   = hamper.CreateVvTextBox (8, 2, "tbx_duljina"  , "HDD"   , GetDB_ColumnSize(DB_ci.duljina));
+      tbx_duljinaJM = hamper.CreateVvTextBox (9, 2, "tbx_duljinaJM", "HDD JM", GetDB_ColumnSize(DB_ci.duljinaJM));
+      tbx_duljina.JAM_ForeColor = tbx_duljinaJM.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG; 
+      tbx_duljina.JAM_Highlighted = true;
+      tbx_duljina.JAM_MarkAsNumericTextBox(0, false, decimal.MaxValue, decimal.MinValue, true);
+
+                     hamper.CreateVvLabel  (4, 3, "BarKod:"   , ContentAlignment.MiddleRight);
+      tbx_barCode1 = hamper.CreateVvTextBox(5, 3, "tbx_barCode1", "Barkod artikla", GetDB_ColumnSize(DB_ci.barCode1), 1, 0);
+
+                  hamper.CreateVvLabel  ( 7, 3, "JM:", ContentAlignment.MiddleRight);
+      tbx_jedMj = hamper.CreateVvTextBox( 8, 3, "tbx_jedMj", "Jedinica mjere", GetDB_ColumnSize(DB_ci.jedMj),1,0);
+    
+                       hamper.CreateVvLabel        (4, 4, "PDV razred:", ContentAlignment.MiddleRight);
+      tbx_pdvKat     = hamper.CreateVvTextBoxLookUp(5, 4, "tbx_pdvKat", "", GetDB_ColumnSize(DB_ci.pdvKat));
+      tbx_pdvKatOpis = hamper.CreateVvTextBox      (6, 4, "tbx_pdvKatOpis", "PDV razred (npr 23%, 10%, 0%, oslob, ...)", 32, 3, 0);
+      tbx_pdvKatOpis.JAM_ReadOnly = true;
+      tbx_pdvKat.JAM_Set_LookUpTable(ZXC.luiListaPdvKat, (int)ZXC.Kolona.prva);
+      tbx_pdvKat.JAM_lui_NameTaker_JAM_Name = tbx_pdvKatOpis.JAM_Name;
+
+                    hamper.CreateVvLabel        (4, 5, "Uob Skl:", ContentAlignment.MiddleRight);
+      tbx_skladCD = hamper.CreateVvTextBoxLookUp(5, 5, "tbx_skladCD", "", GetDB_ColumnSize(DB_ci.skladCD));
+      tbx_skladOpis = hamper.CreateVvTextBox    (6, 5, "tbx_skladOpis", "", 32, 3, 0);
+      tbx_skladOpis.JAM_ReadOnly = true;
+      tbx_skladCD.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_skladCD.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis.JAM_Name;
+  
+                    // hamper.CreateVvLabel  (8, 1, "Opis:", ContentAlignment.MiddleRight);
+      tbx_longOpis = hamper.CreateVvTextBox(10, 0, "tbx_longOpis", "Opširan opis artikla", GetDB_ColumnSize(DB_ci.longOpis), 0, 5);
+      tbx_longOpis.Font = ZXC.vvFont.SmallFont;
+      tbx_longOpis.Multiline = true;
+      tbx_longOpis.ScrollBars = ScrollBars.Vertical;
+
+
+
+                //hamper.CreateVvLabel  (6, 2, "Konto:"   , 1, 0, ContentAlignment.MiddleRight);
+      tbx_konto = hamper.CreateVvTextBox(8, 2, "tbx_konto", "Konto", GetDB_ColumnSize(DB_ci.konto));
+      tbx_konto.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+      tbx_konto.JAM_SetAutoCompleteData(Kplan.recordName, Kplan.sorterKonto.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kplan_sorterCode), null);
+                   //hamper.CreateVvLabel      (3, 3, "ProdCij:", 1, 0, ContentAlignment.MiddleRight);
+      rbt_vpc1     = hamper.CreateVvRadioButton(5, 3, null, "VPC1",  TextImageRelation.TextBeforeImage);
+      rbt_marza    = hamper.CreateVvRadioButton(6, 3, null, "Marža",  TextImageRelation.TextBeforeImage);
+      cbx_isRashod = hamper.CreateVvCheckBox_OLD(7, 3, null, 1, 0, "Neaktivan", System.Windows.Forms.RightToLeft.Yes);
+      tbx_konto   .Visible =
+      rbt_vpc1    .Visible = 
+      rbt_marza   .Visible = 
+      cbx_isRashod.Visible = false;
+      rbt_vpc1.Checked = true;
+      rbt_vpc1.Tag     = true;
 
       this.ControlForInitialFocus = tbx_artiklName;
    }
@@ -958,10 +1093,8 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
 
-      string lblText = (name == "AZapremina:" && ZXC.IsPCTOGO == true) ? "ARAM:" :
-                      ((name == "ADuljina:"   && ZXC.IsPCTOGO == true) ? "AHDD:" : name);
 
-              hamper.CreateVvLabel   (0, 0, /*name*/ lblText, ContentAlignment.MiddleRight);
+              hamper.CreateVvLabel   (0, 0, name, ContentAlignment.MiddleRight);
       tbx   = hamper.CreateVvTextBox (1, 0, "tbx_"   + name, name, dbci);
       tbxJM = hamper.CreateVvTextBox (2, 0, "tbxJM_" + name, name, dbciJM);
 
@@ -971,8 +1104,8 @@ public class ArtiklUC : VvSifrarRecordUC
       tbx.JAM_MarkAsNumericTextBox(3, false, decimal.MaxValue, decimal.MinValue, true);
 
       
-      if(name == "AZapremina:" && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = tbxJM.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG; tbx.JAM_Highlighted = true; }
-      if(name == "ADuljina:"   && ZXC.IsPCTOGO == true) { tbx.JAM_ForeColor = tbxJM.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG; tbx.JAM_Highlighted = true; }
+      if(name == "AZapremina:" && ZXC.IsPCTOGO == true) { hamper.Visible = false; }
+      if(name == "ADuljina:"   && ZXC.IsPCTOGO == true) { hamper.Visible = false; }
    }
 
    private void Initialize_ArtiklCD2Hamper(out VvHamper hamper, string name, int _nextX, int _nextY) 
@@ -1039,6 +1172,7 @@ public class ArtiklUC : VvSifrarRecordUC
                       hamper.CreateVvLabel  (0, 0, hamper.Name, ContentAlignment.MiddleRight);
       tbx_carTarifa = hamper.CreateVvTextBox(1, 0, "tbx_CarTarifa", "Carinska Tarifa", GetDB_ColumnSize(DB_ci.carTarifa));
 
+      hamper.Visible = !ZXC.IsPCTOGO;
    }
 
    private void Initialize_DobavljacHamper(out VvHamper hamper, string name, int _nextX, int _nextY)
@@ -1243,8 +1377,9 @@ public class ArtiklUC : VvSifrarRecordUC
       tbx_grupa2CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
       tbx_grupa2CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa2Opis.JAM_Name;
 
+      hamper.Visible = !ZXC.IsPCTOGO;
    }
-   
+
    private void Initialize_Grupa3CDHamper (out VvHamper hamper, string name, int _nextX, int _nextY)
    {
       hamper = new VvHamper(3, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp);
@@ -1267,8 +1402,11 @@ public class ArtiklUC : VvSifrarRecordUC
       tbx_grupa3Opis.JAM_ReadOnly = true;
       tbx_grupa3CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
       tbx_grupa3CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa3Opis.JAM_Name;
+
+      hamper.Visible = !ZXC.IsPCTOGO;
+
    }
-   
+
    private void Initialize_PlacementHamper(out VvHamper hamper, string name, int _nextX, int _nextY)
    {
       hamper = new VvHamper(4, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp);

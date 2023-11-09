@@ -13981,6 +13981,9 @@ public class FakturPDUC : FakturExtDUC
          decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_decB  , rowIdx, false);
          decimal newHDD   = oldHDD + plusHDD - minusHDD;
          TheG2.PutCell(ci2.iT_decC, rowIdx, newHDD);
+         
+         
+         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
       }
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
@@ -14705,9 +14708,9 @@ public class FakturPDUC : FakturExtDUC
 
          if(artikl_rec != null && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {
-            TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD);
-            TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD);
-            TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
+            TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD );
+            TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD );
+            TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS       );
             //SetColorsPCKartikl();
          }
          
@@ -14725,6 +14728,8 @@ public class FakturPDUC : FakturExtDUC
          { 
             TheG2.PutCell(ci2.iT_dimZ, rowIdx, (rtrano_rec.T_dimZ).ToString0Vv());
             TheG2.PutCell(ci2.iT_decC, rowIdx, (rtrano_rec.T_decC).ToString0Vv());
+            
+            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec.CarTarifa);
          }
 
          if(IsPTG_UgAnDo_DUC && rtrano_rec.T_paletaNo.IsPositive())
@@ -14741,8 +14746,6 @@ public class FakturPDUC : FakturExtDUC
             
             TheG2.PutCell(ci2.iR_ramOld, rowIdx, rtrano_rec.R_MOD_RAM_old);
             TheG2.PutCell(ci2.iR_hddOld, rowIdx, rtrano_rec.R_MOD_HDD_old);
-
-            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, Artikl.Get_ArtiklCD_PCK_base(oldArtiklCD));
          }
 
       } // if(ZXC.IsPCTOGO) 
