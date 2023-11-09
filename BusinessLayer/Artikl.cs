@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using MySql.Data.MySqlClient;
 using static ArtiklDao;
@@ -1463,6 +1464,21 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
                  AS_InvFinKNJ_Manjk_BEF +
                  AS_InvFinKNJ_Visak_AFT +
                  AS_InvFinKNJ_Visak_BEF).NotZero();
+      }
+   }
+
+   public static string Get_New_ArtiklCD_From_PCK_base_RAM_HDD(string PCK_baseCD, decimal ram, decimal hdd)
+   {
+      if(ZXC.IsPCTOGO == false) return PCK_baseCD;
+
+      return PCK_baseCD + "." + ram.ToString0Vv() + "." + hdd.ToString0Vv();
+   }
+
+   public string New_ArtiklCD_From_PCK_base_RAM_HDD
+   {
+      get
+      {
+         return Get_New_ArtiklCD_From_PCK_base_RAM_HDD(this.CarTarifa, this.Zapremina, this.Duljina);
       }
    }
 
