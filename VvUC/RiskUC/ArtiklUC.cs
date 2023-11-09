@@ -125,6 +125,9 @@ public class ArtiklUC : VvSifrarRecordUC
 
       ResumeLayout();
 
+      // 09.11.2023: 
+      this.Validating += new CancelEventHandler(ArtiklUC_Validating);
+
    }
 
    void ArtiklUC_Validating(object sender, CancelEventArgs e)
@@ -135,14 +138,22 @@ public class ArtiklUC : VvSifrarRecordUC
          TheVvTabPage.WriteMode == ZXC.WriteMode.Delete ||
          this.Visible == false) return;
 
-      DateTime serverNow = VvSQL.GetServer_DateTime_Now(TheDbConnection);
+      //DateTime serverNow = VvSQL.GetServer_DateTime_Now(TheDbConnection);
 
       #endregion Should validate enivej?
 
-      if(Fld_Grupa1CD.IsEmpty())
+      //if(Fld_Grupa1CD.IsEmpty())
+      //{
+      //   ZXC.aim_emsg(MessageBoxIcon.Error, "Polje 'Grupa A' ne moze biti prazno!");
+      //   e.Cancel = true;
+      //}
+
+      // 09.11.2023: 
+      if(ZXC.IsPCTOGO && Fld_Ts == ZXC.PCK_TS)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Polje 'Grupa A' ne moze biti prazno!");
-         e.Cancel = true;
+         if(Fld_CarTarifa.IsEmpty()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Za PCK artikl morate zadati PCK baznu šifru."); e.Cancel = true; }
+         if(Fld_Zapremina.IsZero ()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Za PCK artikl morate zadati RAM kapacitet."  ); e.Cancel = true; }
+         if(Fld_Duljina  .IsZero ()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Za PCK artikl morate zadati HDD kapacitet."  ); e.Cancel = true; }
       }
 
    }
