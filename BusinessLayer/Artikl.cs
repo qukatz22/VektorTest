@@ -1533,9 +1533,15 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
                                         a.Zapremina                   == newPCK_RAM                                 && 
                                         a.Duljina                     == newPCK_HDD                                  );
 
-      if(newArtikl_rec == null) return "";
+      if(newArtikl_rec == null)
+      {
+         if(false/*pitaj ga os / nes*/) return ""; // TODO 
 
-      return newArtikl_rec.ArtiklCD;
+         newArtikl_rec = ZXC.TheVvForm.ADD_NEW_PTG_CalculatedArtikl_From_SenderArtiklCD_NewRAM_NewHDD(origArtikl_rec, newPCK_RAM, newPCK_HDD);
+      }
+
+      if(newArtikl_rec == null) return "";
+      else                      return newArtikl_rec.ArtiklCD;
    }
 
 
