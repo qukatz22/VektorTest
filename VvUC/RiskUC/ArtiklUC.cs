@@ -23,7 +23,7 @@ public class ArtiklUC : VvSifrarRecordUC
 {
    #region Fieldz
 
-   private VvTextBox tbx_artiklCD, tbx_artiklName, tbx_barCode1, tbx_skladCD, tbx_skladOpis, tbx_grupa1CD, tbx_grupa1Opis, tbx_jedMj,
+   private VvTextBox tbx_artiklCD, /*tbx_artiklName,*/ tbx_barCode1, tbx_skladCD, tbx_skladOpis, tbx_grupa1CD, tbx_grupa1Opis, tbx_jedMj,
                      tbx_ts, tbx_tsOpis, tbx_konto, tbx_longOpis, tbx_pdvKat, tbx_pdvKatOpis,
                      tbx_artiklCD2, tbx_artiklName2,
                      tbx_barCode2, tbx_serNo, tbx_grupa2CD, tbx_grupa2Opis, tbx_grupa3CD, tbx_grupa3Opis,
@@ -45,7 +45,7 @@ public class ArtiklUC : VvSifrarRecordUC
                      tbx_frsMinTT, tbx_frsMinTTnum,
                      tbx_snaga, tbx_snagaJM, tbx_emisCo2, tbx_euroNorma, tbx_prNabCijOP; 
    private Label     lbl_frsMin;
-
+   public VvTextBox  tbx_artiklName;
    private VvDateTimePicker dtp_dateProizv, dtp_atestDate, dtp_naDan, dtp_dateZadUlaz, dtp_dateZadIzlaz, dtp_dateZadInv, dtp_datePS, dtp_dateZadnji;
 
    private CheckBox cbx_isRashod, cbx_isAkcija, cbx_isMaster, cbx_isDozvMinus, cbx_isSerBr, cbx_isPrnOpis;
@@ -151,9 +151,9 @@ public class ArtiklUC : VvSifrarRecordUC
       // 09.11.2023: 
       if(ZXC.IsPCTOGO && Fld_Ts == ZXC.PCK_TS)
       {
-         if(Fld_CarTarifa.IsEmpty()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Za PCK artikl morate zadati PCK baznu šifru."); e.Cancel = true; }
-         if(Fld_Zapremina.IsZero ()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Za PCK artikl morate zadati RAM kapacitet."  ); e.Cancel = true; }
-         if(Fld_Duljina  .IsZero ()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Za PCK artikl morate zadati HDD kapacitet."  ); e.Cancel = true; }
+         if(Fld_Zapremina.IsZero ()) { ZXC.aim_emsg(MessageBoxIcon./*Stop*/Warning, "Za PCK artikl morate zadati RAM kapacitet."  ); /*e.Cancel = true;*/}
+         if(Fld_Duljina  .IsZero ()) { ZXC.aim_emsg(MessageBoxIcon./*Stop*/Warning, "Za PCK artikl morate zadati HDD kapacitet."  ); /*e.Cancel = true;*/}
+         if(Fld_CarTarifa.IsEmpty()) { ZXC.aim_emsg(MessageBoxIcon.Stop           , "Za PCK artikl morate zadati PCK baznu šifru."); e.Cancel = true; }
       }
 
    }
@@ -2598,6 +2598,13 @@ public class ArtiklUC : VvSifrarRecordUC
        {
           //PTG_PCKinfoLoaded = false;
           DecideIfShouldLoad_PCKinfo(null, null, null);//03.07.2023
+
+            if(artikl_rec.TS == ZXC.PCK_TS)
+            {
+               if(artikl_rec.Zapremina.IsZero()) tbx_zapremina.Text = "0";
+               if(artikl_rec.Duljina  .IsZero()) tbx_duljina  .Text = "0";
+
+            }
        }
 
          //Rtrans UGOrtrans_rec = new Rtrans();

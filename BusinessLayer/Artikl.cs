@@ -1471,8 +1471,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       if(ZXC.IsPCTOGO == false) return PCK_baseCD;
 
-    //return PCK_baseCD + "." + ram.ToString0Vv() + "." + hdd.ToString0Vv();
-      return PCK_baseCD + "." + ram.ToString()    + "." + hdd.ToString()   ;
+    //return PCK_baseCD + "." + ram.ToString0Vv()         + "." + hdd.ToString0Vv()        ;
+      return PCK_baseCD + "." + ram.ToString0Vv_NoGroup() + "." + hdd.ToString0Vv_NoGroup();
    }
 
    public string New_ArtiklCD_From_PCK_base_RAM_HDD

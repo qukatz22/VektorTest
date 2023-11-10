@@ -1766,6 +1766,18 @@ public class VvAddInteractiveSifrarRecordDlg : Crownwood.DotNetMagic.Forms.DotNe
       // ====== User 4 MySQL additions END   =============================
 
 
+      //10.11.2023. da i ovdje kod spremanja naoravi pck artiklCd
+      if(ZXC.IsPCTOGO && TheVvTabPage.TheVvUC is ArtiklUC) // Sredi PCK ArtiklCD 
+      {
+         ArtiklUC theVvUC  = TheVvTabPage.TheVvUC as ArtiklUC;
+         Artikl artikl_rec = TheVvDataRecord as Artikl;
+         if(artikl_rec.TS == ZXC.PCK_TS)
+         {
+            artikl_rec.ArtiklCD = theVvUC.Fld_ArtiklCd = artikl_rec.New_ArtiklCD_From_PCK_base_RAM_HDD;
+         }
+      }
+
+
       if(OK)
       {
          OK = TheVvDao.ADDREC(TheDbConnection, TheVvDataRecord);

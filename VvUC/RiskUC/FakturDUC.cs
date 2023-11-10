@@ -15142,6 +15142,30 @@ public class FakturPDUC : FakturExtDUC
          }
          dlg.Dispose();
       }
+      else if(e.ColumnIndex == ci2.iR_artiklCD_Old)// na MOD ducu
+      { 
+         string artiklCD   = theG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
+
+         if(artiklCD.IsEmpty()) return; // znaci da smo u zutome probali doubleclickom inicirati editiranje cell-a 
+
+         SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+
+         Artikl artikl_rec;
+         try
+         {
+            artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD).MakeDeepCopy();
+         }
+         catch(Exception ex)
+         {
+            artikl_rec = null;
+         }
+
+         if(artikl_rec != null)
+         {
+            TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(TheVvTabPage.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.ART), artikl_rec);
+         }
+      }
+
       else
       { }
 
