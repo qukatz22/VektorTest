@@ -1487,11 +1487,29 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       if(ZXC.IsPCTOGO == false) return artiklCD;
 
-      string[] tokens = artiklCD.Replace(" ", "").Split(new char[] { '.', '@' }, StringSplitOptions.RemoveEmptyEntries);
+      string[] tokens = artiklCD./*Replace(" ", "").*/Split(new char[] { '.', '@' }, StringSplitOptions.RemoveEmptyEntries);
 
       if(tokens.Length.IsZero()) return artiklCD;
 
-      return tokens[0];
+      return tokens[0].TrimEnd(new char[] { ' '});
+   }
+
+   public static (decimal PCK_RAM, decimal PCK_HDD) Get_PTG_RAM_HDD_From_ArtiklCD(string artiklCD)
+   {
+      if(ZXC.IsPCTOGO == false) return (0, 0);
+
+      //  nadi cio artiklCD_rec i vrati njegove zapremina, diuljina
+
+      string[] tokens = artiklCD.Replace(" ", "").Split(new char[] { '.', '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+      decimal thePCK_RAM = 0M;
+      decimal thePCK_HDD = 0M;
+
+      if(tokens.Length == 0) return (0, 0);
+      if(tokens.Length >  1) thePCK_RAM = ZXC.ValOrZero_Decimal(tokens[1], 0);
+      if(tokens.Length >  2) thePCK_HDD = ZXC.ValOrZero_Decimal(tokens[2], 0);
+
+      return (thePCK_RAM, thePCK_HDD);
    }
 
    public string ArtiklCD_PCK_base
@@ -1505,19 +1523,6 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    public static bool Has_equal_PCK_base(string artiklCD1, string artiklCD2)
    {
       return Get_ArtiklCD_PCK_base(artiklCD1) == Get_ArtiklCD_PCK_base(artiklCD2);
-   }
-
-   public static (decimal PCK_RAM, decimal PCK_HDD) Get_PTG_RAM_HDD_From_ArtiklCD(string artiklCD)
-   {
-      if(ZXC.IsPCTOGO == false) return (0, 0);
-
-      //  nadi cio artiklCD_rec i vrati njegove zapremina, diuljina
-
-      //string[] tokens = artiklCD.Replace(" ", "").Split("@".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-
-      //if(tokens.Length.IsZero()) return artiklCD;
-      //
-      return (0, 0);
    }
 
    public static string Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(string senderArtiklCD, decimal newPCK_RAM, decimal newPCK_HDD)
@@ -1545,8 +1550,9 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    }
 
 
-   public decimal PCK_RAM { get { if(ZXC.IsPCTOGO == false) return 0M; return Zapremina; } }
-   public decimal PCK_HDD { get { if(ZXC.IsPCTOGO == false) return 0M; return Duljina  ; } }
+   public string  PCK_BaseCD { get { if(ZXC.IsPCTOGO == false) return ""; return this.CarTarifa; } set { if(ZXC.IsPCTOGO) this.CarTarifa = value; } }
+   public decimal PCK_RAM    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Zapremina; } set { if(ZXC.IsPCTOGO) this.Zapremina = value; } }
+   public decimal PCK_HDD    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Duljina  ; } set { if(ZXC.IsPCTOGO) this.Duljina   = value; } }
 
    #endregion Some Util - Results propertiz
 

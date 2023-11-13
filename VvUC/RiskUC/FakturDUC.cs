@@ -13945,7 +13945,7 @@ public class FakturPDUC : FakturExtDUC
       if(IsPTG_UgAnDo_DUC) vvtbT_artiklCD2.JAM_ReadOnly = true;
    }
 
-   private void SetRow_TT_and_Color(object sender, EventArgs e)
+   private void SetRow_TT_and_Color_and_Calc_newRam_newHdd(object sender, EventArgs e)
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
@@ -13974,12 +13974,14 @@ public class FakturPDUC : FakturExtDUC
          decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_dimX  , rowIdx, false);
          decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_dimY  , rowIdx, false);
          decimal newRAM   = oldRAM + plusRAM - minusRAM;
+         if(newRAM.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New RAM je NEGATIVAN!?");
          TheG2.PutCell(ci2.iT_dimZ, rowIdx, newRAM);
 
          decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld, rowIdx, false);
          decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_decA  , rowIdx, false);
          decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_decB  , rowIdx, false);
          decimal newHDD   = oldHDD + plusHDD - minusHDD;
+         if(newHDD.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!?");
          TheG2.PutCell(ci2.iT_decC, rowIdx, newHDD);
          
          
@@ -14075,7 +14077,7 @@ public class FakturPDUC : FakturExtDUC
       TheG2.PutCell(ci2.iT_dimY, rowIdx, ram_kolPutaKapacitet);
       TheG2.PutCell(ci2.iT_decB, rowIdx, hdd_kolPutaKapacitet);
 
-      SetRow_TT_and_Color(sender, e);
+      SetRow_TT_and_Color_and_Calc_newRam_newHdd(sender, e);
    }
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, bool isMOC_PCK_base, decimal MOC_wanted_NEW_RAM, decimal MOC_wanted_NEW_HDD, bool shouldWarn)
@@ -14179,7 +14181,7 @@ public class FakturPDUC : FakturExtDUC
       else if(this is MOD_PTG_DUC) // PCK serno handling for MOC/MOS rtrano row 
       {
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno_For_MOD);
-         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler(SetRow_TT_and_Color    );
+         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
       else // old, default PPUK 
       {
@@ -14215,7 +14217,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_dimX.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_dimX.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_dimX.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       }
 
@@ -14231,7 +14233,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_dimY.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_dimY.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_dimY.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
       }
@@ -14315,7 +14317,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_decA.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_decA.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_decA.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
       }
@@ -14331,7 +14333,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_decB.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color);
+         vvtbT_decB.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_decB.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
       }
@@ -14493,7 +14495,7 @@ public class FakturPDUC : FakturExtDUC
 
    protected void R_artiklCD2_OLD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
-      vvtbT_artiklCD2_Old = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_artiklCD2_Old", TheVvDaoTrans2, -12, _statusText);
+      vvtbT_artiklCD2_Old = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_artiklCD2_Old", TheVvDaoTrans2, DB_Tci2.t_artiklCD, _statusText);
       vvtbT_artiklCD2_Old.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnGrid_Leave));
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_artiklCD2_Old, TheVvDaoTrans2, "R_artiklCD_Old", _colHeader, ZXC.Q6un);
@@ -14729,7 +14731,7 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iT_dimZ, rowIdx, (rtrano_rec.T_dimZ).ToString0Vv());
             TheG2.PutCell(ci2.iT_decC, rowIdx, (rtrano_rec.T_decC).ToString0Vv());
             
-            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec.CarTarifa);
+            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec./*CarTarifa*/PCK_BaseCD);
          }
 
          if(IsPTG_UgAnDo_DUC && rtrano_rec.T_paletaNo.IsPositive())

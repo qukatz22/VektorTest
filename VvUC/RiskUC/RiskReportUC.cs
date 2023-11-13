@@ -282,7 +282,7 @@ public partial class RiskFilterUC : VvFilterUC
    private RadioButton rbSort_Datum, rbSort_Broj, rbSort_Partner,
                             rbArtSort_ByName, rbArtSort_BySifra, rbArtSort_ByBarCode, rbArtSort_topByKol, rbArtSort_topByFin, rbArtSort_topByRuc,
                             rbt_grupNull, rbt_grupUser, rbt_grupPartner, rbt_grupValuta, rbt_grupPutnik, rbt_grupMjTros, rbt_grupPosJed, rbt_grupProjekt, rbt_grupNacPl, rbt_grupTT, rbt_grupMonth, rbt_grupSkladCD, rbt_grupTH_CycleM, rbt_grupGodina,
-                            rbt_grupArtNull, rbt_grupArtTs, rbt_grupArtGr1, rbt_grupArtGr2, rbt_grupArtGr3,
+                            rbt_grupArtNull, rbt_grupArtTs, rbt_grupArtGr1, rbt_grupArtGr2, rbt_grupArtGr3, rbt_grupArtPCK,
                             rbt_pdvKnjigaR, rbt_pdvKnjigaP, rbt_pdvKnjigUr, rbt_pdvKnjigUu, rbt_pdvKnjigNijedna,
                             rbt_pdvR1, rbt_pdvR2, rbt_pdvSviR,
                             rbt_grupWeek, rbt_grupDay, rbt_grupHour,
@@ -1412,6 +1412,8 @@ public partial class RiskFilterUC : VvFilterUC
       rbt_grupArtGr1 = hamper.CreateVvRadioButton(1, 1, null, "GrupiA", TextImageRelation.ImageBeforeText);
       rbt_grupArtGr2 = hamper.CreateVvRadioButton(2, 1, null, "GrupiB", TextImageRelation.ImageBeforeText);
       rbt_grupArtGr3 = hamper.CreateVvRadioButton(3, 1, null, ZXC.IsSPSISTdemo ? "Kat.Br.": "GrupiC", TextImageRelation.ImageBeforeText);
+      rbt_grupArtGr3.Visible = false;
+      rbt_grupArtPCK = hamper.CreateVvRadioButton(3, 1, null, "PCKu", TextImageRelation.ImageBeforeText);
 
       if(ZXC.IsSvDUH == false) hamper.CreateVvLabel        (0, 2, "SamoTip:", ContentAlignment.MiddleRight);
       tbx_Artikl_TS          = hamper.CreateVvTextBoxLookUp(0, 3, "tbx_artikl_TS", "Tip artikla");
@@ -2262,6 +2264,7 @@ public partial class RiskFilterUC : VvFilterUC
          else if(rbt_grupArtGr1 .Checked) return "Grupa1CD";
          else if(rbt_grupArtGr2 .Checked) return "Grupa2CD";
          else if(rbt_grupArtGr3 .Checked) return "Grupa3CD";
+         else if(rbt_grupArtPCK .Checked) return "CarTarifa";
          else return "";
       }
       set
@@ -2270,6 +2273,7 @@ public partial class RiskFilterUC : VvFilterUC
          else if(value == "Grupa1CD") rbt_grupArtGr1.Checked = true;
          else if(value == "Grupa2CD") rbt_grupArtGr2.Checked = true;
          else if(value == "Grupa3CD") rbt_grupArtGr3.Checked = true;
+         else if(value == "CarTarifa")rbt_grupArtPCK.Checked = true;
          else rbt_grupArtNull.Checked = true;
       }
    }
