@@ -3496,10 +3496,11 @@ public class RptR_StandardRiskReport : VvRiskReport
 
       switch(artiklGRtype)
       {
-         case "TS"      : return artikl_rec.TS      .NotEmpty() ? artikl_rec.TS       : " NEDEFINIRANI Tip Artikla"   ;
-         case "Grupa1CD": return artikl_rec.Grupa1CD.NotEmpty() ? artikl_rec.Grupa1CD : " NEDEFINIRANA Grupa1 Artikla";
-         case "Grupa2CD": return artikl_rec.Grupa2CD.NotEmpty() ? artikl_rec.Grupa2CD : " NEDEFINIRANA Grupa2 Artikla";
-         case "Grupa3CD": return artikl_rec.Grupa3CD.NotEmpty() ? artikl_rec.Grupa3CD : " NEDEFINIRANA Grupa3 Artikla";
+         case "TS"       : return artikl_rec.TS       .NotEmpty() ? artikl_rec.TS        : " NEDEFINIRANI Tip Artikla"   ;
+         case "Grupa1CD" : return artikl_rec.Grupa1CD .NotEmpty() ? artikl_rec.Grupa1CD  : " NEDEFINIRANA Grupa1 Artikla";
+         case "Grupa3CD" : return artikl_rec.Grupa3CD .NotEmpty() ? artikl_rec.Grupa3CD  : " NEDEFINIRANA Grupa3 Artikla";
+         case "Grupa2CD" : return artikl_rec.Grupa2CD .NotEmpty() ? artikl_rec.Grupa2CD  : " NEDEFINIRANA Grupa2 Artikla";
+         case "CarTarifa": return artikl_rec.CarTarifa.NotEmpty() ? artikl_rec.CarTarifa : " NEDEFINIRANA PCK baza Artikla";
          
          default: return "";
       }

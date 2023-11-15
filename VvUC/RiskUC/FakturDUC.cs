@@ -14492,7 +14492,6 @@ public class FakturPDUC : FakturExtDUC
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD1, null, "R_skladCD1", _colHeader, _width);
    }
-
    protected void R_artiklCD2_OLD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_artiklCD2_Old = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_artiklCD2_Old", TheVvDaoTrans2, DB_Tci2.t_artiklCD, _statusText);
@@ -14507,7 +14506,6 @@ public class FakturPDUC : FakturExtDUC
     //}
 
    }
-
    protected void R_PCK_baza_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_PCK_baza = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_PCK_baza", TheVvDaoTrans2, -12, _statusText);
@@ -15061,20 +15059,70 @@ public class FakturPDUC : FakturExtDUC
 
    private void SetColors_MOD_PTG_DUC(string TT, int rowIdx)
    {
-      VvDataGridView dgv = TheG2;
+    //VvDataGridView dgv = TheG2;
 
-      foreach(DataGridViewTextBoxCell tbxCell in dgv.Rows[rowIdx].Cells)
+      Color clr_MOC = Color.FromArgb(255, 204, 153);
+      Color clr_MOS = ZXC.vvColors.clr_PCK_PTG;
+      Color clr_MOI = Color.FromArgb(204, 255, 204);
+      Color clr_MOU = Color.FromArgb(204, 230, 255);
+      Color clr_old = Color.LightBlue;
+      Color clr_new = Color.Lavender;
+
+
+    //foreach(DataGridViewTextBoxCell tbxCell in dgv  .Rows[rowIdx].Cells)
+      foreach(DataGridViewTextBoxCell tbxCell in TheG2.Rows[rowIdx].Cells)
       {
          switch(TT)
          {
-            case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG;                                                                                       break;
-            case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); tbxCell.Style.ForeColor = Color.Black; tbxCell.Style.Font = ZXC.vvFont.BaseFont; break;
-            case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); tbxCell.Style.ForeColor = Color.Black; tbxCell.Style.Font = ZXC.vvFont.BaseFont; break;
-            case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153);                                                                                  break;
-
-            default:            tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+            case Faktur.TT_MOC:
+               AddColorsToCell_Oth(clr_MOC, rowIdx);
+               AddColorsToCell_Old(clr_old, rowIdx);
+               AddColorsToCell_New(clr_new, rowIdx);
+               break;
+            case Faktur.TT_MOS:
+               AddColorsToCell_Oth(clr_MOS, rowIdx);
+               AddColorsToCell_Old(clr_old, rowIdx);
+               AddColorsToCell_New(clr_new, rowIdx);
+               break;
+            case Faktur.TT_MOI:
+               tbxCell.Style.BackColor = clr_MOI;
+               break;
+            case Faktur.TT_MOU:
+               tbxCell.Style.BackColor = clr_MOU;
+               break;
+      
+            default: tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
          }
       }
+   }
+   private void AddColorsToCell_Oth(Color clr, int rowIdx)
+   { 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_TT      ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_serno   ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iR_PCK_baza].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_artiklTS].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_ramKlasa].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_hddKlasa].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_skladCD ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_dimX    ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_dimY    ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_decA    ].Style.BackColor =
+      TheG2.Rows[rowIdx].Cells[ci2.iT_decB    ].Style.BackColor = clr;
+   }
+   private void AddColorsToCell_Old(Color clr, int rowIdx)
+   { 
+      TheG2.Rows[rowIdx].Cells[ci2.iR_artiklCD_Old].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_kol         ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iR_ramOld      ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iR_hddOld      ].Style.BackColor = clr; 
+   }
+   private void AddColorsToCell_New(Color clr, int rowIdx)
+   { 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_artiklCD].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_dimZ    ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_decC    ].Style.BackColor = clr;
+      
+      TheG2.Rows[rowIdx].Cells["scrol"        ].Style.BackColor = clr;
    }
 
    #endregion PutDgvFields2(), GetDgvFields2()

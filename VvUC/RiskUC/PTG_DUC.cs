@@ -3277,9 +3277,6 @@ public class MOD_PTG_DUC : FakturPDUC
       T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"              );
       T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"              );
 
-
-
-
     //T_paletaNo_CreateColumn       (ZXC.Q3un     ,    true, "ModSt"       , "Osnovno stavka"                    );
    }
 

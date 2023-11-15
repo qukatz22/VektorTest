@@ -273,7 +273,7 @@ public partial class RiskFilterUC : VvFilterUC
                             tbx_pdv_832vr, tbx_pdv_832br    ,
                             tbx_pdv_833vr, tbx_pdv_833br    ,
                             tbx_pdv_860  , tbx_pdv_840,
-                            tbx_Artikl_TS, tbx_Artikl_Gr1, tbx_Artikl_Gr2, tbx_Artikl_Gr3,
+                            tbx_Artikl_TS, tbx_Artikl_Gr1, tbx_Artikl_Gr2, tbx_Artikl_Gr3, tbx_Artikl_PCK,
                             tbx_FRUF_Name, tbx_FRUF_Value, 
                             tbx_vezDok2OD, tbx_vezDok2DO
                             ;
@@ -1389,54 +1389,104 @@ public partial class RiskFilterUC : VvFilterUC
 
    private void InitializeHamper_GrupirajArtikl(out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 5, "", this, false);
+      if(ZXC.IsPCTOGO)
+      { 
+         hamper = new VvHamper(4, 6, "", this, false);
+         
+         hamper.VvColWdt      = new int[] { ZXC.Q3un- ZXC.Qun8, ZXC.Q3un + ZXC.Qun12, ZXC.Q3un + ZXC.Qun12, ZXC.Q3un + ZXC.Qun12 };
+         hamper.VvSpcBefCol   = new int[] { ZXC.Qun12, ZXC.Qun12, ZXC.Qun12, ZXC.Qun12 };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
+         
+         for(int i = 0; i < hamper.VvNumOfRows; i++)
+         {
+            hamper.VvRowHgt[i]    = ZXC.QUN - ZXC.Qun8;
+            hamper.VvSpcBefRow[i] = ZXC.Qun12;
+         }
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+       //hamper.VvSpcBefRow[2] = ZXC.Qun12 ;
+         hamper.VvRowHgt[4]    = ZXC.QUN ;
+         
+                           hamper.CreateVvLabel      (0, 0, "Grup Artikle po:", 1, 0, ContentAlignment.MiddleLeft);
+         rbt_grupArtNull = hamper.CreateVvRadioButton(3, 0, null, "NE", TextImageRelation.ImageBeforeText);
+         rbt_grupArtNull.Checked = true;
+         rbt_grupArtNull.Tag = true;
 
-      hamper.VvColWdt      = new int[] { ZXC.Q3un - ZXC.Qun2, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
-      hamper.VvRightMargin = hamper.VvLeftMargin;
+         rbt_grupArtPCK = hamper.CreateVvRadioButton(0, 1, null, "PCKu", 1, 0, TextImageRelation.ImageBeforeText);
+         tbx_Artikl_PCK = hamper.CreateVvTextBox    (2, 1, "tbx_artikl_PCK", "PCK baza", 32, 1, 0);
 
-      for(int i = 0; i < hamper.VvNumOfRows; i++)
-      {
-         hamper.VvRowHgt[i]    = ZXC.QUN - ZXC.Qun8;
-         hamper.VvSpcBefRow[i] = ZXC.Qun12;
+         rbt_grupArtTs = hamper.CreateVvRadioButton (0, 2, null, "Tipu", TextImageRelation.ImageBeforeText);
+         rbt_grupArtGr1 = hamper.CreateVvRadioButton(1, 2, null, "GrupiA", TextImageRelation.ImageBeforeText);
+         rbt_grupArtGr2 = hamper.CreateVvRadioButton(2, 2, null, "GrupiB", TextImageRelation.ImageBeforeText);
+         rbt_grupArtGr3 = hamper.CreateVvRadioButton(3, 2, null, "GrupiC", TextImageRelation.ImageBeforeText);
+         
+                                  hamper.CreateVvLabel        (0, 3, "SamoTip:", ContentAlignment.MiddleRight);
+         tbx_Artikl_TS          = hamper.CreateVvTextBoxLookUp(0, 4, "tbx_artikl_TS", "Tip artikla");
+         tbx_Artikl_TS.JAM_Set_LookUpTable(ZXC.luiListaArtiklTS, (int)ZXC.Kolona.prva);
+         
+                          hamper.CreateVvLabel        (1, 3, "SamoGrA:", ContentAlignment.MiddleRight);
+         tbx_Artikl_Gr1 = hamper.CreateVvTextBoxLookUp(1, 4, "tbx_artikl_Gr1", "Grupa A artikla");
+         tbx_Artikl_Gr1.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
+         
+                          hamper.CreateVvLabel        (2, 3, "SamoGrB:", ContentAlignment.MiddleRight);
+         tbx_Artikl_Gr2 = hamper.CreateVvTextBoxLookUp(2, 4, "tbx_artikl_Gr2", "Grupa B artikla");
+         tbx_Artikl_Gr2.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+         
+                          hamper.CreateVvLabel        (3, 3, "SamoGrC:", ContentAlignment.MiddleRight);
+         tbx_Artikl_Gr3 = hamper.CreateVvTextBoxLookUp(3, 4, "tbx_artikl_Gr3", "Grupa C artikla");
+         tbx_Artikl_Gr3.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);      
+
       }
-      hamper.VvBottomMargin = hamper.VvTopMargin;
-      hamper.VvSpcBefRow[2]   = ZXC.Qun12 ;
-      hamper.VvRowHgt[3]   = ZXC.QUN ;
+      else
+      { 
+         hamper = new VvHamper(4, 5, "", this, false);
 
-      hamper.CreateVvLabel(0, 0, "Grup Artikle po:", 1, 0, ContentAlignment.MiddleLeft);
-      rbt_grupArtNull = hamper.CreateVvRadioButton(3, 0, null, "NE", TextImageRelation.ImageBeforeText);
-      rbt_grupArtNull.Checked = true;
-      rbt_grupArtNull.Tag = true;
-      rbt_grupArtTs = hamper.CreateVvRadioButton(0, 1, null, "Tipu", TextImageRelation.ImageBeforeText);
-      rbt_grupArtGr1 = hamper.CreateVvRadioButton(1, 1, null, "GrupiA", TextImageRelation.ImageBeforeText);
-      rbt_grupArtGr2 = hamper.CreateVvRadioButton(2, 1, null, "GrupiB", TextImageRelation.ImageBeforeText);
-      rbt_grupArtGr3 = hamper.CreateVvRadioButton(3, 1, null, ZXC.IsSPSISTdemo ? "Kat.Br.": "GrupiC", TextImageRelation.ImageBeforeText);
-      rbt_grupArtGr3.Visible = false;
-      rbt_grupArtPCK = hamper.CreateVvRadioButton(3, 1, null, "PCKu", TextImageRelation.ImageBeforeText);
+         hamper.VvColWdt      = new int[] { ZXC.Q3un - ZXC.Qun8, ZXC.Q3un + ZXC.Qun12, ZXC.Q3un + ZXC.Qun12, ZXC.Q3un + ZXC.Qun12 };
+         hamper.VvSpcBefCol   = new int[] { ZXC.Qun12, ZXC.Qun12, ZXC.Qun12, ZXC.Qun12 };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      if(ZXC.IsSvDUH == false) hamper.CreateVvLabel        (0, 2, "SamoTip:", ContentAlignment.MiddleRight);
-      tbx_Artikl_TS          = hamper.CreateVvTextBoxLookUp(0, 3, "tbx_artikl_TS", "Tip artikla");
-      tbx_Artikl_TS.JAM_Set_LookUpTable(ZXC.luiListaArtiklTS, (int)ZXC.Kolona.prva);
+         for(int i = 0; i < hamper.VvNumOfRows; i++)
+         {
+            hamper.VvRowHgt[i]    = ZXC.QUN - ZXC.Qun8;
+            hamper.VvSpcBefRow[i] = ZXC.Qun12;
+         }
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+         hamper.VvSpcBefRow[2]   = ZXC.Qun12 ;
+         hamper.VvRowHgt[3]   = ZXC.QUN ;
 
-                       hamper.CreateVvLabel        (1, 2, "SamoGrA:", ContentAlignment.MiddleRight);
-      tbx_Artikl_Gr1 = hamper.CreateVvTextBoxLookUp(1, 3, "tbx_artikl_Gr1", "Grupa A artikla");
-      tbx_Artikl_Gr1.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
+         hamper.CreateVvLabel(0, 0, "Grup Artikle po:", 1, 0, ContentAlignment.MiddleLeft);
+         rbt_grupArtNull = hamper.CreateVvRadioButton(3, 0, null, "NE", TextImageRelation.ImageBeforeText);
+         rbt_grupArtNull.Checked = true;
+         rbt_grupArtNull.Tag = true;
+         rbt_grupArtTs = hamper.CreateVvRadioButton(0, 1, null, "Tipu", TextImageRelation.ImageBeforeText);
+         rbt_grupArtGr1 = hamper.CreateVvRadioButton(1, 1, null, "GrupiA", TextImageRelation.ImageBeforeText);
+         rbt_grupArtGr2 = hamper.CreateVvRadioButton(2, 1, null, "GrupiB", TextImageRelation.ImageBeforeText);
+         rbt_grupArtGr3 = hamper.CreateVvRadioButton(3, 1, null, ZXC.IsSPSISTdemo ? "Kat.Br.": "GrupiC", TextImageRelation.ImageBeforeText);
 
-                       hamper.CreateVvLabel        (2, 2, "SamoGrB:", ContentAlignment.MiddleRight);
-      tbx_Artikl_Gr2 = hamper.CreateVvTextBoxLookUp(2, 3, "tbx_artikl_Gr2", "Grupa B artikla");
-      tbx_Artikl_Gr2.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+         if(ZXC.IsSvDUH == false) hamper.CreateVvLabel        (0, 2, "SamoTip:", ContentAlignment.MiddleRight);
+         tbx_Artikl_TS          = hamper.CreateVvTextBoxLookUp(0, 3, "tbx_artikl_TS", "Tip artikla");
+         tbx_Artikl_TS.JAM_Set_LookUpTable(ZXC.luiListaArtiklTS, (int)ZXC.Kolona.prva);
 
-                       hamper.CreateVvLabel        (3, 2, "SamoGrC:", ContentAlignment.MiddleRight);
-      tbx_Artikl_Gr3 = hamper.CreateVvTextBoxLookUp(3, 3, "tbx_artikl_Gr3", "Grupa C artikla");
-      tbx_Artikl_Gr3.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
+                          hamper.CreateVvLabel        (1, 2, "SamoGrA:", ContentAlignment.MiddleRight);
+         tbx_Artikl_Gr1 = hamper.CreateVvTextBoxLookUp(1, 3, "tbx_artikl_Gr1", "Grupa A artikla");
+         tbx_Artikl_Gr1.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
 
-      if(ZXC.IsSvDUH)
-      {
-         rbt_grupArtTs.Visible = tbx_Artikl_TS.Visible = false;
+                          hamper.CreateVvLabel        (2, 2, "SamoGrB:", ContentAlignment.MiddleRight);
+         tbx_Artikl_Gr2 = hamper.CreateVvTextBoxLookUp(2, 3, "tbx_artikl_Gr2", "Grupa B artikla");
+         tbx_Artikl_Gr2.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+
+                          hamper.CreateVvLabel        (3, 2, "SamoGrC:", ContentAlignment.MiddleRight);
+         tbx_Artikl_Gr3 = hamper.CreateVvTextBoxLookUp(3, 3, "tbx_artikl_Gr3", "Grupa C artikla");
+         tbx_Artikl_Gr3.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
+
+         if(ZXC.IsSvDUH)
+         {
+            rbt_grupArtTs.Visible = tbx_Artikl_TS.Visible = false;
+         }
+
+         rbt_grupArtPCK = hamper.CreateVvRadioButton(0, 0, null, "PCKu", 1, 0, TextImageRelation.ImageBeforeText);
+         tbx_Artikl_PCK = hamper.CreateVvTextBox    (0, 0, "tbx_artikl_PCK", "PCK baza", 32, 1, 0);
+         rbt_grupArtPCK.Visible = tbx_Artikl_PCK.Visible = false; // ovo mora biti da ne radi greske kod drugih firmi koje to nemaju!!!
       }
-
-
       VvHamper.AddLabelLine(hamper);
 
       //VvHamper.HamperStyling(hamper);
@@ -2753,7 +2803,8 @@ public partial class RiskFilterUC : VvFilterUC
    public string Fld_Artikl_Gr1 { get { return tbx_Artikl_Gr1.Text; } set { tbx_Artikl_Gr1.Text = value; } }
    public string Fld_Artikl_Gr2 { get { return tbx_Artikl_Gr2.Text; } set { tbx_Artikl_Gr2.Text = value; } }
    public string Fld_Artikl_Gr3 { get { return tbx_Artikl_Gr3.Text; } set { tbx_Artikl_Gr3.Text = value; } }
-
+   public string Fld_Artikl_PCK { get { return tbx_Artikl_PCK.Text; } set { tbx_Artikl_PCK.Text = value; } }
+   
    public string Fld_FRUF_Name      { get { return tbx_FRUF_Name .Text;        } set { tbx_FRUF_Name     .Text    = value; } }
    public string Fld_FRUF_Value     { get { return tbx_FRUF_Value.Text;        } set { tbx_FRUF_Value    .Text    = value; } }
    public bool   Fld_FRUF_BiloGdjeU { get { return cbx_FRUF_BiloGdjeU.Checked; } set { cbx_FRUF_BiloGdjeU.Checked = value; } }
@@ -2964,6 +3015,7 @@ public partial class RiskFilterUC : VvFilterUC
          Fld_Artikl_Gr1             = TheRtransFilter.Artikl_Gr1;
          Fld_Artikl_Gr2             = TheRtransFilter.Artikl_Gr2;
          Fld_Artikl_Gr3             = TheRtransFilter.Artikl_Gr3;
+         Fld_Artikl_PCK             = TheRtransFilter.Artikl_PCK;
          Fld_FRUF_Name              = TheRtransFilter.FRUF_Name ;
          Fld_FRUF_Value             = TheRtransFilter.FRUF_Value;
          Fld_FRUF_BiloGdjeU         = TheRtransFilter.FRUF_BiloGdjeU;
@@ -3124,6 +3176,7 @@ public partial class RiskFilterUC : VvFilterUC
       TheRtransFilter.Artikl_Gr1             = Fld_Artikl_Gr1       ;
       TheRtransFilter.Artikl_Gr2             = Fld_Artikl_Gr2       ;
       TheRtransFilter.Artikl_Gr3             = Fld_Artikl_Gr3       ;
+      TheRtransFilter.Artikl_PCK             = Fld_Artikl_PCK       ;
       TheRtransFilter.FRUF_Name              = Fld_FRUF_Name        ;
       TheRtransFilter.FRUF_Value             = Fld_FRUF_Value       ;
       TheRtransFilter.FRUF_BiloGdjeU         = Fld_FRUF_BiloGdjeU   ;
@@ -3349,6 +3402,8 @@ public partial class RiskFilterUC : VvFilterUC
          if(theRptFilter.Artikl_Gr1.NotEmpty()) theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], false, "Artikl_Gr1"  , theRptFilter.Artikl_Gr1 , theRptFilter.Artikl_Gr1 + " " + ZXC.luiListaGrupa1Artikla.GetNameForThisCd(theRptFilter.Artikl_Gr1), "Za artikl GrA:" , " = ", ""/*ArtStat.recordName*/));
          if(theRptFilter.Artikl_Gr2.NotEmpty()) theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd2], false, "Artikl_Gr2"  , theRptFilter.Artikl_Gr2 , theRptFilter.Artikl_Gr2 + " " + ZXC.luiListaGrupa2Artikla.GetNameForThisCd(theRptFilter.Artikl_Gr2), "Za artikl GrB:" , " = ", ""/*ArtStat.recordName*/));
          if(theRptFilter.Artikl_Gr3.NotEmpty()) theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd3], false, "Artikl_Gr3"  , theRptFilter.Artikl_Gr3 , theRptFilter.Artikl_Gr3 + " " + ZXC.luiListaGrupa3Artikla.GetNameForThisCd(theRptFilter.Artikl_Gr3), "Za artikl GrC:" , " = ", ""/*ArtStat.recordName*/));
+
+         //PCTOGO PCK????
 
       }
 
@@ -3906,6 +3961,9 @@ public partial class RiskFilterUC : VvFilterUC
       //17.04.2018.
       if(theRptFilter.Artikl_Gr2.NotEmpty()) theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD  ], false, "Artikl_Gr2"  , theRptFilter.Artikl_Gr2 , theRptFilter.Artikl_Gr2 + " " + ZXC.luiListaGrupa2Artikla.GetNameForThisCd(theRptFilter.Artikl_Gr2), "Za artikl GrB:" , " = ", ""));
       if(theRptFilter.Artikl_Gr3.NotEmpty()) theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD  ], false, "Artikl_Gr3"  , theRptFilter.Artikl_Gr3 , theRptFilter.Artikl_Gr3 + " " + ZXC.luiListaGrupa3Artikla.GetNameForThisCd(theRptFilter.Artikl_Gr3), "Za artikl GrC:" , " = ", ""));
+      
+      //PCTOGO PCK
+      if(theRptFilter.Artikl_PCK.NotEmpty()) theRptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa ], false, "PCK_baza"    , theRptFilter.Artikl_PCK , theRptFilter.Artikl_PCK, "Za artikl PCK:" , " = ", ""));
 
       #endregion ArtiklCD od - do
 
