@@ -1479,7 +1479,22 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       get
       {
-         return Get_New_ArtiklCD_From_PCK_base_RAM_HDD(this.CarTarifa, this.Zapremina, this.Duljina);
+         return Get_New_ArtiklCD_From_PCK_base_RAM_HDD(this.PCK_BaseCD, this.PCK_RAM, this.PCK_HDD);
+      }
+   }
+
+   public static string Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(string oldPCK_name, decimal ram, decimal hdd)
+   {
+      if(ZXC.IsPCTOGO == false) return oldPCK_name;
+
+      return ZXC.ModifyPCK_ArtiklName(oldPCK_name, ram, hdd);
+   }
+
+   public string New_ArtiklName_From_OldPCK_name_RAM_HDD
+   {
+      get
+      {
+         return Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(this.ArtiklName, this.PCK_RAM, this.PCK_HDD);
       }
    }
 
@@ -1512,13 +1527,13 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       return (thePCK_RAM, thePCK_HDD);
    }
 
-   public string ArtiklCD_PCK_base
-   {
-      get
-      {
-         return Get_ArtiklCD_PCK_base(this.ArtiklCD);
-      }
-   }
+   //public string ArtiklCD_PCK_base
+   //{
+   //   get
+   //   {
+   //      return Get_ArtiklCD_PCK_base(this.ArtiklCD);
+   //   }
+   //}
 
    public static bool Has_equal_PCK_base(string artiklCD1, string artiklCD2)
    {
@@ -1534,9 +1549,9 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       if(origArtikl_rec == null) return "";
 
       Artikl newArtikl_rec = VvUserControl.ArtiklSifrar
-         ./*Single*/FirstOrDefault(a => a.ArtiklCD_PCK_base.ToUpper() == origArtikl_rec.ArtiklCD_PCK_base.ToUpper() && 
-                                        a.Zapremina                   == newPCK_RAM                                 && 
-                                        a.Duljina                     == newPCK_HDD                                  );
+         ./*Single*/FirstOrDefault(a => a.PCK_BaseCD.ToUpper() == origArtikl_rec.PCK_BaseCD.ToUpper() && 
+                                        a.PCK_RAM              == newPCK_RAM                          && 
+                                        a.PCK_HDD              == newPCK_HDD                           );
 
       if(newArtikl_rec == null)
       {

@@ -1773,7 +1773,8 @@ public class VvAddInteractiveSifrarRecordDlg : Crownwood.DotNetMagic.Forms.DotNe
          Artikl artikl_rec = TheVvDataRecord as Artikl;
          if(artikl_rec.TS == ZXC.PCK_TS)
          {
-            artikl_rec.ArtiklCD = theVvUC.Fld_ArtiklCd = artikl_rec.New_ArtiklCD_From_PCK_base_RAM_HDD;
+            artikl_rec.ArtiklCD   = theVvUC.Fld_ArtiklCd   = artikl_rec.New_ArtiklCD_From_PCK_base_RAM_HDD     ;
+            artikl_rec.ArtiklName = theVvUC.Fld_ArtiklName = artikl_rec.New_ArtiklName_From_OldPCK_name_RAM_HDD;
          }
       }
 

@@ -128,6 +128,9 @@ public class ArtiklUC : VvSifrarRecordUC
       // 09.11.2023: 
       this.Validating += new CancelEventHandler(ArtiklUC_Validating);
 
+      //string oldName = "Nb HP EliteBook 8470p, i5, 4GB RAM, 120 GB SSD HDD, DVD-RW, 14\", Ms Win7pro (upgrade to";
+      //string newName = ZXC.ModifyPCK_ArtiklName(oldName, 100M, 200M);
+      //ZXC.aim_emsg(oldName + "\n\r" + newName);
    }
 
    void ArtiklUC_Validating(object sender, CancelEventArgs e)
