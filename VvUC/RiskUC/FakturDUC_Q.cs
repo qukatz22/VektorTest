@@ -2751,6 +2751,41 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #endregion Check Dupla Pojava Artikla ... tamo gdje to smeta 
 
+      #region PCTOGO Validations
+
+      if(ZXC.IsPCTOGO)
+      {
+
+         #region Rtrano validacije
+
+         if(this is FakturPDUC) 
+         {
+            FakturPDUC thePduc = this as FakturPDUC;
+            Rtrano_colIdx ci2  = thePduc.DgvCI2;
+
+            Rtrano rtrano_rec;
+
+            for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
+            {
+               rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+               // ne daj prazni MOC/MOS NewArtiklCD 
+               if(this is MOD_PTG_DUC && rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.IsEmpty())
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka mora imati definirani 'Artikl NEW'.\n\nRedak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno);
+                  e.Cancel = true;
+               }
+
+            } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
+
+         } // if(this is FakturPDUC) 
+
+         #endregion Rtrano validacije
+
+      } // if(ZXC.IsPCTOGO) 
+
+      #endregion PCTOGO Validations
+
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
 
    protected string  oldSkladCD, oldSkladCD2, oldVezniDok;
@@ -5403,7 +5438,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region Check for double serno entry
 
-      int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno == theSerno).Count();
+    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno           == theSerno          ).Count();
+      int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno.ToLower() == theSerno.ToLower()).Count();
 
       if(theSernoCount > 1)
       {
