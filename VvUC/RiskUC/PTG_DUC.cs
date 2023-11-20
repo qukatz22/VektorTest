@@ -3261,7 +3261,6 @@ public class MOD_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q2un,         true, "Tip"          , "Tip artikla"          );
       R_ramKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "RAM klasa"    , "RAM klasa"            );
       R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"            );
-      T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"    );
 
       R_artiklCD2_OLD_CreateColumn  (ZXC.Q5un,         true, "Artikl OLD"   , "Šifra artikla"        );
       T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"             );
@@ -3276,8 +3275,11 @@ public class MOD_PTG_DUC : FakturPDUC
       T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Artikl NEW"   , "Šifra artikla"        );
       T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"              );
       T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"              );
+      T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"    );
 
-    //T_paletaNo_CreateColumn       (ZXC.Q3un     ,    true, "ModSt"       , "Osnovno stavka"                    );
+      T_artiklName2_CreateColumn   (ZXC.Q3un        , false, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+
+    //T_paletaNo_CreateColumn      (ZXC.Q3un        ,  true, "ModSt"        , "Osnovno stavka"                    );
    }
 
    #endregion TheG2_Specific_Columns2

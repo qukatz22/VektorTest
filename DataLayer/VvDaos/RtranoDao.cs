@@ -488,9 +488,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       foreach(Rtrano rtrano in thisSerno_All_RtranoList)
       {
-         if(currSernoArtiklCD != rtrano.T_artiklCD)
+       //if(currSernoArtiklCD != rtrano.T_artiklCD) 
+         if(Artikl.Has_equal_PCK_base(currSernoArtiklCD, rtrano.T_artiklCD) == false)
          {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serijskom broju: [{3}]\n\r\n\rje izmijenjen Artikl!!!\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}", currSernoArtiklCD, rtrano, rtrano.T_artiklCD, _theSerno);
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serijskom broju: [{3}]\n\r\n\rje izmijenjena PCK Baza!!!\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}",
+               Artikl.Get_ArtiklCD_PCK_base(currSernoArtiklCD), rtrano, Artikl.Get_ArtiklCD_PCK_base(rtrano.T_artiklCD), _theSerno);
          }
          else if(currSernoSignature != rtrano.PCK_ArtiklInfo_Signature && !rtrano.TtInfo.Is_MOC_or_MOS_TT)
          {
