@@ -2604,8 +2604,8 @@ public class ArtiklUC : VvSifrarRecordUC
 
             if(artikl_rec.TS == ZXC.PCK_TS)
             {
-               if(artikl_rec.Zapremina.IsZero()) tbx_zapremina.Text = "0";
-               if(artikl_rec.Duljina  .IsZero()) tbx_duljina  .Text = "0";
+               if(artikl_rec.PCK_RAM.IsZero()) tbx_zapremina.Text = "0";
+               if(artikl_rec.PCK_HDD.IsZero()) tbx_duljina  .Text = "0";
 
             }
        }

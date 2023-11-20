@@ -3697,29 +3697,51 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    #region UpdateArtikl
 
-   private void AnyArtiklTextBox_OnGrid2_Leave(object sender, EventArgs e, VvDataGridView theGrid, int currRow, Artikl artikl_rec)
+   private void AnyArtiklTextBox_OnGrid2_Leave(object sender, EventArgs e, VvDataGridView theGrid, int currRowIdx, Artikl artikl_rec)
    {
-
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
       if(artikl_rec != null)
       {
-         theGrid.PutCell(ci2.iT_artiklCD   , currRow, artikl_rec.ArtiklCD  );
-         theGrid.PutCell(ci2.iT_artiklName , currRow, artikl_rec.ArtiklName);
-         theGrid.PutCell(ci2.iT_jm         , currRow, artikl_rec.JedMj     );
-         theGrid.PutCell(ci2.iT_artiklTS   , currRow, artikl_rec.TS        );
+         theGrid.PutCell(ci2.iT_artiklCD   , currRowIdx, artikl_rec.ArtiklCD  );
+         theGrid.PutCell(ci2.iT_artiklName , currRowIdx, artikl_rec.ArtiklName);
+         theGrid.PutCell(ci2.iT_jm         , currRowIdx, artikl_rec.JedMj     );
+         theGrid.PutCell(ci2.iT_artiklTS   , currRowIdx, artikl_rec.TS        );
+
+         if(this is MOD_PTG_DUC)
+         {
+            theGrid.PutCell(ci2.iR_artiklCD_Old, currRowIdx, artikl_rec.ArtiklCD);
+            if(artikl_rec.TS == ZXC.PCK_TS)
+            {
+               theGrid.PutCell(ci2.iR_ramOld, currRowIdx, artikl_rec.PCK_RAM);
+               theGrid.PutCell(ci2.iR_hddOld, currRowIdx, artikl_rec.PCK_HDD);
+            }
+         }
+
+         if(this is MOD_PTG_DUC && artikl_rec.TS == ZXC.PCK_TS)
+         {
+            bool isSernoEmpty = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, false).IsEmpty();
+
+            if(isSernoEmpty)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "PCK Artikl zadajte tek nakon unosa serijskog broja.");
+
+               theGrid.ClearRowContent(currRowIdx);
+               return;
+            }
+         }
 
          if(ZXC.IsPCTOGO && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {
-            theGrid.PutCell(ci2.iT_ramKlasa, currRow, artikl_rec.Grupa2CD);
-            theGrid.PutCell(ci2.iT_hddKlasa, currRow, artikl_rec.Grupa3CD);
-            theGrid.PutCell(ci2.iT_artiklTS, currRow, artikl_rec.TS      );
-            theGrid.PutCell(ci2.iT_kol, currRow, 1.00M);
+            theGrid.PutCell(ci2.iT_ramKlasa, currRowIdx, artikl_rec.Grupa2CD);
+            theGrid.PutCell(ci2.iT_hddKlasa, currRowIdx, artikl_rec.Grupa3CD);
+            theGrid.PutCell(ci2.iT_artiklTS, currRowIdx, artikl_rec.TS      );
+            theGrid.PutCell(ci2.iT_kol     , currRowIdx, 1.00M              );
 
             if(artikl_rec.TS == ZXC.PCK_TS)
             {
-               theGrid.PutCell(ci2.iT_dimZ, currRow, artikl_rec.Zapremina);
-               theGrid.PutCell(ci2.iT_decC, currRow, artikl_rec.Duljina  );
+               theGrid.PutCell(ci2.iT_dimZ, currRowIdx, artikl_rec.PCK_RAM);
+               theGrid.PutCell(ci2.iT_decC, currRowIdx, artikl_rec.PCK_HDD);
             }
 
             if(artikl_rec.TS == ZXC.KMP_TS)
@@ -3732,8 +3754,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
              //if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRow, kolPutaKapacitet);
              //if(isHDD) TheG2.PutCell(ci2.iT_decB, currRow, kolPutaKapacitet);
 
-               if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRow, artikl_rec.Zapremina);
-               if(isHDD) TheG2.PutCell(ci2.iT_decB, currRow, artikl_rec.Duljina  );
+               if(isRAM) TheG2.PutCell(ci2.iT_dimY, currRowIdx, artikl_rec.PCK_RAM);
+               if(isHDD) TheG2.PutCell(ci2.iT_decB, currRowIdx, artikl_rec.PCK_HDD);
             }
             //(this as FakturPDUC).SetColorsPCKartikl();
          }
@@ -3742,11 +3764,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          if(HasRtrano_SkladCD_Exposed)
          {
-            theGrid.PutCell(ci2.iT_skladCD, currRow, Fld_SkladCD);
+            theGrid.PutCell(ci2.iT_skladCD, currRowIdx, Fld_SkladCD);
          }
 
          #endregion HasRtrano_SkladCD_Exposed
-      }
+
+      } // if(artikl_rec != null)
    }
 
    // ****** 

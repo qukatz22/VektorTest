@@ -14021,7 +14021,7 @@ public class FakturPDUC : FakturExtDUC
          decimal enteredKapacitet = isRAM ? rtrano_rec.T_dimX + rtrano_rec.T_dimY : rtrano_rec.T_decA + rtrano_rec.T_decB;
 
        //decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
-         decimal kolPutaKapacitet = isRAM ? rtrano_rec.T_kol * artikl_rec.Zapremina : rtrano_rec.T_kol * artikl_rec.Duljina;
+         decimal kolPutaKapacitet = isRAM ? rtrano_rec.T_kol * artikl_rec.PCK_RAM : rtrano_rec.T_kol * artikl_rec.PCK_HDD;
 
          if(enteredKapacitet != kolPutaKapacitet)
          {
@@ -14059,20 +14059,20 @@ public class FakturPDUC : FakturExtDUC
       bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
       bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
 
-      if(isRAM && artikl_rec.Zapremina.IsZero())
+      if(isRAM && artikl_rec.PCK_RAM.IsZero())
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
          return;
       }
 
-      if(isHDD && artikl_rec.Duljina.IsZero())
+      if(isHDD && artikl_rec.PCK_HDD.IsZero())
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
          return;
       }
 
-      decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
-      decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Duljina;
+      decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_RAM;
+      decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_HDD;
 
       TheG2.PutCell(ci2.iT_dimY, rowIdx, ram_kolPutaKapacitet);
       TheG2.PutCell(ci2.iT_decB, rowIdx, hdd_kolPutaKapacitet);
