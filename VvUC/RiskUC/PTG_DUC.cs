@@ -3220,6 +3220,10 @@ public class MOD_PTG_DUC : FakturPDUC
 
    #region Fld
 
+   public string Fld_PTG_MOC_PCK_ArtCD  { get { return                             (Fld_PrjArtCD); } }
+   public string Fld_PTG_MOC_PCK_baseCD { get { return Artikl.Get_ArtiklCD_PCK_base(Fld_PrjArtCD); } }
+   public int    Fld_PTG_MOC_RowCount   { get { return (int)Fld_someMoney; } }
+
    public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
    public string Fld_PTG_HddKlasa { set { tbx_hddKlasa.Text = value; } }
 

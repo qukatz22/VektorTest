@@ -1675,6 +1675,7 @@ public abstract class PCK_BASE_InfoLine
    public decimal PCK_RAM      { get; set; }
    public decimal PCK_HDD      { get; set; }
 
+   public string  PCK_BaseCD   { get { return Artikl.Get_ArtiklCD_PCK_base(PCK_ArtCD); } }
    public PCK_BASE_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)
    {
       this.PCK_ArtCD    = _PCK_ArtCD   ;

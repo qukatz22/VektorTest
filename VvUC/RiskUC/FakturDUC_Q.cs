@@ -3731,6 +3731,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             }
          }
 
+         if(this is MOD_PTG_DUC && ThisIs_MOC_rowIndex(currRowIdx) && artikl_rec.TS != ZXC.PCK_TS)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl (cilj modifikacije).", (int)(this as MOD_PTG_DUC).Fld_someMoney);
+
+            theGrid.ClearRowContent(currRowIdx);
+            return;
+         }
+
          if(ZXC.IsPCTOGO && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {
             theGrid.PutCell(ci2.iT_ramKlasa, currRowIdx, artikl_rec.Grupa2CD);
@@ -5545,6 +5553,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
+      MOD_PTG_DUC theDUC = this as MOD_PTG_DUC;
+
       #endregion Init stuff
 
       string theSerno = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, true);
@@ -5580,11 +5590,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          return; // NOVI serno, ... nije naso nist po tom serno-u 
       }
 
+      // ak smo dosli do tu, znaci da je u pitanju postojeci serno 
+      // pa mu idemo iskoristiti lastRtrano_rec stuff              
+
+      if(ThisIs_MOC_rowIndex(currRowIdx) && sernoInfo.PCK_BaseCD != theDUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", theDUC.Fld_PTG_MOC_RowCount, theDUC.Fld_PTG_MOC_PCK_baseCD);
+
+         theGrid.EndEdit(); // !!! 
+
+         theGrid.ClearRowContent(currRowIdx);
+         return;
+      }
+
       Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec, currRowIdx);
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
 
-      // odi na RAM+
+      // odi na RAM+ 
       SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}");
    }
 
@@ -5602,11 +5625,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       theGrid.PutCell(ci2.iT_decC  , currRowIdx, 0M);
    }
 
-   protected bool thisIs_MOC_rowIndex(int rIdx)
+   protected bool ThisIs_MOC_rowIndex(int rIdx)
    {
-      int numOfExpected_MOC_rows = (int)(this as MOD_PTG_DUC).Fld_someMoney;
-
-      return rIdx < numOfExpected_MOC_rows;
+      return rIdx < (this as MOD_PTG_DUC).Fld_PTG_MOC_RowCount;
    }
 
    private void Put_PCK_info_MOD_DgvLineFields2(Rtrano oldRtrano_rec, int rIdx)
@@ -5633,7 +5654,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
     //string MOC_ArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldRtrano_rec.T_artiklCD, cilj_MOC_RAM, cilj_MOC_HDD);
 
-      bool isMOCrow = (thisIs_MOC_rowIndex(rIdx) && theMOD_DUC.Fld_PrjArtCD == cilj_MOC_ArtiklCD);
+      bool isMOCrow = (ThisIs_MOC_rowIndex(rIdx) && theMOD_DUC.Fld_PrjArtCD == cilj_MOC_ArtiklCD);
          
       if(isMOCrow)
       {

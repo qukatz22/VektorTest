@@ -14089,7 +14089,7 @@ public class FakturPDUC : FakturExtDUC
                    MOC_wanted_NEW_RAM  == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
                    MOC_wanted_NEW_HDD  == rtrano_rec./*T_decC*/T_PCK_HDD &&
                    isMOC_PCK_base                                        &&
-                   thisIs_MOC_rowIndex(rowIdx); 
+                   ThisIs_MOC_rowIndex(rowIdx); 
 
       if(isPCK)
       {
