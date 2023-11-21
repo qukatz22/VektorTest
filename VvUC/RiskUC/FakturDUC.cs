@@ -9149,7 +9149,8 @@ public partial class FakturExtDUC : FakturDUC
       else if(isMOD_PTG)
       { 
          hamper               = new VvHamper(2, 2, "", null, false);
-         hamper.VvColWdt      = new int[] {     ZXC.Q5un , ZXC.Q10un + ZXC.Q2un };
+
+         hamper.VvColWdt      = new int[] {     ZXC.Q8un , ZXC.Q10un + ZXC.Q2un };
          hamper.VvSpcBefCol   = new int[] { faBefFirstCol,             faBefCol };
          hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -9180,7 +9181,7 @@ public partial class FakturExtDUC : FakturDUC
       if(this is MOD_PTG_DUC)
       {
          tbx_prjArtCD  .Font = ZXC.vvFont.LargeBoldFont;
-         tbx_prjArtName.Font = ZXC.vvFont.LargeBoldFont;
+         tbx_prjArtName.Font = ZXC.vvFont.BaseBoldFont;
       }
 
       tbx_prjArtCD  .JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType  , new EventHandler(OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_OnZaglavlje_Leave));
@@ -12963,8 +12964,9 @@ public partial class FakturExtDUC : FakturDUC
          Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == faktEx.PrjArtCD);
          if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
          {
-            modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD;
-            modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD;
+            modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD  ;
+            modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD  ;
+            modDUC.Fld_PTG_PCKbaza  = artikl_rec.PCK_BaseCD;
          }
 
          Put_MOD_Semafor_Labels(this as MOD_PTG_DUC);

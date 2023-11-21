@@ -3042,8 +3042,8 @@ public class MOD_PTG_DUC : FakturPDUC
 {
    #region Fieldz
 
-   public  VvHamper  hamp_klase, hamp_ugando, hamp_semafor;
-   private VvTextBox tbx_ramKlasa, tbx_hddKlasa;
+   public  VvHamper  hamp_klase, hamp_pckBaza, hamp_ugando, hamp_semafor;
+   private VvTextBox tbx_pckBaza, tbx_ramKlasa, tbx_hddKlasa;
    public  Label     lbl_MOC, lbl_SER, lbl_RAM, lbl_HDD;
 
    #endregion Fieldz
@@ -3082,6 +3082,7 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       CreateArrOfHampers();
       SetParentOfHamperLeftHampers();
+      CrateHamperPCKbaza();
       CrateHamperKlasa();
       CreateHamperUGANDO();
       CreateHamperSemafor();
@@ -3096,7 +3097,9 @@ public class MOD_PTG_DUC : FakturPDUC
       hamp_ugando     .Location = new Point(hamp_kupdobNaziv.Right , hamp_dokDate.Bottom + ZXC.Qun8);
       hamp_napomena   .Location = new Point(                 0, hamp_ugando .Bottom + ZXC.Qun8);
 
-      hamp_prjArtName.Location = new Point(           labelWidth, hamp_napomena.Bottom + ZXC.Qun2);
+
+      hamp_pckBaza   .Location = new Point(           labelWidth, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_prjArtName.Location = new Point(hamp_pckBaza   .Right, hamp_napomena.Bottom + ZXC.Qun2);
       hamp_klase     .Location = new Point(hamp_prjArtName.Right, hamp_napomena.Bottom + ZXC.Qun2);
       hamp_decimal   .Location = new Point(hamp_klase     .Right, hamp_napomena.Bottom + ZXC.Qun2);
       hamp_someMoney .Location = new Point(hamp_decimal   .Right, hamp_napomena.Bottom + ZXC.Qun2);
@@ -3119,6 +3122,26 @@ public class MOD_PTG_DUC : FakturPDUC
                                     hamp_dokDate, hamp_dokNum, hamp_napomena,// hamp_v1TT,
                                     hamp_prjArtName, hamp_decimal, hamp_someMoney
                                    };
+   }
+
+   private void CrateHamperPCKbaza()
+   {
+      hamp_pckBaza        = new VvHamper(1, 2, "", null, false);
+      hamp_pckBaza.Parent = TheTabControl.TabPages[0];
+
+      hamp_pckBaza.VvColWdt      = new int[] { ZXC.Q5un };
+      hamp_pckBaza.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+      hamp_pckBaza.VvRightMargin = hamp_pckBaza.VvLeftMargin;
+
+      hamp_pckBaza.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
+      hamp_pckBaza.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
+      hamp_pckBaza.VvBottomMargin = hamp_pckBaza.VvTopMargin;
+
+                    hamp_pckBaza.CreateVvLabel  (0, 0, "PCK baza", ContentAlignment.MiddleLeft);
+      tbx_pckBaza = hamp_pckBaza.CreateVvTextBox(0, 1, "tbx_pckBaza", "", 16);
+      tbx_pckBaza.JAM_ReadOnly = true;
+      tbx_pckBaza.Font = ZXC.vvFont.BaseBoldFont;
+
    }
 
    private void CrateHamperKlasa()
@@ -3226,6 +3249,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
    public string Fld_PTG_HddKlasa { set { tbx_hddKlasa.Text = value; } }
+   public string Fld_PTG_PCKbaza  { set { tbx_pckBaza.Text = value; } }
 
 
    #endregion Fld
