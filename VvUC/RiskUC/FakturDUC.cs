@@ -1627,6 +1627,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          tbx_decimal01.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
          tbx_decimal02.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
+         tbx_decimal01.JAM_ReadOnly =
+         tbx_decimal02.JAM_ReadOnly = true;
+
       }
       else
       {
@@ -15103,7 +15106,7 @@ public class FakturPDUC : FakturExtDUC
       TheG2.Rows[rowIdx].Cells[ci2.iT_artiklTS].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_ramKlasa].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_hddKlasa].Style.BackColor = 
-      TheG2.Rows[rowIdx].Cells[ci2.iT_skladCD ].Style.BackColor = 
+    //TheG2.Rows[rowIdx].Cells[ci2.iT_skladCD ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_dimX    ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_dimY    ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_decA    ].Style.BackColor =
@@ -15122,7 +15125,7 @@ public class FakturPDUC : FakturExtDUC
       TheG2.Rows[rowIdx].Cells[ci2.iT_dimZ    ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_decC    ].Style.BackColor = clr;
       
-      TheG2.Rows[rowIdx].Cells["scrol"        ].Style.BackColor = clr;
+    //TheG2.Rows[rowIdx].Cells["scrol"        ].Style.BackColor = clr;
    }
 
    #endregion PutDgvFields2(), GetDgvFields2()

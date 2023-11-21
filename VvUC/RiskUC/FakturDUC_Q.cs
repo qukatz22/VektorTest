@@ -7042,6 +7042,8 @@ public partial class FakturExtDUC : FakturDUC
             {
                (this as MOD_PTG_DUC).Fld_PTG_RamKlasa = artikl_rec.Grupa2CD;
                (this as MOD_PTG_DUC).Fld_PTG_HddKlasa = artikl_rec.Grupa3CD;
+               (this as MOD_PTG_DUC).Fld_Decimal01    = artikl_rec.PCK_RAM ;
+               (this as MOD_PTG_DUC).Fld_Decimal02    = artikl_rec.PCK_HDD ;
             }
 
          }
