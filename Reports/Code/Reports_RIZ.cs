@@ -9,6 +9,7 @@ using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
 using static RtransDao;
 using static ArtiklDao;
+using static DevTecDao;
 
 
 #if MICROSOFT
@@ -1269,7 +1270,20 @@ public /*partial*/ class RptR_IRA : VvRiskReport
       if(theDUC.IsShowingConvertedMoney == true)
       {
          devTecaj = ZXC.DevTecDao.GetHnbTecaj(presentValutaEnum, faktur_rec.DokDate);
-         faktur_rec.ConvertBussinessValuesToDeviza(devTecaj, ((FakturDocFilter)RptFilter).DevNameAsEnum);
+
+         // 23.11.2023: ShowingConvertedMoney_BUG_Repair
+       //faktur_rec.ConvertBussinessValuesToDeviza(devTecaj, ((FakturDocFilter)RptFilter).DevNameAsEnum);
+         faktur_rec.Transes.ForEach(rtr => 
+            { 
+             //rtr.T_cij = VvCurrency(rtr.T_cij); 
+             //rtr.T_cij =           (rtr.T_cij * devTecaj);
+               rtr.T_cij = ZXC.DivSafe(rtr.T_cij, devTecaj);
+               rtr.CalcTransResults(null); 
+            } 
+         );
+
+         faktur_rec.TakeTransesSumToDokumentSum(true);
+
       }
 
       TheFakturList.Add(faktur_rec);
@@ -5714,6 +5728,11 @@ public class RptR_SVD_FinIzlaz : RptR_StandardRiskReport
        //TheMoney2    = rtr.R_KCRP,
          TheCD        = klinikaKupdob_rec.Naziv,
          KupdobName   = klinikaKupdob_rec.Ulica1
+
+         // 23.11.2023: 
+         , 
+         String1 = gr.First().T_jedMj
+
       }).OrderBy(qwe => qwe.DevName).ThenBy(qwe => qwe.ArtiklGrName).ToList();
 
       return TheDeviznaSumaList.Count;
