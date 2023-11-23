@@ -2037,6 +2037,19 @@ public class RptR_StandardRiskReport : VvRiskReport
       {
          List<string> skladList = ArtiklDao.GetDistinctSkladCdListForArtikl(TheDbConnection, /*_artiklCD*/ "");
 
+         // 23.11.2023: 
+         if(ZXC.IsSvDUH)
+         {
+            if(RptFilter.SVD_IsDonacSklad == ZXC.JeliJeTakav.NIJE_TAKAV) // todo: smo NOT DON 
+            {
+               skladList.RemoveAll(skladCD => ZXC.IsSvDUH_donSkl(skladCD) == true);
+            }
+            if(RptFilter.SVD_IsDonacSklad == ZXC.JeliJeTakav.JE_TAKAV) // todo: smo DON 
+            {
+               skladList.RemoveAll(skladCD => ZXC.IsSvDUH_donSkl(skladCD) == false);
+            }
+         }
+
          // 21.01.2015: 
          if(ZXC.IsTEXTHOshop) skladList.RemoveAll(scd => scd.Length >= 2 && scd.Substring(0, 2) != ZXC.vvDB_ServerID.ToString());
 

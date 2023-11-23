@@ -1077,6 +1077,11 @@ public static class VvSkyLab
       return OK;
    }
 
+   internal static int TH_Addrec_EUR_Artikl_OnNultiZPCs(XSqlConnection conn, string rootName, decimal euroMoney, string gr1cd_kategorija, string gr2cd_kind, string gr3cd_nabILIprod)
+   {
+      throw new NotImplementedException();
+   }
+
    internal static decimal Kune_From_KunskiArtiklName(string artiklCD)
    {
       string moneyStr = ZXC.SubstringSafe(artiklCD, 2);
