@@ -6286,6 +6286,25 @@ public static class VvSQL
       return (cmd);
    }
 
+   internal static XSqlCommand GetNultiZpcTtNums_Command(XSqlConnection conn)
+   {
+      #region local variablez 
+
+      XSqlCommand cmd = InitCommand(conn);
+
+      //string               preffix = "prm_";
+      //DataRowCollection    rows    = ZXC.FakturDao.TheSchemaTable.Rows;
+      //FakturDao.FakturCI   ci      = ZXC.FakCI;
+
+      #endregion local variablez
+
+      cmd.CommandText = "SELECT DISTINCT TtNum FROM faktur F" + "\n" +
+                        "WHERE TT = 'ZPC'                   " + "\n" +
+                        "AND TtNum MOD 10000 = 0            " + "\n" +
+                        "ORDER BY TtNum                     ";
+      return (cmd);
+   }
+
    internal static XSqlCommand GetDistinctRtranoSernoForArtiklAndSklad_Command(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
    {
       #region local variablez 
@@ -6422,6 +6441,21 @@ public static class VvSQL
       cmd.CommandText = "SELECT * FROM " + Rtrans.recordName + "\n" +
 
                         " WHERE " + "t_ttSort = ?ttSort AND t_ttNum = ?ttNum AND t_artiklCD = ?artCD" + "\n" +
+
+                        "ORDER BY t_serial DESC LIMIT 1";
+      return (cmd);
+   }
+
+   public static XSqlCommand SetMeLastRtransForTtAndTtNum_Command(XSqlConnection conn, string tt, uint ttNum, Rtrans rtrans_rec)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "tt"    , tt      , ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt  ]);
+      CreateCommandNamedParameter(cmd, "", "ttnUM" , ttNum   , ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum   ]);
+
+      cmd.CommandText = "SELECT * FROM " + Rtrans.recordName + "\n" +
+
+                        " WHERE " + "t_tt = ?tt AND t_ttNum = ?ttNum " + "\n" +
 
                         "ORDER BY t_serial DESC LIMIT 1";
       return (cmd);

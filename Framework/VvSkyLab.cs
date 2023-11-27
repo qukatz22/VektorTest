@@ -1077,8 +1077,59 @@ public static class VvSkyLab
       return OK;
    }
 
-   internal static int TH_Addrec_EUR_Artikl_OnNultiZPCs(XSqlConnection conn, string rootName, decimal euroMoney, string gr1cd_kategorija, string gr2cd_kind, string gr3cd_nabILIprod)
+   internal static (bool, Artikl) TH_Addrec_EUR_Artikl_V2(XSqlConnection conn, string rootName, decimal niceEuroMoney, string gr1cd_kategorija, string gr2cd_kind, string gr3cd_nabILIprod/*, string oldArtiklCD*/)
    {
+      Artikl artikl_rec = new Artikl();
+
+      artikl_rec.ArtiklCD   = rootName + niceEuroMoney.ToString("000.00");
+
+      artikl_rec.Grupa1CD   = gr1cd_kategorija;
+      artikl_rec.Grupa2CD   = gr2cd_kind      ;
+      artikl_rec.Grupa3CD   = gr3cd_nabILIprod;
+
+      artikl_rec.ArtiklName = artikl_rec.Grupa2Name + " " + artikl_rec.ArtiklCD;
+
+      artikl_rec.TS         = "ROB";
+      artikl_rec.PdvKat     = "25" ;
+      artikl_rec.JedMj      = "kom";
+
+    //artikl_rec.SkladCD    = "SVPS";
+
+      artikl_rec.MadeIn     = VvForm.artMadeIn_EUR              ; // za lakse filtriranje u SQL recenicama 
+      artikl_rec.Placement  = rootName                          ; // rootName                              
+      artikl_rec.Starost    = ZXC.KuneIzEURa_HRD_(niceEuroMoney); // kune                                  
+      artikl_rec.ImportCij  =                     niceEuroMoney ; // euri                                  
+    //artikl_rec.ArtiklCD2  = oldArtiklCD                       ; // 'najslicniji' stari kunski artiklCD   
+
+    //bool OK = artikl_rec.VvDao.ADDREC(conn, artikl_rec); // TODO vrati ovo
+      bool OK = true;
+
+      return (OK, artikl_rec);
+   }
+
+   internal static int TH_Addrec_EUR_Artikl_OnNultiZPCs(XSqlConnection conn, Artikl artikl_rec, List<uint> nulti_ZPC_TtNumList, string rootName, decimal euroMoney, string gr1cd_kategorija, string gr2cd_kind, string gr3cd_nabILIprod)
+   {
+      List<string> malop_ALL_SkladCDlist = ZXC.luiListaSkladista.Where(lui => lui.Flag == true                              ).Select(l => l.Cd).ToList();
+      List<string> malop5weekSkladCDlist = ZXC.luiListaSkladista.Where(lui => lui.Flag == true && ZXC.IsTH_5WeekShop(lui.Cd)).Select(l => l.Cd).ToList();
+
+      bool isFor5weekOnly = false; // todo 
+
+      List<uint> nulti_ZPC_TtNumList_filtered;
+
+      if(isFor5weekOnly)
+      {
+         nulti_ZPC_TtNumList_filtered = nulti_ZPC_TtNumList/*.RemoveAll(kurac)*/;
+      }
+      else
+      {
+         nulti_ZPC_TtNumList_filtered = nulti_ZPC_TtNumList;
+      }
+
+      foreach(uint theTtNum in nulti_ZPC_TtNumList_filtered)
+      {
+         // daj mi zadnji rtrans od ovog theTtnum-a
+      }
+
       throw new NotImplementedException();
    }
 
