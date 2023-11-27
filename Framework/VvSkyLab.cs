@@ -1101,8 +1101,7 @@ public static class VvSkyLab
       artikl_rec.ImportCij  =                     niceEuroMoney ; // euri                                  
     //artikl_rec.ArtiklCD2  = oldArtiklCD                       ; // 'najslicniji' stari kunski artiklCD   
 
-    //bool OK = artikl_rec.VvDao.ADDREC(conn, artikl_rec); // TODO vrati ovo
-      bool OK = true;
+      bool OK = artikl_rec.VvDao.ADDREC(conn, artikl_rec);
 
       return (OK, artikl_rec);
    }
