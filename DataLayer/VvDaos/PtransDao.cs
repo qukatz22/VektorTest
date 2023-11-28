@@ -914,24 +914,59 @@ public sealed class PtransDao : VvDaoBase, IVvDao
          korKoef      = GetKorKoefForMonth(ptrGR.Key, personRowOfCurrentTrans);
          ispravanKoef = korKoef.IsZero() ? usedKoef : korKoef;
 
-         if(ptrGR.First().T_dokDate >= ZXC.Date01012017) // novo za isplate od 01.01.2017.
+   // novo za euro eru u 2023 a vjerujem da će trebati novo i za kraj 2024
+       //if(ptrGR.First().T_dokDate >= ZXC.Date01012017) // novo za isplate od 01.01.2017.
+       //{
+       // //26.11.2020.!!!!!! koeficijent za alfu se promjenio u 2020 godini pa ga treba promjeniti i ovdje
+       // // zato dodajemo ovo kao i na ptransu:
+       //   decimal koefZaOsnOdb = ptrGR.First().T_dokDate < ZXC.Date01012020 ? 1.50M : 1.60M; // 23.12.2019. od 01.01.2020. je ovaj koef 1.60 tj osnovni osobni odbitak je 4000
+       //   
+       // //decimal alfa = ZXC.Ron((pR._osnOdb * 1.50M       ) / 100M, 0) * 100M; // alfa = osnOdb2017 x 1.5          ... zaokruzen na 100 kn = 3.800 
+       //   decimal alfa = ZXC.Ron((pR._osnOdb * koefZaOsnOdb) / 100M, 0) * 100M; // .. od 2020 je 4000
+       //
+       //   decimal beta = pR._osnOdb * (ispravanKoef - 1.00M)                  ; // beta = osnOdb2017 x koefOvisanOdDjece                   
+       //                                                                         //R_Odbitak = T_koef.NotZero() ? alfa + beta : 0.00M;
+       // //fondOdbitka +=                          (alfa + beta)        .Ron2();
+       //   fondOdbitka += (ispravanKoef.NotZero() ? alfa + beta : 0.00M).Ron2();
+       //}
+       //else // po starom do 31.12.2016.
+       //{
+       //   fondOdbitka += (ispravanKoef * pR._osnOdb).Ron2();
+       //}
+
+         if(ptrGR.First().T_dokDate < ZXC.Date01012017)// dpo 31.12.2016
+         {
+            fondOdbitka += (ispravanKoef * pR._osnOdb).Ron2();
+         }
+         else if(ptrGR.First().T_dokDate >= ZXC.Date01012017 && ptrGR.First().T_dokDate < ZXC.EURoERAstart)
          {
           //26.11.2020.!!!!!! koeficijent za alfu se promjenio u 2020 godini pa ga treba promjeniti i ovdje
           // zato dodajemo ovo kao i na ptransu:
             decimal koefZaOsnOdb = ptrGR.First().T_dokDate < ZXC.Date01012020 ? 1.50M : 1.60M; // 23.12.2019. od 01.01.2020. je ovaj koef 1.60 tj osnovni osobni odbitak je 4000
-            
-          //decimal alfa = ZXC.Ron((pR._osnOdb * 1.50M       ) / 100M, 0) * 100M; // alfa = osnOdb2017 x 1.5          ... zaokruzen na 100 kn = 3.800 
-            decimal alfa = ZXC.Ron((pR._osnOdb * koefZaOsnOdb) / 100M, 0) * 100M; // .. od 2020 je 4000
-
-            decimal beta = pR._osnOdb * (ispravanKoef - 1.00M)                  ; // beta = osnOdb2017 x koefOvisanOdDjece                   
-                                                                                  //R_Odbitak = T_koef.NotZero() ? alfa + beta : 0.00M;
-          //fondOdbitka +=                          (alfa + beta)        .Ron2();
+            decimal alfa         = ZXC.Ron((pR._osnOdb * koefZaOsnOdb) / 100M, 0) * 100M; // .. od 2020 je 4000
+            decimal beta         = pR._osnOdb * (ispravanKoef - 1.00M)                  ; // beta = osnOdb2017 x koefOvisanOdDjece                   
+                                                                                          //R_Odbitak = T_koef.NotZero() ? alfa + beta : 0.00M;
             fondOdbitka += (ispravanKoef.NotZero() ? alfa + beta : 0.00M).Ron2();
          }
-         else // po starom do 31.12.2016.
-         {
-            fondOdbitka += (ispravanKoef * pR._osnOdb).Ron2();
+         else//EURoERaStart 2023 godina NOVO!!!!!
+         { 
+            bool plUmjesecu_isSijecanj2023 = ptrGR.First().T_dokDate <= ZXC.Date31012023;
+            decimal koefZaOsnOdb = 1.60M; 
+            decimal alfa         = pR._osnOdb * koefZaOsnOdb          ; // ovdje ga ne zaokruzujemo jer je on yapravo = 4.000 kn pa ga treba samo preracunati u eur-e tj u pR._osnOdb vec jesu euri 
+            decimal beta         = pR._osnOdb * (ispravanKoef - 1.00M); // beta = osnOdb x koefOvisanOdDjece                                                         
+
+            if(!plUmjesecu_isSijecanj2023)
+            {
+               alfa = alfa.Ron2();
+               beta = beta.Ron2();
+            }
+
+            if(ispravanKoef < 1.00M) fondOdbitka += ZXC.Ron2(alfa * ispravanKoef);
+            else                     fondOdbitka += (alfa + beta)                        ;
+         
+         
          }
+
       }
 
       return fondOdbitka.Ron2();

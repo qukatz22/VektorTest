@@ -3787,6 +3787,264 @@ public class Ptrans : VvTransRecord
 
    //}
 
+      #region nove place u 2024
+   private void Calc_Doprinosi_2024(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
+   {
+
+      #region MIOiz & MIOna
+
+      decimal maxMioOsnova = pR._maxMioOsn - spent.MioOsn;
+      decimal osnovicaDop; // trbala bi biti jednaka 'R_MioOsn' ali NE smije trzati na 'maxMioOsnova' tj. NEMA gornje granice 
+
+      //decimal pRmio1_granica1  =  700.00M;
+      //decimal pRmio1_granica2  = 1300.00M;
+      //decimal pRmio1_olak1     =  300.00M;
+      //decimal pRmio1_olak2     =    0.50M;
+      //bool    T_isVisePosl     =    false;
+      //decimal T_mio1_dir_olak  =    0.00M;
+        decimal R_mio1_olaksica  =    0.00M;
+        decimal R_mio1_osnovica  =    0.00M;
+
+      if(placaTT == Placa.TT_UGOVORODJELU ||
+         placaTT == Placa.TT_NADZORODBOR  ||
+         placaTT == Placa.TT_TURSITVIJECE ||  
+         placaTT == Placa.TT_IDD_KOLONA_4 ||
+         placaTT == Placa.TT_BIVSIRADNIK  || //23.12.2019.
+         placaTT == Placa.TT_SEZZAPPOLJOP
+         )
+      {
+         osnovicaDop = R_MioOsn = R_TheBruto; 
+      }
+      else if(placaTT == Placa.TT_AUTORHONOR || placaTT == Placa.TT_NR3_PX1DADOP/*12.2018*/)
+      {
+         R_AHizdatak = (R_TheBruto * pR._stOthOlak) / 100.00M;
+         R_AHizdatak = R_AHizdatak.Ron2();
+
+         osnovicaDop = R_MioOsn = R_TheBruto - R_AHizdatak;
+      }
+      else if(placaTT == Placa.TT_AUTORHONUMJ || placaTT == Placa.TT_AUVECASTOPA/*12.2018*/)
+      {
+         R_AHizdatak = (R_TheBruto * (pR._stOthOlak + 25.00M)) / 100.00M;
+         R_AHizdatak = R_AHizdatak.Ron2();
+
+         osnovicaDop = R_MioOsn = R_TheBruto - R_AHizdatak;
+      }
+      else if(placaTT == Placa.TT_AHSAMOSTUMJ)
+      {
+         R_AHizdatak = (R_TheBruto * (pR._stOthOlak + 25.00M)) / 100.00M;
+         R_AHizdatak = R_AHizdatak.Ron2();
+
+         osnovicaDop = R_MioOsn = 0.00M;
+      }
+      else if(placaTT == Placa.TT_POREZNADOBIT || 
+              placaTT == Placa.TT_DDBEZDOPRINO || //12.2018.
+              placaTT == Placa.TT_NR1_PX1NEDOP || //12.2018.
+              placaTT == Placa.TT_NR2_P01NEDOP    //12.2018.
+              )
+      {
+         osnovicaDop = R_MioOsn = 0.00M;
+      }
+      else
+      {
+         R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
+         osnovicaDop =                                            R_TheBruto;
+
+         R_mio1_olaksica = CalcMio1Osnovica(pR, spent);
+         R_mio1_osnovica = R_TheBruto - R_mio1_olaksica;
+      }
+
+      #region  novo 26.11.2014.
+
+      // uvijek treba uzimati razmjerni dio minMioOsn u odnosu na to koliko je radnik sati RADIO - stvarni sati rada koji se ubrajju u R_SatiR
+    //if(placaTT == Placa.TT_REDOVANRAD || placaTT == Placa.TT_PODUZETPLACA || placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_STRUCNOOSPOS)  24.01.2017.
+      if(placaTT == Placa.TT_REDOVANRAD || placaTT == Placa.TT_PODUZETPLACA || placaTT == Placa.TT_NEPLACDOPUST /*|| isSO_bef2017*/                    )
+      {
+         decimal minMioOsnZaPuniFond;
+         decimal satiRadaZaRazmjerniDio;
+         decimal satiRadaBezPrekovrIznadFonda;
+         decimal razmjerniDioMinMioOsn;
+         bool hasPrekovremeneIznadFonda;
+         // 30.01.2017.
+         decimal minDopOsnZaPuniFondClUp;
+         decimal razmjerniDioMinMioOsnZaClUpr; 
+
+      
+         hasPrekovremeneIznadFonda    = R_FondSatiDiffABS.IsPositive(); // da li ima prekovremene preko fonda da ih maknemo jer cisti fond ulayi u obracun
+
+         satiRadaBezPrekovrIznadFonda = hasPrekovremeneIznadFonda ? R_SatiUk - R_FondSatiDiffABS : R_SatiR;
+
+         minMioOsnZaPuniFond          = (T_dnFondSati.NotZero() ? ((pR._minMioOsn / ((decimal)Placa.SluzbeniDnevniFondSati)) * T_dnFondSati) : pR._minMioOsn); // iznos minMioOsn ovisno o tome na koliko je sati radnik prijavljen
+
+         satiRadaZaRazmjerniDio       = R_SatiUk.NotZero() ? (R_FondSatiDiffABS.NotZero() ? R_SatiUk - R_FondSatiDiffABS : R_SatiUk) : 0.00M; // ukupni fond sati radnika umanjen za prekovremene
+
+         razmjerniDioMinMioOsn        = ZXC.DivSafe(minMioOsnZaPuniFond, satiRadaZaRazmjerniDio) * satiRadaBezPrekovrIznadFonda; // razmjerni dio MinMioOsn na osnovu koliko je sati radnik radio ali 
+
+         minDopOsnZaPuniFondClUp      = (T_dnFondSati.NotZero() ? ((pR._stMioNa2B5 / ((decimal)Placa.SluzbeniDnevniFondSati)) * T_dnFondSati) : pR._stMioNa2B5); // iznos minDopOsn ovisno o tome na koliko je sati CLAN UPRAVE prijavljen
+
+         razmjerniDioMinMioOsnZaClUpr = ZXC.DivSafe(minDopOsnZaPuniFondClUp, satiRadaZaRazmjerniDio) * satiRadaBezPrekovrIznadFonda; // razmjerni dio osnovice za doprinose na osnovu koliko je sati CLAN UPRAVE radio
+
+
+         if(placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_STRUCNOOSPOS)
+         {
+            osnovicaDop = R_MioOsn = razmjerniDioMinMioOsn;
+         }
+       //else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.MINMIONE     ) // 29.12.2014. kada na bolovanje hoce dati a da ne uzima minMioOsn//MINMIONE - ne uzima minMioOsn vec stvarin bruto koji je u biti manji od MinMioOSn
+         else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.MINMIONE ||
+                 placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.NOVO_MINMIONE) // 18.12.2019.i za novozaposlene da ne uzima minMioOsn//MINMIONE - ne uzima minMioOsn vec stvarin bruto koji je u biti manji od MinMioOSn
+         {
+            osnovicaDop = R_MioOsn = R_TheBruto;
+         }
+         else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.MAXMIONE) // 13.03.2015. ne uzimaj u obzir maxMioOsn kod ovog obracuna - npr. za otpremninu i sl.
+         {
+            osnovicaDop = R_MioOsn = R_TheBruto;
+         }
+         else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.CLANUPRAVE) // 30.01.2017. ako je clan  uprave i bruto mu je manji ili jednak propisanoj osnovici za doprinose takvih onda mu uzimaj to za osnovicu ali trebalo bi izci u omjeru sati
+         {
+            osnovicaDop = R_MioOsn = razmjerniDioMinMioOsnZaClUpr;
+         }
+         else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.IZASLANRADNIK) // 14.04.2023. izaslani radnik ima 20% veću osnovicu za doprinose
+         {
+            osnovicaDop = R_MioOsn = ZXC.VvGet_125_on_100(R_TheBruto, 20.00M);
+         }
+         else
+         { //qweqwe
+            if(R_TheBruto < razmjerniDioMinMioOsn) osnovicaDop = R_MioOsn = razmjerniDioMinMioOsn;
+          //else                                   R_MioOsn    = R_TheBruto; 12.03.2015. jer kod velikih placa peko maxMioOsn nije dobro radilo
+            else                                 { R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
+                                                   osnovicaDop =                                            R_TheBruto; }
+         }
+      }
+
+      #endregion novo 26.11.2014.
+
+      // 21.12.2013: 
+      if(placaTT == Placa.TT_PLACAUNARAVI) osnovicaDop = R_MioOsn = R_TheBruto;
+
+      if(T_isMioII == true) // covjek JE u II MIO stupu 
+      {
+       //R_Mio1stup = R_MioOsn        * pR._stMio1stup / 100.00M;
+         R_Mio1stup = R_mio1_osnovica * pR._stMio1stup / 100.00M;
+         R_Mio2stup = R_MioOsn * pR._stMio2stup / 100.00M;
+      }
+      else // covjek NIJE u II MIO stupu 
+      {
+       //R_Mio1stup = R_MioOsn        * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
+         R_Mio1stup = R_mio1_osnovica * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
+         R_Mio2stup = 0.00M;
+      }
+      R_Mio1stup = R_Mio1stup.Ron2()      ;
+      R_Mio2stup = R_Mio2stup.Ron2()      ;
+      R_MioAll   = R_Mio1stup + R_Mio2stup;
+
+
+      #region T_rsB.NotZero - radnik ima po nekoj osnovi beneficirani radni staz
+      if(T_rsB.NotZero()) // radnik ima po nekoj osnovi beneficirani radni staz 
+      {
+         decimal stMioNa1, stMioNa2;
+
+         switch(T_rsB)
+         {
+            case 1: stMioNa1 = pR._stMioNaB1; stMioNa2 = pR._stMioNa2B1; break;
+            case 2: stMioNa1 = pR._stMioNaB2; stMioNa2 = pR._stMioNa2B2; break;
+            case 3: stMioNa1 = pR._stMioNaB3; stMioNa2 = pR._stMioNa2B3; break;
+            case 4: stMioNa1 = pR._stMioNaB4; stMioNa2 = pR._stMioNa2B4; break;
+            case 5: stMioNa1 = pR._prosPlaca; stMioNa2 = pR._stMioNa2B5; break;
+
+            default: ZXC.aim_emsg("T_rsB nije od 1 do 5!"); stMioNa1 = stMioNa2 = 0; break;
+         }
+
+         if(T_isMioII == true) // covjek JE u II MIO stupu 
+         {
+            R_Mio1stupNa = R_MioOsn * stMioNa1 / 100.00M;
+            R_Mio2stupNa = R_MioOsn * stMioNa2 / 100.00M;
+         }
+         else // covjek NIJE u II MIO stupu 
+         {
+            R_Mio1stupNa = R_MioOsn * (stMioNa1 + stMioNa2) / 100.00M;
+            R_Mio2stupNa = 0.00M;
+         }
+         R_Mio1stupNa = R_Mio1stupNa.Ron2();
+         R_Mio2stupNa = R_Mio2stupNa.Ron2();
+         R_MioAllNa   = R_Mio1stupNa + R_Mio2stupNa;
+      }
+      #endregion T_rsB.NotZero - radnik ima po nekoj osnovi beneficirani radni staz
+
+      #endregion MIOiz & MIOna
+
+      if(T_dokDate <= ZXC.Date12052015) osnovicaDop = R_MioOsn; // do 12.5.2015 je bio bug da su i Dop trzali na maxMioOsn a nisu smjeli            
+                                                                // od 'danas' smo popravili te razdvojili maxMioOsn od utjecaja na ostale doprinose 
+      #region ZDR & ZOR
+
+    //R_ZdrNa = R_TheBruto * pR._stZdrNa / 100.00M;
+    //22.03.2013.                                  
+      R_ZdrNa = osnovicaDop   * pR._stZdrNa / 100.00M;
+      
+      R_ZdrNa = R_ZdrNa.Ron2();
+
+    //R_ZorNa = R_TheBruto * pR._stZorNa / 100.00M;
+    //22.03.2013.
+      R_ZorNa = osnovicaDop * pR._stZorNa / 100.00M;
+      R_ZorNa = R_ZorNa.Ron2();
+
+      #endregion ZDR & ZOR
+
+      #region ZAPna ZAP2
+
+    //R_ZapNa  = R_TheBruto * pR._stZapNa / 100.00M;
+    //R_ZapII  = R_TheBruto * pR._stZapII / 100.00M;
+    //22.03.2013.
+      R_ZapNa = osnovicaDop * pR._stZapNa / 100.00M;
+      R_ZapII = osnovicaDop * pR._stZapII / 100.00M;
+
+
+      R_ZapNa = R_ZapNa.Ron2();
+      R_ZapII = R_ZapII.Ron2();
+
+      R_ZapAll = R_ZapNa + R_ZapII; // !? treba li ovaj zapII ovdje? 
+
+      #endregion ZAPna ZAP2
+
+      #region DoprIZ, DoprNA, DoprALL
+
+      R_DoprIz = R_Mio1stup   + R_Mio2stup;
+      R_DoprNa = R_Mio1stupNa + R_Mio2stupNa + R_ZdrNa + R_ZorNa + R_ZapNa + R_ZapII + R_ZpiUk ;
+
+      R_DoprAll = R_DoprIz + R_DoprNa;
+
+      #endregion DoprIZ, DoprNA, DoprALL
+
+      R_osnovicaDop = osnovicaDop.Ron2();  // 13.05.2015. da se moze prikazati u joppd obrascu
+
+   }
+
+   private decimal CalcMio1Osnovica(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent)
+   {
+      //e sad tu jos treba dodati i potro[enu ako ima vi[e isplata u mjesecu a ima ih i mi ih imamo
+      //!!!! A što kada je više isplata - onda račna na zadnjoj i mora oduzeti koliko je bilo na prethodnoj
+      //!!!! Validacija  - ne računamo MIO1olakšicu ako je bool true a tada mora onda druga olakšica biti ispunjena
+
+      decimal pRmio1_granica1  =  700.00M;
+      decimal pRmio1_granica2  = 1300.00M;
+      decimal pRmio1_olak1     =  300.00M;
+      decimal pRmio1_olak2     =    0.50M;
+      bool    T_isVisePosl     =    false;
+      decimal T_mio1_dir_olak  =    0.00M;
+      decimal theMio1Olaksica  =    0.00M;
+      decimal potrosenMioOsn   = spent.MioOsn; //ovo jos treba provejeriti da li je tako
+
+           if(T_isVisePosl                                  ) theMio1Olaksica = T_mio1_dir_olak;
+      else if(R_TheBruto + potrosenMioOsn <= pRmio1_granica1) theMio1Olaksica = pRmio1_olak1;
+      else if(R_TheBruto + potrosenMioOsn <= pRmio1_granica2) theMio1Olaksica = pRmio1_olak2 * (pRmio1_granica2 - R_TheBruto);
+      else                                   theMio1Olaksica = 0.00M;
+
+    // ali ako je nesto potroseno onda je na tome i gbilo olaksica pa to treba uyeti osnosno umanjiti ya placeni mio ili uvecati!!!!
+
+      return theMio1Olaksica;
+   }
+   
+   #endregion nove place u 2024
+
+
    #endregion CalcTransResults()
 
    #region CalcTransResults_FromReportDataRowParameters 
