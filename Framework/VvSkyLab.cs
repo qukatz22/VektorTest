@@ -1241,6 +1241,49 @@ public static class VvSkyLab
 #endif
 
    #endregion HRD_2023
+
+   public static List<string> Get_TH_BagArtiklPreffixList(string bagArtiklCD)
+   {
+      List<string> bagArtiklPreffixList_ODJ_A = new List<string>() { "AO", "AM", "AD"       };
+      List<string> bagArtiklPreffixList_ODJ_B = new List<string>() { "BO", "BM", "BD"       };
+      List<string> bagArtiklPreffixList_ODJ_C = new List<string>() { "CO", "CM", "CD"       };
+      List<string> bagArtiklPreffixList_OST_A = new List<string>() { "AC", "AT", "AR"       };
+      List<string> bagArtiklPreffixList_OST_B = new List<string>() { "BC", "BT", "BR", "KT" };
+
+      switch(bagArtiklCD)
+      {
+         case "SQM W"  :
+         case "SQM HW" :
+         case "SQM S"  :
+         case "SQM LS" :
+         case "HATS"   :
+         case "HATS S" :
+         case "KOŽA  A": 
+            return bagArtiklPreffixList_ODJ_A;
+         case "KARNEVAL":
+         case "SQ BRIC-A-BRAC":
+         case "SQB S":
+         case "SQB W":
+            return bagArtiklPreffixList_ODJ_B;
+         case "MIX S":
+         case "MIX W":
+            return bagArtiklPreffixList_ODJ_C;
+         case "BAG A":
+         case "SHOES ALL":
+         case "SHOES LS A":
+            return bagArtiklPreffixList_OST_A;
+         case "BAG B":
+         case "SHOES B S":
+         case "SHOES B W":
+         case "SQ HT":
+         case "BAG TRAVEL B":
+            return bagArtiklPreffixList_OST_B;
+
+      }
+
+      return null;
+   }
+
 }
 
 public class TH_PriceRuleForCycleMoment
@@ -2650,48 +2693,6 @@ public class TH_PriceRuleForCycleMoment
    public static DateTime GetActiveZPCdate_ForThisDay(TH_PriceRuleForCycleMoment rule, DateTime dokDate)
    {
       return dokDate - rule.ZPC_Age_InDays;
-   }
-
-   public static List<string> Get_TH_ArtiklPreffix(string bagArtiklCD)
-   {
-      List<string> bagArtiklPreffixList_ODJ_A = new List<string>() { "AO", "AM", "AD"       };
-      List<string> bagArtiklPreffixList_ODJ_B = new List<string>() { "BO", "BM", "BD"       };
-      List<string> bagArtiklPreffixList_ODJ_C = new List<string>() { "CO", "CM", "CD"       };
-      List<string> bagArtiklPreffixList_OST_A = new List<string>() { "AC", "AT", "AR"       };
-      List<string> bagArtiklPreffixList_OST_B = new List<string>() { "BC", "BT", "BR", "KT" };
-
-      switch(bagArtiklCD)
-      {
-         case "SQM W"  :
-         case "SQM HW" :
-         case "SQM S"  :
-         case "SQM LS" :
-         case "HATS"   :
-         case "HATS S" :
-         case "KOŽA  A": 
-            return bagArtiklPreffixList_ODJ_A;
-         case "KARNEVAL":
-         case "SQ BRIC-A-BRAC":
-         case "SQB S":
-         case "SQB W":
-            return bagArtiklPreffixList_ODJ_B;
-         case "MIX S":
-         case "MIX W":
-            return bagArtiklPreffixList_ODJ_C;
-         case "BAG A":
-         case "SHOES ALL":
-         case "SHOES LS A":
-            return bagArtiklPreffixList_OST_A;
-         case "BAG B":
-         case "SHOES B S":
-         case "SHOES B W":
-         case "SQ HT":
-         case "BAG TRAVEL B":
-            return bagArtiklPreffixList_OST_B;
-
-      }
-
-      return null;
    }
 
    #endregion STATIC Util Metodz
