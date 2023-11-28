@@ -2652,6 +2652,22 @@ public class TH_PriceRuleForCycleMoment
       return dokDate - rule.ZPC_Age_InDays;
    }
 
+   public static List<string> Get_TH_ArtiklPreffix(string bagArtiklCD)
+   {
+      List<string> bagArtiklPreffixList_ODJ_A = new List<string>() { "AO", "AM", "AD"};
+      List<string> bagArtiklPreffixList_ODJ_B = new List<string>() { "AO", "AM", "AD" };
+      List<string> bagArtiklPreffixList_ODJ_C = new List<string>() { "AO", "AM", "AD" };
+      List<string> bagArtiklPreffixList_OST_A = new List<string>() { "AO", "AM", "AD" };
+      List<string> bagArtiklPreffixList_OST_B = new List<string>() { "AO", "AM", "AD" };
+
+      switch(bagArtiklCD)
+      {
+         case "SQM W": return bagArtiklPreffixList_ODJ_A;
+      }
+
+      return null;
+   }
+
    #endregion STATIC Util Metodz
 
 }
