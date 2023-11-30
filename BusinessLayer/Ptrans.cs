@@ -64,6 +64,10 @@ public struct PtransStruct
 
    /* 47 */  internal decimal   _t_dopZdr2020 ;   
 
+   /* 48 */  internal decimal   _t_stPorez1   ;
+   /* 49 */  internal decimal   _t_stPorez2   ;
+   /* 50 */  internal decimal   _t_fixMio1Olak;
+
              //internal PtransResultStruct _ptrResult;
 }
 
@@ -305,6 +309,9 @@ public class Ptrans : VvTransRecord
       /* 45 */  this.currentData._t_pr3mjBruto  = decimal.Zero;   
       /* 46 */  this.currentData._t_brutoKorekc = decimal.Zero;   
       /* 47 */  this.currentData._t_dopZdr2020  = decimal.Zero;   
+      /* 48 */  this.currentData._t_stPorez1    = decimal.Zero;
+      /* 49 */  this.currentData._t_stPorez2    = decimal.Zero;
+      /* 50 */  this.currentData._t_fixMio1Olak = decimal.Zero;
 
    }
 
@@ -716,6 +723,10 @@ public class Ptrans : VvTransRecord
    /* 46 */public decimal T_brutoKorekc { get { return this.currentData._t_brutoKorekc; } set { this.currentData._t_brutoKorekc = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)]
    /* 47 */public decimal T_dopZdr2020  { get { return this.currentData._t_dopZdr2020 ; } set { this.currentData._t_dopZdr2020  = value; } }
+
+   /* 48 */public decimal T_stPorez1    { get { return this.currentData._t_stPorez1   ; } set { this.currentData._t_stPorez1     = value; } }
+   /* 49 */public decimal T_stPorez2    { get { return this.currentData._t_stPorez2   ; } set { this.currentData._t_stPorez2     = value; } }
+   /* 50 */public decimal T_fixMio1Olak { get { return this.currentData._t_fixMio1Olak; } set { this.currentData._t_fixMio1Olak  = value; } }
 
    /* */
 

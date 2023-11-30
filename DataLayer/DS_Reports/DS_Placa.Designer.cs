@@ -5450,6 +5450,12 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnR_Netto_Kn;
             
+            private global::System.Data.DataColumn columnt_stPorez1;
+            
+            private global::System.Data.DataColumn columnt_stPorez2;
+            
+            private global::System.Data.DataColumn columnt_fixMio1Olak;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public IzvjTableDataTable() {
@@ -6733,6 +6739,30 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn t_stPorez1Column {
+                get {
+                    return this.columnt_stPorez1;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn t_stPorez2Column {
+                get {
+                    return this.columnt_stPorez2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn t_fixMio1OlakColumn {
+                get {
+                    return this.columnt_fixMio1Olak;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -6924,7 +6954,10 @@ namespace Vektor.DataLayer.DS_Reports {
                         uint R_daniB, 
                         decimal t_dopZdr2020, 
                         decimal R_Netto_EUR, 
-                        decimal R_Netto_Kn) {
+                        decimal R_Netto_Kn, 
+                        decimal t_stPorez1, 
+                        decimal t_stPorez2, 
+                        decimal t_fixMio1Olak) {
                 IzvjTableRow rowIzvjTableRow = ((IzvjTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         t_parentID,
@@ -7082,7 +7115,10 @@ namespace Vektor.DataLayer.DS_Reports {
                         R_daniB,
                         t_dopZdr2020,
                         R_Netto_EUR,
-                        R_Netto_Kn};
+                        R_Netto_Kn,
+                        t_stPorez1,
+                        t_stPorez2,
+                        t_fixMio1Olak};
                 rowIzvjTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowIzvjTableRow);
                 return rowIzvjTableRow;
@@ -7261,6 +7297,9 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_dopZdr2020 = base.Columns["t_dopZdr2020"];
                 this.columnR_Netto_EUR = base.Columns["R_Netto_EUR"];
                 this.columnR_Netto_Kn = base.Columns["R_Netto_Kn"];
+                this.columnt_stPorez1 = base.Columns["t_stPorez1"];
+                this.columnt_stPorez2 = base.Columns["t_stPorez2"];
+                this.columnt_fixMio1Olak = base.Columns["t_fixMio1Olak"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7578,6 +7617,12 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnR_Netto_EUR);
                 this.columnR_Netto_Kn = new global::System.Data.DataColumn("R_Netto_Kn", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnR_Netto_Kn);
+                this.columnt_stPorez1 = new global::System.Data.DataColumn("t_stPorez1", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnt_stPorez1);
+                this.columnt_stPorez2 = new global::System.Data.DataColumn("t_stPorez2", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnt_stPorez2);
+                this.columnt_fixMio1Olak = new global::System.Data.DataColumn("t_fixMio1Olak", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnt_fixMio1Olak);
                 this.columnt_parentID.AllowDBNull = false;
                 this.columnt_dokNum.AllowDBNull = false;
                 this.columnt_serial.AllowDBNull = false;
@@ -7795,6 +7840,9 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_dopZdr2020.AllowDBNull = false;
                 this.columnR_Netto_EUR.DefaultValue = ((decimal)(0m));
                 this.columnR_Netto_Kn.DefaultValue = ((decimal)(0m));
+                this.columnt_stPorez1.AllowDBNull = false;
+                this.columnt_stPorez2.AllowDBNull = false;
+                this.columnt_fixMio1Olak.AllowDBNull = false;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -21880,6 +21928,39 @@ namespace Vektor.DataLayer.DS_Reports {
                 }
                 set {
                     this[this.tableIzvjTable.R_Netto_KnColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal t_stPorez1 {
+                get {
+                    return ((decimal)(this[this.tableIzvjTable.t_stPorez1Column]));
+                }
+                set {
+                    this[this.tableIzvjTable.t_stPorez1Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal t_stPorez2 {
+                get {
+                    return ((decimal)(this[this.tableIzvjTable.t_stPorez2Column]));
+                }
+                set {
+                    this[this.tableIzvjTable.t_stPorez2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal t_fixMio1Olak {
+                get {
+                    return ((decimal)(this[this.tableIzvjTable.t_fixMio1OlakColumn]));
+                }
+                set {
+                    this[this.tableIzvjTable.t_fixMio1OlakColumn] = value;
                 }
             }
             
