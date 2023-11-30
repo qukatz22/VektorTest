@@ -78,12 +78,12 @@ public struct PrulesStruct
    // 16.01.2019: 
    /* 51 */ internal decimal _stZdrDD   ;
 
+#if nottjetttt
    /* 52 */ internal decimal _mio1Granica1  ;
    /* 53 */ internal decimal _mio1Granica2  ;
    /* 54 */ internal decimal _mio1FiksOlk;
    /* 55 */ internal decimal _mio1KoefOlk;
-
-
+#endif
 }
 
 //public struct PlacaResultStruct
@@ -1014,6 +1014,7 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._stZdrDD; }
       set {        this.currentData._pRules._stZdrDD = value; }
    }
+#if nottjetttt
    /* 52 */ public decimal Rule_Mio1Gran1
    {
       get { return this.currentData._pRules._mio1Granica1; }
@@ -1034,6 +1035,7 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._mio1KoefOlk; }
       set {        this.currentData._pRules._mio1KoefOlk = value; }
    }
+#endif
 
    #endregion Rules Data Layer Columns
 

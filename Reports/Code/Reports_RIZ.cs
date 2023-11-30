@@ -11202,13 +11202,27 @@ public class RptR_BLAG                : RptR_StandardRiskReport
       // 12.02.2018: 
       if(RptFilter.IsBlgInIzvVal)
       {
-         TheFakturList.ForEach(fak => fak.ConvertBussinessValuesToDeviza(ZXC.DevTecDao.GetHnbTecaj(/*presentValutaEnum*/fak.DevNameAsEnum, fak.DokDate), fak.DevNameAsEnum));
+         decimal devTecaj;
+         foreach(Faktur fak in TheFakturList)
+         {
+            devTecaj = ZXC.DevTecDao.GetHnbTecaj(fak.DevNameAsEnum, fak.DokDate);
 
-         //Faktur_rec_SumaRazdoblja_BLG.ConvertBussinessValuesToDeviza(ZXC.DevTecDao.GetHnbTecaj(/*presentValutaEnum*/Faktur_rec_SumaRazdoblja_BLG.DevNameAsEnum, Faktur_rec_SumaRazdoblja_BLG.DokDate), Faktur_rec_SumaRazdoblja_BLG.DevNameAsEnum);
-         //Faktur_rec_DonosPretRazd_BLG.ConvertBussinessValuesToDeviza(ZXC.DevTecDao.GetHnbTecaj(/*presentValutaEnum*/Faktur_rec_DonosPretRazd_BLG.DevNameAsEnum, Faktur_rec_DonosPretRazd_BLG.DokDate), Faktur_rec_DonosPretRazd_BLG.DevNameAsEnum);
+            // 23.11.2023: ShowingConvertedMoney_BUG_Repair
+          //fak.ConvertBussinessValuesToDeviza(devTecaj, fak.DevNameAsEnum);
+            fak.VvDao.LoadTranses(TheDbConnection, fak, false);
+            fak.Transes.ForEach(rtr => 
+               { 
+                //rtr.T_cij = VvCurrency(rtr.T_cij); 
+                //rtr.T_cij =           (rtr.T_cij * devTecaj);
+                  rtr.T_cij = ZXC.DivSafe(rtr.T_cij, devTecaj);
+                  rtr.CalcTransResults(null); 
+               } 
+            );
+            fak.TakeTransesSumToDokumentSum(true);
+         }
       }
 
-      // Fill Faktur_rec_SumaRazdoblja_BLG, fill Faktur_rec_DonosPretRazd_BLG 
+    //Fill Faktur_rec_SumaRazdoblja_BLG, fill Faktur_rec_DonosPretRazd_BLG 
       FillFakturRec_SUM();
 
       int distinctValutaCount = TheFakturList.Select(fak => fak.DevName).Distinct().Count();
@@ -11253,10 +11267,24 @@ public class RptR_BLAG                : RptR_StandardRiskReport
     //28.03.2018. ako se devizna blagajna prkazuje u devizi
       if(RptFilter.IsBlgInIzvVal)
       {
-         prevFakturList.ForEach(fak => fak.ConvertBussinessValuesToDeviza(ZXC.DevTecDao.GetHnbTecaj(/*presentValutaEnum*/fak.DevNameAsEnum, fak.DokDate), fak.DevNameAsEnum));
+         decimal devTecaj;
+         foreach(Faktur fak in prevFakturList)
+         {
+            devTecaj = ZXC.DevTecDao.GetHnbTecaj(fak.DevNameAsEnum, fak.DokDate);
 
-         //Faktur_rec_SumaRazdoblja_BLG.ConvertBussinessValuesToDeviza(ZXC.DevTecDao.GetHnbTecaj(/*presentValutaEnum*/Faktur_rec_SumaRazdoblja_BLG.DevNameAsEnum, Faktur_rec_SumaRazdoblja_BLG.DokDate), Faktur_rec_SumaRazdoblja_BLG.DevNameAsEnum);
-         //Faktur_rec_DonosPretRazd_BLG.ConvertBussinessValuesToDeviza(ZXC.DevTecDao.GetHnbTecaj(/*presentValutaEnum*/Faktur_rec_DonosPretRazd_BLG.DevNameAsEnum, Faktur_rec_DonosPretRazd_BLG.DokDate), Faktur_rec_DonosPretRazd_BLG.DevNameAsEnum);
+            // 23.11.2023: ShowingConvertedMoney_BUG_Repair
+          //fak.ConvertBussinessValuesToDeviza(devTecaj, fak.DevNameAsEnum);
+            fak.VvDao.LoadTranses(TheDbConnection, fak, false);
+            fak.Transes.ForEach(rtr => 
+               { 
+                //rtr.T_cij = VvCurrency(rtr.T_cij); 
+                //rtr.T_cij =           (rtr.T_cij * devTecaj);
+                  rtr.T_cij = ZXC.DivSafe(rtr.T_cij, devTecaj);
+                  rtr.CalcTransResults(null); 
+               } 
+            );
+            fak.TakeTransesSumToDokumentSum(true);
+         }
       }
 
       fakturPrevListSUM_rec.SumValuesFromList(prevFakturList);
