@@ -239,6 +239,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       /* 48 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_StKrizPor2,    TheSchemaTable.Rows[CI.stKrizPor2]);
       /* 50 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_VrKoefBr1 ,    TheSchemaTable.Rows[CI.vrKoefBr1 ]);
       /* 51 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_StZdrDD   ,    TheSchemaTable.Rows[CI.stZdrDD   ]);
+   ///* 52 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1Granica1,  TheSchemaTable.Rows[CI.stZdrDD   ]);
+   ///* 53 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1Granica2,  TheSchemaTable.Rows[CI.stZdrDD   ]);
+   ///* 54 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1FiksOlk,   TheSchemaTable.Rows[CI.stZdrDD   ]);
+   ///* 55 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1KoefOlk,   TheSchemaTable.Rows[CI.stZdrDD   ]);
 
          if(isArhiva)
          {
@@ -404,6 +408,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       /* 48 */ placa_rec.Rule_StKrizPor2  = placaRow.stKrizPor2;
       /* 50 */ placa_rec.Rule_VrKoefBr1   = placaRow.vrKoefBr1 ;
       /* 51 */ placa_rec.Rule_StZdrDD     = placaRow.stZdrDD   ;
+   ///* 52 */ placa_rec.Rule_Mio1Gran1   = placaRow.stZdrDD   ;
+   ///* 53 */ placa_rec.Rule_Mio1Gran2   = placaRow.stZdrDD   ;
+   ///* 54 */ placa_rec.Rule_Mio1FiksOlk = placaRow.stZdrDD   ;
+   ///* 55 */ placa_rec.Rule_Mio1KoefOlk = placaRow.stZdrDD   ;
    }
 
    #endregion FillFromTypedPlacaDataRow

@@ -3787,7 +3787,7 @@ public class Ptrans : VvTransRecord
 
    //}
 
-      #region nove place u 2024
+   #region nove place u 2024
    private void Calc_Doprinosi_2024(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
    {
 
@@ -4019,9 +4019,10 @@ public class Ptrans : VvTransRecord
 
    private decimal CalcMio1Osnovica(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent)
    {
-      //e sad tu jos treba dodati i potro[enu ako ima vi[e isplata u mjesecu a ima ih i mi ih imamo
+      //e sad tu jos treba dodati i potro[enu ako ima vi[e isplata u mjesecu
       //!!!! A što kada je više isplata - onda račna na zadnjoj i mora oduzeti koliko je bilo na prethodnoj
-      //!!!! Validacija  - ne računamo MIO1olakšicu ako je bool true a tada mora onda druga olakšica biti ispunjena
+      //!!!! Ne računamo MIO1olakšicu ako je bool true a tada mora onda druga olakšica biti ispunjena
+      //!!!! Ako su neke isplate druge a mi ih svejedno stavljamo na RR ali u evidenciji rada imaju 0021 ili sl tada se tu ne obračunava mio Olakšica
 
       decimal pRmio1_granica1  =  700.00M;
       decimal pRmio1_granica2  = 1300.00M;
@@ -4122,6 +4123,5 @@ public class Ptrans : VvTransRecord
    }
 
    #endregion VvDataRecordFactory
-
 
 }

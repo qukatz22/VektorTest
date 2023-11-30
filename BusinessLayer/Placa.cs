@@ -78,12 +78,18 @@ public struct PrulesStruct
    // 16.01.2019: 
    /* 51 */ internal decimal _stZdrDD   ;
 
+   /* 52 */ internal decimal _mio1Granica1  ;
+   /* 53 */ internal decimal _mio1Granica2  ;
+   /* 54 */ internal decimal _mio1FiksOlk;
+   /* 55 */ internal decimal _mio1KoefOlk;
+
+
 }
 
 //public struct PlacaResultStruct
 //{
 //   //___________PtransStruct
-   
+
 //   /* 01 */  internal decimal  _brutoOsn;   
 //   /* 02 */  internal decimal  _topObrok;   
 //   /* 03 */  internal decimal  _dodBruto;   
@@ -1007,6 +1013,26 @@ public class Placa : VvPolyDocumRecord
    {
       get { return this.currentData._pRules._stZdrDD; }
       set {        this.currentData._pRules._stZdrDD = value; }
+   }
+   /* 52 */ public decimal Rule_Mio1Gran1
+   {
+      get { return this.currentData._pRules._mio1Granica1; }
+      set {        this.currentData._pRules._mio1Granica1 = value; }
+   }
+   /* 53 */ public decimal Rule_Mio1Gran2
+   {
+      get { return this.currentData._pRules._mio1Granica2; }
+      set {        this.currentData._pRules._mio1Granica2 = value; }
+   }
+   /* 54 */ public decimal Rule_Mio1FiksOlk
+   {
+      get { return this.currentData._pRules._mio1FiksOlk; }
+      set {        this.currentData._pRules._mio1FiksOlk = value; }
+   }
+   /* 55 */ public decimal Rule_Mio1KoefOlk
+   {
+      get { return this.currentData._pRules._mio1KoefOlk; }
+      set {        this.currentData._pRules._mio1KoefOlk = value; }
    }
 
    #endregion Rules Data Layer Columns
