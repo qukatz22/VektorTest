@@ -3796,14 +3796,8 @@ public class Ptrans : VvTransRecord
       decimal maxMioOsnova = pR._maxMioOsn - spent.MioOsn;
       decimal osnovicaDop; // trbala bi biti jednaka 'R_MioOsn' ali NE smije trzati na 'maxMioOsnova' tj. NEMA gornje granice 
 
-      //decimal pRmio1_granica1  =  700.00M;
-      //decimal pRmio1_granica2  = 1300.00M;
-      //decimal pRmio1_olak1     =  300.00M;
-      //decimal pRmio1_olak2     =    0.50M;
-      //bool    T_isVisePosl     =    false;
-      //decimal T_mio1_dir_olak  =    0.00M;
-        decimal R_mio1_olaksica  =    0.00M;
-        decimal R_mio1_osnovica  =    0.00M;
+      decimal R_mio1_olaksica  =    0.00M;
+      decimal R_mio1_osnovica  =    0.00M;
 
       if(placaTT == Placa.TT_UGOVORODJELU ||
          placaTT == Placa.TT_NADZORODBOR  ||
@@ -3971,8 +3965,6 @@ public class Ptrans : VvTransRecord
 
       #endregion MIOiz & MIOna
 
-      if(T_dokDate <= ZXC.Date12052015) osnovicaDop = R_MioOsn; // do 12.5.2015 je bio bug da su i Dop trzali na maxMioOsn a nisu smjeli            
-                                                                // od 'danas' smo popravili te razdvojili maxMioOsn od utjecaja na ostale doprinose 
       #region ZDR & ZOR
 
     //R_ZdrNa = R_TheBruto * pR._stZdrNa / 100.00M;
@@ -4019,30 +4011,179 @@ public class Ptrans : VvTransRecord
 
    private decimal CalcMio1Osnovica(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent)
    {
-      //e sad tu jos treba dodati i potro[enu ako ima vi[e isplata u mjesecu
       //!!!! A što kada je više isplata - onda račna na zadnjoj i mora oduzeti koliko je bilo na prethodnoj
-      //!!!! Ne računamo MIO1olakšicu ako je bool true a tada mora onda druga olakšica biti ispunjena
+      //!!!! Ne računamo MIO1olakšicu ako je fiksna olakšica ispunjena                                     
       //!!!! Ako su neke isplate druge a mi ih svejedno stavljamo na RR ali u evidenciji rada imaju 0021 ili sl tada se tu ne obračunava mio Olakšica
+      //!!!! treba paziti na sppc stvari - kad se uzima ili ne minMioOsn?!
 
-      decimal pRmio1_granica1  =  700.00M;
-      decimal pRmio1_granica2  = 1300.00M;
-      decimal pRmio1_olak1     =  300.00M;
-      decimal pRmio1_olak2     =    0.50M;
-      bool    T_isVisePosl     =    false;
+      decimal pR_mio1Granica1  =  700.00M;
+      decimal pR_mio1Granica2  = 1300.00M;
+      decimal pR_mio1FiksOlk   =  300.00M;
+      decimal pR_mio1KoefOlk   =    0.50M;
       decimal T_mio1_dir_olak  =    0.00M;
       decimal theMio1Olaksica  =    0.00M;
-      decimal potrosenMioOsn   = spent.MioOsn; //ovo jos treba provejeriti da li je tako
+      decimal potrosenMioOsn   = spent.MioOsn; //ovo jos treba provejeriti da li je tako i zapravo kako jer ovo je onaj neki stari mioOsn to nije to sto nam treba
 
-           if(T_isVisePosl                                  ) theMio1Olaksica = T_mio1_dir_olak;
-      else if(R_TheBruto + potrosenMioOsn <= pRmio1_granica1) theMio1Olaksica = pRmio1_olak1;
-      else if(R_TheBruto + potrosenMioOsn <= pRmio1_granica2) theMio1Olaksica = pRmio1_olak2 * (pRmio1_granica2 - R_TheBruto);
-      else                                   theMio1Olaksica = 0.00M;
-
-    // ali ako je nesto potroseno onda je na tome i gbilo olaksica pa to treba uyeti osnosno umanjiti ya placeni mio ili uvecati!!!!
+           if(T_mio1_dir_olak.NotZero()                                                                      ) theMio1Olaksica = T_mio1_dir_olak;
+      else if(R_TheBruto - potrosenMioOsn <= pR_mio1Granica1                                                 ) theMio1Olaksica = pR_mio1FiksOlk;
+      else if(R_TheBruto - potrosenMioOsn > pR_mio1Granica1 && R_TheBruto - potrosenMioOsn <= pR_mio1Granica2) theMio1Olaksica = pR_mio1KoefOlk * (pR_mio1Granica2 - R_TheBruto);
+      else                                                                                                     theMio1Olaksica = 0.00M;
 
       return theMio1Olaksica;
    }
    
+   private void Calc_DohodakOdbitakPorOsn_2024(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
+   {
+      // 22.04.2016. koristimo t_zivotno za redni broj u iyvornom Joppd obrascu te moramo prilikom obra;una neta nulirati zivotno da s ne bi zbrajalo u olaksice 
+      // ukidanje poreznih olakšica za životno, dobrovoljno mirovinsko i dobrovoljno zdravstveno osiguranje nakon 1. srpnja 2010
+
+      R_Premije = T_zivotno + T_dopZdr + T_dobMIO;
+
+      if(R_Premije > (0.70M * pR._osnOdb)) R_Premije = 0.70M * pR._osnOdb;
+      R_Premije = R_Premije.Ron2();
+
+      if(T_dokDate > ZXC.Date01072010) R_Premije = 0.0M; // 22.04.2016.
+
+      R_Odbitak = T_koef * pR._osnOdb;
+      R_Odbitak = R_Odbitak.Ron2();
+
+      R_Odbitak                -= spent.Odbitak;
+      maxOsn1 = pR._maxPorOsn1 - spent.PorOsn1;
+      maxOsn2 = pR._maxPorOsn2 - spent.PorOsn2 - pR._maxPorOsn1;
+      maxOsn3 = pR._maxPorOsn3 - spent.PorOsn3 - pR._maxPorOsn2;
+
+      if(R_Odbitak < 0.00M) R_Odbitak = 0.00M;
+      if(maxOsn1   < 0.00M) maxOsn1   = 0.00M;
+      if(maxOsn2   < 0.00M) maxOsn2   = 0.00M;
+      if(maxOsn3   < 0.00M) maxOsn3   = 0.00M;
+
+      R_Dohodak = R_TheBruto - R_DoprIz - R_Premije;
+
+      if(R_Dohodak < 0.00M) R_Dohodak = 0.00M;
+
+      if(R_Odbitak > R_Dohodak) R_Odbitak = R_Dohodak;
+
+      R_PorOsnAll = R_Dohodak - R_Odbitak;
+
+      if(T_invalidTip == InvalidEnum.HRVI) R_PorOsnAll *= ((100.00M - T_koefHRVI) / 100.00M);
+
+      if(placaTT == Placa.TT_AUTORHONOR )
+      {
+         R_PorOsnAll -= R_AHizdatak;
+         R_AHizdatak = R_AHizdatak.Ron2();
+      }
+
+      if(placaTT == Placa.TT_NR2_P01NEDOP)
+      {
+         R_AHizdatak = (R_PorOsnAll * pR._stOthOlak) / 100.00M;
+         R_PorOsnAll -= R_AHizdatak;
+         R_AHizdatak = R_AHizdatak.Ron2();
+      }
+
+      if(placaTT == Placa.TT_AUTORHONUMJ || placaTT == Placa.TT_AUVECASTOPA/*12.2018.*/)
+      {
+         if(T_dokDate < ZXC.Date01012017) R_AHizdatak = (R_PorOsnAll * (pR._stOthOlak + 25.00M) /* TODO: ovih 25 staviti u pRulse */) / 100.00M; 
+
+         R_PorOsnAll -= R_AHizdatak;
+         R_AHizdatak = R_AHizdatak.Ron2();
+      }
+
+      if(placaTT == Placa.TT_AHSAMOSTUMJ)
+      {
+         R_AHizdatak = (R_PorOsnAll * (pR._stOthOlak + 25.00M) /* TODO: ovih 25 staviti u pRulse */) / 100.00M;
+
+         R_PorOsnAll -= R_AHizdatak;
+         R_AHizdatak = R_AHizdatak.Ron2();
+      }
+
+      if(placaTT == Placa.TT_NR3_PX1DADOP)//12.2018.
+      {
+         R_PorOsnAll += R_DoprIz;
+      }
+
+      R_PorOsnAll = R_PorOsnAll.Ron2();
+
+      if(placaTT == Placa.TT_STRUCNOOSPOS || placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_SAMODOPRINOS) R_Dohodak = R_PorOsnAll = 0.00M; // 09.02.2016. SD 25.11.2014.
+   }
+
+   private void Calc_Porez_2024(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
+   {
+      decimal ostaloZaOporezirati;
+
+      ostaloZaOporezirati = R_PorOsnAll;
+
+      if(placaTT == Placa.TT_UGOVORODJELU ||
+         placaTT == Placa.TT_NADZORODBOR  ||
+         placaTT == Placa.TT_TURSITVIJECE ||
+         placaTT == Placa.TT_IDD_KOLONA_4 ||
+         placaTT == Placa.TT_SEZZAPPOLJOP ||
+         placaTT == Placa.TT_AUTORHONUMJ  ||
+         placaTT == Placa.TT_AHSAMOSTUMJ  ||
+         placaTT == Placa.TT_AUTORHONOR   ||
+         placaTT == Placa.TT_DDBEZDOPRINO ||
+         placaTT == Placa.TT_AUVECASTOPA  ||
+         placaTT == Placa.TT_NR1_PX1NEDOP ||
+         placaTT == Placa.TT_NR2_P01NEDOP ||
+         placaTT == Placa.TT_NR3_PX1DADOP   
+         )//Obračun drugog dohotka: niže stope koje donose JLS
+      {
+            R_PorOsn1 = R_PorOsnAll;
+            R_PorOsn2 =
+            R_PorOsn3 =
+            R_PorOsn4 = 0.00M;
+      }
+      else if(placaTT == Placa.TT_POREZNADOBIT) // 07.03.2014. obracun poreza za isplatu oporezive dobiti
+      {
+         R_PorOsn1 = R_PorOsnAll;
+         R_PorOsn2 =
+         R_PorOsn3 =
+         R_PorOsn4 = 0.00M;
+      }
+      else if(placaTT == Placa.TT_STRUCNOOSPOS || placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_SAMODOPRINOS) // 09.02.2016. dodan SD 25.11.2014. nema poreza za strucno osposobljavanje bez yasnivanja ro
+      {
+         R_PorOsn1 = 
+         R_PorOsn2 =
+         R_PorOsn3 =
+         R_PorOsn4 = 0.00M;
+      }
+      else // REDOVNA PLACA ________________________________________ +BivsiRadnik od 23.02.2019. + dodati novi TT ya ostalo sto nije placa ali se ovako racuna
+      {
+         if(ostaloZaOporezirati > maxOsn1)// za stopuPoreza1
+         {  
+            R_PorOsn1            = maxOsn1;
+            ostaloZaOporezirati -= R_PorOsn1;
+         }
+         else
+         {
+            R_PorOsn1 = ostaloZaOporezirati;
+            ostaloZaOporezirati = 0.00M;
+         }
+
+         if(ostaloZaOporezirati > maxOsn2)// za stopuPoreza2
+         { 
+            R_PorOsn2 = maxOsn2;
+            ostaloZaOporezirati -= R_PorOsn2;
+         }
+         else
+         {
+            R_PorOsn2 = ostaloZaOporezirati;
+            ostaloZaOporezirati = 0.00M;
+         }
+
+      } // REDOVNA PLACA ________________________________________ 
+
+      // TODO: DELLMELATTER 
+      if(Math.Abs((R_PorOsnAll) - (R_PorOsn1+R_PorOsn2+R_PorOsn3+R_PorOsn4)) > 0.00M) ZXC.aim_emsg("oAll<{0}> o1+other+o3+o4<{1}> !!!", R_PorOsnAll, R_PorOsn1 + R_PorOsn2 + R_PorOsn3 + R_PorOsn4);
+
+      R_Por1Uk = R_PorOsn1 * pR._stpor1 / 100.00M/*T_stpor1*/;
+      R_Por2Uk = R_PorOsn2 * pR._stpor2 / 100.00M/*T_stpor2*/;
+
+      R_Por1Uk = R_Por1Uk.Ron2();
+      R_Por2Uk = R_Por2Uk.Ron2();
+
+      R_PorezAll  = R_Por1Uk + R_Por2Uk;
+   }
+
    #endregion nove place u 2024
 
 
