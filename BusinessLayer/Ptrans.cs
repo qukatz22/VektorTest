@@ -1512,8 +1512,17 @@ public class Ptrans : VvTransRecord
          Calc_Doprinosi                             (    pRules, spent, placa_rec.TT);
       }
 
-      Calc_DohodakOdbitakPorOsn                  (    pRules, spent, placa_rec.TT);
-      Calc_PorezPrirez                           (    pRules, spent, placa_rec.TT);
+      if(T_dokDate < ZXC.Date01012024)
+      { 
+         Calc_DohodakOdbitakPorOsn               (    pRules, spent, placa_rec.TT);
+         Calc_PorezPrirez                        (    pRules, spent, placa_rec.TT);
+      }
+      else
+      { 
+         Calc_DohodakOdbitakPorOsn_2024          (    pRules, spent, placa_rec.TT);
+         Calc_Porez_2024                         (    pRules, spent, placa_rec.TT);
+      }
+      
       Calc_Netto                                 (            ptranOsOfThisPtrans);
       Calc_KrizniPorez                           (    pRules, spent              );
       Calc_Obustave                              (            ptranOsOfThisPtrans);
@@ -4027,18 +4036,13 @@ public class Ptrans : VvTransRecord
       //!!!! Ako su neke isplate druge a mi ih svejedno stavljamo na RR ali u evidenciji rada imaju 0021 ili sl tada se tu ne obračunava mio Olakšica
       //!!!! treba paziti na sppc stvari - kad se uzima ili ne minMioOsn?!
 
-      decimal pR_mio1Granica1  =  700.00M;
-      decimal pR_mio1Granica2  = 1300.00M;
-      decimal pR_mio1FiksOlk   =  300.00M;
-      decimal pR_mio1KoefOlk   =    0.50M;
-      decimal T_mio1_dir_olak  =    0.00M;
-      decimal theMio1Olaksica  =    0.00M;
-      decimal potrosenMioOsn   = spent.MioOsn; //ovo jos treba provejeriti da li je tako i zapravo kako jer ovo je onaj neki stari mioOsn to nije to sto nam treba
+      decimal theMio1Olaksica   =    0.00M;
+    //decimal potrosenaOlaksica = spent.Mio1Olk; //ovo jos treba provejeriti da li je tako i zapravo kako jer ovo je onaj neki stari mioOsn to nije to sto nam treba
 
-           if(T_mio1_dir_olak.NotZero()                                                                      ) theMio1Olaksica = T_mio1_dir_olak;
-      else if(R_TheBruto - potrosenMioOsn <= pR_mio1Granica1                                                 ) theMio1Olaksica = pR_mio1FiksOlk;
-      else if(R_TheBruto - potrosenMioOsn > pR_mio1Granica1 && R_TheBruto - potrosenMioOsn <= pR_mio1Granica2) theMio1Olaksica = pR_mio1KoefOlk * (pR_mio1Granica2 - R_TheBruto);
-      else                                                                                                     theMio1Olaksica = 0.00M;
+           if(T_fixMio1Olak.NotZero()                                        ) theMio1Olaksica = T_fixMio1Olak;
+      else if(R_TheBruto <= pR._mio1Granica1                                 ) theMio1Olaksica = pR._mio1FiksOlk;
+      else if(R_TheBruto > pR._mio1Granica1 && R_TheBruto <= pR._mio1Granica2) theMio1Olaksica = pR._mio1KoefOlk * (pR._mio1Granica2 - R_TheBruto);
+      else                                                                     theMio1Olaksica = 0.00M;
 
       return theMio1Olaksica;
    }

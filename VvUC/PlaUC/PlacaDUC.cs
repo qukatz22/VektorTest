@@ -28,7 +28,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                      tbx_stZapNa, tbx_stZapII, tbx_stZpi, tbx_stOthOlak,
                      tbx_stMioNaB1, tbx_stMioNa2B1, tbx_stMioNaB2, tbx_stMioNa2B2,
                      tbx_stMioNaB3, tbx_stMioNa2B3, tbx_stMioNaB4, tbx_stMioNa2B4, tbx_prosPlaca, tbx_stMioNa2B5,
-                     tbx_stKrizPor1, tbx_stKrizPor2, tbx_isTrgFondSati, tbx_lookUpVrstaJoppd, tbx_VrKoefBr1, tbx_isLocked, tbx_stZdrDD;
+                     tbx_stKrizPor1, tbx_stKrizPor2, tbx_isTrgFondSati, tbx_lookUpVrstaJoppd, tbx_VrKoefBr1, tbx_isLocked, tbx_stZdrDD,
+                     tbx_mio1Granica1, tbx_mio1Granica2, tbx_mio1FiksOlk, tbx_mio1KoefOlk; // novo 2024
 
    private VvDateTimePicker dTP_datum;
    private Button btn_PlusMinus;
@@ -57,7 +58,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                      vvtbT_ukBrRata, vvtbT_opisOb, vvtbT_kupdob_cd,
                      vvtbT_kupdob_tk, vvtbT_iznosOb, vvtbT_partija,
                      vvtbT_brutoDodSt, vvtbT_izNetoaSt, vvtbT_brDodpoloz,
-                     vvtbT_rbrRate,    vvtbT_ptranoKind ,
+                     vvtbT_rbrRate,    vvtbT_ptranoKind,
+                     vvtbT_stPorez1, vvtbT_stPorez2, vvtbT_fixMio1Olak,//novo 2024
 
                      //R   
                      vvtbT_bruto100, vvtbT_theBruto, vvtbT_mioOsn, vvtbT_mio1stup,
@@ -78,7 +80,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                      vvtbT_stjecatCD, vvtbT_primDohCD, vvtbT_pocKrajCD,
                      //R
                      vvtbT_stjecatName, vvtbT_primDohName, vvtbT_pocKrajName,
-                     vvtbT_neoPrimName, vvtbT_nacIsplName;
+                     vvtbT_neoPrimName, vvtbT_nacIsplName,
+                     vvtbT_mio1Olk, vvtbT_mio1Osn;//novo 2024
 
    private VvTextBoxColumn           colVvText;
    private VvDateTimePickerColumn    colDate;
@@ -439,7 +442,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       //CreateHamperOpen();
 
-      hamper = new VvHamper(23, 5, "", panelRules /*TheTabControl.TabPages[0]*/ , false);
+      hamper = new VvHamper(23, /*5*/9, "", panelRules /*TheTabControl.TabPages[0]*/ , false);
 
       hamper.VvColWdt = new int[]{ ZXC.Q3un - ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
                                    ZXC.Q3un + ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
@@ -463,8 +466,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                                      };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       hamper.Location = new Point(ZXC.Qun4, ZXC.Qun4);
@@ -658,6 +661,26 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       tbx_stKrizPor1.JAM_ReadOnly =
       tbx_stKrizPor2.JAM_ReadOnly =
       tbx_VrKoefBr1 .JAM_ReadOnly = true;
+
+      hamper.CreateVvLabel(0, 5, "Mio1Granica1:", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 6, "Mio1Granica2:", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 7, "Mio1FiksOlk :", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 8, "Mio1KoefOlk :", ContentAlignment.MiddleRight);
+
+      tbx_mio1Granica1 = hamper.CreateVvTextBox(10, 5, "tbx_mio1Granica1", "Mio1Granica1", 12);
+      tbx_mio1Granica2 = hamper.CreateVvTextBox(10, 6, "tbx_mio1Granica2", "Mio1Granica2", 12);
+      tbx_mio1FiksOlk  = hamper.CreateVvTextBox(10, 7, "tbx_mio1FiksOlk ", "Mio1FiksOlk ", 12);
+      tbx_mio1KoefOlk  = hamper.CreateVvTextBox(10, 8, "tbx_mio1KoefOlk ", "Mio1KoefOlk ", 12);
+     
+      tbx_mio1Granica1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_mio1Granica2.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_mio1FiksOlk .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_mio1KoefOlk .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
+      tbx_mio1Granica1.JAM_ReadOnly =
+      tbx_mio1Granica2.JAM_ReadOnly =
+      tbx_mio1FiksOlk .JAM_ReadOnly =
+      tbx_mio1KoefOlk .JAM_ReadOnly = true;
 
       hamper.Visible = false;
    }
@@ -1398,6 +1421,43 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
 
+   protected void T_stPorez1_CreateColumn(int _width, int numOfDecimalPlaces)
+   {
+      vvtbT_stPorez1 = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_stPorez1", TheVvDaoTrans, DB_Tci.t_stPorez1, "Stopa poreza 1");
+    //vvtbT_stPorez1.JAM_ReadOnly = true;
+      vvtbT_stPorez1.JAM_ShouldCalcTrans = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez1, TheVvDaoTrans, DB_Tci.t_stPorez1, "StPor1", _width);
+
+    //vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
+    //vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
+   }
+   protected void T_stPorez2_CreateColumn(int _width, int numOfDecimalPlaces)
+   {
+      vvtbT_stPorez2 = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_stPorez2", TheVvDaoTrans, DB_Tci.t_stPorez2, "Stopa poreza 2");
+    //vvtbT_stPorez2.JAM_ReadOnly = true;
+      vvtbT_stPorez2.JAM_ShouldCalcTrans = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez2, TheVvDaoTrans, DB_Tci.t_stPorez2, "StPor2", _width);
+
+    //vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
+    //vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
+   }
+   protected void T_fixMio1Olak_CreateColumn(int _width, int numOfDecimalPlaces)
+   {
+      vvtbT_fixMio1Olak = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_fixMio1Olak", TheVvDaoTrans, DB_Tci.t_fixMio1Olak, "Fiksna olaksica ya MIO 1 - kod vise poslodavaca");
+      vvtbT_fixMio1Olak.JAM_ShouldCalcTransAndSumGrid = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_fixMio1Olak, TheVvDaoTrans, DB_Tci.t_fixMio1Olak, "FixMio1Olk", _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth // ako ce se zbrajati
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
+   }
+
 
    #endregion T_Columns
 
@@ -1994,6 +2054,41 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
    }
    
+ ////2024
+ //protected void R_mio1Osn_CreateColumn(int _width, int numOfDecimalPlaces)
+ //{
+ //   vvtbT_mio1Osn = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Osn", null, -12, "Osnovica za doprinos za MIO I stup");
+ //   vvtbT_mio1Osn.JAM_ReadOnly = true;
+ //   colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Osn, null, "R_mio1Osn", "MIO Osn", _width);
+ //
+ //   vvtbT_mioOsn.JAM_ShouldSumGrid = true;
+ //   colVvText.MinimumWidth = _width;
+ //
+ //   PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, false));
+ //}
+
+   protected void R_mio1Olk_CreateColumn(int _width, int numOfDecimalPlaces)
+   {
+      vvtbT_mio1Olk = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Olk", null, -12, "Olaksica za MIO I");
+    //vvtbT_mio1Olk.JAM_ReadOnly = true;
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Olk, null, "R_mio1Olk", "MIO I Olk", _width);
+
+      vvtbT_mio1Olk.JAM_ShouldSumGrid = true;
+      colVvText.MinimumWidth = _width;
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, true));
+   }
+   protected void R_mio1Osn_CreateColumn(int _width, int numOfDecimalPlaces)
+   {
+      vvtbT_mio1Osn = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Osn", null, -12, "Osnovica za MIO I");
+    //vvtbT_mio1Osn.JAM_ReadOnly = true;
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Osn, null, "R_mio1Osn", "MIO I Osn", _width);
+
+      vvtbT_mio1Osn.JAM_ShouldSumGrid = true;
+      colVvText.MinimumWidth = _width;
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, true));
+   }
 
 
    #endregion R_Columns
@@ -2495,9 +2590,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       internal int iT_pr3mjBruto ;
       internal int iT_brutoKorekc;
       internal int iT_dopZdr2020;
+      internal int iT_stPorez1   ;
+      internal int iT_stPorez2   ;
+      internal int iT_fixMio1Olak;
 
-      /* 01R */
-      internal int iT_bruto100;
+      /* 01R */      internal int iT_bruto100;
       /* 02R */      internal int iT_theBruto;
       /* 03R */      internal int iT_mioOsn;
       /* 04R */      internal int iT_mio1stup;
@@ -2547,6 +2644,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                      internal int iT_nacIsplName;
                      internal int iT_neoPrimName;
       /* 57R  */     internal int iT_satiNeR;
+      /*      */     internal int iT_mio1Olk;
+      /*      */     internal int iT_mio1Osn;
 
    }
 
@@ -2560,36 +2659,39 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       ci.iT_prezime  = TheG.IdxForColumn("T_prezime");
       ci.iT_ime      = TheG.IdxForColumn("T_ime");
 
-      ci.iT_prezimeIme = TheG.IdxForColumn("R_prezimeIme");
-
-      ci.iT_brutoOsn   = TheG.IdxForColumn("T_brutoOsn");
-      ci.iT_topObrok   = TheG.IdxForColumn("T_topObrok");
-      ci.iT_godStaza   = TheG.IdxForColumn("T_godStaza");
-      ci.iT_dodBruto   = TheG.IdxForColumn("T_dodBruto");
-      ci.iT_isMioII    = TheG.IdxForColumn("T_isMioII");
-      ci.iT_spc        = TheG.IdxForColumn("T_spc");
-      ci.iT_koef       = TheG.IdxForColumn("T_koef");
-      ci.iT_zivotno    = TheG.IdxForColumn("T_zivotno");
-      ci.iT_dopZdr     = TheG.IdxForColumn("T_dopZdr");
-      ci.iT_dobMIO     = TheG.IdxForColumn("T_dobMIO");
-      ci.iT_koefHRVI   = TheG.IdxForColumn("T_koefHRVI");
-      ci.iT_invalidTip = TheG.IdxForColumn("T_invalidTip");
-      ci.iT_opcCD      = TheG.IdxForColumn("T_opcCD");
-      ci.iT_opcName    = TheG.IdxForColumn("T_opcName");
-      ci.iT_opcRadCD   = TheG.IdxForColumn("T_opcRadCD");
-      ci.iT_opcRadName = TheG.IdxForColumn("T_opcRadName");
-      ci.iT_stPrirez   = TheG.IdxForColumn("T_stPrirez");
-      ci.iT_netoAdd    = TheG.IdxForColumn("T_netoAdd");
-      ci.iT_isDirNeto  = TheG.IdxForColumn("T_isDirNeto");
-      ci.iT_prijevoz   = TheG.IdxForColumn("T_prijevoz");
-      ci.iT_isPoluSat  = TheG.IdxForColumn("T_IsPoluSat");
-      ci.iT_rsB        = TheG.IdxForColumn("T_rsB");
-      ci.iT_nacIsplCD  = TheG.IdxForColumn("T_nacIsplCD");
-      ci.iT_neoPrimCD  = TheG.IdxForColumn("T_neoPrimCD");
-      ci.iT_dokumCD    = TheG.IdxForColumn("T_dokumCD");
-      ci.iT_brutoDodSt = TheG.IdxForColumn("T_brutoDodSt");
-      ci.iT_brDodPoloz = TheG.IdxForColumn("T_brDodPoloz");
-      ci.iT_dopZdr2020 = TheG.IdxForColumn("T_dopZdr2020");
+      ci.iT_prezimeIme  = TheG.IdxForColumn("R_prezimeIme");
+                        
+      ci.iT_brutoOsn    = TheG.IdxForColumn("T_brutoOsn");
+      ci.iT_topObrok    = TheG.IdxForColumn("T_topObrok");
+      ci.iT_godStaza    = TheG.IdxForColumn("T_godStaza");
+      ci.iT_dodBruto    = TheG.IdxForColumn("T_dodBruto");
+      ci.iT_isMioII     = TheG.IdxForColumn("T_isMioII");
+      ci.iT_spc         = TheG.IdxForColumn("T_spc");
+      ci.iT_koef        = TheG.IdxForColumn("T_koef");
+      ci.iT_zivotno     = TheG.IdxForColumn("T_zivotno");
+      ci.iT_dopZdr      = TheG.IdxForColumn("T_dopZdr");
+      ci.iT_dobMIO      = TheG.IdxForColumn("T_dobMIO");
+      ci.iT_koefHRVI    = TheG.IdxForColumn("T_koefHRVI");
+      ci.iT_invalidTip  = TheG.IdxForColumn("T_invalidTip");
+      ci.iT_opcCD       = TheG.IdxForColumn("T_opcCD");
+      ci.iT_opcName     = TheG.IdxForColumn("T_opcName");
+      ci.iT_opcRadCD    = TheG.IdxForColumn("T_opcRadCD");
+      ci.iT_opcRadName  = TheG.IdxForColumn("T_opcRadName");
+      ci.iT_stPrirez    = TheG.IdxForColumn("T_stPrirez");
+      ci.iT_netoAdd     = TheG.IdxForColumn("T_netoAdd");
+      ci.iT_isDirNeto   = TheG.IdxForColumn("T_isDirNeto");
+      ci.iT_prijevoz    = TheG.IdxForColumn("T_prijevoz");
+      ci.iT_isPoluSat   = TheG.IdxForColumn("T_IsPoluSat");
+      ci.iT_rsB         = TheG.IdxForColumn("T_rsB");
+      ci.iT_nacIsplCD   = TheG.IdxForColumn("T_nacIsplCD");
+      ci.iT_neoPrimCD   = TheG.IdxForColumn("T_neoPrimCD");
+      ci.iT_dokumCD     = TheG.IdxForColumn("T_dokumCD");
+      ci.iT_brutoDodSt  = TheG.IdxForColumn("T_brutoDodSt");
+      ci.iT_brDodPoloz  = TheG.IdxForColumn("T_brDodPoloz");
+      ci.iT_dopZdr2020  = TheG.IdxForColumn("T_dopZdr2020");
+      ci.iT_stPorez1    = TheG.IdxForColumn("T_stPorez1");
+      ci.iT_stPorez2    = TheG.IdxForColumn("T_stPorez2");
+      ci.iT_fixMio1Olak = TheG.IdxForColumn("T_fixMio1Olak");
 
       /* 01R */      ci.iT_bruto100         = TheG.IdxForColumn("R_bruto100");
       /* 02R */      ci.iT_theBruto         = TheG.IdxForColumn("R_theBruto");
@@ -2651,8 +2753,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       /* 57R */      ci.iT_satiNeR         = TheG.IdxForColumn("R_satiNeR");
 
-
-
+                     ci.iT_mio1Olk         = TheG.IdxForColumn("R_mio1Olk");
+                     ci.iT_mio1Osn         = TheG.IdxForColumn("R_mio1Osn");
    }
 
    //=== PtranE, Trans2, VirtualTranses2, TheG2, ... ============================================= 
@@ -3131,6 +3233,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       set { cbx_isLocked.Checked = value; }
    }
 
+   public decimal Fld_Mio1Granica1  { get { return tbx_mio1Granica1.GetDecimalField(); } set { tbx_mio1Granica1.PutDecimalField(value); }  }
+   public decimal Fld_Mio1Granica2  { get { return tbx_mio1Granica2.GetDecimalField(); } set { tbx_mio1Granica2.PutDecimalField(value); }  }
+   public decimal Fld_Mio1FiksOlk   { get { return tbx_mio1FiksOlk .GetDecimalField(); } set { tbx_mio1FiksOlk .PutDecimalField(value); }  }
+   public decimal Fld_Mio1KoefOlk   { get { return tbx_mio1KoefOlk .GetDecimalField(); } set { tbx_mio1KoefOlk .PutDecimalField(value); } }
+
 
    #endregion Fld_
 
@@ -3223,6 +3330,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          Fld_VrKoefBr1  = placa_rec.Rule_VrKoefBr1 ;
 
          Fld_StZdrDD    = placa_rec.Rule_StZdrDD   ;
+
+         Fld_Mio1Granica1 = placa_rec.Rule_Mio1Granica1;
+         Fld_Mio1Granica2 = placa_rec.Rule_Mio1Granica2;
+         Fld_Mio1FiksOlk  = placa_rec.Rule_Mio1FiksOlk ;
+         Fld_Mio1KoefOlk  = placa_rec.Rule_Mio1KoefOlk ;
 
          SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.None);
 
@@ -3326,6 +3438,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       placa_rec.Rule_VrKoefBr1  = Fld_VrKoefBr1 ;
 
       placa_rec.Rule_StZdrDD    = Fld_StZdrDD   ;
+
+      placa_rec.Rule_Mio1Granica1 = Fld_Mio1Granica1;
+      placa_rec.Rule_Mio1Granica2 = Fld_Mio1Granica2;
+      placa_rec.Rule_Mio1FiksOlk  = Fld_Mio1FiksOlk ;
+      placa_rec.Rule_Mio1KoefOlk  = Fld_Mio1KoefOlk ;
 
       GetDgvFields(dirtyFlagging);
    }
@@ -3442,6 +3559,9 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       TheG.PutCell(ci.iT_pr3mjBruto , rowIdx, ptrans_rec.T_pr3mjBruto );
       TheG.PutCell(ci.iT_brutoKorekc, rowIdx, ptrans_rec.T_brutoKorekc);
       TheG.PutCell(ci.iT_dopZdr2020 , rowIdx, ptrans_rec.T_dopZdr2020);
+      TheG.PutCell(ci.iT_stPorez1   , rowIdx, ptrans_rec.T_stPorez1);
+      TheG.PutCell(ci.iT_stPorez2   , rowIdx, ptrans_rec.T_stPorez2);
+      TheG.PutCell(ci.iT_fixMio1Olak, rowIdx, ptrans_rec.T_fixMio1Olak);
 
    }
 
@@ -4082,6 +4202,27 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                                           dgvPtrans_rec.T_dopZdr2020 = TheG.GetDecimalCell(ci.iT_dopZdr2020, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_dopZdr2020 = dgvPtrans_rec.T_dopZdr2020;
       }
+
+      if(TheG.CI_OK(ci.iT_stPorez1))
+      {
+                                        dgvPtrans_rec.T_stPorez1 = TheG.GetDecimalCell(ci.iT_stPorez1, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_stPorez1 = dgvPtrans_rec.T_stPorez1;
+      }
+      if(TheG.CI_OK(ci.iT_stPorez2))
+      {
+                                        dgvPtrans_rec.T_stPorez2 = TheG.GetDecimalCell(ci.iT_stPorez2, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_stPorez2 = dgvPtrans_rec.T_stPorez2;
+      }
+      if(TheG.CI_OK(ci.iT_fixMio1Olak))
+      {
+                                           dgvPtrans_rec.T_fixMio1Olak = TheG.GetDecimalCell(ci.iT_fixMio1Olak, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_fixMio1Olak = dgvPtrans_rec.T_fixMio1Olak;
+      }
+
+
+
+
+
 
       #endregion GetColumns
 
@@ -4785,7 +4926,7 @@ public partial class PlacaDUC     : PlacaBaseDUC//VvPolyDocumRecordUC
    }
 }
 
-public partial class Placa2014DUC : PlacaBaseDUC
+public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
 {
 
    #region Constructor
@@ -4876,6 +5017,12 @@ public partial class Placa2014DUC : PlacaBaseDUC
       /*21*/         w = ZXC.QUN + ZXC.Qun2;  T_invalidTip_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
                      
       /*14*/         w = ZXC.Q2un + ZXC.Qun2; T_isMioII_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
+
+      /* 03R */      w = ZXC.Q4un;            T_fixMio1Olak_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /* 03R */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 03R */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+
+
       /* 03R */      w = ZXC.Q4un;            R_mioOsn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 04R */      w = ZXC.Q4un;            R_mio1stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 05R */      w = ZXC.Q4un;            R_mio2stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
@@ -4910,15 +5057,20 @@ public partial class Placa2014DUC : PlacaBaseDUC
       /* 14R */      w = ZXC.Q4un;            R_porOsn3_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
       /* 15R */      w = ZXC.Q4un;            R_porOsn4_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
       /* 11R */      w = ZXC.Q4un;            R_porOsnAll_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
-                                              
+      
+      /* 11R */      w = ZXC.Q3un;            T_stPorez1_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
+      /* 11R */      w = ZXC.Q3un;            T_stPorez2_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
+
       /* 16R */      w = ZXC.Q4un;            R_por1uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 17R */      w = ZXC.Q4un;            R_por2uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 18R */      w = ZXC.Q4un;            R_por3uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 19R */      w = ZXC.Q4un;            R_por4uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 20R */      w = ZXC.Q4un;            R_porezAll_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      
       /*22*/         w = ZXC.Q3un - ZXC.Qun4; T_opcCD_CreateColumn(w);               TheG.TheSumOfPreferredWidths += w;
       /*23*/         w = ZXC.Q5un;            T_opcName_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
       /*26*/         w = ZXC.Q3un - ZXC.Qun2; T_stPrirez_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      
       /*24*/         w = ZXC.Q3un - ZXC.Qun4; T_opcRadCD_CreateColumn(w);            TheG.TheSumOfPreferredWidths += w;
       /*25*/         w = ZXC.Q5un;            T_opcRadName_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
       /* 21R */      w = ZXC.Q4un;            R_prirez_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
