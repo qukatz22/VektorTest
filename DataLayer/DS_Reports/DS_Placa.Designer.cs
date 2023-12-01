@@ -1441,6 +1441,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnstZdrDD;
             
+            private global::System.Data.DataColumn columnmio1Granica1;
+            
+            private global::System.Data.DataColumn columnmio1Granica2;
+            
+            private global::System.Data.DataColumn columnmio1FiksOlk;
+            
+            private global::System.Data.DataColumn columnmio1KoefOlk;
+            
             private global::System.Data.DataColumn columnS_tBrutoOsn;
             
             private global::System.Data.DataColumn columnS_tTopObrok;
@@ -2009,6 +2017,38 @@ namespace Vektor.DataLayer.DS_Reports {
             public global::System.Data.DataColumn stZdrDDColumn {
                 get {
                     return this.columnstZdrDD;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn mio1Granica1Column {
+                get {
+                    return this.columnmio1Granica1;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn mio1Granica2Column {
+                get {
+                    return this.columnmio1Granica2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn mio1FiksOlkColumn {
+                get {
+                    return this.columnmio1FiksOlk;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn mio1KoefOlkColumn {
+                get {
+                    return this.columnmio1KoefOlk;
                 }
             }
             
@@ -2652,6 +2692,10 @@ namespace Vektor.DataLayer.DS_Reports {
                         decimal stKrizPor2, 
                         decimal vrKoefBr1, 
                         decimal stZdrDD, 
+                        decimal mio1Granica1, 
+                        decimal mio1Granica2, 
+                        decimal mio1FiksOlk, 
+                        decimal mio1KoefOlk, 
                         decimal S_tBrutoOsn, 
                         decimal S_tTopObrok, 
                         decimal S_tDodBruto, 
@@ -2773,6 +2817,10 @@ namespace Vektor.DataLayer.DS_Reports {
                         stKrizPor2,
                         vrKoefBr1,
                         stZdrDD,
+                        mio1Granica1,
+                        mio1Granica2,
+                        mio1FiksOlk,
+                        mio1KoefOlk,
                         S_tBrutoOsn,
                         S_tTopObrok,
                         S_tDodBruto,
@@ -2921,6 +2969,10 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnstKrizPor2 = base.Columns["stKrizPor2"];
                 this.columnvrKoefBr1 = base.Columns["vrKoefBr1"];
                 this.columnstZdrDD = base.Columns["stZdrDD"];
+                this.columnmio1Granica1 = base.Columns["mio1Granica1"];
+                this.columnmio1Granica2 = base.Columns["mio1Granica2"];
+                this.columnmio1FiksOlk = base.Columns["mio1FiksOlk"];
+                this.columnmio1KoefOlk = base.Columns["mio1KoefOlk"];
                 this.columnS_tBrutoOsn = base.Columns["S_tBrutoOsn"];
                 this.columnS_tTopObrok = base.Columns["S_tTopObrok"];
                 this.columnS_tDodBruto = base.Columns["S_tDodBruto"];
@@ -3095,6 +3147,14 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnvrKoefBr1);
                 this.columnstZdrDD = new global::System.Data.DataColumn("stZdrDD", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnstZdrDD);
+                this.columnmio1Granica1 = new global::System.Data.DataColumn("mio1Granica1", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmio1Granica1);
+                this.columnmio1Granica2 = new global::System.Data.DataColumn("mio1Granica2", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmio1Granica2);
+                this.columnmio1FiksOlk = new global::System.Data.DataColumn("mio1FiksOlk", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmio1FiksOlk);
+                this.columnmio1KoefOlk = new global::System.Data.DataColumn("mio1KoefOlk", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmio1KoefOlk);
                 this.columnS_tBrutoOsn = new global::System.Data.DataColumn("S_tBrutoOsn", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnS_tBrutoOsn);
                 this.columnS_tTopObrok = new global::System.Data.DataColumn("S_tTopObrok", typeof(decimal), null, global::System.Data.MappingType.Element);
@@ -3295,6 +3355,10 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnstKrizPor2.AllowDBNull = false;
                 this.columnvrKoefBr1.AllowDBNull = false;
                 this.columnstZdrDD.AllowDBNull = false;
+                this.columnmio1Granica1.AllowDBNull = false;
+                this.columnmio1Granica2.AllowDBNull = false;
+                this.columnmio1FiksOlk.AllowDBNull = false;
+                this.columnmio1KoefOlk.AllowDBNull = false;
                 this.columnS_tBrutoOsn.Caption = "DataColumn1";
                 this.columnS_tTopObrok.Caption = "DataColumn1";
                 this.columnS_tDodBruto.Caption = "DataColumn1";
@@ -16736,6 +16800,50 @@ namespace Vektor.DataLayer.DS_Reports {
                 }
                 set {
                     this[this.tableplaca.stZdrDDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal mio1Granica1 {
+                get {
+                    return ((decimal)(this[this.tableplaca.mio1Granica1Column]));
+                }
+                set {
+                    this[this.tableplaca.mio1Granica1Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal mio1Granica2 {
+                get {
+                    return ((decimal)(this[this.tableplaca.mio1Granica2Column]));
+                }
+                set {
+                    this[this.tableplaca.mio1Granica2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal mio1FiksOlk {
+                get {
+                    return ((decimal)(this[this.tableplaca.mio1FiksOlkColumn]));
+                }
+                set {
+                    this[this.tableplaca.mio1FiksOlkColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal mio1KoefOlk {
+                get {
+                    return ((decimal)(this[this.tableplaca.mio1KoefOlkColumn]));
+                }
+                set {
+                    this[this.tableplaca.mio1KoefOlkColumn] = value;
                 }
             }
             

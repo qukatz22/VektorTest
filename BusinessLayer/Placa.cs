@@ -78,12 +78,12 @@ public struct PrulesStruct
    // 16.01.2019: 
    /* 51 */ internal decimal _stZdrDD   ;
 
-#if nottjetttt
-   /* 52 */ internal decimal _mio1Granica1  ;
-   /* 53 */ internal decimal _mio1Granica2  ;
-   /* 54 */ internal decimal _mio1FiksOlk;
-   /* 55 */ internal decimal _mio1KoefOlk;
-#endif
+   // 2024: 
+   /* 52 */ internal decimal _mio1Granica1;
+   /* 53 */ internal decimal _mio1Granica2;
+   /* 54 */ internal decimal _mio1FiksOlk ;
+   /* 55 */ internal decimal _mio1KoefOlk ;
+
 }
 
 //public struct PlacaResultStruct
@@ -288,6 +288,13 @@ public class Placa : VvPolyDocumRecord
       /* 47 */     this.currentData._pRules._stKrizPor1 = 
       /* 48 */     this.currentData._pRules._stKrizPor2 = decimal.Zero;
       /* 50 */     this.currentData._pRules._vrKoefBr1  = decimal.Zero;
+
+      /* 51 */     this.currentData._pRules._stZdrDD       =
+
+      /* 52 */     this.currentData._pRules._mio1Granica1  =
+      /* 53 */     this.currentData._pRules._mio1Granica2  =
+      /* 54 */     this.currentData._pRules._mio1FiksOlk   =
+      /* 55 */     this.currentData._pRules._mio1KoefOlk   = decimal.Zero;
 
    }
 
@@ -1014,13 +1021,13 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._stZdrDD; }
       set {        this.currentData._pRules._stZdrDD = value; }
    }
-#if nottjetttt
-   /* 52 */ public decimal Rule_Mio1Gran1
+
+   /* 52 */ public decimal Rule_Mio1Granica1
    {
       get { return this.currentData._pRules._mio1Granica1; }
       set {        this.currentData._pRules._mio1Granica1 = value; }
    }
-   /* 53 */ public decimal Rule_Mio1Gran2
+   /* 53 */ public decimal Rule_Mio1Granica2
    {
       get { return this.currentData._pRules._mio1Granica2; }
       set {        this.currentData._pRules._mio1Granica2 = value; }
@@ -1035,7 +1042,7 @@ public class Placa : VvPolyDocumRecord
       get { return this.currentData._pRules._mio1KoefOlk; }
       set {        this.currentData._pRules._mio1KoefOlk = value; }
    }
-#endif
+
 
    #endregion Rules Data Layer Columns
 

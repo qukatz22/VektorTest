@@ -42,7 +42,7 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
 
    #region CreateTablePlaca
 
-   public static   uint TableVersionStatic { get { return 10; } }
+   public static   uint TableVersionStatic { get { return 11; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -105,6 +105,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
          /*48+2*/  "stKrizPor2   decimal(12,2)        NOT NULL default '0.0',\n" +
          /*50+2*/  "vrKoefBr1    decimal(12,2)        NOT NULL default '0.0',\n" +
          /* ???*/  "stZdrDD      decimal(12,2)        NOT NULL default '0.0',\n" +
+         /* 52 */  "mio1Granica1 decimal(12,2)        NOT NULL default '0.0',\n" +
+         /* 53 */  "mio1Granica2 decimal(12,2)        NOT NULL default '0.0',\n" +
+         /* 54 */  "mio1FiksOlk  decimal(12,2)        NOT NULL default '0.0',\n" +
+         /* 55 */  "mio1KoefOlk  decimal(12,2)        NOT NULL default '0.0',\n" +
 
          CreateTable_ArhivaExtensionDefinition(isArhiva) +
 
@@ -152,6 +156,11 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
          case 9: return ("CHANGE COLUMN stMioNaB5 prosPlaca DECIMAL(12,2) NOT NULL DEFAULT '0.00'; \n");
 
          case 10: return ("ADD COLUMN stZdrDD    decimal(12,2)        NOT NULL default '0.0'   AFTER vrKoefBr1; \n");
+
+         case 11: return ("ADD COLUMN mio1Granica1 decimal(12,2)        NOT NULL default '0.0' AFTER stZdrDD     ,  " +
+                          "ADD COLUMN mio1Granica2 decimal(12,2)        NOT NULL default '0.0' AFTER mio1Granica1,  " +
+                          "ADD COLUMN mio1FiksOlk  decimal(12,2)        NOT NULL default '0.0' AFTER mio1Granica2,  " +
+                          "ADD COLUMN mio1KoefOlk  decimal(12,2)        NOT NULL default '0.0' AFTER mio1FiksOlk ;\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -239,10 +248,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       /* 48 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_StKrizPor2,    TheSchemaTable.Rows[CI.stKrizPor2]);
       /* 50 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_VrKoefBr1 ,    TheSchemaTable.Rows[CI.vrKoefBr1 ]);
       /* 51 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_StZdrDD   ,    TheSchemaTable.Rows[CI.stZdrDD   ]);
-   ///* 52 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1Granica1,  TheSchemaTable.Rows[CI.stZdrDD   ]);
-   ///* 53 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1Granica2,  TheSchemaTable.Rows[CI.stZdrDD   ]);
-   ///* 54 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1FiksOlk,   TheSchemaTable.Rows[CI.stZdrDD   ]);
-   ///* 55 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1KoefOlk,   TheSchemaTable.Rows[CI.stZdrDD   ]);
+      /* 52 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1Granica1,  TheSchemaTable.Rows[CI.mio1Granica1]);
+      /* 53 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1Granica2,  TheSchemaTable.Rows[CI.mio1Granica2]);
+      /* 54 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1FiksOlk,   TheSchemaTable.Rows[CI.mio1FiksOlk ]);
+      /* 55 */ VvSQL.CreateCommandParameter(cmd, preffix, placa.Rule_Mio1KoefOlk,   TheSchemaTable.Rows[CI.mio1KoefOlk ]);
 
          if(isArhiva)
          {
@@ -322,6 +331,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       /* 48 */      rdrData._pRules._stKrizPor2   = reader.GetDecimal(CI.stKrizPor2);
       /* 50 */      rdrData._pRules._vrKoefBr1    = reader.GetDecimal(CI.vrKoefBr1 );
       /* 51 */      rdrData._pRules._stZdrDD      = reader.GetDecimal(CI.stZdrDD   );
+      /* 52 */      rdrData._pRules._mio1Granica1 = reader.GetDecimal(CI.mio1Granica1);
+      /* 53 */      rdrData._pRules._mio1Granica2 = reader.GetDecimal(CI.mio1Granica2);
+      /* 54 */      rdrData._pRules._mio1FiksOlk  = reader.GetDecimal(CI.mio1FiksOlk );
+      /* 55 */      rdrData._pRules._mio1KoefOlk  = reader.GetDecimal(CI.mio1KoefOlk );
 
       ((Placa)vvDataRecord).CurrentData = rdrData;
 
@@ -408,10 +421,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       /* 48 */ placa_rec.Rule_StKrizPor2  = placaRow.stKrizPor2;
       /* 50 */ placa_rec.Rule_VrKoefBr1   = placaRow.vrKoefBr1 ;
       /* 51 */ placa_rec.Rule_StZdrDD     = placaRow.stZdrDD   ;
-   ///* 52 */ placa_rec.Rule_Mio1Gran1   = placaRow.stZdrDD   ;
-   ///* 53 */ placa_rec.Rule_Mio1Gran2   = placaRow.stZdrDD   ;
-   ///* 54 */ placa_rec.Rule_Mio1FiksOlk = placaRow.stZdrDD   ;
-   ///* 55 */ placa_rec.Rule_Mio1KoefOlk = placaRow.stZdrDD   ;
+      /* 52 */ placa_rec.Rule_Mio1Granica1= placaRow.mio1Granica1;
+      /* 53 */ placa_rec.Rule_Mio1Granica2= placaRow.mio1Granica2;
+      /* 54 */ placa_rec.Rule_Mio1FiksOlk = placaRow.mio1FiksOlk ;
+      /* 55 */ placa_rec.Rule_Mio1KoefOlk = placaRow.mio1KoefOlk ;
    }
 
    #endregion FillFromTypedPlacaDataRow
@@ -478,7 +491,7 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       /* 51 */   placaRow.S_rNettoWoAdd = ptransesOfThisPlaca.Sum(ptrn => ptrn.R_NettoWoAdd);
       /* 52 */   placaRow.S_rAHizdatak  = ptransesOfThisPlaca.Sum(ptrn => ptrn.R_AHizdatak);
       /* 53 */   placaRow.S_rNettoAftKrp= ptransesOfThisPlaca.Sum(ptrn => ptrn.R_NettoAftKrp);
-      /* 54 */   placaRow.S_rBrtDodNaStaz= ptransesOfThisPlaca.Sum(ptrn => ptrn.R_BrtDodNaStaz);
+      /* 54 */   placaRow.S_rBrtDodNaStaz=ptransesOfThisPlaca.Sum(ptrn => ptrn.R_BrtDodNaStaz);
 
     //   55 */   placaRow.S_rTheBruto_WoNZ = ptransesOfThisPlaca.Where(ptrn =>  ptrn.t_spc != (byte)Ptrans.SpecEnum.NOVOZAPOSL                                                      ).Sum(ptrn => ptrn.R_TheBruto);
       /* 55 */   placaRow.S_rTheBruto_WoNZ = ptransesOfThisPlaca.Where(ptrn => (ptrn.t_spc != (byte)Ptrans.SpecEnum.NOVOZAPOSL && ptrn.t_spc != (byte)Ptrans.SpecEnum.NOVO_MINMIONE)).Sum(ptrn => ptrn.R_TheBruto);
@@ -596,6 +609,11 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       internal int vrKoefBr1 ;
       internal int stZdrDD   ;
 
+      internal int mio1Granica1;
+      internal int mio1Granica2;
+      internal int mio1FiksOlk ;
+      internal int mio1KoefOlk ;
+
       internal int origRecID;
       internal int recVer;
       internal int arAction;
@@ -667,6 +685,11 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       CI.stKrizPor2     = GetSchemaColumnIndex("stKrizPor2");
       CI.vrKoefBr1      = GetSchemaColumnIndex("vrKoefBr1" );
       CI.stZdrDD        = GetSchemaColumnIndex("stZdrDD");
+
+      CI.mio1Granica1   = GetSchemaColumnIndex("mio1Granica1"); 
+      CI.mio1Granica2   = GetSchemaColumnIndex("mio1Granica2"); 
+      CI.mio1FiksOlk    = GetSchemaColumnIndex("mio1FiksOlk");
+      CI.mio1KoefOlk    = GetSchemaColumnIndex("mio1KoefOlk");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");
