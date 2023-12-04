@@ -67,6 +67,7 @@ public struct PtransStruct
    /* 48 */  internal decimal   _t_stPorez1   ;
    /* 49 */  internal decimal   _t_stPorez2   ;
    /* 50 */  internal decimal   _t_fixMio1Olak;
+   /* 51 */  internal decimal   _t_Mio1OlkKind;
 
              //internal PtransResultStruct _ptrResult;
 }
@@ -193,6 +194,9 @@ public struct PtransResultStruct
   /* 95 */ internal decimal _t_netto_EUR    ;	   
   /* 96 */ internal decimal _t_netto_Kn     ;	   
 
+  /* 97 */ internal decimal _t_Mio1Olk      ;	   
+  /* 98 */ internal decimal _t_Mio1Osn      ;	   
+
 }
 
 #endregion struct PtransStruct
@@ -233,6 +237,15 @@ public class Ptrans : VvTransRecord
       ZASTICENIrn,
       NEZASTICENIrn,
       NIJE_PTRANO
+   }
+
+   public enum Mio1OlkKindEnum
+   {
+      NIJE   = 0,
+      Do0700 = 1,
+      Do1300 = 2,
+      Izjava = 3,
+      PorUpr = 4,
    }
 
    #endregion Fildz
@@ -312,6 +325,7 @@ public class Ptrans : VvTransRecord
       /* 48 */  this.currentData._t_stPorez1    = decimal.Zero;
       /* 49 */  this.currentData._t_stPorez2    = decimal.Zero;
       /* 50 */  this.currentData._t_fixMio1Olak = decimal.Zero;
+      /* 51 */  this.currentData._t_Mio1OlkKind = decimal.Zero;
 
    }
 
@@ -727,6 +741,11 @@ public class Ptrans : VvTransRecord
    /* 48 */public decimal T_stPorez1    { get { return this.currentData._t_stPorez1   ; } set { this.currentData._t_stPorez1     = value; } }
    /* 49 */public decimal T_stPorez2    { get { return this.currentData._t_stPorez2   ; } set { this.currentData._t_stPorez2     = value; } }
    /* 50 */public decimal T_fixMio1Olak { get { return this.currentData._t_fixMio1Olak; } set { this.currentData._t_fixMio1Olak  = value; } }
+   /* 51 */public Ptrans.Mio1OlkKindEnum T_Mio1OlkKind
+   {
+      get { return (Ptrans.Mio1OlkKindEnum)this.currentData._t_Mio1OlkKind; }
+      set {                                this.currentData._t_Mio1OlkKind = (ushort) value; }
+   }
 
    /* */
 
@@ -1076,17 +1095,11 @@ public class Ptrans : VvTransRecord
   /* 92 */ public decimal R_NetoWoZast       { get { return this._ptrResult._t_NetoWoZast       ;} set {  this._ptrResult._t_NetoWoZast       = value;  } } // Obrazac IP1  neto koji ide na nezasticeni racun uvecan za hzzo i prijevoz (za one kojei koriste Z - trebali bi u Z unjeti i te neto dodatke u zasticeni rn kao Z)       
   /* 93 */ public bool    R_hasNonObust      { get { return this._ptrResult._t_hasNonObust      ;} set {  this._ptrResult._t_hasNonObust      = value;  } } // Ima li ptrano ikoji da nije obustava, vec tekuci za neto (zasticeni ili obicni) 
 
-   /* 95 */ public decimal R_Netto_EUR
-   { 
-      get { return this._ptrResult._t_netto_EUR;         }
-      set {        this._ptrResult._t_netto_EUR = value; }
-   }	   
+   /* 95 */ public decimal R_Netto_EUR       { get { return this._ptrResult._t_netto_EUR;   }      set {        this._ptrResult._t_netto_EUR = value; } }	   
 
-   /* 96 */ public decimal R_Netto_Kn
-   { 
-      get { return this._ptrResult._t_netto_Kn;         }
-      set {        this._ptrResult._t_netto_Kn = value; }
-   }	   
+   /* 96 */ public decimal R_Netto_Kn        { get { return this._ptrResult._t_netto_Kn;    }      set {        this._ptrResult._t_netto_Kn = value; } }
+   /* 97 */ public decimal R_Mio1Olk        { get { return this._ptrResult._t_Mio1Olk  ;    }      set {        this._ptrResult._t_Mio1Olk  = value; } }
+   /* 98 */ public decimal R_Mio1Osn        { get { return this._ptrResult._t_Mio1Osn  ;    }      set {        this._ptrResult._t_Mio1Osn  = value; } }	   
 
   // !!! Ubuduce ako treba neka 'R_' varijabla, NE treba je dodavati u _ptrResult structuru ?! 
   // OSIM ako ne trebas taj R_ pokazati na DUC-u u 'PutDgvLineResultsFields1' 
@@ -1431,6 +1444,11 @@ public class Ptrans : VvTransRecord
       internal decimal MioOsn     { get; set; }
       internal decimal KrizPorOsn { get; set; }
       internal decimal KrizPorUk  { get; set; }
+
+      // 2024: 
+      internal decimal TheBruto   { get; set; }
+      internal decimal Mio1Olak   { get; set; }
+
    }
 
    public override void CalcTransResults(VvDocumentRecord _vvDocumentRecord)

@@ -41,7 +41,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
 
    #region CreateTablePtrans
 
-   public static   uint TableVersionStatic { get { return 13; } }
+   public static   uint TableVersionStatic { get { return 14; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -101,6 +101,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
          /* 48 */  "t_stPorez1    decimal( 5,2)        NOT NULL default '0.00',\n" +
          /* 49 */  "t_stPorez2    decimal( 5,2)        NOT NULL default '0.00',\n" +
          /* 50 */  "t_fixMio1Olak decimal(10,2)        NOT NULL default '0.00',\n" +
+         /* 51 */  "t_Mio1OlkKind tinyint(1)  unsigned NOT NULL default '0'   ,\n" +
 
           "PRIMARY KEY                   (recID)                                                 ,\n" +
           /*"UNIQUE*/" KEY BY_LINKER     (t_parentID, t_serial)                                  ,\n" +
@@ -142,6 +143,8 @@ public sealed class PtransDao : VvDaoBase, IVvDao
          case 13: return("ADD COLUMN t_stPorez1    decimal( 5,2)        NOT NULL default '0.00' AFTER t_dopZdr2020,  " +
                          "ADD COLUMN t_stPorez2    decimal( 5,2)        NOT NULL default '0.00' AFTER t_stPorez1  ,  " +
                          "ADD COLUMN t_fixMio1Olak decimal(10,2)        NOT NULL default '0.00' AFTER t_stPorez2  ;\n");
+
+         case 14: return("ADD COLUMN t_Mio1OlkKind tinyint(1)  unsigned NOT NULL default '0' AFTER t_fixMio1Olak  ;\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -224,6 +227,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 48 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_stPorez1   ,TheSchemaTable.Rows[CI.t_stPorez1   ]);
       /* 49 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_stPorez2   ,TheSchemaTable.Rows[CI.t_stPorez2   ]);
       /* 50 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_fixMio1Olak,TheSchemaTable.Rows[CI.t_fixMio1Olak]);
+      /* 51 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_Mio1OlkKind,TheSchemaTable.Rows[CI.t_Mio1OlkKind]);
 
       }
 
@@ -296,6 +300,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 48 */ rdrData._t_stPorez1   = reader.GetDecimal (CI.t_stPorez1   );
       /* 49 */ rdrData._t_stPorez2   = reader.GetDecimal (CI.t_stPorez2   );
       /* 50 */ rdrData._t_fixMio1Olak= reader.GetDecimal (CI.t_fixMio1Olak);
+      /* 51 */ rdrData._t_Mio1OlkKind= reader.GetDecimal (CI.t_Mio1OlkKind);
 
       ((Ptrans)vvDataRecord).CurrentData = rdrData;
 
@@ -366,6 +371,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 48 */   ptrans_rec.T_stPorez1   = ptransRow.t_stPorez1   ;
       /* 49 */   ptrans_rec.T_stPorez2   = ptransRow.t_stPorez2   ;
       /* 50 */   ptrans_rec.T_fixMio1Olak= ptransRow.t_fixMio1Olak;
+      /* 51 */   ptrans_rec.T_Mio1OlkKind= (Ptrans.Mio1OlkKindEnum)ptransRow.t_Mio1OlkKind;
 
 
 
@@ -549,6 +555,9 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 95 */ ptransRow.R_Netto_EUR  = ptrans_rec.R_Netto_EUR ;
       /* 96 */ ptransRow.R_Netto_Kn   = ptrans_rec.R_Netto_Kn  ;
 
+      /* 97 */ ptransRow.R_Mio1Olk    = ptrans_rec.R_Mio1Olk  ;
+      /* 98 */ ptransRow.R_Mio1Osn    = ptrans_rec.R_Mio1Osn  ;
+
 
       Ptrane ptrane_rec;
       if(ptraneRowsOfThisPerson != null) foreach(DS_Placa.ptraneRow ptraneRow in ptraneRowsOfThisPerson)
@@ -627,6 +636,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 48 */  internal int t_stPorez1   ;
       /* 49 */  internal int t_stPorez2   ;
       /* 50 */  internal int t_fixMio1Olak;
+      /* 51 */  internal int t_Mio1OlkKind;
 
    }
 
@@ -694,6 +704,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 48 */ CI.t_stPorez1   = GetSchemaColumnIndex("t_stPorez1"   );
       /* 49 */ CI.t_stPorez2   = GetSchemaColumnIndex("t_stPorez2"   );
       /* 50 */ CI.t_fixMio1Olak= GetSchemaColumnIndex("t_fixMio1Olak");
+      /* 51 */ CI.t_Mio1OlkKind= GetSchemaColumnIndex("t_Mio1OlkKind");
 
    }
 
@@ -1152,6 +1163,10 @@ public sealed class PtransDao : VvDaoBase, IVvDao
     //spent.KrizPorOsn = PtransList.Sum(ptrn => ptrn.R_KrizPorOsn);
       spent.KrizPorOsn = PtransList.Sum(ptrn => (ptrn.R_Netto - ptrn.R_Premije).Ron2());
       spent.KrizPorUk  = PtransList.Sum(ptrn => ptrn.R_KrizPorUk );
+
+      // 2024: 
+      spent.TheBruto   = PtransList.Sum(ptrn => ptrn.R_TheBruto);
+      spent.Mio1Olak   = PtransList.Sum(ptrn => ptrn.R_Mio1Olk );
 
       return spent;
    }
