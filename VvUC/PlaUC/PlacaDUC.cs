@@ -59,7 +59,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                      vvtbT_kupdob_tk, vvtbT_iznosOb, vvtbT_partija,
                      vvtbT_brutoDodSt, vvtbT_izNetoaSt, vvtbT_brDodpoloz,
                      vvtbT_rbrRate,    vvtbT_ptranoKind,
-                     vvtbT_stPorez1, vvtbT_stPorez2, vvtbT_fixMio1Olak,//novo 2024
+                     vvtbT_stPorez1, vvtbT_stPorez2, vvtbT_fixMio1Olak, vvtbT_Mio1OlkKind,//novo 2024
 
                      //R   
                      vvtbT_bruto100, vvtbT_theBruto, vvtbT_mioOsn, vvtbT_mio1stup,
@@ -1458,6 +1458,16 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
 
+   protected void T_Mio1OlkKind_CreateColumn(int _width)
+   {
+      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "....");
+      vvtbT_Mio1OlkKind.JAM_AllowedInputCharacters = "34";
+      
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_Mio1OlkKind, TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "M1Olk", _width);
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
+   }
+
 
    #endregion T_Columns
 
@@ -2070,7 +2080,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void R_mio1Olk_CreateColumn(int _width, int numOfDecimalPlaces)
    {
       vvtbT_mio1Olk = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Olk", null, -12, "Olaksica za MIO I");
-    //vvtbT_mio1Olk.JAM_ReadOnly = true;
+      vvtbT_mio1Olk.JAM_ReadOnly = true;
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Olk, null, "R_mio1Olk", "MIO I Olk", _width);
 
       vvtbT_mio1Olk.JAM_ShouldSumGrid = true;
@@ -2081,7 +2091,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void R_mio1Osn_CreateColumn(int _width, int numOfDecimalPlaces)
    {
       vvtbT_mio1Osn = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Osn", null, -12, "Osnovica za MIO I");
-    //vvtbT_mio1Osn.JAM_ReadOnly = true;
+      vvtbT_mio1Osn.JAM_ReadOnly = true;
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Osn, null, "R_mio1Osn", "MIO I Osn", _width);
 
       vvtbT_mio1Osn.JAM_ShouldSumGrid = true;
@@ -2593,6 +2603,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       internal int iT_stPorez1   ;
       internal int iT_stPorez2   ;
       internal int iT_fixMio1Olak;
+      internal int iT_mio1OlkKind;
 
       /* 01R */      internal int iT_bruto100;
       /* 02R */      internal int iT_theBruto;
@@ -2692,6 +2703,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       ci.iT_stPorez1    = TheG.IdxForColumn("T_stPorez1");
       ci.iT_stPorez2    = TheG.IdxForColumn("T_stPorez2");
       ci.iT_fixMio1Olak = TheG.IdxForColumn("T_fixMio1Olak");
+      ci.iT_mio1OlkKind = TheG.IdxForColumn("T_mio1OlkKind");
 
       /* 01R */      ci.iT_bruto100         = TheG.IdxForColumn("R_bruto100");
       /* 02R */      ci.iT_theBruto         = TheG.IdxForColumn("R_theBruto");
@@ -3562,7 +3574,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       TheG.PutCell(ci.iT_stPorez1   , rowIdx, ptrans_rec.T_stPorez1);
       TheG.PutCell(ci.iT_stPorez2   , rowIdx, ptrans_rec.T_stPorez2);
       TheG.PutCell(ci.iT_fixMio1Olak, rowIdx, ptrans_rec.T_fixMio1Olak);
-
+      TheG.PutCell(ci.iT_mio1OlkKind, rowIdx, GetOneInteger4Mio1OlkKindEnum(ptrans_rec.T_Mio1OlkKind));
    }
 
    public override void PutDgvLineResultsFields1(int rowIdx, VvTransRecord trans_rec, bool passPtrResultsToZaglavljeTranses)
@@ -3625,6 +3637,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       /* 46R */      TheG.PutCell(ci.iT_daniZpi         , rowIdx, ptrans_rec.R_DaniZpi);
       /* 23R */      TheG.PutCell(ci.iT_nettoBlue       , rowIdx, ptrans_rec.R_Netto);
       /* 57R */      TheG.PutCell(ci.iT_satiNeR         , rowIdx, ptrans_rec.R_SatiNeR);
+      /* 57R */      TheG.PutCell(ci.iT_mio1Olk         , rowIdx, ptrans_rec.R_Mio1Olk);
+      /* 57R */      TheG.PutCell(ci.iT_mio1Osn         , rowIdx, ptrans_rec.R_Mio1Osn);
 
       TheG.PutCell(ci.iT_nacIsplName, rowIdx, ZXC.luiListaNacIspl   .GetNameForThisCd(ptrans_rec.T_nacIsplCD));
       TheG.PutCell(ci.iT_neoPrimName, rowIdx, ZXC.luiListaNeoporPrim.GetNameForThisCd(ptrans_rec.T_neoPrimCD));
@@ -4218,11 +4232,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                                            dgvPtrans_rec.T_fixMio1Olak = TheG.GetDecimalCell(ci.iT_fixMio1Olak, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_fixMio1Olak = dgvPtrans_rec.T_fixMio1Olak;
       }
-
-
-
-
-
+      if(TheG.CI_OK(ci.iT_mio1OlkKind))
+      {
+                                           dgvPtrans_rec.T_Mio1OlkKind = GetMio1OlkKindEnumFromInteger(TheG.GetIntCell(ci.iT_mio1OlkKind, rIdx, dirtyFlagging));
+         if(DB_RWT) db_rec.T_Mio1OlkKind = dgvPtrans_rec.T_Mio1OlkKind;
+      }
 
       #endregion GetColumns
 
@@ -5019,6 +5033,7 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
       /*14*/         w = ZXC.Q2un + ZXC.Qun2; T_isMioII_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
 
       /* 03R */      w = ZXC.Q4un;            T_fixMio1Olak_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /* 03R */      w = ZXC.Q2un;            T_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
 

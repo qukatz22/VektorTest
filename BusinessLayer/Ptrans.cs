@@ -3841,9 +3841,6 @@ public class Ptrans : VvTransRecord
       decimal maxMioOsnova = pR._maxMioOsn - spent.MioOsn;
       decimal osnovicaDop; // trbala bi biti jednaka 'R_MioOsn' ali NE smije trzati na 'maxMioOsnova' tj. NEMA gornje granice 
 
-      decimal R_Mio1_olaksica  =    0.00M;
-      decimal R_Mio1_osnovica  =    0.00M;
-
       if(placaTT == Placa.TT_UGOVORODJELU ||
          placaTT == Placa.TT_NADZORODBOR  ||
          placaTT == Placa.TT_TURSITVIJECE ||  
@@ -3888,8 +3885,8 @@ public class Ptrans : VvTransRecord
          R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
          osnovicaDop =                                            R_TheBruto;
 
-         R_Mio1_olaksica = CalcMio1Osnovica(pR, spent);
-         R_Mio1_osnovica = R_TheBruto - R_Mio1_olaksica;
+         R_Mio1Olk = CalcMio1Osnovica(pR, spent);
+         R_Mio1Osn = R_TheBruto - R_Mio1Olk;
       }
 
       #region  novo 26.11.2014.
@@ -3961,14 +3958,12 @@ public class Ptrans : VvTransRecord
 
       if(T_isMioII == true) // covjek JE u II MIO stupu 
       {
-       //R_Mio1stup = R_MioOsn        * pR._stMio1stup / 100.00M;
-         R_Mio1stup = R_Mio1_osnovica * pR._stMio1stup / 100.00M;
-         R_Mio2stup = R_MioOsn        * pR._stMio2stup / 100.00M;
+         R_Mio1stup = R_Mio1Osn * pR._stMio1stup / 100.00M;
+         R_Mio2stup = R_MioOsn  * pR._stMio2stup / 100.00M;
       }
       else // covjek NIJE u II MIO stupu 
       {
-       //R_Mio1stup = R_MioOsn        * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
-         R_Mio1stup = R_Mio1_osnovica * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
+         R_Mio1stup = R_Mio1Osn * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
          R_Mio2stup = 0.00M;
       }
       R_Mio1stup = R_Mio1stup.Ron2()      ;
@@ -4063,8 +4058,8 @@ public class Ptrans : VvTransRecord
 
       decimal theMio1Olaksica       = 0.00M;
       decimal olaksicaNaUkupnibruto = 0.00M;
-      decimal potrosenaOlaksica     = 0.00M;//spent.Mio1Olk ; 
-      decimal ukupniTheBruto        = 0.00M;//spent.TheBruto; 
+      decimal potrosenaOlaksica     = spent.Mio1Olak; 
+      decimal ukupniTheBruto        = spent.TheBruto; 
 
       ukupniTheBruto += R_TheBruto; // ovo ne bi trebalo ako cemo sumirati
 
@@ -4076,18 +4071,20 @@ public class Ptrans : VvTransRecord
       { 
          olaksicaNaUkupnibruto = pR._mio1FiksOlk;
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
+         T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do0700;
       }
       else if(ukupniTheBruto > pR._mio1Granica1 && ukupniTheBruto <= pR._mio1Granica2)
       {
          olaksicaNaUkupnibruto = pR._mio1KoefOlk * (pR._mio1Granica2 - ukupniTheBruto);
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
+         T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do1300;
       }
       else
       {
          theMio1Olaksica = 0.00M;
       }
        
-      potrosenaOlaksica += theMio1Olaksica;//mozda ovo i ne treba
+    //potrosenaOlaksica += theMio1Olaksica;//mozda ovo i ne treba
 
       return theMio1Olaksica;
    }
