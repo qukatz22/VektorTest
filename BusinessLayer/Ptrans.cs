@@ -1506,11 +1506,18 @@ public class Ptrans : VvTransRecord
          Calc_OtherDohodakOrPenzOrNovozap_Overriders_Bef2017(ref pRules,        placa_rec.TT);
          Calc_Doprinosi_Bef2017                             (    pRules, spent, placa_rec.TT);
       }
-      else
+      else if(T_dokDate >= ZXC.Date01012017 && T_dokDate < ZXC.Date01012024) //!!!!!!!!!!krajnji datum
       {
          Calc_OtherDohodakOrPenzOrNovozap_Overriders(ref pRules,        placa_rec.TT);
          Calc_Doprinosi                             (    pRules, spent, placa_rec.TT);
       }
+      else//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      {
+         Calc_Doprinosi_2024(pRules, spent, placa_rec.TT);
+      }
+
+
+
 
       if(T_dokDate < ZXC.Date01012024)
       { 
@@ -3816,8 +3823,8 @@ public class Ptrans : VvTransRecord
       decimal maxMioOsnova = pR._maxMioOsn - spent.MioOsn;
       decimal osnovicaDop; // trbala bi biti jednaka 'R_MioOsn' ali NE smije trzati na 'maxMioOsnova' tj. NEMA gornje granice 
 
-      decimal R_mio1_olaksica  =    0.00M;
-      decimal R_mio1_osnovica  =    0.00M;
+      decimal R_Mio1_olaksica  =    0.00M;
+      decimal R_Mio1_osnovica  =    0.00M;
 
       if(placaTT == Placa.TT_UGOVORODJELU ||
          placaTT == Placa.TT_NADZORODBOR  ||
@@ -3863,8 +3870,8 @@ public class Ptrans : VvTransRecord
          R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
          osnovicaDop =                                            R_TheBruto;
 
-         R_mio1_olaksica = CalcMio1Osnovica(pR, spent);
-         R_mio1_osnovica = R_TheBruto - R_mio1_olaksica;
+         R_Mio1_olaksica = CalcMio1Osnovica(pR, spent);
+         R_Mio1_osnovica = R_TheBruto - R_Mio1_olaksica;
       }
 
       #region  novo 26.11.2014.
@@ -3937,13 +3944,13 @@ public class Ptrans : VvTransRecord
       if(T_isMioII == true) // covjek JE u II MIO stupu 
       {
        //R_Mio1stup = R_MioOsn        * pR._stMio1stup / 100.00M;
-         R_Mio1stup = R_mio1_osnovica * pR._stMio1stup / 100.00M;
-         R_Mio2stup = R_MioOsn * pR._stMio2stup / 100.00M;
+         R_Mio1stup = R_Mio1_osnovica * pR._stMio1stup / 100.00M;
+         R_Mio2stup = R_MioOsn        * pR._stMio2stup / 100.00M;
       }
       else // covjek NIJE u II MIO stupu 
       {
        //R_Mio1stup = R_MioOsn        * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
-         R_Mio1stup = R_mio1_osnovica * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
+         R_Mio1stup = R_Mio1_osnovica * (pR._stMio1stup + pR._stMio2stup) / 100.00M;
          R_Mio2stup = 0.00M;
       }
       R_Mio1stup = R_Mio1stup.Ron2()      ;
@@ -4036,13 +4043,33 @@ public class Ptrans : VvTransRecord
       //!!!! Ako su neke isplate druge a mi ih svejedno stavljamo na RR ali u evidenciji rada imaju 0021 ili sl tada se tu ne obračunava mio Olakšica
       //!!!! treba paziti na sppc stvari - kad se uzima ili ne minMioOsn?!
 
-      decimal theMio1Olaksica   =    0.00M;
-    //decimal potrosenaOlaksica = spent.Mio1Olk; //ovo jos treba provejeriti da li je tako i zapravo kako jer ovo je onaj neki stari mioOsn to nije to sto nam treba
+      decimal theMio1Olaksica       = 0.00M;
+      decimal olaksicaNaUkupnibruto = 0.00M;
+      decimal potrosenaOlaksica     = 0.00M;//spent.Mio1Olk ; 
+      decimal ukupniTheBruto        = 0.00M;//spent.TheBruto; 
 
-           if(T_fixMio1Olak.NotZero()                                        ) theMio1Olaksica = T_fixMio1Olak;
-      else if(R_TheBruto <= pR._mio1Granica1                                 ) theMio1Olaksica = pR._mio1FiksOlk;
-      else if(R_TheBruto > pR._mio1Granica1 && R_TheBruto <= pR._mio1Granica2) theMio1Olaksica = pR._mio1KoefOlk * (pR._mio1Granica2 - R_TheBruto);
-      else                                                                     theMio1Olaksica = 0.00M;
+      ukupniTheBruto += R_TheBruto; // ovo ne bi trebalo ako cemo sumirati
+
+      if(T_fixMio1Olak.NotZero()) 
+      {
+         theMio1Olaksica = T_fixMio1Olak;
+      } 
+      else if(ukupniTheBruto <= pR._mio1Granica1)
+      { 
+         olaksicaNaUkupnibruto = pR._mio1FiksOlk;
+         theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
+      }
+      else if(ukupniTheBruto > pR._mio1Granica1 && ukupniTheBruto <= pR._mio1Granica2)
+      {
+         olaksicaNaUkupnibruto = pR._mio1KoefOlk * (pR._mio1Granica2 - ukupniTheBruto);
+         theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
+      }
+      else
+      {
+         theMio1Olaksica = 0.00M;
+      }
+       
+      potrosenaOlaksica += theMio1Olaksica;//mozda ovo i ne treba
 
       return theMio1Olaksica;
    }
@@ -4065,12 +4092,12 @@ public class Ptrans : VvTransRecord
       R_Odbitak                -= spent.Odbitak;
       maxOsn1 = pR._maxPorOsn1 - spent.PorOsn1;
       maxOsn2 = pR._maxPorOsn2 - spent.PorOsn2 - pR._maxPorOsn1;
-      maxOsn3 = pR._maxPorOsn3 - spent.PorOsn3 - pR._maxPorOsn2;
+    //maxOsn3 = pR._maxPorOsn3 - spent.PorOsn3 - pR._maxPorOsn2;
 
       if(R_Odbitak < 0.00M) R_Odbitak = 0.00M;
       if(maxOsn1   < 0.00M) maxOsn1   = 0.00M;
       if(maxOsn2   < 0.00M) maxOsn2   = 0.00M;
-      if(maxOsn3   < 0.00M) maxOsn3   = 0.00M;
+    //if(maxOsn3   < 0.00M) maxOsn3   = 0.00M;
 
       R_Dohodak = R_TheBruto - R_DoprIz - R_Premije;
 
@@ -4190,13 +4217,15 @@ public class Ptrans : VvTransRecord
       // TODO: DELLMELATTER 
       if(Math.Abs((R_PorOsnAll) - (R_PorOsn1+R_PorOsn2+R_PorOsn3+R_PorOsn4)) > 0.00M) ZXC.aim_emsg("oAll<{0}> o1+other+o3+o4<{1}> !!!", R_PorOsnAll, R_PorOsn1 + R_PorOsn2 + R_PorOsn3 + R_PorOsn4);
 
-      R_Por1Uk = R_PorOsn1 * pR._stpor1 / 100.00M/*T_stpor1*/;
-      R_Por2Uk = R_PorOsn2 * pR._stpor2 / 100.00M/*T_stpor2*/;
+      R_Por1Uk = R_PorOsn1 * T_stPorez1 / 100.00M;
+      R_Por2Uk = R_PorOsn2 * T_stPorez2 / 100.00M;
 
       R_Por1Uk = R_Por1Uk.Ron2();
       R_Por2Uk = R_Por2Uk.Ron2();
 
       R_PorezAll  = R_Por1Uk + R_Por2Uk;
+
+      R_Prirez = 0.00M;
    }
 
    #endregion nove place u 2024
