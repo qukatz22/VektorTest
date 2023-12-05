@@ -442,156 +442,146 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       //CreateHamperOpen();
 
-      hamper = new VvHamper(23, /*5*/9, "", panelRules /*TheTabControl.TabPages[0]*/ , false);
+      hamper = new VvHamper(24, 5, "", panelRules /*TheTabControl.TabPages[0]*/ , false);
 
-      hamper.VvColWdt = new int[]{ ZXC.Q3un - ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
-                                   ZXC.Q3un + ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
-                                   ZXC.Q3un - ZXC.Qun2, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
-                                   ZXC.Q4un + ZXC.Qun4, ZXC.Q4un           , 
-                                   ZXC.Q5un + ZXC.Qun4, ZXC.Q2un           , ZXC.Q2un,
-                                   ZXC.Q5un + ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN, 
-                                   ZXC.Q3un           , ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
-                                   ZXC.Q5un           , ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
-                                   //ZXC.Q3un           , ZXC.Q2un + ZXC.Qun4, ZXC.QUN
+      hamper.VvColWdt = new int[]{/*kol  0  1  2 */ ZXC.Q3un - ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
+                                  /*kol  3  4  5 */ ZXC.Q3un + ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
+                                  /*kol  6  7  8 */ ZXC.Q3un - ZXC.Qun2, ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
+                                  /*kol  9 10    */ ZXC.Q4un + ZXC.Qun4, ZXC.Q3un           , 
+                                  /*kol 11 12    */ ZXC.Q6un - ZXC.Qun4, ZXC.Q3un           , 
+                                  /*kol 13 14    */ ZXC.Q5un           , ZXC.Q3un           , 
+                                  /*kol 15 16 17 */ ZXC.Q5un + ZXC.Qun4, ZXC.Q2un + ZXC.Qun4, ZXC.QUN, 
+                                  /*kol 18 19 20 */ ZXC.Q3un           , ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
+                                  /*kol 21 23 23 */ ZXC.Q5un           , ZXC.Q2un + ZXC.Qun4, ZXC.QUN,
                                   };
-      hamper.VvSpcBefCol = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun8,
-                                       ZXC.Qun4, ZXC.Qun4, ZXC.Qun8,
-                                       ZXC.Qun4, ZXC.Qun4, ZXC.Qun8,
-                                       ZXC.Qun4, ZXC.Qun4,
-                                       ZXC.Qun4, ZXC.Qun4, ZXC.Qun8,
-                                       ZXC.Qun4, ZXC.Qun8, ZXC.Qun8,
-                                       ZXC.Qun8, ZXC.Qun8, ZXC.Qun8,
-                                       ZXC.Qun4, ZXC.Qun8, ZXC.Qun8,
-                                      // ZXC.Qun8, ZXC.Qun8, ZXC.Qun8
+      hamper.VvSpcBefCol = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun10,
+                                       ZXC.Qun8, ZXC.Qun8, ZXC.Qun10,
+                                       ZXC.Qun8, ZXC.Qun8, ZXC.Qun10,
+                                       ZXC.Qun8, ZXC.Qun8,
+                                       ZXC.Qun8, ZXC.Qun8,
+                                       ZXC.Qun8, ZXC.Qun8,
+                                       ZXC.Qun8, ZXC.Qun8, ZXC.Qun10,
+                                       ZXC.Qun8, ZXC.Qun8, ZXC.Qun10,
+                                       ZXC.Qun8, ZXC.Qun8, ZXC.Qun10,
                                      };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       hamper.Location = new Point(ZXC.Qun4, ZXC.Qun4);
 
-      Label lbl_stPor1, lbl_stPor2, lbl_stPor3, lbl_stPor4, lbl_stPor1p, lbl_stPor2p, lbl_stPor3p, lbl_stPor4p,
-            lbl_osnOdb, lbl_maxPorOsn1, lbl_maxPorOsn2, lbl_maxPorOsn3,
-            lbl_minMioOsn, lbl_maxMioOsn,
-            lbl_stMioIz, lbl_stMioIz_II, lbl_stZdrNa, lbl_stZorNa, lbl_stMioIzp, lbl_stMioIz_IIp, lbl_stZdrNap, lbl_stZorNap,
-            lbl_stZapNa, lbl_stZapII, lbl_stZpi, lbl_stOthOlak, lbl_stZapNap, lbl_stZapIIp, lbl_stZpip, lbl_stOthOlakp,
-            lbl_staz, lbl_stazPost, lbl_granBrRad,
-            lbl_stMioNaB1, lbl_stMioNa2B1, lbl_stMioNaB2, lbl_stMioNa2B2,
-            lbl_stMioNaB3, lbl_stMioNa2B3, lbl_stMioNaB4, lbl_stMioNa2B4, lbl_prosPlaca, lbl_stMioNa2B5,
-            lbl_stMioNaB1p, lbl_stMioNa2B1p, lbl_stMioNaB2p, lbl_stMioNa2B2p,
-            lbl_stMioNaB3p, lbl_stMioNa2B3p, lbl_stMioNaB4p, lbl_stMioNa2B4p, /*lbl_stMioNaB5p, */lbl_stMioNa2B5p,
-            lbl_stKrizPor1, lbl_stKrizPor2, lbl_stKrizPor1p, lbl_stKrizPor2p, lbl_stZdrDD;
-
-
-      lbl_stMioIz     = hamper.CreateVvLabel   (0, 0, "MIO I iz:", ContentAlignment.MiddleRight);
-      lbl_stMioIz_II  = hamper.CreateVvLabel   (0, 1, "MIO II iz:", ContentAlignment.MiddleRight);
-      lbl_stZdrNa     = hamper.CreateVvLabel   (0, 2, "Zdrav na:", ContentAlignment.MiddleRight);
-      lbl_stZorNa     = hamper.CreateVvLabel   (0, 3, "ZOR na:", ContentAlignment.MiddleRight);
-      lbl_stZdrDD     = hamper.CreateVvLabel   (0, 4, "Zdr DD:", ContentAlignment.MiddleRight);
-      tbx_stMioIz     = hamper.CreateVvTextBox (1, 0, "tbx_stMioIz", "Stopa doprinosa za MIO I stup iz plaće",/*GetDB_ColumnSize*/ 5);
+                        hamper.CreateVvLabel   (0, 0, "MIO I iz:" , ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel   (0, 1, "MIO II iz:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel   (0, 2, "Zdrav na:" , ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel   (0, 3, "ZOR na:"   , ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel   (0, 4, "Zdr DD:"   , ContentAlignment.MiddleRight);
+      tbx_stMioIz     = hamper.CreateVvTextBox (1, 0, "tbx_stMioIz"   , "Stopa doprinosa za MIO I stup iz plaće",/*GetDB_ColumnSize*/ 5);
       tbx_stMioIz_II  = hamper.CreateVvTextBox (1, 1, "tbx_stMioIz_II", "Stopa doprinosa za MIO II stup iz plaće", 5);
-      tbx_stZdrNa     = hamper.CreateVvTextBox (1, 2, "tbx_stZdrNa", "Stopa doprinosa za zdravstveno osiguranje na plaće", 5);
-      tbx_stZorNa     = hamper.CreateVvTextBox (1, 3, "tbx_stZorNa", "Stopa doprinosa za ZOR na plaće", 5);
-      tbx_stZdrDD     = hamper.CreateVvTextBox (1, 4, "tbx_stZdrDD", "Stopa doprinosa za ZDR na drugi doh.", 5);
-      lbl_stMioIzp    = hamper.CreateVvLabel   (2, 0, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioIz_IIp = hamper.CreateVvLabel   (2, 1, "%", ContentAlignment.MiddleLeft);
-      lbl_stZdrNap    = hamper.CreateVvLabel   (2, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_stZorNap    = hamper.CreateVvLabel   (2, 3, "%", ContentAlignment.MiddleLeft);
+      tbx_stZdrNa     = hamper.CreateVvTextBox (1, 2, "tbx_stZdrNa"   , "Stopa doprinosa za zdravstveno osiguranje na plaće", 5);
+      tbx_stZorNa     = hamper.CreateVvTextBox (1, 3, "tbx_stZorNa"   , "Stopa doprinosa za ZOR na plaće", 5);
+      tbx_stZdrDD     = hamper.CreateVvTextBox (1, 4, "tbx_stZdrDD"   , "Stopa doprinosa za ZDR na drugi doh.", 5);
+                        hamper.CreateVvLabel   (2, 0, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel   (2, 1, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel   (2, 2, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel   (2, 3, "%", ContentAlignment.MiddleLeft);
                         hamper.CreateVvLabel   (2, 4, "%", ContentAlignment.MiddleLeft);
       
-                        hamper.CreateVvLabel  ( 0, 4, "Vrijednost koeficijenta za Bruto1:", 9, 0, ContentAlignment.MiddleRight);
-      tbx_VrKoefBr1   = hamper.CreateVvTextBox(10, 4, "tbx_VrKoefBr1", "Vrijednost koeficijenta za Bruto1", 12);
-
-      lbl_stZapNa     = hamper.CreateVvLabel  (3, 0, "Zapoš na:", ContentAlignment.MiddleRight);
-      lbl_stZapII     = hamper.CreateVvLabel  (3, 1, "Zapoš II na:", ContentAlignment.MiddleRight);
-      lbl_stZpi       = hamper.CreateVvLabel  (3, 2, "ZPI na:", ContentAlignment.MiddleRight);
-      lbl_stOthOlak   = hamper.CreateVvLabel  (3, 3, "Izdatak:", ContentAlignment.MiddleRight);
-      tbx_stZapNa     = hamper.CreateVvTextBox(4, 0, "tbx_stZapNa", "Stopa doprinosa za zapošljavanje na plaće", 5);
-      tbx_stZapII     = hamper.CreateVvTextBox(4, 1, "tbx_stZapII", "Poseban doprinos za zapošljavenje na plaće  - preko 20 radnika", 5);
-      tbx_stZpi       = hamper.CreateVvTextBox(4, 2, "tbx_stZpi", "Stopa doprinosa za ZPI", 5);
+                        hamper.CreateVvLabel  (3, 0, "Zapoš na:"   , ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (3, 1, "Zapoš II na:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (3, 2, "ZPI na:"     , ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (3, 3, "Izdatak:"    , ContentAlignment.MiddleRight);
+      tbx_stZapNa     = hamper.CreateVvTextBox(4, 0, "tbx_stZapNa"  , "Stopa doprinosa za zapošljavanje na plaće", 5);
+      tbx_stZapII     = hamper.CreateVvTextBox(4, 1, "tbx_stZapII"  , "Poseban doprinos za zapošljavenje na plaće  - preko 20 radnika", 5);
+      tbx_stZpi       = hamper.CreateVvTextBox(4, 2, "tbx_stZpi"    , "Stopa doprinosa za ZPI", 5);
       tbx_stOthOlak   = hamper.CreateVvTextBox(4, 3, "tbx_stOthOlak", "Postotak priznatog izdatka za druge dohotke", 5);
-      lbl_stZapNap    = hamper.CreateVvLabel  (5, 0, "%", ContentAlignment.MiddleLeft);
-      lbl_stZapIIp    = hamper.CreateVvLabel  (5, 1, "%", ContentAlignment.MiddleLeft);
-      lbl_stZpip      = hamper.CreateVvLabel  (5, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_stOthOlakp  = hamper.CreateVvLabel  (5, 3, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (5, 0, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (5, 1, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (5, 2, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (5, 3, "%", ContentAlignment.MiddleLeft);
 
-      lbl_stPor1      = hamper.CreateVvLabel  (6, 0, "Porez 1:", ContentAlignment.MiddleRight);
-      lbl_stPor2      = hamper.CreateVvLabel  (6, 1, "Porez 2:", ContentAlignment.MiddleRight);
-      lbl_stPor3      = hamper.CreateVvLabel  (6, 2, "Porez 3:", ContentAlignment.MiddleRight);
-      lbl_stPor4      = hamper.CreateVvLabel  (6, 3, "Porez 4:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (6, 0, "Porez 1:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (6, 1, "Porez 2:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (6, 2, "Porez 3:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (6, 3, "Porez 4:", ContentAlignment.MiddleRight);
       tbx_stPor1      = hamper.CreateVvTextBox(7, 0, "tbx_stPor1", "Stopa poreza na dohodak prvog poreznog razreda", 5);
       tbx_stPor2      = hamper.CreateVvTextBox(7, 1, "tbx_stPor2", "Stopa poreza na dohodak drugog poreznog razreda", 5);
       tbx_stPor3      = hamper.CreateVvTextBox(7, 2, "tbx_stPor3", "Stopa poreza na dohodak trećeg poreznog razreda", 5);
       tbx_stPor4      = hamper.CreateVvTextBox(7, 3, "tbx_stPor4", "Stopa poreza na dohodak četvrtog poreznog razreda", 5);
-      lbl_stPor1p     = hamper.CreateVvLabel  (8, 0, "%", ContentAlignment.MiddleLeft);
-      lbl_stPor2p     = hamper.CreateVvLabel  (8, 1, "%", ContentAlignment.MiddleLeft);
-      lbl_stPor3p     = hamper.CreateVvLabel  (8, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_stPor4p     = hamper.CreateVvLabel  (8, 3, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (8, 0, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (8, 1, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (8, 2, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (8, 3, "%", ContentAlignment.MiddleLeft);
 
-      lbl_osnOdb      = hamper.CreateVvLabel  ( 9, 0, "OsnovOdbitak:", ContentAlignment.MiddleRight);
-      lbl_maxPorOsn1  = hamper.CreateVvLabel  ( 9, 1, "MaxPorOsnov1:", ContentAlignment.MiddleRight);
-      lbl_maxPorOsn2  = hamper.CreateVvLabel  ( 9, 2, "MaxPorOsnov2:", ContentAlignment.MiddleRight);
-      lbl_maxPorOsn3  = hamper.CreateVvLabel  ( 9, 3, "MaxPorOsnov3:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  ( 9, 0, "OsnovOdbitak:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  ( 9, 1, "MaxPorOsn1:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  ( 9, 2, "MaxPorOsn2:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  ( 9, 3, "MaxPorOsn3:", ContentAlignment.MiddleRight);
       tbx_osnOdb      = hamper.CreateVvTextBox(10, 0, "tbx_osnOdb", "Osnovni osobni odbitak", 12);
       tbx_maxPorOsn1  = hamper.CreateVvTextBox(10, 1, "tbx_maxPorOsn1", "Maximalna porezna osnovica za porez 1", 12);
       tbx_maxPorOsn2  = hamper.CreateVvTextBox(10, 2, "tbx_maxPorOsn2", "Maximalna porezna osnovica za porez 2", 12);
       tbx_maxPorOsn3  = hamper.CreateVvTextBox(10, 3, "tbx_maxPorOsn3", "Maximalna porezna osnovica za porez 3", 12);
+                        hamper.CreateVvLabel  ( 7, 4, "Vrijed koef. za Bruto1:", 2, 0, ContentAlignment.MiddleRight);
+      tbx_VrKoefBr1   = hamper.CreateVvTextBox(10, 4, "tbx_VrKoefBr1", "Vrijednost koeficijenta za Bruto1", 12);
 
-      lbl_minMioOsn   = hamper.CreateVvLabel  (11, 0, "Min MIO osnovica:", ContentAlignment.MiddleRight);
-      lbl_maxMioOsn   = hamper.CreateVvLabel  (11, 1, "Max MIO osnovica:", ContentAlignment.MiddleRight);
-      lbl_staz        = hamper.CreateVvLabel  (11, 2, "Staž na godinu:", ContentAlignment.MiddleRight);
-      lbl_stazPost    = hamper.CreateVvLabel  (13, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_granBrRad   = hamper.CreateVvLabel  (11, 3, "GraniBrojRadnika:", ContentAlignment.MiddleRight);
-      tbx_minMioOsn   = hamper.CreateVvTextBox(12, 0, "tbx_minMioOsn", "Minimalna MIO osnovica", 12, 1, 0);
-      tbx_maxMioOsn   = hamper.CreateVvTextBox(12, 1, "tbx_maxMioOsn", "Maximalna MIO osnovica", 12, 1, 0);
-      tbx_stDodStaz   = hamper.CreateVvTextBox(12, 2, "tbx_stDodStaz", "Postotak staza na godinu", 5);
-      tbx_granBrRad   = hamper.CreateVvTextBox(12, 3, "tbx_granBrRad", "Granični broj radnika za primjenu posebnog doprinosa za zapošljevanje", 5);
+                        hamper.CreateVvLabel  (11, 0, "Min MIO osnovica:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (11, 1, "Max MIO osnovica:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (11, 2, "Prosječna plaća:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (11, 3, "OsnDopČlanUprave:", ContentAlignment.MiddleRight);
+      tbx_minMioOsn   = hamper.CreateVvTextBox(12, 0, "tbx_minMioOsn", "Minimalna MIO osnovica", 12);
+      tbx_maxMioOsn   = hamper.CreateVvTextBox(12, 1, "tbx_maxMioOsn", "Maximalna MIO osnovica", 12);
+      tbx_prosPlaca   = hamper.CreateVvTextBox(12, 2, "tbx_prosPlaca", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 24 mjeseci", 12);
+      tbx_stMioNa2B5  = hamper.CreateVvTextBox(12, 3, "tbx_stMioNa2B5", "", 12);
+
+                         hamper.CreateVvLabel  (13, 0, "Mio1Granica1:", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel  (13, 1, "Mio1Granica2:", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel  (13, 2, "Mio1FiksOlk :", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel  (13, 3, "Mio1KoefOlk :", ContentAlignment.MiddleRight);
+      tbx_mio1Granica1 = hamper.CreateVvTextBox(14, 0, "tbx_mio1Granica1", "Mio1Granica1", 12);
+      tbx_mio1Granica2 = hamper.CreateVvTextBox(14, 1, "tbx_mio1Granica2", "Mio1Granica2", 12);
+      tbx_mio1FiksOlk  = hamper.CreateVvTextBox(14, 2, "tbx_mio1FiksOlk ", "Mio1FiksOlk ", 12);
+      tbx_mio1KoefOlk  = hamper.CreateVvTextBox(14, 3, "tbx_mio1KoefOlk ", "Mio1KoefOlk ", 12);
+
+                       hamper.CreateVvLabel  (15, 0, "B 12/14 MIO I na:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (15, 1, "B 12/15 MIO I na:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (15, 2, "B 12/16 MIO I na:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (15, 3, "B 12/18 MIO I na:", ContentAlignment.MiddleRight);
+      tbx_stMioNaB1  = hamper.CreateVvTextBox(16, 0, "tbx_stMioNaB1", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 14 mjeseci", 5);
+      tbx_stMioNaB2  = hamper.CreateVvTextBox(16, 1, "tbx_stMioNaB2", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 15 mjeseci", 5);
+      tbx_stMioNaB3  = hamper.CreateVvTextBox(16, 2, "tbx_stMioNaB3", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 16 mjeseci", 5);
+      tbx_stMioNaB4  = hamper.CreateVvTextBox(16, 3, "tbx_stMioNaB4", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 18 mjeseci", 5);
+                       hamper.CreateVvLabel  (17, 0, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (17, 1, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (17, 2, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (17, 3, "%", ContentAlignment.MiddleLeft);
 
 
-      lbl_stMioNaB1  = hamper.CreateVvLabel  (14, 0, "B 12/14 MIO I na:", ContentAlignment.MiddleRight);
-      lbl_stMioNaB2  = hamper.CreateVvLabel  (14, 1, "B 12/15 MIO I na:", ContentAlignment.MiddleRight);
-      lbl_stMioNaB3  = hamper.CreateVvLabel  (14, 2, "B 12/16 MIO I na:", ContentAlignment.MiddleRight);
-      lbl_stMioNaB4  = hamper.CreateVvLabel  (14, 3, "B 12/18 MIO I na:", ContentAlignment.MiddleRight);
-      tbx_stMioNaB1  = hamper.CreateVvTextBox(15, 0, "tbx_stMioNaB1", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 14 mjeseci", 5);
-      tbx_stMioNaB2  = hamper.CreateVvTextBox(15, 1, "tbx_stMioNaB2", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 15 mjeseci", 5);
-      tbx_stMioNaB3  = hamper.CreateVvTextBox(15, 2, "tbx_stMioNaB3", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 16 mjeseci", 5);
-      tbx_stMioNaB4  = hamper.CreateVvTextBox(15, 3, "tbx_stMioNaB4", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 18 mjeseci", 5);
-      lbl_stMioNaB1p = hamper.CreateVvLabel  (16, 0, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNaB2p = hamper.CreateVvLabel  (16, 1, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNaB3p = hamper.CreateVvLabel  (16, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNaB4p = hamper.CreateVvLabel  (16, 3, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (18, 0, "MIO II na:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (18, 1, "MIO II na:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (18, 2, "MIO II na:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (18, 3, "MIO II na:", ContentAlignment.MiddleRight);
+      tbx_stMioNa2B1 = hamper.CreateVvTextBox(19, 0, "tbx_stMioNa2B1", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 14 mjeseci", 5);
+      tbx_stMioNa2B2 = hamper.CreateVvTextBox(19, 1, "tbx_stMioNa2B2", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 15 mjeseci", 5);
+      tbx_stMioNa2B3 = hamper.CreateVvTextBox(19, 2, "tbx_stMioNa2B3", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 16 mjeseci", 5);
+      tbx_stMioNa2B4 = hamper.CreateVvTextBox(19, 3, "tbx_stMioNa2B4", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 18 mjeseci", 5);
+                       hamper.CreateVvLabel  (20, 0, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (20, 1, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (20, 2, "%", ContentAlignment.MiddleLeft);
+                       hamper.CreateVvLabel  (20, 3, "%", ContentAlignment.MiddleLeft);
 
 
-      lbl_stMioNa2B1 = hamper.CreateVvLabel  (17, 0, "MIO II na:", ContentAlignment.MiddleRight);
-      lbl_stMioNa2B2 = hamper.CreateVvLabel  (17, 1, "MIO II na:", ContentAlignment.MiddleRight);
-      lbl_stMioNa2B3 = hamper.CreateVvLabel  (17, 2, "MIO II na:", ContentAlignment.MiddleRight);
-      lbl_stMioNa2B4 = hamper.CreateVvLabel  (17, 3, "MIO II na:", ContentAlignment.MiddleRight);
-      tbx_stMioNa2B1 = hamper.CreateVvTextBox(18, 0, "tbx_stMioNa2B1", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 14 mjeseci", 5);
-      tbx_stMioNa2B2 = hamper.CreateVvTextBox(18, 1, "tbx_stMioNa2B2", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 15 mjeseci", 5);
-      tbx_stMioNa2B3 = hamper.CreateVvTextBox(18, 2, "tbx_stMioNa2B3", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 16 mjeseci", 5);
-      tbx_stMioNa2B4 = hamper.CreateVvTextBox(18, 3, "tbx_stMioNa2B4", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 18 mjeseci", 5);
-      lbl_stMioNa2B1p = hamper.CreateVvLabel (19, 0, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNa2B2p = hamper.CreateVvLabel (19, 1, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNa2B3p = hamper.CreateVvLabel (19, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNa2B4p = hamper.CreateVvLabel (19, 3, "%", ContentAlignment.MiddleLeft);
-
-      lbl_prosPlaca   = hamper.CreateVvLabel  (20, 0, "Prosjecna placa:", ContentAlignment.MiddleRight);
-      tbx_prosPlaca   = hamper.CreateVvTextBox(21, 0, "tbx_prosPlaca", "Stopa doprinosa za MIO I stup na plaće - beneficirani radni staž: 12 mjeseci kao 24 mjeseci", 12);
-    //lbl_stMioNaB5p  = hamper.CreateVvLabel  (22, 0, "%", ContentAlignment.MiddleLeft);
-      lbl_stMioNa2B5  = hamper.CreateVvLabel  (20, 1, "OsnDopČlanUprave:", ContentAlignment.MiddleRight);
-      tbx_stMioNa2B5  = hamper.CreateVvTextBox(21, 1, "tbx_stMioNa2B5", "", 12);
-    //lbl_stMioNa2B5  = hamper.CreateVvLabel  (20, 1, "MIO II na:", ContentAlignment.MiddleRight);
-    //tbx_stMioNa2B5  = hamper.CreateVvTextBox(21, 1, "tbx_stMioNa2B5", "Stopa doprinosa za MIO II stup na plaće - beneficirani radni staž: 12 mjeseci kao 24 mjeseci", 5);
-    //lbl_stMioNa2B5p = hamper.CreateVvLabel  (22, 1, "%", ContentAlignment.MiddleLeft);
-
-      lbl_stKrizPor1  = hamper.CreateVvLabel(20, 2, "KrizPor1:", ContentAlignment.MiddleRight);
-      lbl_stKrizPor2  = hamper.CreateVvLabel(20, 3, "KrizPor2:", ContentAlignment.MiddleRight);
-      tbx_stKrizPor1  = hamper.CreateVvTextBox(21, 2, "tbx_stKrizPor1", "Stopa kriznog poreza 1", 5);
-      tbx_stKrizPor2  = hamper.CreateVvTextBox(21, 3, "tbx_stKrizPor2", "Stopa kriznog poreza 2", 5);
-      lbl_stKrizPor1p = hamper.CreateVvLabel(22, 2, "%", ContentAlignment.MiddleLeft);
-      lbl_stKrizPor2p = hamper.CreateVvLabel(22, 3, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (21, 0, "Staž na godinu:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (21, 1, "GraniBrRadnika:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (21, 2, "KrizPor1:", ContentAlignment.MiddleRight);
+                        hamper.CreateVvLabel  (21, 3, "KrizPor2:", ContentAlignment.MiddleRight);
+      tbx_stDodStaz   = hamper.CreateVvTextBox(22, 0, "tbx_stDodStaz", "Postotak staza na godinu", 5);
+      tbx_granBrRad   = hamper.CreateVvTextBox(22, 1, "tbx_granBrRad", "Granični broj radnika za primjenu posebnog doprinosa za zapošljevanje", 5);
+      tbx_stKrizPor1  = hamper.CreateVvTextBox(22, 2, "tbx_stKrizPor1", "Stopa kriznog poreza 1", 5);
+      tbx_stKrizPor2  = hamper.CreateVvTextBox(22, 3, "tbx_stKrizPor2", "Stopa kriznog poreza 2", 5);
+                        hamper.CreateVvLabel  (23, 0, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (23, 2, "%", ContentAlignment.MiddleLeft);
+                        hamper.CreateVvLabel  (23, 3, "%", ContentAlignment.MiddleLeft);
 
       tbx_stMioIz    .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioIz_II .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
@@ -611,72 +601,61 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       tbx_stMioNaB2  .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNaB3  .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNaB4  .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
-      tbx_prosPlaca  .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNa2B1 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNa2B2 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNa2B3 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNa2B4 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stMioNa2B5 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
-      tbx_osnOdb     .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_maxPorOsn1 .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_maxPorOsn2 .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_maxPorOsn3 .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_minMioOsn  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_maxMioOsn  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_stKrizPor1 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
       tbx_stKrizPor2 .JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
-      tbx_VrKoefBr1  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-
-      tbx_stMioIz   .JAM_ReadOnly =
-      tbx_stMioIz_II.JAM_ReadOnly =
-      tbx_stZdrNa   .JAM_ReadOnly =
-      tbx_stZdrDD   .JAM_ReadOnly =
-      tbx_stZorNa   .JAM_ReadOnly =
-      tbx_stZapNa   .JAM_ReadOnly =
-      tbx_stZapII   .JAM_ReadOnly =
-      tbx_stZpi     .JAM_ReadOnly =
-      tbx_stOthOlak .JAM_ReadOnly =
-      tbx_stPor1    .JAM_ReadOnly =
-      tbx_stPor2    .JAM_ReadOnly =
-      tbx_stPor3    .JAM_ReadOnly =
-      tbx_stPor4    .JAM_ReadOnly =
-      tbx_osnOdb    .JAM_ReadOnly =
-      tbx_maxPorOsn1.JAM_ReadOnly =
-      tbx_maxPorOsn2.JAM_ReadOnly =
-      tbx_maxPorOsn3.JAM_ReadOnly =
-      tbx_minMioOsn .JAM_ReadOnly =
-      tbx_maxMioOsn .JAM_ReadOnly =
-      tbx_stDodStaz .JAM_ReadOnly =
-      tbx_granBrRad .JAM_ReadOnly =
-      tbx_stMioNaB1 .JAM_ReadOnly =
-      tbx_stMioNaB2 .JAM_ReadOnly =
-      tbx_stMioNaB3 .JAM_ReadOnly =
-      tbx_stMioNaB4 .JAM_ReadOnly =
-      tbx_prosPlaca .JAM_ReadOnly =
-      tbx_stMioNa2B1.JAM_ReadOnly =
-      tbx_stMioNa2B2.JAM_ReadOnly =
-      tbx_stMioNa2B3.JAM_ReadOnly =
-      tbx_stMioNa2B4.JAM_ReadOnly =
-      tbx_stMioNa2B5.JAM_ReadOnly =
-      tbx_stKrizPor1.JAM_ReadOnly =
-      tbx_stKrizPor2.JAM_ReadOnly =
-      tbx_VrKoefBr1 .JAM_ReadOnly = true;
-
-      hamper.CreateVvLabel(0, 5, "Mio1Granica1:", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 6, "Mio1Granica2:", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 7, "Mio1FiksOlk :", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 8, "Mio1KoefOlk :", ContentAlignment.MiddleRight);
-
-      tbx_mio1Granica1 = hamper.CreateVvTextBox(10, 5, "tbx_mio1Granica1", "Mio1Granica1", 12);
-      tbx_mio1Granica2 = hamper.CreateVvTextBox(10, 6, "tbx_mio1Granica2", "Mio1Granica2", 12);
-      tbx_mio1FiksOlk  = hamper.CreateVvTextBox(10, 7, "tbx_mio1FiksOlk ", "Mio1FiksOlk ", 12);
-      tbx_mio1KoefOlk  = hamper.CreateVvTextBox(10, 8, "tbx_mio1KoefOlk ", "Mio1KoefOlk ", 12);
-     
+      
+      tbx_osnOdb      .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_maxPorOsn1  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_maxPorOsn2  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_maxPorOsn3  .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_minMioOsn   .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_maxMioOsn   .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_VrKoefBr1   .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_prosPlaca   .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_mio1Granica1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_mio1Granica2.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_mio1FiksOlk .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_mio1KoefOlk .JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
+      tbx_stMioIz     .JAM_ReadOnly =
+      tbx_stMioIz_II  .JAM_ReadOnly =
+      tbx_stZdrNa     .JAM_ReadOnly =
+      tbx_stZdrDD     .JAM_ReadOnly =
+      tbx_stZorNa     .JAM_ReadOnly =
+      tbx_stZapNa     .JAM_ReadOnly =
+      tbx_stZapII     .JAM_ReadOnly =
+      tbx_stZpi       .JAM_ReadOnly =
+      tbx_stOthOlak   .JAM_ReadOnly =
+      tbx_stPor1      .JAM_ReadOnly =
+      tbx_stPor2      .JAM_ReadOnly =
+      tbx_stPor3      .JAM_ReadOnly =
+      tbx_stPor4      .JAM_ReadOnly =
+      tbx_osnOdb      .JAM_ReadOnly =
+      tbx_maxPorOsn1  .JAM_ReadOnly =
+      tbx_maxPorOsn2  .JAM_ReadOnly =
+      tbx_maxPorOsn3  .JAM_ReadOnly =
+      tbx_minMioOsn   .JAM_ReadOnly =
+      tbx_maxMioOsn   .JAM_ReadOnly =
+      tbx_stDodStaz   .JAM_ReadOnly =
+      tbx_granBrRad   .JAM_ReadOnly =
+      tbx_stMioNaB1   .JAM_ReadOnly =
+      tbx_stMioNaB2   .JAM_ReadOnly =
+      tbx_stMioNaB3   .JAM_ReadOnly =
+      tbx_stMioNaB4   .JAM_ReadOnly =
+      tbx_prosPlaca   .JAM_ReadOnly =
+      tbx_stMioNa2B1  .JAM_ReadOnly =
+      tbx_stMioNa2B2  .JAM_ReadOnly =
+      tbx_stMioNa2B3  .JAM_ReadOnly =
+      tbx_stMioNa2B4  .JAM_ReadOnly =
+      tbx_stMioNa2B5  .JAM_ReadOnly =
+      tbx_stKrizPor1  .JAM_ReadOnly =
+      tbx_stKrizPor2  .JAM_ReadOnly =
+      tbx_VrKoefBr1   .JAM_ReadOnly =
       tbx_mio1Granica1.JAM_ReadOnly =
       tbx_mio1Granica2.JAM_ReadOnly =
       tbx_mio1FiksOlk .JAM_ReadOnly =
@@ -2099,7 +2078,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, true));
    }
-
 
    #endregion R_Columns
 
@@ -5073,9 +5051,6 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
       /* 15R */      w = ZXC.Q4un;            R_porOsn4_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
       /* 11R */      w = ZXC.Q4un;            R_porOsnAll_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
       
-      /* 11R */      w = ZXC.Q3un;            T_stPorez1_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
-      /* 11R */      w = ZXC.Q3un;            T_stPorez2_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
-
       /* 16R */      w = ZXC.Q4un;            R_por1uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 17R */      w = ZXC.Q4un;            R_por2uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 18R */      w = ZXC.Q4un;            R_por3uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
@@ -5085,6 +5060,8 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
       /*22*/         w = ZXC.Q3un - ZXC.Qun4; T_opcCD_CreateColumn(w);               TheG.TheSumOfPreferredWidths += w;
       /*23*/         w = ZXC.Q5un;            T_opcName_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
       /*26*/         w = ZXC.Q3un - ZXC.Qun2; T_stPrirez_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /* 11R */      w = ZXC.Q3un;            T_stPorez1_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /* 11R */      w = ZXC.Q3un;            T_stPorez2_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       
       /*24*/         w = ZXC.Q3un - ZXC.Qun4; T_opcRadCD_CreateColumn(w);            TheG.TheSumOfPreferredWidths += w;
       /*25*/         w = ZXC.Q5un;            T_opcRadName_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;

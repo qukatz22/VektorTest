@@ -3919,7 +3919,7 @@ public class Ptrans : VvTransRecord
 
          razmjerniDioMinMioOsnZaClUpr = ZXC.DivSafe(minDopOsnZaPuniFondClUp, satiRadaZaRazmjerniDio) * satiRadaBezPrekovrIznadFonda; // razmjerni dio osnovice za doprinose na osnovu koliko je sati CLAN UPRAVE radio
 
-
+//todo provjeri ove slucajeve!!!!!!!
          if(placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_STRUCNOOSPOS)
          {
             osnovicaDop = R_MioOsn = razmjerniDioMinMioOsn;
@@ -4071,13 +4071,13 @@ public class Ptrans : VvTransRecord
       { 
          olaksicaNaUkupnibruto = pR._mio1FiksOlk;
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
-         T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do0700;
+       //T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do0700;????
       }
       else if(ukupniTheBruto > pR._mio1Granica1 && ukupniTheBruto <= pR._mio1Granica2)
       {
          olaksicaNaUkupnibruto = pR._mio1KoefOlk * (pR._mio1Granica2 - ukupniTheBruto);
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
-         T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do1300;
+       //T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do1300;????
       }
       else
       {
