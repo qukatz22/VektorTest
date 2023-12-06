@@ -1253,7 +1253,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       
       //******* 05.11.2014. da opcinaCD i opcRadCd dojde sa eventualno prethodnog obracuna
 
-      ZXC.DbNavigationRestrictor dbNavigationRestrictor = new ZXC.DbNavigationRestrictor("t_tt", new string[] { Fld_TT, Placa.TT_REDOVANRAD, Placa.TT_PODUZETPLACA, Placa.TT_AUTORHONOR, Placa.TT_AUTORHONUMJ, Placa.TT_AHSAMOSTUMJ, Placa.TT_NADZORODBOR, Placa.TT_TURSITVIJECE, Placa.TT_PLACAUNARAVI });
+      ZXC.DbNavigationRestrictor dbNavigationRestrictor = new ZXC.DbNavigationRestrictor("t_tt", new string[] { Fld_TT, Placa.TT_REDOVANRAD, Placa.TT_OSTALIPRIM, Placa.TT_PODUZETPLACA, Placa.TT_AUTORHONOR, Placa.TT_AUTORHONUMJ, Placa.TT_AHSAMOSTUMJ, Placa.TT_NADZORODBOR, Placa.TT_TURSITVIJECE, Placa.TT_PLACAUNARAVI });
 
       // 06.10.2017: 
       if(person_rec == null) person_rec = new Person();
@@ -4936,6 +4936,7 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
             Placa.TT_TURSITVIJECE,
             Placa.TT_PODUZETPLACA,
             Placa.TT_REDOVANRAD,
+            Placa.TT_OSTALIPRIM,
             Placa.TT_UGOVORODJELU,
             Placa.TT_BIVSIRADNIK,
             Placa.TT_PLACAUNARAVI, 

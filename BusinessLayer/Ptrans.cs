@@ -3849,28 +3849,32 @@ public class Ptrans : VvTransRecord
          placaTT == Placa.TT_SEZZAPPOLJOP
          )
       {
-         osnovicaDop = R_MioOsn = R_TheBruto; 
+       //osnovicaDop = R_MioOsn =             R_TheBruto; 
+         osnovicaDop = R_MioOsn = R_Mio1Osn = R_TheBruto; 
       }
       else if(placaTT == Placa.TT_AUTORHONOR || placaTT == Placa.TT_NR3_PX1DADOP/*12.2018*/)
       {
          R_AHizdatak = (R_TheBruto * pR._stOthOlak) / 100.00M;
          R_AHizdatak = R_AHizdatak.Ron2();
 
-         osnovicaDop = R_MioOsn = R_TheBruto - R_AHizdatak;
+       //osnovicaDop = R_MioOsn =             R_TheBruto - R_AHizdatak;
+         osnovicaDop = R_MioOsn = R_Mio1Osn = R_TheBruto - R_AHizdatak;
       }
       else if(placaTT == Placa.TT_AUTORHONUMJ || placaTT == Placa.TT_AUVECASTOPA/*12.2018*/)
       {
          R_AHizdatak = (R_TheBruto * (pR._stOthOlak + 25.00M)) / 100.00M;
          R_AHizdatak = R_AHizdatak.Ron2();
 
-         osnovicaDop = R_MioOsn = R_TheBruto - R_AHizdatak;
+       //osnovicaDop = R_MioOsn =             R_TheBruto - R_AHizdatak;
+         osnovicaDop = R_MioOsn = R_Mio1Osn = R_TheBruto - R_AHizdatak;
       }
       else if(placaTT == Placa.TT_AHSAMOSTUMJ)
       {
          R_AHizdatak = (R_TheBruto * (pR._stOthOlak + 25.00M)) / 100.00M;
          R_AHizdatak = R_AHizdatak.Ron2();
 
-         osnovicaDop = R_MioOsn = 0.00M;
+       //osnovicaDop = R_MioOsn =             0.00M;
+         osnovicaDop = R_MioOsn = R_Mio1Osn = 0.00M;
       }
       else if(placaTT == Placa.TT_POREZNADOBIT || 
               placaTT == Placa.TT_DDBEZDOPRINO || //12.2018.
@@ -3878,7 +3882,12 @@ public class Ptrans : VvTransRecord
               placaTT == Placa.TT_NR2_P01NEDOP    //12.2018.
               )
       {
-         osnovicaDop = R_MioOsn = 0.00M;
+       //osnovicaDop = R_MioOsn =             0.00M;
+         osnovicaDop = R_MioOsn = R_Mio1Osn = 0.00M;
+      }
+      else if(placaTT == Placa.TT_OSTALIPRIM)
+      { 
+         osnovicaDop = R_MioOsn = R_Mio1Osn = R_TheBruto; 
       }
       else
       {
@@ -3891,9 +3900,9 @@ public class Ptrans : VvTransRecord
 
       #region  novo 26.11.2014.
 
-      // uvijek treba uzimati razmjerni dio minMioOsn u odnosu na to koliko je radnik sati RADIO - stvarni sati rada koji se ubrajju u R_SatiR
-    //if(placaTT == Placa.TT_REDOVANRAD || placaTT == Placa.TT_PODUZETPLACA || placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_STRUCNOOSPOS)  24.01.2017.
-      if(placaTT == Placa.TT_REDOVANRAD || placaTT == Placa.TT_PODUZETPLACA || placaTT == Placa.TT_NEPLACDOPUST /*|| isSO_bef2017*/                    )
+    // uvijek treba uzimati razmjerni dio minMioOsn u odnosu na to koliko je radnik sati RADIO - stvarni sati rada koji se ubrajju u R_SatiR
+    //if(placaTT == Placa.TT_REDOVANRAD || placaTT == Placa.TT_PODUZETPLACA || placaTT == Placa.TT_NEPLACDOPUST  || placaTT == Placa.TT_STRUCNOOSPOS)  24.01.2017.
+      if(placaTT == Placa.TT_REDOVANRAD || placaTT == Placa.TT_PODUZETPLACA || placaTT == Placa.TT_NEPLACDOPUST /*|| isSO_bef2017*/                 )
       {
          decimal minMioOsnZaPuniFond;
          decimal satiRadaZaRazmjerniDio;
@@ -3953,8 +3962,13 @@ public class Ptrans : VvTransRecord
 
       #endregion novo 26.11.2014.
 
-      // 21.12.2013: 
-      if(placaTT == Placa.TT_PLACAUNARAVI) osnovicaDop = R_MioOsn = R_TheBruto;
+      if(placaTT == Placa.TT_PLACAUNARAVI) // ovo jos treba provjeriti!!!
+      {
+         osnovicaDop = R_MioOsn = R_TheBruto;
+
+         R_Mio1Olk = CalcMio1Osnovica(pR, spent);
+         R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+      }
 
       if(T_isMioII == true) // covjek JE u II MIO stupu 
       {
@@ -4046,7 +4060,7 @@ public class Ptrans : VvTransRecord
       #endregion DoprIZ, DoprNA, DoprALL
 
       R_osnovicaDop = osnovicaDop.Ron2();  // 13.05.2015. da se moze prikazati u joppd obrascu
-
+                                           // od 2024 ovo je za MIO2 i za zdr a MIO1 ima svoju osnovicu!!!!!
    }
 
    private decimal CalcMio1Osnovica(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent)

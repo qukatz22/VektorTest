@@ -174,6 +174,7 @@ public class Placa : VvPolyDocumRecord
    public const string TT_NR3_PX1DADOP = "N3"; // NEREZIDENTI porez X 10% bez pausala, doprinosi na osn umanjenu za pausal 30% 
 
    public const string TT_BIVSIRADNIK  = "BR"; // 23.12.2019. Obračun primitaka prema kojima se doprinosi obračunavaju na način koji ima obilježje drugog dohotka, a porez na dohodak prema primitcima od kojih se utvrđuje dohodak od nesamostalnog rada
+   public const string TT_OSTALIPRIM   = "OP"; // za 2024 Ostali primici koji nisu plaća i na njih se ne odnosi smanjenje MIO1 osnovice i ne ulaze u takav obračun - oni koji u evr imaju 0021,0025 i sl + primici iznad neoporezivog iznosa
 
    // 30.03.2021: za potrebe 'GetAlreadySpentPtransInThisMonth' da/ne, a i za eventualne buduce                     
    // ovo je lista placa_TT ova koji se odnose na zaposlene a ne neke 'vanjske' oblike angazmana koje treba platiti 

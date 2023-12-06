@@ -893,7 +893,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
       #region RowAtIndex[6] ONLY REDOVAN RAD + PODUZETNICKA
 
-      var placaTable_RR_ONLY = placaTable.Where(placa => placa.tt == Placa.TT_REDOVANRAD ||
+      var placaTable_RR_ONLY = placaTable.Where(placa => placa.tt == Placa.TT_REDOVANRAD   ||
                                                          placa.tt == Placa.TT_PLACAUNARAVI || 
                                                          placa.tt == Placa.TT_PODUZETPLACA).ToArray();
 
@@ -1101,6 +1101,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.brojRedaka = jpdBstranaTable.Rows.Count;
 
          jpdStrA.porP11 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
+                                                           jpdBrow.b_tt == Placa.TT_OSTALIPRIM   ||
                                                            jpdBrow.b_tt == Placa.TT_PLACAUNARAVI ||
                                                            jpdBrow.b_tt == Placa.TT_BIVSIRADNIK  || //23.12.2019.
                                                            jpdBrow.b_tt == Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_PorPrir);
@@ -1125,6 +1126,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
                                                            ).Sum(jpdBrow => jpdBrow.b_PorPrir);
 
          jpdStrA.mio1P01 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
+                                                            jpdBrow.b_tt == Placa.TT_OSTALIPRIM   ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_Mio1stup);
@@ -1148,6 +1150,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.mio1P06 = jpdBstranaTable./*Where(jpdBrow => jpdBrow.b_tt == Placa.TT_PODUZETPLACA).*/Sum(jpdBrow => jpdBrow.b_Mio1stupNa);
          jpdStrA.mio1P07 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_SAMODOPRINOS).Sum(jpdBrow => jpdBrow.b_Mio1stup); // 08.02.2016. dodano 
          jpdStrA.mio2P01 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
+                                                            jpdBrow.b_tt == Placa.TT_OSTALIPRIM   ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_Mio2stup);
@@ -1171,10 +1174,12 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdStrA.mio2P06 = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_SAMODOPRINOS).Sum(jpdBrow => jpdBrow.b_Mio2stup);// 08.02.2016. dodano 
 
          jpdStrA.zdrP01  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
+                                                            jpdBrow.b_tt == Placa.TT_OSTALIPRIM   ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_ZdrNa);
          jpdStrA.zdrP02  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_REDOVANRAD   ||
+                                                            jpdBrow.b_tt == Placa.TT_OSTALIPRIM   ||
                                                             jpdBrow.b_tt == Placa.TT_NEPLACDOPUST ||
                                                             jpdBrow.b_tt == Placa.TT_STRUCNOOSPOS ||
                                                             jpdBrow.b_tt == Placa.TT_PLACAUNARAVI).Sum(jpdBrow => jpdBrow.b_ZorNa);
@@ -1980,6 +1985,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
                if(IsBtchBookg_NettoAndObust) virmanRow.btchBookgID = NetoBtchBookgID;
             }
+            else if(placa_rec.TT == Placa.TT_OSTALIPRIM)
+            {
+               virmanRow.opisPl = perWkpdb.perImePrez + " Ostali primici Za " + placa_rec.MMYYYY + " Rn: " + perWkpdb.banPnbO;
+            }
             else
             {
                virmanRow.opisPl = perWkpdb.perImePrez + " Drugi doh. za " + placa_rec.MMYYYY + " Rn: " + perWkpdb.banPnbO;
@@ -2654,6 +2663,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       {
          case Placa.TT_REDOVANRAD  : 
          case Placa.TT_PODUZETPLACA: return "Plaća za ";
+         case Placa.TT_OSTALIPRIM  : return "Ostali primici ";
          case Placa.TT_NEOPOREZPRIM: return "Neoporezivi primitci za ";
          default:                    return "Drugi dohodak za ";
       }
