@@ -648,6 +648,10 @@ public class VvPref
    {
       public List<VVColChooserStates> ColChooserStates;
    }
+   public struct PlacaOd2024DucPrefs
+   {
+      public List<VVColChooserStates> ColChooserStates;
+   }
 
    public struct LoginLinuxPrefs
    {
@@ -1132,6 +1136,7 @@ public class VvPref
    public FindOperAnaPrefs         findOperana;
    public PlacaDucPrefs            placaDUC;
    public Placa2014DucPrefs        placa2014DUC;
+   public PlacaOd2024DucPrefs      placaOd2024DUC;
    public PlacaNPDucPrefs          placaNPDUC;
    public ArtiklUcPrefs            artiklUC;
    public FindArtiklPrefs          findArtikl;

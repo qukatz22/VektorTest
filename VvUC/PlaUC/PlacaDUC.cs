@@ -1003,9 +1003,17 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       vvtbT_opcCD = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_opcCD", TheVvDaoTrans, DB_Tci.t_opcCD, "Šifra općine");
       vvtbT_opcCD.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
-      vvtbT_opcCD.JAM_Set_LookUpTable(ZXC.luiListaOpcina, (int)ZXC.Kolona.prva);
-      vvtbT_opcCD.JAM_ShouldCalcTrans = true;
 
+      if(this is PlacaOd2024DUC) //za place od 01.01.2024.
+      {
+         vvtbT_opcCD.JAM_Set_LookUpTable(ZXC.luiListaPorPla, (int)ZXC.Kolona.prva);
+      }
+      else // po starom
+      { 
+         vvtbT_opcCD.JAM_Set_LookUpTable(ZXC.luiListaOpcina, (int)ZXC.Kolona.prva);
+      }
+
+      vvtbT_opcCD.JAM_ShouldCalcTrans = true;
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_opcCD, TheVvDaoTrans, DB_Tci.t_opcCD, "SifOpć", _width);
 
     //vvtbT_opcName.JAM_lui_CdTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_opcCD);
@@ -1029,7 +1037,17 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void T_opcName_CreateColumn(int _width)
    {
       vvtbT_opcName = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_opcName", TheVvDaoTrans, DB_Tci.t_opcName, "Naziv općine");
-      vvtbT_opcName.JAM_Set_LookUpTable(ZXC.luiListaOpcina, (int)ZXC.Kolona.druga, true);
+
+      if(this is PlacaOd2024DUC) //za place od 01.01.2024.
+      {
+         vvtbT_opcName.JAM_Set_LookUpTable(ZXC.luiListaPorPla, (int)ZXC.Kolona.druga, true);
+      }
+      else // po starom
+      {
+         vvtbT_opcName.JAM_Set_LookUpTable(ZXC.luiListaOpcina, (int)ZXC.Kolona.druga, true);
+      }
+
+
       vvtbT_opcName.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_opcName, TheVvDaoTrans, DB_Tci.t_opcName, "Općina", _width);
@@ -1408,8 +1426,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez1, TheVvDaoTrans, DB_Tci.t_stPorez1, "StPor1", _width);
 
-    //vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
-    //vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
+      vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez1);
+      vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez1);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
@@ -1421,8 +1439,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez2, TheVvDaoTrans, DB_Tci.t_stPorez2, "StPor2", _width);
 
-    //vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
-    //vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPrirez);
+    //vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
+    //vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
@@ -4936,6 +4954,253 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
             Placa.TT_TURSITVIJECE,
             Placa.TT_PODUZETPLACA,
             Placa.TT_REDOVANRAD,
+            Placa.TT_UGOVORODJELU,
+            Placa.TT_BIVSIRADNIK,
+            Placa.TT_PLACAUNARAVI, 
+            Placa.TT_SEZZAPPOLJOP, 
+            Placa.TT_POREZNADOBIT, 
+            Placa.TT_STRUCNOOSPOS, 
+            Placa.TT_NEPLACDOPUST, 
+            Placa.TT_SAMODOPRINOS,
+            Placa.TT_DDBEZDOPRINO,
+            Placa.TT_AUVECASTOPA ,
+            Placa.TT_NR1_PX1NEDOP,
+            Placa.TT_NR2_P01NEDOP,
+            Placa.TT_NR3_PX1DADOP
+         });
+   }
+
+   #endregion Constructor
+
+   #region TheGrid_Columns
+
+   protected override void InitializeDUC_Specific_Columns_TheG()
+   {
+      int w;
+
+      TheG.TheSumOfPreferredWidths = 0;
+      TheG.TheSumOfPreferredWidths += TheG.RowHeadersWidth;
+
+      /*07*/         w = ZXC.Q2un + ZXC.Qun2; T_personCD_CreateColumn(w);            TheG.TheSumOfPreferredWidths += w;
+      /*08*/         w = ZXC.Q7un;            T_prezime_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w; /*Fill*/// minWidth=ZXC.Q6un
+      /*09*/         w = ZXC.Q5un;            T_ime_CreateColumn(w);                 TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q7un;            R_prezimeIme_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+                                                                               
+      /* NetoBlue */ w = ZXC.Q4un;            R_nettoBlue_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
+
+      /*07*/
+      w = ZXC.Q2un + ZXC.Qun4;/* 22.04.16.*/ T_zivotno_CreateColumn(w, 0, "RbrJop", "Redni broj redka izvornog JOPPD Obrasca za koji je potrebno napraviti 2-Ispravak ili 3-Dopunu", false); TheG.TheSumOfPreferredWidths += w;
+      /* 37R */      w = ZXC.Q2un;            R_numOfLinesPtrane_CreateColumn(w, 0); TheG.TheSumOfPreferredWidths += w;
+      /* 38R */      w = ZXC.Q2un;            R_numOfLinesPtrano_CreateColumn(w, 0); TheG.TheSumOfPreferredWidths += w;
+  
+      /*  */         w = ZXC.Q2un + ZXC.Qun8; T_koefBruto1_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q2un + ZXC.Qun8; T_brutoDodSt2_CreateColumn(w, 2);      TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q2un + ZXC.Qun8; T_brutoDodSt3_CreateColumn(w, 2);      TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q2un;            T_dnFondSati_CreateColumn(w, 2/*0 do 05.04.2019.*/);       TheG.TheSumOfPreferredWidths += w;
+
+      /*10*/         w = ZXC.Q4un;            T_brutoOsn_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /*11*/         w = ZXC.Q3un;            T_topObrok_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /*12*/         w = ZXC.Q2un + ZXC.Qun2; T_godStaza_CreateColumn(w, 0);         TheG.TheSumOfPreferredWidths += w;
+      /*00*/         w = ZXC.Q3un;            T_brutoDodSt_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /*13*/         w = ZXC.Q4un;            T_dodBruto_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q4un;            T_brDodpoloz_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+
+      /* 01R */      w = ZXC.Q4un;            R_bruto100_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+                                              
+      /* 30 */       w = ZXC.Q3un;            T_IsPoluSat_CreateColumn(w);           TheG.TheSumOfPreferredWidths += w;
+ 
+      /* 01R */      w = ZXC.Q4un;            T_pr3mjBruto_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+
+                                                                                    
+      /* 34R */      w = ZXC.Q3un;            R_satiRada_CreateColumn(w, 1);         TheG.TheSumOfPreferredWidths += w;
+      /* 35R */      w = ZXC.Q3un;            R_satiBolovanja_CreateColumn(w, 1);    TheG.TheSumOfPreferredWidths += w;
+      /* 36R */      w = ZXC.Q3un;            R_satiUkupno_CreateColumn(w, 1);       TheG.TheSumOfPreferredWidths += w;
+      /* 39R */      w = ZXC.Q3un;            R_fondSatiDiff_CreateColumn(w, 1);     TheG.TheSumOfPreferredWidths += w;
+      /* 57R */      w = ZXC.Q3un;            R_satiNeRad_CreateColumn(w, 1);        TheG.TheSumOfPreferredWidths += w;
+
+      /*11*/         w = ZXC.Q3un;            T_thisStazSt_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /*   */        w = ZXC.Q4un;            T_brutoKorekc_CreateColumn(w, 2);      TheG.TheSumOfPreferredWidths += w;
+      /* 02R */      w = ZXC.Q4un;            R_theBruto_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+
+      /*15*/         w = ZXC.QUN + ZXC.Qun2;  T_spc_CreateColumn(w);                 TheG.TheSumOfPreferredWidths += w;
+      /*20*/         w = ZXC.Q2un;            T_koefHRVI_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /*21*/         w = ZXC.QUN + ZXC.Qun2;  T_invalidTip_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+                     
+      /*14*/         w = ZXC.Q2un + ZXC.Qun2; T_isMioII_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
+
+      /* 03R */      w = ZXC.Q4un;            R_mioOsn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 04R */      w = ZXC.Q4un;            R_mio1stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /* 05R */      w = ZXC.Q4un;            R_mio2stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /* 06R */      w = ZXC.Q4un;            R_mioAll_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 07R */      w = ZXC.Q4un;            R_doprIz_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+
+      /* 34 */       w = ZXC.Q2un + ZXC.Qun4; T_rsB_CreateColumn(w);                 TheG.TheSumOfPreferredWidths += w;
+      /* 40R */      w = ZXC.Q4un;            R_mio1stupNa_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /* 41R */      w = ZXC.Q4un;            R_mio2stupNa_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /* 42R */      w = ZXC.Q4un;            R_mioAllNa_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+
+      /* 27R */      w = ZXC.Q4un;            R_zdrNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+      /* 28R */      w = ZXC.Q4un;            R_zorNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+      /* 29R */      w = ZXC.Q4un;            R_zapNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+      /* 30R */      w = ZXC.Q4un;            R_zapII_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+      /* 31R */      w = ZXC.Q4un;            R_zapAll_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 46R */      w = ZXC.Q2un;            R_daniZpi_CreateColumn(w, 0);          TheG.TheSumOfPreferredWidths += w;
+      /* 45R */      w = ZXC.Q4un;            R_zpiUk_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+
+      /* 32R */      w = ZXC.Q4un;            R_doprNa_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 33R */      w = ZXC.Q4un;            R_doprAll_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+
+      /* 10R */      w = ZXC.Q4un;            R_dohodak_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+
+      // 26.08.2021: 
+    //               w = ZXC.Q3un - ZXC.Qun4; T_koef_CreateColumn(w, 2);             TheG.TheSumOfPreferredWidths += w;
+      /*16*/         w = ZXC.Q3un - ZXC.Qun4; T_koef_CreateColumn(w, 4);             TheG.TheSumOfPreferredWidths += w;
+      /* 08R */      w = ZXC.Q4un;            R_odbitak_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+
+      /* 12R */      w = ZXC.Q4un;            R_porOsn1_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /* 13R */      w = ZXC.Q4un;            R_porOsn2_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /* 14R */      w = ZXC.Q4un;            R_porOsn3_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /* 15R */      w = ZXC.Q4un;            R_porOsn4_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /* 11R */      w = ZXC.Q4un;            R_porOsnAll_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
+      
+      /* 16R */      w = ZXC.Q4un;            R_por1uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 17R */      w = ZXC.Q4un;            R_por2uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 18R */      w = ZXC.Q4un;            R_por3uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 19R */      w = ZXC.Q4un;            R_por4uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 20R */      w = ZXC.Q4un;            R_porezAll_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      
+      /*22*/         w = ZXC.Q3un - ZXC.Qun4; T_opcCD_CreateColumn(w);               TheG.TheSumOfPreferredWidths += w;
+      /*23*/         w = ZXC.Q5un;            T_opcName_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
+      /*26*/         w = ZXC.Q3un - ZXC.Qun2; T_stPrirez_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      
+      /*24*/         w = ZXC.Q3un - ZXC.Qun4; T_opcRadCD_CreateColumn(w);            TheG.TheSumOfPreferredWidths += w;
+      /*25*/         w = ZXC.Q5un;            T_opcRadName_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+      /* 21R */      w = ZXC.Q4un;            R_prirez_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 22R */      w = ZXC.Q4un;            R_porPrirez_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
+
+      /* 23R */      w = ZXC.Q4un;            R_netto_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+                                              
+      /*27*/         w = ZXC.Q4un;            T_netoAdd_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /*36*/         w = ZXC.Q3un - ZXC.Qun4; T_neoPrimCD_CreateColumn(w);           TheG.TheSumOfPreferredWidths += w;
+                     w = ZXC.Q5un           ; R_neoPrimName_CreateColumn(w);         TheG.TheSumOfPreferredWidths += w;
+
+      /*28*/         w = ZXC.Q2un - ZXC.Qun4; T_isDirNeto_CreateColumn(w);           TheG.TheSumOfPreferredWidths += w;
+      /*29*/         w = ZXC.Q3un + ZXC.Qun2; T_prijevoz_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /*18*/         w = ZXC.Q4un;            T_dopZdr_CreateColumn     (w, 2, "NP63"     , "NP63 Neoporezive nagrade za radne rezultate i drugi oblici dodatnog nagrađivanja"            ); TheG.TheSumOfPreferredWidths += w;
+      /*19*/         w = ZXC.Q4un;            T_dobMIO_CreateColumn     (w, 2, "NP tobrok", "NP65 Novčane paušalne nakande za podmirivanje troškova prehrane radnika do propisanog iznosa"); TheG.TheSumOfPreferredWidths += w;
+      /*18*/         w = ZXC.Q4un;            T_dopZdr2020_CreateColumn (w, 2, "DodZdr"   , "NP71 Premije dopunskog i dodatnog zdravstvenog osiguranja do propisanog iznosa."             ); TheG.TheSumOfPreferredWidths += w;
+
+      /* 24R */      w = ZXC.Q4un;            R_obustave_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /* 26R */      w = ZXC.Q4un;            R_naRuke_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+ 
+      /*35*/         w = ZXC.Q3un - ZXC.Qun4; T_nacIsplCD_CreateColumn(w);           TheG.TheSumOfPreferredWidths += w;
+                     w = ZXC.Q5un           ; R_nacIsplName_CreateColumn(w);         TheG.TheSumOfPreferredWidths += w;
+
+      /* 25R */      w = ZXC.Q4un;            R_2Pay_CreateColumn(w, 2);             TheG.TheSumOfPreferredWidths += w;
+                                                                                     
+      /*ScrollCol*/  w = ZXC.QUN;             ColumnForScroll_CreateColumn(w);       TheG.TheSumOfPreferredWidths += w;
+   }
+
+   #endregion TheGrid_Columns
+
+   #region TheGrid2_Columns
+
+   protected override void InitializeDUC_Specific_Columns_TheG2()
+   {
+      int w;
+
+      TheG2.TheSumOfPreferredWidths = 0;
+      TheG2.TheSumOfPreferredWidths += TheG2.RowHeadersWidth;
+
+      w = ZXC.Q3un; T_personCD_2_CreateColumn(w); TheG2.TheSumOfPreferredWidths += w;
+      w = ZXC.Q8un; T_prezime_2_CreateColumn(w) ; TheG2.TheSumOfPreferredWidths += w;
+      w = ZXC.Q6un; T_ime_2_CreateColumn(w)     ; TheG2.TheSumOfPreferredWidths += w;
+
+      /* 10 */      w = ZXC.Q2un  + ZXC.Qun4;  T_vrstaRCd_CreateColumn(w);      TheG2.TheSumOfPreferredWidths += w;
+      /* 11 */      w = ZXC.Q10un + ZXC.Q5un;  T_vrstaRName_CreateColumn(w);    TheG2.TheSumOfPreferredWidths += w;
+      /* 12 */      w = ZXC.Q3un  - ZXC.Qun8;  T_cijPerc_CreateColumn(w, 0);    TheG2.TheSumOfPreferredWidths += w;
+      /* 14 */      w = ZXC.Q3un  - ZXC.Qun4;  T_rsOO_CreateColumn(w);          TheG2.TheSumOfPreferredWidths += w;
+      /* 20 */      w = ZXC.Q2un            ;  T_ip1gr_CreateColumn(w);         TheG2.TheSumOfPreferredWidths += w;
+      /* 20 */      w = ZXC.Q2un  + ZXC.Qun4;  T_rbrIsprJop_CreateColumn(w);    TheG2.TheSumOfPreferredWidths += w;
+      /* 15 */      w = ZXC.Q3un  - ZXC.Qun4;  T_rsOD_CreateColumn(w);          TheG2.TheSumOfPreferredWidths += w;
+      /* 16 */      w = ZXC.Q3un  - ZXC.Qun4;  T_rsDO_CreateColumn(w);          TheG2.TheSumOfPreferredWidths += w;
+      /* 13 */      w = ZXC.Q3un  - ZXC.Qun2;  T_sati_CreateColumn(w, 1);       TheG2.TheSumOfPreferredWidths += w;
+      /* 17 */      w = ZXC.Q3un  - ZXC.Qun2;  T_stjecatCD_CreateColumn(w);     TheG2.TheSumOfPreferredWidths += w;
+                    w = ZXC.Q5un            ;  R_stjecatName_CreateColumn(w);   TheG2.TheSumOfPreferredWidths += w;
+      /* 18 */      w = ZXC.Q3un  - ZXC.Qun2;  T_primDohCD_CreateColumn(w);     TheG2.TheSumOfPreferredWidths += w;
+                    w = ZXC.Q5un            ;  R_primDohName_CreateColumn(w);   TheG2.TheSumOfPreferredWidths += w;
+      /* 19 */      w = ZXC.Q3un  - ZXC.Qun2;  T_pocKrajCD_CreateColumn(w);     TheG2.TheSumOfPreferredWidths += w;
+                    w = ZXC.Q5un            ;  R_pocKrajName_CreateColumn(w);   TheG2.TheSumOfPreferredWidths += w;
+
+   }
+
+   #endregion TheGrid2_Columns
+
+   #region TheGrid3_Columns
+
+   protected override void InitializeDUC_Specific_Columns_TheG3()
+   {
+      int w;
+
+      TheG3.TheSumOfPreferredWidths = 0;
+      TheG3.TheSumOfPreferredWidths += TheG3.RowHeadersWidth;
+
+      w = ZXC.Q3un; T_personCD_3_CreateColumn(w); TheG3.TheSumOfPreferredWidths += w;
+      w = ZXC.Q7un; T_prezime_3_CreateColumn(w); TheG3.TheSumOfPreferredWidths += w;
+      w = ZXC.Q5un; T_ime_3_CreateColumn(w); TheG3.TheSumOfPreferredWidths += w;
+
+      /* 10 */       w = ZXC.Q5un; T_dateStart_CreateColumn(w)   ; TheG3.TheSumOfPreferredWidths += w;
+      /* 11 */       w = ZXC.Q3un; T_ukBrRata_CreateColumn(w)    ; TheG3.TheSumOfPreferredWidths += w;
+      /* 12 */       w = ZXC.Q8un; T_opisOb_CreateColumn(w)      ; TheG3.TheSumOfPreferredWidths += w;
+      /* 16 */       w = ZXC.Q2un; T_isZbirObus_CreateColumn(w)  ; TheG3.TheSumOfPreferredWidths += w;
+      /* 17 */       w = ZXC.Q7un; T_partija_CreateColumn(w)     ; TheG3.TheSumOfPreferredWidths += w;
+      /* 13 */       w = ZXC.Q3un; T_kupdob_cd_CreateColumn(w)   ; TheG3.TheSumOfPreferredWidths += w;
+      /* 14 */       w = ZXC.Q3un; T_kupdob_tk_CreateColumn(w)   ; TheG3.TheSumOfPreferredWidths += w;
+      /* 20 */       w = ZXC.Q2un; T_ptranoKind_CreateColumn(w)  ; TheG3.TheSumOfPreferredWidths += w;
+      /* 00 */       w = ZXC.Q3un; T_izNetoaSt_CreateColumn(w, 2); TheG3.TheSumOfPreferredWidths += w;
+      /* 15 */       w = ZXC.Q4un; T_iznosOb_CreateColumn(w, 2)  ; TheG3.TheSumOfPreferredWidths += w;
+      /* 19 */       w = ZXC.Q3un; T_rbrRate_CreateColumn(w)     ; TheG3.TheSumOfPreferredWidths += w;
+
+   }
+
+   #endregion TheGrid3_Columns
+
+   public override List<VvPref.VVColChooserStates> TheColChooserStates
+   {
+      get
+      {
+         return TheVvTabPage.TheVvForm.VvPref.placaOd2024DUC.ColChooserStates;
+      }
+      set
+      {
+         TheVvTabPage.TheVvForm.VvPref.placaOd2024DUC.ColChooserStates = value;
+      }
+   }
+ 
+   public override void PutDefaultDUCfields()
+   {
+      Fld_VrstaJOPPD = "1";
+   }
+}
+
+public partial class PlacaOd2024DUC : PlacaBaseDUC // placa od 2024 nadalje!!!
+{
+
+   #region Constructor
+
+   public PlacaOd2024DUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
+   {
+      dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
+      (Placa.tt_colName, new string[] 
+         { 
+            Placa.TT_AUTORHONOR,
+            Placa.TT_AUTORHONUMJ,
+            Placa.TT_AHSAMOSTUMJ,
+            Placa.TT_IDD_KOLONA_4,
+            Placa.TT_NADZORODBOR,
+            Placa.TT_TURSITVIJECE,
+            Placa.TT_PODUZETPLACA,
+            Placa.TT_REDOVANRAD,
             Placa.TT_OSTALIPRIM,
             Placa.TT_UGOVORODJELU,
             Placa.TT_BIVSIRADNIK,
@@ -5015,8 +5280,6 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
       /* 03R */      w = ZXC.Q2un;            T_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-
-
       /* 03R */      w = ZXC.Q4un;            R_mioOsn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 04R */      w = ZXC.Q4un;            R_mio1stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 05R */      w = ZXC.Q4un;            R_mio2stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
@@ -5030,9 +5293,9 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
 
       /* 27R */      w = ZXC.Q4un;            R_zdrNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
       /* 28R */      w = ZXC.Q4un;            R_zorNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
-      /* 29R */      w = ZXC.Q4un;            R_zapNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
-      /* 30R */      w = ZXC.Q4un;            R_zapII_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
-      /* 31R */      w = ZXC.Q4un;            R_zapAll_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 29R */    //w = ZXC.Q4un;            R_zapNa_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+      /* 30R */    //w = ZXC.Q4un;            R_zapII_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
+      /* 31R */    //w = ZXC.Q4un;            R_zapAll_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 46R */      w = ZXC.Q2un;            R_daniZpi_CreateColumn(w, 0);          TheG.TheSumOfPreferredWidths += w;
       /* 45R */      w = ZXC.Q4un;            R_zpiUk_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
 
@@ -5048,26 +5311,27 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
 
       /* 12R */      w = ZXC.Q4un;            R_porOsn1_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
       /* 13R */      w = ZXC.Q4un;            R_porOsn2_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
-      /* 14R */      w = ZXC.Q4un;            R_porOsn3_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
-      /* 15R */      w = ZXC.Q4un;            R_porOsn4_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /* 14R */    //w = ZXC.Q4un;            R_porOsn3_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
+      /* 15R */    //w = ZXC.Q4un;            R_porOsn4_CreateColumn(w, 2);          TheG.TheSumOfPreferredWidths += w;
       /* 11R */      w = ZXC.Q4un;            R_porOsnAll_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
-      
-      /* 16R */      w = ZXC.Q4un;            R_por1uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-      /* 17R */      w = ZXC.Q4un;            R_por2uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-      /* 18R */      w = ZXC.Q4un;            R_por3uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-      /* 19R */      w = ZXC.Q4un;            R_por4uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-      /* 20R */      w = ZXC.Q4un;            R_porezAll_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       
       /*22*/         w = ZXC.Q3un - ZXC.Qun4; T_opcCD_CreateColumn(w);               TheG.TheSumOfPreferredWidths += w;
       /*23*/         w = ZXC.Q5un;            T_opcName_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
-      /*26*/         w = ZXC.Q3un - ZXC.Qun2; T_stPrirez_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      /*26*/       //w = ZXC.Q3un - ZXC.Qun2; T_stPrirez_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 11R */      w = ZXC.Q3un;            T_stPorez1_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 11R */      w = ZXC.Q3un;            T_stPorez2_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       
       /*24*/         w = ZXC.Q3un - ZXC.Qun4; T_opcRadCD_CreateColumn(w);            TheG.TheSumOfPreferredWidths += w;
       /*25*/         w = ZXC.Q5un;            T_opcRadName_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
-      /* 21R */      w = ZXC.Q4un;            R_prirez_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-      /* 22R */      w = ZXC.Q4un;            R_porPrirez_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
+
+      /* 16R */      w = ZXC.Q4un;            R_por1uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 17R */      w = ZXC.Q4un;            R_por2uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 18R */    //w = ZXC.Q4un;            R_por3uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 19R */    //w = ZXC.Q4un;            R_por4uk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 20R */      w = ZXC.Q4un;            R_porezAll_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
+      
+      /* 21R */    //w = ZXC.Q4un;            R_prirez_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /* 22R */    //w = ZXC.Q4un;            R_porPrirez_CreateColumn(w, 2);        TheG.TheSumOfPreferredWidths += w;
 
       /* 23R */      w = ZXC.Q4un;            R_netto_CreateColumn(w, 2);            TheG.TheSumOfPreferredWidths += w;
                                               

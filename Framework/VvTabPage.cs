@@ -1052,6 +1052,7 @@ be_fast:
                case ZXC.VvSubModulEnum.AMO:
                case ZXC.VvSubModulEnum.PLA:
                case ZXC.VvSubModulEnum.PLA_2014:
+               case ZXC.VvSubModulEnum.PLA_2024:
                case ZXC.VvSubModulEnum.PLA_NP:
                   col1 = ZXC.Q4un;
                   col2 = ZXC.Q4un;

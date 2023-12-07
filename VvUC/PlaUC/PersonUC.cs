@@ -1181,9 +1181,9 @@ public class PersonUC : VvSifrarRecordUC
    protected override void theFIRST_TransGrid_DoubleClick(object sender, EventArgs e)
    {
       DataGridView dgv = sender as DataGridView;
-           if(dgv == aTransesGrid[1]) base.OpenNew_Record_TabPage_OnDoubleClick(ZXC.VvSubModulEnum.PLA_2014, SelectedRecIDIn_SECOND_TransGrid);
-      else if(dgv == aTransesGrid[2]) base.OpenNew_Record_TabPage_OnDoubleClick(ZXC.VvSubModulEnum.PLA_2014, SelectedRecIDIn_THIRD_TransGrid);
-      else                            base.OpenNew_Record_TabPage_OnDoubleClick(ZXC.VvSubModulEnum.PLA_2014, SelectedRecIDIn_FIRST_TransGrid);
+           if(dgv == aTransesGrid[1]) base.OpenNew_Record_TabPage_OnDoubleClick(/*ZXC.VvSubModulEnum.PLA_2014*/ZXC.VvSubModulEnum.PLA_2024, SelectedRecIDIn_SECOND_TransGrid);
+      else if(dgv == aTransesGrid[2]) base.OpenNew_Record_TabPage_OnDoubleClick(/*ZXC.VvSubModulEnum.PLA_2014*/ZXC.VvSubModulEnum.PLA_2024, SelectedRecIDIn_THIRD_TransGrid);
+      else                            base.OpenNew_Record_TabPage_OnDoubleClick(/*ZXC.VvSubModulEnum.PLA_2014*/ZXC.VvSubModulEnum.PLA_2024, SelectedRecIDIn_FIRST_TransGrid);
    }
 
    private void InitializeTheGrid_ReadOnly_Columns_Ptrans()
