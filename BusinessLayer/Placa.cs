@@ -1342,6 +1342,8 @@ public class Placa : VvPolyDocumRecord
    public decimal Srad1_ONPNsatiR { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.R_satiR_ONPN); } }
 
    public decimal S_tDopZdr2020   { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.T_dopZdr2020); } }
+   /* 97 */ public decimal S_rMio1Olk { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.R_Mio1Olk); } }
+   /* 98 */ public decimal S_rMio1Osn { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.R_Mio1Osn); } }
 
 
    // !!! Kada dodajes ovdje neki 'S_zxc', ne zaboravi i u PlacaDao.FillTypedDataRowSumResults()

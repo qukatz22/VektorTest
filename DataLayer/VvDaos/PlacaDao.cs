@@ -512,6 +512,10 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
 
                  placaRow.S_PIVRptrCount = ptransesOfThisPlaca.Count(ptrn => ptrn.R_isONPN == 0);
                  placaRow.S_ONPNptrCount = ptransesOfThisPlaca.Count(ptrn => ptrn.R_isONPN == 1);  
+
+      /* 97 */   placaRow.S_rMio1Olk = ptransesOfThisPlaca.Sum(ptrn => ptrn.R_Mio1Olk);  
+      /* 98 */   placaRow.S_rMio1Osn = ptransesOfThisPlaca.Sum(ptrn => ptrn.R_Mio1Osn);  
+
    }
 
    #endregion FillTypedDataRowResults

@@ -3633,8 +3633,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       /* 46R */      TheG.PutCell(ci.iT_daniZpi         , rowIdx, ptrans_rec.R_DaniZpi);
       /* 23R */      TheG.PutCell(ci.iT_nettoBlue       , rowIdx, ptrans_rec.R_Netto);
       /* 57R */      TheG.PutCell(ci.iT_satiNeR         , rowIdx, ptrans_rec.R_SatiNeR);
-      /* 57R */      TheG.PutCell(ci.iT_mio1Olk         , rowIdx, ptrans_rec.R_Mio1Olk);
-      /* 57R */      TheG.PutCell(ci.iT_mio1Osn         , rowIdx, ptrans_rec.R_Mio1Osn);
+      /* 97R */      TheG.PutCell(ci.iT_mio1Olk         , rowIdx, ptrans_rec.R_Mio1Olk);
+      /* 98R */      TheG.PutCell(ci.iT_mio1Osn         , rowIdx, ptrans_rec.R_Mio1Osn);
 
       TheG.PutCell(ci.iT_nacIsplName, rowIdx, ZXC.luiListaNacIspl   .GetNameForThisCd(ptrans_rec.T_nacIsplCD));
       TheG.PutCell(ci.iT_neoPrimName, rowIdx, ZXC.luiListaNeoporPrim.GetNameForThisCd(ptrans_rec.T_neoPrimCD));
