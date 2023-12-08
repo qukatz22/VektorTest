@@ -2579,11 +2579,11 @@ struct IRA   *iraPtr;
       return ((FakturDUC)ZXC.TheVvForm.TheVvDocumentRecordUC).Get_S_OrgPakKol_fromScreen();
    }
 
-   public static decimal GetZtrCut(decimal s_ukZavisni, decimal ukupnoSvi, decimal mojDio)
+   public static decimal GetZtrCut(decimal fak_S_ukZavisni, decimal fak_S_ukKC, decimal rtr_R_KC)
    {
-      decimal mojKoef = ZXC.DivSafe(mojDio, ukupnoSvi);
+      decimal rtr_Koef = ZXC.DivSafe(rtr_R_KC, fak_S_ukKC);
 
-      return (s_ukZavisni * mojKoef);
+      return (fak_S_ukZavisni * rtr_Koef);
    }
    
    #endregion UTIL Metodz
