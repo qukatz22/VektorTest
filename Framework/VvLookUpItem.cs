@@ -17,6 +17,7 @@ public class VvLookUpItem : IDisposable, IEditableObject
    private DateTime  _dateT;
    private uint      _uinteger;
    private string    _string2 ;
+ //private double    _double  ;
 
    private bool _modified;
    private bool _editing;
@@ -104,6 +105,21 @@ public class VvLookUpItem : IDisposable, IEditableObject
    [System.Xml.Serialization.XmlIgnore]
    public bool R_Bool { get; set; }
 
+   public static bool AreEqual(VvLookUpItem aLui, VvLookUpItem bLui)
+   {
+      if(aLui == null || bLui == null) return false;
+
+      if(aLui.Name               == bLui.Name             &&
+         aLui.Cd                 == bLui.Cd               &&
+         aLui.Number             == bLui.Number           &&
+         aLui.Flag               == bLui.Flag             &&
+         aLui.Integer            == bLui.Integer          &&
+         aLui.DateT              == bLui.DateT            &&
+         aLui.Uinteger           == bLui.Uinteger         &&
+         aLui.String2.NullSafe() == bLui.String2.NullSafe()) return true;
+
+      return false;
+   }
 
    // Object class overrides
    public override bool Equals(object obj)
@@ -255,5 +271,3 @@ public class VvLookUpItem : IDisposable, IEditableObject
    #endregion Obsolete - sepsolete
    
 }
-
-
