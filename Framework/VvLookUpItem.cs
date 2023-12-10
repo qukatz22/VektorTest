@@ -17,21 +17,25 @@ public class VvLookUpItem : IDisposable, IEditableObject
    private DateTime  _dateT;
    private uint      _uinteger;
    private string    _string2 ;
- //private double    _double  ;
+   private double    _number2 ;
 
    private bool _modified;
    private bool _editing;
 
 
-   public VvLookUpItem(): this("", "", 0.00M, false, 0, DateTime.Today, 0, "")
+   public VvLookUpItem(): this("", "", 0.00M, false, 0, DateTime.Today, 0, "", 0D)
    {
    }
 
-   public VvLookUpItem(string cd, string name): this(cd, name, 0.00M, false, 0, DateTime.Now, 0, "")
+   public VvLookUpItem(string cd, string name): this(cd, name, 0.00M, false, 0, DateTime.Now, 0, "", 0D)
    {
    }
 
-   public VvLookUpItem(string cd, string name, decimal number, bool flag, int integer, DateTime dateT, uint uinteger, string string2)
+   public VvLookUpItem(string cd, string name, decimal number, bool flag, int integer, DateTime dateT, uint uinteger, string string2) : this(cd, name, number, flag, integer, dateT, uinteger, string2, 0D)
+   {
+   }
+
+   public VvLookUpItem(string cd, string name, decimal number, bool flag, int integer, DateTime dateT, uint uinteger, string string2, double number2)
    {
       this._name     = name    ;
       this._cd       = cd      ;
@@ -41,9 +45,10 @@ public class VvLookUpItem : IDisposable, IEditableObject
       this._dateT    = dateT   ;
       this._uinteger = uinteger;
       this._string2  = string2 ;
+      this._number2  = number2 ;
 
       _modified = false;
-      _editing = false;
+      _editing  = false;
    }
 
    public void Dispose()
@@ -102,6 +107,12 @@ public class VvLookUpItem : IDisposable, IEditableObject
       set {        this._string2 = value; }
    }
 
+   public double Number2
+   {
+      get { return this._number2; }
+      set {        this._number2 = value; }
+   }
+
    [System.Xml.Serialization.XmlIgnore]
    public bool R_Bool { get; set; }
 
@@ -116,6 +127,7 @@ public class VvLookUpItem : IDisposable, IEditableObject
          aLui.Integer            == bLui.Integer          &&
          aLui.DateT              == bLui.DateT            &&
          aLui.Uinteger           == bLui.Uinteger         &&
+         aLui.Number2            == bLui.Number2          &&
          aLui.String2.NullSafe() == bLui.String2.NullSafe()) return true;
 
       return false;
@@ -160,7 +172,8 @@ public class VvLookUpItem : IDisposable, IEditableObject
    private DateTime _editDateT;
    private uint     _editUinteger;
    private string   _editString2;
- 
+   private double   _editNumber2;
+
    public void BeginEdit()
    {
       if (!_editing)
@@ -173,6 +186,8 @@ public class VvLookUpItem : IDisposable, IEditableObject
          _editDateT    = DateT;
          _editUinteger = Uinteger;
          _editString2  = String2;
+         _editNumber2  = Number2;
+
          _editing      = true;
       }
    }
@@ -189,6 +204,8 @@ public class VvLookUpItem : IDisposable, IEditableObject
          Uinteger = _editUinteger;
          DateT    = _editDateT;
          String2  = _editString2;
+         Number2  = _editNumber2;
+
          _editing = false;
       }
    }
@@ -204,6 +221,7 @@ public class VvLookUpItem : IDisposable, IEditableObject
                       || (Integer  != _editInteger )
                       || (Uinteger != _editUinteger)
                       || (String2  != _editString2 )
+                      || (Number2  != _editNumber2 )
                       || (DateT    != _editDateT   ));
          _editing = false;
       }

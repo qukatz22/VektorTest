@@ -723,6 +723,7 @@ public static class VvLookUp_Ex
         "theDateT   date                                     NOT NULL default '0001-01-01',\n" +
         "theUinteger int(10)    unsigned                     NOT NULL default 0           ,\n" +
         "theString2  varchar(128) collate latin2_croatian_ci NOT NULL default ''          ,\n" +
+        "theNumber2  DOUBLE(12,2)                            NOT NULL default 0.00        ,\n" +
 
         "PRIMARY KEY  (recID)\n"
       );
