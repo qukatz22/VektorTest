@@ -4080,7 +4080,13 @@ public class Ptrans : VvTransRecord
       if(T_fixMio1Olak.NotZero()) 
       {
          theMio1Olaksica = T_fixMio1Olak;
-      } 
+      }
+      else if(ukupniTheBruto <= pR._mio1FiksOlk)
+      {
+         olaksicaNaUkupnibruto = ukupniTheBruto;
+         theMio1Olaksica = olaksicaNaUkupnibruto - potrosenaOlaksica;
+         //T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do0700;????
+      }
       else if(ukupniTheBruto <= pR._mio1Granica1)
       { 
          olaksicaNaUkupnibruto = pR._mio1FiksOlk;
