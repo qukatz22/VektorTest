@@ -300,7 +300,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 48 */ rdrData._t_stPorez1   = reader.GetDecimal (CI.t_stPorez1   );
       /* 49 */ rdrData._t_stPorez2   = reader.GetDecimal (CI.t_stPorez2   );
       /* 50 */ rdrData._t_fixMio1Olak= reader.GetDecimal (CI.t_fixMio1Olak);
-      /* 51 */ rdrData._t_Mio1OlkKind= reader.GetDecimal (CI.t_Mio1OlkKind);
+      /* 51 */ rdrData._t_Mio1OlkKind= reader.GetByte    (CI.t_Mio1OlkKind);
 
       ((Ptrans)vvDataRecord).CurrentData = rdrData;
 

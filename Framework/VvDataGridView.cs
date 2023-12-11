@@ -261,6 +261,14 @@ public class VvDataGridView : DataGridView
          }
       }
 
+      if(vvtb.JAM_lui_NumberTaker2_JAM_Name.NotEmpty())
+      {
+         if(chosenLui != null)
+         {
+            PutCell(vvtb.JAM_lui_NumberTaker2_JAM_Name, rowIdx, chosenLui.Number2);
+         }
+      }
+
       if(vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty())
       {
          if(chosenLui != null)

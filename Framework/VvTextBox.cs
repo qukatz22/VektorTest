@@ -86,6 +86,7 @@ public class VvTextBox : TextBox, IEditableObject
    private string    lui_CdTaker_JAM_Name;
    private string    lui_NameTaker_JAM_Name;
    private string    lui_NumberTaker_JAM_Name;
+   private string    lui_NumberTaker2_JAM_Name;
    private string    lui_FlagTaker_JAM_Name;
    private string    lui_IntegerTaker_JAM_Name;
    private string    lui_UintegerTaker_JAM_Name;
@@ -861,6 +862,17 @@ public class VvTextBox : TextBox, IEditableObject
       }
    }
 
+   public string JAM_lui_NumberTaker2_JAM_Name
+   {
+      get { return lui_NumberTaker2_JAM_Name; }
+      set
+      {
+         JAM_FieldExitMethod = new EventHandler(OnExitSetLookUp_DataTakers);
+
+         lui_NumberTaker2_JAM_Name = value;
+      }
+   }
+
    /// <summary>
    /// this.vvtb je VvLookUp odabir koji ce pak ovome vvtb-u predati Flag kolonu LookUp liste
    /// </summary>
@@ -1560,6 +1572,15 @@ public class VvTextBox : TextBox, IEditableObject
          sendTabCount++;
       }
 
+      if(vvtb.JAM_lui_NumberTaker2_JAM_Name.NotEmpty())
+      {
+         siblingTextBox = GetSiblingVvTextBoxTaker(vvtb, vvtb.JAM_lui_NumberTaker2_JAM_Name);
+         siblingTextBox.PutDecimalField((chosenLui == null ? 0.00M : (decimal)chosenLui.Number2));
+
+         if(siblingTextBox.JAM_ReadOnly == true) readOnlyTakerCount++;
+         sendTabCount++;
+      }
+
       /*Vv*/CheckBox siblingCheckBox;
       if(vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty())
       {
@@ -2138,6 +2159,7 @@ public class VvTextBox : TextBox, IEditableObject
       this.lui_CdTaker_JAM_Name      = vvtbJAM_MemberProvider.JAM_lui_CdTaker_JAM_Name;
       this.lui_NameTaker_JAM_Name    = vvtbJAM_MemberProvider.JAM_lui_NameTaker_JAM_Name;
       this.lui_NumberTaker_JAM_Name  = vvtbJAM_MemberProvider.JAM_lui_NumberTaker_JAM_Name;
+      this.lui_NumberTaker2_JAM_Name = vvtbJAM_MemberProvider.JAM_lui_NumberTaker2_JAM_Name;
       this.lui_FlagTaker_JAM_Name    = vvtbJAM_MemberProvider.JAM_lui_FlagTaker_JAM_Name;
       this.lui_IntegerTaker_JAM_Name = vvtbJAM_MemberProvider.JAM_lui_IntegerTaker_JAM_Name;
       this.lui_UintegerTaker_JAM_Name= vvtbJAM_MemberProvider.JAM_lui_UintegerTaker_JAM_Name;

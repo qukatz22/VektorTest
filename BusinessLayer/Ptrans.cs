@@ -67,7 +67,7 @@ public struct PtransStruct
    /* 48 */  internal decimal   _t_stPorez1   ;
    /* 49 */  internal decimal   _t_stPorez2   ;
    /* 50 */  internal decimal   _t_fixMio1Olak;
-   /* 51 */  internal decimal   _t_Mio1OlkKind;
+   /* 51 */  internal ushort    _t_Mio1OlkKind;
 
              //internal PtransResultStruct _ptrResult;
 }
@@ -196,6 +196,7 @@ public struct PtransResultStruct
 
   /* 97 */ internal decimal _t_Mio1Olk      ;	   
   /* 98 */ internal decimal _t_Mio1Osn      ;	   
+  /* 99 */ internal ushort  _r_Mio1OlkKind  ; // ovaj result moze biti i result i doci iz dataLayer-a 
 
 }
 
@@ -325,7 +326,7 @@ public class Ptrans : VvTransRecord
       /* 48 */  this.currentData._t_stPorez1    = decimal.Zero;
       /* 49 */  this.currentData._t_stPorez2    = decimal.Zero;
       /* 50 */  this.currentData._t_fixMio1Olak = decimal.Zero;
-      /* 51 */  this.currentData._t_Mio1OlkKind = decimal.Zero;
+      /* 51 */  this.currentData._t_Mio1OlkKind = 0;
 
    }
 
@@ -1100,6 +1101,7 @@ public class Ptrans : VvTransRecord
    /* 96 */ public decimal R_Netto_Kn        { get { return this._ptrResult._t_netto_Kn;    }      set {        this._ptrResult._t_netto_Kn = value; } }
    /* 97 */ public decimal R_Mio1Olk        { get { return this._ptrResult._t_Mio1Olk  ;    }      set {        this._ptrResult._t_Mio1Olk  = value; } }
    /* 98 */ public decimal R_Mio1Osn        { get { return this._ptrResult._t_Mio1Osn  ;    }      set {        this._ptrResult._t_Mio1Osn  = value; } }	   
+   /* 99 */ public ushort  R_Mio1OlkKind    { get { return this._ptrResult._r_Mio1OlkKind;  }      set {        this._ptrResult._r_Mio1OlkKind = value; } }	   
 
   // !!! Ubuduce ako treba neka 'R_' varijabla, NE treba je dodavati u _ptrResult structuru ?! 
   // OSIM ako ne trebas taj R_ pokazati na DUC-u u 'PutDgvLineResultsFields1' 
@@ -4080,31 +4082,38 @@ public class Ptrans : VvTransRecord
       if(T_fixMio1Olak.NotZero()) 
       {
          theMio1Olaksica = T_fixMio1Olak;
+
+         R_Mio1OlkKind = (ushort)T_Mio1OlkKind;
       }
-      else if(ukupniTheBruto <= pR._mio1FiksOlk)
+      else if(ukupniTheBruto <= pR._mio1FiksOlk )
       {
          olaksicaNaUkupnibruto = ukupniTheBruto;
          theMio1Olaksica = olaksicaNaUkupnibruto - potrosenaOlaksica;
-         //T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do0700;????
+
+         R_Mio1OlkKind = 1;
       }
       else if(ukupniTheBruto <= pR._mio1Granica1)
       { 
          olaksicaNaUkupnibruto = pR._mio1FiksOlk;
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
-       //T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do0700;????
+
+         R_Mio1OlkKind = 1;
       }
-      else if(ukupniTheBruto > pR._mio1Granica1 && ukupniTheBruto <= pR._mio1Granica2)
+      else if(ukupniTheBruto >  pR._mio1Granica1 && ukupniTheBruto <= pR._mio1Granica2)
       {
          olaksicaNaUkupnibruto = pR._mio1KoefOlk * (pR._mio1Granica2 - ukupniTheBruto);
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
-       //T_Mio1OlkKind = Ptrans.Mio1OlkKindEnum.Do1300;????
+
+         R_Mio1OlkKind = 2;
       }
       else
       {
          theMio1Olaksica = 0.00M;
+
+         R_Mio1OlkKind = 0;
       }
-       
-    //potrosenaOlaksica += theMio1Olaksica;//mozda ovo i ne treba
+
+      //potrosenaOlaksica += theMio1Olaksica;//mozda ovo i ne treba
 
       return theMio1Olaksica;
    }
@@ -4264,7 +4273,6 @@ public class Ptrans : VvTransRecord
    }
 
    #endregion nove place u 2024
-
 
    #endregion CalcTransResults()
 

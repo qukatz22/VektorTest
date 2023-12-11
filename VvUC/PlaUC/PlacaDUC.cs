@@ -1439,8 +1439,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez2, TheVvDaoTrans, DB_Tci.t_stPorez2, "StPor2", _width);
 
-    //vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
-    //vvtbT_opcName.JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
+    vvtbT_opcCD  .JAM_lui_NumberTaker2_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
+    vvtbT_opcName.JAM_lui_NumberTaker2_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }

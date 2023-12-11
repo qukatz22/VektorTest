@@ -4200,16 +4200,35 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdBstranaRow.b_sati      = ptransRow.R_SatiR;
          jpdBstranaRow.b_neoPrimCD = "0";
 
-       //17.01.2014. kod poduyetnika ni nema takvog poreza
-       //if(ptransRow.t_tt == Placa.TT_PODUZETPLACA) jpdBstranaRow.b_posInval = "0"; 
-       //else                                        jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 ? "1" : "0"; // doraditi sko  ce biti potrebe
-       // 04.02.2014. od place 012014 poduzetnici placaju zaposljavanje
+         //17.01.2014. kod poduyetnika ni nema takvog poreza
+         //if(ptransRow.t_tt == Placa.TT_PODUZETPLACA) jpdBstranaRow.b_posInval = "0"; 
+         //else                                        jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 ? "1" : "0"; // doraditi sko  ce biti potrebe
+         // 04.02.2014. od place 012014 poduzetnici placaju zaposljavanje
 
+
+
+
+#if kakojeKodIzgledaoDoKraja2023
          //04.12.2014
-// jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 ? "1" : "0"; // doraditi sko  ce biti potrebe
+      // jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20                                 ? "1" : "0"; // doraditi sko  ce biti potrebe
          // XY je konacni godisnji obracun
          jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 && jpdBstranaRow.b_rsOO != "XY" ? "1" : "0"; // doraditi sko  ce biti potrebe
-         
+#endif
+         bool is_posInval_DO_2023 = false; // TODO: !!!!!!!! 
+         bool is_posInval_OD_2024 = !is_posInval_DO_2023;
+
+         if(is_posInval_DO_2023)
+         {
+            jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 && jpdBstranaRow.b_rsOO != "XY" ? "1" : "0"; // doraditi sko  ce biti potrebe
+         }
+         if(is_posInval_OD_2024)
+         {
+            jpdBstranaRow.b_posInval = ptransRow.R_Mio1OlkKind.ToString();
+         }
+
+
+
+
          // 14.01.2015.
          //jpdBstranaRow.b_radVr     = ptransRow.t_isPoluSat == 0      ? "1" : "2"; // jos treba doraditi
          jpdBstranaRow.b_radVr = ((ptransRow.t_dnFondSati == 0 || ptransRow.t_dnFondSati == 8) && ptransRow.t_isPoluSat == 0) ? "1" : "2"; 

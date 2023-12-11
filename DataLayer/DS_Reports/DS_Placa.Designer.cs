@@ -5556,6 +5556,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnt_Mio1OlkKind;
             
+            private global::System.Data.DataColumn columnR_Mio1OlkKind;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public IzvjTableDataTable() {
@@ -6887,6 +6889,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn R_Mio1OlkKindColumn {
+                get {
+                    return this.columnR_Mio1OlkKind;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -7084,7 +7094,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         decimal t_stPorez1, 
                         decimal t_stPorez2, 
                         decimal t_fixMio1Olak, 
-                        decimal t_Mio1OlkKind) {
+                        byte t_Mio1OlkKind, 
+                        byte R_Mio1OlkKind) {
                 IzvjTableRow rowIzvjTableRow = ((IzvjTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         t_parentID,
@@ -7248,7 +7259,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         t_stPorez1,
                         t_stPorez2,
                         t_fixMio1Olak,
-                        t_Mio1OlkKind};
+                        t_Mio1OlkKind,
+                        R_Mio1OlkKind};
                 rowIzvjTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowIzvjTableRow);
                 return rowIzvjTableRow;
@@ -7433,6 +7445,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_stPorez2 = base.Columns["t_stPorez2"];
                 this.columnt_fixMio1Olak = base.Columns["t_fixMio1Olak"];
                 this.columnt_Mio1OlkKind = base.Columns["t_Mio1OlkKind"];
+                this.columnR_Mio1OlkKind = base.Columns["R_Mio1OlkKind"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7760,8 +7773,10 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnt_stPorez2);
                 this.columnt_fixMio1Olak = new global::System.Data.DataColumn("t_fixMio1Olak", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnt_fixMio1Olak);
-                this.columnt_Mio1OlkKind = new global::System.Data.DataColumn("t_Mio1OlkKind", typeof(decimal), null, global::System.Data.MappingType.Element);
+                this.columnt_Mio1OlkKind = new global::System.Data.DataColumn("t_Mio1OlkKind", typeof(byte), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnt_Mio1OlkKind);
+                this.columnR_Mio1OlkKind = new global::System.Data.DataColumn("R_Mio1OlkKind", typeof(byte), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnR_Mio1OlkKind);
                 this.columnt_parentID.AllowDBNull = false;
                 this.columnt_dokNum.AllowDBNull = false;
                 this.columnt_serial.AllowDBNull = false;
@@ -7985,6 +8000,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_stPorez2.AllowDBNull = false;
                 this.columnt_fixMio1Olak.AllowDBNull = false;
                 this.columnt_Mio1OlkKind.AllowDBNull = false;
+                this.columnR_Mio1OlkKind.DefaultValue = ((byte)(0));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -22304,12 +22320,28 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public decimal t_Mio1OlkKind {
+            public byte t_Mio1OlkKind {
                 get {
-                    return ((decimal)(this[this.tableIzvjTable.t_Mio1OlkKindColumn]));
+                    return ((byte)(this[this.tableIzvjTable.t_Mio1OlkKindColumn]));
                 }
                 set {
                     this[this.tableIzvjTable.t_Mio1OlkKindColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public byte R_Mio1OlkKind {
+                get {
+                    try {
+                        return ((byte)(this[this.tableIzvjTable.R_Mio1OlkKindColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'R_Mio1OlkKind\' in table \'IzvjTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableIzvjTable.R_Mio1OlkKindColumn] = value;
                 }
             }
             
@@ -23643,6 +23675,18 @@ namespace Vektor.DataLayer.DS_Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetR_Mio1OsnNull() {
                 this[this.tableIzvjTable.R_Mio1OsnColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsR_Mio1OlkKindNull() {
+                return this.IsNull(this.tableIzvjTable.R_Mio1OlkKindColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetR_Mio1OlkKindNull() {
+                this[this.tableIzvjTable.R_Mio1OlkKindColumn] = global::System.Convert.DBNull;
             }
         }
         
