@@ -4264,10 +4264,28 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_Mio1stupNa = ptransRow.R_Mio1stupNa;
       jpdBstranaRow.b_Mio2stupNa = ptransRow.R_Mio2stupNa;
       jpdBstranaRow.b_ZpiUk      = 0.00M                 ;  // poseban redak kad postoji zpi a inace je 0 
+
+
+
+
     
     //jpdBstranaRow.b_ZapII      = ptransRow.R_ZapII     ; od 2024 ovdje idu olaksice
-      jpdBstranaRow.b_ZapII      = ptransRow.R_ZapII     ;
-      
+         bool is_posInval2_DO_2023 = false; // TODO: !!!!!!!! 
+         bool is_posInval2_OD_2024 = !is_posInval2_DO_2023;
+
+         if(is_posInval2_DO_2023)
+         {
+            jpdBstranaRow.b_ZapII = ptransRow.R_ZapII;
+         }
+         if(is_posInval2_OD_2024)
+         {
+            jpdBstranaRow.b_ZapII = ptransRow.R_Mio1Olk;
+         }
+
+
+
+
+     
       jpdBstranaRow.b_AHizdatak  = ptransRow.R_AHizdatak ;
       jpdBstranaRow.b_MioAll     = ptransRow.R_MioAll    ;
       jpdBstranaRow.b_Dohodak    = ptransRow.R_Dohodak   ;

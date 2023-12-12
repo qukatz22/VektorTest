@@ -81,7 +81,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
                      //R
                      vvtbT_stjecatName, vvtbT_primDohName, vvtbT_pocKrajName,
                      vvtbT_neoPrimName, vvtbT_nacIsplName,
-                     vvtbT_mio1Olk, vvtbT_mio1Osn;//novo 2024
+                     vvtbT_mio1Olk, vvtbT_mio1Osn, vvtbR_Mio1OlkKind;//novo 2024
 
    private VvTextBoxColumn           colVvText;
    private VvDateTimePickerColumn    colDate;
@@ -1421,7 +1421,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void T_stPorez1_CreateColumn(int _width, int numOfDecimalPlaces)
    {
       vvtbT_stPorez1 = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_stPorez1", TheVvDaoTrans, DB_Tci.t_stPorez1, "Stopa poreza 1");
-    //vvtbT_stPorez1.JAM_ReadOnly = true;
+      vvtbT_stPorez1.JAM_ReadOnly = true;
       vvtbT_stPorez1.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez1, TheVvDaoTrans, DB_Tci.t_stPorez1, "StPor1", _width);
@@ -1434,7 +1434,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void T_stPorez2_CreateColumn(int _width, int numOfDecimalPlaces)
    {
       vvtbT_stPorez2 = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_stPorez2", TheVvDaoTrans, DB_Tci.t_stPorez2, "Stopa poreza 2");
-    //vvtbT_stPorez2.JAM_ReadOnly = true;
+      vvtbT_stPorez2.JAM_ReadOnly = true;
       vvtbT_stPorez2.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez2, TheVvDaoTrans, DB_Tci.t_stPorez2, "StPor2", _width);
@@ -1464,7 +1464,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
-
 
    #endregion T_Columns
 
@@ -1762,8 +1761,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
-
-
    /* 24R */
    protected void R_obustave_CreateColumn(int _width, int numOfDecimalPlaces)
    {
@@ -2061,19 +2058,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
    }
    
- ////2024
- //protected void R_mio1Osn_CreateColumn(int _width, int numOfDecimalPlaces)
- //{
- //   vvtbT_mio1Osn = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Osn", null, -12, "Osnovica za doprinos za MIO I stup");
- //   vvtbT_mio1Osn.JAM_ReadOnly = true;
- //   colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Osn, null, "R_mio1Osn", "MIO Osn", _width);
- //
- //   vvtbT_mioOsn.JAM_ShouldSumGrid = true;
- //   colVvText.MinimumWidth = _width;
- //
- //   PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, false));
- //}
-
    protected void R_mio1Olk_CreateColumn(int _width, int numOfDecimalPlaces)
    {
       vvtbT_mio1Olk = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Olk", null, -12, "Olaksica za MIO I");
@@ -2096,6 +2080,20 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, true));
    }
+
+   protected void R_Mio1OlkKind_CreateColumn(int _width)
+   {
+      vvtbR_Mio1OlkKind = TheG.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb4ColR_Mio1OlkKind", null, -12, "Oznaka načina umanjenja mjesečne osnovice za obračun doprinosa MIO 1.stup");
+      vvtbR_Mio1OlkKind.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_Mio1OlkKind, null, "R_Mio1OlkKind", "OznUm", _width);
+      colVvText.MinimumWidth = _width;
+
+      vvtbR_Mio1OlkKind.JAM_MarkAsNumericTextBox(0, false, decimal.MaxValue, decimal.MinValue, true);
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, true));
+   }
+
 
    #endregion R_Columns
 
@@ -2653,6 +2651,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       /* 57R  */     internal int iT_satiNeR;
       /*      */     internal int iT_mio1Olk;
       /*      */     internal int iT_mio1Osn;
+                     internal int iR_mio1OlkKind;
 
    }
 
@@ -2763,6 +2762,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
                      ci.iT_mio1Olk         = TheG.IdxForColumn("R_mio1Olk");
                      ci.iT_mio1Osn         = TheG.IdxForColumn("R_mio1Osn");
+                     ci.iR_mio1OlkKind     = TheG.IdxForColumn("R_mio1OlkKind");
+
    }
 
    //=== PtranE, Trans2, VirtualTranses2, TheG2, ... ============================================= 
@@ -3635,6 +3636,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       /* 57R */      TheG.PutCell(ci.iT_satiNeR         , rowIdx, ptrans_rec.R_SatiNeR);
       /* 97R */      TheG.PutCell(ci.iT_mio1Olk         , rowIdx, ptrans_rec.R_Mio1Olk);
       /* 98R */      TheG.PutCell(ci.iT_mio1Osn         , rowIdx, ptrans_rec.R_Mio1Osn);
+      /* 99R */      TheG.PutCell(ci.iR_mio1OlkKind     , rowIdx, ptrans_rec.R_Mio1OlkKind);
 
       TheG.PutCell(ci.iT_nacIsplName, rowIdx, ZXC.luiListaNacIspl   .GetNameForThisCd(ptrans_rec.T_nacIsplCD));
       TheG.PutCell(ci.iT_neoPrimName, rowIdx, ZXC.luiListaNeoporPrim.GetNameForThisCd(ptrans_rec.T_neoPrimCD));
@@ -5278,6 +5280,8 @@ public partial class PlacaOd2024DUC : PlacaBaseDUC // placa od 2024 nadalje!!!
 
       /* 03R */      w = ZXC.Q4un;            T_fixMio1Olak_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q2un;            T_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+      /* 03R */      w = ZXC.Q2un;            R_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+
       /* 03R */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mioOsn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;

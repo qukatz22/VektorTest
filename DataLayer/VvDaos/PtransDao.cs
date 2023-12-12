@@ -555,8 +555,9 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 95 */ ptransRow.R_Netto_EUR  = ptrans_rec.R_Netto_EUR ;
       /* 96 */ ptransRow.R_Netto_Kn   = ptrans_rec.R_Netto_Kn  ;
 
-      /* 97 */ ptransRow.R_Mio1Olk    = ptrans_rec.R_Mio1Olk  ;
-      /* 98 */ ptransRow.R_Mio1Osn    = ptrans_rec.R_Mio1Osn  ;
+      /* 97 */ ptransRow.R_Mio1Olk     = ptrans_rec.R_Mio1Olk  ;
+      /* 98 */ ptransRow.R_Mio1Osn     = ptrans_rec.R_Mio1Osn  ;
+      /* 99 */ ptransRow.R_Mio1OlkKind = (byte)ptrans_rec.R_Mio1OlkKind;
 
 
       Ptrane ptrane_rec;
