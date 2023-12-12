@@ -3131,8 +3131,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       if(placa_rec.TT == Placa.TT_UGOVORODJELU &&
                     T_spc == Ptrans.SpecEnum.PENZ) return 15; //4 od 01.07.2015. isplta drugog dohotka koji ne podlijeze oporezivanju;
 
-      //if(T_isMioII == false) return 3; TODOTAMQ 23.05.2012. ovo krivo zvuci ali je tak jer dolazi obrnuto pa bi trebalo ispraviti u dolasku
-      if(T_isMioII == true) return 3;
+    //if(T_isMioII == false) return 3; TODOTAMQ 23.05.2012. ovo krivo zvuci ali je tak jer dolazi obrnuto pa bi trebalo ispraviti u dolasku
+      if(T_isMioII == true ) return 3;
       
       // 14.03.2014.
       if(T_spc == Ptrans.SpecEnum.NOVOZAPOSL   ) return 4;
@@ -4214,14 +4214,17 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          // XY je konacni godisnji obracun
          jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 && jpdBstranaRow.b_rsOO != "XY" ? "1" : "0"; // doraditi sko  ce biti potrebe
 #endif
-         bool is_posInval_DO_2023 = false; // TODO: !!!!!!!! 
-         bool is_posInval_OD_2024 = !is_posInval_DO_2023;
+         DateTime zaMMYY_asDateTime = Placa.GetDateTimeFromMMYYYY(ptransRow.t_mmyyyy, false);
 
-         if(is_posInval_DO_2023)
+
+         bool is_posInval_DO_1123 = zaMMYY_asDateTime < ZXC.Date01122023;
+         bool is_posInval_OD_1223 = !is_posInval_DO_1123;
+
+         if(is_posInval_DO_1123)
          {
             jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 && jpdBstranaRow.b_rsOO != "XY" ? "1" : "0"; // doraditi sko  ce biti potrebe
          }
-         if(is_posInval_OD_2024)
+         if(is_posInval_OD_1223)
          {
             jpdBstranaRow.b_posInval = ptransRow.R_Mio1OlkKind.ToString();
          }
