@@ -680,6 +680,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       /* 54 */   placaSumRow_OK_ONLY.X_rBrtDodNaStaz=placaTable_OK_ONLY.Sum(placa => placa.S_rBrtDodNaStaz);
       /* 55 */   placaSumRow_OK_ONLY.X_rTheBruto_WoNZ=placaTable_OK_ONLY.Sum(placa => placa.S_rTheBruto_WoNZ);
       /* 56 */   placaSumRow_OK_ONLY.X_tBrDodPoloz  = placaTable_OK_ONLY.Sum(placa => placa.S_tBrDodPoloz );  
+              
+                 placaSumRow_OK_ONLY.X_rMio1Olk     = placaTable_OK_ONLY.Sum(placa => placa.S_rMio1Olk );  
+                 placaSumRow_OK_ONLY.X_rMio1Osn     = placaTable_OK_ONLY.Sum(placa => placa.S_rMio1Osn );  
 
                  placaSumRow_OK_ONLY.X_rIDizdaci   = placaSumRow_OK_ONLY.X_rDoprIz + placaSumRow_OK_ONLY.X_rPremije;
 
@@ -1542,6 +1545,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             /* 48 */   ptransSumRow.P_brutoOsn   = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_brutoOsn );
             /* 49 */   ptransSumRow.P_topObrok   = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_topObrok );
             /* 50 */   ptransSumRow.P_dodBruto   = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_dodBruto );
+            
+            /*    */   ptransSumRow.P_Mio1Olk    = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.R_Mio1Olk);
+            /*    */   ptransSumRow.P_Mio1Osn    = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.R_Mio1Osn );
           
             //          22.04.2016. ziovtno smo uzeli za rbrJop i ne vrijedi od T_dokDate < new DateTime(2010, 07, 01)   
             /* 51 */   ptransSumRow.P_zivotno    = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_zivotno  );
@@ -4068,6 +4074,11 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_rsOO       = t_rsOO;
       jpdBstranaRow.b_satiNeRad  = ptransRow.R_SatiNeR;
 
+      // za novosti u placi od za 122023
+      DateTime zaMMYY_asDateTime = Placa.GetDateTimeFromMMYYYY(ptransRow.t_mmyyyy, false);
+      bool is_posInval_DO_1123 = zaMMYY_asDateTime < ZXC.Date01122023;
+      bool is_posInval_OD_1223 = !is_posInval_DO_1123;
+
       #region if(isDrugiDohodak)
 
       if(isDrugiDohodak)
@@ -4214,11 +4225,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          // XY je konacni godisnji obracun
          jpdBstranaRow.b_posInval = ZXC.CURR_prjkt_rec.IsOver20 && jpdBstranaRow.b_rsOO != "XY" ? "1" : "0"; // doraditi sko  ce biti potrebe
 #endif
-         DateTime zaMMYY_asDateTime = Placa.GetDateTimeFromMMYYYY(ptransRow.t_mmyyyy, false);
-
-
-         bool is_posInval_DO_1123 = zaMMYY_asDateTime < ZXC.Date01122023;
-         bool is_posInval_OD_1223 = !is_posInval_DO_1123;
+         //DateTime zaMMYY_asDateTime = Placa.GetDateTimeFromMMYYYY(ptransRow.t_mmyyyy, false);
+         //bool is_posInval_DO_1123 = zaMMYY_asDateTime < ZXC.Date01122023;
+         //bool is_posInval_OD_1223 = !is_posInval_DO_1123;
 
          if(is_posInval_DO_1123)
          {
@@ -4228,8 +4237,6 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          {
             jpdBstranaRow.b_posInval = ptransRow.R_Mio1OlkKind.ToString();
          }
-
-
 
 
          // 14.01.2015.
@@ -4268,26 +4275,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_Mio2stupNa = ptransRow.R_Mio2stupNa;
       jpdBstranaRow.b_ZpiUk      = 0.00M                 ;  // poseban redak kad postoji zpi a inace je 0 
 
-
-
-
-    
-    //jpdBstranaRow.b_ZapII      = ptransRow.R_ZapII     ; od 2024 ovdje idu olaksice
-         bool is_posInval2_DO_2023 = false; // TODO: !!!!!!!! 
-         bool is_posInval2_OD_2024 = !is_posInval2_DO_2023;
-
-         if(is_posInval2_DO_2023)
-         {
-            jpdBstranaRow.b_ZapII = ptransRow.R_ZapII;
-         }
-         if(is_posInval2_OD_2024)
-         {
-            jpdBstranaRow.b_ZapII = ptransRow.R_Mio1Olk;
-         }
-
-
-
-
+   
+    //                         jpdBstranaRow.b_ZapII      = ptransRow.R_ZapII     ; od 2024 ovdje idu olaksice
+      if(is_posInval_DO_1123) {jpdBstranaRow.b_ZapII = ptransRow.R_ZapII;  }
+      if(is_posInval_OD_1223) {jpdBstranaRow.b_ZapII = ptransRow.R_Mio1Olk;}
      
       jpdBstranaRow.b_AHizdatak  = ptransRow.R_AHizdatak ;
       jpdBstranaRow.b_MioAll     = ptransRow.R_MioAll    ;

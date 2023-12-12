@@ -1530,16 +1530,17 @@ public class Ptrans : VvTransRecord
       if(isEraBef_2017) // if(T_dokDate < ZXC.Date01012017)
       {
          Calc_OtherDohodakOrPenzOrNovozap_Overriders_Bef2017(ref pRules, placa_rec.TT);
-         Calc_Doprinosi_Bef2017(pRules, spent, placa_rec.TT);
+         Calc_Doprinosi_Bef2017                             (pRules, spent, placa_rec.TT);
       }
-      else if(isEraBetween_2017_And_1123) //if(T_dokDate >= ZXC.Date01012017 && T_dokDate < ZXC.Date01012024) //!!!!!!!!!!krajnji datum
+      else if(isEraBetween_2017_And_1123) //if(T_dokDate >= ZXC.Date01012017 && T_dokDate < ZXC.Date01012024)
       {
-         Calc_OtherDohodakOrPenzOrNovozap_Overriders(ref pRules, placa_rec.TT);
-         Calc_Doprinosi(pRules, spent, placa_rec.TT);
+         Calc_OtherDohodakOrPenzOrNovozap_Overriders_Between_2017_And_1123(ref pRules, placa_rec.TT);
+         Calc_Doprinosi_Between_2017_And_1123                             (pRules, spent, placa_rec.TT);
       }
       else if(isEraFrom_1223)
       {
-         Calc_Doprinosi_2024(pRules, spent, placa_rec.TT);
+         Calc_OtherDohodakOrPenzOrNovozap_Overriders_From_1223(ref pRules, placa_rec.TT);
+         Calc_Doprinosi_From_1223(pRules, spent, placa_rec.TT);
       }
       else throw new Exception("Nedefinirana Era za Calc_Doprinosi");
 
@@ -2619,7 +2620,7 @@ public class Ptrans : VvTransRecord
 
    }
 
-   private void Calc_OtherDohodakOrPenzOrNovozap_Overriders(ref PrulesStruct pR, string placaTT)
+   private void Calc_OtherDohodakOrPenzOrNovozap_Overriders_Between_2017_And_1123(ref PrulesStruct pR, string placaTT)
    {
       #region Ako ovdje nemas sta raditi: return;
 
@@ -3100,7 +3101,7 @@ public class Ptrans : VvTransRecord
 
    }
 
-   private void Calc_Doprinosi(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
+   private void Calc_Doprinosi_Between_2017_And_1123(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
    {
 
       #region MIOiz & MIOna
@@ -3841,7 +3842,7 @@ public class Ptrans : VvTransRecord
    //}
 
    #region nove place u 2024
-   private void Calc_Doprinosi_2024(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
+   private void Calc_Doprinosi_From_1223(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent, string placaTT)
    {
 
       #region MIOiz & MIOna
@@ -4071,6 +4072,258 @@ public class Ptrans : VvTransRecord
                                            // od 2024 ovo je za MIO2 i za zdr a MIO1 ima svoju osnovicu!!!!!
    }
 
+   private void Calc_OtherDohodakOrPenzOrNovozap_Overriders_From_1223(ref PrulesStruct pR, string placaTT)
+   {
+      #region Ako ovdje nemas sta raditi: return;
+
+      // Ovdje popisati sve moguce 'specijalnost', te ako nije nijedna od njih - return! 
+
+      if(placaTT != Placa.TT_UGOVORODJELU  &&
+         placaTT != Placa.TT_BIVSIRADNIK   &&
+         placaTT != Placa.TT_NADZORODBOR   &&
+         placaTT != Placa.TT_AUTORHONOR    &&
+         placaTT != Placa.TT_AUTORHONUMJ   &&
+         placaTT != Placa.TT_AHSAMOSTUMJ   &&
+         placaTT != Placa.TT_PODUZETPLACA  &&
+         placaTT != Placa.TT_IDD_KOLONA_4  &&
+         placaTT != Placa.TT_IDD_KOLONA_4  &&
+         placaTT != Placa.TT_SEZZAPPOLJOP  &&
+         placaTT != Placa.TT_POREZNADOBIT  &&  // 07.03.2014.
+         placaTT != Placa.TT_STRUCNOOSPOS  &&  // 25.11.2014.
+         placaTT != Placa.TT_NEPLACDOPUST  &&  // 25.11.2014.
+         placaTT != Placa.TT_TURSITVIJECE  &&  // 12.03.2015.
+         placaTT != Placa.TT_SAMODOPRINOS  &&  // 09.02.2016.
+         placaTT != Placa.TT_DDBEZDOPRINO  &&  // 12.2018.
+         placaTT != Placa.TT_AUVECASTOPA   &&  // 12.2018.
+         placaTT != Placa.TT_NR1_PX1NEDOP  &&  // 12.2018.
+         placaTT != Placa.TT_NR2_P01NEDOP  &&  // 12.2018.
+         placaTT != Placa.TT_NR3_PX1DADOP  &&  // 12.2018.
+
+         this.T_spc != SpecEnum.NOVOZAPOSL    &&
+         this.T_spc != SpecEnum.NOVO_MINMIONE && //18.12.2019
+         this.T_spc != SpecEnum.IZASLANRADNIK && //14.03.2023
+         this.T_spc != SpecEnum.PENZ)
+      {
+         return;
+      }
+
+      #endregion Ako ovdje nemas sta raditi: return;
+
+      #region Za Copy Paste-anje
+
+      // fuse, svi rulzi:
+
+      ///* 17 */ pr.Rule_StPor1       = 0.00M;
+      ///* 18 */ pr.Rule_StPor2       = 0.00M;
+      ///* 19 */ pr.Rule_StPor3       = 0.00M;
+      ///* 20 */ pr.Rule_StPor4       = 0.00M;
+      ///* 21 */ pr.Rule_OsnOdb       = 0.00M;
+      ///* 22 */ pr.Rule_StMio1stup   = 0.00M;
+      ///* 23 */ pr.Rule_StMio2stup   = 0.00M;
+      ///* 24 */ pr.Rule_StZdrNa      = 0.00M;
+      ///* 25 */ pr.Rule_StZorNa      = 0.00M;
+      ///* 26 */ pr.Rule_StZapNa      = 0.00M;
+      ///* 27 */ pr.Rule_StZapII      = 0.00M;
+      ///* 28 */ pr.Rule_MinMioOsn    = 0.00M;
+      ///* 29 */ pr.Rule_MaxMioOsn    = 0.00M;
+      ///* 30 */ pr.Rule_MaxPorOsn1   = 0.00M;
+      ///* 31 */ pr.Rule_MaxPorOsn2   = 0.00M;
+      ///* 32 */ pr.Rule_MaxPorOsn3   = 0.00M;
+      ///* 33 */ pr.Rule_StZpi        = 0.00M;
+      ///* 34 */ pr.Rule_StOthOlak    = 0.00M;
+      ///* 35 */ pr.Rule_StDodStaz    = 0.00M;
+      ///* 36 */ pr.Rule_GranBrRad    = 0.00M;
+      ///* 37 */ pr.Rule_StMioNaB1    = 0.00M;
+      ///* 38 */ pr.Rule_StMioNa2B1   = 0.00M;
+      ///* 39 */ pr.Rule_StMioNaB2    = 0.00M;
+      ///* 40 */ pr.Rule_StMioNa2B2   = 0.00M;
+      ///* 41 */ pr.Rule_StMioNaB3    = 0.00M;
+      ///* 42 */ pr.Rule_StMioNa2B3   = 0.00M;
+      ///* 43 */ pr.Rule_StMioNaB4    = 0.00M;
+      ///* 44 */ pr.Rule_StMioNa2B4   = 0.00M;
+      ///* 45 */ pr.Rule_ProsPlaca    = 0.00M;
+      ///* 46 */ pr.Rule_StMioNa2B5   = 0.00M;
+
+      #endregion Za Copy Paste-anje
+
+      #region OtherDohodak & PENZ Overriders
+
+      if(placaTT == Placa.TT_UGOVORODJELU ||
+       //placaTT == Placa.TT_BIVSIRADNIK  ||
+         placaTT == Placa.TT_NADZORODBOR  ||
+         placaTT == Placa.TT_TURSITVIJECE ||
+         placaTT == Placa.TT_IDD_KOLONA_4 ||
+         placaTT == Placa.TT_AUTORHONUMJ  ||
+         placaTT == Placa.TT_AHSAMOSTUMJ  ||
+         placaTT == Placa.TT_SEZZAPPOLJOP ||
+         placaTT == Placa.TT_POREZNADOBIT ||
+         placaTT == Placa.TT_AUTORHONOR   ||
+         placaTT == Placa.TT_DDBEZDOPRINO || // 12.2018.
+         placaTT == Placa.TT_AUVECASTOPA  || // 12.2018.
+         placaTT == Placa.TT_NR1_PX1NEDOP || // 12.2018. porez X bez pausala, bez doprinosa                          
+         placaTT == Placa.TT_NR2_P01NEDOP || // 12.2018. porez 1 sa pausalom, bez doprinosa                          
+         placaTT == Placa.TT_NR3_PX1DADOP    // 12.2018. porez X bez pausala, doprinosi na osn umanjenu za pausal 30%
+         )
+      {
+        
+         if(placaTT == Placa.TT_POREZNADOBIT) // za sada _stpor1 fiksna, NE iz rulsa 
+         {
+          //pR._stpor1 = T_dokDate < ZXC.Date01012021                                  ? 12.00M : 10.00M;
+            pR._stpor1 = T_dokDate < ZXC.Date01012021 || T_dokDate >= ZXC.Date01012024 ? 12.00M : 10.00M; // za 2024 opet vratili na 12
+         }
+         if(placaTT == Placa.TT_AUVECASTOPA) //12.2018. racuna porez 1 kao stopu 2 
+         {
+            pR._stpor1 = pR._stpor2 = this.T_stPorez1;
+         }
+         if(placaTT == Placa.TT_NR1_PX1NEDOP || placaTT == Placa.TT_NR3_PX1DADOP) // racuna porez 1 kao stopu 2 
+         {
+            pR._stpor1 = 10.00M; //12.2018. za sada je 10 iako jos moze biti i 5 
+         }
+
+         /* 19 */ pR._stpor2       = 0.00M;
+         /* 19 */ pR._stpor3       = 0.00M;
+         /* 20 */ pR._stpor4       = 0.00M;
+
+         /* 21 */ pR._osnOdb       = 0.00M;
+
+         /* 25 */ pR._stZorNa      = 0.00M;
+         /* 26 */ pR._stZapNa      = 0.00M;
+         /* 27 */ pR._stZapII      = 0.00M;
+
+         /* 37 */ pR._stMioNaB1    = 0.00M;
+         /* 38 */ pR._stMioNa2B1   = 0.00M;
+         /* 39 */ pR._stMioNaB2    = 0.00M;
+         /* 40 */ pR._stMioNa2B2   = 0.00M;
+         /* 41 */ pR._stMioNaB3    = 0.00M;
+         /* 42 */ pR._stMioNa2B3   = 0.00M;
+         /* 43 */ pR._stMioNaB4    = 0.00M;
+         /* 44 */ pR._stMioNa2B4   = 0.00M;
+         /* 45 */ pR._prosPlaca    = 0.00M;
+         /* 46 */ pR._stMioNa2B5   = 0.00M;
+
+
+       // ne placaju se doprinosi                     
+        if(placaTT == Placa.TT_POREZNADOBIT || 
+           placaTT == Placa.TT_AHSAMOSTUMJ  ||  //neki autori se izborili da ni oni ne placaju doprinose
+           placaTT == Placa.TT_DDBEZDOPRINO ||  //12.2018. drugi dohodak bez obveze doprinosa
+           placaTT == Placa.TT_NR1_PX1NEDOP ||  //12.2018. nerezidenti bez obveze doprinosa
+           placaTT == Placa.TT_NR2_P01NEDOP     //12.2018. nerezidenti bez obveze doprinosa
+           ) 
+         {                                       
+            /* 22 */ pR._stMio1stup = 0.00M;
+            /* 23 */ pR._stMio2stup = 0.00M;
+            /* 24 */ pR._stZdrNa    = 0.00M;
+         }
+         else // za ostale, stopa se prepolavlja 
+         {
+            /* 22 */ pR._stMio1stup /= 2.00M;
+            /* 23 */ pR._stMio2stup /= 2.00M;
+
+            //16.01.2019. za 2019 i dalje je pola od onoga koliko je bilo (15%) bez povecanja koji ide na placu 
+            ////* 24 */ pR._stZdrNa    /= 2.00M;
+            if(T_MMYYYY_asDateTime >= ZXC.Date01012019) pR._stZdrNa  = pR._stZdrDD; // 'od 2019'   
+            else                                        pR._stZdrNa /=       2.00M; // 'po starom' 
+         }
+      }
+      if(placaTT == Placa.TT_STRUCNOOSPOS)
+      {
+         pR._stpor1   = 0.00M;
+         pR._stpor2   = 0.00M;
+         pR._stZapNa  = 0.00M;
+         pR._stZapII  = 0.00M;
+
+      }
+      if(placaTT == Placa.TT_NEPLACDOPUST)
+      {
+         pR._stpor1 = 0.00M;
+         pR._stpor2 = 0.00M;
+      }
+
+      #endregion OtherDohodak & PENZ Overriders
+
+      #region NOVOZAPOSLENI Overriders
+
+      if(this.T_spc == SpecEnum.NOVOZAPOSL || this.T_spc == SpecEnum.NOVO_MINMIONE) // Novozaposleni NE placa doprinose NA placu18.12.2019. 
+      {
+         /* 24 */ pR._stZdrNa      = 0.00M;
+         /* 25 */ pR._stZorNa      = 0.00M;
+         /* 26 */ pR._stZapNa      = 0.00M;
+         /* 27 */ pR._stZapII      = 0.00M;
+         /* 37 */ pR._stMioNaB1    = 0.00M;
+         /* 38 */ pR._stMioNa2B1   = 0.00M;
+         /* 39 */ pR._stMioNaB2    = 0.00M;
+         /* 40 */ pR._stMioNa2B2   = 0.00M;
+         /* 41 */ pR._stMioNaB3    = 0.00M;
+         /* 42 */ pR._stMioNa2B3   = 0.00M;
+         /* 43 */ pR._stMioNaB4    = 0.00M;
+         /* 44 */ pR._stMioNa2B4   = 0.00M;
+         /* 45 */ pR._prosPlaca    = 0.00M;
+         /* 46 */ pR._stMioNa2B5   = 0.00M;
+      }
+
+      #endregion NOVOZAPOSLENI Overriders
+
+      #region PODUZETNICKA PLACA Overriders
+
+      // 04.02.2014. od place za 012014 poduzetnik placa doprinos za zaposljavanje ali jos ne znamo da li se djeli na dva ili ne
+      if(placaTT == Placa.TT_PODUZETPLACA && this.T_MMYYYY_asDateTime < ZXC.Date01012014) // Poduzetnik NE placa doprinose za zaposljavanje
+      {
+         /* 26 */ pR._stZapNa      = 0.00M;
+         /* 27 */ pR._stZapII      = 0.00M;
+      }
+      // 07.03.2014. sad kazu da se ne odvaja tj da ukupno ide na prvi doprinos
+      if(placaTT == Placa.TT_PODUZETPLACA && this.T_MMYYYY_asDateTime >= ZXC.Date01012014) // Poduzetnik NE placa doprinose za zaposljavanje
+      {
+         /* 26 */ pR._stZapNa      = pR._stZapNa + pR._stZapII;
+         /* 27 */ pR._stZapII      = 0.00M;
+      }
+
+      #endregion PODUZETNICKA PLACA Overriders
+
+      #region TT_SAMODOPRINOS Overriders
+
+      if(placaTT == Placa.TT_SAMODOPRINOS)
+      {
+         pR._stpor1       = 0.00M;
+         pR._stpor2       = 0.00M;
+         pR._stpor3       = 0.00M;
+         pR._stpor4       = 0.00M;
+         pR._osnOdb       = 0.00M;
+
+         pR._stZapII      = 0.00M;
+
+         pR._stMioNaB1    = 0.00M;
+         pR._stMioNa2B1   = 0.00M;
+         pR._stMioNaB2    = 0.00M;
+         pR._stMioNa2B2   = 0.00M;
+         pR._stMioNaB3    = 0.00M;
+         pR._stMioNa2B3   = 0.00M;
+         pR._stMioNaB4    = 0.00M;
+         pR._stMioNa2B4   = 0.00M;
+         pR._prosPlaca    = 0.00M;
+         pR._stMioNa2B5   = 0.00M;
+
+      }
+      #endregion TT_SAMODOPRINOS Overriders
+
+      #region TT_BIVSIRADNIK Overriders
+      //23.12.2019.Obračun primitaka prema kojima se doprinosi obračunavaju na način koji ima obilježje drugog dohotka, a porez na dohodak prema primitcima od kojih se utvrđuje dohodak od nesamostalnog rada
+      if(placaTT == Placa.TT_BIVSIRADNIK)
+      {
+        /* 22 */ pR._stMio1stup /= 2.00M;
+        /* 23 */ pR._stMio2stup /= 2.00M;
+
+        //16.01.2019. za 2019 i dalje je pola od onoga koliko je bilo (15%) bez povecanja koji ide na placu 
+        ////* 24 */ pR._stZdrNa    /= 2.00M;
+        if(T_MMYYYY_asDateTime >= ZXC.Date01012019) pR._stZdrNa  = pR._stZdrDD; // 'od 2019'   
+        else                                        pR._stZdrNa /=       2.00M; // 'po starom' 
+
+
+      }
+      #endregion TT_BIVSIRADNIK Overriders
+
+   }
+
    private decimal CalcMio1Osnovica(PrulesStruct pR, AlreadySpentPtransInThisMonthStruct spent)
    {
       //!!!! A što kada je više isplata - onda račna na zadnjoj i mora oduzeti koliko je bilo na prethodnoj
@@ -4220,23 +4473,17 @@ public class Ptrans : VvTransRecord
          )//Obračun drugog dohotka: niže stope koje donose JLS
       {
             R_PorOsn1 = R_PorOsnAll;
-            R_PorOsn2 =
-            R_PorOsn3 =
-            R_PorOsn4 = 0.00M;
+            R_PorOsn2 = 0.00M;
       }
       else if(placaTT == Placa.TT_POREZNADOBIT) // 07.03.2014. obracun poreza za isplatu oporezive dobiti
       {
          R_PorOsn1 = R_PorOsnAll;
-         R_PorOsn2 =
-         R_PorOsn3 =
-         R_PorOsn4 = 0.00M;
+         R_PorOsn2 = 0.00M;
       }
       else if(placaTT == Placa.TT_STRUCNOOSPOS || placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_SAMODOPRINOS) // 09.02.2016. dodan SD 25.11.2014. nema poreza za strucno osposobljavanje bez yasnivanja ro
       {
          R_PorOsn1 = 
-         R_PorOsn2 =
-         R_PorOsn3 =
-         R_PorOsn4 = 0.00M;
+         R_PorOsn2 = 0.00M;
       }
       else // REDOVNA PLACA ________________________________________ +BivsiRadnik od 23.02.2019. + dodati novi TT ya ostalo sto nije placa ali se ovako racuna
       {

@@ -1047,7 +1047,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          vvtbT_opcName.JAM_Set_LookUpTable(ZXC.luiListaOpcina, (int)ZXC.Kolona.druga, true);
       }
 
-
       vvtbT_opcName.JAM_ShouldCalcTrans = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_opcName, TheVvDaoTrans, DB_Tci.t_opcName, "Općina", _width);
@@ -1093,6 +1092,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       vvtbT_opcRadName.JAM_lui_CdTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_opcRadCD);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
+
    }
 
 
