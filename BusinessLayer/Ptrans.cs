@@ -1521,23 +1521,29 @@ public class Ptrans : VvTransRecord
       else // classic - NEW 
          Calc_TheBruto                           (    pRules, ptranEsOfThisPtrans, placa_rec.FondSati, anyT_staz_Exists);
 
-      if(T_dokDate < ZXC.Date01012017)
+      #region Calc_Doprinosi
+
+      bool isEraBef_2017              = T_dokDate < ZXC.Date01012017;
+      bool isEraBetween_2017_And_1123 = this.T_MMYYYY_asDateTime <  ZXC.Date01122023 && isEraBef_2017 == false; 
+      bool isEraFrom_1223             = this.T_MMYYYY_asDateTime >= ZXC.Date01122023;
+
+      if(isEraBef_2017) // if(T_dokDate < ZXC.Date01012017)
       {
-         Calc_OtherDohodakOrPenzOrNovozap_Overriders_Bef2017(ref pRules,        placa_rec.TT);
-         Calc_Doprinosi_Bef2017                             (    pRules, spent, placa_rec.TT);
+         Calc_OtherDohodakOrPenzOrNovozap_Overriders_Bef2017(ref pRules, placa_rec.TT);
+         Calc_Doprinosi_Bef2017(pRules, spent, placa_rec.TT);
       }
-      else if(T_dokDate >= ZXC.Date01012017 && T_dokDate < ZXC.Date01012024) //!!!!!!!!!!krajnji datum
+      else if(isEraBetween_2017_And_1123) //if(T_dokDate >= ZXC.Date01012017 && T_dokDate < ZXC.Date01012024) //!!!!!!!!!!krajnji datum
       {
-         Calc_OtherDohodakOrPenzOrNovozap_Overriders(ref pRules,        placa_rec.TT);
-         Calc_Doprinosi                             (    pRules, spent, placa_rec.TT);
+         Calc_OtherDohodakOrPenzOrNovozap_Overriders(ref pRules, placa_rec.TT);
+         Calc_Doprinosi(pRules, spent, placa_rec.TT);
       }
-      else//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      else if(isEraFrom_1223)
       {
          Calc_Doprinosi_2024(pRules, spent, placa_rec.TT);
       }
+      else throw new Exception("Nedefinirana Era za Calc_Doprinosi");
 
-
-
+      #endregion Calc_Doprinosi
 
       if(T_dokDate < ZXC.Date01012024)
       { 
