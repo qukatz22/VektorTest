@@ -4045,24 +4045,21 @@ public class Ptrans : VvTransRecord
 
       #region ZAPna ZAP2
 
-    //R_ZapNa  = R_TheBruto * pR._stZapNa / 100.00M;
-    //R_ZapII  = R_TheBruto * pR._stZapII / 100.00M;
-    //22.03.2013.
-      R_ZapNa = osnovicaDop * pR._stZapNa / 100.00M;
-      R_ZapII = osnovicaDop * pR._stZapII / 100.00M;
-
-
-      R_ZapNa = R_ZapNa.Ron2();
-      R_ZapII = R_ZapII.Ron2();
-
-      R_ZapAll = R_ZapNa + R_ZapII; // !? treba li ovaj zapII ovdje? 
+    //R_ZapNa = osnovicaDop * pR._stZapNa / 100.00M;
+    //R_ZapII = osnovicaDop * pR._stZapII / 100.00M;
+    //
+    //
+    //R_ZapNa = R_ZapNa.Ron2();
+    //R_ZapII = R_ZapII.Ron2();
+    //
+    //R_ZapAll = R_ZapNa + R_ZapII; // !? treba li ovaj zapII ovdje? 
 
       #endregion ZAPna ZAP2
 
       #region DoprIZ, DoprNA, DoprALL
 
       R_DoprIz = R_Mio1stup   + R_Mio2stup;
-      R_DoprNa = R_Mio1stupNa + R_Mio2stupNa + R_ZdrNa + R_ZorNa + R_ZapNa + R_ZapII + R_ZpiUk ;
+      R_DoprNa = R_Mio1stupNa + R_Mio2stupNa + R_ZdrNa /*+ R_ZorNa + R_ZapNa + R_ZapII */+ R_ZpiUk ;
 
       R_DoprAll = R_DoprIz + R_DoprNa;
 

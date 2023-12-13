@@ -1439,8 +1439,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez2, TheVvDaoTrans, DB_Tci.t_stPorez2, "StPor2", _width);
 
-    vvtbT_opcCD  .JAM_lui_NumberTaker2_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
-    vvtbT_opcName.JAM_lui_NumberTaker2_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
+      vvtbT_opcCD  .JAM_lui_NumberTaker2_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
+      vvtbT_opcName.JAM_lui_NumberTaker2_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez2);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
@@ -1457,10 +1457,12 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
    protected void T_Mio1OlkKind_CreateColumn(int _width)
    {
-      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "....");
+    //vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_String_ColumnTemplate(    "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "...."); da ne dodu 0 kad je prazno
+      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "Fiksna olaksica za MIO 1 - kod vise poslodavaca");
+
       vvtbT_Mio1OlkKind.JAM_AllowedInputCharacters = "34";
       
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_Mio1OlkKind, TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "M1Olk", _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_Mio1OlkKind, TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "FixOzn", _width);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
@@ -2086,14 +2088,13 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       vvtbR_Mio1OlkKind = TheG.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb4ColR_Mio1OlkKind", null, -12, "Oznaka načina umanjenja mjesečne osnovice za obračun doprinosa MIO 1.stup");
       vvtbR_Mio1OlkKind.JAM_ReadOnly = true;
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_Mio1OlkKind, null, "R_Mio1OlkKind", "OznUm", _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_Mio1OlkKind, null, "R_Mio1OlkKind", "M1Ozn", _width);
       colVvText.MinimumWidth = _width;
 
       vvtbR_Mio1OlkKind.JAM_MarkAsNumericTextBox(0, false, decimal.MaxValue, decimal.MinValue, true);
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, true, true));
    }
-
 
    #endregion R_Columns
 
@@ -5030,6 +5031,13 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
                      
       /*14*/         w = ZXC.Q2un + ZXC.Qun2; T_isMioII_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
 
+      // ovo je zbog place 122023
+      /*     */      w = ZXC.Q4un;            T_fixMio1Olak_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q2un + ZXC.Qun2; T_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q2un + ZXC.Qun2; R_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+
       /* 03R */      w = ZXC.Q4un;            R_mioOsn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 04R */      w = ZXC.Q4un;            R_mio1stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 05R */      w = ZXC.Q4un;            R_mio2stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
@@ -5278,12 +5286,12 @@ public partial class PlacaOd2024DUC : PlacaBaseDUC // placa od 2024 nadalje!!!
                      
       /*14*/         w = ZXC.Q2un + ZXC.Qun2; T_isMioII_CreateColumn(w);             TheG.TheSumOfPreferredWidths += w;
 
-      /* 03R */      w = ZXC.Q4un;            T_fixMio1Olak_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
-      /* 03R */      w = ZXC.Q2un;            T_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
-      /* 03R */      w = ZXC.Q2un;            R_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q4un;            T_fixMio1Olak_CreateColumn(w, 2);       TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q2un + ZXC.Qun2; T_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q2un + ZXC.Qun2; R_Mio1OlkKind_CreateColumn(w);          TheG.TheSumOfPreferredWidths += w;
 
-      /* 03R */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
-      /* 03R */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q4un;            R_mio1Olk_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
+      /*     */      w = ZXC.Q4un;            R_mio1Osn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 03R */      w = ZXC.Q4un;            R_mioOsn_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;
       /* 04R */      w = ZXC.Q4un;            R_mio1stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 05R */      w = ZXC.Q4un;            R_mio2stup_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
@@ -5541,7 +5549,6 @@ public partial class PlacaNPDUC   : PlacaBaseDUC
       Fld_VrstaObr   = "01";
    }
 }
-
 
 public class Placa_AddPersonsDlg : VvDialog
 {
