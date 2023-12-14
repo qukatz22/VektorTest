@@ -1075,6 +1075,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          } // for(int pRowIdx = 0; pRowIdx < ptransTable.Rows.Count; ++pRowIdx)
 
+         //2024
+         DateTime zaMMYY_asDateTime = Placa.GetDateTimeFromMMYYYY(placaSumRow_OK_ONLY.X_zaMMYYYY, false);
+         bool is_posInval_DO_1123 = zaMMYY_asDateTime < ZXC.Date01122023;
+          
          jpdStrA.dateIzvj   = placa_rec.DokDate                    ;
          jpdStrA.oznakaIzvj = placa_rec.RSm_ID                     ;
          
@@ -1085,7 +1089,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             jpdStrA.oznakaIzvj    = RptFilter.ForcedRSmID;
          }
 
-       //jpdStrA.vrstaIzvj  = placa_rec.VrstaJOPPD.IsEmpty() ? "1" : placa_rec.VrstaJOPPD;
+         //jpdStrA.vrstaIzvj  = placa_rec.VrstaJOPPD.IsEmpty() ? "1" : placa_rec.VrstaJOPPD;
          jpdStrA.piNaziv    = ZXC.CURR_prjkt_rec.Naziv             ;
          jpdStrA.piMjesto   = ZXC.CURR_prjkt_rec.Grad              ;
          jpdStrA.piUlica    = ZXC.CURR_prjkt_rec.UlicaBezBroja_1   ;
@@ -1212,7 +1216,11 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
        //jpdStrA.zapP02  = jpdBstranaTable./*Where(jpdBrow => jpdBrow.b_tt == Placa.TT_PODUZETPLACA).*/Sum(jpdBrow => jpdBrow.b_ZapII  );
          jpdStrA.zapP01  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt != Placa.TT_PODUZETPLACA && 
                                                             jpdBrow.b_tt != Placa.TT_SAMODOPRINOS).Sum(jpdBrow => jpdBrow.b_ZapNa);
-         jpdStrA.zapP02  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt != Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_ZapII);
+       // od za 122023 promjene b_ZapII je Mio1Olak
+       //jpdStrA.zapP02  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt != Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_ZapII);
+         jpdStrA.zapP02  = is_posInval_DO_1123 ? jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt != Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_ZapII) : 0.00M;
+
+
          jpdStrA.zapP03  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_PODUZETPLACA).Sum(jpdBrow => jpdBrow.b_ZapNa  ); // 06.03.2014.dodano
          jpdStrA.zapP04  = jpdBstranaTable.Where(jpdBrow => jpdBrow.b_tt == Placa.TT_SAMODOPRINOS).Sum(jpdBrow => jpdBrow.b_ZapNa  ); // 08.02.2016.dodano
          jpdStrA.npNetto = jpdBstranaTable./*Where(jpdBrow => jpdBrow.b_tt == Placa.TT_PODUZETPLACA).*/Sum(jpdBrow => jpdBrow.b_NetoAdd);
@@ -4040,7 +4048,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
                              ptransRow.t_tt == Placa.TT_NR1_PX1NEDOP || ptransRow.t_tt == Placa.TT_BIVSIRADNIK
                             );
 
-      bool isBef2017 = ptransRow.t_dokDate < ZXC.Date01012017;
+      bool isBef2017  = ptransRow.t_dokDate < ZXC.Date01012017;
+      bool isBef2024  = ptransRow.t_dokDate < ZXC.Date01012024;
 
     //10.03.2020. umjesto placaSumTable[0].X_zaMMYYYY treba ptransRow.t_mmyyyy kako bi placa koja je za 2 mjesec mogla ici na isti joppd sa neoporzivim primicima za npr za 3 mjesec
     //int mm   = ZXC.ValOrZero_Int(placaSumTable[0].X_zaMM  );
@@ -4286,8 +4295,14 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       jpdBstranaRow.b_Odbitak    = ptransRow.R_Odbitak   ;
       jpdBstranaRow.b_PorOsnAll  = ptransRow.R_PorOsnAll ;
       jpdBstranaRow.b_PorezAll   = ptransRow.R_PorezAll  ;
-      jpdBstranaRow.b_PorPrir    = ptransRow.R_PorPrirez ;
-      jpdBstranaRow.b_Prirez     = ptransRow.R_Prirez;
+
+      // od 2024
+    //jpdBstranaRow.b_PorPrir    =             ptransRow.R_PorPrirez                       ;
+    //jpdBstranaRow.b_Prirez     =             ptransRow.R_Prirez                          ;
+      jpdBstranaRow.b_PorPrir    = isBef2024 ? ptransRow.R_PorPrirez : ptransRow.R_PorezAll;
+      jpdBstranaRow.b_Prirez     = isBef2024 ? ptransRow.R_Prirez    : 0.00M               ;
+
+
 
     //if(ptransRow.t_tt == Placa.TT_AUTORHONOR || ptransRow.t_tt == Placa.TT_AUTORHONUMJ                                          )
     //if(ptransRow.t_tt == Placa.TT_AUTORHONOR || ptransRow.t_tt == Placa.TT_AUTORHONUMJ || ptransRow.t_tt == Placa.TT_AHSAMOSTUMJ)
@@ -4355,7 +4370,6 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       }
 
       #endregion TT_SAMODOPRINOS
-
 
       #region OO je OOnaTeretHZZOa
       
@@ -4580,8 +4594,12 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          jpdBstranaRow.b_Odbitak    = isBef2017 ? 0.00M : ptransRow.R_Odbitak  ;
          jpdBstranaRow.b_PorOsnAll  = isBef2017 ? 0.00M : ptransRow.R_PorOsnAll;
          jpdBstranaRow.b_PorezAll   = isBef2017 ? 0.00M : ptransRow.R_PorezAll ;
-         jpdBstranaRow.b_PorPrir    = isBef2017 ? 0.00M : ptransRow.R_PorPrirez;
-         jpdBstranaRow.b_Prirez     = isBef2017 ? 0.00M : ptransRow.R_Prirez   ;
+
+         //2024
+       //jpdBstranaRow.b_PorPrir    = isBef2017 ? 0.00M :             ptransRow.R_PorPrirez                       ;
+       //jpdBstranaRow.b_Prirez     = isBef2017 ? 0.00M :             ptransRow.R_Prirez                          ;
+         jpdBstranaRow.b_PorPrir    = isBef2017 ? 0.00M : isBef2024 ? ptransRow.R_PorPrirez : ptransRow.R_PorezAll;
+         jpdBstranaRow.b_Prirez     = isBef2017 ? 0.00M : isBef2024 ? ptransRow.R_Prirez    : 0.00M               ;
          jpdBstranaRow.b_Netto      =             0.00M                        ;
          
          if(ptransRow.t_tt == Placa.TT_PODUZETPLACA)
@@ -4637,8 +4655,22 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       // 09.07.2014. za HZTK isplata jubilarne nagrade iznad nepoporezivog
       // i 30.12.2014. za ZarPtica isplata naknade kad je radnik na dugom bolovanju a zele mu isplatiti razliku
       // 12.03.2015. i otpremnine iznad neoporezivog 0025
+      // 01.01.2024. je za ovo napravljen novi TT - OP - OSTALI PRIMICI
 
-      if(ptransRow.t_tt == Placa.TT_REDOVANRAD && jpdBstranaRow.b_primDohCD == "0021" || ptransRow.t_tt == Placa.TT_REDOVANRAD && jpdBstranaRow.b_primDohCD == "0025")
+    //if(              ptransRow.t_tt == Placa.TT_REDOVANRAD && jpdBstranaRow.b_primDohCD == "0021" || ptransRow.t_tt == Placa.TT_REDOVANRAD && jpdBstranaRow.b_primDohCD == "0025")
+      if(isBef2024 && (ptransRow.t_tt == Placa.TT_REDOVANRAD && jpdBstranaRow.b_primDohCD == "0021" || ptransRow.t_tt == Placa.TT_REDOVANRAD && jpdBstranaRow.b_primDohCD == "0025"))
+      { 
+         jpdBstranaRow.b_rsOD      = ZXC.projectYearFirstDay.ToString("s").Substring(0, 10); // na bazi godine
+         jpdBstranaRow.b_rsDO      = ZXC.projectYearLastDay .ToString("s").Substring(0, 10); // na bazi godine
+         jpdBstranaRow.b_rsODcr    = ZXC.projectYearFirstDay.ToString(ZXC.VvDateFormat);
+         jpdBstranaRow.b_rsDOcr    = ZXC.projectYearLastDay .ToString(ZXC.VvDateFormat);
+         jpdBstranaRow.b_sati      = 0;
+         jpdBstranaRow.b_ObrPrimPl = 0.00M;
+         jpdBstranaRow.b_satiNeRad = 0;
+      }
+
+      // u 2024 uvodimo novi TT za te ostale primitke jer se MIO1 racuna drugacie od place
+      if(!isBef2024  && ptransRow.t_tt == Placa.TT_OSTALIPRIM)
       { 
          jpdBstranaRow.b_rsOD      = ZXC.projectYearFirstDay.ToString("s").Substring(0, 10); // na bazi godine
          jpdBstranaRow.b_rsDO      = ZXC.projectYearLastDay .ToString("s").Substring(0, 10); // na bazi godine
@@ -5102,7 +5134,7 @@ public class RptP_JOPPD : VvPlacaReport
             strB.P126 = jpdBstranaRow.b_Mio1stupNa.ToStringVv_NoGroup_ForceDot();
             strB.P127 = jpdBstranaRow.b_Mio2stupNa.ToStringVv_NoGroup_ForceDot();
             strB.P128 = jpdBstranaRow.b_ZpiUk     .ToStringVv_NoGroup_ForceDot();
-            strB.P129 = jpdBstranaRow.b_ZapII     .ToStringVv_NoGroup_ForceDot();
+            strB.P129 = jpdBstranaRow.b_ZapII     .ToStringVv_NoGroup_ForceDot(); // ovdje je od 122023 Mio1Olaksica
             strB.P131 = jpdBstranaRow.b_AHizdatak .ToStringVv_NoGroup_ForceDot();
             strB.P132 = jpdBstranaRow.b_MioAll    .ToStringVv_NoGroup_ForceDot();
             strB.P133 = jpdBstranaRow.b_Dohodak   .ToStringVv_NoGroup_ForceDot();

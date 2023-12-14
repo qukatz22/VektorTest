@@ -184,6 +184,7 @@ public class Placa : VvPolyDocumRecord
       Placa.TT_PLACAUNARAVI /*"PN"*/, // placa u naravi                                                           
       Placa.TT_NEPLACDOPUST /*"ND"*/, // 25.11.14. neplaceni dopust                                               
       Placa.TT_BIVSIRADNIK  /*"BR"*/, // 23.12.2019. Obračun primitaka prema kojima se doprinosi obračunavaju na način koji ima obilježje drugog dohotka, a porez na dohodak prema primitcima od kojih se utvrđuje dohodak od nesamostalnog rada
+      Placa.TT_OSTALIPRIM   /*"OP"*/, // 01.01.2024. Ostali primici - iznad neoporezivog iznosa - koristi spent za oporz ali ne i za MIO1olaksicu
    };
    /// <summary>
    /// RR, PP, PN, ND, BR
