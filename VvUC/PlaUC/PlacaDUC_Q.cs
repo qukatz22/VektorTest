@@ -617,13 +617,17 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       int daysInMM = DateTime.DaysInMonth(placa_rec.MMYYYY_asDateTime.Year, placa_rec.MMYYYY_asDateTime.Month);
       foreach(Ptrane ptrane_rec in placa_rec.TransesNonDeleted2)
       {
-         // 03.06.2015: 
-         if(ptrane_rec.T_rsOO == "10")
+         // 15.12.2023: 
+       //if(ptrane_rec.T_rsOO == "10")
+         if(ptrane_rec.T_rsOO != "98" && ptrane_rec.T_rsOO != "99")
          {
             if(ptrane_rec.T_rsOD.IsZero() || ptrane_rec.T_rsDO.IsZero())
             {
-               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "GRESKA. Za redovan rad '10' niti rsOD niti rsDO ne smiju biti '0'!\n\n{0}!", ptrane_rec.T_PrezimeIme);
-               e.Cancel = true;
+             //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "GRESKA. Za redovan rad '10' niti rsOD niti rsDO ne smiju biti '0'!\n\n{0}!", ptrane_rec.T_PrezimeIme);
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "UPOZORENJE. Niti rsOD niti rsDO ne smiju biti '0'!\n\n{0}!", ptrane_rec.T_PrezimeIme);
+
+               // 15.12.2023: mjenjamo iz errora u warning only 
+             //e.Cancel = true;
                break;
             }
          }

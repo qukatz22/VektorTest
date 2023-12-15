@@ -4057,11 +4057,22 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       int mm   = Placa.Get_zaMMint  (ptransRow.t_mmyyyy);
       int yyyy = Placa.Get_zaYYYYint(ptransRow.t_mmyyyy);
 
-      DateTime dateOD = new DateTime(yyyy, mm, t_rsOD);
-      DateTime dateDO = new DateTime(yyyy, mm, t_rsDO);
+      DateTime dateOD;
+      DateTime dateDO;
 
+      try
+      {
+         dateOD = new DateTime(yyyy, mm, t_rsOD);
+         dateDO = new DateTime(yyyy, mm, t_rsDO);
+      }
+      catch (Exception ex)
+      {
+         ZXC.aim_emsg("djelatnik {0} ime nekorektne OD ili DO vrijednosti na EVR", ptransRow.t_prezime );
+         ZXC.aim_emsg_VvException(ex);
+         dateOD = dateDO = DateTime.MinValue;
+      }
       //21.04.2016. ako je 2 ili 3 vrstaJoppd onda ide broj rbrJop a inace ++jpdRbr
-    //jpdBstranaRow.b_rbr        = ++jpdRbr; 
+      //jpdBstranaRow.b_rbr        = ++jpdRbr; 
       jpdBstranaRow.b_rbr        = vrstaJoppd == "1" ? ++jpdRbr : rbrJop;
 
 
