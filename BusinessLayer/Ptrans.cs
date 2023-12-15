@@ -3670,19 +3670,23 @@ public class Ptrans : VvTransRecord
          placaTT == Placa.TT_NR3_PX1DADOP    // 12.2018. porez X bez pausala, doprinosi na osn umanjenu za pausal 30%
          )
       {
-        
+
          if(placaTT == Placa.TT_POREZNADOBIT) // za sada _stpor1 fiksna, NE iz rulsa 
          {
           //pR._stpor1 = T_dokDate < ZXC.Date01012021                                  ? 12.00M : 10.00M;
             pR._stpor1 = T_dokDate < ZXC.Date01012021 || T_dokDate >= ZXC.Date01012024 ? 12.00M : 10.00M; // za 2024 opet vratili na 12
          }
-         if(placaTT == Placa.TT_AUVECASTOPA) //12.2018. racuna porez 1 kao stopu 2 
+         else if(placaTT == Placa.TT_AUVECASTOPA) //12.2018. racuna porez 1 kao stopu 2 
          {
             pR._stpor1 = pR._stpor2 = this.T_stPorez1;
          }
-         if(placaTT == Placa.TT_NR1_PX1NEDOP || placaTT == Placa.TT_NR3_PX1DADOP) // racuna porez 1 kao stopu 2 
+         else if(placaTT == Placa.TT_NR1_PX1NEDOP || placaTT == Placa.TT_NR3_PX1DADOP) // racuna porez 1 kao stopu 2 
          {
             pR._stpor1 = 10.00M; //12.2018. za sada je 10 iako jos moze biti i 5 
+         }
+         else
+         {
+            pR._stpor1 = T_stPorez1;
          }
 
          /* 19 */ pR._stpor2       = 0.00M;
@@ -3706,9 +3710,9 @@ public class Ptrans : VvTransRecord
          /* 45 */ pR._prosPlaca    = 0.00M;
          /* 46 */ pR._stMioNa2B5   = 0.00M;
 
-
-       // ne placaju se doprinosi                     
-        if(placaTT == Placa.TT_POREZNADOBIT || 
+         #region oni koji ne placaju doprinose
+         // ne placaju se doprinosi                     
+         if(placaTT == Placa.TT_POREZNADOBIT || 
            placaTT == Placa.TT_AHSAMOSTUMJ  ||  //neki autori se izborili da ni oni ne placaju doprinose
            placaTT == Placa.TT_DDBEZDOPRINO ||  //12.2018. drugi dohodak bez obveze doprinosa
            placaTT == Placa.TT_NR1_PX1NEDOP ||  //12.2018. nerezidenti bez obveze doprinosa
@@ -3729,7 +3733,11 @@ public class Ptrans : VvTransRecord
             if(T_MMYYYY_asDateTime >= ZXC.Date01012019) pR._stZdrNa  = pR._stZdrDD; // 'od 2019'   
             else                                        pR._stZdrNa /=       2.00M; // 'po starom' 
          }
+
+         #endregion oni koji ne placaju doprinose
+
       }
+
       if(placaTT == Placa.TT_STRUCNOOSPOS)
       {
          pR._stpor1   = 0.00M;
@@ -4217,13 +4225,18 @@ public class Ptrans : VvTransRecord
             ostaloZaOporezirati = 0.00M;
          }
 
+         pR._stpor1 = T_stPorez1;
+         pR._stpor2 = T_stPorez2;
       } // REDOVNA PLACA ________________________________________ 
 
       // TODO: DELLMELATTER 
       if(Math.Abs((R_PorOsnAll) - (R_PorOsn1+R_PorOsn2+R_PorOsn3+R_PorOsn4)) > 0.00M) ZXC.aim_emsg("oAll<{0}> o1+other+o3+o4<{1}> !!!", R_PorOsnAll, R_PorOsn1 + R_PorOsn2 + R_PorOsn3 + R_PorOsn4);
 
-      R_Por1Uk = R_PorOsn1 * T_stPorez1 / 100.00M;
-      R_Por2Uk = R_PorOsn2 * T_stPorez2 / 100.00M;
+    //R_Por1Uk = R_PorOsn1 * T_stPorez1 / 100.00M;
+    //R_Por2Uk = R_PorOsn2 * T_stPorez2 / 100.00M;
+      R_Por1Uk = R_PorOsn1 * pR._stpor1 / 100.00M;
+      R_Por2Uk = R_PorOsn2 * pR._stpor2 / 100.00M;
+
 
       R_Por1Uk = R_Por1Uk.Ron2();
       R_Por2Uk = R_Por2Uk.Ron2();

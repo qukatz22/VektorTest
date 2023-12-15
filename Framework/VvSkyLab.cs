@@ -1247,8 +1247,12 @@ public static class VvSkyLab
       List<string> bagArtiklPreffixList_ODJ_A = new List<string>() { "AO", "AM", "AD"       };
       List<string> bagArtiklPreffixList_ODJ_B = new List<string>() { "BO", "BM", "BD"       };
       List<string> bagArtiklPreffixList_ODJ_C = new List<string>() { "CO", "CM", "CD"       };
-      List<string> bagArtiklPreffixList_OST_A = new List<string>() { "AC", "AT", "AR"       };
-      List<string> bagArtiklPreffixList_OST_B = new List<string>() { "BC", "BT", "BR", "KT" };
+      List<string> bagArtiklPreffixList_CIP_A = new List<string>() { "AC"                   };
+      List<string> bagArtiklPreffixList_OST_A = new List<string>() { "AT", "AR"             };
+      List<string> bagArtiklPreffixList_CIP_B = new List<string>() { "BC"                   };
+      List<string> bagArtiklPreffixList_OST_B = new List<string>() { "BT", "BR"             };
+      List<string> bagArtiklPreffixList_TRV_B = new List<string>() { "BT"                   };
+      List<string> bagArtiklPreffixList_OS_KT = new List<string>() { "KT"                   };
 
       switch(bagArtiklCD)
       {
@@ -1268,17 +1272,23 @@ public static class VvSkyLab
          case "MIX S":
          case "MIX W":
             return bagArtiklPreffixList_ODJ_C;
-         case "BAG A":
          case "SHOES ALL":
+         case "SHOES HW":
          case "SHOES LS A":
+            return bagArtiklPreffixList_CIP_A;
+         case "BAG A":
             return bagArtiklPreffixList_OST_A;
-         case "BAG B":
          case "SHOES B S":
          case "SHOES B W":
-         case "SQ HT":
-         case "BAG TRAVEL B":
+            return bagArtiklPreffixList_CIP_B;
+         case "BAG B":
             return bagArtiklPreffixList_OST_B;
-
+         case "BAG TRAVEL B":
+            return bagArtiklPreffixList_TRV_B;
+         case "SQ HHR":
+         case "SQ HT":
+         case "SQ TASKY":
+            return bagArtiklPreffixList_OS_KT;
       }
 
       return null;
