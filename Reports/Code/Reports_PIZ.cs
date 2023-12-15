@@ -4015,6 +4015,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             t_rsOO = "10";
             t_stjecatCD = "0201"; t_primDohCD = "0402"; t_pocKrajCD = "0"; t_sati = 0;
             break;
+         case Placa.TT_OSTALIPRIM: //01.01.2024.
+            t_rsOO = "10";
+            t_stjecatCD = "0001"; t_primDohCD = "0021"; t_pocKrajCD = "0"; t_sati = 0;
+            break;
 
 
          default: ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Za TT [" + ptransRow.t_tt + "] nedefiniran T_rsOO!"); 
