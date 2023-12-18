@@ -4244,6 +4244,9 @@ public class Ptrans : VvTransRecord
       R_PorezAll  = R_Por1Uk + R_Por2Uk;
 
       R_Prirez = 0.00M;
+
+      R_PorPrirez = R_PorezAll/* + R_Prirez*/;
+
    }
 
    #endregion Dohodak i Porez From2024
