@@ -2558,7 +2558,7 @@ public class PlaFilterUC : VvFilterUC
       if(theVvPlaReport != null && theVvPlaReport.VvLet_TT_AHiUGiNOiK4_Only == true)
       {
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TtNotRR", Placa.TT_REDOVANRAD  , "", "Za tip plaće:", " != ", "", Ptrans.recordName));
-         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TtNotRR", Placa.TT_OSTALIPRIM  , "", "Za tip plaće:", " != ", "", Ptrans.recordName));//2024
+         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TtNotOP", Placa.TT_OSTALIPRIM  , "", "Za tip plaće:", " != ", "", Ptrans.recordName));//2024
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TtNotPP", Placa.TT_PODUZETPLACA, "", "Za tip plaće:", " != ", "", Ptrans.recordName));
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TtNotND", Placa.TT_NEPLACDOPUST, "", "Za tip plaće:", " != ", "", Ptrans.recordName));
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TtNotPN", Placa.TT_PLACAUNARAVI, "", "Za tip plaće:", " != ", "", Ptrans.recordName));
