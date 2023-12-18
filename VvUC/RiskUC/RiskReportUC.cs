@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using CrystalDecisions.Windows.Forms;
 using System.Collections.Generic;
 
+
 public class RiskReportUC              : VvReportUC
 {
    #region Fieldz
@@ -3416,7 +3417,7 @@ public partial class RiskFilterUC : VvFilterUC
          //  Fld_pdvZPkind                                                                                                                                                                           
 
          bool imaLiSmislaFiltriratiPo_LiP_FakturDataLayeru = true;
-
+         
          if(theRptFilter.TT != Faktur.TT_URA)
          {
             imaLiSmislaFiltriratiPo_LiP_FakturDataLayeru = false;
@@ -3440,7 +3441,11 @@ public partial class RiskFilterUC : VvFilterUC
        //if(                                                theRptFilter.SVD_LiP != ZXC.PdvZPkindEnum.NoZP) 
          if(imaLiSmislaFiltriratiPo_LiP_FakturDataLayeru && theRptFilter.SVD_LiP != ZXC.PdvZPkindEnum.NoZP)
          {
-            theRptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvZPkind], false, "LP", theRptFilter.SVD_LiP, text /*theRptFilter.SVD_LiP.ToString()*/, "Za L/P tip računa:", " = ", ""));
+            // 18.12.2023: dodan ovaj dodatni if tako da ovaj fm NE ide kada je CR_SVD_PrmArt_Ulaz 
+            if(theVvRiskReport.VirtualReportDocument is Vektor.Reports.RIZ.CR_SVD_PrmArt_Ulaz == false)
+            {
+               theRptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvZPkind], false, "LP", theRptFilter.SVD_LiP, text /*theRptFilter.SVD_LiP.ToString()*/, "Za L/P tip računa:", " = ", ""));
+            }
          }
 
          // SvDUH Only: OD - DO VezniDok2                                                                                                                   
