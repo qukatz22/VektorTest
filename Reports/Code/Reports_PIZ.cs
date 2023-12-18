@@ -4017,7 +4017,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             break;
          case Placa.TT_OSTALIPRIM: //01.01.2024.
             t_rsOO = "10";
-            t_stjecatCD = "0001"; t_primDohCD = "0021"; t_pocKrajCD = "0"; t_sati = 0;
+            t_stjecatCD = "0001"; t_primDohCD = "0021"; t_pocKrajCD = "3"; t_sati = 0;
             break;
 
 
@@ -4698,6 +4698,30 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
       #endregion Ostali primici koji se isplaćuju uz plaću-oporezivi  6.2.=0021
 
+    //if(ptransRow.t_tt == Placa.TT_NEOPOREZPRIM)
+    //{ 
+    //   jpdBstranaRow.b_Bruto      = 
+    //   jpdBstranaRow.b_Mio1stup   = 
+    //   jpdBstranaRow.b_Mio2stup   = 
+    //   jpdBstranaRow.b_ZdrNa      = 
+    //   jpdBstranaRow.b_ZorNa      = 
+    //   jpdBstranaRow.b_ZapNa      = 
+    //   jpdBstranaRow.b_Mio1stupNa = 
+    //   jpdBstranaRow.b_Mio2stupNa = 
+    //   jpdBstranaRow.b_ZpiUk      =  
+    //   jpdBstranaRow.b_ZapII      = 
+    //   jpdBstranaRow.b_AHizdatak  = 
+    //   jpdBstranaRow.b_MioAll     = 
+    //   jpdBstranaRow.b_Dohodak    = 
+    //   jpdBstranaRow.b_Odbitak    = 
+    //   jpdBstranaRow.b_PorOsnAll  = 
+    //   jpdBstranaRow.b_PorezAll   = 
+    //   jpdBstranaRow.b_PorPrir    = 
+    //   jpdBstranaRow.b_Prirez     = 0.00M;
+    //}
+
+
+
       #region godisnji obracun poreza
 
       if(jpdBstranaRow.b_rsOO == "XY")// godisnji obracun poreza
@@ -4711,9 +4735,6 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       }
 
       #endregion godisnji obracun poreza
-
-
-
 
       return jpdBstranaRow;
    }
