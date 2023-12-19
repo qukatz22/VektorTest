@@ -1424,6 +1424,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       vvtbT_stPorez1.JAM_ReadOnly = true;
       vvtbT_stPorez1.JAM_ShouldCalcTrans = true;
 
+      vvtbT_stPorez1.JAM_IsForPercent = true;
+    //vvtbT_stPorez1.JAM_MarkAsNumericTextBox(numOfDecimalPlaces, true, decimal.MaxValue, 100.00M, true);
+
+
+
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez1, TheVvDaoTrans, DB_Tci.t_stPorez1, "StPor1", _width);
 
       vvtbT_opcCD  .JAM_lui_NumberTaker_JAM_Name = TheVvDaoTrans.GetSchemaColumnName(DB_Tci.t_stPorez1);
@@ -1436,6 +1441,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       vvtbT_stPorez2 = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_stPorez2", TheVvDaoTrans, DB_Tci.t_stPorez2, "Stopa poreza 2");
       vvtbT_stPorez2.JAM_ReadOnly = true;
       vvtbT_stPorez2.JAM_ShouldCalcTrans = true;
+      
+      vvtbT_stPorez2.JAM_IsForPercent = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_stPorez2, TheVvDaoTrans, DB_Tci.t_stPorez2, "StPor2", _width);
 
@@ -1454,7 +1461,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
-
    protected void T_Mio1OlkKind_CreateColumn(int _width)
    {
     //vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_String_ColumnTemplate(    "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "...."); da ne dodu 0 kad je prazno
@@ -3702,7 +3708,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       TheSumGrid.PutCell(ci.iT_brDodPoloz, 0, placa_rec.S_tBrDodPoloz);
       TheSumGrid.PutCell(ci.iT_satiNeR   , 0, placa_rec.S_rSatiNeR   );
       TheSumGrid.PutCell(ci.iT_dopZdr2020, 0, placa_rec.S_tDopZdr2020);
-
+      TheSumGrid.PutCell(ci.iT_mio1Olk   , 0, placa_rec.S_rMio1Olk   );
+      TheSumGrid.PutCell(ci.iT_mio1Osn   , 0, placa_rec.S_rMio1Osn   );
    }
 
    private void PutDgvFields2()
@@ -4668,7 +4675,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       //PlacaDokumentFilter placaFilter = (PlacaDokumentFilter)vvRptFilter;
       VvRpt_Placa_Filter placaFilter = (VvRpt_Placa_Filter)vvRptFilter;
-      if(this.Fld_TT == Placa.TT_PODUZETPLACA || this.Fld_TT == Placa.TT_REDOVANRAD)
+      if(this.Fld_TT == Placa.TT_PODUZETPLACA || this.Fld_TT == Placa.TT_REDOVANRAD || this.Fld_TT == Placa.TT_OSTALIPRIM)
        //return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace  (), new ZXC.VvRptExternTblChooser_Placa(true , false, false, false, false), reportName, placaFilter);
        //return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, false, false), reportName, placaFilter);
          return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, true, true ), reportName, placaFilter);

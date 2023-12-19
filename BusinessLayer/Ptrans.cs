@@ -3490,7 +3490,7 @@ public class Ptrans : VvTransRecord
 
       #endregion razmjerniDioMinMioOsn (novo 26.11.2014.)
 
-      if(placaTT == Placa.TT_PLACAUNARAVI) // ovo jos treba provjeriti!!!
+      if(placaTT == Placa.TT_PLACAUNARAVI)
       {
          osnovicaDop = R_MioOsn = R_TheBruto;
 
