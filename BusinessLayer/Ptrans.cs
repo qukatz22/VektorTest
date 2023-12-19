@@ -3387,6 +3387,10 @@ public class Ptrans : VvTransRecord
       { 
          osnovicaDop = R_MioOsn = R_Mio1Osn = R_TheBruto; 
       }
+      else if(placaTT == Placa.TT_NEOPOREZPRIM)
+      {
+         osnovicaDop = R_MioOsn = R_Mio1Osn = 0.00M;
+      }
       else
       {
          R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
