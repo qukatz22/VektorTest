@@ -14609,6 +14609,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnbtchBookgID.DefaultValue = ((string)(""));
                 this.columnvirKind.DefaultValue = ((int)(0));
                 this.columnptranoKind.DefaultValue = ((int)(3));
+                this.columnUtilInt.DefaultValue = ((int)(0));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

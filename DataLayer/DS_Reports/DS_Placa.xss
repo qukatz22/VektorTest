@@ -7,16 +7,16 @@
 <DiagramLayout xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ex:showrelationlabel="False" ViewPortX="-1" ViewPortY="-16" xmlns:ex="urn:schemas-microsoft-com:xml-msdatasource-layout-extended" xmlns="urn:schemas-microsoft-com:xml-msdatasource-layout">
   <Shapes>
     <Shape ID="DesignTable:ptrane" ZOrder="9" X="538" Y="6" Height="632" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="28" SplitterPosition="628" />
-    <Shape ID="DesignTable:placa" ZOrder="5" X="168" Y="-6" Height="1530" Width="262" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1526" />
+    <Shape ID="DesignTable:placa" ZOrder="6" X="168" Y="-6" Height="1530" Width="262" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1526" />
     <Shape ID="DesignTable:person" ZOrder="13" X="9" Y="4" Height="1965" Width="166" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1961" />
-    <Shape ID="DesignTable:IzvjTable" ZOrder="7" X="1489" Y="24" Height="1716" Width="257" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1712" />
+    <Shape ID="DesignTable:IzvjTable" ZOrder="7" X="1568" Y="22" Height="1716" Width="257" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1712" />
     <Shape ID="DesignTable:ptrano" ZOrder="8" X="538" Y="729" Height="493" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="28" SplitterPosition="512" />
     <Shape ID="DesignTable:kupdob" ZOrder="10" X="1335" Y="826" Height="724" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="720" />
-    <Shape ID="DesignTable:placaSum" ZOrder="3" X="865" Y="3" Height="1685" Width="252" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1681" />
-    <Shape ID="DesignTable:ptransSum" ZOrder="1" X="1110" Y="9" Height="1685" Width="223" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="28" SplitterPosition="1681" />
-    <Shape ID="DesignTable:rsmBstrana" ZOrder="4" X="493" Y="1471" Height="149" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="145" />
-    <Shape ID="DesignTable:opcinaSum" ZOrder="2" X="457" Y="1264" Height="149" Width="173" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="145" />
-    <Shape ID="DesignTable:virman" ZOrder="6" X="1305" Y="194" Height="609" Width="156" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="605" />
+    <Shape ID="DesignTable:placaSum" ZOrder="4" X="865" Y="3" Height="1685" Width="252" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1681" />
+    <Shape ID="DesignTable:ptransSum" ZOrder="2" X="1110" Y="9" Height="1685" Width="223" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="28" SplitterPosition="1681" />
+    <Shape ID="DesignTable:rsmBstrana" ZOrder="5" X="493" Y="1471" Height="149" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="145" />
+    <Shape ID="DesignTable:opcinaSum" ZOrder="3" X="457" Y="1264" Height="149" Width="173" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="145" />
+    <Shape ID="DesignTable:virman" ZOrder="1" X="1869" Y="25" Height="1189" Width="210" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1185" />
     <Shape ID="DesignTable:ptraneSum" ZOrder="12" X="1295" Y="11" Height="148" Width="154" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="144" />
     <Shape ID="DesignTable:jpdBstrana" ZOrder="11" X="695" Y="10" Height="1391" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="1387" />
   </Shapes>
