@@ -3682,7 +3682,7 @@ public class Ptrans : VvTransRecord
          }
          else if(placaTT == Placa.TT_AUVECASTOPA) //12.2018. racuna porez 1 kao stopu 2 
          {
-            pR._stpor1 = pR._stpor2 = this.T_stPorez1;
+            pR._stpor1 = T_dokDate < ZXC.Date01012024 ? pR._stpor2 : this.T_stPorez1;
          }
          else if(placaTT == Placa.TT_NR1_PX1NEDOP || placaTT == Placa.TT_NR3_PX1DADOP) // racuna porez 1 kao stopu 2 
          {
@@ -3690,7 +3690,7 @@ public class Ptrans : VvTransRecord
          }
          else
          {
-            pR._stpor1 = T_stPorez1;
+            pR._stpor1 = T_dokDate < ZXC.Date01012024 ? pR._stpor1 : T_stPorez1;
          }
 
          /* 19 */ pR._stpor2       = 0.00M;
