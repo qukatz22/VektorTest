@@ -3456,7 +3456,7 @@ public class Ptrans : VvTransRecord
             osnovicaDop = R_MioOsn = razmjerniDioMinMioOsnZaClUpr;
 
             R_Mio1Olk   = CalcMio1Olaksica(pR, spent, razmjerniDioMinMioOsnZaClUpr);
-            R_Mio1Osn   = razmjerniDioMinMioOsn - R_Mio1Olk;
+            R_Mio1Osn   = razmjerniDioMinMioOsnZaClUpr - R_Mio1Olk;
          }
          else if(placaTT == Placa.TT_REDOVANRAD && T_spc == SpecEnum.IZASLANRADNIK) // 14.04.2023. izaslani radnik ima 20% veću osnovicu za doprinose
          {
@@ -3470,7 +3470,7 @@ public class Ptrans : VvTransRecord
           //else                                 { R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
           //                                       osnovicaDop =                                            R_TheBruto; }
 
-            if(R_TheBruto < razmjerniDioMinMioOsn) 
+            if(R_TheBruto < razmjerniDioMinMioOsn) // za one koji ne rade puni mjesec i one koji imaju prekovremeno?!
             {
                osnovicaDop = R_MioOsn = razmjerniDioMinMioOsn;
 
@@ -3482,8 +3482,19 @@ public class Ptrans : VvTransRecord
                R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
                osnovicaDop =                                            R_TheBruto;
       
-               R_Mio1Olk = CalcMio1Olaksica(pR, spent, 0.00M);
+               R_Mio1Olk = R_TheBruto > maxMioOsnova ? CalcMio1Olaksica(pR, spent, maxMioOsnova) : CalcMio1Olaksica(pR, spent, 0.00M);
                R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+            }
+
+            if(R_SatiUk == T_FondSati) //za pne koji su na bolovanju na teret poslodavca i imaju puni fond sati da im uzima punu MinMioOsnovicu a ne razmjerni dio
+            {
+               if(R_TheBruto.NotZero() && R_TheBruto < minMioOsnZaPuniFond)
+               {
+                  osnovicaDop = R_MioOsn = minMioOsnZaPuniFond;
+
+                  R_Mio1Olk = CalcMio1Olaksica(pR, spent, minMioOsnZaPuniFond);
+                  R_Mio1Osn = minMioOsnZaPuniFond - R_Mio1Olk;
+               }
             }
          }
       }
