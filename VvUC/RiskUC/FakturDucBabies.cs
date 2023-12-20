@@ -4683,7 +4683,15 @@ public class InventuraDUC        : FakturDUC
       R_KC_CreateColumn    (ZXC.Q4un          , 2, isVisible, "Iznos" , "Iznos");
 
       vvtbT_cij.JAM_ReadOnly = true;
-      vvtbT_kol.JAM_DisableNegativeNumberValues = true;
+
+      // 20.12.2024: metaflex treba, a mozda zatreba i drugima da mogu pisati negativne brojke 
+      // buduci sr INV, INM moze kumulirati ... pa za ispravke ...                             
+      // ... TH-u i dalje branimo                                                              
+      //vvtbT_kol.JAM_DisableNegativeNumberValues = true;
+      if(ZXC.IsTEXTHOany)
+      {
+         vvtbT_kol.JAM_DisableNegativeNumberValues = true;
+      }
 
    }
 
@@ -5625,7 +5633,14 @@ public class InventuraMPDUC      : FakturExtDUC
 
       vvtbT_cij.JAM_ReadOnly = true;
 
-      vvtbT_kol.JAM_DisableNegativeNumberValues = true;
+      // 20.12.2024: metaflex treba, a mozda zatreba i drugima da mogu pisati negativne brojke 
+      // buduci sr INV, INM moze kumulirati ... pa za ispravke ...                             
+      // ... TH-u i dalje branimo                                                              
+      //vvtbT_kol.JAM_DisableNegativeNumberValues = true;
+      if(ZXC.IsTEXTHOany)
+      {
+         vvtbT_kol.JAM_DisableNegativeNumberValues = true;
+      }
 
    }
 
