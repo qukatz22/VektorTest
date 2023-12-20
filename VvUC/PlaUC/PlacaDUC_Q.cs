@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Reflection;
+using static NalogDao;
 
 //public partial class PlacaDUC : VvPolyDocumRecordUC
 public partial class PlacaBaseDUC : VvPolyDocumRecordUC
@@ -296,6 +297,38 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       // 08.09.2014: 
       Fld_VrKoefBr1 = ZXC.CURR_prjkt_rec.VrKoefBr1;
+
+      bool jelTreba = placa_rec.DokDate.Year >= 2024 && (placa_rec.Transes.Any(ptr => ptr.T_stPorez1.IsZero()) ||
+                                                         placa_rec.Transes.Any(ptr => ptr.T_stPorez2.IsZero()));
+
+      if(jelTreba)
+      {
+         FillEmptyStopaPoreza1i2();
+      }
+   }
+
+   private void FillEmptyStopaPoreza1i2()
+   {
+      Ptrans ptrans_rec;
+      int rIdx;
+      VvLookUpItem porPlaLui;
+
+      for(rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
+      {
+         ptrans_rec = (Ptrans)GetDgvLineFields1(rIdx, false, null);
+
+         if(ptrans_rec.T_stPorez1.NotZero() && ptrans_rec.T_stPorez2.NotZero()) continue; // alles ok 
+
+         // znaci, fali nekome stPor 
+
+         porPlaLui = ZXC.luiListaPorPla.GetLuiForThisCd(ptrans_rec.T_opcCD);
+
+         if(porPlaLui != null)
+         {
+            TheG.PutCell(ci.iT_stPorez1, rIdx, porPlaLui.Number );
+            TheG.PutCell(ci.iT_stPorez2, rIdx, porPlaLui.Number2);
+         }
+      }
    }
 
    private string GetOneLetter4Invalid(Ptrans.InvalidEnum invalidEnum)
