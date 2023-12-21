@@ -413,7 +413,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       {
          case Ptrans.Mio1OlkKindEnum.NIJE  : return 0;
          case Ptrans.Mio1OlkKindEnum.Do0700: return 1;
-         case Ptrans.Mio1OlkKindEnum.Do1300: return 2;
+       //case Ptrans.Mio1OlkKindEnum.Do1300: return 2;
+         case Ptrans.Mio1OlkKindEnum.Do1300: return 1;
          case Ptrans.Mio1OlkKindEnum.Izjava: return 3;
          case Ptrans.Mio1OlkKindEnum.PorUpr: return 4;
 
