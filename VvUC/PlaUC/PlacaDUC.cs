@@ -1464,7 +1464,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void T_Mio1OlkKind_CreateColumn(int _width)
    {
     //vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_String_ColumnTemplate(    "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "...."); da ne dodu 0 kad je prazno
-      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "Fiksna olaksica za MIO 1 - kod vise poslodavaca");
+      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "Fiksna olaksica za MIO 1 - kod vise poslodavaca: 1-podaci PU, 2-izjava radnika");
 
       vvtbT_Mio1OlkKind.JAM_AllowedInputCharacters = "23";
       
