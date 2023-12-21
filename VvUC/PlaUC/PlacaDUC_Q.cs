@@ -411,12 +411,16 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       switch(mioEnum)
       {
-         case Ptrans.Mio1OlkKindEnum.NIJE  : return 0;
-         case Ptrans.Mio1OlkKindEnum.Do0700: return 1;
+       //case Ptrans.Mio1OlkKindEnum.NIJE  : return 0;
+       //case Ptrans.Mio1OlkKindEnum.Do0700: return 1;
        //case Ptrans.Mio1OlkKindEnum.Do1300: return 2;
-         case Ptrans.Mio1OlkKindEnum.Do1300: return 1;
-         case Ptrans.Mio1OlkKindEnum.Izjava: return 3;
-         case Ptrans.Mio1OlkKindEnum.PorUpr: return 4;
+       //case Ptrans.Mio1OlkKindEnum.Izjava: return 3;
+       //case Ptrans.Mio1OlkKindEnum.PorUpr: return 4;
+
+         case Ptrans.Mio1OlkKindEnum.NIJE   : return 0;
+         case Ptrans.Mio1OlkKindEnum.Od1Posl: return 1;
+         case Ptrans.Mio1OlkKindEnum.PorUpr : return 2;
+         case Ptrans.Mio1OlkKindEnum.Izjava : return 3;
 
          default: return 0;
       }
@@ -426,13 +430,18 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       switch(num)
       {
-         case 0: return Ptrans.Mio1OlkKindEnum.NIJE;
-         case 1: return Ptrans.Mio1OlkKindEnum.Do0700;
-         case 2: return Ptrans.Mio1OlkKindEnum.Do1300;
-         case 3: return Ptrans.Mio1OlkKindEnum.Izjava;
-         case 4: return Ptrans.Mio1OlkKindEnum.PorUpr;
+       //case 0: return Ptrans.Mio1OlkKindEnum.NIJE  ;
+       //case 1: return Ptrans.Mio1OlkKindEnum.Do0700;
+       //case 2: return Ptrans.Mio1OlkKindEnum.Do1300;
+       //case 3: return Ptrans.Mio1OlkKindEnum.Izjava;
+       //case 4: return Ptrans.Mio1OlkKindEnum.PorUpr;
 
-         default: return Ptrans.Mio1OlkKindEnum.NIJE;
+         case 0: return Ptrans.Mio1OlkKindEnum.NIJE   ;
+         case 1: return Ptrans.Mio1OlkKindEnum.Od1Posl;
+         case 2: return Ptrans.Mio1OlkKindEnum.PorUpr ;
+         case 3: return Ptrans.Mio1OlkKindEnum.Izjava ;
+                                                      
+         default: return Ptrans.Mio1OlkKindEnum.NIJE  ;
       }
    }
 

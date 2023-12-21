@@ -243,11 +243,16 @@ public class Ptrans : VvTransRecord
 
    public enum Mio1OlkKindEnum
    {
-      NIJE   = 0,
-      Do0700 = 1,
-      Do1300 = 2,
-      Izjava = 3,
-      PorUpr = 4,
+    //NIJE   = 0,
+    //Do0700 = 1,
+    //Do1300 = 2,
+    //Izjava = 3,
+    //PorUpr = 4,
+
+      NIJE    = 0,
+      Od1Posl = 1,
+      PorUpr  = 2,
+      Izjava  = 3,
    }
 
    #endregion Fildz
