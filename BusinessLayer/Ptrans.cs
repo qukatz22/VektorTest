@@ -3609,28 +3609,28 @@ public class Ptrans : VvTransRecord
          olaksicaNaUkupnibruto = ukupniTheBruto;
          theMio1Olaksica = olaksicaNaUkupnibruto - potrosenaOlaksica;
 
-         R_Mio1OlkKind = 1; // kada je kod jednog poslodavca i ima olaksicu bez obzira koju onda je 1
+         R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.Od1Posl; // kada je kod jednog poslodavca i ima olaksicu bez obzira koju onda je 1
       }
       else if(ukupniTheBruto <= pR._mio1Granica1)
       { 
          olaksicaNaUkupnibruto = pR._mio1FiksOlk;
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
 
-         R_Mio1OlkKind = 1; // kada je kod jednog poslodavca i ima olaksicu bez obzira koju onda je 1
-       }
+         R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.Od1Posl;//1; // kada je kod jednog poslodavca i ima olaksicu bez obzira koju onda je 1
+      }
       else if(ukupniTheBruto >  pR._mio1Granica1 && ukupniTheBruto <= pR._mio1Granica2)
       {
          olaksicaNaUkupnibruto = pR._mio1KoefOlk * (pR._mio1Granica2 - ukupniTheBruto);
          theMio1Olaksica       = olaksicaNaUkupnibruto - potrosenaOlaksica;
 
        //R_Mio1OlkKind = 2; 
-         R_Mio1OlkKind = 1; // kada je kod jednog poslodavca i ima olaksicu bez obzira koju onda je 1
+         R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.Od1Posl;//1; // kada je kod jednog poslodavca i ima olaksicu bez obzira koju onda je 1
       }
       else
       {
          theMio1Olaksica = 0.00M;
 
-         R_Mio1OlkKind = 0;
+         R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.NIJE;//0;
       }
 
       return theMio1Olaksica;
