@@ -1679,8 +1679,11 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
             InvKol  += rtr.T_kol ; // NotBene: JE kumulativ 
             InvKol2 += rtr.T_kol2; // NotBene: JE kumulativ 
 
-            InvFinNBC += InvKol * this.PrNabCij; // NotBene: JE kumulativ 
-            InvFinMPC += InvKol * this.MalopCij; // NotBene: JE kumulativ 
+            // 27.12.2024: ovo je bio BUG!!!
+          //InvFinNBC += InvKol    * this.PrNabCij; // NotBene: JE kumulativ 
+          //InvFinMPC += InvKol    * this.MalopCij; // NotBene: JE kumulativ 
+            InvFinNBC += rtr.T_kol * this.PrNabCij; // NotBene: JE kumulativ 
+            InvFinMPC += rtr.T_kol * this.MalopCij; // NotBene: JE kumulativ 
          }
          else // classic, NIJE kumulativ (ovako je bilo do 19.06.2023)
          { 
