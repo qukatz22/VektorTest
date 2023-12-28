@@ -1706,7 +1706,8 @@ public class PutNalFilterUC : VvFilterUC
       hamper.VvBottomMargin = ZXC.Qun4 + ZXC.Qun10;
 
       cbx_printNapomena = hamper.CreateVvCheckBox_OLD(0, 0, null, "Printaj napomenu", System.Windows.Forms.RightToLeft.No);
-      cbx_ocuPNIuKn     = hamper.CreateVvCheckBox_OLD(0, 1, null, " + Sume u kunama"   , System.Windows.Forms.RightToLeft.No);
+    //cbx_ocuPNIuKn     = hamper.CreateVvCheckBox_OLD(0, 1, null, " + Sume u kunama", System.Windows.Forms.RightToLeft.No);
+      cbx_ocuPNIuKn     = hamper.CreateVvCheckBox_OLD(0, 1, null, " + Sume u " + ZXC.EURorHRKstr, System.Windows.Forms.RightToLeft.No);
 
       if(TheVvUC is PutNalInoDUC) cbx_ocuPNIuKn.Visible = true;
       else                        cbx_ocuPNIuKn.Visible = false;
