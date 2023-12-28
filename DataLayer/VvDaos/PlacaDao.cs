@@ -895,6 +895,70 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       return (success);
    }
 
+   public bool COPY_KDC_MIXER_TABLE(XSqlConnection conn, string destDbName, string srcDbName, out int nora)
+   {
+      bool   success = true;
+
+      nora = -1;
+
+      ZXC.sqlErrNo = 0;
+
+      using(XSqlCommand cmd = VvSQL.COPY_KDC_MIXER_TABLE_Command(conn, Mixer.recordName, destDbName, srcDbName))
+      {
+         try                     { nora = cmd.ExecuteNonQuery(); }
+         catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "KDC Mixer", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+         catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+      }
+      if(!success) return false;
+
+      using(XSqlCommand cmd = VvSQL.COPY_KDC_MIXER_TABLE_Command(conn, Xtrans.recordName, destDbName, srcDbName))
+      {
+         try                     {        cmd.ExecuteNonQuery(); }
+         catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "KDC Xtrans", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+         catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+      }
+      // buduci da KDC ne treba Xtrano. za naki drugi tt, upali ako bude trebalo 
+    //using(XSqlCommand cmd = VvSQL.COPY_KDC_MIXER_TABLE_Command(conn, Xtrano.recordName, destDbName, srcDbName))
+    //{
+    //   try                     {        cmd.ExecuteNonQuery(); }
+    //   catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "KDC Xtrano", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+    //   catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+    //}
+      return (success);
+   }
+
+   public bool COPY_RASTER_MIXER_TABLE(XSqlConnection conn, string destDbName, string srcDbName, out int nora)
+   {
+      bool   success = true;
+
+      nora = -1;
+
+      ZXC.sqlErrNo = 0;
+
+      using(XSqlCommand cmd = VvSQL.COPY_RASTER_MIXER_TABLE_Command(conn, Mixer.recordName, destDbName, srcDbName))
+      {
+         try                     { nora = cmd.ExecuteNonQuery(); }
+         catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "Raster Mixer", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+         catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+      }
+      if(!success) return false;
+
+      using(XSqlCommand cmd = VvSQL.COPY_RASTER_MIXER_TABLE_Command(conn, Xtrans.recordName, destDbName, srcDbName))
+      {
+         try                     {        cmd.ExecuteNonQuery(); }
+         catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "Raster Xtrans", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+         catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+      }
+      // buduci da KDC ne treba Xtrano. za naki drugi tt, upali ako bude trebalo 
+    //using(XSqlCommand cmd = VvSQL.COPY_KDC_MIXER_TABLE_Command(conn, Xtrano.recordName, destDbName, srcDbName))
+    //{
+    //   try                     {        cmd.ExecuteNonQuery(); }
+    //   catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "KDC Xtrano", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+    //   catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+    //}
+      return (success);
+   }
+
    #endregion COPY_DECEMBAR_PLACA_TABLE
 
 }
