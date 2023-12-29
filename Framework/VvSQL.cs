@@ -6739,6 +6739,23 @@ public static class VvSQL
       return (cmd);
    }
 
+   //public static XSqlCommand COPY_0ZPC_FAKTUR_TABLE_Command(XSqlConnection conn, string tblname, string destDbName, string srcDbName)
+   //{
+   //   XSqlCommand cmd = InitCommand(conn);
+   //
+   //   string ttCol   = (tblname == Mixer.recordName ? "tt"      : "t_tt"     );
+   //   string dateCol = (tblname == Mixer.recordName ? "dokDate" : "t_dokDate");
+   //
+   //
+   //   cmd.CommandText = "INSERT INTO " + destDbName + "." + tblname + " SELECT * FROM " + "\n" +
+   //                                       srcDbName + "." + tblname + "\n" +
+   //
+   //                     "WHERE " + ttCol   + " = '" + Faktur.TT_ZPC + "'\n" +
+   //                     "AND   " + dateCol + " = '" + ZXC.projectYearFirstDay + "'\n";
+   //
+   //   return (cmd);
+   //}
+
    public static XSqlCommand Get_TABLE_Create_Time_Command(XSqlConnection conn, string dbName, string tblname)
    {
       XSqlCommand cmd = InitCommand(conn);

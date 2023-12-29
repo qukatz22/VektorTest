@@ -959,6 +959,33 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
       return (success);
    }
 
+   //public bool COPY_0ZPC_FAKTUR_TABLE(XSqlConnection conn, string destDbName, string srcDbName, out int nora)
+   //{
+   //   bool   success = true;
+   //
+   //   nora = -1;
+   //
+   //   ZXC.sqlErrNo = 0;
+   //
+   //   using(XSqlCommand cmd = VvSQL.COPY_0ZPC_FAKTUR_TABLE_Command(conn, Faktur.recordName, destDbName, srcDbName))
+   //   {
+   //      try                     { nora = cmd.ExecuteNonQuery(); }
+   //      catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "0ZPC Faktur", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+   //      catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+   //   }
+   //
+   //   if(!success) return false;
+   //
+   //   using(XSqlCommand cmd = VvSQL.COPY_0ZPC_FAKTUR_TABLE_Command(conn, Rtrans.recordName, destDbName, srcDbName))
+   //   {
+   //      try                     {        cmd.ExecuteNonQuery(); }
+   //      catch(XSqlException ex) { success = false; VvSQL.ReportSqlError("COPY_TABLE " + "0ZPC Rtrans", ex, System.Windows.Forms.MessageBoxButtons.OK); ZXC.sqlErrNo = ex.Number; }
+   //      catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+   //   }
+   //
+   //   return (success);
+   //}
+
    #endregion COPY_DECEMBAR_PLACA_TABLE
 
 }
