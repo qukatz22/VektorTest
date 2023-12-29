@@ -1542,6 +1542,13 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2023, 02, 27), TH_Cjenik_Kind._5WShop_5WCjenik_ },
       { new DateTime(2023, 06, 12), TH_Cjenik_Kind._5WShop_6WCjenik_ },
       { new DateTime(2023, 07, 24), TH_Cjenik_Kind._5WShop_5WCjenik_ },
+      { new DateTime(2023, 12, 11), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      
+      { new DateTime(2024, 01, 22), TH_Cjenik_Kind._5WShop_5WCjenik_ },
+      { new DateTime(2024, 02, 26), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      { new DateTime(2024, 04, 08), TH_Cjenik_Kind._5WShop_5WCjenik_ },
+      { new DateTime(2024, 05, 13), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      { new DateTime(2024, 06, 24), TH_Cjenik_Kind._5WShop_5WCjenik_ },
 
    };
 
@@ -1556,7 +1563,10 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2021, 12, 15), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },  
       { new DateTime(2022, 01, 12), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
       { new DateTime(2022, 12, 14), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
-      { new DateTime(2023, 01, 11), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ }
+      { new DateTime(2023, 01, 11), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
+
+      { new DateTime(2024, 11, 13), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
+      { new DateTime(2024, 12, 11), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
 
    };
 
@@ -2215,7 +2225,6 @@ public class TH_PriceRuleForCycleMoment
       //   new TH_PriceRuleForCycleMoment(6,    6,  7,  7M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 7 do  7kn" ),
       //};
 
-      // 23.12.2022. new 2023 EUR TH_PriceRuleList_W3_SRI_C3
       ZXC.TH_PriceRuleList_W5_C6 = new List<TH_PriceRuleForCycleMoment>()
       {
                                       // CK Tjed Dan  Max  Rbt HHprc  Letak  ExclsvKind   
