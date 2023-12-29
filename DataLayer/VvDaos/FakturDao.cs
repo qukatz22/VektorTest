@@ -4120,6 +4120,44 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       return theList;
    }
 
+   internal bool COPY_0ZPC_FAKTUR_TABLE(string thisYearDbName, XSqlConnection nextYearDbConnection, out int nora)
+   {
+      XSqlConnection thisYearDbConnection = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, ZXC.vvDB_User, ZXC.vvDB_Password, thisYearDbName);
+
+      nora = -1;
+
+      List<Faktur> faktur0ZPClist = new List<Faktur>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.dokDate], "theDate", ZXC.projectYearFirstDay, " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt     ], "tt"     , Faktur.TT_ZPC          , " = "));
+
+      bool OK = VvDaoBase.LoadGenericVvDataRecordList<Faktur>(thisYearDbConnection, faktur0ZPClist, filterMembers, "", "dokDate, ttSort, ttNum", true);
+
+      if(OK) faktur0ZPClist.ForEach(fak => fak.VvDao.LoadTranses(thisYearDbConnection, fak, false));
+
+      thisYearDbConnection.Close();
+
+      if(!OK || faktur0ZPClist.Count.IsZero()) return false;
+
+      Faktur ngFaktur_rec;
+      nora = 0;
+
+      foreach(Faktur faktur in faktur0ZPClist)
+      {
+         ngFaktur_rec = (Faktur)faktur.CreateNewRecordAndCloneItComplete();
+
+         ngFaktur_rec.DokDate = ZXC.nextYearFirstDay;
+
+         OK = ngFaktur_rec.VvDao.ADDREC(nextYearDbConnection, ngFaktur_rec);
+
+         if(OK) nora++;
+      }
+
+      return OK;
+   }
+
    #endregion GetPrihodTT_Skladista_InUse
 }
 
