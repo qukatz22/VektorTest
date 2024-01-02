@@ -6912,7 +6912,9 @@ public static class VvSQL
             "      r.t_tt != 'MSU' AND r.t_tt != 'MMU' AND r.t_tt != 'VMU' AND r.t_tt != 'MVU' AND r.t_tt != 'KUL' AND r.t_tt != 'PUK'    \n" +
             "GROUP BY f.recID                                                                                                             \n" +
             "HAVING SUM(r.t_kol) IS NOT NULL                                                                                              \n" +
-            "AND (ABS(f.s_ukK - SUM(r.t_kol)) >= 1 OR ABS(ABS(f.s_ukKC) - ABS(SUM(r.t_kol * r.t_cij))) >= 1)                              \n" ; break;
+            // 02.01.2024: 
+          //"AND (ABS(f.s_ukK - SUM(r.t_kol)) >= 1 OR ABS(ABS(f.s_ukKC) - ABS(SUM(      r.t_kol * r.t_cij    ))) >= 1)                              \n" ; break;
+            "AND (ABS(f.s_ukK - SUM(r.t_kol)) >= 1 OR ABS(ABS(f.s_ukKC) - ABS(SUM(ROUND(r.t_kol * r.t_cij, 2)))) >= 1)                              \n"; break;
 
          case ZXC.MySqlCheck_Kind.K_TwinRtransVsArtstatCij: cmd.CommandText =
             "SELECT R.t_tt, R.t_ttNum, R.*                       " + "\n" +
