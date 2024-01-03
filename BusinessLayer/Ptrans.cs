@@ -3506,12 +3506,16 @@ public class Ptrans : VvTransRecord
 
       #endregion razmjerniDioMinMioOsn (novo 26.11.2014.)
 
-      if(placaTT == Placa.TT_PLACAUNARAVI)
+      if(placaTT == Placa.TT_PLACAUNARAVI)// !!! ovo je pitanje da li ide na olaksice ili ne ide !!!!!
       {
          osnovicaDop = R_MioOsn = R_TheBruto;
 
-         R_Mio1Olk = CalcMio1Olaksica(pR, spent, 0.00M);
-         R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+       //03.01.2024. - ne uzimati olaksice kada je PN i oznaka 0021
+       //R_Mio1Olk = CalcMio1Olaksica(pR, spent, 0.00M);
+       //R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+
+         R_Mio1Olk = 0.00M;
+         R_Mio1Osn = R_TheBruto;
       }
 
       if(T_isMioII == true) // covjek JE u II MIO stupu 
@@ -3628,7 +3632,9 @@ public class Ptrans : VvTransRecord
       }
       else
       {
-         theMio1Olaksica = 0.00M;
+       //02.01.2024. i ovdje bi trebalo umanjiti olakšicu za već potrošenuOlakšicu
+       //theMio1Olaksica = 0.00M;
+         theMio1Olaksica = 0.00M - potrosenaOlaksica;
 
          R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.NIJE;//0;
       }
