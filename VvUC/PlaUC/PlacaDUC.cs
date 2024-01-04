@@ -1453,7 +1453,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    }
    protected void T_fixMio1Olak_CreateColumn(int _width, int numOfDecimalPlaces)
    {
-      vvtbT_fixMio1Olak = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_fixMio1Olak", TheVvDaoTrans, DB_Tci.t_fixMio1Olak, "Fiksna olaksica ya MIO 1 - kod vise poslodavaca");
+      vvtbT_fixMio1Olak = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_fixMio1Olak", TheVvDaoTrans, DB_Tci.t_fixMio1Olak, "Fiksna olakšica za MIO1, radnik kod više poslodavaca, iznos olakšice na osnovu izjave radnika ili PU");
       vvtbT_fixMio1Olak.JAM_ShouldCalcTransAndSumGrid = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_fixMio1Olak, TheVvDaoTrans, DB_Tci.t_fixMio1Olak, "FixMio1Olk", _width);
@@ -1464,7 +1464,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    protected void T_Mio1OlkKind_CreateColumn(int _width)
    {
     //vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_String_ColumnTemplate(    "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "...."); da ne dodu 0 kad je prazno
-      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "Fiksna olaksica za MIO 1 - kod vise poslodavaca: 1-podaci PU, 2-izjava radnika");
+      vvtbT_Mio1OlkKind = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb4ColT_Mio1OlkKind", TheVvDaoTrans, DB_Tci.t_Mio1OlkKind, "Oznaka MIO1 olakšice radnika kod više poslodavaca: 2-podaci PU, 3-izjava radnika");
 
       vvtbT_Mio1OlkKind.JAM_AllowedInputCharacters = "23";
       
@@ -2068,7 +2068,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    
    protected void R_mio1Olk_CreateColumn(int _width, int numOfDecimalPlaces)
    {
-      vvtbT_mio1Olk = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Olk", null, -12, "Olaksica za MIO I");
+      vvtbT_mio1Olk = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Olk", null, -12, "Olaksica za MIO 1.stup");
       vvtbT_mio1Olk.JAM_ReadOnly = true;
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Olk, null, "R_mio1Olk", "MIO I Olk", _width);
 
@@ -2079,7 +2079,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    }
    protected void R_mio1Osn_CreateColumn(int _width, int numOfDecimalPlaces)
    {
-      vvtbT_mio1Osn = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Osn", null, -12, "Osnovica za MIO I");
+      vvtbT_mio1Osn = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_mio1Osn", null, -12, "Osnovica za MIO 1.stup");
       vvtbT_mio1Osn.JAM_ReadOnly = true;
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_mio1Osn, null, "R_mio1Osn", "MIO I Osn", _width);
 
