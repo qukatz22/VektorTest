@@ -2318,9 +2318,15 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
          if(T_skladDate > ZXC.Date06062023)
          {
-            R_rbt1   += 0.02M;
-            R_KCRP   -= 0.02M;
-            pdvBruto -= 0.02M;
+            decimal correction = 0.02M;
+            if(R_KCRP.IsNegative() && T_skladDate > ZXC.Date04012024)
+            {
+               correction = -correction;
+            }
+
+            R_rbt1   += correction;
+            R_KCRP   -= correction;
+            pdvBruto -= correction;
          }
          else
          {
