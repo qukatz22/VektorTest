@@ -749,7 +749,15 @@ public partial class PutNalDUC : MixerDUC
     
     //if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = 170.00m; od 01.09.2019. je 200kn
     //if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = 200.00M;
-      if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M : 26.55M; //euro dnevnica 25.01.2023.?!
+
+      decimal dnevnica;
+
+           if(ZXC.projectYearAsInt <= 2022) dnevnica = 200.00M;  // kn
+      else if(ZXC.projectYearAsInt == 2023) dnevnica =  26.55M;  // eur
+      else                                  dnevnica =  30.00M;  // eur
+
+    //if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M : 26.55M; //euro dnevnica 25.01.2023.?!
+      if(CtrlOK(tbx_iznosDnev) && this is PutNalTuzDUC) Fld_IznosDnev = dnevnica; 
    }
 
    /*protected*/public override void PutSpecificsFld()
@@ -933,6 +941,13 @@ public partial class PutNalDUC : MixerDUC
 
    public void DatePutaExitMethod(object sender, EventArgs e)
    {
+
+      decimal dnevnica;
+
+           if(ZXC.projectYearAsInt <= 2022) dnevnica = 200.00M;  // kn
+      else if(ZXC.projectYearAsInt == 2023) dnevnica =  26.55M;  // eur
+      else                                  dnevnica =  30.00M;  // eur
+
       if(Fld_DatePuta > DateTimePicker.MinimumDateTime && Fld_DatePuta < ZXC.Date01092019)
       {
          Fld_IznosDnev = 170.00M;
@@ -940,7 +955,11 @@ public partial class PutNalDUC : MixerDUC
       else
       {
        //Fld_IznosDnev = 200.00M;
-         Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M : 26.55M; //euro dnevnica 25.01.2023.?
+       //Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M : 26.55M; //euro dnevnica 25.01.2023.?
+       //Fld_IznosDnev = ZXC.projectYearAsInt <= 2022 ? 200.00M :
+       //                ZXC.projectYearAsInt == 2023 ? 26.55M  : 30.00M;
+         
+         Fld_IznosDnev = dnevnica;
       }
    }
 

@@ -3388,7 +3388,10 @@ public class Ptrans : VvTransRecord
       {
          osnovicaDop = R_MioOsn = R_Mio1Osn = 0.00M;
       }
-      else if(placaTT == Placa.TT_OSTALIPRIM)//novo u 2024
+      else if(placaTT == Placa.TT_OSTALIPRIM   || 
+              placaTT == Placa.TT_SAMODOPRINOS ||
+              placaTT == Placa.TT_STRUCNOOSPOS ||
+              placaTT == Placa.TT_PODUZETPLACA   )
       { 
          osnovicaDop = R_MioOsn = R_Mio1Osn = R_TheBruto; 
       }
@@ -3433,8 +3436,7 @@ public class Ptrans : VvTransRecord
 
          razmjerniDioMinMioOsnZaClUpr = ZXC.DivSafe(minDopOsnZaPuniFondClUp, satiRadaZaRazmjerniDio) * satiRadaBezPrekovrIznadFonda; // razmjerni dio osnovice za doprinose na osnovu koliko je sati CLAN UPRAVE radio
 
-//todo provjeri ove slucajeve!!!!!!!
-         if(placaTT == Placa.TT_NEPLACDOPUST || placaTT == Placa.TT_STRUCNOOSPOS)
+         if(placaTT == Placa.TT_NEPLACDOPUST)
          {
             osnovicaDop = R_MioOsn = razmjerniDioMinMioOsn;
          }
@@ -3486,9 +3488,16 @@ public class Ptrans : VvTransRecord
             { 
                R_MioOsn    = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_TheBruto;
                osnovicaDop =                                            R_TheBruto;
-      
-               R_Mio1Olk = R_TheBruto > maxMioOsnova ? CalcMio1Olaksica(pR, spent, maxMioOsnova) : CalcMio1Olaksica(pR, spent, 0.00M);
-               R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+
+               if(placaTT == Placa.TT_PODUZETPLACA)
+               {
+                  R_Mio1Osn = R_MioOsn;
+               }
+               else
+               {
+                  R_Mio1Olk = R_TheBruto > maxMioOsnova ? CalcMio1Olaksica(pR, spent, maxMioOsnova) : CalcMio1Olaksica(pR, spent, 0.00M);
+                  R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+               }
             }
 
             if(R_SatiUk == T_FondSati) //za pne koji su na bolovanju na teret poslodavca i imaju puni fond sati da im uzima punu MinMioOsnovicu a ne razmjerni dio
