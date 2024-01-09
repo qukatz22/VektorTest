@@ -687,6 +687,8 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
 
    private static bool ShouldSkipThsiPI(PropertyInfo pi, object olderValue)
    {
+      // 09.01.2023: 
+      if(olderValue == null) return true;
       if(
          pi.Name.Contains("RecID" ) ||
          pi.Name.Contains("ModTS" ) ||
