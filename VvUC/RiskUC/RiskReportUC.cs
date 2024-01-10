@@ -7175,6 +7175,17 @@ public class FakturDocFilterUC    : VvFilterUC
          rbt_ira5.Visible = tbx_obrazacE.Visible = false;
 
       }
+      else if(TheVvUC is IZMDUC || TheVvUC is IZMDUC_2)
+      {
+         rbt_ira2    .Visible =
+         tbx_obrazacB.Visible =true;
+         rbt_ira3    .Visible =
+         rbt_ira4    .Visible =
+         tbx_obrazacC.Visible = 
+         tbx_obrazacD.Visible = false;
+         rbt_ira5.Visible = tbx_obrazacE.Visible = false;
+
+      }
 
       else
       {

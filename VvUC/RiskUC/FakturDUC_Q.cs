@@ -6277,9 +6277,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
             }
 
-         
-         
-         
          case Faktur.TT_PNM   :
             switch(subDsc)
             {
@@ -6288,6 +6285,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                case 2: return ZXC.dscLuiLst_PNM_2;
                case 3: return ZXC.dscLuiLst_PNM_3;
                case 4: return ZXC.dscLuiLst_PNM_4;
+               default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
+            }
+
+         case Faktur.TT_IZM:
+            switch(subDsc)
+            {
+               case 0: case 1: return ZXC.dscLuiLst_IZM;
+               case 2:         return ZXC.dscLuiLst_IZM_2;
                default: ZXC.aim_emsg("FakturDUC_Q.GetDscLuiListForThisName(): LookUpListName (" + theTT + ", subDSC: " + subDsc + ") still undone!"); return null;
             }
 
@@ -6325,7 +6330,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          case Faktur.TT_PIP   : return ZXC.dscLuiLst_PIP;
          case Faktur.TT_POV   : return ZXC.dscLuiLst_POV;
          case Faktur.TT_MSI   : return ZXC.dscLuiLst_MSI;
-         case Faktur.TT_IZM   : return ZXC.dscLuiLst_IZM;
          case Faktur.TT_KIZ   : return ZXC.dscLuiLst_KIZ;
          case Faktur.TT_PIK   : return ZXC.dscLuiLst_PIK;
          
@@ -8041,22 +8045,43 @@ public class PrnFakDsc : VvLookupAsDsc
 
       }
       else if(TT == Faktur.TT_IZM)
-      { 
-         Dsc_Title = "Izdatnica";
+      {
+         if(luiList == ZXC.dscLuiLst_IZM)
+         { 
+            Dsc_Title = "Izdatnica";
 
-         Dsc_T_artiklCD =
-         Dsc_T_artiklName =
-         Dsc_T_jedMj =
-         Dsc_T_kol =
-         Dsc_T_cij =
-         Dsc_T_rbt1St =
-         Dsc_R_KCR =
-         Dsc_R_KCRMP = true;
+            Dsc_T_artiklCD =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj =
+            Dsc_T_kol =
+            Dsc_T_cij =
+            Dsc_T_rbt1St =
+            Dsc_R_KCR =
+            Dsc_R_KCRMP = true;
 
-         Dsc_SignPrimaoc = true;
-         Dsc_LblPrimio = "Robu preuzeo:";
+            Dsc_SignPrimaoc = true;
+            Dsc_LblPrimio = "Robu preuzeo:";
 
-         Dsc_OcuR12 = false;
+            Dsc_OcuR12 = false;
+         }
+         else if(luiList == ZXC.dscLuiLst_IZM_2)
+         { 
+            Dsc_Title = "Izdatnica";
+
+            Dsc_T_artiklCD   =
+            Dsc_T_artiklName =
+            Dsc_T_jedMj      =
+            Dsc_T_kol        =
+            Dsc_T_cij        =
+            Dsc_T_rbt1St     =
+            Dsc_R_KCR        =
+            Dsc_R_KCRMP      = true;
+
+            Dsc_SignPrimaoc = true;
+            Dsc_LblPrimio   = "Robu preuzeo:";
+
+            Dsc_OcuR12 = false;
+         }
 
       }
 
