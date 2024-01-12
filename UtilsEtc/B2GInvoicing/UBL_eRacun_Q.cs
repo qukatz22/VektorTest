@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -1338,7 +1339,17 @@ namespace EN16931.UBL
             case "BT002 Dosp": theDate = faktur_rec.DospDate; break; //BT-2 Dospjece placanja
             case "BT072"     : theDate = faktur_rec.DokDate ; break; // 24.06.2019.ActualDeliveryDate
 
-            case "BTqwe"     : theDate = faktur_rec.PdvDate ; break; // 14.12.2020. prema uputama u mailu koji namposla moj-eRacun 14.12. 
+            // 12.01.2024:
+          //case "BTqwe"     : theDate = faktur_rec.PdvDate ; break; // 14.12.2020. prema uputama u mailu koji namposla moj-eRacun 14.12. 
+            case "BTqwe"     :
+               theDate = faktur_rec.PdvDate ; 
+
+               if(theDate.IsEmpty())
+               {
+                  theDate = faktur_rec.DokDate;
+               }
+
+               break; // 14.12.2020. prema uputama u mailu koji namposla moj-eRacun 14.12. 
 
             default: theDate = DateTime.MinValue; break;
          }
