@@ -1825,6 +1825,34 @@ public static class VvSQL
        //(ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA ||  ZXC.vvDB_IsLocalhost                                                       )) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
          (ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA || (ZXC.vvDB_IsLocalhost && ZXC.CURR_userName == ZXC.vvDB_programSuperUserName))) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
 
+
+
+
+      #region Roll In Past
+
+      //int thisYear = ZXC.projectYearAsInt;
+      //
+      //bool prevYearExists = true;
+      //
+      //XSqlConnection currPrervYear_conn;
+      //string         currPrervYear_dbname;
+      //
+      //for(int currPrevYear = thisYear - 1; prevYearExists; --currPrevYear)
+      //{
+      //   if(currPrevYear < 2010) break; // safety 
+      //
+      //   if(dbName == ZXC.VvDB_prjktDB_Name) continue;
+      //
+      //   currPrervYear_dbname = ChangeYearInDbName(currPrevYear, dbName);
+      //
+      //   currPrervYear_conn   = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, ZXC.vvDB_User, ZXC.vvDB_Password, currPrervYear_dbname);
+      //}
+
+      #endregion Roll In Past
+
+
+
+
       if(actualInFileTableVersion == lastNewestCurrentTableVersion)
       {
          ZXC.ClearStatusText();
@@ -1833,11 +1861,32 @@ public static class VvSQL
       else
       {
          bool OK = ALTER_TABLE_ForCatchUp(conn, dbName, tableName, actualInFileTableVersion, lastNewestCurrentTableVersion, vvTableMetaData);
-         
+
+         #region Roll In Past
+
+         //int thisYear = ZXC.projectYearAsInt;
+         //int prevYear = thisYear - 1;
+         //
+         //bool prevYearExists = true;
+         //
+         //XSqlConnection currPrervYearConn;
+         //
+         //for(int currPrevYear = thisYear - 1; prevYearExists; --currPrevYear)
+         //{
+         //   currPrervYearConn = ZXC.TheSecondDbConn_SameDB_OtherYear(currPrevYear);
+         //}
+
+         #endregion Roll In Past
+
          ZXC.ClearStatusText();
          return OK;
       }
 
+   }
+
+   private static string ChangeYearInDbName(int prevYear, string dbName)
+   {
+      return dbName.Replace(ZXC.projectYear, prevYear.ToString());
    }
 
    private static bool VvSqlMaintenanceCheckTable(XSqlConnection conn, string dbName, string tableName)
