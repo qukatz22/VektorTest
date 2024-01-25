@@ -8681,8 +8681,9 @@ public partial class FakturExtDUC : FakturDUC
     //hamper = new VvHamper(4, 1, "", null, false);
       hamper = new VvHamper(4, 2, "", null, false);
 
-      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q5un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun2 + 2 * faBefCol, ZXC.Q2un + ZXC.Qun4, ZXC.Q3un - ZXC.Qun4 };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
+    //hamper.VvColWdt      = new int[] { labelWidth   , ZXC.Q5un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun2 + 2 * faBefCol, ZXC.Q2un + ZXC.Qun4, ZXC.Q3un - ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { labelWidth   , ZXC.Q5un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun2 + 2 * faBefCol, isTetragram ? ZXC.QUN + ZXC.Qun4 : ZXC.Q2un + ZXC.Qun4, isTetragram ? ZXC.Q4un - ZXC.Qun4 : ZXC.Q3un - ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol,                                                 faBefCol,                                               faBefCol,                                                faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt     = new int[] { ZXC.QUN , isTetragram ? ZXC.QUN  : 0 };
@@ -8693,9 +8694,13 @@ public partial class FakturExtDUC : FakturDUC
       tbx_NacPlac = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_NacPlac", "Način plaćanja", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.nacPlac));
       tbx_NacPlac.JAM_MustTabOutBeforeSubmit = true;
 
-      cbx_isCash = hamper.CreateVvCheckBox_OLD(2, 0, null, "Got", RightToLeft.No);
+    //cbx_isCash = hamper.CreateVvCheckBox_OLD(2, 0, null, "Got", RightToLeft.No);
+      cbx_isCash = hamper.CreateVvCheckBox_OLD(2, 0, null, isTetragram ? "" : "Got", RightToLeft.No);
       cbx_isCash.Name = "IsCash";
       cbx_isCash.Enabled = false;
+
+      tbx_S_ukKCRP_NP1 = hamper.CreateVvTextBox(3, 0, "tbx_S_ukKCRP_NP1", "Iznos NP1", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.s_ukKCRP_NP2));
+      tbx_S_ukKCRP_NP1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
       tbx_NacPlacRbt = hamper.CreateVvTextBoxLookUp(3, 0, "tbx_NacPlacRbt", "Način plaćanja - Rabat", 12);
       tbx_NacPlacRbt.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
@@ -8707,14 +8712,12 @@ public partial class FakturExtDUC : FakturDUC
       tbx_NacPlacRbt.JAM_ReadOnly = true;
       tbx_NacPlacRbt.JAM_IsForPercent = true;
 
-      tbx_S_ukKCRP_NP1 = hamper.CreateVvTextBox(3, 0, "tbx_S_ukKCRP_NP1", "Iznos NP1", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.s_ukKCRP_NP2));
-      tbx_S_ukKCRP_NP1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
       Label lbl_np2    = hamper.CreateVvLabel(0, 1, "NačinPl2:", ContentAlignment.MiddleRight);
       tbx_NacPlac2 = hamper.CreateVvTextBoxLookUp(1, 1, "tbx_NacPlac2", "Način plaćanja 2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.nacPlac2));
       tbx_NacPlac2.JAM_MustTabOutBeforeSubmit = true;
 
-      cbx_isCash2 = hamper.CreateVvCheckBox_OLD(2, 1, null, "Got", RightToLeft.No);
+      cbx_isCash2 = hamper.CreateVvCheckBox_OLD(2, 1, null, "", RightToLeft.No);
       cbx_isCash2.Name = "IsCash2";
       cbx_isCash2.Enabled = false;
 
