@@ -239,6 +239,10 @@ public struct FaktExStruct
    /*192 */ /*internal*/ public decimal _skiz_ukKC     ;
    /*193 */ /*internal*/ public decimal _skiz_ukKCR    ;
    /*194 */ /*internal*/ public decimal _skiz_ukRbt1   ;
+
+   /*195 */ /*internal*/ public decimal _s_ukKCRP_NP2  ;
+   /*196 */ /*internal*/ public string  _nacPlac2      ;
+   /*197 */ /*internal*/ public bool    _isNpCash2     ; 
                                     
 }
 
@@ -611,7 +615,10 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       decimal           _S_ukMskPNP    ,
       decimal           _Skiz_ukKC     ,
       decimal           _Skiz_ukKCR    ,
-      decimal           _Skiz_ukRbt1   
+      decimal           _Skiz_ukRbt1   ,
+      decimal           _S_ukKCRP_NP2  ,
+      string            _NacPlac2      ,
+      bool              _IsNpCash2
       )
       : this(0)
    {
@@ -738,7 +745,10 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       this.S_ukMskPNP     = _S_ukMskPNP   ; 
       this.Skiz_ukKC      = _Skiz_ukKC    ; 
       this.Skiz_ukKCR     = _Skiz_ukKCR   ; 
-      this.Skiz_ukRbt1    = _Skiz_ukRbt1  ; 
+      this.Skiz_ukRbt1    = _Skiz_ukRbt1  ;
+      this.S_ukKCRP_NP2   = _S_ukKCRP_NP2 ;
+      this.NacPlac2       = _NacPlac2     ;
+      this.IsNpCash2      = _IsNpCash2    ;
    }
 
    #endregion Constructors
@@ -746,12 +756,12 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    #region Sorters
 
    // 26.03.2018: sorter sorterTtRecID additions ... kasnije abortirao kao NEUSPJEH 
- //public static VvSQL.RecordSorter sorterTtRecID = new VvSQL.RecordSorter(Faktur.recordName, Faktur.recordNameArhiva, new VvSQL.IndexSegment[]
- //   {
- //      new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.ttSort]),
- //      new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recID ]),
- //      new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer] , true)
- //   }, "TtRecID", VvSQL.SorterType.NewRecID, false);
+   //public static VvSQL.RecordSorter sorterTtRecID = new VvSQL.RecordSorter(Faktur.recordName, Faktur.recordNameArhiva, new VvSQL.IndexSegment[]
+   //   {
+   //      new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.ttSort]),
+   //      new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recID ]),
+   //      new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer] , true)
+   //   }, "TtRecID", VvSQL.SorterType.NewRecID, false);
 
    public static VvSQL.RecordSorter sorterTtNum = new VvSQL.RecordSorter(Faktur.recordName, Faktur.recordNameArhiva, new VvSQL.IndexSegment[]  
       {
@@ -2116,6 +2126,14 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*192 */ public decimal Skiz_ukKC         { get { return this.TheEx.currentData._skiz_ukKC     ; } set { this.TheEx.currentData._skiz_ukKC      = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*193 */ public decimal Skiz_ukKCR        { get { return this.TheEx.currentData._skiz_ukKCR    ; } set { this.TheEx.currentData._skiz_ukKCR     = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*194 */ public decimal Skiz_ukRbt1       { get { return this.TheEx.currentData._skiz_ukRbt1   ; } set { this.TheEx.currentData._skiz_ukRbt1    = value; } }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP2      { get { return this.TheEx.currentData._s_ukKCRP_NP2  ; } set { this.TheEx.currentData._s_ukKCRP_NP2   = value; } }
+                                                      /*196 */ public string  NacPlac2          { get { return this.TheEx.currentData._nacPlac2      ; } set { this.TheEx.currentData._nacPlac2       = value; } }
+
+   /* 197 */ public bool  IsNpCash2
+   {
+      get { return                  this.TheEx.currentData._isNpCash2; }
+      set {                         this.TheEx.currentData._isNpCash2 =         value; }
+   }
 
    #endregion Data Layer Columns
 
@@ -2571,7 +2589,6 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal TrnSum_kizKC    { get { return this.TrnNonDel.Sum(rtrn => rtrn.Rkiz_KC)   ; } }
    public decimal TrnSum_kizKCR   { get { return this.TrnNonDel.Sum(rtrn => rtrn.Rkiz_KCR)  ; } }
    public decimal TrnSum_kizRbt1  { get { return this.TrnNonDel.Sum(rtrn => rtrn.Rkiz_rbt1) ; } }
-
    public decimal TrnSum_MSK   { get { return (TtInfo.IsSplitTTMalULAZ ? this.TrnNonDel_PULX_ALL.Sum(rtrn => rtrn.R_MSK   ) : this.TrnNonDel.Sum(rtrn => rtrn.R_MSK   ));} }
    public decimal TrnSum_MSK_00{ get { return this.TrnNonDel.Sum(rtrn => rtrn.R_MSK_00);} }
    public decimal TrnSum_MSK_10{ get { return this.TrnNonDel.Sum(rtrn => rtrn.R_MSK_10);} }
@@ -3286,10 +3303,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal   R_Ira_Ruv    { get { return (/*R_Ira_PV*/ R_ukKCR_rob - R_Ira_NV  ); } }
 
    public decimal Ira_RUV        { get { return Ira_ROB_Ruv + Ira_USL_PV; } }
+   public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP2.NotZero(); } }
+   public bool    R_IsNpCashAny  { get { return this.IsNpCash || this.IsNpCash2; } }
 
-   public decimal R_ukKCRP_cash { get { return ( this.IsNpCash ? this.S_ukKCRP : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_NP1  { get { return ( this.S_ukKCRP - this.S_ukKCRP_NP2); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+
+ //public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.R_ukKCRP_NP1 : 0M) +
+                                                (this.IsNpCash2 ? this.S_ukKCRP_NP2 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
    public decimal K_ukKCRP_cash { get; set;                                             } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash ? this.S_ukKCRP : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+
+ //public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.R_ukKCRP_NP1 : 0M) +
+                                               (!this.IsNpCash2 ? this.S_ukKCRP_NP2 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
    public decimal K_ukKCRP_ziro { get; set;                                             } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
    // 21.09.2022: 
@@ -4297,8 +4323,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       this.Skiz_ukKC      = fakturList.Sum(f => f.Skiz_ukKC     );
       this.Skiz_ukKCR     = fakturList.Sum(f => f.Skiz_ukKCR    );
       this.Skiz_ukRbt1    = fakturList.Sum(f => f.Skiz_ukRbt1   );
-
-
+      this.S_ukKCRP_NP2   = fakturList.Sum(f => f.S_ukKCRP_NP2  );
    }
 
    public void RatioValuesOnR2Uplata()
@@ -4415,6 +4440,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       this.Skiz_ukKC      *= ratio;
       this.Skiz_ukKCR     *= ratio;
       this.Skiz_ukRbt1    *= ratio;
+      this.S_ukKCRP_NP2   *= ratio;
    }
 
    internal string TT_And_TtNum 
@@ -4894,6 +4920,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          // Za sve načine plaćanja koji nisu prije
          // navedeni koristiti će se oznaka ‘Ostalo’.
 
+         // Novo u 2024: 
+         if(this.R_IsNpMix == true) return Raverus.FiskalizacijaDEV.Schema.NacinPlacanjaType.O; // O – ostalo              
+
          if(this.IsNpCash == true) return Raverus.FiskalizacijaDEV.Schema.NacinPlacanjaType.G; // G – gotovina 
             
          if(
@@ -4933,6 +4962,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          // 'Ostalo'.
          // Za sve načine plaćanja koji nisu prije
          // navedeni koristiti će se oznaka ‘Ostalo’.
+
+         // Novo u 2024: 
+         if(this.TheEx.BackupData._s_ukKCRP_NP2.NotZero()) return Raverus.FiskalizacijaDEV.Schema.NacinPlacanjaType.O; // O – ostalo              
 
          if(this.TheEx.BackupData._isNpCash == true) return Raverus.FiskalizacijaDEV.Schema.NacinPlacanjaType.G; // G – gotovina 
             
@@ -5383,6 +5415,9 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*192 */    this.currentData._skiz_ukKC      = decimal.Zero;
       /*193 */    this.currentData._skiz_ukKCR     = decimal.Zero;
       /*194 */    this.currentData._skiz_ukRbt1    = decimal.Zero;
+      /*195 */    this.currentData._s_ukKCRP_NP2   = decimal.Zero;
+      /*196 */    this.currentData._nacPlac2       = ""          ;
+      /*197 */    this.currentData._isNpCash2      = false       ;
    }
 
    #endregion Constructors
@@ -6278,6 +6313,14 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*192 */ public decimal Skiz_ukKC         { get { return this.currentData._skiz_ukKC     ; } set { this.currentData._skiz_ukKC      = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*193 */ public decimal Skiz_ukKCR        { get { return this.currentData._skiz_ukKCR    ; } set { this.currentData._skiz_ukKCR     = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*194 */ public decimal Skiz_ukRbt1       { get { return this.currentData._skiz_ukRbt1   ; } set { this.currentData._skiz_ukRbt1    = value; } }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP2      { get { return this.currentData._s_ukKCRP_NP2  ; } set { this.currentData._s_ukKCRP_NP2   = value; } }
+                                                      /*196 */ public string NacPlac2           { get { return this.currentData._nacPlac2      ; } set { this.currentData._nacPlac2       = value; } }
+
+   /* 197 */ public bool IsNpCash2
+   {
+      get { return                  this.currentData._isNpCash2; }
+      set {                         this.currentData._isNpCash2 =         value; }
+   }
 
    #endregion Data Layer Columns
 

@@ -7902,6 +7902,139 @@ public class VvArtikl_FRAG_Importer : VvDataRecordImporter
 
 }
 
+public class VvKupdob_TGPLEM_Importer : VvDataRecordImporter
+{
+   private List<RawData> RawDataList { get; set; }
+
+   internal struct RawData
+   {
+      /* A 01 */  internal string _kupdobCD  ;
+      /* B 02 */  internal string _kupdobName;
+      /* C 03 */  internal string _oib       ;
+      /* D 04 */  internal string _adresa    ;
+      /* E 05 */  internal string _ptt       ;
+      /* F 06 */  internal string _grad      ;
+      /* G 07 */  internal string _telefon   ;
+      /* H 08 */  internal string _telefax   ;
+      /* I 09 */  internal string _mail      ;
+      /* J 10 */  internal string _iban      ;
+      /* K 11 */  internal string _kontakt   ;
+      /* L 12 */  internal string _napomena  ;
+   }
+
+   public VvKupdob_TGPLEM_Importer(XSqlConnection conn, string fullPathFileName, string delimiter) : base(conn, fullPathFileName, delimiter)
+   {
+      this.RawDataList = new List<RawData>();
+   }
+
+   protected override void ProcessLine(XSqlConnection conn, ref ushort line, bool addrecGoesOnPostprocess)
+   {
+      RawData rawDatStruct = new RawData();
+
+      rawDatStruct._kupdobCD   = GetString ( 1);
+      rawDatStruct._kupdobName = GetString ( 2);
+      rawDatStruct._oib        = GetString ( 3);
+      rawDatStruct._adresa     = GetString ( 4);
+      rawDatStruct._ptt        = GetString ( 5);
+      rawDatStruct._grad       = GetString ( 6);
+      rawDatStruct._telefon    = GetString ( 7);
+      rawDatStruct._telefax    = GetString ( 8);
+      rawDatStruct._mail       = GetString ( 9);
+      rawDatStruct._iban       = GetString (10);
+      rawDatStruct._kontakt    = GetString (11);
+      rawDatStruct._napomena   = GetString (12);
+
+      if(addrecGoesOnPostprocess == true) // ne bus jos nis ADDREC-al, samo spremi u listu za PostProcessLines(). 
+      {
+         this.RawDataList.Add(rawDatStruct);
+      }
+      else // Odmah ADDREC-aj, PostProcessLines() nije potrebno. 
+      {
+
+      }
+
+   }
+
+   protected override void PostProcessLines(XSqlConnection conn)
+   {
+      Kupdob kupdob_rec = new Kupdob();
+
+      bool dbOK=true, isFirma;
+      int errCount = 0, okCount=0;
+      List<string> errMessageList = null;
+
+      uint   currCentCD = 0, kupdobCD = 1000;
+      string currCentTK = "";
+
+      foreach(RawData rawDatStruct in this.RawDataList)
+      {
+         kupdob_rec.Memset0(0);
+
+       //artikl_rec.KupdobCD = (rawDatStruct._kupdobCD);
+         kupdob_rec.KupdobCD = ++kupdobCD;
+         kupdob_rec.Url      = LimitedStr(rawDatStruct._kupdobCD,   ZXC.KpdbCI.url    );
+         kupdob_rec.Oib      = LimitedStr(rawDatStruct._oib,        ZXC.KpdbCI.oib    );
+         kupdob_rec.Url      = LimitedStr(rawDatStruct._kupdobCD  , ZXC.KpdbCI.url    );
+         kupdob_rec.Naziv    = LimitedStr(rawDatStruct._kupdobName, ZXC.KpdbCI.naziv  );
+         kupdob_rec.Ticker   = kupdob_rec.GenerateTicker(2);
+
+         kupdob_rec.Ziro1    = LimitedStr(rawDatStruct._iban    ,   ZXC.KpdbCI.ziro1  );
+         kupdob_rec.Tel1     = LimitedStr(rawDatStruct._telefon ,   ZXC.KpdbCI.tel1   );
+         kupdob_rec.Fax      = LimitedStr(rawDatStruct._telefax ,   ZXC.KpdbCI.fax    );
+         kupdob_rec.Ulica1   =                                      
+         kupdob_rec.Ulica2   = LimitedStr(rawDatStruct._adresa  ,   ZXC.KpdbCI.ulica1 );
+         kupdob_rec.PostaBr  = LimitedStr(rawDatStruct._ptt     ,   ZXC.KpdbCI.postaBr);
+         kupdob_rec.Grad     = LimitedStr(rawDatStruct._grad    ,   ZXC.KpdbCI.grad   );
+         kupdob_rec.Email    = LimitedStr(rawDatStruct._mail    ,   ZXC.KpdbCI.email  );
+         kupdob_rec.Napom1   = LimitedStr(rawDatStruct._napomena,   ZXC.KpdbCI.napom1 );
+         kupdob_rec.Ime      = LimitedStr(rawDatStruct._kontakt ,   ZXC.KpdbCI.ime    );
+
+         dbOK = kupdob_rec.VvDao.ADDREC(conn, kupdob_rec, false, false, false, /*false*/ true); // don't report errors, save them in the list
+
+         #region Report Errors manager
+
+         if(dbOK == false)
+         {
+            errCount++;
+
+            if(errMessageList == null) errMessageList = new List<string>();
+
+            errMessageList.Add("Err " + errCount.ToString("0000") + ": " + ZXC.sqlErrMessage);
+         }
+         else okCount++;
+
+         #endregion Report Errors manager
+
+      } // foreach(RawData rawDatStruct in this.RawDataList) 
+
+      #region Report Errors manager
+
+      if(errCount.NotZero())
+      {
+         string fName = ZXC.TheVvForm.Get_MyDocumentsLocation_ProjectAndUser_Dependent(false) + @"\VvKupdob_FRIGOTERM_Importer_ErrorList.txt";
+
+         using(StreamWriter sw = new StreamWriter(fName, false, Encoding.GetEncoding(1250)))
+         {
+            foreach(string error in errMessageList)
+            {
+               sw.WriteLine(error);
+            }
+         }
+
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Bilo je {0} error-a.\n\nVidi datoteku: {1}.\n\nOK records: {2}. ", errCount, fName, okCount);
+      }
+
+      #endregion Report Errors manager
+
+   }
+
+   private string LimitedStr(string data, int cIdx)
+   {
+      return ZXC.LenLimitedStr(data, ZXC.KupdobDao.GetSchemaColumnSize(cIdx));
+   }
+
+}
+
 
 #endif
 

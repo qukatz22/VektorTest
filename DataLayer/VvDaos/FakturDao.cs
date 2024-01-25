@@ -1915,7 +1915,10 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
                   /* S_ukMskPNP   */ grp.Sum  (f => f.S_ukMskPNP   ),
                   /* Skiz_ukKC    */ grp.Sum  (f => f.Skiz_ukKC    ),
                   /* Skiz_ukKCR   */ grp.Sum  (f => f.Skiz_ukKCR   ),
-                  /* Skiz_ukRbt1  */ grp.Sum  (f => f.Skiz_ukRbt1  )
+                  /* Skiz_ukRbt1  */ grp.Sum  (f => f.Skiz_ukRbt1  ),
+                  /* S_ukKCRP_NP2 */ grp.Sum  (f => f.S_ukKCRP_NP2 ),
+                  /* NacPlac2     */ grp.First().NacPlac2           ,
+                  /* IsNpCash2    */ grp.First().IsNpCash2
 
                ))
             .OrderBy         (sumarniFaktur => sumarniFaktur.SkladCD )
@@ -2174,7 +2177,10 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
                   /* S_ukMskPNP   */ grp.Sum  (f => f.S_ukMskPNP   ),
                   /* Skiz_ukKC    */ grp.Sum  (f => f.Skiz_ukKC    ),
                   /* Skiz_ukKCR   */ grp.Sum  (f => f.Skiz_ukKCR   ),
-                  /* Skiz_ukRbt1  */ grp.Sum  (f => f.Skiz_ukRbt1  )
+                  /* Skiz_ukRbt1  */ grp.Sum  (f => f.Skiz_ukRbt1  ),
+                  /* S_ukKCRP_NP2 */ grp.Sum  (f => f.S_ukKCRP_NP2 ),
+                  /* NacPlac2     */ grp.First().NacPlac2           ,
+                  /* IsNpCash2    */ grp.First().IsNpCash2
 
                ))
             .OrderBy         (sumarniFaktur => sumarniFaktur.DokDate)
@@ -5330,7 +5336,7 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
 
    #region CreateTableFaktEx
 
-   public static   uint TableVersionStatic { get { return 19; } }
+   public static   uint TableVersionStatic { get { return 20; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -5537,6 +5543,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
          /*192 */ "skiz_ukKC      decimal(12,4)        NOT NULL default '0.00'      ,\n" +
          /*193 */ "skiz_ukKCR     decimal(12,4)        NOT NULL default '0.00'      ,\n" +
          /*194 */ "skiz_ukRbt1    decimal(12,4)        NOT NULL default '0.00'      ,\n" +
+         /*195 */ "s_ukKCRP_NP2   decimal(12,4)        NOT NULL default '0.00'      ,\n" +
+         /*196 */ "nacPlac2       varchar(24)          NOT NULL default ''          ,\n" +
+         /*197 */ "isNpCash2      tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
 
                                               "PRIMARY KEY      (recID     ) ,\n" +
           (isArhiva ? "" : /*"UNIQUE "*/"") + "KEY BY_FakRecID  (fakturRecID),\n" +
@@ -5696,6 +5705,10 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
                          "ADD    COLUMN skiz_ukRbt1   decimal(12,4)        NOT NULL default '0.00' AFTER skiz_ukKCR  ;  ");
 
         case 19: return ("MODIFY COLUMN vezniDok2    varchar(40)           NOT NULL default ''                       ;\n");
+
+        case 20: return ("ADD    COLUMN s_ukKCRP_NP2   decimal(12,4)        NOT NULL default '0.00' AFTER skiz_ukRbt1 ,  " +
+                         "ADD    COLUMN nacPlac2       varchar(24)          NOT NULL default ''     AFTER s_ukKCRP_NP2,  " +
+                         "ADD    COLUMN isNpCash2      tinyint(1)  unsigned NOT NULL default '0'    AFTER nacPlac2    ;  ");
 
         default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -5926,6 +5939,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*192 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.Skiz_ukKC     , TheSchemaTable.Rows[CI.skiz_ukKC     ]);
       /*193 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.Skiz_ukKCR    , TheSchemaTable.Rows[CI.skiz_ukKCR    ]);
       /*194 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.Skiz_ukRbt1   , TheSchemaTable.Rows[CI.skiz_ukRbt1   ]);
+      /*195 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.S_ukKCRP_NP2  , TheSchemaTable.Rows[CI.s_ukKCRP_NP2  ]);
+      /*196 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.NacPlac2      , TheSchemaTable.Rows[CI.nacPlac2      ]);
+      /*197 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.IsNpCash2     , TheSchemaTable.Rows[CI.isNpCash2     ]);
       }
 
    }
@@ -6144,6 +6160,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*192 */ rdrData._skiz_ukKC      = reader.GetDecimal  (CI.skiz_ukKC      + ciOffset);
       /*193 */ rdrData._skiz_ukKCR     = reader.GetDecimal  (CI.skiz_ukKCR     + ciOffset);
       /*194 */ rdrData._skiz_ukRbt1    = reader.GetDecimal  (CI.skiz_ukRbt1    + ciOffset);
+      /*195 */ rdrData._s_ukKCRP_NP2   = reader.GetDecimal  (CI.s_ukKCRP_NP2   + ciOffset);
+      /*196 */ rdrData._nacPlac2       = reader.GetString   (CI.nacPlac2       + ciOffset);
+      /*197 */ rdrData._isNpCash2      = reader.GetBoolean  (CI.isNpCash2      + ciOffset);
 
       int nextReaderIndex = lastFaktExCI + 1 + ciOffset;
 
@@ -6411,6 +6430,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*192 */ internal int skiz_ukKC     ;
       /*193 */ internal int skiz_ukKCR    ;
       /*194 */ internal int skiz_ukRbt1   ;
+      /*195 */ internal int s_ukKCRP_NP2  ;
+      /*196 */ internal int nacPlac2      ;
+      /*197 */ internal int isNpCash2     ;
    }
 
    /// <summary>
@@ -6622,8 +6644,11 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*192 */ CI.skiz_ukKC      = GetSchemaColumnIndex("skiz_ukKC");
       /*193 */ CI.skiz_ukKCR     = GetSchemaColumnIndex("skiz_ukKCR");
       /*194 */ CI.skiz_ukRbt1    = GetSchemaColumnIndex("skiz_ukRbt1");
+      /*195 */ CI.s_ukKCRP_NP2   = GetSchemaColumnIndex("s_ukKCRP_NP2");
+      /*196 */ CI.nacPlac2       = GetSchemaColumnIndex("nacPlac2");
+      /*197 */ CI.isNpCash2      = GetSchemaColumnIndex("isNpCash2");
 
-lastFaktExCI = CI.skiz_ukRbt1; // !!!!!! 
+lastFaktExCI = CI.nacPlac2; // !!!!!! 
 
    }
 

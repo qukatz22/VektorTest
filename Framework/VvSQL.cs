@@ -27,10 +27,10 @@ public static class VvSQL
 
    #region Enums and Constants
 
-   public enum ParamListType     { Complete, Without_ID, ID_Only, Old_Values, LanSrvAndRecID_only};
-   public enum DB_RW_ActionType  { ADD, RWT, RWT_2, DEL, EQL, UTIL, NONE    };
+   public enum ParamListType { Complete, Without_ID, ID_Only, Old_Values, LanSrvAndRecID_only };
+   public enum DB_RW_ActionType { ADD, RWT, RWT_2, DEL, EQL, UTIL, NONE };
    public enum DBNavigActionType { FRS, PRV, NXT, LST };
-   public enum OrderDirectEnum   { ASC, DESC };
+   public enum OrderDirectEnum { ASC, DESC };
 
    #endregion Enums and Constants
 
@@ -40,16 +40,16 @@ public static class VvSQL
    {
       XSqlCommand cmd = connection.CreateCommand();
 
-      cmd.CommandType  = CommandType.Text;
+      cmd.CommandType = CommandType.Text;
 
       cmd.UpdatedRowSource = UpdateRowSource.None;
 
       // 15.12.2017: 
-    //cmd.CommandTimeout = 120;
+      //cmd.CommandTimeout = 120;
       cmd.CommandTimeout = 480; // 8 min 
-    //cmd.CommandTimeout =  60; // 1 min 
+                                //cmd.CommandTimeout =  60; // 1 min 
 
-      return(cmd);
+      return (cmd);
    }
 
    //public static string Get_Sql_UserID(XSqlConnection conn)
@@ -70,11 +70,11 @@ public static class VvSQL
             cmd.CommandText = "SELECT SUBSTRING_INDEX(USER(),_utf8'@',1)";
 
          retValAsObject = cmd.ExecuteScalar();
-      } 
+      }
 
       strUser = /*uint.Parse*/(retValAsObject.ToString());
 
-      return(strUser);
+      return (strUser);
    }
 
    // OVO VRACA CLIENT NAME 
@@ -92,7 +92,7 @@ public static class VvSQL
 
       strClient = /*uint.Parse*/(retValAsObject.ToString());
 
-      return(strClient);
+      return (strClient);
    }
 
    // OVO VRACA SERVER NAME 
@@ -134,18 +134,18 @@ public static class VvSQL
             else dNetDateTime = DateTime.MinValue;
 
             reader.Close();
-            
+
          } // using reader
       } // using cmd 
 
-      return(dNetDateTime);
+      return (dNetDateTime);
    }
 
    // OVO VRACA SERVER ID 
    public static uint Get_Sql_ServerID(XSqlConnection conn)
    {
       object retValAsObject;
-      uint   serverID;
+      uint serverID;
 
       using(XSqlCommand cmd = InitCommand(conn))
       {
@@ -169,12 +169,12 @@ public static class VvSQL
 
       using(XSqlCommand cmd = InitCommand(conn))
       {
-         cmd.CommandText = 
+         cmd.CommandText =
 
             "SELECT AUTO_INCREMENT \n" +
-            "FROM information_schema.TABLES \n"           +
-            "WHERE TABLE_SCHEMA = '" + dbName    + "' \n" +
-            "AND   TABLE_NAME   = '" + tableName + "' \n" ;
+            "FROM information_schema.TABLES \n" +
+            "WHERE TABLE_SCHEMA = '" + dbName + "' \n" +
+            "AND   TABLE_NAME   = '" + tableName + "' \n";
 
          retValAsObject = cmd.ExecuteScalar();
       }
@@ -195,13 +195,13 @@ public static class VvSQL
       string tableName;
 
       if(isArhiva) tableName = vvDataRecord.VirtualRecordNameArhiva;
-      else         tableName = vvDataRecord.VirtualRecordName;
+      else tableName = vvDataRecord.VirtualRecordName;
 
       cmd.CommandText = "SELECT * FROM " + tableName + " WHERE recID = ?prm_recID";
 
       //arhivedDataRecord.SetCommandParamValues(cmd, arhivedDataRecord, ParamListType.ID_Only);
       vvDataRecord.VvDao.SetCommandParamValues(cmd, vvDataRecord, ParamListType.ID_Only, isArhiva);
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand EQLREC_byLanSrvIDAndLanRecID_Command(XSqlConnection conn, VvDataRecord vvDataRecord, uint lanSrvID, uint lanRecID, bool isArhiva)
@@ -211,11 +211,11 @@ public static class VvSQL
       string tableName;
 
       if(isArhiva) tableName = vvDataRecord.VirtualRecordNameArhiva;
-      else         tableName = vvDataRecord.VirtualRecordName;
+      else tableName = vvDataRecord.VirtualRecordName;
 
       cmd.CommandText = "SELECT * FROM " + tableName + " WHERE lanSrvID = " + lanSrvID + " AND lanRecID = " + lanRecID;
 
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand GetRecID_byLanSrvAndLanRecID_Command(XSqlConnection conn, VvDataRecord vvDataRecord, bool isArhiva)
@@ -225,12 +225,12 @@ public static class VvSQL
       string tableName;
 
       if(isArhiva) tableName = vvDataRecord.VirtualRecordNameArhiva;
-      else         tableName = vvDataRecord.VirtualRecordName      ;
-      
+      else tableName = vvDataRecord.VirtualRecordName;
+
       cmd.CommandText = "SELECT recID FROM " + tableName + " WHERE lanSrvID = ?prm_lanSrvID AND lanRecID =?prm_lanRecID";
 
       vvDataRecord.VvDao.SetCommandParamValues(cmd, vvDataRecord, ParamListType.Complete, isArhiva);
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand GetExtenderRecID_ByFatherRecID_Command(XSqlConnection conn, VvDataRecord vvDataRecordFather, bool isArhiva)
@@ -240,11 +240,11 @@ public static class VvSQL
       string tableName;
 
       if(isArhiva) tableName = vvDataRecordFather.VirtualExtenderRecord.VirtualRecordNameArhiva;
-      else         tableName = vvDataRecordFather.VirtualExtenderRecord.VirtualRecordName      ;
-      
+      else tableName = vvDataRecordFather.VirtualExtenderRecord.VirtualRecordName;
+
       cmd.CommandText = "SELECT recID FROM " + tableName + " WHERE " + ((IVvExtenderDataRecord)(vvDataRecordFather.VirtualExtenderRecord)).JoinedColName + " = " + vvDataRecordFather.VirtualRecID;
 
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand EQLREC_byEverything_Command(XSqlConnection conn, VvDataRecord vvDataRecord/*, bool isArhiva*/)
@@ -256,7 +256,7 @@ public static class VvSQL
 
       vvDataRecord.VvDao.SetCommandParamValues(cmd, vvDataRecord, ParamListType.Complete, false /*isArhiva*/);
 
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand EQLREC_bySomeUniqueColumn_Command(XSqlConnection conn, object byThisValue, DataRow drSchemaSomeUniqueColumn, VvDataRecord vvDataRecord, bool isArhiva)
@@ -266,13 +266,13 @@ public static class VvSQL
       string tableName;
 
       if(isArhiva) tableName = vvDataRecord.VirtualRecordNameArhiva;
-      else         tableName = vvDataRecord.VirtualRecordName;
+      else tableName = vvDataRecord.VirtualRecordName;
 
       CreateCommandNamedParameter(cmd, "", "wantedValue", byThisValue, drSchemaSomeUniqueColumn);
 
       cmd.CommandText = "SELECT * FROM " + tableName + " WHERE " + drSchemaSomeUniqueColumn["ColumnName"] + " = ?wantedValue";
 
-      return(cmd);
+      return (cmd);
    }
 
    #endregion EQLREC_Command
@@ -281,8 +281,8 @@ public static class VvSQL
 
    public enum SorterType { None, /*RecID, */Code, Ticker, Matbr, Name, DokNum, DokDate, TtNum, TtNum2, Person, City, Konto, KontoNaziv, OIB, BarCode, KpdbName, ArtStat, ArtTopByKol, ArtTopByFin, ArtTopByRuc, Serlot, NewRecID, s_lio, KCDnaziv, Name2, Code2, Serno };
 
-   public enum RptOrderBy 
-   { 
+   public enum RptOrderBy
+   {
       XYZ_UNDEFINED,
       FIZ_Dnevnik_DokNum,
       FIZ_Dnevnik_DokDate,
@@ -305,11 +305,11 @@ public static class VvSQL
 
    public struct IndexSegment
    {
-      string     fldName;
+      string fldName;
       XSqlDbType dbType;
-      int        paramSize;
-      DataRow    schemaTableDT;
-      bool       isArhiva;
+      int paramSize;
+      DataRow schemaTableDT;
+      bool isArhiva;
 
       //public IndexSegment(string _fldName, XSqlDbType _dbType, int _paramSize)
       //{
@@ -324,17 +324,17 @@ public static class VvSQL
 
       public IndexSegment(DataRow schemaTableDataRow, bool _isArhiva)
       {
-         string      _fldName   = (string)     schemaTableDataRow["ColumnName"];
-         XSqlDbType  _dbType    = (XSqlDbType) schemaTableDataRow["ProviderType"];
-         int         _paramSize = (int)        schemaTableDataRow["ColumnSize"];
+         string _fldName = (string)schemaTableDataRow["ColumnName"];
+         XSqlDbType _dbType = (XSqlDbType)schemaTableDataRow["ProviderType"];
+         int _paramSize = (int)schemaTableDataRow["ColumnSize"];
 
          this.schemaTableDT = schemaTableDataRow;
-         
-         this.fldName   = _fldName;
-         this.dbType    = _dbType;
+
+         this.fldName = _fldName;
+         this.dbType = _dbType;
          this.paramSize = _paramSize;
 
-         this.isArhiva  = _isArhiva;
+         this.isArhiva = _isArhiva;
       }
 
       public string FldName
@@ -375,11 +375,11 @@ public static class VvSQL
 
       public RecordSorter(string _recName, string _recNameArhiva, VvSQL.IndexSegment[] _iSegs, string _comboText, VvSQL.SorterType _sortType, bool _biloGdjeUnazivu)
       {
-         this.recName         = _recName;
-         this.recNameArhiva   = _recNameArhiva;
-         this.iSegs           = _iSegs;
-         this.comboText       = _comboText;
-         this.sortType        = _sortType;
+         this.recName = _recName;
+         this.recNameArhiva = _recNameArhiva;
+         this.iSegs = _iSegs;
+         this.comboText = _comboText;
+         this.sortType = _sortType;
          this.biloGdjeUnazivu = _biloGdjeUnazivu;
       }
 
@@ -393,13 +393,13 @@ public static class VvSQL
       public string RecName
       {
          get { return this.recName; }
-         set {        this.recName = value; }
+         set { this.recName = value; }
       }
 
       public string RecNameArhiva
       {
          get { return this.recNameArhiva; }
-         set {        this.recNameArhiva = value; }
+         set { this.recNameArhiva = value; }
       }
 
       public VvSQL.IndexSegment[] IdxSegments
@@ -460,8 +460,8 @@ public static class VvSQL
       if(ZXC.IsSvDUH_ZAHonly) shouldRestrict_SKL2 = true;
 
       // 12.20.2021: 
-      shouldRestrict_TT   = shouldRestrict_TT   && dbNavRestrictor_TT  .NotEmpty;
-      shouldRestrict_SKL  = shouldRestrict_SKL  && dbNavRestrictor_SKL .NotEmpty;
+      shouldRestrict_TT = shouldRestrict_TT && dbNavRestrictor_TT.NotEmpty;
+      shouldRestrict_SKL = shouldRestrict_SKL && dbNavRestrictor_SKL.NotEmpty;
       shouldRestrict_SKL2 = shouldRestrict_SKL2 && dbNavRestrictor_SKL2.NotEmpty;
 
       // 21.10.2016: za 'CalcIBAN_2017_TEKUCI' potrebe 
@@ -474,63 +474,63 @@ public static class VvSQL
 
       // 11.10.2021: kad je vvDataRecord Faktur, IsExtendable je ipak ovdje false?! pa OR-amo 
       if((vvDataRecord.IsExtendable || vvDataRecord is Faktur) && vvDataRecord.VirtualExtenderRecord != null)
-    //if(vvDataRecord is Faktur) 
-         strSql += " L " + "\n" + 
-                   "LEFT JOIN  "                      + vvDataRecord.VirtualExtenderRecord  .VirtualRecordName + " R " + "\n" + "\n" + 
-                   "ON L.RecID = R." + ((IVvExtenderDataRecord)vvDataRecord.VirtualExtenderRecord).JoinedColName       + "\n";
+         //if(vvDataRecord is Faktur) 
+         strSql += " L " + "\n" +
+                   "LEFT JOIN  " + vvDataRecord.VirtualExtenderRecord.VirtualRecordName + " R " + "\n" + "\n" +
+                   "ON L.RecID = R." + ((IVvExtenderDataRecord)vvDataRecord.VirtualExtenderRecord).JoinedColName + "\n";
 
       switch(action)
       {
-         case DBNavigActionType.PRV: 
-            strSql += " WHERE "    + VvSQL.PRVNXT_WhereConditon (sorter.IdxSegments, " < ",  isArhiva) +
-                      (shouldRestrict_TT  ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT  ) : "") +
-                      (shouldRestrict_SKL ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL ) : "") +
-                      (shouldRestrict_SKL2? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
+         case DBNavigActionType.PRV:
+            strSql += " WHERE " + VvSQL.PRVNXT_WhereConditon(sorter.IdxSegments, " < ", isArhiva) +
+                      (shouldRestrict_TT ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT) : "") +
+                      (shouldRestrict_SKL ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL) : "") +
+                      (shouldRestrict_SKL2 ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
                       " ORDER BY " + VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "DESC", isArhiva) + " LIMIT 1";
             break;
 
-         case DBNavigActionType.NXT: 
-            strSql += " WHERE "    + VvSQL.PRVNXT_WhereConditon (sorter.IdxSegments , " > ", isArhiva) +
-                      (shouldRestrict_TT  ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT  ) : "") +
-                      (shouldRestrict_SKL ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL ) : "") +
-                      (shouldRestrict_SKL2? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
-                      " ORDER BY " + VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "ASC",  isArhiva) + " LIMIT 1";
+         case DBNavigActionType.NXT:
+            strSql += " WHERE " + VvSQL.PRVNXT_WhereConditon(sorter.IdxSegments, " > ", isArhiva) +
+                      (shouldRestrict_TT ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT) : "") +
+                      (shouldRestrict_SKL ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL) : "") +
+                      (shouldRestrict_SKL2 ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
+                      " ORDER BY " + VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "ASC", isArhiva) + " LIMIT 1";
             break;
 
          case DBNavigActionType.FRS:
-            strSql += (shouldRestrict_TT  ? " WHERE " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT  ) : "") +
-                      (shouldRestrict_SKL ? " AND "   + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL ) : "") +
-                      (shouldRestrict_SKL2? " AND "   + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
-                      " ORDER BY " + VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "ASC",  isArhiva) + " LIMIT 1";
+            strSql += (shouldRestrict_TT ? " WHERE " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT) : "") +
+                      (shouldRestrict_SKL ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL) : "") +
+                      (shouldRestrict_SKL2 ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
+                      " ORDER BY " + VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "ASC", isArhiva) + " LIMIT 1";
             break;
 
          case DBNavigActionType.LST:
-            strSql += (shouldRestrict_TT  ? " WHERE " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT  ) : "") +
-                      (shouldRestrict_SKL ? " AND "   + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL ) : "") +
-                      (shouldRestrict_SKL2? " AND "   + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
+            strSql += (shouldRestrict_TT ? " WHERE " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_TT) : "") +
+                      (shouldRestrict_SKL ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL) : "") +
+                      (shouldRestrict_SKL2 ? " AND " + VvSQL.NavRestrictorWhereCondition(dbNavRestrictor_SKL2) : "") +
                       " ORDER BY " + VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "DESC", isArhiva) + " LIMIT 1";
 
             // 26.04.2022: 
-          //if(ZXC.IsSvDUH && dbNavRestrictor_SKL.RestrictedValues != null && dbNavRestrictor_SKL.RestrictedValues[0] == "10")
+            //if(ZXC.IsSvDUH && dbNavRestrictor_SKL.RestrictedValues != null && dbNavRestrictor_SKL.RestrictedValues[0] == "10")
             // 07.06.2022:
-            if(ZXC.IsSvDUH && dbNavRestrictor_SKL.RestrictedValues != null && dbNavRestrictor_SKL.RestrictedValues[0] == "10"       &&
-                              dbNavRestrictor_TT .RestrictedValues != null && dbNavRestrictor_TT .RestrictedValues[0] == Faktur.TT_IZD)
+            if(ZXC.IsSvDUH && dbNavRestrictor_SKL.RestrictedValues != null && dbNavRestrictor_SKL.RestrictedValues[0] == "10" &&
+                              dbNavRestrictor_TT.RestrictedValues != null && dbNavRestrictor_TT.RestrictedValues[0] == Faktur.TT_IZD)
             {
                strSql = strSql.Replace("ORDER BY", "AND ttnum < 200000 ORDER BY"); // jer smo u sve dokumenta sa skl 70 i 90 prebacili na 10 a ostali su ttNum-ovi 7xxxxx i 9xxxxx 
             }
 
             break;
 
-         default : System.Windows.Forms.MessageBox.Show("PRVNXT_Command: prv_or_nxt not set!");
-            strSql = null; 
+         default: System.Windows.Forms.MessageBox.Show("PRVNXT_Command: prv_or_nxt not set!");
+            strSql = null;
             break;
       }
 
       SetNavigationalParam(vvDataRecord.SorterCurrVal(sorter.SortType), cmd, strSql, sorter, isArhiva, false);
 
       //int i = 0;
-      if(shouldRestrict_TT  ) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_TT  /*, i*/);
-      if(shouldRestrict_SKL ) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_SKL /*, i*/);
+      if(shouldRestrict_TT) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_TT  /*, i*/);
+      if(shouldRestrict_SKL) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_SKL /*, i*/);
       if(shouldRestrict_SKL2) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_SKL2/*, i*/);
 
       return cmd;
@@ -555,18 +555,18 @@ public static class VvSQL
       if(dbNavigationRestrictor.IsEmpty) return "";
 
       string fldName, paramName;
-      System.Text.StringBuilder sbWhereCondition =  new System.Text.StringBuilder();
+      System.Text.StringBuilder sbWhereCondition = new System.Text.StringBuilder();
 
       fldName = dbNavigationRestrictor.ColName;
 
       sbWhereCondition.Append("(");
 
-      for(int i=0; i < dbNavigationRestrictor.RestrictedValues.Length; ++i)
+      for(int i = 0; i < dbNavigationRestrictor.RestrictedValues.Length; ++i)
       {
          paramName = "?restrictor_" + dbNavigationRestrictor.ColName + i;
 
          sbWhereCondition.Append(fldName + " = " + paramName);
-         
+
          if(i < dbNavigationRestrictor.RestrictedValues.Length - 1)
          {
             sbWhereCondition.Append(" OR ");
@@ -588,7 +588,7 @@ public static class VvSQL
       int i;
       for(i = /*initI*/0; i < dbNavigationRestrictor.RestrictedValues.Length; ++i)
       {
-         CreateCommandParameter(cmd, "restrictor_", dbNavigationRestrictor.ColName+i, dbNavigationRestrictor.RestrictedValues[i], XSqlDbType.String, 16);
+         CreateCommandParameter(cmd, "restrictor_", dbNavigationRestrictor.ColName + i, dbNavigationRestrictor.RestrictedValues[i], XSqlDbType.String, 16);
       }
 
       //return i;
@@ -596,7 +596,7 @@ public static class VvSQL
 
    private static string SorterSegmentFldNames(VvSQL.IndexSegment[] iSegs, string strAscDesc, bool isArhiva)
    {
-      bool   firstPass   = true;
+      bool firstPass = true;
       string strFldNames = "";
 
       foreach(VvSQL.IndexSegment iSeg in iSegs)
@@ -613,8 +613,8 @@ public static class VvSQL
          }
 
          // 26.03.2018: sorter sorterTtRecID additions ... kasnije abortirao kao NEUSPJEH 
-         strFldNames +=                                         iSeg.FldName + " " + strAscDesc;
-       //strFldNames += (iSeg.FldName == "recID" ? "L." : "") + iSeg.FldName + " " + strAscDesc;
+         strFldNames += iSeg.FldName + " " + strAscDesc;
+         //strFldNames += (iSeg.FldName == "recID" ? "L." : "") + iSeg.FldName + " " + strAscDesc;
       }
 
       return strFldNames;
@@ -664,7 +664,7 @@ public static class VvSQL
 
    private static void SetNavigationalParam(object[] paramValues, XSqlCommand cmd, string strSql, RecordSorter sorter, bool isArhiva, bool biloGdjeUnazivu)
    {
-      int i=0;
+      int i = 0;
 
       cmd.CommandText = strSql;
       cmd.CommandType = CommandType.Text;
@@ -672,7 +672,7 @@ public static class VvSQL
       int idxOfSegFr_biloGdjeUnazivu;
 
       if(sorter.RecName == Faktur.recordName) idxOfSegFr_biloGdjeUnazivu = 1;
-      else                                    idxOfSegFr_biloGdjeUnazivu = 0;
+      else idxOfSegFr_biloGdjeUnazivu = 0;
 
       if(biloGdjeUnazivu) paramValues[idxOfSegFr_biloGdjeUnazivu] = "%" + paramValues[idxOfSegFr_biloGdjeUnazivu] + "%";
 
@@ -736,21 +736,21 @@ public static class VvSQL
 
    #region GTEREC_Command
 
-   public static XSqlCommand GTEREC_Command(XSqlConnection  conn, 
-                                            string          selectWhat,
-                                            object[]        paramValues, 
+   public static XSqlCommand GTEREC_Command(XSqlConnection conn,
+                                            string selectWhat,
+                                            object[] paramValues,
                                             List<VvSqlFilterMember> filterMembers,
-                                            OrderDirectEnum direction, 
-                                            RecordSorter    sorter,
-                                            int             offset,     
-                                            int             pageSize,
-                                            bool            countOnly,
-                                            bool            isArhiva,
-                                            VvRecLstUC      theRecListUC)
+                                            OrderDirectEnum direction,
+                                            RecordSorter sorter,
+                                            int offset,
+                                            int pageSize,
+                                            bool countOnly,
+                                            bool isArhiva,
+                                            VvRecLstUC theRecListUC)
    {
       string strSql, orderByAndLimit = "", strVeceManje = "";
       string tableName;
-      bool   biloGdjeUnazivu = sorter.BiloGdjeU_Tekstu;
+      bool biloGdjeUnazivu = sorter.BiloGdjeU_Tekstu;
 
       XSqlCommand cmd = VvSQL.InitCommand(conn);
 
@@ -762,17 +762,17 @@ public static class VvSQL
 
       switch(direction)
       {
-         case  OrderDirectEnum.ASC: orderByAndLimit += VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "ASC",  isArhiva) + " LIMIT ";
-                                    strVeceManje = " >";
-                                    break;
+         case OrderDirectEnum.ASC: orderByAndLimit += VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "ASC", isArhiva) + " LIMIT ";
+            strVeceManje = " >";
+            break;
 
-         case OrderDirectEnum.DESC: orderByAndLimit += VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "DESC" , isArhiva) + " LIMIT ";
-                                    strVeceManje = " <";
-                                    break;
+         case OrderDirectEnum.DESC: orderByAndLimit += VvSQL.SorterSegmentFldNames(sorter.IdxSegments, "DESC", isArhiva) + " LIMIT ";
+            strVeceManje = " <";
+            break;
 
          default: System.Windows.Forms.MessageBox.Show("PRVNXT_Command: asc_desc not set!");
-            orderByAndLimit = strVeceManje = null; 
-            break;      
+            orderByAndLimit = strVeceManje = null;
+            break;
       }
 
       orderByAndLimit += offset + "," + pageSize;
@@ -780,33 +780,33 @@ public static class VvSQL
       if(countOnly) orderByAndLimit = "";
 
       if(isArhiva) tableName = sorter.RecNameArhiva;
-      else         tableName = sorter.RecName;
+      else tableName = sorter.RecName;
 
       if(sorter.SortType == SorterType.Person) RemoveEventualImeRequestFromPrezimeParamValue(ref paramValues[0]);
 
       strSql = "SELECT " + selectWhat + " FROM " + tableName + " " + sorter.RecName + "\n" +
 
-               #region Artikl's artstat additions (3.1.2011)
+      #region Artikl's artstat additions (3.1.2011)
 
                (tableName == Artikl.recordName && theRecListUC != null ? VvSQL.EventualRelatedArtstat_ForWhereClause_FromFilterMembers(cmd, theRecListUC as ArtiklListUC) : "") +
 
-               #endregion Artikl's artstat additions
+      #endregion Artikl's artstat additions
 
-               #region Fakturs's FaktExt additions (8.1.2011)
+      #region Fakturs's FaktExt additions (8.1.2011)
 
                // 17.06.2012: tu je bio bug kada si dosao iz 'faktur_ar' - a
-             //(tableName == Faktur.recordName ? "LEFT JOIN " + FaktEx.recordName + " ext ON " + sorter.RecName + ".RecID = ext.fakturRecID \n" : "") +
+               //(tableName == Faktur.recordName ? "LEFT JOIN " + FaktEx.recordName + " ext ON " + sorter.RecName + ".RecID = ext.fakturRecID \n" : "") +
                (tableName.StartsWith(Faktur.recordName) ? "LEFT JOIN " + (tableName == Faktur.recordName ? FaktEx.recordName : FaktEx.recordNameArhiva) + " ext ON " + sorter.RecName + ".RecID = ext.fakturRecID \n" : "") +
-               
-               #endregion Fakturs's FaktExt additions (8.1.2011)
 
-               #region Rtrans's Kupdob additions (17.3.2016)
+      #endregion Fakturs's FaktExt additions (8.1.2011)
+
+      #region Rtrans's Kupdob additions (17.3.2016)
 
                (tableName.StartsWith(Rtrans.recordName) ? "LEFT JOIN " + Kupdob.recordName + " ext ON " + sorter.RecName + ".t_kupdob_CD = ext.kupdobCD \n" : "") +
 
                (tableName.StartsWith(Rtrano.recordName) ? "LEFT JOIN " + Kupdob.recordName + " ext ON " + sorter.RecName + ".t_kupdob_CD = ext.kupdobCD \n" : "") +
-               
-               #endregion Rtrans's Kupdob additions (17.3.2016)
+
+      #endregion Rtrans's Kupdob additions (17.3.2016)
 
               " WHERE " + VvSQL.GTEREC_WhereConditon(sorter/*.IdxSegments*/, filterMembers, strVeceManje, isArhiva, biloGdjeUnazivu) + orderByAndLimit;
 
@@ -821,7 +821,7 @@ public static class VvSQL
 
    private static void RemoveEventualImeRequestFromPrezimeParamValue(ref object paramValue)
    {
-      string komplet, prezimePart, imePart="";
+      string komplet, prezimePart, imePart = "";
 
       komplet = prezimePart = paramValue.ToString();
 
@@ -841,7 +841,7 @@ public static class VvSQL
          count = int.Parse(cmd.ExecuteScalar().ToString());
       }
 
-      return(count);
+      return (count);
    }
 
    private static string GTEREC_WhereConditon(RecordSorter sorter, List<VvSqlFilterMember> filterMembers, string comparer, bool isArhiva, bool biloGdjeUnazivu)
@@ -849,17 +849,17 @@ public static class VvSQL
       VvSQL.IndexSegment[] iSegs = sorter.IdxSegments;
 
       bool firstPass = true;
-      bool lastPass  = false;
+      bool lastPass = false;
       string strWhereCondition = "(", fldName, paramName;
-      int    numOfSigificantSegments     = isArhiva ? iSegs.Length     : iSegs.Length - 1;
-      int    idxOfLastSignificantSegment = isArhiva ? iSegs.Length - 1 : iSegs.Length - 2;
+      int numOfSigificantSegments = isArhiva ? iSegs.Length : iSegs.Length - 1;
+      int idxOfLastSignificantSegment = isArhiva ? iSegs.Length - 1 : iSegs.Length - 2;
 
       if(biloGdjeUnazivu == true)
       {
          int idxOfSegFr_biloGdjeUnazivu;
 
          if(sorter.RecName == Faktur.recordName) idxOfSegFr_biloGdjeUnazivu = 1;
-         else                                    idxOfSegFr_biloGdjeUnazivu = 0;
+         else idxOfSegFr_biloGdjeUnazivu = 0;
 
          fldName = iSegs[idxOfSegFr_biloGdjeUnazivu].FldName;
 
@@ -910,7 +910,7 @@ public static class VvSQL
       {
          strWhereCondition += ParameterizedWhereClauseFromVvSqlFilter(filterMembers, true);
       }
-      
+
       return strWhereCondition;
    }
 
@@ -973,7 +973,7 @@ public static class VvSQL
    //   {
    //      strWhereCondition += ParameterizedWhereClauseFromVvSqlFilter(filterMembers, true);
    //   }
-      
+
    //   return strWhereCondition;
    //}
 
@@ -988,25 +988,25 @@ public static class VvSQL
       string tableName;
 
       if(isArhiva) tableName = vvDataRecord.VirtualRecordNameArhiva;
-      else         tableName = vvDataRecord.VirtualRecordName;
+      else tableName = vvDataRecord.VirtualRecordName;
 
-      cmd.CommandText = "INSERT INTO " + tableName + " SET " + 
-                        CreateStr4_WHERE_or_SET_Clause(conn, vvDataRecord, DB_RW_ActionType.ADD, isArhiva, false, isSkyTraffic) + ";\n" + 
+      cmd.CommandText = "INSERT INTO " + tableName + " SET " +
+                        CreateStr4_WHERE_or_SET_Clause(conn, vvDataRecord, DB_RW_ActionType.ADD, isArhiva, false, isSkyTraffic) + ";\n" +
 
          "SELECT @@IDENTITY"; // ovo ce pokupiti return od ExecuteScalar();
 
       vvDataRecord.VvDao.SetCommandParamValues(cmd, vvDataRecord, ParamListType.Without_ID, isArhiva);
 
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand RWTREC_Command(XSqlConnection conn, VvDataRecord vvDataRecord, bool isSkyTraffic)
    {
       VvDataRecord oldValues_dataRec;
-      XSqlCommand  cmd = InitCommand(conn);
+      XSqlCommand cmd = InitCommand(conn);
 
-      cmd.CommandText = "UPDATE " + vvDataRecord.VirtualRecordName + "\n" + 
-                        " SET "   + CreateStr4_WHERE_or_SET_Clause(conn, vvDataRecord, DB_RW_ActionType.RWT,   false, false, isSkyTraffic) + "\n" +
+      cmd.CommandText = "UPDATE " + vvDataRecord.VirtualRecordName + "\n" +
+                        " SET " + CreateStr4_WHERE_or_SET_Clause(conn, vvDataRecord, DB_RW_ActionType.RWT, false, false, isSkyTraffic) + "\n" +
                         " WHERE " + CreateStr4_WHERE_or_SET_Clause(conn, vvDataRecord, DB_RW_ActionType.RWT_2, false, false, isSkyTraffic);
 
       vvDataRecord.VvDao.SetCommandParamValues(cmd, vvDataRecord, ParamListType.Without_ID, false);
@@ -1020,31 +1020,31 @@ public static class VvSQL
       vvDataRecord.VvDao.SetCommandParamValues(cmd, oldValues_dataRec, ParamListType.Old_Values, false);
       /* */
 
-      return(cmd);
+      return (cmd);
    }
 
    public static XSqlCommand DELREC_Command(XSqlConnection conn, VvDataRecord vvDataRecord, bool identifyByRecIDonly, bool isSkyTraffic)
    {
       XSqlCommand cmd = InitCommand(conn);
 
-      cmd.CommandText = "DELETE FROM " + vvDataRecord.VirtualRecordName + " WHERE " +  
+      cmd.CommandText = "DELETE FROM " + vvDataRecord.VirtualRecordName + " WHERE " +
                          CreateStr4_WHERE_or_SET_Clause(conn, vvDataRecord, DB_RW_ActionType.DEL, false, identifyByRecIDonly, isSkyTraffic);
 
       vvDataRecord.VvDao.SetCommandParamValues(cmd, vvDataRecord, ParamListType.Complete, false);
 
-      return(cmd);
+      return (cmd);
    }
 
    internal static XSqlCommand Rwtrec_BLOBsingleColumn_Command(XSqlConnection conn, VvDataRecord vvDataRecord, string blobColName, byte[] blobValue)
    {
       XSqlCommand cmd = InitCommand(conn);
 
-      cmd.CommandText = "UPDATE " + vvDataRecord.VirtualRecordName     + "\n" +
-                        "SET "    + blobColName + " = ?prm_blobValue " + "\n" +
-                        "WHERE recID = ?prm_recID "                    + "\n" ;
+      cmd.CommandText = "UPDATE " + vvDataRecord.VirtualRecordName + "\n" +
+                        "SET " + blobColName + " = ?prm_blobValue " + "\n" +
+                        "WHERE recID = ?prm_recID " + "\n";
 
-      CreateCommandParameter(cmd, "recID"    , vvDataRecord.VirtualRecID, XSqlDbType.Int32     ,           10);
-      CreateCommandParameter(cmd, "blobValue", blobValue                , XSqlDbType.MediumBlob, 1048576 * 32); // 32 MB 
+      CreateCommandParameter(cmd, "recID", vvDataRecord.VirtualRecID, XSqlDbType.Int32, 10);
+      CreateCommandParameter(cmd, "blobValue", blobValue, XSqlDbType.MediumBlob, 1048576 * 32); // 32 MB 
 
       return (cmd);
    }
@@ -1065,79 +1065,79 @@ public static class VvSQL
       if(actionType == DB_RW_ActionType.RWT_2) // WHERE 
       {
          preffix = "old_";
-         suffix  = " AND ";
+         suffix = " AND ";
       }
       else if(actionType == DB_RW_ActionType.DEL ||
               actionType == DB_RW_ActionType.EQL) // WHERE 
       {
          preffix = "prm_";
-         suffix  = " AND ";
+         suffix = " AND ";
       }
-      else if(actionType == DB_RW_ActionType.ADD || 
+      else if(actionType == DB_RW_ActionType.ADD ||
               actionType == DB_RW_ActionType.RWT) // SET 
       {
          preffix = "prm_";
-         suffix  = ", ";
+         suffix = ", ";
       }
-      else return("ActionType UNDEFINED!");
+      else return ("ActionType UNDEFINED!");
 
-      if(actionType == DB_RW_ActionType.ADD) 
+      if(actionType == DB_RW_ActionType.ADD)
       {
          if(vvDataRecord.IsTrans == false && vvDataRecord.IsExtender == false /*2.2.2011:&& vvDataRecord.IsCacheForStatus == false*/)
          {
             if(isArhiva)
             {
                // SkyNews 
-             //firstLine = "addTS = ?"  + preffix + "addTS "  + suffix + "\n" +
-             //            "modTS = ?"  + preffix + "modTS "  + suffix + "\n" +
-             //            "addUID = ?" + preffix + "addUID " + suffix + "\n" +
-             //            "modUID = ?" + preffix + "modUID " + suffix + "\n" +
-             //            "arTS   = CURRENT_TIMESTAMP "      + suffix + "\n"; 
-               firstLine = "addTS = ?"  + preffix + "addTS "  + suffix + "\n" +
-                           "modTS = ?"  + preffix + "modTS "  + suffix + "\n" +
+               //firstLine = "addTS = ?"  + preffix + "addTS "  + suffix + "\n" +
+               //            "modTS = ?"  + preffix + "modTS "  + suffix + "\n" +
+               //            "addUID = ?" + preffix + "addUID " + suffix + "\n" +
+               //            "modUID = ?" + preffix + "modUID " + suffix + "\n" +
+               //            "arTS   = CURRENT_TIMESTAMP "      + suffix + "\n"; 
+               firstLine = "addTS = ?" + preffix + "addTS " + suffix + "\n" +
+                           "modTS = ?" + preffix + "modTS " + suffix + "\n" +
                            "addUID = ?" + preffix + "addUID " + suffix + "\n" +
                            "modUID = ?" + preffix + "modUID " + suffix + "\n" +
-                           (ZXC.ThisIsVektorProject 
+                           (ZXC.ThisIsVektorProject
                               ?
                               "lanSrvID = ?" + preffix + "lanSrvID " + suffix + "\n" +
                               "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n"
                               : ""
                            ) +
 
-                           "arTS   = CURRENT_TIMESTAMP "          + suffix + "\n";
+                           "arTS   = CURRENT_TIMESTAMP " + suffix + "\n";
             }
             else // classic NOT arhiva 
             {
                // SkyNews 
-             //firstLine = "addTS  = CURRENT_TIMESTAMP "       + suffix +
-             //            "addUID = '" + ZXC.vvDB_User + "' " + suffix + "\n";
+               //firstLine = "addTS  = CURRENT_TIMESTAMP "       + suffix +
+               //            "addUID = '" + ZXC.vvDB_User + "' " + suffix + "\n";
 
                if(isSkyTraffic) // SkyLab vrsi ADDREC recorda. Treba sacuvati sve orginalne meta podatke. 
                {
-                  firstLine = "addTS    = ?" + preffix + "addTS "    + suffix + "\n" +
-                              "modTS    = ?" + preffix + "modTS "    + suffix + "\n" +
-                              "addUID   = ?" + preffix + "addUID "   + suffix + "\n" +
-                              "modUID   = ?" + preffix + "modUID "   + suffix + "\n" +
+                  firstLine = "addTS    = ?" + preffix + "addTS " + suffix + "\n" +
+                              "modTS    = ?" + preffix + "modTS " + suffix + "\n" +
+                              "addUID   = ?" + preffix + "addUID " + suffix + "\n" +
+                              "modUID   = ?" + preffix + "modUID " + suffix + "\n" +
                               "lanSrvID = ?" + preffix + "lanSrvID " + suffix + "\n" +
-                              "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n" ;
+                              "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n";
                }
                else // Classic - classic. NOT arhiva, NOT SkyLab 
                {
                   uint lanRecID;
-                //bool isRecordBornInSkyEnvironment = vvDataRecord.VirtualLanRecID.IsZero() && ZXC.IsSkyEnvironment; // maybe todo? 
+                  //bool isRecordBornInSkyEnvironment = vvDataRecord.VirtualLanRecID.IsZero() && ZXC.IsSkyEnvironment; // maybe todo? 
 
                   if(ZXC.IsSkyEnvironment) // Daj se odluci. Da li kod CopyOut-a cuvamo ili ne lanRecID!?!? ODGOVOR: do daljnjega ZABRANJUJEMO copy out u SkyEnvironmentu!!! 
                   {
                      // 29.12.2017: 
-                   //if(ZXC.CopyOut_InProgress) lanRecID = vvDataRecord.VirtualLanRecID;
-                   //else                       lanRecID = VvSQL.Get_Sql_NextAutoIncrementRecID(conn, vvDataRecord.VirtualRecordName);
+                     //if(ZXC.CopyOut_InProgress) lanRecID = vvDataRecord.VirtualLanRecID;
+                     //else                       lanRecID = VvSQL.Get_Sql_NextAutoIncrementRecID(conn, vvDataRecord.VirtualRecordName);
                      if(ZXC.CopyOut_InProgress)
                      {
                         if(ZXC.IsTEXTHOany && vvDataRecord is Faktur && (vvDataRecord as Faktur).TT == Faktur.TT_ZPC)
                         {
                            lanRecID = VvSQL.Get_Sql_NextAutoIncrementRecID(conn, vvDataRecord.VirtualRecordName);
                         }
-                        else 
+                        else
                         {
                            lanRecID = vvDataRecord.VirtualLanRecID;
                         }
@@ -1149,14 +1149,14 @@ public static class VvSQL
                   }
                   else
                   {
-                   //lanRecID = vvDataRecord.VirtualLanRecID;
+                     //lanRecID = vvDataRecord.VirtualLanRecID;
                      lanRecID = 0;
                   }
-   
-                  firstLine = "addTS = CURRENT_TIMESTAMP "              + suffix +
-                              "addUID = '"   + ZXC.vvDB_User     + "' " + suffix +
+
+                  firstLine = "addTS = CURRENT_TIMESTAMP " + suffix +
+                              "addUID = '" + ZXC.vvDB_User + "' " + suffix +
                               (vvDataRecord.IsCacheForStatus || ZXC.ThisIsVektorProject == false ? "" :
-                              "lanRecID = '" + lanRecID          + "' " + suffix +
+                              "lanRecID = '" + lanRecID + "' " + suffix +
                               "lanSrvID = '" + ZXC.vvDB_ServerID + "' " + suffix) + "\n";
 
                } // Classic - classic. NOT arhiva, NOT SkyLab 
@@ -1169,18 +1169,18 @@ public static class VvSQL
          }
       } // if(actionType == DB_RW_ActionType.ADD)  
 
-      else if(actionType == DB_RW_ActionType.RWT) 
+      else if(actionType == DB_RW_ActionType.RWT)
       {
          if(vvDataRecord.EditedHasChanges() && !vvDataRecord.IsTrans && !vvDataRecord.IsExtender && !vvDataRecord.IsCacheForStatus) // ############################################ 
          {
             if(isSkyTraffic) // SkyLab vrsi RWTREC recorda. Treba sacuvati sve orginalne meta podatke. 
             {
-               firstLine = "addTS    = ?" + preffix + "addTS "    + suffix + "\n" +
-                           "modTS    = ?" + preffix + "modTS "    + suffix + "\n" +
-                           "addUID   = ?" + preffix + "addUID "   + suffix + "\n" +
-                           "modUID   = ?" + preffix + "modUID "   + suffix + "\n" +
+               firstLine = "addTS    = ?" + preffix + "addTS " + suffix + "\n" +
+                           "modTS    = ?" + preffix + "modTS " + suffix + "\n" +
+                           "addUID   = ?" + preffix + "addUID " + suffix + "\n" +
+                           "modUID   = ?" + preffix + "modUID " + suffix + "\n" +
                            "lanSrvID = ?" + preffix + "lanSrvID " + suffix + "\n" +
-                           "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n" ;
+                           "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n";
             }
             else // classic, NOT skyTraffic 
             {
@@ -1191,19 +1191,19 @@ public static class VvSQL
          {
             if(isSkyTraffic) // SkyLab vrsi RWTREC recorda. Treba sacuvati sve orginalne meta podatke. 
             {
-               firstLine = "addTS    = ?" + preffix + "addTS "    + suffix + "\n" +
-                           "modTS    = ?" + preffix + "modTS "    + suffix + "\n" +
-                           "addUID   = ?" + preffix + "addUID "   + suffix + "\n" +
-                           "modUID   = ?" + preffix + "modUID "   + suffix + "\n" +
+               firstLine = "addTS    = ?" + preffix + "addTS " + suffix + "\n" +
+                           "modTS    = ?" + preffix + "modTS " + suffix + "\n" +
+                           "addUID   = ?" + preffix + "addUID " + suffix + "\n" +
+                           "modUID   = ?" + preffix + "modUID " + suffix + "\n" +
                            "lanSrvID = ?" + preffix + "lanSrvID " + suffix + "\n" +
-                           "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n" ;
+                           "lanRecID = ?" + preffix + "lanRecID " + suffix + "\n";
             }
             else // classic, NOT skyTraffic 
             {
                firstLine = "modUID = '" + ZXC.vvDB_User + "' " + suffix + "\n";
             }
          }
-         else if((vvDataRecord.IsDocument     && ((VvDocumentRecord )vvDataRecord).EditedTransesHaveChanges ()) ||
+         else if((vvDataRecord.IsDocument && ((VvDocumentRecord)vvDataRecord).EditedTransesHaveChanges()) ||
                  (vvDataRecord.IsPolyDocument && ((VvPolyDocumRecord)vvDataRecord).EditedTransesHaveChanges2()) ||
                  (vvDataRecord.IsPolyDocument && ((VvPolyDocumRecord)vvDataRecord).EditedTransesHaveChanges3())) // ################################################################## 
          {
@@ -1235,7 +1235,7 @@ public static class VvSQL
          }
       } // else if(actionType == DB_RW_ActionType.RWT) 
 
-      else                               
+      else
       {
          if(identifyByRecIDonly == true)
          {
@@ -1247,21 +1247,22 @@ public static class VvSQL
             else // orig, default case 
             {
                /* if(isSkyTraffic) return ("lanSrvID = ?" + preffix + "lanSrvID AND lanRecID =?" + preffix + "lanRecID ");
-               else */ return ("recID = ?" + preffix + "recID "); // Orig, default case 
+               else */
+               return ("recID = ?" + preffix + "recID "); // Orig, default case 
             }
          }
 
          firstLine = "recID = ?" + preffix + "recID " + suffix + "\n";
       }
 
-      clause = firstLine + vvDataRecord.VvDao.WHERE_or_SET_Clause_Specifics(preffix, suffix, isArhiva); 
+      clause = firstLine + vvDataRecord.VvDao.WHERE_or_SET_Clause_Specifics(preffix, suffix, isArhiva);
 
-      return(clause);
+      return (clause);
    }
 
    public static string ColumnAndParam(string columnName, string preffix, string suffix)
    {
-      return(columnName + " = ?" + preffix + columnName + suffix);
+      return (columnName + " = ?" + preffix + columnName + suffix);
    }
 
    public static void CreateCommandParameter(XSqlCommand cmd, string paramName, object paramValue, XSqlDbType dbType, int size)
@@ -1327,11 +1328,11 @@ public static class VvSQL
       // ovo je kak'ti brze 
 
       //string      paramName  = (string)     drSchema[0];
-      XSqlDbType  dbType     = (XSqlDbType) drSchema[13];
-      int         size       = (int)        drSchema[2];
-      bool        isNullable = (bool)       drSchema[12];
-      byte        precision  = (byte)(int)  drSchema[3];
-      byte        scale      = (byte)(int)  drSchema[4];
+      XSqlDbType dbType = (XSqlDbType)drSchema[13];
+      int size = (int)drSchema[2];
+      bool isNullable = (bool)drSchema[12];
+      byte precision = (byte)(int)drSchema[3];
+      byte scale = (byte)(int)drSchema[4];
 
       //if(dbType == XSqlDbType.VarChar)
       //{
@@ -1380,7 +1381,7 @@ public static class VvSQL
 
       // 02.11.2015: da ne javlja KDUP error za CACHE na poslovnici (vatrogasna mjera)                                   
       // 03.11.2015: da ne javlja KDUP error za CACHE igdje         (vatrogasna mjera)                                   
-    //if(  ZXC.IsTEXTHOshop &&   ex.Number == 1062 /* K_DUP err */ && actionName.ToLower().Contains(ArtStat.recordName)) 
+      //if(  ZXC.IsTEXTHOshop &&   ex.Number == 1062 /* K_DUP err */ && actionName.ToLower().Contains(ArtStat.recordName)) 
       if(/*ZXC.IsTEXTHOshop &&*/ ex.Number == 1062 /* K_DUP err */ && actionName.ToLower().Contains(ArtStat.recordName))
       {
          ZXC.aim_log(theMessage);
@@ -1389,13 +1390,13 @@ public static class VvSQL
 
       DialogResult result = MessageBox.Show(theMessage, "Database error!", msgBoxButtons, MessageBoxIcon.Error);
 
-      if(result == DialogResult.OK)     return true;
-      if(result == DialogResult.Retry)  return true;
-      if(result == DialogResult.Yes)    return true;
+      if(result == DialogResult.OK) return true;
+      if(result == DialogResult.Retry) return true;
+      if(result == DialogResult.Yes) return true;
 
-      if(result == DialogResult.Abort)  return false;
+      if(result == DialogResult.Abort) return false;
       if(result == DialogResult.Cancel) return false;
-      if(result == DialogResult.No)     return false;
+      if(result == DialogResult.No) return false;
 
       return true;
    }
@@ -1411,16 +1412,16 @@ public static class VvSQL
          return true;
       }
 
-      DialogResult result = 
+      DialogResult result =
          MessageBox.Show(theMessage, "Database error!", msgBoxButtons, MessageBoxIcon.Error);
 
-      if(result == DialogResult.OK)     return true;
-      if(result == DialogResult.Retry)  return true;
-      if(result == DialogResult.Yes)    return true;
+      if(result == DialogResult.OK) return true;
+      if(result == DialogResult.Retry) return true;
+      if(result == DialogResult.Yes) return true;
 
-      if(result == DialogResult.Abort)  return false;
+      if(result == DialogResult.Abort) return false;
       if(result == DialogResult.Cancel) return false;
-      if(result == DialogResult.No)     return false;
+      if(result == DialogResult.No) return false;
 
       return true;
    }
@@ -1428,7 +1429,7 @@ public static class VvSQL
    public static bool ReportGenericError(string actionName, string errMessage, MessageBoxButtons msgBoxButtons)
    {
       string theMessage = "Akcija: [" + actionName + "]\n\n" + "Method: " + ZXC.GetMethodNameDaStack() + "\n\nPoruka:\n\n" + errMessage/* + "]"*/;
-      
+
       // 01.05.2015: 
       if(ZXC.ThisIsSkyLabProject)
       {
@@ -1482,7 +1483,7 @@ public static class VvSQL
          if(shouldReport1045)
          {
 #if(DEBUG)
-         VvSQL.ReportSqlError("CREATE_AND_OPEN_XSqlConnection", ex, System.Windows.Forms.MessageBoxButtons.OK); 
+            VvSQL.ReportSqlError("CREATE_AND_OPEN_XSqlConnection", ex, System.Windows.Forms.MessageBoxButtons.OK);
 #else
             if(_dbName != ZXC.vv_MBF_DbName)
             {
@@ -1522,9 +1523,9 @@ public static class VvSQL
       {
          //return String.Format("Server = {0}; UID = {1}; Password = {2}; Pooling = false; Connect Timeout = 4;",
          //   _server, _user, _password, ZXC.TheVvDatabaseInfoIn_ComboBox4Projects.DataBaseName);
-       //return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                                 Connect Timeout = 10; Allow User Variables=True;                                                            ", _server, theUser, _password, ZXC.vvDB_Port);
-       //return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                 Keepalive=10;   Connect Timeout = 10; Allow User Variables=True;                                                            ", _server, theUser, _password, ZXC.vvDB_Port);
-       //return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                 Keepalive=4 ;   Connect Timeout = 16; Allow User Variables=True; default command timeout=20;                             {4}", _server, theUser, _password, ZXC.vvDB_Port, ZXC.ThisIsHektorProject ? "CharSet=latin1; " : "");
+         //return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                                 Connect Timeout = 10; Allow User Variables=True;                                                            ", _server, theUser, _password, ZXC.vvDB_Port);
+         //return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                 Keepalive=10;   Connect Timeout = 10; Allow User Variables=True;                                                            ", _server, theUser, _password, ZXC.vvDB_Port);
+         //return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                 Keepalive=4 ;   Connect Timeout = 16; Allow User Variables=True; default command timeout=20;                             {4}", _server, theUser, _password, ZXC.vvDB_Port, ZXC.ThisIsHektorProject ? "CharSet=latin1; " : "");
          return String.Format("Server = {0}; UID = {1}; Port = {3} ; Password = {2};                 Keepalive=4 ;   Connect Timeout = 16; Allow User Variables=True; default command timeout=20; convert zero datetime=True; {4}", _server, theUser, _password, ZXC.vvDB_Port, ZXC.ThisIsHektorProject ? "CharSet=latin1; " : "");
 
          // TIMEOUT problem NE RJESAVAS OVDJE nego u InitCommand()! 
@@ -1536,9 +1537,9 @@ public static class VvSQL
 
          //return String.Format("Server = {0}; UID = {1}; Password = {2}; DataBase = {3}; Pooling = false; Connect Timeout = 4;",
          //   _server, _user, _password, ZXC.TheVvDatabaseInfoIn_ComboBox4Projects.DataBaseName);
-       //return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3};               Connect Timeout = 10; Allow User Variables=True;                                                              ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
-       //return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3}; Keepalive=10; Connect Timeout = 10; Allow User Variables=True;                                                              ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
-       //return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3}; Keepalive= 4; Connect Timeout = 16; Allow User Variables=True; default command timeout=20;                                  ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
+         //return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3};               Connect Timeout = 10; Allow User Variables=True;                                                              ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
+         //return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3}; Keepalive=10; Connect Timeout = 10; Allow User Variables=True;                                                              ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
+         //return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3}; Keepalive= 4; Connect Timeout = 16; Allow User Variables=True; default command timeout=20;                                  ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
          return String.Format("Server = {0}; UID = {1}; Port = {4} ; Password = {2}; DataBase = {3}; Keepalive= 4; Connect Timeout = 16; Allow User Variables=True; default command timeout=20; convert zero datetime=True       ", _server, theUser, _password, _dbName, ZXC.vvDB_Port);
 
          // TIMEOUT problem NE RJESAVAS OVDJE nego u InitCommand()! 
@@ -1549,7 +1550,7 @@ public static class VvSQL
    {
       XSqlConnection tempConnection = new XSqlConnection(VvSQL.GetConnectionString(ZXC.vvDB_Server, ZXC.vvDB_User, ZXC.vvDB_Password, dbName));
 
-      try                     { tempConnection.Open(); }
+      try { tempConnection.Open(); }
       catch(XSqlException ex) { VvSQL.ReportSqlError("CREATE_TEMP_XSqlConnection.Open", ex, System.Windows.Forms.MessageBoxButtons.OK); }
 
       tempConnection.ChangeDatabase(dbName);
@@ -1605,6 +1606,52 @@ public static class VvSQL
          {
             success = false;
             VvSQL.ReportSqlError("GetVVDatabaseNamesList: " + dbNamePreffix, ex, System.Windows.Forms.MessageBoxButtons.OK);
+         }
+         catch(Exception ex)
+         {
+            success = false;
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+         }
+
+      } // using cmd  
+
+      return (dbNames);
+   }
+
+   public static List<string> GetVVDatabaseNamesList_viaSuffix(XSqlConnection tmpConn, string dbNameSuffix)
+   {
+      bool success = true;
+      string currDbName;
+      List<string> dbNames = new List<string>();
+
+      using(XSqlCommand cmd = CHECK_DATABASE_EXISTS_Command(tmpConn, '%' + dbNameSuffix))
+      {
+         try
+         {
+            using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult/* | CommandBehavior.SingleRow*/))
+            {
+
+               success = reader.HasRows;
+
+               while(success && reader.Read())
+               {
+                  currDbName = reader.GetString(0);
+
+                  // PAZI OVO JER DRUGACIJE od GetVVDatabaseNamesList()!
+                  //if(ZXC.vvDB_is_www) currDbName = currDbName.Replace(ZXC.vvDB_www_preffix, "");
+
+                  /*if(currDbName[2] == '2')*/ dbNames.Add(currDbName); 
+                  //if(currDbName[2] == '1') dbNames.Add(currDbName); // npr vv2009_VIPER_000001, na trecem mjestu mora biti prva znamenka godine, malo fuzzy ti je ovo! 
+               }
+
+               reader.Close();
+
+            } // using reader 
+         }
+         catch(XSqlException ex)
+         {
+            success = false;
+            VvSQL.ReportSqlError("GetVVDatabaseNamesList: " + dbNameSuffix, ex, System.Windows.Forms.MessageBoxButtons.OK);
          }
          catch(Exception ex)
          {
@@ -1746,7 +1793,7 @@ public static class VvSQL
 
    public static ZXC.VvDataBaseInfo? GetVvDataBaseInfoForKupdobCD(XSqlConnection tmpConn, string year, uint KupdobCD)
    {
-      bool   success = true;
+      bool success = true;
       string returnedName = "", searchPattern = ZXC.vvDB_www_preffix + ZXC.TheVvForm.GetvvDB_prefix() + year + "_%_" + KupdobCD.ToString("000000");
 
       using(XSqlCommand cmd = CHECK_DATABASE_EXISTS_Command(tmpConn, searchPattern))
@@ -1757,7 +1804,7 @@ public static class VvSQL
             {
                success = reader.HasRows;
                if(reader.Read()) returnedName = reader.GetString(0);
-               else              success = false;
+               else success = false;
                reader.Close();
 
             } // using reader 
@@ -1817,76 +1864,59 @@ public static class VvSQL
       VvDaoBase.VvTableMetaData vvTableMetaData = VvDaoBase.GetVvTableMetadata(conn, dbName, tableName);
 
       uint lastNewestCurrentTableVersion = ZXC.TheVvForm.GetLastNewestCurrentTableVersionForMetaData(tableName);
-      uint actualInFileTableVersion      = vvTableMetaData.TableVersion;
+      uint actualInFileTableVersion = vvTableMetaData.TableVersion;
 
       // 11.02.2015:                                                                                             ovo IsNotRipley7 dodano 08.11.2016 da ubrzam ulazak u vvTH 
       if(ZXC.ThisIsSkyLabProject == false && tableName != DevTec.recordName && tableName != Htrans.recordName && ZXC.IsRipleyOrKristal == false &&
          // Za 'vvDB_ServerID_CENTRALA' NEMOJ provjeravati OSIM ako si superuser na localhostu)
-       //(ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA ||  ZXC.vvDB_IsLocalhost                                                       )) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
+         //(ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA ||  ZXC.vvDB_IsLocalhost                                                       )) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
          (ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA || (ZXC.vvDB_IsLocalhost && ZXC.CURR_userName == ZXC.vvDB_programSuperUserName))) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
-
-
-
-
-      #region Roll In Past
-
-      //int thisYear = ZXC.projectYearAsInt;
-      //
-      //bool prevYearExists = true;
-      //
-      //XSqlConnection currPrervYear_conn;
-      //string         currPrervYear_dbname;
-      //
-      //for(int currPrevYear = thisYear - 1; prevYearExists; --currPrevYear)
-      //{
-      //   if(currPrevYear < 2010) break; // safety 
-      //
-      //   if(dbName == ZXC.VvDB_prjktDB_Name) continue;
-      //
-      //   currPrervYear_dbname = ChangeYearInDbName(currPrevYear, dbName);
-      //
-      //   currPrervYear_conn   = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, ZXC.vvDB_User, ZXC.vvDB_Password, currPrervYear_dbname);
-      //}
-
-      #endregion Roll In Past
-
-
-
 
       if(actualInFileTableVersion == lastNewestCurrentTableVersion)
       {
          ZXC.ClearStatusText();
          return (true);
       }
-      else
+      else // GO! ALTER this TABLE 
       {
          bool OK = ALTER_TABLE_ForCatchUp(conn, dbName, tableName, actualInFileTableVersion, lastNewestCurrentTableVersion, vvTableMetaData);
 
          #region Roll In Past
 
-         //int thisYear = ZXC.projectYearAsInt;
-         //int prevYear = thisYear - 1;
-         //
-         //bool prevYearExists = true;
-         //
-         //XSqlConnection currPrervYearConn;
-         //
-         //for(int currPrevYear = thisYear - 1; prevYearExists; --currPrevYear)
-         //{
-         //   currPrervYearConn = ZXC.TheSecondDbConn_SameDB_OtherYear(currPrevYear);
-         //}
+         if(OK && dbName != ZXC.VvDB_prjktDB_Name)
+         {
+            ZXC.VvDataBaseInfo dbi = new ZXC.VvDataBaseInfo(dbName);
+
+            List<string> dbNames_prevYears = GetVVDatabaseNamesList_viaSuffix(conn, dbi.ProjectName + "_" + dbi.ProjectCode); 
+
+            dbNames_prevYears.Remove(dbName); // makni tekucu godinu 
+
+
+            XSqlConnection currPrevYear_conn = null;
+
+            foreach(string currPrervYear_dbname in dbNames_prevYears)
+            {
+               if(currPrervYear_dbname == ZXC.VvDB_prjktDB_Name) continue;
+               if(dbi.ProjectYearAsUInt < 2010)                  continue; // safety 
+
+               dbi = new ZXC.VvDataBaseInfo(currPrervYear_dbname);
+
+               currPrevYear_conn = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, ZXC.vvDB_User, ZXC.vvDB_Password, currPrervYear_dbname);
+
+               ALTER_TABLE_ForCatchUp(currPrevYear_conn, currPrervYear_dbname, tableName, actualInFileTableVersion, lastNewestCurrentTableVersion, vvTableMetaData);
+
+              } // foreach(string currPrervYear_dbname in dbNames_prevYears)
+
+            if(currPrevYear_conn != null) currPrevYear_conn.Close();
+         }
 
          #endregion Roll In Past
 
          ZXC.ClearStatusText();
+
          return OK;
       }
 
-   }
-
-   private static string ChangeYearInDbName(int prevYear, string dbName)
-   {
-      return dbName.Replace(ZXC.projectYear, prevYear.ToString());
    }
 
    private static bool VvSqlMaintenanceCheckTable(XSqlConnection conn, string dbName, string tableName)

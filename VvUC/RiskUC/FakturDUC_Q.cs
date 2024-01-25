@@ -1916,10 +1916,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // 22.10.2014: 
       bool isKomisijaInUse = VvUserControl.KupdobSifrar.Any(kpdb => kpdb.Komisija != ZXC.KomisijaKindEnum.NIJE);
 
-      VvLookUpItem skladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD);
+      VvLookUpItem skladLUI  = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD);
       VvLookUpItem sklad2LUI = ZXC.luiListaSkladista.GetLuiForThisCd(Fld_SkladCD2);
-      bool isSklKomisija = skladLUI == null ? false : isKomisijaInUse ? skladLUI.Integer > 10 : false;
-      bool isSkl2Komisija = sklad2LUI == null ? false : isKomisijaInUse ? sklad2LUI.Integer > 10 : false;
+      bool isSklKomisija     = skladLUI  == null ? false : isKomisijaInUse ? skladLUI .Integer > 10 : false;
+      bool isSkl2Komisija    = sklad2LUI == null ? false : isKomisijaInUse ? sklad2LUI.Integer > 10 : false;
 
       // 19.05.2017: bikoz TEMBO, overriding isSklKomisija rule 
       if(isSklKomisija && skladLUI.Cd.ToUpper().StartsWith("VPSK")) isSklKomisija = false; // ako SkladCD1 pocne sa 'VPSK' tada NIJE komisija bez obzira na druge obzire 
@@ -2041,9 +2041,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region IsNpCash but NOT fiskalize
 
-      if(faktur_rec.IsFiskalDutyFaktur == true && // IRM, IRA, IFA, IOD, IPV 
+      if(faktur_rec.IsFiskalDutyFaktur        == true  && // IRM, IRA, IFA, IOD, IPV                                      
          faktur_rec.IsFiskalDutyFaktur_ONLINE == false && // PREMA Prjkt pravilima ovaj TT NE IDE na OnLine Fiskalizaciju 
-         faktur_rec.IsNpCash == true)    // ...a zadao je NP 'Novcanice' 
+       //faktur_rec.IsNpCash                  == true)    // ...a zadao je NP 'Novcanice'                                 
+         faktur_rec.R_IsNpCashAny             == true)    // ...a zadao je NP 'Novcanice'                                 
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Prema pravilima u Projektu, ovaj dokument NE MOŽE imati GOTOVINSKI način plaćanja ('Novčanice')!");
 
@@ -2081,14 +2082,48 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(this is FakturExtDUC)
       {
          string nacPlac = faktur_rec.NacPlac;
-         bool isNpCash = faktur_rec.IsNpCash;
+         bool isNpCash  = faktur_rec.IsNpCash;
 
          bool shouldBeIsNpCash = ZXC.luiListaRiskVrstaPl.GetFlagForThisCd(nacPlac);
 
-         //if(isNpCash != shouldBeIsNpCash                                           )
+       //if(isNpCash != shouldBeIsNpCash                                           )
          if(isNpCash != shouldBeIsNpCash && faktur_rec.TtInfo.IsBlagajnaTT == false)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
+            e.Cancel = true;
+         }
+
+         // Novododano u 2024: 
+         string nacPlac2 = faktur_rec.NacPlac2;
+         bool isNpCash2  = faktur_rec.IsNpCash2;
+
+         bool shouldBeIsNpCash2 = ZXC.luiListaRiskVrstaPl.GetFlagForThisCd(nacPlac2);
+
+       //if(isNpCash2 != shouldBeIsNpCash                                           )
+         if(isNpCash2 != shouldBeIsNpCash2 && faktur_rec.TtInfo.IsBlagajnaTT == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
+            e.Cancel = true;
+         }
+
+         // Novododano u 2024: 
+         if(faktur_rec.S_ukKCRP_NP2.NotZero() && faktur_rec.S_ukKCRP_NP2 == faktur_rec.S_ukKCRP)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U DRUGI način plaćanja je stavljen cijeli iznos računa!\n\nZadajte takav iznos NP2 da bude manji od ukupnog iznosa računa.");
+            e.Cancel = true;
+         }
+
+         // Novododano u 2024: 
+         if(faktur_rec.S_ukKCRP_NP2.NotZero() && faktur_rec.S_ukKCRP_NP2 > faktur_rec.S_ukKCRP)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U DRUGI način plaćanja je stavljen iznos koji je veći od iznosa računa!\n\nZadajte takav iznos NP2 da bude manji od ukupnog iznosa računa.");
+            e.Cancel = true;
+         }
+
+         // Novododano u 2024: 
+         if(faktur_rec.S_ukKCRP_NP2.NotZero() && faktur_rec.NacPlac == faktur_rec.NacPlac2)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nema smisla navoditi iznos druge vrste plaćanja kada su obe vrste plaćanja jednake!\n\nZadajte takav NP2 da bude drukčiji od NP1.");
             e.Cancel = true;
          }
       }
