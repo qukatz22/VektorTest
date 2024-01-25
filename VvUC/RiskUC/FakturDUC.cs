@@ -8676,7 +8676,7 @@ public partial class FakturExtDUC : FakturDUC
    }
    private void InitializeHamper_NacPlac(out VvHamper hamper)
    {
-      bool isTetragram = ZXC.IsTETRAGRAM_ANY;
+      bool isTetragram = /*ZXC.IsTETRAGRAM_ANY*/true;
          
     //hamper = new VvHamper(4, 1, "", null, false);
       hamper = new VvHamper(4, 2, "", null, false);
@@ -12507,7 +12507,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_NacPlac     )) Fld_NacPlac      = faktEx.NacPlac;
       if(CtrlOK(tbx_NacPlac2    )) Fld_NacPlac2     = faktEx.NacPlac2;
       if(CtrlOK(tbx_S_ukKCRP_NP2)) Fld_S_ukKCRP_NP2 = faktEx.S_ukKCRP_NP2;
-      if(CtrlOK(tbx_R_ukKCRP_NP1)) Fld_R_ukKCRP_NP1 = faktur_rec.R_ukKCRP_NP1;
+      if(CtrlOK(tbx_R_ukKCRP_NP1)) Fld_R_ukKCRP_NP1 = faktur_rec.R_ukKCRP_NP2;
       if(CtrlOK(tbx_ZiroRn      )) Fld_ZiroRn       = faktEx.ZiroRn;
       if(CtrlOK(tbx_ValName     )) Fld_DevName      = faktEx.DevName;
 
@@ -13383,7 +13383,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(CtrlOK(tbx_NacPlac     )) faktur_rec.NacPlac      = Fld_NacPlac;
       if(CtrlOK(tbx_NacPlac2    )) faktur_rec.NacPlac2     = Fld_NacPlac2;
-      if(CtrlOK(tbx_S_ukKCRP_NP2)) faktur_rec.S_ukKCRP_NP2 = Fld_S_ukKCRP_NP2;
+      if(CtrlOK(tbx_S_ukKCRP_NP2)) faktur_rec.S_ukKCRP_NP1 = Fld_S_ukKCRP_NP2;
       if(CtrlOK(tbx_ZiroRn      )) faktur_rec.ZiroRn       = Fld_ZiroRn;
       if(CtrlOK(tbx_ValName     )) faktur_rec.DevName      = Fld_DevName;
       if(CtrlOK(tbx_PnbM        )) faktur_rec.PnbM         = Fld_PnbM;

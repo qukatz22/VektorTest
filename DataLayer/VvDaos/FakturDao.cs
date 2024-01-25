@@ -1916,7 +1916,7 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
                   /* Skiz_ukKC    */ grp.Sum  (f => f.Skiz_ukKC    ),
                   /* Skiz_ukKCR   */ grp.Sum  (f => f.Skiz_ukKCR   ),
                   /* Skiz_ukRbt1  */ grp.Sum  (f => f.Skiz_ukRbt1  ),
-                  /* S_ukKCRP_NP2 */ grp.Sum  (f => f.S_ukKCRP_NP2 ),
+                  /* S_ukKCRP_NP2 */ grp.Sum  (f => f.S_ukKCRP_NP1 ),
                   /* NacPlac2     */ grp.First().NacPlac2           ,
                   /* IsNpCash2    */ grp.First().IsNpCash2
 
@@ -2178,7 +2178,7 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
                   /* Skiz_ukKC    */ grp.Sum  (f => f.Skiz_ukKC    ),
                   /* Skiz_ukKCR   */ grp.Sum  (f => f.Skiz_ukKCR   ),
                   /* Skiz_ukRbt1  */ grp.Sum  (f => f.Skiz_ukRbt1  ),
-                  /* S_ukKCRP_NP2 */ grp.Sum  (f => f.S_ukKCRP_NP2 ),
+                  /* S_ukKCRP_NP2 */ grp.Sum  (f => f.S_ukKCRP_NP1 ),
                   /* NacPlac2     */ grp.First().NacPlac2           ,
                   /* IsNpCash2    */ grp.First().IsNpCash2
 

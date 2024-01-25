@@ -746,7 +746,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       this.Skiz_ukKC      = _Skiz_ukKC    ; 
       this.Skiz_ukKCR     = _Skiz_ukKCR   ; 
       this.Skiz_ukRbt1    = _Skiz_ukRbt1  ;
-      this.S_ukKCRP_NP2   = _S_ukKCRP_NP2 ;
+      this.S_ukKCRP_NP1   = _S_ukKCRP_NP2 ;
       this.NacPlac2       = _NacPlac2     ;
       this.IsNpCash2      = _IsNpCash2    ;
    }
@@ -2126,7 +2126,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*192 */ public decimal Skiz_ukKC         { get { return this.TheEx.currentData._skiz_ukKC     ; } set { this.TheEx.currentData._skiz_ukKC      = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*193 */ public decimal Skiz_ukKCR        { get { return this.TheEx.currentData._skiz_ukKCR    ; } set { this.TheEx.currentData._skiz_ukKCR     = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*194 */ public decimal Skiz_ukRbt1       { get { return this.TheEx.currentData._skiz_ukRbt1   ; } set { this.TheEx.currentData._skiz_ukRbt1    = value; } }
-   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP2      { get { return this.TheEx.currentData._s_ukKCRP_NP2  ; } set { this.TheEx.currentData._s_ukKCRP_NP2   = value; } }
+
+   // pazi, u data layeru si krenuo u krivom smjeru pa se ovaj property tam zove 's_ukKCRP_NP2' 
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP1      { get { return this.TheEx.currentData._s_ukKCRP_NP2  ; } set { this.TheEx.currentData._s_ukKCRP_NP2   = value; } }
                                                       /*196 */ public string  NacPlac2          { get { return this.TheEx.currentData._nacPlac2      ; } set { this.TheEx.currentData._nacPlac2       = value; } }
 
    /* 197 */ public bool  IsNpCash2
@@ -3303,19 +3305,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal   R_Ira_Ruv    { get { return (/*R_Ira_PV*/ R_ukKCR_rob - R_Ira_NV  ); } }
 
    public decimal Ira_RUV        { get { return Ira_ROB_Ruv + Ira_USL_PV; } }
-   public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP2.NotZero(); } }
+   public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP1.NotZero(); } }
    public bool    R_IsNpCashAny  { get { return this.IsNpCash || this.IsNpCash2; } }
 
-   public decimal R_ukKCRP_NP1  { get { return ( this.S_ukKCRP - this.S_ukKCRP_NP2); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_NP2  { get { return ( this.S_ukKCRP - this.S_ukKCRP_NP1); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
  //public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.R_ukKCRP_NP1 : 0M) +
-                                                (this.IsNpCash2 ? this.S_ukKCRP_NP2 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.R_ukKCRP_NP2 : 0M) +
+                                                (this.IsNpCash2 ? this.S_ukKCRP_NP1 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
    public decimal K_ukKCRP_cash { get; set;                                             } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
  //public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.R_ukKCRP_NP1 : 0M) +
-                                               (!this.IsNpCash2 ? this.S_ukKCRP_NP2 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.R_ukKCRP_NP2 : 0M) +
+                                               (!this.IsNpCash2 ? this.S_ukKCRP_NP1 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
    public decimal K_ukKCRP_ziro { get; set;                                             } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
    // 21.09.2022: 
@@ -4323,7 +4325,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       this.Skiz_ukKC      = fakturList.Sum(f => f.Skiz_ukKC     );
       this.Skiz_ukKCR     = fakturList.Sum(f => f.Skiz_ukKCR    );
       this.Skiz_ukRbt1    = fakturList.Sum(f => f.Skiz_ukRbt1   );
-      this.S_ukKCRP_NP2   = fakturList.Sum(f => f.S_ukKCRP_NP2  );
+      this.S_ukKCRP_NP1   = fakturList.Sum(f => f.S_ukKCRP_NP1  );
    }
 
    public void RatioValuesOnR2Uplata()
@@ -4440,7 +4442,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       this.Skiz_ukKC      *= ratio;
       this.Skiz_ukKCR     *= ratio;
       this.Skiz_ukRbt1    *= ratio;
-      this.S_ukKCRP_NP2   *= ratio;
+      this.S_ukKCRP_NP1   *= ratio;
    }
 
    internal string TT_And_TtNum 
@@ -5092,16 +5094,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       Faktur np2Faktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
 
-      this.S_ukKCRP = this.R_ukKCRP_NP1;
+      this.S_ukKCRP = this.R_ukKCRP_NP2;
 
       np2Faktur_rec.NacPlac  = np2Faktur_rec.NacPlac2    ;
-      np2Faktur_rec.S_ukKCRP = np2Faktur_rec.S_ukKCRP_NP2;
+      np2Faktur_rec.S_ukKCRP = np2Faktur_rec.S_ukKCRP_NP1;
 
       this.NacPlac2     = "";
-      this.S_ukKCRP_NP2 =  0;
+      this.S_ukKCRP_NP1 =  0;
 
       np2Faktur_rec.NacPlac2     = "";
-      np2Faktur_rec.S_ukKCRP_NP2 =  0;
+      np2Faktur_rec.S_ukKCRP_NP1 =  0;
 
       return np2Faktur_rec;
    }
