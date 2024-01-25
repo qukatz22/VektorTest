@@ -5939,7 +5939,7 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*192 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.Skiz_ukKC     , TheSchemaTable.Rows[CI.skiz_ukKC     ]);
       /*193 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.Skiz_ukKCR    , TheSchemaTable.Rows[CI.skiz_ukKCR    ]);
       /*194 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.Skiz_ukRbt1   , TheSchemaTable.Rows[CI.skiz_ukRbt1   ]);
-      /*195 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.S_ukKCRP_NP2  , TheSchemaTable.Rows[CI.s_ukKCRP_NP2  ]);
+      /*195 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.S_ukKCRP_NP1  , TheSchemaTable.Rows[CI.s_ukKCRP_NP2  ]);
       /*196 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.NacPlac2      , TheSchemaTable.Rows[CI.nacPlac2      ]);
       /*197 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.IsNpCash2     , TheSchemaTable.Rows[CI.isNpCash2     ]);
       }

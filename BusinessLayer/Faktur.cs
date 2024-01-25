@@ -6333,7 +6333,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*192 */ public decimal Skiz_ukKC         { get { return this.currentData._skiz_ukKC     ; } set { this.currentData._skiz_ukKC      = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*193 */ public decimal Skiz_ukKCR        { get { return this.currentData._skiz_ukKCR    ; } set { this.currentData._skiz_ukKCR     = value; } }
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*194 */ public decimal Skiz_ukRbt1       { get { return this.currentData._skiz_ukRbt1   ; } set { this.currentData._skiz_ukRbt1    = value; } }
-   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP2      { get { return this.currentData._s_ukKCRP_NP2  ; } set { this.currentData._s_ukKCRP_NP2   = value; } }
+   [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP1      { get { return this.currentData._s_ukKCRP_NP2  ; } set { this.currentData._s_ukKCRP_NP2   = value; } }
                                                       /*196 */ public string NacPlac2           { get { return this.currentData._nacPlac2      ; } set { this.currentData._nacPlac2       = value; } }
 
    /* 197 */ public bool IsNpCash2

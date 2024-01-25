@@ -7443,7 +7443,7 @@ public partial class FakturExtDUC : FakturDUC
                     tbx_KupdobUlica, tbx_KupdobZip, tbx_KupdobMjesto,tbx_Napomena2,tbx_RokPonude, tbx_dateX, tbx_PonudDate, tbx_ValName,tbx_DostAddr, tbx_RokIsporuke, 
                     tbx_RokIspDate,  tbx_PersonBName, tbx_somePercent, tbx_OpciAlabel; // !!!
    /*private*/ public VvTextBox tbx_VezniDok2,  tbx_VezniDok2Opis, tbx_FcoOpis,
-                     tbx_NacPlac, tbx_NacPlacRbt, tbx_NacPlac2, tbx_R_ukKCRP_NP1, tbx_S_ukKCRP_NP2,
+                     tbx_NacPlac, tbx_NacPlacRbt, tbx_NacPlac2, tbx_S_ukKCRP_NP1, tbx_R_ukKCRP_NP2,
                      tbx_ZiroRn,  tbx_PnbM, tbx_PnbV,
                      tbx_PersonACD, tbx_PersonAName, //tbx_Status, tbx_StatusOpis,
                      tbx_PersonBCD,
@@ -8707,9 +8707,8 @@ public partial class FakturExtDUC : FakturDUC
       tbx_NacPlacRbt.JAM_ReadOnly = true;
       tbx_NacPlacRbt.JAM_IsForPercent = true;
 
-      tbx_R_ukKCRP_NP1 = hamper.CreateVvTextBox(3, 0, "tbx_R_ukKCRP_NP1", "Iznos NP1", 12);
-      tbx_R_ukKCRP_NP1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
-      tbx_R_ukKCRP_NP1.JAM_ReadOnly = true;
+      tbx_S_ukKCRP_NP1 = hamper.CreateVvTextBox(3, 0, "tbx_S_ukKCRP_NP1", "Iznos NP1", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.s_ukKCRP_NP2));
+      tbx_S_ukKCRP_NP1.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
       Label lbl_np2    = hamper.CreateVvLabel(0, 1, "NačinPl2:", ContentAlignment.MiddleRight);
       tbx_NacPlac2 = hamper.CreateVvTextBoxLookUp(1, 1, "tbx_NacPlac2", "Način plaćanja 2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.nacPlac2));
@@ -8719,8 +8718,9 @@ public partial class FakturExtDUC : FakturDUC
       cbx_isCash2.Name = "IsCash2";
       cbx_isCash2.Enabled = false;
 
-      tbx_S_ukKCRP_NP2 = hamper.CreateVvTextBox(3, 1, "tbx_S_ukKCRP_NP2", "Iznos NP2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.s_ukKCRP_NP2));
-      tbx_S_ukKCRP_NP2.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_R_ukKCRP_NP2 = hamper.CreateVvTextBox(3, 1, "tbx_S_ukKCRP_NP2", "Iznos NP2", 12);
+      tbx_R_ukKCRP_NP2.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+      tbx_R_ukKCRP_NP2.JAM_ReadOnly = true;
 
       tbx_NacPlac2.JAM_Set_LookUpTable(ZXC.luiListaRiskVrstaPl, (int)ZXC.Kolona.prva);
       tbx_NacPlac2.JAM_lui_FlagTaker_JAM_Name = cbx_isCash2.Name;
@@ -8736,8 +8736,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          lbl_np2         .Visible = false;
          tbx_NacPlac2    .Visible = false;
-         tbx_R_ukKCRP_NP1.Visible = false;
-         tbx_S_ukKCRP_NP2.Visible = false;
+         tbx_S_ukKCRP_NP1.Visible = false;
+         tbx_R_ukKCRP_NP2.Visible = false;
       }
 
       hamper.Name = "ANačinPlać:";
@@ -12222,8 +12222,8 @@ public partial class FakturExtDUC : FakturDUC
    public bool Fld_IsNpCash   { get { return cbx_isCash.Checked; }  set { cbx_isCash.Checked = value; }   }
    public bool Fld_IsNpCash2   { get { return cbx_isCash2.Checked; } set { cbx_isCash2.Checked = value; }  }
 
-   public decimal Fld_R_ukKCRP_NP1 { get { return tbx_R_ukKCRP_NP1.GetDecimalField(); } set { tbx_R_ukKCRP_NP1.PutDecimalField(value); } }
-   public decimal Fld_S_ukKCRP_NP2 { get { return tbx_S_ukKCRP_NP2.GetDecimalField(); } set { tbx_S_ukKCRP_NP2.PutDecimalField(value); } }
+   public decimal Fld_S_ukKCRP_NP1 { get { return tbx_S_ukKCRP_NP1.GetDecimalField(); } set { tbx_S_ukKCRP_NP1.PutDecimalField(value); } }
+   public decimal Fld_R_ukKCRP_NP2 { get { return tbx_R_ukKCRP_NP2.GetDecimalField(); } set { tbx_R_ukKCRP_NP2.PutDecimalField(value); } }
 
    public string Fld_fiskJIR   { get { return tbx_fiskJIR  .Text; } set { tbx_fiskJIR  .Text = value; } }
    public string Fld_fiskZKI   { get { return tbx_fiskZKI  .Text; } set { tbx_fiskZKI  .Text = value; } }
@@ -12506,8 +12506,8 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_SkladDate   )) Fld_SkladDate    = faktEx.SkladDate;
       if(CtrlOK(tbx_NacPlac     )) Fld_NacPlac      = faktEx.NacPlac;
       if(CtrlOK(tbx_NacPlac2    )) Fld_NacPlac2     = faktEx.NacPlac2;
-      if(CtrlOK(tbx_S_ukKCRP_NP2)) Fld_S_ukKCRP_NP2 = faktEx.S_ukKCRP_NP2;
-      if(CtrlOK(tbx_R_ukKCRP_NP1)) Fld_R_ukKCRP_NP1 = faktur_rec.R_ukKCRP_NP2;
+      if(CtrlOK(tbx_R_ukKCRP_NP2)) Fld_R_ukKCRP_NP2 = faktur_rec.R_ukKCRP_NP2;
+      if(CtrlOK(tbx_S_ukKCRP_NP1)) Fld_S_ukKCRP_NP1 = faktEx.S_ukKCRP_NP1;
       if(CtrlOK(tbx_ZiroRn      )) Fld_ZiroRn       = faktEx.ZiroRn;
       if(CtrlOK(tbx_ValName     )) Fld_DevName      = faktEx.DevName;
 
@@ -13383,7 +13383,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(CtrlOK(tbx_NacPlac     )) faktur_rec.NacPlac      = Fld_NacPlac;
       if(CtrlOK(tbx_NacPlac2    )) faktur_rec.NacPlac2     = Fld_NacPlac2;
-      if(CtrlOK(tbx_S_ukKCRP_NP2)) faktur_rec.S_ukKCRP_NP1 = Fld_S_ukKCRP_NP2;
+      if(CtrlOK(tbx_S_ukKCRP_NP1)) faktur_rec.S_ukKCRP_NP1 = Fld_S_ukKCRP_NP1;
       if(CtrlOK(tbx_ZiroRn      )) faktur_rec.ZiroRn       = Fld_ZiroRn;
       if(CtrlOK(tbx_ValName     )) faktur_rec.DevName      = Fld_DevName;
       if(CtrlOK(tbx_PnbM        )) faktur_rec.PnbM         = Fld_PnbM;
