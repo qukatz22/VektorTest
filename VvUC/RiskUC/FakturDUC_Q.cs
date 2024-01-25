@@ -2107,21 +2107,21 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          // Novododano u 2024: 
-         if(faktur_rec.S_ukKCRP_NP1.NotZero() && faktur_rec.S_ukKCRP_NP1 == faktur_rec.S_ukKCRP)
+         if(false/*faktur_rec.S_ukKCRP_NP1.NotZero() && faktur_rec.S_ukKCRP_NP1 == faktur_rec.S_ukKCRP*/)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U DRUGI način plaćanja je stavljen cijeli iznos računa!\n\nZadajte takav iznos NP2 da bude manji od ukupnog iznosa računa.");
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U PRVI način plaćanja je stavljen cijeli iznos računa!\n\nZadajte takav iznos NP1 da bude manji od ukupnog iznosa računa.");
             e.Cancel = true;
          }
 
          // Novododano u 2024: 
          if(faktur_rec.S_ukKCRP_NP1.NotZero() && faktur_rec.S_ukKCRP_NP1 > faktur_rec.S_ukKCRP)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U DRUGI način plaćanja je stavljen iznos koji je veći od iznosa računa!\n\nZadajte takav iznos NP2 da bude manji od ukupnog iznosa računa.");
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U PRVI način plaćanja je stavljen iznos koji je veći od iznosa računa!\n\nZadajte takav iznos NP1 da bude manji od ukupnog iznosa računa.");
             e.Cancel = true;
          }
 
          // Novododano u 2024: 
-         if(faktur_rec.S_ukKCRP_NP1.NotZero() && faktur_rec.NacPlac == faktur_rec.NacPlac2)
+         if(faktur_rec.R_ukKCRP_NP2.NotZero() && faktur_rec.NacPlac == faktur_rec.NacPlac2)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nema smisla navoditi iznos druge vrste plaćanja kada su obe vrste plaćanja jednake!\n\nZadajte takav NP2 da bude drukčiji od NP1.");
             e.Cancel = true;

@@ -3308,7 +3308,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP1.NotZero(); } }
    public bool    R_IsNpCashAny  { get { return this.IsNpCash || this.IsNpCash2; } }
 
-   public decimal R_ukKCRP_NP2  { get { return ( this.S_ukKCRP - this.S_ukKCRP_NP1); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_NP2  { get { return (this.S_ukKCRP_NP1.NotZero() ? this.S_ukKCRP - this.S_ukKCRP_NP1 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
  //public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
    public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.R_ukKCRP_NP2 : 0M) +
