@@ -1992,6 +1992,17 @@ public class RptR_StandardRiskReport : VvRiskReport
       {
          TheFakturList.Where(f => f.DokDate.Year == year).ToList().ForEach(f => f.Convert_Euro_To_Kuna_ForAllMoneyPropertiez_JOB(null));
       }
+   
+      // Novo u 2024: 
+      if(TheFakturList.Any(fak => fak.R_IsNpMix) && RptFilter.GrupiranjeDokum == "NacPlac")
+      {
+         var mixane_fakture = TheFakturList.Where(fak => fak.R_IsNpMix).ToList();
+
+         for(int i = 0; i < mixane_fakture.Count; ++i)
+         {
+            TheFakturList.Add(mixane_fakture[i].SplitThisFakturForNpMix());
+         }
+      }
    }
 
    /*private*/

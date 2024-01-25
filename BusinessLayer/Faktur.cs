@@ -5088,6 +5088,24 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       return LIKEclause;
    }
 
+   internal Faktur SplitThisFakturForNpMix()
+   {
+      Faktur np2Faktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
+
+      this.S_ukKCRP = this.R_ukKCRP_NP1;
+
+      np2Faktur_rec.NacPlac  = np2Faktur_rec.NacPlac2    ;
+      np2Faktur_rec.S_ukKCRP = np2Faktur_rec.S_ukKCRP_NP2;
+
+      this.NacPlac2     = "";
+      this.S_ukKCRP_NP2 =  0;
+
+      np2Faktur_rec.NacPlac2     = "";
+      np2Faktur_rec.S_ukKCRP_NP2 =  0;
+
+      return np2Faktur_rec;
+   }
+
    public ZXC.SkySklKind Skl1kind
    {
       get
