@@ -1709,7 +1709,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          // NEGATIVNI RUC 
          if(faktur_rec.TtInfo.IsIzlazniPdvTT && faktur_rec.TrnNonDel./*Where(r => r.T_pdvColTip != ZXC.PdvKolTipEnum.GlassOnIRM).*/Any(rtrans => rtrans.R_Ira_RUV.IsNegative()))
          {
-            if(ZXC.RISK_PromjenaNacPlac_inProgress != true)
+            // 26.01.2024: 
+          //if(ZXC.RISK_PromjenaNacPlac_inProgress != true)
+            if(ZXC.RISK_PromjenaNacPlac_inProgress != true && faktur_rec.Is_STORNO == false)
             {
                ZXC.aim_emsg(MessageBoxIcon./*Error*/Warning, "UPOZORENJE:\n\nDokument sadrži stavku(e) sa NEGATIVNOM zaradom (RUC).");
             }
@@ -2114,14 +2116,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          // Novododano u 2024: 
-         if(faktur_rec.S_ukKCRP_NP1.NotZero() && faktur_rec.S_ukKCRP_NP1 > faktur_rec.S_ukKCRP)
+         if(faktur_rec.S_ukKCRP_NP1.NotZero() && Math.Abs(faktur_rec.S_ukKCRP_NP1) > Math.Abs(faktur_rec.S_ukKCRP))
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: U PRVI način plaćanja je stavljen iznos koji je veći od iznosa računa!\n\nZadajte takav iznos NP1 da bude manji od ukupnog iznosa računa.");
             e.Cancel = true;
          }
 
          // Novododano u 2024: 
-         if(faktur_rec.R_ukKCRP_NP2.NotZero() && faktur_rec.NacPlac == faktur_rec.NacPlac2)
+         if(false/*faktur_rec.R_ukKCRP_NP2.NotZero() && faktur_rec.NacPlac == faktur_rec.NacPlac2*/)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nema smisla navoditi iznos druge vrste plaćanja kada su obe vrste plaćanja jednake!\n\nZadajte takav NP2 da bude drukčiji od NP1.");
             e.Cancel = true;

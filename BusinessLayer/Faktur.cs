@@ -3305,20 +3305,22 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal   R_Ira_Ruv    { get { return (/*R_Ira_PV*/ R_ukKCR_rob - R_Ira_NV  ); } }
 
    public decimal Ira_RUV        { get { return Ira_ROB_Ruv + Ira_USL_PV; } }
-   public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP1.NotZero(); } }
+ //public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP1.NotZero(); } }
+   public bool    R_IsNpMix      { get { return this.NacPlac != this.NacPlac2; } }
    public bool    R_IsNpCashAny  { get { return this.IsNpCash || this.IsNpCash2; } }
 
    public decimal R_ukKCRP_NP2  { get { return (this.S_ukKCRP_NP1.NotZero() ? this.S_ukKCRP - this.S_ukKCRP_NP1 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_NP1  { get { return (this.S_ukKCRP_NP1.NotZero() ? this.S_ukKCRP_NP1 : this.S_ukKCRP);      } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
  //public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.R_ukKCRP_NP2 : 0M) +
-                                                (this.IsNpCash2 ? this.S_ukKCRP_NP1 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal K_ukKCRP_cash { get; set;                                             } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_cash { get { return ( this.IsNpCash  ? this.R_ukKCRP_NP1 : 0M)  +
+                                                (this.IsNpCash2 ? this.R_ukKCRP_NP2 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal K_ukKCRP_cash { get; set;                                                  } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
  //public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.S_ukKCRP     : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.R_ukKCRP_NP2 : 0M) +
-                                               (!this.IsNpCash2 ? this.S_ukKCRP_NP1 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
-   public decimal K_ukKCRP_ziro { get; set;                                             } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal R_ukKCRP_ziro { get { return (!this.IsNpCash  ? this.R_ukKCRP_NP1 : 0M)  +
+                                               (!this.IsNpCash2 ? this.R_ukKCRP_NP2 : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
+   public decimal K_ukKCRP_ziro { get; set;                                                  } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
 
    // 21.09.2022: 
  //public decimal R_ukKCRP_storno { get { return (this.Is_STORNO              ? this.S_ukKCRP : 0M); } } // za Reporte 'K_' a za ostale bussiness upotrebe 'R_' 
