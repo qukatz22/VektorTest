@@ -2128,6 +2128,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nema smisla navoditi iznos druge vrste plaćanja kada su obe vrste plaćanja jednake!\n\nZadajte takav NP2 da bude drukčiji od NP1.");
             e.Cancel = true;
          }
+
+         // Novododano u 2024: 
+         if(faktur_rec.S_ukKCRP_NP1.IsZero() && faktur_rec.NacPlac2.NotEmpty())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nema smisla navoditi drugu vrstu plaćanja kada je iznos prve prazan!\n\nPobrišite drugu vrstu plaćanja ili zadajte iznos prve vrste plaćanja.");
+            e.Cancel = true;
+         }
       }
 
       #endregion Check IsNpCash Flag
