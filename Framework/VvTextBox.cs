@@ -1582,7 +1582,10 @@ public class VvTextBox : TextBox, IEditableObject
       }
 
       /*Vv*/CheckBox siblingCheckBox;
-      if(vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty())
+
+      // 26.01.2024: za tetragram NP ...
+    //if(  vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty()        )
+      if(/*vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty()*/ false)
       {
          siblingCheckBox = GetSiblingCheckBoxTaker(vvtb, vvtb.JAM_lui_FlagTaker_JAM_Name);
          siblingCheckBox.Checked = ((chosenLui == null ? false : chosenLui.Flag));
