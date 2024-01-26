@@ -6648,7 +6648,7 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*196 */ CI.nacPlac2       = GetSchemaColumnIndex("nacPlac2");
       /*197 */ CI.isNpCash2      = GetSchemaColumnIndex("isNpCash2");
 
-lastFaktExCI = CI.nacPlac2; // !!!!!! 
+lastFaktExCI = CI.isNpCash2; // !!!!!! 
 
    }
 
