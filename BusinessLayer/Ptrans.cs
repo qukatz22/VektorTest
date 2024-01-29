@@ -69,6 +69,7 @@ public struct PtransStruct
    /* 49 */  internal decimal   _t_stPorez2   ;
    /* 50 */  internal decimal   _t_fixMio1Olak;
    /* 51 */  internal ushort    _t_Mio1OlkKind;
+   /* 52 */  internal decimal   _t_NP73;
 
              //internal PtransResultStruct _ptrResult;
 }
@@ -333,6 +334,7 @@ public class Ptrans : VvTransRecord
       /* 49 */  this.currentData._t_stPorez2    = decimal.Zero;
       /* 50 */  this.currentData._t_fixMio1Olak = decimal.Zero;
       /* 51 */  this.currentData._t_Mio1OlkKind = 0;
+      /* 52 */  this.currentData._t_NP73        = decimal.Zero;
 
    }
 
@@ -753,6 +755,7 @@ public class Ptrans : VvTransRecord
       get { return (Ptrans.Mio1OlkKindEnum)this.currentData._t_Mio1OlkKind; }
       set {                                this.currentData._t_Mio1OlkKind = (ushort) value; }
    }
+   /* 50 */public decimal T_NP73        { get { return this.currentData._t_NP73; } set { this.currentData._t_NP73  = value; } }
 
    /* */
 

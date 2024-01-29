@@ -898,7 +898,8 @@
               <xs:element name="t_stPorez2" msprop:Generator_ColumnPropNameInTable="t_stPorez2Column" msprop:Generator_ColumnPropNameInRow="t_stPorez2" msprop:Generator_UserColumnName="t_stPorez2" msprop:Generator_ColumnVarNameInTable="columnt_stPorez2" type="xs:decimal" />
               <xs:element name="t_fixMio1Olak" msprop:Generator_ColumnPropNameInTable="t_fixMio1OlakColumn" msprop:Generator_ColumnPropNameInRow="t_fixMio1Olak" msprop:Generator_UserColumnName="t_fixMio1Olak" msprop:Generator_ColumnVarNameInTable="columnt_fixMio1Olak" type="xs:decimal" />
               <xs:element name="t_Mio1OlkKind" msprop:Generator_ColumnPropNameInTable="t_Mio1OlkKindColumn" msprop:Generator_ColumnPropNameInRow="t_Mio1OlkKind" msprop:Generator_UserColumnName="t_Mio1OlkKind" msprop:Generator_ColumnVarNameInTable="columnt_Mio1OlkKind" type="xs:unsignedByte" />
-              <xs:element name="R_Mio1OlkKind" msprop:Generator_UserColumnName="R_Mio1OlkKind" msprop:Generator_ColumnPropNameInTable="R_Mio1OlkKindColumn" msprop:Generator_ColumnPropNameInRow="R_Mio1OlkKind" msprop:Generator_ColumnVarNameInTable="columnR_Mio1OlkKind" type="xs:unsignedByte" default="0" minOccurs="0" />
+              <xs:element name="R_Mio1OlkKind" msprop:Generator_ColumnPropNameInTable="R_Mio1OlkKindColumn" msprop:Generator_ColumnPropNameInRow="R_Mio1OlkKind" msprop:Generator_UserColumnName="R_Mio1OlkKind" msprop:Generator_ColumnVarNameInTable="columnR_Mio1OlkKind" type="xs:unsignedByte" default="0" minOccurs="0" />
+              <xs:element name="t_NP73" msprop:Generator_ColumnPropNameInRow="t_NP73" msprop:Generator_ColumnPropNameInTable="t_NP73Column" msprop:Generator_ColumnVarNameInTable="columnt_NP73" msprop:Generator_UserColumnName="t_NP73" type="xs:decimal" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

@@ -41,7 +41,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
 
    #region CreateTablePtrans
 
-   public static   uint TableVersionStatic { get { return 14; } }
+   public static   uint TableVersionStatic { get { return 15; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -102,6 +102,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
          /* 49 */  "t_stPorez2    decimal( 5,2)        NOT NULL default '0.00',\n" +
          /* 50 */  "t_fixMio1Olak decimal(10,2)        NOT NULL default '0.00',\n" +
          /* 51 */  "t_Mio1OlkKind tinyint(1)  unsigned NOT NULL default '0'   ,\n" +
+         /* 52 */  "t_NP73        decimal(10,2)        NOT NULL default '0.00',\n" +
 
           "PRIMARY KEY                   (recID)                                                 ,\n" +
           /*"UNIQUE*/" KEY BY_LINKER     (t_parentID, t_serial)                                  ,\n" +
@@ -145,6 +146,8 @@ public sealed class PtransDao : VvDaoBase, IVvDao
                          "ADD COLUMN t_fixMio1Olak decimal(10,2)        NOT NULL default '0.00' AFTER t_stPorez2  ;\n");
 
          case 14: return("ADD COLUMN t_Mio1OlkKind tinyint(1)  unsigned NOT NULL default '0' AFTER t_fixMio1Olak  ;\n");
+
+         case 15: return ("ADD COLUMN t_NP73 decimal(10,2) NOT NULL default '0.00' AFTER t_Mio1OlkKind;");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -228,6 +231,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 49 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_stPorez2   ,TheSchemaTable.Rows[CI.t_stPorez2   ]);
       /* 50 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_fixMio1Olak,TheSchemaTable.Rows[CI.t_fixMio1Olak]);
       /* 51 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_Mio1OlkKind,TheSchemaTable.Rows[CI.t_Mio1OlkKind]);
+      /* 52 */ VvSQL.CreateCommandParameter(cmd, preffix, ptrans.T_NP73       ,TheSchemaTable.Rows[CI.t_NP73       ]);
 
       }
 
@@ -301,6 +305,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 49 */ rdrData._t_stPorez2   = reader.GetDecimal (CI.t_stPorez2   );
       /* 50 */ rdrData._t_fixMio1Olak= reader.GetDecimal (CI.t_fixMio1Olak);
       /* 51 */ rdrData._t_Mio1OlkKind= reader.GetByte    (CI.t_Mio1OlkKind);
+      /* 52 */ rdrData._t_NP73       = reader.GetDecimal (CI.t_NP73       );
 
       ((Ptrans)vvDataRecord).CurrentData = rdrData;
 
@@ -372,6 +377,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 49 */   ptrans_rec.T_stPorez2   = ptransRow.t_stPorez2   ;
       /* 50 */   ptrans_rec.T_fixMio1Olak= ptransRow.t_fixMio1Olak;
       /* 51 */   ptrans_rec.T_Mio1OlkKind= (Ptrans.Mio1OlkKindEnum)ptransRow.t_Mio1OlkKind;
+      /* 52 */   ptrans_rec.T_NP73       = ptransRow.t_NP73       ;
 
 
 
@@ -638,6 +644,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 49 */  internal int t_stPorez2   ;
       /* 50 */  internal int t_fixMio1Olak;
       /* 51 */  internal int t_Mio1OlkKind;
+      /* 52 */  internal int t_NP73       ;
 
    }
 
@@ -706,6 +713,7 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       /* 49 */ CI.t_stPorez2   = GetSchemaColumnIndex("t_stPorez2"   );
       /* 50 */ CI.t_fixMio1Olak= GetSchemaColumnIndex("t_fixMio1Olak");
       /* 51 */ CI.t_Mio1OlkKind= GetSchemaColumnIndex("t_Mio1OlkKind");
+      /* 52 */ CI.t_NP73       = GetSchemaColumnIndex("t_NP73"       );
 
    }
 

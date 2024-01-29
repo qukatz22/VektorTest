@@ -5558,6 +5558,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnR_Mio1OlkKind;
             
+            private global::System.Data.DataColumn columnt_NP73;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public IzvjTableDataTable() {
@@ -6897,6 +6899,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn t_NP73Column {
+                get {
+                    return this.columnt_NP73;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -7095,7 +7105,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         decimal t_stPorez2, 
                         decimal t_fixMio1Olak, 
                         byte t_Mio1OlkKind, 
-                        byte R_Mio1OlkKind) {
+                        byte R_Mio1OlkKind, 
+                        decimal t_NP73) {
                 IzvjTableRow rowIzvjTableRow = ((IzvjTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         t_parentID,
@@ -7260,7 +7271,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         t_stPorez2,
                         t_fixMio1Olak,
                         t_Mio1OlkKind,
-                        R_Mio1OlkKind};
+                        R_Mio1OlkKind,
+                        t_NP73};
                 rowIzvjTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowIzvjTableRow);
                 return rowIzvjTableRow;
@@ -7446,6 +7458,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_fixMio1Olak = base.Columns["t_fixMio1Olak"];
                 this.columnt_Mio1OlkKind = base.Columns["t_Mio1OlkKind"];
                 this.columnR_Mio1OlkKind = base.Columns["R_Mio1OlkKind"];
+                this.columnt_NP73 = base.Columns["t_NP73"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7777,6 +7790,8 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnt_Mio1OlkKind);
                 this.columnR_Mio1OlkKind = new global::System.Data.DataColumn("R_Mio1OlkKind", typeof(byte), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnR_Mio1OlkKind);
+                this.columnt_NP73 = new global::System.Data.DataColumn("t_NP73", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnt_NP73);
                 this.columnt_parentID.AllowDBNull = false;
                 this.columnt_dokNum.AllowDBNull = false;
                 this.columnt_serial.AllowDBNull = false;
@@ -8001,6 +8016,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_fixMio1Olak.AllowDBNull = false;
                 this.columnt_Mio1OlkKind.AllowDBNull = false;
                 this.columnR_Mio1OlkKind.DefaultValue = ((byte)(0));
+                this.columnt_NP73.AllowDBNull = false;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -22343,6 +22359,17 @@ namespace Vektor.DataLayer.DS_Reports {
                 }
                 set {
                     this[this.tableIzvjTable.R_Mio1OlkKindColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal t_NP73 {
+                get {
+                    return ((decimal)(this[this.tableIzvjTable.t_NP73Column]));
+                }
+                set {
+                    this[this.tableIzvjTable.t_NP73Column] = value;
                 }
             }
             
