@@ -1034,10 +1034,78 @@ public class Prjkt : Kupdob
       }
    }
 
-   public string   FiskalCertifikat_Issuer  { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.IssuerName.Name          ); } }
-   public string   FiskalCertifikat_Subject { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.Subject                  ); } }
-   public string   FiskalCertifikat_Expire  { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.GetExpirationDateString()); } }
-   public DateTime FiskalCertifikat_ExpireD { get { return (FiskalCertifikat == null ? DateTime.MinValue : FiskalCertifikat.NotAfter); } }
+   public string   FiskalCertifikat_Issuer  
+   { 
+      get 
+      {
+         if(FiskalCertifikat == null) return "";
+
+         try
+         {
+            return FiskalCertifikat.IssuerName.Name;
+         }
+         catch(Exception ex)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "FiskalCertifikat.IssuerName.Name error\n\r\n\r{0}", ex.Message);
+            ZXC.aim_emsg_VvException(ex);
+            return "";
+         }
+      }
+   }
+   public string   FiskalCertifikat_Subject 
+   { 
+      get 
+      {
+         if(FiskalCertifikat == null) return "";
+
+         try
+         {
+            return FiskalCertifikat.Subject;
+         }
+         catch(Exception ex)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "FiskalCertifikat.Subject error\n\r\n\r{0}", ex.Message);
+            ZXC.aim_emsg_VvException(ex);
+            return "";
+         }
+      }
+   }
+   public string   FiskalCertifikat_Expire  
+   { 
+      get 
+      {
+         if(FiskalCertifikat == null) return "";
+
+         return (FiskalCertifikat == null ? "" : FiskalCertifikat.GetExpirationDateString());
+         try
+         {
+            return FiskalCertifikat.GetExpirationDateString();
+         }
+         catch(Exception ex)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "FiskalCertifikat.GetExpirationDateString() error\n\r\n\r{0}", ex.Message);
+            ZXC.aim_emsg_VvException(ex);
+            return "";
+         }
+      }
+   }
+   public DateTime FiskalCertifikat_ExpireD 
+   { 
+      get 
+      { 
+         if(FiskalCertifikat == null) return DateTime.MinValue;
+         try
+         {
+            return FiskalCertifikat.NotAfter;
+         }
+         catch(Exception ex)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "FiskalCertifikat.NotAfter error\n\r\n\r{0}", ex.Message);
+            ZXC.aim_emsg_VvException(ex);
+            return DateTime.MinValue;
+         }
+      }
+   }
 
    #endregion FiskalCertifikat
 
