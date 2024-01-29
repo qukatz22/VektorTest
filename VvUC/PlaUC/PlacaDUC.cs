@@ -43,7 +43,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    private VvTextBox vvtbT_personCD, vvtbT_ime, vvtbT_prezime,
                      vvtbT_brutoOsn, vvtbT_topObrok, vvtbT_godStaza, vvtbT_dodBruto,
                      vvtbT_spc, vvtbT_koef, vvtbT_koefBruto1, vvtbT_dnFondSati, 
-                     vvtbT_zivotno, vvtbT_dopZdr, vvtbT_dopZdr2020, vvtbT_dobMIO, vvtbT_koefHRVI,
+                     vvtbT_zivotno, vvtbT_dopZdr, vvtbT_dopZdr2020, vvtbT_NP73, vvtbT_dobMIO, vvtbT_koefHRVI,
                      vvtbT_invalidTip, vvtbT_opcCD, vvtbT_opcName, vvtbT_opcRadCD,
                      vvtbT_opcRadName, vvtbT_stPrirez, vvtbT_netoAdd,
                      vvtbT_prijevoz,
@@ -1473,6 +1473,17 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
    }
 
+   protected void T_NP73_CreateColumn(int _width, int numOfDecimalPlaces, string header, string opis)
+   {
+      vvtbT_NP73 = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColT_NP73", TheVvDaoTrans, DB_Tci.t_NP73, opis);
+      vvtbT_NP73.JAM_ShouldCalcTransAndSumGrid = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_NP73, TheVvDaoTrans, DB_Tci.t_NP73, header, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth // ako ce se zbrajati
+
+      PlacaColChDefaultsList.Add(new VvPref.VVColChooserStates(colVvText.Name, false, true));
+   }
+
    #endregion T_Columns
 
    #region R_Columns
@@ -2605,6 +2616,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       internal int iT_stPorez2   ;
       internal int iT_fixMio1Olak;
       internal int iT_mio1OlkKind;
+      internal int iT_NP73;
 
       /* 01R */      internal int iT_bruto100;
       /* 02R */      internal int iT_theBruto;
@@ -2706,6 +2718,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       ci.iT_stPorez2    = TheG.IdxForColumn("T_stPorez2");
       ci.iT_fixMio1Olak = TheG.IdxForColumn("T_fixMio1Olak");
       ci.iT_mio1OlkKind = TheG.IdxForColumn("T_mio1OlkKind");
+      ci.iT_NP73        = TheG.IdxForColumn("T_NP73");
+
 
       /* 01R */      ci.iT_bruto100         = TheG.IdxForColumn("R_bruto100");
       /* 02R */      ci.iT_theBruto         = TheG.IdxForColumn("R_theBruto");
@@ -3579,6 +3593,8 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       TheG.PutCell(ci.iT_stPorez2   , rowIdx, ptrans_rec.T_stPorez2);
       TheG.PutCell(ci.iT_fixMio1Olak, rowIdx, ptrans_rec.T_fixMio1Olak);
       TheG.PutCell(ci.iT_mio1OlkKind, rowIdx, GetOneInteger4Mio1OlkKindEnum(ptrans_rec.T_Mio1OlkKind));
+      TheG.PutCell(ci.iT_NP73       , rowIdx, ptrans_rec.T_NP73);
+
    }
 
    public override void PutDgvLineResultsFields1(int rowIdx, VvTransRecord trans_rec, bool passPtrResultsToZaglavljeTranses)
@@ -3709,7 +3725,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       TheSumGrid.PutCell(ci.iT_satiNeR   , 0, placa_rec.S_rSatiNeR   );
       TheSumGrid.PutCell(ci.iT_dopZdr2020, 0, placa_rec.S_tDopZdr2020);
       TheSumGrid.PutCell(ci.iT_mio1Olk   , 0, placa_rec.S_rMio1Olk   );
-      TheSumGrid.PutCell(ci.iT_mio1Osn   , 0, placa_rec.S_rMio1Osn   );
+      TheSumGrid.PutCell(ci.iT_NP73      , 0, placa_rec.S_tNP73      );
    }
 
    private void PutDgvFields2()
@@ -4140,7 +4156,6 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          if(DB_RWT) db_rec.T_prijevoz = dgvPtrans_rec.T_prijevoz;
       }
 
-
       if(TheG.CI_OK(ci.iT_isPoluSat))
       {
                                          //dgvAtrans_rec.T_isMioII = TheG.GetBoolCell(ci.iT_isMioII, rIdx, dirtyFlagging);
@@ -4242,6 +4257,12 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       {
                                            dgvPtrans_rec.T_Mio1OlkKind = GetMio1OlkKindEnumFromInteger(TheG.GetIntCell(ci.iT_mio1OlkKind, rIdx, dirtyFlagging));
          if(DB_RWT) db_rec.T_Mio1OlkKind = dgvPtrans_rec.T_Mio1OlkKind;
+      }
+
+      if(TheG.CI_OK(ci.iT_NP73))
+      {
+                                    dgvPtrans_rec.T_NP73 = TheG.GetDecimalCell(ci.iT_NP73, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_NP73 = dgvPtrans_rec.T_NP73;
       }
 
       #endregion GetColumns
@@ -5360,9 +5381,10 @@ public partial class PlacaOd2024DUC : PlacaBaseDUC // placa od 2024 nadalje!!!
 
       /*28*/         w = ZXC.Q2un - ZXC.Qun4; T_isDirNeto_CreateColumn(w);           TheG.TheSumOfPreferredWidths += w;
       /*29*/         w = ZXC.Q3un + ZXC.Qun2; T_prijevoz_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
-      /*18*/         w = ZXC.Q4un;            T_dopZdr_CreateColumn     (w, 2, "NP63"     , "NP63 Neoporezive nagrade za radne rezultate i drugi oblici dodatnog nagrađivanja"            ); TheG.TheSumOfPreferredWidths += w;
-      /*19*/         w = ZXC.Q4un;            T_dobMIO_CreateColumn     (w, 2, "NP tobrok", "NP65 Novčane paušalne nakande za podmirivanje troškova prehrane radnika do propisanog iznosa"); TheG.TheSumOfPreferredWidths += w;
-      /*18*/         w = ZXC.Q4un;            T_dopZdr2020_CreateColumn (w, 2, "DodZdr"   , "NP71 Premije dopunskog i dodatnog zdravstvenog osiguranja do propisanog iznosa."             ); TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q4un + ZXC.Qun4; T_dopZdr_CreateColumn     (w, 2, "NP63 nagr"  , "NP63 Neoporezive nagrade za radne rezultate i drugi oblici dodatnog nagrađivanja"            ); TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q4un + ZXC.Qun4; T_dobMIO_CreateColumn     (w, 2, "NP65 prehr", "NP65 Novčane paušalne nakande za podmirivanje troškova prehrane radnika do propisanog iznosa"); TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q4un + ZXC.Qun4; T_dopZdr2020_CreateColumn (w, 2, "NP71 dodZdr", "NP71 Premije dopunskog i dodatnog zdravstvenog osiguranja do propisanog iznosa."             ); TheG.TheSumOfPreferredWidths += w;
+      /*  */         w = ZXC.Q4un + ZXC.Qun4; T_NP73_CreateColumn(w, 2, "NP73 izdMjR", "NP73 Isplata neoporezivog primitka za paušalnu naknadu za podmirivanje troškova radnika za rad na izdvojenom mjestu rada do ."); TheG.TheSumOfPreferredWidths += w;
 
       /* 24R */      w = ZXC.Q4un;            R_obustave_CreateColumn(w, 2);         TheG.TheSumOfPreferredWidths += w;
       /* 26R */      w = ZXC.Q4un;            R_naRuke_CreateColumn(w, 2);           TheG.TheSumOfPreferredWidths += w;

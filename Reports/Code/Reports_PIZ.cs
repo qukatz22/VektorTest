@@ -3561,6 +3561,12 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          Add_NeoporeziviUzRR_jpdBstranaRow(jpdBstranaTable, ptransRow, personRowOfCurrentTrans, vrstaJoppd, Convert.ToInt16(ptransRow.t_zivotno), "71", ptransRow.t_dopZdr2020);
       }
 
+      // 29.01.2024: novi ekstra redak za NP73 "73"
+      if(ZXC.projectYearAsInt >= 2024 && ptransRow.t_NP73.NotZero())
+      {
+         Add_NeoporeziviUzRR_jpdBstranaRow(jpdBstranaTable, ptransRow, personRowOfCurrentTrans, vrstaJoppd, Convert.ToInt16(ptransRow.t_NP73), "73", ptransRow.t_NP73);
+      }
+
       // 23.12.2020: dodaj Konacni Obracun SAMO JEDNOM! 
     //if(/*goodMjesec*/ ptransRow.t_dokDate.Month == 12 && rptFilter.HocuKonacniObrPor == true)
       if(/*goodMjesec*/ ptransRow.t_dokDate.Month == 12 && rptFilter.HocuKonacniObrPor == true && isKonacniObrPor_dodan == false)

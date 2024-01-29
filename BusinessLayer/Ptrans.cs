@@ -1891,6 +1891,16 @@ public class Ptrans : VvTransRecord
 
             ptrane_rec.R_ThisEvrCijena = cijSatPr3 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3; //04.02.2015.
          }
+         else if(T_pr3mjBruto.NotZero() && ptrane_rec.T_rsOO == "99" && ptrane_rec.T_vrstaR_name.ToUpper().Contains("BLAGDAN"))//29.01.2024. i na blagdane djeluje prosjek 3 place
+         {
+            decimal cijSatPr3 = ZXC.DivSafe(T_pr3mjBruto, (T_IsPoluSat ? fondSati / 2 : fondSati)); //04.02.2015. cijena sata na osnovu prosjeka 3 mjesecne place
+            
+            if(ptrane_rec.T_dokDate <= new DateTime(2024, 02, 01)) ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100;
+            else                                                   ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc == 100.00M) ? cijSatPr3-cijenaSata100 : (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3;
+         
+            ptrane_rec.R_ThisEvrCijena = cijSatPr3 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3; 
+         
+         }
          else /* prekovr., bolNaPosl */
          {
             ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100;
@@ -2083,8 +2093,9 @@ public class Ptrans : VvTransRecord
 
 
       // 28.06.2015. za obrazac ip1 kada ima dodatke a nema evr
-    //R_Bruto30D = T_topObrok + T_dodBruto + R_BrtDodNaStaz + T_brDodPoloz + R_thisStazDod + T_brutoKorekc + T_prijevoz + T_np63 + T_npTobrok               ; // 12.03.2019: dodan '+ T_np63' 06.09.2019. dodan T_npTobrok
-      R_Bruto30D = T_topObrok + T_dodBruto + R_BrtDodNaStaz + T_brDodPoloz + R_thisStazDod + T_brutoKorekc + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020; // 03.03.2020: dodan '+ T_dopZdr2020'
+    //R_Bruto30D = T_topObrok + T_dodBruto + R_BrtDodNaStaz + T_brDodPoloz + R_thisStazDod + T_brutoKorekc + T_prijevoz + T_np63 + T_npTobrok                        ; // 12.03.2019: dodan '+ T_np63' 06.09.2019. dodan T_npTobrok
+    //R_Bruto30D = T_topObrok + T_dodBruto + R_BrtDodNaStaz + T_brDodPoloz + R_thisStazDod + T_brutoKorekc + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020         ; // 03.03.2020: dodan '+ T_dopZdr2020'                       
+      R_Bruto30D = T_topObrok + T_dodBruto + R_BrtDodNaStaz + T_brDodPoloz + R_thisStazDod + T_brutoKorekc + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + T_NP73; // 29.01.2024: dodan '+ T_NP73' za HZTK                     
 
       if(ptranesOfThisPtrans.Length == 0)
       {
@@ -4413,8 +4424,9 @@ public class Ptrans : VvTransRecord
       decimal zasticeniZ    = ptranosOfThisPtrans.Where(ptrn => ptrn.T_ptranoKind == PtranoKind.ZASTICENIrn  ).Sum(ptrn => ptrn.T_iznosOb); // ozanka Z na ptrano - zasticeni ide sa ptrano-a
       decimal netoN         = ptranosOfThisPtrans.Where(ptrn => ptrn.T_ptranoKind == PtranoKind.NEZASTICENIrn).Sum(ptrn => ptrn.T_iznosOb); // oznaka N na ptrano - zasticeni ide preko persona a ovo je preostali neto koji ide na nezasticeni racun - klasicni tekuci
       // 12.03.2019: dodan '+ T_np63' 06.09.2019: dodan '+ T_npTobrok' ... 03.03.2020.T_dopZdr2020
-    //decimal zasticeniN    = R_Netto - netoN - R_OnlyObustave + T_prijevoz + T_np63 + T_npTobrok +                (T_isDirNeto == true ? 0.00M : T_NetoAdd);                    // iznos zasticeni koji ne nastaje preko ptrano-a
-      decimal zasticeniN    = R_Netto - netoN - R_OnlyObustave + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd);                    // iznos zasticeni koji ne nastaje preko ptrano-a
+    //decimal zasticeniN    = R_Netto - netoN - R_OnlyObustave + T_prijevoz + T_np63 + T_npTobrok +                (T_isDirNeto == true ? 0.00M : T_NetoAdd)         ;// iznos zasticeni koji ne nastaje preko ptrano-a
+    //decimal zasticeniN    = R_Netto - netoN - R_OnlyObustave + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd)         ;// iznos zasticeni koji ne nastaje preko ptrano-a
+      decimal zasticeniN    = R_Netto - netoN - R_OnlyObustave + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd) + T_NP73;// 29.01.2024. iznos zasticeni koji ne nastaje preko ptrano-a
 
       R_ZasticeniNeto = R_hasNonObustZ ? zasticeniZ : R_hasNonObustN ? zasticeniN : 0.00M;
       
@@ -4434,14 +4446,16 @@ public class Ptrans : VvTransRecord
 
    private void Calc_ToPay_NaRuke()
    {
-    //R_2Pay = R_TheBruto + R_DoprNa + T_NetoAdd + T_prijevoz + T_np63 + T_npTobrok               ; // 12.03.2019: dodan '+ T_np63', 06.09.2019: dodan '+ T_npTobrok' 
-      R_2Pay = R_TheBruto + R_DoprNa + T_NetoAdd + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020; // 03.03.2020: dodan '+ T_dopZdr2020'
+    //R_2Pay = R_TheBruto + R_DoprNa + T_NetoAdd + T_prijevoz + T_np63 + T_npTobrok                        ; // 12.03.2019: dodan '+ T_np63', 06.09.2019: dodan '+ T_npTobrok' 
+    //R_2Pay = R_TheBruto + R_DoprNa + T_NetoAdd + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020         ; // 03.03.2020: dodan '+ T_dopZdr2020'                             
+      R_2Pay = R_TheBruto + R_DoprNa + T_NetoAdd + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + T_NP73; // 29.01.2024: dodan '+ T_NP73'                                   
 
       R_NaRuke = R_Netto      - 
                  R_KrizPorUk  + 
-                 T_np63       + // 12.03.2019: dodan '+ T_np63' 
-                 T_npTobrok   + // 06.09.2019: dodan '+ T_npTobrok' 
-                 T_dopZdr2020 + // 03.03.2020: dodan '+ T_dopZdr2020' 
+                 T_np63       + // 12.03.2019: dodan '+ T_np63'      
+                 T_npTobrok   + // 06.09.2019: dodan '+ T_npTobrok'  
+                 T_dopZdr2020 + // 03.03.2020: dodan '+ T_dopZdr2020'
+                 T_NP73       + // 29.01.2024: dodan '+ T_NP73'      
                  T_prijevoz   - 
                  R_Obustave   +
                  (T_isDirNeto == true ? 0.00M : T_NetoAdd); // ako je direkt neto add da ga ne zbraja dvaput 
@@ -4472,12 +4486,17 @@ public class Ptrans : VvTransRecord
       //      (R_TheBruto + R_DoprNa    + T_NetoAdd + T_prijevoz              ));
 
       // Obrazac IP1 29.06.2015.
-    //R_NetoWoZast   = R_Netto - R_ZasticeniNeto + T_prijevoz + T_np63 + T_npTobrok +                (T_isDirNeto == true ? 0.00M : T_NetoAdd); // 12.03.2019: dodan '+ T_np63' 06.09.2019: dodan '+ T_npTobrok'
-      R_NetoWoZast   = R_Netto - R_ZasticeniNeto + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd); // 03.03.2020: dodan '+ T_dopZdr2020'
+    //R_NetoWoZast = R_Netto - R_ZasticeniNeto + T_prijevoz + T_np63 + T_npTobrok +                (T_isDirNeto == true ? 0.00M : T_NetoAdd)         ; // 12.03.2019: dodan '+ T_np63' 06.09.2019: dodan '+ T_npTobrok'
+    //R_NetoWoZast = R_Netto - R_ZasticeniNeto + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd)         ; // 03.03.2020: dodan '+ T_dopZdr2020'
+      R_NetoWoZast = R_Netto - R_ZasticeniNeto + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd) + T_NP73; // 29.01.2024: dodan '+ T_NP73'      
+
       R_NetoIsplata  = R_NetoWoZast + R_ZasticeniNeto - R_OnlyObustave;
+
     // Obrazac NP1 01.07.2015. // 12.03.2019: dodan '+ T_np63'// 06.09.2019: dodan '+ T_npTobrok' 
-    //R_NetoALLNeto  = R_Netto + T_prijevoz + T_np63 + T_npTobrok +                (T_isDirNeto == true ? 0.00M : T_NetoAdd); // 01.07.2015. iznos sveukupnog neta i onog dobivenog iz bruta i raznih neto dodataka (hzzo) i prjevoz
-      R_NetoALLNeto  = R_Netto + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd); // 03.03.2020. dodan T_dopZdr2020
+    //R_NetoALLNeto = R_Netto + T_prijevoz + T_np63 + T_npTobrok +                (T_isDirNeto == true ? 0.00M : T_NetoAdd)         ; // 01.07.2015. iznos sveukupnog neta i onog dobivenog iz bruta i raznih neto dodataka (hzzo) i prjevoz
+    //R_NetoALLNeto = R_Netto + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd)         ; // 03.03.2020. dodan T_dopZdr2020
+      R_NetoALLNeto = R_Netto + T_prijevoz + T_np63 + T_npTobrok + T_dopZdr2020 + (T_isDirNeto == true ? 0.00M : T_NetoAdd) + T_NP73; // 29.01.2024: dodan '+ T_NP73'  
+
       R_NezasticNeto = R_NetoWoZast - R_OnlyObustave;
 
       R_Netto_Kn = ZXC.EURiIzKuna_ILI_KuneIzEURa_HRD_(R_NetoIsplata);
