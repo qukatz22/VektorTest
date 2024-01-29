@@ -515,6 +515,7 @@ public sealed class PlacaDao : VvDaoBase, IVvDao
 
       /* 97 */   placaRow.S_rMio1Olk = ptransesOfThisPlaca.Sum(ptrn => ptrn.R_Mio1Olk);  
       /* 98 */   placaRow.S_rMio1Osn = ptransesOfThisPlaca.Sum(ptrn => ptrn.R_Mio1Osn);  
+      /* 99 */   placaRow.S_tNP73    = ptransesOfThisPlaca.Sum(ptrn => ptrn.t_NP73   );
 
    }
 

@@ -1346,6 +1346,9 @@ public class Placa : VvPolyDocumRecord
    /* 97 */ public decimal S_rMio1Olk { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.R_Mio1Olk); } }
    /* 98 */ public decimal S_rMio1Osn { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.R_Mio1Osn); } }
 
+   /* 99 */   public decimal S_tNP73 { get { return this.TransesNonDeleted.Sum(ptrn => ptrn.T_NP73); }   
+   }   
+
 
    // !!! Kada dodajes ovdje neki 'S_zxc', ne zaboravi i u PlacaDao.FillTypedDataRowSumResults()
 

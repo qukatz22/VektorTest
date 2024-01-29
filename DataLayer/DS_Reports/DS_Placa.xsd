@@ -267,6 +267,7 @@
               <xs:element name="S_tDopZdr2020" msprop:Generator_ColumnPropNameInTable="S_tDopZdr2020Column" msprop:Generator_ColumnPropNameInRow="S_tDopZdr2020" msprop:Generator_UserColumnName="S_tDopZdr2020" msprop:Generator_ColumnVarNameInTable="columnS_tDopZdr2020" type="xs:decimal" minOccurs="0" />
               <xs:element name="S_rMio1Olk" msprop:Generator_ColumnPropNameInTable="S_rMio1OlkColumn" msprop:Generator_ColumnPropNameInRow="S_rMio1Olk" msprop:Generator_UserColumnName="S_rMio1Olk" msprop:Generator_ColumnVarNameInTable="columnS_rMio1Olk" type="xs:decimal" minOccurs="0" />
               <xs:element name="S_rMio1Osn" msprop:Generator_ColumnPropNameInTable="S_rMio1OsnColumn" msprop:Generator_ColumnPropNameInRow="S_rMio1Osn" msprop:Generator_UserColumnName="S_rMio1Osn" msprop:Generator_ColumnVarNameInTable="columnS_rMio1Osn" type="xs:decimal" minOccurs="0" />
+              <xs:element name="S_tNP73" msprop:Generator_ColumnPropNameInRow="S_tNP73" msprop:Generator_ColumnPropNameInTable="S_tNP73Column" msprop:Generator_ColumnVarNameInTable="columnS_tNP73" msprop:Generator_UserColumnName="S_tNP73" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -899,7 +900,7 @@
               <xs:element name="t_fixMio1Olak" msprop:Generator_ColumnPropNameInTable="t_fixMio1OlakColumn" msprop:Generator_ColumnPropNameInRow="t_fixMio1Olak" msprop:Generator_UserColumnName="t_fixMio1Olak" msprop:Generator_ColumnVarNameInTable="columnt_fixMio1Olak" type="xs:decimal" />
               <xs:element name="t_Mio1OlkKind" msprop:Generator_ColumnPropNameInTable="t_Mio1OlkKindColumn" msprop:Generator_ColumnPropNameInRow="t_Mio1OlkKind" msprop:Generator_UserColumnName="t_Mio1OlkKind" msprop:Generator_ColumnVarNameInTable="columnt_Mio1OlkKind" type="xs:unsignedByte" />
               <xs:element name="R_Mio1OlkKind" msprop:Generator_ColumnPropNameInTable="R_Mio1OlkKindColumn" msprop:Generator_ColumnPropNameInRow="R_Mio1OlkKind" msprop:Generator_UserColumnName="R_Mio1OlkKind" msprop:Generator_ColumnVarNameInTable="columnR_Mio1OlkKind" type="xs:unsignedByte" default="0" minOccurs="0" />
-              <xs:element name="t_NP73" msprop:Generator_ColumnPropNameInRow="t_NP73" msprop:Generator_ColumnPropNameInTable="t_NP73Column" msprop:Generator_ColumnVarNameInTable="columnt_NP73" msprop:Generator_UserColumnName="t_NP73" type="xs:decimal" />
+              <xs:element name="t_NP73" msprop:Generator_UserColumnName="t_NP73" msprop:Generator_ColumnPropNameInTable="t_NP73Column" msprop:Generator_ColumnPropNameInRow="t_NP73" msprop:Generator_ColumnVarNameInTable="columnt_NP73" type="xs:decimal" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -1573,6 +1574,7 @@
               <xs:element name="P_dopZdr2020" msdata:Caption="t_dopZdr2020" msprop:Generator_ColumnPropNameInTable="P_dopZdr2020Column" msprop:Generator_ColumnPropNameInRow="P_dopZdr2020" msprop:Generator_UserColumnName="P_dopZdr2020" msprop:Generator_ColumnVarNameInTable="columnP_dopZdr2020" type="xs:decimal" default="0" minOccurs="0" />
               <xs:element name="P_Mio1Olk" msprop:Generator_ColumnPropNameInTable="P_Mio1OlkColumn" msprop:Generator_ColumnPropNameInRow="P_Mio1Olk" msprop:Generator_UserColumnName="P_Mio1Olk" msprop:Generator_ColumnVarNameInTable="columnP_Mio1Olk" type="xs:decimal" default="0" minOccurs="0" />
               <xs:element name="P_Mio1Osn" msprop:Generator_ColumnPropNameInTable="P_Mio1OsnColumn" msprop:Generator_ColumnPropNameInRow="P_Mio1Osn" msprop:Generator_UserColumnName="P_Mio1Osn" msprop:Generator_ColumnVarNameInTable="columnP_Mio1Osn" type="xs:decimal" default="0" minOccurs="0" />
+              <xs:element name="P_NP73" msprop:Generator_ColumnPropNameInRow="P_NP73" msprop:Generator_ColumnPropNameInTable="P_NP73Column" msprop:Generator_ColumnVarNameInTable="columnP_NP73" msprop:Generator_UserColumnName="P_NP73" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

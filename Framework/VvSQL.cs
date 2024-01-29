@@ -1903,6 +1903,10 @@ public static class VvSQL
 
                currPrevYear_conn = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, ZXC.vvDB_User, ZXC.vvDB_Password, currPrervYear_dbname);
 
+               // dodano tek 29.01.2024: 
+               vvTableMetaData = VvDaoBase.GetVvTableMetadata(/*conn*/currPrevYear_conn, /*dbName*/currPrervYear_dbname, tableName);
+               actualInFileTableVersion = vvTableMetaData.TableVersion;
+
                ALTER_TABLE_ForCatchUp(currPrevYear_conn, currPrervYear_dbname, tableName, actualInFileTableVersion, lastNewestCurrentTableVersion, vvTableMetaData);
 
               } // foreach(string currPrervYear_dbname in dbNames_prevYears)

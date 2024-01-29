@@ -1591,6 +1591,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnS_rMio1Osn;
             
+            private global::System.Data.DataColumn columnS_tNP73;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public placaDataTable() {
@@ -2626,6 +2628,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn S_tNP73Column {
+                get {
+                    return this.columnS_tNP73;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2786,7 +2796,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         int S_ONPNptrCount, 
                         decimal S_tDopZdr2020, 
                         decimal S_rMio1Olk, 
-                        decimal S_rMio1Osn) {
+                        decimal S_rMio1Osn, 
+                        decimal S_tNP73) {
                 placaRow rowplacaRow = ((placaRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         recID,
@@ -2913,7 +2924,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         S_ONPNptrCount,
                         S_tDopZdr2020,
                         S_rMio1Olk,
-                        S_rMio1Osn};
+                        S_rMio1Osn,
+                        S_tNP73};
                 rowplacaRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowplacaRow);
                 return rowplacaRow;
@@ -3068,6 +3080,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnS_tDopZdr2020 = base.Columns["S_tDopZdr2020"];
                 this.columnS_rMio1Olk = base.Columns["S_rMio1Olk"];
                 this.columnS_rMio1Osn = base.Columns["S_rMio1Osn"];
+                this.columnS_tNP73 = base.Columns["S_tNP73"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3323,6 +3336,8 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnS_rMio1Olk);
                 this.columnS_rMio1Osn = new global::System.Data.DataColumn("S_rMio1Osn", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnS_rMio1Osn);
+                this.columnS_tNP73 = new global::System.Data.DataColumn("S_tNP73", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnS_tNP73);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint2", new global::System.Data.DataColumn[] {
                                 this.columnrecID}, true));
                 this.columnrecID.AllowDBNull = false;
@@ -12005,6 +12020,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnP_Mio1Osn;
             
+            private global::System.Data.DataColumn columnP_NP73;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public ptransSumDataTable() {
@@ -12632,6 +12649,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn P_NP73Column {
+                get {
+                    return this.columnP_NP73;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -12741,7 +12766,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         decimal P_BrtDodNaStaz, 
                         decimal P_dopZdr2020, 
                         decimal P_Mio1Olk, 
-                        decimal P_Mio1Osn) {
+                        decimal P_Mio1Osn, 
+                        decimal P_NP73) {
                 ptransSumRow rowptransSumRow = ((ptransSumRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         P_personCD,
@@ -12817,7 +12843,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         P_BrtDodNaStaz,
                         P_dopZdr2020,
                         P_Mio1Olk,
-                        P_Mio1Osn};
+                        P_Mio1Osn,
+                        P_NP73};
                 rowptransSumRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowptransSumRow);
                 return rowptransSumRow;
@@ -12914,6 +12941,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnP_dopZdr2020 = base.Columns["P_dopZdr2020"];
                 this.columnP_Mio1Olk = base.Columns["P_Mio1Olk"];
                 this.columnP_Mio1Osn = base.Columns["P_Mio1Osn"];
+                this.columnP_NP73 = base.Columns["P_NP73"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -13067,6 +13095,8 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnP_Mio1Olk);
                 this.columnP_Mio1Osn = new global::System.Data.DataColumn("P_Mio1Osn", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnP_Mio1Osn);
+                this.columnP_NP73 = new global::System.Data.DataColumn("P_NP73", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnP_NP73);
                 this.columnP_personCD.Caption = "t_personCD";
                 this.columnP_ime.Caption = "t_ime";
                 this.columnP_ime.MaxLength = 24;
@@ -18160,6 +18190,22 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal S_tNP73 {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableplaca.S_tNP73Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'S_tNP73\' in table \'placa\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplaca.S_tNP73Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsS_tBrutoOsnNull() {
                 return this.IsNull(this.tableplaca.S_tBrutoOsnColumn);
             }
@@ -19008,6 +19054,18 @@ namespace Vektor.DataLayer.DS_Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetS_rMio1OsnNull() {
                 this[this.tableplaca.S_rMio1OsnColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsS_tNP73Null() {
+                return this.IsNull(this.tableplaca.S_tNP73Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetS_tNP73Null() {
+                this[this.tableplaca.S_tNP73Column] = global::System.Convert.DBNull;
             }
         }
         
@@ -28360,6 +28418,22 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal P_NP73 {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableptransSum.P_NP73Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'P_NP73\' in table \'ptransSum\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableptransSum.P_NP73Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsP_personCDNull() {
                 return this.IsNull(this.tableptransSum.P_personCDColumn);
             }
@@ -29244,6 +29318,18 @@ namespace Vektor.DataLayer.DS_Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetP_Mio1OsnNull() {
                 this[this.tableptransSum.P_Mio1OsnColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsP_NP73Null() {
+                return this.IsNull(this.tableptransSum.P_NP73Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetP_NP73Null() {
+                this[this.tableptransSum.P_NP73Column] = global::System.Convert.DBNull;
             }
         }
         
