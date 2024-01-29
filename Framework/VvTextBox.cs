@@ -1584,8 +1584,9 @@ public class VvTextBox : TextBox, IEditableObject
       /*Vv*/CheckBox siblingCheckBox;
 
       // 26.01.2024: za tetragram NP ...
-    //if(  vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty()        )
-      if(/*vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty()*/ false)
+      // 29.01.2024: ipak vratili jer je BUG pri staroj upotrebi 
+      if(  vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty()        )
+    //if(/*vvtb.JAM_lui_FlagTaker_JAM_Name.NotEmpty()*/ false)
       {
          siblingCheckBox = GetSiblingCheckBoxTaker(vvtb, vvtb.JAM_lui_FlagTaker_JAM_Name);
          siblingCheckBox.Checked = ((chosenLui == null ? false : chosenLui.Flag));

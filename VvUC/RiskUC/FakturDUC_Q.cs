@@ -2104,7 +2104,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
        //if(isNpCash2 != shouldBeIsNpCash                                           )
          if(isNpCash2 != shouldBeIsNpCash2 && faktur_rec.TtInfo.IsBlagajnaTT == false)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
+            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja2!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
             e.Cancel = true;
          }
 

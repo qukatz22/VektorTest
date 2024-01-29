@@ -4785,7 +4785,6 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    #region FISKAL STUFF
 
-   public static uint   BaseTtNum            = 100000;
    public static string TtNumFiskalSeparator = "-";
    public static string TtNumFiskalONU       = "1";
 
@@ -4884,32 +4883,54 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    // TtNum = TtNumSkBr * BaseTtNum + TtNumRbr 
 
+   public static uint BaseTtNum = 100000;
    public uint TtNumRbr
    {
       get
       {
-         if(this.TtNum < BaseTtNum) return this.TtNum;
+         // 29.01.2024: 
+         uint theBaseNum = Faktur.BaseTtNum;
 
-         return this.TtNum % BaseTtNum;
+         uint OPP__BR = (uint)ZXC.luiListaSkladista.GetUintegerForThisCd(this.SkladCD); // pazi UInteger! 
+
+         if(ZXC.IsThisUintDvoznamenkast(OPP__BR)) theBaseNum /= 10;
+
+       //if(this.TtNum < BaseTtNum ) return this.TtNum;
+         if(this.TtNum < theBaseNum) return this.TtNum;
+
+       //return this.TtNum % BaseTtNum ;
+         return this.TtNum % theBaseNum;
       }
    }
 
-   public uint TtNumSkPp
-   {
-      get
-      {
-         if(this.TtNum < BaseTtNum) return 0;
-
-         return (this.TtNum - this.TtNumRbr) / BaseTtNum;
-      }
-   }
+   // od 29.01.2024: 
+ //public uint TtNumSkPp
+ //{
+ //   get
+ //   {
+ //      if(this.TtNum < BaseTtNum ) return 0;
+ //
+ //      return (this.TtNum - this.TtNumRbr) / BaseTtNum ;
+ //   }
+ //}
+   public uint TtNumSkPp { get { return ZXC.luiListaSkladista.GetRootTtNum_For_FiskalOPP(this.SkladCD); } }
 
    public static uint GetTtNumFromRbr(string skladCD, uint rbr)
    {
-      uint skladBR = (uint)ZXC.luiListaSkladista.GetIntegerForThisCd(skladCD);
+      // 29.01.2024: 
 
-      return skladBR * /*100000*/ Faktur.BaseTtNum + rbr;
-     
+      uint theBaseNum = Faktur.BaseTtNum;
+
+      uint skladBR = (uint)ZXC.luiListaSkladista.GetIntegerForThisCd (skladCD);
+      uint OPP__BR = (uint)ZXC.luiListaSkladista.GetUintegerForThisCd(skladCD); // pazi UInteger! 
+
+      uint rootTtNum = OPP__BR.IsZero() ? skladBR : OPP__BR;
+
+      if(ZXC.IsThisUintDvoznamenkast(rootTtNum)) theBaseNum /= 10;
+
+    //return skladBR   * /*100000*/ Faktur.BaseTtNum  + rbr;
+      return rootTtNum * /*100000*/        theBaseNum + rbr;
+            
    }
 
    public string TtNumFiskal
