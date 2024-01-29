@@ -1476,6 +1476,7 @@
               <xs:element name="X_tDopZdr2020" msdata:Caption="DataColumn1" msprop:Generator_ColumnPropNameInTable="X_tDopZdr2020Column" msprop:Generator_ColumnPropNameInRow="X_tDopZdr2020" msprop:Generator_UserColumnName="X_tDopZdr2020" msprop:Generator_ColumnVarNameInTable="columnX_tDopZdr2020" type="xs:decimal" default="0" minOccurs="0" />
               <xs:element name="X_rMio1Olk" msprop:Generator_ColumnPropNameInTable="X_rMio1OlkColumn" msprop:Generator_ColumnPropNameInRow="X_rMio1Olk" msprop:Generator_UserColumnName="X_rMio1Olk" msprop:Generator_ColumnVarNameInTable="columnX_rMio1Olk" type="xs:decimal" default="0" minOccurs="0" />
               <xs:element name="X_rMio1Osn" msprop:Generator_ColumnPropNameInTable="X_rMio1OsnColumn" msprop:Generator_ColumnPropNameInRow="X_rMio1Osn" msprop:Generator_UserColumnName="X_rMio1Osn" msprop:Generator_ColumnVarNameInTable="columnX_rMio1Osn" type="xs:decimal" default="0" minOccurs="0" />
+              <xs:element name="X_tNP73" msprop:Generator_ColumnPropNameInRow="X_tNP73" msprop:Generator_ColumnPropNameInTable="X_tNP73Column" msprop:Generator_ColumnVarNameInTable="columnX_tNP73" msprop:Generator_UserColumnName="X_tNP73" type="xs:decimal" default="0" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

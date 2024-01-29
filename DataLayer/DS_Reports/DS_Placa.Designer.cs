@@ -10416,6 +10416,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columnX_rMio1Osn;
             
+            private global::System.Data.DataColumn columnX_tNP73;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public placaSumDataTable() {
@@ -11107,6 +11109,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn X_tNP73Column {
+                get {
+                    return this.columnX_tNP73;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -11224,7 +11234,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         decimal X_tBrDodPoloz, 
                         decimal X_tDopZdr2020, 
                         decimal X_rMio1Olk, 
-                        decimal X_rMio1Osn) {
+                        decimal X_rMio1Osn, 
+                        decimal X_tNP73) {
                 placaSumRow rowplacaSumRow = ((placaSumRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         X_uMMYYYY,
@@ -11308,7 +11319,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         X_tBrDodPoloz,
                         X_tDopZdr2020,
                         X_rMio1Olk,
-                        X_rMio1Osn};
+                        X_rMio1Osn,
+                        X_tNP73};
                 rowplacaSumRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowplacaSumRow);
                 return rowplacaSumRow;
@@ -11413,6 +11425,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnX_tDopZdr2020 = base.Columns["X_tDopZdr2020"];
                 this.columnX_rMio1Olk = base.Columns["X_rMio1Olk"];
                 this.columnX_rMio1Osn = base.Columns["X_rMio1Osn"];
+                this.columnX_tNP73 = base.Columns["X_tNP73"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -11582,6 +11595,8 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnX_rMio1Olk);
                 this.columnX_rMio1Osn = new global::System.Data.DataColumn("X_rMio1Osn", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnX_rMio1Osn);
+                this.columnX_tNP73 = new global::System.Data.DataColumn("X_tNP73", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnX_tNP73);
                 this.columnX_uMMYYYY.DefaultValue = ((string)("\"\""));
                 this.columnX_zaMMYYYY.DefaultValue = ((string)("\"\""));
                 this.columnX_uMM.Caption = "S_rVrstaObveznika";
@@ -11739,6 +11754,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnX_tDopZdr2020.DefaultValue = ((decimal)(0m));
                 this.columnX_rMio1Olk.DefaultValue = ((decimal)(0m));
                 this.columnX_rMio1Osn.DefaultValue = ((decimal)(0m));
+                this.columnX_tNP73.DefaultValue = ((decimal)(0m));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -26235,6 +26251,22 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal X_tNP73 {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableplacaSum.X_tNP73Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'X_tNP73\' in table \'placaSum\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacaSum.X_tNP73Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsX_uMMYYYYNull() {
                 return this.IsNull(this.tableplacaSum.X_uMMYYYYColumn);
             }
@@ -27215,6 +27247,18 @@ namespace Vektor.DataLayer.DS_Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetX_rMio1OsnNull() {
                 this[this.tableplacaSum.X_rMio1OsnColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsX_tNP73Null() {
+                return this.IsNull(this.tableplacaSum.X_tNP73Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetX_tNP73Null() {
+                this[this.tableplacaSum.X_tNP73Column] = global::System.Convert.DBNull;
             }
         }
         
