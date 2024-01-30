@@ -1034,6 +1034,12 @@ public class Prjkt : Kupdob
       }
    }
 
+   public string   FiskalCertifikat_Issuer  { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.IssuerName.Name          ); } }
+   public string   FiskalCertifikat_Subject { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.Subject                  ); } }
+   public string   FiskalCertifikat_Expire  { get { return (FiskalCertifikat == null ? "" : FiskalCertifikat.GetExpirationDateString()); } }
+   public DateTime FiskalCertifikat_ExpireD { get { return (FiskalCertifikat == null ? DateTime.MinValue : FiskalCertifikat.NotAfter  ); } }
+
+#if nijeovodobro
    public string   FiskalCertifikat_Issuer  
    { 
       get 
@@ -1107,11 +1113,12 @@ public class Prjkt : Kupdob
       }
    }
 
+#endif
    #endregion FiskalCertifikat
 
    #region ESgnCertifikat
 
- //private bool eSgnCertifikatLoadedFromBLOB = false;
+   //private bool eSgnCertifikatLoadedFromBLOB = false;
    public bool eSgnCertifikatLoadedFromBLOB // Memset0 se NE poziva npr na prethodni - sljedeci ali se 
                                               // PrjktExtensionStruct = new PrjktExtensionStruct() poziva uvijek
                                               // ... zato ti se ovaj bool 'eSgnCertifikatLoaded' ne nulira kako si ocekivao 
