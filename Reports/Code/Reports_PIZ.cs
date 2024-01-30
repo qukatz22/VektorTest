@@ -683,6 +683,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
               
                  placaSumRow_OK_ONLY.X_rMio1Olk     = placaTable_OK_ONLY.Sum(placa => placa.S_rMio1Olk );  
                  placaSumRow_OK_ONLY.X_rMio1Osn     = placaTable_OK_ONLY.Sum(placa => placa.S_rMio1Osn );  
+                 placaSumRow_OK_ONLY.X_tNP73        = placaTable_OK_ONLY.Sum(placa => placa.S_tNP73    );  
 
                  placaSumRow_OK_ONLY.X_rIDizdaci   = placaSumRow_OK_ONLY.X_rDoprIz + placaSumRow_OK_ONLY.X_rPremije;
 
@@ -1565,9 +1566,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             /*    */   ptransSumRow.P_dopZdr2020 = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_dopZdr2020);
 
 
-            /* 54 */
-            ptransSumRow.P_netoAdd    = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_netoAdd  );
+            /* 54 */   ptransSumRow.P_netoAdd    = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_netoAdd  );
             /* 55 */   ptransSumRow.P_prijevoz   = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_prijevoz );
+            /* 55 */   ptransSumRow.P_NP73       = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.t_NP73     );
             
             /*    */   ptransSumRow.P_AHizdatak  = ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.R_AHizdatak   );
             /*    */   ptransSumRow.P_NettoAftKrp= ptransTable.Where(ptrans => ptrans.t_personCD == persDistPtrList[p].t_personCD).Sum(ptrans => ptrans.R_NettoAftKrp );

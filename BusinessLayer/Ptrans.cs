@@ -1782,6 +1782,7 @@ public class Ptrans : VvTransRecord
       decimal Bkratko_sati       = 0M; 
       bool    isBkratko          = false;
       bool    isGodOdm           = false;
+      bool    isBlagdanZaPr3mj   = false;
 
       decimal cijenaSata100 = ZXC.DivSafe(T_brutoOsn, (T_IsPoluSat ? fondSati / 2 : fondSati));
 
@@ -1824,6 +1825,14 @@ public class Ptrans : VvTransRecord
          isGodOdm = Ptrane.IsGodisnjiOdmor(ptrane_rec.T_rsOO, ptrane_rec.T_vrstaR_name);
 
          #endregion isGodOdm
+
+         #region isBlagdanZaPr3mj za HZTK
+
+         // uvjet od 01.02.2024. je jer tek od tada i za blagdan uzimaju prosjek 3 plaće a do tada mora ostati kako je bilo pa sam radi kasnije stavila ovdje ovaj uvjet
+
+         isBlagdanZaPr3mj = ptrane_rec.T_rsOO == "99" && ptrane_rec.T_vrstaR_name.ToUpper().Contains("BLAGDAN") && ptrane_rec.T_dokDate >= new DateTime(2024, 02, 01);
+
+         #endregion isBlagdanZaPr3mj  za HZTK
 
          #region HZTK prekovremeno
 
@@ -1891,12 +1900,12 @@ public class Ptrans : VvTransRecord
 
             ptrane_rec.R_ThisEvrCijena = cijSatPr3 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3; //04.02.2015.
          }
-         else if(T_pr3mjBruto.NotZero() && ptrane_rec.T_rsOO == "99" && ptrane_rec.T_vrstaR_name.ToUpper().Contains("BLAGDAN"))//29.01.2024. i na blagdane djeluje prosjek 3 place
+         else if(T_pr3mjBruto.NotZero() && isBlagdanZaPr3mj)//29.01.2024. i na blagdane djeluje prosjek 3 place
          {
             decimal cijSatPr3 = ZXC.DivSafe(T_pr3mjBruto, (T_IsPoluSat ? fondSati / 2 : fondSati)); //04.02.2015. cijena sata na osnovu prosjeka 3 mjesecne place
             
-            if(ptrane_rec.T_dokDate <= new DateTime(2024, 02, 01)) ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100;
-            else                                                   ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc == 100.00M) ? cijSatPr3-cijenaSata100 : (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3;
+          //if(ptrane_rec.T_dokDate <= new DateTime(2024, 02, 01)) ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100;
+            /*else*/                                                   ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc == 100.00M) ? cijSatPr3-cijenaSata100 : (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3;
          
             ptrane_rec.R_ThisEvrCijena = cijSatPr3 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijSatPr3; 
          
@@ -1907,6 +1916,7 @@ public class Ptrans : VvTransRecord
 
             ptrane_rec.R_ThisEvrCijena = cijenaSata100 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100; //02.02.2015.
          }
+         
          #endregion cijena sata
 
          ptrane_rec.R_EvrBruto = ptrane_rec.R_EvrCijena * ptrane_rec.T_sati;
@@ -1964,7 +1974,8 @@ public class Ptrans : VvTransRecord
 
          if(T_pr3mjBruto.NotZero())
          {
-                 if(isBkratko || isGodOdm                                   ) brutoProsjekRadZaDodNaStaz += 0.00M;
+               //if(isBkratko || isGodOdm                                   ) brutoProsjekRadZaDodNaStaz += 0.00M;
+                 if(isBkratko || isGodOdm || isBlagdanZaPr3mj               ) brutoProsjekRadZaDodNaStaz += 0.00M;
             else if(ptrane_rec.T_rsOO == "10"                               ) brutoProsjekRadZaDodNaStaz += (ptrane_rec.R_EvrCijena * R_SatiOnlyRad).Ron2();
             else if(isHZTKprekovremeno && this.T_dokDate >= ZXC.Date01022021) //28.01.2021. korekcija korekcije prekovremenog koje je obracunat na osnovicom sa DodNaStaz da se taj dodatak izbaci kod obracuna osnovice dodZaStaz, linija 1746
             {
