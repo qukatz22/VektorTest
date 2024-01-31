@@ -1022,7 +1022,13 @@ public class Prjkt : Kupdob
 
             try
             {
-                fiskalCertifikat = new X509Certificate2(this.CertFile, this.CertPasswdDecrypted);
+               // 31.01.2024: pokusaj ispravka Access Denied poruke 
+              //fiskalCertifikat = new X509Certificate2(this.CertFile, this.CertPasswdDecrypted);
+                fiskalCertifikat = new X509Certificate2(this.CertFile, this.CertPasswdDecrypted, X509KeyStorageFlags.MachineKeySet);
+            }
+            catch(System.Security.Cryptography.CryptographicException cEx)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, cEx.Message);
             }
             catch(Exception ex)
             {

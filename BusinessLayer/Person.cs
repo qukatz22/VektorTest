@@ -1051,6 +1051,13 @@ public class Person : VvSifrarRecord
    {
       uint godineStaza = 0;
 
+      if(this.DatePri.IsEmpty())
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Upozorenje!\n\nDjelatnik {0}\n\n nema datum prijave!", this);
+
+         return 0;
+      }
+
       DateTime stazDateOD = this.DatePri;
       DateTime stazDateDO = Placa.GetDateTimeFromMMYYYY(placaZaMMYYYY, true);
 
