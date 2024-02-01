@@ -81,6 +81,7 @@ public struct PrjktExtensionStruct
    internal bool _isBtchBookg;
 
    internal string _memoFooter2;
+   internal bool   _isNoAutoisFiskal;
 }
 
 #endregion struct PrjktStruct
@@ -177,6 +178,7 @@ public class Prjkt : Kupdob
       this.currentExtData._eSgnCertPasswd     = "";
 
       this.currentExtData._isBtchBookg        = false;
+      this.currentExtData._isNoAutoisFiskal     = false;
 
       sorterKCD     = Kupdob.sorterKCD;
       sorterCity    = Kupdob.sorterCity;
@@ -537,6 +539,12 @@ public class Prjkt : Kupdob
    {
       get { return this.currentExtData._memoFooter2; }
       set { this.currentExtData._memoFooter2 = value; }
+   }
+
+   public bool IsNoAutoFiskal
+   {
+      get { return this.currentExtData._isNoAutoisFiskal; }
+      set { this.currentExtData._isNoAutoisFiskal = value; }
    }
 
    // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 

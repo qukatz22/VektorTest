@@ -109,6 +109,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
          "periodLockDay    tinyint(2) unsigned NOT NULL default 0    ,\n" +
          "isBtchBookg      tinyint(1) unsigned NOT NULL default 0    ,\n" +
          "memoFooter2 varchar(2048)       NOT NULL default '',\n" +
+         "isNoAutoFiskal   tinyint(1) unsigned NOT NULL default 0    ,\n" +
 
          ""
       );
@@ -191,6 +192,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.ShouldPeriodLock, TheSchemaTable.Rows[CI.shouldPeriodLock]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.PeriodLockDay   , TheSchemaTable.Rows[CI.periodLockDay   ]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsBtchBookg     , TheSchemaTable.Rows[CI.isBtchBookg     ]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsNoAutoFiskal  , TheSchemaTable.Rows[CI.isNoAutoFiskal  ]);
 
    }
 
@@ -234,6 +236,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
 	   rdrData._memoHeader = reader.GetString(CI.memoHeader);
       rdrData._memoFooter = reader.GetString(CI.memoFooter);
       rdrData._memoFooter2= reader.GetString(CI.memoFooter2);
+      rdrData._isNoAutoisFiskal = reader.GetBoolean(CI.isNoAutoFiskal);
 
       #region Tu budalasaš dok ne savladas tehniku ucitavanja slika...
 
@@ -420,6 +423,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       internal int shouldPeriodLock;
       internal int periodLockDay   ;
       internal int isBtchBookg     ;
+      internal int isNoAutoFiskal  ;
 
       internal int origRecID;
       internal int recVer;
@@ -496,6 +500,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       CI.shouldPeriodLock= GetSchemaColumnIndex("shouldPeriodLock");
       CI.periodLockDay   = GetSchemaColumnIndex("periodLockDay");
       CI.isBtchBookg     = GetSchemaColumnIndex("isBtchBookg");
+      CI.isNoAutoFiskal  = GetSchemaColumnIndex("isNoAutoFiskal");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");
