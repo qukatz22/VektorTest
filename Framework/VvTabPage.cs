@@ -464,7 +464,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          bool shouldCheck_forTH         = this.TheVvUC is IRMDUC && ZXC.IsTEXTHOshop                          ; // TEXTHO
          bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRADUC && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
 
-         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && (shouldCheck_forTH || shouldCheck_forNoAutoFisk))
+         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && (shouldCheck_forTH /*|| shouldCheck_forNoAutoFisk*/))
          {
             uint NOTfisk_IRM_Count = FakturDao.CountNOTfiskalized_IRMs(TheDbConnection);
 
