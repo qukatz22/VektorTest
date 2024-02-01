@@ -454,11 +454,17 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          /*********************************************************************************************************************************************************************/
 
          // 02.06.2015: 
-       //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && this.TheVvUC is IRMDUC)
+       //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline &&  this.TheVvUC is IRMDUC)
          // 14.06.2015: 
          // 30.11.2015: 
-       //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && this.TheVvUC is IRMDUC && ZXC.IsTEXTHOany )
-         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && this.TheVvUC is IRMDUC && ZXC.IsTEXTHOshop)
+       //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline &&  this.TheVvUC is IRMDUC && ZXC.IsTEXTHOany )
+         // 01.02.2024: 
+       //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline &&  this.TheVvUC is IRMDUC && ZXC.IsTEXTHOshop)
+
+         bool shouldCheck_forTH         = this.TheVvUC is IRMDUC && ZXC.IsTEXTHOshop                          ; // TEXTHO
+         bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRADUC && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
+
+         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && (shouldCheck_forTH || shouldCheck_forNoAutoFisk))
          {
             uint NOTfisk_IRM_Count = FakturDao.CountNOTfiskalized_IRMs(TheDbConnection);
 
