@@ -9426,8 +9426,9 @@ public partial class FakturExtDUC : FakturDUC
 
       string text = "DatumX:";
 
-      if(this is BORDUC) text = "Dolazak:";
-      else               text = (ZXC.RRD.Dsc_IsDateXDateIzd && (this is IRADUC || this is IFADUC)) ? "DatIzdav:" : "DatumX:";
+           if(this is BORDUC     ) text = "Dolazak:"  ;
+      else if(ZXC.IsTETRAGRAM_ANY) text = "DatUpl:";
+      else                         text = (ZXC.RRD.Dsc_IsDateXDateIzd && (this is IRADUC || this is IFADUC)) ? "DatIzdav:" : "DatumX:";
 
                    hamper.CreateVvLabel  (0, 0, text, ContentAlignment.MiddleRight);
       tbx_dateX = hamper.CreateVvTextBox(1, 0, "tbx_DatumX", "Datum");
@@ -11387,6 +11388,14 @@ public partial class FakturExtDUC : FakturDUC
             hamp_DatumX.VvInitialHamperLocation = new Point(hamp_Mtros.Right + ZXC.QUN, hamp_Fco.Bottom);
             hampCbxM_DatumX.Location            = new Point(hamp_Mtros.Right + 0, hamp_Fco.Bottom);
          //}
+
+      }
+      else if(this is PonudaDUC)//01.02.2024.
+      {
+         hamp_DatumX.Location                = new Point(hamp_OsobaB.Right + ZXC.QUN, hamp_osobaX.Bottom);;
+         hamp_DatumX.VvInitialHamperLocation = new Point(hamp_OsobaB.Right + ZXC.QUN, hamp_osobaX.Bottom);;
+         hampCbxM_DatumX.Location            = new Point(hamp_OsobaB.Right + 0, hamp_osobaX.Bottom);
+         panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, /*hamp_externLink2*/hamp_eRproc.Bottom);
 
       }
       else
@@ -13523,8 +13532,8 @@ public partial class FakturExtDUC : FakturDUC
 
       // --- PPMV shit end   
 
-      if(CtrlOK(tbx_dateX        )) faktur_rec.DateX         = Fld_DateX;
   
+      if(CtrlOK(tbx_dateX        )) faktur_rec.DateX         = Fld_DateX;
       if(CtrlOK(tbx_s_ukOsnPNP   ))  faktur_rec.S_ukOsnPNP   = Fld_S_ukOsnPNP     ;
       if(CtrlOK(tbx_s_ukIznPNP   ))  faktur_rec.S_ukIznPNP   = Fld_S_ukIznPNP     ;
       if(CtrlOK(tbx_S_ukMskPNP   ))  faktur_rec.S_ukMskPNP   = Fld_S_ukMskPNP     ;

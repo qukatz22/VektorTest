@@ -2666,14 +2666,14 @@ public class PonudaDUC           : FakturExtDUC
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
                                     hamp_VezniDok2, hamp_Fco, hamp_NacPlac,  hamp_osobaA, hamp_OsobaB ,
                                     hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, hamp_tipOtpreme, hamp_osobaX,
-                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent,//hamp_PonudDate, 08.11.2013. on je na osnovnom
+                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent, hamp_DatumX,/*ovaj DatumX dodan 01.02.24.*///hamp_PonudDate, 08.11.2013. on je na osnovnom
                                     hamp_opis
                                   };
 
       hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
                                         hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_NacPlac, hampCbxM_OsobaA, hampCbxM_osobaB,
                                         hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme, hampCbxM_osobaX,
-                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent, //hampCbxM_PonudDate, 08.11.2013 on je na sonovnom
+                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent, hampCbxM_DatumX, //hampCbxM_PonudDate, 08.11.2013 on je na sonovnom
                                         hampCbxM_opis                                   
                                       };
    }

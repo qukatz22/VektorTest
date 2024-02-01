@@ -6732,7 +6732,10 @@ public class FakturDocFilterUC    : VvFilterUC
       tbx_LblVeze3   = hamper.CreateVvTextBox(5, 1, "tbx_LblVeze3"   , "Labela za Veza3  ");
       tbx_LblVeze4   = hamper.CreateVvTextBox(6, 1, "tbx_LblVeze4"   , "Labela za Veza4  ");
 
-      cbx_OcuDateX = hamper.CreateVvCheckBox_OLD(0, 2, null, "DatumX", System.Windows.Forms.RightToLeft.No);
+      string textDate = ZXC.IsTETRAGRAM_ANY ? "DatUplate:" : "DatumX";
+
+    //cbx_OcuDateX = hamper.CreateVvCheckBox_OLD(0, 2, null, "DatumX", System.Windows.Forms.RightToLeft.No);
+      cbx_OcuDateX = hamper.CreateVvCheckBox_OLD(0, 2, null, textDate, System.Windows.Forms.RightToLeft.No);
       tbx_lblDateX = hamper.CreateVvTextBox     (0, 3,       "tbx_lblDateX", "Labela za Datumx");
 
       VvHamper.HamperStyling(hamper);
