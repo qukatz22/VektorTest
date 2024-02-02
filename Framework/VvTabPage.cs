@@ -464,7 +464,9 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          bool shouldCheck_forTH         = this.TheVvUC is IRMDUC && ZXC.IsTEXTHOshop                          ; // TEXTHO
          bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRADUC && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
 
-         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && (shouldCheck_forTH /*|| shouldCheck_forNoAutoFisk*/))
+         #region Check for TH
+
+         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && shouldCheck_forTH)
          {
             uint NOTfisk_IRM_Count = FakturDao.CountNOTfiskalized_IRMs(TheDbConnection);
 
@@ -484,6 +486,24 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
 
             ZXC.RISK_NOTfisk_Checked = true;
          }
+
+         #endregion Check for TH
+
+         #region Check for NoAutoFisk
+
+         if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && shouldCheck_forNoAutoFisk)
+         {
+            List<Faktur> theFakturList = FakturDao.GetAllPreviously_NOTfiskalizedFakturs(TheDbConnection);
+
+            if(theFakturList.Count.NotZero())
+            {
+               ZXC.aim_emsg_List("NE FISKALIZIRANI raèuni!", theFakturList.Select(fak => fak./*TT_And_TtNum*/ToString()).ToList());
+            }
+
+            ZXC.RISK_NOTfisk_Checked = true;
+         }
+
+         #endregion Check for NoAutoFisk
 
 be_fast:
 

@@ -4858,16 +4858,38 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       }
    }
 
-   public static bool IsFiskalDutyTT_ONLINE(string theTT, /*bool isNpCash*/ string nacPlac)
+   public static bool IsFiskalDutyTT_ONLINE(string theTT, string nacPlac, string nacPlac2)
    {
-      return IsFiskalDutyTT(theTT) && ZXC.CURR_prjkt_rec.IsFiskalOnline && IsOkRegardingPrjktFiskThisTTonly(theTT) && IsOkRegardingPrjktIsFiskCashTTonly(/*isNpCash*/nacPlac, theTT);
+      return
+
+      IsFiskalDutyTT(theTT) && 
+      ZXC.CURR_prjkt_rec.IsFiskalOnline && 
+      IsOkRegardingPrjktFiskThisTTonly(theTT) && 
+      (
+        IsOkRegardingPrjktIsFiskCashTTonly(nacPlac, theTT) 
+        
+        || 
+
+        (nacPlac2.NotEmpty() && IsOkRegardingPrjktIsFiskCashTTonly(nacPlac2, theTT))
+      );
    }
 
    public bool IsFiskalDutyFaktur_ONLINE 
    { 
       get 
       {
-         return IsFiskalDutyFaktur && ZXC.CURR_prjkt_rec.IsFiskalOnline && IsOkRegardingPrjktFiskThisTTonly(this.TT) && IsOkRegardingPrjktIsFiskCashTTonly(this./*IsNpCash*/NacPlac, this.TT); 
+         return 
+            
+         IsFiskalDutyFaktur && 
+         ZXC.CURR_prjkt_rec.IsFiskalOnline && 
+         IsOkRegardingPrjktFiskThisTTonly(this.TT) && 
+         (
+            IsOkRegardingPrjktIsFiskCashTTonly(this./*IsNpCash*/NacPlac, this.TT) 
+            
+            || 
+            
+            (this.NacPlac2.NotEmpty() && IsOkRegardingPrjktIsFiskCashTTonly(this.NacPlac2, this.TT))
+         ); 
       } 
    }
 

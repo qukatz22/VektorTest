@@ -2186,7 +2186,9 @@ public class VvHamper: Panel
             }
             else if(((VvTextBox)thisControl).Tag is string && (string)((VvTextBox)thisControl).Tag == "Fiskal")
             {
-               if((FakturExtDUC)ZXC.TheVvForm.TheVvDocumentRecordUC != null && Faktur.IsFiskalDutyTT_ONLINE(((FakturExtDUC)ZXC.TheVvForm.TheVvDocumentRecordUC).Fld_TT, ((FakturExtDUC)ZXC.TheVvForm.TheVvDocumentRecordUC)./*Fld_IsNpCash*/Fld_NacPlac))
+               FakturExtDUC theDUC = (FakturExtDUC)ZXC.TheVvForm.TheVvDocumentRecordUC;
+
+               if(theDUC != null && Faktur.IsFiskalDutyTT_ONLINE(theDUC.Fld_TT, theDUC.Fld_NacPlac, theDUC.Fld_NacPlac2))
                {
                  if(((VvTextBox)thisControl).IsEmpty()) ((VvTextBox)thisControl).BackColor = Color.Red;
                  else                                   ((VvTextBox)thisControl).BackColor = ZXC.vvColors.vvTBoxReadOnly_True_BackColor;

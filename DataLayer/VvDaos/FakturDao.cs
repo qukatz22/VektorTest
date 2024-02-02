@@ -3959,6 +3959,38 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       return (recCount);
    }
 
+   public static List<Faktur> GetAllPreviously_NOTfiskalizedFakturs(XSqlConnection conn)
+   {
+    //int debugCount;
+
+      //Cursor.Current = Cursors.WaitCursor;
+
+      // ================================================================================================================================ 
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+
+      DataRowCollection FakExSch = ZXC.FaktExDao.TheSchemaTable.Rows;
+      FaktExDao.FaktExCI FakExCI = ZXC.FaktExDao.CI;
+
+      filterMembers.Add(new VvSqlFilterMember("tt", "theTT", TtInfo.Prihod_IN_Clause, "", "", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+      filterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.fiskJIR], "theJIR", "", " = "));
+
+    //VvDaoBase.GenericLoopAnd_RWTREC_AllRecord<Faktur>(TheDbConnection, RetardFiskalization, filterMembers, "dokDate , ttSort, ttNum ", TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName, out debugCount, true);
+      List<Faktur> theFakturList = new List<Faktur>();
+      VvDaoBase.LoadGenericVvDataRecordList(conn, theFakturList, filterMembers, "", "dokDate , ttSort, ttNum ", true);
+      // ================================================================================================================================ 
+
+      //Cursor.Current = Cursors.Default;
+
+      //ShowNews();
+
+    //ZXC.aim_emsg("Gotovo. Fiskalizirao {0} računa.", debugCount);
+
+      theFakturList.RemoveAll(fak => fak.IsFiskalDutyFaktur_ONLINE == false);
+
+      return theFakturList;
+   }
+
+
    #endregion Check NOT fiskalized PRIHOD_TT Rns
 
    #region BarcodeFile
