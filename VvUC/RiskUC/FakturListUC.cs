@@ -230,14 +230,14 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
    protected override void CreateHamperSpecifikum()
    {
-      hampSpecifikum = new VvHamper(8, 1, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
+      hampSpecifikum = new VvHamper(8, 2, "", this, true, hampListaRastePada.Right + ZXC.Qun4, nextY, razmakHamp);
 
       hampSpecifikum.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q3un, ZXC.Q3un,          ZXC.Q5un, ZXC.Q4un,          ZXC.Q5un, ZXC.Q8un, ZXC.QUN - ZXC.Qun8 };
       hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun2+ZXC.Qun8, ZXC.Qun4, ZXC.Qun2+ZXC.Qun8, ZXC.Qun8,          ZXC.Qun12 };
       hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
 
-      hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN  };
-      hampSpecifikum.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hampSpecifikum.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hampSpecifikum.VvBottomMargin = hampSpecifikum.VvTopMargin;
 
 
@@ -278,10 +278,22 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       cbx_biloGdjeUnazivu = hampSpecifikum.CreateVvCheckBox_OLD(7, 0, CheckBox_biloGdjeUnazivu_Click, "", RightToLeft.No, true);
       SetVvPrefLink_AND_ToolTipText_ForGenericBiloGdjeUnazivuCheckBox(cbx_biloGdjeUnazivu, new EventHandler(cbx_biloGdjeUnazivu_Click_SaveToVvPref));
       
-      VvHamper.Open_Close_Fields_ForWriting(tbx_TT     , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_ttNum  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog); 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_dokDate, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_Partner, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+                            hampSpecifikum.CreateVvLabel        (0, 1, "Skladište:", System.Drawing.ContentAlignment.MiddleRight);
+      tbx_filterSkladCd   = hampSpecifikum.CreateVvTextBoxLookUp(1, 1, "tbx_filterSkladCd", "Skladište");
+      tbx_filterSkladOpis = hampSpecifikum.CreateVvTextBox      (2, 1, "tbx_filterSkladOpiS", "", 36, 1, 0);
+      tbx_filterSkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_filterSkladOpis.JAM_ReadOnly  = true;
+      tbx_filterSkladCd.JAM_WriteOnly = true;
+
+      tbx_filterSkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_filterSkladCd.JAM_lui_NameTaker_JAM_Name = tbx_filterSkladOpis.JAM_Name;
+
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_TT           , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_ttNum        , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog); 
+      VvHamper.Open_Close_Fields_ForWriting(tbx_dokDate      , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_Partner      , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_filterSkladCd, ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
 
    }
 
@@ -411,14 +423,14 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
       //==============================================================================================================================
 
-                            hampFilter.CreateVvLabel        (5, 1, "Skladište:", System.Drawing.ContentAlignment.MiddleRight);
-      tbx_filterSkladCd   = hampFilter.CreateVvTextBoxLookUp(6, 1, "tbx_filterSkladCd", "Skladište");
-      tbx_filterSkladOpis = hampFilter.CreateVvTextBox      (7, 1, "tbx_filterSkladOpiS", "");
-      tbx_filterSkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
-      tbx_filterSkladOpis.JAM_ReadOnly  = true;
+      //                      hampFilter.CreateVvLabel        (5, 1, "Skladište:", System.Drawing.ContentAlignment.MiddleRight);
+      //tbx_filterSkladCd   = hampFilter.CreateVvTextBoxLookUp(6, 1, "tbx_filterSkladCd", "Skladište");
+      //tbx_filterSkladOpis = hampFilter.CreateVvTextBox      (7, 1, "tbx_filterSkladOpiS", "");
+      //tbx_filterSkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
+      //tbx_filterSkladOpis.JAM_ReadOnly  = true;
           
-      tbx_filterSkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-      tbx_filterSkladCd.JAM_lui_NameTaker_JAM_Name = tbx_filterSkladOpis.JAM_Name;
+      //tbx_filterSkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      //tbx_filterSkladCd.JAM_lui_NameTaker_JAM_Name = tbx_filterSkladOpis.JAM_Name;
 
 
       if(!isSvd)           hampFilter.CreateVvLabel        (5, 2, "Način plaćanja:", System.Drawing.ContentAlignment.MiddleRight);
