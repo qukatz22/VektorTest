@@ -4657,6 +4657,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          }
       }
 
+      if(this is MOD_PTG_DUC)
+      {
+         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
+      }
    }
 
    public static decimal GetDiffKol_PlanVsRealizacijaPIPR(string artiklCD, List<Rtrans> realizacijaRtransList, decimal planKol)
@@ -4737,6 +4741,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       TheG.PutCell(ci.iT_kiz_KCR , rowIdx, VvCurrency(rtrans_rec.Rkiz_KCR));
       TheG.PutCell(ci.iT_kiz_rbt1, rowIdx, VvCurrency(rtrans_rec.Rkiz_rbt1));
 
+      TheG.PutCell(ci.iT_IRA_MPC , rowIdx, VvCurrency(rtrans_rec.R_CIJ_KCRP));
+
+      if(this is IRA_MPC_DUC && TheVvTabPage.WriteMode != ZXC.WriteMode.None)
+      {
+         TheG.PutCell(ci.iT_cij, rowIdx, VvCurrency(rtrans_rec.T_cij));
+      }
    }
 
    public override void PutDgvTransSumFields1()
@@ -5449,6 +5459,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          }
          if(DB_RWT) db_rec.T_wanted = dgvRtrans_rec.T_wanted;
       }
+
+      if(TheG.CI_OK(ci.iT_IRA_MPC)) // T_wanted !!! 
+      {
+                                      dgvRtrans_rec.T_wanted = TheG.GetDecimalCell(ci.iT_IRA_MPC, rIdx, dirtyFlagging, true); 
+         if(DB_RWT) db_rec.T_wanted = dgvRtrans_rec.T_wanted;
+      }
+
       if(TheG.CI_OK(ci.iT_doCijMal))
       {
                                         dgvRtrans_rec.T_doCijMal = TheG.GetDecimalCell(ci.iT_doCijMal, rIdx, dirtyFlagging);
