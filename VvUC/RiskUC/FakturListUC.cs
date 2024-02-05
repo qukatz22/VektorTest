@@ -97,6 +97,10 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.Default_TT = Faktur.TT_ZAH;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PST || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PST_PTG)
          this.Default_TT = Faktur.TT_PST;
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PON_MPC)
+         this.Default_TT = Faktur.TT_PON;
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IRA_MPC)
+         this.Default_TT = Faktur.TT_IRA;
       else
          this.Default_TT = vvMasterSubModul.subModul_shortName;
 
