@@ -69,7 +69,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
-                       vvtbR_SVDartRealizOG, vvtbR_SVDRealizKol, vvtbR_utilUint, vvtbR_utilString;
+                       vvtbR_SVDartRealizOG, vvtbR_SVDRealizKol, vvtbR_utilUint, vvtbR_utilString, vvtbT_IRA_MPC;
 
    protected VvTextBoxColumn colVvText;
    public VvCheckBox vvcbx_isProdukt;
@@ -2452,6 +2452,17 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
+   protected void T_IRA_MPC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_IRA_MPC = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtbT_IRA_MPC", TheVvDaoTrans, DB_Tci.t_wanted, _statusText);
+      vvtbT_IRA_MPC.JAM_ShouldCalcTrans = true;
+
+   //vvtbT_MPConIRA.JAM_FieldExitMethod = new EventHandler(OnExitT_Cij_CheckPrevCij);
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_IRA_MPC, TheVvDaoTrans, "T_IRA_MPC", _colHeader, _width);
+      colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
+      colVvText.Visible = isVisible;
+   }
 
    #endregion T_Columns
 
@@ -3088,7 +3099,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_ramKlasa ; 
       internal int iT_hddOld; 
       internal int iT_hddKlasa ;
-      internal int iT_TT       ; 
+      internal int iT_TT       ;
+      internal int iT_IRA_MPC  ; 
 
    }
 
@@ -3172,8 +3184,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_ramKlasa          = TheG.IdxForColumn("R_ramKlasa"); 
       ci.iT_hddOld            = TheG.IdxForColumn("R_hddOld"); 
       ci.iT_hddKlasa          = TheG.IdxForColumn("R_hddKlasa"); 
-      
-      ci.iT_TT                = TheG.IdxForColumn("T_TT"); 
+      ci.iT_TT                = TheG.IdxForColumn("T_TT");
+
+      ci.iT_IRA_MPC           = TheG.IdxForColumn("T_IRA_MPC");// t_wanted  
 
    }
 
