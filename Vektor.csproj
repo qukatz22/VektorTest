@@ -923,6 +923,12 @@
       <DependentUpon>CR_IsplatnaListaObracunOP.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\PIZ\CR_IsplatnaListaOstPriPN.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_IsplatnaListaOstPriPN.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\PIZ\CR_IsplatnaLista_080710.cs">
       <DependentUpon>CR_IsplatnaLista_080710.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3066,6 +3072,10 @@
     <EmbeddedResource Include="Reports\PIZ\CR_IsplatnaListaObracunOP.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_IsplatnaListaObracunOP.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_IsplatnaListaOstPriPN.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_IsplatnaListaOstPriPN.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\PIZ\CR_IsplatnaLista_080710.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

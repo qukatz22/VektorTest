@@ -4696,14 +4696,12 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
    {
       //PlacaDokumentFilter placaFilter = (PlacaDokumentFilter)vvRptFilter;
       VvRpt_Placa_Filter placaFilter = (VvRpt_Placa_Filter)vvRptFilter;
-      if(this.Fld_TT == Placa.TT_PODUZETPLACA || this.Fld_TT == Placa.TT_REDOVANRAD || this.Fld_TT == Placa.TT_OSTALIPRIM)
-       //return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace  (), new ZXC.VvRptExternTblChooser_Placa(true , false, false, false, false), reportName, placaFilter);
-       //return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, false, false), reportName, placaFilter);
-         return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, true, true ), reportName, placaFilter);
+          if(this.Fld_TT == Placa.TT_PODUZETPLACA || this.Fld_TT == Placa.TT_REDOVANRAD || this.Fld_TT == Placa.TT_OSTALIPRIM || this.Fld_TT == Placa.TT_PLACAUNARAVI)
+            return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunPlace_2() , new ZXC.VvRptExternTblChooser_Placa(false, false, false, true, true ), reportName, placaFilter);
      else if(this.Fld_TT == Placa.TT_NEOPOREZPRIM)
-         return new VvPlacaReport(new Vektor.Reports.PIZ.CR_NeoporeziviPrim(), new ZXC.VvRptExternTblChooser_Placa(true, false, false, false, false), reportName, placaFilter);
+            return new VvPlacaReport(new Vektor.Reports.PIZ.CR_NeoporeziviPrim(), new ZXC.VvRptExternTblChooser_Placa(true, false, false, false, false), reportName, placaFilter);
       else
-         return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunDrDoh(), new ZXC.VvRptExternTblChooser_Placa(false, false, false, false, false), reportName, placaFilter);
+            return new VvPlacaReport(new Vektor.Reports.PIZ.CR_ObracunDrDoh()   , new ZXC.VvRptExternTblChooser_Placa(false, false, false, false, false), reportName, placaFilter);
 
    }
 
