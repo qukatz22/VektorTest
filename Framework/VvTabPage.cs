@@ -1133,6 +1133,7 @@ be_fast:
                   break;
 
                case ZXC.VvSubModulEnum.R_IRA:
+               case ZXC.VvSubModulEnum.R_IRA_MPC:
                case ZXC.VvSubModulEnum.R_IRP:
                case ZXC.VvSubModulEnum.R_IFA:
                case ZXC.VvSubModulEnum.R_IFAdev:
@@ -1170,6 +1171,7 @@ be_fast:
                case ZXC.VvSubModulEnum.R_STU:
                case ZXC.VvSubModulEnum.R_STI:
                case ZXC.VvSubModulEnum.R_PON:
+               case ZXC.VvSubModulEnum.R_PON_MPC:
                case ZXC.VvSubModulEnum.R_PNM:
                case ZXC.VvSubModulEnum.R_RVI:
                case ZXC.VvSubModulEnum.R_RVU:
