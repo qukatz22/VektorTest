@@ -685,16 +685,17 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(this is FakturExtDUC)
       {
          if(IsRadNalog) hamper.VvColWdt = new int[] { ZXC.Q6un - ZXC.Qun4, ZXC.Q4un + ZXC.Qun4 };
-         else if(this is IFADUC ||
-                 this is IRADUC ||
-                 this is IRMDUC_2 ||
-                 this is IRPDUC ||
-                 this is IZMDUC ||
+         else if(this is IFADUC        ||
+                 this is IRADUC        ||
+                 this is IRA_MPC_DUC   ||
+                 this is IRMDUC_2      ||
+                 this is IRPDUC        ||
+                 this is IZMDUC        ||
                  this is OdobrKupcuDUC ||
                  this is PovratKupcaDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.QUN + ZXC.Qun2 };
-         else if(this is IRMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
-         else if(this is RNZDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
-         else hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4 };
+         else if(this is IRMDUC)         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
+         else if(this is RNZDUC)         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
+         else                            hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4 };
 
          hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
       }
@@ -736,11 +737,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       dtp_DokDate.JAM_MustTabOutBeforeSubmit = true;
       // 02.05.2016: Try Validate like VvTextBox ___  END  ___
 
-      if(this is IFADUC ||
-         this is IRADUC ||
-         this is IRPDUC ||
-         this is IRMDUC ||
-         this is IRMDUC_2 ||
+      if(this is IFADUC        ||
+         this is IRADUC        ||
+         this is IRA_MPC_DUC   ||
+         this is IRPDUC        ||
+         this is IRMDUC        ||
+         this is IRMDUC_2      ||
          this is OdobrKupcuDUC ||
          this is PovratKupcaDUC)
       {
@@ -2579,7 +2581,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.MinimumWidth = _width;
 
 
-      if(this is IRADUC || this is IRPDUC || this is IRMDUC || this is IRMDUC_2)
+      if(this is IRADUC || this is IRA_MPC_DUC || this is IRPDUC || this is IRMDUC || this is IRMDUC_2)
       {
          colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
          vvtbR_cij_kcr.JAM_BackColor = Color.Aquamarine;
@@ -7581,9 +7583,9 @@ public partial class FakturExtDUC : FakturDUC
       TheTabControl.TabPages.Add(CreateVvInnerTabPages("Zoom", "Zoom", ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
 
-      if(this is UFADUC || this is URADUC || this is URPDUC || this is OdobrDobavDUC || this is PovratKupcaDUC ||
-         this is IFADUC || this is IRADUC || this is IRPDUC || this is OdobrKupcuDUC || this is PovratDobaDUC ||
-         this is IRMDUC || this is IRMDUC_2 || this is URMDUC || this is UFMDUC ||
+      if(this is UFADUC       || this is URADUC      || this is URPDUC          || this is OdobrDobavDUC  || this is PovratKupcaDUC ||
+         this is IFADUC       || this is IRADUC      || this is IRA_MPC_DUC     || this is IRPDUC         || this is OdobrKupcuDUC  || this is PovratDobaDUC ||
+         this is IRMDUC       || this is IRMDUC_2    || this is URMDUC          || this is UFMDUC         ||
          this is BlgIsplatDUC || this is BlgUplatDUC || this is BlgIsplat_M_DUC || this is BlgUplat_M_DUC || this is WYRNDUC)
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(ftrans_TabPageName, ftrans_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
@@ -8259,7 +8261,7 @@ public partial class FakturExtDUC : FakturDUC
       tbx_PnbV.JAM_IsSupressTab = true;
 
       //03.09.2019. ovaj pnb ne sluzi na izlazu nicemu
-      if(this is IFADUC || this is IRADUC)
+      if(this is IFADUC || this is IRADUC || this is IRA_MPC_DUC)
       {
          tbx_PnbM.JAM_ReadOnly = 
          tbx_PnbV.JAM_ReadOnly = true;
@@ -9460,7 +9462,7 @@ public partial class FakturExtDUC : FakturDUC
       else if(ZXC.IsTETRAGRAM_ANY) text = "DatUpl:";
       else                         text = (ZXC.RRD.Dsc_IsDateXDateIzd && (this is IRADUC || this is IFADUC)) ? "DatIzdav:" : "DatumX:";
 
-                   hamper.CreateVvLabel  (0, 0, text, ContentAlignment.MiddleRight);
+                  hamper.CreateVvLabel  (0, 0, text, ContentAlignment.MiddleRight);
       tbx_dateX = hamper.CreateVvTextBox(1, 0, "tbx_DatumX", "Datum");
       tbx_dateX.JAM_IsForDateTimePicker = true;
       dtp_dateX = hamper.CreateVvDateTimePicker(1, 0, "", tbx_dateX);
@@ -10065,12 +10067,12 @@ public partial class FakturExtDUC : FakturDUC
 
    private string FindTTfromDUC(FakturExtDUC fakturExtDUC)
    {
-      if(fakturExtDUC is IFADUC) return Faktur.TT_IFA;
-      else if(fakturExtDUC is IRADUC || fakturExtDUC is IRPDUC) return Faktur.TT_IRA;
-      else if(fakturExtDUC is IRMDUC || fakturExtDUC is IRMDUC_2) return Faktur.TT_IRM;
-      else if(fakturExtDUC is OdobrKupcuDUC) return Faktur.TT_IOD;
-      else if(fakturExtDUC is PovratKupcaDUC) return Faktur.TT_IPV;
-      else return "";
+           if(fakturExtDUC is IFADUC                                                         ) return Faktur.TT_IFA;
+      else if(fakturExtDUC is IRADUC || fakturExtDUC is IRA_MPC_DUC || fakturExtDUC is IRPDUC) return Faktur.TT_IRA;
+      else if(fakturExtDUC is IRMDUC || fakturExtDUC is IRMDUC_2                             ) return Faktur.TT_IRM;
+      else if(fakturExtDUC is OdobrKupcuDUC                                                  ) return Faktur.TT_IOD;
+      else if(fakturExtDUC is PovratKupcaDUC                                                 ) return Faktur.TT_IPV;
+      else                                                                                     return "";
    }
 
    private void SetVisibilitiToolstripbuttons(bool isVisible)
@@ -10682,8 +10684,8 @@ public partial class FakturExtDUC : FakturDUC
       bool isIzlaz = false;
       bool isWYR   = this is WYRNDUC ;
 
-      if(this is UFADUC || this is URADUC || this is URPDUC || this is URMDUC || this is UFMDUC || this is OdobrDobavDUC || this is PovratDobaDUC   ) isIzlaz = false;
-      if(this is IFADUC || this is IRADUC || this is IRPDUC || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC || this is IRMDUC_2) isIzlaz = true;
+      if(this is UFADUC || this is URADUC || this is URPDUC      || this is URMDUC || this is UFMDUC        || this is OdobrDobavDUC  || this is PovratDobaDUC             ) isIzlaz = false;
+      if(this is IFADUC || this is IRADUC || this is IRA_MPC_DUC || this is IRPDUC || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC || this is IRMDUC_2) isIzlaz = true;
 
       lbl_ukOsnm.Location = new Point(hamp_S_ukPdv.VvXxOfCol[1], hamp_S_ukPdv.VvYyOfRow[0]);
       lbl_ukPdvm.Location = new Point(hamp_S_ukPdv.VvXxOfCol[2], hamp_S_ukPdv.VvYyOfRow[0]);
@@ -11078,19 +11080,13 @@ public partial class FakturExtDUC : FakturDUC
       else if(this is KIZDUC || this is PIKDUC) hamp_napomena.Location = new Point(0, hamp_v3TT.Bottom - ZXC.Qun4);
       else                                      hamp_napomena.Location = new Point(0, hamp_v4TT.Bottom - ZXC.Qun4);
 
-      if(this is IFADUC || this is IRADUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC)
+      if(this is IFADUC || this is IRADUC || this is IRA_MPC_DUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC)
       {
          hamp_NacPlac.Location = new Point(0, hamp_napomena.Bottom - ZXC.Qun4);
          hamp_fiskJIR.Location = new Point(hamp_NacPlac.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
 
          nextY = hamp_NacPlac.Bottom;
       }
-    //else if(this is PonudaDUC && ZXC.IsTETRAGRAM_ANY)//novo 2024
-    //{
-    //   hamp_NacPlac.Location = new Point(0, hamp_napomena.Bottom - ZXC.Qun4);
-    //   
-    //   nextY = hamp_NacPlac.Bottom;
-    //}
       else
       {
          nextY = hamp_napomena.Bottom;
@@ -11394,7 +11390,7 @@ public partial class FakturExtDUC : FakturDUC
          hampCbxM_somePercent.Location            = new Point(0      , hamp_napomena2.Bottom - ZXC.Qun8);
       }
 
-      if((this is IFADUC || this is IRADUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC))
+      if((this is IFADUC || this is IRADUC || this is IRA_MPC_DUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC))
       {
          hamp_fiskMsgID.Location                = new Point(ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
          hamp_fiskMsgID.VvInitialHamperLocation = new Point(ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
