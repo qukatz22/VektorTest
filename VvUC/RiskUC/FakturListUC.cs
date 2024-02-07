@@ -783,6 +783,8 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       DataGridViewTextBoxColumn col;
       bool isDOKO = (ZXC.TheVvForm.TheVvUC is DOD_PTG_DUC /*|| ZXC.TheVvForm.TheVvUC is KOP_PTG_DUC*/);
       bool isUGAN = (ZXC.TheVvForm.TheVvUC is UGO_PTG_DUC || ZXC.TheVvForm.TheVvUC is ANU_PTG_DUC);
+      bool is2NPl = (ZXC.IsTETRAGRAM_ANY && (ZXC.TheVvForm.TheVvUC is IRA_MPC_DUC || ZXC.TheVvForm.TheVvUC is PON_MPC_DUC));
+      
       int numOfTtNum = isDOKO ? 10 : isUGAN ? 7 : 6;
 
       int sumOfColWidth = 0, colWidth;
@@ -807,7 +809,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       string partnerDSname  = ZXC.RRD.Dsc_IsCentralaFindFaktur ? "ext_kupdobName"     : "ext_posJedName"             ;
       colWidth = ZXC.Q9un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, partnerCaption  , colWidth, true    , partnerDSname);
 
-      colWidth = ZXC.Q2un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"       , colWidth, false   , "tt");
+      colWidth = ZXC.Q2un                                          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"       , colWidth, false   , "tt");
       colWidth = (isDOKO || isUGAN) ? ZXC.Q4un : ZXC.Q3un          ; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "Broj"     , colWidth, true, /*6*/numOfTtNum, "ttNum");
 
       if(isDOKO)
@@ -819,6 +821,13 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       colWidth = ZXC.Q4un          ; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(TheGrid, "Datum"    , colWidth          , "dokDate");
       colWidth = ZXC.Q2un+ZXC.Qun4 ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Sklad"    , colWidth, false   , "skladCD");
     //colWidth = ZXC.Q5un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Broj u PG", colWidth, false   , "vezniDok2");
+    
+      if(is2NPl)
+      { 
+         colWidth = ZXC.Q5un       ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Način plaćanja ", colWidth, false   , "ext_NacPlac" );
+         colWidth = ZXC.Q5un       ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Način plaćanja 2", colWidth, false   , "ext_NacPlac2");
+      }
+
       colWidth = ZXC.Q5un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "OrigBrDok", colWidth, false   , "vezniDok");
       if(ZXC.IsSvDUH)
       {
