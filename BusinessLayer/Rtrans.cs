@@ -2020,7 +2020,7 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
       #region izvedi T_cij iz T_wanted (mpc)
 
-      T_cij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt);
+      T_cij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
 
       #endregion izvedi T_cij iz T_wanted (mpc)
 
@@ -2028,16 +2028,16 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       //                           R_KC = (R_kol * T_cij     ).Ron2();     
       //if(TtInfo.IsManualPUcijTT) R_KC = (R_kol * T_noCijMal).Ron2();
       /*else*/
-      R_KC = (R_kol * T_cij     ).Ron2();
+      R_KC = (R_kol * T_cij     ).Ron2(); // !!! 
 
       R_rbt1     = ((R_KC)          * T_rbt1St / 100.00M)/*.Ron2()*/;
       R_rbt2     = ((R_KC - R_rbt1) * T_rbt2St / 100.00M)/*.Ron2()*/;
                  
-      R_KCR      = (R_KC - (R_rbt1 + R_rbt2) + T_ztr).Ron2();
+      R_KCR      = (R_KC - (R_rbt1 + R_rbt2) + T_ztr)/*.Ron2()*/;
                  
     //R_mrz      = (R_KCR * T_wanted / 100.00M)/*.Ron2()*/;
                  
-      R_KCRM     = (R_KCR + R_mrz)/*.Ron2()*/;
+      R_KCRM     = (R_KCR + R_mrz).Ron2();
                  
       R_pdv      = (R_KCRM * T_pdvSt / 100.00M)/*.Ron2()*/;
 

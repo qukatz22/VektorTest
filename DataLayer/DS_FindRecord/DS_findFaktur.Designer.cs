@@ -339,6 +339,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             private global::System.Data.DataColumn columnext_opciAvalue;
             
+            private global::System.Data.DataColumn columnext_nacPlac;
+            
+            private global::System.Data.DataColumn columnext_nacPlac2;
+            
             private global::System.Data.DataColumn columnext_s_ukKCRMP;
             
             private global::System.Data.DataColumn columnorigRecID;
@@ -626,6 +630,22 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_nacPlacColumn {
+                get {
+                    return this.columnext_nacPlac;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ext_nacPlac2Column {
+                get {
+                    return this.columnext_nacPlac2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public global::System.Data.DataColumn ext_s_ukKCRMPColumn {
                 get {
                     return this.columnext_s_ukKCRMP;
@@ -740,6 +760,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         string ext_personName, 
                         string ext_opciAlabel, 
                         string ext_opciAvalue, 
+                        string ext_nacPlac, 
+                        string ext_nacPlac2, 
                         decimal ext_s_ukKCRMP, 
                         uint origRecID, 
                         ushort recVer, 
@@ -778,6 +800,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         ext_personName,
                         ext_opciAlabel,
                         ext_opciAvalue,
+                        ext_nacPlac,
+                        ext_nacPlac2,
                         ext_s_ukKCRMP,
                         origRecID,
                         recVer,
@@ -836,6 +860,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_personName = base.Columns["ext_personName"];
                 this.columnext_opciAlabel = base.Columns["ext_opciAlabel"];
                 this.columnext_opciAvalue = base.Columns["ext_opciAvalue"];
+                this.columnext_nacPlac = base.Columns["ext_nacPlac"];
+                this.columnext_nacPlac2 = base.Columns["ext_nacPlac2"];
                 this.columnext_s_ukKCRMP = base.Columns["ext_s_ukKCRMP"];
                 this.columnorigRecID = base.Columns["origRecID"];
                 this.columnrecVer = base.Columns["recVer"];
@@ -907,6 +933,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 base.Columns.Add(this.columnext_opciAlabel);
                 this.columnext_opciAvalue = new global::System.Data.DataColumn("ext_opciAvalue", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnext_opciAvalue);
+                this.columnext_nacPlac = new global::System.Data.DataColumn("ext_nacPlac", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_nacPlac);
+                this.columnext_nacPlac2 = new global::System.Data.DataColumn("ext_nacPlac2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnext_nacPlac2);
                 this.columnext_s_ukKCRMP = new global::System.Data.DataColumn("ext_s_ukKCRMP", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnext_s_ukKCRMP);
                 this.columnorigRecID = new global::System.Data.DataColumn("origRecID", typeof(uint), null, global::System.Data.MappingType.Element);
@@ -967,6 +997,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_opciAlabel.MaxLength = 32;
                 this.columnext_opciAvalue.AllowDBNull = false;
                 this.columnext_opciAvalue.MaxLength = 32;
+                this.columnext_nacPlac.AllowDBNull = false;
+                this.columnext_nacPlac.MaxLength = 24;
+                this.columnext_nacPlac2.AllowDBNull = false;
+                this.columnext_nacPlac2.MaxLength = 24;
                 this.columnext_s_ukKCRMP.AllowDBNull = false;
                 this.columnext_s_ukKCRMP.Caption = "ext_s_ukKCRP";
                 this.columnorigRecID.AllowDBNull = false;
@@ -1443,6 +1477,28 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 }
                 set {
                     this[this.tablefaktur.ext_opciAvalueColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string ext_nacPlac {
+                get {
+                    return ((string)(this[this.tablefaktur.ext_nacPlacColumn]));
+                }
+                set {
+                    this[this.tablefaktur.ext_nacPlacColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string ext_nacPlac2 {
+                get {
+                    return ((string)(this[this.tablefaktur.ext_nacPlac2Column]));
+                }
+                set {
+                    this[this.tablefaktur.ext_nacPlac2Column] = value;
                 }
             }
             
