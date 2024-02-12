@@ -7995,7 +7995,7 @@ public class PON_MPC_DUC           : FakturExtDUC
       T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV"     , "Jedinična cijena");
 
     //T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
-    //R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
+      R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
   
     //R_cij_kcr_CreateColumn(ZXC.Q4un, 2, false, "VPC"   , "Veleprodajna cijena");
     //R_NC_CreateColumn     (ZXC.Q4un, 2, false, "NabCij", "Nabavna cijena");
@@ -8100,7 +8100,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
       T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"              , "Jedinica mjere");
       T_cij_CreateColumn           (ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV", "Jedinična cijena");
     //T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"             , "Stopa rabata 1");
-    //R_KCR_CreateColumn           (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a");
+      R_KCR_CreateColumn           (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a");
 
     //R_cij_kcr_CreateColumn       (ZXC.Q4un, 2          , false, "VPC"   , "Veleprodajna cijena");
     //R_NC_CreateColumn            (ZXC.Q4un, 2          , false, "NabCij", "Nabavna cijena");

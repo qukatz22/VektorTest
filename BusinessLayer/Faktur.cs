@@ -5157,36 +5157,31 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       Faktur np2Faktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
 
-      //this.S_ukKCRP = this.R_ukKCRP_NP2;
+      decimal ratio1 = ZXC.DivSafe(this.S_ukKCRP_NP1, this.S_ukKCRP);
 
-      //np2Faktur_rec.NacPlac  = np2Faktur_rec.NacPlac2    ;
-      //np2Faktur_rec.S_ukKCRP = np2Faktur_rec.S_ukKCRP_NP1;
+      decimal total_S_ukKC  = this.S_ukKC ;
+      decimal total_S_ukKCR = this.S_ukKCR;
+      decimal total_S_ukPdv = this.S_ukPdv;
 
-      //this.NacPlac2     = "";
-      //this.S_ukKCRP_NP1 =  0;
-
-      //np2Faktur_rec.NacPlac2     = "";
-      //np2Faktur_rec.S_ukKCRP_NP1 =  0;
-
-      decimal ratio  = ZXC.DivSafe(this.S_ukKCRP_NP1, this.S_ukKCRP);
-      decimal ratio2 = ZXC.DivSafe(this.R_ukKCRP_NP2, this.S_ukKCRP);
+      // 1. Faktur: 
 
       this.S_ukKCRP = this.S_ukKCRP_NP1;
 
-      np2Faktur_rec.NacPlac  = np2Faktur_rec.NacPlac2    ;
+      this.S_ukKC  *= ratio1; this.S_ukKC  = this.S_ukKC .Ron2();
+      this.S_ukKCR *= ratio1; this.S_ukKCR = this.S_ukKCR.Ron2();
+      this.S_ukPdv *= ratio1; this.S_ukPdv = this.S_ukPdv.Ron2();
+
+      this.NacPlac2 = "";
+
+      // 2. Faktur: 
+
       np2Faktur_rec.S_ukKCRP = np2Faktur_rec.R_ukKCRP_NP2;
 
-      this.NacPlac2     = "";
+      np2Faktur_rec.S_ukKC   = total_S_ukKC  - this.S_ukKC ;
+      np2Faktur_rec.S_ukKCR  = total_S_ukKCR - this.S_ukKCR;
+      np2Faktur_rec.S_ukPdv  = total_S_ukPdv - this.S_ukPdv;
 
-      this.S_ukKC     *= ratio;
-    //this.R_ukRbt1i2 *= ratio;
-      this.S_ukKCR    *= ratio;
-      this.S_ukPdv    *= ratio;
-
-      np2Faktur_rec.S_ukKC     *= ratio2;
-    //np2Faktur_rec.R_ukRbt1i2 *= ratio2;
-      np2Faktur_rec.S_ukKCR    *= ratio2;
-      np2Faktur_rec.S_ukPdv    *= ratio2;
+      np2Faktur_rec.NacPlac = np2Faktur_rec.NacPlac2;
 
       return np2Faktur_rec;
    }
