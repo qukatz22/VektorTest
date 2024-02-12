@@ -8094,8 +8094,8 @@ public class IRA_MPC_DUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,   isVisible, "Šifra"           , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"           , "Naziv artikla");
-      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"             , "Usluga");
-      T_konto_CreateColumn         (ZXC.Q3un          ,   isVisible, "Konto"           , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+    //T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"             , "Usluga");
+    //T_konto_CreateColumn         (ZXC.Q3un          ,   isVisible, "Konto"           , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"             , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"              , "Jedinica mjere");
       T_cij_CreateColumn           (ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV", "Jedinična cijena");
