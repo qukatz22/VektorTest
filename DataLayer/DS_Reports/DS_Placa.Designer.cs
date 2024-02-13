@@ -8032,6 +8032,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_Mio1OlkKind.AllowDBNull = false;
                 this.columnR_Mio1OlkKind.DefaultValue = ((byte)(0));
                 this.columnt_NP73.AllowDBNull = false;
+                this.columnt_NP73.DefaultValue = ((decimal)(0m));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
