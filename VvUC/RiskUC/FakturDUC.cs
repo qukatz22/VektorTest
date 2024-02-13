@@ -5162,7 +5162,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       decimal s_KC = 0.00M, t_cij, t_kol;
 
-      for(int rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
+      int rowCount     = TheG.RowCount;
+
+       if(TheG.AllowUserToAddRows == false) rowCount++; // u bijelome, inkrementiraj limit for petlje za +1 
+
+      // 13.02.2024: bijo BUG! 
+    //for(int rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
+      for(int rIdx = 0; rIdx < rowCount      - 1; ++rIdx)
       {
          t_cij = TheG.GetDecimalCell(ci.iT_cij, rIdx, false);
          t_kol = TheG.GetDecimalCell(ci.iT_kol, rIdx, false);
