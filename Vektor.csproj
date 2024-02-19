@@ -677,6 +677,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Reports\FIZ\CR_TranspKat1Racuni.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_TranspKat1Racuni.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\FIZ\CR_TSIpod.cs">
       <DependentUpon>CR_TSIpod.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -1119,6 +1125,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CR_SepaPain00100103.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PIZ\CR_TranspKat2Pl.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_TranspKat2Pl.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PIZ\CR_VirmaniPlaca.cs">
@@ -2909,6 +2921,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_Sintetika_SCMT.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FIZ\CR_TranspKat1Racuni.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_TranspKat1Racuni.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\FIZ\CR_TSIpod.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_TSIpod.cs</LastGenOutput>
@@ -3204,6 +3220,10 @@
     <EmbeddedResource Include="Reports\PIZ\CR_SepaPain00100103.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_SepaPain00100103.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\PIZ\CR_TranspKat2Pl.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_TranspKat2Pl.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\PIZ\CR_VirmaniPlaca.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
