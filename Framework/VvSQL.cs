@@ -292,6 +292,7 @@ public static class VvSQL
       FIZ_Sconti_DokDate,
       FIZ_ScontiMT_TipBr,
       FIZ_ScontiMT_DokDate,
+      FIZ_AnalitikaProrTroska_DokDate,
       //FIZ_RekapNal_DokDate,
       //FIZ_RekapNal_DokNum,
 
