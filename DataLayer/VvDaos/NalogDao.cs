@@ -1973,7 +1973,27 @@ public sealed class NalogDao : VvDaoBase, IVvDao
          string ktoGotovina = ZXC.KSD.Dsc_IrmKupciCash;
          filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], "ktoGotovina", ktoGotovina, " != ")); 
 
-         filterMembers.Add(new VvSqlFilterMember("SUBSTRING(ftr.t_konto, 1, 3)", "(" + wantedKontoSet + ")", " IN "));
+         // 19.02.2024: big news!
+       //filterMembers.Add(new VvSqlFilterMember("SUBSTRING(ftr.t_konto, 1, 3)", "(" + wantedKontoSet + ")", " IN "));
+         if(wantedKontoSet.Length < 2)
+         {
+            filterMembers.Add(new VvSqlFilterMember("SUBSTRING(ftr.t_konto, 1, 3)", "(" + wantedKontoSet + ")", " IN "));
+         }
+         else
+         {
+            string[] saldaContiKonta;
+            if(isOtsKupaca) { saldaContiKonta = Ftrans.WantedKupciKontoSet; }
+            else            { saldaContiKonta = Ftrans.WantedDobavKontoSet; }
+
+
+            int lastIdx = saldaContiKonta.Length - 1;
+            for(int i = 0; i <= lastIdx; ++i)
+            {
+               if(i == 0)            filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.OPEN_OR , false, "prvi"      , saldaContiKonta[i] + "%", "", "", " LIKE ", ""));
+               else if(i == lastIdx) filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.CLOSE_OR, false, "zadnji"    , saldaContiKonta[i] + "%", "", "", " LIKE ", ""));
+               else                  filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.NONE    , false, i.ToString(), saldaContiKonta[i] + "%", "", "", " LIKE ", ""));
+            }
+         }
          if(isOtsAndNotKartica)
          {
             filterMembers.Add(new VvSqlFilterMember(otsSubQuerry, 0, " != "));
