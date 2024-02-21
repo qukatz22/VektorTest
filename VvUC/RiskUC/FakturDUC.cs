@@ -7114,7 +7114,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       if(saldaKonti_ftransList == null) saldaKonti_ftransList = new List<Ftrans>();
       else                              saldaKonti_ftransList.Clear();
 
-      VvDaoBase.LoadGenericVvDataRecordList<Ftrans>(TheDbConnection, saldaKonti_ftransList, SetFilterMembers4LoadFtranses(faktur_rec/*.RecID*/), "t_dokDate ASC, t_dokNum ASC, t_serial ASC");
+      VvDaoBase.LoadGenericVvDataRecordList<Ftrans>(TheDbConnection, saldaKonti_ftransList, SetFilterMembers4LoadFtranses(), "t_dokDate ASC, t_dokNum ASC, t_serial ASC");
 
       ftransesLoaded = true;
 
@@ -7158,7 +7158,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    }
 
-   private List<VvSqlFilterMember> SetFilterMembers4LoadFtranses(Faktur faktur_rec)
+   private List<VvSqlFilterMember> SetFilterMembers4LoadFtranses_OLD(Faktur faktur_rec)
    {
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
 
@@ -7171,6 +7171,51 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          faktur_rec.TtInfo.IsBlagajnaTT == false)
       {
          filterMembers.Add(new VvSqlFilterMember("SUBSTRING(t_konto, 1, 2)", "('12', '22')", " IN "));
+      }
+
+      return filterMembers;
+   }
+
+   private List<VvSqlFilterMember> SetFilterMembers4LoadFtranses()
+   {
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(/*2*/);
+   
+      uint fakturRecID = faktur_rec.RecID;
+   
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "", fakturRecID, "", "", " = ", ""));
+   
+      KtoShemaDsc KSD = ZXC.KSD;
+   
+      string kupacKontaString = KSD.Dsc_KupacKontaIOS.TrimEnd(','); // ako bil ostavi zarez na kraju 
+      string dobavKontaString = KSD.Dsc_DobavKontaIOS.TrimEnd(','); // ako bil ostavi zarez na kraju 
+   
+      string wantedKontaString, kontraKontaString;
+   
+      string[] saldaContiKontaStringArray;
+   
+      bool isOtsKupaca = faktur_rec.TtInfo.IsPrihodTT;
+   
+      if(isOtsKupaca) { wantedKontaString = kupacKontaString; kontraKontaString = dobavKontaString; saldaContiKontaStringArray = Ftrans.WantedKupciKontaStringArray; }
+      else            { wantedKontaString = dobavKontaString; kontraKontaString = kupacKontaString; saldaContiKontaStringArray = Ftrans.WantedDobavKontaStringArray; }
+   
+      if(saldaContiKontaStringArray.Length.IsZero()) // ni jedan konto nije naveden
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "U pravilima nije zadan nijedan konto!");
+         return null;
+      }
+      else if(saldaContiKontaStringArray.Length == 1) // samo jedan konto je naveden
+      {
+         filterMembers.Add(new VvSqlFilterMember("SUBSTRING(t_konto, 1, 3)", "(" + wantedKontaString + ")", " IN "));
+      }
+      else
+      {
+         int lastIdx = saldaContiKontaStringArray.Length - 1;
+         for(int i = 0; i <= lastIdx; ++i)
+         {
+                 if(i == 0)       filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.OPEN_OR , false, "prvi",       saldaContiKontaStringArray[i] + "%", "", "", " LIKE ", ""));
+            else if(i == lastIdx) filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.CLOSE_OR, false, "zadnji",     saldaContiKontaStringArray[i] + "%", "", "", " LIKE ", ""));
+            else                  filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.NONE    , false, i.ToString(), saldaContiKontaStringArray[i] + "%", "", "", " LIKE ", ""));
+         }
       }
 
       return filterMembers;

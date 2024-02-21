@@ -1949,15 +1949,15 @@ public sealed class NalogDao : VvDaoBase, IVvDao
     //KtoShemaDsc KSD = new KtoShemaDsc(ZXC.dscLuiLst_KtoShema);
       KtoShemaDsc KSD = ZXC.KSD;
 
-      string kupacKonta = KSD.Dsc_KupacKontaIOS.TrimEnd(','); // ako bil ostavi zarez na kraju 
-      string dobavKonta = KSD.Dsc_DobavKontaIOS.TrimEnd(','); // ako bil ostavi zarez na kraju 
+      string kupacKontaString = KSD.Dsc_KupacKontaIOS.TrimEnd(','); // ako bil ostavi zarez na kraju 
+      string dobavKontaString = KSD.Dsc_DobavKontaIOS.TrimEnd(','); // ako bil ostavi zarez na kraju 
 
-      string wantedKontoSet, kontraKontoSet;
+      string wantedKontaString, kontraKontaString;
 
-    //if(isOtsKupaca) { wantedKontoSet = "12"; kontraKontoSet = "22"; }
-    //else            { wantedKontoSet = "22"; kontraKontoSet = "12"; }
-      if(isOtsKupaca) { wantedKontoSet = kupacKonta; kontraKontoSet = dobavKonta; }
-      else            { wantedKontoSet = dobavKonta; kontraKontoSet = kupacKonta; }
+      string[] saldaContiKontaStringArray;
+
+      if(isOtsKupaca) { wantedKontaString = kupacKontaString; kontraKontaString = dobavKontaString; saldaContiKontaStringArray = Ftrans.WantedKupciKontaStringArray; }
+      else            { wantedKontaString = dobavKontaString; kontraKontaString = kupacKontaString; saldaContiKontaStringArray = Ftrans.WantedDobavKontaStringArray; }
 
       bool isOtsAndNotKartica = !isKarticaAndNotOTS;
 
@@ -1975,23 +1975,23 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
          // 19.02.2024: big news!
        //filterMembers.Add(new VvSqlFilterMember("SUBSTRING(ftr.t_konto, 1, 3)", "(" + wantedKontoSet + ")", " IN "));
-         if(wantedKontoSet.Length < 2)
+         if(saldaContiKontaStringArray.Length.IsZero()) // ni jedan konto nije naveden
          {
-            filterMembers.Add(new VvSqlFilterMember("SUBSTRING(ftr.t_konto, 1, 3)", "(" + wantedKontoSet + ")", " IN "));
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "U pravilima nije zadan nijedan konto!");
+            return;
+         }
+         else if(saldaContiKontaStringArray.Length == 1) // samo jedan konto je naveden
+         {
+            filterMembers.Add(new VvSqlFilterMember("SUBSTRING(ftr.t_konto, 1, 3)", "(" + wantedKontaString + ")", " IN "));
          }
          else
          {
-            string[] saldaContiKonta;
-            if(isOtsKupaca) { saldaContiKonta = Ftrans.WantedKupciKontoSet; }
-            else            { saldaContiKonta = Ftrans.WantedDobavKontoSet; }
-
-
-            int lastIdx = saldaContiKonta.Length - 1;
+            int lastIdx = saldaContiKontaStringArray.Length - 1;
             for(int i = 0; i <= lastIdx; ++i)
             {
-               if(i == 0)            filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.OPEN_OR , false, "prvi"      , saldaContiKonta[i] + "%", "", "", " LIKE ", ""));
-               else if(i == lastIdx) filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.CLOSE_OR, false, "zadnji"    , saldaContiKonta[i] + "%", "", "", " LIKE ", ""));
-               else                  filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.NONE    , false, i.ToString(), saldaContiKonta[i] + "%", "", "", " LIKE ", ""));
+               if(i == 0)            filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.OPEN_OR , false, "prvi"      , saldaContiKontaStringArray[i] + "%", "", "", " LIKE ", ""));
+               else if(i == lastIdx) filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.CLOSE_OR, false, "zadnji"    , saldaContiKontaStringArray[i] + "%", "", "", " LIKE ", ""));
+               else                  filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto], ZXC.FM_OR_Enum.NONE    , false, i.ToString(), saldaContiKontaStringArray[i] + "%", "", "", " LIKE ", ""));
             }
          }
          if(isOtsAndNotKartica)
@@ -2033,14 +2033,14 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
       else // needsKontra == true 
       {
-         string distinctKupdobCD_CommaSeparated_InWantedSet = GetDistinctKupdobCDInWantedSet(conn, filterMembers, wantedKontoSet, dateOTS);
+         string distinctKupdobCD_CommaSeparated_InWantedSet = GetDistinctKupdobCDInWantedSet(conn, filterMembers, wantedKontaString, dateOTS);
 
          filterMembers.Add(new VvSqlFilterMember(otsSubQuerry, 0, " != ")); // namjerno u duplo kao zadnji 
          filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_dokDate], true, "dateOTS", dateOTS, "", "", "", "")); // za otsSubQuerry value parametra '?prm_dateOTS' 
 
          orderBy = "naziv, t_konto DESC, t_tipBr, t_dokDate, t_serial".Replace("DESC", (isOtsKupaca ? "" : "DESC"));
 
-         GetWantedSetWithKontraSet(conn, TheFtransList, filterMembers, wantedKontoSet, kontraKontoSet, orderBy, distinctKupdobCD_CommaSeparated_InWantedSet);
+         GetWantedSetWithKontraSet(conn, TheFtransList, filterMembers, wantedKontaString, kontraKontaString, orderBy, distinctKupdobCD_CommaSeparated_InWantedSet);
       }
 
       #endregion needsKontra: GetDistinctKupdobCDInWantedSet(), GetWantedSet With KontraSet if kupdob is mentioned in WantedSet (even if ots doesn't exists in WantedSet show kontraSet)
@@ -2053,7 +2053,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
       foreach(Ftrans ftrans_rec in TheFtransList)
       {
-         SetOtsInfo_IOS(ftrans_rec, kontraKontoSet, TheFtransList, dateOTS);
+         SetOtsInfo_IOS(ftrans_rec, kontraKontaString, TheFtransList, dateOTS);
 
          // 26.4.2011: remarkirano jer kada je karticna kuca onda ufa ide na 1200, ... za sada nemozemo razlikovati korektno od greske, pa necemo javljati poruke upozorenja do daljnjega... 
          //CheckFtrans_Ots(ftrans_rec, isOtsKupaca);

@@ -744,8 +744,8 @@ public class Ftrans : VvTransRecord
       }
    }
 
-   public static string[] WantedKupciKontoSet { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_KupacKontaIOS); } }
-   public static string[] WantedDobavKontoSet { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_DobavKontaIOS); } }
+   public static string[] WantedKupciKontaStringArray { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_KupacKontaIOS); } }
+   public static string[] WantedDobavKontaStringArray { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_DobavKontaIOS); } }
 
    //public DateTime DokDateFromOpis 
    //{ 
@@ -811,10 +811,10 @@ public class Ftrans : VvTransRecord
       // 14.04.2020: TEMBO nesto ...
       if(T_konto is null) T_konto = "";
 
-      foreach(string ktoRoot in Ftrans.WantedKupciKontoSet) if(T_konto.StartsWith(ktoRoot) && T_dug.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.OTVARANJE;
-      foreach(string ktoRoot in Ftrans.WantedDobavKontoSet) if(T_konto.StartsWith(ktoRoot) && T_pot.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.OTVARANJE;
-      foreach(string ktoRoot in Ftrans.WantedKupciKontoSet) if(T_konto.StartsWith(ktoRoot) && T_pot.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.ZATVARANJE;
-      foreach(string ktoRoot in Ftrans.WantedDobavKontoSet) if(T_konto.StartsWith(ktoRoot) && T_dug.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.ZATVARANJE;
+      foreach(string ktoRoot in Ftrans.WantedKupciKontaStringArray) if(T_konto.StartsWith(ktoRoot) && T_dug.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.OTVARANJE;
+      foreach(string ktoRoot in Ftrans.WantedDobavKontaStringArray) if(T_konto.StartsWith(ktoRoot) && T_pot.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.OTVARANJE;
+      foreach(string ktoRoot in Ftrans.WantedKupciKontaStringArray) if(T_konto.StartsWith(ktoRoot) && T_pot.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.ZATVARANJE;
+      foreach(string ktoRoot in Ftrans.WantedDobavKontaStringArray) if(T_konto.StartsWith(ktoRoot) && T_dug.NotZero()) this.T_otsKind = ZXC.OtsKindEnum.ZATVARANJE;
 
     //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ftrans.SetOtsKind(): konto [" + T_konto + "] NOR otvaranje NOR zatvaranje");
 

@@ -584,13 +584,13 @@ public class Kplan : VvSifrarRecord
 
    public static bool GetIsKontoDobav(string konto)
    {
-      foreach(string ktoRoot in Ftrans.WantedDobavKontoSet) if(konto.StartsWith(ktoRoot)) return true;
+      foreach(string ktoRoot in Ftrans.WantedDobavKontaStringArray) if(konto.StartsWith(ktoRoot)) return true;
 
       return false;
    }
    public static bool GetIsKontoKupac(string konto)
    {
-      foreach(string ktoRoot in Ftrans.WantedKupciKontoSet) if(konto.StartsWith(ktoRoot)) return true;
+      foreach(string ktoRoot in Ftrans.WantedKupciKontaStringArray) if(konto.StartsWith(ktoRoot)) return true;
 
       return false;
    }
