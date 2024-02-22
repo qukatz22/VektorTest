@@ -6024,10 +6024,19 @@ public static class VvSQL
          "t_artiklCD = ?prm_t_artiklCD                   \n" +
          (isFor_One_SkladCD ?
          "AND                                            \n" +
-         "t_skladCD  = ?prm_t_skladCD                    \n\n" : "");
+         "t_skladCD  = ?prm_t_skladCD                    \n\n" : "") /*;*/ +
+
+         " AND t_skladDate >= ?prm_projYearFirstDay \n\n";
 
       VvSQL.CreateCommandParameter(cmd, preffix, _artiklCD, rows[ci.t_artiklCD]);
       VvSQL.CreateCommandParameter(cmd, preffix, _skladCD , rows[ci.t_skladCD ]);
+
+      // 22.02.2024: HUGE NEWS!!!                                                                             
+      // Pojavom UgAnDo-a, u fajlu ce postojati TT-ovi - ArtStat influenceri koji se 'vuku' iz proslih godina 
+      // pa ih treba odavdje amputirati jer pocetno stanje vec donosi njihov utjecaj iz proslosti             
+      // pa bi se odervajs to dupliralo                                                                       
+
+      VvSQL.CreateCommandParameter(cmd, preffix, "projYearFirstDay", ZXC.projectYearFirstDay, XSqlDbType.DateTime, 32);
 
       #endregion part1
 
