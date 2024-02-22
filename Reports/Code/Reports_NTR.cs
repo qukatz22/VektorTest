@@ -187,7 +187,11 @@ public class RptF_KPI : VvFinReport
 
    private IEnumerable<string> kplanDistinctDUGlist;
    private IEnumerable<string> kplanDistinctPOTlist;
-   private VvLookUpLista       kpiLookUpLista = ZXC.luiListaNTR_KPI;
+
+   // 22.02.2024: 
+ //private VvLookUpLista       kpiLookUpLista = ZXC.luiListaNTR_KPI;
+   private VvLookUpLista       kpiLookUpLista = ZXC.KSD.Dsc_IsPlanViaMtros ? ZXC.luiListaNTR_KPI24 : ZXC.luiListaNTR_KPI;
+
    private VvLookUpLista       ppiLookUpLista = ZXC.luiListaNTR_PPI;
    private VvLookUpLista       ppi2LookUpLista= ZXC.luiListaNTR_PPI2;
    protected decimal[]         ppiRed;
