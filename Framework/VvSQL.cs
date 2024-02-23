@@ -5638,7 +5638,13 @@ public static class VvSQL
          // 11.07.2015: 
          // 12.07.2015: ipak NE! 
        //"AND SUBSTRING(R.t_ttNUm, 4) != '000'  " + "\n" + // skip nulte ZPC-ove 
-         "AND R.t_tt IN " + artstatInfluencerList + " ";
+         "AND R.t_tt IN " + artstatInfluencerList + "\n\n" +
+
+      // 22.02.2024: HUGE NEWS!!!                                                                             
+      // Pojavom UgAnDo-a, u fajlu ce postojati TT-ovi - ArtStat influenceri koji se 'vuku' iz proslih godina 
+      // pa ih treba odavdje amputirati jer pocetno stanje vec donosi njihov utjecaj iz proslosti             
+      // pa bi se odervajs to dupliralo                                                                       
+         " AND R.t_skladDate >= '" + ZXC.projectYearFirstDay.ToString(ZXC.VvDateYyyyMmDdMySQLFormat) + "'\n\n";
    }
 
    private static string From_Join_Where_ClauseForBadMSU_ArtstatNabCijCommand(string twinUlazTTList)

@@ -2067,6 +2067,94 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       return artikl_rec.EditedHasChanges();
    }
 
+   internal bool SynchronizeArtiklSifrar(XSqlConnection conn, ZXC.WriteMode writeMode, Artikl orig_artikl_rec)
+   {
+      bool OK = true;
+
+      // vvT1_vv2024_TGPROJ_000001 
+      // vvT2_vv2024_TGPLEM_000001 
+
+      string kontra_dbName = 
+         ZXC.vvDB_VvDomena == "vvT1" ? conn.Database.Replace("vvT1", "vvT2").Replace("TGPROJ", "TGPLEM") : 
+         ZXC.vvDB_VvDomena == "vvT2" ? conn.Database.Replace("vvT2", "vvT1").Replace("TGPLEM", "TGPROJ") : 
+         throw new Exception("vvDomena nije niti T1 niuti T2");
+
+      string orig_dbName = conn.Database;
+
+      conn.ChangeDatabase(kontra_dbName);
+
+      Artikl kontra_artikl_rec = orig_artikl_rec.MakeDeepCopy();
+
+      // ADDREC 
+      if(writeMode == ZXC.WriteMode.Add) 
+      {
+         try
+         {
+            OK = ADDREC(conn, kontra_artikl_rec, false, false, false, false);
+         }
+         catch(Exception ex2)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, ex2.Message);
+            OK = false;
+         }
+      } // ADDREC 
+
+      // RWTREC 
+      else if(writeMode == ZXC.WriteMode.Edit) 
+      {
+         bool foundOK = SetMe_Record_bySomeUniqueColumn(conn, kontra_artikl_rec, orig_artikl_rec.ArtiklCD, ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD], false, false);
+
+         if(foundOK == false)
+         {
+            ZXC.aim_emsg("SynchronizeArtiklSifrar: nema takvog artikla u kontra database-u!?");
+            conn.ChangeDatabase(orig_dbName);
+            return false;
+         }
+         try
+         {
+            kontra_artikl_rec.BeginEdit();
+
+            kontra_artikl_rec.CurrentData = orig_artikl_rec.CurrentData;
+
+            OK = RWTREC(conn, kontra_artikl_rec, false, false, false, false);
+
+            kontra_artikl_rec.EndEdit();
+         }
+         catch(Exception ex2)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, ex2.Message);
+            OK = false;
+         }
+      } // RWTREC 
+
+      // DELREC 
+      else if(writeMode == ZXC.WriteMode.Delete)
+      {
+         bool foundOK = SetMe_Record_bySomeUniqueColumn(conn, kontra_artikl_rec, orig_artikl_rec.ArtiklCD, ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD], false, false);
+
+         if(foundOK == false)
+         {
+            ZXC.aim_emsg("SynchronizeArtiklSifrar: nema takvog artikla u kontra database-u!?");
+            conn.ChangeDatabase(orig_dbName);
+            return false;
+         }
+         try
+         {
+            DELREC(conn, kontra_artikl_rec, false);
+         }
+         catch(Exception ex2)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, ex2.Message);
+            OK = false;
+         }
+
+      } // DELREC
+
+      conn.ChangeDatabase(orig_dbName);
+
+      return OK;
+   }
+
    #endregion Set_IMPORT_OFFIX_Columns
 
 
