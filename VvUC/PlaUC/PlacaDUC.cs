@@ -5681,8 +5681,8 @@ public class Placa_CalcBrutoFromNetoDlg : VvDialog
    {
       hamper = new VvHamper(4, 2, "", this, false, ZXC.QUN, ZXC.QUN, 0);
 
-      hamper.VvColWdt = new int[] { ZXC.Q4un, ZXC.Q4un, ZXC.QUN - ZXC.Qun4, ZXC.Q9un };
-      hamper.VvSpcBefCol = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q4un, ZXC.QUN - ZXC.Qun4, ZXC.Q9un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -5692,27 +5692,29 @@ public class Placa_CalcBrutoFromNetoDlg : VvDialog
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      Label lbl0 = hamper.CreateVvLabel(0, 0, "Za radnika:", ContentAlignment.MiddleRight);
+      Label lbl0   = hamper.CreateVvLabel  (0, 0, "Za radnika:", ContentAlignment.MiddleRight);
       tbx_personCD = hamper.CreateVvTextBox(1, 0, "tbx_personCD", "");
-      tbx_prezime = hamper.CreateVvTextBox(2, 0, "tbx_prezime", "", 32, 1, 0);
+      tbx_prezime  = hamper.CreateVvTextBox(2, 0, "tbx_prezime", "", 32, 1, 0);
 
       tbx_personCD.JAM_ReadOnly =
       tbx_prezime.JAM_ReadOnly = true;
 
-      Label lbl1 = hamper.CreateVvLabel(0, 1, "Zadani neto:", ContentAlignment.MiddleRight);
-      tbx_neto = hamper.CreateVvTextBox(1, 1, "tbx_neto", "", 12);
+      Label lbl1 = hamper.CreateVvLabel  (0, 1, "Zadani neto:", ContentAlignment.MiddleRight);
+      tbx_neto   = hamper.CreateVvTextBox(1, 1, "tbx_neto", "", 12);
       tbx_neto.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_neto.JAM_DisableNegativeNumberValues = true;
 
-      Label lbl2 = hamper.CreateVvLabel(3, 1, "Neto nakon posebnog poreza", ContentAlignment.MiddleLeft);
-      tbx_isAfterKrizPor = hamper.CreateVvTextBox(2, 1, "tbx_isAfterKrizPor", "");
+      Label lbl2         = hamper.CreateVvLabel   (3, 1, "Neto nakon posebnog poreza", ContentAlignment.MiddleLeft);
+      tbx_isAfterKrizPor = hamper.CreateVvTextBox (2, 1, "tbx_isAfterKrizPor", "");
       cbx_isAfterKrizPor = hamper.CreateVvCheckBox(2, 1, "", tbx_isAfterKrizPor, "", "X");
       tbx_isAfterKrizPor.JAM_Highlighted = true;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_personCD, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_prezime, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_neto, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_personCD      , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_prezime       , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_neto          , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_isAfterKrizPor, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+
+      lbl2.Visible = tbx_isAfterKrizPor.Visible = cbx_isAfterKrizPor.Visible = false;
    }
 
    #endregion Constructor

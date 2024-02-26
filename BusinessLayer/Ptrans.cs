@@ -1233,6 +1233,119 @@ public class Ptrans : VvTransRecord
 
       placa_rec       = _placa_rec;
       PrulesStruct pr = placa_rec.Prules;
+      spent           = PtransDao.GetAlreadySpentPtransInThisMonth(ZXC.TheVvForm.TheDbConnection, T_personCD, T_dokNum, T_dokDate);
+
+
+      decimal zbStDopIz, X, Y, A, B, C, D, N, O, R, P, M, Z, U,
+                  max1, max2, max3, maxO, maxP, dx1, dx2, dx3, dO, dP,
+                  calcBruto, a, b, c, d, dOP,
+                  KP1, KP2, minKrizPor, maxKrizPor, granKrizPor,
+                  ux1, ux2, ux3, uO, uM, uP,
+                  stIzdatka;
+         
+      ux1 = ux2 = ux3 = uO = uM = uP = 0.00M;   
+          
+      uO  = spent.Odbitak;
+      ux1 = spent.PorOsn1;
+      ux2 = spent.PorOsn2;
+      uM  = spent.MioOsn;
+
+      zbStDopIz = pr._stMio1stup + pr._stMio2stup;
+      if(placa_rec.IsRRsetTT == false) zbStDopIz = zbStDopIz / 2;
+      Z =        zbStDopIz    / 100.00M;
+      X = 1.00M - (zbStDopIz) / 100.00M;
+
+      A = this.T_stPorez1 / 100.00M;
+      B = this.T_stPorez1 / 100.00M;
+      O = pr._osnOdb;
+      R = T_koef;
+      M = pr._maxMioOsn - uM;
+
+      stIzdatka = this.T_TT == Placa.TT_AHSAMOSTUMJ || this.T_TT == Placa.TT_AUTORHONUMJ ? (pr._stOthOlak + 25.00M) / 100.00M :
+                  this.T_TT == Placa.TT_AUTORHONOR                                       ? (pr._stOthOlak           / 100.00M): 0.00M;
+      
+      U = 1 - stIzdatka;
+      
+      N = wantedNetto;
+
+      a = 1.00M - A;
+      b = 1.00M - B;
+
+      max1 = pr._maxPorOsn1;
+      max2 = pr._maxPorOsn2 - pr._maxPorOsn1;
+      maxO = O * R;
+
+      dx1 = max1 - ux1;
+      dx2 = max2 - ux2;
+      dO  = maxO - uO;
+
+      if(placa_rec.IsRRsetTT) // klasicna placa
+      {
+         if(N <= (dO))
+         {
+            if(X != 0.00M) calcBruto = N / X;
+            else calcBruto = 0.00M;
+         }
+         else if(dO < N && N <= (dx1 * a + dO))
+         {
+            if((X * a) != 0.00M)
+            {
+               calcBruto = (N - dO * A) / (X * a);
+
+               if(calcBruto > M)
+                  calcBruto = (N + M * Z * a - dO * A) / (a);
+            }
+            else calcBruto = 0.00M;
+         }
+         else if((dx1 * a + dO) < N && N <= (dx1 * a + dx2 * b + dO))
+         {
+            if((X * b) != 0.00M)
+            {
+               calcBruto = (N - dO * B - dx1 *  (B - A)) / (X * b);
+
+               if(calcBruto > M)
+                  calcBruto = (N + M * Z * b - dO * B - dx1 * (B - A)) / (b);
+            }
+            else calcBruto = 0.00M;
+
+         }
+         else
+            calcBruto = 0.00M;
+      }
+      else if(placa_rec.TT == Placa.TT_AHSAMOSTUMJ || placa_rec.TT == Placa.TT_DDBEZDOPRINO) // nemaju doprinose
+      {
+         if((1.00M - U * A) != 0.00M)
+         {
+            calcBruto = N / (1.00M - U * A);
+         }
+         else
+         {
+            calcBruto = 0.00M;
+         }
+      }
+      else // drugi dohoci sa doprinosima i porezima
+      {
+         if(1.00M - U * (Z + X * A) != 0.00M)
+         {
+            calcBruto = N / (1.00M - U * (Z + X * A));
+         }
+         else
+         {
+            calcBruto = 0.00M;
+         }
+      }
+
+
+      return calcBruto;
+   }
+
+   public decimal CalcBrutoDaNetto_OLD(decimal wantedNetto, bool isAfterKrizPor, Placa _placa_rec)
+   {
+      Placa        placa_rec;
+      AlreadySpentPtransInThisMonthStruct spent;
+
+      placa_rec       = _placa_rec;
+      PrulesStruct pr = placa_rec.Prules;
       spent           = PtransDao.GetAlreadySpentPtransInThisMonth(/*ZXC.TheMainDbConnection*/ZXC.TheVvForm.TheDbConnection, T_personCD, T_dokNum, T_dokDate);
 
       decimal zbStDopIz, X, Y, A, B, C, D, N, O, R, P, M, Z, U, 
@@ -1838,9 +1951,8 @@ public class Ptrans : VvTransRecord
 
          //28.01.2021. HZTK hoce dodatak na staz i na prekovremene ali kada ima isNaProsjeku = true onda je program povecao dodatak na staz 
          bool isHZTKprekovremeno = ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_MTROS && ptrane_rec.T_rsOO == "98";
-         
-         #endregion HZTK prekovremeno
 
+         #endregion HZTK prekovremeno
 
          // do 28.01.2015. a ovdje dodajemo obracun bolovanja na osnovu prosjeka tri zadnje place
          //if(ptrane_rec.T_rsOO != "99") ptrane_rec.R_EvrCijena = (ptrane_rec.T_cijPerc          ) / 100.00M * cijenaSata;
@@ -1875,7 +1987,6 @@ public class Ptrans : VvTransRecord
             ptrane_rec.R_EvrCijena  = (ptrane_rec.T_cijPerc) / 100.00M * evrCijenaOsnovica/*cijenaSata100*/;
 
             ptrane_rec.R_ThisEvrCijena = ptrane_rec.R_EvrCijena; //02.02.2015.
-         
          }
          else if(isBkratko && T_pr3mjBruto.NotZero()) // obracun bolovanja na temelju prosjeka zadnje 3 place bruto
          {
@@ -1916,7 +2027,16 @@ public class Ptrans : VvTransRecord
 
             ptrane_rec.R_ThisEvrCijena = cijenaSata100 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100; //02.02.2015.
          }
+
+         //20.02.2024.
+
+         if(ptrane_rec.T_dokDate >= new DateTime(2024, 03, 01))// od datuma isplate 01.03.2024.
+         {
+            ptrane_rec.R_EvrCijena     = ptrane_rec.R_EvrCijena    .Ron2();
+            ptrane_rec.R_ThisEvrCijena = ptrane_rec.R_ThisEvrCijena.Ron2(); 
+         }
          
+
          #endregion cijena sata
 
          ptrane_rec.R_EvrBruto = ptrane_rec.R_EvrCijena * ptrane_rec.T_sati;
@@ -2163,6 +2283,12 @@ public class Ptrans : VvTransRecord
          R_TheBruto = R_TheBruto.Ron2();
 
          return;
+      }
+
+     //20.02.2024.
+      if(this.T_dokDate >= new DateTime(2024, 03, 01))// od datuma isplate 01.03.2024.
+      {
+         cijenaSata100 = cijenaSata100.Ron2();
       }
 
       R_SatiOnlyRadBruto = R_SatiOnlyRad * cijenaSata100;

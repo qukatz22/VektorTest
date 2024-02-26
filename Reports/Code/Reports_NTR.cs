@@ -190,7 +190,7 @@ public class RptF_KPI : VvFinReport
 
    // 22.02.2024: 
  //private VvLookUpLista       kpiLookUpLista =                                                                                         ZXC.luiListaNTR_KPI; 
-   private VvLookUpLista       kpiLookUpLista = (ZXC.KSD.Dsc_IsPlanViaMtros && ZXC .projectYearAsInt >= 2024) ? ZXC.luiListaNTR_KPI24 : ZXC.luiListaNTR_KPI;
+   private VvLookUpLista       kpiLookUpLista = (ZXC.KSD.Dsc_IsKPI24 && ZXC .projectYearAsInt >= 2024) ? ZXC.luiListaNTR_KPI24 : ZXC.luiListaNTR_KPI;
 
    private VvLookUpLista       ppiLookUpLista = ZXC.luiListaNTR_PPI;
    private VvLookUpLista       ppi2LookUpLista= ZXC.luiListaNTR_PPI2;
