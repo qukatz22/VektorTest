@@ -1279,21 +1279,47 @@ public class Ptrans : VvTransRecord
       dx2 = max2 - ux2;
       dO  = maxO - uO;
 
+      decimal Mo   = pr._mio1FiksOlk ;
+      decimal GM1  = pr._mio1Granica1;
+      decimal GM2  = pr._mio1Granica2;
+      decimal fM   = pr._mio1KoefOlk /*/ 100.00M*/;
+      decimal stD1 = pr._stMio1stup / 100.00M; 
+      decimal stD2 = pr._stMio2stup / 100.00M;
+      decimal xxx  = 1.00M - stD1 - stD2;
+
       if(placa_rec.IsRRsetTT) // klasicna placa
       {
          if(N <= (dO))
          {
-            if(X != 0.00M) calcBruto = N / X;
+            if(xxx != 0.00M) 
+            {
+               calcBruto = (N - Mo * stD1) / xxx;
+
+               if(GM2 >= calcBruto && calcBruto > GM1)
+               {
+                  calcBruto = (N - GM2*fM*stD1) / (xxx - fM*stD1);
+               }
+               if(calcBruto > GM2)
+               {
+                  calcBruto = (N ) / (xxx);
+               }
+            } 
             else calcBruto = 0.00M;
          }
-         else if(dO < N && N <= (dx1 * a + dO))
+         else if(dO < N && N <= (dx1 * a + dO))//tu si stala
          {
-            if((X * a) != 0.00M)
+            if((xxx * a) != 0.00M)
             {
-               calcBruto = (N - dO * A) / (X * a);
+               calcBruto = (N - dO * A + Mo*stD1*a) / (xxx * a);
 
-               if(calcBruto > M)
-                  calcBruto = (N + M * Z * a - dO * A) / (a);
+               if(GM2 >= calcBruto && calcBruto > GM1)
+               {
+                  calcBruto = (N - GM2 * fM * stD1) / (xxx - fM * stD1);
+               }
+               if(calcBruto > GM2)
+               {
+                  calcBruto = (N) / (xxx);
+               }
             }
             else calcBruto = 0.00M;
          }

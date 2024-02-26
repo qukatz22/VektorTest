@@ -9620,9 +9620,9 @@ public partial class FakturExtDUC : FakturDUC
    private void InitializeHamper_IrmKupon_OUT(out VvHamper hamper)
    {
       hamper = new VvHamper(9, 1, "", ThePolyGridTabControl.TabPages[0], false);
-      //                                    0          1             2                      3                  4               5         6              7        8       
-      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q4un, ZXC.Q2un - ZXC.Qun2, ZXC.Q2un + ZXC.Qun2, ZXC.Q2un - ZXC.Qun2, ZXC.Q2un, ZXC.Q4un, ZXC.QUN + ZXC.Qun2, ZXC.Q4un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,        0,           ZXC.Qun10,                   0,            ZXC.Qun8,        0, ZXC.Qun8,                  0, ZXC.Qun8 };
+      //                                    0          1             2                      3                  4               5                      6          7            8       
+      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q4un, ZXC.Q2un - ZXC.Qun2, ZXC.Q2un + ZXC.Qun2, ZXC.Q2un - ZXC.Qun2, ZXC.Q2un + ZXC.Qun4, ZXC.Q4un, ZXC.QUN + ZXC.Qun2, ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,        0,           ZXC.Qun10,                   0,            ZXC.Qun8,                   0, ZXC.Qun10,                  0, ZXC.Qun10 };
       hamper.VvRightMargin = hamper.VvLeftMargin; 
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };
@@ -9633,7 +9633,8 @@ public partial class FakturExtDUC : FakturDUC
 
       lbl_kpnOut1 = hamper.CreateVvLabel(0, 0, "IZDAN"      , ContentAlignment.MiddleLeft);
       lbl_kpnOut2 = hamper.CreateVvLabel(1, 0, "Kpn MinIzn:", ContentAlignment.MiddleRight);
-      lbl_kpnOut3 = hamper.CreateVvLabel(3, 0, "kn  Pop:"   , ContentAlignment.MiddleLeft);
+    //lbl_kpnOut3 = hamper.CreateVvLabel(3, 0, "kn  Pop:"   , ContentAlignment.MiddleLeft);
+      lbl_kpnOut3 = hamper.CreateVvLabel(3, 0, "Popust:"    , ContentAlignment.MiddleRight);
 //    lbl_kpnOut4 = hamper.CreateVvLabel(4, 0, "Pop:"       , ContentAlignment.MiddleRight);
       lbl_kpnOut5 = hamper.CreateVvLabel(5, 0, "%  Od:"     , ContentAlignment.MiddleLeft);
 //    lbl_kpnOut6 = hamper.CreateVvLabel(6, 0, "Od:"        , ContentAlignment.MiddleRight);
@@ -9660,6 +9661,8 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Visible       = false;
       cbx_isKpnOUT.Visible = false;
 
+      //26.6.2024 privremeno micemo da ne bi zabunom unijeli jer izdaju kupone bezuvjetno
+      lbl_kpnOut2.Visible = tbx_someMoney.Visible = false;
    }
 
    protected void Set_KPN_Out_labelsEnabledState(VvHamper hamper, bool enabled, Color color)
