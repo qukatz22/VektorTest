@@ -1734,6 +1734,12 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
     //if(this is RptP_Virmani)
       if(this is RptP_Virmani && (this is RptP_ListaBanka == false))
       {
+         // 26.02.2024: 
+         bool hasMixed_aJeTo = Get_hasMixed_aJeTo(placaTable);
+         if(hasMixed_aJeTo)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "VAŽNO upozorenje!!!\n\r\n\rZadanim filterom obuhvaća se skup raznovrsnih tipova plaće\n\rte će možda biti krivo sumirani ili krivo formirani PNB-ovi\n\rza pojedine 'virmane'?!");
+         }
 
          #region Local Variables & Init common values
 
@@ -2604,6 +2610,32 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       }
 
       return true;
+   }
+
+   private bool Get_hasMixed_aJeTo(DS_Placa.placaDataTable placaTable)
+   {
+      //pvi.aJePoduzetPl   = placa_rec.TT == Placa.TT_PODUZETPLACA;
+      //pvi.aJeAutHonorar  = placa_rec.TT == Placa.TT_AUTORHONOR  || placa_rec.TT == Placa.TT_NR1_PX1NEDOP || placa_rec.TT == Placa.TT_NR2_P01NEDOP || placa_rec.TT == Placa.TT_DDBEZDOPRINO;
+      //pvi.aJeAutHonUmje  = placa_rec.TT == Placa.TT_AUTORHONUMJ || placa_rec.TT == Placa.TT_AUVECASTOPA  || placa_rec.TT == Placa.TT_NR3_PX1DADOP;
+      //pvi.aJeAHSamostUm  = placa_rec.TT == Placa.TT_AHSAMOSTUMJ;
+      //pvi.aJeUgovODjelu  = placa_rec.TT == Placa.TT_UGOVORODJELU ;
+      //pvi.aJeNadzorOdb   = placa_rec.TT == Placa.TT_NADZORODBOR || placa_rec.TT == Placa.TT_TURSITVIJECE;
+      //pvi.aJeIDD_Kolona4 = placa_rec.TT == Placa.TT_IDD_KOLONA_4;
+      //pvi.aJeSezZapPolj  = placa_rec.TT == Placa.TT_SEZZAPPOLJOP;
+      //pvi.aJePorNaDobit  = placa_rec.TT == Placa.TT_POREZNADOBIT;
+      //pvi.aJeStrucOspos  = placa_rec.TT == Placa.TT_STRUCNOOSPOS;
+      //pvi.aJeSamoDop     = placa_rec.TT == Placa.TT_SAMODOPRINOS;
+
+      //private static string[] arrayRRsetTT = new string[] {
+      //   Placa.TT_REDOVANRAD   /*"RR"*/, // redovan rad                                                              
+      //   Placa.TT_PODUZETPLACA /*"PP"*/, // poduzetnicka placa                                                       
+      //   Placa.TT_PLACAUNARAVI /*"PN"*/, // placa u naravi                                                           
+      //   Placa.TT_NEPLACDOPUST /*"ND"*/, // 25.11.14. neplaceni dopust                                               
+      //   Placa.TT_BIVSIRADNIK  /*"BR"*/, // 23.12.2019. Obračun primitaka prema kojima se doprinosi obračunavaju na način koji ima obilježje drugog dohotka, a porez na dohodak prema primitcima od kojih se utvrđuje dohodak od nesamostalnog rada
+      //   Placa.TT_OSTALIPRIM   /*"OP"*/, // 01.01.2024. Ostali primici - iznad neoporezivog iznosa - koristi spent za oporz ali ne i za MIO1olaksicu
+      //};
+
+      return placaTable.ToList().Select(pl => pl.tt).Distinct().Count().MoreThenOne();
    }
 
    private string Get_NP_theVOP(string pnbo, string t_neoPrimCD)
