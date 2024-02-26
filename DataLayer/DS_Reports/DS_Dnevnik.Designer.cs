@@ -44,6 +44,8 @@ namespace Vektor.DataLayer.DS_Reports {
         
         private global::System.Data.DataRelation relationRelation_FakturForFtrans;
         
+        private global::System.Data.DataRelation relationRelation_FakturForFtransAPT;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -311,6 +313,7 @@ namespace Vektor.DataLayer.DS_Reports {
             this.relationRelation_KupdobForFtransMT = this.Relations["Relation_KupdobForFtransMT"];
             this.relationRelation_KplanForFtrans = this.Relations["Relation_KplanForFtrans"];
             this.relationRelation_FakturForFtrans = this.Relations["Relation_FakturForFtrans"];
+            this.relationRelation_FakturForFtransAPT = this.Relations["Relation_FakturForFtransAPT"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -351,6 +354,10 @@ namespace Vektor.DataLayer.DS_Reports {
                         this.tablefaktur.tipBrColumn}, new global::System.Data.DataColumn[] {
                         this.tableIzvjTable.t_projektCDColumn}, false);
             this.Relations.Add(this.relationRelation_FakturForFtrans);
+            this.relationRelation_FakturForFtransAPT = new global::System.Data.DataRelation("Relation_FakturForFtransAPT", new global::System.Data.DataColumn[] {
+                        this.tablefaktur.tipBrColumn}, new global::System.Data.DataColumn[] {
+                        this.tableIzvjTable.t_tipBrColumn}, false);
+            this.Relations.Add(this.relationRelation_FakturForFtransAPT);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -986,7 +993,7 @@ namespace Vektor.DataLayer.DS_Reports {
                         string t_ticker, 
                         kupdobRow parentkupdobRowByRelation_KupdobForFtransMT, 
                         string t_mtros_tk, 
-                        string t_tipBr, 
+                        fakturRow parentfakturRowByRelation_FakturForFtransAPT, 
                         string t_opis, 
                         System.DateTime t_valuta, 
                         string t_tt, 
@@ -1029,7 +1036,7 @@ namespace Vektor.DataLayer.DS_Reports {
                         t_ticker,
                         null,
                         t_mtros_tk,
-                        t_tipBr,
+                        null,
                         t_opis,
                         t_valuta,
                         t_tt,
@@ -1073,6 +1080,9 @@ namespace Vektor.DataLayer.DS_Reports {
                 if ((parentkupdobRowByRelation_KupdobForFtransMT != null)) {
                     columnValuesArray[7] = parentkupdobRowByRelation_KupdobForFtransMT[0];
                 }
+                if ((parentfakturRowByRelation_FakturForFtransAPT != null)) {
+                    columnValuesArray[9] = parentfakturRowByRelation_FakturForFtransAPT[8];
+                }
                 if ((parentfakturRowByRelation_FakturForFtrans != null)) {
                     columnValuesArray[32] = parentfakturRowByRelation_FakturForFtrans[8];
                 }
@@ -1093,7 +1103,7 @@ namespace Vektor.DataLayer.DS_Reports {
                         string t_ticker, 
                         kupdobRow parentkupdobRowByRelation_KupdobForFtransMT, 
                         string t_mtros_tk, 
-                        string t_tipBr, 
+                        fakturRow parentfakturRowByRelation_FakturForFtransAPT, 
                         string t_opis, 
                         System.DateTime t_valuta, 
                         string t_tt, 
@@ -1117,7 +1127,7 @@ namespace Vektor.DataLayer.DS_Reports {
                         t_ticker,
                         null,
                         t_mtros_tk,
-                        t_tipBr,
+                        null,
                         t_opis,
                         t_valuta,
                         t_tt,
@@ -1160,6 +1170,9 @@ namespace Vektor.DataLayer.DS_Reports {
                 }
                 if ((parentkupdobRowByRelation_KupdobForFtransMT != null)) {
                     columnValuesArray[7] = parentkupdobRowByRelation_KupdobForFtransMT[0];
+                }
+                if ((parentfakturRowByRelation_FakturForFtransAPT != null)) {
+                    columnValuesArray[9] = parentfakturRowByRelation_FakturForFtransAPT[8];
                 }
                 if ((parentfakturRowByRelation_FakturForFtrans != null)) {
                     columnValuesArray[32] = parentfakturRowByRelation_FakturForFtrans[8];
@@ -2564,6 +2577,8 @@ namespace Vektor.DataLayer.DS_Reports {
             
             private global::System.Data.DataColumn columntipBr;
             
+            private global::System.Data.DataColumn columnvezniDok;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public fakturDataTable() : 
@@ -2680,6 +2695,14 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn vezniDokColumn {
+                get {
+                    return this.columnvezniDok;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2715,7 +2738,7 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public fakturRow AddfakturRow(uint fakturRecID, uint kupdobCD, string kupdobTK, string kupdobName, string prjArtName, string napomena, string tt, uint ttNum, string tipBr) {
+            public fakturRow AddfakturRow(uint fakturRecID, uint kupdobCD, string kupdobTK, string kupdobName, string prjArtName, string napomena, string tt, uint ttNum, string tipBr, string vezniDok) {
                 fakturRow rowfakturRow = ((fakturRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         fakturRecID,
@@ -2726,7 +2749,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         napomena,
                         tt,
                         ttNum,
-                        tipBr};
+                        tipBr,
+                        vezniDok};
                 rowfakturRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowfakturRow);
                 return rowfakturRow;
@@ -2734,7 +2758,7 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public fakturRow AddfakturRow(uint fakturRecID, uint kupdobCD, string kupdobTK, string kupdobName, string prjArtName, string napomena, string tt, uint ttNum) {
+            public fakturRow AddfakturRow(uint fakturRecID, uint kupdobCD, string kupdobTK, string kupdobName, string prjArtName, string napomena, string tt, uint ttNum, string vezniDok) {
                 fakturRow rowfakturRow = ((fakturRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         fakturRecID,
@@ -2745,7 +2769,8 @@ namespace Vektor.DataLayer.DS_Reports {
                         napomena,
                         tt,
                         ttNum,
-                        null};
+                        null,
+                        vezniDok};
                 rowfakturRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowfakturRow);
                 return rowfakturRow;
@@ -2784,6 +2809,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columntt = base.Columns["tt"];
                 this.columnttNum = base.Columns["ttNum"];
                 this.columntipBr = base.Columns["tipBr"];
+                this.columnvezniDok = base.Columns["vezniDok"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2807,6 +2833,8 @@ namespace Vektor.DataLayer.DS_Reports {
                 base.Columns.Add(this.columnttNum);
                 this.columntipBr = new global::System.Data.DataColumn("tipBr", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntipBr);
+                this.columnvezniDok = new global::System.Data.DataColumn("vezniDok", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnvezniDok);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnfakturRecID}, true));
                 this.columnfakturRecID.AllowDBNull = false;
@@ -2824,6 +2852,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columntt.MaxLength = 3;
                 this.columnttNum.AllowDBNull = false;
                 this.columntipBr.ReadOnly = true;
+                this.columnvezniDok.MaxLength = 64;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3668,6 +3697,17 @@ namespace Vektor.DataLayer.DS_Reports {
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["Relation_FakturForFtrans"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public fakturRow fakturRowByRelation_FakturForFtransAPT {
+                get {
+                    return ((fakturRow)(this.GetParentRow(this.Table.ParentRelations["Relation_FakturForFtransAPT"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["Relation_FakturForFtransAPT"]);
                 }
             }
             
@@ -4547,6 +4587,22 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string vezniDok {
+                get {
+                    try {
+                        return ((string)(this[this.tablefaktur.vezniDokColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'vezniDok\' in table \'faktur\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablefaktur.vezniDokColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IstipBrNull() {
                 return this.IsNull(this.tablefaktur.tipBrColumn);
             }
@@ -4559,12 +4615,35 @@ namespace Vektor.DataLayer.DS_Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsvezniDokNull() {
+                return this.IsNull(this.tablefaktur.vezniDokColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetvezniDokNull() {
+                this[this.tablefaktur.vezniDokColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public IzvjTableRow[] GetIzvjTableRows() {
                 if ((this.Table.ChildRelations["Relation_FakturForFtrans"] == null)) {
                     return new IzvjTableRow[0];
                 }
                 else {
                     return ((IzvjTableRow[])(base.GetChildRows(this.Table.ChildRelations["Relation_FakturForFtrans"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public IzvjTableRow[] GetIzvjTableRowsByRelation_FakturForFtransAPT() {
+                if ((this.Table.ChildRelations["Relation_FakturForFtransAPT"] == null)) {
+                    return new IzvjTableRow[0];
+                }
+                else {
+                    return ((IzvjTableRow[])(base.GetChildRows(this.Table.ChildRelations["Relation_FakturForFtransAPT"])));
                 }
             }
         }

@@ -7902,7 +7902,8 @@ public class VvArtikl_FRAG_Importer : VvDataRecordImporter
 
 }
 
-public class VvKupdob_TGPLEM_Importer : VvDataRecordImporter
+public class 
+   VvKupdob_TGPLEM_Importer : VvDataRecordImporter
 {
    private List<RawData> RawDataList { get; set; }
 

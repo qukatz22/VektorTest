@@ -1776,7 +1776,9 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       else                                          opis = "";
 
       if(opis.IsEmpty()) opis = currOpis;
-      else               opis = LimitedOpisStr(opis + "/" + currOpis);
+      // 26.02.2024: ... a mozda smo nekog zajebali, ovak oce rozel 
+    //else               opis = LimitedOpisStr(opis     + "/" + currOpis);
+      else               opis = LimitedOpisStr(currOpis + "/" + opis    );
 
       // 15.11.2022: 
       if(ZXC.projectYearAsInt == 2023) // !!! pazi da li se doticna NY operacija (Init_NY, SendToPsNalog, PS_RISK, ...) izvodi u PG ili u NY!!! 
