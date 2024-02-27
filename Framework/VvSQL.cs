@@ -5299,7 +5299,9 @@ public static class VvSQL
    {
       XSqlCommand cmd = InitCommand(conn);
 
-      cmd.CommandText = "GRANT ALL ON `" + ZXC.TheVvForm.GetvvDB_prefix() + "%`.* TO " + user_rec.UserName4Sql;
+      // 27.02.2024: 
+    //cmd.CommandText = "GRANT ALL ON `" + ZXC.TheVvForm.GetvvDB_prefix() + "%`.* TO "  + user_rec.UserName4Sql      ;
+      cmd.CommandText = "GRANT ALL ON `" + ZXC.TheVvForm.GetvvDB_prefix() + "%`.* TO '" + user_rec.UserName4Sql + "'";
 
       return (cmd);
    }
