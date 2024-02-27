@@ -1256,7 +1256,7 @@ public class Ptrans : VvTransRecord
       X = 1.00M - (zbStDopIz) / 100.00M;
 
       A = this.T_stPorez1 / 100.00M;
-      B = this.T_stPorez1 / 100.00M;
+      B = this.T_stPorez2 / 100.00M;
       O = pr._osnOdb;
       R = T_koef;
       M = pr._maxMioOsn - uM;
@@ -1306,19 +1306,19 @@ public class Ptrans : VvTransRecord
             } 
             else calcBruto = 0.00M;
          }
-         else if(dO < N && N <= (dx1 * a + dO))//tu si stala
+         else if(dO < N && N <= (dx1 * a + dO))
          {
             if((xxx * a) != 0.00M)
             {
                calcBruto = (N - dO * A + Mo*stD1*a) / (xxx * a);
 
-               if(GM2 >= calcBruto && calcBruto > GM1)
+               if(GM2 >= calcBruto && calcBruto > GM1)//tu si stala
                {
-                  calcBruto = (N - GM2 * fM * stD1) / (xxx - fM * stD1);
+                  calcBruto = (N - GM2 * fM * stD1 * a - dO * A) / ((xxx - fM*stD1) * a);
                }
                if(calcBruto > GM2)
                {
-                  calcBruto = (N) / (xxx);
+                  calcBruto = (N - dO*A) / (xxx * a);
                }
             }
             else calcBruto = 0.00M;
@@ -1327,13 +1327,12 @@ public class Ptrans : VvTransRecord
          {
             if((X * b) != 0.00M)
             {
-               calcBruto = (N - dO * B - dx1 *  (B - A)) / (X * b);
+               calcBruto = (N - dx1 *  (B - A) - dO*B) / (xxx * b);
 
-               if(calcBruto > M)
-                  calcBruto = (N + M * Z * b - dO * B - dx1 * (B - A)) / (b);
+             //if(calcBruto > M) mozda jednog dana al sad nemam snage
+             //   calcBruto = (N + M * Z * b - dO * B - dx1 * (B - A)) / (b);
             }
             else calcBruto = 0.00M;
-
          }
          else
             calcBruto = 0.00M;

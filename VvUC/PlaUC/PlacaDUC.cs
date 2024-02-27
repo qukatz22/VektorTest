@@ -1286,20 +1286,34 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
          // 26.09.2016: tek 
          if(true)
          {
+
             VvLookUpItem lui;
-            
-            lui = ZXC.luiListaOpcina.GetLuiForThisCd(prevPtrans_rec.T_opcCD   ); if(lui != null) { theGrid.PutCell(theGrid.IdxForColumn("T_opcName")   , currRow, lui.Name); theGrid.PutCell(theGrid.IdxForColumn("T_stPrirez"), currRow, lui.Number);}
-            lui = ZXC.luiListaOpcina.GetLuiForThisCd(prevPtrans_rec.T_opcRadCD); if(lui != null) { theGrid.PutCell(theGrid.IdxForColumn("T_opcRadName"), currRow, lui.Name); }
+
+            if(this is PlacaOd2024DUC) //za place od 01.01.2024.
+            { 
+               lui = ZXC.luiListaPorPla.GetLuiForThisCd(prevPtrans_rec.T_opcCD   ); if(lui != null) 
+               { 
+                  theGrid.PutCell(theGrid.IdxForColumn("T_opcName") , currRow, lui.Name); 
+                  theGrid.PutCell(theGrid.IdxForColumn("T_stPorez1"), currRow, lui.Number);
+                  theGrid.PutCell(theGrid.IdxForColumn("T_stPorez2"), currRow, lui.Number2);
+               }
+               lui = ZXC.luiListaOpcina.GetLuiForThisCd(prevPtrans_rec.T_opcRadCD); if(lui != null) 
+               { 
+                  theGrid.PutCell(theGrid.IdxForColumn("T_opcRadName"), currRow, lui.Name); 
+               }
+            }
+            else
+            { 
+               lui = ZXC.luiListaOpcina.GetLuiForThisCd(prevPtrans_rec.T_opcCD   ); if(lui != null) { theGrid.PutCell(theGrid.IdxForColumn("T_opcName")   , currRow, lui.Name); theGrid.PutCell(theGrid.IdxForColumn("T_stPrirez"), currRow, lui.Number);}
+               lui = ZXC.luiListaOpcina.GetLuiForThisCd(prevPtrans_rec.T_opcRadCD); if(lui != null) { theGrid.PutCell(theGrid.IdxForColumn("T_opcRadName"), currRow, lui.Name); }
+            }
 
             theGrid.PutCell(theGrid.IdxForColumn("T_koef")   , currRow,                           prevPtrans_rec.T_koef    );
             theGrid.PutCell(theGrid.IdxForColumn("T_isMioII"), currRow, VvCheckBox.GetString4Bool(prevPtrans_rec.T_isMioII));
          }
-
       }
 
       //******* 05.11.2014. da opcinaCD i opcRadCd dojde sa eventualno prethodnog obracuna
-
-
 
       // samo za DUC-eve
       ZXC.TheVvForm.SetDirtyFlag(sender);

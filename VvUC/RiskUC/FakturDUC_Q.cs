@@ -2691,28 +2691,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          // 22.05.2023: 'e nece rabat ici bezuvjetno!' 
-         if(TexthoRabatIsNeopravdan(theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol)))
-         {
-            DialogResult result = MessageBox.Show("Nije ostvaren uvjet za odobravanje rabata!\n\r\n\rŽelite li poništiti rabat?\n\r\n\rDA - poništi rabat i usnimi račun\n\rNE - vrati se na unos računa da bi ga dopunio.)",
-               "Nije ostvaren uvjet za odobravanje rabata!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-
-            if(result != DialogResult.Yes)  // "NE" - vrati me na račun 
-            {
-               e.Cancel = true;
-            }
-            else // "DA" - ponisti rabat i usnimi racun 
-            {
-               decimal newRabat = 0.00M;
-
-               for(int rIdx = 0; rIdx < theIRMDUC.TheG.RowCount - 1; ++rIdx)
-               {
-                  theIRMDUC.TheG.PutCell(theIRMDUC.DgvCI.iT_rbt1St, rIdx, newRabat);
-               }
-
-               theIRMDUC.GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS();
-            }
-
-         }
+         // 27.02.2024: 'e bas hoce rabat ici bezuvjetno!' 
+       //if(TexthoRabatIsNeopravdan(theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol)))
+       //{
+       //   DialogResult result = MessageBox.Show("Nije ostvaren uvjet za odobravanje rabata!\n\r\n\rŽelite li poništiti rabat?\n\r\n\rDA - poništi rabat i usnimi račun\n\rNE - vrati se na unos računa da bi ga dopunio.)",
+       //      "Nije ostvaren uvjet za odobravanje rabata!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+       //
+       //   if(result != DialogResult.Yes)  // "NE" - vrati me na račun 
+       //   {
+       //      e.Cancel = true;
+       //   }
+       //   else // "DA" - ponisti rabat i usnimi racun 
+       //   {
+       //      decimal newRabat = 0.00M;
+       //
+       //      for(int rIdx = 0; rIdx < theIRMDUC.TheG.RowCount - 1; ++rIdx)
+       //      {
+       //         theIRMDUC.TheG.PutCell(theIRMDUC.DgvCI.iT_rbt1St, rIdx, newRabat);
+       //      }
+       //
+       //      theIRMDUC.GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS();
+       //   }
+       //
+       //}
 
       } // if(ZXC.IsTEXTHOshop && this is IRMDUC)
 
