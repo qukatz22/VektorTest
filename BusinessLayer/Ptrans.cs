@@ -1287,18 +1287,27 @@ public class Ptrans : VvTransRecord
       decimal stD2 = pr._stMio2stup / 100.00M;
       decimal xxx  = 1.00M - stD1 - stD2;
 
-      if(placa_rec.IsRRsetTT) // klasicna placa
+    //if(placa_rec.IsRRsetTT) // klasicna placa
+      if(placa_rec.TT == Placa.TT_REDOVANRAD) // klasicna placa
       {
          if(N <= (dO))
          {
             if(xxx != 0.00M) 
             {
-               calcBruto = (N - Mo * stD1) / xxx;
+               if(N <= (Mo)) // uz spc M zanemari minMioOsn
+               { 
+                 calcBruto = (N ) / (1-stD2);
+               }
+               else
+               {
+                  calcBruto = (N - Mo * stD1) / xxx;
+               }
 
                if(GM2 >= calcBruto && calcBruto > GM1)
                {
                   calcBruto = (N - GM2*fM*stD1) / (xxx - fM*stD1);
                }
+
                if(calcBruto > GM2)
                {
                   calcBruto = (N ) / (xxx);
@@ -1337,6 +1346,38 @@ public class Ptrans : VvTransRecord
          else
             calcBruto = 0.00M;
       }
+      else if(placa_rec.TT == Placa.TT_PLACAUNARAVI || placa_rec.TT == Placa.TT_OSTALIPRIM || placa_rec.TT == Placa.TT_SAMODOPRINOS || placa_rec.TT == Placa.TT_STRUCNOOSPOS || placa_rec.TT == Placa.TT_PODUZETPLACA)
+      {
+         if(N <= (dO))
+         {
+            if(xxx != 0.00M) 
+            {
+                  calcBruto = (N ) / (xxx);
+            } 
+            else calcBruto = 0.00M;
+         }
+         else if(dO < N && N <= (dx1 * a + dO))
+         {
+            if((xxx * a) != 0.00M)
+            {
+              calcBruto = (N - dO*A) / (xxx * a);
+            }
+            else calcBruto = 0.00M;
+         }
+         else if((dx1 * a + dO) < N && N <= (dx1 * a + dx2 * b + dO))
+         {
+            if((X * b) != 0.00M)
+            {
+               calcBruto = (N - dx1 *  (B - A) - dO*B) / (xxx * b);
+             //if(calcBruto > M) mozda jednog dana al sad nemam snage
+             //   calcBruto = (N + M * Z * b - dO * B - dx1 * (B - A)) / (b);
+            }
+            else calcBruto = 0.00M;
+         }
+         else
+            calcBruto = 0.00M;
+      }
+
       else if(placa_rec.TT == Placa.TT_AHSAMOSTUMJ || placa_rec.TT == Placa.TT_DDBEZDOPRINO) // nemaju doprinose
       {
          if((1.00M - U * A) != 0.00M)
@@ -2053,13 +2094,13 @@ public class Ptrans : VvTransRecord
             ptrane_rec.R_ThisEvrCijena = cijenaSata100 + (ptrane_rec.T_cijPerc - 100.00M) / 100.00M * cijenaSata100; //02.02.2015.
          }
 
-         //20.02.2024.
-
-         if(ptrane_rec.T_dokDate >= new DateTime(2024, 03, 01))// od datuma isplate 01.03.2024.
-         {
-            ptrane_rec.R_EvrCijena     = ptrane_rec.R_EvrCijena    .Ron2();
-            ptrane_rec.R_ThisEvrCijena = ptrane_rec.R_ThisEvrCijena.Ron2(); 
-         }
+         //20.02.2024. smo pokusali sa zaokruyivanjem ali to ipak nije bas nesto
+         //samo za HZTK a oni imaju označen takav plan+neprofitni su
+       //if(ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_MTROS && ptrane_rec.T_dokDate >= new DateTime(2024, 03, 01))// od datuma isplate 01.03.2024.
+       //{
+       //   ptrane_rec.R_EvrCijena     = ptrane_rec.R_EvrCijena    .Ron2();
+       //   ptrane_rec.R_ThisEvrCijena = ptrane_rec.R_ThisEvrCijena.Ron2(); 
+       //}
          
 
          #endregion cijena sata
@@ -2310,11 +2351,12 @@ public class Ptrans : VvTransRecord
          return;
       }
 
-     //20.02.2024.
-      if(this.T_dokDate >= new DateTime(2024, 03, 01))// od datuma isplate 01.03.2024.
-      {
-         cijenaSata100 = cijenaSata100.Ron2();
-      }
+     //20.02.2024. 28.02.2024. odustali od zaokruzovanja
+    //samo za HZTK a oni imaju označen takav plan+neprofitni su
+    //if(ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_MTROS && this.T_dokDate >= new DateTime(2024, 03, 01))// od datuma isplate 01.03.2024.
+    //{
+    //   cijenaSata100 = cijenaSata100.Ron2();
+    //}
 
       R_SatiOnlyRadBruto = R_SatiOnlyRad * cijenaSata100;
 
