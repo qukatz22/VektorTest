@@ -1665,6 +1665,45 @@ public class SVD_SubRptLine
 #endregion SVD_RptLine,  SVD_SubRptLine
 
 #region PCTOGO PCK_ArtiklInfo, PCK_SernoInfo
+
+
+
+// tu si stao 
+//public abstract class PCK_BAZA
+//{
+//   public string  PCK_BazaCD   { get; set; }
+//   public string  PCK_BazaName { get; set; }
+//   public string  PCK_RAMkind  { get; set; }
+//   public string  PCK_HDDkind  { get; set; }
+//   public string  PCK_SklCD    { get; set; }
+//   public decimal PCK_RAM      { get; set; }
+//   public decimal PCK_HDD      { get; set; }
+//
+//   public PCK_BAZA(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)
+//   {
+//      this.PCK_ArtCD    = _PCK_ArtCD   ;
+//      this.PCK_ArtName  = _PCK_ArtName ;
+//      this.PCK_RAMkind  = _PCK_RAMkind ;
+//      this.PCK_HDDkind  = _PCK_HDDkind ;
+//      this.PCK_SklCD    = _PCK_SklCD   ;
+//      this.PCK_RAM      = _PCK_RAM     ;
+//      this.PCK_HDD      = _PCK_HDD     ;
+//   }
+//
+//   //public override string ToString()
+//   //{
+//   //   return @""" + PCK_Serno + @"" " +  PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";
+//   //}
+//}
+
+
+
+
+
+
+
+
+
 public abstract class PCK_BASE_InfoLine
 {
    public string  PCK_ArtCD    { get; set; }
@@ -1675,7 +1714,7 @@ public abstract class PCK_BASE_InfoLine
    public decimal PCK_RAM      { get; set; }
    public decimal PCK_HDD      { get; set; }
 
-   public string  PCK_BaseCD   { get { return Artikl.Get_ArtiklCD_PCK_base(PCK_ArtCD); } }
+   public string  PCK_BazaCD   { get { return Artikl.Get_PCK_bazaCD(PCK_ArtCD); } }
    public PCK_BASE_InfoLine(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)
    {
       this.PCK_ArtCD    = _PCK_ArtCD   ;

@@ -5638,7 +5638,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // ak smo dosli do tu, znaci da je u pitanju postojeci serno 
       // pa mu idemo iskoristiti lastRtrano_rec stuff              
 
-      if(ThisIs_MOC_rowIndex(currRowIdx) && sernoInfo.PCK_BaseCD != theDUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
+      if(ThisIs_MOC_rowIndex(currRowIdx) && sernoInfo.PCK_BazaCD != theDUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", theDUC.Fld_PTG_MOC_RowCount, theDUC.Fld_PTG_MOC_PCK_baseCD);
 

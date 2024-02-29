@@ -1498,7 +1498,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       }
    }
 
-   public static string Get_ArtiklCD_PCK_base(string artiklCD)
+   public static string Get_PCK_bazaCD(string artiklCD)
    {
       if(ZXC.IsPCTOGO == false) return artiklCD;
 
@@ -1537,7 +1537,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
 
    public static bool Has_equal_PCK_base(string artiklCD1, string artiklCD2)
    {
-      return Get_ArtiklCD_PCK_base(artiklCD1) == Get_ArtiklCD_PCK_base(artiklCD2);
+      return Get_PCK_bazaCD(artiklCD1) == Get_PCK_bazaCD(artiklCD2);
    }
 
    public static string Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(string senderArtiklCD, decimal newPCK_RAM, decimal newPCK_HDD)

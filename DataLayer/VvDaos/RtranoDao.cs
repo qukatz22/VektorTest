@@ -492,7 +492,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          if(Artikl.Has_equal_PCK_base(currSernoArtiklCD, rtrano.T_artiklCD) == false)
          {
             ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serijskom broju: [{3}]\n\r\n\rje izmijenjena PCK Baza!!!\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}",
-               Artikl.Get_ArtiklCD_PCK_base(currSernoArtiklCD), rtrano, Artikl.Get_ArtiklCD_PCK_base(rtrano.T_artiklCD), _theSerno);
+               Artikl.Get_PCK_bazaCD(currSernoArtiklCD), rtrano, Artikl.Get_PCK_bazaCD(rtrano.T_artiklCD), _theSerno);
          }
          else if(currSernoSignature != rtrano.PCK_ArtiklInfo_Signature && !rtrano.TtInfo.Is_MOC_or_MOS_TT)
          {
