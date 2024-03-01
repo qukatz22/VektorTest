@@ -13110,7 +13110,7 @@ public partial class FakturExtDUC : FakturDUC
          {
             modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD  ;
             modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD  ;
-            modDUC.Fld_PTG_PCKbaza  = artikl_rec.PCK_BaseCD;
+            modDUC.Fld_PTG_PCKbaza  = artikl_rec.PCK_BazaCD;
          }
 
          Put_MOD_Semafor_Labels(this as MOD_PTG_DUC);
@@ -14881,7 +14881,7 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iT_dimZ, rowIdx, (rtrano_rec.T_dimZ).ToString0Vv());
             TheG2.PutCell(ci2.iT_decC, rowIdx, (rtrano_rec.T_decC).ToString0Vv());
             
-            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec./*CarTarifa*/PCK_BaseCD);
+            TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec./*CarTarifa*/PCK_BazaCD);
          }
 
          if(IsPTG_UgAnDo_DUC && rtrano_rec.T_paletaNo.IsPositive())

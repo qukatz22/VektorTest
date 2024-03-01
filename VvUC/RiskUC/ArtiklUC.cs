@@ -3455,7 +3455,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
          string skladCD = this.TheCurrentSkladCD;
 
-         List<PCK_ArtiklInfo_Line> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklInfo_List_ForArtiklAndSklad(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD);
+         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_Artikl_List_ForArtiklAndSklad(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD);
 
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
@@ -3474,7 +3474,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
          if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga a ako je empty da ga prazni
          {
-            PCK_ArtiklInfo_Line PCK_Line = PCK_ArtiklInfo_List[0];
+            PCK_Artikl PCK_Line = PCK_ArtiklInfo_List[0];
 
             pcKInfoUC.PutDgv2Fields(PCK_Line.PCK_SernoInfo_List);
          }

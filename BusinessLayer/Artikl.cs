@@ -1479,7 +1479,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       get
       {
-         return Get_New_ArtiklCD_From_PCK_base_RAM_HDD(this.PCK_BaseCD, this.PCK_RAM, this.PCK_HDD);
+         return Get_New_ArtiklCD_From_PCK_base_RAM_HDD(this.PCK_BazaCD, this.PCK_RAM, this.PCK_HDD);
       }
    }
 
@@ -1498,7 +1498,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       }
    }
 
-   public static string Get_PCK_bazaCD(string artiklCD)
+   public static string Get_PCK_BazaCD(string artiklCD)
    {
       if(ZXC.IsPCTOGO == false) return artiklCD;
 
@@ -1537,7 +1537,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
 
    public static bool Has_equal_PCK_base(string artiklCD1, string artiklCD2)
    {
-      return Get_PCK_bazaCD(artiklCD1) == Get_PCK_bazaCD(artiklCD2);
+      return Get_PCK_BazaCD(artiklCD1) == Get_PCK_BazaCD(artiklCD2);
    }
 
    public static string Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(string senderArtiklCD, decimal newPCK_RAM, decimal newPCK_HDD)
@@ -1549,7 +1549,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       if(origArtikl_rec == null) return "";
 
       Artikl newArtikl_rec = VvUserControl.ArtiklSifrar
-         ./*Single*/FirstOrDefault(a => a.PCK_BaseCD.ToUpper() == origArtikl_rec.PCK_BaseCD.ToUpper() && 
+         ./*Single*/FirstOrDefault(a => a.PCK_BazaCD.ToUpper() == origArtikl_rec.PCK_BazaCD.ToUpper() && 
                                         a.PCK_RAM              == newPCK_RAM                          && 
                                         a.PCK_HDD              == newPCK_HDD                           );
 
@@ -1565,7 +1565,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    }
 
 
-   public string  PCK_BaseCD { get { if(ZXC.IsPCTOGO == false) return ""; return this.CarTarifa; } set { if(ZXC.IsPCTOGO) this.CarTarifa = value; } }
+   public string  PCK_BazaCD { get { if(ZXC.IsPCTOGO == false) return ""; return this.CarTarifa; } set { if(ZXC.IsPCTOGO) this.CarTarifa = value; } }
    public decimal PCK_RAM    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Zapremina; } set { if(ZXC.IsPCTOGO) this.Zapremina = value; } }
    public decimal PCK_HDD    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Duljina  ; } set { if(ZXC.IsPCTOGO) this.Duljina   = value; } }
 

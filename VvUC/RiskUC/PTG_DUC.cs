@@ -3244,7 +3244,7 @@ public class MOD_PTG_DUC : FakturPDUC
    #region Fld
 
    public string Fld_PTG_MOC_PCK_ArtCD  { get { return                             (Fld_PrjArtCD); } }
-   public string Fld_PTG_MOC_PCK_baseCD { get { return Artikl.Get_PCK_bazaCD(Fld_PrjArtCD); } }
+   public string Fld_PTG_MOC_PCK_baseCD { get { return Artikl.Get_PCK_BazaCD(Fld_PrjArtCD); } }
    public int    Fld_PTG_MOC_RowCount   { get { return (int)Fld_someMoney; } }
 
    public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
@@ -3892,13 +3892,13 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 
 }
 
-public partial class PCK_ArtiklInfo_Dlg :  VvDialog
+public partial class PCK_ArtiklList_Dlg :  VvDialog
 {
    public PCK_ArtiklInfo_UC TheUC { get; set; }
    private Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
-   public PCK_ArtiklInfo_Dlg()
+   public PCK_ArtiklList_Dlg()
    {
       ZXC.CurrentForm = this;
 
@@ -3970,7 +3970,7 @@ public class PCK_ArtiklInfo_UC : UserControl
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
 
-   List<PCK_ArtiklInfo_Line> PCK_Lines;
+   List<PCK_Artikl> PCK_Lines;
 
    public VvDataGridView TheSernoGrid { get; set; }
    private VvTextBox vvtb_PCK_theSerno;
@@ -4269,7 +4269,7 @@ public class PCK_ArtiklInfo_UC : UserControl
    #endregion SetColumnIndexes()
 
    #region PutDgvFields
-   public void PutDgvFields(List<PCK_ArtiklInfo_Line> _PCK_Lines)
+   public void PutDgvFields(List<PCK_Artikl> _PCK_Lines)
    {
       this.PCK_Lines = _PCK_Lines;
 
@@ -4298,7 +4298,7 @@ public class PCK_ArtiklInfo_UC : UserControl
 
    }
 
-   private void PutDgvLineFields(int rowIdx, PCK_ArtiklInfo_Line _PCK_Line)
+   private void PutDgvLineFields(int rowIdx, PCK_Artikl _PCK_Line)
    {
       ThePCKInfoGrid.PutCell(ci.iT_PCK_ArtCD   , rowIdx, _PCK_Line.PCK_ArtCD  );
       ThePCKInfoGrid.PutCell(ci.iT_PCK_ArtName , rowIdx, _PCK_Line.PCK_ArtName);
@@ -4313,14 +4313,14 @@ public class PCK_ArtiklInfo_UC : UserControl
       ThePCKInfoGrid.PutCell(ci.iT_StanjeKol   , rowIdx, _PCK_Line.StanjeKol  );
    }
 
-   private void PutDgvSumFields(List<PCK_ArtiklInfo_Line> _PCK_Lines)
+   private void PutDgvSumFields(List<PCK_Artikl> _PCK_Lines)
    {
       ThePCKInfoSumGrid.PutCell(ci.iT_PCK_RAM  , 0, _PCK_Lines.Sum(pck => pck.PCK_RAM  ));
       ThePCKInfoSumGrid.PutCell(ci.iT_PCK_HDD  , 0, _PCK_Lines.Sum(pck => pck.PCK_HDD  ));
       ThePCKInfoSumGrid.PutCell(ci.iT_StanjeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
    }
 
-   public void PutDgv2Fields(List<PCK_SernoInfo_Line> PCK_SernoInfoLines)
+   public void PutDgv2Fields(List<PCK_Unikat> PCK_SernoInfoLines)
    {
       int rowIdx;
 
@@ -4341,7 +4341,7 @@ public class PCK_ArtiklInfo_UC : UserControl
       TheSernoGrid.ClearSelection();
    }
 
-   private void PutDgv2LineFields(int rowIdx, PCK_SernoInfo_Line _PCK_SernoInfoLine)
+   private void PutDgv2LineFields(int rowIdx, PCK_Unikat _PCK_SernoInfoLine)
    {
       TheSernoGrid.PutCell(ci2.iT_PCK_theSerno, rowIdx, _PCK_SernoInfoLine.PCK_Serno);
    }
@@ -4359,7 +4359,7 @@ public class PCK_ArtiklInfo_UC : UserControl
      
       if(rowIdx.IsNegative()) return;
      
-      PCK_ArtiklInfo_Line PCK_Line = PCK_Lines[rowIdx];
+      PCK_Artikl PCK_Line = PCK_Lines[rowIdx];
      
       theUC.PutDgv2Fields(PCK_Line.PCK_SernoInfo_List);
 

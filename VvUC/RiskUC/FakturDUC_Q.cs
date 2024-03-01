@@ -3924,7 +3924,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             if(theSerno.NotEmpty())
             {
-               (PCK_SernoInfo_Line sernoInfo, Rtrano lastRtrano_rec) sernoData = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+               (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) sernoData = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
 
                if(sernoData != (null, null))
                {
@@ -5363,7 +5363,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #endregion Check for double serno entry
 
-      PCK_SernoInfo_Line sernoInfo                 ;
+      PCK_Unikat sernoInfo                 ;
       Rtrano             lastRtrano_rec_ovog_sernoa;
 
       (sernoInfo, lastRtrano_rec_ovog_sernoa) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
@@ -5516,7 +5516,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #endregion Check for double serno entry
 
-      PCK_SernoInfo_Line sernoInfo     ;
+      PCK_Unikat sernoInfo     ;
       Rtrano             lastRtrano_rec;
 
       (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
@@ -5628,7 +5628,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #endregion Check for double serno entry
 
-      (PCK_SernoInfo_Line sernoInfo, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+      (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
 
       if(sernoInfo == null)
       {
@@ -7120,7 +7120,7 @@ public partial class FakturExtDUC : FakturDUC
                (this as MOD_PTG_DUC).Fld_PTG_HddKlasa = artikl_rec.Grupa3CD   ;
                (this as MOD_PTG_DUC).Fld_Decimal01    = artikl_rec.PCK_RAM    ;
                (this as MOD_PTG_DUC).Fld_Decimal02    = artikl_rec.PCK_HDD    ;
-               (this as MOD_PTG_DUC).Fld_PTG_PCKbaza  = artikl_rec.PCK_BaseCD ;
+               (this as MOD_PTG_DUC).Fld_PTG_PCKbaza  = artikl_rec.PCK_BazaCD ;
             }
 
          }
