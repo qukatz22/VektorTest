@@ -3975,6 +3975,9 @@ public class PCK_ArtiklList_UC : UserControl
    public VvDataGridView TheSernoGrid { get; set; }
    private VvTextBox vvtb_PCK_theSerno;
 
+   private VvHamper hamp_rbtBaza;
+   private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze;
+
    #endregion Fieldz
 
    #region Constructor
@@ -3985,7 +3988,9 @@ public class PCK_ArtiklList_UC : UserControl
 
       this.Parent = _parent;
 
-      ThePCKInfoGrid = CreateTheGrid("ThePCKInfoGrid",                        ZXC.QunMrgn, ZXC.QunMrgn);
+      CreateHamperRbt();
+
+      ThePCKInfoGrid = CreateTheGrid("ThePCKInfoGrid",                        ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
       TheSernoGrid   = CreateTheGrid("TheSernoGrid"  , ThePCKInfoGrid.Right + ZXC.QunMrgn, ZXC.QunMrgn);
 
       ThePCKInfoSumGrid = CreateSumGrid(ThePCKInfoGrid, ThePCKInfoGrid.Parent, "SUM" + ThePCKInfoGrid.Name);
@@ -4008,6 +4013,31 @@ public class PCK_ArtiklList_UC : UserControl
    #endregion Constructor
 
    #region CalcLocationAndSize
+
+   private void CreateHamperRbt()
+   {
+      hamp_rbtBaza = new VvHamper(2, 1, "", this, false);
+      hamp_rbtBaza.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+
+      hamp_rbtBaza.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q7un };
+      hamp_rbtBaza.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamp_rbtBaza.VvRightMargin = 0;
+
+      hamp_rbtBaza.VvRowHgt       = new int[] { ZXC.QUN };
+      hamp_rbtBaza.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamp_rbtBaza.VvBottomMargin = hamp_rbtBaza.VvTopMargin;
+
+      rbt_ovaPCKbaza = hamp_rbtBaza.CreateVvRadioButton(0, 0, new EventHandler(rbtPCKbaza_checked), "ova PCK baza", TextImageRelation.ImageBeforeText);
+      rbt_svePCKbaze = hamp_rbtBaza.CreateVvRadioButton(1, 0, new EventHandler(rbtPCKbaza_checked), "sve PCK baze", TextImageRelation.ImageBeforeText);
+      rbt_ovaPCKbaza.Checked = true;
+
+   }
+   private void rbtPCKbaza_checked(object sender, EventArgs e)
+   {
+      RadioButton rbt = sender as RadioButton;
+
+    }
+
 
    private void CalcLocationAndSize()
    {

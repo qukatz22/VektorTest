@@ -3829,11 +3829,25 @@ public class Ptrans : VvTransRecord
          ukupniTheBruto = razmjerniDioMinMioOsn;
       }
 
-      if(T_fixMio1Olak.NotZero() || (T_Mio1OlkKind == Mio1OlkKindEnum.Izjava || T_Mio1OlkKind == Mio1OlkKindEnum.PorUpr)) // novo ipak je 2 ili 3 !!!
+    // 04.03.2024. - promjena kada je vise poslodavaca i kad nema nikakve olaksuce onda treba doci 0 kao i kod obicnih
+    //if(T_fixMio1Olak.NotZero() || (T_Mio1OlkKind == Mio1OlkKindEnum.Izjava || T_Mio1OlkKind == Mio1OlkKindEnum.PorUpr)) // novo ipak je 2 ili 3 !!!
+    //{
+    //   theMio1Olaksica = T_fixMio1Olak;
+    //
+    //   R_Mio1OlkKind = (ushort)T_Mio1OlkKind;
+    //}
+      if(T_Mio1OlkKind == Mio1OlkKindEnum.Izjava || T_Mio1OlkKind == Mio1OlkKindEnum.PorUpr) // novo ipak je 2 ili 3 !!!
       {
-         theMio1Olaksica = T_fixMio1Olak;
-
-         R_Mio1OlkKind = (ushort)T_Mio1OlkKind;
+         if(T_fixMio1Olak.NotZero())
+         {
+            theMio1Olaksica = T_fixMio1Olak;
+            R_Mio1OlkKind = (ushort)T_Mio1OlkKind;
+         }
+         else
+         {
+            theMio1Olaksica = 0.00M;
+            R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.NIJE;//0;
+         }
       }
       else if(ukupniTheBruto <= pR._mio1FiksOlk )
       {
