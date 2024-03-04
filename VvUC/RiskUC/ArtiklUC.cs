@@ -197,7 +197,7 @@ public class ArtiklUC : VvSifrarRecordUC
       { 
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
          
-         pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
+         pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName], artikl_rec.ArtiklCD, /*Fld_ZaSkladCD*/"");
 
          TheTabControl.SelectionChanged += DecideIfShouldLoad_PCKinfo;
       }
@@ -2607,6 +2607,8 @@ public class ArtiklUC : VvSifrarRecordUC
                if(artikl_rec.PCK_RAM.IsZero()) tbx_zapremina.Text = "0";
                if(artikl_rec.PCK_HDD.IsZero()) tbx_duljina  .Text = "0";
 
+               pcKInfoUC.currArtiklCD = artikl_rec.ArtiklCD;
+               pcKInfoUC.currSkladCD  = Fld_ZaSkladCD      ;
             }
        }
 

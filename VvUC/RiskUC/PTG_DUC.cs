@@ -3898,11 +3898,11 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    private Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
-   public PCK_ArtiklList_Dlg()
+   public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD)
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new PCK_ArtiklList_UC(this);
+      TheUC = new PCK_ArtiklList_UC(this, currArtiklCD, currSkladCD);
 
       SuspendLayout();
 
@@ -3978,15 +3978,20 @@ public class PCK_ArtiklList_UC : UserControl
    private VvHamper hamp_rbtBaza;
    private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze;
 
+   public string currArtiklCD, currSkladCD;
+
    #endregion Fieldz
 
    #region Constructor
 
-   public PCK_ArtiklList_UC(Control _parent)
+   public PCK_ArtiklList_UC(Control _parent, string _currArtiklCD, string _currSkladCD)
    {
       this.SuspendLayout();
 
       this.Parent = _parent;
+
+      this.currArtiklCD = _currArtiklCD;
+      this.currSkladCD  = _currSkladCD;
 
       CreateHamperRbt();
 
@@ -4036,7 +4041,13 @@ public class PCK_ArtiklList_UC : UserControl
    {
       RadioButton rbt = sender as RadioButton;
 
-    }
+      bool thisBazaOnly = rbt.Checked && rbt == rbt_ovaPCKbaza;
+
+      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.currArtiklCD, this.currSkladCD, thisBazaOnly);
+
+      PutDgvFields(PCK_ArtikList);
+
+   }
 
 
    private void CalcLocationAndSize()
@@ -4306,6 +4317,7 @@ public class PCK_ArtiklList_UC : UserControl
       int rowIdx;
 
       ThePCKInfoGrid.Rows.Clear();
+      TheSernoGrid  .Rows.Clear();
 
       if(_PCK_Lines != null)
       {
