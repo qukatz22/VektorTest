@@ -2,6 +2,9 @@
 using System.Data;
 using System.Linq;
 using System.Data.Common;
+using com.sun.org.apache.bcel.@internal.classfile;
+using iTextSharp.text.pdf.parser;
+using Microsoft.Office.Interop.Excel;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -391,7 +394,9 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
    #region Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
 
-   public static List<PCK_Artikl> Get_PCK_ArtiklList_ForPCK_Baza_AndSklad(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
+#if STARI_NACIN_DELME
+
+   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad_OLD_DELME(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
    {
       List<string> istaBazaArtiklCDlist = VvUserControl.ArtiklSifrar.Where(a => a.PCK_BazaCD == Artikl.Get_PCK_BazaCD(_PCK_ArtCD)).Select(a => a.ArtiklCD).ToList();
 
@@ -399,12 +404,13 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       foreach(string currArtCD in istaBazaArtiklCDlist)
       {
-         istaBaza_PCK_ArtiklList.AddRange(Get_PCK_Artikl_List_ForArtiklAndSklad(conn, currArtCD, _PCK_SklCD));
+         istaBaza_PCK_ArtiklList.AddRange(Get_PCK_Artikl_List_ByArtiklAndSklad(conn, currArtCD, _PCK_SklCD));
       }
 
       return istaBaza_PCK_ArtiklList;
    }
-   public static List<PCK_Artikl> Get_PCK_Artikl_List_ForArtiklAndSklad(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
+
+   public static List<PCK_Artikl> Get_PCK_Artikl_List_ByArtiklAndSklad/*_OLD_DELME*/(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
    {
       if(_PCK_ArtCD.IsEmpty()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Zadajte artikl!"); return null; }
 
@@ -466,7 +472,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          {
             artiklInfoLine = new PCK_Artikl(_PCK_ArtCD, artikl_rec.ArtiklName, sernoInfo_GR.First().PCK_RAMkind, sernoInfo_GR.First().PCK_HDDkind, currSkladCD, sernoInfo_GR.First().PCK_RAM, sernoInfo_GR.First().PCK_HDD);
 
-            artiklInfoLine.PCK_SernoInfo_List = sernoInfo_GR.ToList();
+            artiklInfoLine.PCK_Unikat_List = sernoInfo_GR.ToList();
 
             currSklCD_PCK_ArtiklList.Add(artiklInfoLine);
          }
@@ -478,7 +484,45 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return ALL_SklCD_PCK_ArtiklList;
    }
 
-   public static (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) Get_PCK_SernoInfo_Line_And_LastRtrano(XSqlConnection conn, string _theSerno)
+
+#endif
+   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad/*_NEW*/(XSqlConnection conn, string PCK_artiklCD, string skladCD, bool thisBazaOnly)
+   {
+      //List<PCK_Artikl>  ALL_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
+      //List<PCK_Artikl>  currSklCD_PCK_ArtiklList;
+
+      List<Artikl>     currSklCD_artiklList;
+      List<PCK_Artikl> all_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
+
+
+      List<string> skladCDlist;
+      if(skladCD.NotEmpty()) skladCDlist = new List<string> { skladCD };
+      else                   skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, PCK_artiklCD);
+
+      VvRpt_RiSk_Filter rptFilter = new VvRpt_RiSk_Filter() /*{ DatumOd = ZXC.projectYearFirstDay, DatumDo = DateTime.Today, Artikl_TS = ZXC.PCK_TS }*/ ;
+
+      DataRowCollection   ArtSch = ZXC.ArtiklSchemaRows;
+      ArtiklDao.ArtiklCI   ArtCI = ZXC.ArtiklDao.CI;
+      DataRowCollection   ArsSch = ZXC.ArtStatSchemaRows;
+      ArtStatDao.ArtStatCI ArsCI = ZXC.ArtStatDao.CI;
+
+      rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS,                        " = " ));
+      if(thisBazaOnly)
+      rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(PCK_artiklCD), " = " ));
+
+      foreach(string currSkladCD in skladCDlist)
+      {
+         currSklCD_artiklList = new List<Artikl>();
+
+         ArtiklDao.GetArtiklWithArtstatList(conn, currSklCD_artiklList, currSkladCD, DateTime.Today, rptFilter, "", /*ArtiklOrderBy*/ "artiklCD");
+
+         currSklCD_artiklList.ForEach(art => all_SklCD_PCK_ArtiklList.Add(new PCK_Artikl(art, currSkladCD, art.AS_StanjeKol)));
+      }
+
+      return all_SklCD_PCK_ArtiklList;
+   }
+
+   public static (PCK_Unikat thePCK_Unikat, Rtrano lastRtrano_rec) Get_PCK_Unikat_And_LastRtrano(XSqlConnection conn, string _theSerno)
    {
       List<Rtrano> thisSerno_All_RtranoList = GetRtranoList_For_SERNO(conn, _theSerno);
 
@@ -489,9 +533,9 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(a => a.ArtiklCD == lastRtrano_rec.T_artiklCD);
 
-      PCK_Unikat sernoInfoLine_byLastRtrano = new PCK_Unikat(_theSerno, lastRtrano_rec.T_artiklCD, lastRtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, lastRtrano_rec.T_skladCD, lastRtrano_rec.T_PCK_RAM, lastRtrano_rec.T_PCK_HDD);
+      PCK_Unikat thePCK_Unikat = new PCK_Unikat(_theSerno, lastRtrano_rec.T_artiklCD, lastRtrano_rec.T_artiklName, artikl_rec.Grupa2CD, artikl_rec.Grupa3CD, lastRtrano_rec.T_skladCD, lastRtrano_rec.T_PCK_RAM, lastRtrano_rec.T_PCK_HDD);
 
-      sernoInfoLine_byLastRtrano.PCK_SernoInfo_RtranoList = thisSerno_All_RtranoList;
+      thePCK_Unikat.PCK_SernoInfo_RtranoList = thisSerno_All_RtranoList;
 
       #region Check For Errors or Indiscrepancy
 
@@ -517,7 +561,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       #endregion Check For Errors or Indiscrepancy
 
-      return (sernoInfoLine_byLastRtrano, lastRtrano_rec);
+      return (thePCK_Unikat, lastRtrano_rec);
    }
 
    #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad

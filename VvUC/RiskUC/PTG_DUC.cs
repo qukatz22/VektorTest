@@ -3894,7 +3894,7 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 
 public partial class PCK_ArtiklList_Dlg :  VvDialog
 {
-   public PCK_ArtiklInfo_UC TheUC { get; set; }
+   public PCK_ArtiklList_UC TheUC { get; set; }
    private Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
@@ -3902,7 +3902,7 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new PCK_ArtiklInfo_UC(this);
+      TheUC = new PCK_ArtiklList_UC(this);
 
       SuspendLayout();
 
@@ -3948,7 +3948,7 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    }
 }
 
-public class PCK_ArtiklInfo_UC : UserControl
+public class PCK_ArtiklList_UC : UserControl
 {
    #region Fieldz
 
@@ -3979,7 +3979,7 @@ public class PCK_ArtiklInfo_UC : UserControl
 
    #region Constructor
 
-   public PCK_ArtiklInfo_UC(Control _parent)
+   public PCK_ArtiklList_UC(Control _parent)
    {
       this.SuspendLayout();
 
@@ -4320,30 +4320,25 @@ public class PCK_ArtiklInfo_UC : UserControl
       ThePCKInfoSumGrid.PutCell(ci.iT_StanjeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
    }
 
-   public void PutDgv2Fields(List<PCK_Unikat> PCK_SernoInfoLines)
+   public void PutDgv2Fields(/*List<PCK_Unikat>*/ List<string> theSernoList)
    {
       int rowIdx;
 
       TheSernoGrid.Rows.Clear();
 
-      if(PCK_SernoInfoLines != null)
+      if(theSernoList != null)
       {
-         for(rowIdx = 0; rowIdx < PCK_SernoInfoLines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         for(rowIdx = 0; rowIdx < theSernoList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             TheSernoGrid.Rows.Add();
 
-            PutDgv2LineFields(rowIdx, PCK_SernoInfoLines[rowIdx]);
+            TheSernoGrid.PutCell(ci2.iT_PCK_theSerno, rowIdx, theSernoList[rowIdx]);
 
             TheSernoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
          }
       }
 
       TheSernoGrid.ClearSelection();
-   }
-
-   private void PutDgv2LineFields(int rowIdx, PCK_Unikat _PCK_SernoInfoLine)
-   {
-      TheSernoGrid.PutCell(ci2.iT_PCK_theSerno, rowIdx, _PCK_SernoInfoLine.PCK_Serno);
    }
 
    #endregion PutDgvFields
@@ -4353,15 +4348,17 @@ public class PCK_ArtiklInfo_UC : UserControl
    private void ThePCKGrid_CellMouseClick_OpenSernoList(object sender, DataGridViewCellMouseEventArgs e)
    {
       VvDataGridView theG = sender as VvDataGridView;
-      PCK_ArtiklInfo_UC theUC = theG.Parent as PCK_ArtiklInfo_UC;
+      PCK_ArtiklList_UC theUC = theG.Parent as PCK_ArtiklList_UC;
 
       int rowIdx = e.RowIndex;
      
       if(rowIdx.IsNegative()) return;
      
-      PCK_Artikl PCK_Line = PCK_Lines[rowIdx];
-     
-      theUC.PutDgv2Fields(PCK_Line.PCK_SernoInfo_List);
+      PCK_Artikl thePCK_Artikl = PCK_Lines[rowIdx];
+
+      List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
+
+      theUC.PutDgv2Fields(/*thePCK_Artikl.PCK_Unikat_List*/ theSernoList);
 
    }
 

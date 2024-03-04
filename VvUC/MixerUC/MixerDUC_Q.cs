@@ -1679,9 +1679,10 @@ public class PCK_Artikl
    public decimal PCK_HDD      { get; set; }
 
    public string  PCK_BazaCD   { get { return Artikl.Get_PCK_BazaCD(PCK_ArtCD); } }
-   public int StanjeKol { get { return PCK_SernoInfo_List.Count; } }
+   public int StanjeKol_OLD_DELME { get { return PCK_Unikat_List.Count;         } }
+   public /*int*/ decimal StanjeKol { get; set; }
 
-   public List<PCK_Unikat> PCK_SernoInfo_List { get; set; }
+   public List<PCK_Unikat> PCK_Unikat_List { get; set; }
 
    public PCK_Artikl(string _PCK_ArtCD, string _PCK_ArtName, string _PCK_RAMkind, string _PCK_HDDkind, string _PCK_SklCD, decimal _PCK_RAM, decimal _PCK_HDD)
    {
@@ -1692,6 +1693,18 @@ public class PCK_Artikl
       this.PCK_SklCD    = _PCK_SklCD   ;
       this.PCK_RAM      = _PCK_RAM     ;
       this.PCK_HDD      = _PCK_HDD     ;
+   }
+
+   public PCK_Artikl(Artikl artikl_rec, string _skladCD, decimal _stanjeKol)
+   {
+      this.PCK_ArtCD    = artikl_rec.ArtiklCD  ;
+      this.PCK_ArtName  = artikl_rec.ArtiklName;
+      this.PCK_RAMkind  = artikl_rec.Grupa2CD  ;
+      this.PCK_HDDkind  = artikl_rec.Grupa3CD  ;
+      this.PCK_SklCD    = _skladCD             ;
+      this.PCK_RAM      = artikl_rec.PCK_RAM   ;
+      this.PCK_HDD      = artikl_rec.PCK_HDD   ;
+      this.StanjeKol    = _stanjeKol           ;
    }
 
    public override string ToString()

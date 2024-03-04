@@ -3924,7 +3924,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             if(theSerno.NotEmpty())
             {
-               (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) sernoData = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+               (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) sernoData = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
                if(sernoData != (null, null))
                {
@@ -5366,7 +5366,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       PCK_Unikat sernoInfo                 ;
       Rtrano             lastRtrano_rec_ovog_sernoa;
 
-      (sernoInfo, lastRtrano_rec_ovog_sernoa) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+      (sernoInfo, lastRtrano_rec_ovog_sernoa) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
       string upisaniArtiklCD = theGrid2.GetStringCell(ci2.iT_artiklCD, currRowIdx, false);
 
@@ -5519,7 +5519,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       PCK_Unikat sernoInfo     ;
       Rtrano             lastRtrano_rec;
 
-      (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+      (sernoInfo, lastRtrano_rec) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
     //string upisaniArtiklCD = theGrid.GetStringCell(ci2.iT_artiklCD    , currRowIdx, false);
       string upisaniArtiklCD = theGrid.GetStringCell(ci2.iR_artiklCD_Old, currRowIdx, false);
@@ -5628,7 +5628,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #endregion Check for double serno entry
 
-      (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_SernoInfo_Line_And_LastRtrano(TheDbConnection, theSerno);
+      (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
       if(sernoInfo == null)
       {

@@ -83,7 +83,7 @@ public class ArtiklUC : VvSifrarRecordUC
    
    private Button btn_numCd, btn_proj, btn_openExLinkURL, btn_openExLinkNap;
 
-   private PCK_ArtiklInfo_UC pcKInfoUC;
+   private PCK_ArtiklList_UC pcKInfoUC;
    protected bool PTG_PCKinfoLoaded;
 
    #endregion Fieldz
@@ -197,7 +197,7 @@ public class ArtiklUC : VvSifrarRecordUC
       { 
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
          
-         pcKInfoUC = new PCK_ArtiklInfo_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
+         pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName]);
 
          TheTabControl.SelectionChanged += DecideIfShouldLoad_PCKinfo;
       }
@@ -3455,7 +3455,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
          string skladCD = this.TheCurrentSkladCD;
 
-         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_Artikl_List_ForArtiklAndSklad(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD);
+         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ByArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD, true);
 
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
@@ -3472,16 +3472,16 @@ public class ArtiklUC : VvSifrarRecordUC
          pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.BackColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
          pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.ForeColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
 
-         if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga a ako je empty da ga prazni
-         {
-            PCK_Artikl PCK_Line = PCK_ArtiklInfo_List[0];
-
-            pcKInfoUC.PutDgv2Fields(PCK_Line.PCK_SernoInfo_List);
-         }
-         else 
-         {
+         //if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga a ako je empty da ga prazni
+         //{
+         //   PCK_Artikl PCK_Line = PCK_ArtiklInfo_List[0];
+         //
+         //   pcKInfoUC.PutDgv2Fields(PCK_Line.PCK_Unikat_List);
+         //}
+         //else 
+         //{
             pcKInfoUC.TheSernoGrid.Rows.Clear();
-         }
+         //}
 
          pcKInfoUC.Visible = true;
       }
