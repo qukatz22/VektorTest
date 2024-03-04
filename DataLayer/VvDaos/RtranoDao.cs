@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
-using System.Data.Common;
-using com.sun.org.apache.bcel.@internal.classfile;
-using iTextSharp.text.pdf.parser;
-using Microsoft.Office.Interop.Excel;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
