@@ -234,7 +234,7 @@ public partial class GFI_TSI_DUC : MixerDUC
       T_intA_CreateColumn          (ZXC.Q2un             , "AOP"              , "AOP o");
       T_kpdbMjestoA_32_CreateColumn(ZXC.Q3un             , "RbrBilj"          , "Redni broj bilješke");
       T_moneyA_CreateColumn        (ZXC.Q5un             , "Prethodna God"    , "Prethodna godina (neto)", 0);
-      T_moneyB_CreateColumn        (ZXC.Q5un, 0          , "Tekuća God"       , "Tekuća godina (neto)"    , true);
+      T_moneyB_CreateColumn        (ZXC.Q5un, /*0*/2     , "Tekuća God"       , "Tekuća godina (neto)"    , true);
       T_kpdbNameA_50_CreateColumn  (ZXC.Q10un + ZXC.Q5un , "Formula / Pravilo", "Formula/Pravilo za obračun retka", false);
       T_strA_2_CreateColumn        (ZXC.QUN + ZXC.Qun2   , "Tip"              , "Tip redka: 'S'- sumarni redak u koji se ne unose pravila, 'N' - dodatni podaci koji nisu iz glavne knjige, ' '(prazno) - formula pravila za popunu pozicije u izvještaju", null);
 

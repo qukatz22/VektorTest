@@ -251,7 +251,7 @@ public class GFI_TSI_BilancaRow
 
    public string Pozicija { get; set; }
 
-   public /*decimal*/int TheAOPValue
+   public /*decimal*/ /*int*/ decimal TheAOPValue
    {
       get
       {
@@ -265,7 +265,9 @@ public class GFI_TSI_BilancaRow
             case GFI_TSI_DUC.MoneyKind.prmDug                 : theMoney = PrmDug                       ; break;
             case GFI_TSI_DUC.MoneyKind.prmPot                 : theMoney = PrmPot                       ; break;}
 
-         return IsMinus ? (int)(-theMoney.Ron(0)) : (int)(theMoney.Ron(0));
+         // 04.03.2024: 
+       //return IsMinus ? (int)(-theMoney.Ron(0)) : (int)(theMoney.Ron(0));
+         return IsMinus ?      (-theMoney.Ron(2)) :      (theMoney.Ron(2));
       }
    }
 
@@ -582,7 +584,7 @@ public partial class GFI_TSI_DUC : MixerDUC
 
    }
 
-   public /*decimal*/ int GetTheAOPValue(Xtrans xtrans_rec)
+   public /*decimal*/ /*int*/ decimal GetTheAOPValue(Xtrans xtrans_rec)
    {
       // Ako je Tip redka 'N' znaci da podatak nije iz Bilance nego je literal/konstanta/neizvedeni podatak kojega doslovno upisujemo u 'TheRule' kolonu 
       // 17.06.2015. ako je tip redka "O" ne desava se nista - to je samo opisni redak koji nema nikakav iznos                                           
