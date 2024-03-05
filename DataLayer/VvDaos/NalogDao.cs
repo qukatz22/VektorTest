@@ -1242,8 +1242,9 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                ftrans.T_valuta   = ngT_valuta          ; // !!! 
 
               //05.03.2024. i ovdje okrenuti radi Rozela ali bi trebalo sa nekom kvacicom!!!!
-             //ftrans.T_opis = LimitedOpisStr(origTipBr + "/" + ftrans.T_opis);
-               ftrans.T_opis = LimitedOpisStr(ftrans.T_opis + "/" + origTipBr);
+             //                           ftrans.T_opis = LimitedOpisStr(origTipBr     + "/" + ftrans.T_opis);staro
+               if(ZXC.KSD.Dsc_IsPsOrigBr) ftrans.T_opis = LimitedOpisStr(ftrans.T_opis + "/" + origTipBr    ); // rozel
+               else                       ftrans.T_opis = LimitedOpisStr(origTipBr     + "/" + ftrans.T_opis); //staro klasik
 
                ftrans.VvDao.RWTREC(tabPagesConnection, ftrans, false, true, false);
 
@@ -1778,8 +1779,15 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
       if(opis.IsEmpty()) opis = currOpis;
       // 26.02.2024: ... a mozda smo nekog zajebali, ovak oce rozel 
-    //else               opis = LimitedOpisStr(opis     + "/" + currOpis);
-      else               opis = LimitedOpisStr(currOpis + "/" + opis    );
+    //else                         opis = LimitedOpisStr(opis    + "/" + currOpis); ovako je bilo prvotno
+    // 05.03.2024. ako je Dsc_IsPsOrigBr onda hoce PS po novome
+      else
+      {
+         if(ZXC.KSD.Dsc_IsPsOrigBr) opis = LimitedOpisStr(currOpis + "/" + opis    ); //rozel       
+         else                       opis = LimitedOpisStr(opis     + "/" + currOpis); //staro klasik
+      }
+         
+         
 
       // 15.11.2022: 
       if(ZXC.projectYearAsInt == 2023) // !!! pazi da li se doticna NY operacija (Init_NY, SendToPsNalog, PS_RISK, ...) izvodi u PG ili u NY!!! 

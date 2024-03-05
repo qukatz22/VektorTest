@@ -8612,7 +8612,8 @@ public class KtoShemaDsc : VvLookupAsDsc
    public bool Dsc_ForceIRMkaoIRA       { get; set; }
    public bool Dsc_NePrikazujKDC        { get; set; }
    public bool Dsc_IsKPI24              { get; set; }
-   
+   public bool Dsc_IsPsOrigBr           { get; set; }
+
    #endregion KontoSchema
 
    #region Obrada Troskova Proizvodnje
@@ -8878,6 +8879,7 @@ public class KtoShemaDsc : VvLookupAsDsc
       Dsc_ForceIRMkaoIRA       = 
       Dsc_NePrikazujKDC        =
       Dsc_IsKPI24              =
+      Dsc_IsPsOrigBr           =
       Dsc_IsIFAtoUPL_napomena  = false;
       Dsc_Is_OTSviaMtrosCD     = false;
 
