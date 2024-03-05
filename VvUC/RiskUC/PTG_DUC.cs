@@ -3922,18 +3922,18 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       this.MaximizeBox = true;
 
       this.ClientSize = new Size(dlgWidth, dlgHeight);
-      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
-      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-      this.AcceptButton = okButton;
-
-      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+    //AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+    //okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+    //
+    //this.AcceptButton = okButton;
+    //
+    //okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
       TheUC.Anchor                =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.ThePCKInfoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.TheSernoGrid  .Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       
-      this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
+    //this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
      
       this.Location = new Point(SystemInformation.WorkingArea.Width - this.Width, (SystemInformation.WorkingArea.Height - this.Height)/2);
 
@@ -3996,7 +3996,7 @@ public class PCK_ArtiklList_UC : UserControl
       CreateHamperRbt();
 
       ThePCKInfoGrid = CreateTheGrid("ThePCKInfoGrid",                        ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
-      TheSernoGrid   = CreateTheGrid("TheSernoGrid"  , ThePCKInfoGrid.Right + ZXC.QunMrgn, ZXC.QunMrgn);
+      TheSernoGrid   = CreateTheGrid("TheSernoGrid"  , ThePCKInfoGrid.Right + ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
 
       ThePCKInfoSumGrid = CreateSumGrid(ThePCKInfoGrid, ThePCKInfoGrid.Parent, "SUM" + ThePCKInfoGrid.Name);
 
