@@ -1197,6 +1197,7 @@ public class RptR_PTG_Artikl_PCK_info : VvRiskReport
 
       TheDeviznaSumaList = PCK_ArtiklInfo_List.Select(pck_line => new VvReportSourceUtil()
       {
+         String3      = pck_line.PCK_BazaCD ,
          ArtiklGrCD   = pck_line.PCK_ArtCD  ,
          ArtiklGrName = pck_line.PCK_ArtName,
          String1      = pck_line.PCK_RAMkind,

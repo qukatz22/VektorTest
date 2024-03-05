@@ -1241,8 +1241,9 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                                                        
                ftrans.T_valuta   = ngT_valuta          ; // !!! 
 
-
-               ftrans.T_opis = LimitedOpisStr(origTipBr + "/" + ftrans.T_opis);
+              //05.03.2024. i ovdje okrenuti radi Rozela ali bi trebalo sa nekom kvacicom!!!!
+             //ftrans.T_opis = LimitedOpisStr(origTipBr + "/" + ftrans.T_opis);
+               ftrans.T_opis = LimitedOpisStr(ftrans.T_opis + "/" + origTipBr);
 
                ftrans.VvDao.RWTREC(tabPagesConnection, ftrans, false, true, false);
 
