@@ -1483,18 +1483,18 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       }
    }
 
-   public static string Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(string oldPCK_name, decimal ram, decimal hdd)
+   public static string Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(string oldPCK_name, decimal ram, decimal hdd, string RAMjm, string HDDjm)
    {
       if(ZXC.IsPCTOGO == false) return oldPCK_name;
 
-      return ZXC.ModifyPCK_ArtiklName(oldPCK_name, ram, hdd);
+      return ZXC.ModifyPCK_ArtiklName(oldPCK_name, ram, hdd, RAMjm, HDDjm);
    }
 
    public string New_ArtiklName_From_OldPCK_name_RAM_HDD
    {
       get
       {
-         return Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(this.ArtiklName, this.PCK_RAM, this.PCK_HDD);
+         return Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(this.ArtiklName, this.PCK_RAM, this.PCK_HDD, this.ZapreminaJM, this.DuljinaJM);
       }
    }
 
