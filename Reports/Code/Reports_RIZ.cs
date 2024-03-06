@@ -1193,7 +1193,7 @@ public class RptR_PTG_Artikl_PCK_info : VvRiskReport
 
       if(theUC.artikl_rec.TS != ZXC.PCK_TS) return 0;
 
-      List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ForArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, true);
+      List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ForArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, theUC.artikl_rec/*.ArtiklCD*/, theUC.TheCurrentSkladCD, true);
 
       TheDeviznaSumaList = PCK_ArtiklInfo_List.Select(pck_line => new VvReportSourceUtil()
       {

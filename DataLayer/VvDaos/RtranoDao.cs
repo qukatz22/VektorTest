@@ -482,10 +482,9 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
 
 #endif
-   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad/*_NEW*/(XSqlConnection conn, string PCK_artiklCD, string skladCD, bool thisBazaOnly)
+   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad/*_NEW*/(XSqlConnection conn, Artikl artikl_rec, string skladCD, bool thisBazaOnly/*ZXC.PCK_Info_Kind info_Kind*/)
    {
-      //List<PCK_Artikl>  ALL_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
-      //List<PCK_Artikl>  currSklCD_PCK_ArtiklList;
+      ZXC.PCK_Info_Kind info_Kind = ZXC.PCK_Info_Kind.SveBazeIkomponente;
 
       List<Artikl>     currSklCD_artiklList;
       List<PCK_Artikl> all_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
@@ -493,7 +492,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       List<string> skladCDlist;
       if(skladCD.NotEmpty()) skladCDlist = new List<string> { skladCD };
-      else                   skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, PCK_artiklCD);
+      else                   skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl_rec.ArtiklCD);
 
       VvRpt_RiSk_Filter rptFilter = new VvRpt_RiSk_Filter() /*{ DatumOd = ZXC.projectYearFirstDay, DatumDo = DateTime.Today, Artikl_TS = ZXC.PCK_TS }*/ ;
 
@@ -502,9 +501,26 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       DataRowCollection   ArsSch = ZXC.ArtStatSchemaRows;
       ArtStatDao.ArtStatCI ArsCI = ZXC.ArtStatDao.CI;
 
-      rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS,                        " = " ));
-      if(thisBazaOnly)
-      rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(PCK_artiklCD), " = " ));
+      switch(info_Kind)
+      {
+         case ZXC.PCK_Info_Kind.OvaBazaOnly:
+
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS                         , " = "));
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(artikl_rec.ArtiklCD), " = "));
+            break;
+
+         case ZXC.PCK_Info_Kind.SveBazeOnly:
+
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS                         , " = "));
+            break;
+
+         case ZXC.PCK_Info_Kind.SveBazeIkomponente:
+
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS], ZXC.FM_OR_Enum.OPEN_OR , false, "theTS" , ZXC.PCK_TS , "", "", " = ", ""));
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.NONE    , false, "RAMgr1", ZXC.RAM_GR1, "", "", " = ", ""));
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.CLOSE_OR, false, "HDDgr1", ZXC.HDD_GR1, "", "", " = ", ""));
+            break;
+      }
 
       foreach(string currSkladCD in skladCDlist)
       {

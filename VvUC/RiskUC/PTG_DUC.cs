@@ -3948,7 +3948,7 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    }
 }
 
-public class PCK_ArtiklList_UC : UserControl
+public class PCK_ArtiklList_UC : VvUserControl
 {
    #region Fieldz
 
@@ -3980,6 +3980,8 @@ public class PCK_ArtiklList_UC : UserControl
 
    public string currArtiklCD, currSkladCD;
 
+   Artikl artikl_rec;
+
    #endregion Fieldz
 
    #region Constructor
@@ -3992,6 +3994,8 @@ public class PCK_ArtiklList_UC : UserControl
 
       this.currArtiklCD = _currArtiklCD;
       this.currSkladCD  = _currSkladCD;
+
+      artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
 
       CreateHamperRbt();
 
@@ -4043,7 +4047,7 @@ public class PCK_ArtiklList_UC : UserControl
 
       bool thisBazaOnly = rbt.Checked && rbt == rbt_ovaPCKbaza;
 
-      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.currArtiklCD, this.currSkladCD, thisBazaOnly);
+      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this./*currArtiklCD*/artikl_rec, this.currSkladCD, thisBazaOnly);
 
       PutDgvFields(PCK_ArtikList);
 
@@ -4422,6 +4426,11 @@ public class PCK_ArtiklList_UC : UserControl
 
       rtranoListUC.button_GO.PerformClick();
       // =============================== 
+   }
+
+   public override void GetFields(bool dirtyFlagging)
+   {
+      throw new NotImplementedException();
    }
 
    #endregion MouseDouble/Click

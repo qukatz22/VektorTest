@@ -3457,7 +3457,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
          string skladCD = this.TheCurrentSkladCD;
 
-         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ByArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec.ArtiklCD, skladCD, true);
+         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ByArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec/*.ArtiklCD*/, skladCD, true);
 
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
