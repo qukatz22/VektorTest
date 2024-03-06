@@ -70,7 +70,7 @@ public partial class Statistika_NPF_DUC : /*MixerDUC*/GFI_TSI_DUC
       T_kpdbUlBrA_32_CreateColumn  (ZXC.Q2un,             "Cell"             , "XY pozicija u Excel tabilci", 5);
       T_intA_CreateColumn          (ZXC.Q2un,             "AOP"              , "AOP o");
       T_moneyA_CreateColumn        (ZXC.Q5un,             "Prethodna God"    , "Prethodna godina", 0);
-      T_moneyB_CreateColumn        (ZXC.Q5un, 0,          "Tekuća God"       , "Tekuća godina", true);
+      T_moneyB_CreateColumn        (ZXC.Q5un, 2,          "Tekuća God"       , "Tekuća godina", true);
       T_kpdbNameA_50_CreateColumn  (ZXC.Q10un + ZXC.Q5un, "Formula / Pravilo", "Formula/Pravilo za obračun retka", false);
       T_strA_2_CreateColumn        (ZXC.QUN + ZXC.Qun2,   "Tip"              , "Tip redka: 'S'- sumarni redak u koji se ne unose pravila, 'N' - dodatni podaci koji nisu iz glavne knjige, 'O'- redak naslova poglavlja,' '(prazno) - formula pravila za popunu pozicije u izvještaju", null);
 
