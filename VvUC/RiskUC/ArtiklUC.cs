@@ -196,7 +196,7 @@ public class ArtiklUC : VvSifrarRecordUC
       if(ZXC.IsPCTOGO)
       { 
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
-         
+               
          pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName], artikl_rec.ArtiklCD, /*Fld_ZaSkladCD*/"");
 
          TheTabControl.SelectionChanged += DecideIfShouldLoad_PCKinfo;
@@ -3457,7 +3457,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
          string skladCD = this.TheCurrentSkladCD;
 
-         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ByArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec/*.ArtiklCD*/, skladCD, true);
+         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ByArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec/*.ArtiklCD*/, skladCD, pcKInfoUC.Fld_Pck_Info_kind);
 
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
@@ -3484,6 +3484,9 @@ public class ArtiklUC : VvSifrarRecordUC
          //{
             pcKInfoUC.TheSernoGrid.Rows.Clear();
          //}
+       
+         VvHamper.Open_Close_Fields_ForWriting(pcKInfoUC.hamp_rbtBaza , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);// jer se ponasa ko reportFilter
+         VvHamper.Open_Close_Fields_ForWriting(pcKInfoUC.hamp_cbxKlase, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);// jer se ponasa ko reportFilter
 
          pcKInfoUC.Visible = true;
       }

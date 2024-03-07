@@ -3911,7 +3911,8 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;
-      this.Text = "PCK INFO";
+
+      this.Text = TheUC.Fld_CurrArtikl;
 
       TheUC.Parent   = this;
       TheUC.Location = new Point(ZXC.Qun8, ZXC.Qun8);
@@ -3975,8 +3976,9 @@ public class PCK_ArtiklList_UC : VvUserControl
    public VvDataGridView TheSernoGrid { get; set; }
    private VvTextBox vvtb_PCK_theSerno;
 
-   private VvHamper hamp_rbtBaza;
-   private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze;
+   public  VvHamper hamp_rbtBaza, hamp_cbxKlase;
+   private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze, rbt_svePCKbazeAndKomp;
+   private CheckBox cbx_RamKlasa, cbx_HddKlasa;
 
    public string currArtiklCD, currSkladCD;
 
@@ -3995,9 +3997,11 @@ public class PCK_ArtiklList_UC : VvUserControl
       this.currArtiklCD = _currArtiklCD;
       this.currSkladCD  = _currSkladCD;
 
-      artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
+    //                            artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
+      if(currArtiklCD.NotEmpty()) artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
 
       CreateHamperRbt();
+      CreateHamperCbx();
 
       ThePCKInfoGrid = CreateTheGrid("ThePCKInfoGrid",                        ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
       TheSernoGrid   = CreateTheGrid("TheSernoGrid"  , ThePCKInfoGrid.Right + ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
@@ -4022,38 +4026,6 @@ public class PCK_ArtiklList_UC : VvUserControl
    #endregion Constructor
 
    #region CalcLocationAndSize
-
-   private void CreateHamperRbt()
-   {
-      hamp_rbtBaza = new VvHamper(2, 1, "", this, false);
-      hamp_rbtBaza.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
-
-      hamp_rbtBaza.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q7un };
-      hamp_rbtBaza.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
-      hamp_rbtBaza.VvRightMargin = 0;
-
-      hamp_rbtBaza.VvRowHgt       = new int[] { ZXC.QUN };
-      hamp_rbtBaza.VvSpcBefRow    = new int[] { ZXC.Qun4 };
-      hamp_rbtBaza.VvBottomMargin = hamp_rbtBaza.VvTopMargin;
-
-      rbt_ovaPCKbaza = hamp_rbtBaza.CreateVvRadioButton(0, 0, new EventHandler(rbtPCKbaza_checked), "ova PCK baza", TextImageRelation.ImageBeforeText);
-      rbt_svePCKbaze = hamp_rbtBaza.CreateVvRadioButton(1, 0, new EventHandler(rbtPCKbaza_checked), "sve PCK baze", TextImageRelation.ImageBeforeText);
-      rbt_ovaPCKbaza.Checked = true;
-
-   }
-   private void rbtPCKbaza_checked(object sender, EventArgs e)
-   {
-      RadioButton rbt = sender as RadioButton;
-
-      bool thisBazaOnly = rbt.Checked && rbt == rbt_ovaPCKbaza;
-
-      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this./*currArtiklCD*/artikl_rec, this.currSkladCD, thisBazaOnly);
-
-      PutDgvFields(PCK_ArtikList);
-
-   }
-
-
    private void CalcLocationAndSize()
    {
       if(this.Parent is VvDialog)
@@ -4069,6 +4041,58 @@ public class PCK_ArtiklList_UC : VvUserControl
    }
 
    #endregion CalcLocationAndSize
+
+   #region hampers
+
+   private void CreateHamperRbt()
+   {
+      hamp_rbtBaza = new VvHamper(3, 1, "", this, false);
+      hamp_rbtBaza.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+
+      hamp_rbtBaza.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un, ZXC.Q10un + ZXC.Q2un };
+      hamp_rbtBaza.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamp_rbtBaza.VvRightMargin = 0;
+
+      hamp_rbtBaza.VvRowHgt       = new int[] { ZXC.QUN };
+      hamp_rbtBaza.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamp_rbtBaza.VvBottomMargin = hamp_rbtBaza.VvTopMargin;
+
+      rbt_ovaPCKbaza        = hamp_rbtBaza.CreateVvRadioButton(0, 0, new EventHandler(rbtPCKbaza_checked), "Ista PCK baza"   , TextImageRelation.ImageBeforeText);
+      rbt_svePCKbaze        = hamp_rbtBaza.CreateVvRadioButton(1, 0, new EventHandler(rbtPCKbaza_checked), "Sve PCK baze"    , TextImageRelation.ImageBeforeText);
+      rbt_svePCKbazeAndKomp = hamp_rbtBaza.CreateVvRadioButton(2, 0, new EventHandler(rbtPCKbaza_checked), "PCK i komponente", TextImageRelation.ImageBeforeText);
+      rbt_ovaPCKbaza.Checked = true;
+
+   }
+   private void rbtPCKbaza_checked(object sender, EventArgs e)
+   {
+      RadioButton rbt = sender as RadioButton;
+
+      bool thisBazaOnly = rbt.Checked && rbt == rbt_ovaPCKbaza;
+
+      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this./*currArtiklCD*/artikl_rec, this.currSkladCD, Fld_Pck_Info_kind);
+
+      PutDgvFields(PCK_ArtikList);
+
+   }
+
+   private void CreateHamperCbx()
+   {
+      hamp_cbxKlase = new VvHamper(2, 1, "", this, false);
+      hamp_cbxKlase.Location = new Point(hamp_rbtBaza.Right, ZXC.QunMrgn);
+
+      hamp_cbxKlase.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un};
+      hamp_cbxKlase.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
+      hamp_cbxKlase.VvRightMargin = 0;
+
+      hamp_cbxKlase.VvRowHgt       = new int[] { ZXC.QUN };
+      hamp_cbxKlase.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamp_cbxKlase.VvBottomMargin = hamp_cbxKlase.VvTopMargin;
+
+      cbx_RamKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(0, 0, null, "Ista RAM klasa", RightToLeft.No);
+      cbx_HddKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(1, 0, null, "Ista HDD klasa", RightToLeft.No);
+   }
+
+   #endregion hampers
 
    #region TheGrid
 
@@ -4313,7 +4337,38 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    #endregion SetColumnIndexes()
 
-   #region PutDgvFields
+   #region Fld
+
+   public ZXC.PCK_Info_Kind Fld_Pck_Info_kind
+   {
+      get
+      {
+              if(rbt_ovaPCKbaza       .Checked) return ZXC.PCK_Info_Kind.OvaBazaOnly       ;
+         else if(rbt_svePCKbaze       .Checked) return ZXC.PCK_Info_Kind.SveBazeOnly       ;
+         else if(rbt_svePCKbazeAndKomp.Checked) return ZXC.PCK_Info_Kind.SveBazeIkomponente;
+         else                                   return ZXC.PCK_Info_Kind.OvaBazaOnly       ;
+      }
+      set
+      {
+         switch(value)
+         {
+            case ZXC.PCK_Info_Kind.OvaBazaOnly       : rbt_ovaPCKbaza       .Checked = true; break;
+            case ZXC.PCK_Info_Kind.SveBazeOnly       : rbt_svePCKbaze       .Checked = true; break;
+            case ZXC.PCK_Info_Kind.SveBazeIkomponente: rbt_svePCKbazeAndKomp.Checked  = true; break;
+         }
+      }
+   }
+
+   public bool Fld_IsIstaRamKlasa { get { return cbx_RamKlasa.Checked; } set { cbx_RamKlasa.Checked = value; } }
+   public bool Fld_IsIstaHddKlasa { get { return cbx_HddKlasa.Checked; } set { cbx_HddKlasa.Checked = value; } }
+
+ //public string Fld_CurrArtikl { get { return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb"; ; } }
+   public string Fld_CurrArtikl { get { return artikl_rec.ToString(); } }
+   
+
+#endregion Fld
+
+#region PutDgvFields
    public void PutDgvFields(List<PCK_Artikl> _PCK_Lines)
    {
       this.PCK_Lines = _PCK_Lines;
