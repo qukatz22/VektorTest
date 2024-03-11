@@ -289,6 +289,8 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_NUP = "NUP"; // Implicitna Nivelacija - ULAZ Povrata  
    public const string TT_PRI = "PRI"; // Primka u Veleprodaju NE Pdv 
    public const string TT_PIP = "PIP"; // Primka iz PROIZVODNJE 
+   public const string TT_POT = "POT"; // Primka za otkup od fiz. osobe (Tetragram) 
+   public const string TT_PRP = "PRP"; // Primka za posudbu od fiz. osobe (Tetragram) 
 
    public const string TT_PSM = "PSM"; // Pocetno Stanje MALOPRODAJE 
    public const string TT_URM = "URM"; // Ulazni Racun u MALOP + Kalkulacija 
