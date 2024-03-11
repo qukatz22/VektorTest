@@ -5777,7 +5777,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          {
                                                                          return new RptR_IRA(new Vektor.Reports.RIZ.CR_RNZ_Nalog(), reportName, fakturFilter);
          }
-       //else if(this is IZD_SVD_DUC)                                    return new RptR_IRA(new Vektor.Reports.RIZ.CR_IZD_SVD(), reportName, fakturFilter);
          else if(this is IZD_SVD_DUC || this is ZAH_SVD_DUC)             return new RptR_IRA(new Vektor.Reports.RIZ.CR_IZD_SVD(), reportName, fakturFilter);
          else if(this is NRD_SVD_DUC || this is URA_SVD_DUC)             return new RptR_IRA(new Vektor.Reports.RIZ.CR_SVD_NRD(), reportName, fakturFilter);
          else if(this is UGODUC )                                        return new RptR_IRA(new Vektor.Reports.RIZ.CR_SVD_UGO(), reportName, fakturFilter);
@@ -5787,9 +5786,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
           else if(ThePolyGridTabControl.SelectedTab.Title == ptgDod_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_DOD() */, reportName, fakturFilter);
           else                                                                   return new RptR_IRA(new Vektor.Reports.RIZ.CR_VMI_DUC()/*CR_PTG_UGAN()*/, reportName, fakturFilter);
          }
-
-         else
+         else if(this is POT_DUC)
          {
+            return new RptR_IRA(new Vektor.Reports.RIZ.CR_POT_DUC(), reportName, fakturFilter);
+         }
+         else
+               {
             //if(                                       this.TheFakturDocFilter.PFD.Dsc_OcuPosPrint == true) return new RptR_IRA(new Vektor.Reports.RIZ.CR_posFaktura(), reportName, fakturFilter);
             if(this.TheFakturDocFilter.PFD != null && this.TheFakturDocFilter.PFD.Dsc_OcuPosPrint == true)
             {
@@ -5896,7 +5898,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is ProizvodnjaDUC    || this is MedjuSkladMVI2DUC  || this is RNMDUC            || 
          this is RNZDUC            ||
          this is URA_SVD_DUC       || this is IZD_SVD_DUC        || this is NRD_SVD_DUC       ||
-         this is UGODUC            || this is ZAH_SVD_DUC                                       )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
+         this is UGODUC            || this is ZAH_SVD_DUC        ||                             
+         this is POT_DUC           || this is PRP_DUC                                           )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
       else if(this is URMDUC     || this is KalkulacijaMpDUC     ||
               this is URMDUC_2   || this is KalkulacijaMpDUC_2   || 
               this is URMDUC_Dev || this is KalkulacijaMpDUC_Dev                                ) ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width; //tamo mu se postavlja sirina 

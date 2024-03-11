@@ -8152,7 +8152,7 @@ public class POT_DUC         : FakturExtDUC
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
          { 
-            Faktur.TT_PRI
+            Faktur.TT_POT
          });
    }
 
@@ -8235,5 +8235,99 @@ public class POT_DUC         : FakturExtDUC
       SetUpColor(clr_klkPri, clr_Sklad, clr_klkPri);
    }
 }
+
+public class PRP_DUC         : FakturExtDUC
+{
+   #region Constructor
+
+   public PRP_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_PRP
+         });
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+      SetParentOfhampers();
+      SetLocationMigrators();
+
+      SetSumeHampers(false, true, true, false);
+
+      hamp_SkladDate.Location = new Point(hamp_dokDate.Right   , hamp_dokDate    .Top   );
+      hamp_vezniDok .Location = new Point(hamp_kupdobOther.Left, hamp_kupdobOther.Bottom);
+      hamp_ZiroRn   .Location = new Point(hamp_kupdobOther.Left, hamp_vezniDok   .Bottom - ZXC.Qun4);
+
+      hamp_NacPlac.Location   = new Point(hamp_kupdobOther.Right, hamp_kupdobOther.Bottom);
+           
+      hamp_opis.Location    = new Point(hamp_tt.Right, hamp_tt.Top);
+      hamp_opis.BringToFront();
+      hamp_NacPlac.BringToFront();
+      
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    hamp_kupdobOther, hamp_ZiroRn, hamp_vezniDok,  
+                                    hamp_dokDate    ,  hamp_dokNum,  hamp_SkladDate, hamp_napomena, 
+                                    hamp_skladCd    , hamp_v1TT   , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
+                                    hamp_NacPlac, hamp_DatumX, hamp_opis
+                                  };
+
+      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
+                                    hamp_VezniDok2, hamp_Fco, /*hamp_NacPlac,*/  hamp_osobaA, hamp_OsobaB ,
+                                    hamp_OpciA, hamp_OpciB,  hamp_osobaX,/* hamp_rokIsporuke, hamp_rokIspDate, hamp_tipOtpreme,*/
+                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent/*, hamp_opis*/
+                                  };
+
+      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
+                                        hampCbxM_VezniDok2, hampCbxM_Fco, /*hampCbxM_NacPlac,*/ hampCbxM_OsobaA, hampCbxM_osobaB,
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_osobaX,/* hampCbxM_rokIsporuke, hampCbxM_rokIspDate	, hampCbxM_tipOtpreme,*/
+                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,
+                                        hampCbxM_opis                                   
+                                      };
+   }
+ 
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible = true;
+
+      T_artiklCD_CreateColumn      (ZXC.Q4un   ,          isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2,          isVisible, "Iznos"      , "Iznos");
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturPrimkaDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(clr_klkPri, clr_Sklad, clr_klkPri);
+   }
+}
+
 #endregion TETRAGRAM
 

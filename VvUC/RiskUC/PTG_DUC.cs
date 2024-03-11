@@ -4361,12 +4361,12 @@ public class PCK_ArtiklList_UC : VvUserControl
    public bool Fld_IsIstaHddKlasa { get { return cbx_HddKlasa.Checked; } set { cbx_HddKlasa.Checked = value; } }
 
  //public string Fld_CurrArtikl { get { return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb"; ; } }
-   public string Fld_CurrArtikl { get { return artikl_rec.ToString(); } }
+   public string Fld_CurrArtikl { get { return artikl_rec.ArtiklCD + " " + artikl_rec.ArtiklName; } }
    
 
 #endregion Fld
 
-#region PutDgvFields
+   #region PutDgvFields
    public void PutDgvFields(List<PCK_Artikl> _PCK_Lines)
    {
       this.PCK_Lines = _PCK_Lines;

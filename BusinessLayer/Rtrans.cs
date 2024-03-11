@@ -1944,7 +1944,8 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    private void CalcTrans_VELEP_Results(Faktur faktur_rec)
    {
       // 05.02.2024: 
-      if(ZXC.IsTETRAGRAM_ANY) // TODO: kasnije iz RRD rulsa 
+  //    if(ZXC.IsTETRAGRAM_ANY) // TODO: kasnije iz RRD rulsa 
+      if(ZXC.IsTETRAGRAM_ANY && TtInfo.IsFinKol_I) // TODO: kasnije iz RRD rulsa 
       {
          CalcTrans_VELEP_Results_ByMPC(faktur_rec);
          return;
