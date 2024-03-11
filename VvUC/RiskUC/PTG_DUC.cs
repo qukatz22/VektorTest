@@ -3997,8 +3997,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       this.currArtiklCD = _currArtiklCD;
       this.currSkladCD  = _currSkladCD;
 
-    //                            artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
-      if(currArtiklCD.NotEmpty()) artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
+                                  artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
+    //if(currArtiklCD.NotEmpty()) artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
 
       CreateHamperRbt();
       CreateHamperCbx();
@@ -4057,22 +4057,17 @@ public class PCK_ArtiklList_UC : VvUserControl
       hamp_rbtBaza.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_rbtBaza.VvBottomMargin = hamp_rbtBaza.VvTopMargin;
 
-      rbt_ovaPCKbaza        = hamp_rbtBaza.CreateVvRadioButton(0, 0, new EventHandler(rbtPCKbaza_checked), "Ista PCK baza"   , TextImageRelation.ImageBeforeText);
-      rbt_svePCKbaze        = hamp_rbtBaza.CreateVvRadioButton(1, 0, new EventHandler(rbtPCKbaza_checked), "Sve PCK baze"    , TextImageRelation.ImageBeforeText);
-      rbt_svePCKbazeAndKomp = hamp_rbtBaza.CreateVvRadioButton(2, 0, new EventHandler(rbtPCKbaza_checked), "PCK i komponente", TextImageRelation.ImageBeforeText);
+      rbt_ovaPCKbaza        = hamp_rbtBaza.CreateVvRadioButton(0, 0, /*new EventHandler(*/ShowPckinfo/*)*/, "Ista PCK baza"   , TextImageRelation.ImageBeforeText);
+      rbt_svePCKbaze        = hamp_rbtBaza.CreateVvRadioButton(1, 0, /*new EventHandler(*/ShowPckinfo/*)*/, "Sve PCK baze"    , TextImageRelation.ImageBeforeText);
+      rbt_svePCKbazeAndKomp = hamp_rbtBaza.CreateVvRadioButton(2, 0, /*new EventHandler(*/ShowPckinfo/*)*/, "PCK i komponente", TextImageRelation.ImageBeforeText);
       rbt_ovaPCKbaza.Checked = true;
 
    }
-   private void rbtPCKbaza_checked(object sender, EventArgs e)
+   private void ShowPckinfo(object sender, EventArgs e)
    {
-      RadioButton rbt = sender as RadioButton;
-
-      bool thisBazaOnly = rbt.Checked && rbt == rbt_ovaPCKbaza;
-
-      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this./*currArtiklCD*/artikl_rec, this.currSkladCD, Fld_Pck_Info_kind);
+      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.artikl_rec, this.currSkladCD, Fld_Pck_Info_kind, Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
 
       PutDgvFields(PCK_ArtikList);
-
    }
 
    private void CreateHamperCbx()
@@ -4088,8 +4083,11 @@ public class PCK_ArtiklList_UC : VvUserControl
       hamp_cbxKlase.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_cbxKlase.VvBottomMargin = hamp_cbxKlase.VvTopMargin;
 
-      cbx_RamKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(0, 0, null, "Ista RAM klasa", RightToLeft.No);
-      cbx_HddKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(1, 0, null, "Ista HDD klasa", RightToLeft.No);
+      string RAMkindFilterLabel = "Samo " + artikl_rec.Grupa2CD + " memorije";
+      string HDDkindFilterLabel = "Samo " + artikl_rec.Grupa3CD + " diskovi";
+
+      cbx_RamKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
+      cbx_HddKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
    }
 
    #endregion hampers

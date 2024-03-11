@@ -2694,10 +2694,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             }
          }
 
-         // 22.05.2023: 'e nece rabat ici bezuvjetno!' 
-         // 27.02.2024: 'e bas hoce rabat ici bezuvjetno!' 
-     //if(TexthoRabatIsNeopravdan(theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol)))
-         if(false)
+         // 22.05.2023: 'e nece rabat ici bezuvjetno!'            
+         // 27.02.2024: 'e bas hoce rabat ici bezuvjetno!'        
+         // 11.03.2024: 'vracamo uvjet ali osim u nekom periodu!' 
+       //if(false)
+         if(TexthoRabatIsNeopravdan(theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol), theIRMDUC.Fld_DokDate))
          {
             DialogResult result = MessageBox.Show("Nije ostvaren uvjet za odobravanje rabata!\n\r\n\rŽelite li poništiti rabat?\n\r\n\rDA - poništi rabat i usnimi račun\n\rNE - vrati se na unos računa da bi ga dopunio.)",
                "Nije ostvaren uvjet za odobravanje rabata!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
@@ -2843,9 +2844,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
    private decimal dataLayerT_kol;
 
-   private bool TexthoRabatIsNeopravdan(string skladCD, decimal ukRbt1, decimal ukKC, decimal ukK)
+   private bool TexthoRabatIsNeopravdan(string skladCD, decimal ukRbt1, decimal ukKC, decimal ukK, DateTime dokDate)
    {
       if(ukRbt1.IsZero()) return false;
+
+      // 11.03.2024: 'vracamo uvjet ali osim u nekom periodu 5w poslovnice mogu sto hoce!' 
+      bool ostvareniSuUvjetiZaBezuvjetniRabat = ZXC.IsTH_5WeekShop(skladCD) && ZXC.IsTH_specialPeriod(dokDate);
+      if(ostvareniSuUvjetiZaBezuvjetniRabat) return false;
 
       ukKC = Math.Abs(ukKC); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
       ukK  = Math.Abs(ukK ); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 

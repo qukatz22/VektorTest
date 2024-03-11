@@ -83,7 +83,8 @@ public class ArtiklUC : VvSifrarRecordUC
    
    private Button btn_numCd, btn_proj, btn_openExLinkURL, btn_openExLinkNap;
 
-   private PCK_ArtiklList_UC pcKInfoUC;
+   internal PCK_ArtiklList_UC pcKInfoUC;
+
    protected bool PTG_PCKinfoLoaded;
 
    #endregion Fieldz
@@ -3457,7 +3458,9 @@ public class ArtiklUC : VvSifrarRecordUC
 
          string skladCD = this.TheCurrentSkladCD;
 
-         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao./*Get_PCK_Artikl_List_ByArtiklAndSklad*/Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec/*.ArtiklCD*/, skladCD, pcKInfoUC.Fld_Pck_Info_kind);
+         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec, skladCD, pcKInfoUC.Fld_Pck_Info_kind,
+                                                                                                                                            pcKInfoUC.Fld_IsIstaRamKlasa,
+                                                                                                                                            pcKInfoUC.Fld_IsIstaHddKlasa);
 
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 

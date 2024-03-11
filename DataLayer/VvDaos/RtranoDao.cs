@@ -482,10 +482,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
 
 #endif
-   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad/*_NEW*/(XSqlConnection conn, Artikl artikl_rec, string skladCD, /*bool thisBazaOnly*/ZXC.PCK_Info_Kind info_Kind)
+   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(XSqlConnection conn, Artikl artikl_rec, string skladCD, ZXC.PCK_Info_Kind info_Kind, bool wantsThisRAMkindOnly, bool wantsThisHDDkindOnly)
    {
-    //ZXC.PCK_Info_Kind info_Kind = ZXC.PCK_Info_Kind.SveBazeIkomponente;
-
       List<Artikl>     currSklCD_artiklList;
       List<PCK_Artikl> all_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
 
@@ -494,7 +492,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       if(skladCD.NotEmpty()) skladCDlist = new List<string> { skladCD };
       else                   skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl_rec.ArtiklCD);
 
-      VvRpt_RiSk_Filter rptFilter = new VvRpt_RiSk_Filter() /*{ DatumOd = ZXC.projectYearFirstDay, DatumDo = DateTime.Today, Artikl_TS = ZXC.PCK_TS }*/ ;
+      VvRpt_RiSk_Filter rptFilter = new VvRpt_RiSk_Filter() /*{ DatumOd = ZXC.projectYearFirstDay, DatumDo = DateTime.Today, Artikl_TS = ZXC.PCK_TS }*/;
 
       DataRowCollection   ArtSch = ZXC.ArtiklSchemaRows;
       ArtiklDao.ArtiklCI   ArtCI = ZXC.ArtiklDao.CI;
@@ -506,7 +504,15 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          case ZXC.PCK_Info_Kind.OvaBazaOnly:
 
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS                         , " = "));
-            if(artikl_rec != null) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(artikl_rec.ArtiklCD), " = "));
+
+          //if(artikl_rec != null)
+          //{
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(artikl_rec.ArtiklCD), " = "));
+          //}
+          //else
+          //{
+          //   int a = 4;
+          //}
             break;
 
          case ZXC.PCK_Info_Kind.SveBazeOnly:
@@ -520,6 +526,15 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.NONE    , false, "RAMgr1", ZXC.RAM_GR1, "", "", " = ", ""));
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.CLOSE_OR, false, "HDDgr1", ZXC.HDD_GR1, "", "", " = ", ""));
             break;
+      }
+
+      if(wantsThisRAMkindOnly)
+      {
+         rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "thePCKwantsThisRAMkindOnly_Baza", artikl_rec.Grupa2CD, " = "));
+      }
+      if(wantsThisHDDkindOnly)
+      {
+         rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "thePCKwantsThisHDDkindOnly_Baza", artikl_rec.Grupa3CD, " = "));
       }
 
       foreach(string currSkladCD in skladCDlist)
