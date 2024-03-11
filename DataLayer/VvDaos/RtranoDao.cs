@@ -482,9 +482,9 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
 
 #endif
-   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad/*_NEW*/(XSqlConnection conn, Artikl artikl_rec, string skladCD, bool thisBazaOnly/*ZXC.PCK_Info_Kind info_Kind*/)
+   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad/*_NEW*/(XSqlConnection conn, Artikl artikl_rec, string skladCD, /*bool thisBazaOnly*/ZXC.PCK_Info_Kind info_Kind)
    {
-      ZXC.PCK_Info_Kind info_Kind = ZXC.PCK_Info_Kind.SveBazeIkomponente;
+    //ZXC.PCK_Info_Kind info_Kind = ZXC.PCK_Info_Kind.SveBazeIkomponente;
 
       List<Artikl>     currSklCD_artiklList;
       List<PCK_Artikl> all_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
@@ -506,7 +506,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          case ZXC.PCK_Info_Kind.OvaBazaOnly:
 
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS                         , " = "));
-            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(artikl_rec.ArtiklCD), " = "));
+            if(artikl_rec != null) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(artikl_rec.ArtiklCD), " = "));
             break;
 
          case ZXC.PCK_Info_Kind.SveBazeOnly:

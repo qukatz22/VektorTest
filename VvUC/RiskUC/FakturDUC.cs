@@ -867,13 +867,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       else if(this is RNZDUC) hamper = new VvHamper(4, 1, "", null, false);
       else hamper = new VvHamper(2, 1, "", null, false);
 
-      if(this is RNMDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
-      else if(this is RNZDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q5un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol, ZXC.Q2un - faBefCol };
+           if(this is RNMDUC)             hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+      else if(this is RNZDUC)             hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q5un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol, ZXC.Q2un - faBefCol };
       else if(this is FakturExtDUC ||
               this is PredatUProizDUC ||
               this is PovratInterDUC ||
-              this is PIPDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
-      else hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un - ZXC.Qun4 };
+              this is PIPDUC)             hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
+      else                                hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un - ZXC.Qun4 };
 
       if(this is RNMDUC) hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
       else if(this is RNZDUC) hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
@@ -889,14 +889,15 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is FakturExtDUC)
       {
-         if(this is BlgUplatDUC || this is BlgUplat_M_DUC) { lblText = "Svrha UPL:"; statText = "Svrha Uplate - Dnevnik Blagajne"; }
-         else if(this is RNMDUC) { lblText = "VrstaRNM:"; statText = "Vrsta radnog naloga"; }
+              if(this is BlgUplatDUC || this is BlgUplat_M_DUC)   { lblText = "Svrha UPL:"; statText = "Svrha Uplate - Dnevnik Blagajne"; }
+         else if(this is RNMDUC)                                  { lblText = "VrstaRNM:" ; statText = "Vrsta radnog naloga"; }
          else if(this is BlgIsplatDUC || this is BlgIsplat_M_DUC) { lblText = "Svrha ISP:"; statText = "Svrha Isplate - Dnevnik Blagajne"; }
-         else if(IsRadNalog) { lblText = "RefDok:"; statText = "Referentni dokument - ugovor, narudžba ..."; }
-         else if(this is IZMDUC_2) { lblText = "Soba:"; statText = "Broj sobe"; }
-         else if(this is RNZDUC) { lblText = "VrstaRNZ:"; statText = "Vrsta radnog naloga"; }
-         else if(this is UGODUC) { lblText = "Ugovor br:"; statText = "Broj Ugovora"; }
-         else { lblText = "OrigBrDok:"; statText = "Vezni dokument - Originlni broj računa dobavljača (kupca)"; }
+         else if(IsRadNalog)                                      { lblText = "RefDok:"   ; statText = "Referentni dokument - ugovor, narudžba ..."; }
+         else if(this is IZMDUC_2)                                { lblText = "Soba:"     ; statText = "Broj sobe"; }
+         else if(this is RNZDUC)                                  { lblText = "VrstaRNZ:" ; statText = "Vrsta radnog naloga"; }
+         else if(this is POT_DUC)                                 { lblText = "BrOsobDok:"; statText = "Broj osobnog dokumenta/putovnice"; }
+         else if(this is UGODUC)                                  { lblText = "Ugovor br:"; statText = "Broj Ugovora"; }
+         else                                                     { lblText = "OrigBrDok:"; statText = "Vezni dokument - Originlni broj računa dobavljača (kupca)"; }
       }
       else
       {
@@ -7947,8 +7948,6 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(4, 2, "", null, false);
 
-      //hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q5un - ZXC.Qun2, ZXC.Q7un + faBefCol - ZXC.Qun4 };
-      //hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
       hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q2un - ZXC.Qun2, ZXC.Q5un, ZXC.Q5un - ZXC.Qun4 };
       hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
 
@@ -7958,8 +7957,8 @@ public partial class FakturExtDUC : FakturDUC
       hamper.VvSpcBefRow = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      tbx_KupdobUlica = hamper.CreateVvTextBox(1, 0, "tbx_KupdobUlica ", "KupdobUlica ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kdUlica));
-      tbx_KupdobZip = hamper.CreateVvTextBox(1, 0, "tbx_KupdobZip   ", "KupdobZip   ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kdZip));
+      tbx_KupdobUlica  = hamper.CreateVvTextBox(1, 0, "tbx_KupdobUlica ", "KupdobUlica ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kdUlica));
+      tbx_KupdobZip    = hamper.CreateVvTextBox(1, 0, "tbx_KupdobZip   ", "KupdobZip   ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kdZip));
       tbx_KupdobMjesto = hamper.CreateVvTextBox(1, 0, "tbx_KupdobMjesto", "KupdobMjesto", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kdMjesto));
 
       string textLblAdr = (this is ZAH_SVD_DUC) ? "" : "AdrFaktur:";
@@ -7967,7 +7966,7 @@ public partial class FakturExtDUC : FakturDUC
                      hamper.CreateVvLabel  (0, 0, textLblAdr, ContentAlignment.MiddleRight);
       tbx_KdAdresa = hamper.CreateVvTextBox(1, 0, "kdAdresa", "Adresa partnera", 74, 2, 0);
 
-      hamper.CreateVvLabel(0, 1, "VATc+oib:", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel(0, 1, "VATc+oib:", ContentAlignment.MiddleRight);
       tbx_vatCntryCode = hamper.CreateVvTextBox(1, 1, "tbx_vatCntryCode", "VatCode", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.vatCntryCode));
       tbx_KdOib = hamper.CreateVvTextBox(2, 1, "kdOib", "Oib", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kdOib));
       //tbx_KdOib.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
@@ -7981,9 +7980,7 @@ public partial class FakturExtDUC : FakturDUC
       tbx_vatCntryCode.JAM_IsSupressTab = true;
 
       tbx_KdAdresa.JAM_ReadOnly = true;
-      //tbx_KdOib   .JAM_ReadOnly = 
 
-      //tbx_KupdobName  .JAM_Highlighted = true;
       tbx_KupdobUlica.Visible =
       tbx_KupdobZip.Visible =
       tbx_KupdobMjesto.Visible = false;
@@ -8250,8 +8247,8 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4 };
-      hamper.VvSpcBefCol = new int[] { ZXC.Qun4, faBefCol };
+      hamper.VvColWdt      = new int[] { ZXC.IsTETRAGRAM_ANY ? labelWidth-ZXC.Qun2 : labelWidth, ZXC.Q4un + ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt = new int[] { ZXC.QUN };
@@ -8272,15 +8269,15 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un - ZXC.Qun4 };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.IsTETRAGRAM_ANY ? ZXC.Q10un + ZXC.QUN + ZXC.Qun2 : ZXC.Q7un - ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "IBAN:", ContentAlignment.MiddleRight);
+                   hamper.CreateVvLabel(0, 0, "IBAN:", ContentAlignment.MiddleRight);
       tbx_ZiroRn = hamper.CreateVvTextBoxLookUp(1, 0, "", "tbx_Ziro");
 
       tbx_ZiroRn.JAM_Set_LookUpTable(ZXC.luiListaRiskZiroRn, (int)ZXC.Kolona.prva);
