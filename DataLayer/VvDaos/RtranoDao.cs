@@ -489,8 +489,16 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
 
       List<string> skladCDlist;
-      if(skladCD.NotEmpty()) skladCDlist = new List<string> { skladCD };
-      else                   skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl_rec.ArtiklCD);
+
+      if(skladCD.NotEmpty())
+      {
+         skladCDlist = new List<string> { skladCD };
+      }
+      else
+      {
+         if(info_Kind == ZXC.PCK_Info_Kind.OvaBazaOnly) skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl_rec./*ArtiklCD*/PCK_BazaCD, true);
+         else                                           skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, "");
+      }
 
       VvRpt_RiSk_Filter rptFilter = new VvRpt_RiSk_Filter() /*{ DatumOd = ZXC.projectYearFirstDay, DatumDo = DateTime.Today, Artikl_TS = ZXC.PCK_TS }*/;
 

@@ -1014,11 +1014,15 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
    public static List<string> GetDistinctSkladCdListForArtikl(XSqlConnection conn, string _artiklCD)
    {
+      return GetDistinctSkladCdListForArtikl(conn, _artiklCD, false);
+   }
+   public static List<string> GetDistinctSkladCdListForArtikl(XSqlConnection conn, string _artiklCD, bool isRootCD)
+   {
       string skladCD;
       List<string> skladCDlist = new List<string>();
 
       // Ovo si mogao i efikasnije, tako da postavis kao eventualni uvjet jos i '_dateDo, _ttSort, _ttNum, _serial' ali neka...
-      using(XSqlCommand cmd = VvSQL.GetDistinctSkladCdForArtikl_Command(conn, _artiklCD))
+      using(XSqlCommand cmd = VvSQL.GetDistinctSkladCdForArtikl_Command(conn, _artiklCD, isRootCD))
       {
          using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult /*| CommandBehavior.SingleRow*/))
          {

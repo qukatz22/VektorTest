@@ -3898,11 +3898,11 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    private Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
-   public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD)
+   public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD, PCK_ArtiklList_Caller theCaller)
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new PCK_ArtiklList_UC(this, currArtiklCD, currSkladCD);
+      TheUC = new PCK_ArtiklList_UC(this, currArtiklCD, currSkladCD, theCaller);
 
       SuspendLayout();
 
@@ -3949,6 +3949,10 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    }
 }
 
+public enum PCK_ArtiklList_Caller
+{
+   ArtiklUC, ArtiklListUC, SubModulAction
+}
 public class PCK_ArtiklList_UC : VvUserControl
 {
    #region Fieldz
@@ -3980,25 +3984,28 @@ public class PCK_ArtiklList_UC : VvUserControl
    private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze, rbt_svePCKbazeAndKomp;
    private CheckBox cbx_RamKlasa, cbx_HddKlasa;
 
-   public string currArtiklCD, currSkladCD;
+   public string LocalArtiklCD, LocalSkladCD;
 
-   Artikl artikl_rec;
+   internal Artikl Artikl_rec;
+
+   public PCK_ArtiklList_Caller TheCaller;
 
    #endregion Fieldz
 
    #region Constructor
 
-   public PCK_ArtiklList_UC(Control _parent, string _currArtiklCD, string _currSkladCD)
+   public PCK_ArtiklList_UC(Control _parent, string currArtiklCD, string currSkladCD, PCK_ArtiklList_Caller theCaller)
    {
       this.SuspendLayout();
 
       this.Parent = _parent;
 
-      this.currArtiklCD = _currArtiklCD;
-      this.currSkladCD  = _currSkladCD;
+      this.LocalArtiklCD = currArtiklCD;
+      this.LocalSkladCD  = currSkladCD ;
+      this.TheCaller     = theCaller    ;
 
-                                  artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
-    //if(currArtiklCD.NotEmpty()) artikl_rec = Get_Artikl_FromVvUcSifrar(_currArtiklCD);
+      //                           artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
+      if(LocalArtiklCD.NotEmpty()) Artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
 
       CreateHamperRbt();
       CreateHamperCbx();
@@ -4065,7 +4072,14 @@ public class PCK_ArtiklList_UC : VvUserControl
    }
    private void ShowPckinfo(object sender, EventArgs e)
    {
-      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.artikl_rec, this.currSkladCD, Fld_Pck_Info_kind, Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
+      switch(TheCaller)
+      {
+         case PCK_ArtiklList_Caller.ArtiklListUC  :                                                                   break; // LocalSkladCD already ok 
+         case PCK_ArtiklList_Caller.ArtiklUC      : LocalSkladCD = (ZXC.TheVvForm.TheVvUC as ArtiklUC).Fld_ZaSkladCD; break; 
+         case PCK_ArtiklList_Caller.SubModulAction:                                                                   break; // LocalSkladCD already ok 
+      }
+
+      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind, Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
 
       PutDgvFields(PCK_ArtikList);
    }
@@ -4083,8 +4097,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       hamp_cbxKlase.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_cbxKlase.VvBottomMargin = hamp_cbxKlase.VvTopMargin;
 
-      string RAMkindFilterLabel = "Samo " + artikl_rec.Grupa2CD + " memorije";
-      string HDDkindFilterLabel = "Samo " + artikl_rec.Grupa3CD + " diskovi";
+      string RAMkindFilterLabel = "Samo " + Artikl_rec.Grupa2CD + " memorije";
+      string HDDkindFilterLabel = "Samo " + Artikl_rec.Grupa3CD + " diskovi";
 
       cbx_RamKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
       cbx_HddKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
@@ -4361,7 +4375,7 @@ public class PCK_ArtiklList_UC : VvUserControl
    public bool Fld_IsIstaHddKlasa { get { return cbx_HddKlasa.Checked; } set { cbx_HddKlasa.Checked = value; } }
 
  //public string Fld_CurrArtikl { get { return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb"; ; } }
-   public string Fld_CurrArtikl { get { return artikl_rec.ArtiklCD + " " + artikl_rec.ArtiklName; } }
+   public string Fld_CurrArtikl { get { return Artikl_rec.ArtiklCD + " " + Artikl_rec.ArtiklName; } }
    
 
 #endregion Fld

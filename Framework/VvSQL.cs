@@ -6346,7 +6346,7 @@ public static class VvSQL
       return(cmd);
    }
 
-   internal static XSqlCommand GetDistinctSkladCdForArtikl_Command(XSqlConnection conn, string _artiklCD)
+   internal static XSqlCommand GetDistinctSkladCdForArtikl_Command(XSqlConnection conn, string _artiklCD, bool isRootCD)
    {
       #region local variablez 
 
@@ -6358,9 +6358,9 @@ public static class VvSQL
 
       #endregion local variablez
 
-      cmd.CommandText = "SELECT DISTINCT t_skladCD FROM " + Rtrans.recordName + (_artiklCD.NotEmpty() ? " WHERE t_artiklCD = ?prm_t_artiklCD\n" : "\n");
+      cmd.CommandText = "SELECT DISTINCT t_skladCD FROM " + Rtrans.recordName + (_artiklCD.NotEmpty() ? isRootCD ? @" WHERE t_artiklCD LIKE '" + _artiklCD + "%'\n" : " WHERE t_artiklCD = ?prm_t_artiklCD\n" : "\n");
 
-      if(_artiklCD.NotEmpty())
+      if(_artiklCD.NotEmpty() && !isRootCD)
       {
          VvSQL.CreateCommandParameter(cmd, preffix, _artiklCD, rows[ci.t_artiklCD]);
       }

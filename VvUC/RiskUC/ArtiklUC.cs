@@ -198,7 +198,7 @@ public class ArtiklUC : VvSifrarRecordUC
       { 
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(pckInfo_TabPageName, pckInfo_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
                
-         pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName], artikl_rec.ArtiklCD, /*Fld_ZaSkladCD*/"");
+         //pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName], artikl_rec.ArtiklCD, /*Fld_ZaSkladCD*/"");
 
          TheTabControl.SelectionChanged += DecideIfShouldLoad_PCKinfo;
       }
@@ -2598,7 +2598,8 @@ public class ArtiklUC : VvSifrarRecordUC
          SetToolTipsForPredugackys();
 
        //PTG_PCKinfoLoaded = false;
-       if(ZXC.IsPCTOGO)
+     //if(ZXC.IsPCTOGO)
+       if(ZXC.IsPCTOGO && TheTabControl.SelectedTab.Name == pckInfo_TabPageName)
        {
           //PTG_PCKinfoLoaded = false;
           DecideIfShouldLoad_PCKinfo(null, null, null);//03.07.2023
@@ -2608,8 +2609,8 @@ public class ArtiklUC : VvSifrarRecordUC
                if(artikl_rec.PCK_RAM.IsZero()) tbx_zapremina.Text = "0";
                if(artikl_rec.PCK_HDD.IsZero()) tbx_duljina  .Text = "0";
 
-               pcKInfoUC.currArtiklCD = artikl_rec.ArtiklCD;
-               pcKInfoUC.currSkladCD  = Fld_ZaSkladCD      ;
+               pcKInfoUC.LocalArtiklCD = artikl_rec.ArtiklCD;
+               pcKInfoUC.LocalSkladCD  = Fld_ZaSkladCD      ;
             }
        }
 
@@ -3452,16 +3453,24 @@ public class ArtiklUC : VvSifrarRecordUC
       {
          //PTG_PCKinfoLoaded = true;
 
+         // qweqwe ovo je novo: 
+         if(pcKInfoUC == null)
+         {
+            pcKInfoUC = new PCK_ArtiklList_UC(TheTabControl.TabPages[pckInfo_TabPageName], artikl_rec.ArtiklCD, Fld_ZaSkladCD, PCK_ArtiklList_Caller.ArtiklUC);
+         }
+         else
+         {
+            pcKInfoUC.Artikl_rec  = this.artikl_rec.MakeDeepCopy();
+            pcKInfoUC.LocalSkladCD = Fld_ZaSkladCD;
+         }
+
          TheArtiklFilterUC.rbt_PCKinfo.Checked = true;
 
          pcKInfoUC.ThePCKInfoGrid.Rows.Clear();
 
-         string skladCD = this.TheCurrentSkladCD;
-
-         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec, skladCD, pcKInfoUC.Fld_Pck_Info_kind,
-                                                                                                                                            pcKInfoUC.Fld_IsIstaRamKlasa,
-                                                                                                                                            pcKInfoUC.Fld_IsIstaHddKlasa);
-
+         List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec, Fld_ZaSkladCD, pcKInfoUC.Fld_Pck_Info_kind,
+                                                                                                                                                  pcKInfoUC.Fld_IsIstaRamKlasa,
+                                                                                                                                                  pcKInfoUC.Fld_IsIstaHddKlasa);
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
          pcKInfoUC.Size = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
@@ -3498,7 +3507,7 @@ public class ArtiklUC : VvSifrarRecordUC
          //TheArtiklFilterUC.rbt_PCKinfo.Checked = false;
          TheArtiklFilterUC.rbt_robKartA.Checked = true;
 
-         pcKInfoUC.Visible = false;
+         if(pcKInfoUC != null) pcKInfoUC.Visible = false;
       }
    }
 }
