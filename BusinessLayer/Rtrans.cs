@@ -2019,14 +2019,14 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
       #region izvedi T_cij iz T_wanted (mpc)
 
-      if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
-      {
-         T_cij = 80M;
-      }
-      else
-      {
+      //if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
+      //{
+      //   T_cij = 80M;
+      //}
+      //else
+      //{
          T_cij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
-      }
+      //}
 
       #endregion izvedi T_cij iz T_wanted (mpc)
 
@@ -2047,12 +2047,12 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
                  
       R_pdv      = (R_KCRM * T_pdvSt / 100.00M)/*.Ron2()*/;
 
-      if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
-      {
-         decimal pdvOsnova = R_KCRM - T_ppmvOsn;
-        
-         R_pdv = (pdvOsnova * T_pdvSt / 100.00M)/*.Ron2()*/; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
-      }
+      //if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
+      //{
+      //   decimal pdvOsnova = R_KCRM - T_ppmvOsn;
+      //  
+      //   R_pdv = (pdvOsnova * T_pdvSt / 100.00M)/*.Ron2()*/; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
+      //}
 
       R_pdv_jed = ZXC.DivSafe(R_pdv, R_kol);
 
