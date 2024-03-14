@@ -694,7 +694,7 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
          pi.Name.Contains("ModTS" ) ||
          pi.Name.Contains("ModUID") ||
          pi.Name.Contains("RecVer") ||
-         pi.Name.Contains("Ar"    ) ||
+         //pi.Name.Contains("Ar"    ) ||
 
          pi.Name.Contains("TheLogo") ||
          pi.Name.Contains("CertFile") ||
@@ -707,12 +707,14 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
          pi.Name.StartsWith("Skn_"  ) ||
          pi.Name.StartsWith("TrnSum") ||
          pi.Name.StartsWith("Suggested") ||
+         pi.Name.StartsWith("New_Artik") ||
 
          pi.Name.StartsWith("S_" ) ||
          pi.Name.Contains  ("_uk") ||
 
          pi.Name == "T_recID" ||
          pi.Name == "T_parentID" ||
+         pi.Name == "HasSenseCheckingForArhivaVersionExistance" ||
 
          olderValue.ToString().Contains("RecID") 
         )

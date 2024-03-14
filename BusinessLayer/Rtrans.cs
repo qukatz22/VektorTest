@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using System.Reflection;
-using com.sun.org.apache.bcel.@internal.generic;
 
 #region struct RtransStruct
 
@@ -1944,8 +1943,7 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    private void CalcTrans_VELEP_Results(Faktur faktur_rec)
    {
       // 05.02.2024: 
-  //    if(ZXC.IsTETRAGRAM_ANY) // TODO: kasnije iz RRD rulsa 
-      if(ZXC.IsTETRAGRAM_ANY && TtInfo.IsFinKol_I) // TODO: kasnije iz RRD rulsa 
+      if(ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON)) // TODO: kasnije iz RRD rulsa 
       {
          CalcTrans_VELEP_Results_ByMPC(faktur_rec);
          return;
@@ -2021,7 +2019,14 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
       #region izvedi T_cij iz T_wanted (mpc)
 
-      T_cij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
+      if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
+      {
+         T_cij = 80M;
+      }
+      else
+      {
+         T_cij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
+      }
 
       #endregion izvedi T_cij iz T_wanted (mpc)
 
@@ -2042,16 +2047,12 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
                  
       R_pdv      = (R_KCRM * T_pdvSt / 100.00M)/*.Ron2()*/;
 
-      // 24.09.2018:
-      // 01.10.2018: micemo odaavde - ide amo u malop jer je pdv u marzi
-      //if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
-      //{
-      //   // 26.09.2018. ispravak jer ide pdv  u marzu
-      // //decimal pdvOsnova = R_KCRM - T_ppmvOsn;
-      //   decimal pdvOsnova = ZXC.VvGet_100_from_125((R_KCRM - T_ppmvOsn),T_pdvSt);
-      //
-      //   R_pdv = (pdvOsnova * T_pdvSt / 100.00M)/*.Ron2()*/; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
-      //}
+      if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
+      {
+         decimal pdvOsnova = R_KCRM - T_ppmvOsn;
+        
+         R_pdv = (pdvOsnova * T_pdvSt / 100.00M)/*.Ron2()*/; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
+      }
 
       R_pdv_jed = ZXC.DivSafe(R_pdv, R_kol);
 

@@ -8115,6 +8115,8 @@ public class IRA_MPC_DUC              : FakturExtDUC
      
       R_KCRP_CreateColumn         (ZXC.Q4un + ZXC.Qun2 , 2, isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
 
+      T_ppmvOsn_CreateColumn(ZXC.Q5un, 2, false, "Osnovica", "Osnovica za obračun pdv-a na umjetninu", false);
+
       vvtbT_cij.JAM_ReadOnly = true;
    }
 

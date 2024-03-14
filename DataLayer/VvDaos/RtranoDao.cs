@@ -496,7 +496,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       }
       else
       {
-         if(info_Kind == ZXC.PCK_Info_Kind.OvaBazaOnly) skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl_rec./*ArtiklCD*/PCK_BazaCD, true);
+         if(info_Kind == ZXC.PCK_Info_Kind.OvaBazaOnly) skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, artikl_rec.PCK_BazaCD, true);
          else                                           skladCDlist = ArtiklDao.GetDistinctSkladCdListForArtikl(conn, "");
       }
 
@@ -515,7 +515,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
           //if(artikl_rec != null)
           //{
-            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", Artikl.Get_PCK_BazaCD(artikl_rec.ArtiklCD), " = "));
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", artikl_rec.PCK_BazaCD, " = "));
           //}
           //else
           //{

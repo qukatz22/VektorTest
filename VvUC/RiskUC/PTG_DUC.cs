@@ -3064,6 +3064,35 @@ public class MOD_PTG_DUC : FakturPDUC
 
       TheSumGrid.Visible = false;
 
+      //TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(Grid_EditingControlShowing);
+      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(kurac);   
+
+   }
+
+   private void kurac(object sender, DataGridViewEditingControlShowingEventArgs e)
+   {
+      Control      control  = e.Control;
+      DataGridView theG2    = sender as VvDataGridView;
+
+      if(control is VvTextBox)
+      {
+       //VvTextBox vvtbTalon     = theG2.Columns[theG2.CurrentCell.ColumnIndex].Tag as VvTextBox;
+         VvTextBox currVvTextBox = theG2.EditingControl                             as VvTextBox;
+
+         int rowIdx = theG2.CurrentCell.RowIndex   ;
+         int colIdx = theG2.CurrentCell.ColumnIndex;
+
+         Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+         bool isMOCrow = ThisIs_MOC_rowIndex(rowIdx);
+
+         if(isMOCrow && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true;
+         
+         //if(false)
+         //{
+         //   currVvTextBox.ReadOnly = true;
+         //}
+      }
    }
 
    private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
@@ -3816,9 +3845,6 @@ public class PST_PTG_DUC : FakturPDUC
       SetUpColor(Color.Empty, clr_Sklad, Color.Empty);
    }
 }
-
-
-
 
 public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 {
