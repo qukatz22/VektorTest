@@ -250,7 +250,7 @@ public static class VvUcList_Ex
 
 public static class VvUcList_AddNew
 {
-   public static uint TableVersionStatic_VEKTOR { get { return 298/*229*/; } }
+   public static uint TableVersionStatic_VEKTOR { get { return 296/*297*/; } }
 
    public static string AddNewVvUserControl_CommandText_VEKTOR(uint catchingVersion)
    {
@@ -682,8 +682,7 @@ public static class VvUcList_AddNew
          case 295: return commandBeginning + GetCommandEnd(ZXC.VvReportEnum.FIZ_APT_K1.ToString() , "2", "5", "FIZ_APT_K1", ZXC.IsTEXTHOany2 ? "valentina" : "");
          case 296: return commandBeginning + GetCommandEnd(ZXC.VvReportEnum.PIZ_APT_K2.ToString() , "3", "5", "PIZ_APT_K2", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
-         case 297: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PRI_POT.ToString(), "1", "2", "POT_DUC"   , ZXC.IsTEXTHOany2 ? "valentina" : "");
-         case 298: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PRI_PRP.ToString(), "1", "2", "PRP_DUC"   , ZXC.IsTEXTHOany2 ? "valentina" : "");
+       //case 297: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PRI_POT.ToString(), "1", "2", "POT_DUC"   , ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          // SV DUH: rucno, kao i one prethodne, onemoguciti svaki novi UC koji njima ne treba! 
 

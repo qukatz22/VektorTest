@@ -6861,34 +6861,48 @@ public partial class FakturExtDUC : FakturDUC
 
       // 30.03.2021: poboljsavamo logiku Fld_PdvKnjiga
       // ALI ODUSTAJEMO 
-    //if(_kupdob_rec.IsHRVATSKA && faktur_rec.TtInfo.IsUlazniPdvTT)
-    //{
-    //   //Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
-    //
-    //   // Fld_PdvKnjiga: 
-    //   if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.PODUZECE_R1 ||
-    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL ||
-    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R1     ||
-    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2      )
-    //   {
-    //      Fld_PdvKnjiga = ZXC.PdvKnjigaEnum.REDOVNA;
-    //   }
-    //
-    //   // Fld_PdvR12: 
-    //   if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.PODUZECE_R1 ||
-    //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R1      )
-    //   {
-    //      Fld_PdvR12 = ZXC.PdvR12Enum.R1;
-    //   }
-    //   else if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL ||
-    //           _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2      )
-    //   {
-    //      Fld_PdvR12 = ZXC.PdvR12Enum.R2;
-    //   }
-    //
-    //}
+      //if(_kupdob_rec.IsHRVATSKA && faktur_rec.TtInfo.IsUlazniPdvTT)
+      //{
+      //   //Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
+      //
+      //   // Fld_PdvKnjiga: 
+      //   if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.PODUZECE_R1 ||
+      //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL ||
+      //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R1     ||
+      //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2      )
+      //   {
+      //      Fld_PdvKnjiga = ZXC.PdvKnjigaEnum.REDOVNA;
+      //   }
+      //
+      //   // Fld_PdvR12: 
+      //   if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.PODUZECE_R1 ||
+      //      _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R1      )
+      //   {
+      //      Fld_PdvR12 = ZXC.PdvR12Enum.R1;
+      //   }
+      //   else if(_kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL ||
+      //           _kupdob_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2      )
+      //   {
+      //      Fld_PdvR12 = ZXC.PdvR12Enum.R2;
+      //   }
+      //
+      //}
 
       #endregion KUPDOB NOT IN PDV 17.12.2019
+
+      //14.03.2024. za TG POT
+
+      #region POT_DUC
+
+    //if(this is POT_DUC)
+    //{
+    //   if(_kupdob_rec.Napom1.NotEmpty()) faktur_rec.VezniDok  = Fld_VezniDok  = _kupdob_rec.Napom1;
+    //   if(_kupdob_rec.Tel1  .NotEmpty()) faktur_rec.VezniDok2 = Fld_VezniDok2 = _kupdob_rec.Tel1  ;
+    //   if(_kupdob_rec.Email .NotEmpty()) faktur_rec.Fco       = Fld_Fco       = _kupdob_rec.Email ;
+    //   if(_kupdob_rec.Ziro1 .NotEmpty()) faktur_rec.ZiroRn    = Fld_ZiroRn    = _kupdob_rec.Ziro1 ;
+    //}
+
+      #endregion POT_DUC
 
       #region KOMISIJA
 

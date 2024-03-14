@@ -895,7 +895,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(IsRadNalog)                                      { lblText = "RefDok:"   ; statText = "Referentni dokument - ugovor, narudžba ..."; }
          else if(this is IZMDUC_2)                                { lblText = "Soba:"     ; statText = "Broj sobe"; }
          else if(this is RNZDUC)                                  { lblText = "VrstaRNZ:" ; statText = "Vrsta radnog naloga"; }
-         else if(this is POT_DUC)                                 { lblText = "BrOsobDok:"; statText = "Broj osobnog dokumenta/putovnice"; }
+         else if(this is POT_DUC)                                 { lblText = "BrOsDok:"  ; statText = "Broj osobnog dokumenta/putovnice"; }
          else if(this is UGODUC)                                  { lblText = "Ugovor br:"; statText = "Broj Ugovora"; }
          else                                                     { lblText = "OrigBrDok:"; statText = "Vezni dokument - Originlni broj računa dobavljača (kupca)"; }
       }
@@ -5899,7 +5899,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is RNZDUC            ||
          this is URA_SVD_DUC       || this is IZD_SVD_DUC        || this is NRD_SVD_DUC       ||
          this is UGODUC            || this is ZAH_SVD_DUC        ||                             
-         this is POT_DUC           || this is PRP_DUC                                           )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
+         this is POT_DUC                                                                        )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
       else if(this is URMDUC     || this is KalkulacijaMpDUC     ||
               this is URMDUC_2   || this is KalkulacijaMpDUC_2   || 
               this is URMDUC_Dev || this is KalkulacijaMpDUC_Dev                                ) ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width; //tamo mu se postavlja sirina 
@@ -7933,9 +7933,9 @@ public partial class FakturExtDUC : FakturDUC
       }
       else
       {
-         tbx_KupdobCd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyKupdobTextBoxLeave));
-         tbx_KupdobTk.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyKupdobTextBoxLeave));
-         tbx_KupdobName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName), new EventHandler(AnyKupdobTextBoxLeave));
+         tbx_KupdobCd.JAM_SetAutoCompleteData  (Kupdob.recordName, Kupdob.sorterKCD.SortType   , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra) , new EventHandler(AnyKupdobTextBoxLeave));
+         tbx_KupdobTk.JAM_SetAutoCompleteData  (Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyKupdobTextBoxLeave));
+         tbx_KupdobName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyKupdobTextBoxLeave));
       }
 
       tbx_KupdobCd.DoubleClick += new EventHandler(AnyKupdobTextBox_DoubleClick);
@@ -8079,6 +8079,7 @@ public partial class FakturExtDUC : FakturDUC
       if(this is RNMDUC     ) text = "Standard:" ;
       if(this is RNZDUC     ) text = "Ugovor:"   ;
       if(this is URA_SVD_DUC) text = "KnjigBr:"  ;
+      if(this is POT_DUC    ) text = "Telefon:"  ;
 
       //KtoShemaDsc KSD = new KtoShemaDsc(ZXC.dscLuiLst_KtoShema);
       KtoShemaDsc KSD = ZXC.KSD;
@@ -8140,8 +8141,8 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(3, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt = new int[] { ZXC.QUN };
@@ -8169,7 +8170,8 @@ public partial class FakturExtDUC : FakturDUC
       }
       else
       {
-         hamper.CreateVvLabel(0, 0, "Fco:", ContentAlignment.MiddleRight);
+         string text = (this is POT_DUC) ? "e-mail:" : "Fco:";
+                   hamper.CreateVvLabel  (0, 0, text, ContentAlignment.MiddleRight);
          tbx_Fco = hamper.CreateVvTextBox(1, 0, "tbx_Fco", "Franco", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fco), 1, 0);
       }
       hamper.Name = "AFranco:";
@@ -8250,7 +8252,7 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      hamper.VvColWdt      = new int[] { ZXC.IsTETRAGRAM_ANY ? labelWidth-ZXC.Qun2 : labelWidth, ZXC.Q4un + ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { /*ZXC.IsTETRAGRAM_ANY ? labelWidth-ZXC.Qun2 :*/ labelWidth, ZXC.Q4un + ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
