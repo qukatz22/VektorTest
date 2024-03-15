@@ -1277,7 +1277,7 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
    #endregion Result Propertiez
 
    // 11.01.2018: 
- //public /*ZXC.TH_CycleMoment*/string TH_CycleMoment { get { return ZXC.TH_GetCycleMoment_AsNiceString(this.T_skladDate, this.T_skladCD); } }
+   //public /*ZXC.TH_CycleMoment*/string TH_CycleMoment { get { return ZXC.TH_GetCycleMoment_AsNiceString(this.T_skladDate, this.T_skladCD); } }
    public /*ZXC.TH_CycleMoment*/string TH_CycleMoment 
    { 
       get 
@@ -1784,9 +1784,12 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    public bool Is_URA_wMinusKol                         { get { return this.T_TT == Faktur.TT_URA && this.R_kol.IsNegative(); } }
  //public bool Is_AfterURA_wMinusKol_StanjeKol_GoesZero { get { return Is_URA_wMinusKol && A_StanjeKol.IsZero(); } } // NUP_DILEMA! 2. od 2 dileme 
 
+   public bool Is_VelepByMPC                            { get { return ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON); } } // TODO: kasnije iz RRD rulsa 
+   public bool Is_VelepByMPC_4Umj                       { get { return Is_VelepByMPC && this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN; } }
+
    #endregion Propertiz
 
-   #region ToString
+         #region ToString
 
    public override string ToString()
    {
@@ -1942,12 +1945,16 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
    private void CalcTrans_VELEP_Results(Faktur faktur_rec)
    {
+      #region Velep by MPC & Velep by MCP forUmjetnina NEWS
+
       // 05.02.2024: 
-      if(ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON)) // TODO: kasnije iz RRD rulsa 
-      {
-         CalcTrans_VELEP_Results_ByMPC(faktur_rec);
-         return;
+      if(Is_VelepByMPC)      
+      { 
+         CalcTrans_VELEP_Results_ByMPC(faktur_rec); 
+         return; 
       }
+
+      #endregion Velep by MPC & Velep by MCP forUmjetnina NEWS
 
       INIT_Memset0Rtrans_GetZtr(faktur_rec);
 
@@ -2019,21 +2026,12 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
       #region izvedi T_cij iz T_wanted (mpc)
 
-      //if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
-      //{
-      //   T_cij = 80M;
-      //}
-      //else
-      //{
-         T_cij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
-      //}
+      T_cij = Is_VelepByMPC_4Umj ? (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2() : 
+                                   ZXC.VvGet_100_from_125(T_wanted, T_pdvSt)            .Ron2() ;
 
+      //T_cij = 80M;
       #endregion izvedi T_cij iz T_wanted (mpc)
 
-      //24.01.2014: 
-      //                           R_KC = (R_kol * T_cij     ).Ron2();     
-      //if(TtInfo.IsManualPUcijTT) R_KC = (R_kol * T_noCijMal).Ron2();
-      /*else*/
       R_KC = (R_kol * T_cij     ).Ron2(); // !!! 
 
       R_rbt1     = ((R_KC)          * T_rbt1St / 100.00M)/*.Ron2()*/;
@@ -2045,16 +2043,13 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
                  
       R_KCRM     = (R_KCR + R_mrz).Ron2();
                  
-      R_pdv      = (R_KCRM * T_pdvSt / 100.00M)/*.Ron2()*/;
+    //decimal pdvOsn = Is_VelepByMPC_4Umj ? R_PdvOsn : R_KCRM; // !!! 
+      decimal pdvOsn = Is_VelepByMPC_4Umj ? R_KC - T_ppmvOsn * R_kol : R_KCRM; // !!! 
 
-      //if(this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
-      //{
-      //   decimal pdvOsnova = R_KCRM - T_ppmvOsn;
-      //  
-      //   R_pdv = (pdvOsnova * T_pdvSt / 100.00M)/*.Ron2()*/; // T_ppmvOsn je artStat_rec.PrNabCij prema ulazima 
-      //}
+    //R_pdv      = (R_KCRM * T_pdvSt / 100.00M)/*.Ron2()*/;
+      R_pdv      = (pdvOsn * T_pdvSt / 100.00M)/*.Ron2()*/;
 
-      R_pdv_jed = ZXC.DivSafe(R_pdv, R_kol);
+      R_pdv_jed  = ZXC.DivSafe(R_pdv, R_kol);
 
       R_KCRP     = (R_KCRM + R_pdv)/*.Ron2()*/;
 

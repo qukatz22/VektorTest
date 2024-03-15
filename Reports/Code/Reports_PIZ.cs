@@ -20,8 +20,8 @@ using System.Text;
 using System.Windows.Forms;
 using Vektor;
 // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
-using PAIN_001_001_03;
-//using PAIN_001_001_09;
+//using PAIN_001_001_03;
+using PAIN_001_001_09;
 #endif
 
 // 17.02.2011: Za Report-e, daj Distinct-ivne Ptrans-e po t_personCd-u
@@ -6710,8 +6710,8 @@ public class RptP_SEPA : RptP_Virmani
    {
       // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
 
-      return ExecuteExportValidationSEPA_001_001_003(fileName, this);
-    //return ExecuteExportValidationSEPA_001_001_009(fileName, this);
+    //return ExecuteExportValidationSEPA_001_001_003(fileName, this);
+      return ExecuteExportValidationSEPA_001_001_009(fileName, this);
    }
 
    public static bool ExecuteExportValidationSEPA_001_001_003(string fileName, VvReport theReport)
@@ -6756,11 +6756,11 @@ public class RptP_SEPA : RptP_Virmani
    {
       // SEPA_PAIN_001_001_03_to_PAIN_001_001_09
 
-      return ExecuteExportSEPA_001_001_03(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
-    //return ExecuteExportSEPA_001_001_09(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
+    //return ExecuteExportSEPA_001_001_03(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
+      return ExecuteExportSEPA_001_001_09(fullPathFileName, TheVirmanList, ZnpDate, RptFilter.VirmanGroup, true);
    }
 
-//#if SEPA_001_001_03
+#if SEPA_001_001_03
    public static bool ExecuteExportSEPA_001_001_03(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
       // 16.10.2023: tu si stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
@@ -7035,9 +7035,9 @@ public class RptP_SEPA : RptP_Virmani
       return theTx;
    }
 
-//#endif
+#endif
 
-#if SEPA_001_001_09
+//#if SEPA_001_001_09
 
    public static bool ExecuteExportSEPA_001_001_09(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
@@ -7324,7 +7324,7 @@ public class RptP_SEPA : RptP_Virmani
       return theTx;
    }
 
-#endif
+//#endif
 
    private static object Get_DbtrAgt_BIC(string IBAN)
    {

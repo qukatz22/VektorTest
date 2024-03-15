@@ -2147,18 +2147,18 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    #region 2013 EU PDV NEWS
                                    
-   public decimal TrnSum_OsnR25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == false).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnR25n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n && rtr.T_isIrmUsluga == false).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnU25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == true ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnU25n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n && rtr.T_isIrmUsluga == true ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnR10m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10m && rtr.T_isIrmUsluga == false).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnR10n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10n && rtr.T_isIrmUsluga == false).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnU10m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10m && rtr.T_isIrmUsluga == true ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnU10n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10n && rtr.T_isIrmUsluga == true ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnR05m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05m && rtr.T_isIrmUsluga == false).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnR05n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05n && rtr.T_isIrmUsluga == false).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnU05m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05m && rtr.T_isIrmUsluga == true ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnU05n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05n && rtr.T_isIrmUsluga == true ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnR25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnR25n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnU25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnU25n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnR10m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10m && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnR10n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10n && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnU10m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10m && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnU10n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10n && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnR05m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05m && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnR05n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05n && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnU05m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05m && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnU05n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05n && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
                                     
    public decimal TrnSum_PdvR25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == false).Sum(rtrn => rtrn.R_pdv).Ron2(); } }
    public decimal TrnSum_PdvR25n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n && rtr.T_isIrmUsluga == false).Sum(rtrn => rtrn.R_pdv).Ron2(); } }
@@ -2215,11 +2215,11 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal TrnSum_OsnZP_12   { get { return (this.PdvZPkind == ZXC.PdvZPkindEnum.KOL_12 ? this.TrnSum_Osn09 : 0.00M); } }
    public decimal TrnSum_OsnZP_13   { get { return (this.PdvZPkind == ZXC.PdvZPkindEnum.KOL_13 ? this.TrnSum_Osn09 : 0.00M); } }
 
-   public decimal TrnSum_Osn12      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol12).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn13      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol13).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn14      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol14).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn15      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol15).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn16      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol16).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn12      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol12).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn13      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol13).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn14      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol14).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn15      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol15).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn16      { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol16).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
 
    #endregion 2013 EU PDV NEWS
 
@@ -2432,12 +2432,12 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal R_ukPdv_AVANS_STORNO     { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Sum(rtrn => rtrn.R_pdv ); } }
    public decimal R_ukKCRP_AVANS_STORNO    { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Sum(rtrn => rtrn.R_KCRP); } }
 
-   public decimal R_ukKCR_25m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_25m).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)      ); } }
+   public decimal R_ukKCR_25m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_25m).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)      ); } }
    public decimal R_ukPdv_25m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_25m).Sum(rtrn =>                          rtrn.R_pdv                ).Ron2(); } }
 
-   public decimal R_ukKCR_10m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_10m).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)      ); } }
+   public decimal R_ukKCR_10m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_10m).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)      ); } }
    public decimal R_ukPdv_10m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_10m).Sum(rtrn => rtrn.R_pdv                                         ).Ron2(); } }
-   public decimal R_ukKCR_05m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_05m).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)      ); } }
+   public decimal R_ukKCR_05m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_05m).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)      ); } }
    public decimal R_ukPdv_05m_AVANS_STORNO { get { return -1.00M * this.TrnNonDel_AVANS_STORNO.Where(rtr => rtr.R_isPdv_05m).Sum(rtrn => rtrn.R_pdv                                         ).Ron2(); } }
 
    public decimal R_ukKC_SUM_AVANS         { get { return this.S_ukKC     + this.R_ukKC_AVANS_STORNO  ; } }
@@ -2625,34 +2625,33 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal TrnSum_IznPNP  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPNP).Sum(rtrn => (rtrn.R_Pnp   )); } }
    public decimal TrnSum_MskPNP  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPNP).Sum(rtrn => (rtrn.R_mskPnp)); } }
 
-   public decimal TrnSum_Osn25m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn25n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn25m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn25n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_Osn25   { get { return (this.TrnSum_Osn25m + this.TrnSum_Osn25n).Ron2(); } }
 
-   public decimal TrnSum_Osn05m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05m  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn05n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05n  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn05m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05m  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn05n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_05n  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_Osn05   { get { return (this.TrnSum_Osn05m + this.TrnSum_Osn05n).Ron2(); } }
 
-   public decimal TrnSum_Osn23m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_23m  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn23n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_23n  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn23m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_23m  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn23n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_23n  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_Osn23   { get { return (this.TrnSum_Osn23m + this.TrnSum_Osn23n).Ron2(); } }
 
-   public decimal TrnSum_Osn22m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_22m  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn22n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_22n  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn22m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_22m  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn22n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_22n  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_Osn22   { get { return (this.TrnSum_Osn22m + this.TrnSum_Osn22n).Ron2(); } }
 
-   public decimal TrnSum_Osn10m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10m  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn10n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10n  ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn10m  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10m  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn10n  { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_10n  ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_Osn10x  { get { return (this.TrnSum_Osn10m + this.TrnSum_Osn10n).Ron2(); } }
 
-   public decimal TrnSum_Osn0    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_0    ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_OsnPr   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_PR   ).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-
-   public decimal TrnSum_Osn07   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol07).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn08   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol08).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn09   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol09).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn10   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol10).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
-   public decimal TrnSum_Osn11   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol11).Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn0    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_0    ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_OsnPr   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_PR   ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn07   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol07).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn08   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol08).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn09   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol09).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn10   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol10).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
+   public decimal TrnSum_Osn11   { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_kol11).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
 
    public decimal TrnSum_OsnUr25 { get { return (this.PdvKnjiga == ZXC.PdvKnjigaEnum.UVOZ_ROB ? this.TrnSum_Osn25m : 0.00M); } }
    public decimal TrnSum_OsnUr23 { get { return (this.PdvKnjiga == ZXC.PdvKnjigaEnum.UVOZ_ROB ? this.TrnSum_Osn23m : 0.00M); } }
@@ -2840,7 +2839,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       if(ZXC.RISK_CopyToOtherDUC_inProgress) return;
 
-      decimal rtransSum = TrnNonDel.Sum(rtrn => (rtrn.TtInfo.IsMalopTT ? rtrn.R_PdvOsn : rtrn.R_KCR)).Ron2();
+      decimal rtransSum = TrnNonDel.Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)).Ron2();
       decimal tarifeSum = (TrnSum_Osn25m + TrnSum_Osn25n + TrnSum_Osn05m + TrnSum_Osn05n + TrnSum_Osn23m + TrnSum_Osn23n + TrnSum_Osn22m + TrnSum_Osn22n + TrnSum_Osn10m + TrnSum_Osn10n + TrnSum_Osn0 + TrnSum_OsnPr +
                            TrnSum_Osn07  + TrnSum_Osn08  + TrnSum_Osn09  + TrnSum_Osn10  + TrnSum_Osn11  + 
                            TrnSum_Osn12  + TrnSum_Osn13  + TrnSum_Osn14  + TrnSum_Osn15  + TrnSum_Osn16).Ron2();
