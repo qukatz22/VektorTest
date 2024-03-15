@@ -2029,7 +2029,8 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       T_cij = Is_VelepByMPC_4Umj ? (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2() : 
                                    ZXC.VvGet_100_from_125(T_wanted, T_pdvSt)            .Ron2() ;
 
-      //T_cij = 80M;
+      if(T_wanted.IsZero()) T_cij = 0M;
+
       #endregion izvedi T_cij iz T_wanted (mpc)
 
       R_KC = (R_kol * T_cij     ).Ron2(); // !!! 
@@ -2043,8 +2044,9 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
                  
       R_KCRM     = (R_KCR + R_mrz).Ron2();
                  
-    //decimal pdvOsn = Is_VelepByMPC_4Umj ? R_PdvOsn : R_KCRM; // !!! 
+    //decimal pdvOsn = Is_VelepByMPC_4Umj ? R_PdvOsn                 : R_KCRM; // !!! 
       decimal pdvOsn = Is_VelepByMPC_4Umj ? R_KC - T_ppmvOsn * R_kol : R_KCRM; // !!! 
+      if(R_KC.IsZero()) pdvOsn = 0M;
 
     //R_pdv      = (R_KCRM * T_pdvSt / 100.00M)/*.Ron2()*/;
       R_pdv      = (pdvOsn * T_pdvSt / 100.00M)/*.Ron2()*/;
