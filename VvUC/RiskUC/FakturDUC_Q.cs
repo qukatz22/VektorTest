@@ -6894,13 +6894,13 @@ public partial class FakturExtDUC : FakturDUC
 
       #region POT_DUC
 
-    //if(this is POT_DUC)
-    //{
-    //   if(_kupdob_rec.Napom1.NotEmpty()) faktur_rec.VezniDok  = Fld_VezniDok  = _kupdob_rec.Napom1;
-    //   if(_kupdob_rec.Tel1  .NotEmpty()) faktur_rec.VezniDok2 = Fld_VezniDok2 = _kupdob_rec.Tel1  ;
-    //   if(_kupdob_rec.Email .NotEmpty()) faktur_rec.Fco       = Fld_Fco       = _kupdob_rec.Email ;
-    //   if(_kupdob_rec.Ziro1 .NotEmpty()) faktur_rec.ZiroRn    = Fld_ZiroRn    = _kupdob_rec.Ziro1 ;
-    //}
+      if(this is POT_DUC)
+      {
+         if(_kupdob_rec.Napom1.NotEmpty()) faktur_rec.VezniDok  = Fld_VezniDok  = _kupdob_rec.Napom1;
+         if(_kupdob_rec.Tel1  .NotEmpty()) faktur_rec.VezniDok2 = Fld_VezniDok2 = _kupdob_rec.Tel1  ;
+         if(_kupdob_rec.Email .NotEmpty()) faktur_rec.Fco       = Fld_Fco       = _kupdob_rec.Email ;
+         if(_kupdob_rec.Ziro1 .NotEmpty()) faktur_rec.ZiroRn    = Fld_ZiroRn    = _kupdob_rec.Ziro1 ;
+      }
 
       #endregion POT_DUC
 

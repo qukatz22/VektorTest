@@ -8004,11 +8004,13 @@ public class PON_MPC_DUC           : FakturExtDUC
     //R_RUC_CreateColumn    (ZXC.Q4un, 2, false, "RUC"   , "RUC - razlika u cijeni");
     //R_RUV_CreateColumn    (ZXC.Q4un, 2, false, "RUV"   , "RUV - razlika u vrijednosti");
 
-      T_pdvSt_CreateColumn(ZXC.Q2un, 0, isVisible, "PdvSt", "Stopa PDV-a");
+      T_pdvSt_CreateColumn    (ZXC.Q2un, 0, isVisible, "PdvSt", "Stopa PDV-a");
+      T_pdvKolTip_CreateColumn(ZXC.QUN, isVisible);
 
       T_IRA_MPC_CreateColumn(ZXC.Q4un+ ZXC.Qun4, 2, isVisible, "Cijena s PDV", "Jedinična cijena");
       
       R_KCRP_CreateColumn(ZXC.Q4un + ZXC.Qun2, 2, isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
+      T_ppmvOsn_CreateColumn(ZXC.Q5un, 2, false, "Osnovica", "Osnovica za obračun pdv-a na umjetninu", false);
 
 
       vvtbT_cij.JAM_ReadOnly = true;
@@ -8218,12 +8220,13 @@ public class POT_DUC         : FakturExtDUC
    {
       bool isVisible = true;
 
-      T_artiklCD_CreateColumn      (ZXC.Q4un   ,          isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
-      T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn           (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
-      R_KCRM_CreateColumn          (ZXC.Q4un, 2,          isVisible, "Iznos"      , "Iznos");
+      T_artiklCD_CreateColumn      (ZXC.Q4un   , isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(             isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_kol_CreateColumn           (ZXC.Q3un, 2, isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   , isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 4, isVisible, "Cijena"     , "Jedinična cijena");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2, isVisible, "Iznos"      , "Iznos");
+      T_pdvKolTip_CreateColumn     (ZXC.QUN    , isVisible);
    }
 
    #endregion TheG_Specific_Columns
