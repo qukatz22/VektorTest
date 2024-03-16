@@ -8181,8 +8181,8 @@ public class POT_DUC         : FakturExtDUC
       hamp_VezniDok2 .Location = new Point(hamp_kupdobOther.Left, hamp_vezniDok   .Bottom);
       hamp_Fco       .Location = new Point(hamp_kupdobOther.Left, hamp_VezniDok2  .Bottom);
 
-      hamp_NacPlac.Location   = new Point(hamp_kupdobOther.Right, hamp_kupdobOther.Bottom - ZXC.Qun4);
-      hamp_ZiroRn .Location   = new Point(hamp_NacPlac    .Left , hamp_NacPlac    .Bottom - ZXC.Qun4);
+      hamp_NacPlac.Location   = new Point(hamp_kupdobOther.Right - ZXC.Qun8 - ZXC.Qun12, hamp_kupdobOther.Bottom - ZXC.Qun4);
+      hamp_ZiroRn .Location   = new Point(hamp_NacPlac    .Left            , hamp_NacPlac    .Bottom - ZXC.Qun4);
 
       hamp_opis.Location    = new Point(hamp_tt.Right, hamp_tt.Top);
       hamp_opis.BringToFront();

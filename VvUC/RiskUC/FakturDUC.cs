@@ -8252,7 +8252,7 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      hamper.VvColWdt      = new int[] { /*ZXC.IsTETRAGRAM_ANY ? labelWidth-ZXC.Qun2 :*/ labelWidth, ZXC.Q4un + ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { this is POT_DUC ? labelWidth-ZXC.Qun2 : labelWidth, ZXC.Q4un + ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -8274,7 +8274,7 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      hamper.VvColWdt      = new int[] { labelWidth, ZXC.IsTETRAGRAM_ANY ? ZXC.Q10un + ZXC.QUN + ZXC.Qun2 : ZXC.Q7un - ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { labelWidth, this is POT_DUC ? ZXC.Q10un + ZXC.QUN + ZXC.Qun2 - ZXC.Qun10 : ZXC.Q7un - ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
