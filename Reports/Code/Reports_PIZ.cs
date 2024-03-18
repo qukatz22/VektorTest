@@ -2771,6 +2771,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.MIO1:
 
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO I stup";
+            virmanRow.prim3 = "A. Mihanovića 3";
 
             if(isPlacaBef2014)
             {
@@ -2804,6 +2805,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
           //virmanRow.ziro2 = "1001005-1700036001";
             virmanRow.ziro2 = "HR7610010051700036001";
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO II stup";
+            virmanRow.prim3 = "A. Mihanovića 3";
 
             if(isPlacaBef2014)
             {
@@ -2841,6 +2843,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
 
             virmanRow.prim2 = virmanRow.opisPl = "Dopr. za ZDRAVSTVENO osiguranje";
+            virmanRow.prim3 = "Margaretska 3";
 
             if(isPlacaBef2014)
             {
@@ -2877,6 +2880,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             }
 
             virmanRow.prim2 = virmanRow.opisPl = "Dopr za ZOs od ozljedNaRadu";
+            virmanRow.prim3 = "Margaretska 3";
 
             if(isPlacaBef2014)
             {
@@ -2906,6 +2910,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             }
 
             virmanRow.prim2 = virmanRow.opisPl = "Dopr za ZOs za put u inozemstvo";
+            virmanRow.prim3 = "Margaretska 3";
 
             if(isPlacaBef2014)
             {
@@ -2921,6 +2926,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.ZAP:
 
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za ZAPOŠLJAVANJE";
+            virmanRow.prim3 = "DZAP";
 
             if(isPlacaBef2014)
             {
@@ -2938,6 +2944,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.ZPP:
 
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za ZAPOŠLJAVANJE 2";
+            virmanRow.prim3 = "DZAP2";
 
             if(isPlacaBef2014)
             {
@@ -2955,6 +2962,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.MIO1NA:
 
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO I staž s povećanim trajanjem";
+            virmanRow.prim3 = "A. Mihanovića 3";
 
             if(isPlacaBef2014)
             {
@@ -2973,6 +2981,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             //virmanRow.ziro2 = "1001005-1700036001";
             virmanRow.ziro2 = "HR7610010051700036001";
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO II staž s povećanim trajanjem";
+            virmanRow.prim3 = "A. Mihanovića 3";
 
             if(isPlacaBef2014)
             {
@@ -7299,7 +7308,16 @@ public class RptP_SEPA : RptP_Virmani
     //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
     //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
       theTx.Cdtr.PstlAdr         = new PostalAddress24();
-      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : "" };
+      theTx.Cdtr.PstlAdr.Ctry    = "HR"; 
+      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : " " };
+    //theTx.Cdtr.PstlAdr.StrtNm  = virman_rec.Prim2                                   /*ZXC.CURR_prjkt_rec.UlicaBezBroja_1*/;
+    //theTx.Cdtr.PstlAdr.BldgNb  = 0.ToString()                                                /*ZXC.CURR_prjkt_rec.UlicniBroj_1*/;
+    //theTx.Cdtr.PstlAdr.PstCd   = " "/*10000.ToString()*/                                                 /*ZXC.CURR_prjkt_rec.PostaBr*/;
+    //theTx.Cdtr.PstlAdr.TwnNm   = virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : ""/*ZXC.CURR_prjkt_rec.Grad*/;
+    //theTx.Cdtr.PstlAdr.Ctry    = " "                                                 /*ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty*/; 
+
+
+
 
       theTx.CdtrAcct         = new CashAccount38Cdtr();
       theTx.CdtrAcct.Id      = new AccountIdentification4Choice_2();
