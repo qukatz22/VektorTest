@@ -4730,7 +4730,24 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA!\n\nNabavna cijena u trenutku stvaranja ovoga dokumenta {0}kn\n\nje različita od trenutne cijene po kalkulaciji [{2}] {1}kn\n\nPosljedica je da je PDV na UMJETNINU krivo obračunat!",
                rtrans_rec.T_ppmvOsn.ToStringVv(), rtrans_rec.R_Ira_NC.ToStringVv(), rtrans_rec.TheAsEx.DateZadUlaz.ToString(ZXC.VvDateFormat));
          }
-      }
+
+         // 2024: 
+         if(false /*rtrans_rec.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN*/) // palimo nakon dply 19.03.
+         {
+            Faktur umjULAZfaktur_rec = new Faktur();
+            Rtrans umjULAZrtrans_rec = new Rtrans();
+
+            bool umjULAZrtransFound = FakturDao.SetMeLast_UmjPOTrtrans_For_UmjIZLAZrtrans(TheDbConnection, umjULAZrtrans_rec, rtrans_rec.T_artiklCD, rtrans_rec.T_skladCD);
+
+            if(umjULAZrtransFound)
+            {
+               rtrans_rec.R_utilString = umjULAZrtrans_rec.TtAndTtNum;
+
+               TheG.PutCell(ci.iT_utilString, rowIdx, rtrans_rec.R_utilString);
+
+            } // if(umjULAZrtransFound)
+         } // if(rtrans_rec.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
+      } // if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT)
 
       TheG.PutCell(ci.iT_ppmvIzn, rowIdx, VvCurrency(rtrans_rec.R_ppmvIzn));
 

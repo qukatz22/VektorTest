@@ -3607,13 +3607,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       string skladCD    = HasRtrans_SkladCD_Exposed ? TheG.GetStringCell(ci.iT_skladCD, rowIdx, false) : Fld_SkladCD;
 
+      bool isUmjetninaRtrans  = GetPdvKolTipEnumFromFirstLetter(TheG.GetStringCell(ci.iT_pdvKolTip, rowIdx, false)) == ZXC.PdvKolTipEnum.UMJETN;
+
       if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, skladCD, ref maxKol, ref t_kol, false))
       {
-         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx);
+         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx, isUmjetninaRtrans);
 
-         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL) e.Cancel = true;
-
-         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT == false) e.Cancel = true; // ZABRANA samo za VELEP 
+         if(isUmjetninaRtrans)                                                                                            e.Cancel = true;
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL)                                                   e.Cancel = true;
+         if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT == false) e.Cancel = true;
       }
    }
 
@@ -3636,7 +3638,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, skladCD, ref maxKol, ref t_kol, true))
       {
-         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx);
+         Issue_ArtiklIsInMinus_ErrorMessage(artiklCD, artiklName, maxKol, t_kol, rowIdx, false);
 
          if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL) e.Cancel = true;
 
@@ -3644,13 +3646,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       }
    }
 
-   private void Issue_ArtiklIsInMinus_ErrorMessage(string artiklCD, string artiklName, decimal oldKolSt, decimal t_kol, int rowIdx)
+   private void Issue_ArtiklIsInMinus_ErrorMessage(string artiklCD, string artiklName, decimal oldKolSt, decimal t_kol, int rowIdx, bool isUmjetninaRtrans)
    {
-      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT) // npr. Zagria, za MAL niti ne javljaj minuse 
+      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL && faktur_rec.TtInfo.IsMalopTT && isUmjetninaRtrans == false) // npr. Zagria, za MAL niti ne javljaj minuse 
       {
          return;
       }
-      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG) // npr. Zagria, za MAL niti ne javljaj minuse 
+      if(ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.ALOW_ALL_NO_MSG && isUmjetninaRtrans == false) // npr. Zagria, za MAL niti ne javljaj minuse 
       {
          return;
       }

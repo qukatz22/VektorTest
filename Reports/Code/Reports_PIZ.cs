@@ -7228,6 +7228,10 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
          pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
 
+         // 19.03.2024: 
+         if(ZXC.CURR_prjkt_rec.Ulica1.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazna 'Ulica1' platitelja možda bude problem?!");
+         if(ZXC.CURR_prjkt_rec.Grad  .IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazan 'Grad'   platitelja možda bude problem?!");
+
 //pmtInf.Dbtr.IdSpecified = true;
 //pmtInf.Dbtr.Id.Item = new OrganisationIdentification29();
 //(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item = new GenericOrganisationIdentification1();
@@ -7308,16 +7312,17 @@ public class RptP_SEPA : RptP_Virmani
     //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
     //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
       theTx.Cdtr.PstlAdr         = new PostalAddress24();
-      theTx.Cdtr.PstlAdr.Ctry    = "HR"; 
-      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : " " };
-    //theTx.Cdtr.PstlAdr.StrtNm  = virman_rec.Prim2                                   /*ZXC.CURR_prjkt_rec.UlicaBezBroja_1*/;
-    //theTx.Cdtr.PstlAdr.BldgNb  = 0.ToString()                                                /*ZXC.CURR_prjkt_rec.UlicniBroj_1*/;
-    //theTx.Cdtr.PstlAdr.PstCd   = " "/*10000.ToString()*/                                                 /*ZXC.CURR_prjkt_rec.PostaBr*/;
-    //theTx.Cdtr.PstlAdr.TwnNm   = virman_rec.Prim3.NotEmpty() ? virman_rec.Prim3 : ""/*ZXC.CURR_prjkt_rec.Grad*/;
-    //theTx.Cdtr.PstlAdr.Ctry    = " "                                                 /*ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty*/; 
 
+      // 19.03.2024: 
+      theTx.Cdtr.PstlAdr.Ctry    = "HR";
 
+      // 19.03.2024: 
+    //theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim2.NotEmpty() ? virman_rec.Prim3 : " " };
+      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2,                               virman_rec.Prim3       };
 
+      // 19.03.2024: 
+      if(virman_rec.Prim2.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazna 'AdrLine1' primatelja možda bude problem?!");
+      if(virman_rec.Prim3.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazan 'AdrLine2' primatelja možda bude problem?!");
 
       theTx.CdtrAcct         = new CashAccount38Cdtr();
       theTx.CdtrAcct.Id      = new AccountIdentification4Choice_2();

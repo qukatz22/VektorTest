@@ -6600,7 +6600,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   public static XSqlCommand SetMeLastUGOrtransForURArtrans_Command(XSqlConnection conn, Rtrans UGOrtrans_rec, Rtrans URArtrans_rec)
+   public static XSqlCommand SetMeLastUGOrtransForURArtrans_Command(XSqlConnection conn, Rtrans URArtrans_rec)
    {
       XSqlCommand cmd = InitCommand(conn);
 
@@ -6622,6 +6622,28 @@ public static class VvSQL
                         " AND   t_skladDate <= ?URAdate \n" + // UgovorOD 
                         // 27.09.2018: dodan via JOIN 
                         " AND   DospDate    >= ?URAdate \n" + // UgovorDO 
+
+                        "ORDER BY " + Rtrans.artiklOrderBy_DESC + " LIMIT 1";
+      return (cmd);
+   }
+
+   public static XSqlCommand SetMeLast_UmjPOTrtrans_For_UmjIZLAZrtrans_Command(XSqlConnection conn, string artiklCD, string skladCD)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "tt"      , Faktur.TT_POT            , ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt       ]);
+      CreateCommandNamedParameter(cmd, "", "artCD"   ,                 artiklCD , ZXC.RtransSchemaRows[ZXC.RtrCI.t_artiklCD ]);
+      CreateCommandNamedParameter(cmd, "", "sklCD"   ,                 skladCD  , ZXC.RtransSchemaRows[ZXC.RtrCI.t_skladCD  ]);
+
+      cmd.CommandText = "SELECT * FROM " + Rtrans.recordName + "\n" +
+                        
+                        " LEFT JOIN  faktEx             \n" +
+                        "                               \n" +
+                        " ON t_parentID = fakturRecID   \n" +
+
+                        " WHERE t_tt         = ?tt      \n" +
+                        " AND   t_artiklCD   = ?artCD   \n" +
+                        " AND   t_skladCD    = ?sklCD   \n" +
 
                         "ORDER BY " + Rtrans.artiklOrderBy_DESC + " LIMIT 1";
       return (cmd);

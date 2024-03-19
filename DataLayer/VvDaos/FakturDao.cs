@@ -1056,9 +1056,26 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
    {
       bool success = true;
 
-      using(XSqlCommand cmd = VvSQL.SetMeLastUGOrtransForURArtrans_Command(conn, UGOrtrans_rec, URArtrans_rec))
+      using(XSqlCommand cmd = VvSQL.SetMeLastUGOrtransForURArtrans_Command(conn, URArtrans_rec))
       {
          success = ZXC.RtransDao.ExecuteSingleFillFromDataReader(UGOrtrans_rec, false, cmd, false);
+      } // using cmd 
+
+    //if(!success && !_shouldBeSilent)
+    //{
+    //   VvSQL.ReportGeneric_DB_Error("", "Podatak: [" + artiklCD + " - " + _tt + "] ne postoji u datoteci [" + Rtrans.recordName + ".", System.Windows.Forms.MessageBoxButtons.OK);
+    //}
+
+      return success;
+   }
+
+   public static bool SetMeLast_UmjPOTrtrans_For_UmjIZLAZrtrans(XSqlConnection conn, Rtrans umjULAZrtrans_rec, string artiklCD, string skladCD)
+   {
+      bool success = true;
+
+      using(XSqlCommand cmd = VvSQL.SetMeLast_UmjPOTrtrans_For_UmjIZLAZrtrans_Command(conn, artiklCD, skladCD))
+      {
+         success = ZXC.RtransDao.ExecuteSingleFillFromDataReader(umjULAZrtrans_rec, false, cmd, false);
       } // using cmd 
 
     //if(!success && !_shouldBeSilent)
