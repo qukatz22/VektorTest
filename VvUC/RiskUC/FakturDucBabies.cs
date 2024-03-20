@@ -8104,11 +8104,12 @@ public class IRA_MPC_DUC              : FakturExtDUC
     //T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"             , "Stopa rabata 1");
       R_KCR_CreateColumn           (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a");
 
-    //R_cij_kcr_CreateColumn       (ZXC.Q4un, 2          , false, "VPC"   , "Veleprodajna cijena");
-    //R_NC_CreateColumn            (ZXC.Q4un, 2          , false, "NabCij", "Nabavna cijena");
-    //R_NV_CreateColumn            (ZXC.Q4un, 2          , false, "NabVri", "Nabavna vrijednost");
-    //R_RUC_CreateColumn           (ZXC.Q4un, 2          , false, "RUC"   , "RUC - razlika u cijeni");
-    //R_RUV_CreateColumn           (ZXC.Q4un, 2          , false, "RUV"   , "RUV - razlika u vrijednosti");
+      R_cij_kcr_CreateColumn       (ZXC.Q4un, 2          , false, "VPC"      , "Veleprodajna cijena"        );
+      R_NC_CreateColumn            (ZXC.Q4un, 2          , false, "NabCij"   , "Nabavna cijena"             );
+      R_NV_CreateColumn            (ZXC.Q4un, 2          , false, "NabVri"   , "Nabavna vrijednost"         );
+      R_RUC_CreateColumn           (ZXC.Q4un, 2          , false, "RUC"      , "RUC - razlika u cijeni"     );
+      R_RUV_CreateColumn           (ZXC.Q4un, 2          , false, "RUV"      , "RUV - razlika u vrijednosti");
+      R_utilString_CreateColumn    (ZXC.Q5un             , false, "UlazniDok", "Broj ulaznog dokumenta"     );
 
       T_pdvSt_CreateColumn         (ZXC.Q2un, 0          , isVisible, "PdvSt"      , "Stopa PDV-a");
       T_pdvKolTip_CreateColumn     (ZXC.QUN              , isVisible);
@@ -8181,12 +8182,14 @@ public class POT_DUC         : FakturExtDUC
       hamp_VezniDok2 .Location = new Point(hamp_kupdobOther.Left, hamp_vezniDok   .Bottom);
       hamp_Fco       .Location = new Point(hamp_kupdobOther.Left, hamp_VezniDok2  .Bottom);
 
-      hamp_ZiroRn.Location   = new Point(hamp_kupdobOther.Right - ZXC.Qun8 - ZXC.Qun12, hamp_kupdobOther.Bottom - ZXC.Qun4);
-      hamp_NacPlac.Location  = new Point(hamp_kupdobOther.Right - ZXC.Qun8 - ZXC.Qun12, hamp_ZiroRn.Bottom - ZXC.Qun4);
+      hamp_ZiroRn    .Location = new Point(hamp_kupdobOther.Right - ZXC.Qun8 - ZXC.Qun12, hamp_kupdobOther.Bottom - ZXC.Qun4);
+      hamp_NacPlac   .Location = new Point(hamp_kupdobOther.Right - ZXC.Qun8 - ZXC.Qun12, hamp_ZiroRn.Bottom      - ZXC.Qun4);
+      hamp_prjArtName.Location = new Point(hamp_v4TT.Left                        , hamp_v4TT.Bottom               - ZXC.Qun4);
 
       hamp_opis.Location    = new Point(hamp_tt.Right, hamp_tt.Top);
       hamp_opis.BringToFront();
       hamp_NacPlac.BringToFront();
+
    }
 
    private void CreateArrOfHampers()
@@ -8195,7 +8198,7 @@ public class POT_DUC         : FakturExtDUC
                                     hamp_kupdobOther, hamp_ZiroRn, hamp_vezniDok,  hamp_VezniDok2, hamp_Fco,
                                     hamp_dokDate    ,  hamp_dokNum,  hamp_SkladDate, hamp_napomena, 
                                     hamp_skladCd    , hamp_v1TT   , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
-                                    hamp_NacPlac, hamp_opis
+                                    hamp_NacPlac, hamp_opis, hamp_prjArtName
                                   };
 
       //hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,

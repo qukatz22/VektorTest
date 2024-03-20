@@ -950,7 +950,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      if(this is FakturExtDUC && this is PIZpDUC == false && this is ProizvodnjaDUC == false)
+           if(this is FakturExtDUC && this is PIZpDUC == false && this is ProizvodnjaDUC == false)
       {
          if(this is BlgUplatDUC || this is BlgIsplatDUC ||
             this is BlgUplat_M_DUC || this is BlgIsplat_M_DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - 4 * ZXC.Qun8 - 2 * ZXC.Qun8 + 2 * faBefCol };
@@ -967,10 +967,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is URMDUC && IsAutoKucaProjekt)          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
          else if(this is ZAH_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
          else if(this is MOD_PTG_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 3 + ZXC.Q4un - ZXC.Qun8 };
+         else if(this is POT_DUC)                              hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun12};
          else                                                  hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
       }
       else if(this is MedjuSkladDUC || this is MedjuSklad2DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
-      else hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
+      else                                                     hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
 
       hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
@@ -4732,7 +4733,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          }
 
          // 2024: 
-         if(false /*rtrans_rec.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN*/) // palimo nakon dply 19.03.
+         if(/*false*/rtrans_rec.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN)
          {
             Faktur umjULAZfaktur_rec = new Faktur();
             Rtrans umjULAZrtrans_rec = new Rtrans();
@@ -9302,6 +9303,17 @@ public partial class FakturExtDUC : FakturDUC
 
          hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
          hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10           };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+      }
+      else if(this is POT_DUC)
+      {
+         hamper               = new VvHamper(3, 1, "", null, false);
+         hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q5un, ZXC.Q10un + ZXC.Q8un + ZXC.Qun4};
+         hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
+
+         hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
          hamper.VvBottomMargin = hamper.VvTopMargin;
       }
 
