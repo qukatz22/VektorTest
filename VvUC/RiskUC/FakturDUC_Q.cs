@@ -3666,7 +3666,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    private bool ThisRowWillProduceMinusKolSt(int rowIdx, string artiklCD, string skladCD, ref decimal kolStBeforeThisChange, ref decimal t_kol, bool isRtrano)
    {
       // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus: palimo svima, a ne samo SvDUH-u 
-    //if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
+      //if(ZXC.IsSvDUH == false) return false; // dalje idemo samo ako JESMO SvDUH 
 
       Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
 
@@ -3679,8 +3679,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       if(artstat_rec != null) kolStBeforeThisChange = artstat_rec.StanjeKolFree;
       else                    kolStBeforeThisChange = 0.00M;
 
-      uint recID = isRtrano? TheG2.GetUint32Cell((this as FakturPDUC).DgvCI2.iT_recID, rowIdx, false) : 
-                             TheG .GetUint32Cell(                         ci.iT_recID, rowIdx, false) ;
+      uint recID = isRtrano ? TheG2.GetUint32Cell((this as FakturPDUC).DgvCI2.iT_recID, rowIdx, false) :
+                              TheG.GetUint32Cell(ci.iT_recID, rowIdx, false);
 
       ZXC.WriteMode thisRtransWriteMode = ZXC.WriteMode.Add;
 
@@ -3713,6 +3713,28 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       {
          kolStBeforeThisChange += this.dataLayerT_kol;
       }
+
+      #region Check for nonUNIKATNI ulaz PPOM artikla
+
+      if(artikl_rec.IsUMJETNINA && faktur_rec.TtInfo.IsFinKol_U)
+      {
+         decimal ulazKolBeforeThisChange;
+
+         if(artstat_rec != null) ulazKolBeforeThisChange = artstat_rec./*StanjeKolFree*/UkUlazKol;
+         else                    ulazKolBeforeThisChange = 0.00M;
+
+         decimal deltaUlazKol = rtrans_rec.GetDeltaKol/*_Ulaz*/(thisRtransWriteMode, this.dataLayerT_kol);
+
+         decimal newUkUlazKol = ulazKolBeforeThisChange + deltaUlazKol;
+
+         if(newUkUlazKol > 1)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "PPOM artikl \n\r\n\r{0}\n\r\n\rne može imati više od jednog ulaza!", artikl_rec);
+            return true;
+         }
+      } 
+
+      #endregion Check for nonUNIKATNI ulaz PPOM artikla
 
       return (newKolSt.IsNegative());
    }

@@ -2727,7 +2727,7 @@ struct IRA   *iraPtr;
    //
    //   return kolStAfterThisChange.IsNegative();
    //}
-   public decimal GetDeltaKol(ZXC.WriteMode writeMode, decimal oldRtransKol)
+   public decimal GetDeltaKol(ZXC.WriteMode writeMode, decimal origRtransKol)
    {
       decimal thisRtransKol = (TtInfo.IsStornoTT ? ForceNegative_T_kol     /* always negativno */ : T_kol    );
 
@@ -2739,15 +2739,15 @@ struct IRA   *iraPtr;
       if(TtInfo.IsFinKol_I)
       {
          thisRtransKol = -thisRtransKol;
-         oldRtransKol  = -oldRtransKol;
+         origRtransKol = -origRtransKol;
       }
 
       switch(writeMode)
       {
-         case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;               break;
-         case ZXC.WriteMode.Delete: deltaKol = -thisRtransKol;               break;
-         case ZXC.WriteMode.Edit  : deltaKol = thisRtransKol - oldRtransKol; break;
-         default                  : deltaKol = 0.00M;                        break;
+         case ZXC.WriteMode.Add   : deltaKol = +thisRtransKol;                break;
+         case ZXC.WriteMode.Delete: deltaKol = -thisRtransKol;                break;
+         case ZXC.WriteMode.Edit  : deltaKol = thisRtransKol - origRtransKol; break;
+         default                  : deltaKol = 0.00M;                         break;
       }
 
       return deltaKol;
