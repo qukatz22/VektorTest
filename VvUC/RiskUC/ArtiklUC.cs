@@ -2779,6 +2779,20 @@ public class ArtiklUC : VvSifrarRecordUC
                else               TheVvTabPage.TheVvForm.VvPref.findArtikl.LastUsedSkladCD = "";
             }
          }
+         // 22.03.2024: 
+         // ok, nije null ali nije li nepostojeci u vazecoj lui listi jer udjosmo u program iz neke druge vvDomene 
+         else
+         {
+            VvLookUpItem theLui = ZXC.luiListaSkladista.SingleOrDefault(lui => lui.Cd == TheVvTabPage.TheVvForm.VvPref.findArtikl.LastUsedSkladCD); 
+            if(theLui == null)
+            {
+               theLui = ZXC.luiListaSkladista.FirstOrDefault();
+               if(theLui != null)
+               {
+                  TheVvTabPage.TheVvForm.VvPref.findArtikl.LastUsedSkladCD = ZXC.luiListaSkladista.OrderBy(lui => lui.Integer).FirstOrDefault().Cd;
+               }
+            }
+         }
 
          return TheVvTabPage.TheVvForm.VvPref.findArtikl.LastUsedSkladCD;
       }
