@@ -8848,7 +8848,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(this is POT_DUC)
       {
-         lbl_np2.Visible = tbx_NacPlac2.Visible = cbx_isCash2.Visible = tbx_R_ukKCRP_NP2.Visible = false;
+       //lbl_np2.Visible = tbx_NacPlac2.Visible = cbx_isCash2.Visible = tbx_R_ukKCRP_NP2.Visible = false;
       }   
 
       hamper.Name = "ANačinPlać:";
