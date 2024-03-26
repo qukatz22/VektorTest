@@ -7545,7 +7545,7 @@ public partial class FakturExtDUC : FakturDUC
 
    public VvTextBox tbx_vatCntryCode, tbx_KdOib, tbx_KdAdresa, tbx_KupdobTk, tbx_KupdobName, tbx_KupdobCd, tbx_CjenikTT, tbx_CjenikTTnum, tbx_S_ukZtr,
                     tbx_PosJedCd, tbx_PosJedTk, tbx_PosJedName, tbx_PosJedAdresa, tbx_PosJedUlica, tbx_PosJedZip, tbx_PosJedMjesto, tbx_RokPlac, tbx_DospDate, tbx_Fco,
-                    tbx_KupdobUlica, tbx_KupdobZip, tbx_KupdobMjesto,tbx_Napomena2,tbx_RokPonude, tbx_dateX, tbx_PonudDate, tbx_ValName,tbx_DostAddr, tbx_RokIsporuke, 
+                    tbx_KupdobUlica, tbx_KupdobZip, tbx_KupdobMjesto,tbx_Napomena2, tbx_Napomena2Opis, tbx_RokPonude, tbx_dateX, tbx_PonudDate, tbx_ValName,tbx_DostAddr, tbx_RokIsporuke, 
                     tbx_RokIspDate,  tbx_PersonBName, tbx_somePercent, tbx_OpciAlabel; // !!!
    /*private*/ public VvTextBox tbx_VezniDok2,  tbx_VezniDok2Opis, tbx_FcoOpis,
                      tbx_NacPlac, tbx_NacPlacRbt, tbx_NacPlac2, tbx_S_ukKCRP_NP1, tbx_R_ukKCRP_NP2,
@@ -7568,7 +7568,7 @@ public partial class FakturExtDUC : FakturDUC
                      tbx_S_ukPdv,
                      tbx_v3_tt, tbx_v3_ttNum, tbx_v4_tt, tbx_v4_ttNum, tbx_v3_ttOpis, tbx_v4_ttOpis,
                      tbx_twinS_ukKCR, tbx_twinS_ukRbt12, tbx_twinS_ukPdv, tbx_twinS_ukKCRM, /*tbx_twinS_ukKC,  tbx_twinS_ukMrz, */
-                     tbx_TipOtpreme, 
+                     tbx_TipOtpreme, tbx_TipOtpremeOpis,
                      tbx_DostName, 
                      tbx_s_ukOsn07, tbx_s_ukOsn08, tbx_s_ukOsn09, tbx_s_ukOsn10, tbx_s_ukOsn11,
                      tbx_s_ukOsnUr23, tbx_s_ukOsnUr25, tbx_s_ukOsnUu10, tbx_s_ukOsnUu22, tbx_s_ukOsnUu23, tbx_s_ukOsnUu25, tbx_s_ukOsnUr05,
@@ -8046,23 +8046,44 @@ public partial class FakturExtDUC : FakturDUC
    }
    private void InitializeHamper_napomena2(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 1, "", null, false);
+      hamper = new VvHamper(3, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, (this is RNZDUC) ? 3 * ZXC.Q10un - ZXC.Q4un + ZXC.Qun4 : ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
+      {
+         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+      }
+      else
+      { 
+         hamper.VvColWdt      = new int[] { labelWidth, (this is RNZDUC) ? 3 * ZXC.Q10un - ZXC.Q4un + ZXC.Qun4 : ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol, 0 };
+      }
+
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, 0 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun8 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       string textN = "Napom2:";
 
-      if(this is IRPDUC) textN = "Vozač:";
-      if(this is RNZDUC) textN = "VrstaPosla:";
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC ))
+      { 
+                             hamper.CreateVvLabel        (0, 0, "VrstPosla:", ContentAlignment.MiddleRight);
+         tbx_Napomena2     = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Napomena2", "Intrastat Vrsta posla", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2));
+         tbx_Napomena2Opis = hamper.CreateVvTextBox      (2, 0, "tbx_Napomena2Opis", "Intrastat Vrsta posla opis");
+         tbx_Napomena2.JAM_Set_LookUpTable(ZXC.luiListaIntrastVrPosla, (int)ZXC.Kolona.prva);
+         tbx_Napomena2.JAM_lui_NameTaker_JAM_Name = tbx_Napomena2Opis.JAM_Name;
+      }
+      else
+      { 
 
-      hamper.CreateVvLabel(0, 0, textN /*"Napom2:"*/, ContentAlignment.MiddleRight);
-      tbx_Napomena2 = hamper.CreateVvTextBox(1, 0, "tbx_napomena", "Napomena2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2));
+         if(this is IRPDUC) textN = "Vozač:";
+         if(this is RNZDUC) textN = "VrstaPosla:";
+
+         hamper.CreateVvLabel(0, 0, textN /*"Napom2:"*/, ContentAlignment.MiddleRight);
+         tbx_Napomena2 = hamper.CreateVvTextBox(1, 0, "tbx_napomena", "Napomena2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2), 1, 0);
+
+      }
 
       hamper.Name = "ANapomena2:";
    }
@@ -8106,7 +8127,7 @@ public partial class FakturExtDUC : FakturDUC
       //if(ZXC.CURR_prjkt_rec.IsNeprofit == true || KSD.Dsc_IsVisibleColPozicija == true)
       if((ZXC.CURR_prjkt_rec.IsNeprofit == true || KSD.Dsc_IsVisibleColPozicija == true) && (this is WYRNDUC == false))
       {
-         hamper.CreateVvLabel(0, 0, "Pozicija", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel(0, 0, "Pozicija", ContentAlignment.MiddleRight);
          VvLookUpLista.LoadResultLuiList_PozicijePlana_PLN_or_RLZ(/* isPLN */ false);
          tbx_VezniDok2 = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_VezniDok2", "Pozicija", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.vezniDok2));
          tbx_VezniDok2Opis = hamper.CreateVvTextBox(2, 0, "tbx_VezniDok2Op", "Pozicija opis");
@@ -8122,6 +8143,14 @@ public partial class FakturExtDUC : FakturDUC
       //   tbx_VezniDok2.JAM_Set_LookUpTable(ZXC.luiListaFinFond, (int)ZXC.Kolona.prva);
       //   tbx_VezniDok2.JAM_lui_NameTaker_JAM_Name = tbx_VezniDok2Opis.JAM_Name;
       //}
+      else if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC ))
+      { 
+                             hamper.CreateVvLabel        (0, 0, "Incoterm:", ContentAlignment.MiddleRight);
+         tbx_VezniDok2     = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_VezniDok2", "Intrastat Incoterm", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.vezniDok2));
+         tbx_VezniDok2Opis = hamper.CreateVvTextBox      (2, 0, "tbx_VezniDok2Op", "Intrastat Incoterm opis");
+         tbx_VezniDok2.JAM_Set_LookUpTable(ZXC.luiListaIncoterms, (int)ZXC.Kolona.prva);
+         tbx_VezniDok2.JAM_lui_NameTaker_JAM_Name = tbx_VezniDok2Opis.JAM_Name;
+      }
       else
       {
 
@@ -8172,7 +8201,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(KSD.Dsc_IsVisibleColFond == true)
       {
-         hamper.CreateVvLabel(0, 0, "Fond:", ContentAlignment.MiddleRight);
+                   hamper.CreateVvLabel(0, 0, "Fond:", ContentAlignment.MiddleRight);
          tbx_Fco = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Fco", "Fond", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fco));
          tbx_FcoOpis = hamper.CreateVvTextBox(2, 0, "tbx_FcoOpis", "Fond opis");
          tbx_Fco.JAM_Set_LookUpTable(ZXC.luiListaFinFond, (int)ZXC.Kolona.prva);
@@ -8185,6 +8214,14 @@ public partial class FakturExtDUC : FakturDUC
          hamper.CreateVvLabel(0, 0, "Ugovor. način štićenja:", ContentAlignment.MiddleRight);
          tbx_Fco = hamper.CreateVvTextBox(1, 0, "tbx_Fco", "Način štićenja", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fco), 1, 0);
          tbx_Fco.JAM_ReadOnly = true;
+      }
+      else if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC ))
+      { 
+                   hamper.CreateVvLabel        (0, 0, "Isporuka:"  , ContentAlignment.MiddleRight);
+         tbx_Fco = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Fco"    , "Intrastat teritorij isporuke", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fco));
+         tbx_FcoOpis = hamper.CreateVvTextBox  (2, 0, "tbx_FcoOpis", "Intrastat teritorij isporuka opis");
+         tbx_Fco.JAM_Set_LookUpTable(ZXC.luiListaIntrastIsporuka, (int)ZXC.Kolona.prva);
+         tbx_Fco.JAM_lui_NameTaker_JAM_Name = tbx_FcoOpis.JAM_Name;
       }
       else
       {
@@ -9119,23 +9156,37 @@ public partial class FakturExtDUC : FakturDUC
    }
    private void InitializeHamper_TipOtpreme(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 1, "", null, false);
+      hamper = new VvHamper(/*2*/3, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
+    //hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol      };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun8 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "TipOtpreme:", ContentAlignment.MiddleRight);
-      tbx_TipOtpreme = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_TipOtpreme", "TipOtpreme", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.tipOtpreme));
 
-      tbx_TipOtpreme.JAM_Set_LookUpTable(ZXC.luiListaRiskTipOtprem, (int)ZXC.Kolona.prva);
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
+      {
+                          hamper.CreateVvLabel(0, 0, "VrstaProm:", ContentAlignment.MiddleRight);
+         tbx_TipOtpreme = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_tbx_TipOtpreme", "Intrastat vrsta prometa:", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.tipOtpreme));
+         tbx_TipOtpremeOpis = hamper.CreateVvTextBox(2, 0, "tbx_tbx_TipOtpremeOpis", "Intrastat vrsta prometa opis");
+         tbx_TipOtpreme.JAM_Set_LookUpTable(ZXC.luiListaIntrastVrProm, (int)ZXC.Kolona.prva);
+         tbx_TipOtpreme.JAM_lui_NameTaker_JAM_Name = tbx_TipOtpremeOpis.JAM_Name;
+      }
+      else
+      { 
+                          hamper.CreateVvLabel        (0, 0, "TipOtpreme:", ContentAlignment.MiddleRight);
+         tbx_TipOtpreme = hamper.CreateVvTextBoxLookUp("tbx_TipOtpreme", 1, 0, "TipOtpreme", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.tipOtpreme), 1, 0);
+   
+         tbx_TipOtpreme.JAM_Set_LookUpTable(ZXC.luiListaRiskTipOtprem, (int)ZXC.Kolona.prva);
 
+      
+      }
       hamper.Name = "ATipOtpreme:";
-
    }
 
    private void InitializeHamper_dostava(out VvHamper hamper)
@@ -9143,17 +9194,17 @@ public partial class FakturExtDUC : FakturDUC
 
       hamper = new VvHamper(4, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, hamp_posJedCd.Width - labelWidth - 2 * faBefFirstCol - faBefCol, labelWidth, hamp_posJedCd.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefFirstCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth, hamp_posJedCd.Width - labelWidth - 2 * faBefFirstCol - faBefCol, labelWidth, hamp_posJedCd.Width - labelWidth - 2 * faBefFirstCol - faBefCol };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefFirstCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt = new int[] { ZXC.QUN };
       hamper.VvSpcBefRow = new int[] { ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "DostNaziv:", ContentAlignment.MiddleRight);
+                     hamper.CreateVvLabel(0, 0, "DostNaziv:", ContentAlignment.MiddleRight);
       tbx_DostName = hamper.CreateVvTextBox(1, 0, "tbx_dostName", "Naziv dostave", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.dostName));
-      hamper.CreateVvLabel(2, 0, "DostAdres:", ContentAlignment.MiddleRight);
+                     hamper.CreateVvLabel(2, 0, "DostAdres:", ContentAlignment.MiddleRight);
       tbx_DostAddr = hamper.CreateVvTextBox(3, 0, "tbx_DostAddr", "Adresa dostave", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.dostAddr));
 
       hamper.Name = "ADostava:";
@@ -11641,6 +11692,11 @@ public partial class FakturExtDUC : FakturDUC
       get { return tbx_Napomena2.Text; }
       set { tbx_Napomena2.Text = value; }
    }
+   public string Fld_Napomena2Opis
+   {
+      set { tbx_Napomena2Opis.Text = value; }
+   }
+
    public DateTime Fld_PdvDate
    {
       get { return dtp_PdvDate.Value; }
@@ -11696,8 +11752,6 @@ public partial class FakturExtDUC : FakturDUC
    {
       set { tbx_VezniDok2Opis.Text = value; }
    }
-
-
    public string Fld_Fco
    {
       get { return tbx_Fco.Text; }
@@ -11707,7 +11761,6 @@ public partial class FakturExtDUC : FakturDUC
    {
       set { tbx_FcoOpis.Text = value; }
    }
-
    public int Fld_RokPlac
    {
       get { return tbx_RokPlac.GetIntField(); }
@@ -11745,7 +11798,6 @@ public partial class FakturExtDUC : FakturDUC
       get { return tbx_NacPlac2.Text; }
       set { tbx_NacPlac2.Text = value; }
    }
-
    public string Fld_ZiroRn
    {
       get { return tbx_ZiroRn.Text; }
@@ -12199,6 +12251,10 @@ public partial class FakturExtDUC : FakturDUC
    {
       get { return tbx_TipOtpreme.Text; }
       set { tbx_TipOtpreme.Text = value; }
+   }
+   public string Fld_TipOtpremeOpis
+   {
+      set { tbx_TipOtpremeOpis.Text = value; }
    }
 
    public decimal Fld_TwinS_ukKCR
@@ -12987,6 +13043,14 @@ public partial class FakturExtDUC : FakturDUC
       if((ZXC.CURR_prjkt_rec.IsNeprofit || ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_FOND) && (this is WYRNDUC == false)) if(CtrlOK(tbx_VezniDok2)) Fld_VezniDok2Opis = ZXC.luiListaPozicijePlanaRLZ.GetNameForThisCd(faktEx.VezniDok2);
       if((                                 ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_FOND) && (this is WYRNDUC == false)) if(CtrlOK(tbx_Fco)      ) Fld_FcoOpis       = ZXC.luiListaFinFond         .GetNameForThisCd(faktEx.Fco      );
 
+      //26.03.2024. intrastat
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
+      {
+         Fld_VezniDok2Opis  = ZXC.luiListaIncoterms      .GetNameForThisCd(faktEx.VezniDok2  );
+         Fld_Napomena2Opis  = ZXC.luiListaIntrastVrPosla .GetNameForThisCd(faktEx.Napomena2 );
+         Fld_FcoOpis        = ZXC.luiListaIntrastIsporuka.GetNameForThisCd(faktEx.Fco       );
+         Fld_TipOtpremeOpis = ZXC.luiListaIntrastVrProm  .GetNameForThisCd(faktEx.TipOtpreme);
+      }
 
       SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name/*None*/);
 
@@ -17621,7 +17685,7 @@ public class RiskRulesUC : VvOtherUC
                          cbx_isOpenSaldoKupca, cbx_isVisibleMtrosCol, cbx_isIRMttNum7, cbx_isProizvCijByArtGr, cbx_isDokDate2, cbx_isRetMoneyCalc, cbx_isIrmQuickPrint,
                          cbx_IsSklRestrictor, cbx_IsMSIttNumByPosl, cbx_IsPrintOTSafterIRA, cbx_isVisibleSerlotCol, cbx_isVisibleRabat2Col, cbx_isCentralaFindFaktur,
                          cbx_isOibOznOper, cbx_isIgnoreImportCij, cbx_isObligArtikl, cbx_isPamtiPrintDate, cbx_isBlgOrderByDokNum, cbx_isRbtFromPartner,
-                         cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD;
+                         cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD, cbx_isIntrastat;
 
    //public RiskRulesDsc RRD { get; set; }
 
@@ -17718,9 +17782,10 @@ public class RiskRulesUC : VvOtherUC
                                hamper.CreateVvLabel       (4, 5, "Naziv OP:"     , ContentAlignment.MiddleRight);
       tbx_OrgPakText         = hamper.CreateVvTextBox     (5, 8, "tbx_OrgPakText", "OrigPakText");
 
-      cbx_IsDateXDateIzd     = hamper.CreateVvCheckBox_OLD(1, 9, null, 4, 0, "DatumX kao datum izdavanja računa", RightToLeft.No);
+      cbx_IsDateXDateIzd     = hamper.CreateVvCheckBox_OLD(1, 9, null, 2, 0, "DatumX kao datum izdavanja računa", RightToLeft.No);
+      cbx_isIntrastat        = hamper.CreateVvCheckBox_OLD(4, 9, null, 1, 0    , "Intrastat", RightToLeft.Yes);
 
-      cbx_isOpenSaldoKupca   = hamper.CreateVvCheckBox_OLD(1, 10, null, 2, 0, "Javljaj otvoreni saldo kupca", RightToLeft.No);
+      cbx_isOpenSaldoKupca = hamper.CreateVvCheckBox_OLD(1, 10, null, 2, 0, "Javljaj otvoreni saldo kupca", RightToLeft.No);
       cbx_IsPrintOTSafterIRA = hamper.CreateVvCheckBox_OLD(4, 10, null, 1, 0, "Print OTS nakon računa"      , RightToLeft.No);
 
       cbx_IsKol2Visible    = hamper.CreateVvCheckBox_OLD(1, 11, null, 2, 0, "Prikaži ambalažnu količinu sa brojem decimala" , RightToLeft.No);
@@ -18033,6 +18098,9 @@ public class RiskRulesUC : VvOtherUC
 
    public decimal Fld_PdvMathTolerancy         { get { return tbx_PdvMathTolerancy.GetDecimalField(); } set { tbx_PdvMathTolerancy.PutDecimalField(value); } }
 
+   public bool Fld_IsIntrastat                 { get { return cbx_isIntrastat.Checked; } set { cbx_isIntrastat.Checked = value; } }
+
+
 #endregion Fld_
 
 #region PutFields(), GetFields()
@@ -18100,6 +18168,8 @@ public class RiskRulesUC : VvOtherUC
       Fld_NorKolNumOfDecimalPlaces = (uint)RRD.Dsc_NorKolNumOfDecimalPlaces;
       Fld_PdvMathTolerancy         = RRD.Dsc_PdvMathTolerancy;
 
+      Fld_IsIntrastat              = RRD.Dsc_IsIntrastat;
+
    }
 
    public void GetDscFields()
@@ -18156,6 +18226,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_OpcinaCd_PNP             = Fld_OpcinaCd_PNP ;
       ZXC.RRD.Dsc_NOcheckDupUbyKMD         = Fld_NOcheckDupUbyKMD ;
       ZXC.RRD.Dsc_PdvMathTolerancy         = Fld_PdvMathTolerancy ;
+      ZXC.RRD.Dsc_IsIntrastat              = Fld_IsIntrastat ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
 

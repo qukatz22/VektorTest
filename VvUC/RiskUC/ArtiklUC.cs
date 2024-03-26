@@ -36,7 +36,7 @@ public class ArtiklUC : VvSifrarRecordUC
                      tbx_ulMinCij, tbx_ulMaxCij, tbx_ulLastCij, tbx_ruc, tbx_rabat1, tbx_rabat2, tbx_minKol,
                      tbx_invKolSt, tbx_invFinSt, tbx_ulazKol, tbx_ulazFin, tbx_izlazKol, tbx_izlazFinNab, tbx_izlazFinNab2, tbx_izlazFinProd, tbx_izlazRUV, tbx_izlRezervKol, tbx_KolStFree,
                      /*tbx_prProdCij,*/ tbx_ruvPost,
-                     tbx_velicina, tbx_garRok, tbx_drzPorjekla, tbx_atestBr, tbx_atestDate, tbx_url,
+                     tbx_velicina, tbx_garRok, tbx_drzPorjekla, tbx_drzPorjeklaOpis, tbx_atestBr, tbx_atestDate, tbx_url,
                      tbx_dobCd, tbx_dobNaziv, tbx_dobTick, tbx_proizvCd, tbx_proizvNaziv, tbx_proizvTick, tbx_marza,
                      tbx_masaNettoJM, tbx_masaBrutoJM, tbx_promjerJM, tbx_povrsinaJM, tbx_zapreminaJM, tbx_duljinaJM, tbx_sirinaJM, tbx_visinaJM,
                      tbx_naDan,
@@ -1298,7 +1298,7 @@ public class ArtiklUC : VvSifrarRecordUC
    {
       hamper = new VvHamper(3, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q6un - ZXC.Qun4, ZXC.Q5un};
+      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4};
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -1310,9 +1310,13 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation  = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;      
       
-                        hamper.CreateVvLabel  (0, 0, name, ContentAlignment.MiddleRight);
-      tbx_drzPorjekla = hamper.CreateVvTextBox(1, 0, "tbx_drzPorjekla", "DrzPorjekla", GetDB_ColumnSize(DB_ci.madeIn));
-      
+                            hamper.CreateVvLabel        (0, 0, name, ContentAlignment.MiddleRight);
+    //tbx_drzPorjekla     = hamper.CreateVvTextBox      (1, 0, "tbx_drzPorjekla", "DrzPorjekla", GetDB_ColumnSize(DB_ci.madeIn));
+      tbx_drzPorjekla     = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_drzPorjekla", "DrzPorjekla", GetDB_ColumnSize(DB_ci.madeIn));
+      tbx_drzPorjeklaOpis = hamper.CreateVvTextBox      (2, 0, "tbx_skladOpis", "", 32);
+      tbx_drzPorjeklaOpis.JAM_ReadOnly = true;
+      tbx_drzPorjekla.JAM_Set_LookUpTable(ZXC.luiListaGeonomenklatura, (int)ZXC.Kolona.prva);
+      tbx_drzPorjekla.JAM_lui_NameTaker_JAM_Name = tbx_drzPorjeklaOpis.JAM_Name;
    }
 
    private void Initialize_BarCode2Hamper (out VvHamper hamper, string name, int _nextX, int _nextY)
@@ -1616,7 +1620,9 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation  = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
 
-      string text = ZXC.IsSvDUH ? "AHalmed:" : name;
+    //string text = ZXC.IsSvDUH ? "AHalmed:" : name;
+      string text = ZXC.IsSvDUH ? "AHalmed:" : "AIntstŠifra:" /*name*/;
+    
     //hamper.CreateVvLabel(0, 0, name, ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
 
@@ -2169,6 +2175,12 @@ public class ArtiklUC : VvSifrarRecordUC
       get { return tbx_drzPorjekla.Text; }
       set {        tbx_drzPorjekla.Text = value; }
    } 
+
+   /*    */public string Fld_MadeInOpis
+   {
+      set { tbx_drzPorjeklaOpis.Text = value; }
+   }
+
    /* 56 */ public string   Fld_Url
    {
       get { return tbx_url.Text; }
@@ -2703,7 +2715,10 @@ public class ArtiklUC : VvSifrarRecordUC
          Fld_Grupa2Opis = artikl_rec.Grupa2Name;
          Fld_Grupa3Opis = artikl_rec.Grupa3Name;
          Fld_TsOpis     = artikl_rec.TsName    ;
-         //===================== 
+
+         Fld_MadeInOpis = ZXC.luiListaGeonomenklatura.GetNameForThisCd(artikl_rec.MadeIn);
+
+      //===================== 
 
          SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.None);
 

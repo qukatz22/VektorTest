@@ -9019,16 +9019,12 @@ public class RiskRulesDsc : VvLookupAsDsc
    public decimal Dsc_TolerancOdstUlCij        { get; set; }
    public bool    Dsc_IsPamtiPrintDate         { get; set; }
    public bool    Dsc_IsBlgOrderByDokNum       { get; set; }
-
    public int Dsc_NorKolNumOfDecimalPlaces     { get; set; }
-
    // 30.09.2020: 
    public string  Dsc_PreferedSkladOnUCLoad    { get; set; }
-
    public bool Dsc_IsVisibleLotOnIzlaz         { get; set; }
    public bool Dsc_IsUseNAK                    { get; set; }
    public bool Dsc_IsSintArt4Print             { get; set; }
-
    public bool Is_Serlot_Active
    {
       get
@@ -9036,11 +9032,10 @@ public class RiskRulesDsc : VvLookupAsDsc
          return this.Dsc_IsSerlotVisible || Dsc_IsVisibleLotOnIzlaz;
       }
    }
-   
    public string Dsc_OpcinaCd_PNP              { get; set; }
    public bool Dsc_NOcheckDupUbyKMD            { get; set; } //check duplicate URA/UFA by kcd date money
-
    public decimal Dsc_PdvMathTolerancy         { get; set; }
+   public bool Dsc_IsIntrastat             { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -9124,6 +9119,8 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_PreferedSkladOnUCLoad    = "";
 
       Dsc_PdvMathTolerancy         = 0.99M;
+
+      Dsc_IsIntrastat              = false;
 
       #endregion defautValue
    }
