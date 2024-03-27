@@ -8050,14 +8050,16 @@ public partial class FakturExtDUC : FakturDUC
 
       if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
       {
-         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+         hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
+         hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
+
       }
       else
       { 
-         hamper.VvColWdt      = new int[] { labelWidth, (this is RNZDUC) ? 3 * ZXC.Q10un - ZXC.Q4un + ZXC.Qun4 : ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol, 0 };
+         hamper.VvColWdt    = new int[] { labelWidth, (this is RNZDUC) ? 3 * ZXC.Q10un - ZXC.Q4un + ZXC.Qun4 : ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol, 0 };
+         hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, 0 };
       }
 
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, 0 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };
@@ -9171,9 +9173,9 @@ public partial class FakturExtDUC : FakturDUC
 
       if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
       {
-                          hamper.CreateVvLabel(0, 0, "VrstaProm:", ContentAlignment.MiddleRight);
+                          hamper.CreateVvLabel        (0, 0, "VrstProm:", ContentAlignment.MiddleRight);
          tbx_TipOtpreme = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_tbx_TipOtpreme", "Intrastat vrsta prometa:", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.tipOtpreme));
-         tbx_TipOtpremeOpis = hamper.CreateVvTextBox(2, 0, "tbx_tbx_TipOtpremeOpis", "Intrastat vrsta prometa opis");
+         tbx_TipOtpremeOpis = hamper.CreateVvTextBox  (2, 0, "tbx_tbx_TipOtpremeOpis", "Intrastat vrsta prometa opis");
          tbx_TipOtpreme.JAM_Set_LookUpTable(ZXC.luiListaIntrastVrProm, (int)ZXC.Kolona.prva);
          tbx_TipOtpreme.JAM_lui_NameTaker_JAM_Name = tbx_TipOtpremeOpis.JAM_Name;
       }
@@ -13046,10 +13048,10 @@ public partial class FakturExtDUC : FakturDUC
       //26.03.2024. intrastat
       if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
       {
-         Fld_VezniDok2Opis  = ZXC.luiListaIncoterms      .GetNameForThisCd(faktEx.VezniDok2  );
-         Fld_Napomena2Opis  = ZXC.luiListaIntrastVrPosla .GetNameForThisCd(faktEx.Napomena2 );
-         Fld_FcoOpis        = ZXC.luiListaIntrastIsporuka.GetNameForThisCd(faktEx.Fco       );
-         Fld_TipOtpremeOpis = ZXC.luiListaIntrastVrProm  .GetNameForThisCd(faktEx.TipOtpreme);
+         if(CtrlOK(tbx_VezniDok2 )) Fld_VezniDok2Opis  = ZXC.luiListaIncoterms      .GetNameForThisCd(faktEx.VezniDok2 );
+         if(CtrlOK(tbx_Napomena2 )) Fld_Napomena2Opis  = ZXC.luiListaIntrastVrPosla .GetNameForThisCd(faktEx.Napomena2 );
+         if(CtrlOK(tbx_Fco       )) Fld_FcoOpis        = ZXC.luiListaIntrastIsporuka.GetNameForThisCd(faktEx.Fco       );
+         if(CtrlOK(tbx_TipOtpreme)) Fld_TipOtpremeOpis = ZXC.luiListaIntrastVrProm  .GetNameForThisCd(faktEx.TipOtpreme);
       }
 
       SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name/*None*/);

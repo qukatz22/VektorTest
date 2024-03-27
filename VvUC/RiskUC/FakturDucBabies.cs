@@ -390,6 +390,7 @@ public class URADUC              : FakturExtDUC
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
                                     hamp_VezniDok2, hamp_Fco, hamp_NacPlac,  hamp_osobaA, hamp_OsobaB ,
                                     hamp_OpciA, hamp_OpciB,  hamp_osobaX,hamp_carinaKind,/* hamp_rokIsporuke, hamp_rokIspDate, hamp_tipOtpreme,*/
+                                    hamp_tipOtpreme, 
                                     hamp_externLink1, hamp_externLink2, hamp_prjIdent, hamp_eRproc,
                                     hamp_opis
                                   };
@@ -397,6 +398,7 @@ public class URADUC              : FakturExtDUC
       hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
                                         hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_NacPlac, hampCbxM_OsobaA, hampCbxM_osobaB,
                                         hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_osobaX, hampCbxM_carinaKind,/* hampCbxM_rokIsporuke, hampCbxM_rokIspDate	, hampCbxM_tipOtpreme,*/
+                                        hampCbxM_tipOtpreme, 
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent, hampCbxM_eRproc,
                                         hampCbxM_opis                                   
                                       };
@@ -8059,6 +8061,14 @@ public class IRA_MPC_DUC              : FakturExtDUC
       SetLocationMigrators();
 
       SetSumeHampers(true, true, true, false);
+
+      hamp_DatumX     .Location = new Point(hamp_NacPlac  .Left , hamp_NacPlac  .Bottom - ZXC.Qun4);
+      hamp_VezniDok2  .Location = new Point(hamp_fiskJIR  .Left , hamp_fiskJIR  .Bottom);
+      hamp_Fco        .Location = new Point(hamp_VezniDok2.Right, hamp_fiskJIR  .Bottom);
+      hamp_napomena2  .Location = new Point(hamp_fiskJIR  .Left , hamp_VezniDok2.Bottom);
+      hamp_tipOtpreme .Location = new Point(hamp_napomena2.Right, hamp_VezniDok2.Bottom);
+
+      nextY = hamp_DatumX.Bottom;
    }
 
    private void CreateArrOfHampers()
@@ -8066,20 +8076,21 @@ public class IRA_MPC_DUC              : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
-                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR,
+                                    hamp_DatumX, hamp_VezniDok2, hamp_napomena2, hamp_Fco, hamp_tipOtpreme
                                   };
 
-      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
-                                    hamp_VezniDok2, hamp_Fco, hamp_DatumX,  hamp_osobaA, hamp_OsobaB ,
-                                    hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, hamp_tipOtpreme,  hamp_osobaX,hamp_carinaKind,
+      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat,/* hamp_napomena2,*/
+                                    /*hamp_VezniDok2, hamp_Fco, hamp_DatumX,*/  hamp_osobaA, hamp_OsobaB ,
+                                    hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, /*hamp_tipOtpreme,*/  hamp_osobaX,hamp_carinaKind,
                                     hamp_dostava, hamp_PonudDate,
                                     hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,
                                     hamp_eRproc, hamp_fiskPrgBr, hamp_opis
                                   };
 
-      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
-                                        hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_DatumX, hampCbxM_OsobaA, hampCbxM_osobaB,
-                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme, hampCbxM_osobaX, hampCbxM_carinaKind,
+      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, /*hampCbxM_napomena2,*/
+                                        /*hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_DatumX,*/ hampCbxM_OsobaA, hampCbxM_osobaB,
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, /*hampCbxM_tipOtpreme,*/ hampCbxM_osobaX, hampCbxM_carinaKind,
                                         hampCbxM_dostava, hampCbxM_PonudDate,
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp, hampCbxM_fiskPrgBr,
                                         hampCbxM_eRproc, hampCbxM_fiskPrgBr, hampCbxM_opis
