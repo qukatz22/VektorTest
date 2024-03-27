@@ -1247,6 +1247,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_Intrastat.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_Intrastat.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_InventurnaLista.cs">
       <DependentUpon>CR_InventurnaLista.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -2404,7 +2410,6 @@
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceClient.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceOperation.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\Outgoing_eRacun_parameters.cs" />
-    <Compile Include="UtilsEtc\instIr002a.cs" />
     <Compile Include="UtilsEtc\PTG_OtplatniPlan.cs" />
     <Compile Include="UtilsEtc\sepa_hr_pain_001_001_09_11-2023-2.cs" />
     <Compile Include="UtilsEtc\Vv_WebService _Utils.cs" />
@@ -3307,6 +3312,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_FaktInterna.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_FaktInterna.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_Intrastat.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_Intrastat.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_InventurnaLista.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -4882,18 +4891,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XSD\Intrastat\instBaseTypes.xsd">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XSD\Intrastat\instComplexTypes.xsd">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XSD\Intrastat\instIr002a.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -12977,4 +12977,45 @@ public class RptR_Rekap_PNP_Rtrans : RptR_StandardRiskReport
 
 #endregion PNP
 
+#region Intrastat
+
+public class RptR_Intrastat : RptR_StandardRiskReport
+{
+   public RptR_Intrastat(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl, bool isUlaz)
+
+      : base(_reportDocument     ,
+             _reportName         ,                                                    
+             _rptFilter          , 
+             _filterStyle        ,
+             _rptNeeds_ArtWars   , // ArtiklWithArtstat 
+             _rptNeeds_ArtStat   , // ArtStat        
+             _rptNeeds_Faktur    , // Faktur         
+             _rptNeeds_Rtrans    , // Rtrans         
+             _rptNeeds_Kupdob    , // Kupdob         
+             _rptNeeds_Prjkt     , // Prjkt          
+             _rptNeeds_Rtrans4ruc, // Rtrans4ruc     
+             _rptNeeds_Artikl    ) // Artikl         
+
+   {
+      IsForExport = true;
+
+      this.IsUlaz = isUlaz;
+   }
+
+   public bool IsUlaz;
+
+   public override int FillRiskReportLists()
+   {
+      RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind], "pdvGEOkind", ZXC.PdvGEOkindEnum.EU, " = "));
+
+      base.FillRiskReportLists();
+
+      return 0;
+   }
+}
+
+
+#endregion Intrastat
+
+
 #endregion Classic RISK Reports
