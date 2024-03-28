@@ -2,14 +2,9 @@
 using System.Data;
 using CrystalDecisions.CrystalReports.Engine;
 using Vektor.Reports.RIZ;
-using Vektor.DataLayer.DS_AllColumns;
-using Vektor.DataLayer.DS_Reports;
 using System.Linq;
 using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
-using static RtransDao;
-using static ArtiklDao;
-using static DevTecDao;
 
 
 #if MICROSOFT
@@ -13012,10 +13007,99 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       return 0;
    }
+
+   public override string ExportFileName
+   {
+      get
+      {
+         string mmyyyy = RptFilter.DatumOd.Month.ToString("00") + RptFilter.DatumOd.Year.ToString("0000");
+         string   yyyy =                                          RptFilter.DatumOd.Year.ToString("0000");
+
+         return (IsUlaz ? "Intr_PRIM_" : "Intr_OTPR_")  + ZXC.CURR_prjkt_rec.Oib + "_" + mmyyyy + ".xml";
+      }
+   }
+
+   public override bool ExecuteExportValidation(string fileName)
+   {
+      List<ZXC.VvXmlValidationData> valDataList = new List<ZXC.VvXmlValidationData>();
+      
+      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a", @"XSD\Intrastat\instBaseTypes.xsd"   ));
+      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a", @"XSD\Intrastat\instComplexTypes.xsd"));
+      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a", @"XSD\Intrastat\instIr002a.xsd"      ));
+
+      return ExecuteExportValidation_Base(valDataList);
+   }
+
+   public override bool ExecuteExport(string fileName)
+   {
+      #region Init
+
+      INTRASTAT.IR002AType theIr002a = new INTRASTAT.IR002AType();
+
+      #endregion Init
+
+      #region Set XML data
+
+      #region Envelope
+
+      theIr002a.Envelope = new INTRASTAT.EnvelopeType()
+      {
+         //Naslov        = new PDV_URA.sNaslovTemeljni()        { Value = "Knjiga primljenih (ulaznih) računa"                      },
+         //Autor         = new PDV_URA.sAutorTemeljni ()        { Value = ZXC.CURR_prjkt_rec.Ime + " " + ZXC.CURR_prjkt_rec.Prezime },
+         //Datum         = new PDV_URA.sDatumTemeljni()         { Value = DateTime.Now                                              },
+         //Format        = new PDV_URA.sFormatTemeljni()        { Value = PDV_URA.tFormat.textxml                                   },
+         //Jezik         = new PDV_URA.sJezikTemeljni()         { Value = PDV_URA.tJezik.hrHR                                       },
+         //Identifikator = new PDV_URA.sIdentifikatorTemeljni() { Value = Guid.NewGuid().ToString("D")/*.ToUpper()*/                },
+         //Uskladjenost  = new PDV_URA.sUskladjenost()          { Value = PdvSchema_2015 ? "ObrazacURA-v1-0" : "ObrazacURA-v2-0"    },
+         //Tip           = new PDV_URA.sTipTemeljni()           { Value = PDV_URA.tTip.Elektroničkiobrazac                          },
+         //Adresant      = new PDV_URA.sAdresantTemeljni()      { Value = "Ministarstvo Financija, Porezna uprava, Zagreb"          }
+
+         Header = new INTRASTAT.HeaderType()
+         {
+            FlowOfGoods = 1,
+            PSI = null,
+            ReferencePeriod = null,
+            Declarant = null,
+            ReportType = INTRASTAT.ReportTypeType.Item0,
+            ReportDate = DateTime.Today
+         },
+
+         Declaration = new INTRASTAT.DeclarationType()
+         {
+
+         }
+      };
+
+      INTRASTAT.ItemType item;
+
+      foreach(Rtrans rtrans_rec in TheRtransList)
+      {
+         item = new INTRASTAT.ItemType()
+         {
+            ItemNr = 0,
+            VATNumber = "",
+            CN8Code = "",
+            GoodsDescription = "",
+            DestinationCountryCode = "",
+            //DeliveryTerms = INTRASTAT.DeliveryTermsType.
+         };
+      }
+
+      #endregion Envelope
+
+      #endregion Set XML data
+
+      #region Final
+
+      string xmlString = theIr002a.SaveToFile(fileName, ZXC.VvUTF8Encoding_noBOM);
+
+      return true;
+
+      #endregion Final
+   }
+
 }
 
-
 #endregion Intrastat
-
 
 #endregion Classic RISK Reports

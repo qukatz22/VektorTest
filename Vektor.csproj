@@ -2410,6 +2410,7 @@
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceClient.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceOperation.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\Outgoing_eRacun_parameters.cs" />
+    <Compile Include="UtilsEtc\instIr002a.cs" />
     <Compile Include="UtilsEtc\PTG_OtplatniPlan.cs" />
     <Compile Include="UtilsEtc\sepa_hr_pain_001_001_09_11-2023-2.cs" />
     <Compile Include="UtilsEtc\Vv_WebService _Utils.cs" />
@@ -4891,6 +4892,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="XSD\sepa.hr.pain.001.001.09_11-2023-2.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XSD\Intrastat\instBaseTypes.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XSD\Intrastat\instComplexTypes.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XSD\Intrastat\instIr002a.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
