@@ -1085,8 +1085,8 @@ public class ArtiklUC : VvSifrarRecordUC
    {
       hamper = new VvHamper(3, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp); ;
  
-      hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q2un + ZXC.Qun4 -ZXC.Qun12, ZXC.Q2un-ZXC.Qun2 };
-      hamper.VvSpcBefCol = new int[] {   ZXC.Qun4,                       ZXC.Qun4,         ZXC.Qun12 };
+      hamper.VvColWdt    = new int[] { labelWidth + ZXC.Qun4, ZXC.Q2un + ZXC.Qun4 -ZXC.Qun12, ZXC.Q2un-ZXC.Qun2 };
+      hamper.VvSpcBefCol = new int[] {   ZXC.Qun4,                       ZXC.Qun12,         ZXC.Qun12 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };

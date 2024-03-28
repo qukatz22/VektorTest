@@ -8069,6 +8069,14 @@ public class IRA_MPC_DUC              : FakturExtDUC
       hamp_tipOtpreme .Location = new Point(hamp_napomena2.Right, hamp_VezniDok2.Bottom);
 
       nextY = hamp_DatumX.Bottom;
+
+      if(ZXC.RRD.Dsc_IsIntrastat == false)
+      {
+         hamp_VezniDok2.Visible = false;
+         hamp_Fco       .Visible = false;
+         hamp_napomena2 .Visible = false;
+         hamp_tipOtpreme.Visible = false;
+      }
    }
 
    private void CreateArrOfHampers()
