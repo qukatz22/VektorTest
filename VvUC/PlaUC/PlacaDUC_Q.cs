@@ -688,7 +688,11 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       } // foreach(Ptrane ptrane_rec in placa_rec.TransesNonDeleted2)
 
       // 19.02.2020: 
-      decimal maxHZZO_NetoAdd = 4257.28M;
+      // 29.03.2024. a sad su euri : 565,04 eura/4.257,28
+    //decimal maxHZZO_NetoAdd = 4257.28M;
+      decimal maxHZZO_NetoAdd;
+      if(ZXC.IsEURoERA_projectYear) maxHZZO_NetoAdd =  565.04M;
+      else                          maxHZZO_NetoAdd = 4257.28M;
 
       foreach(Ptrans ptrans_rec in placa_rec.TransesNonDeleted)
       {

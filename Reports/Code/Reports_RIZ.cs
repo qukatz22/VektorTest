@@ -13057,11 +13057,21 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          Header = new INTRASTAT.HeaderType()
          {
             FlowOfGoods = 1,
-            PSI = null,
-            ReferencePeriod = null,
-            Declarant = null,
-            ReportType = INTRASTAT.ReportTypeType.Item0,
-            ReportDate = DateTime.Today
+            
+            PSI = new INTRASTAT.PSIType()
+               { 
+                  PSIId = new INTRASTAT.PSIIdType() 
+                     { 
+                        PSICountryCode =  INTRASTAT.PSICountryCodeType.HR, 
+                        PSININumber    = ZXC.CURR_prjkt_rec.Oib
+                     },  
+                  PSIName = ZXC.CURR_prjkt_rec.Naziv, 
+                  PSIAddress = ZXC.CURR_prjkt_rec.Ulica1
+               } ,
+
+            ReferencePeriod = null,                           //za razdoblje YYYY-MM
+            ReportType      = INTRASTAT.ReportTypeType.Item0, //4 sifre - to bi nekako trebali omoguciti
+            ReportDate      = DateTime.Today
          },
 
          Declaration = new INTRASTAT.DeclarationType()
@@ -13072,16 +13082,30 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       INTRASTAT.ItemType item;
 
+      uint rbr = 0;
+
       foreach(Rtrans rtrans_rec in TheRtransList)
       {
          item = new INTRASTAT.ItemType()
          {
-            ItemNr = 0,
-            VATNumber = "",
-            CN8Code = "",
-            GoodsDescription = "",
-            DestinationCountryCode = "",
-            //DeliveryTerms = INTRASTAT.DeliveryTermsType.
+            ItemNr                 = rbr++                  ,
+            CN8Code                = ""                     , //artikl AtestBr
+            GoodsDescription       = rtrans_rec.T_artiklName,
+            DestinationCountryCode = ""                     , //artikl MadeIn
+            DeliveryTerms          = new INTRASTAT.DeliveryTermsType()
+               { 
+                  DeliveryTermsCode   = "",
+                  PlaceOfDeliveryCode = 1
+               },
+            NatureOfTransaction = new INTRASTAT.NatureOfTransactionType()
+               {
+                  NatureOfTransactionACode = 1,
+                  NatureOfTransactionBCode = 1
+               },
+            CountryOfOriginCode = "",
+            NetWeight           = 0.001M,
+            QuantityInSU        = 100.000M,
+            InvoicedAmount      = rtrans_rec.R_KCR
          };
       }
 

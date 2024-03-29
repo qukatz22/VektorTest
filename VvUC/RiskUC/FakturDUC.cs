@@ -8075,6 +8075,7 @@ public partial class FakturExtDUC : FakturDUC
          tbx_Napomena2Opis = hamper.CreateVvTextBox      (2, 0, "tbx_Napomena2Opis", "Intrastat Vrsta posla opis");
          tbx_Napomena2.JAM_Set_LookUpTable(ZXC.luiListaIntrastVrPosla, (int)ZXC.Kolona.prva);
          tbx_Napomena2.JAM_lui_NameTaker_JAM_Name = tbx_Napomena2Opis.JAM_Name;
+         tbx_Napomena2Opis.JAM_ReadOnly = true;
       }
       else
       { 
@@ -8152,6 +8153,8 @@ public partial class FakturExtDUC : FakturDUC
          tbx_VezniDok2Opis = hamper.CreateVvTextBox      (2, 0, "tbx_VezniDok2Op", "Intrastat Incoterm opis");
          tbx_VezniDok2.JAM_Set_LookUpTable(ZXC.luiListaIncoterms, (int)ZXC.Kolona.prva);
          tbx_VezniDok2.JAM_lui_NameTaker_JAM_Name = tbx_VezniDok2Opis.JAM_Name;
+         tbx_VezniDok2Opis.JAM_ReadOnly = true;
+
       }
       else
       {
@@ -8224,6 +8227,8 @@ public partial class FakturExtDUC : FakturDUC
          tbx_FcoOpis = hamper.CreateVvTextBox  (2, 0, "tbx_FcoOpis", "Intrastat teritorij isporuka opis");
          tbx_Fco.JAM_Set_LookUpTable(ZXC.luiListaIntrastIsporuka, (int)ZXC.Kolona.prva);
          tbx_Fco.JAM_lui_NameTaker_JAM_Name = tbx_FcoOpis.JAM_Name;
+         tbx_FcoOpis.JAM_ReadOnly = true;
+
       }
       else
       {
@@ -9178,6 +9183,8 @@ public partial class FakturExtDUC : FakturDUC
          tbx_TipOtpremeOpis = hamper.CreateVvTextBox  (2, 0, "tbx_tbx_TipOtpremeOpis", "Intrastat vrsta prometa opis");
          tbx_TipOtpreme.JAM_Set_LookUpTable(ZXC.luiListaIntrastVrProm, (int)ZXC.Kolona.prva);
          tbx_TipOtpreme.JAM_lui_NameTaker_JAM_Name = tbx_TipOtpremeOpis.JAM_Name;
+         tbx_TipOtpremeOpis.JAM_ReadOnly = true;
+
       }
       else
       { 
