@@ -13005,7 +13005,32 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       base.FillRiskReportLists();
 
-      return 0;
+      TheDeviznaSumaList = TheRtransList
+         .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
+         .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
+         .Select(SecJoin => new VvReportSourceUtil()
+         {
+            ArtiklGrCD   = SecJoin.A.AtestBr,
+            ArtiklGrName = SecJoin.A.ArtiklName,
+            TheCD        = SecJoin.A.MadeIn,
+            FakturGR     = SecJoin.F.VatCntryCode,
+            KupdobName   = SecJoin.F.VATnumber,
+            DevName      = SecJoin.F.VezniDok2,
+            String1      = SecJoin.F.Fco,
+            String2      = SecJoin.F.Napomena2.Substring(0, 1),
+            String3      = SecJoin.F.Napomena2.Substring(1, 1),
+            String4      = SecJoin.F.TipOtpreme,
+            TheMoney     = SecJoin.A.GetIntrastat_Masa_U_Kg(SecJoin.R.T_kol),
+            TheMoney2    = SecJoin.A.GetIntrastat_Kol_U_JM (SecJoin.R.T_kol),
+            TheMoneyKCR  = SecJoin.R.R_KCR,
+
+         })
+       //.OrderBy(qwe => qwe.ArtiklGrCD)
+         .ToList();
+
+
+      //return 0;
+      return TheDeviznaSumaList.Count;
    }
 
    public override string ExportFileName
@@ -13042,73 +13067,141 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       #region Envelope
 
-      theIr002a.Envelope = new INTRASTAT.EnvelopeType()
-      {
-         Header = new INTRASTAT.HeaderType()
-         {
-            FlowOfGoods = 1,
-            
-            PSI = new INTRASTAT.PSIType()
-            { 
-               PSIId = new INTRASTAT.PSIIdType() 
-                  { 
-                     PSICountryCode =  INTRASTAT.PSICountryCodeType.HR, 
-                     PSININumber    = ZXC.CURR_prjkt_rec.Oib
-                  },  
-               PSIName = ZXC.CURR_prjkt_rec.Naziv, 
-               PSIAddress = ZXC.CURR_prjkt_rec.Ulica1
-            },
+      //theIr002a.Envelope = new INTRASTAT.EnvelopeType()
+      //{
+      //   Header = new INTRASTAT.HeaderType()
+      //   {
+      //      FlowOfGoods = 1,
 
-            ReferencePeriod = RptFilter.DatumOd.ToString(ZXC.VvDateYyyyMmFormat), //za razdoblje YYYY-MM
-            ReportType      = INTRASTAT.ReportTypeType.Item0, //4 sifre - to bi nekako trebali omoguciti
-            ReportDate      = DateTime.Today
-         },
+      //      PSI = new INTRASTAT.PSIType()
+      //      { 
+      //         PSIId = new INTRASTAT.PSIIdType() 
+      //            { 
+      //               PSICountryCode =  INTRASTAT.PSICountryCodeType.HR, 
+      //               PSININumber    = ZXC.CURR_prjkt_rec.Oib
+      //            },  
+      //         PSIName    = ZXC.CURR_prjkt_rec.Naziv, 
+      //         PSIAddress = ZXC.CURR_prjkt_rec.Ulica1
+      //      },
 
-         Declaration = new INTRASTAT.DeclarationType()
-         {
+      //      ReferencePeriod = RptFilter.DatumOd.ToString(ZXC.VvDateYyyyMmFormat), //za razdoblje YYYY-MM
+      //      ReportType      = INTRASTAT.ReportTypeType.Item0, //4 sifre - to bi nekako trebali omoguciti
+      //      ReportDate      = DateTime.Today
+      //   },
 
-         }
-      };
+      //   Declaration = new INTRASTAT.DeclarationType()
+      //   {
 
-      INTRASTAT.ItemType item;
+      //   }
+      //};
+
+      theIr002a.Envelope                                 = new INTRASTAT.EnvelopeType();
+      theIr002a.Envelope.Header                          = new INTRASTAT.HeaderType();
+      theIr002a.Envelope.Header.FlowOfGoods              = (short)(this.IsUlaz ? 1 : 2);
+      theIr002a.Envelope.Header.PSI                      = new INTRASTAT.PSIType();
+      theIr002a.Envelope.Header.PSI.PSIId                = new INTRASTAT.PSIIdType();
+      theIr002a.Envelope.Header.PSI.PSIId.PSICountryCode = INTRASTAT.PSICountryCodeType.HR;
+      theIr002a.Envelope.Header.PSI.PSIId.PSININumber    = ZXC.CURR_prjkt_rec.Oib;
+      theIr002a.Envelope.Header.PSI.PSIName              = ZXC.CURR_prjkt_rec.Naziv ;
+      theIr002a.Envelope.Header.PSI.PSIAddress           = ZXC.CURR_prjkt_rec.Ulica1;
+
+      theIr002a.Envelope.Header.ReferencePeriod = RptFilter.DatumOd.ToString(ZXC.VvDateYyyyMmFormat); //za razdoblje YYYY-MM;
+      theIr002a.Envelope.Header.ReportType      = INTRASTAT.ReportTypeType.Item0 ; //4 sifre - to bi nekako trebali omoguciti;
+      theIr002a.Envelope.Header.ReportDate      = DateTime.Today;
+
+      theIr002a.Envelope.Declaration      = new INTRASTAT.DeclarationType();
 
       uint rbr = 0;
 
-      TheDeviznaSumaList = TheRtransList
-         .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
-         .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
-         .Select(SecJoin => new VvReportSourceUtil()
-         {
-            ArtiklGrCD = SecJoin.A.ArtiklCD,
-            TheCD      = SecJoin.A.AtestBr
-         })
-       //.OrderBy(qwe => qwe.ArtiklGrCD)
-         .ToList();
+      //TheDeviznaSumaList = TheRtransList
+      //   .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
+      //   .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
+      //   .Select(SecJoin => new VvReportSourceUtil()
+      //   {
+      //      ArtiklGrCD   = SecJoin.A.AtestBr,
+      //      ArtiklGrName = SecJoin.A.ArtiklName,
+      //      TheCD        = SecJoin.A.MadeIn,
+      //      FakturGR     = SecJoin.F.VatCntryCode,
+      //      KupdobName   = SecJoin.F.VATnumber,
+      //      DevName      = SecJoin.F.VezniDok2,
+      //      String1      = SecJoin.F.Fco,
+      //      String2      = SecJoin.F.Napomena2.Substring(0, 1),
+      //      String3      = SecJoin.F.Napomena2.Substring(1, 1),
+      //      String4      = SecJoin.F.TipOtpreme,
+      //      TheMoney     = SecJoin.A.GetIntrastat_Masa_U_Kg(SecJoin.R.T_kol),
+      //      TheMoney2    = SecJoin.A.GetIntrastat_Kol_U_JM (SecJoin.R.T_kol),
+      //      TheMoneyKCR  = SecJoin.R.R_KCR,
 
-      foreach(VvReportSourceUtil rsu in TheDeviznaSumaList)
+      //   })
+      // //.OrderBy(qwe => qwe.ArtiklGrCD)
+      //   .ToList();
+
+      INTRASTAT.ItemType item;
+
+      theIr002a.Envelope.Declaration.Item = new INTRASTAT.ItemType[TheDeviznaSumaList.Count];
+
+      List<VvReportSourceUtil> rsu = TheDeviznaSumaList;
+      //foreach(VvReportSourceUtil rsu in TheDeviznaSumaList)
+      //{
+      //  item = new INTRASTAT.ItemType()
+      //   {
+      //      ItemNr                 = rbr++                  ,
+      //      CN8Code                = rsu.ArtiklGrCD         ,
+      //      GoodsDescription       = rsu.ArtiklGrName       ,
+      //      DestinationCountryCode = rsu.FakturGR           , 
+      //      DeliveryTerms          = new INTRASTAT.DeliveryTermsType()
+      //      { 
+      //         DeliveryTermsCode   = rsu.DevName,
+      //         PlaceOfDeliveryCode = short.Parse(rsu.String1)
+      //      },
+      //      NatureOfTransaction = new INTRASTAT.NatureOfTransactionType()
+      //      {
+      //         NatureOfTransactionACode = short.Parse(rsu.String2),
+      //         NatureOfTransactionBCode = short.Parse(rsu.String3)
+      //      },
+      //      TransportMode       = short.Parse(rsu.String4),
+      //      CountryOfOriginCode = rsu.TheCD,
+      //      NetWeight           = rsu.TheMoney,
+      //      QuantityInSU        = rsu.TheMoney2,
+      //      InvoicedAmount      = rsu.TheMoneyKCR
+      //   };
+      //}
+
+      for(int i = 0; i < TheDeviznaSumaList.Count; ++i)
       {
-         item = new INTRASTAT.ItemType()
+         item = theIr002a.Envelope.Declaration.Item[i] = new INTRASTAT.ItemType();
+
+         item.ItemNr                 = (uint)(i+1)         ;
+
+         if(this.IsUlaz == false)// samo ako je izlaz onda ide ovaj podatak
          {
-            ItemNr                 = rbr++                  ,
-            CN8Code                = rsu.TheCD              , //artikl AtestBr
-            GoodsDescription       = "",
-            DestinationCountryCode = ""                     , //artikl MadeIn
-            DeliveryTerms          = new INTRASTAT.DeliveryTermsType()
-            { 
-               DeliveryTermsCode   = "",
-               PlaceOfDeliveryCode = 1
-            },
-            NatureOfTransaction = new INTRASTAT.NatureOfTransactionType()
-            {
-               NatureOfTransactionACode = 1,
-               NatureOfTransactionBCode = 1
-            },
-            CountryOfOriginCode = "",
-            NetWeight           = 0.001M,
-            QuantityInSU        = 100.000M,
-            InvoicedAmount      = rsu.TheMoney
-         };
+            if(rsu[i].KupdobName.IsEmpty() || rsu[i].KupdobName.Length < 4) item.VATNumber = "QV999999999999" ; // je nepoznat OIB jer je fizicka osoba onda ide ovaj broj
+            else                                                            item.VATNumber = rsu[i].KupdobName; // ako je iylay onda mora biti a ako je ulay onda ne smije biti
+         } 
+
+         item.CN8Code                = rsu[i].ArtiklGrCD   ;
+         item.GoodsDescription       = rsu[i].ArtiklGrName ;
+         item.DestinationCountryCode = rsu[i].FakturGR     ;
+
+         item.DeliveryTerms                     = new INTRASTAT.DeliveryTermsType();
+         item.DeliveryTerms.DeliveryTermsCode   = rsu[i].DevName;
+         item.DeliveryTerms.PlaceOfDeliveryCode = short.Parse(rsu[i].String1);
+
+         item.NatureOfTransaction                           = new INTRASTAT.NatureOfTransactionType();
+         item.NatureOfTransaction.NatureOfTransactionACode = short.Parse(rsu[i].String2);
+         item.NatureOfTransaction.NatureOfTransactionBCode = short.Parse(rsu[i].String3);
+/*speci*/item.NatureOfTransaction.NatureOfTransactionBCodeSpecified = true;
+
+         item.TransportMode         = short.Parse(rsu[i].String4);
+         item.CountryOfOriginCode   = rsu[i].TheCD               ;
+         item.NetWeight             = rsu[i].TheMoney.Ron(3)     ;
+/*speci*/item.NetWeightSpecified    = true                       ;
+         item.QuantityInSU          = rsu[i].TheMoney2.Ron(3)    ;
+/*speci*/item.QuantityInSUSpecified = true                       ;
+         item.InvoicedAmount        = rsu[i].TheMoneyKCR.Ron(0)  ;
       }
+
+      theIr002a.Envelope.Declaration.TotalItems = (uint)TheDeviznaSumaList.Count;
 
       #endregion Envelope
 
