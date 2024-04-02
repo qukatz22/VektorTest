@@ -13023,9 +13023,9 @@ public class RptR_Intrastat : RptR_StandardRiskReport
    {
       List<ZXC.VvXmlValidationData> valDataList = new List<ZXC.VvXmlValidationData>();
       
-      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a", @"XSD\Intrastat\instBaseTypes.xsd"   ));
-      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a", @"XSD\Intrastat\instComplexTypes.xsd"));
-      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a", @"XSD\Intrastat\instIr002a.xsd"      ));
+      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/baseTypes"   , @"XSD\Intrastat\instBaseTypes.xsd"   ));
+      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/complexTypes", @"XSD\Intrastat\instComplexTypes.xsd"));
+      valDataList.Add(new ZXC.VvXmlValidationData(@"http://apisit.hr/b28/inst/ed/2011/ir002a"      , @"XSD\Intrastat\instIr002a.xsd"      ));
 
       return ExecuteExportValidation_Base(valDataList);
    }
@@ -13044,32 +13044,22 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       theIr002a.Envelope = new INTRASTAT.EnvelopeType()
       {
-         //Naslov        = new PDV_URA.sNaslovTemeljni()        { Value = "Knjiga primljenih (ulaznih) računa"                      },
-         //Autor         = new PDV_URA.sAutorTemeljni ()        { Value = ZXC.CURR_prjkt_rec.Ime + " " + ZXC.CURR_prjkt_rec.Prezime },
-         //Datum         = new PDV_URA.sDatumTemeljni()         { Value = DateTime.Now                                              },
-         //Format        = new PDV_URA.sFormatTemeljni()        { Value = PDV_URA.tFormat.textxml                                   },
-         //Jezik         = new PDV_URA.sJezikTemeljni()         { Value = PDV_URA.tJezik.hrHR                                       },
-         //Identifikator = new PDV_URA.sIdentifikatorTemeljni() { Value = Guid.NewGuid().ToString("D")/*.ToUpper()*/                },
-         //Uskladjenost  = new PDV_URA.sUskladjenost()          { Value = PdvSchema_2015 ? "ObrazacURA-v1-0" : "ObrazacURA-v2-0"    },
-         //Tip           = new PDV_URA.sTipTemeljni()           { Value = PDV_URA.tTip.Elektroničkiobrazac                          },
-         //Adresant      = new PDV_URA.sAdresantTemeljni()      { Value = "Ministarstvo Financija, Porezna uprava, Zagreb"          }
-
          Header = new INTRASTAT.HeaderType()
          {
             FlowOfGoods = 1,
             
             PSI = new INTRASTAT.PSIType()
-               { 
-                  PSIId = new INTRASTAT.PSIIdType() 
-                     { 
-                        PSICountryCode =  INTRASTAT.PSICountryCodeType.HR, 
-                        PSININumber    = ZXC.CURR_prjkt_rec.Oib
-                     },  
-                  PSIName = ZXC.CURR_prjkt_rec.Naziv, 
-                  PSIAddress = ZXC.CURR_prjkt_rec.Ulica1
-               } ,
+            { 
+               PSIId = new INTRASTAT.PSIIdType() 
+                  { 
+                     PSICountryCode =  INTRASTAT.PSICountryCodeType.HR, 
+                     PSININumber    = ZXC.CURR_prjkt_rec.Oib
+                  },  
+               PSIName = ZXC.CURR_prjkt_rec.Naziv, 
+               PSIAddress = ZXC.CURR_prjkt_rec.Ulica1
+            },
 
-            ReferencePeriod = null,                           //za razdoblje YYYY-MM
+            ReferencePeriod = RptFilter.DatumOd.ToString(ZXC.VvDateYyyyMmFormat), //za razdoblje YYYY-MM
             ReportType      = INTRASTAT.ReportTypeType.Item0, //4 sifre - to bi nekako trebali omoguciti
             ReportDate      = DateTime.Today
          },
@@ -13084,28 +13074,39 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       uint rbr = 0;
 
-      foreach(Rtrans rtrans_rec in TheRtransList)
+      TheDeviznaSumaList = TheRtransList
+         .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
+         .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
+         .Select(SecJoin => new VvReportSourceUtil()
+         {
+            ArtiklGrCD = SecJoin.A.ArtiklCD,
+            TheCD      = SecJoin.A.AtestBr
+         })
+       //.OrderBy(qwe => qwe.ArtiklGrCD)
+         .ToList();
+
+      foreach(VvReportSourceUtil rsu in TheDeviznaSumaList)
       {
          item = new INTRASTAT.ItemType()
          {
             ItemNr                 = rbr++                  ,
-            CN8Code                = ""                     , //artikl AtestBr
-            GoodsDescription       = rtrans_rec.T_artiklName,
+            CN8Code                = rsu.TheCD              , //artikl AtestBr
+            GoodsDescription       = "",
             DestinationCountryCode = ""                     , //artikl MadeIn
             DeliveryTerms          = new INTRASTAT.DeliveryTermsType()
-               { 
-                  DeliveryTermsCode   = "",
-                  PlaceOfDeliveryCode = 1
-               },
+            { 
+               DeliveryTermsCode   = "",
+               PlaceOfDeliveryCode = 1
+            },
             NatureOfTransaction = new INTRASTAT.NatureOfTransactionType()
-               {
-                  NatureOfTransactionACode = 1,
-                  NatureOfTransactionBCode = 1
-               },
+            {
+               NatureOfTransactionACode = 1,
+               NatureOfTransactionBCode = 1
+            },
             CountryOfOriginCode = "",
             NetWeight           = 0.001M,
             QuantityInSU        = 100.000M,
-            InvoicedAmount      = rtrans_rec.R_KCR
+            InvoicedAmount      = rsu.TheMoney
          };
       }
 
