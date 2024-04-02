@@ -934,11 +934,46 @@ public class Artikl : VvSifrarRecord
 
    }
 
+   #region Intrastat Propertiz
+
+   public decimal Masa_U_Kg
+   {
+      get
+      {
+         if(this.MasaNetto.IsZero()) return 0M;
+
+         decimal pretvornik;
+
+         switch(this.MasaNettoJM)
+         {
+            case "g" : case "G" : pretvornik = 0.001M; break;
+            case "t" : case "T" : pretvornik =  1000M; break;
+            case "KG": case "Kg":
+            case "kG": case "kg": pretvornik =     1M; break;
+
+            default             : pretvornik =     0M; break;
+         }
+
+         return this.MasaNetto * pretvornik;
+      }
+   }
+
+   public decimal GetIntrastat_Kol_U_JM(decimal t_kol)
+   {
+      return t_kol * this.MasaNetto;
+   }
+
+   public decimal GetIntrastat_Masa_U_Kg(decimal t_kol)
+   {
+      return GetIntrastat_Kol_U_JM(t_kol) / 1000M;
+   }
+
+   #endregion Intrastat Propertiz
 
    #endregion General propertiez
 
    #region Artstat propertiz
-   
+
    public uint AS_RecID
    {
       get { return this.TheAsEx.currentData._recID; }
