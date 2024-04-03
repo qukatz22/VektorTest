@@ -5691,16 +5691,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, Rtrano_colIdx ci2)
    {
-      theGrid.PutCell(ci2.iT_TT    , currRowIdx, "");
-      theGrid.PutCell(ci2.iT_kol   , currRowIdx, 0M);
-      theGrid.PutCell(ci2.iT_dimX  , currRowIdx, 0M);
-      theGrid.PutCell(ci2.iT_dimY  , currRowIdx, 0M);
-      theGrid.PutCell(ci2.iT_decA  , currRowIdx, 0M);
-      theGrid.PutCell(ci2.iT_decB  , currRowIdx, 0M);
-      theGrid.PutCell(ci2.iR_ramOld, currRowIdx, 0M);
-      theGrid.PutCell(ci2.iR_hddOld, currRowIdx, 0M);
-      theGrid.PutCell(ci2.iT_dimZ  , currRowIdx, 0M);
-      theGrid.PutCell(ci2.iT_decC  , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_TT         , currRowIdx, "");
+      theGrid.PutCell(ci2.iT_kol        , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_RAM_plus   , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_RAM_minus  , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_RAM_new    , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_HDD_plus   , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_HDD_minus  , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iT_HDD_new    , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iR_ramOld     , currRowIdx, 0M);
+      theGrid.PutCell(ci2.iR_hddOld     , currRowIdx, 0M);
    }
 
    protected bool ThisIs_MOC_rowIndex(int rIdx)

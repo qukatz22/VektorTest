@@ -8,6 +8,7 @@ using System.Data;
 using ICSharpCode.SharpZipLib.Encryption;
 using static ArtiklDao;
 using FinaInvoiceB2GENClient.FinaInvoiceWS;
+using ikvm.lang;
 
 #if MICROSOFT
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -14217,10 +14218,10 @@ public class FakturPDUC : FakturExtDUC
       bool isKomponentaArtikl = !isPCKartikl;
 
       bool isPlusOrMinusCol =
-           (colIdx == ci2.iT_dimX ||
-            colIdx == ci2.iT_dimY ||
-            colIdx == ci2.iT_decA ||
-            colIdx == ci2.iT_decB) ;
+           (colIdx == ci2.iT_RAM_plus  ||
+            colIdx == ci2.iT_RAM_minus ||
+            colIdx == ci2.iT_HDD_plus  ||
+            colIdx == ci2.iT_HDD_minus) ;
 
       string oldArtiklCD = "";
 
@@ -14231,19 +14232,19 @@ public class FakturPDUC : FakturExtDUC
 
       if(isPlusOrMinusCol && isPCKartikl)
       {
-         decimal oldRAM   = TheG2.GetDecimalCell(ci2.iR_ramOld, rowIdx, false);
-         decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_dimX  , rowIdx, false);
-         decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_dimY  , rowIdx, false);
+         decimal oldRAM   = TheG2.GetDecimalCell(ci2.iR_ramOld   , rowIdx, false);
+         decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
+         decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
          decimal newRAM   = oldRAM + plusRAM - minusRAM;
          if(newRAM.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New RAM je NEGATIVAN!?");
-         TheG2.PutCell(ci2.iT_dimZ, rowIdx, newRAM);
+         TheG2.PutCell(ci2.iT_RAM_new, rowIdx, newRAM);
 
-         decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld, rowIdx, false);
-         decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_decA  , rowIdx, false);
-         decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_decB  , rowIdx, false);
+         decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld   , rowIdx, false);
+         decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
+         decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
          decimal newHDD   = oldHDD + plusHDD - minusHDD;
          if(newHDD.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!?");
-         TheG2.PutCell(ci2.iT_decC, rowIdx, newHDD);
+         TheG2.PutCell(ci2.iT_HDD_new, rowIdx, newHDD);
          
          
          TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
@@ -14276,7 +14277,7 @@ public class FakturPDUC : FakturExtDUC
 
          if(vvTextBox is null || artikl_rec is null) return;
 
-         bool isRAM = colIdx == ci2.iT_dimX || colIdx == ci2.iT_dimY;
+         bool isRAM = colIdx == ci2.iT_RAM_plus || colIdx == ci2.iT_RAM_minus;
          bool isHDD = !isRAM;
 
          decimal enteredKapacitet = isRAM ? rtrano_rec.T_dimX + rtrano_rec.T_dimY : rtrano_rec.T_decA + rtrano_rec.T_decB;
@@ -14335,8 +14336,17 @@ public class FakturPDUC : FakturExtDUC
       decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_RAM;
       decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_HDD;
 
-      TheG2.PutCell(ci2.iT_dimY, rowIdx, ram_kolPutaKapacitet);
-      TheG2.PutCell(ci2.iT_decB, rowIdx, hdd_kolPutaKapacitet);
+      int ramDelta_colIdx = ci2.iT_dimY;
+      int hddDelta_colIdx = ci2.iT_decB;
+
+      if(rtrano_rec.T_TT == Faktur.TT_MOU)
+      {
+         ramDelta_colIdx = ci2.iT_RAM_plus;
+         hddDelta_colIdx = ci2.iT_HDD_plus;
+      }
+
+      TheG2.PutCell(ramDelta_colIdx, rowIdx, ram_kolPutaKapacitet);
+      TheG2.PutCell(hddDelta_colIdx, rowIdx, hdd_kolPutaKapacitet);
 
       SetRow_TT_and_Color_and_Calc_newRam_newHdd(sender, e);
    }
@@ -14355,10 +14365,10 @@ public class FakturPDUC : FakturExtDUC
          else      return Faktur.TT_MOS;
       }
 
-      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false);
-      decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false);
-      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false);
-      decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false);
+      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
+      decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
+      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
+      decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
 
       bool isMOI = RAMminus.NotZero() || HDDminus.NotZero();
       bool isMOU = RAMplus .NotZero() || HDDplus .NotZero();
@@ -14761,10 +14771,10 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_artiklCD2_Old, TheVvDaoTrans2, "R_artiklCD_Old", _colHeader, ZXC.Q6un);
       colVvText.Visible = isVisible;
 
-    //if(this is MOD_PTG_DUC)
-    //{
-    //   vvtbT_artiklCD2_Old.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color);
-    //}
+      if(this is MOD_PTG_DUC)
+      {
+         vvtbT_artiklCD2_Old.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+      }
 
    }
    protected void R_PCK_baza_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
@@ -14826,6 +14836,15 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_skladCD1;
       internal int iR_artiklCD_Old;
       internal int iR_PCK_baza;
+
+      // duplicates 4 MOD understanding 
+      internal int iT_RAM_plus ;
+      internal int iT_RAM_minus;
+      internal int iT_RAM_new  ;
+      internal int iT_HDD_plus ;
+      internal int iT_HDD_minus;
+      internal int iT_HDD_new  ;
+
    }
 
    private void SetRtranoColumnIndexes()
@@ -14861,6 +14880,14 @@ public class FakturPDUC : FakturExtDUC
       ci2.iT_skladCD1     = TheG2.IdxForColumn("R_skladCD1");
       ci2.iR_artiklCD_Old = TheG2.IdxForColumn("R_artiklCD_Old");
       ci2.iR_PCK_baza     = TheG2.IdxForColumn("R_PCK_baza");
+
+      ci2.iT_RAM_plus  = ci2.iT_dimX;
+      ci2.iT_RAM_minus = ci2.iT_dimY;
+      ci2.iT_RAM_new   = ci2.iT_dimZ;
+      ci2.iT_HDD_plus  = ci2.iT_decA;
+      ci2.iT_HDD_minus = ci2.iT_decB;
+      ci2.iT_HDD_new   = ci2.iT_decC;
+
    }
 
    #endregion SetRtranoColumnIndexes()
@@ -15074,10 +15101,10 @@ public class FakturPDUC : FakturExtDUC
 
       if(this.Fld_TT == Faktur.TT_MOD)
       {
-         TheSumGrid2.PutCell(ci2.iT_dimX, 0, faktur_rec.TrnSum2_dimX);
-         TheSumGrid2.PutCell(ci2.iT_dimY, 0, faktur_rec.TrnSum2_dimY);
-         TheSumGrid2.PutCell(ci2.iT_decA, 0, faktur_rec.TrnSum2_decA);
-         TheSumGrid2.PutCell(ci2.iT_decB, 0, faktur_rec.TrnSum2_decB);
+         TheSumGrid2.PutCell(ci2.iT_RAM_plus , 0, faktur_rec.TrnSum2_dimX);
+         TheSumGrid2.PutCell(ci2.iT_RAM_minus, 0, faktur_rec.TrnSum2_dimY);
+         TheSumGrid2.PutCell(ci2.iT_HDD_plus , 0, faktur_rec.TrnSum2_decA);
+         TheSumGrid2.PutCell(ci2.iT_HDD_minus, 0, faktur_rec.TrnSum2_decB);
       }
    }
 
@@ -15167,12 +15194,12 @@ public class FakturPDUC : FakturExtDUC
 
          // ove GetDecimalCell-ove ovdje preduhitrujemo jer nam trebaju u dgvRtrano_rec-u za Get_MOD_RtranoTT 
          // dole nize ce se oni jos jednom, defaultno ponasanje, pokupiti                                     
-         dgvRtrano_rec.T_dimX = TheG2.GetDecimalCell(ci2.iT_dimX, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_dimY = TheG2.GetDecimalCell(ci2.iT_dimY, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_dimZ, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_decA, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_decB, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_decC, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimX = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimY = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_RAM_new  , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_HDD_new  , rIdx, dirtyFlagging);
 
          bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == ZXC.PCK_TS;
 
@@ -15184,7 +15211,9 @@ public class FakturPDUC : FakturExtDUC
          }
 
          dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, isMOC_PCK_base, PCK_RAM, PCK_HDD, false);
-      }
+
+      } // if(HasRtrano_TT_Exposed)
+
       if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
 
       dgvRtrano_rec.T_ttSort = faktur_rec.TtSort;

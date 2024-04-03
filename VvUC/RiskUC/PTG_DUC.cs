@@ -3084,14 +3084,23 @@ public class MOD_PTG_DUC : FakturPDUC
 
          Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
 
-         bool isMOCrow = ThisIs_MOC_rowIndex(rowIdx);
+         bool isMOCrowIdx = ThisIs_MOC_rowIndex(rowIdx);
 
-         if(isMOCrow && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true;
-         
-         //if(false)
-         //{
-         //   currVvTextBox.ReadOnly = true;
-         //}
+         #region some util bools
+
+         bool isMOC_MOS_row = rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS;
+         bool isMOI_MOU_row = rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU;
+
+         bool isKol_col                = colIdx == DgvCI2.iT_kol  ;
+         bool isSerno_col              = colIdx == DgvCI2.iT_serno;
+         bool isRAM_HDD_plus_minus_col = colIdx == DgvCI2.iT_RAM_plus || colIdx == DgvCI2.iT_RAM_minus || colIdx == DgvCI2.iT_HDD_plus || colIdx == DgvCI2.iT_HDD_minus;
+
+         #endregion some util bools
+
+         if(isMOCrowIdx && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true;
+         if(isMOI_MOU_row && (isSerno_col || isRAM_HDD_plus_minus_col)                     ) currVvTextBox.ReadOnly = true;
+         if(isMOC_MOS_row &&  isKol_col                                                    ) currVvTextBox.ReadOnly = true;
+
       }
    }
 
