@@ -8208,7 +8208,7 @@ public class POT_DUC         : FakturExtDUC
       hamp_opis.Location    = new Point(hamp_tt.Right, hamp_tt.Top);
       hamp_opis.BringToFront();
       hamp_NacPlac.BringToFront();
-
+      
    }
 
    private void CreateArrOfHampers()
@@ -8217,7 +8217,7 @@ public class POT_DUC         : FakturExtDUC
                                     hamp_kupdobOther, hamp_ZiroRn, hamp_vezniDok,  hamp_VezniDok2, hamp_Fco,
                                     hamp_dokDate    ,  hamp_dokNum,  hamp_SkladDate, hamp_napomena, 
                                     hamp_skladCd    , hamp_v1TT   , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
-                                    hamp_NacPlac, hamp_opis, hamp_prjArtName
+                                    hamp_NacPlac, hamp_opis, hamp_prjArtName, hamp_posJedCd
                                   };
 
       //hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
