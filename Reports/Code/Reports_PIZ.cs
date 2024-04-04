@@ -7225,8 +7225,17 @@ public class RptP_SEPA : RptP_Virmani
 //         pmtInf.ReqdExctnDt      = executionDate           ;
          pmtInf.ReqdExctnDt.Dt   = executionDate           ;
 
-         pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
-         pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
+       //pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
+       //pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
+       //
+         pmtInf.Dbtr                 = new PartyIdentification135_1();
+         pmtInf.Dbtr.Nm              = ZXC.CURR_prjkt_rec.Naziv;
+         pmtInf.Dbtr.PstlAdr         = new PostalAddress24();
+         pmtInf.Dbtr.PstlAdr.StrtNm  = ZXC.CURR_prjkt_rec.UlicaBezBroja_1;
+         pmtInf.Dbtr.PstlAdr.BldgNb  = ZXC.CURR_prjkt_rec.UlicniBroj_1;
+         pmtInf.Dbtr.PstlAdr.PstCd   = ZXC.CURR_prjkt_rec.PostaBr;
+         pmtInf.Dbtr.PstlAdr.TwnNm   = ZXC.CURR_prjkt_rec.Grad;
+         pmtInf.Dbtr.PstlAdr.Ctry    = ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty; //novo - ovo jos provjeri
 
          // 19.03.2024: 
          if(ZXC.CURR_prjkt_rec.Ulica1.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazna 'Ulica1' platitelja možda bude problem?!");
@@ -7238,9 +7247,19 @@ public class RptP_SEPA : RptP_Virmani
 //((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).Id = ZXC.CURR_prjkt_rec.Oib;
 //         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).SchmeNmSpecified = false;
 
-         pmtInf.DbtrAcct.Id.IBAN        = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
-         pmtInf.DbtrAcct.Ccy            = /*"HRK"*/ ZXC.EURorHRKstr;
+         //04.04.2024 za nou sepu
+       //pmtInf.DbtrAcct.Id.IBAN        = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
+       //pmtInf.DbtrAcct.Ccy            = /*"HRK"*/ ZXC.EURorHRKstr;
+       //pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
+         pmtInf.DbtrAcct         = new CashAccount38Dbtr();
+         pmtInf.DbtrAcct.Id      = new AccountIdentification4Choice();
+         pmtInf.DbtrAcct.Id.IBAN = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
+         
+         pmtInf.DbtrAgt                 = new BranchAndFinancialInstitutionIdentification6DbtrAgt();
+         pmtInf.DbtrAgt.FinInstnId      = new FinancialInstitutionIdentification18DbtrAgt();
          pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
+
+
 
 //         pmtInf.UltmtDbtrSpecified    = 
 //         pmtInf.UltmtDbtr.IdSpecified = true;
