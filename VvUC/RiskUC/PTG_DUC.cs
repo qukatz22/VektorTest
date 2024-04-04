@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
-using Crownwood.DotNetMagic.Controls;
-using ikvm.lang;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -14,10 +12,6 @@ using XSqlCommand    = System.Data.SqlClient.SqlCommand;
 using MySql.Data.MySqlClient;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using XSqlCommand    = MySql.Data.MySqlClient.MySqlCommand;
-using System.Collections.Generic;
-//tam
-using Vektor.Reports.PIZ;
-using System.ComponentModel;
 #endif
 
 public class KUG_PTG_DUC : FakturExtDUC
@@ -3064,12 +3058,10 @@ public class MOD_PTG_DUC : FakturPDUC
 
       TheSumGrid.Visible = false;
 
-      //TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(Grid_EditingControlShowing);
-      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(kurac);   
-
+      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEC_Showing_DisableInput);   
    }
 
-   private void kurac(object sender, DataGridViewEditingControlShowingEventArgs e)
+   private void OnEC_Showing_DisableInput(object sender, DataGridViewEditingControlShowingEventArgs e)
    {
       Control      control  = e.Control;
       DataGridView theG2    = sender as VvDataGridView;
@@ -3097,9 +3089,9 @@ public class MOD_PTG_DUC : FakturPDUC
 
          #endregion some util bools
 
-         if(isMOCrowIdx && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true;
-         if(isMOI_MOU_row && (isSerno_col || isRAM_HDD_plus_minus_col)                     ) currVvTextBox.ReadOnly = true;
-         if(isMOC_MOS_row &&  isKol_col                                                    ) currVvTextBox.ReadOnly = true;
+         if(isMOCrowIdx && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true; // Disable Input! 
+         if(isMOI_MOU_row && (isSerno_col || isRAM_HDD_plus_minus_col)                     ) currVvTextBox.ReadOnly = true; // Disable Input! 
+         if(isMOC_MOS_row &&  isKol_col                                                    ) currVvTextBox.ReadOnly = true; // Disable Input! 
 
       }
    }

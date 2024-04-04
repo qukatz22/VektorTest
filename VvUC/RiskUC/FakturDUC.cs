@@ -5,10 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Data;
-using ICSharpCode.SharpZipLib.Encryption;
-using static ArtiklDao;
-using FinaInvoiceB2GENClient.FinaInvoiceWS;
-using ikvm.lang;
 
 #if MICROSOFT
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -14353,6 +14349,8 @@ public class FakturPDUC : FakturExtDUC
 
    private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, bool isMOC_PCK_base, decimal MOC_wanted_NEW_RAM, decimal MOC_wanted_NEW_HDD, bool shouldWarn)
    {
+      if(rtrano_rec.T_artiklCD.IsEmpty()) return ""; // kak bus znal jel MOC MOS MOI MOU ak je artikl prazan 
+
       bool isMOC = isPCK &&
                    MOC_wanted_NEW_RAM  == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
                    MOC_wanted_NEW_HDD  == rtrano_rec./*T_decC*/T_PCK_HDD &&
@@ -14384,7 +14382,9 @@ public class FakturPDUC : FakturExtDUC
          {
             ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnije niti MOU niti MOI jer ima nedefinirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
          }
-         return Faktur.TT_MOU;
+
+         //return Faktur.TT_MOU;
+         return "";
       }
 
    }
