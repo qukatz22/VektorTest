@@ -1212,7 +1212,8 @@ namespace EN16931.UBL
             case "BT081"         : theString = "30" /* virman ?! todo */                                                 ; break; //BT-81 Šifra načina plaćanja	                              
           //case "BT083"         : theString = GetPnbFromFaktur(faktur_rec)                                              ; break; //BT-83 Informacije o doznaci - broj racuna, poziv na br i sl    
             case "BT083"         : theString = faktur_rec.VvPnb                                                          ; break; //BT-83 Informacije o doznaci - broj racuna, poziv na br i sl    
-            case "BT084"         : theString = faktur_rec.ZiroRn                                                         ; break; //BT-84 Identifikator računa plaćanja IBAN	      
+          //case "BT084"         : theString = faktur_rec.ZiroRn                                                         ; break; //BT-84 Identifikator računa plaćanja IBAN	      
+            case "BT084"         : theString = faktur_rec.ZiroRn.IsEmpty() ? ZXC.CURR_prjkt_rec.Ziro1 : faktur_rec.ZiroRn; break; //BT-84 Identifikator računa plaćanja IBAN 05.04.2024. kada na faktur ne do]e IBAM onda uzmi iy projekta	      
 
             case "BT025"         : theString = faktur_rec.VezniDok                    ; break; //BT-25 Referenca na prethodni račun                         
           //case "BT082"         : theString = "za sada ovo necemo"                   ; break; //BT-82 Tekst za  načina plaćanja 

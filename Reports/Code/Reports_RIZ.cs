@@ -13024,6 +13024,8 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             TheMoney2    = SecJoin.A.GetIntrastat_Kol_U_JM (SecJoin.R.T_kol),
             TheMoneyKCR  = SecJoin.R.R_KCR,
 
+            IsNekakav    = IsUlaz,
+            Kol          = SecJoin.R.T_kol
          })
        //.OrderBy(qwe => qwe.ArtiklGrCD)
          .ToList();
@@ -13111,7 +13113,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       theIr002a.Envelope.Declaration      = new INTRASTAT.DeclarationType();
 
-      uint rbr = 0;
+      //uint rbr = 0;
 
       //TheDeviznaSumaList = TheRtransList
       //   .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })

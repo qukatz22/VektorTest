@@ -2855,16 +2855,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       ukKC = Math.Abs(ukKC); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
       ukK  = Math.Abs(ukK ); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
 
-      if(skladCD == "20M5" || skladCD == "74M5") // Velika Gorica i Koprivnica imaju pravilo 'bar 2 komada'
-      {
-         if(ukK >= 2) return false;
-         else         return true ;
-      }
-      else // ostale poslovnice imaju pravilo 'bar 5 eur' 
-      {
+    //05.04.2024. Velika Gorica I Koprivnica više nisu special cycle trgovine 
+    //if(skladCD == "20M5" || skladCD == "74M5") // Velika Gorica i Koprivnica imaju pravilo 'bar 2 komada'
+    //{
+    //   if(ukK >= 2) return false;
+    //   else         return true ;
+    //}
+    //else // ostale poslovnice imaju pravilo 'bar 5 eur' 
+    //{
          if(ukKC >= 5.00M) return false;
          else              return true ;
-      }
+    //}
    }
 
    public string GetPIZ_IntersectTT()

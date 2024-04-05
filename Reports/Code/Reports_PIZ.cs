@@ -7200,7 +7200,7 @@ public class RptP_SEPA : RptP_Virmani
 
       #endregion GRUPA1 (NON batching) Transactions LOOP ========================================================================================
 
-      foreach(string currBtchBookgID in PmtInf_btchBookgIDlist) // GRUPE LOOPing - za sada se UVIJEK vrti samo jemput (sam0 jedna BatchBooking grupa smije postojati) 
+      foreach(string currBtchBookgID in PmtInf_btchBookgIDlist) // GRUPE LOOPing - za sada se UVIJEK vrti samo jemput (sam0 jedna BatchBooking grupa smije postojati) NETO!!!
       {
          #region CURR-btchBookgID PmtInf - header (everything bef transactions)
 
@@ -7221,9 +7221,21 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.NbOfTxs          = theNbOfTxs              ;
          pmtInf.CtrlSum          = theCtrlSum              ;
 
+         //05.04.2024. dodajemo ovo i ovdje jer ne prolazi BBneto
+         //05.11.2019: RBA se buni, pa je ovo 1. pokusaj zadovoljenja ___ START ___ 
+         pmtInf.PmtTpInf                    = new PaymentTypeInformation26PmtInf();
+         pmtInf.PmtTpInf.InstrPrty          = Priority2Code.NORM;
+         pmtInf.PmtTpInf.InstrPrtySpecified = true;
+         // 05.11.2019: RBA se buni, pa je ovo 1. pokusaj zadovoljenja ___  END  ___ 
+
+         // 08.05.2023: neki njemacki klijent rozel-a treba sepu a njem. banka se buni da ovo fali pa dodajemo: 
+         pmtInf.PmtTpInf.SvcLvl    = new ServiceLevel8Choice();
+         pmtInf.PmtTpInf.SvcLvl.Cd = "SEPA";
+         //05.04.2024. dodajemo ovo i ovdje jer ne prolazi BBneto
+ 
+
          pmtInf.ReqdExctnDt    = new DateAndDateTime2Choice();
-//         pmtInf.ReqdExctnDt      = executionDate           ;
-         pmtInf.ReqdExctnDt.Dt   = executionDate           ;
+         pmtInf.ReqdExctnDt.Dt = executionDate           ;
 
        //pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
        //pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
