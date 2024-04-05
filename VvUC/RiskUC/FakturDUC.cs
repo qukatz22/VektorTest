@@ -3714,8 +3714,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             } //if(ZXC.IsPCTOGO) 
 
+            if(ZXC.IsTETRAGRAM_ANY)
+            {
+               VvLookUpItem skladLUI = ZXC.GetTetragramPreferredSkladCD();
+
+               if(skladLUI != null)
+               {
+                  Fld_SkladCD    =       skladLUI.Cd     ;
+                  Fld_SkladOpis  =       skladLUI.Name   ;
+                  Fld_SkladBR    = (uint)skladLUI.Integer;
+               }
+            }
+
          } // if(ZXC.RISK_CopyToOtherDUC_inProgress == false) 
-      }
+
+      } // if(ttInfo.IsSklCdInTtNum ||
 
       bool isCentToCentMSI = (this is MedjuSkladDUC) &&
                              Fld_SkladCD.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) &&
