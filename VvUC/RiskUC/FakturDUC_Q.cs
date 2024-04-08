@@ -7307,11 +7307,14 @@ public partial class FakturExtDUC : FakturDUC
       TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
    }
 
-   public override bool IsSomeCrutialFieldIrregularyChanged()
+   public override bool IsSomeCrutialFieldIrregularyChanged() // "Trebam li zabraniti ispravak ovog racuna?" 
    {
       if(faktur_rec.IsFiskalDutyFaktur_ONLINE == false) return false;
 
 //if(faktur_rec.IsAlreadyFiskalized == false) return false;
+
+      // 08.04.2024: 
+      if(ZXC.IsTETRAGRAM_ANY && faktur_rec.IsAlreadyFiskalized == false) return false;
       
       FaktEx fx = faktur_rec.TheEx;
 
@@ -7319,7 +7322,7 @@ public partial class FakturExtDUC : FakturDUC
       if(faktur_rec.CurrentData._dokNum  != faktur_rec.BackupData._dokNum)  { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena broja rn nakon fiskalizacije!"); return true; }
       if(faktur_rec.CurrentData._skladCD != faktur_rec.BackupData._skladCD) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena opp-a nakon fiskalizacije!"   ); return true; }
 
-      if(fx.CurrentData._s_ukKCRP != fx.BackupData._s_ukKCRP) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa nakon fiskalizacije!"); return true; }
+      if(fx.CurrentData._s_ukKCRP != fx.BackupData._s_ukKCRP)               { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena iznosa nakon fiskalizacije!"  ); return true; }
 
       // 10.11.2015: 
     //if(fx.CurrentData._nacPlac    != fx.BackupData._nacPlac         ) { ZXC.aim_emsg(MessageBoxIcon.Error, "Nedozvoljena promjena nacina placanja nakon fiskalizacije!"); return true; }
