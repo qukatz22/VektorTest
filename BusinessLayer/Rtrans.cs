@@ -2390,9 +2390,31 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       R_rbtPdv    = R_mskPdv     - R_pdv                               ; // porez u rabatu                                                                              
       R_KCR       = R_KCRPwoPPMV - R_pdv - R_Pnp                       ; // kupacPlatijo pa bez pdv.                              ("ja zaradijo")                       
 
+      if(T_skladDate.Date > ZXC.Date09042024)
+      {
+         decimal correction = R_KCRP_MPV_Correction;
+
+         if(R_KCRP.IsNegative())
+         {
+            correction = -correction;
+         }
+
+         R_rbt1   += correction;
+         R_KCRP   -= correction;
+         pdvBruto -= correction;
+
+         R_pdv = ZXC.VvGet_25_from_125(pdvBruto, T_pdvSt);
+         R_KCR = pdvBruto - R_pdv;
+
+         R_rbtPdv = R_mskPdv - R_pdv; // ponavljamo zbog novog R_pdv-a                                                                              
+      }
+
       // 17.04.2023: ... a 05.06.2023: jos doradili ... a 27.07.2023: jos doradili da smo umj. R_KCRP stavili pdvBruto
-    //if(ShouldAdjust_2i7_MalopCij                                  ) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
-      if(ShouldAdjust_2i7_MalopCij && T_skladDate > ZXC.Date17042023) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
+      //if(ShouldAdjust_2i7_MalopCij                                  ) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
+
+      #region Stara MPV Korekcija 
+
+      else if(ShouldAdjust_2i7_MalopCij && T_skladDate > ZXC.Date17042023) // 'za platiti' stavke zavrsava s 2 ili 7 centa 
       {
          bool mozemoLiZa2centa = T_skladDate > ZXC.Date06062023;
 
@@ -2423,8 +2445,9 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
          R_rbtPdv = R_mskPdv - R_pdv; // ponavljamo zbog novog R_pdv-a                                                                              
       }
 
+      #endregion Stara MPV Korekcija 
 
-      R_KCRM      = R_KCR;
+      R_KCRM = R_KCR;
                   
       R_MSK       = R_KC; // !!! 
 
@@ -2455,6 +2478,38 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       }
 
    } // CalcTrans_MALOP_Results_IZLAZ 
+
+   private decimal R_KCRP_MPV_Correction
+   {
+      get
+      {
+         if(T_pdvSt != 25.00M || R_rbt1.IsZero()) return 0.00M;
+
+         int kcrp_x_100_as_int = (int)(Math.Floor(R_KCRP * 100.00M));
+
+         string kcrp_x_100_as_str = kcrp_x_100_as_int.ToString();
+
+         char lastChar = ZXC.GetStringsLastChar(kcrp_x_100_as_str);
+
+         switch(lastChar)
+         {
+            case '0':
+            case '5': return 0.00M;
+
+            case '1': return 0.01M;
+            case '2': return 0.02M;
+            case '3': return 0.03M;
+            case '4': return 0.04M;
+                             
+            case '6': return 0.01M;
+            case '7': return 0.02M;
+            case '8': return 0.03M;
+            case '9': return 0.04M;
+
+            default: return 0.00M;
+         }
+      }
+   }
 
    private bool ShouldAdjust_2i7_MalopCij
    {
