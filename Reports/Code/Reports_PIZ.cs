@@ -7159,13 +7159,6 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.Dbtr.PstlAdr.Ctry    = ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty; //novo - ovo jos provjeri
        //pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
 
-//pmtInf.Dbtr.IdSpecified = true;  //!!!Specified
-//pmtInf.Dbtr.Id          = new Party38Choice();
-//pmtInf.Dbtr.Id.Item     = new OrganisationIdentification29();
-//(pmtInf.Dbtr.Id.Item      as  OrganisationIdentification29).Item = new GenericOrganisationIdentification1();
-//((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).Id = ZXC.CURR_prjkt_rec.Oib;
-//         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).SchmeNmSpecified = false;     //!!!Specified 
-  
          pmtInf.DbtrAcct         = new CashAccount38Dbtr();
          pmtInf.DbtrAcct.Id      = new AccountIdentification4Choice();
          pmtInf.DbtrAcct.Id.IBAN = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
@@ -7214,7 +7207,7 @@ public class RptP_SEPA : RptP_Virmani
          theNbOfTxs = _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID).Count().ToString();
          theCtrlSum = _theVirmanList.Where(v => v.BtchBookgID == currBtchBookgID).Sum(virman_rec => virman_rec.Money).Ron2();
 
-//         pmtInf.PmtTpInf.CtgyPurp.Cd = "SALA";
+//       pmtInf.PmtTpInf.CtgyPurp.Cd   = "SALA";
 
          pmtInf.PmtInfId         = currBtchBookgID         ;
          pmtInf.PmtMtd           = PaymentMethod3Code.TRF  ;
@@ -7233,13 +7226,13 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.PmtTpInf.SvcLvl.Cd = "SEPA";
          //05.04.2024. dodajemo ovo i ovdje jer ne prolazi BBneto
  
+         //09.04.2024.!!!!
+         pmtInf.PmtTpInf.CtgyPurp = new CategoryPurpose1Choice();
+         pmtInf.PmtTpInf.CtgyPurp.Item = "SALA";
 
          pmtInf.ReqdExctnDt    = new DateAndDateTime2Choice();
          pmtInf.ReqdExctnDt.Dt = executionDate           ;
 
-       //pmtInf.Dbtr.Nm          = ZXC.CURR_prjkt_rec.Naziv;
-       //pmtInf.Dbtr.PstlAdr.AdrLine = new string[] { ZXC.CURR_prjkt_rec.Ulica1, ZXC.CURR_prjkt_rec.Grad };
-       //
          pmtInf.Dbtr                 = new PartyIdentification135_1();
          pmtInf.Dbtr.Nm              = ZXC.CURR_prjkt_rec.Naziv;
          pmtInf.Dbtr.PstlAdr         = new PostalAddress24();
@@ -7253,16 +7246,6 @@ public class RptP_SEPA : RptP_Virmani
          if(ZXC.CURR_prjkt_rec.Ulica1.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazna 'Ulica1' platitelja možda bude problem?!");
          if(ZXC.CURR_prjkt_rec.Grad  .IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazan 'Grad'   platitelja možda bude problem?!");
 
-//pmtInf.Dbtr.IdSpecified = true;
-//pmtInf.Dbtr.Id.Item = new OrganisationIdentification29();
-//(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item = new GenericOrganisationIdentification1();
-//((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).Id = ZXC.CURR_prjkt_rec.Oib;
-//         ((GenericOrganisationIdentification1)(pmtInf.Dbtr.Id.Item as OrganisationIdentification29).Item).SchmeNmSpecified = false;
-
-         //04.04.2024 za nou sepu
-       //pmtInf.DbtrAcct.Id.IBAN        = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
-       //pmtInf.DbtrAcct.Ccy            = /*"HRK"*/ ZXC.EURorHRKstr;
-       //pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
          pmtInf.DbtrAcct         = new CashAccount38Dbtr();
          pmtInf.DbtrAcct.Id      = new AccountIdentification4Choice();
          pmtInf.DbtrAcct.Id.IBAN = dbtrIBAN.TrimStart(' ').TrimEnd(' ');
@@ -7270,7 +7253,6 @@ public class RptP_SEPA : RptP_Virmani
          pmtInf.DbtrAgt                 = new BranchAndFinancialInstitutionIdentification6DbtrAgt();
          pmtInf.DbtrAgt.FinInstnId      = new FinancialInstitutionIdentification18DbtrAgt();
          pmtInf.DbtrAgt.FinInstnId.Item = Get_DbtrAgt_BIC(pmtInf.DbtrAcct.Id.IBAN);
-
 
 
 //         pmtInf.UltmtDbtrSpecified    = 

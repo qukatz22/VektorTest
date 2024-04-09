@@ -3312,11 +3312,12 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         string opisPlac = "Plaćanje: " + NacPlac + " " + R_ukKCRP_NP1.ToStringVv() + " " + "EUR";
+         string valutaName = this.DevName.IsEmpty() ? "EUR" : this.DevName ;
+         string opisPlac   = "Plaćanje: " + NacPlac + " " + R_ukKCRP_NP1.ToStringVv() + " " + valutaName/*"EUR"*/;
          
          if(this.R_ukKCRP_NP2.NotZero())
          {
-            opisPlac += ", " + NacPlac2 + " " + R_ukKCRP_NP2.ToStringVv() + " " + /*this.DevName*/"EUR";
+            opisPlac += ", " + NacPlac2 + " " + R_ukKCRP_NP2.ToStringVv() + " " + valutaName/*this.DevName"EUR"*/;
          }
 
          return opisPlac;

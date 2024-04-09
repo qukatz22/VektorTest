@@ -1590,7 +1590,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // if still... 
       if(IsShowingConvertedMoney)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u kune.");
+       //ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u kune.");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u eure.");
          e.Cancel = true;
       }
 

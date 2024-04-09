@@ -250,7 +250,8 @@ public abstract class NalogDUC : VvDocumentRecordUC
       // if still... 
       if(IsShowingConvertedMoney)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u kune.");
+       //ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u kune.");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Prije usnimavanja preracunajte valutu u eure.");
          e.Cancel = true;
       }
 
