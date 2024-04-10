@@ -5863,7 +5863,7 @@ public class Placa2NalogRulesUC : VvOtherUC
                      tbx_NP60_jubi_D, tbx_NP60_jubi_P
                      ;
 
-   private CheckBox cbx_visibleVrKoefBruto1, cxb_isObustOsnDohodak, cxb_isNPnaRR_Umjesecu;
+   private CheckBox cbx_visibleVrKoefBruto1, cxb_isObustOsnDohodak, cxb_isNPnaRR_Umjesecu, cxb_ZanemariMaxHZZO;
 
    public KtoShemaPlacaDsc KSP { get; set; }
 
@@ -6958,20 +6958,22 @@ public class Placa2NalogRulesUC : VvOtherUC
 
    private void InitializeHamper_IsOsnovObDoh(out VvHamper hamper)
    {
-      hamper          = new VvHamper(1, 2, "", this, false);
+      hamper          = new VvHamper(1, 3, "", this, false);
       hamper.Location = new Point(hamp_CR_OP.Left, hamp_CR_OP.Bottom + ZXC.QunMrgn);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un * 3 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8      };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2, ZXC.Qun2 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2, ZXC.Qun2, ZXC.Qun2 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cxb_isObustOsnDohodak = hamper.CreateVvCheckBox_OLD(0, 0, null, "Osnovica za obračun obustave na osnovu postotka je Dohodak (standardna osnovica je Neto)", System.Windows.Forms.RightToLeft.No);
+      cxb_isObustOsnDohodak  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Osnovica za obračun obustave na osnovu postotka je Dohodak (standardna osnovica je Neto)", System.Windows.Forms.RightToLeft.No);
      
-      cxb_isNPnaRR_Umjesecu   = hamper.CreateVvCheckBox_OLD(0, 1, null, "Mjesec (datum od i do na Joppd obrascu) za NeoPrim na obračunu plaće (RR) je mjesec U KOJEM JE ISPLATA (standardno je kao i plaća tj. za mjesec)", System.Windows.Forms.RightToLeft.No);
+      cxb_isNPnaRR_Umjesecu  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Mjesec (datum od i do na Joppd obrascu) za NeoPrim na obračunu plaće (RR) je mjesec U KOJEM JE ISPLATA (standardno je kao i plaća tj. za mjesec)", System.Windows.Forms.RightToLeft.No);
+
+      cxb_ZanemariMaxHZZO    = hamper.CreateVvCheckBox_OLD(0, 2, null, "Dozvoli iznos naknade za bolovanje preko maksimalnog HZZO iznosa)", System.Windows.Forms.RightToLeft.No);
    
    }
 
@@ -7157,8 +7159,9 @@ public class Placa2NalogRulesUC : VvOtherUC
 
    public bool Fld_CR_IsVrKfBrt1     { get { return cbx_visibleVrKoefBruto1.Checked; } set { cbx_visibleVrKoefBruto1.Checked = value; } }
    public bool Fld_IsObustOsnDoh     { get { return cxb_isObustOsnDohodak  .Checked; } set { cxb_isObustOsnDohodak  .Checked = value; } }
-   public bool Fld_IsNPnaRR_U_mj { get { return cxb_isNPnaRR_Umjesecu  .Checked; } set { cxb_isNPnaRR_Umjesecu.Checked = value; } }
-
+   public bool Fld_IsNPnaRR_U_mj { get { return cxb_isNPnaRR_Umjesecu  .Checked; } set { cxb_isNPnaRR_Umjesecu .Checked = value; } }
+   public bool Fld_ZanemariMaxHZZO { get { return cxb_ZanemariMaxHZZO .Checked; } set { cxb_ZanemariMaxHZZO.Checked = value; } }
+   
    public string Fld_NP63_nagr_D { get { return tbx_NP63_nagr_D.Text; } set { tbx_NP63_nagr_D.Text = value; } }
    public string Fld_NP65_preh_D { get { return tbx_NP65_preh_D.Text; } set { tbx_NP65_preh_D.Text = value; } }
    public string Fld_NP71_dZdr_D { get { return tbx_NP71_dZdr_D.Text; } set { tbx_NP71_dZdr_D.Text = value; } }
@@ -7379,6 +7382,7 @@ public class Placa2NalogRulesUC : VvOtherUC
       Fld_NP26_otpr_P    = KSP.Dsc_NP26_otpr_P   ;
       Fld_NP60_jubi_P    = KSP.Dsc_NP60_jubi_P   ;
 
+      Fld_ZanemariMaxHZZO = KSP.Dsc_ZanemariMaxHZZO;
 
    }
 
@@ -7575,6 +7579,8 @@ public class Placa2NalogRulesUC : VvOtherUC
        KSP.Dsc_NP22_regB_P    = Fld_NP22_regB_P   ;
        KSP.Dsc_NP26_otpr_P    = Fld_NP26_otpr_P   ;
        KSP.Dsc_NP60_jubi_P    = Fld_NP60_jubi_P   ;
+      
+       KSP.Dsc_ZanemariMaxHZZO = Fld_ZanemariMaxHZZO;
 
        KSP.SaveDscToLookUpItemList();
 
@@ -7778,6 +7784,7 @@ public class KtoShemaPlacaDsc : VvLookupAsDsc
    public string Dsc_NP22_regB_P    { get; set; }
    public string Dsc_NP26_otpr_P    { get; set; }
    public string Dsc_NP60_jubi_P    { get; set; }
+   public bool Dsc_ZanemariMaxHZZO { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -7989,6 +7996,7 @@ public class KtoShemaPlacaDsc : VvLookupAsDsc
       Dsc_NP22_regB_P      = "2300";
       Dsc_NP26_otpr_P      = "2300";
       Dsc_NP60_jubi_P      = "2300";
+      Dsc_ZanemariMaxHZZO  = false;
 
       #endregion defautValue
    }

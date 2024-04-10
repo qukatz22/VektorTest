@@ -694,6 +694,9 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       if(ZXC.IsEURoERA_projectYear) maxHZZO_NetoAdd =  565.04M;
       else                          maxHZZO_NetoAdd = 4257.28M;
 
+      //10.04.2024.
+      KtoShemaPlacaDsc kspl = new KtoShemaPlacaDsc(ZXC.dscLuiLst_KtoShemaPlaca);
+
       foreach(Ptrans ptrans_rec in placa_rec.TransesNonDeleted)
       {
          if(placa_rec.TT == Placa.TT_REDOVANRAD && ptrans_rec.T_koef.IsZero())
@@ -715,8 +718,14 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
             ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška! Djelatnik {0}\n\r\n\riznos naknade za bolovanje ('NetoDod') {1} je prevelik.\n\r\n\r(max: {2})", 
                ptrans_rec.T_prezimeIme, ptrans_rec.T_NetoAdd.ToStringVv(), maxHZZO_NetoAdd.ToStringVv());
 
-            e.Cancel = true;
-            break;
+          //10.04.2024.
+          //e.Cancel = true;
+          //break;
+            if(kspl.Dsc_ZanemariMaxHZZO == false)
+            {
+               e.Cancel = true;
+               break;
+            }
          }
       }
    }

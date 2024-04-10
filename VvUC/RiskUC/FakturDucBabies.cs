@@ -8202,6 +8202,9 @@ public class POT_DUC         : FakturExtDUC
       SetSumeHampers(false, true, true, false);
 
       hamp_SkladDate .Location = new Point(hamp_dokDate.Right   , hamp_dokDate    .Top   );
+
+      hamp_ValName   .Location = new Point(hamp_dokDate.Left   , hamp_dokDate    .Bottom - ZXC.Qun4);
+
       hamp_vezniDok  .Location = new Point(hamp_kupdobOther.Left, hamp_kupdobOther.Bottom- ZXC.Qun4);
       hamp_VezniDok2 .Location = new Point(hamp_kupdobOther.Left, hamp_vezniDok   .Bottom);
       hamp_Fco       .Location = new Point(hamp_kupdobOther.Left, hamp_VezniDok2  .Bottom);
@@ -8220,7 +8223,7 @@ public class POT_DUC         : FakturExtDUC
    {
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     hamp_kupdobOther, hamp_ZiroRn, hamp_vezniDok,  hamp_VezniDok2, hamp_Fco,
-                                    hamp_dokDate    ,  hamp_dokNum,  hamp_SkladDate, hamp_napomena, 
+                                    hamp_dokDate    , hamp_ValName , hamp_dokNum,  hamp_SkladDate, hamp_napomena, 
                                     hamp_skladCd    , hamp_v1TT   , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
                                     hamp_NacPlac, hamp_opis, hamp_prjArtName, hamp_posJedCd
                                   };
