@@ -2020,14 +2020,21 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       CalcKuneBackupValues();
    }
 
+   public decimal R_cij_4VELEP_Results_ByMPC
+   {
+      get
+      {
+         return Is_VelepByMPC_4Umj ? (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2() :
+                                      ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
+      }
+   }
    private void CalcTrans_VELEP_Results_ByMPC(Faktur faktur_rec) //  za sada Tetragram ONLY 
    {
       INIT_Memset0Rtrans_GetZtr(faktur_rec);
 
       #region izvedi T_cij iz T_wanted (mpc)
 
-      T_cij = Is_VelepByMPC_4Umj ? (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2() : 
-                                   ZXC.VvGet_100_from_125(T_wanted, T_pdvSt)            .Ron2() ;
+      T_cij = R_cij_4VELEP_Results_ByMPC;
 
       if(T_wanted.IsZero()) T_cij = 0M;
 

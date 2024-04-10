@@ -1279,6 +1279,14 @@ public /*partial*/ class RptR_IRA : VvRiskReport
              //rtr.T_cij = VvCurrency(rtr.T_cij); 
              //rtr.T_cij =           (rtr.T_cij * devTecaj);
                rtr.T_cij = ZXC.DivSafe(rtr.T_cij, devTecaj);
+
+               // 09.04.2024: 
+               if(rtr.Is_VelepByMPC)
+               {
+                  rtr.T_wanted = ZXC.DivSafe(rtr.T_wanted, devTecaj);
+                  rtr.T_cij    = rtr.R_cij_4VELEP_Results_ByMPC;
+               }
+
                rtr.CalcTransResults(null); 
             } 
          );

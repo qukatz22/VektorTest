@@ -3932,6 +3932,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                { 
                   rtr.T_cij = VvCurrency(rtr.T_cij);
 
+                  // 09.04.2024: 
+                  if(rtr.Is_VelepByMPC)
+                  {
+                     rtr.T_wanted = VvCurrency(rtr.T_wanted);
+                     rtr.T_cij    = VvCurrency(rtr.R_cij_4VELEP_Results_ByMPC);
+                  }
+
                   rtr.CalcTransResults(null); 
                } 
             );
@@ -4145,7 +4152,15 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             fakturLocal_rec.Transes.ForEach(rtr => 
                { 
                 //rtr.T_cij = VvCurrency(rtr.T_cij); 
-                  rtr.T_cij =           (rtr.T_cij * DevTecaj); 
+                  rtr.T_cij =           (rtr.T_cij * DevTecaj);
+
+                  // 09.04.2024: 
+                  if(rtr.Is_VelepByMPC)
+                  {
+                     rtr.T_wanted = rtr.T_wanted * DevTecaj;
+                     rtr.T_cij    = rtr.R_cij_4VELEP_Results_ByMPC;
+                  }
+
                   rtr.CalcTransResults(null); 
                } 
             );
@@ -14216,211 +14231,6 @@ public class FakturPDUC : FakturExtDUC
       if(IsPTG_UgAnDo_DUC) vvtbT_artiklCD2.JAM_ReadOnly = true;
    }
 
-   private void SetRow_TT_and_Color_and_Calc_newRam_newHdd(object sender, EventArgs e)
-   {
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
-
-      int rowIdx = TheG2.CurrentRow.Index;
-      int colIdx = TheG2.CurrentCell.ColumnIndex;
-
-      bool isPCKartikl        = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
-      bool isKomponentaArtikl = !isPCKartikl;
-
-      bool isPlusOrMinusCol =
-           (colIdx == ci2.iT_RAM_plus  ||
-            colIdx == ci2.iT_RAM_minus ||
-            colIdx == ci2.iT_HDD_plus  ||
-            colIdx == ci2.iT_HDD_minus) ;
-
-      string oldArtiklCD = "";
-
-      if(isPCKartikl)
-      {
-         oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
-      }
-
-      if(isPlusOrMinusCol && isPCKartikl)
-      {
-         decimal oldRAM   = TheG2.GetDecimalCell(ci2.iR_ramOld   , rowIdx, false);
-         decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
-         decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
-         decimal newRAM   = oldRAM + plusRAM - minusRAM;
-         if(newRAM.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New RAM je NEGATIVAN!?");
-         TheG2.PutCell(ci2.iT_RAM_new, rowIdx, newRAM);
-
-         decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld   , rowIdx, false);
-         decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
-         decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
-         decimal newHDD   = oldHDD + plusHDD - minusHDD;
-         if(newHDD.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!?");
-         TheG2.PutCell(ci2.iT_HDD_new, rowIdx, newHDD);
-         
-         
-         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
-      }
-
-      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
-
-      string  MOC_wanted_ArtiklCD = Fld_PrjArtCD ;
-      decimal MOC_wanted_NEW_RAM  = Fld_Decimal01;
-      decimal MOC_wanted_NEW_HDD  = Fld_Decimal02;
-
-      bool isMOC_PCK_base = Artikl.Has_equal_PCK_base(MOC_wanted_ArtiklCD, oldArtiklCD);
-
-      string theTT = Get_MOD_RtranoTT(rowIdx, isPCKartikl, rtrano_rec, isMOC_PCK_base, MOC_wanted_NEW_RAM, MOC_wanted_NEW_HDD, false);
-
-      TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
-
-      if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(theTT, rowIdx);
-
-      if(isKomponentaArtikl) // MOU / MOI stavke (komponente PCK-a) 
-      {
-         // provjeravaj ovo samo za kolone RAM+/- i HDD+/- 
-         if(isPlusOrMinusCol == false) return;
-
-         //VvDataGridView dgv  = sender             as VvDataGridView;
-         //VvTextBox vvTextBox = dgv.EditingControl as VvTextBox     ;
-         VvTextBox vvTextBox = sender as VvTextBox;
-
-         Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
-
-         if(vvTextBox is null || artikl_rec is null) return;
-
-         bool isRAM = colIdx == ci2.iT_RAM_plus || colIdx == ci2.iT_RAM_minus;
-         bool isHDD = !isRAM;
-
-         decimal enteredKapacitet = isRAM ? rtrano_rec.T_dimX + rtrano_rec.T_dimY : rtrano_rec.T_decA + rtrano_rec.T_decB;
-
-       //decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
-         decimal kolPutaKapacitet = isRAM ? rtrano_rec.T_kol * artikl_rec.PCK_RAM : rtrano_rec.T_kol * artikl_rec.PCK_HDD;
-
-         if(enteredKapacitet != kolPutaKapacitet)
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
-         }
-      }
-   }
-
-   private void Set_MOU_MOI_RAMorHDD_minus(object sender, EventArgs e)
-   {
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
-
-      int rowIdx = TheG2.CurrentRow.Index;
-
-      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
-
-      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
-
-      if(isPCK == true)
-      {
-         if(rtrano_rec.T_kol != 1.00M)
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, "Besmislena je količina različita od 1.");
-            TheG2.PutCell(ci2.iT_kol, rowIdx, 1M);
-         }
-         return; // NIJE moi mou 
-      }
-
-      VvTextBox vvTextBox = sender as VvTextBox;
-
-      Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
-
-      if(vvTextBox is null || artikl_rec is null) return;
-
-      bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
-      bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
-
-      if(isRAM && artikl_rec.PCK_RAM.IsZero())
-      {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
-         return;
-      }
-
-      if(isHDD && artikl_rec.PCK_HDD.IsZero())
-      {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
-         return;
-      }
-
-      decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_RAM;
-      decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_HDD;
-
-      int ramDelta_colIdx = ci2.iT_dimY;
-      int hddDelta_colIdx = ci2.iT_decB;
-
-      if(rtrano_rec.T_TT == Faktur.TT_MOU)
-      {
-         ramDelta_colIdx = ci2.iT_RAM_plus;
-         hddDelta_colIdx = ci2.iT_HDD_plus;
-      }
-
-      TheG2.PutCell(ramDelta_colIdx, rowIdx, ram_kolPutaKapacitet);
-      TheG2.PutCell(hddDelta_colIdx, rowIdx, hdd_kolPutaKapacitet);
-
-      SetRow_TT_and_Color_and_Calc_newRam_newHdd(sender, e);
-   }
-
-   private string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, bool isMOC_PCK_base, decimal MOC_wanted_NEW_RAM, decimal MOC_wanted_NEW_HDD, bool shouldWarn)
-   {
-      if(rtrano_rec.T_artiklCD.IsEmpty()) return ""; // kak bus znal jel MOC MOS MOI MOU ak je artikl prazan 
-
-      bool isMOC = isPCK &&
-                   MOC_wanted_NEW_RAM  == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
-                   MOC_wanted_NEW_HDD  == rtrano_rec./*T_decC*/T_PCK_HDD &&
-                   isMOC_PCK_base                                        &&
-                   ThisIs_MOC_rowIndex(rowIdx); 
-
-      if(isPCK)
-      {
-         if(isMOC) return Faktur.TT_MOC;
-         else      return Faktur.TT_MOS;
-      }
-
-      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
-      decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
-      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
-      decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
-
-      bool isMOI = RAMminus.NotZero() || HDDminus.NotZero();
-      bool isMOU = RAMplus .NotZero() || HDDplus .NotZero();
-
-      if(isMOI && (RAMplus  + HDDplus ).NotZero()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Komponenta u {0}. retku ima zadanu i plus i minus količinu!?", rowIdx + 1);
-      if(isMOU && (RAMminus + HDDminus).NotZero()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Komponenta u {0}. retku ima zadanu i plus i minus količinu!?", rowIdx + 1);
-
-           if(isMOI) return Faktur.TT_MOI;
-      else if(isMOU) return Faktur.TT_MOU;
-      else
-      {
-         if(shouldWarn)
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnije niti MOU niti MOI jer ima nedefinirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
-         }
-
-         //return Faktur.TT_MOU;
-         return "";
-      }
-
-   }
-
-   private void Check_MOD_plusMinus_errors(int rowIdx, Rtrano rtrano_rec)
-   {
-      // samo kao podsjetnik: 
-      // decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false); 
-      // decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false); 
-      // decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false); 
-      // decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false); 
-
-      uint numOfPlusMinusUnosa = 0;
-
-      if(rtrano_rec.T_dimX.NotZero()) numOfPlusMinusUnosa++;
-      if(rtrano_rec.T_dimY.NotZero()) numOfPlusMinusUnosa++;
-      if(rtrano_rec.T_decA.NotZero()) numOfPlusMinusUnosa++;
-      if(rtrano_rec.T_decB.NotZero()) numOfPlusMinusUnosa++;
-
-      if(numOfPlusMinusUnosa < 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnema definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
-      if(numOfPlusMinusUnosa > 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rima višestruko definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
-   }
-
    protected void T_artiklName2_CreateColumnFill(bool isVisible, string _colHeader, string _statusText)
    {
       vvtbT_artiklName2 = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_artiklName2", TheVvDaoTrans2, DB_Tci2.t_artiklName, _statusText);
@@ -14465,7 +14275,7 @@ public class FakturPDUC : FakturExtDUC
       else if(this is MOD_PTG_DUC) // PCK serno handling for MOC/MOS rtrano row 
       {
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno_For_MOD);
-         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
       else // old, default PPUK 
       {
@@ -14501,7 +14311,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_dimX.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+         vvtbT_dimX.JAM_FieldExitMethod = new EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_dimX.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       }
 
@@ -14517,7 +14327,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_dimY.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+         vvtbT_dimY.JAM_FieldExitMethod = new EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_dimY.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
       }
@@ -14601,7 +14411,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_decA.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+         vvtbT_decA.JAM_FieldExitMethod = new EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_decA.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
       }
@@ -14617,7 +14427,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_decB.JAM_FieldExitMethod = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+         vvtbT_decB.JAM_FieldExitMethod = new EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
          vvtbT_decB.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
       }
@@ -14665,7 +14475,7 @@ public class FakturPDUC : FakturExtDUC
       if(this is MOD_PTG_DUC)
       {
          vvtbT_kolg2.JAM_FieldEntryMethod              = new       EventHandler(OnEntryT_Kolg2_ForEditWriteMode_Get_dataLayerT_kolg2);
-         vvtbT_kolg2.JAM_FieldExitMethod               = new       EventHandler(Set_MOU_MOI_RAMorHDD_minus                          );
+         vvtbT_kolg2.JAM_FieldExitMethod               = new       EventHandler((this as MOD_PTG_DUC).Set_MOU_MOI_RAMorHDD_minus    );
          vvtbT_kolg2.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExitT_Kolg2_ValidateCheckMinus                    );
       }
 
@@ -14786,7 +14596,7 @@ public class FakturPDUC : FakturExtDUC
 
       if(this is MOD_PTG_DUC)
       {
-         vvtbT_artiklCD2_Old.JAM_FieldExitMethod_3 = new EventHandler(SetRow_TT_and_Color_and_Calc_newRam_newHdd);
+         vvtbT_artiklCD2_Old.JAM_FieldExitMethod_3 = new EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
 
    }
@@ -15021,7 +14831,7 @@ public class FakturPDUC : FakturExtDUC
 
          if(rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU)
          {
-            Check_MOD_plusMinus_errors(rowIdx, rtrano_rec);
+            (this as MOD_PTG_DUC).Check_MOD_plusMinus_errors(rowIdx, rtrano_rec);
             TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, rtrano_rec.T_artiklCD);
          }
 
@@ -15207,12 +15017,12 @@ public class FakturPDUC : FakturExtDUC
 
          // ove GetDecimalCell-ove ovdje preduhitrujemo jer nam trebaju u dgvRtrano_rec-u za Get_MOD_RtranoTT 
          // dole nize ce se oni jos jednom, defaultno ponasanje, pokupiti                                     
-         dgvRtrano_rec.T_dimX = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_dimY = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_dimZ = TheG2.GetDecimalCell(ci2.iT_RAM_new  , rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_decA = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_decB = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rIdx, dirtyFlagging);
-         dgvRtrano_rec.T_decC = TheG2.GetDecimalCell(ci2.iT_HDD_new  , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimX    = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_dimY    = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_PCK_RAM = TheG2.GetDecimalCell(ci2.iT_RAM_new  , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decA    = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_decB    = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rIdx, dirtyFlagging);
+         dgvRtrano_rec.T_PCK_HDD = TheG2.GetDecimalCell(ci2.iT_HDD_new  , rIdx, dirtyFlagging);
 
          bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rIdx, false) == ZXC.PCK_TS;
 
@@ -15223,7 +15033,9 @@ public class FakturPDUC : FakturExtDUC
             isMOC_PCK_base     = Artikl.Has_equal_PCK_base(Fld_PrjArtCD, oldArtiklCD);
          }
 
-         dgvRtrano_rec.T_TT = Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, isMOC_PCK_base, PCK_RAM, PCK_HDD, false);
+         dgvRtrano_rec.T_artiklCD = TheG2.GetStringCell(ci2.iT_artiklCD, rIdx, dirtyFlagging); // ponavljamo jos dole klasicnao 
+
+         dgvRtrano_rec.T_TT = (this as MOD_PTG_DUC).Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, isMOC_PCK_base, PCK_RAM, PCK_HDD, false);
 
       } // if(HasRtrano_TT_Exposed)
 
@@ -15360,7 +15172,7 @@ public class FakturPDUC : FakturExtDUC
       return dgvRtrano_rec;
    }
 
-   private void SetColors_MOD_PTG_DUC(string TT, int rowIdx)
+   protected void SetColors_MOD_PTG_DUC(string TT, int rowIdx)
    {
     //VvDataGridView dgv = TheG2;
 

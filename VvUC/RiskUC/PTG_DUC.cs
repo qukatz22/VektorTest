@@ -3032,408 +3032,6 @@ public class FUG_PTG_UC : VvUserControl
 
 }
 
-public class MOD_PTG_DUC : FakturPDUC
-{
-   #region Fieldz
-
-   public  VvHamper  hamp_klase, hamp_pckBaza, hamp_ugando, hamp_semafor;
-   private VvTextBox tbx_pckBaza, tbx_ramKlasa, tbx_hddKlasa;
-   public  Label     lbl_MOC, lbl_SER, lbl_RAM, lbl_HDD;
-
-   #endregion Fieldz
-
-   #region Constructor
-
-   public MOD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
-   {
-      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
-      (Faktur.tt_colName, new string[]
-      {
-         Faktur.TT_MOD 
-      });
-
-      ThePolyGridTabControl.SelectedIndex = 1;
-
-      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
-
-      TheSumGrid.Visible = false;
-
-      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEC_Showing_DisableInput);   
-   }
-
-   private void OnEC_Showing_DisableInput(object sender, DataGridViewEditingControlShowingEventArgs e)
-   {
-      Control      control  = e.Control;
-      DataGridView theG2    = sender as VvDataGridView;
-
-      if(control is VvTextBox)
-      {
-       //VvTextBox vvtbTalon     = theG2.Columns[theG2.CurrentCell.ColumnIndex].Tag as VvTextBox;
-         VvTextBox currVvTextBox = theG2.EditingControl                             as VvTextBox;
-
-         int rowIdx = theG2.CurrentCell.RowIndex   ;
-         int colIdx = theG2.CurrentCell.ColumnIndex;
-
-         Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
-
-         bool isMOCrowIdx = ThisIs_MOC_rowIndex(rowIdx);
-
-         #region some util bools
-
-         bool isMOC_MOS_row = rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS;
-         bool isMOI_MOU_row = rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU;
-
-         bool isKol_col                = colIdx == DgvCI2.iT_kol  ;
-         bool isSerno_col              = colIdx == DgvCI2.iT_serno;
-         bool isRAM_HDD_plus_minus_col = colIdx == DgvCI2.iT_RAM_plus || colIdx == DgvCI2.iT_RAM_minus || colIdx == DgvCI2.iT_HDD_plus || colIdx == DgvCI2.iT_HDD_minus;
-
-         #endregion some util bools
-
-         if(isMOCrowIdx && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true; // Disable Input! 
-         if(isMOI_MOU_row && (isSerno_col || isRAM_HDD_plus_minus_col)                     ) currVvTextBox.ReadOnly = true; // Disable Input! 
-         if(isMOC_MOS_row &&  isKol_col                                                    ) currVvTextBox.ReadOnly = true; // Disable Input! 
-
-      }
-   }
-
-   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
-   {
-      if(newPage.Enabled == false)
-      {
-         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
-      }
-   }
-
-   #endregion Constructor
-
-   #region HamperLocation
-
-   protected override void SetLocationAndParentOfHampersOnBaby()
-   {
-      CreateArrOfHampers();
-      SetParentOfHamperLeftHampers();
-      CrateHamperPCKbaza();
-      CrateHamperKlasa();
-      CreateHamperUGANDO();
-      CreateHamperSemafor();
-
-      panel_MigratorsLeftB.SendToBack();
-
-      hamp_dokDate    .Location = new Point(                             0,                              0);
-      hamp_tt         .Location = new Point(hamp_dokDate.Right + ZXC.Qun12,                              0);
-      hamp_skladCd    .Location = new Point(hamp_tt          .Right,                              0);
-      hamp_dokNum     .Location = new Point(hamp_skladCd     .Right,                              0);
-      hamp_kupdobNaziv.Location = new Point(                      0, hamp_dokDate.Bottom           );
-      hamp_ugando     .Location = new Point(hamp_kupdobNaziv.Right , hamp_dokDate.Bottom + ZXC.Qun8);
-      hamp_napomena   .Location = new Point(                 0, hamp_ugando .Bottom + ZXC.Qun8);
-
-
-      hamp_pckBaza   .Location = new Point(           labelWidth, hamp_napomena.Bottom + ZXC.Qun2);
-      hamp_prjArtName.Location = new Point(hamp_pckBaza   .Right, hamp_napomena.Bottom + ZXC.Qun2);
-      hamp_klase     .Location = new Point(hamp_prjArtName.Right, hamp_napomena.Bottom + ZXC.Qun2);
-      hamp_decimal   .Location = new Point(hamp_klase     .Right, hamp_napomena.Bottom + ZXC.Qun2);
-      hamp_someMoney .Location = new Point(hamp_decimal   .Right, hamp_napomena.Bottom + ZXC.Qun2);
-
-      hamp_semafor   .Location = new Point(hamp_someMoney.Right + ZXC.Q2un, hamp_napomena.Top + ZXC.Qun4);
-
-      nextY = hamp_prjArtName.Bottom + ZXC.QUN;
-      
-      hamp_IznosUvaluti.Visible = false;
-
-      this.ControlForInitialFocus = tbx_Napomena; // tamara ... todo? 
-
-      SetSumeHampers(false, false, false, false);
-
-      hamp_twin.Visible = false;
-   }
-   private void CreateArrOfHampers()
-   {
-      hamperLeft = new VvHamper[] { hamp_skladCd, hamp_tt, hamp_kupdobNaziv, //hamp_SkladDate,
-                                    hamp_dokDate, hamp_dokNum, hamp_napomena,// hamp_v1TT,
-                                    hamp_prjArtName, hamp_decimal, hamp_someMoney
-                                   };
-   }
-
-   private void CrateHamperPCKbaza()
-   {
-      hamp_pckBaza        = new VvHamper(1, 2, "", null, false);
-      hamp_pckBaza.Parent = TheTabControl.TabPages[0];
-
-      hamp_pckBaza.VvColWdt      = new int[] { ZXC.Q5un };
-      hamp_pckBaza.VvSpcBefCol   = new int[] { ZXC.Qun8 };
-      hamp_pckBaza.VvRightMargin = hamp_pckBaza.VvLeftMargin;
-
-      hamp_pckBaza.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
-      hamp_pckBaza.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
-      hamp_pckBaza.VvBottomMargin = hamp_pckBaza.VvTopMargin;
-
-                    hamp_pckBaza.CreateVvLabel  (0, 0, "PCK baza", ContentAlignment.MiddleLeft);
-      tbx_pckBaza = hamp_pckBaza.CreateVvTextBox(0, 1, "tbx_pckBaza", "", 16);
-      tbx_pckBaza.JAM_ReadOnly = true;
-      tbx_pckBaza.Font = ZXC.vvFont.BaseBoldFont;
-
-   }
-
-   private void CrateHamperKlasa()
-   {
-      hamp_klase = new VvHamper(2, 2, "", null, false);
-      hamp_klase.Parent = TheTabControl.TabPages[0];
-
-      hamp_klase.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q3un};
-      hamp_klase.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8};
-      hamp_klase.VvRightMargin = hamp_klase.VvLeftMargin;
-
-      hamp_klase.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
-      hamp_klase.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
-      hamp_klase.VvBottomMargin = hamp_klase.VvTopMargin;
-
-
-      hamp_klase.CreateVvLabel(0, 0, "RAM klasa", ContentAlignment.MiddleRight);
-      hamp_klase.CreateVvLabel(1, 0, "HDD klasa", ContentAlignment.MiddleRight);
-
-      tbx_ramKlasa = hamp_klase.CreateVvTextBox(0, 1, "tbx_ramKlasa", "", 24);
-      tbx_hddKlasa = hamp_klase.CreateVvTextBox(1, 1, "tbx_hddKlasa", "", 24);
-
-      tbx_ramKlasa.JAM_ReadOnly = true;
-      tbx_hddKlasa.JAM_ReadOnly = true;
-   }
-
-   private void CreateHamperUGANDO()
-   {
-      hamp_ugando        = new VvHamper(5, 1, "", null, false);
-      hamp_ugando.Parent = TheTabControl.TabPages[0];
-
-      hamp_ugando.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q4un - ZXC.Qun4, ZXC.QUN - ZXC.Qun4 };
-      hamp_ugando.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol, 0 };
-      hamp_ugando.VvRightMargin = hamp_ugando.VvLeftMargin;
-
-      hamp_ugando.VvRowHgt       = new int[] { ZXC.QUN  };
-      hamp_ugando.VvSpcBefRow    = new int[] { ZXC.Qun8 };
-      hamp_ugando.VvBottomMargin = hamp_ugando.VvTopMargin;
-
-      hamp_ugando.CreateVvLabel(0, 0, "UgAnDo:", ContentAlignment.MiddleRight);
-
-
-      tbx_v1_tt     = hamp_ugando.CreateVvTextBoxLookUp(1, 0, "tbx_v1_tt"    , "", GetDB_ColumnSize(DB_ci.v1_tt));
-      tbx_v1_ttOpis = hamp_ugando.CreateVvTextBox      (2, 0, "tbx_v1_ttOpis", "", 32);
-      tbx_v1_ttNum  = hamp_ugando.CreateVvTextBox      (3, 0, "tbx_v1_ttNum" , "", GetDB_ColumnSize(DB_ci.v1_ttNum));
-
-
-      btn_v1TT = hamp_ugando.CreateVvButton(4, 0, new EventHandler(GoTo_RISK_Dokument_Click/*GoTo_UGAN_Dokument_Click*/), "");
-
-      btn_v1TT.Name = "v1_TT";
-      btn_v1TT.FlatStyle = FlatStyle.Flat;
-      btn_v1TT.FlatAppearance.BorderColor = ZXC.vvColors.userControl_BackColor;
-      btn_v1TT.Image = VvIco.TriangleBlue16.ToBitmap();
-      btn_v1TT.Tag = 1;
-      btn_v1TT.TabStop = false;
-
-      tbx_v1_tt.JAM_CharacterCasing = CharacterCasing.Upper;
-      tbx_v1_tt.JAM_Set_NOTobligatory_LookUpTable(ZXC.luiListaFakturType, (int)ZXC.Kolona.prva);
-      tbx_v1_tt.JAM_lui_NameTaker_JAM_Name = tbx_v1_ttOpis.JAM_Name;
-      tbx_v1_ttOpis.JAM_ReadOnly = true;
-
-      tbx_v1_ttNum.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
-
-      tbx_v1_tt.JAM_IsSupressTab = true;
-      tbx_v1_ttNum.JAM_IsSupressTab = true;
-
-   }
-
-   private void CreateHamperSemafor()
-   {
-      hamp_semafor = new VvHamper(1, 4, "", null, false);
-      hamp_semafor.Parent = TheTabControl.TabPages[0];
-
-      hamp_semafor.VvColWdt      = new int[] { ZXC.Q4un};
-      hamp_semafor.VvSpcBefCol   = new int[] { 0};
-      hamp_semafor.VvRightMargin = hamp_semafor.VvLeftMargin;
-
-      hamp_semafor.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun12, ZXC.QUN + ZXC.Qun12, ZXC.QUN + ZXC.Qun12, ZXC.QUN + ZXC.Qun12 };
-      hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0, 0 };
-      hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
-
-      lbl_MOC = hamp_semafor.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
-      lbl_SER = hamp_semafor.CreateVvLabel(0, 1, "SerNo?!", ContentAlignment.MiddleCenter);
-      lbl_RAM = hamp_semafor.CreateVvLabel(0, 2, "", ContentAlignment.MiddleCenter);
-      lbl_HDD = hamp_semafor.CreateVvLabel(0, 3, "", ContentAlignment.MiddleCenter);
-
-      lbl_MOC.BackColor = Color.Green;
-      lbl_SER.BackColor = Color.Green;
-      lbl_RAM.BackColor = Color.Green;
-      lbl_HDD.BackColor = Color.Green;
-
-      lbl_MOC.ForeColor = Color.Yellow;
-      lbl_SER.ForeColor = Color.Yellow;
-      lbl_RAM.ForeColor = Color.Yellow;
-      lbl_HDD.ForeColor = Color.Yellow;
-   }
-
-   #endregion HamperLocation
-
-   #region Fld
-
-   public string Fld_PTG_MOC_PCK_ArtCD  { get { return                             (Fld_PrjArtCD); } }
-   public string Fld_PTG_MOC_PCK_baseCD { get { return Artikl.Get_PCK_BazaCD(Fld_PrjArtCD); } }
-   public int    Fld_PTG_MOC_RowCount   { get { return (int)Fld_someMoney; } }
-
-   public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
-   public string Fld_PTG_HddKlasa { set { tbx_hddKlasa.Text = value; } }
-   public string Fld_PTG_PCKbaza  { set { tbx_pckBaza.Text = value; } }
-
-
-   #endregion Fld
-
-   #region TheG_Specific_Columns
-   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
-   public override bool HasRtrano_TT_Exposed      { get { return true; } }
-   public override bool IsRtransTT_MOD_kindDependable { get { return true; } }
-   protected override void InitializeDUC_Specific_Columns()
-   {
-      TheG.ColumnHeadersHeight = ZXC.Q2un;
-
-      T_TT_CreateColumnG1          (ZXC.Q2un,    true, "TT"       , "Tip dokumenta");
-      T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra"    , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(             true, "Naziv"    , "Naziv artikla ili proizvoljan opis");
-      T_artiklTS_CreateColumn      (ZXC.Q2un,    true, "Tip"      , "Tip artikla");
-      T_skladCD_CreateColumn       (ZXC.Q3un,    true, "Sklad"    , "Ulazno ili izlazno skladište");
-      T_kol_CreateColumn           (ZXC.Q3un, 0, true, "Kol"      , "Količina"      );
-      T_jedMj_CreateColumn         (ZXC.Q2un   , true, "JM"       , "Jedinica mjere");
-      T_cij_CreateColumn           (ZXC.Q4un, 2, true, "Cijena"   , "Jedinična cijena");
-      R_KCRM_CreateColumn          (ZXC.Q4un, 2, true, "Iznos"    , "Iznos");
-   }
-
-   #endregion TheG_Specific_Columns
-
-   #region TheG2_Specific_Columns2
-
-   protected override void InitializeDUC_Specific_Columns2()
-   {
-      TheG2.ColumnHeadersHeight = ZXC.Q2un;
-
-      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        );
-      T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla");
-
-      R_PCK_baza_CreateColumn       (ZXC.Q4un         ,true, "PCK baza"     , "PCK baza"             );
-      R_artiklTS_CreateColumn       (ZXC.Q2un,         true, "Tip"          , "Tip artikla"          );
-      R_ramKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "RAM klasa"    , "RAM klasa"            );
-      R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"            );
-
-      R_artiklCD2_OLD_CreateColumn  (ZXC.Q5un,         true, "Artikl OLD"   , "Šifra artikla"        );
-      T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"             );
-      R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM OLD"      , "RAM OLD"              );
-      R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD OLD"      , "HDD OLD"              );
-
-      T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                );
-      T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                );
-      T_decA_CreateColumn           (ZXC.Q3un     , 0, true, "HDD +"        , "HDD +"                );
-      T_decB_CreateColumn           (ZXC.Q3un     , 0, true, "HDD -"        , "HDD -"                );
-
-      T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Artikl NEW"   , "Šifra artikla"        );
-      T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"              );
-      T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"              );
-      T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"    );
-
-      T_artiklName2_CreateColumn   (ZXC.Q3un        , false, "Naziv"        , "Naziv artikla ili proizvoljan opis");
-
-    //T_paletaNo_CreateColumn      (ZXC.Q3un        ,  true, "ModSt"        , "Osnovno stavka"                    );
-   }
-
-   #endregion TheG2_Specific_Columns2
-
-   /// <summary>
-   /// Primjer za tuple return value example
-   /// </summary>
-   /// <param name="MOD_RAM_saldo"></param>
-   /// <param name="MOD_HDD_saldo"></param>
-   /// <returns></returns>
-   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
-   {
-      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
-      bool idemoUbijelo = !idemoUzuto                    ;
-
-      int rtranStabIdx = 0;
-      int rtranOtabIdx = 1;
-
-      if(idemoUzuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
-
-      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
-      {
-         if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
-         else // idemoUzuto 
-         {
-            if(i == rtranOtabIdx) ThePolyGridTabControl.TabPages[i].Enabled = true ;
-            else                  ThePolyGridTabControl.TabPages[i].Enabled = false;
-         }
-      }
-   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
-
-   internal void SintRtranoToRtransOnMOD(VvForm theVvForm)
-   {
-      foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
-      {
-         modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
-      }
-
-      faktur_rec.InvokeTransClear();
-
-    //List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
-    //List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
-
-      List<Rtrano> mou_moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU || rto.T_TT == Faktur.TT_MOI).ToList();
-
-      Rtrans  rtrans_rec   ;
-      Artikl  artikl_rec   ;
-      string  t_jedMj      ;
-      ushort  t_serial =  0;
-      decimal theCij   = 0M;
-
-      foreach(Rtrano rtrano_rec in mou_moi_list)
-      {
-         artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
-         if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
-         else                   t_jedMj = ""              ;
-
-         ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
-
-         theCij = artStat != null ? artStat.PrNabCij : 0.00M;
-
-         if(theCij.IsZero())
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r{0}", artikl_rec);
-         }
-
-         rtrans_rec = new Rtrans(rtrano_rec, theCij, t_jedMj, ++t_serial);
-
-         rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
-
-         rtrans_rec.CalcTransResults(null);
-
-         faktur_rec.Transes.Add(rtrans_rec);
-      }
-
-      theVvForm.BeginEdit(faktur_rec);
-
-      faktur_rec.TakeTransesSumToDokumentSum(false);
-
-      bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
-
-      if(!OK) { theVvForm.CancelEdit(faktur_rec); return; }
-
-      theVvForm.EndEdit(faktur_rec);
-
-      theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
-   }
-
-   //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO? Color.Beige
-   protected override void AddColorsToBaby()
-   {
-      SetUpColor(Color.Beige, Color.Empty, Color.Beige);
-   }
-
-}
-
 public class PRI_PTG_DUC : FakturPDUC
 {
 
@@ -4844,3 +4442,611 @@ public class VvModificiraj_PTG_Dlg : VvDialog
    }
 
 }*/
+
+public class MOD_PTG_DUC : FakturPDUC
+{
+   #region Fieldz
+
+   public  VvHamper  hamp_klase, hamp_pckBaza, hamp_ugando, hamp_semafor;
+   private VvTextBox tbx_pckBaza, tbx_ramKlasa, tbx_hddKlasa;
+   public  Label     lbl_MOC, lbl_SER, lbl_RAM, lbl_HDD;
+
+   #endregion Fieldz
+
+   #region Constructor
+
+   public MOD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+      (Faktur.tt_colName, new string[]
+      {
+         Faktur.TT_MOD 
+      });
+
+      ThePolyGridTabControl.SelectedIndex = 1;
+
+      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
+
+      TheSumGrid.Visible = false;
+
+      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEC_Showing_DisableInput);   
+   }
+
+   private void OnEC_Showing_DisableInput(object sender, DataGridViewEditingControlShowingEventArgs e)
+   {
+      Control      control  = e.Control;
+      DataGridView theG2    = sender as VvDataGridView;
+
+      if(control is VvTextBox)
+      {
+       //VvTextBox vvtbTalon     = theG2.Columns[theG2.CurrentCell.ColumnIndex].Tag as VvTextBox;
+         VvTextBox currVvTextBox = theG2.EditingControl                             as VvTextBox;
+
+         int rowIdx = theG2.CurrentCell.RowIndex   ;
+         int colIdx = theG2.CurrentCell.ColumnIndex;
+
+         Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+         bool isMOCrowIdx = ThisIs_MOC_rowIndex(rowIdx);
+
+         #region some util bools
+
+         bool isMOC_MOS_row = rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS;
+         bool isMOI_MOU_row = rtrano_rec.T_TT == Faktur.TT_MOI || rtrano_rec.T_TT == Faktur.TT_MOU;
+
+         bool isKol_col                = colIdx == DgvCI2.iT_kol  ;
+         bool isSerno_col              = colIdx == DgvCI2.iT_serno;
+         bool isRAM_HDD_plus_minus_col = colIdx == DgvCI2.iT_RAM_plus || colIdx == DgvCI2.iT_RAM_minus || colIdx == DgvCI2.iT_HDD_plus || colIdx == DgvCI2.iT_HDD_minus;
+
+         #endregion some util bools
+
+         if(isMOCrowIdx && rtrano_rec.T_serno.IsEmpty() && colIdx == DgvCI2.iR_artiklCD_Old) currVvTextBox.ReadOnly = true; // Disable Input! 
+         if(isMOI_MOU_row && (isSerno_col || isRAM_HDD_plus_minus_col)                     ) currVvTextBox.ReadOnly = true; // Disable Input! 
+         if(isMOC_MOS_row &&  isKol_col                                                    ) currVvTextBox.ReadOnly = true; // Disable Input! 
+
+      }
+   }
+
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      if(newPage.Enabled == false)
+      {
+         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
+      }
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+      SetParentOfHamperLeftHampers();
+      CrateHamperPCKbaza();
+      CrateHamperKlasa();
+      CreateHamperUGANDO();
+      CreateHamperSemafor();
+
+      panel_MigratorsLeftB.SendToBack();
+
+      hamp_dokDate    .Location = new Point(                             0,                              0);
+      hamp_tt         .Location = new Point(hamp_dokDate.Right + ZXC.Qun12,                              0);
+      hamp_skladCd    .Location = new Point(hamp_tt          .Right,                              0);
+      hamp_dokNum     .Location = new Point(hamp_skladCd     .Right,                              0);
+      hamp_kupdobNaziv.Location = new Point(                      0, hamp_dokDate.Bottom           );
+      hamp_ugando     .Location = new Point(hamp_kupdobNaziv.Right , hamp_dokDate.Bottom + ZXC.Qun8);
+      hamp_napomena   .Location = new Point(                 0, hamp_ugando .Bottom + ZXC.Qun8);
+
+
+      hamp_pckBaza   .Location = new Point(           labelWidth, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_prjArtName.Location = new Point(hamp_pckBaza   .Right, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_klase     .Location = new Point(hamp_prjArtName.Right, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_decimal   .Location = new Point(hamp_klase     .Right, hamp_napomena.Bottom + ZXC.Qun2);
+      hamp_someMoney .Location = new Point(hamp_decimal   .Right, hamp_napomena.Bottom + ZXC.Qun2);
+
+      hamp_semafor   .Location = new Point(hamp_someMoney.Right + ZXC.Q2un, hamp_napomena.Top + ZXC.Qun4);
+
+      nextY = hamp_prjArtName.Bottom + ZXC.QUN;
+      
+      hamp_IznosUvaluti.Visible = false;
+
+      this.ControlForInitialFocus = tbx_Napomena; // tamara ... todo? 
+
+      SetSumeHampers(false, false, false, false);
+
+      hamp_twin.Visible = false;
+   }
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_skladCd, hamp_tt, hamp_kupdobNaziv, //hamp_SkladDate,
+                                    hamp_dokDate, hamp_dokNum, hamp_napomena,// hamp_v1TT,
+                                    hamp_prjArtName, hamp_decimal, hamp_someMoney
+                                   };
+   }
+
+   private void CrateHamperPCKbaza()
+   {
+      hamp_pckBaza        = new VvHamper(1, 2, "", null, false);
+      hamp_pckBaza.Parent = TheTabControl.TabPages[0];
+
+      hamp_pckBaza.VvColWdt      = new int[] { ZXC.Q5un };
+      hamp_pckBaza.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+      hamp_pckBaza.VvRightMargin = hamp_pckBaza.VvLeftMargin;
+
+      hamp_pckBaza.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
+      hamp_pckBaza.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
+      hamp_pckBaza.VvBottomMargin = hamp_pckBaza.VvTopMargin;
+
+                    hamp_pckBaza.CreateVvLabel  (0, 0, "PCK baza", ContentAlignment.MiddleLeft);
+      tbx_pckBaza = hamp_pckBaza.CreateVvTextBox(0, 1, "tbx_pckBaza", "", 16);
+      tbx_pckBaza.JAM_ReadOnly = true;
+      tbx_pckBaza.Font = ZXC.vvFont.BaseBoldFont;
+
+   }
+
+   private void CrateHamperKlasa()
+   {
+      hamp_klase = new VvHamper(2, 2, "", null, false);
+      hamp_klase.Parent = TheTabControl.TabPages[0];
+
+      hamp_klase.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q3un};
+      hamp_klase.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8};
+      hamp_klase.VvRightMargin = hamp_klase.VvLeftMargin;
+
+      hamp_klase.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN + ZXC.Qun8 };
+      hamp_klase.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun10          };
+      hamp_klase.VvBottomMargin = hamp_klase.VvTopMargin;
+
+
+      hamp_klase.CreateVvLabel(0, 0, "RAM klasa", ContentAlignment.MiddleRight);
+      hamp_klase.CreateVvLabel(1, 0, "HDD klasa", ContentAlignment.MiddleRight);
+
+      tbx_ramKlasa = hamp_klase.CreateVvTextBox(0, 1, "tbx_ramKlasa", "", 24);
+      tbx_hddKlasa = hamp_klase.CreateVvTextBox(1, 1, "tbx_hddKlasa", "", 24);
+
+      tbx_ramKlasa.JAM_ReadOnly = true;
+      tbx_hddKlasa.JAM_ReadOnly = true;
+   }
+
+   private void CreateHamperUGANDO()
+   {
+      hamp_ugando        = new VvHamper(5, 1, "", null, false);
+      hamp_ugando.Parent = TheTabControl.TabPages[0];
+
+      hamp_ugando.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q4un - ZXC.Qun4, ZXC.QUN - ZXC.Qun4 };
+      hamp_ugando.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol, 0 };
+      hamp_ugando.VvRightMargin = hamp_ugando.VvLeftMargin;
+
+      hamp_ugando.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamp_ugando.VvSpcBefRow    = new int[] { ZXC.Qun8 };
+      hamp_ugando.VvBottomMargin = hamp_ugando.VvTopMargin;
+
+      hamp_ugando.CreateVvLabel(0, 0, "UgAnDo:", ContentAlignment.MiddleRight);
+
+
+      tbx_v1_tt     = hamp_ugando.CreateVvTextBoxLookUp(1, 0, "tbx_v1_tt"    , "", GetDB_ColumnSize(DB_ci.v1_tt));
+      tbx_v1_ttOpis = hamp_ugando.CreateVvTextBox      (2, 0, "tbx_v1_ttOpis", "", 32);
+      tbx_v1_ttNum  = hamp_ugando.CreateVvTextBox      (3, 0, "tbx_v1_ttNum" , "", GetDB_ColumnSize(DB_ci.v1_ttNum));
+
+
+      btn_v1TT = hamp_ugando.CreateVvButton(4, 0, new EventHandler(GoTo_RISK_Dokument_Click/*GoTo_UGAN_Dokument_Click*/), "");
+
+      btn_v1TT.Name = "v1_TT";
+      btn_v1TT.FlatStyle = FlatStyle.Flat;
+      btn_v1TT.FlatAppearance.BorderColor = ZXC.vvColors.userControl_BackColor;
+      btn_v1TT.Image = VvIco.TriangleBlue16.ToBitmap();
+      btn_v1TT.Tag = 1;
+      btn_v1TT.TabStop = false;
+
+      tbx_v1_tt.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_v1_tt.JAM_Set_NOTobligatory_LookUpTable(ZXC.luiListaFakturType, (int)ZXC.Kolona.prva);
+      tbx_v1_tt.JAM_lui_NameTaker_JAM_Name = tbx_v1_ttOpis.JAM_Name;
+      tbx_v1_ttOpis.JAM_ReadOnly = true;
+
+      tbx_v1_ttNum.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
+      tbx_v1_tt.JAM_IsSupressTab = true;
+      tbx_v1_ttNum.JAM_IsSupressTab = true;
+
+   }
+
+   private void CreateHamperSemafor()
+   {
+      hamp_semafor = new VvHamper(1, 4, "", null, false);
+      hamp_semafor.Parent = TheTabControl.TabPages[0];
+
+      hamp_semafor.VvColWdt      = new int[] { ZXC.Q4un};
+      hamp_semafor.VvSpcBefCol   = new int[] { 0};
+      hamp_semafor.VvRightMargin = hamp_semafor.VvLeftMargin;
+
+      hamp_semafor.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun12, ZXC.QUN + ZXC.Qun12, ZXC.QUN + ZXC.Qun12, ZXC.QUN + ZXC.Qun12 };
+      hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0, 0 };
+      hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
+
+      lbl_MOC = hamp_semafor.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
+      lbl_SER = hamp_semafor.CreateVvLabel(0, 1, "SerNo?!", ContentAlignment.MiddleCenter);
+      lbl_RAM = hamp_semafor.CreateVvLabel(0, 2, "", ContentAlignment.MiddleCenter);
+      lbl_HDD = hamp_semafor.CreateVvLabel(0, 3, "", ContentAlignment.MiddleCenter);
+
+      lbl_MOC.BackColor = Color.Green;
+      lbl_SER.BackColor = Color.Green;
+      lbl_RAM.BackColor = Color.Green;
+      lbl_HDD.BackColor = Color.Green;
+
+      lbl_MOC.ForeColor = Color.Yellow;
+      lbl_SER.ForeColor = Color.Yellow;
+      lbl_RAM.ForeColor = Color.Yellow;
+      lbl_HDD.ForeColor = Color.Yellow;
+   }
+
+   #endregion HamperLocation
+
+   #region Fld
+
+   public string Fld_PTG_MOC_PCK_ArtCD  { get { return                             (Fld_PrjArtCD); } }
+   public string Fld_PTG_MOC_PCK_baseCD { get { return Artikl.Get_PCK_BazaCD(Fld_PrjArtCD); } }
+   public int    Fld_PTG_MOC_RowCount   { get { return (int)Fld_someMoney; } }
+
+   public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
+   public string Fld_PTG_HddKlasa { set { tbx_hddKlasa.Text = value; } }
+   public string Fld_PTG_PCKbaza  { set { tbx_pckBaza.Text = value; } }
+
+
+   #endregion Fld
+
+   #region TheG_Specific_Columns
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_TT_Exposed      { get { return true; } }
+   public override bool IsRtransTT_MOD_kindDependable { get { return true; } }
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      TheG.ColumnHeadersHeight = ZXC.Q2un;
+
+      T_TT_CreateColumnG1          (ZXC.Q2un,    true, "TT"       , "Tip dokumenta");
+      T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra"    , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(             true, "Naziv"    , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn      (ZXC.Q2un,    true, "Tip"      , "Tip artikla");
+      T_skladCD_CreateColumn       (ZXC.Q3un,    true, "Sklad"    , "Ulazno ili izlazno skladište");
+      T_kol_CreateColumn           (ZXC.Q3un, 0, true, "Kol"      , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   , true, "JM"       , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 2, true, "Cijena"   , "Jedinična cijena");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2, true, "Iznos"    , "Iznos");
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region TheG2_Specific_Columns2
+
+   protected override void InitializeDUC_Specific_Columns2()
+   {
+      TheG2.ColumnHeadersHeight = ZXC.Q2un;
+
+      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        );
+      T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla");
+
+      R_PCK_baza_CreateColumn       (ZXC.Q4un         ,true, "PCK baza"     , "PCK baza"             );
+      R_artiklTS_CreateColumn       (ZXC.Q2un,         true, "Tip"          , "Tip artikla"          );
+      R_ramKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "RAM klasa"    , "RAM klasa"            );
+      R_hddKlasa2_CreateColumn      (ZXC.Q3un-ZXC.Qun2,true, "HDD klasa"    , "RAM klasa"            );
+
+      R_artiklCD2_OLD_CreateColumn  (ZXC.Q5un,         true, "Artikl OLD"   , "Šifra artikla"        );
+      T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"             );
+      R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM OLD"      , "RAM OLD"              );
+      R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD OLD"      , "HDD OLD"              );
+
+      T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                );
+      T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                );
+      T_decA_CreateColumn           (ZXC.Q3un     , 0, true, "HDD +"        , "HDD +"                );
+      T_decB_CreateColumn           (ZXC.Q3un     , 0, true, "HDD -"        , "HDD -"                );
+
+      T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Artikl NEW"   , "Šifra artikla"        );
+      T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"              );
+      T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"              );
+      T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"    );
+
+      T_artiklName2_CreateColumn   (ZXC.Q3un        , false, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+
+    //T_paletaNo_CreateColumn      (ZXC.Q3un        ,  true, "ModSt"        , "Osnovno stavka"                    );
+   }
+
+   #endregion TheG2_Specific_Columns2
+
+   /// <summary>
+   /// Primjer za tuple return value example
+   /// </summary>
+   /// <param name="MOD_RAM_saldo"></param>
+   /// <param name="MOD_HDD_saldo"></param>
+   /// <returns></returns>
+   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
+   {
+      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+      bool idemoUbijelo = !idemoUzuto                    ;
+
+      int rtranStabIdx = 0;
+      int rtranOtabIdx = 1;
+
+      if(idemoUzuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+
+      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
+      {
+         if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
+         else // idemoUzuto 
+         {
+            if(i == rtranOtabIdx) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else                  ThePolyGridTabControl.TabPages[i].Enabled = false;
+         }
+      }
+   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+
+   internal void SintRtranoToRtransOnMOD(VvForm theVvForm)
+   {
+      foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
+      {
+         modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
+      }
+
+      faktur_rec.InvokeTransClear();
+
+    //List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
+    //List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
+
+      List<Rtrano> mou_moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU || rto.T_TT == Faktur.TT_MOI).ToList();
+
+      Rtrans  rtrans_rec   ;
+      Artikl  artikl_rec   ;
+      string  t_jedMj      ;
+      ushort  t_serial =  0;
+      decimal theCij   = 0M;
+
+      foreach(Rtrano rtrano_rec in mou_moi_list)
+      {
+         artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+         if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
+         else                   t_jedMj = ""              ;
+
+         ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
+
+         theCij = artStat != null ? artStat.PrNabCij : 0.00M;
+
+         if(theCij.IsZero())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r{0}", artikl_rec);
+         }
+
+         rtrans_rec = new Rtrans(rtrano_rec, theCij, t_jedMj, ++t_serial);
+
+         rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
+
+         rtrans_rec.CalcTransResults(null);
+
+         faktur_rec.Transes.Add(rtrans_rec);
+      }
+
+      theVvForm.BeginEdit(faktur_rec);
+
+      faktur_rec.TakeTransesSumToDokumentSum(false);
+
+      bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
+
+      if(!OK) { theVvForm.CancelEdit(faktur_rec); return; }
+
+      theVvForm.EndEdit(faktur_rec);
+
+      theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
+   }
+
+   //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO? Color.Beige
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(Color.Beige, Color.Empty, Color.Beige);
+   }
+
+   internal void SetRow_TT_and_Color_and_Calc_newRam_newHdd(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      int rowIdx = TheG2.CurrentRow.Index;
+      int colIdx = TheG2.CurrentCell.ColumnIndex;
+
+      bool isPCKartikl        = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
+      bool isKomponentaArtikl = !isPCKartikl;
+
+      bool isPlusOrMinusCol =
+           (colIdx == ci2.iT_RAM_plus  ||
+            colIdx == ci2.iT_RAM_minus ||
+            colIdx == ci2.iT_HDD_plus  ||
+            colIdx == ci2.iT_HDD_minus) ;
+
+      string oldArtiklCD = "";
+
+      if(isPCKartikl)
+      {
+         oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
+      }
+
+      if(isPlusOrMinusCol && isPCKartikl)
+      {
+         decimal oldRAM   = TheG2.GetDecimalCell(ci2.iR_ramOld   , rowIdx, false);
+         decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
+         decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
+         decimal newRAM   = oldRAM + plusRAM - minusRAM;
+         if(newRAM.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New RAM je NEGATIVAN!?");
+         TheG2.PutCell(ci2.iT_RAM_new, rowIdx, newRAM);
+
+         decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld   , rowIdx, false);
+         decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
+         decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
+         decimal newHDD   = oldHDD + plusHDD - minusHDD;
+         if(newHDD.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!?");
+         TheG2.PutCell(ci2.iT_HDD_new, rowIdx, newHDD);
+         
+         
+         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
+      }
+
+      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+      string  MOC_wanted_ArtiklCD = Fld_PrjArtCD ;
+      decimal MOC_wanted_NEW_RAM  = Fld_Decimal01;
+      decimal MOC_wanted_NEW_HDD  = Fld_Decimal02;
+
+      bool isMOC_PCK_base = Artikl.Has_equal_PCK_base(MOC_wanted_ArtiklCD, oldArtiklCD);
+
+      string theTT = Get_MOD_RtranoTT(rowIdx, isPCKartikl, rtrano_rec, isMOC_PCK_base, MOC_wanted_NEW_RAM, MOC_wanted_NEW_HDD, false);
+
+      TheG2.PutCell(ci2.iT_TT, rowIdx, theTT);
+
+      if(this is MOD_PTG_DUC) (this as MOD_PTG_DUC).SetColors_MOD_PTG_DUC(theTT, rowIdx);
+
+      if(isKomponentaArtikl) // MOU / MOI stavke (komponente PCK-a) 
+      {
+         // provjeravaj ovo samo za kolone RAM+/- i HDD+/- 
+         if(isPlusOrMinusCol == false) return;
+
+         //VvDataGridView dgv  = sender             as VvDataGridView;
+         //VvTextBox vvTextBox = dgv.EditingControl as VvTextBox     ;
+         VvTextBox vvTextBox = sender as VvTextBox;
+
+         Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+         if(vvTextBox is null || artikl_rec is null) return;
+
+         bool isRAM = colIdx == ci2.iT_RAM_plus || colIdx == ci2.iT_RAM_minus;
+         bool isHDD = !isRAM;
+
+         decimal enteredKapacitet = isRAM ? rtrano_rec.T_dimX + rtrano_rec.T_dimY : rtrano_rec.T_decA + rtrano_rec.T_decB;
+
+       //decimal kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.Zapremina;
+         decimal kolPutaKapacitet = isRAM ? rtrano_rec.T_kol * artikl_rec.PCK_RAM : rtrano_rec.T_kol * artikl_rec.PCK_HDD;
+
+         if(enteredKapacitet != kolPutaKapacitet)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
+         }
+      }
+   }
+
+   internal void Set_MOU_MOI_RAMorHDD_minus(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      int rowIdx = TheG2.CurrentRow.Index;
+
+      bool isPCK = TheG2.GetStringCell(ci2.iT_artiklTS, rowIdx, false) == ZXC.PCK_TS;
+
+      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+      if(isPCK == true)
+      {
+         if(rtrano_rec.T_kol != 1.00M)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Besmislena je količina različita od 1.");
+            TheG2.PutCell(ci2.iT_kol, rowIdx, 1M);
+         }
+         return; // NIJE moi mou 
+      }
+
+      VvTextBox vvTextBox = sender as VvTextBox;
+
+      Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+      if(vvTextBox is null || artikl_rec is null) return;
+
+      bool isRAM = artikl_rec.Grupa1CD == ZXC.RAM_GR1;
+      bool isHDD = artikl_rec.Grupa1CD == ZXC.HDD_GR1;
+
+      if(isRAM && artikl_rec.PCK_RAM.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
+         return;
+      }
+
+      if(isHDD && artikl_rec.PCK_HDD.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl [{0}] nema definiran kapacitet");
+         return;
+      }
+
+      decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_RAM;
+      decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_HDD;
+
+      int ramDelta_colIdx = ci2.iT_dimY;
+      int hddDelta_colIdx = ci2.iT_decB;
+
+      if(rtrano_rec.T_TT == Faktur.TT_MOU)
+      {
+         ramDelta_colIdx = ci2.iT_RAM_plus;
+         hddDelta_colIdx = ci2.iT_HDD_plus;
+      }
+
+      TheG2.PutCell(ramDelta_colIdx, rowIdx, ram_kolPutaKapacitet);
+      TheG2.PutCell(hddDelta_colIdx, rowIdx, hdd_kolPutaKapacitet);
+
+      SetRow_TT_and_Color_and_Calc_newRam_newHdd(sender, e);
+   }
+
+   internal string Get_MOD_RtranoTT(int rowIdx, bool isPCK, Rtrano rtrano_rec, bool isMOC_PCK_base, decimal MOC_wanted_NEW_RAM, decimal MOC_wanted_NEW_HDD, bool shouldWarn)
+   {
+      if(rtrano_rec.T_artiklCD.IsEmpty()) return ""; // kak bus znal jel MOC MOS MOI MOU ak je artikl prazan 
+
+      bool isMOC = isPCK &&
+                   MOC_wanted_NEW_RAM  == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
+                   MOC_wanted_NEW_HDD  == rtrano_rec./*T_decC*/T_PCK_HDD &&
+                   isMOC_PCK_base                                        &&
+                   ThisIs_MOC_rowIndex(rowIdx); 
+
+      if(isPCK)
+      {
+         if(isMOC) return Faktur.TT_MOC;
+         else      return Faktur.TT_MOS;
+      }
+
+      decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
+      decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
+      decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
+      decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
+
+      bool isMOI = RAMminus.NotZero() || HDDminus.NotZero();
+      bool isMOU = RAMplus .NotZero() || HDDplus .NotZero();
+
+      if(isMOI && (RAMplus  + HDDplus ).NotZero()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Komponenta u {0}. retku ima zadanu i plus i minus količinu!?", rowIdx + 1);
+      if(isMOU && (RAMminus + HDDminus).NotZero()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Komponenta u {0}. retku ima zadanu i plus i minus količinu!?", rowIdx + 1);
+
+           if(isMOI) return Faktur.TT_MOI;
+      else if(isMOU) return Faktur.TT_MOU;
+      else
+      {
+         if(shouldWarn)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnije niti MOU niti MOI jer ima nedefinirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
+         }
+
+         //return Faktur.TT_MOU;
+         return "";
+      }
+
+   }
+
+   internal void Check_MOD_plusMinus_errors(int rowIdx, Rtrano rtrano_rec)
+   {
+      // samo kao podsjetnik: 
+      // decimal RAMplus  = TheG2.GetDecimalCell(ci2.iT_dimX, rowIdx, false); 
+      // decimal RAMminus = TheG2.GetDecimalCell(ci2.iT_dimY, rowIdx, false); 
+      // decimal HDDplus  = TheG2.GetDecimalCell(ci2.iT_decA, rowIdx, false); 
+      // decimal HDDminus = TheG2.GetDecimalCell(ci2.iT_decB, rowIdx, false); 
+
+      uint numOfPlusMinusUnosa = 0;
+
+      if(rtrano_rec.T_dimX.NotZero()) numOfPlusMinusUnosa++;
+      if(rtrano_rec.T_dimY.NotZero()) numOfPlusMinusUnosa++;
+      if(rtrano_rec.T_decA.NotZero()) numOfPlusMinusUnosa++;
+      if(rtrano_rec.T_decB.NotZero()) numOfPlusMinusUnosa++;
+
+      if(numOfPlusMinusUnosa < 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rnema definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
+      if(numOfPlusMinusUnosa > 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rima višestruko definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
+   }
+
+
+}
