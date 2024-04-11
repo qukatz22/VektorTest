@@ -3308,11 +3308,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal   R_Ira_Ruv    { get { return (/*R_Ira_PV*/ R_ukKCR_rob - R_Ira_NV  ); } }
 
    public decimal Ira_RUV        { get { return Ira_ROB_Ruv + Ira_USL_PV; } }
-   public string  R_OpisPlac   
+   public string  R_OpisPlac(string devName)   
    { 
-      get 
-      {
-         string valutaName = this.DevName.IsEmpty() ? "EUR" : this.DevName ;
+         string valutaName = devName.IsEmpty() || devName.ToUpper() == "EMPTY" ? "EUR" : devName ;
          string opisPlac   = "Plaćanje: " + NacPlac + " " + R_ukKCRP_NP1.ToStringVv() + " " + valutaName/*"EUR"*/;
          
          if(this.R_ukKCRP_NP2.NotZero())
@@ -3321,7 +3319,6 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          }
 
          return opisPlac;
-      } 
    }
 
  //public bool    R_IsNpMix      { get { return this.S_ukKCRP_NP1.NotZero(); } }
@@ -4183,6 +4180,24 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    }
 
+   /// <summary>
+   /// OVDJE TREBA NABROJATI SVE EVENTUALNE MONEY PROPERTIZ
+   /// KOJI NE NASTAJU PREKO TakeTransesSumToDokumentSum
+   /// ZA SADA PREPZNAJEMO SAMO OVAJ S_ukKCRP_NP1 
+   /// </summary>
+   /// <param name="theDUC"></param>
+   /// <param name="mcKind"></param>
+   internal void ConvertOtherMoneyPropertiez(FakturDUC theDUC, ZXC.MoneyConversionKind mcKind)
+   {
+      switch(mcKind)
+      {
+         case ZXC.MoneyConversionKind.automatski: this.S_ukKCRP_NP1 = theDUC.VvCurrency(S_ukKCRP_NP1)   ; break;
+
+         case ZXC.MoneyConversionKind.mnozenje  : this.S_ukKCRP_NP1 = S_ukKCRP_NP1 * theDUC.DevTecaj    ; break;
+
+         case ZXC.MoneyConversionKind.dijeljenje: this.S_ukKCRP_NP1 = ZXC.DivSafe(S_ukKCRP_NP1, DevTecaj); break;
+      }
+   }
    public void ConvertBussinessValuesToDeviza(decimal tecaj, ZXC.ValutaNameEnum presentValutaEnum)
    {
 

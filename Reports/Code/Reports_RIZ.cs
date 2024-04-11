@@ -1293,6 +1293,7 @@ public /*partial*/ class RptR_IRA : VvRiskReport
 
          faktur_rec.TakeTransesSumToDokumentSum(true);
 
+         faktur_rec.ConvertOtherMoneyPropertiez(theDUC, ZXC.MoneyConversionKind.dijeljenje);
       }
 
       TheFakturList.Add(faktur_rec);

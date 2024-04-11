@@ -3945,6 +3945,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             fakturLocal_rec.TakeTransesSumToDokumentSum(true);
 
+            fakturLocal_rec.ConvertOtherMoneyPropertiez(this, ZXC.MoneyConversionKind.automatski);
+
             IsShowingConvertedMoney = false; // privremeno! 
          }
 
@@ -4166,6 +4168,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             );
 
             fakturLocal_rec.TakeTransesSumToDokumentSum(true);
+
+            fakturLocal_rec.ConvertOtherMoneyPropertiez(this, ZXC.MoneyConversionKind.mnozenje);
 
             IsShowingConvertedMoney = true; // vrati na true 
          }
@@ -12724,8 +12728,8 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_SkladDate   )) Fld_SkladDate    = faktEx.SkladDate;
       if(CtrlOK(tbx_NacPlac     )) Fld_NacPlac      = faktEx.NacPlac;
       if(CtrlOK(tbx_NacPlac2    )) Fld_NacPlac2     = faktEx.NacPlac2;
-      if(CtrlOK(tbx_R_ukKCRP_NP2)) Fld_R_ukKCRP_NP2 = faktur_rec.R_ukKCRP_NP2;
-      if(CtrlOK(tbx_S_ukKCRP_NP1)) Fld_S_ukKCRP_NP1 = faktEx.S_ukKCRP_NP1;
+      if(CtrlOK(tbx_R_ukKCRP_NP2)) Fld_R_ukKCRP_NP2 = VvCurrency(faktur_rec.R_ukKCRP_NP2);
+      if(CtrlOK(tbx_S_ukKCRP_NP1)) Fld_S_ukKCRP_NP1 = VvCurrency(faktEx.S_ukKCRP_NP1);
       if(CtrlOK(tbx_ZiroRn      )) Fld_ZiroRn       = faktEx.ZiroRn;
       if(CtrlOK(tbx_ValName     )) Fld_DevName      = faktEx.DevName;
 
