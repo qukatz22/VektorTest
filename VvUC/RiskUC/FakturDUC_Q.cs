@@ -6398,7 +6398,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          case Faktur.TT_PRI   : return ZXC.dscLuiLst_PRI;
          case Faktur.TT_KLK   : return ZXC.dscLuiLst_KLK;
          case Faktur.TT_KKM   : return ZXC.dscLuiLst_KKM;
-         
+         case Faktur.TT_POT   : return ZXC.dscLuiLst_URA; // zato jer treba pfd radi deviznog
+
          case Faktur.TT_IZD   : return ZXC.dscLuiLst_IZD;
          case Faktur.TT_UOD   : return ZXC.dscLuiLst_UOD;
          case Faktur.TT_UPV   : return ZXC.dscLuiLst_UPV;
