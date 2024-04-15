@@ -290,9 +290,10 @@ public partial class RiskFilterUC : VvFilterUC
                             rbt_grupDayOfWeek, rbt_grupHourOfDay,
                             rbt_svaSklad, rbt_onlyVelepSkl, rbt_onlyMalopSkl, rbt_TMB_VpskVps2,
                             rbt_Lijek, rbt_Potros, rbt_LiP,
-                            rbt_svdSvaSkl, rbt_svdDonac, rbt_svdNeDonac;
+                            rbt_svdSvaSkl, rbt_svdDonac, rbt_svdNeDonac,
+                            rbt_intrastatI, rbt_intrastatN, rbt_intrastat0, rbt_intrastatB;
    private VvHamper hamper_OdDo, hamper_Partner, hamper_TTSklad, hamper_AllSklad, hamper_TopSort, hamper_pdv, hamper_NacPlac, hamper_IOS, hamper_ODDoArtikl, hamper_ODDoTT, 
-                    hamper_status, hamper_compDate, hamper_rptNap, hamper_OdDoVezDok2, hamper_svdLiP, hamper_svdSklad, hamper_uvozIzvoz;
+                    hamper_status, hamper_compDate, hamper_rptNap, hamper_OdDoVezDok2, hamper_svdLiP, hamper_svdSklad, hamper_uvozIzvoz, hamper_intrastat;
    public VvHamper hamper_Sort, hamper_HorLine, hamper_grupDok, hamper_grupArtikl, hamper_ArtSort, hamper_pdvRtip, 
                    hamp_macro, hamper_Color, hamper_Bool2;
    private CheckBox cbx_grupaPoStr, cbx_visiblePosto, cbx_topGroups, cbx_topSort, cbx_ocuGraf,
@@ -420,6 +421,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_uvozIzvoz.Visible = true;
 
       hamper_pdv       .Visible = false;
+      hamper_intrastat .Visible = false;
       hamper_IOS       .Visible = false;
       hamper_Color     .Visible = false;
       hamper_ODDoArtikl.Visible = false;
@@ -480,6 +482,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_TopSort    .Visible = false;
       hamper_pdvRtip    .Visible = false;
       hamper_pdv        .Visible = false;
+      hamper_intrastat  .Visible = false;
       hamper_IOS        .Visible = true;
       hamper_Color      .Visible = true;
       hamper_ODDoArtikl .Visible = false;
@@ -546,6 +549,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_grupDok  .Visible = false;
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = false;
+      hamper_intrastat.Visible = false;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_compDate .Visible = false;
@@ -607,6 +611,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_Sort     .Visible = false;
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = false;
+      hamper_intrastat.Visible = false;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_compDate .Visible = false;
@@ -657,8 +662,12 @@ public partial class RiskFilterUC : VvFilterUC
       hamperHorLine .Location = new Point(nextX, hamper_Partner.Bottom + razmakIzmjedjuHampera);
       hamper_status.BringToFront();
 
-      VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_pdv    , MaxHamperWidth, razmakIzmjedjuHampera);
-      VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_Partner, MaxHamperWidth, razmakIzmjedjuHampera);
+      hamper_intrastat.Location = new Point(nextX, hamper_pdv.Top + ZXC.Q10un *2 + ZXC.Q2un);
+      hamper_intrastat.BringToFront();
+
+      VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_pdv      , MaxHamperWidth, razmakIzmjedjuHampera);
+      VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_intrastat, MaxHamperWidth, razmakIzmjedjuHampera);
+      VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_Partner  , MaxHamperWidth, razmakIzmjedjuHampera);
 
       hamper_TTSklad   .Visible = false;
       hamper_ODDoTT    .Visible = false;
@@ -672,6 +681,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_Sort     .Visible = false;
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = true;
+      hamper_intrastat.Visible = true;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_NacPlac  .Visible = false;
@@ -715,6 +725,7 @@ public partial class RiskFilterUC : VvFilterUC
       InitializeHamper_GroupTopSort(out hamper_TopSort);
       InitializeHamper_OTS(out hamper_IOS);
       InitializeHamper_Pvd(out hamper_pdv);
+      InitializeHamper_Intrastat(out hamper_intrastat);
       InitializeHamper_ProjektNacPlac(out hamper_NacPlac);
       InitializeHamper_Status(out hamper_status);
       InitializeHamper_ColorVisible(out hamper_Color);
@@ -1905,8 +1916,8 @@ public partial class RiskFilterUC : VvFilterUC
      
       rbt_pdvKnjigaR      = hamper.CreateVvRadioButton(2, 0, null, "Redovna" ,       TextImageRelation.ImageAboveText);
       rbt_pdvKnjigaP      = hamper.CreateVvRadioButton(3, 0, null, "Predujma", 1, 0, TextImageRelation.ImageAboveText);
-      rbt_pdvKnjigUr      = hamper.CreateVvRadioButton(2, 1, null, "Uvz robe",       TextImageRelation.ImageAboveText);
-      rbt_pdvKnjigUu      = hamper.CreateVvRadioButton(3, 1, null, "Uvz uslg", 1, 0, TextImageRelation.ImageAboveText);
+      rbt_pdvKnjigUr      = hamper.CreateVvRadioButton(2, 1, null, "UvzRobe",       TextImageRelation.ImageAboveText);
+      rbt_pdvKnjigUu      = hamper.CreateVvRadioButton(3, 1, null, "UvzUsl" , 1, 0, TextImageRelation.ImageAboveText);
       rbt_pdvKnjigNijedna = hamper.CreateVvRadioButton(2, 2, null, "Nijedna" ,       TextImageRelation.ImageAboveText);
       rbt_pdvKnjigaR.Checked = true;
       rbt_pdvKnjigaR.Tag = true;
@@ -2093,11 +2104,33 @@ public partial class RiskFilterUC : VvFilterUC
       {
          lblTelFax.Visible = cbx_isPrjktTel.Visible = cbx_isPrjktFax.Visible = cbx_IsPrjktMail.Visible =
          lblkont.Visible = tbx_tel.Visible = tbx_fax.Visible = tbx_mail.Visible = false;
-      }   
-
-
+      }
       //VvHamper.HamperStyling(hamper);
       VvHamper.AddLabelLine(hamper);
+   }
+
+   private void InitializeHamper_Intrastat(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(3, 2, "", this, false);
+                                      
+      hamper.VvColWdt      = new int[] { ZXC.Q4un + ZXC.Qun2, ZXC.Q4un - ZXC.Qun2, ZXC.Q4un};
+      hamper.VvSpcBefCol   = new int[] {           ZXC.Qun12, ZXC.Qun12,ZXC.Qun12};
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun4;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                       hamper.CreateVvLabel      (0, 0, "Vrsta Intrastat obr:", 1, 0, ContentAlignment.MiddleLeft);
+      rbt_intrastatI = hamper.CreateVvRadioButton(2, 0, null, "Izvorni", TextImageRelation.ImageBeforeText);
+      rbt_intrastatI.Checked = true;
+      rbt_intrastatI.Tag = true;
+      rbt_intrastatN = hamper.CreateVvRadioButton(0, 1, null, "Nadomjesni", TextImageRelation.ImageBeforeText);
+      rbt_intrastat0 = hamper.CreateVvRadioButton(1, 1, null, "0 nulti"   , TextImageRelation.ImageBeforeText);
+      rbt_intrastatB = hamper.CreateVvRadioButton(2, 1, null, "Brisanje"  , TextImageRelation.ImageBeforeText);
 
    }
 
@@ -2862,6 +2895,32 @@ public partial class RiskFilterUC : VvFilterUC
 
    public decimal Fld_TH_Kune { get { return tbx_ThKune.GetDecimalField(); } set { tbx_ThKune.PutDecimalField(value); } }
 
+   public INTRASTAT.ReportTypeType Fld_VrstaIntrastatObr
+   { 
+      get
+      {
+              if(rbt_intrastatI.Checked) return INTRASTAT.ReportTypeType.I    ;
+         else if(rbt_intrastatN.Checked) return INTRASTAT.ReportTypeType.N    ;
+         else if(rbt_intrastat0.Checked) return INTRASTAT.ReportTypeType.Item0;
+         else if(rbt_intrastatB.Checked) return INTRASTAT.ReportTypeType.B    ;
+
+         else throw new Exception("Fld_Intrastat: who df is checked?");
+      }
+      set
+      {
+         switch(value)
+         {
+            case INTRASTAT.ReportTypeType.I    : rbt_intrastatI.Checked = true; break;
+            case INTRASTAT.ReportTypeType.N    : rbt_intrastatN.Checked = true; break;
+            case INTRASTAT.ReportTypeType.Item0: rbt_intrastat0.Checked = true; break;
+            case INTRASTAT.ReportTypeType.B    : rbt_intrastatB.Checked = true; break;
+            default                            : rbt_intrastatI.Checked = true; break;
+         }
+      }
+
+   
+   }
+
    #endregion Fld_
 
    #region PutFilterFields(), GetFilterFields()
@@ -3187,6 +3246,8 @@ public partial class RiskFilterUC : VvFilterUC
       TheRtransFilter.SVD_IsDonacSklad       = Fld_SVD_IsDonacSklad;
       TheRtransFilter.UvozIzvozOnly          = Fld_UvozIzvozOnly;
       TheRtransFilter.TH_Blg_uKunama         = Fld_TH_Kune ;
+      
+      TheRtransFilter.VrstaIntrastatObr      = Fld_VrstaIntrastatObr;
 
    }
 

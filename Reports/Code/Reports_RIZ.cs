@@ -13014,6 +13014,12 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       base.FillRiskReportLists();
 
+      // 1. samo za artikle: Artikl.TS = "ROB"
+      // 2. moram znati da li je kupdob.IsZzz tj. da li je osoba
+      // 3. imam slucaj EKO-Zlato koji je osoba i ima neki broj ali mu nece stavljati vatcountrycode a nemam pojma odkuda ga saznati
+      // 4. moramo uzeti u obzir one koeficijente a ne stvarne JM - GetIntrastat_Masa_U_Kg i GetIntrastat_Kol_U_JM
+      // 5. vidi kak iygkeda xml - dolazi mi xmlns="http://apisit.hr/b28/inst/ed/2011/complexTypes" na stavke i nas se gore razlikuje od onog koji su oni nama poslali
+
       TheDeviznaSumaList = TheRtransList
          .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
          .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
@@ -13023,7 +13029,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             ArtiklGrName = SecJoin.A.ArtiklName,
             TheCD        = SecJoin.A.MadeIn,
             FakturGR     = SecJoin.F.VatCntryCode,
-            KupdobName   = SecJoin.F.VATnumber,
+            KupdobName   = IsUlaz ? "" : SecJoin.F.VATnumber,
             DevName      = SecJoin.F.VezniDok2,
             String1      = SecJoin.F.Fco,
             String2      = SecJoin.F.Napomena2.Substring(0, 1),
@@ -13078,34 +13084,6 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       #region Envelope
 
-      //theIr002a.Envelope = new INTRASTAT.EnvelopeType()
-      //{
-      //   Header = new INTRASTAT.HeaderType()
-      //   {
-      //      FlowOfGoods = 1,
-
-      //      PSI = new INTRASTAT.PSIType()
-      //      { 
-      //         PSIId = new INTRASTAT.PSIIdType() 
-      //            { 
-      //               PSICountryCode =  INTRASTAT.PSICountryCodeType.HR, 
-      //               PSININumber    = ZXC.CURR_prjkt_rec.Oib
-      //            },  
-      //         PSIName    = ZXC.CURR_prjkt_rec.Naziv, 
-      //         PSIAddress = ZXC.CURR_prjkt_rec.Ulica1
-      //      },
-
-      //      ReferencePeriod = RptFilter.DatumOd.ToString(ZXC.VvDateYyyyMmFormat), //za razdoblje YYYY-MM
-      //      ReportType      = INTRASTAT.ReportTypeType.Item0, //4 sifre - to bi nekako trebali omoguciti
-      //      ReportDate      = DateTime.Today
-      //   },
-
-      //   Declaration = new INTRASTAT.DeclarationType()
-      //   {
-
-      //   }
-      //};
-
       theIr002a.Envelope                                 = new INTRASTAT.EnvelopeType();
       theIr002a.Envelope.Header                          = new INTRASTAT.HeaderType();
       theIr002a.Envelope.Header.FlowOfGoods              = (short)(this.IsUlaz ? 1 : 2);
@@ -13117,66 +13095,16 @@ public class RptR_Intrastat : RptR_StandardRiskReport
       theIr002a.Envelope.Header.PSI.PSIAddress           = ZXC.CURR_prjkt_rec.Ulica1;
 
       theIr002a.Envelope.Header.ReferencePeriod = RptFilter.DatumOd.ToString(ZXC.VvDateYyyyMmFormat); //za razdoblje YYYY-MM;
-      theIr002a.Envelope.Header.ReportType      = INTRASTAT.ReportTypeType.Item0 ; //4 sifre - to bi nekako trebali omoguciti;
+      theIr002a.Envelope.Header.ReportType      = RptFilter.VrstaIntrastatObr; 
       theIr002a.Envelope.Header.ReportDate      = DateTime.Today;
 
       theIr002a.Envelope.Declaration      = new INTRASTAT.DeclarationType();
-
-      //uint rbr = 0;
-
-      //TheDeviznaSumaList = TheRtransList
-      //   .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
-      //   .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
-      //   .Select(SecJoin => new VvReportSourceUtil()
-      //   {
-      //      ArtiklGrCD   = SecJoin.A.AtestBr,
-      //      ArtiklGrName = SecJoin.A.ArtiklName,
-      //      TheCD        = SecJoin.A.MadeIn,
-      //      FakturGR     = SecJoin.F.VatCntryCode,
-      //      KupdobName   = SecJoin.F.VATnumber,
-      //      DevName      = SecJoin.F.VezniDok2,
-      //      String1      = SecJoin.F.Fco,
-      //      String2      = SecJoin.F.Napomena2.Substring(0, 1),
-      //      String3      = SecJoin.F.Napomena2.Substring(1, 1),
-      //      String4      = SecJoin.F.TipOtpreme,
-      //      TheMoney     = SecJoin.A.GetIntrastat_Masa_U_Kg(SecJoin.R.T_kol),
-      //      TheMoney2    = SecJoin.A.GetIntrastat_Kol_U_JM (SecJoin.R.T_kol),
-      //      TheMoneyKCR  = SecJoin.R.R_KCR,
-
-      //   })
-      // //.OrderBy(qwe => qwe.ArtiklGrCD)
-      //   .ToList();
 
       INTRASTAT.ItemType item;
 
       theIr002a.Envelope.Declaration.Item = new INTRASTAT.ItemType[TheDeviznaSumaList.Count];
 
       List<VvReportSourceUtil> rsu = TheDeviznaSumaList;
-      //foreach(VvReportSourceUtil rsu in TheDeviznaSumaList)
-      //{
-      //  item = new INTRASTAT.ItemType()
-      //   {
-      //      ItemNr                 = rbr++                  ,
-      //      CN8Code                = rsu.ArtiklGrCD         ,
-      //      GoodsDescription       = rsu.ArtiklGrName       ,
-      //      DestinationCountryCode = rsu.FakturGR           , 
-      //      DeliveryTerms          = new INTRASTAT.DeliveryTermsType()
-      //      { 
-      //         DeliveryTermsCode   = rsu.DevName,
-      //         PlaceOfDeliveryCode = short.Parse(rsu.String1)
-      //      },
-      //      NatureOfTransaction = new INTRASTAT.NatureOfTransactionType()
-      //      {
-      //         NatureOfTransactionACode = short.Parse(rsu.String2),
-      //         NatureOfTransactionBCode = short.Parse(rsu.String3)
-      //      },
-      //      TransportMode       = short.Parse(rsu.String4),
-      //      CountryOfOriginCode = rsu.TheCD,
-      //      NetWeight           = rsu.TheMoney,
-      //      QuantityInSU        = rsu.TheMoney2,
-      //      InvoicedAmount      = rsu.TheMoneyKCR
-      //   };
-      //}
 
       for(int i = 0; i < TheDeviznaSumaList.Count; ++i)
       {
@@ -13184,6 +13112,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
          item.ItemNr                 = (uint)(i+1)         ;
 
+         // ovo treba rjesiti na pocetku da se vidi i u printu - tocka 2 i 3!!!!!!!!
          if(this.IsUlaz == false)// samo ako je izlaz onda ide ovaj podatak
          {
             if(rsu[i].KupdobName.IsEmpty() || rsu[i].KupdobName.Length < 4) item.VATNumber = "QV999999999999" ; // je nepoznat OIB jer je fizicka osoba onda ide ovaj broj
