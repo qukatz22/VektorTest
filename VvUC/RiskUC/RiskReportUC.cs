@@ -5595,8 +5595,8 @@ public class FakturDocFilterUC    : VvFilterUC
       // 29.03.2016.  
       if(TheVvUC is FakturExtDUC && ((FakturExtDUC)TheVvUC is PrimkaVpDUC || (FakturExtDUC)TheVvUC is KIZDUC)) CreateHamperPrimkaKalkulacija(out hamp_priKalk, (FakturExtDUC)TheVvUC is PrimkaVpDUC ? "Kalkulacija" : "KIZ skraćeni");
     
-    //if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is MedjuSkladDUC || (FakturDUC)TheVvUC is MedjuSkladDUC)                        ) CreateHamperPrimkaKalkulacija(out hamp_priKalk, "MSI KOL");
-      if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is MedjuSkladDUC || (FakturDUC)TheVvUC is MedjuSkladDUC) && ZXC.IsSvDUH == false) CreateHamperPrimkaKalkulacija(out hamp_priKalk, "MSI KOL");
+    //if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is MedjuSkladDUC || (FakturDUC)TheVvUC is MedjuSkladDUC)                                                        ) CreateHamperPrimkaKalkulacija(out hamp_priKalk, "MSI KOL");
+      if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is MedjuSkladDUC || (FakturDUC)TheVvUC is MedjuSkladDUC) && ZXC.IsSvDUH == false && ZXC.IsTETRAGRAM_ANY == false) CreateHamperPrimkaKalkulacija(out hamp_priKalk, "MSI KOL");
 
       //07.09.2020.
       if(TheVvUC is FakturDUC && ((FakturDUC)TheVvUC is URMDUC || (FakturDUC)TheVvUC is KalkulacijaMpDUC))

@@ -1088,6 +1088,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       tbx_TtOpis.Font = ZXC.vvFont.BaseFont;
       tbx_TtNum.Font = ZXC.vvFont.BaseBoldFont;
 
+      //15.04.2024.
+      tbx_TtNum.JAM_ReadOnly = true;
+      /* !!! */  if(ZXC.CurrUserHasSuperPrivileges)
+      /* !!! */  {
+      /* !!! */     tbx_TtNum.JAM_ReadOnly = false;
+      /* !!! */  }
+
+
    }
    private void InitializeHamper_dokNum(out VvHamper hamper)
    {
