@@ -3755,7 +3755,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(TheDbConnection, (Rtrans)GetDgvLineFields1(currRow, false, null));
 
-      if(artStat_rec == null || artStat_rec.PrNabCij.IsZero()) return;
+      if(artStat_rec == null) return;
+
+      // 15.04.2023: 
+    //decimal cijToCompare = artStat_rec.PrNabCij;
+      decimal cijToCompare = artStat_rec.UlazCijLast;
+
+      if(cijToCompare.IsZero()) return;
 
     // 12.04.2018:
     //decimal tolerancy =                                                                           50; 
@@ -3764,12 +3770,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       string artiklCD       = TheG.GetStringCell (ci.iT_artiklCD  , currRow, false);
       string artiklName     = TheG.GetStringCell (ci.iT_artiklName, currRow, false);
       decimal newCij        = TheG.GetDecimalCell(ci.iT_cij       , currRow, false);
-      decimal stopaPromjene = ZXC.StopaPromjene(artStat_rec.PrNabCij, newCij);
+
+      if(newCij.IsZero()) return;
+
+      decimal stopaPromjene = ZXC.StopaPromjene(cijToCompare, newCij);
 
       if(Math.Abs(stopaPromjene) > tolerancy)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE!\n\nRedak: {0}\n\nArtikl: '{1} {5}'\n\nPrethodna prosječna nabavna cijena: {2}\n\nNova nabavna cijena: {3}\n\nOdstupanje: {4}%",
-            currRow + 1, artiklCD, artStat_rec.PrNabCij.ToStringVv(), newCij.ToStringVv(), stopaPromjene.ToString0Vv(), artiklName);
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE!\n\nRedak: {0}\n\nArtikl: '{1} {5}'\n\nPrethodna ulazna cijena: {2}\n\nNova ulazna cijena: {3}\n\nOdstupanje: {4}%",
+            currRow + 1, artiklCD, cijToCompare.ToStringVv(), newCij.ToStringVv(), stopaPromjene.ToString0Vv(), artiklName);
       }
    }
 
