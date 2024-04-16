@@ -936,7 +936,7 @@ public class Artikl : VvSifrarRecord
 
    #region Intrastat Propertiz
 
-   public decimal Masa_U_Kg
+   public decimal MasaNetto_U_Kg
    {
       get
       {
@@ -958,14 +958,38 @@ public class Artikl : VvSifrarRecord
       }
    }
 
+   private decimal MasaNetto_U_g
+   {
+      get
+      {
+         return this.MasaNetto_U_Kg * 1000M;
+      }
+   }
+
    public decimal GetIntrastat_Kol_U_JM(decimal t_kol)
    {
-      return t_kol * this.MasaNetto;
+      return t_kol * this.MasaNetto_zaokruzenaNaGram;
    }
 
    public decimal GetIntrastat_Masa_U_Kg(decimal t_kol)
    {
       return GetIntrastat_Kol_U_JM(t_kol) / 1000M;
+   }
+
+   private decimal MasaNetto_zaokruzenaNaGram
+   {
+      get 
+      {
+         return this.MasaNetto_U_g.Ron(0); 
+      }
+   }
+
+   private decimal MasaNetto_zaokruzenaNaGram_kroz1000
+   {
+      get 
+      {
+         return this.MasaNetto_zaokruzenaNaGram / 1000M;
+      }
    }
 
    #endregion Intrastat Propertiz

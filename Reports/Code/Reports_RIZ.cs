@@ -5,6 +5,7 @@ using Vektor.Reports.RIZ;
 using System.Linq;
 using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
+using com.sun.org.apache.bcel.@internal.generic;
 
 
 #if MICROSOFT
@@ -13014,33 +13015,48 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       base.FillRiskReportLists();
 
-      // 1. samo za artikle: Artikl.TS = "ROB"
-      // 2. moram znati da li je kupdob.IsZzz tj. da li je osoba
-      // 3. imam slucaj EKO-Zlato koji je osoba i ima neki broj ali mu nece stavljati vatcountrycode a nemam pojma odkuda ga saznati
-      // 4. moramo uzeti u obzir one koeficijente a ne stvarne JM - GetIntrastat_Masa_U_Kg i GetIntrastat_Kol_U_JM
-      // 5. vidi kak iygkeda xml - dolazi mi xmlns="http://apisit.hr/b28/inst/ed/2011/complexTypes" na stavke i nas se gore razlikuje od onog koji su oni nama poslali
+      // 1. samo za artikle: Artikl.TS = "ROB"                                                                                                                          
+      // 2. moram znati da li je kupdob.IsZzz tj. da li je osoba                                                                                                        
+      // 3. imam slucaj EKO-Zlato koji je osoba i ima neki broj ali mu nece stavljati vatcountrycode a nemam pojma odkuda ga saznati                                    
+      // 4. moramo uzeti u obzir one koeficijente a ne stvarne JM - GetIntrastat_Masa_U_Kg i GetIntrastat_Kol_U_JM                                                      
+      // 5. vidi kak iygkeda xml - dolazi mi xmlns="http://apisit.hr/b28/inst/ed/2011/complexTypes" na stavke i nas se gore razlikuje od onog koji su oni nama poslali  
+
+      TheArtiklList.RemoveAll(art => art.TS != "ROB");
+
+      if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MasaNettoJM != "g"))
+      {
+         var errorsList = new List<string>();
+
+         foreach(Artikl artikl in TheArtiklList.Where(art => art.MasaNettoJM != "g"))
+         {
+            errorsList.Add(String.Format("{0} {1} MasaNetto: {2} [{3}]", artikl.ArtiklCD, artikl.ArtiklName, artikl.MasaNetto, artikl.MasaNettoJM));
+         }
+
+         ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala nema jedinicu mjere 'g'.", errorsList.Count), errorsList);
+      }
 
       TheDeviznaSumaList = TheRtransList
-         .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak => Fak.RecID   , (Rtr    , Fak) => new { R = Rtr      , F = Fak                })
-         .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art => Art.ArtiklCD, (FrsJoin, Art) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
-         .Select(SecJoin => new VvReportSourceUtil()
+         .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak  => Fak .RecID   , (Rtr    , Fak ) => new { R = Rtr      , F = Fak                })
+         .Join(TheArtiklList, FrsJoin => FrsJoin.R.T_artiklCD, Art  => Art .ArtiklCD, (FrsJoin, Art ) => new { R = FrsJoin.R, F = FrsJoin.F, A = Art })
+         .Join(TheKupdobList, SecJoin => SecJoin.F.KupdobCD  , Kpdb => Kpdb.KupdobCD, (SecJoin, Kpdb) => new { R = SecJoin.R, F = SecJoin.F, A = SecJoin.A, K = Kpdb })
+         .Select(ThirdJoin => new VvReportSourceUtil()
          {
-            ArtiklGrCD   = SecJoin.A.AtestBr,
-            ArtiklGrName = SecJoin.A.ArtiklName,
-            TheCD        = SecJoin.A.MadeIn,
-            FakturGR     = SecJoin.F.VatCntryCode,
-            KupdobName   = IsUlaz ? "" : SecJoin.F.VATnumber,
-            DevName      = SecJoin.F.VezniDok2,
-            String1      = SecJoin.F.Fco,
-            String2      = SecJoin.F.Napomena2.Substring(0, 1),
-            String3      = SecJoin.F.Napomena2.Substring(1, 1),
-            String4      = SecJoin.F.TipOtpreme,
-            TheMoney     = SecJoin.A.GetIntrastat_Masa_U_Kg(SecJoin.R.T_kol),
-            TheMoney2    = SecJoin.A.GetIntrastat_Kol_U_JM (SecJoin.R.T_kol),
-            TheMoneyKCR  = SecJoin.R.R_KCR,
+            ArtiklGrCD   = ThirdJoin.A.AtestBr,
+            ArtiklGrName = ThirdJoin.A.ArtiklName,
+            TheCD        = ThirdJoin.A.MadeIn,
+            FakturGR     = ThirdJoin.F.VatCntryCode,
+            KupdobName   = IsUlaz ? "" : ThirdJoin.K.IsZzz ? "" : ThirdJoin.F.VATnumber,
+            DevName      = ThirdJoin.F.VezniDok2,
+            String1      = ThirdJoin.F.Fco,
+            String2      = ThirdJoin.F.Napomena2.Substring(0, 1),
+            String3      = ThirdJoin.F.Napomena2.Substring(1, 1),
+            String4      = ThirdJoin.F.TipOtpreme,
+            TheMoney     = ThirdJoin.A.GetIntrastat_Masa_U_Kg(ThirdJoin.R.T_kol),
+            TheMoney2    = ThirdJoin.A.GetIntrastat_Kol_U_JM (ThirdJoin.R.T_kol),
+            TheMoneyKCR  = ThirdJoin.R.R_KCR,
 
             IsNekakav    = IsUlaz,
-            Kol          = SecJoin.R.T_kol
+            Kol          = ThirdJoin.R.T_kol
          })
        //.OrderBy(qwe => qwe.ArtiklGrCD)
          .ToList();
