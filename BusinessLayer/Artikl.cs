@@ -940,7 +940,8 @@ public class Artikl : VvSifrarRecord
    {
       get
       {
-         if(this.MasaNetto.IsZero()) return 0M;
+       //if(this.MasaNetto.IsZero()) return 0M;
+         if(this.MasaNetto.IsZero()) return 1M;
 
          decimal pretvornik;
 
@@ -968,12 +969,14 @@ public class Artikl : VvSifrarRecord
 
    public decimal GetIntrastat_Kol_U_JM(decimal t_kol)
    {
-      return t_kol * this.MasaNetto_zaokruzenaNaGram;
+    //return t_kol * this.MasaNetto_zaokruzenaNaGram;
+      return this.MasaNetto.IsZero() ? 0.000M : t_kol * this.MasaNetto_zaokruzenaNaGram;
    }
 
    public decimal GetIntrastat_Masa_U_Kg(decimal t_kol)
    {
-      return GetIntrastat_Kol_U_JM(t_kol) / 1000M;
+    //return GetIntrastat_Kol_U_JM(t_kol) / 1000M;
+      return this.MasaNetto.IsZero() ? t_kol : GetIntrastat_Kol_U_JM(t_kol) / 1000M;
    }
 
    private decimal MasaNetto_zaokruzenaNaGram

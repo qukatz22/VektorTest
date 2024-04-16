@@ -13045,7 +13045,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             ArtiklGrName = ThirdJoin.A.ArtiklName,
             TheCD        = ThirdJoin.A.MadeIn,
             FakturGR     = ThirdJoin.F.VatCntryCode,
-            KupdobName   = IsUlaz ? "" : ThirdJoin.K.IsZzz ? "" : ThirdJoin.F.VATnumber,
+            KupdobName   = IsUlaz ? "" : ThirdJoin.K.IsZzz ? "QV999999999999" : ThirdJoin.F.VATnumber,
             DevName      = ThirdJoin.F.VezniDok2,
             String1      = ThirdJoin.F.Fco,
             String2      = ThirdJoin.F.Napomena2.Substring(0, 1),
@@ -13056,7 +13056,9 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             TheMoneyKCR  = ThirdJoin.R.R_KCR,
 
             IsNekakav    = IsUlaz,
-            Kol          = ThirdJoin.R.T_kol
+            Kol          = ThirdJoin.R.T_kol,
+            String5      = ThirdJoin.A.MasaNettoJM
+            
          })
        //.OrderBy(qwe => qwe.ArtiklGrCD)
          .ToList();
@@ -13122,18 +13124,16 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       List<VvReportSourceUtil> rsu = TheDeviznaSumaList;
 
+      if(theIr002a.Envelope.Header.ReportType == INTRASTAT.ReportTypeType.B || theIr002a.Envelope.Header.ReportType == INTRASTAT.ReportTypeType.Item0)
+      {
+         // tada ne bi trebale doci stavke, samo zaglavlje ....
+      }
+
       for(int i = 0; i < TheDeviznaSumaList.Count; ++i)
       {
          item = theIr002a.Envelope.Declaration.Item[i] = new INTRASTAT.ItemType();
 
          item.ItemNr                 = (uint)(i+1)         ;
-
-         // ovo treba rjesiti na pocetku da se vidi i u printu - tocka 2 i 3!!!!!!!!
-         if(this.IsUlaz == false)// samo ako je izlaz onda ide ovaj podatak
-         {
-            if(rsu[i].KupdobName.IsEmpty() || rsu[i].KupdobName.Length < 4) item.VATNumber = "QV999999999999" ; // je nepoznat OIB jer je fizicka osoba onda ide ovaj broj
-            else                                                            item.VATNumber = rsu[i].KupdobName; // ako je iylay onda mora biti a ako je ulay onda ne smije biti
-         } 
 
          item.CN8Code                = rsu[i].ArtiklGrCD   ;
          item.GoodsDescription       = rsu[i].ArtiklGrName ;
@@ -13143,17 +13143,17 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          item.DeliveryTerms.DeliveryTermsCode   = rsu[i].DevName;
          item.DeliveryTerms.PlaceOfDeliveryCode = short.Parse(rsu[i].String1);
 
-         item.NatureOfTransaction                           = new INTRASTAT.NatureOfTransactionType();
+         item.NatureOfTransaction                          = new INTRASTAT.NatureOfTransactionType();
          item.NatureOfTransaction.NatureOfTransactionACode = short.Parse(rsu[i].String2);
          item.NatureOfTransaction.NatureOfTransactionBCode = short.Parse(rsu[i].String3);
-/*speci*/item.NatureOfTransaction.NatureOfTransactionBCodeSpecified = true;
+         item.NatureOfTransaction.NatureOfTransactionBCodeSpecified = true;
 
          item.TransportMode         = short.Parse(rsu[i].String4);
          item.CountryOfOriginCode   = rsu[i].TheCD               ;
          item.NetWeight             = rsu[i].TheMoney.Ron(3)     ;
-/*speci*/item.NetWeightSpecified    = true                       ;
+         item.NetWeightSpecified    = true                       ;
          item.QuantityInSU          = rsu[i].TheMoney2.Ron(3)    ;
-/*speci*/item.QuantityInSUSpecified = true                       ;
+         item.QuantityInSUSpecified = rsu[i].TheMoney2.Ron(3).NotZero() /*true*/;// ovo ide samo ako ima JM a a ko nema onda ne treba dolaziti
          item.InvoicedAmount        = rsu[i].TheMoneyKCR.Ron(0)  ;
       }
 

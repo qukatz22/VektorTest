@@ -681,7 +681,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_Sort     .Visible = false;
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = true;
-      hamper_intrastat.Visible = true;
+      hamper_intrastat.Visible = ZXC.IsTETRAGRAM_ANY/* true*/;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_NacPlac  .Visible = false;
@@ -7228,7 +7228,7 @@ public class FakturDocFilterUC    : VvFilterUC
          rbt_ira5.Visible = tbx_obrazacE.Visible = false;
 
       }
-      else if(TheVvUC is PonudaDUC || TheVvUC is ObvezPonudaDUC)
+      else if(TheVvUC is PonudaDUC || TheVvUC is ObvezPonudaDUC || TheVvUC is PON_MPC_DUC)
       {
          rbt_ira2    .Visible =
          tbx_obrazacB.Visible =true;
