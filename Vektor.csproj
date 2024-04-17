@@ -1757,6 +1757,12 @@
       <DependentUpon>CR_RekapRealizRNM.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_RekapRtrans.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapRtrans.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_RekapTrans.cs">
       <DependentUpon>CR_RekapTrans.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3653,6 +3659,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_RekapRealizRNM.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_RekapRealizRNM.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RekapRtrans.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapRtrans.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_RekapTrans.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

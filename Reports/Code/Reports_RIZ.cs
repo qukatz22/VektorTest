@@ -13153,7 +13153,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          item.NetWeight             = rsu[i].TheMoney.Ron(3)     ;
          item.NetWeightSpecified    = true                       ;
          item.QuantityInSU          = rsu[i].TheMoney2.Ron(3)    ;
-         item.QuantityInSUSpecified = rsu[i].TheMoney2.Ron(3).NotZero() /*true*/;// ovo ide samo ako ima JM a a ko nema onda ne treba dolaziti
+         item.QuantityInSUSpecified = true                       ;// ovo ide samo ako ima JM a a ko nema onda ne treba dolaziti
          item.InvoicedAmount        = rsu[i].TheMoneyKCR.Ron(0)  ;
       }
 
