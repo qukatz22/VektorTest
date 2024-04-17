@@ -13155,6 +13155,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          item.NetWeightSpecified    = true                       ;
          item.InvoicedAmount        = rsu[i].TheMoneyKCR.Ron(0)  ;
 
+//       a sto cemo sad ? sto ako su oba moneya 0?  Mi javljamo poruku ali u xml ce otici sa krivom 0 i nece javiti gresku validacije!!!!!!!!
          if(rsu[i].TheMoney2.NotZero())
          { 
             item.QuantityInSU          = rsu[i].TheMoney2.Ron(3) ; // BETA 
