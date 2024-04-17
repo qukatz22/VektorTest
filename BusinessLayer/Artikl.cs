@@ -958,39 +958,30 @@ public class Artikl : VvSifrarRecord
       }
    }
 
-   private decimal MasaNetto_U_g
+   private decimal GetIntrastat_MasaN_U_Kg (decimal t_kol) { return t_kol * this.MasaNetto_U_g_zaokruzena_kroz1000; } // ALFA za netto slučaj 
+   public  decimal GetIntrastat_Kol_U_PodJM(decimal t_kol) { return t_kol * this.MasaNetto_U_g_zaokruzena;          } // BETA 
+   private decimal MasaNetto_U_g                     { get { return this.MasaNetto_U_Kg * 1000M;                  } }
+   private decimal MasaNetto_U_g_zaokruzena          { get { return this.MasaNetto_U_g.Ron(0);                    } }
+   private decimal MasaNetto_U_g_zaokruzena_kroz1000 { get { return this.MasaNetto_U_g_zaokruzena / 1000M;        } }
+
+   // Odlucili smo da za artikle koji nemaju masu kao realnu podjedinicu mjere 
+   // koristimo 'MasaBruto' da im navedemo težinu u kg                         
+
+   private decimal GetIntrastat_MasaB_U_Kg(decimal t_kol) { return t_kol * this.MasaBruto; } // ALFA za bruto slučaj 
+
+   public decimal GetIntrastat_MasaBN_U_Kg(decimal t_kol) // ALFA 
    {
-      get
+      bool isMasaNetto = this.MasaNetto.NotZero();
+      bool isMasaBruto = this.MasaBruto.NotZero();
+
+      if(!isMasaNetto && !isMasaBruto)
       {
-         return this.MasaNetto_U_Kg * 1000M;
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Artiklu {0}\n\r\n\rNije zadana ni jedna masa!?", this);
       }
-   }
 
-   public decimal GetIntrastat_Kol_U_JM(decimal t_kol)
-   {
-      return t_kol * this.MasaNetto_zaokruzenaNaGram;
-   }
-
-   public decimal GetIntrastat_Masa_U_Kg(decimal t_kol)
-   {
-      return GetIntrastat_Kol_U_JM(t_kol) / 1000M;
-   }
-
-   private decimal MasaNetto_zaokruzenaNaGram
-   {
-      get 
-      {
-         return this.MasaNetto_U_g.Ron(0); 
-      }
-   }
-
-   private decimal MasaNetto_zaokruzenaNaGram_kroz1000
-   {
-      get 
-      {
-         return this.MasaNetto_zaokruzenaNaGram / 1000M;
-      }
-   }
+      return isMasaBruto ? GetIntrastat_MasaB_U_Kg(t_kol) :
+                           GetIntrastat_MasaN_U_Kg(t_kol) ;
+   } 
 
    #endregion Intrastat Propertiz
 

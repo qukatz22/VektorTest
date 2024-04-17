@@ -13051,8 +13051,8 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             String2      = ThirdJoin.F.Napomena2.Substring(0, 1),
             String3      = ThirdJoin.F.Napomena2.Substring(1, 1),
             String4      = ThirdJoin.F.TipOtpreme,
-            TheMoney     = ThirdJoin.A.GetIntrastat_Masa_U_Kg(ThirdJoin.R.T_kol),
-            TheMoney2    = ThirdJoin.A.GetIntrastat_Kol_U_JM (ThirdJoin.R.T_kol),
+            TheMoney     = ThirdJoin.A.GetIntrastat_MasaBN_U_Kg (ThirdJoin.R.T_kol), // ALFA 
+            TheMoney2    = ThirdJoin.A.GetIntrastat_Kol_U_PodJM (ThirdJoin.R.T_kol), // BETA 
             TheMoneyKCR  = ThirdJoin.R.R_KCR,
 
             IsNekakav    = IsUlaz,
@@ -13063,8 +13063,6 @@ public class RptR_Intrastat : RptR_StandardRiskReport
        //.OrderBy(qwe => qwe.ArtiklGrCD)
          .ToList();
 
-
-      //return 0;
       return TheDeviznaSumaList.Count;
    }
 
@@ -13124,12 +13122,15 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       List<VvReportSourceUtil> rsu = TheDeviznaSumaList;
 
+      bool trebamoStavke = true;
+
       if(theIr002a.Envelope.Header.ReportType == INTRASTAT.ReportTypeType.B || theIr002a.Envelope.Header.ReportType == INTRASTAT.ReportTypeType.Item0)
       {
          // tada ne bi trebale doci stavke, samo zaglavlje ....
+         trebamoStavke = false;
       }
 
-      for(int i = 0; i < TheDeviznaSumaList.Count; ++i)
+      for(int i = 0; trebamoStavke && i < TheDeviznaSumaList.Count; ++i) // 'trebamoStavke' varijabla regulira da li trebamo stavke 
       {
          item = theIr002a.Envelope.Declaration.Item[i] = new INTRASTAT.ItemType();
 
@@ -13150,14 +13151,23 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
          item.TransportMode         = short.Parse(rsu[i].String4);
          item.CountryOfOriginCode   = rsu[i].TheCD               ;
-         item.NetWeight             = rsu[i].TheMoney.Ron(3)     ;
+         item.NetWeight             = rsu[i].TheMoney .Ron(3)    ; // ALFA 
          item.NetWeightSpecified    = true                       ;
-         item.QuantityInSU          = rsu[i].TheMoney2.Ron(3)    ;
-         item.QuantityInSUSpecified = true                       ;// ovo ide samo ako ima JM a a ko nema onda ne treba dolaziti
          item.InvoicedAmount        = rsu[i].TheMoneyKCR.Ron(0)  ;
+
+         if(rsu[i].TheMoney2.NotZero())
+         { 
+            item.QuantityInSU          = rsu[i].TheMoney2.Ron(3) ; // BETA 
+            item.QuantityInSUSpecified = true                    ; // ovo ide samo ako ima JM a a ko nema onda ne treba dolaziti
+         }                                                       
+         else                                                    
+         {                                                       
+            item.QuantityInSU          = 0M                      ; // BETA 
+            item.QuantityInSUSpecified = false                   ; // ovo ide samo ako ima JM a a ko nema onda ne treba dolaziti
+         }
       }
 
-      theIr002a.Envelope.Declaration.TotalItems = (uint)TheDeviznaSumaList.Count;
+      theIr002a.Envelope.Declaration.TotalItems = trebamoStavke ? (uint)TheDeviznaSumaList.Count : 0;
 
       #endregion Envelope
 
