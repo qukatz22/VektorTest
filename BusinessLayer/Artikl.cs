@@ -976,7 +976,7 @@ public class Artikl : VvSifrarRecord
 
       if(!isMasaNetto && !isMasaBruto)
       {
-         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Artiklu {0}\n\r\n\rNije zadana ni jedna masa!?", this);
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Artiklu {0}\n\r\n\rNije zadana ni jedna masa!?", this);
       }
 
       return isMasaBruto ? GetIntrastat_MasaB_U_Kg(t_kol) :

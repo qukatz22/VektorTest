@@ -13044,7 +13044,7 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             ArtiklGrCD   = ThirdJoin.A.AtestBr,
             ArtiklGrName = ThirdJoin.A.ArtiklName,
             TheCD        = ThirdJoin.A.MadeIn,
-            FakturGR     = ThirdJoin.F.VatCntryCode,
+            FakturGR     = ThirdJoin.F.VatCntryCode.NotEmpty() ? ThirdJoin.F.VatCntryCode : ThirdJoin.K.Napom2,
             KupdobName   = IsUlaz ? "" : ThirdJoin.K.IsZzz ? "QV999999999999" : ThirdJoin.F.VATnumber,
             DevName      = ThirdJoin.F.VezniDok2,
             String1      = ThirdJoin.F.Fco,
@@ -13175,6 +13175,26 @@ public class RptR_Intrastat : RptR_StandardRiskReport
       #endregion Set XML data
 
       #region Final
+
+      // ipak ne. vretili na staro
+    //bool ok = true;
+    //string xmlString;
+    //
+    //if(TheDeviznaSumaList.Any(ds => ds.TheMoney.IsZero() && ds.TheMoney2.IsZero()))
+    //{
+    //   ok = false;
+    //}
+    //
+    //if(ok)
+    //{
+    //   xmlString = theIr002a.SaveToFile(fileName, ZXC.VvUTF8Encoding_noBOM);
+    //}
+    //else
+    //{
+    //   ZXC.aim_emsg(MessageBoxIcon.Stop, "XML datoteka sadrži neprihvatljive greške stoge neće biti kreirana!");
+    //}
+    //
+    //return /*true*/ok;
 
       string xmlString = theIr002a.SaveToFile(fileName, ZXC.VvUTF8Encoding_noBOM);
 
