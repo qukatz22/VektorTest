@@ -595,6 +595,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       CalcLocationSizeAnchor_ThePolyGridTabControl(TheTabControl.TabPages[0], nextX, CalcRazmakZaPolyGridTabControl());
    }
 
+   public bool IsFiskalDutyDUC
+   {
+      get
+      {
+         return this is IRMDUC || this is IRMDUC_2 || this is IRADUC || this is IRA_MPC_DUC || this is IRPDUC || this is IFADUC || this is IFAdevDUC;
+      }
+   }
 
    #endregion Constructor
 
@@ -1088,14 +1095,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       tbx_TtOpis.Font = ZXC.vvFont.BaseFont;
       tbx_TtNum.Font = ZXC.vvFont.BaseBoldFont;
 
-      //15.04.2024.
-      tbx_TtNum.JAM_ReadOnly = true;
-      /* !!! */  if(ZXC.CurrUserHasSuperPrivileges)
-      /* !!! */  {
-      /* !!! */     tbx_TtNum.JAM_ReadOnly = false;
-      /* !!! */  }
-
-
+      //22.04.2024: 
+      if(this.IsFiskalDutyDUC && ZXC.CurrUserHasSuperPrivileges == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && ZXC.CURR_prjkt_rec.IsNoTtNumChk == false)
+      {
+         tbx_TtNum.JAM_ReadOnly = true;
+      }
+      //22.04.2024: 
+      tbx_TtNum.JAM_FieldExitMethod = new EventHandler(OnExit_Beautify_TtNum);
    }
    private void InitializeHamper_dokNum(out VvHamper hamper)
    {

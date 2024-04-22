@@ -3464,6 +3464,31 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       }
    }
 
+   protected /*private*/ void OnExit_Beautify_TtNum(object sender, EventArgs e)
+   {
+      VvTextBox vvtb = sender as VvTextBox;
+
+      if(this.Visible            == false) return;
+      if(vvtb.EditedHasChanges() == false) return;
+
+      uint newTtNum=0;
+
+      uint theUint = ZXC.ValOrZero_UInt(tbx_TtNum.Text);
+
+      if(theUint.NotZero() && faktur_rec.TtInfo.IsSklCdInTtNum && theUint < Faktur.BaseTtNum)
+      {
+         newTtNum = Faktur.GetTtNumFromRbr(Fld_SkladCD, theUint);
+      }
+      else
+      {
+         newTtNum = theUint;
+      }
+
+      Put_NewTT_Num(newTtNum);
+
+      oldTtNum = Fld_TtNum;
+   }
+
    #endregion FakturDUC_Validating
 
    #region OnExit BOR-SOBA-GOST

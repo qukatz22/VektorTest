@@ -421,7 +421,9 @@ public class URADUC              : FakturExtDUC
       T_kol2_CreateColumn      (ZXC.Q3un, ZXC.RRD.Dsc_AmbKolNumOfDecimalPlaces, ZXC.RRD.Dsc_IsKol2Visible, "AmbKol"     , "Ambalažna količina");
       T_kol_CreateColumn       (ZXC.Q3un, 2,             isVisible                , "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,             isVisible                , "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 4,             isVisible                , "Cijena"     , "Jedinična cijena");
+
+      T_cij_CreateColumn       (ZXC.Q4un, ZXC.IsTETRAGRAM_ANY ? 5 : 4, isVisible, "Cijena", "Jedinična cijena");
+
       T_rbt1St_CreateColumn    (ZXC.Q3un - ZXC.Qun4, 2,  isVisible                , "Rb1"        , "Stopa rabata 1");
  //   T_rbt2St_CreateColumn    (ZXC.Q2un, 0,             isVisible                , "Rb2"        , "Stopa rabata 2");
       R_KCR_CreateColumn       (ZXC.Q4un, 2,             isVisible                , "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
