@@ -4,12 +4,8 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using static ArtiklDao;
-using Org.BouncyCastle.Asn1.Ocsp;
-using System.Runtime.CompilerServices;
-using ikvm.lang;
 using static FakturPDUC;
+using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -17,8 +13,6 @@ using XSqlConnection = System.Data.SqlClient.SqlConnection;
 #else
 using                  MySql.Data.MySqlClient;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
-using System.Reflection;
-using System.Text;
 using System.IO;
 #endif
 
@@ -3898,7 +3892,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    public void AnyArtiklTextBox_OnGrid_Leave(object sender, EventArgs e)
    {
       #region Init stuff
-
+      
       if(isPopulatingSifrar)                           return;
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
@@ -4071,7 +4065,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          return;
-      }
+
+      } // if(isRtranoSecondGrid) // ############################################## 
+
       // ##################################################################### 
 
       #endregion Init stuff
@@ -5655,6 +5651,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    protected void OnExit_Update_PCK_Serno_For_MOD   (object sender, System.ComponentModel.CancelEventArgs e)
    {
+      // Get WriteMode
+      // if wm is Edit then check if exists in dl 4 this document
+      // anf if y ... ne dakj! 
       #region Init stuff
 
       if(isPopulatingSifrar)                           return;
@@ -5683,8 +5682,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region Check for double serno entry
 
+      List<string> sernosInUseList = new List<string>();
+
+      for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
+      {
+         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, false));
+      }
+
     //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno           == theSerno          ).Count();
-      int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno.ToLower() == theSerno.ToLower()).Count();
+    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno.ToLower() == theSerno.ToLower()).Count();
+      int theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
 
       if(theSernoCount > 1)
       {

@@ -2225,8 +2225,17 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    #region Result Sums - NON Data Layer Columns
 
+#if DEBUG
+   public List<string> Transes_4Debug   { get { return this.Transes  .Select(t => t.SaveTransesWriteMode + "~" + t.ToString()).ToList(); } }
+   public List<string> TrnNonDel_4Debug { get { return this.TrnNonDel.Select(t => t.SaveTransesWriteMode + "~" + t.ToString()).ToList(); } }
+
+   public List<string> Transes2_4Debug   { get { return this.Transes2  .Select(t => t.SaveTransesWriteMode + "~" + t.ToString()).ToList(); } }
+   public List<string> TrnNonDel2_4Debug { get { return this.TrnNonDel2.Select(t => t.SaveTransesWriteMode + "~" + t.ToString()).ToList(); } }
+#endif
+
    //private List<Rtrans> TransesNonDeleted
-   /*private*/public Rtrans[] TrnNonDel  // postalo public tek 05.01.2012 
+   /*private*/
+   public Rtrans[] TrnNonDel  // postalo public tek 05.01.2012 
    { 
       get 
       {

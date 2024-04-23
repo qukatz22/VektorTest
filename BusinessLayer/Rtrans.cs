@@ -1789,22 +1789,21 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
    #endregion Propertiz
 
-         #region ToString
+   #region ToString
 
    public override string ToString()
    {
       // for watch (debug) only 
-      if(this.TtInfo.IsRNMsetTT)
-      return " TT: "     + T_TT + "-" + T_ttNum +
-             "/" + R_grName + "/" + T_dokNum + "/" + 
-             " (" + T_skladDate.ToShortDateString() + ") " + T_skladCD +
-             " Ser: "    + T_serial   + String.Format(" k:{0:N} c:{1:N}", R_kol, T_cij) +
-             " Artikl: " + T_artiklCD + "-" + T_artiklName;
-      
+      //if(this.TtInfo.IsRNMsetTT)
+      //return " TT: "     + T_TT + "-" + T_ttNum +
+      //       "/" + R_grName + "/" + T_dokNum + "/" + 
+      //       " (" + T_skladDate.ToShortDateString() + ") " + T_skladCD +
+      //       " Ser: "    + T_serial   + String.Format(" k:{0:N} c:{1:N}", R_kol, T_cij) +
+      //       " Artikl: " + T_artiklCD + "-" + T_artiklName;
+   
       return " TT: "     + T_TT + "-" + T_ttNum + " (" + T_skladDate.ToShortDateString() + ") " + T_skladCD +
              " Ser: "    + T_serial   + String.Format(" k:{0:N} c:{1:N}", R_kol, T_cij) +
              " Artikl: " + T_artiklCD + "-" + T_artiklName;
-                      
    }
 
    public string ToShortString()
