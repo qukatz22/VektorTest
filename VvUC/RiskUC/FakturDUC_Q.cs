@@ -3628,6 +3628,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       string skladCD    = HasRtrans_SkladCD_Exposed ? TheG.GetStringCell(ci.iT_skladCD, rowIdx, false) : Fld_SkladCD;
 
+      // 23.04.2024: 
+      bool isProductLineChecked = VvCheckBox.GetBool4String(TheG.GetStringCell(ci.iT_isProductLine, rowIdx, false));
+      if(isProductLineChecked)                 skladCD =        Fld_SkladCD2;
+    //else                     dgvRtrans_rec.T_skladCD = faktur_rec.SkladCD ;
+
       bool isUmjetninaRtrans  = GetPdvKolTipEnumFromFirstLetter(TheG.GetStringCell(ci.iT_pdvKolTip, rowIdx, false)) == ZXC.PdvKolTipEnum.UMJETN;
 
       if(ThisRowWillProduceMinusKolSt(rowIdx, artiklCD, skladCD, ref maxKol, ref t_kol, false))
