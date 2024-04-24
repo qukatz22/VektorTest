@@ -4,8 +4,6 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using static FakturPDUC;
-using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -2806,7 +2804,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          if(this is FakturPDUC) 
          {
             FakturPDUC thePduc = this as FakturPDUC;
-            Rtrano_colIdx ci2  = thePduc.DgvCI2;
+            FakturPDUC.Rtrano_colIdx ci2  = thePduc.DgvCI2;
 
             Rtrano rtrano_rec;
 
@@ -5656,9 +5654,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    protected void OnExit_Update_PCK_Serno_For_MOD   (object sender, System.ComponentModel.CancelEventArgs e)
    {
-      // Get WriteMode
-      // if wm is Edit then check if exists in dl 4 this document
-      // anf if y ... ne dakj! 
       #region Init stuff
 
       if(isPopulatingSifrar)                           return;
@@ -5729,6 +5724,35 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          return;
       }
 
+      #region U 'Ispravi': Ponovno zadavanje serno-a, kojeg smo prvo pobrisali ili pregazili, a koji je postojao u DataLayeru prije ovog ispravka
+
+      if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.Edit)
+      {
+         Rtrano previousForThisSerno_Rtrano_rec = null;
+         foreach(Rtrano rtrano in faktur_rec.Transes2)
+         {
+            if(rtrano.backupData._t_serno == theSerno)
+            {
+               previousForThisSerno_Rtrano_rec = rtrano.MakeDeepCopy();
+               previousForThisSerno_Rtrano_rec.RestoreBackupData();
+            }
+         }
+
+         if(previousForThisSerno_Rtrano_rec != null)
+         {
+            string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(previousForThisSerno_Rtrano_rec.T_artiklCD, previousForThisSerno_Rtrano_rec.R_MOD_RAM_old, previousForThisSerno_Rtrano_rec.R_MOD_HDD_old);
+
+            lastRtrano_rec = previousForThisSerno_Rtrano_rec.MakeDeepCopy();
+            lastRtrano_rec.T_artiklCD = oldArtiklCD;
+            lastRtrano_rec.T_PCK_RAM  = previousForThisSerno_Rtrano_rec.R_MOD_RAM_old;
+            lastRtrano_rec.T_PCK_HDD  = previousForThisSerno_Rtrano_rec.R_MOD_HDD_old;
+
+            ZXC.aim_emsg(MessageBoxIcon.Information, "Ovaj serijski broj je prije ispravka već bio na ovom dokumentu. Ponavljam njegovo 'OldArtikl' obilježje.");
+         }
+      }
+
+      #endregion U 'Ispravi': Ponovno zadavanje serno-a, kojeg smo prvo pobrisali ili pregazili, a koji je postojao u DataLayeru prije ovog ispravka
+
       Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec, currRowIdx);
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
@@ -5737,7 +5761,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}");
    }
 
-   private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, Rtrano_colIdx ci2)
+   private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, FakturPDUC.Rtrano_colIdx ci2)
    {
       theGrid.PutCell(ci2.iT_TT         , currRowIdx, "");
       theGrid.PutCell(ci2.iT_kol        , currRowIdx, 0M);
@@ -5816,9 +5840,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       }
 
       PutDgvLineFields2(newRtrano_rec, rIdx, true); // classic 
+
     //PutDgvLineResultsFields2(rIdx, newRtrano_rec, false); // RAMnew, HDDnew 
 
-      Rtrano_colIdx localCi2 = (this as FakturPDUC).DgvCI2;
+      FakturPDUC.Rtrano_colIdx localCi2 = (this as FakturPDUC).DgvCI2;
 
       TheG2.PutCell(localCi2.iR_ramOld, rIdx, /*VvCurrency*/(oldRtrano_rec.T_PCK_RAM    ).ToString0Vv());
       TheG2.PutCell(localCi2.iR_hddOld, rIdx, /*VvCurrency*/(oldRtrano_rec.T_PCK_HDD    ).ToString0Vv());

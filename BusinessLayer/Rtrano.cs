@@ -47,8 +47,8 @@ public class Rtrano : VvTransRecord
    public const string recordName = "rtrano";
    public const string recordNameArhiva = recordName + VvDataRecord.ArhRecNameExstension;
 
-   private RtranoStruct currentData;
-   private RtranoStruct backupData;
+   /*private*/ public RtranoStruct currentData;
+   /*private*/ public RtranoStruct backupData ;
 
    protected static System.Data.DataTable TheSchemaTable = ZXC.RtranoDao.TheSchemaTable;
    protected static RtranoDao.RtranoCI    CI             = ZXC.RtranoDao.CI;
