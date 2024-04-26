@@ -7960,7 +7960,8 @@ public class PON_MPC_DUC           : FakturExtDUC
       hamp_PonudDate.Location = new Point(hamp_DospDate.Left, hamp_DospDate.Bottom - ZXC.Qun4);
       hamp_RokPonude.Location = new Point(hamp_RokPlac.Left, hamp_DospDate.Bottom - ZXC.Qun4);
      
-      hamp_opis.Location = new Point(hamp_tt.Right, hamp_tt.Top);
+    //hamp_opis.Location = new Point(hamp_tt.Right, hamp_tt.Top);
+      hamp_opis.Location = new Point(hamp_v1TT.Right, hamp_tt.Top);
       hamp_opis.BringToFront();
    }
 
@@ -8072,7 +8073,8 @@ public class IRA_MPC_DUC              : FakturExtDUC
       hamp_Fco        .Location = new Point(hamp_VezniDok2.Right, hamp_fiskJIR  .Bottom);
       hamp_napomena2  .Location = new Point(hamp_fiskJIR  .Left , hamp_VezniDok2.Bottom);
       hamp_tipOtpreme .Location = new Point(hamp_napomena2.Right, hamp_VezniDok2.Bottom);
-      hamp_opis       .Location = new Point(hamp_tt       .Right, hamp_tt       .Top);
+    //hamp_opis       .Location = new Point(hamp_tt       .Right, hamp_tt       .Top);
+      hamp_opis       .Location = new Point(hamp_v1TT.Right     , hamp_tt.Top);
       hamp_opis.BringToFront();
 
       nextY = hamp_DatumX.Bottom;
