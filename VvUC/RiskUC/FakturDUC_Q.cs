@@ -3812,6 +3812,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
    {
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
+      bool isNovoUpareniSerno = false;
+
       if(artikl_rec != null)
       {
          theGrid.PutCell(ci2.iT_artiklCD   , currRowIdx, artikl_rec.ArtiklCD  );
@@ -3840,6 +3842,35 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                theGrid.ClearRowContent(currRowIdx);
                return;
             }
+            else if(ThisIs_MOC_rowIndex(currRowIdx)) // serno je zadan ... uparujemo serno i artikl
+            {
+               isNovoUpareniSerno = true;
+
+               string  cilj_MOC_ArtiklCD = (this as MOD_PTG_DUC).Fld_PrjArtCD;
+
+               decimal cilj_MOC_RAM = Fld_Decimal01;
+               decimal cilj_MOC_HDD = Fld_Decimal02;
+
+               decimal artikl_OLD_RAM = artikl_rec.PCK_RAM;
+               decimal artikl_OLD_HDD = artikl_rec.PCK_HDD;
+
+               decimal ramPlus  = cilj_MOC_RAM - artikl_OLD_RAM;
+               decimal ramMinus = 0M;
+               decimal hddPlus  = cilj_MOC_HDD - artikl_OLD_HDD;
+               decimal hddMinus = 0M;
+
+               if(ramPlus.IsNegative()) { ramMinus = -ramPlus; ramPlus = 0; }
+               if(hddPlus.IsNegative()) { hddMinus = -hddPlus; hddPlus = 0; }
+
+               TheG2.PutCell(ci2.iT_RAM_plus , currRowIdx, ramPlus );
+               TheG2.PutCell(ci2.iT_RAM_minus, currRowIdx, ramMinus);
+               TheG2.PutCell(ci2.iT_HDD_plus , currRowIdx, hddPlus );
+               TheG2.PutCell(ci2.iT_HDD_minus, currRowIdx, hddMinus);
+
+               TheG2.PutCell(ci2.iT_artiklCD, currRowIdx, cilj_MOC_ArtiklCD);
+               TheG2.PutCell(ci2.iT_RAM_new , currRowIdx, cilj_MOC_RAM     );
+               TheG2.PutCell(ci2.iT_HDD_new , currRowIdx, cilj_MOC_HDD     );
+            }
          }
 
          if(this is MOD_PTG_DUC && ThisIs_MOC_rowIndex(currRowIdx) && artikl_rec.TS != ZXC.PCK_TS)
@@ -3857,10 +3888,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             theGrid.PutCell(ci2.iT_artiklTS, currRowIdx, artikl_rec.TS      );
             theGrid.PutCell(ci2.iT_kol     , currRowIdx, 1.00M              );
 
-            if(artikl_rec.TS == ZXC.PCK_TS)
+            if(artikl_rec.TS == ZXC.PCK_TS && !isNovoUpareniSerno)
             {
-               theGrid.PutCell(ci2.iT_dimZ, currRowIdx, artikl_rec.PCK_RAM);
-               theGrid.PutCell(ci2.iT_decC, currRowIdx, artikl_rec.PCK_HDD);
+               theGrid.PutCell(ci2.iT_RAM_new, currRowIdx, artikl_rec.PCK_RAM);
+               theGrid.PutCell(ci2.iT_HDD_new, currRowIdx, artikl_rec.PCK_HDD);
             }
 
             if(artikl_rec.TS == ZXC.KMP_TS)
