@@ -3870,12 +3870,25 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                TheG2.PutCell(ci2.iT_artiklCD, currRowIdx, cilj_MOC_ArtiklCD);
                TheG2.PutCell(ci2.iT_RAM_new , currRowIdx, cilj_MOC_RAM     );
                TheG2.PutCell(ci2.iT_HDD_new , currRowIdx, cilj_MOC_HDD     );
-            }
-         }
 
-         if(this is MOD_PTG_DUC && ThisIs_MOC_rowIndex(currRowIdx) && artikl_rec.TS != ZXC.PCK_TS)
+               // ako smo tu onda je novouparenje serno-a sa MOC artiklom 
+               for(int i = 1; i <= 6; i++) SendKeys.Send("{TAB}");
+            }
+
+         } // if(this is MOD_PTG_DUC && artikl_rec.TS == ZXC.PCK_TS)
+
+       //if(this is MOD_PTG_DUC && ThisIs_MOC_rowIndex(currRowIdx) && artikl_rec.TS != ZXC.PCK_TS)
+       //{
+       //   ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl (cilj modifikacije).", (int)(this as MOD_PTG_DUC).Fld_someMoney);
+       //
+       //   theGrid.ClearRowContent(currRowIdx);
+       //   return;
+       //}
+
+         if(this is MOD_PTG_DUC && ThisIs_MOC_rowIndex(currRowIdx) && artikl_rec.PCK_BazaCD != (this as MOD_PTG_DUC).Fld_PTG_PCKbaza)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl (cilj modifikacije).", (int)(this as MOD_PTG_DUC).Fld_someMoney);
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl (cilj modifikacije) PCK baze {1}.", 
+               (int)(this as MOD_PTG_DUC).Fld_someMoney, (this as MOD_PTG_DUC).Fld_PTG_PCKbaza);
 
             theGrid.ClearRowContent(currRowIdx);
             return;
@@ -5788,8 +5801,20 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
 
+      if(ThisIs_MOC_rowIndex(currRowIdx))
+      {
+         // 7 puta 
+         for(int i = 1; i <= 7; i++) SendKeys.Send("{TAB}"); 
+      }
+      else
+      {
+         // 3 puta 
+         for(int i = 1; i <= 3; i++) SendKeys.Send("{TAB}");
+      }
+
       // odi na RAM+ 
-      SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}");
+      //SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}");
+      //theGrid.CurrentCell = theGrid[3, 2];                                                                                                                                                
    }
 
    private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, FakturPDUC.Rtrano_colIdx ci2)

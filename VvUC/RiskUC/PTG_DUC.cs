@@ -4690,7 +4690,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
    public string Fld_PTG_HddKlasa { set { tbx_hddKlasa.Text = value; } }
-   public string Fld_PTG_PCKbaza  { set { tbx_pckBaza.Text = value; } }
+   public string Fld_PTG_PCKbaza  { get { return tbx_pckBaza.Text; } set { tbx_pckBaza.Text = value; } }
 
 
    #endregion Fld
