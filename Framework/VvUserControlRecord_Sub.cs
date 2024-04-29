@@ -5,6 +5,7 @@ using Crownwood.DotNetMagic.Controls;
 using System.Collections.Generic;
 using CrystalDecisions.Windows.Forms;
 using System.Linq;
+using ikvm.lang;
 
 public interface IVvHasSumInDataLayerDocumentRecordUC
 {
@@ -1767,7 +1768,10 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
 
    public DataGridView   TheColChooserGrid3  { get; set; }
    public VvDataGridView TheG3               { get; set; }
-   public DataGridView   TheSumGrid3         { get; set; }
+
+   // 29.04.2024: 
+ //public   DataGridView TheSumGrid3         { get; set; }
+   public VvDataGridView TheSumGrid3         { get; set; }
 
    protected List<VvTransRecord> VirtualTranses3 { get { return this.VirtualPolyDocumRecord.VirtualTranses3; } }
 
@@ -1817,6 +1821,26 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
          else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2) return TheG2;
          else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3) return TheG3;
          else throw new Exception("VvUserControlRecord_Sub.TheCurrentG: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
+
+         //switch(ThePolyGridTabControl.SelectedTab.Title)
+         //{
+         //   case TabPageTitle1: return TheG;
+         //   case TabPageTitle2: return TheG2;
+         //   case TabPageTitle3: return TheG3;
+
+         //   default: throw new Exception("VvUserControlRecord_Sub.TheCurrentG: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
+         //}
+      }
+   }
+
+   public VvDataGridView TheCurrentSumGrid
+   {
+      get
+      {
+              if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle1) return TheSumGrid;
+         else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2) return TheSumGrid2;
+         else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3) return TheSumGrid3;
+         else throw new Exception("VvUserControlRecord_Sub.TheCurrentSumGrid: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
 
          //switch(ThePolyGridTabControl.SelectedTab.Title)
          //{
@@ -1917,6 +1941,19 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
 
    #endregion ThePolyGridTabControl
 
+   public decimal Put_ColSum_OnSumGrid(int colIdx)
+   {
+      decimal theSum = 0.00M;
+
+      for(int rowIdx = 0; rowIdx < TheCurrentG.RowCount - 1; ++rowIdx)
+      {
+         theSum += TheCurrentG.GetDecimalCell(colIdx, rowIdx, false);
+      }
+
+      TheCurrentSumGrid.PutCell(colIdx, 0, theSum);
+
+      return theSum;
+   }
 }
 
 public abstract class VvSifrarRecordUC    : VvRecordUC

@@ -5048,5 +5048,12 @@ public class MOD_PTG_DUC : FakturPDUC
       if(numOfPlusMinusUnosa > 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rima višestruko definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
    }
 
+   internal void Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid()
+   {
+      Put_ColSum_OnSumGrid(ci2.iT_RAM_plus  );
+      Put_ColSum_OnSumGrid(ci2.iT_RAM_minus );
+      Put_ColSum_OnSumGrid(ci2.iT_HDD_plus  );
+      Put_ColSum_OnSumGrid(ci2.iT_HDD_minus );
+   }
 
 }
