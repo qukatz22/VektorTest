@@ -13265,7 +13265,7 @@ public partial class FakturExtDUC : FakturDUC
             modDUC.Fld_PTG_PCKbaza  = artikl_rec.PCK_BazaCD;
          }
 
-         Put_MOD_Semafor_Labels(this as MOD_PTG_DUC);
+         modDUC.Put_MOD_Semafor_Labels();
 
       }
 
@@ -13291,26 +13291,10 @@ public partial class FakturExtDUC : FakturDUC
 //#endif
    }
 
-   private void SetMODsemaforLabelColorAndText(Label semaforLabel, Color color, string labelText)
+   protected void SetMODsemaforLabelColorAndText(Label semaforLabel, Color color, string labelText)
    {
       semaforLabel.BackColor = color;
       semaforLabel.Text      = labelText;
-   }
-
-   private void Put_MOD_Semafor_Labels(MOD_PTG_DUC modDUC)
-   {
-      Color okColor  = Color.Green;
-      Color badColor = Color.Red  ;
-
-      int numOfMOCrows = faktur_rec.TrnNonDel2.Count(rto => rto.T_TT == Faktur.TT_MOC);
-      int MOCsaldo     = (int)Fld_someMoney - numOfMOCrows;
-
-      if(MOCsaldo                        .IsZero()) SetMODsemaforLabelColorAndText(modDUC.lbl_MOC, okColor , "");
-      else                                          SetMODsemaforLabelColorAndText(modDUC.lbl_MOC, badColor, "MOC " + MOCsaldo);
-      if(faktur_rec.TrnSum2_MOD_RAM_saldo.IsZero()) SetMODsemaforLabelColorAndText(modDUC.lbl_RAM, okColor , "");
-      else                                          SetMODsemaforLabelColorAndText(modDUC.lbl_RAM, badColor, "RAM " + faktur_rec.TrnSum2_MOD_RAM_saldo.ToString0Vv());
-      if(faktur_rec.TrnSum2_MOD_HDD_saldo.IsZero()) SetMODsemaforLabelColorAndText(modDUC.lbl_HDD, okColor , "");
-      else                                          SetMODsemaforLabelColorAndText(modDUC.lbl_HDD, badColor, "HDD " + faktur_rec.TrnSum2_MOD_HDD_saldo.ToString0Vv());
    }
 
    protected override void PutExtFields_RUC_Values(Faktur faktur)
@@ -13561,7 +13545,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(this is MOD_PTG_DUC)
       {
-         Put_MOD_Semafor_Labels(this as MOD_PTG_DUC);
+         (this as MOD_PTG_DUC).Put_MOD_Semafor_Labels();
       }
 
    }

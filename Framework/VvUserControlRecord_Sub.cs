@@ -1945,6 +1945,15 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
    {
       decimal theSum = 0.00M;
 
+      //if(TheVvTabPage.WriteMode == ZXC.WriteMode.None)
+      //{
+      //        if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle1) return VirtualPolyDocumRecord.VirtualTranses;
+      //   else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2) return TheSumGrid2;
+      //   else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3) return TheSumGrid3;
+      //
+      //   return faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC).Count();
+      //}
+
       for(int rowIdx = 0; rowIdx < TheCurrentG.RowCount - 1; ++rowIdx)
       {
          theSum += TheCurrentG.GetDecimalCell(colIdx, rowIdx, false);

@@ -1008,7 +1008,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    public override void InvokeTransRemove2(VvTransRecord trans_rec)
    {
-      this.Transes2.Remove((Rtrano)trans_rec);
+      bool result = this.Transes2.Remove((Rtrano)trans_rec);
    }
 
    public override void InvokeTransRemove3(VvTransRecord trans_rec)

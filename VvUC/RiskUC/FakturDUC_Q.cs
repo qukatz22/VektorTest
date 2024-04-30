@@ -3840,7 +3840,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                ZXC.aim_emsg(MessageBoxIcon.Stop, "PCK Artikl zadajte tek nakon unosa serijskog broja.");
 
                theGrid.ClearRowContent(currRowIdx);
-               (this as MOD_PTG_DUC).Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+               (this as MOD_PTG_DUC).Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
                return;
             }
             else if(ThisIs_MOC_rowIndex(currRowIdx)) // serno je zadan ... uparujemo serno i artikl
@@ -3892,7 +3892,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                (int)(this as MOD_PTG_DUC).Fld_someMoney, (this as MOD_PTG_DUC).Fld_PTG_PCKbaza);
 
             theGrid.ClearRowContent(currRowIdx);
-            (this as MOD_PTG_DUC).Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+            (this as MOD_PTG_DUC).Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
             return;
          }
 
@@ -3934,7 +3934,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          #endregion HasRtrano_SkladCD_Exposed
 
-         if(this is MOD_PTG_DUC) (this as MOD_PTG_DUC).Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+         if(this is MOD_PTG_DUC)
+         {
+            (this as MOD_PTG_DUC).Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+            (this as MOD_PTG_DUC).Put_MOD_Semafor_Labels();
+         }
 
       } // if(artikl_rec != null)
    }
@@ -5583,14 +5587,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
-      MOD_PTG_DUC theDUC = this as MOD_PTG_DUC;
+      MOD_PTG_DUC the_MOD_DUC = this as MOD_PTG_DUC;
 
       #endregion Init stuff
 
       string theSerno = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, true);
 
       theGrid.ClearRowContent(currRowIdx);
-      (this as MOD_PTG_DUC).Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+      the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
       theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
 
       if(theSerno.IsEmpty())
@@ -5632,14 +5636,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       // ak smo dosli do tu, znaci da je u pitanju postojeci serno 
       // pa mu idemo iskoristiti lastRtrano_rec stuff              
 
-      if(ThisIs_MOC_rowIndex(currRowIdx) && sernoInfo.PCK_BazaCD != theDUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
+      if(ThisIs_MOC_rowIndex(currRowIdx) && sernoInfo.PCK_BazaCD != the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
       {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", theDUC.Fld_PTG_MOC_RowCount, theDUC.Fld_PTG_MOC_PCK_baseCD);
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", the_MOD_DUC.Fld_PTG_MOC_RowCount, the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD);
 
          theGrid.EndEdit(); // !!! 
 
          theGrid.ClearRowContent(currRowIdx);
-         (this as MOD_PTG_DUC).Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+         the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
          return;
       }
 
@@ -5691,7 +5695,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       //SendKeys.Send("{TAB}"); SendKeys.Send("{TAB}");
       //theGrid.CurrentCell = theGrid[3, 2];                                                                                                                                                
 
-      /*if(this is MOD_PTG_DUC)*/ (this as MOD_PTG_DUC).Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+      the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+      the_MOD_DUC.Put_MOD_Semafor_Labels();
 
    }
 

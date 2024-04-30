@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -4664,18 +4665,18 @@ public class MOD_PTG_DUC : FakturPDUC
       hamp_semafor.VvSpcBefRow    = new int[] { 0, 0, 0, 0 };
       hamp_semafor.VvBottomMargin = hamp_semafor.VvTopMargin;
 
-      lbl_MOC = hamp_semafor.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
-      lbl_SER = hamp_semafor.CreateVvLabel(0, 1, "SerNo?!", ContentAlignment.MiddleCenter);
+      lbl_MOC = hamp_semafor.CreateVvLabel(0, 1, "", ContentAlignment.MiddleCenter);
+    //lbl_SER = hamp_semafor.CreateVvLabel(0, 1, "SerNo?!", ContentAlignment.MiddleCenter);
       lbl_RAM = hamp_semafor.CreateVvLabel(0, 2, "", ContentAlignment.MiddleCenter);
       lbl_HDD = hamp_semafor.CreateVvLabel(0, 3, "", ContentAlignment.MiddleCenter);
 
       lbl_MOC.BackColor = Color.Green;
-      lbl_SER.BackColor = Color.Green;
+    //lbl_SER.BackColor = Color.Green;
       lbl_RAM.BackColor = Color.Green;
       lbl_HDD.BackColor = Color.Green;
 
       lbl_MOC.ForeColor = Color.Yellow;
-      lbl_SER.ForeColor = Color.Yellow;
+    //lbl_SER.ForeColor = Color.Yellow;
       lbl_RAM.ForeColor = Color.Yellow;
       lbl_HDD.ForeColor = Color.Yellow;
    }
@@ -4861,7 +4862,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
       string oldArtiklCD = "";
 
-      if(isPCKartikl)
+      //if(isPCKartikl)
       {
          oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx, false);
       }
@@ -4902,6 +4903,10 @@ public class MOD_PTG_DUC : FakturPDUC
 
       if(isKomponentaArtikl) // MOU / MOI stavke (komponente PCK-a) 
       {
+         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, oldArtiklCD);
+
+         TheVvTabPage.TheVvForm.SetDirtyFlag(this); // !!! 
+
          // provjeravaj ovo samo za kolone RAM+/- i HDD+/- 
          if(isPlusOrMinusCol == false) return;
 
@@ -4926,6 +4931,43 @@ public class MOD_PTG_DUC : FakturPDUC
             ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
          }
       }
+   }
+
+   internal void Put_MOD_Semafor_Labels(/*MOD_PTG_DUC modDUC*/)
+   {
+      Color okColor  = Color.Green;
+      Color badColor = Color.Red  ;
+
+    //int numOfMOCrows = faktur_rec.TrnNonDel2.Count(rto => rto.T_TT == Faktur.TT_MOC);
+      int numOfMOCrows = /*modDUC.*/Get_MOC_RowCount();
+      int MOCsaldo     = (int)Fld_someMoney - numOfMOCrows;
+
+      decimal RAMsaldo, RAMplus, RAMminus;
+      decimal HDDsaldo, HDDplus, HDDminus;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None)
+      {
+         RAMplus  = faktur_rec.TrnSum2_dimX;
+         RAMminus = faktur_rec.TrnSum2_dimY;
+         HDDplus  = faktur_rec.TrnSum2_decA;
+         HDDminus = faktur_rec.TrnSum2_decB;
+      }
+      else
+      {
+         RAMplus  = TheCurrentSumGrid.GetDecimalCell(ci2.iT_RAM_plus , 0, false);
+         RAMminus = TheCurrentSumGrid.GetDecimalCell(ci2.iT_RAM_minus, 0, false);
+         HDDplus  = TheCurrentSumGrid.GetDecimalCell(ci2.iT_HDD_plus , 0, false);
+         HDDminus = TheCurrentSumGrid.GetDecimalCell(ci2.iT_HDD_minus, 0, false);
+      }
+      RAMsaldo = RAMplus - RAMminus;
+      HDDsaldo = HDDplus - HDDminus;
+
+      if(MOCsaldo.IsZero()) SetMODsemaforLabelColorAndText(/*modDUC.*/lbl_MOC, okColor , "MOC OK");
+      else                  SetMODsemaforLabelColorAndText(/*modDUC.*/lbl_MOC, badColor, "MOC " + MOCsaldo);
+      if(RAMsaldo.IsZero()) SetMODsemaforLabelColorAndText(/*modDUC.*/lbl_RAM, okColor , "RAM OK");
+      else                  SetMODsemaforLabelColorAndText(/*modDUC.*/lbl_RAM, badColor, "RAM " + RAMsaldo.ToString0Vv());
+      if(HDDsaldo.IsZero()) SetMODsemaforLabelColorAndText(/*modDUC.*/lbl_HDD, okColor , "HDD OK");
+      else                  SetMODsemaforLabelColorAndText(/*modDUC.*/lbl_HDD, badColor, "HDD " + HDDsaldo.ToString0Vv());
    }
 
    internal void Set_MOU_MOI_RAMorHDD_minus(object sender, EventArgs e)
@@ -5048,12 +5090,26 @@ public class MOD_PTG_DUC : FakturPDUC
       if(numOfPlusMinusUnosa > 1) ZXC.aim_emsg(MessageBoxIcon.Warning, "Stavka redka {0}\n\r\n\r{1}\n\r\n\rima višestruko definirane RAM/HDD plus/minus količine?!", rowIdx + 1, rtrano_rec);
    }
 
-   internal void Put_RAM_HDD_PlusMinus_ColSum_OnSumGrid()
+   internal void Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid()
    {
       Put_ColSum_OnSumGrid(ci2.iT_RAM_plus  );
       Put_ColSum_OnSumGrid(ci2.iT_RAM_minus );
       Put_ColSum_OnSumGrid(ci2.iT_HDD_plus  );
       Put_ColSum_OnSumGrid(ci2.iT_HDD_minus );
+   }
+
+   internal int Get_MOC_RowCount()
+   {
+      int theCount = 0;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC).Count();
+
+      for(int rowIdx = 0; rowIdx < TheCurrentG.RowCount - 1; ++rowIdx)
+      {
+         if(TheCurrentG.GetStringCell(ci2.iT_TT, rowIdx, false) == Faktur.TT_MOC) theCount++;
+      }
+
+      return theCount;
    }
 
 }
