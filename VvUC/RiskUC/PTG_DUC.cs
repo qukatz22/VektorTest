@@ -4882,9 +4882,12 @@ public class MOD_PTG_DUC : FakturPDUC
          decimal newHDD   = oldHDD + plusHDD - minusHDD;
          if(newHDD.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!?");
          TheG2.PutCell(ci2.iT_HDD_new, rowIdx, newHDD);
+
+
+         //TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
+         string newArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD);
+         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, newArtiklCD);
          
-         
-         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
       }
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
@@ -5112,4 +5115,20 @@ public class MOD_PTG_DUC : FakturPDUC
       return theCount;
    }
 
+   internal bool ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(XSqlConnection conn, Artikl templateArtikl_rec, string newArtiklCD)
+   {
+      Artikl newArtikl_rec = templateArtikl_rec.MakeDeepCopy();
+
+      (decimal newPCK_RAM, decimal newPCK_HDD) = Artikl.Get_PTG_RAM_HDD_From_ArtiklCD(newArtiklCD);
+
+      newArtikl_rec.PCK_RAM = newPCK_RAM;
+      newArtikl_rec.PCK_HDD = newPCK_HDD;
+
+      newArtikl_rec.ArtiklCD   = newArtikl_rec.New_ArtiklCD_From_PCK_base_RAM_HDD;
+      newArtikl_rec.ArtiklName = ZXC.ModifyPCK_ArtiklName(templateArtikl_rec.ArtiklName, newPCK_RAM, newPCK_HDD, templateArtikl_rec.ZapreminaJM, templateArtikl_rec.DuljinaJM);
+
+      bool OK = newArtikl_rec.VvDao.ADDREC(conn, newArtikl_rec, false, false, false, false);
+
+      return OK;
+   }
 }

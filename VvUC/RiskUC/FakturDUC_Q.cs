@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using com.sun.org.apache.bcel.@internal.generic;
+using static ArtiklDao;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -2808,6 +2810,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             Rtrano rtrano_rec;
 
+            var new_MOC_MOS_ArtiklCDlist = new List<string>();
+
             for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
             {
                rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
@@ -2819,7 +2823,35 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   e.Cancel = true;
                }
 
+               // dodaj nove MOC/MOS Artikle 
+               if(this is MOD_PTG_DUC && rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.NotEmpty())
+               {
+                  string newArtiklCD = rtrano_rec.T_artiklCD;
+
+                  if(Get_Artikl_FromVvUcSifrar(newArtiklCD) != null) continue; // newArtiklCD postoji otprije ... continue 
+
+                  bool addnewOK = true;
+
+                  Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
+
+                  if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
+
+                  addnewOK = (this as MOD_PTG_DUC).ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
+
+                  if(addnewOK == false)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka rezultira novim artiklom čije dodavanje nije uspjelo.\n\nArtikl [{2}] Redak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno, newArtiklCD);
+                     e.Cancel = true;
+                     break;
+                  }
+
+                  new_MOC_MOS_ArtiklCDlist.Add(newArtiklCD);
+
+               } // // dodaj nove MOC/MOS Artikle  
+
             } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
+
+            if(this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty()) ZXC.aim_emsg_List(string.Format("Dodao {0} novih PCK artikla.", new_MOC_MOS_ArtiklCDlist.Count), new_MOC_MOS_ArtiklCDlist);
 
          } // if(this is FakturPDUC) 
 

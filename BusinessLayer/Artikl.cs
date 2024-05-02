@@ -1605,9 +1605,17 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
 
       if(newArtikl_rec == null)
       {
-         if(false/*pitaj ga os / nes*/) return ""; // TODO 
+         //if(false/*pitaj ga os / nes*/) return ""; // TODO 
+         //
+         //newArtikl_rec = ZXC.TheVvForm.ADD_NEW_PTG_CalculatedArtikl_From_SenderArtiklCD_NewRAM_NewHDD(origArtikl_rec, newPCK_RAM, newPCK_HDD);
 
-         newArtikl_rec = ZXC.TheVvForm.ADD_NEW_PTG_CalculatedArtikl_From_SenderArtiklCD_NewRAM_NewHDD(origArtikl_rec, newPCK_RAM, newPCK_HDD);
+         newArtikl_rec = origArtikl_rec.MakeDeepCopy();
+
+         newArtikl_rec.PCK_RAM    = newPCK_RAM;
+         newArtikl_rec.PCK_HDD    = newPCK_HDD;
+         newArtikl_rec.ArtiklCD   = newArtikl_rec.New_ArtiklCD_From_PCK_base_RAM_HDD;
+         newArtikl_rec.ArtiklName = newArtikl_rec.New_ArtiklName_From_OldPCK_name_RAM_HDD;
+
       }
 
       if(newArtikl_rec == null) return "";
