@@ -15178,10 +15178,10 @@ public class FakturPDUC : FakturExtDUC
    {
     //VvDataGridView dgv = TheG2;
 
-      Color clr_MOC = Color.FromArgb(255, 204, 153);
-      Color clr_MOS = ZXC.vvColors.clr_PCK_PTG;
-      Color clr_MOI = Color.FromArgb(204, 255, 204);
-      Color clr_MOU = Color.FromArgb(204, 230, 255);
+      Color clr_MOC = ZXC.vvColors.clr_PCK_PTG; 
+      Color clr_MOS = Color.FromArgb(255, 204, 153);
+      Color clr_MOI = Color.FromArgb(204, 230, 255);
+      Color clr_MOU = Color.FromArgb(204, 255, 204); 
       Color clr_old = Color.LightBlue;
       Color clr_new = Color.Lavender;
 

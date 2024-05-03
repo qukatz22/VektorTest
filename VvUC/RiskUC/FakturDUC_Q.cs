@@ -2845,7 +2845,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                      break;
                   }
 
-                  new_MOC_MOS_ArtiklCDlist.Add(newArtiklCD);
+                  new_MOC_MOS_ArtiklCDlist.Add("Novi artikl: " + newArtiklCD);
 
                } // // dodaj nove MOC/MOS Artikle  
 
