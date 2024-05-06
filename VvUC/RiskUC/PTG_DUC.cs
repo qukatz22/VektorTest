@@ -3521,7 +3521,7 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 public partial class PCK_ArtiklList_Dlg :  VvDialog
 {
    public PCK_ArtiklList_UC TheUC { get; set; }
-   private Button okButton, cancelButton;
+   private Button okButton;
    private int dlgWidth, dlgHeight;
 
    public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD, PCK_ArtiklList_Caller theCaller)
@@ -3549,29 +3549,20 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       this.MaximizeBox = true;
 
       this.ClientSize = new Size(dlgWidth, dlgHeight);
-    //AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
-    //okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-    //
-    //this.AcceptButton = okButton;
-    //
-    //okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      AddZatvoriButton  (out okButton, dlgWidth, dlgHeight);
+      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
       TheUC.Anchor                =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.ThePCKInfoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.TheSernoGrid  .Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       
-    //this.cancelButton.Click += new EventHandler(cancelButton_Click); // Da supresa validaciju
-     
       this.Location = new Point(SystemInformation.WorkingArea.Width - this.Width, (SystemInformation.WorkingArea.Height - this.Height)/2);
 
       TheUC.ThePCKInfoSumGrid.ClearSelection();
 
       ResumeLayout();
 
-   }
-   void cancelButton_Click(object sender, EventArgs e)
-   {
-      this.Close();
    }
 }
 
@@ -3642,7 +3633,7 @@ public class PCK_ArtiklList_UC : VvUserControl
       ThePCKInfoSumGrid = CreateSumGrid(ThePCKInfoGrid, ThePCKInfoGrid.Parent, "SUM" + ThePCKInfoGrid.Name);
 
       Initialize_SumGrid_Columns(ThePCKInfoGrid);
-      GridLocationAndSize_Grids(ThePCKInfoGrid);
+    //GridLocationAndSize_Grids(ThePCKInfoGrid);
 
       CalcLocationAndSize();
 
@@ -3666,8 +3657,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       if(this.Parent is VvDialog)
       {
          this.Size             = new Size(ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
-         ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Q2un;
-         TheSernoGrid  .Height = this.Size.Height                            - ZXC.Q2un;
+         ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+         TheSernoGrid  .Height = this.Size.Height                            - ZXC.Qun2 - hamp_rbtBaza.Bottom;
          
          ThePCKInfoSumGrid.Width    = ThePCKInfoGrid.Width;
          ThePCKInfoSumGrid.Location = new Point(ThePCKInfoGrid.Location.X, ThePCKInfoGrid.Bottom + ZXC.Qun12);
@@ -3833,14 +3824,14 @@ public class PCK_ArtiklList_UC : VvUserControl
    {
       DataGridView theSumGrid = theGrid.TheLinkedGrid_Sum;
 
-      theGrid.Height      = this.Height - ZXC.Q2un - theSumGrid.Height;
+      theGrid.Height      = this.Height - hamp_rbtBaza.Bottom - theSumGrid.Height - ZXC.Q10un;
       theSumGrid.Width    = theGrid.Width;
       theSumGrid.Location = new Point(theGrid.Location.X, theGrid.Bottom + ZXC.Qun12);
       theSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
       theGrid.Scroll += new ScrollEventHandler(Grid_VScroll);
 
-      TheSernoGrid.Height = this.Height - ZXC.Q2un;
+      TheSernoGrid.Height = this.Height - hamp_rbtBaza.Bottom - ZXC.Q2un;
    }
 
    private void Grid_VScroll(object sender, ScrollEventArgs e)

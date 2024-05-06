@@ -3502,8 +3502,8 @@ public class ArtiklUC : VvSifrarRecordUC
                                                                                                                                                   pcKInfoUC.Fld_IsIstaHddKlasa);
          pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
 
-         pcKInfoUC.Size = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
-         pcKInfoUC.ThePCKInfoGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKInfoSumGrid.Height - ZXC.Q2un;
+         pcKInfoUC.Size                  = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
+         pcKInfoUC.ThePCKInfoGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKInfoSumGrid.Height - ZXC.Qun2 - pcKInfoUC.hamp_rbtBaza.Bottom;
          pcKInfoUC.TheSernoGrid  .Height = pcKInfoUC.ThePCKInfoGrid.Height + pcKInfoUC.ThePCKInfoSumGrid.Height/* - ZXC.Q2un*/;
          
          pcKInfoUC.ThePCKInfoSumGrid.Width = pcKInfoUC.ThePCKInfoGrid.Width;
