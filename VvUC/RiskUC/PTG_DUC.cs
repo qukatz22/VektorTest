@@ -3652,6 +3652,8 @@ public class PCK_ArtiklList_UC : VvUserControl
 
     //ThePCKInfoGrid.CellMouseDoubleClick += ThePCKGrid_CellMouseDoubleClick_OpenSernoList;
       ThePCKInfoGrid.CellMouseClick       += ThePCKGrid_CellMouseClick_OpenSernoList      ;
+      
+      ThePCKInfoGrid.CellMouseDoubleClick += ThePCKInfoGrid_CellMouseDoubleClick_OpenArtiklUC;
 
       TheSernoGrid.CellMouseDoubleClick += TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList;
    }
@@ -3966,11 +3968,13 @@ public class PCK_ArtiklList_UC : VvUserControl
    public struct Serno_colIdx
    {
       internal int iT_PCK_theSerno;
+      internal int iT_PCK_artiklCD;
    }
    public void SetSernoColumnIndexes()
    {
       ci2 = new Serno_colIdx();
       ci2.iT_PCK_theSerno = TheSernoGrid.IdxForColumn("R_PCK_Serno");
+      ci2.iT_PCK_artiklCD = TheSernoGrid.IdxForColumn("R_PCK_ArtCD");
    }
 
    #endregion SetColumnIndexes()
@@ -4097,6 +4101,10 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
 
+      // tu smo stali 
+      // sda treba izbaciti one kojima zadnje stanje nije kao ovaj aretikl 
+      // GetLastRFtranoForSerno
+
       theUC.PutDgv2Fields(/*thePCK_Artikl.PCK_Unikat_List*/ theSernoList);
 
    }
@@ -4120,6 +4128,45 @@ public class PCK_ArtiklList_UC : VvUserControl
       rtranoListUC.button_GO.PerformClick();
       // =============================== 
    }
+
+   private void ThePCKInfoGrid_CellMouseDoubleClick_OpenArtiklUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      if(e.ColumnIndex != ci2.iT_PCK_artiklCD) return;
+
+      string artiklCD   = theG.GetStringCell(ci2.iT_PCK_artiklCD, rowIdx, false);
+      
+      if(artiklCD.IsEmpty()) return; // znaci da smo u zutome probali doubleclickom inicirati editiranje cell-a 
+
+      //Artikl artikl_rec = new Artikl();
+      //artikl_rec.VvDao.SetMe_Record_bySomeUniqueColumn(conn, artikl_rec, artiklCD, ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD], false);
+
+      SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+
+    // 18.08.2011: bijo BUG! Kako je reference type, saljuci element ArtiklSifrar-a kao TheVvDataRecord, svaka promkena TheVvDataRecord-a je mijenjala i element ArtiklSifrar-a! 
+    //Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      Artikl artikl_rec;
+      try
+      {
+         artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD).MakeDeepCopy();
+      }
+      catch(Exception ex)
+      {
+         artikl_rec = null;
+      }
+
+      if(artikl_rec != null)
+      {
+         ZXC.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.ART), artikl_rec);
+      }
+   }
+
 
    public override void GetFields(bool dirtyFlagging)
    {
@@ -4887,7 +4934,6 @@ public class MOD_PTG_DUC : FakturPDUC
          //TheG2.PutCell(ci2.iT_artiklCD, rowIdx, Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD));
          string newArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(oldArtiklCD, newRAM, newHDD);
          TheG2.PutCell(ci2.iT_artiklCD, rowIdx, newArtiklCD);
-         
       }
 
       Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
@@ -4906,7 +4952,19 @@ public class MOD_PTG_DUC : FakturPDUC
 
       if(isKomponentaArtikl) // MOU / MOI stavke (komponente PCK-a) 
       {
-         TheG2.PutCell(ci2.iT_artiklCD, rowIdx, oldArtiklCD);
+         if(oldArtiklCD.NotEmpty())
+         {
+            TheG2.PutCell(ci2.iT_artiklCD, rowIdx, oldArtiklCD);
+         }
+         else 
+         {
+            string newArtiklCD = TheG2.GetStringCell(ci2.iT_artiklCD, rowIdx, false);
+            
+            if(newArtiklCD.NotEmpty())
+            {
+               TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, newArtiklCD);
+            }
+         }
 
          TheVvTabPage.TheVvForm.SetDirtyFlag(this); // !!! 
 
@@ -5017,8 +5075,8 @@ public class MOD_PTG_DUC : FakturPDUC
       decimal ram_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_RAM;
       decimal hdd_kolPutaKapacitet = rtrano_rec.T_kol * artikl_rec.PCK_HDD;
 
-      int ramDelta_colIdx = ci2.iT_dimY;
-      int hddDelta_colIdx = ci2.iT_decB;
+      int ramDelta_colIdx = ci2.iT_RAM_minus;
+      int hddDelta_colIdx = ci2.iT_HDD_minus;
 
       if(rtrano_rec.T_TT == Faktur.TT_MOU)
       {
