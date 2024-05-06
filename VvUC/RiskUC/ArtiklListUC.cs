@@ -537,6 +537,8 @@ public class ArtiklListUC : VvRecLstUC
 
    public void btn_PCKinfo_Click(object sender, EventArgs e)
    {
+      if(TheGrid.CurrentRow == null) return;
+
       int currRowIdx = TheGrid.CurrentRow.Index;
 
       string currArtiklCD = TheGrid.GetStringCell(0, currRowIdx, false);
