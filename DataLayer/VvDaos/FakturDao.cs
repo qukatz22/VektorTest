@@ -2634,10 +2634,14 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       if(ZXC.KSD.Dsc_IsOnlyIOSknjizenje) return;
 
 
-         // 20.02.2014: IRM Prihod should go analitically, like on IRA 
-         if(ZXC.RRD.Dsc_IsAnaPrihodIRM)
+      // 20.02.2014: IRM Prihod should go analitically, like on IRA 
+      if(ZXC.RRD.Dsc_IsAnaPrihodIRM)
       {
-         /*return*/ Send2Nalog_PrihTros(conn, ref line, theRules, faktur_rec);
+         Send2Nalog_PrihTros(conn, ref line, theRules, faktur_rec);
+         
+         //07.05.2024. za Panigale
+         theRules.FtransOpis = "Poseban porez na MV"; theRules.SetDugAndPot(false, faktur_rec.R_ukPpmvIzn); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_KtoPpmv; Send2Nalog(conn, ref line, theRules, false);
+
          return;
       }
 

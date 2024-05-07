@@ -13023,6 +13023,8 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       TheArtiklList.RemoveAll(art => art.TS != "ROB");
 
+      bool isNeispravanUnos = false;
+
       if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MasaNettoJM != "g"))
       {
          var errorsList = new List<string>();
@@ -13033,7 +13035,39 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          }
 
          ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala nema jedinicu mjere 'g'.", errorsList.Count), errorsList);
+
+         isNeispravanUnos = true;
       }
+
+      // provjeriti da li sam to dobro zamislila
+      if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MadeIn.IsEmpty()))
+      {
+         var errorsList = new List<string>();
+
+         foreach(Artikl artikl in TheArtiklList.Where(art => art.MadeIn.IsEmpty()))
+         {
+            errorsList.Add(String.Format("{0} {1} nema zemlju porijekla", artikl.ArtiklCD, artikl.ArtiklName));
+         }
+
+         ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala nema zemlju porijekla.", errorsList.Count), errorsList);
+
+         isNeispravanUnos = true;
+      }
+
+      if(ZXC.IsTETRAGRAM_ANY && TheFakturList.Any(fak => fak.VezniDok2.IsEmpty() || fak.Fco.IsEmpty() || fak.Napomena2.IsEmpty() || fak.TipOtpreme.IsEmpty()))
+      {
+         var errorsList = new List<string>();
+
+         foreach(Faktur faktur in TheFakturList.Where(fak => fak.VezniDok2.IsEmpty() || fak.Fco.IsEmpty() || fak.Napomena2.IsEmpty() || fak.TipOtpreme.IsEmpty()))
+         {
+            errorsList.Add(String.Format(" Dokument {0} nema potrebne podatke", faktur.TipBr));
+         }
+
+         ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} dokumenata nema potrebne podatke.", errorsList.Count), errorsList);
+
+         isNeispravanUnos = true;
+      }
+
 
       TheDeviznaSumaList = TheRtransList
          .Join(TheFakturList, Rtr     => Rtr      .T_parentID, Fak  => Fak .RecID   , (Rtr    , Fak ) => new { R = Rtr      , F = Fak                })
@@ -13048,17 +13082,17 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             KupdobName   = IsUlaz ? "" : ThirdJoin.K.IsZzz ? "QV999999999999" : ThirdJoin.F.VATnumber,
             DevName      = ThirdJoin.F.VezniDok2,
             String1      = ThirdJoin.F.Fco,
-            String2      = ThirdJoin.F.Napomena2.Substring(0, 1),
-            String3      = ThirdJoin.F.Napomena2.Substring(1, 1),
+            String2      = ThirdJoin.F.Napomena2.NotEmpty() ? ThirdJoin.F.Napomena2.Substring(0, 1): "",
+            String3      = ThirdJoin.F.Napomena2.NotEmpty() ? ThirdJoin.F.Napomena2.Substring(1, 1): "",
             String4      = ThirdJoin.F.TipOtpreme,
             TheMoney     = ThirdJoin.A.GetIntrastat_MasaBN_U_Kg (ThirdJoin.R.T_kol), // ALFA 
             TheMoney2    = ThirdJoin.A.GetIntrastat_Kol_U_PodJM (ThirdJoin.R.T_kol), // BETA 
             TheMoneyKCR  = ThirdJoin.R.R_KCR,
 
-            IsNekakav    = IsUlaz,
+/*Neispra*/ IsNekakav    = (ThirdJoin.A.AtestBr.IsEmpty() || ThirdJoin.A.MadeIn.IsEmpty() || ThirdJoin.F.VezniDok2.IsEmpty() || ThirdJoin.F.Fco.IsEmpty() || ThirdJoin.F.Napomena2.IsEmpty() || ThirdJoin.F.TipOtpreme.IsEmpty()),
             Kol          = ThirdJoin.R.T_kol,
-            String5      = ThirdJoin.A.MasaNettoJM
-            
+            String5      = ThirdJoin.A.MasaNettoJM,
+            String6      = ThirdJoin.F.TipBr
          })
        //.OrderBy(qwe => qwe.ArtiklGrCD)
          .ToList();
