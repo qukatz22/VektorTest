@@ -768,6 +768,19 @@ public struct TtInfo
 
    #endregion IsBlagajna
 
+   #region IsCash2Blagajna
+
+   private static string[] arrayCash2BlagajnaTT = new string[] { 
+      Faktur.TT_POT,
+      Faktur.TT_URA,
+      Faktur.TT_IRA,
+   };
+   public bool IsCash2BlagajnaTT { get { return arrayCash2BlagajnaTT.Contains(TheTT); } }
+
+   public static string Cash2BlagajnaTT_IN_Clause { get { return GetSql_IN_Clause(arrayCash2BlagajnaTT); } }
+
+   #endregion IsCash2Blagajna
+
    #region IsProizvodnjaIzlaz
 
    private static string[] arrayProizvodnjaIzlazTT = new string[] { 
