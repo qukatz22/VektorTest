@@ -4096,6 +4096,20 @@ public class PCK_ArtiklList_UC : VvUserControl
       // sda treba izbaciti one kojima zadnje stanje nije kao ovaj aretikl 
       // GetLastRFtranoForSerno
 
+      Rtrano rtrano_rec;
+
+      for(int i = 0; i < theSernoList.Count; ++i)
+      {
+         rtrano_rec = new Rtrano();
+
+         MixerDao.Get_LastRtrano_ForSerno(ZXC.TheVvForm.TheDbConnection, rtrano_rec, theSernoList[i]);
+
+         if(rtrano_rec.T_artiklCD != thePCK_Artikl.PCK_ArtCD)
+         {
+            theSernoList.RemoveAt(i--);
+         }
+      }
+
       theUC.PutDgv2Fields(/*thePCK_Artikl.PCK_Unikat_List*/ theSernoList);
 
    }
