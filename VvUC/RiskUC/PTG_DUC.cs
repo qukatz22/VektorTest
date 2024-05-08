@@ -4092,9 +4092,8 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
 
-      // tu smo stali 
-      // sda treba izbaciti one kojima zadnje stanje nije kao ovaj aretikl 
-      // GetLastRFtranoForSerno
+      // sda treba izbaciti one kojima zadnje stanje nije kao ovaj artikl 
+      // Get_LastRtrano_ForSerno 
 
       Rtrano rtrano_rec;
 
@@ -4741,9 +4740,9 @@ public class MOD_PTG_DUC : FakturPDUC
    public string Fld_PTG_MOC_PCK_baseCD { get { return Artikl.Get_PCK_BazaCD(Fld_PrjArtCD); } }
    public int    Fld_PTG_MOC_RowCount   { get { return (int)Fld_someMoney; } }
 
-   public string Fld_PTG_RamKlasa { set { tbx_ramKlasa.Text = value; } }
-   public string Fld_PTG_HddKlasa { set { tbx_hddKlasa.Text = value; } }
-   public string Fld_PTG_PCKbaza  { get { return tbx_pckBaza.Text; } set { tbx_pckBaza.Text = value; } }
+   public string Fld_PTG_RamKlasa { get { return tbx_ramKlasa.Text; } set { tbx_ramKlasa.Text = value; } }
+   public string Fld_PTG_HddKlasa { get { return tbx_hddKlasa.Text; } set { tbx_hddKlasa.Text = value; } }
+   public string Fld_PTG_PCKbaza  { get { return tbx_pckBaza.Text ; } set { tbx_pckBaza.Text  = value; } }
 
 
    #endregion Fld

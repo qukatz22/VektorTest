@@ -2823,44 +2823,85 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
             Rtrano rtrano_rec;
 
+            Artikl oldArtikl_rec;
+
             var new_MOC_MOS_ArtiklCDlist = new List<string>();
 
             for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
             {
                rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
 
-               // ne daj prazni MOC/MOS NewArtiklCD 
-               if(this is MOD_PTG_DUC && rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.IsEmpty())
+               artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+               if(this is MOD_PTG_DUC)
                {
-                  ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka mora imati definirani 'Artikl NEW'.\n\nRedak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno);
-                  e.Cancel = true;
-               }
+                  MOD_PTG_DUC theDUC = (MOD_PTG_DUC)this;
 
-               // dodaj nove MOC/MOS Artikle 
-               if(this is MOD_PTG_DUC && rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.NotEmpty())
-               {
-                  string newArtiklCD = rtrano_rec.T_artiklCD;
+                  string oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false);
 
-                  if(Get_Artikl_FromVvUcSifrar(newArtiklCD) != null) continue; // newArtiklCD postoji otprije ... continue 
+                  oldArtikl_rec = Get_Artikl_FromVvUcSifrar(oldArtiklCD);
 
-                  bool addnewOK = true;
-
-                  Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
-
-                  if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
-
-                  addnewOK = (this as MOD_PTG_DUC).ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
-
-                  if(addnewOK == false)
+                  // ne daj prazni MOC/MOS NewArtiklCD 
+                  if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.IsEmpty())
                   {
-                     ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka rezultira novim artiklom čije dodavanje nije uspjelo.\n\nArtikl [{2}] Redak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno, newArtiklCD);
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka mora imati definirani 'Artikl NEW'.\n\nRedak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno);
+                     e.Cancel = true;
+                  }
+
+                  // dodaj nove MOC/MOS Artikle 
+                  if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.NotEmpty())
+                  {
+                     string newArtiklCD = rtrano_rec.T_artiklCD;
+
+                     if(Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
+                     {
+                        bool addnewOK = true;
+
+                        Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
+
+                        if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
+
+                        addnewOK = theDUC.ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
+
+                        if(addnewOK == false)
+                        {
+                           ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka rezultira novim artiklom čije dodavanje nije uspjelo.\n\nArtikl [{2}] Redak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno, newArtiklCD);
+                           e.Cancel = true;
+                           break;
+                        }
+
+                        new_MOC_MOS_ArtiklCDlist.Add("Novi artikl: " + newArtiklCD);
+
+                     } // if(Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
+
+                  } // // dodaj nove MOC/MOS Artikle  
+
+                  #region check RAM/HDD kind 
+                  
+                  string mocRAMkind  = theDUC.Fld_PTG_RamKlasa;
+                  string mocHDDkind  = theDUC.Fld_PTG_HddKlasa;
+                  string rtoRAMkind  = /*artikl_rec.Grupa2CD    */TheG2.GetStringCell(ci2.iT_ramKlasa, rowIdx2, false);
+                  string rtoHDDkind  = /*artikl_rec.Grupa3CD    */TheG2.GetStringCell(ci2.iT_hddKlasa, rowIdx2, false);
+
+                  bool ramChanged   = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
+                  bool hddChanged   = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
+                  
+                  if(ramChanged && mocRAMkind != rtoRAMkind)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "RAM klasa {2} cilja modifikacije ne odgovara RAM klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocRAMkind, rtoRAMkind);
+                     e.Cancel = true;
+                     break;
+                  }
+                  if(hddChanged && mocHDDkind != rtoHDDkind)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "HDD klasa {2} cilja modifikacije ne odgovara HDD klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocHDDkind, rtoHDDkind);
                      e.Cancel = true;
                      break;
                   }
 
-                  new_MOC_MOS_ArtiklCDlist.Add("Novi artikl: " + newArtiklCD);
+                  #endregion check RAM/HDD kind 
 
-               } // // dodaj nove MOC/MOS Artikle  
+               } // if(this is MOD_PTG_DUC)
 
             } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
 
