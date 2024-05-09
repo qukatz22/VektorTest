@@ -13023,8 +13023,6 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       TheArtiklList.RemoveAll(art => art.TS != "ROB");
 
-      bool isNeispravanUnos = false;
-
       if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MasaNettoJM != "g"))
       {
          var errorsList = new List<string>();
@@ -13035,23 +13033,18 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          }
 
          ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala nema jedinicu mjere 'g'.", errorsList.Count), errorsList);
-
-         isNeispravanUnos = true;
       }
 
-      // provjeriti da li sam to dobro zamislila
-      if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MadeIn.IsEmpty()))
+      if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MadeIn.IsEmpty() || art.AtestBr.IsEmpty()))
       {
          var errorsList = new List<string>();
 
-         foreach(Artikl artikl in TheArtiklList.Where(art => art.MadeIn.IsEmpty()))
+         foreach(Artikl artikl in TheArtiklList.Where(art => art.MadeIn.IsEmpty() || art.AtestBr.IsEmpty()))
          {
-            errorsList.Add(String.Format("{0} {1} nema zemlju porijekla", artikl.ArtiklCD, artikl.ArtiklName));
+            errorsList.Add(String.Format("{0} {1} nema zemlju porijekla ili intrastat šifru", artikl.ArtiklCD, artikl.ArtiklName));
          }
 
-         ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala nema zemlju porijekla.", errorsList.Count), errorsList);
-
-         isNeispravanUnos = true;
+         ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala nema zemlju porijekla ili intrastat šifru.", errorsList.Count), errorsList);
       }
 
       if(ZXC.IsTETRAGRAM_ANY && TheFakturList.Any(fak => fak.VezniDok2.IsEmpty() || fak.Fco.IsEmpty() || fak.Napomena2.IsEmpty() || fak.TipOtpreme.IsEmpty()))
@@ -13064,8 +13057,6 @@ public class RptR_Intrastat : RptR_StandardRiskReport
          }
 
          ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} dokumenata nema potrebne podatke.", errorsList.Count), errorsList);
-
-         isNeispravanUnos = true;
       }
 
 
@@ -13089,7 +13080,8 @@ public class RptR_Intrastat : RptR_StandardRiskReport
             TheMoney2    = ThirdJoin.A.GetIntrastat_Kol_U_PodJM (ThirdJoin.R.T_kol), // BETA 
             TheMoneyKCR  = ThirdJoin.R.R_KCR,
 
-/*Neispra*/ IsNekakav    = (ThirdJoin.A.AtestBr.IsEmpty() || ThirdJoin.A.MadeIn.IsEmpty() || ThirdJoin.F.VezniDok2.IsEmpty() || ThirdJoin.F.Fco.IsEmpty() || ThirdJoin.F.Napomena2.IsEmpty() || ThirdJoin.F.TipOtpreme.IsEmpty()),
+/*Neispra*/ IsNekakav    = (ThirdJoin.A.AtestBr.IsEmpty()   || ThirdJoin.A.MadeIn.IsEmpty() || (ThirdJoin.A.MasaNettoJM.IsEmpty() && ThirdJoin.A.MasaBruto.IsZero()) ||
+                            ThirdJoin.F.VezniDok2.IsEmpty() || ThirdJoin.F.Fco.IsEmpty()    || ThirdJoin.F.Napomena2.IsEmpty() || ThirdJoin.F.TipOtpreme.IsEmpty()),
             Kol          = ThirdJoin.R.T_kol,
             String5      = ThirdJoin.A.MasaNettoJM,
             String6      = ThirdJoin.F.TipBr
