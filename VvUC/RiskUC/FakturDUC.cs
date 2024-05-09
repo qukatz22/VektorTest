@@ -13182,7 +13182,11 @@ public partial class FakturExtDUC : FakturDUC
       {
          MOD_PTG_DUC modDUC = this as MOD_PTG_DUC;
 
-       //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
+         modDUC.Fld_PTG_RamKlasa = 
+         modDUC.Fld_PTG_HddKlasa = 
+         modDUC.Fld_PTG_PCKbaza  = "";
+
+         //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
          Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == faktEx.PrjArtCD);
          if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
          {

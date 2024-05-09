@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using com.sun.org.apache.bcel.@internal.generic;
 using static ArtiklDao;
+using FinaInvoiceB2GENClient.FinaInvoiceWS;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -2883,16 +2884,18 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                   string rtoRAMkind  = /*artikl_rec.Grupa2CD    */TheG2.GetStringCell(ci2.iT_ramKlasa, rowIdx2, false);
                   string rtoHDDkind  = /*artikl_rec.Grupa3CD    */TheG2.GetStringCell(ci2.iT_hddKlasa, rowIdx2, false);
 
-                  bool ramChanged   = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
-                  bool hddChanged   = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
+                  bool ramChanged    = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
+                  bool hddChanged    = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
                   
-                  if(ramChanged && mocRAMkind != rtoRAMkind)
+                  bool isMocDefined  = theDUC.Fld_PTG_MOC_PCK_ArtCD.NotEmpty();
+
+                  if(isMocDefined && ramChanged && mocRAMkind != rtoRAMkind)
                   {
                      ZXC.aim_emsg(MessageBoxIcon.Error, "RAM klasa {2} cilja modifikacije ne odgovara RAM klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocRAMkind, rtoRAMkind);
                      e.Cancel = true;
                      break;
                   }
-                  if(hddChanged && mocHDDkind != rtoHDDkind)
+                  if(isMocDefined && hddChanged && mocHDDkind != rtoHDDkind)
                   {
                      ZXC.aim_emsg(MessageBoxIcon.Error, "HDD klasa {2} cilja modifikacije ne odgovara HDD klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocHDDkind, rtoHDDkind);
                      e.Cancel = true;
