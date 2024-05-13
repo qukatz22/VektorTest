@@ -8792,7 +8792,7 @@ public partial class FakturExtDUC : FakturDUC
    }
    private void InitializeHamper_NacPlac(out VvHamper hamper)
    {
-      bool isTetragram = ZXC.IsTETRAGRAM_ANY;
+      bool isTetragram = /*ZXC.IsTETRAGRAM_ANY*/true;
          
     //hamper = new VvHamper(4, 1, "", null, false);
       hamper = new VvHamper(4, 2, "", null, false);
