@@ -288,6 +288,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_URA = "URA"; // Ulazni Racun u VELEP + Primka 
    public const string TT_NUP = "NUP"; // Implicitna Nivelacija - ULAZ Povrata  
    public const string TT_PRI = "PRI"; // Primka u Veleprodaju NE Pdv 
+   public const string TT_POU = "POU"; // Primka u Veleprodaju NE Pdv - Posudba 
    public const string TT_PIP = "PIP"; // Primka iz PROIZVODNJE 
    public const string TT_POT = "POT"; // Primka za otkup od fiz. osobe (Tetragram) 
    public const string TT_PRP = "PRP"; // Primka za posudbu od fiz. osobe (Tetragram) 
@@ -314,6 +315,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
 
    public const string TT_IRA = "IRA"; // Izlazni Racun + Izdatnica 
    public const string TT_IZD = "IZD"; // Izdatnica iz Veleprodaje NE Pdv - ProdCij
+   public const string TT_POI = "POI"; // Izdatnica iz Veleprodaje NE Pdv - ProdCij - Povrat Posudbe 
    public const string TT_IZM = "IZM"; // Izdatnica iz Maloprodaje NE Pdv - ProdCij
  //public const string TT_STI = "STI"; // STORNO Izlaza (i sklad i pdv) 
    public const string TT_RVI = "RVI"; // Revers - Fisycal ONLY izlaz
@@ -325,6 +327,8 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_ISP = "ISP"; // Blagajna - izlaz (Isplatnica) 
    public const string TT_BUP = "BUP"; // Blagajna - ulaz  (Uplatnica)  - MULTI (vise blagajni)
    public const string TT_BIS = "BIS"; // Blagajna - izlaz (Isplatnica) - MULTI (vise blagajni)
+   public const string TT_ABU = "ABU"; // Blagajna - ulaz  (Uplatnica)  - AUTOMATSKA (vise blagajni) + OPP__BR 
+   public const string TT_ABI = "ABI"; // Blagajna - izlaz (Isplatnica) - AUTOMATSKA (vise blagajni) + OPP__BR 
    public const string TT_TMU = "TMU"; // Korektura ulaza  - TEMELJNICA 
    public const string TT_TMI = "TMI"; // Korektura izlaza - TEMELJNICA 
 

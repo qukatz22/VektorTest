@@ -2948,6 +2948,25 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand GetNext_ABx_TtNum_Command(XSqlConnection conn, string recordName, string wantedTT, string wantedSkladCD)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      List<string> OPPskladCDlist = ZXC.luiListaSkladista.GetOPPskladCDlist(wantedSkladCD, wantedTT);
+
+      bool isMultiSklad = OPPskladCDlist != null && OPPskladCDlist.Count > 1;
+
+      string skladCDinOrEqualClause = "AND (skladCD " + (isMultiSklad ? " IN " + GetInSetClause(OPPskladCDlist) : " = '" + wantedSkladCD) + 
+                                    (isMultiSklad ? ")   " : "')   ");
+
+      cmd.CommandText = "SELECT MAX(" + VvSQL.ttNumColName + ") FROM " + recordName + "\n " +
+                        "WHERE "      + VvSQL.ttColName    + " = '"    + wantedTT   + "'\n" +
+
+                      skladCDinOrEqualClause + "";
+
+      return (cmd);
+   }
+
    #endregion GetNextDokNum_Command
 
    #region GetTranses_Command

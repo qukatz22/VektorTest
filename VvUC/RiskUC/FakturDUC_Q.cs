@@ -139,6 +139,7 @@ public struct TtInfo
       Faktur.TT_IRA, 
 //    Faktur.TT_STI, 
       Faktur.TT_IZD, 
+      Faktur.TT_POI, 
       Faktur.TT_IMT, 
       Faktur.TT_IZM, 
     //Faktur.TT_IMM, 
@@ -156,6 +157,7 @@ public struct TtInfo
       Faktur.TT_UOD,
       Faktur.TT_UPV,
       Faktur.TT_PRI,
+      Faktur.TT_POU,
       Faktur.TT_POT,
       Faktur.TT_PRP,
     //Faktur.TT_PIP,
@@ -174,7 +176,9 @@ public struct TtInfo
       Faktur.TT_UPL,
       Faktur.TT_ISP,
       Faktur.TT_BUP,
+      Faktur.TT_ABU,
       Faktur.TT_BIS,
+      Faktur.TT_ABI,
       Faktur.TT_RNP,
       Faktur.TT_RNS,
       Faktur.TT_PRJ,
@@ -259,6 +263,7 @@ public struct TtInfo
             case Faktur.TT_IOD:
             case Faktur.TT_IPV:
       case Faktur.TT_IZD:
+      case Faktur.TT_POI:
             case Faktur.TT_IRM:
             case Faktur.TT_PIM: // !!! 
             case Faktur.TT_IZM:
@@ -334,6 +339,7 @@ public struct TtInfo
       Faktur.TT_IRA, 
 //    Faktur.TT_STI, 
       Faktur.TT_IZD, 
+      Faktur.TT_POI, 
       Faktur.TT_IZM, 
       Faktur.TT_IOD, 
       Faktur.TT_IPV, 
@@ -364,6 +370,7 @@ public struct TtInfo
       Faktur.TT_PIK, 
 //    Faktur.TT_STI, 
       Faktur.TT_IZD, 
+      Faktur.TT_POI, 
       Faktur.TT_IZM, 
       Faktur.TT_RVI, 
       Faktur.TT_IRM, 
@@ -376,6 +383,7 @@ public struct TtInfo
       Faktur.TT_UPV,
       Faktur.TT_UPM,
       Faktur.TT_PRI,
+      Faktur.TT_POU,
       Faktur.TT_POT,
       Faktur.TT_PRP,
     //Faktur.TT_PIP,
@@ -418,6 +426,7 @@ public struct TtInfo
       Faktur.TT_IRA, 
 //    Faktur.TT_STU, 
       Faktur.TT_IZD, 
+      Faktur.TT_POI, 
       Faktur.TT_IZM, 
       Faktur.TT_RVI, 
       Faktur.TT_IRM, 
@@ -762,6 +771,8 @@ public struct TtInfo
       Faktur.TT_UPL,
       Faktur.TT_BIS,
       Faktur.TT_BUP,
+      Faktur.TT_ABU,
+      Faktur.TT_ABI,
    };
    public bool IsBlagajnaTT { get { return arrayBlagajnaTT.Contains(TheTT); } }
 
@@ -856,6 +867,7 @@ public struct TtInfo
    /// Ovi TT-ovi su REALIZACIJA / PRIHOD 
    /// </summary>
    public bool IsPrihodTT { get { return arrayPrihodTT.Contains(TheTT); } }
+   public bool IsPrihodTTorABx { get { return IsPrihodTT || TheTT == Faktur.TT_ABU || TheTT == Faktur.TT_ABI; } }
 
    public static string Prihod_IN_Clause { get { return GetSql_IN_Clause(arrayPrihodTT); } }
 
@@ -3095,7 +3107,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          }
 
          // 18.03.2014: Komisija News 
-         if(ZXC.TtInfo(Fld_TT).IsPrihodTT)
+         if(ZXC.TtInfo(Fld_TT).IsPrihodTTorABx)
          {
             VvLookUpItem baseSkladLUI = ZXC.luiListaSkladista.GetBaseSkladLUI(Fld_SkladCD); // glavno skladiste 
             if(baseSkladLUI != null)
@@ -3280,7 +3292,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
       VvLookUpItem newSkladLUI = ZXC.luiListaSkladista.GetLuiForThisCd(    newSkladCD);
 
     //if(ZXC.IsOPPsljednost(theTT, newSkladLUI.Uinteger) == false) return false; // nemoj na promjenu sklCDa NonPrihodTT-ovima () proglasavati zajednicku sljednost iako imaju isti opp 
-      if(ZXC.TtInfo(theTT).IsPrihodTT                    == false) return false; // nemoj na promjenu sklCDa NonPrihodTT-ovima () proglasavati zajednicku sljednost iako imaju isti opp 
+      if(ZXC.TtInfo(theTT).IsPrihodTTorABx               == false) return false; // nemoj na promjenu sklCDa NonPrihodTT-ovima () proglasavati zajednicku sljednost iako imaju isti opp 
 
       if(oldSkladLUI == null || newSkladLUI == null) return false;
 
@@ -6491,11 +6503,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          case Faktur.TT_UPA   : return ZXC.dscLuiLst_UFA; // upaTODO: !!!!!! 
          case Faktur.TT_UFM   : return ZXC.dscLuiLst_UFM;
          case Faktur.TT_PRI   : return ZXC.dscLuiLst_PRI;
+         case Faktur.TT_POU   : return ZXC.dscLuiLst_PRI;
          case Faktur.TT_KLK   : return ZXC.dscLuiLst_KLK;
          case Faktur.TT_KKM   : return ZXC.dscLuiLst_KKM;
          case Faktur.TT_POT   : return ZXC.dscLuiLst_URA; // zato jer treba pfd radi deviznog
 
          case Faktur.TT_IZD   : return ZXC.dscLuiLst_IZD;
+         case Faktur.TT_POI   : return ZXC.dscLuiLst_IZD;
          case Faktur.TT_UOD   : return ZXC.dscLuiLst_UOD;
          case Faktur.TT_UPV   : return ZXC.dscLuiLst_UPV;
          case Faktur.TT_UPM   : return ZXC.dscLuiLst_UPM;
@@ -6514,6 +6528,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
          case Faktur.TT_ISP   : return ZXC.dscLuiLst_ISP;
          case Faktur.TT_BUP   : return ZXC.dscLuiLst_BUP;
          case Faktur.TT_BIS   : return ZXC.dscLuiLst_BIS;
+         case Faktur.TT_ABU   : return ZXC.dscLuiLst_BUP;
+         case Faktur.TT_ABI   : return ZXC.dscLuiLst_BIS;
          case Faktur.TT_PST   : return ZXC.dscLuiLst_PST;
          case Faktur.TT_INV   : return ZXC.dscLuiLst_INV;
          case Faktur.TT_INM   : return ZXC.dscLuiLst_INM;
@@ -6755,9 +6771,11 @@ public partial class FakturExtDUC : FakturDUC
          case Faktur.TT_URA: return ZXC.TheVvForm.VvPref.fakturURbDUC      .MigratorStates;
          case Faktur.TT_URM: return ZXC.TheVvForm.VvPref.fakturURmDUC      .MigratorStates;
          case Faktur.TT_PRI: return ZXC.TheVvForm.VvPref.fakturPrimkaDUC   .MigratorStates;
+         case Faktur.TT_POU: return ZXC.TheVvForm.VvPref.fakturPrimkaDUC   .MigratorStates;
          case Faktur.TT_KLK: return ZXC.TheVvForm.VvPref.fakturKalkDUC     .MigratorStates;
          case Faktur.TT_KKM: return ZXC.TheVvForm.VvPref.fakturKKMDUC      .MigratorStates;
          case Faktur.TT_IZD: return ZXC.TheVvForm.VvPref.fakturIzdatnicaDUC.MigratorStates;
+         case Faktur.TT_POI: return ZXC.TheVvForm.VvPref.fakturIzdatnicaDUC.MigratorStates;
          case Faktur.TT_IRM: return ZXC.TheVvForm.VvPref.fakturIRMDUC      .MigratorStates;
          case Faktur.TT_IOD: return ZXC.TheVvForm.VvPref.fakturOdobrKupDUC .MigratorStates;
          case Faktur.TT_IPV: return ZXC.TheVvForm.VvPref.fakturPovKupDUC   .MigratorStates;
@@ -6778,6 +6796,8 @@ public partial class FakturExtDUC : FakturDUC
          case Faktur.TT_ISP: return ZXC.TheVvForm.VvPref.fakturBlgIspDUC   .MigratorStates;
          case Faktur.TT_BUP: return ZXC.TheVvForm.VvPref.fakturBlgUplMDUC  .MigratorStates;
          case Faktur.TT_BIS: return ZXC.TheVvForm.VvPref.fakturBlgIspMDUC  .MigratorStates;
+         case Faktur.TT_ABU: return ZXC.TheVvForm.VvPref.fakturBlgUplMDUC  .MigratorStates;
+         case Faktur.TT_ABI: return ZXC.TheVvForm.VvPref.fakturBlgIspMDUC  .MigratorStates;
          case Faktur.TT_RNP: return ZXC.TheVvForm.VvPref.fakturRNpDUC      .MigratorStates;
          case Faktur.TT_RNM: return ZXC.TheVvForm.VvPref.fakturRNmDUC      .MigratorStates;
          case Faktur.TT_RNS: return ZXC.TheVvForm.VvPref.fakturRNsDUC      .MigratorStates;
@@ -8197,6 +8217,25 @@ public class PrnFakDsc : VvLookupAsDsc
          Dsc_OcuR12 = false;
 
       }
+      else if(TT == Faktur.TT_POI)
+      { 
+         Dsc_Title = "Povrat Posudbe";
+
+         Dsc_T_artiklCD =
+         Dsc_T_artiklName =
+         Dsc_T_jedMj =
+         Dsc_T_kol =
+         Dsc_T_cij =
+         Dsc_T_rbt1St =
+         Dsc_R_KCR =
+         Dsc_R_KCRMP = true;
+
+         Dsc_SignPrimaoc = true;
+         Dsc_LblPrimio = "Robu preuzeo:";
+
+         Dsc_OcuR12 = false;
+
+      }
      
      
       else if(TT == Faktur.TT_IRM) 
@@ -8298,6 +8337,7 @@ public class PrnFakDsc : VvLookupAsDsc
       else if(TT == Faktur.TT_UPA) { Dsc_Title = "UFA"; } // upaTODO !!!!!! 
       else if(TT == Faktur.TT_UFM) { Dsc_Title = "UFM"; }
       else if(TT == Faktur.TT_PRI) { Dsc_Title = "PRIMKA"; }
+      else if(TT == Faktur.TT_POU) { Dsc_Title = "POSUDBA"; }
       else if(TT == Faktur.TT_KLK) { Dsc_Title = "KALKULACIJA"; }
       else if(TT == Faktur.TT_KKM) { Dsc_Title = "KOMISIJSKA KALKULACIJA"; }
       else if(TT == Faktur.TT_UOD) { Dsc_Title = "ODOBRENJE"; }
@@ -8386,7 +8426,7 @@ public class PrnFakDsc : VvLookupAsDsc
          Dsc_T_kol        = true;
 
       }
-      else if(TT == Faktur.TT_UPL || TT == Faktur.TT_ISP || TT == Faktur.TT_BUP || TT == Faktur.TT_BIS) 
+      else if(TT == Faktur.TT_UPL || TT == Faktur.TT_ISP || TT == Faktur.TT_BUP || TT == Faktur.TT_BIS || TT == Faktur.TT_ABU || TT == Faktur.TT_ABI) 
       {
 
          Dsc_OcuHeader        =
