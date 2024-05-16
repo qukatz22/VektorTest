@@ -439,19 +439,20 @@ public static class VvSQL
    {
       string strSql;
       bool shouldRestrict_TT;
-      bool shouldRestrict_SKL = false;
+      bool shouldRestrict_SKL  = false;
       bool shouldRestrict_SKL2 = false;
-      XSqlCommand cmd = VvSQL.InitCommand(conn);
+      XSqlCommand cmd          = VvSQL.InitCommand(conn);
 
       string tableName;
 
       if(dbNavRestrictor_TT.Equals(ZXC.DbNavigationRestrictor.Empty)) shouldRestrict_TT = false;
-      else shouldRestrict_TT = true;
+      else                                                            shouldRestrict_TT = true;
 
-      if(dbNavRestrictor_SKL.Equals(ZXC.DbNavigationRestrictor.Empty)) shouldRestrict_SKL = false;
-      else if(ZXC.RRD.Dsc_IsSklRestrictor == true) shouldRestrict_SKL = true; // Napravljeno za Likum, a smeta vecini ostalih pa treba u rulse... 
-      if(dbNavRestrictor_SKL2.Equals(ZXC.DbNavigationRestrictor.Empty)) shouldRestrict_SKL2 = false;
-      else if(ZXC.RRD.Dsc_IsSklRestrictor == true) shouldRestrict_SKL2 = true; // Napravljeno za Likum, a smeta vecini ostalih pa treba u rulse... 
+           if(dbNavRestrictor_SKL.Equals(ZXC.DbNavigationRestrictor.Empty)) shouldRestrict_SKL = false;
+      else if(ZXC.RRD.Dsc_IsSklRestrictor == true)                          shouldRestrict_SKL = true ; // Napravljeno za Likum, a smeta vecini ostalih pa treba u rulse... 
+
+           if(dbNavRestrictor_SKL2.Equals(ZXC.DbNavigationRestrictor.Empty)) shouldRestrict_SKL2 = false;
+      else if(ZXC.RRD.Dsc_IsSklRestrictor == true)                           shouldRestrict_SKL2 = true ; // Napravljeno za Likum, a smeta vecini ostalih pa treba u rulse... 
                                                                                // ... ma jebote, vec si u FakturDucBabies na vecini DUCeva overridao ovo ponasanje sa 'dbNavigationRestrictor_SKL = ZXC.DbNavigationRestrictor.Empty;'
                                                                                // ostalo je na IRMu pa si dosao ovdje. Ubuduce izjednaci nekako tu logiku i to preko rulsa 
 
@@ -461,15 +462,24 @@ public static class VvSQL
       if(ZXC.IsSvDUH_ZAHonly) shouldRestrict_SKL2 = true;
 
       // 12.20.2021: 
-      shouldRestrict_TT = shouldRestrict_TT && dbNavRestrictor_TT.NotEmpty;
-      shouldRestrict_SKL = shouldRestrict_SKL && dbNavRestrictor_SKL.NotEmpty;
+      shouldRestrict_TT   = shouldRestrict_TT   && dbNavRestrictor_TT  .NotEmpty;
+      shouldRestrict_SKL  = shouldRestrict_SKL  && dbNavRestrictor_SKL .NotEmpty;
       shouldRestrict_SKL2 = shouldRestrict_SKL2 && dbNavRestrictor_SKL2.NotEmpty;
 
+      // 16.05.2024: 
+      if(ZXC.IsTETRAGRAM_ANY && ZXC.GetTetragram_PreferredSkladCD_LookUpItem() == null)
+      {
+         shouldRestrict_SKL  = 
+         shouldRestrict_SKL2 = false;
+
+      }
+
       // 21.10.2016: za 'CalcIBAN_2017_TEKUCI' potrebe 
+
       if(vvDataRecord is Ptrano && dbNavRestrictor_SKL.ColName == "t_isZastRn") shouldRestrict_SKL = true;
 
       if(isArhiva) tableName = vvDataRecord.VirtualRecordNameArhiva;
-      else tableName = vvDataRecord.VirtualRecordName;
+      else         tableName = vvDataRecord.VirtualRecordName;
 
       strSql = "SELECT * FROM " + tableName;
 
@@ -529,10 +539,9 @@ public static class VvSQL
 
       SetNavigationalParam(vvDataRecord.SorterCurrVal(sorter.SortType), cmd, strSql, sorter, isArhiva, false);
 
-      //int i = 0;
-      if(shouldRestrict_TT) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_TT  /*, i*/);
-      if(shouldRestrict_SKL) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_SKL /*, i*/);
-      if(shouldRestrict_SKL2) /*i =*/ SetRestrictorParam(cmd, dbNavRestrictor_SKL2/*, i*/);
+      if(shouldRestrict_TT  ) SetRestrictorParam(cmd, dbNavRestrictor_TT  );
+      if(shouldRestrict_SKL ) SetRestrictorParam(cmd, dbNavRestrictor_SKL );
+      if(shouldRestrict_SKL2) SetRestrictorParam(cmd, dbNavRestrictor_SKL2);
 
       return cmd;
    }

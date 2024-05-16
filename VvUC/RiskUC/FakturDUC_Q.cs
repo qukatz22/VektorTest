@@ -2068,6 +2068,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #region IsNpCash but NOT fiskalize
 
+#if !DEBUG
+
       if(faktur_rec.IsFiskalDutyFaktur        == true  && // IRM, IRA, IFA, IOD, IPV                                      
          faktur_rec.IsFiskalDutyFaktur_ONLINE == false && // PREMA Prjkt pravilima ovaj TT NE IDE na OnLine Fiskalizaciju 
        //faktur_rec.IsNpCash                  == true)    // ...a zadao je NP 'Novcanice'                                 
@@ -2077,6 +2079,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          e.Cancel = true;
       }
+
+#endif
 
       // 30.12.2016: 
       if((ZXC.IsTEXTHOshop || ZXC.CURR_prjkt_rec.IsFiskalOnline) &&

@@ -195,6 +195,17 @@ public class VvPref
    {
       bool success = false;
 
+      // 16.05.2024: CurrentTetragramUser_CityDependent
+      if(ZXC.IsTETRAGRAMdomena)
+      {
+         VvLookUpItem skladLUI = ZXC.GetTetragram_PreferredSkladCD_LookUpItem();
+
+         if(skladLUI != null)
+         {
+            this.findArtikl.LastUsedSkladCD = skladLUI.Cd;
+         }
+      }
+
       try
       {
          using(StreamWriter sw = new StreamWriter(_filePath))

@@ -3656,7 +3656,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             if(ZXC.IsTETRAGRAM_ANY)
             {
-               VvLookUpItem skladLUI = ZXC.GetTetragramPreferredSkladCD();
+               VvLookUpItem skladLUI = ZXC.GetTetragram_PreferredSkladCD_LookUpItem();
 
                if(skladLUI != null)
                {
