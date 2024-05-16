@@ -17479,7 +17479,7 @@ public class RiskRulesUC : VvOtherUC
                          cbx_IsOrgPakVisible, cbx_IsKol2Visible, cbx_IsPnpStVisible, cbx_IsDateXDateIzd, cbx_IsAnaPrihodIRM,
                          cbx_isOpenSaldoKupca, cbx_isVisibleMtrosCol, cbx_isIRMttNum7, cbx_isProizvCijByArtGr, cbx_isDokDate2, cbx_isRetMoneyCalc, cbx_isIrmQuickPrint,
                          cbx_IsSklRestrictor, cbx_IsMSIttNumByPosl, cbx_IsPrintOTSafterIRA, cbx_isVisibleSerlotCol, cbx_isVisibleRabat2Col, cbx_isCentralaFindFaktur,
-                         cbx_isOibOznOper, cbx_isIgnoreImportCij, cbx_isObligArtikl, cbx_isPamtiPrintDate, cbx_isBlgOrderByDokNum, cbx_isRbtFromPartner,
+                         cbx_isOibOznOper, cbx_isIgnoreImportCij, cbx_isObligArtikl, cbx_isPamtiPrintDate, cbx_isBlgOrderByDokNum, cbx_isCashFakToBlag, cbx_isRbtFromPartner,
                          cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD, cbx_isIntrastat;
 
    //public RiskRulesDsc RRD { get; set; }
@@ -17528,7 +17528,7 @@ public class RiskRulesUC : VvOtherUC
    {
       hamper = new VvHamper(6, 27, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
       //                                      0        1         2          3         4        5     
-      hamper.VvColWdt      = new int[] { ZXC.Q8un, ZXC.Q5un, ZXC.Q4un, ZXC.Q4un, ZXC.Q4un, ZXC.Q3un };
+      hamper.VvColWdt      = new int[] { ZXC.Q8un, ZXC.Q5un, ZXC.Q4un, ZXC.Q4un, ZXC.Q4un, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun8, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -17663,7 +17663,8 @@ public class RiskRulesUC : VvOtherUC
 
       cbx_isPamtiPrintDate   = hamper.CreateVvCheckBox_OLD(1, 26, null, 1, 0, "Pamti datum zadnjeg printanja", RightToLeft.No);
       cbx_isBlgOrderByDokNum = hamper.CreateVvCheckBox_OLD(3, 26, null, 1, 0, "Sort BLG po DokNum-u"         , RightToLeft.No);
-
+      cbx_isCashFakToBlag    = hamper.CreateVvCheckBox_OLD(5, 26, null, 0, 0, "AutoBlgG"                      , RightToLeft.Yes);
+      
    }
 
    private void InitializeHamper_kupdobNaziv(out VvHamper hamper)
@@ -17878,6 +17879,7 @@ public class RiskRulesUC : VvOtherUC
    public bool Fld_IsObligArtikl              { get { return cbx_isObligArtikl       .Checked; } set { cbx_isObligArtikl       .Checked = value; } }
    public bool Fld_IsPamtiPrintDate           { get { return cbx_isPamtiPrintDate    .Checked; } set { cbx_isPamtiPrintDate    .Checked = value; } }
    public bool Fld_IsBlgOrderByDokNum         { get { return cbx_isBlgOrderByDokNum  .Checked; } set { cbx_isBlgOrderByDokNum  .Checked = value; } }
+   public bool Fld_IsCashFakturToBlagajna     { get { return cbx_isCashFakToBlag     .Checked; } set { cbx_isCashFakToBlag     .Checked = value; } }
 
    public decimal Fld_TolerancOdstUlCij        { get { return tbx_tolerancOstUlCij    .GetDecimalField(); } set { tbx_tolerancOstUlCij.PutDecimalField(value); } }
    public uint    Fld_NorKolNumOfDecimalPlaces { get { return tbx_norKolNumDecimal    .GetUintField();    } set { tbx_norKolNumDecimal.PutUintField(value); } }
@@ -17953,6 +17955,7 @@ public class RiskRulesUC : VvOtherUC
       Fld_TolerancOdstUlCij        = RRD.Dsc_TolerancOdstUlCij;
       Fld_IsPamtiPrintDate         = RRD.Dsc_IsPamtiPrintDate;
       Fld_IsBlgOrderByDokNum       = RRD.Dsc_IsBlgOrderByDokNum;
+      Fld_IsCashFakturToBlagajna   = RRD.Dsc_IsCashFakturToBlagajna;
       Fld_PreferedSkladOnUCLoad    = RRD.Dsc_PreferedSkladOnUCLoad;
       Fld_IsVisibleLotColOnIzlaz   = RRD.Dsc_IsVisibleLotOnIzlaz;
       Fld_IsUseNAK                 = RRD.Dsc_IsUseNAK;
@@ -18013,6 +18016,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_TolerancOdstUlCij        = Fld_TolerancOdstUlCij  ;
       ZXC.RRD.Dsc_IsPamtiPrintDate         = Fld_IsPamtiPrintDate;
       ZXC.RRD.Dsc_IsBlgOrderByDokNum       = Fld_IsBlgOrderByDokNum;
+      ZXC.RRD.Dsc_IsCashFakturToBlagajna   = Fld_IsCashFakturToBlagajna;
       ZXC.RRD.Dsc_NorKolNumOfDecimalPlaces = (int)Fld_NorKolNumOfDecimalPlaces;
       ZXC.RRD.Dsc_PreferedSkladOnUCLoad    = Fld_PreferedSkladOnUCLoad ;
       ZXC.RRD.Dsc_IsVisibleLotOnIzlaz      = Fld_IsVisibleLotColOnIzlaz;

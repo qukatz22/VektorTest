@@ -2834,8 +2834,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       get
       {
-         if(this.TT == TT_UPL || this.TT == TT_BUP) return this.currentData._s_ukKC;
-         else                  return 0.00M;
+         if(this.TT == TT_UPL || this.TT == TT_BUP || this.TT == TT_ABU) return this.currentData._s_ukKC;
+         else                                                            return 0.00M;
       }
    }
 
@@ -2843,8 +2843,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       get
       {
-         if(this.TT == TT_ISP || this.TT == TT_BIS) return this.currentData._s_ukKC;
-         else                  return 0.00M;
+         if(this.TT == TT_ISP || this.TT == TT_BIS || this.TT == TT_ABI) return this.currentData._s_ukKC;
+         else                                                            return 0.00M;
       }
    }
 

@@ -2659,10 +2659,21 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       //foreach(Rtrans rtrans_rec in faktur_rec.Transes)
       foreach(Rtrans rtrans_rec in faktur_rec.TransesWOtwins)
       {
+         //09.05.2024:
+         if(/*ZXC.IsPanigale*/ rtrans_rec.T_TT == Faktur.TT_IRM && ZXC.RRD.Dsc_IsAnaPrihodIRM && ZXC.KSD.Dsc_ForceIRMkaoIRA)
+         {
+            if(rtrans_rec.T_konto.IsEmpty())
+            { 
+              if(rtrans_rec.T_isIrmUsluga ) rtrans_rec.T_konto = ZXC.KSD.Dsc_KtoIrmOsnUsl;
+              else                          rtrans_rec.T_konto = ZXC.KSD.Dsc_KtoOsn_Mir  ;
+            }
+         }
+
          if(rtrans_rec.T_konto.IsEmpty()) rtrans_rec.T_konto = theRules.GetKonto_PrihTros(faktur_rec, rtrans_rec);
 
          // 13.03.2014: 
          if(rtrans_rec.T_mtrosCD.IsZero()) rtrans_rec.T_mtrosCD = faktur_rec.MtrosCD;
+
       }
 
       #endregion Fill T_konto if IsEmpty

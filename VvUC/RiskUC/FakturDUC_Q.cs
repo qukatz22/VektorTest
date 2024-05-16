@@ -9169,7 +9169,8 @@ public class RiskRulesDsc : VvLookupAsDsc
    public decimal Dsc_TolerancOdstUlCij        { get; set; }
    public bool    Dsc_IsPamtiPrintDate         { get; set; }
    public bool    Dsc_IsBlgOrderByDokNum       { get; set; }
-   public int Dsc_NorKolNumOfDecimalPlaces     { get; set; }
+   public bool    Dsc_IsCashFakturToBlagajna    { get; set; }
+   public int     Dsc_NorKolNumOfDecimalPlaces  { get; set; }
    // 30.09.2020: 
    public string  Dsc_PreferedSkladOnUCLoad    { get; set; }
    public bool Dsc_IsVisibleLotOnIzlaz         { get; set; }
@@ -9271,6 +9272,7 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_PdvMathTolerancy         = 0.99M;
 
       Dsc_IsIntrastat              = false;
+      Dsc_IsCashFakturToBlagajna   = false;
 
       #endregion defautValue
    }
