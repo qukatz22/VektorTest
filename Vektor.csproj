@@ -1571,6 +1571,12 @@
       <DependentUpon>CR_POT_DUC.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_POU_POI_DUC.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_POU_POI_DUC.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_Ppmv_Prilog1.cs">
       <DependentUpon>CR_Ppmv_Prilog1.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3537,6 +3543,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_POT_DUC.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_POT_DUC.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_POU_POI_DUC.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_POU_POI_DUC.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_Ppmv_Prilog1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

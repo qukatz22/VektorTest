@@ -8285,5 +8285,173 @@ public class POT_DUC         : FakturExtDUC
    }
 }
 
+public class POU_DUC         : FakturExtDUC
+{
+   #region Constructor
+
+   public POU_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_POU
+         });
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+     
+      // kao kod svd  mičemo migratore sa proširenog i dodajemo ove dvije metode dolje kako bi ispravno radilo
+      //SetParentOfhampers();
+      //SetLocationMigrators();
+
+      SetParentOfHamperLeftHampers();
+      panel_MigratorsLeftB.SendToBack();
+
+      SetSumeHampers(false, true, true, false);
+
+      hamp_dokNum.Location = new Point(hamp_kupdobNaziv.Right - hamp_dokNum.Width, hamp_kupdobOther.Top);
+      
+
+      hamp_napomena.Location = new Point(hamp_kupdobOther.Left, hamp_kupdobOther.Bottom - ZXC.Qun4);
+      hamp_napomena.VvColWdt[1] = hamp_kupdobNaziv.Width - labelWidth - ZXC.QUN;
+
+      hamp_opis.Location = new Point(hamp_kupdobOther.Left, hamp_napomena.Bottom);
+      hamp_opis.BringToFront();
+
+      nextY = hamp_opis.Bottom;
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    hamp_kupdobOther, hamp_dokDate    , hamp_dokNum, hamp_napomena, 
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   /*, hamp_v3TT  , hamp_v4TT*/, hamp_opis
+                                  };
+
+   }
+ 
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible = true;
+
+      T_artiklCD_CreateColumn      (ZXC.Q4un   ,          isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2,          isVisible, "Iznos"      , "Iznos");
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturPrimkaDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(clr_klkPri, clr_Sklad, clr_klkPri);
+   }
+}
+
+public class POI_DUC         : FakturExtDUC
+{
+   #region Constructor
+
+   public POI_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_POU
+         });
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+     
+      // kao kod svd  mičemo migratore sa proširenog i dodajemo ove dvije metode dolje kako bi ispravno radilo
+      //SetParentOfhampers();
+      //SetLocationMigrators();
+
+      SetParentOfHamperLeftHampers();
+      panel_MigratorsLeftB.SendToBack();
+
+      SetSumeHampers(false, true, true, false);
+
+      hamp_dokNum.Location = new Point(hamp_kupdobNaziv.Right - hamp_dokNum.Width, hamp_kupdobOther.Top);
+      
+
+      hamp_napomena.Location = new Point(hamp_kupdobOther.Left, hamp_kupdobOther.Bottom - ZXC.Qun4);
+      hamp_napomena.VvColWdt[1] = hamp_kupdobNaziv.Width - labelWidth - ZXC.QUN;
+
+      hamp_opis.Location = new Point(hamp_kupdobOther.Left, hamp_napomena.Bottom);
+      hamp_opis.BringToFront();
+
+      nextY = hamp_opis.Bottom;
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    hamp_kupdobOther, hamp_dokDate    , hamp_dokNum, hamp_napomena, 
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   /*, hamp_v3TT  , hamp_v4TT*/, hamp_opis
+                                  };
+
+   }
+ 
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible = true;
+
+      T_artiklCD_CreateColumn      (ZXC.Q4un   ,          isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
+      R_KCRM_CreateColumn          (ZXC.Q4un, 2,          isVisible, "Iznos"      , "Iznos");
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturIzdatnicaDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(clr_Izlaz, clr_Sklad, Color.Empty);
+   }
+}
+
 #endregion TETRAGRAM
 

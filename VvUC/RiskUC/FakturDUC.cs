@@ -984,7 +984,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, (this is RNZDUC) ? "" : "Napom:", ContentAlignment.MiddleRight);
+      string text = (this is RNZDUC)                     ? "" : 
+                    (this is POU_DUC || this is POI_DUC) ? "Prilog:" : "Napom:";
+
+                     hamper.CreateVvLabel  (0, 0, /*(this is RNZDUC) ? "" : "Napom:"*/ text, ContentAlignment.MiddleRight);
       tbx_Napomena = hamper.CreateVvTextBox(1, 0, "tbx_napomena", "Napomena", GetDB_ColumnSize(DB_ci.napomena));
       tbx_Napomena.Font = ZXC.vvFont.SmallFont;
       if(this is RNZDUC) tbx_Napomena.JAM_ReadOnly = true;
@@ -1326,7 +1329,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       if(this is FakturExtDUC && this is PIZpDUC     == false && this is ProizvodnjaDUC  == false && this is RNZDUC == false &&
                                  this is URA_SVD_DUC == false && this is NRD_SVD_DUC     == false && this is IZD_SVD_DUC == false &&
-                                 this is UGODUC      == false && this is CjenikKupca_DUC == false && this is ZAH_SVD_DUC == false && this is PST_PTG_DUC == false && this is MSI_PTG_DUC == false)
+                                 this is UGODUC      == false && this is CjenikKupca_DUC == false && this is ZAH_SVD_DUC == false && this is PST_PTG_DUC == false && this is MSI_PTG_DUC == false &&
+                                 this is POU_DUC     == false && this is POI_DUC         == false)
       {
               if(this is IRMDUC)                   hamper = new VvHamper(1, 3, "", null, false);
          else if(this is KIZDUC || this is PIKDUC) hamper = new VvHamper(1, 5, "", null, false);
@@ -15327,11 +15331,25 @@ public class VvCopyInNewTTDlg : VvDialog
       var riskTargetSubModulList      = ZXC.TheVvForm.aModuli[1].aSubModuls.Where(sm => sm.subModulKindEnum == ZXC.VvSubModulKindEnum.DOCUMENT).ToList();
       int riskTargetSubModulListCount = riskTargetSubModulList.Count();
 
+//// 17.05.2024. da bey micanja user controla u kopira u dodje samo njihovo - a to bi trebalo iybaciti kod ostalih - a i add remove buttons na alatnoj traci
+//      if(ZXC.IsTETRAGRAM_ANY)
+//      {
+//         riskTargetSubModulList      = ZXC.TheVvForm.aModuli[1].aSubModuls.Where(sm => sm.subModulKindEnum == ZXC.VvSubModulKindEnum.DOCUMENT && sm.groupNum == 13).ToList();
+//         riskTargetSubModulListCount = riskTargetSubModulList.Count();
+//      }
+
+
       int numOfMixerTargetSubModuls = aMixerTargetSubModuls.Length;
 
     // 02.04.2018. za sveti duh posebno jer oni imaju manje ucerControla!!!!!
     //int numOfAllTargetSubModuls =                                             numOfRiskTargetSubModuls + numOfMixerTargetSubModuls ;
       int numOfAllTargetSubModuls = (ZXC.IsSvDUH) ? riskTargetSubModulListCount : (riskTargetSubModulListCount + numOfMixerTargetSubModuls);
+
+      //// 17.05.2024. da bey micanja user controla u kopira u dodje samo njihovo - a to bi trebalo iybaciti kod ostalih - a i add remove buttons na alatnoj traci
+      //if(ZXC.IsTETRAGRAM_ANY)
+      //{
+      //   numOfAllTargetSubModuls = riskTargetSubModulListCount;
+      //}
 
       aRbtTargetDUC = new RadioButton[riskTargetSubModulListCount + numOfMixerTargetSubModuls];
     // 02.04.2018. 
