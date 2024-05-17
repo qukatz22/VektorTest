@@ -5781,8 +5781,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          {
             return new RptR_IRA(new Vektor.Reports.RIZ.CR_POT_DUC(), reportName, fakturFilter);
          }
+         else if(this is POU_DUC || this is POI_DUC)
+         {
+            return new RptR_IRA(new Vektor.Reports.RIZ.CR_POU_POI_DUC(), reportName, fakturFilter);
+         }
+
          else
-               {
+         {
             //if(                                       this.TheFakturDocFilter.PFD.Dsc_OcuPosPrint == true) return new RptR_IRA(new Vektor.Reports.RIZ.CR_posFaktura(), reportName, fakturFilter);
             if(this.TheFakturDocFilter.PFD != null && this.TheFakturDocFilter.PFD.Dsc_OcuPosPrint == true)
             {
@@ -5890,12 +5895,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is RNZDUC            ||
          this is URA_SVD_DUC       || this is IZD_SVD_DUC        || this is NRD_SVD_DUC       ||
          this is UGODUC            || this is ZAH_SVD_DUC        ||                             
-         this is POT_DUC                                                                        )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
+         this is POT_DUC           || this is POU_DUC            || this is POU_DUC             )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
       else if(this is URMDUC     || this is KalkulacijaMpDUC     ||
               this is URMDUC_2   || this is KalkulacijaMpDUC_2   || 
               this is URMDUC_Dev || this is KalkulacijaMpDUC_Dev                                ) ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width; //tamo mu se postavlja sirina 
-      else if(this is UGNorAUN_PTG_DUC) ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width; //tamo mu se postavlja sirina 
-      else                              ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width;
+      else if(this is UGNorAUN_PTG_DUC)                                                           ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width; //tamo mu se postavlja sirina 
+      else                                                                                        ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width;
    }
 
    #endregion CreateFakturDokumentPrintUC
