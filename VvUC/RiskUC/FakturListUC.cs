@@ -101,6 +101,10 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.Default_TT = Faktur.TT_PON;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IRA_MPC)
          this.Default_TT = Faktur.TT_IRA;
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_BUP && ZXC.RRD.Dsc_IsCashFakturToBlagajna)
+         this.Default_TT = Faktur.TT_ABU;
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_BIS && ZXC.RRD.Dsc_IsCashFakturToBlagajna)
+         this.Default_TT = Faktur.TT_ABI;
       else
          this.Default_TT = vvMasterSubModul.subModul_shortName;
 

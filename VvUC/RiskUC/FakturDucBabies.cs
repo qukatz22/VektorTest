@@ -3567,6 +3567,7 @@ public class BlgUplat_M_DUC      : FakturExtDUC
 
       SetSumeHampers(false, true, false, false);
 
+      hamp_ValName.Visible = !ZXC.IsTETRAGRAM_ANY;
    }
 
    private void CreateArrOfHampers()
@@ -3586,6 +3587,8 @@ public class BlgUplat_M_DUC      : FakturExtDUC
                                         hampCbxM_externLink1, hampCbxM_externLink2, hampCbxM_carinaKind,
                                         hampCbxM_OsobaA, hampCbxM_osobaB, hampCbxM_osobaX,
                                       };
+
+      
    }
 
    #endregion HamperLocation
@@ -3737,8 +3740,10 @@ public class BlgIsplat_M_DUC     : FakturExtDUC
 
       SetSumeHampers(false, true, false, false);
 
+      hamp_ValName.Visible = !ZXC.IsTETRAGRAM_ANY;
+
    }
-  
+
    private void CreateArrOfHampers()
    {
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
@@ -8217,7 +8222,7 @@ public class POT_DUC         : FakturExtDUC
       hamp_NacPlac   .Location = new Point(hamp_kupdobOther.Right - ZXC.Qun8 - ZXC.Qun12, hamp_ZiroRn.Bottom      - ZXC.Qun4);
       hamp_prjArtName.Location = new Point(hamp_v4TT.Left                        , hamp_v4TT.Bottom               - ZXC.Qun4);
 
-      hamp_opis.Location    = new Point(hamp_tt.Right, hamp_tt.Top);
+      hamp_opis.Location    = new Point(hamp_v1TT.Right, hamp_tt.Top);
       hamp_opis.BringToFront();
       hamp_NacPlac.BringToFront();
       
