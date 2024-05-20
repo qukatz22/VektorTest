@@ -913,7 +913,12 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
       Cursor.Current = Cursors.WaitCursor;
                       // dodala 1.7.2011. zbog RasterDuc-aa koji nema printanje samog sebe
-      if(isPreview && VirtualFilterUC !=null) VirtualFilterUC.GetFilterFields();
+    //if(isPreview && VirtualFilterUC !=null) VirtualFilterUC.GetFilterFields();
+
+      // 20.05.2024: do sada bilo ovo gore '1.7.2011', a od sada ovako. nismo sigurni na reperkusije 
+      // dok je bilo '1.7.' QuickPrint ne bi uopce uzimao FilterUC vrijednosti pa bi npr. quickprint devizne fakture 
+      // dolazio u eurima umjesto u zadanoj valuti. PredPrint je i prije ovoga radio dobro.
+      if(             VirtualFilterUC !=null) VirtualFilterUC.GetFilterFields();
 
       SetReportAndReportName_ForThisInnerTabPage(TheTabControl.SelectedTab.Name);
 
