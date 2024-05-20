@@ -3718,7 +3718,7 @@ public class BlgIsplat_M_DUC     : FakturExtDUC
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
          { 
-            (ZXC.RRD.Dsc_IsCentralaFindFaktur ? Faktur.TT_ABI : Faktur.TT_BIS)
+            (ZXC.RRD.Dsc_IsCashFakturToBlagajna ? Faktur.TT_ABI : Faktur.TT_BIS)
          });
 
       // 31.10.2013: 

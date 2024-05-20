@@ -4387,7 +4387,7 @@ public class Faktur2NalogRulesAndData
       else FtransFond = "";
       //############################################################################################# 
 
-      IsBLAGAJNA  = faktur_rec.TT == Faktur.TT_UPL || faktur_rec.TT == Faktur.TT_ISP || faktur_rec.TT == Faktur.TT_BUP || faktur_rec.TT == Faktur.TT_BIS;
+      IsBLAGAJNA  = faktur_rec.TT == Faktur.TT_UPL || faktur_rec.TT == Faktur.TT_ISP || faktur_rec.TT == Faktur.TT_BUP || faktur_rec.TT == Faktur.TT_BIS || faktur_rec.TT == Faktur.TT_ABU || faktur_rec.TT == Faktur.TT_ABI;
 
       // 02.03.2017: 
     //IsSKIP_NonMAT =                            faktur_rec.TT == Faktur.TT_PPR || faktur_rec.TT == Faktur.TT_POV;
@@ -4557,9 +4557,11 @@ public class Faktur2NalogRulesAndData
 
                switch(faktur_rec.TT)
                {
-                  case Faktur.TT_UPL: 
+                  case Faktur.TT_UPL:
+                  case Faktur.TT_ABU: 
                   case Faktur.TT_BUP: FtransKonto = KtoShemaDsc.Dsc_Blg_Promet; break;
                   case Faktur.TT_ISP: 
+                  case Faktur.TT_ABI: 
                   case Faktur.TT_BIS: FtransKonto = KtoShemaDsc.Dsc_Blg_Promet; break;
                }
 
@@ -5106,8 +5108,8 @@ public class Faktur2NalogRulesAndData
          
          case ZXC.Faktur2NalogSetEnum.BLAGAJNA:
 
-            if(faktur_rec.TT == Faktur.TT_UPL || faktur_rec.TT == Faktur.TT_BUP) return KtoShemaDsc.Dsc_Blg_Uplat;
-            else                               return KtoShemaDsc.Dsc_Blg_Isplat;
+            if(faktur_rec.TT == Faktur.TT_UPL || faktur_rec.TT == Faktur.TT_BUP || faktur_rec.TT == Faktur.TT_ABU) return KtoShemaDsc.Dsc_Blg_Uplat;
+            else                                                                                                   return KtoShemaDsc.Dsc_Blg_Isplat;
 
          #endregion Faktur2NalogSetEnum.BLAGAJNA
 
@@ -5210,8 +5212,10 @@ public class Faktur2NalogRulesAndData
             {
                case Faktur.TT_UPL: NalogTT = "BL"; TT_OtvaranjeDUG = true ; Fak2nalSetLocal = Fak2nalSet; break;
                case Faktur.TT_BUP: NalogTT = "BL"; TT_OtvaranjeDUG = true ; Fak2nalSetLocal = Fak2nalSet; break;
+               case Faktur.TT_ABU: NalogTT = "BL"; TT_OtvaranjeDUG = true ; Fak2nalSetLocal = Fak2nalSet; break;
                case Faktur.TT_ISP: NalogTT = "BL"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = Fak2nalSet; break;
                case Faktur.TT_BIS: NalogTT = "BL"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = Fak2nalSet; break;
+               case Faktur.TT_ABI: NalogTT = "BL"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = Fak2nalSet; break;
             }
             break; 
 
@@ -5242,8 +5246,10 @@ public class Faktur2NalogRulesAndData
 
             else if(ThisTT_Only == Faktur.TT_UPL) {NalogTT = "BL"; TT_OtvaranjeDUG = true ; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.BLAGAJNA;    }
             else if(ThisTT_Only == Faktur.TT_BUP) {NalogTT = "BL"; TT_OtvaranjeDUG = true ; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.BLAGAJNA;    }
+            else if(ThisTT_Only == Faktur.TT_ABU) {NalogTT = "BL"; TT_OtvaranjeDUG = true ; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.BLAGAJNA;    }
             else if(ThisTT_Only == Faktur.TT_ISP) {NalogTT = "BL"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.BLAGAJNA;    }
             else if(ThisTT_Only == Faktur.TT_BIS) {NalogTT = "BL"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.BLAGAJNA;    }
+            else if(ThisTT_Only == Faktur.TT_ABI) {NalogTT = "BL"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.BLAGAJNA;    }
 
             else if(ThisTT_Only == Faktur.TT_IMT) {NalogTT = "TM"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.PROIZ_IZLAZ; }
             else if(ThisTT_Only == Faktur.TT_PPR) {NalogTT = "TM"; TT_OtvaranjeDUG = false; Fak2nalSetLocal = ZXC.Faktur2NalogSetEnum.PROIZ_IZLAZ; }

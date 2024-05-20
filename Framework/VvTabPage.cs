@@ -1202,6 +1202,8 @@ be_fast:
                case ZXC.VvSubModulEnum.R_ISP:
                case ZXC.VvSubModulEnum.R_BUP:
                case ZXC.VvSubModulEnum.R_BIS:
+               case ZXC.VvSubModulEnum.R_ABU:
+               case ZXC.VvSubModulEnum.R_ABI:
                case ZXC.VvSubModulEnum.R_KIZ:
                case ZXC.VvSubModulEnum.R_PIK:
                case ZXC.VvSubModulEnum.R_TRI:

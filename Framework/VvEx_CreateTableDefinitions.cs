@@ -250,7 +250,7 @@ public static class VvUcList_Ex
 
 public static class VvUcList_AddNew
 {
-   public static uint TableVersionStatic_VEKTOR { get { return 301/*297*/; } }
+   public static uint TableVersionStatic_VEKTOR { get { return 303/*297*/; } }
 
    public static string AddNewVvUserControl_CommandText_VEKTOR(uint catchingVersion)
    {
@@ -687,8 +687,10 @@ public static class VvUcList_AddNew
          case 298: return commandBeginning + GetCommandEnd(ZXC.VvReportEnum.RIZ_IntrastatUlaz .ToString(), "1", "5", "RIZ_IntrastatUlaz" , ZXC.IsTEXTHOany2 ? "valentina" : "");
          case 299: return commandBeginning + GetCommandEnd(ZXC.VvReportEnum.RIZ_IntrastatIzlaz.ToString(), "1", "5", "RIZ_IntrastatIzlaz", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
-         case 300: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_POU.ToString(), "1", "2", "POU_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
-         case 301: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_POI.ToString(), "1", "2", "POI_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 300: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_POU.ToString(), "1", "2", "POU_DUC"        , ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 301: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_POI.ToString(), "1", "2", "POI_DUC"        , ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 302: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_ABU.ToString(), "1", "2", "BlgUplat_M_DUC" , ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 303: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_ABI.ToString(), "1", "2", "BlgIsplat_M_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          // SV DUH: rucno, kao i one prethodne, onemoguciti svaki novi UC koji njima ne treba! 
 
