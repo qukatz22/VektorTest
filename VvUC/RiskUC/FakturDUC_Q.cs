@@ -4001,6 +4001,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
             return;
          }
 
+         if(this is MOD_PTG_DUC && artikl_rec.TS != ZXC.KMP_TS && artikl_rec.TS != ZXC.PCK_TS)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Artikl nije niti 'PCK' niti 'KMP'");
+
+            theGrid.ClearRowContent(currRowIdx);
+            (this as MOD_PTG_DUC).Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+            return;
+         }
+
          if(ZXC.IsPCTOGO && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
          {
             theGrid.PutCell(ci2.iT_ramKlasa, currRowIdx, artikl_rec.Grupa2CD);
