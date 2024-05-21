@@ -3715,6 +3715,9 @@ public class Ptrans : VvTransRecord
                {
                   R_Mio1Olk = R_TheBruto > maxMioOsnova ? CalcMio1Olaksica(pR, spent, maxMioOsnova) : CalcMio1Olaksica(pR, spent, 0.00M);
                   R_Mio1Osn = R_TheBruto - R_Mio1Olk;
+
+                  //tek 21.05.2024. za velike bruto place mio1osn isto je maxMioOsnova
+                  R_Mio1Osn = R_TheBruto > maxMioOsnova ? maxMioOsnova : R_Mio1Osn;
                }
             }
 
