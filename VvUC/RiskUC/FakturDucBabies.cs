@@ -3567,7 +3567,8 @@ public class BlgUplat_M_DUC      : FakturExtDUC
 
       SetSumeHampers(false, true, false, false);
 
-      hamp_ValName.Visible = !ZXC.IsTETRAGRAM_ANY;
+      hamp_ValName     .Visible =
+      hamp_IznosUvaluti.Visible = !ZXC.IsTETRAGRAM_ANY;
    }
 
    private void CreateArrOfHampers()
@@ -3740,8 +3741,8 @@ public class BlgIsplat_M_DUC     : FakturExtDUC
 
       SetSumeHampers(false, true, false, false);
 
-      hamp_ValName.Visible = !ZXC.IsTETRAGRAM_ANY;
-
+      hamp_ValName     .Visible = 
+      hamp_IznosUvaluti.Visible = !ZXC.IsTETRAGRAM_ANY;
    }
 
    private void CreateArrOfHampers()
