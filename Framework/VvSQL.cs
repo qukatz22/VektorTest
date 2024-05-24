@@ -3863,6 +3863,8 @@ public static class VvSQL
          (
          isForceMPSK_by_NBC ? "" : // ako je isForceMPSK_by_NBC, tada NE trebamo UNION za implicitne nivelacije
 
+         // Observacija od 24.05.2024: ova ovdje NUP logika se razlikuje od NUP logike u 'SumFromRtrans'          
+         // pa je moguca pojava crvene brojke razlike u Bilanci skladista kada 'isThisDirektStornoRtrans' postoji 
          // uraPovratShadowTT_IN_Clause 
          "UNION                                                                                                     \n" +
          "SELECT 'NUP', t_skladCD AS SkladCD, 0, 0, 0, 0, SUM(((pstKol+ulazKol-izlazKol)-(rtrUlazKol))*(rtrCijenaNBC-prNBCBefThisUlaz)), 0, 0, 0, 0 \n" +

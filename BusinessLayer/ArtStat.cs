@@ -1408,7 +1408,10 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
        //if(rtr.Is_URA_wMinusKol && StanjeKol.IsZero()  ) // NUP_DILEMA! 1. od 2 dileme 
          if(rtr.Is_URA_wMinusKol                        ) 
          {
-            bool isThisDirektStornoRtrans = Get_isThisDirektStornoRtrans(ArtiklCD, SkladCD,  rtr); 
+            bool isThisDirektStornoRtrans = Get_isThisDirektStornoRtrans(ArtiklCD, SkladCD,  rtr);
+
+            // Observacija od 24.05.2024: ova ovdje NUP logika se razlikuje od NUP logike u 'GetArtstat_SUM_list_Command' 
+            // pa je moguca pojava crvene brojke razlike u Bilanci skladista kada 'isThisDirektStornoRtrans' postoji      
 
             if(isThisDirektStornoRtrans == false) // NUP-aj samo ako ovo nije storno neposredno prethodnog redka robne kartice (npr. SVD odmah stornira krivu URA-u) 
                                                   // ali ako i je storno ali naknadni (nepriljubljeni redci) onda ipak NUP-aj                                        
