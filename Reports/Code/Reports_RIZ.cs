@@ -2338,7 +2338,22 @@ public class RptR_StandardRiskReport : VvRiskReport
          //var distinctItems = items.GroupBy(x => x.Id).Select(y => y.First());
       }
 
+      // 21.01.2022: 
+      if(ZXC.IsSvDUH)
+      {
+         if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_LJEK)
+         {
+            TheArtiklList.RemoveAll(art => art.IsSvdArtGR_Ljek_ == false);
+         }
+         if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_POTR)
+         {
+            TheArtiklList.RemoveAll(art => art.IsSvdArtGR_Potr_ == false);
+         }
+      }
+
 #region GetArtstat_SUM_list
+      
+      decimal SVD_NUP_frizirung = 0M;
 
       if(shouldGetArtstatListForRekapTT)
       {
@@ -2401,7 +2416,19 @@ public class RptR_StandardRiskReport : VvRiskReport
             manyDecimalsReportSourceRow.DecimA05 = isForceMPSK_by_NBC ? diffUlazFinNBC  : diffUlazFinMPC ;
             manyDecimalsReportSourceRow.DecimA06 = isForceMPSK_by_NBC ? diffIzlazFinNBC : diffIzlazFinMPC;
 
+            if(ZXC.IsSvDUH)
+            {
+               SVD_NUP_frizirung += manyDecimalsReportSourceRow.DecimA05;
+
+               manyDecimalsReportSourceRow.DecimA05 = 0M;
+            }
+
             TheManyDecimalsList.Add(manyDecimalsReportSourceRow);
+         }
+
+         if(ZXC.IsSvDUH)
+         {
+            TheArtStatList.SingleOrDefault(ast => ast.TT == Faktur.TT_NUP).UkUlazFinNBC += SVD_NUP_frizirung;
          }
       }
 
@@ -2784,19 +2811,6 @@ public class RptR_StandardRiskReport : VvRiskReport
       } //if(reportDocument is Vektor.Reports.RIZ.CR_SVD_ALMP || reportDocument is Vektor.Reports.RIZ.CR_SVD_HALMED)
 
       #endregion SVD HALMED potrosnje ... ex ALMP 
-
-      // 21.01.2022: 
-      if(ZXC.IsSvDUH)
-      {
-         if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_LJEK)
-         {
-            TheArtiklList.RemoveAll(art => art.IsSvdArtGR_Ljek_ == false);
-         }
-         if(RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_POTR)
-         {
-            TheArtiklList.RemoveAll(art => art.IsSvdArtGR_Potr_ == false);
-         }
-      }
 
       // 04.07.2022: 
       if(isInventuraReport && RptFilter.ZaExportToExcel) 

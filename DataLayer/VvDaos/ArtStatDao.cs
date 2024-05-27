@@ -764,7 +764,9 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
 
    #endregion FtrCI struct & InitializeSchemaColumnIndexes()
 
-   internal static void GetArtstat_SUM_list(XSqlConnection conn, bool isPrmRazdoblja, List<ArtStat> artstatList, string _skladCD, DateTime _dateOd, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter)
+//#if GetArtstat_SUM_list_Old_Orig
+
+   internal static void GetArtstat_SUM_list/*_Old_Orig*/(XSqlConnection conn, bool isPrmRazdoblja, List<ArtStat> artstatList, string _skladCD, DateTime _dateOd, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter)
    {
       bool success = true;
       ArtStat artstat_rec;
@@ -830,6 +832,54 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
          }
       } // using 
    }
+//#endif
+   internal static void GetArtstat_SUM_list_NEWandWRONG(XSqlConnection conn, bool isPrmRazdoblja, List<ArtStat> artstatList, string _skladCD, DateTime _dateOd, DateTime _dateDo, VvRpt_RiSk_Filter RptFilter)
+   {
+      bool success = true;
+    //ArtStat artstat_rec;
 
+      ZXC.sqlErrNo = 0;
+
+    //if(artstatList == null) artstatList = new List<ArtStat>();
+    //else                    artstatList   .Clear();
+
+      bool isForceMPSK_by_NBC = RptFilter.FuseBool1; // RptFilter.FuseBool1 je Fld_IsNbcZaMPSK 
+
+      string ulazShadowTT_IN_Clause       = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsUlazniShadowTT   ).Select(tti => tti.TheTT).ToArray());
+      string izlazShadowTT_IN_Clause      = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsIzlazniShadowTT  ).Select(tti => tti.TheTT).ToArray());
+      string uraPovratShadowTT_IN_Clause  = TtInfo.GetSql_IN_Clause(ZXC.TtInfoArray.Where(tti => tti.IsUraPovratShadowTT).Select(tti => tti.TheTT).ToArray());
+
+    //while(success && reader.Read())
+      foreach(ArtStat artstat_rec in artstatList)
+      {
+         //artstat_rec = new ArtStat();
+
+         //ZXC.ArtStatDao.FillFromDataReader_forSUM_list(artstat_rec, reader);
+
+         artstat_rec.TtSort        = artstat_rec.TtInfo.TtSort ; 
+         artstat_rec.SkladDate     = _dateDo                   ; // tek toliko da ima nekaj 
+
+         artstat_rec.UkPstKol      = artstat_rec.RtrPstKol     ; 
+         artstat_rec.UkUlazKol     = artstat_rec.RtrUlazKol    ; 
+         artstat_rec.UkIzlazKol    = artstat_rec.RtrIzlazKol   ; 
+         artstat_rec.UkPstFinNBC   = artstat_rec.RtrPstVrjNBC  ; 
+         artstat_rec.UkUlazFinNBC  = artstat_rec.RtrUlazVrjNBC ; 
+         artstat_rec.UkIzlazFinNBC = artstat_rec.RtrIzlazVrjNBC; 
+         artstat_rec.UkPstFinMPC   = artstat_rec.RtrPstVrjMPC  ; 
+         artstat_rec.UkUlazFinMPC  = artstat_rec.RtrUlazVrjMPC ; 
+         artstat_rec.UkIzlazFinMPC = artstat_rec.RtrIzlazVrjMPC;
+
+         artstat_rec.ArtiklCD      = ZXC.luiListaFakturType.GetNameForThisCd(artstat_rec.TT);
+
+         if(artstat_rec.TT == Faktur.TT_NUV && artstat_rec.RtrUlazVrjMPC .IsZero() // nemoj ubacivati NUV/NIV ako nemaju sto za reci 
+            ||
+            artstat_rec.TT == Faktur.TT_NIV && artstat_rec.RtrIzlazVrjMPC.IsZero()) continue;
+
+         // 01.02.2023: 
+         if(artstat_rec.TT == Faktur.TT_NUP && artstat_rec.RtrUlazVrjNBC.IsZero()) continue;
+
+         //artstatList.Add(artstat_rec);
+      }
+   }
 
 }

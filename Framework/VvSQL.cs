@@ -3858,6 +3858,9 @@ public static class VvSQL
 
          (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "") + " \n" +
 
+         (RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_LJEK ? "AND (artGrCd1  = '90' || artGrCd1  = 'A0' || artGrCd1  = 'N0' || artGrCd1  = '10')" : "") + " \n" +
+         (RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_POTR ? "AND (artGrCd1 != '90' && artGrCd1 != 'A0' && artGrCd1 != 'N0' && artGrCd1 != '10')" : "") + " \n" +
+
          "GROUP BY t_tt                                               \n" +
 
          (
@@ -3874,6 +3877,10 @@ public static class VvSQL
  /*!!!*/ "AND   rtrUlazKol  < 0                                                                                     \n" + // !!!
          "AND t_tt IN " + uraPovratShadowTT_IN_Clause +                                                            "\n" +
          (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "")                                           + " \n" +
+
+         (RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_LJEK ? "AND (artGrCd1  = '90' || artGrCd1  = 'A0' || artGrCd1  = 'N0' || artGrCd1  = '10')" : "") + " \n" +
+         (RptFilter.SVD_LiP == ZXC.PdvZPkindEnum.SVD_POTR ? "AND (artGrCd1 != '90' && artGrCd1 != 'A0' && artGrCd1 != 'N0' && artGrCd1 != '10')" : "") + " \n" +
+
          "GROUP BY t_skladCD                                                                                        \n" +
 
          // ulazShadowTT_IN_Clause 
