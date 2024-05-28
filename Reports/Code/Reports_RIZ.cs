@@ -2418,18 +2418,20 @@ public class RptR_StandardRiskReport : VvRiskReport
 
             if(ZXC.IsSvDUH)
             {
-               SVD_NUP_frizirung += manyDecimalsReportSourceRow.DecimA05;
+               SVD_NUP_frizirung = manyDecimalsReportSourceRow.DecimA05;
 
                manyDecimalsReportSourceRow.DecimA05 = 0M;
             }
 
-            TheManyDecimalsList.Add(manyDecimalsReportSourceRow);
-         }
+            if(ZXC.IsSvDUH && TheArtStatList.SingleOrDefault(ast => ast.TT == Faktur.TT_NUP && ast.SkladCD == theSkladCD) != null)
+            {
+               TheArtStatList.Single(ast => ast.TT == Faktur.TT_NUP && ast.SkladCD == theSkladCD).UkUlazFinNBC += SVD_NUP_frizirung;
+            }
 
-         if(ZXC.IsSvDUH)
-         {
-            TheArtStatList.SingleOrDefault(ast => ast.TT == Faktur.TT_NUP).UkUlazFinNBC += SVD_NUP_frizirung;
-         }
+            TheManyDecimalsList.Add(manyDecimalsReportSourceRow);
+
+         } // foreach(var artiklList in TheArtiklList.GroupBy(art => art.AS_SkladCD))
+
       }
 
 #endregion GetArtstat_SUM_list
