@@ -5050,6 +5050,28 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
          #endregion HasRtrans_SkladCD_Exposed
          
+         #region Tetragram pdvKolTip - oslobođeno od PDVa
+
+         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && this is IRA_MPC_DUC)
+         {
+            if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.EU)
+            { 
+               bool isFizicakOsoba    = false;
+               bool isPartnerskaFirma = false;
+
+               Kupdob kupdob_rec = (this as FakturExtDUC).Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
+               if(kupdob_rec != null && kupdob_rec.IsZzz)  isFizicakOsoba    = true;
+               if(kupdob_rec != null)                      isPartnerskaFirma = kupdob_rec.Ticker.ToUpper().StartsWith("TETR");
+
+                    if(isFizicakOsoba   ) theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.KOL16));
+               else if(isPartnerskaFirma) theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, "");
+               else                       theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.KOL09));
+            }
+            else if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.HR   ) theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.KOL14));
+            else if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.WORLD) theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.KOL15));
+         }
+
+         #endregion Tetragram pdvKolTip - oslobođeno od PDVa
 
       } // if(artikl_rec != null) 
 

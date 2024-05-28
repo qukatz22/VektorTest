@@ -3872,6 +3872,8 @@ public class Ptrans : VvTransRecord
          R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.NIJE;//0;
       }
 
+      if(T_spc == SpecEnum.IZASLANRADNIK) R_Mio1OlkKind = (ushort)Mio1OlkKindEnum.NIJE;//0;
+
       return theMio1Olaksica;
    }
    private void Calc_OtherDohodakOrPenzOrNovozap_Overriders_From_1223(ref PrulesStruct pR, string placaTT)
