@@ -5059,7 +5059,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
                bool isFizicakOsoba    = false;
                bool isPartnerskaFirma = false;
 
-               Kupdob kupdob_rec = (this as FakturExtDUC).Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
+               Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as IRA_MPC_DUC).Fld_KupdobCd);
                if(kupdob_rec != null && kupdob_rec.IsZzz)  isFizicakOsoba    = true;
                if(kupdob_rec != null)                      isPartnerskaFirma = kupdob_rec.Ticker.ToUpper().StartsWith("TETR");
 
