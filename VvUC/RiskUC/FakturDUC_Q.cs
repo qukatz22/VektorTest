@@ -7,6 +7,7 @@ using System.Linq;
 using com.sun.org.apache.bcel.@internal.generic;
 using static ArtiklDao;
 using FinaInvoiceB2GENClient.FinaInvoiceWS;
+using com.handpoint.api;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1266,7 +1267,7 @@ public struct TtInfo
 
 }
 
-public abstract partial class FakturDUC : VvPolyDocumRecordUC
+public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, Events.Status
 {
 
    #region FakturDUC_Validating & OnExit Set or Validate some fields
@@ -2934,7 +2935,77 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
       #endregion PCTOGO Validations
 
+      #region Authorize M2PAY credit or debit card
+
+      if((this is FakturExtDUC) && faktur_rec.TtInfo.IsPrihodTT && TheVvTabPage.WriteMode == ZXC.WriteMode.Add && faktur_rec.IsNacPlacKartica)
+      {
+         bool isAuthorized = TryAuthorizeThisPayment(faktur_rec);
+
+         if(isAuthorized == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Neuspjela AUTORIZACIJA kartičnog plaćanja!");
+            e.Cancel = true;
+         }
+      }
+
+      #endregion Authorize M2PAY credit or debit card
+
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
+
+   #region M2PAY Hapi
+   private bool TryAuthorizeThisPayment(Faktur faktur_rec)
+   {
+      if(ZXC.M2PAY_API_Initialized == false)
+      {
+         Initialize_M2PAY_API();
+
+         ZXC.M2PAY_API_Initialized = true;
+      }
+
+      return false;
+   }
+
+   private void Initialize_M2PAY_API()
+   {
+      //// ovaj nacin je sa "https://developer.handpoint.com/windows/windowsintegrationguide#WinPaxIntegration"
+
+      //string sharedSecret = "0102030405060708091011121314151617181920212223242526272829303132";
+      //string apikey = "This-is-my-api-key-provided-by-Handpoint";
+      //Hapi api = HapiFactory.GetAsyncInterface(this, new HandpointCredentials(sharedSecret, apikey));
+      //// The api is now initialized. Yay! we've even set default credentials.
+      //// The shared secret is a unique string shared between the payment terminal and your application, it is a free field.
+      //// The Api key is a unique key per merchant used to authenticate the terminal against the Cloud.
+      //// You should replace the API key with the one sent by the Handpoint support team.
+
+
+
+      // ovaj nacin je iz E:\0_DOWNLOAD\M2PAY\Windows-HAPI-Getting-started-masterWindows-Getting-started.sln
+
+      // If using a Handpoint integration card reader update the following string with the supplied shared secret
+      //string sharedSecret = "0102030405060708091011121314151617181920212223242526272829303132"; // orig 
+      string sharedSecret = "1BBFFC6D1CFE1EC980584A61F802D362D7A193CD530E7993DD95F63C433660BC"; // ovo poslalo onaj Matej 
+      Hapi the_hAPI = HapiFactory.GetAsyncInterface(this).DefaultSharedSecret(sharedSecret);
+      // The api is now initialized. Yay! we've even set a default shared secret!
+      // The shared secret is a unique string shared between the card reader and your mobile application. 
+      // It prevents other people to connect to your card reader.
+
+      // Subscribe to the status notifications
+      the_hAPI.AddStatusNotificationEventHandler(this);
+
+      DirectConnect_HapiDevice(the_hAPI); // da li ovo tu ili gore u TryAuthorizeThisPayment      
+                                          // dakle, da li ovo jednom ili kods svake autorizacije? 
+   }
+
+   public void DirectConnect_HapiDevice(Hapi the_hAPI)
+   {
+      Device device = new Device("PP0513901435", "68:AA:D2:00:D5:27", "", ConnectionMethod.ETHERNET);
+      //new Device("name", "address", "port", ConnectionMethod);
+      //The address always has to be written in UPPER CASE
+      
+      the_hAPI.UseDevice(device);
+   }
+
+   #endregion M2PAY Hapi
 
    protected string  oldSkladCD, oldSkladCD2, oldVezniDok;
    private   uint    oldTtNum;
@@ -6785,10 +6856,56 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC
 
    #endregion ORG BOP COP + SVD Grid_CellMouseDoubleClick
 
+   #region Some PTG virtual bools
    public virtual bool HasRtrans_SkladCD_Exposed     { get { return false; } }
    public virtual bool HasRtrano_SkladCD_Exposed     { get { return false; } }
    public virtual bool HasRtrano_TT_Exposed          { get { return false; } }
    public virtual bool IsRtransTT_MOD_kindDependable { get { return false; } }
+
+   #endregion Some PTG virtual bools
+
+   #region Implementation of Events.Required, Events.Statu (M2PAY stuff)
+   
+   public void EndOfTransaction(TransactionResult transactionResult, Device device)
+   {
+      //Window.DisplayReceipts(transactionResult.MerchantReceipt, transactionResult.CustomerReceipt);
+   }
+
+   // ConnectionStatusChanged will get called if the connections status changes
+   public void ConnectionStatusChanged(ConnectionStatus connectionStatus, Device device)
+   {
+      //String status = device.Name + " is " + connectionStatus.ToString();
+      //System.Diagnostics.Debug.WriteLine(status);
+      //Window.DisplayStatus(status);
+   }
+
+   // CurrentTransactionStatus notifies about changes to the current transaction status
+   public void CurrentTransactionStatus(StatusInfo statusInfo, Device device)
+   {
+      //String status = statusInfo.Message;
+      //System.Diagnostics.Debug.WriteLine(status);
+      //Window.DisplayStatus(status);
+   }
+
+   public void DeviceDiscoveryFinished(List<Device> devices)
+   {
+      // Only needed when using a payment terminal, here you get a list of Bluetooth payment terminals paired with your computer
+      // You can also get a list of serial / USB payment terminals attached to your computer
+
+   }
+
+   public void SignatureRequired(SignatureRequest signatureRequest, Device device)
+   {
+      // You'll be notified here if a sale process needs a signature verification
+      // A signature verification is only needed if the cardholder uses a magnetic stripe card or a chip and signature card for the payment
+      // This method will not be invoked if a transaction is made with a Chip & Pin card
+
+      // remarck byQ:
+      //api.SignatureResult(true); // This line means that the cardholder ALWAYS accepts to sign the receipt.
+                                 // A specific line will be displayed on the merchant receipt for the cardholder to be able to sign it
+   }
+
+   #endregion Implementation of Events.Required, Events.Statu (M2PAY stuff)
 
 }
 

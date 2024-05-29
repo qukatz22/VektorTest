@@ -4861,6 +4861,14 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       // POUZEĆE: HPT upla'uje virmanski u ime primatelja posiljke, t. kao da je covjek sam otisao na postu/banku i platio uplatnicom 
    }
 
+   public bool IsNacPlacKartica
+   {
+      get
+      {
+         return IsNacPlacVirman(this.NacPlac, this.TT) == false &&
+                                    this.R_IsNpCashAny == false;
+      }
+   }
    public static bool IsFiskalDutyTT(DateTime dokDate, string theTT)
    {
       if(ZXC.IsFikalEra && dokDate >= ZXC.FiskalEraDate && ZXC.TtInfo(theTT).IsIzlazniPdvTT && !ZXC.TtInfo(theTT).Is_WYRN_TT) // IRM, IRA, IFA, IOD, IPV 
