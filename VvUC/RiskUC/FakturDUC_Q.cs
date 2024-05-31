@@ -7,7 +7,7 @@ using System.Linq;
 using com.sun.org.apache.bcel.@internal.generic;
 using static ArtiklDao;
 using FinaInvoiceB2GENClient.FinaInvoiceWS;
-using com.handpoint.api;
+//using com.handpoint.api;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1267,7 +1267,7 @@ public struct TtInfo
 
 }
 
-public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, Events.Status
+public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required, Events.Status
 {
 
    #region FakturDUC_Validating & OnExit Set or Validate some fields
@@ -2936,7 +2936,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, 
       #endregion PCTOGO Validations
 
       #region Authorize M2PAY credit or debit card
-
+#if NOTJETT
       if((this is FakturExtDUC) && faktur_rec.TtInfo.IsPrihodTT && TheVvTabPage.WriteMode == ZXC.WriteMode.Add && faktur_rec.IsNacPlacKartica)
       {
          bool isAuthorized = TryAuthorizeThisPayment(faktur_rec);
@@ -2947,12 +2947,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, 
             e.Cancel = true;
          }
       }
-
+#endif
       #endregion Authorize M2PAY credit or debit card
 
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
 
    #region M2PAY Hapi
+
+#if NOTJETT
    private bool TryAuthorizeThisPayment(Faktur faktur_rec)
    {
       if(ZXC.M2PAY_API_Initialized == false)
@@ -3004,7 +3006,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, 
       
       the_hAPI.UseDevice(device);
    }
-
+#endif
    #endregion M2PAY Hapi
 
    protected string  oldSkladCD, oldSkladCD2, oldVezniDok;
@@ -6865,7 +6867,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, 
    #endregion Some PTG virtual bools
 
    #region Implementation of Events.Required, Events.Statu (M2PAY stuff)
-   
+
+#if NOTJETT
    public void EndOfTransaction(TransactionResult transactionResult, Device device)
    {
       //Window.DisplayReceipts(transactionResult.MerchantReceipt, transactionResult.CustomerReceipt);
@@ -6904,7 +6907,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC, Events.Required, 
       //api.SignatureResult(true); // This line means that the cardholder ALWAYS accepts to sign the receipt.
                                  // A specific line will be displayed on the merchant receipt for the cardholder to be able to sign it
    }
-
+#endif
    #endregion Implementation of Events.Required, Events.Statu (M2PAY stuff)
 
 }

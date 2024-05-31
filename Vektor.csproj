@@ -143,12 +143,6 @@
       <HintPath>C:\VvLibraries\DotNetMagic.DLL</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="hapi-dotnet-2010">
-      <HintPath>C:\VvLibraries\hapi-dotnet-2010.dll</HintPath>
-    </Reference>
-    <Reference Include="hapi-dotnet-pc">
-      <HintPath>C:\VvLibraries\hapi-dotnet-pc.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\VvLibraries\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
