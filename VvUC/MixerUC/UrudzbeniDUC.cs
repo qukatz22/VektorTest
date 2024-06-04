@@ -505,9 +505,13 @@ public partial class UrudzbeniDUC : MixerDUC
    {
       string yyPrimitka = Fld_DokDate.ToString("yy");
 
-      uint theKlasa_rbrNum = ZXC.MixerDao.GetNext_NAMED_TtNum(TheDbConnection, "strA_40", "SUBSTRING(strD_32, 11)", /*theKlasa*/Fld_StrA_40);
+      string rootOfNum = Fld_KupDobCdAsTxt + "-" + yyPrimitka + "-";
 
-      string theUrBroj = Fld_KupDobCdAsTxt + "-" + yyPrimitka + "-" + theKlasa_rbrNum.ToString("0000");
+    //uint theKlasa_rbrNum  = ZXC.MixerDao.GetNext_UrudzbeniBroj(TheDbConnection, "strA_40", "SUBSTRING(strD_32, 11)", /*theKlasa*/Fld_StrA_40);
+      uint theUrBroj_rbrNum = ZXC.MixerDao.GetNext_UrudzbeniBroj(TheDbConnection,                                      rootOfNum              );
+
+    //string theUrBroj = Fld_KupDobCdAsTxt + "-" + yyPrimitka + "-" + theKlasa_rbrNum. ToString("0000");
+      string theUrBroj = rootOfNum                                  + theUrBroj_rbrNum.ToString("0000");
 
       Fld_StrD_32 = theUrBroj;
       ZXC.TheVvForm.SetDirtyFlag(sender);

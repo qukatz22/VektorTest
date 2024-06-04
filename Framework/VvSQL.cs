@@ -2903,12 +2903,12 @@ public static class VvSQL
       return (cmd);
    }
 
-   public static XSqlCommand GetNext_NAMED_TtNum_Command(XSqlConnection conn, string recordName, string ttColName, string ttNumColName, string wantedTT)
+   public static XSqlCommand GetNext_UrudzbeniBroj_Command(XSqlConnection conn, string rootOfNum)
    {
       XSqlCommand cmd = InitCommand(conn);
 
-      cmd.CommandText = "SELECT MAX(" + ttNumColName + ") FROM " + recordName + "\n" +
-                        "WHERE " + ttColName + " = '" + wantedTT + "' ";
+      cmd.CommandText = "SELECT MAX(SUBSTRING(strD_32, 11)) FROM " + Mixer.recordName + "\n" +
+                        "WHERE tt = '" + Mixer.TT_URZ + "' AND SUBSTRING(strD_32, 1, 10) = '" + rootOfNum + "'";
 
       return (cmd);
    }

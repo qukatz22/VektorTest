@@ -48,10 +48,10 @@
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
-    <MinimumRequiredVersion>8.0.0.149</MinimumRequiredVersion>
+    <MinimumRequiredVersion>8.0.0.150</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>149</ApplicationRevision>
+    <ApplicationRevision>150</ApplicationRevision>
     <ApplicationVersion>8.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -143,6 +143,9 @@
       <HintPath>C:\VvLibraries\DotNetMagic.DLL</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="HandpointSDK, Version=4.2.1.0, Culture=neutral, PublicKeyToken=3225e2704fc065cf, processorArchitecture=MSIL">
+      <HintPath>packages\HandpointSDK.4.2.1\lib\net461\HandpointSDK.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\VvLibraries\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -195,6 +198,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\VvLibraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Shared, Version=4.2.1.0, Culture=neutral, PublicKeyToken=3225e2704fc065cf, processorArchitecture=MSIL">
+      <HintPath>packages\HandpointSDK.4.2.1\lib\net461\Shared.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -208,6 +214,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Services" />
@@ -4681,6 +4688,7 @@
     <None Include="DataLayer\DS_Reports\DS_ZapIzvodNEW.xss">
       <DependentUpon>DS_ZapIzvodNEW.xsd</DependentUpon>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Resources\Prirucnik  ZAH_SVD v04.pdf" />
     <None Include="UtilsEtc\B2GInvoicing\B2GIncoming_Receive\B2GFinaInvoiceWebService.wsdl" />
