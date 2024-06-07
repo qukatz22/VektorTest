@@ -17503,7 +17503,7 @@ public class RiskRulesUC : VvOtherUC
                          cbx_isOpenSaldoKupca, cbx_isVisibleMtrosCol, cbx_isIRMttNum7, cbx_isProizvCijByArtGr, cbx_isDokDate2, cbx_isRetMoneyCalc, cbx_isIrmQuickPrint,
                          cbx_IsSklRestrictor, cbx_IsMSIttNumByPosl, cbx_IsPrintOTSafterIRA, cbx_isVisibleSerlotCol, cbx_isVisibleRabat2Col, cbx_isCentralaFindFaktur,
                          cbx_isOibOznOper, cbx_isIgnoreImportCij, cbx_isObligArtikl, cbx_isPamtiPrintDate, cbx_isBlgOrderByDokNum, cbx_isCashFakToBlag, cbx_isRbtFromPartner,
-                         cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD, cbx_isIntrastat;
+                         cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD, cbx_isIntrastat, cbx_isM2PAY;
 
    //public RiskRulesDsc RRD { get; set; }
 
@@ -17576,10 +17576,11 @@ public class RiskRulesUC : VvOtherUC
 
       cbx_VpcMpcMarzaTheSame4VPC = hamper.CreateVvCheckBox_OLD(2, 1, null, 1, 0, "Isto i za VPC", RightToLeft.No);
 
-      cbx_IsSupressSHADOWing = hamper.CreateVvCheckBox_OLD(1, 2, null, 4, 0, "Nemoj koristiti Implicitne Nivelacije"     , RightToLeft.No);
+      cbx_IsSupressSHADOWing = hamper.CreateVvCheckBox_OLD(1, 2, null, 2, 0, "Nemoj koristiti Implicitne Nivelacije"     , RightToLeft.No);
       cbx_IsBarCode          = hamper.CreateVvCheckBox_OLD(1, 3, null, 4, 0, "Koristi BarKod za zadavanje artikla"       , RightToLeft.No);
       cbx_IsPkVisible        = hamper.CreateVvCheckBox_OLD(1, 4, null, 2, 0, "Prikaži PK kolonu na IRM i PNM"            , RightToLeft.No);
 
+      cbx_isM2PAY          = hamper.CreateVvCheckBox_OLD(2, 2, null, 3, 0, "IsM2PAY"      , RightToLeft.Yes);
       cbx_NOcheckDupUbyKMD = hamper.CreateVvCheckBox_OLD(2, 4, null, 3, 0, "NEcheckUL_KMD", RightToLeft.Yes);
 
 
@@ -17919,6 +17920,7 @@ public class RiskRulesUC : VvOtherUC
    public decimal Fld_PdvMathTolerancy         { get { return tbx_PdvMathTolerancy.GetDecimalField(); } set { tbx_PdvMathTolerancy.PutDecimalField(value); } }
 
    public bool Fld_IsIntrastat                 { get { return cbx_isIntrastat.Checked; } set { cbx_isIntrastat.Checked = value; } }
+   public bool Fld_IsM2PAY                     { get { return cbx_isM2PAY    .Checked; } set { cbx_isM2PAY    .Checked = value; } }
 
 
 #endregion Fld_
@@ -17990,6 +17992,7 @@ public class RiskRulesUC : VvOtherUC
       Fld_PdvMathTolerancy         = RRD.Dsc_PdvMathTolerancy;
 
       Fld_IsIntrastat              = RRD.Dsc_IsIntrastat;
+      Fld_IsM2PAY                  = RRD.Dsc_IsM2PAY;
 
    }
 
@@ -18049,6 +18052,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_NOcheckDupUbyKMD         = Fld_NOcheckDupUbyKMD ;
       ZXC.RRD.Dsc_PdvMathTolerancy         = Fld_PdvMathTolerancy ;
       ZXC.RRD.Dsc_IsIntrastat              = Fld_IsIntrastat ;
+      ZXC.RRD.Dsc_IsM2PAY                  = Fld_IsM2PAY ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
 

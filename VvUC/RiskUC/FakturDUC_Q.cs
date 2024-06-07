@@ -9341,7 +9341,8 @@ public class RiskRulesDsc : VvLookupAsDsc
    public string Dsc_OpcinaCd_PNP              { get; set; }
    public bool Dsc_NOcheckDupUbyKMD            { get; set; } //check duplicate URA/UFA by kcd date money
    public decimal Dsc_PdvMathTolerancy         { get; set; }
-   public bool Dsc_IsIntrastat             { get; set; }
+   public bool Dsc_IsIntrastat                 { get; set; }
+   public bool Dsc_IsM2PAY                     { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -9428,6 +9429,7 @@ public class RiskRulesDsc : VvLookupAsDsc
 
       Dsc_IsIntrastat              = false;
       Dsc_IsCashFakturToBlagajna   = false;
+      Dsc_IsM2PAY                  = false;
 
       #endregion defautValue
    }

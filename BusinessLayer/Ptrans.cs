@@ -3700,6 +3700,10 @@ public class Ptrans : VvTransRecord
                osnovicaDop = R_MioOsn = razmjerniDioMinMioOsn;
 
                R_Mio1Olk   = CalcMio1Olaksica(pR, spent, razmjerniDioMinMioOsn);
+
+               //05.06.24. ako je olaksica veca od bruta onda je olaksica jenaka bnrutu
+               if(R_Mio1Olk > R_TheBruto) R_Mio1Olk = R_TheBruto;
+
                R_Mio1Osn   = razmjerniDioMinMioOsn - R_Mio1Olk;
             } 
             else
@@ -3721,7 +3725,8 @@ public class Ptrans : VvTransRecord
                }
             }
 
-            if(R_SatiUk == T_FondSati) //za pne koji su na bolovanju na teret poslodavca i imaju puni fond sati da im uzima punu MinMioOsnovicu a ne razmjerni dio
+          //if(R_SatiUk == T_FondSati)                 //za one koji su na bolovanju na teret poslodavca i imaju puni fond sati da im uzima punu MinMioOsnovicu a ne razmjerni dio
+            if(R_SatiUk == T_FondSati && R_SatiB == 0) //za one koji su na bolovanju na teret poslodavca i imaju puni fond sati da im uzima punu MinMioOsnovicu a ne razmjerni dio ALI ne smiju biti na nolovanju na teret HZZO-a
             {
                if(R_TheBruto.NotZero() && R_TheBruto < minMioOsnZaPuniFond)
                {
