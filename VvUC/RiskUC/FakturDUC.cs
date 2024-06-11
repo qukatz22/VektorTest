@@ -21173,4 +21173,77 @@ public class INV_Poravnanje_Dlg : VvDialog
 #endregion Fld_
 }
 
+public class VvM2PayStatusDlg : VvDialog
+{
+   #region Fieldz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+   private VvTextBox tbx_m2PayStatus;
+
+   #endregion Fieldz
+
+   #region Constructor
+
+   public VvM2PayStatusDlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text          = "Status " ;
+
+      CreateHamper();
+
+      dlgWidth        = hamper.Right  + ZXC.QunMrgn;
+      dlgHeight       = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_m2PayStatus, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+   #endregion Constructor
+
+   #region hamper
+
+   private void CreateHamper()
+   {
+      hamper          = new VvHamper(1, 1, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un * 2};
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4};
+      hamper.VvRightMargin = 0;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      tbx_m2PayStatus = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "", 1000);
+   }
+
+   #endregion hamper
+
+   #region Event cancelButton
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+   #endregion Event cancelButton
+
+   #region Fld_
+
+   public string Fld_M2PayStatus
+   {
+      get { return tbx_m2PayStatus.Text; }
+      set {        tbx_m2PayStatus.Text = value; }
+   }
+
+   #endregion Fld_
+
+}
+
 #endregion Other RISK Dialogs and UserControls
