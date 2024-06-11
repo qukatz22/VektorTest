@@ -2451,6 +2451,27 @@ public class VvHamper: Panel
       }
    }
 
+   //private delegate void Set_TStripStatusLabel_CallBack(ToolStripStatusLabel theDTP, string theText);
+   //public  static   void Set_TStripStatusLabel_ThreadSafe(ToolStripStatusLabel theTSSL, string theText)
+   //{
+   //   // InvokeRequired required compares the thread ID of the
+   //   // calling thread to the thread ID of the creating thread.
+   //   // If these threads are different, it returns true.
+   //
+   //   if(theTSSL.InvokeRequired)
+   //   {
+   //      Set_TStripStatusLabel_CallBack d = new Set_TStripStatusLabel_CallBack(Set_TStripStatusLabel_ThreadSafe);
+   //      try 
+   //      { 
+   //         theTSSL. Parent.Invoke(d, new object[] { theTSSL, theText }); 
+   //      }
+   //      catch(ObjectDisposedException) { } // ovi se Exception stalno dize pa ga moram ovako krotiti.
+   //   }
+   //   else
+   //   {
+   //      theTSSL.Text = theText;
+   //   }
+   //}
    #endregion SetControlText_ThreadSafe()
 
    #region Create_Label4PrisilniScrollZbogGrida

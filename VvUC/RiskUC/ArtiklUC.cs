@@ -3548,7 +3548,7 @@ public class VvRenameArtiklDlg : VvDialog
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
-   private VvTextBox tbx_newArtiklCD;
+   internal VvTextBox tbx_newArtiklCD;
 
    #endregion Fieldz
 

@@ -21180,7 +21180,7 @@ public class VvM2PayStatusDlg : VvDialog
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
-   private VvTextBox tbx_m2PayStatus;
+   internal VvTextBox tbx_m2PayStatus;
 
    #endregion Fieldz
 
