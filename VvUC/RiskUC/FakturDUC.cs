@@ -21189,7 +21189,7 @@ public class VvM2PayStatusDlg : VvDialog
    public VvM2PayStatusDlg()
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = "Status " ;
+      this.Text          = "Status autorizacije" ;
 
       CreateHamper();
 
@@ -21200,7 +21200,8 @@ public class VvM2PayStatusDlg : VvDialog
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
       okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_m2PayStatus, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_m2PayStatus, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+      okButton.Visible = cancelButton.Visible = false;
    }
 
    #endregion Constructor
@@ -21212,15 +21213,18 @@ public class VvM2PayStatusDlg : VvDialog
       hamper          = new VvHamper(1, 1, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un * 2};
+      hamper.VvColWdt      = new int[] { ZXC.Q10un * 3};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4};
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun2 };
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      tbx_m2PayStatus = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "", 1000);
+      tbx_m2PayStatus      = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "", 1000);
+      tbx_m2PayStatus.Font = ZXC.vvFont.LargeBoldFont;
+      tbx_m2PayStatus.JAM_ForeColor = Color.DarkRed;
+      tbx_m2PayStatus.Text = "Start autorizacije ...";
    }
 
    #endregion hamper
