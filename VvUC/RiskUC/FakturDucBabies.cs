@@ -1632,6 +1632,8 @@ public class IRMDUC              : FakturExtDUC
       hamp_S_pnp_IZL.Visible = ZXC.RRD.Dsc_IsPnpStVisible;
       hamp_S_pnp_IZL.Location = new Point(hamp_S_ukPdv.Left, 0);
 
+      hamp_m2payConected.Visible = ZXC.RRD.Dsc_IsM2PAY;
+
       if(ZXC.IsTEXTHOany)
       {
          tbx_SkladCd .JAM_ReadOnly = true;

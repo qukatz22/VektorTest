@@ -30,7 +30,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                    hampCbxM_projekt, hampCbxM_skladCd, hampCbxM_opis, hampCbxM_osobaX, hampCbxM_prjIdent,
                    hamp_IznosUvaluti, hamp_twin, hamp_obrMPC, hamp_ciljaniMPC, hamp_S_pix, hamp_twin_pix,
                    hamp_irmInfoLabela, hamp_HappyHour, hamp_irmKuponOUT, hamp_irmKuponIN, hamp_decimal, hamp_sumeRNM, hamp_ugoSvDuh, hamp_SumUGAN_PTG, hamp_SumOPL_PTG,
-                   hamp_otPlanRows;
+                   hamp_otPlanRows, hamp_m2payConected;
 
    private VvTextBox tbx_DokNum,
                      /*tbx_SkladCd,*/
@@ -149,6 +149,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    //protected bool isThisVelepDUC;
 
    public Label irmInfoLabel;
+   public Label m2PayConectedLabel;
 
    protected DateTime SVD_UGO_datZadByART = DateTime.MinValue;
    protected decimal SVD_UGO_ostvarenoOGbyART_KCRP_SUM = 0M;
@@ -442,12 +443,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             CalcLocationSizeAnchor_TheDGVAndTheSumGrid_WidthTbxBottomOfSumGrid_WidthChooserGrid(TheG, ZXC.QunMrgn, ZXC.Qun8, hamp_twin, hamp_IznosUvaluti, false);
          }
 
-         hamp_obrMPC.Location = new Point(TheG.Left, hamp_IznosUvaluti.Top);
-         hamp_irmInfoLabela.Location = new Point(TheG.Left, hamp_IznosUvaluti.Top);
-         hamp_HappyHour.Location = new Point(hamp_irmInfoLabela.Right + ZXC.Qun4, hamp_IznosUvaluti.Top);
+         hamp_obrMPC.Location        = new Point(TheG.Left, hamp_IznosUvaluti.Top);
+         hamp_m2payConected.Location = new Point(TheG.Left, hamp_IznosUvaluti.Top);
+       //hamp_irmInfoLabela.Location = new Point(TheG.Left, hamp_IznosUvaluti.Top);
+         hamp_irmInfoLabela.Location = new Point(hamp_m2payConected.Right           , hamp_IznosUvaluti.Top);
+         hamp_HappyHour.Location     = new Point(hamp_irmInfoLabela.Right + ZXC.Qun4, hamp_IznosUvaluti.Top);
 
          if(ZXC.IsTEXTHOany) hamp_ciljaniMPC.Location = new Point(TheG.Right - hamp_ciljaniMPC.Width, hamp_IznosUvaluti.Top);
-         else hamp_ciljaniMPC.Location = new Point(TheG.Right - hamp_IznosUvaluti.Width - hamp_ciljaniMPC.Width, hamp_IznosUvaluti.Top);
+         else                hamp_ciljaniMPC.Location = new Point(TheG.Right - hamp_IznosUvaluti.Width - hamp_ciljaniMPC.Width, hamp_IznosUvaluti.Top);
 
          hamp_ciljaniMPC.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
@@ -650,6 +653,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       InitializeHamper_obrMPC(out hamp_obrMPC);
       InitializeHamper_ciljaniMPC(out hamp_ciljaniMPC);
+      InitializeHamper_M2PayConectedLabel(out hamp_m2payConected);
       InitializeHamper_IrmInfoLabel(out hamp_irmInfoLabela);
       InitializeHamper_HappyHour(out hamp_HappyHour);
       InitializeHamper_decimal(out hamp_decimal);
@@ -1592,6 +1596,24 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       irmInfoLabel = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
       irmInfoLabel.Font = ZXC.vvFont.BaseFont;
       irmInfoLabel.ForeColor = Color.Red;
+      hamper.Visible = false;
+   }
+
+   private void InitializeHamper_M2PayConectedLabel(out VvHamper hamper)
+   {
+      hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q2un      };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      m2PayConectedLabel = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
+      m2PayConectedLabel.BackColor = Color.Red;
+
       hamper.Visible = false;
    }
 
@@ -21181,6 +21203,7 @@ public class VvM2PayStatusDlg : VvDialog
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
    internal VvTextBox tbx_m2PayStatus;
+   internal Label     lbl_m2PayStatus;
 
    #endregion Fieldz
 
@@ -21202,6 +21225,9 @@ public class VvM2PayStatusDlg : VvDialog
 
       VvHamper.Open_Close_Fields_ForWriting(tbx_m2PayStatus, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
       okButton.Visible = cancelButton.Visible = false;
+
+      this.BackColor = Color.LightSteelBlue;
+     
    }
 
    #endregion Constructor
@@ -21210,21 +21236,26 @@ public class VvM2PayStatusDlg : VvDialog
 
    private void CreateHamper()
    {
-      hamper          = new VvHamper(1, 1, "", this, false);
+      hamper          = new VvHamper(1, 2, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un * 3};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4};
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun2 };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun2, ZXC.QUN+ZXC.Qun2 };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4        , ZXC.Qun4         };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       tbx_m2PayStatus      = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "", 1000);
       tbx_m2PayStatus.Font = ZXC.vvFont.LargeBoldFont;
       tbx_m2PayStatus.JAM_ForeColor = Color.DarkRed;
       tbx_m2PayStatus.Text = "Start autorizacije ...";
+
+      lbl_m2PayStatus = hamper.CreateVvLabel(0, 1, "Start autorizacije ...", ContentAlignment.MiddleLeft);
+      lbl_m2PayStatus.Font      = ZXC.vvFont.LargeBoldFont;
+      lbl_m2PayStatus.ForeColor = Color.DarkRed;
+
    }
 
    #endregion hamper
