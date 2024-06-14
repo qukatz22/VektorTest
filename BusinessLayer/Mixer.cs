@@ -101,6 +101,8 @@ public class Mixer : VvPolyDocumRecord
    public const string TT_MVR       = "MVR";  // evidencija Mjesecna radnog VRemena 
    public const string TT_AVR       = "AVR";  // analiticki raspored mjesecni radnog VRemena 
 
+   public const string TT_M2P       = "M2P";  // analiticki raspored mjesecni radnog VRemena 
+
    public static string[] aTT_ZAHT = new string[] 
    {
       TT_ZAHT_NABD,

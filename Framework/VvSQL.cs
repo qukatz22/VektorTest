@@ -6531,6 +6531,19 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand SetMeVvTrans_Command(XSqlConnection conn, string tt, uint ttNum, VvTransRecord trans_rec)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "t_tt"    , tt    , ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt    ]); // pretpostavka je da svi TransRecordi imaju istu schemu za tt i ttNum 
+      CreateCommandNamedParameter(cmd, "", "t_ttnUM" , ttNum , ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum ]); // pretpostavka je da svi TransRecordi imaju istu schemu za tt i ttNum 
+
+      cmd.CommandText = "SELECT * FROM " + trans_rec.VirtualRecordName + "\n" + 
+
+                        " WHERE " + "t_tt = ?t_tt AND t_ttNum = ?t_ttNum";
+      return (cmd);
+   }
+
    public static XSqlCommand SetMeFaktur_Command(XSqlConnection conn, short ttSort, uint ttNum, Faktur faktur_rec)
    {
       XSqlCommand cmd = InitCommand(conn);

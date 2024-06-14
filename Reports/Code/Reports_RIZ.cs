@@ -5,7 +5,6 @@ using Vektor.Reports.RIZ;
 using System.Linq;
 using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.Shared;
-using com.sun.org.apache.bcel.@internal.generic;
 
 
 #if MICROSOFT

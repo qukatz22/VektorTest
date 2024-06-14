@@ -4,10 +4,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using com.sun.org.apache.bcel.@internal.generic;
-using static ArtiklDao;
-using FinaInvoiceB2GENClient.FinaInvoiceWS;
-//using com.handpoint.api;
+using com.handpoint.api;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -7652,6 +7649,7 @@ public partial class FakturExtDUC : FakturDUC
       }
    }
   
+   public TransactionResult M2P_TransactionResult { get; set; }
 }
 
 public class NewRecordEventArgs : EventArgs // Fuse, ali primjer kako inheritirati EventArgs te ga koristiti kao additional info u nekom EventHandler-u 
