@@ -1328,7 +1328,7 @@ namespace Vektor.DataLayer.DS_Reports {
                 this.columnt_progAktiv = new global::System.Data.DataColumn("t_progAktiv", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnt_progAktiv);
                 this.columnt_dokDate.DefaultValue = ((System.DateTime)(IzvjTableDataTable.columnt_dokDate_defaultValue));
-                this.columnt_konto.MaxLength = 8;
+                this.columnt_konto.MaxLength = 9;
                 this.columnt_ticker.MaxLength = 6;
                 this.columnt_mtros_tk.MaxLength = 6;
                 this.columnt_tipBr.MaxLength = 40;
@@ -2113,7 +2113,7 @@ namespace Vektor.DataLayer.DS_Reports {
                                 this.columnsint_konto}, false));
                 this.columnkonto.AllowDBNull = false;
                 this.columnkonto.Unique = true;
-                this.columnkonto.MaxLength = 8;
+                this.columnkonto.MaxLength = 9;
                 this.columntip.AllowDBNull = false;
                 this.columntip.MaxLength = 1;
                 this.columnnaziv.AllowDBNull = false;

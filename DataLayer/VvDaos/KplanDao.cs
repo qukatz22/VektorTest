@@ -100,7 +100,7 @@ public sealed class KplanDao : VvDaoBase, IVvDao
 
    #region CreateTableKplan
 
-   public static   uint TableVersionStatic { get { return 6; } }
+   public static   uint TableVersionStatic { get { return 7; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -115,7 +115,7 @@ public sealed class KplanDao : VvDaoBase, IVvDao
         "modUID varchar(16)     NOT NULL default '',\n"   +
         CreateTable_LanSrvID_And_LanRecID_Columns         +
 
-        "konto     varchar(8)      NOT NULL default '',\n" +
+        "konto     varchar(9)      NOT NULL default '',\n" +
         "tip       char(1)         NOT NULL default '',\n" +
         "naziv     varchar(64)     NOT NULL default '',\n" +
         "psRule    tinyint(1)      unsigned NOT NULL default 0,\n" +
@@ -157,6 +157,8 @@ public sealed class KplanDao : VvDaoBase, IVvDao
          case 5: return AlterTable_LanSrvID_And_LanRecID_Columns;
 
          case 6: return ("ADD COLUMN fond      char(1)         NOT NULL default '' AFTER naziv3;");
+
+         case 7: return ("MODIFY COLUMN konto  varchar(9) NOT NULL default '';             ");
 
          default: throw new Exception("For table " + Kupdob.recordName + " version no. " + catchingVersion + " doesn't exists!");
       }

@@ -44,7 +44,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
 
    #region CreateTableFtrans
 
-   public static   uint TableVersionStatic { get { return 8; } }
+   public static   uint TableVersionStatic { get { return 9; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -56,7 +56,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
          /* 02 */  "t_dokNum    int(10)     unsigned NOT NULL,\n" +
          /* 03 */  "t_serial    smallint(5) unsigned NOT NULL default '0',\n" +
          /* 04 */  "t_dokDate   date                 NOT NULL default '0001-01-01',\n" +
-         /* 05 */  "t_konto     char(8)              NOT NULL default '',\n" +
+         /* 05 */  "t_konto     char(9)              NOT NULL default '',\n" +
          /* 06 */  "t_kupdob_cd int(6)      unsigned NOT NULL default '0',\n" +
          /* 07 */  "t_ticker    char(6)              NOT NULL default '',\n" +
          /* 08 */  "t_mtros_cd  int(6)      unsigned NOT NULL default '0',\n" +
@@ -116,6 +116,8 @@ public sealed class FtransDao : VvDaoBase, IVvDao
          case 7: return ("ADD COLUMN t_pozicija  varchar(32)          NOT NULL default ''  AFTER t_fond         ;\n");
 
          case 8: return ("ADD COLUMN t_progAktiv  varchar(32)          NOT NULL default ''  AFTER t_pozicija    ;\n");
+
+         case 9: return ("MODIFY COLUMN t_konto     char(9)           NOT NULL default ''                       ;\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
