@@ -1926,7 +1926,7 @@ public class NalogFirmaDUC : NalogDUC
    protected override void InitializeDUC_Specific_Columns()
    {
       
-      T_konto_CreateColumn(ZXC.Q3un);
+      T_konto_CreateColumn(ZXC.Q3un + ZXC.Qun4);
 
       T_opis_CreateColumn(/*Fill*/);
 
