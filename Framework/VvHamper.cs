@@ -2332,6 +2332,7 @@ public class VvHamper: Panel
    #region SetControlText_ThreadSafe()
 
    private delegate void Set_ControlText_CallBack  (Control theControl, string theText);
+   private delegate void Set_ControlBackColor_CallBack  (Control theControl, Color theColor);
    public  static   void Set_ControlText_ThreadSafe(Control theControl, string theText)
    {
       // InvokeRequired required compares the thread ID of the
@@ -2350,6 +2351,27 @@ public class VvHamper: Panel
       else
       {
          theControl.Text = theText;
+      }
+   }
+
+   public  static   void Set_ControlBackColor_ThreadSafe(Control theControl, Color theColor)
+   {
+      // InvokeRequired required compares the thread ID of the
+      // calling thread to the thread ID of the creating thread.
+      // If these threads are different, it returns true.
+
+      if(theControl.InvokeRequired)
+      {
+         Set_ControlBackColor_CallBack d = new Set_ControlBackColor_CallBack(Set_ControlBackColor_ThreadSafe);
+         try 
+         { 
+            theControl.Parent.Invoke(d, new object[] { theControl, theColor }); 
+         }
+         catch(ObjectDisposedException) { } // ovi se Exception stalno dize pa ga moram ovako krotiti.
+      }
+      else
+      {
+         theControl.BackColor = theColor;
       }
    }
    private delegate string Get_ControlText_CallBack  (Control theControl);
