@@ -21207,7 +21207,6 @@ public class VvM2PayStatusDlg : VvDialog
    private Button    okButton, cancelButton;
    private VvHamper  hamper;
    private int       dlgWidth, dlgHeight;
-   internal VvTextBox tbx_m2PayStatus;
    internal Label     lbl_m2PayStatus;
 
    #endregion Fieldz
@@ -21228,11 +21227,10 @@ public class VvM2PayStatusDlg : VvDialog
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
       okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_m2PayStatus, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
       okButton.Visible = cancelButton.Visible = false;
 
-      this.BackColor = Color.LightSteelBlue;
-     
+      this.BackColor       = Color.FromArgb(26, 82, 118);
+      this.FormBorderStyle = FormBorderStyle.None;     
    }
 
    #endregion Constructor
@@ -21241,26 +21239,20 @@ public class VvM2PayStatusDlg : VvDialog
 
    private void CreateHamper()
    {
-      hamper          = new VvHamper(1, 2, "", this, false);
+      hamper          = new VvHamper(1, 1, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un * 3};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4};
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN+ZXC.Qun2, ZXC.QUN+ZXC.Qun2 };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4        , ZXC.Qun4         };
+      hamper.VvRowHgt       = new int[] { ZXC.Q2un };
+      hamper.VvSpcBefRow    = new int[] { ZXC.QUN  };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      tbx_m2PayStatus      = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "", 1000);
-      tbx_m2PayStatus.Font = ZXC.vvFont.LargeBoldFont;
-      tbx_m2PayStatus.JAM_ForeColor = Color.DarkRed;
-      tbx_m2PayStatus.Text = "Start autorizacije ...";
-
-      lbl_m2PayStatus = hamper.CreateVvLabel(0, 1, "Start autorizacije ...", ContentAlignment.MiddleLeft);
-      lbl_m2PayStatus.Font      = ZXC.vvFont.LargeBoldFont;
-      lbl_m2PayStatus.ForeColor = Color.DarkRed;
-
+      lbl_m2PayStatus           = hamper.CreateVvLabel(0, 0, "Start autorizacije ...", ContentAlignment.MiddleCenter);
+      lbl_m2PayStatus.Font      = new Font("Calibri", 20f);// ZXC.vvFont.LargeLargeFont;
+      lbl_m2PayStatus.ForeColor = Color.WhiteSmoke;
    }
 
    #endregion hamper
@@ -21273,17 +21265,6 @@ public class VvM2PayStatusDlg : VvDialog
    }
 
    #endregion Event cancelButton
-
-   #region Fld_
-
-   public string Fld_M2PayStatus
-   {
-      get { return tbx_m2PayStatus.Text; }
-      set {        tbx_m2PayStatus.Text = value; }
-   }
-
-   #endregion Fld_
-
 }
 
 #endregion Other RISK Dialogs and UserControls
