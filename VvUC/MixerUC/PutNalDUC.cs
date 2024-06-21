@@ -1190,8 +1190,10 @@ public partial class PutNalDUC : MixerDUC
 
          //xtrans_rec.T_moneyA       = theCbuCbaUC.Fld_IsPrivate ? 2.00M : 0.00M; // Cijena              
          decimal cijenaLoko;
-         if(ZXC.projectYearAsInt <= 2022) cijenaLoko = 3.00M;//kn bilo 2 do nekog 10 mj 2022
-         else                             cijenaLoko = 0.40M;//EUR                          
+              if(ZXC.projectYearAsInt <= 2022) cijenaLoko = 3.00M;//kn bilo 2 do nekog 10 mj 2022
+         else if(ZXC.projectYearAsInt == 2023) cijenaLoko = 0.40M;//EUR                          
+         else                                  cijenaLoko = 0.50M;//EUR                          
+
          xtrans_rec.T_moneyA       = theCbuCbaUC.Fld_IsPrivate ? cijenaLoko : 0.00M; // Cijena              
 
        //if(theCbuCbaUC.Fld_IsPrivate == false) // za sluzbeno vozilo racunaj kilometriOd - kilometriDo (stanja brojila) 

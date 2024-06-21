@@ -17522,7 +17522,7 @@ public class RiskRulesUC : VvOtherUC
    private VvHamper  hamp_mpc, hamp_kupdobNaziv, hamp_ciljaniMPC, hamp_numDecmal, hamp_fiskal;
    private VvTextBox tbx_VpcMpcMarza, tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName, tbx_kolNumDecimal, tbx_ambKolNumDecimal, tbx_cekanjeFiskal,
                      tbx_pnpSt, tbx_komercProvSt, tbx_rucGranica, tbx_omjerPdv, tbx_blgMin, tbx_OrgPakText, tbx_koefPlanCijProizv,
-                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy;
+                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy, tbx_M2P_sekunde;
 
    protected RadioButton rbt_stMarze, rbt_vpc, rbt_mpc, rbt_ciljMPCknjigMPC, rbt_ciljMPCrabat;
    protected CheckBox    cbx_VpcMpcMarzaTheSame4VPC, cbx_IsSupressSHADOWing, cbx_IsBarCode, cbx_IsPkVisible, cbx_IsZtrViaOrgPak,
@@ -17604,12 +17604,16 @@ public class RiskRulesUC : VvOtherUC
       cbx_VpcMpcMarzaTheSame4VPC = hamper.CreateVvCheckBox_OLD(2, 1, null, 1, 0, "Isto i za VPC", RightToLeft.No);
 
       cbx_IsSupressSHADOWing = hamper.CreateVvCheckBox_OLD(1, 2, null, 2, 0, "Nemoj koristiti Implicitne Nivelacije"     , RightToLeft.No);
-      cbx_IsBarCode          = hamper.CreateVvCheckBox_OLD(1, 3, null, 4, 0, "Koristi BarKod za zadavanje artikla"       , RightToLeft.No);
+      cbx_IsBarCode          = hamper.CreateVvCheckBox_OLD(1, 3, null, 2, 0, "Koristi BarKod za zadavanje artikla"       , RightToLeft.No);
       cbx_IsPkVisible        = hamper.CreateVvCheckBox_OLD(1, 4, null, 2, 0, "Prikaži PK kolonu na IRM i PNM"            , RightToLeft.No);
 
       cbx_isM2PAY          = hamper.CreateVvCheckBox_OLD(2, 2, null, 3, 0, "IsM2PAY"      , RightToLeft.Yes);
-      cbx_NOcheckDupUbyKMD = hamper.CreateVvCheckBox_OLD(2, 4, null, 3, 0, "NEcheckUL_KMD", RightToLeft.Yes);
 
+                        hamper.CreateVvLabel  (4, 3, "M2P sekunde čekanja:", ContentAlignment.MiddleRight);
+      tbx_M2P_sekunde = hamper.CreateVvTextBox(5, 3, "M2P_sekunde", "", 2);
+      tbx_M2P_sekunde.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
+      cbx_NOcheckDupUbyKMD = hamper.CreateVvCheckBox_OLD(2, 4, null, 3, 0, "NEcheckUL_KMD", RightToLeft.Yes);
 
       cbx_IsPnpStVisible = hamper.CreateVvCheckBox_OLD(1, 5, null, 2, 0, "Prikaži st poreza na potrošnju na IRM"     , RightToLeft.No);
                   hamper.CreateVvLabel  (4, 5, "Stopa PNP:", ContentAlignment.MiddleRight);
@@ -17617,7 +17621,7 @@ public class RiskRulesUC : VvOtherUC
       tbx_pnpSt.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_pnpSt.JAM_IsForPercent = true;
 
-                 hamper.CreateVvLabel        (4, 6, "Općina PNP:", ContentAlignment.MiddleRight);
+                     hamper.CreateVvLabel        (4, 6, "Općina PNP:", ContentAlignment.MiddleRight);
       tbxOpcCd_PNP = hamper.CreateVvTextBoxLookUp(5, 6, "tbxOpcCd", "Šifra opæine");
       tbxOpcCd_PNP.JAM_Set_LookUpTable(ZXC.luiListaOpcina, (int)ZXC.Kolona.prva);
    
@@ -17625,7 +17629,7 @@ public class RiskRulesUC : VvOtherUC
 
       cbx_IsZtrViaOrgPak     = hamper.CreateVvCheckBox_OLD(1, 7, null, 4, 0, "Obračun zavisnih troškova po pakiranju", RightToLeft.No);
       cbx_IsOrgPakVisible    = hamper.CreateVvCheckBox_OLD(1, 8, null, 2, 0, "Prikaži cij. i kol. pakiranja"         , RightToLeft.No);
-                               hamper.CreateVvLabel       (4, 5, "Naziv OP:"     , ContentAlignment.MiddleRight);
+                               hamper.CreateVvLabel       (4, 8, "Naziv OP:"     , ContentAlignment.MiddleRight);
       tbx_OrgPakText         = hamper.CreateVvTextBox     (5, 8, "tbx_OrgPakText", "OrigPakText");
 
       cbx_IsDateXDateIzd     = hamper.CreateVvCheckBox_OLD(1, 9, null, 2, 0, "DatumX kao datum izdavanja računa", RightToLeft.No);
@@ -17826,8 +17830,8 @@ public class RiskRulesUC : VvOtherUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                          hamper.CreateVvLabel  (0, 0, "Sekunde čekanja FISKALIZACIJE:"  , ContentAlignment.MiddleRight);
-      tbx_cekanjeFiskal = hamper.CreateVvTextBox(1, 0, "tbx_kolNumDecimal", "Broj decimala kolicine", 2);
+                          hamper.CreateVvLabel  (0, 0, "Sekunde čekanja FISKAL:"  , ContentAlignment.MiddleRight);
+      tbx_cekanjeFiskal = hamper.CreateVvTextBox(1, 0, "tbx_kolNumDecimal", "", 2);
       tbx_cekanjeFiskal.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
    }
@@ -17949,10 +17953,11 @@ public class RiskRulesUC : VvOtherUC
    public bool Fld_IsIntrastat                 { get { return cbx_isIntrastat.Checked; } set { cbx_isIntrastat.Checked = value; } }
    public bool Fld_IsM2PAY                     { get { return cbx_isM2PAY    .Checked; } set { cbx_isM2PAY    .Checked = value; } }
 
+   public uint Fld_M2P_TimeOutSeconds          { get { return tbx_M2P_sekunde.GetUintField();   } set { tbx_M2P_sekunde.PutUintField      (value); } }
+   
+   #endregion Fld_
 
-#endregion Fld_
-
-#region PutFields(), GetFields()
+   #region PutFields(), GetFields()
 
    private void PutDscFields(RiskRulesDsc RRD)
    {
@@ -18020,6 +18025,7 @@ public class RiskRulesUC : VvOtherUC
 
       Fld_IsIntrastat              = RRD.Dsc_IsIntrastat;
       Fld_IsM2PAY                  = RRD.Dsc_IsM2PAY;
+      Fld_M2P_TimeOutSeconds       = (uint)RRD.Dsc_M2P_TimeOutSeconds;
 
    }
 
@@ -18080,6 +18086,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_PdvMathTolerancy         = Fld_PdvMathTolerancy ;
       ZXC.RRD.Dsc_IsIntrastat              = Fld_IsIntrastat ;
       ZXC.RRD.Dsc_IsM2PAY                  = Fld_IsM2PAY ;
+      ZXC.RRD.Dsc_M2P_TimeOutSeconds       = (int)Fld_M2P_TimeOutSeconds ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
 

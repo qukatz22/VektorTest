@@ -9341,6 +9341,7 @@ public class RiskRulesDsc : VvLookupAsDsc
    public decimal Dsc_PdvMathTolerancy         { get; set; }
    public bool Dsc_IsIntrastat                 { get; set; }
    public bool Dsc_IsM2PAY                     { get; set; }
+   public int  Dsc_M2P_TimeOutSeconds          { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -9428,6 +9429,7 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_IsIntrastat              = false;
       Dsc_IsCashFakturToBlagajna   = false;
       Dsc_IsM2PAY                  = false;
+      Dsc_M2P_TimeOutSeconds       = 2;
 
       #endregion defautValue
    }
