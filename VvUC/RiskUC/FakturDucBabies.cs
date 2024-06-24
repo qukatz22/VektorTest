@@ -1607,6 +1607,11 @@ public class IRMDUC              : FakturExtDUC
          { 
             Faktur.TT_IRM
          });
+
+      if(ZXC.RRD.Dsc_IsM2PAY == true)
+      {
+         TheVvTabPage.TheVvForm.M2PAY_DirectConnect(false);
+      }
    }
 
    #endregion Constructor
