@@ -21228,7 +21228,7 @@ public class VvM2PayStatusDlg : VvDialog
       CreateHamper();
 
       dlgWidth        = hamper.Right  + ZXC.QunMrgn;
-      dlgHeight       = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      dlgHeight       = hamper.Bottom + ZXC.QunMrgn * 2/* + ZXC.QunBtnH*/;
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
@@ -21249,7 +21249,7 @@ public class VvM2PayStatusDlg : VvDialog
       hamper          = new VvHamper(1, 1, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un * 3};
+      hamper.VvColWdt      = new int[] { ZXC.Q10un * 4};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4};
       hamper.VvRightMargin = 0;
 
