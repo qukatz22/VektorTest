@@ -7982,7 +7982,7 @@ public class PON_MPC_DUC           : FakturExtDUC
    {
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
-                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_pdvGeokind, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
                                     hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_opis
                                   };
 

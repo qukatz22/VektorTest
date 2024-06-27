@@ -5121,15 +5121,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          #endregion HasRtrans_SkladCD_Exposed
          
          #region Tetragram pdvKolTip - oslobođeno od PDVa
-
-         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && this is IRA_MPC_DUC)
+       //27.06.2024.
+       //if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" &&  this is IRA_MPC_DUC                        )
+         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && (this is IRA_MPC_DUC || this is PON_MPC_DUC))
          {
             if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.EU)
             { 
                bool isFizicakOsoba    = false;
                bool isPartnerskaFirma = false;
-
-               Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as IRA_MPC_DUC).Fld_KupdobCd);
+               
+             //Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as IRA_MPC_DUC).Fld_KupdobCd);
+               Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
                if(kupdob_rec != null && kupdob_rec.IsZzz)  isFizicakOsoba    = true;
                if(kupdob_rec != null)                      isPartnerskaFirma = kupdob_rec.Ticker.ToUpper().StartsWith("TETR");
 
@@ -7206,6 +7208,17 @@ public partial class FakturExtDUC : FakturDUC
       }
 
       #endregion POT_DUC
+
+      #region PON_MPC_DUC
+      
+      //27.06.2024.
+      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && this is PON_MPC_DUC)
+      {
+         Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.EU;
+      }
+
+      #endregion PON_MPC_DUC
+
 
       #region KOMISIJA
 
