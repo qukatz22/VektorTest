@@ -21246,15 +21246,16 @@ public class VvM2PayStatusDlg : VvDialog
 
    private void CreateHamper()
    {
-      hamper          = new VvHamper(1, 1, "", this, false);
+    //hamper          = new VvHamper(1, 1, "", this, false);
+      hamper          = new VvHamper(1, 3, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un * 4};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4};
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.Q2un };
-      hamper.VvSpcBefRow    = new int[] { ZXC.QUN  };
+      hamper.VvRowHgt       = new int[] { ZXC.Q2un, ZXC.Q2un, ZXC.Q2un };
+      hamper.VvSpcBefRow    = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       lbl_m2PayStatus           = hamper.CreateVvLabel(0, 0, "Start autorizacije ...", ContentAlignment.MiddleCenter);
