@@ -2089,6 +2089,9 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
       Artikl kontra_artikl_rec = orig_artikl_rec.MakeDeepCopy();
 
+      // 01.07.2024: 
+      kontra_artikl_rec.SkladCD = "";
+
       // ADDREC 
       if(writeMode == ZXC.WriteMode.Add) 
       {

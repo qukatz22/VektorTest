@@ -376,6 +376,23 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       //if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false                                    ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
       if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false && ZXC.ThisIsSurgerProject == false) VvDaoBase.Process_MBF_Data(); // uncomment this 
 
+      #region Diseble Some TS_Buttons
+
+      // 01.07.2024: muku mucimo kako disejblati neke TS Buttone ovisno o ovome i onome ... 
+      // pa mozda, ubuduce ovako                                                                     
+
+      Point xySubModula;
+      string tsButtonName;
+
+      if(ZXC.ThisIsSkyLabProject == false)
+      {
+         xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay1"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
+         xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay2"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
+         xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay3"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
+      }
+
+      #endregion Diseble Some TS_Buttons
+
       ResumeLayout();
 
       Cursor.Current = Cursors.Default;
