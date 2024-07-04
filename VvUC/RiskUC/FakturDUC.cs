@@ -4649,15 +4649,20 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
          {
-            switch(rtrans_rec.T_TT)
+            if(rtrans_rec.T_TT == Faktur.TT_MOU)
             {
-               case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG; break;
-               case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
-               case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
-               case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
-
-               default: tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+               tbxCell.Style.BackColor = Color.PaleGreen;
             }
+
+          //switch(rtrans_rec.T_TT)
+          //{
+          //   case Faktur.TT_MOC: tbxCell.Style.BackColor = Color.FromArgb(255, 204, 153); break;
+          //   case Faktur.TT_MOS: tbxCell.Style.BackColor = ZXC.vvColors.clr_PCK_PTG; break;
+          //   case Faktur.TT_MOI: tbxCell.Style.BackColor = Color.FromArgb(204, 255, 204); break;
+          //   case Faktur.TT_MOU: tbxCell.Style.BackColor = Color.FromArgb(204, 230, 255); break;
+          //
+          //   default: tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor; break;
+          //}
          }
       }
 
@@ -6176,6 +6181,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             hamp_SumUGAN_PTG.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
          }
 
+         if(this is MOD_PTG_DUC)
+         {
+            hamp_twin_pix.Location = new Point(TheG.Right - hamp_twin_pix.Width + ZXC.Qun4, TheG.Bottom);
+            hamp_twin_pix.Anchor   = AnchorStyles.Bottom | AnchorStyles.Right;
+         }
 
       }
       else
@@ -7731,10 +7741,10 @@ public partial class FakturExtDUC : FakturDUC
    //}
    public int CalcRazmakZaPolyGridTabControl_Sume()
    {
-      if(hamp_S_ukIRM.Visible) return hamp_S_ukIRM.Bottom;
+           if(hamp_S_ukIRM.Visible) return hamp_S_ukIRM.Bottom;
       else if(hamp_S_ukMSK.Visible) return hamp_S_ukMSK.Bottom;
-      else if(hamp_S_pix.Visible) return hamp_S_pix.Bottom;
-      else return hamp_S_uk.Bottom;
+      else if(hamp_S_pix.Visible  ) return hamp_S_pix.Bottom;
+      else                          return hamp_S_uk.Bottom;
    }
    public int CalcRazmakZaPolyGridTabControl_Prosireno()
    {
@@ -9954,7 +9964,6 @@ public partial class FakturExtDUC : FakturDUC
 
       hamper.Visible = false;
       if(this is PIZpDUC || this is TransformDUC || this is ProizvodnjaDUC) hamper.Visible = true;
-
    }
 
    private void CreateHameprTwinsOnPolyTabControl_PZI_PIX_TRI()
@@ -9969,15 +9978,17 @@ public partial class FakturExtDUC : FakturDUC
       hamp_twin_pix.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_twin_pix.VvBottomMargin = hamp_twin_pix.VvTopMargin;
 
-      bool isTRIorPIZ = (this is TransformDUC || this is ProizvodnjaDUC);
-      bool isPIZ      =  this is ProizvodnjaDUC;
+      bool isTRIorPIZ      = (this is TransformDUC || this is ProizvodnjaDUC);
+      bool isPIZ           =  this is ProizvodnjaDUC;
+      bool isTRIorPIZorMOD = (this is TransformDUC || this is ProizvodnjaDUC || this is MOD_PTG_DUC);
+      bool isMOD           =  this is MOD_PTG_DUC;
 
-      hamp_twin_pix.CreateVvLabel( 0, 0, isTRIorPIZ ? ""             : "Izlaz:"        , ContentAlignment.MiddleRight);
-      hamp_twin_pix.CreateVvLabel( 2, 0, isTRIorPIZ ? "Izlaz Kol:"   : "Ulaz Proiz.:"  , ContentAlignment.MiddleRight);
-      hamp_twin_pix.CreateVvLabel( 4, 0, isTRIorPIZ ? "Izlaz Fin:"   : "Ulaz Otpad:"   , ContentAlignment.MiddleRight);
-      hamp_twin_pix.CreateVvLabel( 6, 0, isTRIorPIZ ? "Ulaz Kol:"    : "Ulaz Ukup.:"   , ContentAlignment.MiddleRight);
-      hamp_twin_pix.CreateVvLabel( 8, 0, isTRIorPIZ ? "Ulaz Fin:"    : "Razlika:"      , ContentAlignment.MiddleRight);
-      hamp_twin_pix.CreateVvLabel(10, 0, isTRIorPIZ ? "Razlika Fin:" : "Iskoristivost:", ContentAlignment.MiddleRight);
+      if(!isMOD) hamp_twin_pix.CreateVvLabel( 0, 0, isTRIorPIZ          ? ""             : "Izlaz:"        , ContentAlignment.MiddleRight);
+      if(!isMOD) hamp_twin_pix.CreateVvLabel( 2, 0, isTRIorPIZ          ? "Izlaz Kol:"   : "Ulaz Proiz.:"  , ContentAlignment.MiddleRight);
+                 hamp_twin_pix.CreateVvLabel( 4, 0, isTRIorPIZ || isMOD ? "Izlaz Fin:"   : "Ulaz Otpad:"   , ContentAlignment.MiddleRight);
+      if(!isMOD) hamp_twin_pix.CreateVvLabel( 6, 0, isTRIorPIZ          ? "Ulaz Kol:"    : "Ulaz Ukup.:"   , ContentAlignment.MiddleRight);
+                 hamp_twin_pix.CreateVvLabel( 8, 0, isTRIorPIZ || isMOD ? "Ulaz Fin:"    : "Razlika:"      , ContentAlignment.MiddleRight);
+                 hamp_twin_pix.CreateVvLabel(10, 0, isTRIorPIZ || isMOD ? "Razlika Fin:" : "Iskoristivost:", ContentAlignment.MiddleRight);
 
       tbx_twin_pixK       = hamp_twin_pix.CreateVvTextBox( isTRIorPIZ ? 3 : 1, 0, "tbx_twin_pixK"     , "", 12);
       tbx_twin_puxK_P     = hamp_twin_pix.CreateVvTextBox( isTRIorPIZ ? 7 : 3, 0, "tbx_twin_puxK_P"   , "", 12);
@@ -10001,17 +10012,20 @@ public partial class FakturExtDUC : FakturDUC
 
       tbx_twin_pixKC     .Visible =  
       tbx_twin_puxKC_P   .Visible =  
-      tbx_twin_puxKC_Diff.Visible = isTRIorPIZ; 
+      tbx_twin_puxKC_Diff.Visible = isTRIorPIZorMOD; 
 
       tbx_twin_pixK_O    .Visible =  
       tbx_twin_puxK_All  .Visible =  
       tbx_twin_puxK_Diff .Visible =  
-      tbx_twin_puxK_Iskor.Visible = !isTRIorPIZ; 
+      tbx_twin_puxK_Iskor.Visible = /*!isTRIorPIZ*/ !isTRIorPIZorMOD;
 
-      tbx_twin_puxK_Diff.JAM_ForeColor = Color.Red;
-      tbx_twin_puxK_Diff.JAM_Highlighted = true;
-      tbx_twin_puxKC_Diff.JAM_ForeColor = Color.Red;
-      tbx_twin_puxKC_Diff.JAM_Highlighted = true;
+      tbx_twin_pixK  .Visible = 
+      tbx_twin_puxK_P.Visible = !isMOD;
+
+      tbx_twin_puxK_Diff.JAM_ForeColor     = Color.Red;
+      tbx_twin_puxK_Diff.JAM_Highlighted   = true;
+      tbx_twin_puxKC_Diff.JAM_ForeColor    = Color.Red;
+      tbx_twin_puxKC_Diff.JAM_Highlighted  = true;
       tbx_twin_puxK_Iskor.JAM_IsForPercent = true;
 
       tbx_s_pixK      .JAM_PairThisWithTwin(tbx_twin_pixK);
@@ -10045,7 +10059,8 @@ public partial class FakturExtDUC : FakturDUC
       tbx_twin_puxKC_Diff.JAM_MarkAsNumericTextBox(                                2, true, decimal.MaxValue, decimal.MinValue, true);
 
       hamp_twin_pix.Visible = false;
-      if(this is PIZpDUC || this is TransformDUC || this is ProizvodnjaDUC) hamp_twin_pix.Visible = true; 
+    //if(this is PIZpDUC || this is TransformDUC || this is ProizvodnjaDUC) hamp_twin_pix.Visible = true; 
+      if(this is PIZpDUC || this is TransformDUC || this is ProizvodnjaDUC || this is MOD_PTG_DUC) hamp_twin_pix.Visible = true; 
       
       
    }
@@ -21259,7 +21274,7 @@ public class VvM2PayStatusDlg : VvDialog
       hamper.VvSpcBefRow    = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      lbl_m2PayStatus           = hamper.CreateVvLabel(0, 0, "Start autorizacije ...", ContentAlignment.MiddleCenter);
+      lbl_m2PayStatus           = hamper.CreateVvLabel(0, 1, "Start autorizacije ...", ContentAlignment.MiddleCenter);
       lbl_m2PayStatus.Font      = new Font("Calibri", 20f);// ZXC.vvFont.LargeLargeFont;
       lbl_m2PayStatus.ForeColor = Color.WhiteSmoke;
    }

@@ -4521,7 +4521,10 @@ public class MOD_PTG_DUC : FakturPDUC
 
       TheSumGrid.Visible = false;
 
-      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEC_Showing_DisableInput);   
+      TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEC_Showing_DisableInput);
+
+    //hamp_S_pix.Location = new Point(TheG.Left, TheG.Bottom + ZXC.QunMrgn);
+
    }
 
    private void OnEC_Showing_DisableInput(object sender, DataGridViewEditingControlShowingEventArgs e)
