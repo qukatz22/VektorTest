@@ -569,6 +569,14 @@ public class Rtrano : VvTransRecord
       }
    }
 
+   public string R_OldArtiklCD
+   {
+      get
+      {
+         return Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(this.T_artiklCD, this.R_MOD_RAM_old, this.R_MOD_HDD_old);
+      }
+   }
+
    #endregion PCTOGO propertiz
 
    #endregion propertiz 

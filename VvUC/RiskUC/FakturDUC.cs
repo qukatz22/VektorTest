@@ -14819,7 +14819,8 @@ public class FakturPDUC : FakturExtDUC
 
          if(rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS)
          {
-            string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(rtrano_rec.T_artiklCD, rtrano_rec.R_MOD_RAM_old, rtrano_rec.R_MOD_HDD_old);
+          //string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(rtrano_rec.T_artiklCD, rtrano_rec.R_MOD_RAM_old, rtrano_rec.R_MOD_HDD_old);
+            string oldArtiklCD = rtrano_rec.R_OldArtiklCD;
 
             TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, oldArtiklCD);
             

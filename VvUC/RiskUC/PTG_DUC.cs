@@ -4841,40 +4841,28 @@ public class MOD_PTG_DUC : FakturPDUC
 
       faktur_rec.InvokeTransClear();
 
-    //List<Rtrano> mou_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
-    //List<Rtrano> moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
+      ushort t_serial =  0;
 
+      // PCK PASS START ------------------------------------------------------------------------------------------------------------------------- 
+      List<Rtrano> moc_mos_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
+
+      foreach(Rtrano PCK_rtrano_rec in moc_mos_list)
+      {
+         AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOU, PCK_rtrano_rec, ref t_serial); // NEW PCK Artikl 
+
+         PCK_rtrano_rec.T_artiklCD = PCK_rtrano_rec.R_OldArtiklCD;                        // OLD PCK Artikl 
+         AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOI, PCK_rtrano_rec, ref t_serial); // OLD PCK Artikl 
+      }
+      // PCK PASS  END  ------------------------------------------------------------------------------------------------------------------------- 
+
+      // KMP PASS START ------------------------------------------------------------------------------------------------------------------------- 
       List<Rtrano> mou_moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU || rto.T_TT == Faktur.TT_MOI).ToList();
 
-      Rtrans  rtrans_rec   ;
-      Artikl  artikl_rec   ;
-      string  t_jedMj      ;
-      ushort  t_serial =  0;
-      decimal theCij   = 0M;
-
-      foreach(Rtrano rtrano_rec in mou_moi_list)
+      foreach(Rtrano KMP_rtrano_rec in mou_moi_list)
       {
-         artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
-         if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
-         else                   t_jedMj = ""              ;
-
-         ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
-
-         theCij = artStat != null ? artStat.PrNabCij : 0.00M;
-
-         if(theCij.IsZero())
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r{0}", artikl_rec);
-         }
-
-         rtrans_rec = new Rtrans(rtrano_rec, theCij, t_jedMj, ++t_serial);
-
-         rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
-
-         rtrans_rec.CalcTransResults(null);
-
-         faktur_rec.Transes.Add(rtrans_rec);
+         AutoADD_MOD_Rtrans_From_MOD_Rtrano(KMP_rtrano_rec.T_TT, KMP_rtrano_rec, ref t_serial); // KMP Artikl 
       }
+      // KMP PASS  END  ------------------------------------------------------------------------------------------------------------------------- 
 
       theVvForm.BeginEdit(faktur_rec);
 
@@ -4887,6 +4875,38 @@ public class MOD_PTG_DUC : FakturPDUC
       theVvForm.EndEdit(faktur_rec);
 
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
+   }
+
+   private void AutoADD_MOD_Rtrans_From_MOD_Rtrano(string theTT, Rtrano rtrano_rec, ref ushort t_serial)
+   {
+      Rtrans  rtrans_rec   ;
+      Artikl  artikl_rec   ;
+      string  t_jedMj      ;
+      decimal theCij   = 0M;
+
+      artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+      if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
+      else                   t_jedMj = ""              ;
+
+      ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
+
+      theCij = artStat != null ? artStat.PrNabCij : 0.00M;
+
+      if(theCij.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r{0}", artikl_rec);
+      }
+
+      rtrans_rec = new Rtrans(theTT, rtrano_rec, theCij, t_jedMj, ++t_serial);
+
+      rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+
+      rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
+
+      rtrans_rec.CalcTransResults(null);
+
+      faktur_rec.Transes.Add(rtrans_rec);
    }
 
    //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO? Color.Beige

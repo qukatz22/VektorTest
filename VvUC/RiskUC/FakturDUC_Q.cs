@@ -5871,7 +5871,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          if(previousForThisSerno_Rtrano_rec != null)
          {
-            string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(previousForThisSerno_Rtrano_rec.T_artiklCD, previousForThisSerno_Rtrano_rec.R_MOD_RAM_old, previousForThisSerno_Rtrano_rec.R_MOD_HDD_old);
+          //string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(previousForThisSerno_Rtrano_rec.T_artiklCD, previousForThisSerno_Rtrano_rec.R_MOD_RAM_old, previousForThisSerno_Rtrano_rec.R_MOD_HDD_old);
+            string oldArtiklCD = previousForThisSerno_Rtrano_rec.R_OldArtiklCD;
 
             lastRtrano_rec = previousForThisSerno_Rtrano_rec.MakeDeepCopy();
             lastRtrano_rec.T_artiklCD = oldArtiklCD;
