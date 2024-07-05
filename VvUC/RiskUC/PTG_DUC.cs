@@ -4837,6 +4837,12 @@ public class MOD_PTG_DUC : FakturPDUC
 
    internal void SintRtranoToRtransOnMOD(VvForm theVvForm)
    {
+      Rtrans rtrans_rec;
+
+      decimal ukRAMfinIzlazSUM = 0M;
+
+      decimal ukRAMkolUlazSUM = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).Sum(rto => rto.T_dimX);
+
       foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
       {
          modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
@@ -4846,26 +4852,27 @@ public class MOD_PTG_DUC : FakturPDUC
 
       ushort t_serial =  0;
 
-      // PCK PASS START ------------------------------------------------------------------------------------------------------------------------- 
-      List<Rtrano> moc_mos_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
-
-      foreach(Rtrano PCK_rtrano_rec in moc_mos_list)
-      {
-         AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOU, PCK_rtrano_rec, ref t_serial); // NEW PCK Artikl 
-
-         PCK_rtrano_rec.T_artiklCD = PCK_rtrano_rec.R_OldArtiklCD;                        // OLD PCK Artikl 
-         AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOI, PCK_rtrano_rec, ref t_serial); // OLD PCK Artikl 
-      }
-      // PCK PASS  END  ------------------------------------------------------------------------------------------------------------------------- 
-
-      // KMP PASS START ------------------------------------------------------------------------------------------------------------------------- 
+      // KMP PASS START ------------------------------------------------------------------------------------------------------------------------------------------ 
       List<Rtrano> mou_moi_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU || rto.T_TT == Faktur.TT_MOI).ToList();
 
       foreach(Rtrano KMP_rtrano_rec in mou_moi_list)
       {
-         AutoADD_MOD_Rtrans_From_MOD_Rtrano(KMP_rtrano_rec.T_TT, KMP_rtrano_rec, ref t_serial); // KMP Artikl 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(KMP_rtrano_rec.T_TT, KMP_rtrano_rec, ref t_serial, ukRAMkolUlazSUM, ref ukRAMfinIzlazSUM);  // KMP Artikl 
       }
-      // KMP PASS  END  ------------------------------------------------------------------------------------------------------------------------- 
+      // KMP PASS  END  ------------------------------------------------------------------------------------------------------------------------------------------ 
+                                                                                                                                 
+      // PCK PASS START ------------------------------------------------------------------------------------------------------------------------------------------ 
+      List<Rtrano> moc_mos_list = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
+
+      foreach(Rtrano PCK_rtrano_rec in moc_mos_list)
+      {
+         PCK_rtrano_rec.T_artiklCD = PCK_rtrano_rec.R_OldArtiklCD;                                                                               // OLD PCK Artikl 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOI, PCK_rtrano_rec, ref t_serial, ukRAMkolUlazSUM, ref ukRAMfinIzlazSUM);    // OLD PCK Artikl 
+
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOU, PCK_rtrano_rec, ref t_serial, ukRAMkolUlazSUM, ref ukRAMfinIzlazSUM);    // NEW PCK Artikl 
+
+      }
+      // PCK PASS  END  ------------------------------------------------------------------------------------------------------------------------------------------ 
 
       theVvForm.BeginEdit(faktur_rec);
 
@@ -4880,7 +4887,13 @@ public class MOD_PTG_DUC : FakturPDUC
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
    }
 
-   private void AutoADD_MOD_Rtrans_From_MOD_Rtrano(string theTT, Rtrano rtrano_rec, ref ushort t_serial)
+   private decimal Get_MOD_PCK_Artikl_FinDelta(decimal ukRAMfinIzlazSUM, decimal ukRAMkolUlazSUM, decimal thisRAMkolUlaz)
+   {
+      decimal RAM_cij = ZXC.DivSafe(ukRAMfinIzlazSUM, ukRAMkolUlazSUM);
+
+      return RAM_cij * thisRAMkolUlaz;
+   }
+   private Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano(string theTT, Rtrano rtrano_rec, ref ushort t_serial, decimal ukRAMkolUlazSUM, ref decimal ukRAMfinIzlazSUM)
    {
       Rtrans  rtrans_rec   ;
       Artikl  artikl_rec   ;
@@ -4905,11 +4918,24 @@ public class MOD_PTG_DUC : FakturPDUC
 
       rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
 
+      if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT) // rtrano TT! 
+      {
+         decimal MOD_PCK_OLD_Artikl_Fin = /*kurac*/0M; // tu smo stali, rastavi me na 2 komada (komponente i old artikli na jednu, NEW artikli na drugu metodu) 
+
+         decimal MOD_PCK_Artikl_FinDelta = Get_MOD_PCK_Artikl_FinDelta(ukRAMfinIzlazSUM, ukRAMkolUlazSUM, rtrano_rec.T_dimX);
+
+         rtrans_rec.T_cij = MOD_PCK_OLD_Artikl_Fin + MOD_PCK_Artikl_FinDelta;
+      }
+
       rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
 
       rtrans_rec.CalcTransResults(null);
 
+      ukRAMfinIzlazSUM += rtrans_rec.R_KC;
+
       faktur_rec.Transes.Add(rtrans_rec);
+
+      return rtrans_rec;
    }
 
    //ThePolyGridTabControl.TabPages[TabPageTitle2].Tag = ZXC.IsPCTOGO? Color.Beige
