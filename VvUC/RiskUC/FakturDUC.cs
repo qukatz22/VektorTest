@@ -9983,12 +9983,12 @@ public partial class FakturExtDUC : FakturDUC
       bool isTRIorPIZorMOD = (this is TransformDUC || this is ProizvodnjaDUC || this is MOD_PTG_DUC);
       bool isMOD           =  this is MOD_PTG_DUC;
 
-      if(!isMOD) hamp_twin_pix.CreateVvLabel( 0, 0, isTRIorPIZ          ? ""             : "Izlaz:"        , ContentAlignment.MiddleRight);
-      if(!isMOD) hamp_twin_pix.CreateVvLabel( 2, 0, isTRIorPIZ          ? "Izlaz Kol:"   : "Ulaz Proiz.:"  , ContentAlignment.MiddleRight);
-                 hamp_twin_pix.CreateVvLabel( 4, 0, isTRIorPIZ || isMOD ? "Izlaz Fin:"   : "Ulaz Otpad:"   , ContentAlignment.MiddleRight);
-      if(!isMOD) hamp_twin_pix.CreateVvLabel( 6, 0, isTRIorPIZ          ? "Ulaz Kol:"    : "Ulaz Ukup.:"   , ContentAlignment.MiddleRight);
-                 hamp_twin_pix.CreateVvLabel( 8, 0, isTRIorPIZ || isMOD ? "Ulaz Fin:"    : "Razlika:"      , ContentAlignment.MiddleRight);
-                 hamp_twin_pix.CreateVvLabel(10, 0, isTRIorPIZ || isMOD ? "Razlika Fin:" : "Iskoristivost:", ContentAlignment.MiddleRight);
+      if(!isMOD) hamp_twin_pix.CreateVvLabel( 0, 0           , isTRIorPIZ          ? ""             : "Izlaz:"        , ContentAlignment.MiddleRight);
+      if(!isMOD) hamp_twin_pix.CreateVvLabel( 2, 0           , isTRIorPIZ          ? "Izlaz Kol:"   : "Ulaz Proiz.:"  , ContentAlignment.MiddleRight);
+                 hamp_twin_pix.CreateVvLabel(isMOD ? 8 : 4, 0, isTRIorPIZ || isMOD ? "Izlaz Fin:"   : "Ulaz Otpad:"   , ContentAlignment.MiddleRight);
+      if(!isMOD) hamp_twin_pix.CreateVvLabel( 6, 0           , isTRIorPIZ          ? "Ulaz Kol:"    : "Ulaz Ukup.:"   , ContentAlignment.MiddleRight);
+                 hamp_twin_pix.CreateVvLabel(isMOD ? 6 : 8, 0, isTRIorPIZ || isMOD ? "Ulaz Fin:"    : "Razlika:"      , ContentAlignment.MiddleRight);
+                 hamp_twin_pix.CreateVvLabel(10, 0           , isTRIorPIZ || isMOD ? "Razlika Fin:" : "Iskoristivost:", ContentAlignment.MiddleRight);
 
       tbx_twin_pixK       = hamp_twin_pix.CreateVvTextBox( isTRIorPIZ ? 3 : 1, 0, "tbx_twin_pixK"     , "", 12);
       tbx_twin_puxK_P     = hamp_twin_pix.CreateVvTextBox( isTRIorPIZ ? 7 : 3, 0, "tbx_twin_puxK_P"   , "", 12);
@@ -9997,9 +9997,9 @@ public partial class FakturExtDUC : FakturDUC
       tbx_twin_puxK_Diff  = hamp_twin_pix.CreateVvTextBox(                  9, 0, "tbx_twin_puxK_Diff", "", 12);
       tbx_twin_puxK_Iskor = hamp_twin_pix.CreateVvTextBox(                 11, 0, "tbx_twin_puxK_Diff", "", 12);
 
-      tbx_twin_pixKC       = hamp_twin_pix.CreateVvTextBox(  5, 0, "tbx_twin_pixKC"     , "", 12);
-      tbx_twin_puxKC_P     = hamp_twin_pix.CreateVvTextBox(  9, 0, "tbx_twin_puxKC_P"   , "", 12);
-      tbx_twin_puxKC_Diff  = hamp_twin_pix.CreateVvTextBox( 11, 0, "tbx_twin_puxKC_Diff", "", 12);
+      tbx_twin_pixKC       = hamp_twin_pix.CreateVvTextBox(isMOD ? 9 :  5, 0, "tbx_twin_pixKC"     , "", 12);
+      tbx_twin_puxKC_P     = hamp_twin_pix.CreateVvTextBox(isMOD ? 7 :  9, 0, "tbx_twin_puxKC_P"   , "", 12);
+      tbx_twin_puxKC_Diff  = hamp_twin_pix.CreateVvTextBox(            11, 0, "tbx_twin_puxKC_Diff", "", 12);
 
       if(isPIZ)
       {
