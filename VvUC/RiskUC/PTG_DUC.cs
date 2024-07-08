@@ -4942,6 +4942,9 @@ public class MOD_PTG_DUC : FakturPDUC
             ZXC.aim_emsg(MessageBoxIcon.Error, "Uneseni +/- kapacitet ne odgovara specifikaciji komponente.");
          }
       }
+
+      //08.07.2024.
+      Put_MOD_Semafor_Labels();
    }
 
    internal void Put_MOD_Semafor_Labels(/*MOD_PTG_DUC modDUC*/)
