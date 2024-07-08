@@ -12995,6 +12995,17 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_twin_puxKC_P   )) Fld_TwinS_puxKC_P    = Fld_S_puxKC_P   ;
       if(CtrlOK(tbx_twin_puxKC_Diff)) Fld_TwinS_puxKC_Diff = Fld_R_puxKC_Diff;
 
+      // 08.07.2024: cau mama 
+      // MOD Fin Ulaz / Izlaz 
+      if(this is MOD_PTG_DUC)
+      {
+         decimal finUlaz  = faktur.TrnNonDel.Where(rtr => rtr.TtInfo.IsMODulazTT ).Sum(rtr => rtr.R_KC);
+         decimal finIzlaz = faktur.TrnNonDel.Where(rtr => rtr.TtInfo.IsMODizlazTT).Sum(rtr => rtr.R_KC);
+
+         if(CtrlOK(tbx_twin_pixKC)) Fld_TwinS_pixKC      = finIzlaz;
+         if(CtrlOK(tbx_twin_pixKC)) Fld_TwinS_puxKC_P    = finUlaz ;
+         if(CtrlOK(tbx_twin_pixKC)) Fld_TwinS_puxKC_Diff = finUlaz - finIzlaz;
+      }
       //30.01.2017. ????????????   nema suma op, pojma nemam
       if(CtrlOK(tbx_twin_pixK_OP )) Fld_TwinS_pixK_OP  = faktur.TrnSum_ForTT_R_kolOP(Faktur.TT_RNM);
       if(CtrlOK(tbx_twin_puxK_OP )) Fld_TwinS_puxK_OP  = faktur.TrnSum_ForTT_R_kolOP(Faktur.TT_RNU);
