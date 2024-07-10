@@ -108,8 +108,13 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
          "shouldPeriodLock tinyint(1) unsigned NOT NULL default 0    ,\n" +
          "periodLockDay    tinyint(2) unsigned NOT NULL default 0    ,\n" +
          "isBtchBookg      tinyint(1) unsigned NOT NULL default 0    ,\n" +
-         "memoFooter2 varchar(2048)       NOT NULL default '',\n" +
+         "memoFooter2      varchar(2048)       NOT NULL default ''   ,\n" +
          "isNoAutoFiskal   tinyint(1) unsigned NOT NULL default 0    ,\n" +
+
+         "m2pShaSec        varchar(96)         NOT NULL default ''   ,\n" +
+         "m2pApikey        varchar(40)         NOT NULL default ''   ,\n" +
+         "m2pSerno         varchar(16)         NOT NULL default ''   ,\n" +
+         "m2pModel         varchar(16)         NOT NULL default ''   ,\n" +
 
          ""
       );
@@ -194,6 +199,11 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsBtchBookg     , TheSchemaTable.Rows[CI.isBtchBookg     ]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsNoAutoFiskal  , TheSchemaTable.Rows[CI.isNoAutoFiskal  ]);
 
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PshaSec, TheSchemaTable.Rows[CI.m2pShaSec]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Papikey, TheSchemaTable.Rows[CI.m2pApikey]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pserno , TheSchemaTable.Rows[CI.m2pSerno] );
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pmodel , TheSchemaTable.Rows[CI.m2pModel] );
+
    }
 
    #endregion SetCommandParamValues
@@ -237,6 +247,11 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       rdrData._memoFooter = reader.GetString(CI.memoFooter);
       rdrData._memoFooter2= reader.GetString(CI.memoFooter2);
       rdrData._isNoAutoisFiskal = reader.GetBoolean(CI.isNoAutoFiskal);
+
+      rdrData._m2pShaSec = reader.GetString(CI.m2pShaSec);
+      rdrData._m2pApikey = reader.GetString(CI.m2pApikey);
+      rdrData._m2pSerno  = reader.GetString(CI.m2pSerno );
+      rdrData._m2pModel  = reader.GetString(CI.m2pModel );
 
       #region Tu budalasaš dok ne savladas tehniku ucitavanja slika...
 
@@ -424,6 +439,10 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       internal int periodLockDay   ;
       internal int isBtchBookg     ;
       internal int isNoAutoFiskal  ;
+      internal int m2pShaSec       ;
+      internal int m2pApikey       ;
+      internal int m2pSerno        ;
+      internal int m2pModel        ;
 
       internal int origRecID;
       internal int recVer;
@@ -501,6 +520,10 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       CI.periodLockDay   = GetSchemaColumnIndex("periodLockDay");
       CI.isBtchBookg     = GetSchemaColumnIndex("isBtchBookg");
       CI.isNoAutoFiskal  = GetSchemaColumnIndex("isNoAutoFiskal");
+      CI.m2pShaSec       = GetSchemaColumnIndex("m2pShaSec");
+      CI.m2pApikey       = GetSchemaColumnIndex("m2pApikey");
+      CI.m2pSerno        = GetSchemaColumnIndex("m2pSerno" );
+      CI.m2pModel        = GetSchemaColumnIndex("m2pModel" );
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");

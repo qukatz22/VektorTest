@@ -42,7 +42,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
 
    #region CreateTableXtrano
 
-   public static   uint TableVersionStatic { get { return 2; } }
+   public static   uint TableVersionStatic { get { return 3; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -57,9 +57,10 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
          /* 05 */  "t_tt         char(3)               NOT NULL default ''    ,\n" +
          /* 06 */  "t_ttNum      int(10)      unsigned NOT NULL               ,\n" +
          /* 07 */  "t_moneyA     decimal(12,4)         NOT NULL default '0.00',\n" +
-         /* 08 */  "t_opis_128   varchar(128)          NOT NULL default ''   ,\n"  +
+       ///* 08 */  "t_opis_128   varchar(128)          NOT NULL default ''   ,\n"  +
+         /* 08 */  "t_opis_128   varchar(4096)         NOT NULL default ''   ,\n"  +
          /* 09 */  "t_konto      varchar(8)            NOT NULL default ''   ,\n"  +
-         /* 23 */  "t_devName    char(3)               NOT NULL default ''   ,\n" +
+         /* 23 */  "t_devName    char(3)               NOT NULL default ''   ,\n"  +
          
           "PRIMARY KEY                   (recID)                                                   ,\n" +
           /*"UNIQUE*/" KEY BY_LINKER     (t_parentID, t_serial)                                     \n"
@@ -80,6 +81,8 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
                          "ADD COLUMN t_opis_128   varchar(128)          NOT NULL default ''     AFTER t_moneyA   ,  " +
                          "ADD COLUMN t_konto      varchar(8)            NOT NULL default ''     AFTER t_opis_128 ,  " +
                          "ADD COLUMN t_devName    char(3)               NOT NULL default ''     AFTER t_konto    ;\n");
+
+         case 3: return ("MODIFY COLUMN t_opis_128  varchar(4096) NOT NULL default '';");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }

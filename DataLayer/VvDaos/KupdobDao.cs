@@ -39,7 +39,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
    #region CreateTableKupdob
 
-   public static   uint TableVersionStatic { get { return /*!!!*/ 35 /*!!!*/; } }
+   public static   uint TableVersionStatic { get { return /*!!!*/ 36 /*!!!*/; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -325,6 +325,12 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
          case 35: if(isPrjkt == false) return "";
                   return ("ADD isNoAutoFiskal tinyint(1) unsigned NOT NULL default 0  AFTER memoFooter2;\n");
+
+         case 36: if(isPrjkt == false) return "";
+                  return ("ADD COLUMN m2pShaSec        varchar(96)           NOT NULL default '' AFTER isNoAutoFiskal, "   +
+                          "ADD COLUMN m2pApikey        varchar(40)           NOT NULL default '' AFTER m2pShaSec     , "   +
+                          "ADD COLUMN m2pSerno         varchar(16)           NOT NULL default '' AFTER m2pApikey     , "   +
+                          "ADD COLUMN m2pModel         varchar(16)           NOT NULL default '' AFTER m2pSerno      ; \n");
 
          default: throw new Exception("For table " + Kupdob.recordName + " version no. " + catchingVersion + " doesn't exists!");
       }

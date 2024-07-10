@@ -82,6 +82,12 @@ public struct PrjktExtensionStruct
 
    internal string _memoFooter2;
    internal bool   _isNoAutoisFiskal;
+
+   internal string _m2pShaSec;
+   internal string _m2pApikey;
+   internal string _m2pSerno ;
+   internal string _m2pModel ;
+   
 }
 
 #endregion struct PrjktStruct
@@ -180,7 +186,12 @@ public class Prjkt : Kupdob
       this.currentExtData._isBtchBookg        = false;
       this.currentExtData._isNoAutoisFiskal     = false;
 
-      sorterKCD     = Kupdob.sorterKCD;
+      this.currentExtData._m2pShaSec = "";
+      this.currentExtData._m2pApikey = "";
+      this.currentExtData._m2pSerno  = "";
+      this.currentExtData._m2pModel  = "";
+
+   sorterKCD     = Kupdob.sorterKCD;
       sorterCity    = Kupdob.sorterCity;
       sorterOIB     = Kupdob.sorterOIB;
       sorterNaziv   = Kupdob.sorterNaziv;
@@ -546,6 +557,11 @@ public class Prjkt : Kupdob
       get { return this.currentExtData._isNoAutoisFiskal; }
       set { this.currentExtData._isNoAutoisFiskal = value; }
    }
+
+   public string M2PshaSec { get { return this.currentExtData._m2pShaSec; } set { this.currentExtData._m2pShaSec = value; } }
+   public string M2Papikey { get { return this.currentExtData._m2pApikey; } set { this.currentExtData._m2pApikey = value; } }
+   public string M2Pserno  { get { return this.currentExtData._m2pSerno ; } set { this.currentExtData._m2pSerno  = value; } }
+   public string M2Pmodel  { get { return this.currentExtData._m2pModel ; } set { this.currentExtData._m2pModel  = value; } }
 
    // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
    public byte[] TheLogo
