@@ -1612,7 +1612,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       m2PayConectedLabel = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
-      m2PayConectedLabel.BackColor = Color.Red;
+      m2PayConectedLabel.BackColor = ZXC.M2PAY_Device_Connected ? Color.Green : Color.Red;
 
       hamper.Visible = false;
    }
@@ -8854,9 +8854,8 @@ public partial class FakturExtDUC : FakturDUC
 
                     hamper.CreateVvLabel(0, 0, isTetragram ? "NačinPl1:" : "NačinPlać:", ContentAlignment.MiddleRight);
       tbx_NacPlac = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_NacPlac", "Način plaćanja", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.nacPlac));
-      tbx_NacPlac.JAM_MustTabOutBeforeSubmit = true;
 
-    //cbx_isCash = hamper.CreateVvCheckBox_OLD(2, 0, null, "Got", RightToLeft.No);
+      //cbx_isCash = hamper.CreateVvCheckBox_OLD(2, 0, null, "Got", RightToLeft.No);
       cbx_isCash = hamper.CreateVvCheckBox_OLD(2, 0, null, isTetragram ? "" : "Got", RightToLeft.No);
       cbx_isCash.Name = "IsCash";
       cbx_isCash.Enabled = false;
@@ -8867,13 +8866,20 @@ public partial class FakturExtDUC : FakturDUC
       tbx_NacPlacRbt = hamper.CreateVvTextBoxLookUp(3, 0, "tbx_NacPlacRbt", "Način plaćanja - Rabat", 12);
       tbx_NacPlacRbt.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
-      tbx_NacPlac.JAM_Set_LookUpTable(ZXC.luiListaRiskVrstaPl, (int)ZXC.Kolona.prva);
-      tbx_NacPlac.JAM_lui_NumberTaker_JAM_Name = tbx_NacPlacRbt.JAM_Name;
-      tbx_NacPlac.JAM_lui_FlagTaker_JAM_Name = cbx_isCash.Name;
-
       tbx_NacPlacRbt.JAM_ReadOnly = true;
       tbx_NacPlacRbt.JAM_IsForPercent = true;
 
+      if(ZXC.RRD.Dsc_IsM2PAY)
+      {
+         tbx_NacPlac.JAM_ReadOnly = true;
+      }
+      else
+      { 
+         tbx_NacPlac.JAM_Set_LookUpTable(ZXC.luiListaRiskVrstaPl, (int)ZXC.Kolona.prva);
+         tbx_NacPlac.JAM_lui_NumberTaker_JAM_Name = tbx_NacPlacRbt.JAM_Name;
+         tbx_NacPlac.JAM_lui_FlagTaker_JAM_Name   = cbx_isCash.Name;
+         tbx_NacPlac.JAM_MustTabOutBeforeSubmit   = true;
+      }
 
       Label lbl_np2    = hamper.CreateVvLabel(0, 1, "NačinPl2:", ContentAlignment.MiddleRight);
       tbx_NacPlac2 = hamper.CreateVvTextBoxLookUp(1, 1, "tbx_NacPlac2", "Način plaćanja 2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.nacPlac2));
