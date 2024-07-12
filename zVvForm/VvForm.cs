@@ -386,9 +386,9 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
 
       if(ZXC.ThisIsSkyLabProject == false)
       {
-         xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay1"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
-         xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay2"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
-         xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay3"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
+       //xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay1"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
+       //xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay2"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
+       //xySubModula = GetSubModulXY(ZXC.VvSubModulEnum.R_IRM); tsButtonName = "M2pay3"; atsBtn_SubModulSet[xySubModula.X][xySubModula.Y].Single(tsb => tsb.Name == tsButtonName).Visible = ZXC.RRD.Dsc_IsM2PAY;
       }
 
       #endregion Diseble Some TS_Buttons

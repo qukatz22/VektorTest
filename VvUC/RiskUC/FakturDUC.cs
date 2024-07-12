@@ -1607,8 +1607,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper.VvSpcBefCol   = new int[] { faBefFirstCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.Qun2 };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       m2PayConectedLabel = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
