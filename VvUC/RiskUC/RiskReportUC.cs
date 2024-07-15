@@ -6889,8 +6889,8 @@ public class FakturDocFilterUC    : VvFilterUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "Tekst prije postotka:", ContentAlignment.MiddleLeft);
-      hamper.CreateVvLabel(0, 1, "Tekst poslije postot.:", ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(0, 0, "Tekst prije %:", ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(0, 1, "Tekst poslije %:", ContentAlignment.MiddleLeft);
 
       tbx_postoBefore = hamper.CreateVvTextBox(1, 0, "tbx_postoBefore", "Tekst koji se vidi prije postotka", 2048);
       tbx_postoBefore.Multiline = true;
