@@ -111,8 +111,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
          "memoFooter2      varchar(2048)       NOT NULL default ''   ,\n" +
          "isNoAutoFiskal   tinyint(1) unsigned NOT NULL default 0    ,\n" +
 
-         "m2pShaSec        varchar(96)         NOT NULL default ''   ,\n" +
-         "m2pApikey        varchar(40)         NOT NULL default ''   ,\n" +
+         "m2pShaSec        varchar(128)        NOT NULL default ''   ,\n" +
+         "m2pApikey        varchar(128)        NOT NULL default ''   ,\n" +
          "m2pSerno         varchar(16)         NOT NULL default ''   ,\n" +
          "m2pModel         varchar(16)         NOT NULL default ''   ,\n" +
 
@@ -199,8 +199,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsBtchBookg     , TheSchemaTable.Rows[CI.isBtchBookg     ]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsNoAutoFiskal  , TheSchemaTable.Rows[CI.isNoAutoFiskal  ]);
 
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PshaSec, TheSchemaTable.Rows[CI.m2pShaSec]);
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Papikey, TheSchemaTable.Rows[CI.m2pApikey]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PshaSecEncodedAsInFile, TheSchemaTable.Rows[CI.m2pShaSec]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PapikeyEncodedAsInFile, TheSchemaTable.Rows[CI.m2pApikey]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pserno , TheSchemaTable.Rows[CI.m2pSerno] );
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pmodel , TheSchemaTable.Rows[CI.m2pModel] );
 

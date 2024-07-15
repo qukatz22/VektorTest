@@ -558,8 +558,46 @@ public class Prjkt : Kupdob
       set { this.currentExtData._isNoAutoisFiskal = value; }
    }
 
-   public string M2PshaSec { get { return this.currentExtData._m2pShaSec; } set { this.currentExtData._m2pShaSec = value; } }
-   public string M2Papikey { get { return this.currentExtData._m2pApikey; } set { this.currentExtData._m2pApikey = value; } }
+
+   /// <summary>
+   /// Decryptiran, decoded, desifrirani M2PshaSec
+   /// </summary>
+   public string M2PshaSecDecrypted
+   {
+      get
+      {
+       // 13.11.2014: odjedamput za ove Sky-eve propertye SkySrvrHostDecrypted i SkyPasswordDecrypted ovaj 
+       // VvAES.DecryptData na kraju stringa nalijepi '\0' nekoliko puta npr. "192.168.0.1\0\0\0" 
+       //return (currentExtData._m2pShaSec.NotEmpty()) ? VvAES.DecryptData(currentExtData._m2pShaSec, ZXC.vv_Login_AES_key)                   : "";
+         return (currentExtData._m2pShaSec.NotEmpty()) ? VvAES.DecryptData(currentExtData._m2pShaSec, ZXC.vv_Login_AES_key).Replace("\0", "") : "";
+      }
+      //set 
+      //{ 
+      //   this.currentData._passwd = ZXC.NotEmpty(value) ? VvAES.EncryptData(value, ZXC.vv_AES_key) : ""; 
+      //}
+   }
+
+   public string M2PshaSecEncodedAsInFile { get { return this.currentExtData._m2pShaSec; } set { this.currentExtData._m2pShaSec = value; } }
+
+   /// <summary>
+   /// Decryptiran, decoded, desifrirani M2Papikey
+   /// </summary>
+   public string M2PapikeyDecrypted
+   {
+      get
+      {
+       // 13.11.2014: odjedamput za ove Sky-eve propertye SkySrvrHostDecrypted i SkyPasswordDecrypted ovaj 
+       // VvAES.DecryptData na kraju stringa nalijepi '\0' nekoliko puta npr. "192.168.0.1\0\0\0" 
+       //return (currentExtData._m2pApikey.NotEmpty()) ? VvAES.DecryptData(currentExtData._m2pApikey, ZXC.vv_Login_AES_key)                   : "";
+         return (currentExtData._m2pApikey.NotEmpty()) ? VvAES.DecryptData(currentExtData._m2pApikey, ZXC.vv_Login_AES_key).Replace("\0", "") : "";
+      }
+      //set 
+      //{ 
+      //   this.currentData._passwd = ZXC.NotEmpty(value) ? VvAES.EncryptData(value, ZXC.vv_AES_key) : ""; 
+      //}
+   }
+
+   public string M2PapikeyEncodedAsInFile { get { return this.currentExtData._m2pApikey; } set { this.currentExtData._m2pApikey = value; } }
    public string M2Pserno  { get { return this.currentExtData._m2pSerno ; } set { this.currentExtData._m2pSerno  = value; } }
    public string M2Pmodel  { get { return this.currentExtData._m2pModel ; } set { this.currentExtData._m2pModel  = value; } }
 
