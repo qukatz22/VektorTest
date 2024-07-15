@@ -1296,11 +1296,21 @@ public /*partial*/ class RptR_IRA : VvRiskReport
          faktur_rec.ConvertOtherMoneyPropertiez(theDUC, ZXC.MoneyConversionKind.dijeljenje);
       }
 
+      // 15.07.2024: Tetragram Incognito 
+      bool isIncognitoKupdob = /*true*/false; // TODO 
+      if(faktur_rec.TtInfo.IsExtendableTT && isIncognitoKupdob)
+      {
+         faktur_rec.KupdobCD = faktur_rec.PosJedCD = ZXC.RRD.MalopKupdob_rec.KupdobCD;
+
+         faktur_rec.KdOib = "";
+         faktur_rec.Transes.ForEach(rtr => rtr.T_kupdobCD = faktur_rec.KupdobCD);
+      }
+
       TheFakturList.Add(faktur_rec);
 
-      //TheRtransList = faktur_rec.Transes                                                                     ; if(TheRtransList.Count.IsZero()) TheRtransList.Add(new Rtrans());
+    //TheRtransList = faktur_rec.Transes                                                                     ; if(TheRtransList.Count.IsZero()) TheRtransList.Add(new Rtrans());
       TheRtransList = faktur_rec.Transes.Where(r => r.T_pdvColTip != ZXC.PdvKolTipEnum.AVANS_STORNO).ToList(); if(TheRtransList.Count.IsZero()) TheRtransList.Add(new Rtrans());
-      TheRtranoList = faktur_rec.Transes2; if(TheRtranoList.Count.IsZero()) TheRtranoList.Add(new Rtrano());
+      TheRtranoList = faktur_rec.Transes2;                                                                     if(TheRtranoList.Count.IsZero()) TheRtranoList.Add(new Rtrano());
 
       if(faktur_rec.TtInfo.IsExtendableTT)
       {
