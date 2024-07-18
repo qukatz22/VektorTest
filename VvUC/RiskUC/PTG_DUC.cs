@@ -5150,8 +5150,9 @@ public class MOD_PTG_DUC : FakturPDUC
       Rtrans rtrans_rec;
 
       decimal ukRAMfinIzlazSUM = 0M;
+      decimal ukPCKfinIzlazSUM = 0M;
 
-      decimal ukRAMkolUlazSUM = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).Sum(rto => rto.T_dimX);
+      decimal ukMOC_MOS_RAMkolIzlazSUM = faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).Sum(rto => rto.T_dimY);
 
       foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
       {
@@ -5167,7 +5168,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
       foreach(Rtrano KMP_rtrano_rec in mou_moi_list)
       {
-         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(KMP_rtrano_rec.T_TT, KMP_rtrano_rec, ref t_serial, false, ukRAMkolUlazSUM, ref ukRAMfinIzlazSUM);  // KMP Artikl 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(KMP_rtrano_rec.T_TT, KMP_rtrano_rec, ref t_serial, false, ukMOC_MOS_RAMkolIzlazSUM, ref ukRAMfinIzlazSUM, ukPCKfinIzlazSUM);  // KMP Artikl 
       }
       // KMP PASS  END  ------------------------------------------------------------------------------------------------------------------------------------------------- 
                                                                                                                                  
@@ -5177,17 +5178,18 @@ public class MOD_PTG_DUC : FakturPDUC
       string origT_artiklCD;
       foreach(Rtrano PCK_rtrano_rec in moc_mos_list) // OLD PCK Artikl 
       {
-         origT_artiklCD            = PCK_rtrano_rec.T_artiklCD   ;                                                                                      // OLD PCK Artikl 
-         PCK_rtrano_rec.T_artiklCD = PCK_rtrano_rec.R_OldArtiklCD;                                                                                      // OLD PCK Artikl 
+         origT_artiklCD            = PCK_rtrano_rec.T_artiklCD   ;                                                                                                                     // OLD PCK Artikl 
+         PCK_rtrano_rec.T_artiklCD = PCK_rtrano_rec.R_OldArtiklCD;                                                                                                                     // OLD PCK Artikl 
 
-         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOI, PCK_rtrano_rec, ref t_serial, false, ukRAMkolUlazSUM, ref ukRAMfinIzlazSUM);    // OLD PCK Artikl 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOI, PCK_rtrano_rec, ref t_serial, false, ukMOC_MOS_RAMkolIzlazSUM, ref ukRAMfinIzlazSUM, ukPCKfinIzlazSUM);        // OLD PCK Artikl 
 
-         PCK_rtrano_rec.T_artiklCD = origT_artiklCD              ;                                                                                      // OLD PCK Artikl 
-         PCK_rtrano_rec.T_komada = rtrans_rec.R_KC               ; // cuvamo OLD Artikl Fin
+         PCK_rtrano_rec.T_artiklCD = origT_artiklCD              ;                                                                                                                     // OLD PCK Artikl 
+         PCK_rtrano_rec.T_komada = rtrans_rec.R_KC               ; // cuvamo OLD Artikl Fin   
+         ukPCKfinIzlazSUM       += rtrans_rec.R_KC               ; // kumuliramo UK Izlaz Fin 
       }
       foreach(Rtrano PCK_rtrano_rec in moc_mos_list) // NEW PCK Artikl 
       {
-         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOU, PCK_rtrano_rec, ref t_serial, true,  ukRAMkolUlazSUM, ref ukRAMfinIzlazSUM);    // NEW PCK Artikl 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano(Faktur.TT_MOU, PCK_rtrano_rec, ref t_serial, true,  ukMOC_MOS_RAMkolIzlazSUM, ref ukRAMfinIzlazSUM, ukPCKfinIzlazSUM);        // NEW PCK Artikl 
       }
       // PCK PASS  END  ------------------------------------------------------------------------------------------------------------------------------------------------- 
 
@@ -5204,7 +5206,7 @@ public class MOD_PTG_DUC : FakturPDUC
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
    }
 
-   private Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano(string theTT, Rtrano rtrano_rec, ref ushort t_serial, bool isNEWartikl, decimal ukRAMkolUlazSUM, ref decimal ukRAMfinIzlazSUM)
+   private Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano(string theTT, Rtrano rtrano_rec, ref ushort t_serial, bool isNEWartikl, decimal ukMOC_MOS_RAMkolIzlazSUM, ref decimal ukRAMfinIzlazSUM, decimal ukPCKfinIzlazSUM)
    {
       #region Init
 
@@ -5239,12 +5241,18 @@ public class MOD_PTG_DUC : FakturPDUC
 
       if(isNEWartikl)
       {
-         decimal MOD_PCK_OLD_Artikl_Fin = rtrano_rec.T_komada; // gore smo ga u SintRtranoToRtransOnMOD sačuvali kad smo AutoADD_MOD_Rtrans_From_MOD_Rtrano za OLD Artikl 
+       //decimal MOD_PCK_OLD_Artikl_Fin = rtrano_rec.T_komada; // gore smo ga u SintRtranoToRtransOnMOD sačuvali kad smo AutoADD_MOD_Rtrans_From_MOD_Rtrano za OLD Artikl 
+         decimal RAMulazCij = ZXC.DivSafe(ukRAMfinIzlazSUM, ukMOC_MOS_RAMkolIzlazSUM);
 
-         decimal MOD_PCK_Artikl_FinDelta_RAMplus  = RAMplus .NotZero() ? Get_MOD_PCK_Artikl_FinDelta_RAMplus (ukRAMfinIzlazSUM, ukRAMkolUlazSUM, /*RAMdelta*/RAMplus) : 0M;
-         decimal MOD_PCK_Artikl_FinDelta_RAMminus = RAMminus.NotZero() ? Get_MOD_PCK_Artikl_FinDelta_RAMminus(MOD_PCK_OLD_Artikl_Fin, artikl_rec                    ) : 0M;
+         decimal MOD_PCK_Artikl_FinDelta_RAMplus  = RAMplus .NotZero() ? Get_MOD_PCK_Artikl_FinDelta_RAMplus (ukRAMfinIzlazSUM, ukMOC_MOS_RAMkolIzlazSUM, /*RAMdelta*/RAMplus) : 0M;
+       //decimal MOD_PCK_Artikl_FinDelta_RAMminus = RAMminus.NotZero() ? Get_MOD_PCK_Artikl_FinDelta_RAMminus(MOD_PCK_OLD_Artikl_Fin, artikl_rec, RAMminus          ) : 0M;
+         decimal MOD_PCK_Artikl_FinDelta_RAMminus = RAMminus.NotZero() ? /*ukRAMfinIzlazSUM*/ RAMminus * RAMulazCij                                                   : 0M;
 
-         rtrans_rec.T_cij = MOD_PCK_OLD_Artikl_Fin + (MOD_PCK_Artikl_FinDelta_RAMplus - MOD_PCK_Artikl_FinDelta_RAMminus);
+         decimal thisNewArtiklCut = ZXC.DivSafe(RAMminus, ukMOC_MOS_RAMkolIzlazSUM);
+
+         decimal newPCK_ArtiklFinSaldo = (ukPCKfinIzlazSUM - ukRAMfinIzlazSUM) * thisNewArtiklCut;
+
+         rtrans_rec.T_cij = newPCK_ArtiklFinSaldo;
       }
 
       rtrans_rec.VvDao.ADDREC(TheDbConnection, rtrans_rec);
@@ -5260,7 +5268,7 @@ public class MOD_PTG_DUC : FakturPDUC
       bool isOLDartiklLoosingRAM = isOLDartikl && rtrano_rec.T_dimY.NotZero(); // ci2.iT_RAM_minus = ci2.iT_dimY 
 
       if(isKomponenta         ) ukRAMfinIzlazSUM += rtrans_rec.R_KC;
-      if(isOLDartiklLoosingRAM) ukRAMfinIzlazSUM += Get_MOD_PCK_Artikl_FinDelta_RAMminus(rtrans_rec.T_cij, artikl_rec);
+      if(isOLDartiklLoosingRAM) ukRAMfinIzlazSUM += Get_MOD_PCK_Artikl_FinDelta_RAMminus(rtrans_rec.T_cij, artikl_rec, RAMminus);
 
       #endregion Calc ukRAMfinIzlazSUM
 
@@ -5274,14 +5282,15 @@ public class MOD_PTG_DUC : FakturPDUC
       return RAM_cij * RAMplus;
    }
 
-   private decimal Get_MOD_PCK_Artikl_FinDelta_RAMminus(decimal OLDartikl_cij, Artikl artikl_rec)
+   private decimal Get_MOD_PCK_Artikl_FinDelta_RAMminus(decimal OLDartikl_cij, Artikl artikl_rec, decimal RAMkolMinus)
    {
-      // artikl_rec je tu FUSE                      
-      // mozda na osnovu njega pametnije procjenimo 
+      decimal MOD_PCK_Artikl_RAMfinIznos = ZXC.VvGet_25_of_100(OLDartikl_cij, 25M); // todo X posto od PCK artikla je procijenjena RAM vrijednost u PCK-u ... from ZXC.RRD 
 
-      decimal MOD_PCK_Artikl_FinDelta_RAMminus = ZXC.VvGet_25_of_100(OLDartikl_cij, 25M); // todo X posto od PCK artikla je procijenjena RAM vrijednost u PCK-u ... from ZXC.RRD 
+      decimal thisPCK_Artikl_RAM = artikl_rec.PCK_RAM;
 
-      return MOD_PCK_Artikl_FinDelta_RAMminus;
+      decimal RAMcij = ZXC.DivSafe(MOD_PCK_Artikl_RAMfinIznos, thisPCK_Artikl_RAM);
+
+      return RAMkolMinus * RAMcij;
    }
 
    #endregion SintRtranoToRtransOnMOD
