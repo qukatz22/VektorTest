@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using CrystalDecisions.Windows.Forms;
 using System.Collections.Generic;
 
-
 public class RiskReportUC              : VvReportUC
 {
    #region Fieldz
@@ -2925,7 +2924,7 @@ public partial class RiskFilterUC : VvFilterUC
 
    #region PutFilterFields(), GetFilterFields()
 
-   private VvRpt_RiSk_Filter TheRtransFilter
+   /*private*/ internal VvRpt_RiSk_Filter TheRtransFilter
    {
       // 06.04.2012: pa ovo nikada onda za PutFilterFields nije niti radilo?! 
       //get { return this.TheVvUC.VirtualRptFilter as VvRpt_RiSk_Filter; }
@@ -4232,7 +4231,7 @@ public partial class RiskFilterUC : VvFilterUC
 
    }
 
-   private void PutMacroFields(VvRiskMacro riskMacro)
+   /*private*/internal void PutMacroFields(VvRiskMacro riskMacro)
    {
       if(riskMacro == null) return;
 
@@ -4246,10 +4245,12 @@ public partial class RiskFilterUC : VvFilterUC
 
       PutFilterFields(riskMacro.RptFilter);
 
-      //TheVvUC.TheVvTabPage.TheVvForm.tsCbxReport.SelectedItem = theMacro;
-      TheVvUC.TheVvTabPage.TheVvForm.tsCbxReport.SelectedIndex = riskMacro.ReportZ;
-      // 25.11.2012: 
-      TheVvUC.TheVvTabPage.TheVvForm.tsCbxReport.SelectedItem = riskMacro.RptFilter.FuseStr2;
+      // 02.08.2024: dodan if 
+      if(TheVvUC.TheVvTabPage != null)
+      {
+         TheVvUC.TheVvTabPage.TheVvForm.tsCbxReport.SelectedIndex = riskMacro.ReportZ;
+         TheVvUC.TheVvTabPage.TheVvForm.tsCbxReport.SelectedItem  = riskMacro.RptFilter.FuseStr2;
+      }
    }
 
    private void Combbx_macro_SelectedIndexChanged(object sender, EventArgs e)

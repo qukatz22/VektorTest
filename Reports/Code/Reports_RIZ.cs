@@ -1815,7 +1815,15 @@ public class RptR_StandardRiskReport : VvRiskReport
 
 #endregion Sam Lokal Propertiz
 
-   protected RiskReportUC   TheReportUC     { get { return ZXC.TheVvForm.TheVvReportUC as RiskReportUC; } }
+   protected RiskReportUC   TheReportUC     
+   { 
+      get 
+      {
+         if(ZXC.RISK_VvPDFreporter_InProgress) return ZXC.TheVvForm.TheVvPDFreporterReportUC;
+
+         return ZXC.TheVvForm.TheVvReportUC as RiskReportUC; 
+      } 
+   }
 
    protected string FakturOrderBy
    {
