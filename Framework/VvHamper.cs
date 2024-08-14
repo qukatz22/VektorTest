@@ -2426,6 +2426,76 @@ public class VvHamper: Panel
       }
    }
 
+   private delegate int Get_ToolStripComboBoxSelectedIndex_CallBack(ToolStripComboBox theComboBox);
+   public static int Get_ToolStripComboBoxSelectedIndex_ThreadSafe(ToolStripComboBox theComboBox)
+   {
+      // InvokeRequired required compares the thread ID of the
+      // calling thread to the thread ID of the creating thread.
+      // If these threads are different, it returns true.
+
+      int selectedIndex = 0;
+
+      if(theComboBox.ComboBox.InvokeRequired)
+      {
+         Get_ToolStripComboBoxSelectedIndex_CallBack d = new Get_ToolStripComboBoxSelectedIndex_CallBack(Get_ToolStripComboBoxSelectedIndex_ThreadSafe);
+         try
+         {
+            selectedIndex = (int)theComboBox.ComboBox.Parent.Invoke(d, new object[] { theComboBox });
+         }
+         catch(ObjectDisposedException) { } // ovi se Exception stalno dize pa ga moram ovako krotiti.
+
+         return selectedIndex;
+      }
+      else
+      {
+         return theComboBox.SelectedIndex;
+      }
+   }
+
+   private delegate void Set_ComboBoxSelectedItem_CallBack (ToolStripComboBox theComboBox, Object theItem );
+   private delegate void Set_ComboBoxSelectedIndex_CallBack(ToolStripComboBox theComboBox, int    theIndex);
+   public static void Set_ComboBoxSelectedItem_ThreadSafe(ToolStripComboBox theComboBox, Object theItem)
+   {
+      // InvokeRequired required compares the thread ID of the
+      // calling thread to the thread ID of the creating thread.
+      // If these threads are different, it returns true.
+
+      if(theComboBox.ComboBox.InvokeRequired)
+      {
+         Set_ComboBoxSelectedItem_CallBack d = new Set_ComboBoxSelectedItem_CallBack(Set_ComboBoxSelectedItem_ThreadSafe);
+         try
+         {
+            theComboBox.ComboBox.Parent.Invoke(d, new object[] { theComboBox, theItem });
+         }
+         catch(ObjectDisposedException) { } // ovi se Exception stalno dize pa ga moram ovako krotiti.
+      }
+      else
+      {
+         theComboBox.SelectedItem = theItem;
+      }
+   }
+
+   public static void Set_ComboBoxSelectedIndex_ThreadSafe(ToolStripComboBox theComboBox, int theIndex)
+   {
+      // InvokeRequired required compares the thread ID of the
+      // calling thread to the thread ID of the creating thread.
+      // If these threads are different, it returns true.
+
+      if(theComboBox.ComboBox.InvokeRequired)
+      {
+         Set_ComboBoxSelectedIndex_CallBack d = new Set_ComboBoxSelectedIndex_CallBack(Set_ComboBoxSelectedIndex_ThreadSafe);
+         try
+         {
+            theComboBox.ComboBox.Parent.Invoke(d, new object[] { theComboBox, theIndex });
+         }
+         catch(ObjectDisposedException) { } // ovi se Exception stalno dize pa ga moram ovako krotiti.
+      }
+      else
+      {
+         theComboBox.SelectedItem = theIndex;
+      }
+   }
+
    private delegate void Set_DateTimePicker_CallBack  (VvDateTimePicker theDTP, DateTime theDate);
    public  static   void Set_DateTimePicker_ThreadSafe(VvDateTimePicker theDTP, DateTime theDate)
    {
@@ -2494,6 +2564,7 @@ public class VvHamper: Panel
    //      theTSSL.Text = theText;
    //   }
    //}
+
    #endregion SetControlText_ThreadSafe()
 
    #region Create_Label4PrisilniScrollZbogGrida

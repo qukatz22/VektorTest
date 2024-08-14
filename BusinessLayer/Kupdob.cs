@@ -1257,6 +1257,7 @@ public class Kupdob : VvSifrarRecord
       return Ticker + " (" + Naziv + ")" + " (" + /*RecID*/KupdobCD.ToString("000000") + ")";
    }
 
+   public static string TickerToken = " T: ";
    public static string ToSifrarString(VvDataRecord vvDataRecord, VvSQL.SorterType sifrarType, ZXC.AutoCompleteRestrictor restrictor)
    {
       Kupdob kupdob_rec = (Kupdob)vvDataRecord;
@@ -1273,13 +1274,16 @@ public class Kupdob : VvSifrarRecord
 
       switch(sifrarType)
       {
-         case VvSQL.SorterType.Name:   return kupdob_rec.Naziv;
-         //case VvSQL.SorterType.RecID: return artikl_rec.RecID.ToString();
-         case VvSQL.SorterType.Code  : return kupdob_rec.KupdobCD.ToString();
-         case VvSQL.SorterType.Person: return kupdob_rec.Prezime;
-         case VvSQL.SorterType.OIB   : return kupdob_rec.Oib;
-         case VvSQL.SorterType.Ticker: return kupdob_rec.Ticker;
-         case VvSQL.SorterType.City  : return kupdob_rec.Grad;
+         // 10.08.2024: Buon compleano! Nono Lorenzo :-) 
+         // Autocomplete duplicates pokusaj rjesenja     
+       //case VvSQL.SorterType.Name      : return kupdob_rec.Naziv;
+         case VvSQL.SorterType.Name      : return kupdob_rec.Naziv + TickerToken + kupdob_rec.Ticker;
+       //case VvSQL.SorterType.RecID     : return artikl_rec.RecID.ToString();
+         case VvSQL.SorterType.Code      : return kupdob_rec.KupdobCD.ToString();
+         case VvSQL.SorterType.Person    : return kupdob_rec.Prezime;
+         case VvSQL.SorterType.OIB       : return kupdob_rec.Oib;
+         case VvSQL.SorterType.Ticker    : return kupdob_rec.Ticker;
+         case VvSQL.SorterType.City      : return kupdob_rec.Grad;
 
          default: throw new Exception(sifrarType.ToString() + " NOT DEFINED in Kupdob.ToSifrarString(VvSQL.DokumentSorterType sifrarType)");
       }
