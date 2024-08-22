@@ -381,7 +381,7 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       {
 #if DEBUG
        //VvPDFreporter.Initialize_FileSystemWatcher(@"D:\Dropboks");
-         VvPDFreporter.Initialize_FileSystemWatcher(VvPDFreporter.GetDropBoxPath());
+         //VvPDFreporter.Initialize_FileSystemWatcher(VvPDFreporter.GetDropBoxPath());
 #endif
       }
 
