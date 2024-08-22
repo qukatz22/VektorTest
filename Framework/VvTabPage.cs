@@ -844,6 +844,8 @@ be_fast:
       }
       else
       {
+         // 22.08.2024: ovdje, za sada, mislimo staviti TH_CheckAndForceFiskalization
+
          // 15.12.2011 
          ZXC.TheVvForm.VvPref.login.TheINITIAL_VvSubModulEnum_AsInt = (int)TheVvSubModul.subModulEnum;
 

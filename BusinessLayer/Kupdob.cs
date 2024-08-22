@@ -1289,14 +1289,32 @@ public class Kupdob : VvSifrarRecord
       }
    }
 
+   public static string GetCleanKupdobNameFromTokenized(string dirtyName)
+   {
+      string cleanNaziv;
+
+      int visakIdx = dirtyName.IndexOf(Kupdob.TickerToken);
+
+      if(dirtyName.Length.NotZero() && visakIdx.IsZeroOrPositive()) //return;
+      {
+         cleanNaziv = dirtyName.Substring(0, visakIdx);
+      }
+      else
+      {
+         cleanNaziv = dirtyName;
+      }
+
+      return cleanNaziv;
+   }
+
    #endregion ToString
 
-   #region Implements IEditableObject
+      #region Implements IEditableObject
 
-   #region Utils
-   /// <summary>
-   /// this.currentData = this.backupData;
-   /// </summary>
+      #region Utils
+      /// <summary>
+      /// this.currentData = this.backupData;
+      /// </summary>
    public override void RestoreBackupData()
    {
       Generic_RestoreBackupData<KupdobStruct>(ref this.currentData, ref this.backupData);
