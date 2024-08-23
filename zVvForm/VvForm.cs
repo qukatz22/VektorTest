@@ -376,14 +376,14 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       //if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false                                    ) VvDaoBase.Send_MBF_Data_ToSKY(); // uncomment this 
       if(ZXC.ThisIsVektorProject && Getvv_PRODUCT_name() != ZXC.vv_SKYLAB_PRODUCT_Name && ZXC.IsTEXTHOany == false && ZXC.ThisIsHektorProject == false && ZXC.ThisIsSurgerProject == false) VvDaoBase.Process_MBF_Data(); // uncomment this 
 
+#if DEBUG
       // 10.08.2024: Buon compleano! Nono Lorenzo :-) 
       if(/*ZXC.RRD.Dsc_IsIntrastat*/true) // TODO!!!
       {
-#if DEBUG
-       //VvPDFreporter.Initialize_FileSystemWatcher(@"D:\Dropboks");
+         //VvPDFreporter.Initialize_FileSystemWatcher(@"D:\Dropboks");
          //VvPDFreporter.Initialize_FileSystemWatcher(VvPDFreporter.GetDropBoxPath());
-#endif
       }
+#endif
 
       #region Diseble Some TS_Buttons
 
