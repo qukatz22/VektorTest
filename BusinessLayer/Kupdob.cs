@@ -1257,7 +1257,12 @@ public class Kupdob : VvSifrarRecord
       return Ticker + " (" + Naziv + ")" + " (" + /*RecID*/KupdobCD.ToString("000000") + ")";
    }
 
-   public static string TickerToken = " T: ";
+ //public static string TickerToken = " T: ";
+   public static string TickerToken = " Sif: ";
+
+ //public string NazivUniqueAddition { get { return this.Ticker; } }
+   public string NazivUniqueAddition { get { return this.KupdobCD.ToString("000000"); } }
+
    public static string ToSifrarString(VvDataRecord vvDataRecord, VvSQL.SorterType sifrarType, ZXC.AutoCompleteRestrictor restrictor)
    {
       Kupdob kupdob_rec = (Kupdob)vvDataRecord;
@@ -1277,7 +1282,7 @@ public class Kupdob : VvSifrarRecord
          // 10.08.2024: Buon compleano! Nono Lorenzo :-) 
          // Autocomplete duplicates pokusaj rjesenja     
        //case VvSQL.SorterType.Name      : return kupdob_rec.Naziv;
-         case VvSQL.SorterType.Name      : return kupdob_rec.Naziv + TickerToken + kupdob_rec.Ticker;
+         case VvSQL.SorterType.Name      : return kupdob_rec.Naziv + TickerToken + kupdob_rec.NazivUniqueAddition;
        //case VvSQL.SorterType.RecID     : return artikl_rec.RecID.ToString();
          case VvSQL.SorterType.Code      : return kupdob_rec.KupdobCD.ToString();
          case VvSQL.SorterType.Person    : return kupdob_rec.Prezime;
