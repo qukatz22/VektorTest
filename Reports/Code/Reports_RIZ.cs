@@ -1297,14 +1297,18 @@ public /*partial*/ class RptR_IRA : VvRiskReport
       }
 
       // 15.07.2024: Tetragram Incognito 
-      bool isIncognitoKupdob = /*true*/false; // TODO 
+
+    //bool isIncognitoKupdob = /*true*/false; // TODO 
+      bool isIncognitoKupdob = theDUC.TheFakturDocFilterUC.Fld_OcuMalopKD_Print;
       if(faktur_rec.TtInfo.IsExtendableTT && isIncognitoKupdob)
       {
          faktur_rec.KupdobCD = faktur_rec.PosJedCD = ZXC.RRD.MalopKupdob_rec.KupdobCD;
 
-         faktur_rec.KdOib = "";
+         faktur_rec.KdOib    = "";
+         faktur_rec.KdUlica = faktur_rec.KdMjesto = faktur_rec.KdZip = "";
          faktur_rec.Transes.ForEach(rtr => rtr.T_kupdobCD = faktur_rec.KupdobCD);
       }
+      //theDUC.TheFakturDocFilterUC.Fld_OcuMalopKD_Print = false; // ??????? kako i kada ga ponistiti
 
       TheFakturList.Add(faktur_rec);
 
