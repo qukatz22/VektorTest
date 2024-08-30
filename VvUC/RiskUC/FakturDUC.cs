@@ -30,7 +30,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                    hampCbxM_projekt, hampCbxM_skladCd, hampCbxM_opis, hampCbxM_osobaX, hampCbxM_prjIdent,
                    hamp_IznosUvaluti, hamp_twin, hamp_obrMPC, hamp_ciljaniMPC, hamp_S_pix, hamp_twin_pix,
                    hamp_irmInfoLabela, hamp_HappyHour, hamp_irmKuponOUT, hamp_irmKuponIN, hamp_decimal, hamp_sumeRNM, hamp_ugoSvDuh, hamp_SumUGAN_PTG, hamp_SumOPL_PTG,
-                   hamp_otPlanRows, hamp_m2payConected;
+                   hamp_otPlanRows, hamp_m2payConected, hamp_incognitoPrint;
 
    private VvTextBox tbx_DokNum,
                      /*tbx_SkladCd,*/
@@ -453,7 +453,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else                hamp_ciljaniMPC.Location = new Point(TheG.Right - hamp_IznosUvaluti.Width - hamp_ciljaniMPC.Width, hamp_IznosUvaluti.Top);
 
          hamp_ciljaniMPC.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-
 
       }
       else
@@ -7632,7 +7631,7 @@ public partial class FakturExtDUC : FakturDUC
    protected /*private*/ RadioButton rbt_nijeCarina, rbt_spediter, rbt_carina;
    private CheckBox cbx_isCash, cbx_isCash2, cbx_isRed/*, cbx_isKpnOUT*/;
 
-    public CheckBox cbx_isKpnOUT;
+    public CheckBox cbx_isKpnOUT, cbx_isIncognito_Print;
 
    // 07.06.2018: 
    public DateTime Prev_ParagonIRM_Date;
@@ -7916,6 +7915,10 @@ public partial class FakturExtDUC : FakturDUC
          InitializeHamper_PlnRlz_UGO(out hamp_ugoSvDuh);
       }
 
+      if(ZXC.IsTETRAGRAM_ANY)
+      { 
+         InitializeHamper_IsIncognitoPrint(out hamp_incognitoPrint);
+      }
    }
 
    private void InitializeHamper_kupdobNaziv(out VvHamper hamper)
@@ -9665,6 +9668,25 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Name = "AeRproc:";
 
    }
+
+   private void InitializeHamper_IsIncognitoPrint(out VvHamper hamper)
+   {
+      hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q5un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      cbx_isIncognito_Print  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Inkognito", System.Windows.Forms.RightToLeft.No);
+      
+      cbx_isIncognito_Print.Tag = hamp_HappyHour;  // zato da se ponasa neovisno o bijelo/zuto
+      hamper.Visible = false;
+   }
+
 
 #endregion Hampers
 
@@ -12572,9 +12594,11 @@ public partial class FakturExtDUC : FakturDUC
       set { tbx_eRprocOpis.Text = value; }
    }
 
-#endregion Fld_
+ //public bool Fld_IsIncognito_Print { get { return cbx_isIncognito_Print.Checked; } set { cbx_isIncognito_Print.Checked = value; } }
 
-#region PutExtFields(), GetExtFields() PutTransSumToDocumentSumFields_Ext()
+   #endregion Fld_
+
+   #region PutExtFields(), GetExtFields() PutTransSumToDocumentSumFields_Ext()
 
    protected override void SetDefaulFakExDucFields()
    {
@@ -12690,6 +12714,10 @@ public partial class FakturExtDUC : FakturDUC
 
          Fld_StatusCD   = "O"; 
       }
+
+      //30.08.2024. za novi
+    //Fld_IsIncognito_Print = false;
+
    }
 
    protected override void PutExtFields(Faktur faktur/*FaktEx faktEx*/, bool isCopyingToAnotherDUC)
@@ -13144,6 +13172,10 @@ public partial class FakturExtDUC : FakturDUC
 
       //fransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable       // 28.05.2012. premjesteno
       //DecideIfShouldLoad_TransDGV(null, null, null);
+
+      //30.08.2024.
+    //if(CtrlOK(cbx_isIncognito_Print)) Fld_IsIncognito_Print = false;
+
 
 #region PTG Additions
 

@@ -5432,7 +5432,7 @@ public class FakturDocFilterUC    : VvFilterUC
                      cbx_OcuDevCijAndDevTec, cbx_OcuRokIsporDokDate, cbx_OcuMtrosName,
                      cbx_OcuDateX, cbx_OcuPomakVirmana, cbx_OcuPosPrint, cbx_OcuMojuPoslJed, cbx_OcuDatumRacuna,
                      cbx_OcuNapomUmjKupDob, cbx_OcuLikvidator, cbx_Ocu_OTS_saldo, cbx_Ocu_BarkodTtNum, cbx_Ocu_MemoAddGore,
-                     cbx_necuFiskalDodatak, cbx_Ocu_BarKodPDF417, cbx_Necu_prikazEUR, cbx_OcuMalopKD_Print;
+                     cbx_necuFiskalDodatak, cbx_Ocu_BarKodPDF417, cbx_Necu_prikazEUR;
 
    private VvTextBox   tbx_lblPrjktPerson, tbx_lblUserPerson, tbx_lblOsobaA, tbx_lblOsobaB, 
                        tbx_ValName, tbx_nazivPoslJed,
@@ -7193,12 +7193,7 @@ public class FakturDocFilterUC    : VvFilterUC
       tbx_obrazacD.Font =
       tbx_obrazacE.Font = ZXC.vvFont.SmallFont;
 
-      //26.08.2024.
-      cbx_OcuMalopKD_Print = hamper.CreateVvCheckBox_OLD(0, 7, null, 1, 0, "Inkognito", System.Windows.Forms.RightToLeft.No);
-      cbx_OcuMalopKD_Print.Visible = ZXC.IsTETRAGRAM_ANY && (TheVvUC is IRA_MPC_DUC || TheVvUC is PON_MPC_DUC);
-
-
-      if(TheVvUC is IFADUC || TheVvUC is PonMalDUC || TheVvUC is IRMDUC_2 || TheVvUC is IRPDUC)
+           if(TheVvUC is IFADUC || TheVvUC is PonMalDUC || TheVvUC is IRMDUC_2 || TheVvUC is IRPDUC)
       {
          rbt_ira2    .Visible =
          rbt_ira3    .Visible =
@@ -8566,7 +8561,6 @@ public class FakturDocFilterUC    : VvFilterUC
    public bool    Fld_OcuMemoAddGore    { get { return cbx_Ocu_MemoAddGore  .Checked; } set { cbx_Ocu_MemoAddGore  .Checked = value; } }
    public bool    Fld_NecuFiskalDodatak { get { return cbx_necuFiskalDodatak.Checked; } set { cbx_necuFiskalDodatak.Checked = value; } }
    public bool    Fld_Necu_prikazEUR    { get { return cbx_Necu_prikazEUR   .Checked; } set { cbx_Necu_prikazEUR   .Checked = value; } }
-   public bool    Fld_IsIncognito_Print  { get { return cbx_OcuMalopKD_Print.Checked; } set { cbx_OcuMalopKD_Print.Checked = value; } }
 
    #endregion Fld_
 

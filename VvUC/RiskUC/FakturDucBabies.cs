@@ -7976,6 +7976,10 @@ public class PON_MPC_DUC           : FakturExtDUC
     //hamp_opis.Location = new Point(hamp_tt.Right, hamp_tt.Top);
       hamp_opis.Location = new Point(hamp_v1TT.Right, hamp_tt.Top);
       hamp_opis.BringToFront();
+
+    //hamp_incognitoPrint.Location = new Point(ZXC.Qun4, hamp_IznosUvaluti.Top);
+    //hamp_incognitoPrint.Visible = true;
+
    }
 
    private void CreateArrOfHampers()
@@ -8099,6 +8103,10 @@ public class IRA_MPC_DUC              : FakturExtDUC
          hamp_napomena2 .Visible = false;
          hamp_tipOtpreme.Visible = false;
       }
+
+    //hamp_incognitoPrint.Location = new Point(ZXC.Qun4, hamp_IznosUvaluti.Top);
+    //hamp_incognitoPrint.Visible = true;
+
    }
 
    private void CreateArrOfHampers()
