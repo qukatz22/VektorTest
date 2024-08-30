@@ -8566,7 +8566,7 @@ public class FakturDocFilterUC    : VvFilterUC
    public bool    Fld_OcuMemoAddGore    { get { return cbx_Ocu_MemoAddGore  .Checked; } set { cbx_Ocu_MemoAddGore  .Checked = value; } }
    public bool    Fld_NecuFiskalDodatak { get { return cbx_necuFiskalDodatak.Checked; } set { cbx_necuFiskalDodatak.Checked = value; } }
    public bool    Fld_Necu_prikazEUR    { get { return cbx_Necu_prikazEUR   .Checked; } set { cbx_Necu_prikazEUR   .Checked = value; } }
-   public bool    Fld_OcuMalopKD_Print  { get { return cbx_OcuMalopKD_Print.Checked; } set { cbx_OcuMalopKD_Print.Checked = value; } }
+   public bool    Fld_IsIncognito_Print  { get { return cbx_OcuMalopKD_Print.Checked; } set { cbx_OcuMalopKD_Print.Checked = value; } }
 
    #endregion Fld_
 

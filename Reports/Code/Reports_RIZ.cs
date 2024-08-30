@@ -1299,7 +1299,7 @@ public /*partial*/ class RptR_IRA : VvRiskReport
       // 15.07.2024: Tetragram Incognito 
 
     //bool isIncognitoKupdob = /*true*/false; // TODO 
-      bool isIncognitoKupdob = theDUC.TheFakturDocFilterUC.Fld_OcuMalopKD_Print;
+      bool isIncognitoKupdob = theDUC.TheFakturDocFilterUC.Fld_IsIncognito_Print;
       if(faktur_rec.TtInfo.IsExtendableTT && isIncognitoKupdob)
       {
          faktur_rec.KupdobCD = faktur_rec.PosJedCD = ZXC.RRD.MalopKupdob_rec.KupdobCD;
