@@ -7915,10 +7915,8 @@ public partial class FakturExtDUC : FakturDUC
          InitializeHamper_PlnRlz_UGO(out hamp_ugoSvDuh);
       }
 
-      if(ZXC.IsTETRAGRAM_ANY)
-      { 
-         InitializeHamper_IsIncognitoPrint(out hamp_incognitoPrint);
-      }
+      InitializeHamper_IsIncognitoPrint(out hamp_incognitoPrint);
+
    }
 
    private void InitializeHamper_kupdobNaziv(out VvHamper hamper)
@@ -9673,7 +9671,7 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q5un };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -9681,9 +9679,9 @@ public partial class FakturExtDUC : FakturDUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isIncognito_Print  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Inkognito", System.Windows.Forms.RightToLeft.No);
-      
-      cbx_isIncognito_Print.Tag = hamp_HappyHour;  // zato da se ponasa neovisno o bijelo/zuto
+      cbx_isIncognito_Print  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Print inkognito", System.Windows.Forms.RightToLeft.No);
+      cbx_isIncognito_Print.Tag = hamp_incognitoPrint;  // zato da se ponasa neovisno o bijelo/zuto
+
       hamper.Visible = false;
    }
 
@@ -12594,7 +12592,7 @@ public partial class FakturExtDUC : FakturDUC
       set { tbx_eRprocOpis.Text = value; }
    }
 
- //public bool Fld_IsIncognito_Print { get { return cbx_isIncognito_Print.Checked; } set { cbx_isIncognito_Print.Checked = value; } }
+   public bool Fld_IsIncognito_Print { get { return cbx_isIncognito_Print.Checked; } set { cbx_isIncognito_Print.Checked = value; } }
 
    #endregion Fld_
 
@@ -12716,7 +12714,7 @@ public partial class FakturExtDUC : FakturDUC
       }
 
       //30.08.2024. za novi
-    //Fld_IsIncognito_Print = false;
+      Fld_IsIncognito_Print = false;
 
    }
 
@@ -13174,7 +13172,7 @@ public partial class FakturExtDUC : FakturDUC
       //DecideIfShouldLoad_TransDGV(null, null, null);
 
       //30.08.2024.
-    //if(CtrlOK(cbx_isIncognito_Print)) Fld_IsIncognito_Print = false;
+      if(CtrlOK(cbx_isIncognito_Print)) Fld_IsIncognito_Print = false;
 
 
 #region PTG Additions
