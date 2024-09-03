@@ -1296,10 +1296,9 @@ public /*partial*/ class RptR_IRA : VvRiskReport
          faktur_rec.ConvertOtherMoneyPropertiez(theDUC, ZXC.MoneyConversionKind.dijeljenje);
       }
 
-      // 15.07.2024: Tetragram Incognito 
+    // 02.09.2024: Tetragram Incognito 
+      bool isIncognitoKupdob = theDUC is FakturExtDUC ? (theDUC as FakturExtDUC).Fld_IsIncognito_Print : false;
 
-      //bool isIncognitoKupdob = /*true*/false; // TODO 
-      bool isIncognitoKupdob = (theDUC as FakturExtDUC).Fld_IsIncognito_Print;
       if(faktur_rec.TtInfo.IsExtendableTT && isIncognitoKupdob)
       {
          faktur_rec.KupdobCD = faktur_rec.PosJedCD = ZXC.RRD.MalopKupdob_rec.KupdobCD;
