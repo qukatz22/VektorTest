@@ -2011,6 +2011,9 @@ public class Ptrans : VvTransRecord
 
          isBlagdanZaPr3mj = ptrane_rec.T_rsOO == "99" && ptrane_rec.T_vrstaR_name.ToUpper().Contains("BLAGDAN") && ptrane_rec.T_dokDate >= new DateTime(2024, 02, 01);
 
+         // dodano 03.09.2024. za ZarPticu jer ovo njima ne pase
+         if(ZXC.vvDB_VvDomena == "vvZP" && ptrane_rec.T_dokDate >= new DateTime(2024, 09, 01)) isBlagdanZaPr3mj = false;
+
          #endregion isBlagdanZaPr3mj  za HZTK
 
          #region HZTK prekovremeno
