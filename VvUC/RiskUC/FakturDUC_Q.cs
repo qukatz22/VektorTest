@@ -311,7 +311,6 @@ public struct TtInfo
             case Faktur.TT_MVI: // !!! 
 
             case Faktur.TT_MOI: 
-            case Faktur.TT_MOU: 
 
                return ZXC.TtProposeCijenaKindEnum.Propose_PrNabCij;
 
@@ -320,6 +319,7 @@ public struct TtInfo
             case Faktur.TT_PUM: // Proizvodnja ulaz 
             case Faktur.TT_TRM: // Proizvodnja ulaz - MALOPRODAJA !!! ??? 
             case Faktur.TT_RNU: // Proizvodnja ulaz 
+            case Faktur.TT_MOU:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_PrOfPrNabCij_SumeSastojaka;
 
