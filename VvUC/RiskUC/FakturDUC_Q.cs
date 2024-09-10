@@ -7467,12 +7467,21 @@ public partial class FakturExtDUC : FakturDUC
          }
          else if(this.sifrarSorterType == VvSQL.SorterType.Name && tb.Text != "") // ako smo dosli iz naziva, a artikl_rec je null, to je onda 'qwe' pattern (ne postoji kao sifrar) 
          {
-            //Fld_PrjArtName = tb.Text;
+          //Fld_PrjArtName = tb.Text;
             Fld_PrjArtCD = "";
          }
          else
          {
             Fld_PrjArtCD = Fld_PrjArtName = "";
+
+            if(this is MOD_PTG_DUC)
+            {
+               (this as MOD_PTG_DUC).Fld_PTG_RamKlasa = "";
+               (this as MOD_PTG_DUC).Fld_PTG_HddKlasa = "";
+               (this as MOD_PTG_DUC).Fld_Decimal01    = 0M;
+               (this as MOD_PTG_DUC).Fld_Decimal02    = 0M;
+               (this as MOD_PTG_DUC).Fld_PTG_PCKbaza  = "";
+            }
          }
       }
    }

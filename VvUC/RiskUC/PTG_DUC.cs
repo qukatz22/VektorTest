@@ -5238,7 +5238,7 @@ public class MOD_PTG_DUC : FakturPDUC
       }
 
       decimal RAMminusGB = rtrano_rec.T_dimY;
-      decimal HDDminusGB = rtrano_rec.T_decA;
+      decimal HDDminusGB = rtrano_rec.T_decB;
 
       #endregion Init
 
