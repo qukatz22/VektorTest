@@ -127,7 +127,7 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
       Memset0(ID);
    }
 
-   public Rtrans(string theTT, Rtrano rtrano_rec, decimal _t_cij, string _t_jedMj, ushort _t_serial) : base() // PTG ONLY! 
+   public Rtrans(string theTT, Rtrano rtrano_rec, /*decimal _t_cij,*/ string _t_jedMj, ushort _t_serial) : base() // PTG ONLY! 
    {
       this.currentData = new RtransStruct();
 
@@ -149,7 +149,7 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
       this.T_kol        = rtrano_rec.T_kol       ;
       this.T_jedMj      = _t_jedMj               ;
 
-      this.T_cij        = _t_cij                 ;
+    //this.T_cij        = _t_cij                 ;
    }
 
    public Rtrans(Rtrano rtrano_rec, decimal _t_cij, string _t_jedMj, ushort _t_serial) : base() // PTG ONLY! 

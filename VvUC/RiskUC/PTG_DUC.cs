@@ -5242,7 +5242,9 @@ public class MOD_PTG_DUC : FakturPDUC
 
       #endregion Init
 
-      rtrans_rec = new Rtrans(Faktur.TT_MOI, rtrano_rec, theCij, t_jedMj, ++t_serial);
+      rtrans_rec = new Rtrans(Faktur.TT_MOI, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
+
+      rtrans_rec.T_cij = theCij;
 
       rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
 
@@ -5290,7 +5292,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
       #endregion Init
 
-      rtrans_rec = new Rtrans(Faktur.TT_MOU, rtrano_rec, theCij, t_jedMj, ++t_serial);
+      rtrans_rec = new Rtrans(Faktur.TT_MOU, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
 
       rtrans_rec.T_artiklName = NEWartikl_rec.ArtiklName;
 
