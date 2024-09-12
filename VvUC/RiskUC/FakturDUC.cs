@@ -13031,8 +13031,9 @@ public partial class FakturExtDUC : FakturDUC
       // MOD Fin Ulaz / Izlaz 
       if(this is MOD_PTG_DUC)
       {
-         decimal finUlaz  = faktur.TrnNonDel.Where(rtr => rtr.TtInfo.IsMODulazTT ).Sum(rtr => rtr.R_KC);
-         decimal finIzlaz = faktur.TrnNonDel.Where(rtr => rtr.TtInfo.IsMODizlazTT).Sum(rtr => rtr.R_KC);
+         decimal finUlaz  = faktur.TrnNonDel_PULX_ALL                                 .Sum(rtr => rtr.R_KC);
+       //decimal finUlaz  = faktur.TrnNonDel_ALL.Where(rtr => rtr.TtInfo.IsMODulazTT ).Sum(rtr => rtr.R_KC);
+         decimal finIzlaz = faktur.TrnNonDel    .Where(rtr => rtr.TtInfo.IsMODizlazTT).Sum(rtr => rtr.R_KC);
 
          if(CtrlOK(tbx_twin_pixKC)) Fld_TwinS_pixKC      = finIzlaz;
          if(CtrlOK(tbx_twin_pixKC)) Fld_TwinS_puxKC_P    = finUlaz ;

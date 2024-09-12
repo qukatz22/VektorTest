@@ -778,6 +778,20 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, dependentSplitTT_Rtrans_rec, /*actionType*/ VvSQL.DB_RW_ActionType.UTIL /* actionType da bude bilo sta osim RWT jeer u rekurziju ne dolaze backup nego currentData */ , thisRecursiveLevel + 1);
             }
          }
+
+         // MOU pass 
+         dependent_RtransList = GetDependentSplitTtRtransesOnProizvDocuments(conn, rtrans_rec, Faktur.TT_MOU, Faktur.TT_MOI);
+
+         if(dependent_RtransList != null) // dakle, IMA ovisnih knjizenja po drugim skladistima 
+         {
+            // REKURZIJA 
+            //recursiveLevel++;
+            foreach(Rtrans dependentSplitTT_Rtrans_rec in dependent_RtransList)
+            {
+               Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, dependentSplitTT_Rtrans_rec, /*actionType*/ VvSQL.DB_RW_ActionType.UTIL /* actionType da bude bilo sta osim RWT jeer u rekurziju ne dolaze backup nego currentData */ , thisRecursiveLevel + 1);
+            }
+         }
+
       }
 
       #endregion SplitTT pass (Proizvodnja)
@@ -1227,6 +1241,25 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          message += StringOfFakturList(fakturForRwtrecList, true);
          if(isExplicitCall) ZXC.aim_emsg(MessageBoxIcon.Information, "Revalorizacija PIP cijene je gotova. Dokumenti:\n\n{0}", message);
       }
+
+      // MOU-MOI pass 
+      rtransInTroubleList = GetPulRtranses_HavingDescrepancies_List(conn, Faktur.TT_MOU, Faktur.TT_MOI, false);
+
+      if(rtransInTroubleList != null)
+      {
+         // RwtNewValuesFor_PulxRtranses_HavingDescrepancies(conn, rtransInTroubleList);
+
+         // 10.11.2014: dodano tek sada. Bijo BUG! 
+         fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
+         ZXC.aim_log("[MOU/MOI] Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
+
+         if(isExplicitCall)
+         {
+            message += StringOfFakturList(fakturForRwtrecList, true);
+            ZXC.aim_emsg(MessageBoxIcon.Information, "Revalorizacija MOU cijene je gotova. Dokumenti:\n\n{0}", message);
+         }
+      }
+
       //#endif
    }
 

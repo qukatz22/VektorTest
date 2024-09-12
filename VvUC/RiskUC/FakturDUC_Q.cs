@@ -553,6 +553,8 @@ public struct TtInfo
                      // ...dodati taj novi SplitTT pass za REKURZIJU !!!                                                              
       Faktur.TT_RNU,
 
+      Faktur.TT_MOU,
+
    };
    /// <summary>
    /// Ovaj TT utjece na FinSt skladista po PrNabCij koja je iskalkulirana po SUMI linkanihIzlaza (cijena na Ulaznoj Proizvodnji je suma PrNabCij sa njegovih Izlaznih Proizvodnji.
@@ -838,6 +840,8 @@ public struct TtInfo
       Faktur.TT_PUM,
       Faktur.TT_TRM,
       Faktur.TT_RNU,
+
+      Faktur.TT_MOU,
    };
    public bool IsSplitProizvodnjaULAZ { get { return arraySplitProizvodnjaULAZ.Contains(TheTT); } }
 
@@ -846,6 +850,8 @@ public struct TtInfo
       Faktur.TT_PIX,
       Faktur.TT_PIM,
       Faktur.TT_TRI,
+
+      Faktur.TT_MOI,
    };
    public bool IsSplitProizvodnjaIZLAZ { get { return arraySplitProizvodnjaIZLAZ.Contains(TheTT); } }
 
@@ -1171,6 +1177,9 @@ public struct TtInfo
 
       if(TheTT == Faktur.TT_RNM) SplitTT       = Faktur.TT_RNU;
       if(TheTT == Faktur.TT_RNU) LinkedIzlazTT = Faktur.TT_RNM;
+
+      if(TheTT == Faktur.TT_MOI) SplitTT       = Faktur.TT_MOU;
+      if(TheTT == Faktur.TT_MOU) LinkedIzlazTT = Faktur.TT_MOI;
 
       #endregion Proizvodnja
 
@@ -2923,7 +2932,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
 
-            if(this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty()) ZXC.aim_emsg_List(string.Format("Dodao {0} novih PCK artikla.", new_MOC_MOS_ArtiklCDlist.Count), new_MOC_MOS_ArtiklCDlist);
+            if(this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty())
+            {
+               // 12.09.2024: pokusasj da se FORCE ucitavanje sifrara (a s obzirom na [sifrarArtiklLastLoaded < sifrarLastChanged]) 
+               VvUserControl.sifrarArtiklLastLoaded = DateTime.MinValue;
+               SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
+
+               ZXC.aim_emsg_List(string.Format("Dodao {0} novih PCK artikla.", new_MOC_MOS_ArtiklCDlist.Count), new_MOC_MOS_ArtiklCDlist);
+            }
 
          } // if(this is FakturPDUC) 
 

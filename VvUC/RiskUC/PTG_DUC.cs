@@ -5234,7 +5234,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
       if(theCij.IsZero()) // za OLD Artikle i Komponente ocekujemo imati neku odprije cijenu 
       {
-         ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r{0}", artikl_rec);
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r[{0}]", artikl_rec);
       }
 
       decimal RAMminusGB = rtrano_rec.T_dimY;
