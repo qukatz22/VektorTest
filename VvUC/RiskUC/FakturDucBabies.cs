@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -1870,6 +1870,12 @@ public class IRMDUC_2            : FakturExtDUC
          { 
             Faktur.TT_IRM
          });
+
+      if(ZXC.RRD.Dsc_IsM2PAY == true)
+      {
+         TheVvTabPage.TheVvForm.M2PAY_DirectConnect(false);
+      }
+
    }
 
    #endregion Constructor
@@ -1892,6 +1898,8 @@ public class IRMDUC_2            : FakturExtDUC
 
       hamp_S_pnp_IZL.Visible  = ZXC.RRD.Dsc_IsPnpStVisible;
       hamp_S_pnp_IZL.Location = new Point(hamp_S_ukPdv.Left, 0);
+
+      hamp_m2payConected.Visible = ZXC.RRD.Dsc_IsM2PAY;
 
    }
 

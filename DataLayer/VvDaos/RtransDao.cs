@@ -1247,9 +1247,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       if(rtransInTroubleList != null)
       {
-         // RwtNewValuesFor_PulxRtranses_HavingDescrepancies(conn, rtransInTroubleList);
-
-         // 10.11.2014: dodano tek sada. Bijo BUG! 
          fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
          ZXC.aim_log("[MOU/MOI] Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
 
@@ -1445,6 +1442,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                //rtrans_rec.CalcTransResults(null);
                correctCij = reader.GetDecimal(lastRtransCI + 1); // trik, GetPulRtranses_HavingDescrepancies_Command() ti vrati cio Rtrans + jos jedan decimal gdje je 'correctCij' 
                rtrans_rec.TmpDecimal = correctCij; // trik, da gore kod RWTREC-a znas koja je korektna cijena 
+
                rtransList.Add(rtrans_rec);
             }
             reader.Close();
@@ -1452,6 +1450,13 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       } // using(XSqlCommand cmd 
 
       return rtransList;
+   }
+
+   private static decimal Get_MOU_cij_OnCheckPrNabCij(XSqlConnection conn, Faktur MODfaktur_rec, ushort serial_MOUrtransa_kojiTrebaNovuCijenu)
+   {
+      decimal theCij = MOD_PTG_DUC.Calc_AndOptional_ADDREC_MOD_Rtrans_From_MOD_Rtrano(conn, MODfaktur_rec, serial_MOUrtransa_kojiTrebaNovuCijenu);
+      
+      return theCij;
    }
 
    private static List<Rtrans> GetPIP_Rtranses_HavingDescrepancies_List(XSqlConnection conn, string pulxTT, string pizxTT, bool isByGR)
@@ -1468,11 +1473,11 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       // 25.11.2016: vraćamo! ipak 
       //#if PUSE_FUSE
       List<Rtrans> rtransList = new List<Rtrans>();
-      Rtrans rtrans_rec;
+      Rtrans       rtrans_rec;
 
       decimal correctCij;
 
-      //using(XSqlCommand cmd = VvSQL.GetPIP_Rtranses_HavingDescrepancies_Command(conn, pulxTT, pizxTT, isByGR))
+    //using(XSqlCommand cmd = VvSQL.GetPIP_Rtranses_HavingDescrepancies_Command(conn, pulxTT, pizxTT, isByGR))
       using(XSqlCommand cmd = VvSQL.GetPIP_Rtranses_HavingDescrepancies_Command(conn))
       {
          using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult /*| CommandBehavior.SingleRow*/))
@@ -1641,7 +1646,8 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                                                       // byDelf - 15.06.2015
                                                       //rtrans_rec.T_cij =                                    isPULXpass ? rtransInDescrepancy.TmpDecimal : rtransInDescrepancy.TheAsEx.LastPrNabCij; // VOLIA ! 
                   rtrans_rec.T_cij = ConditionalValue(rtrans_rec.T_cij, isPULXpass ?
-                     rtransInDescrepancy.TmpDecimal :
+                   //                                                                                                                 rtransInDescrepancy.TmpDecimal :
+                     rtransInDescrepancy.T_TT == Faktur.TT_MOU ? Get_MOU_cij_OnCheckPrNabCij(conn, (Faktur)faktur_rec.CreateNewRecordAndCloneItComplete(), rtrans_rec.T_serial) : rtransInDescrepancy.TmpDecimal :
                      rtransInDescrepancy.TheAsEx.LastPrNabCij, ZXC.ValOrZero_Decimal(ChkPrNbC_diff_tolerancy.Replace(".", ","), 4) * 2 / 3, ref thisFakturIsTouched);
 
                   if(!thisFakturIsTouched) ZXC.aim_log("prnbc.Not touched line: [{0}-{1}] - [{2}-{3}]", rtrans_rec.T_TT, rtrans_rec.T_ttNum, rtrans_rec.T_cij.ToStringVv(), oldVal.ToStringVv());
@@ -1649,7 +1655,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                   // 20.05.2015:  za svaki slucaj, a ne skodi: 
                   if(rtrans_rec.T_TT == Faktur.TT_ZPC && thisFakturIsTouched)
                   {
-                     rtrans_rec.T_kol = rtransInDescrepancy.TheAsEx.StanjeKol; // VOLIA ! 
+                     rtrans_rec.T_kol      = rtransInDescrepancy.TheAsEx.StanjeKol   ; // VOLIA ! 
                      rtrans_rec.T_doCijMal = rtransInDescrepancy.TheAsEx.PrevMalopCij; // VOLIA ! 
                                                                                        //rtrans_rec.T_doCijMal = rtransInDescrepancy.TheAsEx.LastUlazMPC ; 
 

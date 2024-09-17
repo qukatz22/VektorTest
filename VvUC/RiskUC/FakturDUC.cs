@@ -8870,8 +8870,10 @@ public partial class FakturExtDUC : FakturDUC
       tbx_NacPlacRbt.JAM_ReadOnly = true;
       tbx_NacPlacRbt.JAM_IsForPercent = true;
 
-      if(ZXC.RRD.Dsc_IsM2PAY)
-      {
+      // 17.09.2024: 
+    //if(ZXC.RRD.Dsc_IsM2PAY)
+      if(ZXC.RRD.Dsc_IsM2PAY && ZXC.IsTEXTHOshop) // TH-u je na Novi default Gotovina a kod SAVE-a mogu odabrati SpremiKart 
+      {                                           // ostali (Ducati, ...) trebaju imati i mogucnost 'virman'                
          tbx_NacPlac.JAM_ReadOnly = true;
       }
       else
