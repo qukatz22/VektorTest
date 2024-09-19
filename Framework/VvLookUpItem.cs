@@ -133,20 +133,35 @@ public class VvLookUpItem : IDisposable, IEditableObject
       return false;
    }
 
-   // Object class overrides
+   // od 19.09.2024: novi Equals
+ //public override bool Equals(object obj)
+ //{
+ //   if (obj is VvLookUpItem)
+ //   {
+ //      VvLookUpItem lui = (VvLookUpItem)obj;
+ //
+ //      //qweqwe
+ //      return(this._name.ToLower().Equals(lui.Name.ToLower()));
+ //      //return(this._cd.Equals(lui.Cd));
+ //   }
+ //
+ //   return false;
+ //}
+
    public override bool Equals(object obj)
    {
-      if (obj is VvLookUpItem)
+      if(obj is VvLookUpItem)
       {
          VvLookUpItem lui = (VvLookUpItem)obj;
 
-         return(this._name.ToLower().Equals(lui.Name.ToLower()));
-         //return(this._cd.Equals(lui.Cd));
+         if(_cd  .NotEmpty()) return (this._cd            .Equals(lui.Cd            ));
+         if(_name.NotEmpty()) return (this._name.ToLower().Equals(lui.Name.ToLower()));
+
+         return false;
       }
 
       return false;
    }
-
    public override int GetHashCode()
    {
       return this.Cd.GetHashCode();

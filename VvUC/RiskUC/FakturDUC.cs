@@ -12693,8 +12693,13 @@ public partial class FakturExtDUC : FakturDUC
          if(ZXC.luiListaRiskVrstaPl.Sum(l => l.Number).IsZero()) // znaci NEMA razvrstanih rabata po NacPlac 
          {
             lui = ZXC.luiListaRiskVrstaPl.FirstOrDefault(l => l.Flag == true); // dakle, daj PRVOGA koji ima IsNacPlacCash 
-         }
 
+            // 18.09.2024: 
+            if(ZXC.vvDB_VvDomena == "vvDU")
+            {
+               lui = ZXC.luiListaRiskVrstaPl.FirstOrDefault(l => l.Flag == false); // dakle, daj PRVOGA koji NEMA IsNacPlacCash 
+            }
+         }
          if(lui != null)
          {
             Fld_NacPlac = lui.Cd;
