@@ -4156,7 +4156,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       // 14.06.2023: 
       if(TheVvTabPage.TheVvForm.Is_M2P_AuthorizationNeeded(faktur_rec))
       {
-         (this as FakturExtDUC).M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetTransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
+         (this as FakturExtDUC).M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
       }
 
       ftransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable
