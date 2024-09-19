@@ -9681,7 +9681,7 @@ public partial class FakturExtDUC : FakturDUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isIncognito_Print  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Print inkognito", System.Windows.Forms.RightToLeft.No);
+      cbx_isIncognito_Print  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Maloprodaja", System.Windows.Forms.RightToLeft.No);
       cbx_isIncognito_Print.Tag = hamp_incognitoPrint;  // zato da se ponasa neovisno o bijelo/zuto
 
       hamper.Visible = false;
