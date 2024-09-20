@@ -149,7 +149,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    //protected bool isThisVelepDUC;
 
    public Label irmInfoLabel;
-   public Label m2PayConectedLabel;
+   public Label m2PayConectedLabel, m2PayStatusLabel;
 
    protected DateTime SVD_UGO_datZadByART = DateTime.MinValue;
    protected decimal SVD_UGO_ostvarenoOGbyART_KCRP_SUM = 0M;
@@ -1584,12 +1584,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
 
       //hamper.VvColWdt      = new int[] { ZXC.Q10un*2   };
-      hamper.VvColWdt = new int[] { ZXC.Q10un + ZXC.Q2un };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q2un };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       irmInfoLabel = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
@@ -1600,19 +1600,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private void InitializeHamper_M2PayConectedLabel(out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
+      hamper = new VvHamper(2, 2, "", ThePolyGridTabControl.TabPages[0], false);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q2un      };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol };
+      hamper.VvColWdt      = new int[] { ZXC.Q2un     , ZXC.Q4un  };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, ZXC.Qun12 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.Qun2 };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun2 };
+      hamper.VvRowHgt       = new int[] { ZXC.Qun2, ZXC.Qun4 };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4,        0 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      m2PayConectedLabel = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
+      m2PayConectedLabel           = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleLeft);
       m2PayConectedLabel.BackColor = ZXC.M2PAY_Device_Connected ? Color.Green : Color.Red;
 
+      m2PayStatusLabel = hamper.CreateVvLabel(1, 0, "", 0, 1, ContentAlignment.MiddleLeft);
+      
       hamper.Visible = false;
    }
 
@@ -4153,10 +4155,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          TheSumGrid2.ClearSelection();
       }
 
-      // 14.06.2023: 
+      // 14.06.2024: 
       if(TheVvTabPage.TheVvForm.Is_M2P_AuthorizationNeeded(faktur_rec))
       {
          (this as FakturExtDUC).M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
+        
+         if((this as FakturExtDUC).M2P_TransactionResult != null) (this as FakturExtDUC).m2PayStatusLabel.Text = (this as FakturExtDUC).M2P_TransactionResult.FinStatus.ToString();
       }
 
       ftransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable
