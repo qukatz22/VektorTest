@@ -47,7 +47,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    public VvTextBox tbx_TtNum, tbx_IznosUvaluti, tbx_S_ukK, tbx_S_ukKC, tbx_twinS_ukKC, tbx_TT, tbx_Napomena, tbx_Opis, tbx_ProjektCD,
                     tbx_twin_pixK, tbx_twin_puxK_P, tbx_twin_pixK_O, tbx_twin_puxK_All, tbx_twin_puxK_Diff, tbx_twin_puxK_Iskor,
                     tbx_twin_pixKC, tbx_twin_puxKC_P, tbx_twin_puxKC_Diff, tbx_S_ukK2,
-                    tbx_twin_pixK_OP, tbx_twin_puxK_OP, tbx_DokDate/*, tbx_PTG_KugPartner*/;
+                    tbx_twin_pixK_OP, tbx_twin_puxK_OP, tbx_DokDate/*, tbx_PTG_KugPartner*/, tbx_m2PayStatus;
    /*private*/
    protected VvTextBox tbx_SkladCd, tbx_Sklad2Cd, tbx_decimal02, tbx_v2_ttNum,
                        /*tbx_DokDate,*/ tbx_DokDate2, vvtbT_barCode1, vvtbT_artiklCD, vvtbT_artiklName, vvtbT_jedMj, vvtbT_artiklTS, vvtbT_konto,
@@ -149,7 +149,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    //protected bool isThisVelepDUC;
 
    public Label irmInfoLabel;
-   public Label m2PayConectedLabel, m2PayStatusLabel;
+   public Label m2PayConectedLabel;
 
    protected DateTime SVD_UGO_datZadByART = DateTime.MinValue;
    protected decimal SVD_UGO_ostvarenoOGbyART_KCRP_SUM = 0M;
@@ -1624,17 +1624,17 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q2un };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol};
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol + ZXC.Qun2 + ZXC.Qun12 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN + ZXC.Qun2 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN + ZXC.Qun4 + ZXC.Qun8 };
       hamper.VvSpcBefRow    = new int[] { 0};
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      m2PayStatusLabel           = hamper.CreateVvLabel(0, 0, "", ContentAlignment.MiddleCenter);
-      m2PayStatusLabel.BackColor = Color.FromArgb(26, 82, 118); 
-      m2PayStatusLabel.Font      = new Font("Calibri", 9f, FontStyle.Bold);
-      m2PayStatusLabel.ForeColor = Color.WhiteSmoke;
+      tbx_m2PayStatus               = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "M2PayStatus");
+      tbx_m2PayStatus.JAM_BackColor = Color.FromArgb(26, 82, 118); 
+      tbx_m2PayStatus.Font          = new Font("Calibri", 9f, FontStyle.Bold);
+      tbx_m2PayStatus.JAM_ForeColor = Color.WhiteSmoke;
 
       hamper.Visible = false;
    }
@@ -3488,6 +3488,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    public string Fld_PTG_KugPartner { set { tbx_PTG_KugPartner.Text = value; } }
 
+   public string Fld_M2PayStatus
+   {
+      set { tbx_m2PayStatus.Text = value; }
+   }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -4181,15 +4186,15 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          FakturExtDUC theDUC = this as FakturExtDUC;
 
-         theDUC.m2PayStatusLabel.Text = "";
+         theDUC.Fld_M2PayStatus = "";
 
          theDUC.M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
 
-         if(theDUC.M2P_TransactionResult != null) theDUC.m2PayStatusLabel.Text = theDUC.M2P_TransactionResult.FinStatus.ToString();
+         if(theDUC.M2P_TransactionResult != null) theDUC.Fld_M2PayStatus = theDUC.M2P_TransactionResult.FinStatus.ToString();
       }
       else
       {
-         (this as FakturExtDUC).m2PayStatusLabel.Text = "";
+         (this as FakturExtDUC).Fld_M2PayStatus = "";
       }
 
       ftransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable

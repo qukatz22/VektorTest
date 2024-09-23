@@ -1901,7 +1901,7 @@ public class IRMDUC_2            : FakturExtDUC
       hamp_S_pnp_IZL.Location = new Point(hamp_S_ukPdv.Left, 0);
 
       hamp_m2payConected.Visible = ZXC.RRD.Dsc_IsM2PAY;
-      hamp_m2payStatus.Visible = true;// ZXC.RRD.Dsc_IsM2PAY;
+      hamp_m2payStatus.Visible   = ZXC.RRD.Dsc_IsM2PAY;
 
    }
 
