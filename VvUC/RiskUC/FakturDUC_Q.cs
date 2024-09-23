@@ -7690,6 +7690,7 @@ public partial class FakturExtDUC : FakturDUC
    }
   
    public TransactionResult M2P_TransactionResult { get; set; }
+   public uint M2P_Xtrano_Initial_TtNum           { get; set; }
 }
 
 public class NewRecordEventArgs : EventArgs // Fuse, ali primjer kako inheritirati EventArgs te ga koristiti kao additional info u nekom EventHandler-u 

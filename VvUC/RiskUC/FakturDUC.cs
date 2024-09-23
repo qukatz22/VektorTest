@@ -1627,14 +1627,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper.VvSpcBefCol   = new int[] { faBefFirstCol + ZXC.Qun2 + ZXC.Qun12 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN + ZXC.Qun4 + ZXC.Qun8 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
       hamper.VvSpcBefRow    = new int[] { 0};
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       tbx_m2PayStatus               = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "M2PayStatus");
       tbx_m2PayStatus.JAM_BackColor = Color.FromArgb(26, 82, 118); 
-      tbx_m2PayStatus.Font          = new Font("Calibri", 9f, FontStyle.Bold);
+      tbx_m2PayStatus.Font          = new Font("Calibri", 12f/*, FontStyle.Bold*/);
       tbx_m2PayStatus.JAM_ForeColor = Color.WhiteSmoke;
+      tbx_m2PayStatus.BorderStyle   = BorderStyle.None;
+      tbx_m2PayStatus.TextAlign     = HorizontalAlignment.Center;
 
       hamper.Visible = false;
    }
@@ -4181,16 +4183,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          TheSumGrid2.ClearSelection();
       }
 
-      // 14.06.2024: 
-      if(TheVvTabPage.TheVvForm.Is_M2P_AuthorizationNeeded(faktur_rec))
+    //if(TheVvTabPage.TheVvForm.Is_M2P_AuthorizationNeeded(faktur_rec))
+      if(ZXC.RRD.Dsc_IsM2PAY && faktur_rec.TtInfo.IsPrihodTT          )
       {
          FakturExtDUC theDUC = this as FakturExtDUC;
 
          theDUC.Fld_M2PayStatus = "";
 
-         theDUC.M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
+         theDUC.M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec.TtNum);
 
-         if(theDUC.M2P_TransactionResult != null) theDUC.Fld_M2PayStatus = theDUC.M2P_TransactionResult.FinStatus.ToString();
+         if(theDUC.M2P_TransactionResult != null) theDUC.Fld_M2PayStatus = ZXC.TheVvForm.Get_M2P_TransactionStatusMessage(theDUC.M2P_TransactionResult);
       }
       else
       {
