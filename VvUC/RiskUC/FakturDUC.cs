@@ -4179,9 +4179,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       // 14.06.2024: 
       if(TheVvTabPage.TheVvForm.Is_M2P_AuthorizationNeeded(faktur_rec))
       {
-         (this as FakturExtDUC).M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
+         FakturExtDUC theDUC = this as FakturExtDUC;
 
-         if((this as FakturExtDUC).M2P_TransactionResult != null) (this as FakturExtDUC).m2PayStatusLabel.Text = (this as FakturExtDUC).M2P_TransactionResult.FinStatus.ToString();
+         theDUC.m2PayStatusLabel.Text = "";
+
+         theDUC.M2P_TransactionResult = TheVvTabPage.TheVvForm.M2P_GetLast_TransactionResultFrom_Xtrano(TheDbConnection, faktur_rec);
+
+         if(theDUC.M2P_TransactionResult != null) theDUC.m2PayStatusLabel.Text = theDUC.M2P_TransactionResult.FinStatus.ToString();
       }
       else
       {
