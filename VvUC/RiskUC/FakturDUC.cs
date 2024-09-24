@@ -3492,7 +3492,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    public string Fld_M2PayStatus
    {
-      set { tbx_m2PayStatus.Text = value; }
+      get { return tbx_m2PayStatus.Text; }
+      set 
+      { 
+         //tbx_m2PayStatus.Text = value;
+         VvHamper.Set_ControlText_ThreadSafe(tbx_m2PayStatus, value);
+      }
    }
 
    #endregion Fld_
@@ -12766,7 +12771,7 @@ public partial class FakturExtDUC : FakturDUC
       #region M2PAY reset Fld_ & M2P_xyz values
 
       M2P_TransactionResult    = null;
-      M2P_Xtrano_Initial_TtNum =    0;
+      M2P_Xtrano_Current_TtNum =    0;
       Fld_M2PayStatus          =   "";
 
       #endregion M2PAY reset Fld_ & M2P_xyz values

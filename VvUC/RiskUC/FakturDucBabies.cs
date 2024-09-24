@@ -1858,6 +1858,8 @@ public class IRMDUC              : FakturExtDUC
 
       return false;
    }
+
+   public override bool IsM2PAY_DUC { get { return (true); } }
 }
 
 public class IRMDUC_2            : FakturExtDUC
@@ -1992,6 +1994,8 @@ public class IRMDUC_2            : FakturExtDUC
    {
       SetUpColor(clr_Izlaz, clr_malop, clr_Izlaz);
    }
+   public override bool IsM2PAY_DUC { get { return (true); } }
+
 }
 
 public class IZMDUC              : FakturExtDUC
