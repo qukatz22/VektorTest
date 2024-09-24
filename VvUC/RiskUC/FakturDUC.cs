@@ -12763,6 +12763,14 @@ public partial class FakturExtDUC : FakturDUC
       //30.08.2024. za novi
       Fld_IsIncognito_Print = false;
 
+      #region M2PAY reset Fld_ & M2P_xyz values
+
+      M2P_TransactionResult    = null;
+      M2P_Xtrano_Initial_TtNum =    0;
+      Fld_M2PayStatus          =   "";
+
+      #endregion M2PAY reset Fld_ & M2P_xyz values
+
    }
 
    protected override void PutExtFields(Faktur faktur/*FaktEx faktEx*/, bool isCopyingToAnotherDUC)
