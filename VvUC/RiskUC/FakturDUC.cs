@@ -1624,11 +1624,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q2un };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol + ZXC.Qun2 + ZXC.Qun12 };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol + ZXC.Qun2 + ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { 0};
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4- ZXC.Qun12 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       tbx_m2PayStatus               = hamper.CreateVvTextBox(0, 0, "tbx_m2PayStatus", "M2PayStatus");
