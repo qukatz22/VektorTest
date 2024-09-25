@@ -178,7 +178,7 @@ public class Placa : VvPolyDocumRecord
 
    // 30.03.2021: za potrebe 'GetAlreadySpentPtransInThisMonth' da/ne, a i za eventualne buduce                     
    // ovo je lista placa_TT ova koji se odnose na zaposlene a ne neke 'vanjske' oblike angazmana koje treba platiti 
-   private static string[] arrayRRsetTT = new string[] {
+   /*private*/internal static string[] arrayRRsetTT = new string[] {
       Placa.TT_REDOVANRAD   /*"RR"*/, // redovan rad                                                              
       Placa.TT_PODUZETPLACA /*"PP"*/, // poduzetnicka placa                                                       
       Placa.TT_PLACAUNARAVI /*"PN"*/, // placa u naravi                                                           

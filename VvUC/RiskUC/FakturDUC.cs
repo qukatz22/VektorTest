@@ -4199,7 +4199,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          if(theDUC.M2P_TransactionResult != null) theDUC.Fld_M2PayStatus = ZXC.TheVvForm.Get_M2P_TransactionStatusMessage(theDUC.M2P_TransactionResult);
       }
-      else
+      else if(this is FakturExtDUC)
       {
          (this as FakturExtDUC).Fld_M2PayStatus = "";
       }
