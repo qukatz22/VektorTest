@@ -4872,13 +4872,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          #region Spritz Artikl Fields in faktur_rec.opis
 
          if(artikl_rec.Grupa1CD == ZXC.MotVoziloGrCD &&
-            (Fld_TT == Faktur.TT_IRM || Fld_TT == Faktur.TT_PNM)
+            (Fld_TT == Faktur.TT_IRM || Fld_TT == Faktur.TT_PNM || Fld_TT == Faktur.TT_IRA)
             ) // TODO: !!! kako iz grupe raspoznavati motocikl 
          {
             Fld_Opis += "BROJ ŠASIJE:\t\t\r\n";
             Fld_Opis += "BOJA:\t\t\t\t\r\n";
             Fld_Opis += "OBUJAM:\t\t\t" + artikl_rec.Zapremina.ToStringVv_NoDecimalNoGroup() + " ccm\r\n";
-            Fld_Opis += "SNAGA:\t\t\t" + artikl_rec.Snaga.ToStringVv_NoDecimalNoGroup() + " kW\r\n";
+            Fld_Opis += "SNAGA:\t\t\t"  + artikl_rec.Snaga.ToStringVv_NoDecimalNoGroup() + " kW\r\n";
             //Fld_Opis += "EURO NORMA:\t\tEURO "    + artikl_rec.Garancija.ToString                   () + "\r\n"    ; // FUSE 
             Fld_Opis += "God. proizvodnje:\t\r\n\r\n";
             Fld_Opis += "DRŽAVA PROIZVODNJE: " + (ZXC.IsTEMBO ? "" : "ITALIJA");
@@ -4938,9 +4938,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                theGrid.PutCell(ci.iT_ppmvOsn, currRowIdx, osnovica);
                theGrid.PutCell(ci.iT_ppmvSt1i2, currRowIdx, stopa1i2);
 
-               if(this is IRMDUC_2)
+               if(this is IRMDUC_2 || this is IRADUC_2)
                {
-                  IRMDUC_2 theDUCex = this as IRMDUC_2;
+                //IRMDUC_2 theDUCex = this as IRMDUC_2;
+                  FakturExtDUC theDUCex = this as FakturExtDUC;
 
                   theDUCex.Fld_PrjArtCD = artikl_rec.ArtiklCD;
                   theDUCex.Fld_PrjArtName = artikl_rec.ArtiklName;
@@ -4997,9 +4998,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          } // if(artikl_rec.IsPPMV) 
          else
          {
-            if(this is IRMDUC_2)
+            if(this is IRMDUC_2 || this is IRADUC_2)
             {
-               IRMDUC_2 theDUCex = this as IRMDUC_2;
+               FakturExtDUC theDUCex = this as FakturExtDUC;
 
                theDUCex.Fld_PrjArtCD   = 
                theDUCex.Fld_PrjArtName = "";
@@ -7240,7 +7241,7 @@ public partial class FakturExtDUC : FakturDUC
 
       #region KOMISIJA
 
-      if((this is KIZDUC || this is PIKDUC || this is IRADUC) && _kupdob_rec.KupdobCD.IsPositive()) // ako nije positive znaci da smo pozvani od ClearKupdobFields 
+      if((this is KIZDUC || this is PIKDUC || this is IRADUC || this is IRADUC_2) && _kupdob_rec.KupdobCD.IsPositive()) // ako nije positive znaci da smo pozvani od ClearKupdobFields 
       {
          if(_kupdob_rec.Komisija == ZXC.KomisijaKindEnum.NIJE)
          {

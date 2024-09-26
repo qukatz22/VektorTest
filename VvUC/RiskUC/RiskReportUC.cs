@@ -5649,7 +5649,8 @@ public class FakturDocFilterUC    : VvFilterUC
 
       if(TheVvUC is FakturExtDUC && (FakturExtDUC)TheVvUC is IRPDUC) CreateHamperRtranoOtprFilter(out hamp_rtranoOtpr);
 
-      if(TheVvUC is FakturExtDUC && (FakturExtDUC)TheVvUC is IRMDUC_2) CreateHamperPPMV_Prilog1(out hamp_ppmvPrilog1);
+      if(TheVvUC is FakturExtDUC && ((FakturExtDUC)TheVvUC is IRMDUC_2 || (FakturExtDUC)TheVvUC is IRADUC_2)) CreateHamperPPMV_Prilog1(out hamp_ppmvPrilog1);
+      
       if(TheVvUC is FakturExtDUC && (FakturExtDUC)TheVvUC is RNPDUC) CreateHamper_Rezervacije(out hamp_rezervacije);
       //if(TheVvUC is FakturExtDUC && (FakturExtDUC)TheVvUC is RNMDUC  ) CreateHamper_RNMDUC     (out hamp_RNMDUC);
 
@@ -7099,8 +7100,8 @@ public class FakturDocFilterUC    : VvFilterUC
          cbx_Necu_prikazEUR   .Visible = false;
       }
 
-      if(TheVvUC is IFADUC || TheVvUC is IRADUC || TheVvUC is IRA_MPC_DUC || TheVvUC is IRPDUC) cbx_Ocu_OTS_saldo.Visible = true;
-      else                                                                                      cbx_Ocu_OTS_saldo.Visible = false;
+      if(TheVvUC is IFADUC || TheVvUC is IRADUC || TheVvUC is IRADUC_2 || TheVvUC is IRA_MPC_DUC || TheVvUC is IRPDUC) cbx_Ocu_OTS_saldo.Visible = true;
+      else                                                                                                             cbx_Ocu_OTS_saldo.Visible = false;
 
       //cbx_Ocu_BarkodTtNum.Visible = false;
         cbx_Ocu_BarkodTtNum .Visible = true;
@@ -7204,7 +7205,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
          rbt_ira5.Visible = tbx_obrazacE.Visible = false;
       }
-      else if(TheVvUC is IRADUC || TheVvUC is IRA_MPC_DUC)
+      else if(TheVvUC is IRADUC || TheVvUC is IRADUC_2  || TheVvUC is IRA_MPC_DUC)
       {
          rbt_ira2.Visible =
          rbt_ira3.Visible =
