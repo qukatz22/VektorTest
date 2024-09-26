@@ -1189,12 +1189,12 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       // 6.2.2011: izbacen filter member 't_tt' 
       //drSchema = ZXC.PtransDao.TheSchemaTable.Rows[ZXC.PtransDao.CI.t_tt];
       //filterMembers.Add(new VvSqlFilterMember(drSchema, "elTipTransakcije", Placa.TT_REDOVANRAD, " = "));
-
-      string IN_clause = TtInfo.GetSql_IN_Clause(Placa.arrayRRsetTT);
-
-      filterMembers.Add(new VvSqlFilterMember("t_tt", IN_clause, " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
-      
-      //19.09.2024. tu bi trebalo uključiti filter TT placa_rec.IsRRsetTT jer kada je nešto drugo npr PD prije RR onda na RR krivo računa
+      //25.09.2024. tu bi trebalo uključiti filter TT placa_rec.IsRRsetTT jer kada je nešto drugo npr PD prije RR onda na RR krivo računa
+      if(dokDate.Date > new DateTime(2024, 9, 25)) 
+      { 
+         string IN_clause = TtInfo.GetSql_IN_Clause(Placa.arrayRRsetTT);
+         filterMembers.Add(new VvSqlFilterMember("t_tt", IN_clause, " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+      }
 
       // For wanted personCD only                                                                                                                                            
       drSchema = ZXC.PtransDao.TheSchemaTable.Rows[ZXC.PtransDao.CI.t_personCD];
