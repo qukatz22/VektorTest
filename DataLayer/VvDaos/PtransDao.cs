@@ -1186,9 +1186,11 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(5);
 
       // For TT 'Redovna Placa' only                                                                                                                                            
-      // 6.2.2011: izbacen filter member 't_tt' 
+
+        // 6.2.2011: izbacen filter member 't_tt' 
       //drSchema = ZXC.PtransDao.TheSchemaTable.Rows[ZXC.PtransDao.CI.t_tt];
       //filterMembers.Add(new VvSqlFilterMember(drSchema, "elTipTransakcije", Placa.TT_REDOVANRAD, " = "));
+
       //25.09.2024. tu bi trebalo uključiti filter TT placa_rec.IsRRsetTT jer kada je nešto drugo npr PD prije RR onda na RR krivo računa
       if(dokDate.Date > new DateTime(2024, 9, 25)) 
       { 
