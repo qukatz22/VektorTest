@@ -2041,9 +2041,9 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
       #endregion
 
       #region PPMV
-     
-      //26.09.2024.
-      if(R_ppmvIzn.NotZero()) R_KCRP += R_ppmvIzn;
+
+    //26.09.2024.//30.09.2024
+    //if(R_ppmvIzn.NotZero()) R_KCRP += R_ppmvIzn;
 
       #endregion PPMV
 
