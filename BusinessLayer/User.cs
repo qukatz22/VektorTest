@@ -219,6 +219,8 @@ public class User : VvSifrarRecord
       if(this.Privileges != null) this.Privileges.Clear();
    }
 
+   public override bool IsPrjkt_NonPUG_DataRecord { get { return (true); } }
+
    //===================================================================
    //===================================================================
    //===================================================================

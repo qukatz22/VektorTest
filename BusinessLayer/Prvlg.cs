@@ -191,6 +191,8 @@ public class Prvlg : VvDataRecord
 
    public override string VirtualIDstring { get { return ""; } }
 
+   public override bool IsPrjkt_NonPUG_DataRecord { get { return (true); } }
+
    //===================================================================
    //===================================================================
    //===================================================================

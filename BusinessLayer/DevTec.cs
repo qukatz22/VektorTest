@@ -216,6 +216,9 @@ public class DevTec : VvDocumentRecord
       get { return this.TT; }
    }
 
+   public override bool IsPrjkt_NonPUG_DataRecord { get { return (true); } }
+
+
    /// <summary>
    /// Gets or sets a list of htrans (line items) for the devTec.
    /// </summary>

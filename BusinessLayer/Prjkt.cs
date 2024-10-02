@@ -253,7 +253,7 @@ public class Prjkt : Kupdob
       get { return "pr"; }
    }
 
-
+   public override bool IsPrjkt_NonPUG_DataRecord { get { return (true); } }
 
    //===================================================================
    //===================================================================

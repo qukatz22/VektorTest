@@ -152,6 +152,8 @@ public class Htrans : VvTransRecord
       set {        this.T_ttNum = value; }
    }
 
+   public override bool IsPrjkt_NonPUG_DataRecord { get { return (true); } }
+
    public static string DevTecForeignKey
    {
       get { return "t_parentID"; }

@@ -178,6 +178,8 @@ public abstract class VvDataRecord : ICloneable, IEditableObject
 
    public virtual bool VirtualIsLocked { get { return false; } } // Placa overrides 
 
+   public virtual bool IsPrjkt_NonPUG_DataRecord { get { return (false); } } // User, Prjkt, DevTec, Htrans, Prvlg, SkyRule overrides AS true 
+
    #endregion Fieldz & abstract properties
 
    #region ABSTRACT methods (no bodies)
