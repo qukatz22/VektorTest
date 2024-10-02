@@ -948,6 +948,12 @@ public class RptR_ArtiklKartica  : VvRiskReport
     //if(ZXC.IsSvDUH) TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_NRD);
       if(ZXC.IsSvDUH) TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_NRD || rtr.T_TT == Faktur.TT_INV || rtr.T_TT == Faktur.TT_ZAH);
 
+      // 02.10.2024:                                                                                                          
+      // primjecujemo da u robnu karticu dolaze neki 'nepotrebni?' TT-ovi (npr PON, PNM) a ne znamo vise spisak koji su       
+      // te zasto su uopce u cashu ... pa cemo ih od sada nadalje ovdje rucno iybacivati jednog po jednog kako budu otkrivani 
+
+      TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_PON || rtr.T_TT == Faktur.TT_PNM);
+
       return TheRtransList.Count;
    }
 

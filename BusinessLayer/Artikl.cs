@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -369,6 +370,11 @@ public class Artikl : VvSifrarRecord
    public override string SifraColValue
    {
       get { return this.ArtiklCD; }
+   }
+
+   public override DataRow SifraColDrSchema
+   {
+      get { return ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD]; }
    }
 
    public override DateTime VirtualAddTS { get { return this.AddTS; } }

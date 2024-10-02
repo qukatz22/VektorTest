@@ -979,6 +979,10 @@ public abstract class VvSifrarRecord     : VvDataRecord
       get;
    }
 
+   public abstract System.Data.DataRow SifraColDrSchema
+   {
+      get;
+   }
    public override bool IsSifrar
    {
       get { return true; }

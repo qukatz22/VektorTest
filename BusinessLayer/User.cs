@@ -168,6 +168,11 @@ public class User : VvSifrarRecord
       get { return this.UserName.ToString(); }
    }
 
+   public override System.Data.DataRow SifraColDrSchema
+   {
+      get { return ZXC.UserSchemaRows[ZXC.UsrCI.userName]; }
+   }
+
    public override DateTime VirtualAddTS { get { return this.AddTS; } }
    public override DateTime VirtualModTS { get { return this.ModTS;  } }
    public override string   VirtualAddUID{ get { return this.AddUID; } }

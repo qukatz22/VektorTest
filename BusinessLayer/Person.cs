@@ -439,6 +439,11 @@ public class Person : VvSifrarRecord
       get { return this.PersonCD.ToString() + "_" + this.Prezime; }
    }
 
+   public override System.Data.DataRow SifraColDrSchema
+   {
+      get { return ZXC.PersonSchemaRows[ZXC.PerCI.personCD]; }
+   }
+
    public override DateTime VirtualAddTS { get { return this.AddTS; } }
    public override DateTime VirtualModTS { get { return this.ModTS;  } }
    public override string   VirtualAddUID{ get { return this.AddUID; } }

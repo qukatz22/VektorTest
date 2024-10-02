@@ -353,6 +353,11 @@ public class Kupdob : VvSifrarRecord
       get { return this.KupdobCD.ToString() + "_" + this.Ticker; }
    }
 
+   public override System.Data.DataRow SifraColDrSchema
+   {
+      get { return ZXC.KupdobSchemaRows[ZXC.KpdbCI.kupdobCD]; }
+   }
+
    public override uint UintSifraRootNum    { get { return (ZXC.IsSkyEnvironment ? ZXC.vvDB_ServerID : 0); } }
    public override uint UintSifraBaseFactor { get { return (ZXC.IsSkyEnvironment ? 10000u            : 0); } } // npr 12 * 10000 = 120000 ... 6 znamenki za sifru 
 
