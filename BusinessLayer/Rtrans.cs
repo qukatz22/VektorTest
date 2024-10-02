@@ -1808,7 +1808,7 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    public bool Is_URA_wMinusKol                         { get { return this.T_TT == Faktur.TT_URA && this.R_kol.IsNegative(); } }
  //public bool Is_AfterURA_wMinusKol_StanjeKol_GoesZero { get { return Is_URA_wMinusKol && A_StanjeKol.IsZero(); } } // NUP_DILEMA! 2. od 2 dileme 
 
-   public bool Is_VelepByMPC                            { get { return ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON); } } // TODO: kasnije iz RRD rulsa 
+   public bool Is_VelepByMPC                            { get { return ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON || this.T_TT == Faktur.TT_IZD); } } // TODO: kasnije iz RRD rulsa 
    public bool Is_VelepByMPC_4Umj                       { get { return Is_VelepByMPC && this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN; } }
 
    #endregion Propertiz

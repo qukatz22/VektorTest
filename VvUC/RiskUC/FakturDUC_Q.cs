@@ -5141,7 +5141,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          #region Tetragram pdvKolTip - oslobođeno od PDVa
        //27.06.2024.
        //if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" &&  this is IRA_MPC_DUC                        )
-         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && (this is IRA_MPC_DUC || this is PON_MPC_DUC))
+         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && (this is IRA_MPC_DUC || this is PON_MPC_DUC || this is IZD_MPC_DUC))
          {
             if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.EU)
             { 
