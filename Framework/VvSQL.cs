@@ -3875,6 +3875,10 @@ public static class VvSQL
          "FROM artstat a                                                                                            \n" +
          "WHERE   t_skladCD  = ?prm_AS_t_skladCD                                                                    \n" +
          "AND   t_skladDate <= ?prm_AS_t_skladDate                                                                  \n" +
+
+         // tek od 07.10.2024: 
+         "AND artiklTS NOT IN" + TtInfo.GetSql_IN_Clause(ZXC.IsMinusOK_or_UDP_ArtiklTS_array)                   + " \n" +
+
  /*!!!*/ "AND   rtrUlazKol  < 0                                                                                     \n" + // !!!
          "AND t_tt IN " + uraPovratShadowTT_IN_Clause +                                                            "\n" +
          (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "")                                           + " \n" +
@@ -3890,6 +3894,10 @@ public static class VvSQL
          "FROM artstat a                                                                                            \n" +
          "WHERE   t_skladCD  = ?prm_AS_t_skladCD                                                                    \n" +
          "AND   t_skladDate <= ?prm_AS_t_skladDate                                                                  \n" +
+
+         // tek od 07.10.2024: 
+         "AND artiklTS NOT IN" + TtInfo.GetSql_IN_Clause(ZXC.IsMinusOK_or_UDP_ArtiklTS_array)                   + " \n" +
+
          "AND t_tt IN " + ulazShadowTT_IN_Clause +                                                                 "\n" +
          (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "")                                           + " \n" +
          "GROUP BY t_skladCD                                                                                        \n" +
@@ -3900,6 +3908,10 @@ public static class VvSQL
          "FROM artstat a                                                                                            \n" +
          "WHERE   t_skladCD  = ?prm_AS_t_skladCD                                                                    \n" +
          "AND   t_skladDate <= ?prm_AS_t_skladDate                                                                  \n" +
+
+         // tek od 07.10.2024: 
+         "AND artiklTS NOT IN" + TtInfo.GetSql_IN_Clause(ZXC.IsMinusOK_or_UDP_ArtiklTS_array)                   + " \n" +
+
          "AND t_tt IN " + izlazShadowTT_IN_Clause +                                                                "\n" +
          (isPrmRazdoblja ? "AND t_skladDate >= ?prm_theDateOd " : "")                                           + " \n" +
          "GROUP BY t_skladCD                                                                                        \n");
