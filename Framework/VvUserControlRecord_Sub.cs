@@ -2046,4 +2046,27 @@ public abstract class VvSifrarRecordUC    : VvRecordUC
       ZXC.TheVvForm.OpenNew_Record_TabPage(ZXC.TheVvForm.GetSubModulXY(vvSubModulEnum), (uint?)selectedRecID);
    }
 
+   protected bool IsThisSifra_Duplicated_InNY()
+   {
+      return false; // gasi ovo kad ...
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Add && ZXC.IsSifrar_And_WeAreInPGyear(TheVvTabPage.TheVvDataRecord))
+      {
+         bool NY_dbExists = ZXC.Does_NY_dbExists(TheDbConnection);
+
+         if(NY_dbExists)
+         {
+            bool NY_tableExists = ZXC.Does_NY_tableExists(TheDbConnection, TheVvTabPage.TheVvDataRecord.VirtualRecordName);
+
+            if(NY_tableExists)
+            {
+               bool thisSifraIs_Duplicated_InNY = TheVvDao.SifrarRecordExistsInNY(TheDbConnection, TheVvTabPage.TheVvDataRecord as VvSifrarRecord);
+
+               if(thisSifraIs_Duplicated_InNY) return true;
+            }
+         }
+      }
+
+      return false;
+   }
 }

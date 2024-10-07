@@ -160,6 +160,14 @@ public class ArtiklUC : VvSifrarRecordUC
          if(Fld_CarTarifa.IsEmpty()) { ZXC.aim_emsg(MessageBoxIcon.Stop           , "Za PCK artikl morate zadati PCK baznu šifru."); e.Cancel = true; }
       }
 
+      // Dodajemo sifrar record u PG, pa treba provjeriti je li slobodna sifra i u NY 
+      if(IsThisSifra_Duplicated_InNY())
+      {
+         e.Cancel = true;
+
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Dodajete šifru već zauzetu u novoj godini.\n\r\n\rIspravite ovu šifru na prvu sljedeću slobodnu,\n\r\n\rtj. da je 'slobodna' i u ovoj i u novoj godini.");
+      }
+
    }
 
    private void SetToolTipsForPredugackys()
