@@ -7229,9 +7229,9 @@ public partial class FakturExtDUC : FakturDUC
       #endregion POT_DUC
 
       #region PON_MPC_DUC
-      
+
       //27.06.2024.
-      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && this is PON_MPC_DUC)
+      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && (this is PON_MPC_DUC || this is IZD_MPC_DUC))
       {
          Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.EU;
       }
