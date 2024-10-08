@@ -4605,14 +4605,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       //}
    }
 
+   public bool IsKurac { get { return true; } }
    public string VvDocumIdent 
    {
       get 
       { 
          System.Text.StringBuilder theIdent = new System.Text.StringBuilder("");
 
-         if(ThePFD.Dsc_OcuR12)               theIdent.Append("R-"                    + this.PdvR12_u);
-         if(ThePFD.Dsc_Title.NotEmpty())     theIdent.Append("    " + ThePFD.Dsc_Title + "  ");
+         //08.10.2024.
+         string title = (ZXC.IsTETRAGRAM_ANY && this.TT == Faktur.TT_IRA && IsKurac ) ? "Račun" : ThePFD.Dsc_Title;
+
+         if(ThePFD.Dsc_OcuR12)               theIdent.Append("R-"                       + this.PdvR12_u);
+       //if(ThePFD.Dsc_Title.NotEmpty())     theIdent.Append("    " + ThePFD.Dsc_Title  + "  ");
+         if(ThePFD.Dsc_Title.NotEmpty())     theIdent.Append("    " + title             + "  ");
          if(ThePFD.Dsc_IsAddTT)              theIdent.Append(ThePFD.Dsc_SeparIfTT_Rn    + this.TT);
          if(ThePFD.Dsc_Prefix1Rn.NotEmpty()) theIdent.Append(ThePFD.Dsc_Separ1_Rn       + ThePFD.Dsc_Prefix1Rn);
          if(ThePFD.Dsc_Prefix2Rn.NotEmpty()) theIdent.Append(ThePFD.Dsc_Separ2_Rn       + ThePFD.Dsc_Prefix2Rn);

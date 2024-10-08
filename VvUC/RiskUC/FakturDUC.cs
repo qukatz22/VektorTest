@@ -16745,7 +16745,7 @@ public class Fak2NalogRulesUC : VvOtherUC
       hamper.CreateVvLabel(7, 1, "UrPdv 10", ContentAlignment.MiddleLeft);
       hamper.CreateVvLabel(8, 1, "UrPdv 5" , ContentAlignment.MiddleLeft);
       hamper.CreateVvLabel(9, 1, "UrMarža" , ContentAlignment.MiddleLeft);
-      hamper.CreateVvLabel(0, 3, "Urač. porez na potrošnju:", 1, 0, ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(0, 3, "Urač. porez na potrošnju:", 2, 0, ContentAlignment.MiddleLeft);
       
       tbx_MSK_25    = hamper.CreateVvTextBox(0, 2, "MSK_25"   , "Roba na maloprodajnom skladištu po 25%", 8);
       tbx_MSK_23    = hamper.CreateVvTextBox(1, 2, "MSK_23"   , "Roba na maloprodajnom skladištu po 23%", 8);
@@ -16757,7 +16757,7 @@ public class Fak2NalogRulesUC : VvOtherUC
       tbx_MskPdv_10 = hamper.CreateVvTextBox(7, 2, "MskPdv_10", "Uračunati PDV po 13%"                  , 8);
       tbx_MskPdv_05 = hamper.CreateVvTextBox(8, 2, "MskPdv_05", "Uračunati PDV po 5%"                   , 8);
       tbx_Mrz       = hamper.CreateVvTextBox(9, 2, "Mrz"      , "Uračunata marža"                       , 8);
-      tbx_Msk_PNP   = hamper.CreateVvTextBox(2, 3, "PNP"      , "Uračunata porez na potrošnju"          , 8);
+      tbx_Msk_PNP   = hamper.CreateVvTextBox(3, 3, "PNP"      , "Uračunata porez na potrošnju"          , 8);
 
       tbx_MSK_05   .JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly; 
       tbx_MSK_25   .JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly; 
@@ -16783,8 +16783,8 @@ public class Fak2NalogRulesUC : VvOtherUC
       tbx_Mrz      .JAM_SetAutoCompleteData(Kplan.recordName, Kplan.sorterKonto.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kplan_sorterCode), null);
       tbx_Msk_PNP  .JAM_SetAutoCompleteData(Kplan.recordName, Kplan.sorterKonto.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kplan_sorterCode), null);
 
-      cbx_automatUrmSkl = hamper.CreateVvCheckBox_OLD(0, 4, null, 4, 0, "Automatski knjiži ulaz na MPsklad kada i ulazne dokumente", System.Windows.Forms.RightToLeft.No);
-      cbx_automatIrmSkl = hamper.CreateVvCheckBox_OLD(0, 5, null, 4, 0, "Automatski knjiži izlaz sa MPsklad kada i IRM"            , System.Windows.Forms.RightToLeft.No);
+      cbx_automatUrmSkl = hamper.CreateVvCheckBox_OLD(0, 4, null, 6, 0, "Automatski knjiži ulaz na MPsklad kada i ulazne dokumente", System.Windows.Forms.RightToLeft.No);
+      cbx_automatIrmSkl = hamper.CreateVvCheckBox_OLD(0, 5, null, 6, 0, "Automatski knjiži izlaz sa MPsklad kada i IRM"            , System.Windows.Forms.RightToLeft.No);
    }
 
    private void InitializeHamper_IZDM(out VvHamper hamper)
