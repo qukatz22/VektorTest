@@ -982,7 +982,12 @@ public abstract class VvSifrarRecord     : VvDataRecord
       get;
    }
 
-   public abstract System.Data.DataRow SifraColDrSchema
+   public abstract /*string*/object SifraUniqueSingleColValue
+   {
+      get;
+   }
+
+   public abstract System.Data.DataRow SifraUniqueSingleColDrSchema
    {
       get;
    }

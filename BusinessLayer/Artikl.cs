@@ -372,7 +372,12 @@ public class Artikl : VvSifrarRecord
       get { return this.ArtiklCD; }
    }
 
-   public override DataRow SifraColDrSchema
+   public override object SifraUniqueSingleColValue
+   {
+      get { return this.SifraColValue; }
+   }
+
+   public override System.Data.DataRow SifraUniqueSingleColDrSchema
    {
       get { return ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD]; }
    }

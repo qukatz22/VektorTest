@@ -103,9 +103,33 @@ public class PersonUC : VvSifrarRecordUC
       InitializeVvUserControl(parent);
       CreateDataGridView_InitializeTheGrid_ReadOnly_Columns();
 
+      this.Validating += new System.ComponentModel.CancelEventHandler(PersonUC_Validating);
+
       ResumeLayout();
 
       placa_rec = new Placa();
+   }
+
+   void PersonUC_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      #region Should validate enivej?
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None ||
+         TheVvTabPage.WriteMode == ZXC.WriteMode.Delete ||
+         this.Visible == false) return;
+
+      #endregion Should validate enivej?
+
+
+      //Dodajemo sifrar record u PG, pa treba provjeriti je li slobodna sifra i u NY 
+      (bool thisSifraIs_Duplicated_InNY, VvSifrarRecord inNY_SifrarRecord) = IsThisSifra_Duplicated_InNY();
+
+      if(thisSifraIs_Duplicated_InNY)
+      {
+         e.Cancel = true;
+
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Dodajete šifru djelatnika već zauzetu u novoj godini.\n\r\n\rIspravite ovu šifru na prvu sljedeću slobodnu,\n\r\n\rtj. da je 'slobodna' i u ovoj i u novoj godini.\n\r\n\ru novoj godini je:\n\r\n\r{0}", inNY_SifrarRecord);
+      }
    }
 
    #endregion Constructor

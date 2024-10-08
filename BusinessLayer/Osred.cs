@@ -357,7 +357,12 @@ public class Osred : VvSifrarRecord
       get { return this.OsredCD; }
    }
 
-   public override System.Data.DataRow SifraColDrSchema
+   public override object SifraUniqueSingleColValue
+   {
+      get { return this.SifraColValue; }
+   }
+
+   public override System.Data.DataRow SifraUniqueSingleColDrSchema
    {
       get { return ZXC.OsredSchemaRows[ZXC.OsrCI.osredCD]; }
    }

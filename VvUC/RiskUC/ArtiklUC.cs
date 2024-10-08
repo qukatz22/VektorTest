@@ -161,11 +161,13 @@ public class ArtiklUC : VvSifrarRecordUC
       }
 
       // Dodajemo sifrar record u PG, pa treba provjeriti je li slobodna sifra i u NY 
-      if(IsThisSifra_Duplicated_InNY())
+      (bool thisSifraIs_Duplicated_InNY, VvSifrarRecord inNY_SifrarRecord) = IsThisSifra_Duplicated_InNY();
+
+      if(thisSifraIs_Duplicated_InNY)
       {
          e.Cancel = true;
 
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Dodajete šifru već zauzetu u novoj godini.\n\r\n\rIspravite ovu šifru na prvu sljedeću slobodnu,\n\r\n\rtj. da je 'slobodna' i u ovoj i u novoj godini.");
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Dodajete šifru ili naziv artikla već zauzetu u novoj godini.\n\r\n\rIspravite ovu šifru na prvu sljedeću slobodnu,\n\r\n\rtj. da je 'slobodna' i u ovoj i u novoj godini.\n\r\n\ru novoj godini je:\n\r\n\r{0}", inNY_SifrarRecord);
       }
 
    }

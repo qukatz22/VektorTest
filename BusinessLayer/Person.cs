@@ -439,7 +439,12 @@ public class Person : VvSifrarRecord
       get { return this.PersonCD.ToString() + "_" + this.Prezime; }
    }
 
-   public override System.Data.DataRow SifraColDrSchema
+   public override object SifraUniqueSingleColValue
+   {
+      get { return this./*SifraColValue*/PersonCD; }
+   }
+
+   public override System.Data.DataRow SifraUniqueSingleColDrSchema
    {
       get { return ZXC.PersonSchemaRows[ZXC.PerCI.personCD]; }
    }

@@ -165,7 +165,12 @@ public class Kplan : VvSifrarRecord
       get { return this.Konto; }
    }
 
-   public override System.Data.DataRow SifraColDrSchema
+   public override object SifraUniqueSingleColValue
+   {
+      get { return this.SifraColValue; }
+   }
+
+   public override System.Data.DataRow SifraUniqueSingleColDrSchema
    {
       get { return ZXC.KplanSchemaRows[ZXC.KplCI.konto]; }
    }

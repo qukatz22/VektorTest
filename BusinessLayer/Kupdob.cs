@@ -353,7 +353,12 @@ public class Kupdob : VvSifrarRecord
       get { return this.KupdobCD.ToString() + "_" + this.Ticker; }
    }
 
-   public override System.Data.DataRow SifraColDrSchema
+   public override object SifraUniqueSingleColValue
+   {
+      get { return this./*SifraColValue*/KupdobCD; }
+   }
+
+   public override System.Data.DataRow SifraUniqueSingleColDrSchema
    {
       get { return ZXC.KupdobSchemaRows[ZXC.KpdbCI.kupdobCD]; }
    }
