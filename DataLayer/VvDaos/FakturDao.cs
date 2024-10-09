@@ -2621,11 +2621,17 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
       if(theRules.IsIRM || theRules.IsIZM)
       {
+         // 09.10.2024: uvodimo diferencijaciju da li knjizimo zbirno ili pojedinacno jer do sada nije radilo ya pojedinacne 
+         decimal theMskMrz = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_ukMskMrz : faktur_rec.K_ukMskMrz;
+         decimal theRobaNV = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_Ira_NV   : faktur_rec.Ira_ROB_NV;
+
          theRules.FtransOpis = "Uračunata marža u razduženju skladišta";
-         theRules.SetDugAndPot(true, faktur_rec.K_ukMskMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot(true, faktur_rec.K_ukMskMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(true,            theMskMrz ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
 
          theRules.FtransOpis = "Nabavna vrijednost prodane robe";
-         theRules.SetDugAndPot(true, faktur_rec.Ira_ROB_NV); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot(true, faktur_rec.Ira_ROB_NV); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(true,            theRobaNV ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
 
          //08.10.2024. ako se radi o pojedinacnim IRM-ovima, koji se knjize kao IRA sto je slucaj sa Panigaleom jer je tako trazeno iz rozela
          //onda je faktur_rec.Ira_ROB_NV = 0 a ono sto bi trebalo biti NV pribraja se na  faktur_rec.K_ukMskMrz

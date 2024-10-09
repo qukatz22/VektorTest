@@ -4605,7 +4605,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       //}
    }
 
-   public bool IsKurac { get { return true; } }
+   public bool IsIRAlikeIFA 
+   { 
+      get 
+      { 
+         if(this.TT != TT_IRA || this.Transes.IsEmpty()) return false;
+
+         return this.Transes.All(rtrans => rtrans.T_artiklCD.IsEmpty()); 
+      } 
+   }
+
    public string VvDocumIdent 
    {
       get 
@@ -4613,7 +4622,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          System.Text.StringBuilder theIdent = new System.Text.StringBuilder("");
 
          //08.10.2024.
-         string title = (ZXC.IsTETRAGRAM_ANY && this.TT == Faktur.TT_IRA && IsKurac ) ? "Račun" : ThePFD.Dsc_Title;
+         string title = (ZXC.IsTETRAGRAM_ANY && this.TT == Faktur.TT_IRA && IsIRAlikeIFA ) ? "Račun" : ThePFD.Dsc_Title;
 
          if(ThePFD.Dsc_OcuR12)               theIdent.Append("R-"                       + this.PdvR12_u);
        //if(ThePFD.Dsc_Title.NotEmpty())     theIdent.Append("    " + ThePFD.Dsc_Title  + "  ");

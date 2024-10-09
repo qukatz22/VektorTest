@@ -1264,7 +1264,7 @@ public class Kupdob : VvSifrarRecord
 
    public override string ToString()
    {
-      return Ticker + " (" + Naziv + ")" + " (" + /*RecID*/KupdobCD.ToString("000000") + ")";
+      return Ticker + " (" + Naziv + ")" + " (šif: " + /*RecID*/KupdobCD.ToString("000000") + ")" + " (oib: " + Oib + ")";
    }
 
  //public static string TickerToken = " T: ";
