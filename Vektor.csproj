@@ -48,10 +48,10 @@
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
-    <MinimumRequiredVersion>8.0.0.169</MinimumRequiredVersion>
+    <MinimumRequiredVersion>8.0.0.170</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>169</ApplicationRevision>
+    <ApplicationRevision>170</ApplicationRevision>
     <ApplicationVersion>8.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

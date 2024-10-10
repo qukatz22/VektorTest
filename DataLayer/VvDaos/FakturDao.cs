@@ -2572,25 +2572,56 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
          // 
          decimal korekcKoef = isUlaz ? 1.00M : - 1.00M;
 
+         // 09.10.2024: uvodimo diferencijaciju da li knjizimo zbirno ili pojedinacno jer do sada nije radilo ya pojedinacne 
+         decimal theNivVrj25 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivVrj25 : faktur_rec.K_NivVrj25;
+         decimal theNivVrj23 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivVrj23 : faktur_rec.K_NivVrj23;
+         decimal theNivVrj10 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivVrj10 : faktur_rec.K_NivVrj10;
+         decimal theNivVrj05 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivVrj05 : faktur_rec.K_NivVrj05;
+         decimal theNivVrj00 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivVrj00 : faktur_rec.K_NivVrj00;
+
          theRules.FtransTipBr = nivTipBr;
-         theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj25 :*/ korekcKoef * faktur_rec.K_NivVrj25      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_25   ; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj23 :*/ korekcKoef * faktur_rec.K_NivVrj23      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_23   ; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj10 :*/ korekcKoef * faktur_rec.K_NivVrj10      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_10   ; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj05 :*/ korekcKoef * faktur_rec.K_NivVrj05      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_05   ; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj00 :*/ korekcKoef * faktur_rec.K_NivVrj00      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_00   ; Send2Nalog(conn, ref line, theRules, false);
+
+         // 09.10.2024: uvodimo diferencijaciju da li knjizimo zbirno ili pojedinacno jer do sada nije radilo ya pojedinacne 
+       //theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj25 :*/ korekcKoef * faktur_rec.K_NivVrj25      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_25   ; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj23 :*/ korekcKoef * faktur_rec.K_NivVrj23      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_23   ; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj10 :*/ korekcKoef * faktur_rec.K_NivVrj10      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_10   ; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj05 :*/ korekcKoef * faktur_rec.K_NivVrj05      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_05   ; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot( isUlaz, /*isUlaz ? faktur_rec.R_NivVrj00 :*/ korekcKoef * faktur_rec.K_NivVrj00      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_00   ; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot( isUlaz,                                      korekcKoef *           theNivVrj25      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_25   ; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot( isUlaz,                                      korekcKoef *           theNivVrj23      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_23   ; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot( isUlaz,                                      korekcKoef *           theNivVrj10      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_10   ; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot( isUlaz,                                      korekcKoef *           theNivVrj05      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_05   ; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot( isUlaz,                                      korekcKoef *           theNivVrj00      ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MSK_00   ; Send2Nalog(conn, ref line, theRules, false);
 
          if(theRules.IsIRM || theRules.IsIZM) theRules.FtransOpis = "Nivelacija uračunatog PDVa u razduženju skladišta";
 
-         theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv25 :*/ korekcKoef * faktur_rec.K_NivMskPdv25); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_25; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv23 :*/ korekcKoef * faktur_rec.K_NivMskPdv23); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_23; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv10 :*/ korekcKoef * faktur_rec.K_NivMskPdv10); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_10; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv05 :*/ korekcKoef * faktur_rec.K_NivMskPdv05); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_05; Send2Nalog(conn, ref line, theRules, false);
+         decimal theNivMskPdv25 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivMskPdv25 : faktur_rec.K_NivMskPdv25;
+         decimal theNivMskPdv23 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivMskPdv23 : faktur_rec.K_NivMskPdv23;
+         decimal theNivMskPdv10 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivMskPdv10 : faktur_rec.K_NivMskPdv10;
+         decimal theNivMskPdv05 = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivMskPdv05 : faktur_rec.K_NivMskPdv05;
+
+       //theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv25 :*/ korekcKoef * faktur_rec.K_NivMskPdv25); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_25; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv23 :*/ korekcKoef * faktur_rec.K_NivMskPdv23); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_23; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv10 :*/ korekcKoef * faktur_rec.K_NivMskPdv10); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_10; Send2Nalog(conn, ref line, theRules, false);
+       //theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMskPdv05 :*/ korekcKoef * faktur_rec.K_NivMskPdv05); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_05; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(!isUlaz,                                         korekcKoef *           theNivMskPdv25); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_25; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(!isUlaz,                                         korekcKoef *           theNivMskPdv23); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_23; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(!isUlaz,                                         korekcKoef *           theNivMskPdv10); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_10; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(!isUlaz,                                         korekcKoef *           theNivMskPdv05); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_MskPdv_05; Send2Nalog(conn, ref line, theRules, false);
 
          if(theRules.IsIRM || theRules.IsIZM) theRules.FtransOpis = "Nivelacija uračunatog poreza na potrošnju u razduženju skladišta";
-         theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMrz      :*/ korekcKoef * faktur_rec.K_NivMskPNP); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Msk_PNP; Send2Nalog(conn, ref line, theRules, false);
+
+         decimal theNivMskPNP = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivMskPNP : faktur_rec.K_NivMskPNP;
+
+       //theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMrz      :*/ korekcKoef * faktur_rec.K_NivMskPNP); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Msk_PNP; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(!isUlaz,                                         korekcKoef *           theNivMskPNP); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Msk_PNP; Send2Nalog(conn, ref line, theRules, false);
+
+         decimal theNivMrz = theRules.KtoShemaDsc.Dsc_ForceIRMkaoIRA ? faktur_rec.R_NivMrz : faktur_rec.K_NivMrz;
 
          if(theRules.IsIRM || theRules.IsIZM) theRules.FtransOpis = "Nivelacija uračunate marže u razduženju skladišta";
-         theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMrz      :*/ korekcKoef * faktur_rec.K_NivMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz; Send2Nalog(conn, ref line, theRules, false);
+         
+       //theRules.SetDugAndPot(!isUlaz, /*isUlaz ? faktur_rec.R_NivMrz      :*/ korekcKoef * faktur_rec.K_NivMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(!isUlaz,                                         korekcKoef *           theNivMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz; Send2Nalog(conn, ref line, theRules, false);
       }
 
       // eventualna NIVELACIJA - END                           
@@ -2627,11 +2658,11 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
          theRules.FtransOpis = "Uračunata marža u razduženju skladišta";
        //theRules.SetDugAndPot(true, faktur_rec.K_ukMskMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot(true,            theMskMrz ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(true,             theMskMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
 
          theRules.FtransOpis = "Nabavna vrijednost prodane robe";
        //theRules.SetDugAndPot(true, faktur_rec.Ira_ROB_NV); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
-         theRules.SetDugAndPot(true,            theRobaNV ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
+         theRules.SetDugAndPot(true,             theRobaNV); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
 
          //08.10.2024. ako se radi o pojedinacnim IRM-ovima, koji se knjize kao IRA sto je slucaj sa Panigaleom jer je tako trazeno iz rozela
          //onda je faktur_rec.Ira_ROB_NV = 0 a ono sto bi trebalo biti NV pribraja se na  faktur_rec.K_ukMskMrz
