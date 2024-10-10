@@ -4815,7 +4815,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       TheG.PutCell(ci.iT_IRA_MPC , rowIdx, VvCurrency(rtrans_rec.R_CIJ_KCRP));
 
-      if((this is IRA_MPC_DUC || this is PON_MPC_DUC) && TheVvTabPage.WriteMode != ZXC.WriteMode.None)
+      if((this is IRA_MPC_DUC || this is PON_MPC_DUC || this is IZD_MPC_DUC) && TheVvTabPage.WriteMode != ZXC.WriteMode.None)
       {
          TheG.PutCell(ci.iT_cij, rowIdx, VvCurrency(rtrans_rec.T_cij));
       }

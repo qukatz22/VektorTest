@@ -6130,6 +6130,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          if(_tt == Faktur.TT_IRA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IRA_MPC);
          if(_tt == Faktur.TT_PON) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PON_MPC);
+         if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_MPC);
       }
 
       if(vvSubModulXY == Point.Empty)
