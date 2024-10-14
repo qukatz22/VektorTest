@@ -1397,13 +1397,14 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
       T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
-      R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
-      R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa");
-      R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa");
-      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
-      T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                           );
+      R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla"            );
+      R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa"                         );
+      R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa"                         );
+      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište"                 );
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                  );
+      T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "UgnSt"        , "UGANDO stavka"                     );
    }
 
@@ -2123,6 +2124,7 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
       T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                           );
       T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "DodSt"        , "UGANDO stavka"                     );
    }
 
@@ -3125,6 +3127,7 @@ public class PRI_PTG_DUC : FakturPDUC
       T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "PriSt"       , "UGANDO stavka"                     );
 
       vvtbT_skladCD2.JAM_ReadOnly = true;
@@ -3249,6 +3252,7 @@ public class IZD_PTG_DUC : FakturPDUC
       T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "IzlSkl"       , "Izlazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "IzdSt"        , "UGANDO stavka"                     );
 
       vvtbT_skladCD2.JAM_ReadOnly = true;
@@ -3346,6 +3350,7 @@ public class MSI_PTG_DUC : FakturPDUC
       T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "Stavka"       , "UGANDO stavka"                     );
    }
 
@@ -3435,6 +3440,7 @@ public class PST_PTG_DUC : FakturPDUC
       T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "Stavka"       , "UGANDO stavka"                     );
    }
 
@@ -4790,6 +4796,7 @@ public class MOD_PTG_DUC : FakturPDUC
       T_kolg2_CreateColumn          (ZXC.Q3un     , 0, true, "Kol"          , "Kolicina"             );
       R_ramOld2_CreateColumn        (ZXC.Q3un     , 0, true, "RAM OLD"      , "RAM OLD"              );
       R_hddOld2_CreateColumn        (ZXC.Q3un     , 0, true, "HDD OLD"      , "HDD OLD"              );
+      R_grCD_OLD_CreateColumn       (ZXC.Q5un        , true, "Opis OLD"     , "Opis OLD"              );
 
       T_dimX_CreateColumn           (ZXC.Q3un     , 0, true, "RAM +"        , "RAM +"                );
       T_dimY_CreateColumn           (ZXC.Q3un     , 0, true, "RAM -"        , "RAM -"                );
@@ -4799,6 +4806,7 @@ public class MOD_PTG_DUC : FakturPDUC
       T_artiklCD2_CreateColumn      (ZXC.Q5un,         true, "Artikl NEW"   , "Šifra artikla"        );
       T_dimZ_CreateColumn           (ZXC.Q3un     , 0, true, "RAM NEW"      , "RAM NEW"              );
       T_decC_CreateColumn           (ZXC.Q3un     , 0, true, "HDD NEW"      , "HDD NEW"              );
+      T_grCD_CreateColumn           (ZXC.Q5un,         true, "Opis  NEW"    , "Opis  NEW"     , false);
       T_skladCD2_CreateColumn       (ZXC.Q3un-ZXC.Qun2,true, "Sklad"        , "Izlazno skladište"    );
 
       T_artiklName2_CreateColumn   (ZXC.Q3un        , false, "Naziv"        , "Naziv artikla ili proizvoljan opis");

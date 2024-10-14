@@ -2474,8 +2474,9 @@ public class RtranoListUC : VvRecLstUC
    public VvTextBox tbx_serno,
       tbx_artiklCD  , 
       tbx_artiklName,
-      tbx_PCK_RAM ,
-      tbx_PCK_HDD ,
+      tbx_PCK_RAM   ,
+      tbx_PCK_HDD   , 
+      tbx_PCK_Opis  ,
       tbx_skladDate ,
       tbx_skladCD   ;
    
@@ -2522,10 +2523,10 @@ public class RtranoListUC : VvRecLstUC
 
    protected override void CreateHamperSpecifikum()
    {
-      hampSpecifikum = new VvHamper(8, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
+      hampSpecifikum = new VvHamper(9, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
 
-      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un,ZXC.Q6un, ZXC.Q9un,ZXC.Q3un, ZXC.Q3un,ZXC.Q4un, ZXC.Q4un };
-      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4 };
+      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un,ZXC.Q6un, ZXC.Q9un,ZXC.Q3un, ZXC.Q3un,ZXC.Q5un, ZXC.Q4un, ZXC.Q4un };
+      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
 
       hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN };
@@ -2540,8 +2541,9 @@ public class RtranoListUC : VvRecLstUC
       tbx_artiklName = hampSpecifikum.CreateVvTextBox(3, 0, "tbx_artiklName", "", 32);
       tbx_PCK_RAM    = hampSpecifikum.CreateVvTextBox(4, 0, "tbx_PCK_RAM"   , "", 32);
       tbx_PCK_HDD    = hampSpecifikum.CreateVvTextBox(5, 0, "tbx_PCK_HDD"   , "", 32);
-      tbx_skladDate  = hampSpecifikum.CreateVvTextBox(6, 0, "tbx_skladDate" , "", 32);
-      tbx_skladCD    = hampSpecifikum.CreateVvTextBox(7, 0, "tbx_skladCD"   , "", 32);
+      tbx_PCK_Opis   = hampSpecifikum.CreateVvTextBox(6, 0, "tbx_PCK_Opis"  , "", 32);
+      tbx_skladDate  = hampSpecifikum.CreateVvTextBox(7, 0, "tbx_skladDate" , "", 32);
+      tbx_skladCD    = hampSpecifikum.CreateVvTextBox(8, 0, "tbx_skladCD"   , "", 32);
 
       tbx_PCK_RAM.JAM_ForeColor   = Color.Red  ;
       tbx_PCK_HDD.JAM_ForeColor   = Color.Green;
@@ -2553,6 +2555,7 @@ public class RtranoListUC : VvRecLstUC
       VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_RAM   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_HDD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_Opis  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_skladDate , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_skladCD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
    }
@@ -2587,8 +2590,7 @@ public class RtranoListUC : VvRecLstUC
       colWidth = ZXC.Q9un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Artikla"   , colWidth, true   , "t_artiklName");
       colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "t_dimZ"      ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_RAM_PTG;
       colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "t_decC"      ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_HDD_PTG;
-    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "RAM"             , colWidth,     0  , "ext_PCK_RAM" ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_RAM_PTG;
-    //colWidth = ZXC.Q3un; sumOfColWidth += colWidth; col = AddDGVColum_Decimal_4GridReadOnly (TheGrid, "HDD"             , colWidth,     0  , "ext_PCK_HDD" ); col.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_HDD_PTG;
+      colWidth = ZXC.Q5un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Opis"            , colWidth, false  , "t_grCD"      );
       colWidth = ZXC.Q4un; sumOfColWidth += colWidth;       AddDGVColum_Integer_4GridReadOnly (TheGrid, "ŠifPart"         , colWidth, true, 6, "t_kupdob_cd" ); 
       colWidth = ZXC.Q7un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Naziv Partnera"  , colWidth, false  , "ext_kpdbName");
       colWidth = ZXC.Q2un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "TT"              , colWidth, false  , "t_tt"        );
@@ -2615,6 +2617,7 @@ public class RtranoListUC : VvRecLstUC
       Fld_ArtiklName = rtrano_rec.T_artiklName                          ;  //TheGrid[ 3, rowIdx].Value.ToString();
       Fld_PCK_RAM    = rtrano_rec.T_PCK_RAM.ToString0Vv()               ;  //((decimal)TheGrid[ 4, rowIdx].Value).ToString0Vv();
       Fld_PCK_HDD    = rtrano_rec.T_PCK_HDD.ToString0Vv()               ;  //((decimal)TheGrid[ 5, rowIdx].Value).ToString0Vv();
+      Fld_PCK_Opis   = rtrano_rec.T_grCD                                ;  //((decimal)TheGrid[ 5, rowIdx].Value).ToString0Vv();
       Fld_SkladDate  = rtrano_rec.T_skladDate.ToString(ZXC.VvDateFormat);  //TheGrid[10, rowIdx].Value.ToString();
       Fld_SkladCD    = rtrano_rec.T_skladCD                             ;  //TheGrid[11, rowIdx].Value.ToString();
    }
@@ -2630,7 +2633,7 @@ public class RtranoListUC : VvRecLstUC
    public string Fld_PCK_HDD    { get { return tbx_PCK_HDD   .Text; } set { tbx_PCK_HDD   .Text = value; } }
    public string Fld_SkladDate  { get { return tbx_skladDate .Text; } set { tbx_skladDate .Text = value; } }
    public string Fld_SkladCD    { get { return tbx_skladCD   .Text; } set { tbx_skladCD   .Text = value; } }
-
+   public string Fld_PCK_Opis      { get { return tbx_PCK_Opis   .Text; } set { tbx_PCK_Opis  .Text = value; } }
    public string SelectedTT
    {
       get
@@ -2641,7 +2644,6 @@ public class RtranoListUC : VvRecLstUC
             return "";
       }
    }
-
    public uint SelectedParentID
    {
       get

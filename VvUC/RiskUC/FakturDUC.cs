@@ -14251,7 +14251,7 @@ public class FakturPDUC : FakturExtDUC
 {
    #region Fieldz
 
-   protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklCD2_Old, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName,
+   protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklCD2_Old, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName, vvtbT_grCD_Old,
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
@@ -14458,11 +14458,17 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
       colVvText.Visible = isVisible;
    }
-   protected void T_grCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   protected void T_grCD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText, bool istbxForLookUp)
    {
-      vvtbT_grCD = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_grCD", TheVvDaoTrans2, DB_Tci2.t_grCD, _statusText);
-      vvtbT_grCD.JAM_Set_LookUpTable(ZXC.luiListaRtranoGr, (int)ZXC.Kolona.prva);
-
+      if(istbxForLookUp)
+      {
+         vvtbT_grCD = TheG2.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_grCD", TheVvDaoTrans2, DB_Tci2.t_grCD, _statusText);
+         vvtbT_grCD.JAM_Set_LookUpTable(ZXC.luiListaRtranoGr, (int)ZXC.Kolona.prva);
+      }
+      else
+      {
+         vvtbT_grCD = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_grCD", TheVvDaoTrans2, DB_Tci2.t_grCD, _statusText);
+      }
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_grCD, TheVvDaoTrans2, DB_Tci2.t_grCD, _colHeader, _width);
       colVvText.Visible = isVisible;
    }
@@ -14690,7 +14696,14 @@ public class FakturPDUC : FakturExtDUC
       {
          vvtbT_artiklCD2_Old.JAM_FieldExitMethod_3 = new EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
+   }
+   protected void R_grCD_OLD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbT_grCD_Old = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtbT_grCD_Old", TheVvDaoTrans2, DB_Tci2.t_grCD, _statusText);
+      vvtbT_grCD_Old.JAM_ReadOnly = true;
 
+      colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_grCD_Old, TheVvDaoTrans2, "R_grCD_Old", _colHeader, ZXC.Q5un);
+      colVvText.Visible = isVisible;
    }
    protected void R_PCK_baza_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
@@ -14750,6 +14763,7 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_TT;
       internal int iT_skladCD1;
       internal int iR_artiklCD_Old;
+      internal int iR_grCD_Old;
       internal int iR_PCK_baza;
 
       // duplicates 4 MOD understanding 
@@ -14794,6 +14808,7 @@ public class FakturPDUC : FakturExtDUC
       ci2.iT_TT           = TheG2.IdxForColumn("T_TT");
       ci2.iT_skladCD1     = TheG2.IdxForColumn("R_skladCD1");
       ci2.iR_artiklCD_Old = TheG2.IdxForColumn("R_artiklCD_Old");
+      ci2.iR_grCD_Old     = TheG2.IdxForColumn("R_grCD_Old");
       ci2.iR_PCK_baza     = TheG2.IdxForColumn("R_PCK_baza");
 
       ci2.iT_RAM_plus  = ci2.iT_dimX;
@@ -15320,6 +15335,7 @@ public class FakturPDUC : FakturExtDUC
    private void AddColorsToCell_Old(Color clr, int rowIdx)
    { 
       TheG2.Rows[rowIdx].Cells[ci2.iR_artiklCD_Old].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iR_grCD_Old    ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_kol         ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iR_ramOld      ].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iR_hddOld      ].Style.BackColor = clr; 
@@ -15328,7 +15344,8 @@ public class FakturPDUC : FakturExtDUC
    { 
       TheG2.Rows[rowIdx].Cells[ci2.iT_artiklCD].Style.BackColor = 
       TheG2.Rows[rowIdx].Cells[ci2.iT_dimZ    ].Style.BackColor = 
-      TheG2.Rows[rowIdx].Cells[ci2.iT_decC    ].Style.BackColor = clr;
+      TheG2.Rows[rowIdx].Cells[ci2.iT_decC    ].Style.BackColor = 
+      TheG2.Rows[rowIdx].Cells[ci2.iT_grCD    ].Style.BackColor = clr;
       
     //TheG2.Rows[rowIdx].Cells["scrol"        ].Style.BackColor = clr;
    }

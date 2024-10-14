@@ -6459,7 +6459,7 @@ public class IRPDUC              : FakturPDUC
      //{
          T_artiklCD2_CreateColumn      (ZXC.Q4un,    isVisible, "Šifra"   , "Šifra artikla"                     );
          T_artiklName2_CreateColumnFill(             isVisible, "Naziv"   , "Naziv artikla ili proizvoljan opis");
-         T_grCD_CreateColumn           (ZXC.Q4un,    isVisible, "Grupa"   , "Oznaka za grupiranje"              );
+         T_grCD_CreateColumn           (ZXC.Q4un,    isVisible, "Grupa"   , "Oznaka za grupiranje"              , true);
          R_grNameG2_CreateColumn       (ZXC.Q8un,    isVisible, "Opis"    , "Opis grupe"                        );
          T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "Paleta"  , "Broj palete"                       );
          D_JM_CreateColumn             (ZXC.Q3un,    isVisible, "JM"      , "Jedinica mjere"                    );
