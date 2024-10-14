@@ -2663,13 +2663,6 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
          theRules.FtransOpis = "Nabavna vrijednost prodane robe";
        //theRules.SetDugAndPot(true, faktur_rec.Ira_ROB_NV); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
          theRules.SetDugAndPot(true,             theRobaNV); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
-
-         //08.10.2024. ako se radi o pojedinacnim IRM-ovima, koji se knjize kao IRA sto je slucaj sa Panigaleom jer je tako trazeno iz rozela
-         //onda je faktur_rec.Ira_ROB_NV = 0 a ono sto bi trebalo biti NV pribraja se na  faktur_rec.K_ukMskMrz
-         //mislim da bi u tom slucaju trebalo biti ovako ali nisam ziher 
-         // vidi GetNeprebaceniFakturAndRtrans2NalogLists gdje zbog ZXC.KSD.Dsc_ForceIRMkaoIRA == true ne ulazimo a kad od tamo dodemo kad je false onda tu dodu dobri iznosi 
-         //theRules.SetDugAndPot(true, faktur_rec.R_ukMskMrz); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Mrz;             Send2Nalog(conn, ref line, theRules, false);
-         //theRules.SetDugAndPot(true, faktur_rec.R_Ira_NV  ); theRules.FtransKonto = theRules.KtoShemaDsc.Dsc_Kto_Realizacija; Send2Nalog(conn, ref line, theRules, false);
       }
    }
    private static void Send2Nalog_Prihod_IRM     (XSqlConnection conn, ref ushort line, Faktur2NalogRulesAndData theRules, Faktur faktur_rec)

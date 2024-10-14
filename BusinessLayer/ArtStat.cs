@@ -1199,10 +1199,11 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #endregion InternUlaz_From One or Many Izlaz
 
-         else if(TtInfo.IsMODulazTT)
-         {
-            RtrUlazCijNBC = PrNBCBefThisUlaz; // jer TT_MOU nema t_cij nit' na gridu nit' u dataLayer-u 
-         }
+         // ugaseno 14.10.2024. ... nez cem sluzi, smeta, valjda dio onog starog dizajna MOD-a 
+       //else if(TtInfo.IsMODulazTT)
+       //{
+       //   RtrUlazCijNBC = PrNBCBefThisUlaz; // jer TT_MOU nema t_cij nit' na gridu nit' u dataLayer-u 
+       //}
          else
          {
             RtrUlazCijNBC = rtr.R_CIJ_KCR; // ex 'nab'
@@ -1427,16 +1428,17 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #region MOU ... vrednuj FIN po PrNBCBefThisUlaz
 
-         if(TtInfo.IsMODulazTT)
-         {
-            UkUlazFinNBC      -=             RtrUlazVrjNBC   ;
-            UkUlazFinNBC      += rtr.T_kol * PrNBCBefThisUlaz;
-            UkUlazFirmaFinNBC -=             RtrUlazVrjNBC   ;
-            UkUlazFirmaFinNBC += rtr.T_kol * PrNBCBefThisUlaz;
-            RtrUlazVrjNBC      = rtr.T_kol * RtrUlazCijNBC   ;
-
-            LastPrNabCij       = /*PrNabCij*/ZXC.DivSafe(StanjeFinNBC, StanjeKol);
-         }
+         // ugaseno 14.10.2024. ... nez cem sluzi, smeta, valjda dio onog starog dizajna MOD-a 
+       //if(TtInfo.IsMODulazTT)
+       //{
+       //   UkUlazFinNBC      -=             RtrUlazVrjNBC   ;
+       //   UkUlazFinNBC      += rtr.T_kol * PrNBCBefThisUlaz;
+       //   UkUlazFirmaFinNBC -=             RtrUlazVrjNBC   ;
+       //   UkUlazFirmaFinNBC += rtr.T_kol * PrNBCBefThisUlaz;
+       //   RtrUlazVrjNBC      = rtr.T_kol * RtrUlazCijNBC   ;
+       //
+       //   LastPrNabCij       = /*PrNabCij*/ZXC.DivSafe(StanjeFinNBC, StanjeKol);
+       //}
 
          #endregion MOU ... vrednuj FIN po PrNBCBefThisUlaz
 

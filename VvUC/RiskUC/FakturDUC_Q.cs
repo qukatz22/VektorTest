@@ -5852,9 +5852,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Check for double serno entry
 
-      (PCK_Unikat sernoInfo, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
+      (PCK_Unikat thePCK_Unikat, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
-      if(sernoInfo == null)
+      if(thePCK_Unikat == null)
       {
          return; // NOVI serno, ... nije naso nist po tom serno-u 
       }
@@ -5862,7 +5862,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // ak smo dosli do tu, znaci da je u pitanju postojeci serno 
       // pa mu idemo iskoristiti lastRtrano_rec stuff              
 
-      if(ThisIs_MOC_rowIndex(currRowIdx) && sernoInfo.PCK_BazaCD != the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
+      if(ThisIs_MOC_rowIndex(currRowIdx) && thePCK_Unikat.PCK_BazaCD != the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", the_MOD_DUC.Fld_PTG_MOC_RowCount, the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD);
 
