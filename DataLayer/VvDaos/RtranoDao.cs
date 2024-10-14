@@ -599,6 +599,19 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return (thePCK_Unikat, lastRtrano_rec);
    }
 
+   public static string GetR_opisOLD(XSqlConnection conn, Rtrano rtrano_rec)
+   {
+      (PCK_Unikat thePCK_Unikat, Rtrano lastRtrano_rec) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(conn, rtrano_rec.T_serno);
+
+      List<Rtrano> thisSernoRtranoList = thePCK_Unikat.PCK_SernoInfo_RtranoList;
+
+      int idxOfThisRtrano = thisSernoRtranoList.IndexOf(rtrano_rec);
+
+      if(idxOfThisRtrano < 1) return "";
+
+      return thisSernoRtranoList[idxOfThisRtrano - 1].T_grCD;
+   }
+
    #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
 
 }

@@ -6016,6 +6016,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       // ArtiklCD_OLD 
       TheG2.PutCell(localCi2.iR_artiklCD_Old, rIdx, oldRtrano_rec.T_artiklCD);
+      TheG2.PutCell(localCi2.iR_grCD_Old    , rIdx, oldRtrano_rec.T_grCD    );
 
       // ArtiklCD_NEW 
       if(isMOCrow)

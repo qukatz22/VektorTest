@@ -14963,8 +14963,12 @@ public class FakturPDUC : FakturExtDUC
 
             TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, oldArtiklCD);
             
-            TheG2.PutCell(ci2.iR_ramOld, rowIdx, rtrano_rec.R_MOD_RAM_old);
-            TheG2.PutCell(ci2.iR_hddOld, rowIdx, rtrano_rec.R_MOD_HDD_old);
+            TheG2.PutCell(ci2.iR_ramOld      , rowIdx, rtrano_rec.R_MOD_RAM_old);
+            TheG2.PutCell(ci2.iR_hddOld      , rowIdx, rtrano_rec.R_MOD_HDD_old);
+
+            string R_opisOLD = RtranoDao.GetR_opisOLD(TheDbConnection, rtrano_rec);
+
+            TheG2.PutCell(ci2.iR_grCD_Old    , rowIdx, R_opisOLD);
          }
 
       } // if(ZXC.IsPCTOGO) 
