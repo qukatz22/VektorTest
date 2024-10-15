@@ -2321,6 +2321,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       } 
    }
 
+   /*private*/public Rtrano[] TrnNonDel2_ALL
+   { 
+      get 
+      { 
+         return this.Transes2.Where
+            (rtrn => 
+               rtrn.SaveTransesWriteMode != ZXC.WriteMode.Delete /*&&
+             //rtrn.T_TT                 == Faktur.TT_PUL   // proizvodnju ulaz zbrajaj 
+               rtrn.TtInfo.IsSplitProizvodnjaULAZ == true   // proizvodnju ulaz zbrajaj PUL, PIX */
+            ).ToArray(); 
+      } 
+   }
+
    private Rtrans[] TrnNonDel_PULX_WO_OTPADPILJ
    { 
       get 
@@ -2433,6 +2446,12 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public decimal TrnSum2_dimY { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_dimY); } }
    public decimal TrnSum2_decA { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_decA); } }
    public decimal TrnSum2_decB { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_decB); } }
+
+   // 15.10.2024: otkriveno za PTG potrebe
+   public decimal TrnSum2_ALL_dimX { get { return this.TrnNonDel2_ALL.Sum(rtrno => rtrno.T_dimX); } }
+   public decimal TrnSum2_ALL_dimY { get { return this.TrnNonDel2_ALL.Sum(rtrno => rtrno.T_dimY); } }
+   public decimal TrnSum2_ALL_decA { get { return this.TrnNonDel2_ALL.Sum(rtrno => rtrno.T_decA); } }
+   public decimal TrnSum2_ALL_decB { get { return this.TrnNonDel2_ALL.Sum(rtrno => rtrno.T_decB); } }
 
 
 

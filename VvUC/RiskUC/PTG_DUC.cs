@@ -4969,10 +4969,10 @@ public class MOD_PTG_DUC : FakturPDUC
 
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None)
       {
-         RAMplus  = faktur_rec.TrnSum2_dimX;
-         RAMminus = faktur_rec.TrnSum2_dimY;
-         HDDplus  = faktur_rec.TrnSum2_decA;
-         HDDminus = faktur_rec.TrnSum2_decB;
+         RAMplus  = faktur_rec./*TrnSum2_dimX*/TrnSum2_ALL_dimX;
+         RAMminus = faktur_rec./*TrnSum2_dimY*/TrnSum2_ALL_dimY;
+         HDDplus  = faktur_rec./*TrnSum2_decA*/TrnSum2_ALL_decA;
+         HDDminus = faktur_rec./*TrnSum2_decB*/TrnSum2_ALL_decB;
       }
       else
       {

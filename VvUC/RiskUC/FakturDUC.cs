@@ -15036,10 +15036,10 @@ public class FakturPDUC : FakturExtDUC
 
       if(this.Fld_TT == Faktur.TT_MOD)
       {
-         TheSumGrid2.PutCell(ci2.iT_RAM_plus , 0, faktur_rec.TrnSum2_dimX);
-         TheSumGrid2.PutCell(ci2.iT_RAM_minus, 0, faktur_rec.TrnSum2_dimY);
-         TheSumGrid2.PutCell(ci2.iT_HDD_plus , 0, faktur_rec.TrnSum2_decA);
-         TheSumGrid2.PutCell(ci2.iT_HDD_minus, 0, faktur_rec.TrnSum2_decB);
+         TheSumGrid2.PutCell(ci2.iT_RAM_plus , 0, faktur_rec./*TrnSum2_dimX*/TrnSum2_ALL_dimX);
+         TheSumGrid2.PutCell(ci2.iT_RAM_minus, 0, faktur_rec./*TrnSum2_dimY*/TrnSum2_ALL_dimY);
+         TheSumGrid2.PutCell(ci2.iT_HDD_plus , 0, faktur_rec./*TrnSum2_decA*/TrnSum2_ALL_decA);
+         TheSumGrid2.PutCell(ci2.iT_HDD_minus, 0, faktur_rec./*TrnSum2_decB*/TrnSum2_ALL_decB);
       }
    }
 
