@@ -141,7 +141,10 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
     //this.T_TT         = rtrano_rec.T_TT        ;
       this.T_TT         = theTT                  ;
       this.T_ttNum      = rtrano_rec.T_ttNum     ;
-      this.T_ttSort     = rtrano_rec.T_ttSort    ;
+
+    //this.T_ttSort     = rtrano_rec.T_ttSort     ;
+      this.T_ttSort     = ZXC.TtInfo(theTT).TtSort;
+
       this.T_artiklCD   = rtrano_rec.T_artiklCD  ;
       this.T_skladCD    = rtrano_rec.T_skladCD   ;
       this.T_artiklName = rtrano_rec.T_artiklName;
