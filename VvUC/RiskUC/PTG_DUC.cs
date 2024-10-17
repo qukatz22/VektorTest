@@ -5166,6 +5166,13 @@ public class MOD_PTG_DUC : FakturPDUC
 
       theVvForm.BeginEdit(faktur_rec);
 
+      //// reverse Transes order
+      //for(int serial = 0, reverseSerial = faktur_rec.Transes.Count; serial < faktur_rec.Transes.Count; ++serial, --reverseSerial)
+      //{
+      //   faktur_rec.Transes[serial].T_serial = (ushort)reverseSerial;
+      //   faktur_rec.Transes[serial].SaveTransesWriteMode = ZXC.WriteMode.Edit;
+      //}
+
       faktur_rec.TakeTransesSumToDokumentSum(false);
 
       bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
@@ -5219,7 +5226,7 @@ public class MOD_PTG_DUC : FakturPDUC
                                                                                                                                                                       // --- 
       foreach(Rtrano KMP_rtrano_rec in mou_list)                                                                                                                      // --- 
       {                                                                                                                                                               // --- 
-         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOU(conn, isNO_ADDREC_JustCalc, KMP_rtrano_rec, ref t_serial, false, ukRAMfinIzlazSUM, RAMplusGB_SUM, ukHDDfinIzlazSUM, HDDplusGB_SUM);  // MOU KMP Artikl zeleni ULAZ 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOU(conn, isNO_ADDREC_JustCalc, _faktur_rec, KMP_rtrano_rec, ref t_serial, false, ukRAMfinIzlazSUM, RAMplusGB_SUM, ukHDDfinIzlazSUM, HDDplusGB_SUM);  // MOU KMP Artikl zeleni ULAZ 
                                                                                                                                                                       // --- 
          if(rtrans_rec.T_serial == serial_MOUrtransa_kojiTrebaNovuCijenu) theMOUcij = rtrans_rec.T_cij;                                                               // --- 
       }                                                                                                                                                               // --- 
@@ -5227,7 +5234,7 @@ public class MOD_PTG_DUC : FakturPDUC
                                                                                                                                                                       // --- 
       foreach(Rtrano PCK_rtrano_rec in moc_mos_list) // NEW PCK Artikl                                                                                                // --- 
       {                                                                                                                                                               // --- 
-         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOU(conn, isNO_ADDREC_JustCalc, PCK_rtrano_rec, ref t_serial, true, ukRAMfinIzlazSUM, RAMplusGB_SUM, ukHDDfinIzlazSUM, HDDplusGB_SUM);   // MOU NEW PCK Artikl zeleni ULAZ 
+         rtrans_rec = AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOU(conn, isNO_ADDREC_JustCalc, _faktur_rec, PCK_rtrano_rec, ref t_serial, true, ukRAMfinIzlazSUM, RAMplusGB_SUM, ukHDDfinIzlazSUM, HDDplusGB_SUM);   // MOU NEW PCK Artikl zeleni ULAZ 
                                                                                                                                                                       // --- 
          if(rtrans_rec.T_serial == serial_MOUrtransa_kojiTrebaNovuCijenu) theMOUcij = rtrans_rec.T_cij;                                                               // --- 
       }                                                                                                                                                               // --- 
@@ -5236,7 +5243,7 @@ public class MOD_PTG_DUC : FakturPDUC
       return theMOUcij;
    }
 
-   private static Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOI(XSqlConnection conn, bool isNO_ADDREC_JustCalc, Faktur faktur_rec, Rtrano rtrano_rec, ref ushort t_serial, ref decimal ukRAMfinIzlazSUM, ref decimal ukHDDfinIzlazSUM)
+   private static Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOI(XSqlConnection conn, bool isNO_ADDREC_JustCalc, Faktur _faktur_rec, Rtrano rtrano_rec, ref ushort t_serial, ref decimal ukRAMfinIzlazSUM, ref decimal ukHDDfinIzlazSUM)
    {
       #region Init
 
@@ -5277,7 +5284,7 @@ public class MOD_PTG_DUC : FakturPDUC
       #region Calc ukRAMfinIzlazSUM, ukHDDfinIzlazSUM
 
       rtrans_rec.CalcTransResults(null);
-      faktur_rec.Transes.Add(rtrans_rec);
+      _faktur_rec.Transes.Add(rtrans_rec);
 
       bool isKomponenta = artikl_rec.TS == ZXC.KMP_TS;
       bool isOLDartikl  = !isKomponenta;
@@ -5298,7 +5305,7 @@ public class MOD_PTG_DUC : FakturPDUC
       return rtrans_rec;
    }
 
-   private static Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOU(XSqlConnection conn, bool isNO_ADDREC_JustCalc, Rtrano rtrano_rec, ref ushort t_serial, bool isPCKartikl, decimal ukRAMfinIzlazSUM, decimal RAMplusGB_SUM, decimal ukHDDfinIzlazSUM, decimal HDDplusGB_SUM)
+   private static Rtrans AutoADD_MOD_Rtrans_From_MOD_Rtrano_MOU(XSqlConnection conn, bool isNO_ADDREC_JustCalc, Faktur _faktur_rec, Rtrano rtrano_rec, ref ushort t_serial, bool isPCKartikl, decimal ukRAMfinIzlazSUM, decimal RAMplusGB_SUM, decimal ukHDDfinIzlazSUM, decimal HDDplusGB_SUM)
    {
       #region Init
 
@@ -5358,6 +5365,9 @@ public class MOD_PTG_DUC : FakturPDUC
       }
 
       if(isNO_ADDREC_JustCalc == false) rtrans_rec.VvDao.ADDREC(conn, rtrans_rec);
+
+      //rtrans_rec.CalcTransResults(null);   ne znamo treba li ovo ? 17.10.2024 
+      //_faktur_rec.Transes.Add(rtrans_rec); ne znamo treba li ovo ? 17.10.2024 
 
       return rtrans_rec;
    }
