@@ -5258,7 +5258,18 @@ public class MOD_PTG_DUC : FakturPDUC
       if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
       else                   t_jedMj = ""              ;
 
-      ArtStat artStat = ArtiklDao.GetArtiklStatus(conn, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
+      Rtrans limiterRtrans_rec = new Rtrans()
+      {
+         T_artiklCD  = rtrano_rec.T_artiklCD,
+         T_skladCD   = rtrano_rec.T_skladCD,
+         T_skladDate = rtrano_rec.T_skladDate,
+         T_ttSort    = rtrano_rec.T_ttSort,
+         T_ttNum     = rtrano_rec.T_ttNum,
+         T_serial    = /*rtrano_rec.T_serial*/ (ushort)(t_serial + 1),
+      };
+
+    //ArtStat artStat = ArtiklDao.GetArtiklStatus(conn, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
+      ArtStat artStat = ArtiklDao.GetArtiklStatus(conn, limiterRtrans_rec);
 
       theCij = artStat != null ? artStat.PrNabCij : 0.00M;
 

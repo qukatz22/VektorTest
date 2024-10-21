@@ -448,10 +448,13 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
    {
       get
       {
-         // 29.03.2013: 
-       //return this.TtInfo.Is_PUL_TT;
+         // 21.10.2024: sad skuzismo da ovdje fali MOU, a sta je s TRM i PIP ???!!!
+       //return this.T_TT == Faktur.TT_PUL ||
+       //       this.T_TT == Faktur.TT_PUX;
          return this.T_TT == Faktur.TT_PUL ||
-                this.T_TT == Faktur.TT_PUX;
+                this.T_TT == Faktur.TT_PUX ||
+                this.T_TT == Faktur.TT_MOU;
+
       }
    }
 
