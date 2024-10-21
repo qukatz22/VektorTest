@@ -1618,11 +1618,19 @@ public sealed class RtransDao : VvDaoBase, IVvDao
             // 04.09.2015: 
             //case RtransServiceKind.CheckPrNabCij: arhivaLabel =                           "AUTO_NBC"; break;
             case RtransServiceKind.CheckPrNabCij: arhivaLabel = isPULXpass ? "AUT2_NBC" : "AUTO_NBC"; break;
-            case RtransServiceKind.CheckZPCkol: arhivaLabel = "CHCK_ZPC"; break;
-            case RtransServiceKind.TrimZPC: arhivaLabel = "TRIM_ZPC"; break;
+            case RtransServiceKind.CheckZPCkol  : arhivaLabel = "CHCK_ZPC"; break;
+            case RtransServiceKind.TrimZPC      : arhivaLabel = "TRIM_ZPC"; break;
          }
 
          arhivedFaktur_rec = faktur_rec.CreateArhivedDataRecord(conn, arhivaLabel);
+
+         #region MOU
+
+         bool hasMOU = rtransInDescrepancyList.Any(rtr => rtr.T_TT == Faktur.TT_MOU);
+
+         Faktur MOD_faktur_rec = hasMOU ? (Faktur)faktur_rec.CreateNewRecordAndCloneItComplete() : null;
+
+         #endregion MOU
 
          faktur_rec.BeginEdit();
          if(hasPossibleExtender) faktur_rec.VirtualExtenderRecord.BeginEdit();
@@ -1640,15 +1648,31 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                //if(isZPCkol == false) // old, classic 
                if(serviceKind == RtransServiceKind.CheckPrNabCij) // old, classic 
                {
-                  decimal tmpVal = rtrans_rec.T_cij;  // by Delf 15.06.2015
-                                                      // 10.11.2014: 
-                                                      //rtrans_rec.T_cij =                                               rtransInDescrepancy.TheAsEx.LastPrNabCij; // VOLIA ! 
-                                                      // byDelf - 15.06.2015
-                                                      //rtrans_rec.T_cij =                                    isPULXpass ? rtransInDescrepancy.TmpDecimal : rtransInDescrepancy.TheAsEx.LastPrNabCij; // VOLIA ! 
-                  rtrans_rec.T_cij = ConditionalValue(rtrans_rec.T_cij, isPULXpass ?
-                   //                                                                                                                 rtransInDescrepancy.TmpDecimal :
-                     rtransInDescrepancy.T_TT == Faktur.TT_MOU ? Get_MOU_cij_OnCheckPrNabCij(conn, (Faktur)faktur_rec.CreateNewRecordAndCloneItComplete(), rtrans_rec.T_serial) : rtransInDescrepancy.TmpDecimal :
-                     rtransInDescrepancy.TheAsEx.LastPrNabCij, ZXC.ValOrZero_Decimal(ChkPrNbC_diff_tolerancy.Replace(".", ","), 4) * 2 / 3, ref thisFakturIsTouched);
+                  //decimal tmpVal = rtrans_rec.T_cij;  // by Delf 15.06.2015
+                  //                                    // 10.11.2014: 
+                  //                                    //rtrans_rec.T_cij =                                               rtransInDescrepancy.TheAsEx.LastPrNabCij; // VOLIA ! 
+                  //                                    // byDelf - 15.06.2015
+                  //                                    //rtrans_rec.T_cij =                                    isPULXpass ? rtransInDescrepancy.TmpDecimal : rtransInDescrepancy.TheAsEx.LastPrNabCij; // VOLIA ! 
+
+                  #region MOU
+
+                  decimal MOU_cij = 0M;
+                  bool isMOU = rtransInDescrepancy.T_TT == Faktur.TT_MOU;
+
+                  if(isMOU) MOU_cij = Get_MOU_cij_OnCheckPrNabCij(conn, /*(Faktur)faktur_rec.CreateNewRecordAndCloneItComplete()*/ MOD_faktur_rec, rtrans_rec.T_serial);
+
+                  #endregion MOU
+
+                  decimal PULX_cij        = isMOU ? MOU_cij : rtransInDescrepancy.TmpDecimal;
+                  decimal correctPrNabCij = rtransInDescrepancy.TheAsEx.LastPrNabCij;
+
+                  rtrans_rec.T_cij = 
+                     ConditionalValue(
+                        /* old cij    */ rtrans_rec.T_cij, 
+                        /* new cij    */ isPULXpass ? PULX_cij : correctPrNabCij,
+                        /* tolerancy  */ ZXC.ValOrZero_Decimal(ChkPrNbC_diff_tolerancy.Replace(".", ","), 4) * 2 / 3, 
+                        /* is touched */ ref thisFakturIsTouched)
+                     ;
 
                   if(!thisFakturIsTouched) ZXC.aim_log("prnbc.Not touched line: [{0}-{1}] - [{2}-{3}]", rtrans_rec.T_TT, rtrans_rec.T_ttNum, rtrans_rec.T_cij.ToStringVv(), oldVal.ToStringVv());
 
