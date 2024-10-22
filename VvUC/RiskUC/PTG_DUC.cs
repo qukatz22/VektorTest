@@ -5377,6 +5377,8 @@ public class MOD_PTG_DUC : FakturPDUC
 
       if(isNO_ADDREC_JustCalc == false) rtrans_rec.VvDao.ADDREC(conn, rtrans_rec);
 
+      ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL);
+
       //rtrans_rec.CalcTransResults(null);   ne znamo treba li ovo ? 17.10.2024 
       //_faktur_rec.Transes.Add(rtrans_rec); ne znamo treba li ovo ? 17.10.2024 
 
