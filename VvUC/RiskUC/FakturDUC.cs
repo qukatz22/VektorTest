@@ -21421,4 +21421,77 @@ public class VvM2PayStatusDlg : VvDialog
    #endregion Event cancelButton
 }
 
+public class Vv_PDF417_Dlg : VvDialog
+{
+#region Filedz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+   private VvTextBox tbx_pdf417;
+
+#endregion Filedz
+
+#region Constructor
+
+   public Vv_PDF417_Dlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Barkod računa";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_pdf417, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+#endregion Constructor
+
+#region hamper
+
+   private void CreateHamper()
+   {
+      hamper          = new VvHamper(1, 15, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un * 2 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8      };
+      hamper.VvRightMargin = 0;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      tbx_pdf417 = hamper.CreateVvTextBox(0, 0, "tbx_barkod", "", 250, 0, 14);
+      tbx_pdf417.Multiline = true;
+   }
+
+#endregion hamper
+
+#region Button_Click
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+#endregion Button_Click
+
+#region Fld_
+
+   public string Fld_Pdf417 { get { return tbx_pdf417.Text; } set { tbx_pdf417.Text = value; } }
+
+#endregion Fld_
+}
+
+
 #endregion Other RISK Dialogs and UserControls
