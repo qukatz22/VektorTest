@@ -21448,7 +21448,7 @@ public class Vv_PDF417_Dlg : VvDialog
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
       okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_pdf417, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_pdf417, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
 #endregion Constructor
@@ -21473,6 +21473,8 @@ public class Vv_PDF417_Dlg : VvDialog
 
       tbx_pdf417 = hamper.CreateVvTextBox(0, 0, "tbx_barkod", "", 250, 0, 14);
       tbx_pdf417.Multiline = true;
+
+      tbx_pdf417.AcceptsReturn = true;
    }
 
 #endregion hamper
@@ -21488,7 +21490,13 @@ public class Vv_PDF417_Dlg : VvDialog
 
 #region Fld_
 
-   public string Fld_Pdf417 { get { return tbx_pdf417.Text; } set { tbx_pdf417.Text = value; } }
+   public string[] Fld_Lines 
+   { 
+      get 
+      { 
+         return tbx_pdf417./*Text*/Lines; 
+      }  
+   }
 
 #endregion Fld_
 }
