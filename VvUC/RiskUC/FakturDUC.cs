@@ -21498,7 +21498,15 @@ public class Vv_PDF417_Dlg : VvDialog
       }  
    }
 
-#endregion Fld_
+   public string Fld_Text
+   {
+      get
+      {
+         return tbx_pdf417.Text;
+      }
+   }
+
+   #endregion Fld_
 }
 
 
