@@ -667,7 +667,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       {
          try { nora = cmd.ExecuteNonQuery(); }
          catch(XSqlException ex) { success = false; ZXC.sqlErrNo = ex.Number; VvSQL.ReportSqlError("DELREC_FromCache " + vvDataRecord.VirtualRecordName, ex, System.Windows.Forms.MessageBoxButtons.OK); }
-         catch(Exception ex) { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
+         catch(Exception ex)     { success = false; System.Windows.Forms.MessageBox.Show(ex.Message); }
       } //using
 
       // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*= 
@@ -681,23 +681,23 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          actionType == VvSQL.DB_RW_ActionType.DEL &&
 
          ((rtrans_rec.T_BCKPartiklCD.NotEmpty() && rtrans_rec.T_BCKPartiklCD != rtrans_rec.T_artiklCD) ||
-          (rtrans_rec.T_BCKPskladCD.NotEmpty() && rtrans_rec.T_BCKPskladCD != rtrans_rec.T_skladCD));
+          (rtrans_rec.T_BCKPskladCD .NotEmpty() && rtrans_rec.T_BCKPskladCD  != rtrans_rec.T_skladCD   ));
 
       // 09.05.2016: !!! BIG NEWS !!! ... ali je ovo kurac i ne radi! Ode u beskonacno rebuildanje cache-a za 36 rtransa beskonacno 
-      //if(actionType == VvSQL.DB_RW_ActionType.RWT || delrecMarkedWithWrongArtiklCD   ) 
+    //if(actionType == VvSQL.DB_RW_ActionType.RWT || delrecMarkedWithWrongArtiklCD   ) 
       if(actionType == VvSQL.DB_RW_ActionType.RWT || isDELrtransActionFromRWTdocument)
       {
          artiklCD = rtrans_rec.T_BCKPartiklCD;
-         skladCD = rtrans_rec.T_BCKPskladCD;
+         skladCD  = rtrans_rec.T_BCKPskladCD;
       }
       else
       {
          artiklCD = rtrans_rec.T_artiklCD;
-         skladCD = rtrans_rec.T_skladCD;
+         skladCD  = rtrans_rec.T_skladCD;
       }
 
       // RIDnews:                                                        
-      //             ArtiklDao.SetArtiklStatus(conn, artiklCD, skladCD); 
+      //            ArtiklDao.SetArtiklStatus(conn, artiklCD, skladCD); 
       artstat_rec = ArtiklDao.SetArtiklStatus(conn, artiklCD, skladCD);
 
       // RIDnews:                                                          ___prNabCij_fromIzlazCache___ to be used as RtrUlazCijNBC for MSU, MMU, KUL, PUK, VMU, MVU 
@@ -952,6 +952,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
    public static List<ZXC.CdAndName_CommonStruct> CacheDebugList;
 #endif
 
+   // Ovaj je onaj visoki, poziva se na otvaranje TabPage-a i SubModulAkcija 'Manual_CheckCache_CheckPrNabCij_CheckZPC' 
    public static bool CheckPrNabDokCij(XSqlConnection conn)
    {
 
@@ -980,8 +981,11 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       ZXC.ClearStatusText();
 
       return allOK;
+
+      // izlaz iz visokoga 
    }
 
+   // Ovaj je onaj niski, poziva se iz visokog i rekurzijom iz samog sebe 
    public static bool CheckPrNabDokCij(XSqlConnection conn, uint thisRecursiveLevel, List<Rtrans> rtransInTroubleList_CUMULATIVE)
    {
       // 11.02.2015: 
@@ -998,9 +1002,8 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       if(ZXC.ThisIsSkyLabProject) ZXC.SetMainDbConnDatabaseName(VvSQL.GetDbNameForThisTableName(Faktur.recordName));
 
-      uint descrepancyCount = CountDescrepanciesInPrNabDokCij(conn); // 'POV', 'TMU', 'ZPC', 'PIK', 'KIZ', 'MSI', 'VMI', 'PIZ', 'PIX', 'IMT', 'PPR', 'TMI', 'INV'
-
-      // PAZI! Ovdje ides u PUL pass s obzirom na ove //   'POV', 'TMU', 'ZPC', 'PIK', 'KIZ', 'MSI', 'VMI', 'PIZ', 'PIX', 'IMT', 'PPR', 'TMI', 'INV'
+      uint descrepancyCount = CountDescrepanciesInPrNabDokCij(conn); // ('ZPC', 'INV', 'POV', 'ZKC', 'PIK', 'KIZ', 'MSI', 'VMI', 'PIZ', 'PIX', 'TRI', 'IMT', 'PPR', 'MVI', 'MOI', 'NOR') 
+      // PAZI! Ovdje ides u PUL pass s obzirom na ove                // ('ZPC', 'INV', 'POV', 'ZKC', 'PIK', 'KIZ', 'MSI', 'VMI', 'PIZ', 'PIX', 'TRI', 'IMT', 'PPR', 'MVI', 'MOI', 'NOR') 
       // Podrazumijevas da ako ima 'klasicni' descrepancyCount da postoji i PUL descrepancy, ne provjeravas i ne trazis odgovor na pitanje zasebno za PUL 
       if(descrepancyCount.IsZero())
       {
@@ -1141,13 +1144,13 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       ZXC.RtransDao.ResetRecIDinfoList();    // vvDelf 17.06.2015
 
       return allOK;
+
+      // izlaz iz niskoga - rekurzivnoga 
+
    }
 
    public static void CheckPrNabDokCij_PULX_Additions(XSqlConnection conn, bool isExplicitCall, ref string message) // isExplicitCall: false if called from CheckPrNabDokCij, true if called as some SubmodulAction 
    {
-      //return true;
-      //#if LeJtEr
-
       List<Rtrans> rtransInTroubleList;
       List<Faktur> fakturForRwtrecList;
 
@@ -1161,6 +1164,16 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          // 10.11.2014: dodano tek sada. Bijo BUG! 
          fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
          ZXC.aim_log("[PUL/PIZ] Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
+
+         // 28.10.2024: NEW ERA: dodatno popravljamo i CACHe zelenih PULX rtransa @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+
+         foreach(Rtrans rtrans_rec in rtransInTroubleList) ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
 
          if(isExplicitCall)
          {
@@ -1179,6 +1192,16 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          // 10.11.2014: dodano tek sada. Bijo BUG! 
          fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
          ZXC.aim_log("[PUX/PIX] Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
+
+         // 28.10.2024: NEW ERA: dodatno popravljamo i CACHe zelenih PULX rtransa @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+
+         foreach(Rtrans rtrans_rec in rtransInTroubleList) ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
 
          if(isExplicitCall)
          {
@@ -1205,6 +1228,16 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          // 10.11.2014: dodano tek sada. Bijo BUG! 
          fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
          ZXC.aim_log("[TRM/TRI] Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
+
+         // 28.10.2024: NEW ERA: dodatno popravljamo i CACHe zelenih PULX rtransa @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+         // NAMJERNO SUPRESSANA NOVOST ZA TEXTHO jer ne znamo konsekvence ... eventualne razlike ce njima VvJanitor popraviti 
+         //ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+         //
+         //foreach(Rtrans rtrans_rec in rtransInTroubleList) ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+         //
+         //ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
 
          if(isExplicitCall)
          {
@@ -1250,14 +1283,23 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
          ZXC.aim_log("[MOU/MOI] Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
 
+         // 28.10.2024: NEW ERA: dodatno popravljamo i CACHe zelenih PULX rtransa @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+
+         foreach(Rtrans rtrans_rec in rtransInTroubleList) ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+
          if(isExplicitCall)
          {
             message += StringOfFakturList(fakturForRwtrecList, true);
             ZXC.aim_emsg(MessageBoxIcon.Information, "Revalorizacija MOU cijene je gotova. Dokumenti:\n\n{0}", message);
          }
       }
-
-      //#endif
+      
    }
 
    private static void DeleteAndRenewCache_PreviouslySupressed(XSqlConnection conn, List<Rtrans> rtransInTroubleList)
