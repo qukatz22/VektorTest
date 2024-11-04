@@ -430,10 +430,10 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          ZXC.TheVvForm.Refresh(); Cursor.Current = Cursors.WaitCursor;
 
          // 08.11.2016: fast program entrance
-         //if((ZXC.IsRipleyOrKristal && ZXC.vvDB_VvDomena == "vvTH") || (ZXC.IsTEXTHOcentrala))
-         //{
-         //   goto be_fast;
-         //}
+         if((ZXC.IsRipleyOrKristal && ZXC.vvDB_VvDomena == "vvTH") || (ZXC.IsTEXTHOcentrala))
+         {
+            goto be_fast;
+         }
 
          /*********************************************************************************************************************************************************************/
          /****/   /* 02.07.2017: */
@@ -454,7 +454,15 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          /*********************************************************************************************************************************************************************/
 
          // 28.10.2024: 
-         /****/   if((ZXC.RISK_BadMSU_Checked == false || this.TheVvUC is RiskReportUC) && (!ZXC.IsTEXTHOcentrala || ZXC.vvDB_IsLocalhost)) { ArtiklDao.Check_MSU_Cache(TheDbConnection, false); ZXC.RISK_BadMSU_Checked = true; } /****/
+         /****/   if
+                  (
+                     (ZXC.RISK_BadMSU_Checked == false || TheVvUC is RiskReportUC) && 
+                     (ZXC.IsTEXTHOcentrala    == false || ZXC.vvDB_IsLocalhost   ) && 
+                     (ZXC.IsTEXTHOshop        == false                           )
+                  ) 
+         { 
+            ArtiklDao.Check_MSU_Cache(TheDbConnection, false); ZXC.RISK_BadMSU_Checked = true; 
+         } /****/
 
          // 02.06.2015: 
        //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline &&  this.TheVvUC is IRMDUC)
