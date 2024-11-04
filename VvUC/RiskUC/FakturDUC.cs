@@ -14966,7 +14966,7 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iR_ramOld      , rowIdx, rtrano_rec.R_MOD_RAM_old);
             TheG2.PutCell(ci2.iR_hddOld      , rowIdx, rtrano_rec.R_MOD_HDD_old);
 
-            string R_opisOLD = RtranoDao.GetR_opisOLD(TheDbConnection, rtrano_rec);
+            string R_opisOLD = rtrano_rec.T_serno.NotEmpty() ? RtranoDao.GetR_opisOLD(TheDbConnection, rtrano_rec) : "";
 
             TheG2.PutCell(ci2.iR_grCD_Old    , rowIdx, R_opisOLD);
          }
@@ -15199,6 +15199,9 @@ public class FakturPDUC : FakturExtDUC
       if(TheG2.CI_OK(ci2.iT_artiklName))
       {
          dgvRtrano_rec.T_artiklName = TheG2.GetStringCell(ci2.iT_artiklName, rIdx, dirtyFlagging);
+
+         if(dgvRtrano_rec.T_TT == Faktur.TT_MOC || dgvRtrano_rec.T_TT == Faktur.TT_MOS) dgvRtrano_rec.T_artiklName = Get_Artikl_FromVvUcSifrar(dgvRtrano_rec.T_artiklCD).ArtiklName;
+
          if(DB_RWT) db_rec.T_artiklName = dgvRtrano_rec.T_artiklName;
       }
       if(TheG2.CI_OK(ci2.iT_paletaNo))
