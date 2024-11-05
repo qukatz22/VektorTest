@@ -1542,6 +1542,9 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       }
 
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
 }
 
 // staru nomenklaturu "UGO" (nova je UGN) smo morali ostaviti kod naziva DUC-a jer je vec otislo u vvusercontrol 
@@ -2135,6 +2138,8 @@ public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
    {
       SetUpColor(clr_DOD_PTG, Color.Empty, clr_DOD_PTG);
    }
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
 }
 
 public class PRN_DOD_PTG_DUC : DOD_PTG_DUC
@@ -3150,6 +3155,8 @@ public class PRI_PTG_DUC : FakturPDUC
       SetUpColor(clr_Ulaz, clr_Sklad, clr_Ulaz);
    }
 
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
 }
 
 public class IZD_PTG_DUC : FakturPDUC
@@ -3276,6 +3283,8 @@ public class IZD_PTG_DUC : FakturPDUC
       SetUpColor(clr_Izlaz, clr_Sklad, Color.Empty);
    }
 
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
 }
 
 public class MSI_PTG_DUC : FakturPDUC
@@ -3361,6 +3370,8 @@ public class MSI_PTG_DUC : FakturPDUC
    {
       SetUpColor(Color.Empty, clr_Sklad, Color.Thistle);
    }
+
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
 
 }
 
@@ -3451,6 +3462,8 @@ public class PST_PTG_DUC : FakturPDUC
    {
       SetUpColor(Color.Empty, clr_Sklad, Color.Empty);
    }
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
 }
 
 public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
@@ -4849,6 +4862,8 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       SetUpColor(Color.Beige, Color.Empty, Color.Beige);
    }
+
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
 
    internal void SetRow_TT_and_Color_and_Calc_newRam_newHdd(object sender, EventArgs e)
    {

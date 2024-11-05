@@ -6134,6 +6134,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_MPC);
       }
 
+      if(ZXC.IsPCTOGO)
+      {
+         if(_tt == Faktur.TT_PRI) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PRI_PTG);
+         if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_PTG);
+         if(_tt == Faktur.TT_MSI) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_MSI_PTG);
+
+         // tamara todo!
+      }
       if(vvSubModulXY == Point.Empty)
       {
          GoTo_MIXER_Dokument(_tt, _ttNum);

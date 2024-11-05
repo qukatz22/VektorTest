@@ -220,6 +220,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
    }
 
+   /// <summary>
+   /// PTG DUC koji ima rtrano - serijske brojeve 2. grid 
+   /// </summary>
+   public virtual bool IsPTG_DUC_wRtrano { get { return false; } }
+
+
    #endregion Virtual Metodz
 
    #region Constructor

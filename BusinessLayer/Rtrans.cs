@@ -1962,7 +1962,17 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
             if(artikl_rec != null) art_orgPak = artikl_rec.R_orgPak;
             else                   art_orgPak = 1.00M              ;
 
-            T_ztr = GetZtrCut(faktur_rec.S_ukZavisni, /*faktur_rec.TrnSum_KC*/Get_S_OrgPakKol_fromScreen(), (R_kol * art_orgPak).Ron2());
+            // 05.11.2024 start: ali NE za skutere                                                                                                                                           
+          //T_ztr = GetZtrCut(faktur_rec.S_ukZavisni, /*faktur_rec.TrnSum_KC*/Get_S_OrgPakKol_fromScreen(), (R_kol * art_orgPak).Ron2());                                                    
+
+            bool isSkuter;
+            if(artikl_rec != null) isSkuter = artikl_rec.Grupa1CD == "SKU";
+            else                   isSkuter = false;
+
+            if(isSkuter) T_ztr = GetZtrCut(faktur_rec.S_ukZavisni, /*faktur_rec.TrnSum_KC*/Get_S_KC_fromScreen()       , (R_kol * T_cij)     .Ron2()); // classic via financ. ponderiranje   
+            else         T_ztr = GetZtrCut(faktur_rec.S_ukZavisni, /*faktur_rec.TrnSum_KC*/Get_S_OrgPakKol_fromScreen(), (R_kol * art_orgPak).Ron2()); // via orgPak, npr. prema kilogramima 
+
+            // 05.11.2024  end : ali NE za skutere                                                                                                                                           
          }
          else // classic via financ. ponderiranje 
          {
