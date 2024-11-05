@@ -3514,16 +3514,21 @@ public class ArtiklUC : VvSifrarRecordUC
 
          pcKInfoUC.Size                  = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
          pcKInfoUC.ThePCKInfoGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKInfoSumGrid.Height - ZXC.Qun2 - pcKInfoUC.hamp_rbtBaza.Bottom;
+         pcKInfoUC.ThePCKBazeGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKBazeSumGrid.Height - ZXC.Qun2 - pcKInfoUC.hamp_rbtBaza.Bottom;
          pcKInfoUC.TheSernoGrid  .Height = pcKInfoUC.ThePCKInfoGrid.Height + pcKInfoUC.ThePCKInfoSumGrid.Height/* - ZXC.Q2un*/;
          
          pcKInfoUC.ThePCKInfoSumGrid.Width = pcKInfoUC.ThePCKInfoGrid.Width;
          pcKInfoUC.ThePCKInfoSumGrid.Location = new Point(pcKInfoUC.ThePCKInfoGrid.Location.X, pcKInfoUC.ThePCKInfoGrid.Bottom + ZXC.Qun12);
          pcKInfoUC.ThePCKInfoSumGrid.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-         
-         pcKInfoUC.ThePCKInfoGrid.ColumnHeadersDefaultCellStyle.BackColor = pcKInfoUC.TheSernoGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
-         pcKInfoUC.ThePCKInfoGrid.ColumnHeadersDefaultCellStyle.ForeColor = pcKInfoUC.TheSernoGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
-         pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.BackColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
-         pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.ForeColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
+ 
+         pcKInfoUC.ThePCKBazeSumGrid.Width = pcKInfoUC.ThePCKBazeGrid.Width;
+         pcKInfoUC.ThePCKBazeSumGrid.Location = new Point(pcKInfoUC.ThePCKBazeGrid.Location.X, pcKInfoUC.ThePCKBazeGrid.Bottom + ZXC.Qun12);
+         pcKInfoUC.ThePCKBazeSumGrid.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+         pcKInfoUC.ThePCKInfoGrid.ColumnHeadersDefaultCellStyle.BackColor = pcKInfoUC.TheSernoGrid.ColumnHeadersDefaultCellStyle.BackColor = pcKInfoUC.ThePCKBazeGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
+         pcKInfoUC.ThePCKInfoGrid.ColumnHeadersDefaultCellStyle.ForeColor = pcKInfoUC.TheSernoGrid.ColumnHeadersDefaultCellStyle.ForeColor = pcKInfoUC.ThePCKBazeGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+         pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.BackColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.BackColor    = pcKInfoUC.ThePCKBazeGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
+         pcKInfoUC.ThePCKInfoGrid.RowHeadersDefaultCellStyle.ForeColor    = pcKInfoUC.TheSernoGrid.RowHeadersDefaultCellStyle.ForeColor    = pcKInfoUC.ThePCKBazeGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
 
          //if(PCK_ArtiklInfo_List.NotEmpty()) // da kod prethodni sljedeci ispuni prvoga a ako je empty da ga prazni
          //{

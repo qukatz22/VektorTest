@@ -955,7 +955,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
 
 
-      if(this is UFADUC || this is URADUC || this is URPDUC || this is URMDUC || this is UFMDUC || this is KalkulacijaMpDUC || this is KalkulacijaMpDUC_Dev ||
+      if(this is UFADUC      || this is URADUC || this is URA_PTG_DUC || this is URPDUC || this is URMDUC || this is UFMDUC || this is KalkulacijaMpDUC || this is KalkulacijaMpDUC_Dev ||
          this is PrimkaVpDUC || this is PRIpDUC || this is BlgIsplatDUC || this is BlgUplatDUC || this is PredatUProizDUC || this is PovratInterDUC || this is KKMDUC ||
          this is OdobrDobavDUC || this is PovratDobaDUC || this is IFADUC || this is BlgIsplat_M_DUC || this is BlgUplat_M_DUC || this is PIPDUC ||
          this is URA_SVD_DUC || this is NRD_SVD_DUC || this is UGODUC
@@ -7723,7 +7723,7 @@ public partial class FakturExtDUC : FakturDUC
       TheTabControl.TabPages.Add(CreateVvInnerTabPages("Zoom", "Zoom", ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
 
-      if(this is UFADUC       || this is URADUC      || this is URPDUC          || this is OdobrDobavDUC  || this is PovratKupcaDUC ||
+      if(this is UFADUC       || this is URADUC      || this is URA_PTG_DUC     ||this is URPDUC          || this is OdobrDobavDUC  || this is PovratKupcaDUC ||
          this is IFADUC       || this is IRADUC      || this is IRADUC_2        ||this is IRA_MPC_DUC     || this is IRPDUC         || this is OdobrKupcuDUC  || this is PovratDobaDUC ||
          this is IRMDUC       || this is IRMDUC_2    || this is URMDUC          || this is UFMDUC         ||
          this is BlgIsplatDUC || this is BlgUplatDUC || this is BlgIsplat_M_DUC || this is BlgUplat_M_DUC || this is WYRNDUC)
@@ -10934,8 +10934,8 @@ public partial class FakturExtDUC : FakturDUC
       bool isIzlaz = false;
       bool isWYR   = this is WYRNDUC ;
 
-      if(this is UFADUC || this is URADUC || this is URPDUC   || this is URMDUC      || this is UFMDUC || this is OdobrDobavDUC || this is PovratDobaDUC                                       ) isIzlaz = false;
-      if(this is IFADUC || this is IRADUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC || this is IRMDUC_2) isIzlaz = true;
+      if(this is UFADUC || this is URADUC || this is URA_PTG_DUC || this is URPDUC      || this is URMDUC || this is UFMDUC || this is OdobrDobavDUC || this is PovratDobaDUC                                       ) isIzlaz = false;
+      if(this is IFADUC || this is IRADUC || this is IRADUC_2    || this is IRA_MPC_DUC || this is IRPDUC || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC || this is IRMDUC_2) isIzlaz = true;
 
       lbl_ukOsnm.Location = new Point(hamp_S_ukPdv.VvXxOfCol[1], hamp_S_ukPdv.VvYyOfRow[0]);
       lbl_ukPdvm.Location = new Point(hamp_S_ukPdv.VvXxOfCol[2], hamp_S_ukPdv.VvYyOfRow[0]);

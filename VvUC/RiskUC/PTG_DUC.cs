@@ -3041,6 +3041,129 @@ public class FUG_PTG_UC : VvUserControl
 
 }
 
+public class URA_PTG_DUC : FakturPDUC
+{
+   #region Constructor
+
+   public URA_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_URA
+         });
+      // 31.10.2013: nakon Tembo problem (ubuduce bi trebalo nekako preko rulsa raci koji DUC-evi mogu a koji ne kroz vise skladista)
+      //dbNavigationRestrictor_SKL = ZXC.DbNavigationRestrictor.Empty;
+   }
+
+   #endregion Constructor
+  
+   #region HamperLocation
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+
+      SetParentOfhampers();
+
+      SetLocationMigrators();
+
+      SetSumeHampers(true, true, true, false);
+
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_pdvGeokind, hamp_napomena, 
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT
+                                  };
+
+      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
+                                    hamp_VezniDok2, hamp_Fco, hamp_NacPlac,  hamp_osobaA, hamp_OsobaB ,
+                                    hamp_OpciA, hamp_OpciB,  hamp_osobaX,hamp_carinaKind,/* hamp_rokIsporuke, hamp_rokIspDate, hamp_tipOtpreme,*/
+                                    hamp_tipOtpreme, 
+                                    hamp_externLink1, hamp_externLink2, hamp_prjIdent, hamp_eRproc,
+                                    hamp_opis
+                                  };
+
+      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
+                                        hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_NacPlac, hampCbxM_OsobaA, hampCbxM_osobaB,
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_osobaX, hampCbxM_carinaKind,/* hampCbxM_rokIsporuke, hampCbxM_rokIspDate	, hampCbxM_tipOtpreme,*/
+                                        hampCbxM_tipOtpreme, 
+                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent, hampCbxM_eRproc,
+                                        hampCbxM_opis                                   
+                                      };
+   }
+
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+   public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible = true;
+
+      T_artiklCD_CreateColumn  (ZXC.Q4un   ,             isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                     isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_doCijMal_CreateColumn  (ZXC.Q3un, 0,             isVisible, "RAM"        , "RAM", false);
+      T_noCijMal_CreateColumn  (ZXC.Q3un, 0,             isVisible, "HDD"        , "HDD");
+      T_isIrmUsluga_CreateColumn(ZXC.QUN + ZXC.Qun4,     isVisible, "Usl"        , "Usluga");
+      T_konto_CreateColumn     (ZXC.Q2un ,               isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      T_kol_CreateColumn       (ZXC.Q3un, 2,             isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn     (ZXC.Q2un   ,             isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn       (ZXC.Q4un, 4,             isVisible, "Cijena"     , "Jedinična cijena");
+      T_rbt1St_CreateColumn    (ZXC.Q3un - ZXC.Qun4, 2,  isVisible, "Rb1"        , "Stopa rabata 1");
+      R_KCR_CreateColumn       (ZXC.Q4un, 2,             isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
+      T_pdvSt_CreateColumn     (ZXC.Q2un, 0,             isVisible, "PdvSt"      , "Stopa PDV-a"           );
+      T_pdvKolTip_CreateColumn (ZXC.QUN    ,             isVisible                                       );
+      R_KCRP_CreateColumn      (ZXC.Q4un + ZXC.Qun2 , 2, isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
+   }
+
+   #endregion TheG_Specific_Columns
+   
+   #region TheG_Specific_Columns2
+
+   protected override void InitializeDUC_Specific_Columns2()
+   {
+      bool isVisible = true;
+
+      T_serno_CreateColumn          (ZXC.Q8un,               isVisible, "Serijski broj", "Serijski broj artikla"             );
+      T_artiklCD2_CreateColumn      (ZXC.Q5un,               isVisible, "Šifra"        , "Šifra artikla"                     );
+      T_artiklName2_CreateColumnFill(                        isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
+      R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
+      R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "UlzSkl"       , "Ulazno skladište"                 );
+      T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
+      T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
+      T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "PriSt"       , "UGANDO stavka"                     );
+
+      vvtbT_skladCD2.JAM_ReadOnly = true;
+   }
+
+   #endregion TheG_Specific_Columns2
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturURbDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(clr_Ulaz, clr_Sklad, clr_Ulaz);
+   }
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
+}
+
 public class PRI_PTG_DUC : FakturPDUC
 {
 
@@ -3594,8 +3717,11 @@ public class PCK_ArtiklList_UC : VvUserControl
 {
    #region Fieldz
 
+   public VvDataGridView ThePCKBazeGrid   { get; set; }
    public VvDataGridView ThePCKInfoGrid   { get; set; }
    public VvDataGridView ThePCKInfoSumGrid   { get; set; }
+   public VvDataGridView ThePCKBazeSumGrid   { get; set; }
+   
    private VvTextBox
          vvtb_PCK_ArtCD  ,  
          vvtb_PCK_ArtName,
@@ -3604,10 +3730,10 @@ public class PCK_ArtiklList_UC : VvUserControl
          vvtb_PCK_SklCD  ,  
          vvtb_PCK_RAM    ,  
          vvtb_PCK_HDD    ,  
-       //vvtb_UkPstKol   ,  
-       //vvtb_UkUlazKol  ,  
-       //vvtb_UkIzlazKol ,
-         vvtb_StanjeKol  ;
+         vvtb_StanjeKol  ,
+         vvtb_PCK_BazaName ,
+         vvtb_PCK_BazaSklCD,
+         vvtb_PCK_BazeStKol;
 
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
@@ -3647,12 +3773,15 @@ public class PCK_ArtiklList_UC : VvUserControl
       CreateHamperRbt();
       CreateHamperCbx();
 
-      ThePCKInfoGrid = CreateTheGrid("ThePCKInfoGrid",                        ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
+      ThePCKBazeGrid = CreateTheGrid("ThePCKBazeGrid",                        ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
+      ThePCKInfoGrid = CreateTheGrid("ThePCKInfoGrid", ThePCKBazeGrid.Right + ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
       TheSernoGrid   = CreateTheGrid("TheSernoGrid"  , ThePCKInfoGrid.Right + ZXC.QunMrgn, /*ZXC.QunMrgn*/ hamp_rbtBaza.Bottom);
 
       ThePCKInfoSumGrid = CreateSumGrid(ThePCKInfoGrid, ThePCKInfoGrid.Parent, "SUM" + ThePCKInfoGrid.Name);
+      ThePCKBazeSumGrid = CreateSumGrid(ThePCKBazeGrid, ThePCKBazeGrid.Parent, "SUM" + ThePCKBazeGrid.Name);
 
       Initialize_SumGrid_Columns(ThePCKInfoGrid);
+      Initialize_SumGrid_Columns(ThePCKBazeGrid);
     //GridLocationAndSize_Grids(ThePCKInfoGrid);
 
       CalcLocationAndSize();
@@ -3676,13 +3805,19 @@ public class PCK_ArtiklList_UC : VvUserControl
    {
       if(this.Parent is VvDialog)
       {
-         this.Size             = new Size(ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
+         this.Size             = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
+
+         ThePCKBazeGrid.Height = this.Size.Height - ThePCKBazeSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
          ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
          TheSernoGrid  .Height = this.Size.Height                            - ZXC.Qun2 - hamp_rbtBaza.Bottom;
          
          ThePCKInfoSumGrid.Width    = ThePCKInfoGrid.Width;
          ThePCKInfoSumGrid.Location = new Point(ThePCKInfoGrid.Location.X, ThePCKInfoGrid.Bottom + ZXC.Qun12);
          ThePCKInfoSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+         ThePCKBazeSumGrid.Width    = ThePCKBazeGrid.Width;
+         ThePCKBazeSumGrid.Location = new Point(ThePCKBazeGrid.Location.X, ThePCKBazeGrid.Bottom + ZXC.Qun12);
+         ThePCKBazeSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
       }
    }
 
@@ -3932,6 +4067,12 @@ public class PCK_ArtiklList_UC : VvUserControl
          vvtb_PCK_RAM.JAM_ForeColor = ZXC.vvColors.clr_RAM_PTG;
          vvtb_PCK_HDD.JAM_ForeColor = ZXC.vvColors.clr_HDD_PTG;
       }
+      else if(theGrid.Name == "ThePCKBazeGrid")
+      {
+         vvtb_PCK_BazaName  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate(    "vvtb_PCK_BazaName" , null, -12, "PCK Baza" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_BazaName , null, "R_PCK_BazaName" , "PCK Baza", ZXC.Q3un); vvtb_PCK_BazaName .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q5un;
+         vvtb_PCK_BazaSklCD = theGrid.CreateVvTextBoxFor_String_ColumnTemplate(    "vvtb_PCK_BazaSklCD", null, -12, "Skladište"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_BazaSklCD, null, "R_PCK_BazaSklCD", "Sklad"   , ZXC.Q3un); vvtb_PCK_BazaSklCD.JAM_ReadOnly = true;
+         vvtb_PCK_BazeStKol = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_BazeStKol", null, -12, "StanjeKol"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_BazeStKol, null, "R_BazeStanjeKol", "Stanje"  , ZXC.Q4un); vvtb_PCK_BazeStKol.JAM_ReadOnly = true;
+      }
       else
       {
          vvtb_PCK_theSerno = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_PCK_theSerno", null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSerno, null, "R_PCK_Serno", "Serijski broj", ZXC.Q10un + ZXC.Q2un); vvtb_PCK_theSerno.JAM_ReadOnly = true;
@@ -3987,6 +4128,23 @@ public class PCK_ArtiklList_UC : VvUserControl
       ci2.iT_PCK_theSerno = TheSernoGrid.IdxForColumn("R_PCK_Serno");
       ci2.iT_PCK_artiklCD = TheSernoGrid.IdxForColumn("R_PCK_ArtCD");
    }
+
+   private PCKBaze_colIdx ci3;
+   public struct PCKBaze_colIdx
+   {
+      internal int iT_PCK_BazeName ;
+      internal int iT_PCK_BazeSklCD;
+      internal int iT_StanjeBazeKol;
+   }
+   public void SetPCKBazeColumnIndexes()
+   {
+      ci3 = new PCKBaze_colIdx();
+
+      ci3.iT_PCK_BazeName  = ThePCKInfoGrid.IdxForColumn("R_PCK_BazaName" );
+      ci3.iT_PCK_BazeSklCD = ThePCKInfoGrid.IdxForColumn("R_PCK_BazaSklCD");
+      ci3.iT_StanjeBazeKol = ThePCKInfoGrid.IdxForColumn("R_BazeStanjeKol");
+   }
+
 
    #endregion SetColumnIndexes()
 
@@ -5430,7 +5588,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    private static decimal GetPCK_RAMorHDD_pricePerGB(string priceID, DateTime dokDate)
    {
-      VvLookUpLista luiList = ZXC.luiListaRadnoMjesto/*PCKpricesPerGB*/;
+      VvLookUpLista luiList = ZXC.luiListaPCKpricesPerGB;
 
       luiList.LazyLoad();
 

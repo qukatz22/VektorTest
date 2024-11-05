@@ -6139,6 +6139,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          if(_tt == Faktur.TT_PRI) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PRI_PTG);
          if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_PTG);
          if(_tt == Faktur.TT_MSI) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_MSI_PTG);
+         if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_PTG);
 
          // tamara todo!
       }

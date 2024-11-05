@@ -82,7 +82,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.Default_TT = Faktur.TT_VMI;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IRP)
          this.Default_TT = Faktur.TT_IRA;
-      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_URP || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_URA_SVD)
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_URP || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_URA_SVD || this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_URA_PTG)
          this.Default_TT = Faktur.TT_URA;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_PIZ_P)
          this.Default_TT = Faktur.TT_PIX;
