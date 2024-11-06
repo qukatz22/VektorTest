@@ -3790,12 +3790,46 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       SetPKCColumnIndexes();
 
+      SetPCKBazeColumnIndexes();
+
     //ThePCKInfoGrid.CellMouseDoubleClick += ThePCKGrid_CellMouseDoubleClick_OpenSernoList;
       ThePCKInfoGrid.CellMouseClick       += ThePCKGrid_CellMouseClick_OpenSernoList      ;
       
       ThePCKInfoGrid.CellMouseDoubleClick += ThePCKInfoGrid_CellMouseDoubleClick_OpenArtiklUC;
 
       TheSernoGrid.CellMouseDoubleClick += TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList;
+
+      List<PCK_Artikl> PCKbazeList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+
+      Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
+   }
+
+   private void Put_DGV_All_PCK_Baza_SintList(List<PCK_Artikl> PCKbazeList)
+   {
+      this.PCK_Lines = PCKbazeList;
+
+      int rowIdx;
+
+      ThePCKBazeGrid.Rows.Clear();
+
+      if(PCKbazeList != null)
+      {
+         for(rowIdx = 0; rowIdx < PCKbazeList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         {
+            ThePCKBazeGrid.Rows.Add();
+
+            PutDgvPCKbazeLineFields(rowIdx, PCKbazeList[rowIdx]);
+
+            ThePCKBazeGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         }
+         //PutDgvSumFields(PCK_Lines);
+      }
+
+      //ThePCKInfoSumGrid.ClearSelection();
+
+      PutDgvPCKbazeSumFields(PCKbazeList);
+
+      ThePCKBazeSumGrid.ClearSelection();
    }
 
    #endregion Constructor
@@ -4140,9 +4174,9 @@ public class PCK_ArtiklList_UC : VvUserControl
    {
       ci3 = new PCKBaze_colIdx();
 
-      ci3.iT_PCK_BazeName  = ThePCKInfoGrid.IdxForColumn("R_PCK_BazaName" );
-      ci3.iT_PCK_BazeSklCD = ThePCKInfoGrid.IdxForColumn("R_PCK_BazaSklCD");
-      ci3.iT_StanjeBazeKol = ThePCKInfoGrid.IdxForColumn("R_BazeStanjeKol");
+      ci3.iT_PCK_BazeName  = ThePCKBazeGrid.IdxForColumn("R_PCK_BazaName" );
+      ci3.iT_PCK_BazeSklCD = ThePCKBazeGrid.IdxForColumn("R_PCK_BazaSklCD");
+      ci3.iT_StanjeBazeKol = ThePCKBazeGrid.IdxForColumn("R_BazeStanjeKol");
    }
 
 
@@ -4225,11 +4259,23 @@ public class PCK_ArtiklList_UC : VvUserControl
       ThePCKInfoGrid.PutCell(ci.iT_StanjeKol   , rowIdx, _PCK_Line.StanjeKol  );
    }
 
+   private void PutDgvPCKbazeLineFields(int rowIdx, PCK_Artikl _PCK_Line)
+   {
+      ThePCKBazeGrid.PutCell(ci3.iT_PCK_BazeName , rowIdx, _PCK_Line.PCK_ArtName);
+      ThePCKBazeGrid.PutCell(ci3.iT_PCK_BazeSklCD, rowIdx, _PCK_Line.PCK_SklCD  );
+      ThePCKBazeGrid.PutCell(ci3.iT_StanjeBazeKol, rowIdx, _PCK_Line.StanjeKol  );
+   }
+
    private void PutDgvSumFields(List<PCK_Artikl> _PCK_Lines)
    {
       ThePCKInfoSumGrid.PutCell(ci.iT_PCK_RAM  , 0, _PCK_Lines.Sum(pck => pck.PCK_RAM  ));
       ThePCKInfoSumGrid.PutCell(ci.iT_PCK_HDD  , 0, _PCK_Lines.Sum(pck => pck.PCK_HDD  ));
       ThePCKInfoSumGrid.PutCell(ci.iT_StanjeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
+   }
+
+   private void PutDgvPCKbazeSumFields(List<PCK_Artikl> _PCK_Lines)
+   {
+      ThePCKBazeSumGrid.PutCell(ci3.iT_StanjeBazeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
    }
 
    public void PutDgv2Fields(/*List<PCK_Unikat>*/ List<string> theSernoList)
