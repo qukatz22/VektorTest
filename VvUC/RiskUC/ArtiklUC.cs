@@ -3545,6 +3545,12 @@ public class ArtiklUC : VvSifrarRecordUC
          VvHamper.Open_Close_Fields_ForWriting(pcKInfoUC.hamp_cbxKlase, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);// jer se ponasa ko reportFilter
 
          pcKInfoUC.Visible = true;
+
+         // ThePCKBazeGrid:
+         List<PCK_Artikl> PCKbazeList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+
+         pcKInfoUC.Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
+
       }
       else
       {

@@ -3799,12 +3799,12 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       TheSernoGrid.CellMouseDoubleClick += TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList;
 
-      List<PCK_Artikl> PCKbazeList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
-
-      Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
+      //List<PCK_Artikl> PCKbazeList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+      //
+      //Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
    }
 
-   private void Put_DGV_All_PCK_Baza_SintList(List<PCK_Artikl> PCKbazeList)
+   /*private*/public void Put_DGV_All_PCK_Baza_SintList(List<PCK_Artikl> PCKbazeList)
    {
       this.PCK_Lines = PCKbazeList;
 
