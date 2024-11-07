@@ -950,6 +950,16 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
       VirtualFilterUC.AddFilterMemberz(VirtualRptFilter, /*vvReport*/ null);
 
+      //07.11.2024.
+      if(ZXC.IsPCTOGO && TheVvReport is RptR_PTG_Artikl_PCK_info)
+      {
+         ArtiklUC artiklUC = this as ArtiklUC;
+         artiklUC.DecideIfShouldLoad_PCKinfo(null, null, null);
+         (VirtualRptFilter as ArtiklCardFilter).ArtiklCards = ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
+         artiklUC.TheArtiklFilterUC.Fld_ArtiklCard = ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
+
+      }
+
       norr = TheVvReport.FillDataSet_And_SetDataSource(null);
 
       if(isPreview) // ShowReportPreview
@@ -960,12 +970,18 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
          TheReportViewer.Zoom(/*VirtualRptFilter.PrintZoom*/ ZXC.TheVvForm.VvPref.reportPrefs.ZoomFactor);
 
-         //17.07.2023.TAM provjeri
-         if(ZXC.IsPCTOGO && TheVvReport is RptR_PTG_Artikl_PCK_info)
-         {
-            ArtiklUC artiklUC = this as ArtiklUC;
-            artiklUC.DecideIfShouldLoad_PCKinfo(null, null, null);
-         }
+      //07.11.2024.premjestila gore al ipak postavila Fld_ArtiklCard = ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
+       //if(ZXC.IsPCTOGO && TheVvReport is RptR_PTG_Artikl_PCK_info)
+       //{
+       //   ArtiklUC artiklUC = this as ArtiklUC;
+       //   artiklUC.DecideIfShouldLoad_PCKinfo(null, null, null);
+       //}
+    //if(ZXC.IsPCTOGO && TheVvReport is RptR_PTG_Artikl_PCK_info)
+    //{
+    //   ArtiklUC artiklUC = this as ArtiklUC;
+    //   artiklUC.TheArtiklFilterUC.Fld_ArtiklCard = ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
+    //}
+
 
       }
       else // QuickPrintRecord 

@@ -4043,16 +4043,18 @@ public class PCK_ArtiklList_UC : VvUserControl
          gridSumColumn = new DataGridViewTextBoxColumn();
 
          //gridSumColumn.Name                       = "SUM" + mainGridColumn.Name.TrimStart(new char[] { 't' });
-         gridSumColumn.Name = mainGridColumn.Name;
+         gridSumColumn.Name                       = mainGridColumn.Name;
          gridSumColumn.DefaultCellStyle.Alignment = mainGridColumn.DefaultCellStyle.Alignment;
-         gridSumColumn.AutoSizeMode = mainGridColumn.AutoSizeMode;
-         theSumGrid.AutoGenerateColumns = false;
-         gridSumColumn.Width = mainGridColumn.Width;
-         gridSumColumn.ValueType = mainGridColumn.ValueType;
-         gridSumColumn.Visible = mainGridColumn.Visible;
-         gridSumColumn.Tag = mainGridColumn.Tag;
-         gridSumColumn.DefaultCellStyle.Format = mainGridColumn.DefaultCellStyle.Format;
+         gridSumColumn.AutoSizeMode               = mainGridColumn.AutoSizeMode;
+         theSumGrid.AutoGenerateColumns           = false;
+         gridSumColumn.Width                      = mainGridColumn.Width;
+         gridSumColumn.ValueType                  = mainGridColumn.ValueType;
+         gridSumColumn.Visible                    = mainGridColumn.Visible;
+         gridSumColumn.Tag                        = mainGridColumn.Tag;
+         gridSumColumn.DefaultCellStyle.Format    = mainGridColumn.DefaultCellStyle.Format;
          gridSumColumn.DefaultCellStyle.BackColor = mainGridColumn.DefaultCellStyle.BackColor;
+
+         gridSumColumn.DefaultCellStyle.Font = ZXC.vvFont.LargeBoldFont;
 
          if(mainGridColumn.AutoSizeMode == DataGridViewAutoSizeColumnMode.Fill)
          {
@@ -4091,9 +4093,6 @@ public class PCK_ArtiklList_UC : VvUserControl
          vvtb_PCK_SklCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_SklCD"  , null, -12, "Skladište"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_SklCD   , null, "R_PCK_SklCD"  , "Sklad"    , ZXC.Q3un); vvtb_PCK_SklCD   .JAM_ReadOnly = true;
          vvtb_PCK_RAM     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_RAM"    , null, -12, "RAM"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_RAM     , null, "R_PCK_RAM"    , "RAM"      , ZXC.Q3un); vvtb_PCK_RAM     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont; colVvText.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_RAM_PTG;
          vvtb_PCK_HDD     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_PCK_HDD"    , null, -12, "HDD"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_HDD     , null, "R_PCK_HDD"    , "HDD"      , ZXC.Q3un); vvtb_PCK_HDD     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont; colVvText.DefaultCellStyle.ForeColor = ZXC.vvColors.clr_HDD_PTG;
-    //   vvtb_UkPstKol    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkPstKol"   , null, -12, "PstKol"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkPstKol    , null, "R_UkPstKol"   , "Pst"      , ZXC.Q4un); vvtb_UkPstKol    .JAM_ReadOnly = true; 
-    //   vvtb_UkUlazKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkUlazKol"  , null, -12, "UlazKol"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkUlazKol   , null, "R_UkUlazKol"  , "Ulaz"     , ZXC.Q4un); vvtb_UkUlazKol   .JAM_ReadOnly = true;
-    //   vvtb_UkIzlazKol  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_UkIzlazKol" , null, -12, "IzlazKol" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_UkIzlazKol  , null, "R_UkIzlazKol" , "Izlaz"    , ZXC.Q4un); vvtb_UkIzlazKol  .JAM_ReadOnly = true;
          vvtb_StanjeKol   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(0, "vvtb_StanjeKol"  , null, -12, "StanjeKol"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_StanjeKol   , null, "R_StanjeKol"  , "Stanje"   , ZXC.Q4un); vvtb_StanjeKol   .JAM_ReadOnly = true;
 
          colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);

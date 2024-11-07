@@ -1966,7 +1966,7 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
           //T_ztr = GetZtrCut(faktur_rec.S_ukZavisni, /*faktur_rec.TrnSum_KC*/Get_S_OrgPakKol_fromScreen(), (R_kol * art_orgPak).Ron2());                                                    
 
             bool isSkuter;
-            if(artikl_rec != null) isSkuter = artikl_rec.Grupa1CD == "SKU";
+            if(artikl_rec != null) isSkuter = artikl_rec.TS == "SKU";
             else                   isSkuter = false;
 
             if(isSkuter) T_ztr = GetZtrCut(faktur_rec.S_ukZavisni, /*faktur_rec.TrnSum_KC*/Get_S_KC_fromScreen()       , (R_kol * T_cij)     .Ron2()); // classic via financ. ponderiranje   
