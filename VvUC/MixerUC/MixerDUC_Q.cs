@@ -1707,6 +1707,13 @@ public class PCK_Artikl
       this.StanjeKol    = _stanjeKol           ;
    }
 
+   public PCK_Artikl(string _PCK_ArtCD, string _PCK_SklCD, decimal _stanjeKol)
+   {
+      this.PCK_ArtCD    = _PCK_ArtCD   ;
+      this.PCK_SklCD    = _PCK_SklCD   ;
+      this.StanjeKol    = _stanjeKol   ;
+   }
+
    public override string ToString()
    {
       return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb";

@@ -3739,6 +3739,7 @@ public class PCK_ArtiklList_UC : VvUserControl
    private DataGridViewTextBoxColumn colScrol;
 
    List<PCK_Artikl> PCK_Lines;
+   List<PCK_Artikl> PCK_BazeSintLines;
 
    public VvDataGridView TheSernoGrid { get; set; }
    private VvTextBox vvtb_PCK_theSerno;
@@ -3802,34 +3803,6 @@ public class PCK_ArtiklList_UC : VvUserControl
       //List<PCK_Artikl> PCKbazeList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
       //
       //Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
-   }
-
-   /*private*/public void Put_DGV_All_PCK_Baza_SintList(List<PCK_Artikl> PCKbazeList)
-   {
-      this.PCK_Lines = PCKbazeList;
-
-      int rowIdx;
-
-      ThePCKBazeGrid.Rows.Clear();
-
-      if(PCKbazeList != null)
-      {
-         for(rowIdx = 0; rowIdx < PCKbazeList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
-         {
-            ThePCKBazeGrid.Rows.Add();
-
-            PutDgvPCKbazeLineFields(rowIdx, PCKbazeList[rowIdx]);
-
-            ThePCKBazeGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-         }
-         //PutDgvSumFields(PCK_Lines);
-      }
-
-      //ThePCKInfoSumGrid.ClearSelection();
-
-      PutDgvPCKbazeSumFields(PCKbazeList);
-
-      ThePCKBazeSumGrid.ClearSelection();
    }
 
    #endregion Constructor
@@ -4215,6 +4188,8 @@ public class PCK_ArtiklList_UC : VvUserControl
    #region PutDgvFields
    public void PutDgvFields(List<PCK_Artikl> _PCK_Lines)
    {
+      #region srednji, drugi grid (ThePCKInfoGrid - _PCK_Lines)
+
       this.PCK_Lines = _PCK_Lines;
 
       int rowIdx;
@@ -4241,6 +4216,40 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       ThePCKInfoSumGrid.ClearSelection();
 
+      #endregion srednji, drugi grid (ThePCKInfoGrid - _PCK_Lines)
+
+      #region lijevi, prvi grid (ThePCKBazeGrid - _PCK_Lines)
+
+      List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(/*TheDbConnection*/ZXC.TheVvForm.TheVvTabPage.TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+
+      // grupiraj po PCK_BazaCD + PCK_SklCD 
+      this.PCK_BazeSintLines = PCK_SviArtikliList.GroupBy(pck => pck.PCK_BazaCD + pck.PCK_SklCD).Select(npck => new PCK_Artikl(npck.First().PCK_ArtCD, npck.First().PCK_SklCD, npck.Sum(qwe => qwe.StanjeKol))).ToList();
+
+      //int rowIdx;
+
+      ThePCKBazeGrid.Rows.Clear();
+
+      if(this.PCK_BazeSintLines != null)
+      {
+         for(rowIdx = 0; rowIdx < this.PCK_BazeSintLines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         {
+            ThePCKBazeGrid.Rows.Add();
+
+            PutDgvPCKbazeLineFields(rowIdx, this.PCK_BazeSintLines[rowIdx]);
+
+            ThePCKBazeGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         }
+         //PutDgvSumFields(PCK_Lines);
+      }
+
+      //ThePCKInfoSumGrid.ClearSelection();
+
+      PutDgvPCKbazeSumFields(this.PCK_BazeSintLines);
+
+      ThePCKBazeSumGrid.ClearSelection();
+
+      #endregion lijevi, prvi grid (ThePCKBazeGrid - _PCK_Lines)
+
    }
 
    private void PutDgvLineFields(int rowIdx, PCK_Artikl _PCK_Line)
@@ -4260,7 +4269,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    private void PutDgvPCKbazeLineFields(int rowIdx, PCK_Artikl _PCK_Line)
    {
-      ThePCKBazeGrid.PutCell(ci3.iT_PCK_BazeName , rowIdx, _PCK_Line.PCK_ArtName);
+      ThePCKBazeGrid.PutCell(ci3.iT_PCK_BazeName , rowIdx, _PCK_Line.PCK_BazaCD);
       ThePCKBazeGrid.PutCell(ci3.iT_PCK_BazeSklCD, rowIdx, _PCK_Line.PCK_SklCD  );
       ThePCKBazeGrid.PutCell(ci3.iT_StanjeBazeKol, rowIdx, _PCK_Line.StanjeKol  );
    }
