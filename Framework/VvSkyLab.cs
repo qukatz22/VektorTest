@@ -2457,37 +2457,37 @@ public class TH_PriceRuleForCycleMoment
       ZXC.TH_PriceRuleList_W3_SRI_C4 = new List<TH_PriceRuleForCycleMoment>()
       {
                                      // CK Tjed Dan   Max  Rbt HHprc  Letak  ExclsvKind   
-         new TH_PriceRuleForCycleMoment(4,    1,  1,    0,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 1 (SRI) regular"   ),// 14.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    1,  2,    0,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 2 (ČET) regular"   ),// 15.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    1,  3,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 3 (PET) 10 posto"  ),// 16.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    1,  4,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 4 (SUB) 10 posto"  ),// 17.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    1,  5,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 5 (NED) 10 posto"  ),// 18.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    1,  6,  30M,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 6 (PON) do 30kn"   ),// 19.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    1,  7,  30M,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 7 (UTO) do 30kn"   ),// 20.12.2022.
+         new TH_PriceRuleForCycleMoment(4,    1,  1,    0,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 1 (SRI) regular"   ),
+         new TH_PriceRuleForCycleMoment(4,    1,  2,    0,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 2 (ČET) regular"   ),
+         new TH_PriceRuleForCycleMoment(4,    1,  3,    0,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 3 (PET) regular"   ),
+         new TH_PriceRuleForCycleMoment(4,    1,  4,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 4 (SUB) 10 posto"  ),
+         new TH_PriceRuleForCycleMoment(4,    1,  5,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 5 (NED) 10 posto"  ),
+         new TH_PriceRuleForCycleMoment(4,    1,  6,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 6 (PON) 10 posto"  ),
+         new TH_PriceRuleForCycleMoment(4,    1,  7,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 7 (UTO) 10 posto"  ),
                                                                                                                         
-         new TH_PriceRuleForCycleMoment(4,    2,  1,  30M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 1 (SRI) do 30kn"   ),// 21.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    2,  2,  25M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 2 (ČET) do 25kn"   ),// 22.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    2,  3,  25M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 3 (PET) do 25kn"   ),// 23.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    2,  4,  20M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 4 (SUB) do 20kn"   ),// 24.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    2,  5,  20M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 5 (NED) do 20kn"   ),// 25.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    2,  6,  20M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 6 (PON) do 20kn"   ),// 26.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    2,  7,  20M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 7 (UTO) do 20kn"   ),// 27.12.2022.
+         new TH_PriceRuleForCycleMoment(4,    2,  1, 3.5M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 1 (SRI) do 3,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    2,  2, 3.5M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 2 (ČET) do 3,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    2,  3,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 3 (PET) do 3 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    2,  4,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 4 (SUB) do 3 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    2,  5,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 5 (NED) do 3 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    2,  6,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 6 (PON) do 3 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    2,  7, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 7 (UTO) do 2,5 EUR"),
                                                                                                                         
-         new TH_PriceRuleForCycleMoment(4,    3,  1,  20M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 1 (SRI) do 20kn"   ),// 28.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    3,  2,  15M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 2 (ČET) do 15kn"   ),// 29.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    3,  3,  15M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 3 (PET) do 15kn"   ),// 30.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    3,  4,  15M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 4 (SUB) do 15kn"   ),// 31.12.2022.
-         new TH_PriceRuleForCycleMoment(4,    3,  5,  15M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 5 (NED) do 15kn!!!"),// 01.01.2022. nulti zpc u EUR - treba napraviti novi sa 02.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    3,  6,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 6 (PON) do 2 EUR"  ),// 02.01.2022.
-         new TH_PriceRuleForCycleMoment(4,    3,  7,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 7 (UTO) do 2 EUR"  ),// 03.01.2022.
+         new TH_PriceRuleForCycleMoment(4,    3,  1, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 1 (SRI) do 2,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    3,  2, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 2 (ČET) do 2,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    3,  3,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 3 (PET) do 2 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    3,  4,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 4 (SUB) do 2 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    3,  5,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 5 (NED) do 2 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    3,  6,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 6 (PON) do 2 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    3,  7, 1.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 7 (UTO) do 1,5 EUR"),
                                                                                                                        
-         new TH_PriceRuleForCycleMoment(4,    4,  1,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 1 (SRI) do 1 EUR"  ),// 04.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    4,  2,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 2 (ČET) do 1 EUR"  ),// 05.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    4,  3,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 3 (PET) do 1 EUR"  ),// 06.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    4,  4,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 4 (SUB) do 1 EUR"  ),// 07.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    4,  5,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 5 (NED) do 1 EUR"  ),// 08.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    4,  6, 0.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 6 (PON) do 0,5 EUR"),// 09.01.2023.
-         new TH_PriceRuleForCycleMoment(4,    4,  7, 0.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 7 (UTO) do 0,5 EUR"),// 10.01.2023.
+         new TH_PriceRuleForCycleMoment(4,    4,  1, 1.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 1 (SRI) do 1,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    4,  2, 1.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 2 (ČET) do 1,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    4,  3,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 3 (PET) do 1 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    4,  4,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 4 (SUB) do 1 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    4,  5,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 5 (NED) do 1 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    4,  6, 0.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 6 (PON) do 0,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    4,  7, 0.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 7 (UTO) do 0,5 EUR"),
 
       };
 

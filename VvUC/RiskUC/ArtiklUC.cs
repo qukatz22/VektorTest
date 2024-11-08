@@ -3543,7 +3543,7 @@ public class ArtiklUC : VvSifrarRecordUC
          //}
        
          VvHamper.Open_Close_Fields_ForWriting(pcKInfoUC.hamp_rbtBaza , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);// jer se ponasa ko reportFilter
-         VvHamper.Open_Close_Fields_ForWriting(pcKInfoUC.hamp_cbxKlase, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);// jer se ponasa ko reportFilter
+         VvHamper.Open_Close_Fields_ForWriting(pcKInfoUC.hamp_cbxTbx, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvReportUC);// jer se ponasa ko reportFilter
 
          pcKInfoUC.Visible = true;
 

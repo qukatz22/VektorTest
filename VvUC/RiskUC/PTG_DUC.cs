@@ -3744,9 +3744,10 @@ public class PCK_ArtiklList_UC : VvUserControl
    public VvDataGridView TheSernoGrid { get; set; }
    private VvTextBox vvtb_PCK_theSerno;
 
-   public  VvHamper hamp_rbtBaza, hamp_cbxKlase;
+   public  VvHamper hamp_rbtBaza, hamp_cbxTbx;
    private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze, rbt_svePCKbazeAndKomp;
    private CheckBox cbx_RamKlasa, cbx_HddKlasa;
+   private VvTextBox tbx_SkladCd, tbx_SkladOpis;
 
    public string LocalArtiklCD, LocalSkladCD;
 
@@ -3798,11 +3799,15 @@ public class PCK_ArtiklList_UC : VvUserControl
       
       ThePCKInfoGrid.CellMouseDoubleClick += ThePCKInfoGrid_CellMouseDoubleClick_OpenArtiklUC;
 
-      TheSernoGrid.CellMouseDoubleClick += TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList;
+      TheSernoGrid.CellMouseDoubleClick   += TheSernoGrid_CellMouseDoubleClick_OpenSernoInfoList;
+
+      ThePCKBazeGrid.CellMouseClick       += ThePCKBazeGrid_CellMouseClick_OpenThisBazaOnlyList;
 
       //List<PCK_Artikl> PCKbazeList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
       //
       //Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_SkladCd, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
    #endregion Constructor
@@ -3867,22 +3872,35 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    private void CreateHamperCbx()
    {
-      hamp_cbxKlase = new VvHamper(2, 1, "", this, false);
-      hamp_cbxKlase.Location = new Point(hamp_rbtBaza.Right, ZXC.QunMrgn);
+      hamp_cbxTbx = new VvHamper(5, 1, "", this, false);
+      hamp_cbxTbx.Location = new Point(hamp_rbtBaza.Right, ZXC.QunMrgn);
 
-      hamp_cbxKlase.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un};
-      hamp_cbxKlase.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
-      hamp_cbxKlase.VvRightMargin = 0;
+      hamp_cbxTbx.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un,ZXC.Q3un, ZXC.Q3un, ZXC.Q6un};
+      hamp_cbxTbx.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.Qun4};
+      hamp_cbxTbx.VvRightMargin = 0;
 
-      hamp_cbxKlase.VvRowHgt       = new int[] { ZXC.QUN };
-      hamp_cbxKlase.VvSpcBefRow    = new int[] { ZXC.Qun4 };
-      hamp_cbxKlase.VvBottomMargin = hamp_cbxKlase.VvTopMargin;
+      hamp_cbxTbx.VvRowHgt       = new int[] { ZXC.QUN };
+      hamp_cbxTbx.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamp_cbxTbx.VvBottomMargin = hamp_cbxTbx.VvTopMargin;
 
       string RAMkindFilterLabel = "Samo " + Artikl_rec.Grupa2CD + " memorije";
       string HDDkindFilterLabel = "Samo " + Artikl_rec.Grupa3CD + " diskovi";
 
-      cbx_RamKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
-      cbx_HddKlasa = hamp_cbxKlase.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
+      cbx_RamKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
+      cbx_HddKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
+
+                      hamp_cbxTbx.CreateVvLabel        (2, 0, "Za Skl:", ContentAlignment.MiddleRight);
+      tbx_SkladCd   = hamp_cbxTbx.CreateVvTextBoxLookUp(3, 0, "tbx_SkladCd", "Skladište");
+      tbx_SkladOpis = hamp_cbxTbx.CreateVvTextBox      (4, 0, "tbx_SkladOpiS", "");
+      tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_SkladCd.JAM_DataRequired = true;
+      tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
+      tbx_SkladOpis.JAM_ReadOnly = true;
+
+      tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
+
+
    }
 
    #endregion hampers
@@ -4181,9 +4199,21 @@ public class PCK_ArtiklList_UC : VvUserControl
 
  //public string Fld_CurrArtikl { get { return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb"; ; } }
    public string Fld_CurrArtikl { get { return Artikl_rec.ArtiklCD + " " + Artikl_rec.ArtiklName; } }
-   
+   public string Fld_SkladCD
+   {
+      get
+      {
+       //ZXC.TheVvForm.VvPref.findArtikl.LastUsedSkladCD = tbx_SkladCd.Text;
+         return tbx_SkladCd.Text;
+      }
+      set
+      {
+         tbx_SkladCd.Text = value;
+      }
+   }
 
-#endregion Fld
+   
+   #endregion Fld
 
    #region PutDgvFields
    public void PutDgvFields(List<PCK_Artikl> _PCK_Lines)
@@ -4403,6 +4433,15 @@ public class PCK_ArtiklList_UC : VvUserControl
       }
    }
 
+   private void ThePCKBazeGrid_CellMouseClick_OpenThisBazaOnlyList(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView    theG  = sender as VvDataGridView;
+      PCK_ArtiklList_UC theUC = theG.Parent as PCK_ArtiklList_UC;
+
+      int rowIdx = e.RowIndex;
+     
+      if(rowIdx.IsNegative()) return;
+   }
 
    public override void GetFields(bool dirtyFlagging)
    {
