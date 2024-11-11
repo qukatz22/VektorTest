@@ -3511,7 +3511,7 @@ public class ArtiklUC : VvSifrarRecordUC
          List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, this.artikl_rec, Fld_ZaSkladCD, pcKInfoUC.Fld_Pck_Info_kind,
                                                                                                                                                   pcKInfoUC.Fld_IsIstaRamKlasa,
                                                                                                                                                   pcKInfoUC.Fld_IsIstaHddKlasa);
-         pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List);
+         pcKInfoUC.PutDgvFields(PCK_ArtiklInfo_List, artikl_rec.ArtiklCD);
 
          pcKInfoUC.Size                  = new Size(pcKInfoUC.Parent.Width - ZXC.QunMrgn, pcKInfoUC.Parent.Height - ZXC.QUN);
          pcKInfoUC.ThePCKInfoGrid.Height = pcKInfoUC.Size.Height - pcKInfoUC.ThePCKInfoSumGrid.Height - ZXC.Qun2 - pcKInfoUC.hamp_rbtBaza.Bottom;

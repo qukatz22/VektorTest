@@ -3767,7 +3767,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       this.LocalArtiklCD = currArtiklCD;
       this.LocalSkladCD  = currSkladCD ;
-      this.TheCaller     = theCaller    ;
+      this.TheCaller     = theCaller   ;
 
       //                           artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
       if(LocalArtiklCD.NotEmpty()) Artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
@@ -3868,7 +3868,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind, Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
 
-      PutDgvFields(PCK_ArtikList);
+      PutDgvFields(PCK_ArtikList, Artikl_rec.ArtiklCD);
    }
 
    private void CreateHamperCbx()
@@ -4224,7 +4224,7 @@ public class PCK_ArtiklList_UC : VvUserControl
    #endregion Fld
 
    #region PutDgvFields
-   public void PutDgvFields(List<PCK_Artikl> _PCK_Lines)
+   public void PutDgvFields(List<PCK_Artikl> _PCK_Lines, string initial_PCK_artikl_cd)
    {
       #region srednji, drugi grid (ThePCKInfoGrid - _PCK_Lines)
 
@@ -4244,11 +4244,23 @@ public class PCK_ArtiklList_UC : VvUserControl
             PutDgvLineFields(rowIdx, _PCK_Lines[rowIdx]);
 
             ThePCKInfoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-         }
-         //PutDgvSumFields(PCK_Lines);
-      }
 
-      //ThePCKInfoSumGrid.ClearSelection();
+            if(initial_PCK_artikl_cd.NotEmpty() && _PCK_Lines[rowIdx].PCK_ArtCD == initial_PCK_artikl_cd)
+            {
+               ThePCKInfoGrid.ClearSelection();
+
+               ThePCKInfoGrid.Rows[rowIdx].Selected = true;
+
+               //ThePCKInfoGrid.CurrentCell. performclick
+
+               ThePCKGrid_CellMouseClick_OpenSernoList(ThePCKInfoGrid, new DataGridViewCellMouseEventArgs(0, rowIdx, 0, 0, new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0)));
+            }
+            if(initial_PCK_artikl_cd.IsEmpty() && rowIdx == 0) 
+            {
+               ThePCKGrid_CellMouseClick_OpenSernoList(ThePCKInfoGrid, new DataGridViewCellMouseEventArgs(0, rowIdx, 0, 0, new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0)));
+            }
+         }
+      }
 
       PutDgvSumFields(_PCK_Lines);
 
@@ -4276,11 +4288,22 @@ public class PCK_ArtiklList_UC : VvUserControl
             PutDgvPCKbazeLineFields(rowIdx, this.PCK_BazeSintLines[rowIdx]);
 
             ThePCKBazeGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-         }
-         //PutDgvSumFields(PCK_Lines);
-      }
 
-      //ThePCKInfoSumGrid.ClearSelection();
+            if(initial_PCK_artikl_cd.NotEmpty() && PCK_BazeSintLines[rowIdx].PCK_BazaCD == Artikl.Get_PCK_BazaCD(initial_PCK_artikl_cd))
+            {
+               ThePCKBazeGrid.ClearSelection();
+
+               ThePCKBazeGrid.Rows[rowIdx].Selected = true;
+            }
+
+            if(initial_PCK_artikl_cd.IsEmpty() && PCK_BazeSintLines[rowIdx].PCK_BazaCD == this.Artikl_rec.PCK_BazaCD && PCK_BazeSintLines[rowIdx].PCK_SklCD == this.Artikl_rec.SkladCD)
+            {
+               ThePCKBazeGrid.ClearSelection();
+
+               ThePCKBazeGrid.Rows[rowIdx].Selected = true;
+            }
+         }
+      }
 
       PutDgvPCKbazeSumFields(this.PCK_BazeSintLines);
 
@@ -4324,20 +4347,20 @@ public class PCK_ArtiklList_UC : VvUserControl
       ThePCKBazeSumGrid.PutCell(ci3.iT_StanjeBazeKol, 0, _PCK_Lines.Sum(pck => pck.StanjeKol));
    }
 
-   public void PutDgv2Fields(/*List<PCK_Unikat>*/ List<string> theSernoList)
+   public void PutDgv2Fields(/*List<PCK_Unikat>*/ List</*string*/(string serno, string opis)> theSernoAndOpisList)
    {
       int rowIdx;
 
       TheSernoGrid.Rows.Clear();
 
-      if(theSernoList != null)
+      if(theSernoAndOpisList != null)
       {
-         for(rowIdx = 0; rowIdx < theSernoList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         for(rowIdx = 0; rowIdx < theSernoAndOpisList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             TheSernoGrid.Rows.Add();
 
-            TheSernoGrid.PutCell(ci2.iT_PCK_theSerno  , rowIdx, theSernoList[rowIdx]);
-            TheSernoGrid.PutCell(ci2.iT_PCK_theSernoOp, rowIdx, "Opaska"            );
+            TheSernoGrid.PutCell(ci2.iT_PCK_theSerno  , rowIdx, theSernoAndOpisList[rowIdx].serno);
+            TheSernoGrid.PutCell(ci2.iT_PCK_theSernoOp, rowIdx, theSernoAndOpisList[rowIdx].opis );
 
             TheSernoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
          }
@@ -4363,6 +4386,12 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
 
+      Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD);
+      
+      if(artikl_rec.TS != ZXC.PCK_TS) return;
+
+      List<(string serno, string opis)> theSernoAndOpisList = new List<(string serno, string opis)>();
+
       // sda treba izbaciti one kojima zadnje stanje nije kao ovaj artikl 
       // Get_LastRtrano_ForSerno 
 
@@ -4378,9 +4407,13 @@ public class PCK_ArtiklList_UC : VvUserControl
          {
             theSernoList.RemoveAt(i--);
          }
+         else // dojebi t_opis sa Rtrano-a 
+         {
+            theSernoAndOpisList.Add((rtrano_rec.T_serno, rtrano_rec.T_grCD));
+         }
       }
 
-      theUC.PutDgv2Fields(/*thePCK_Artikl.PCK_Unikat_List*/ theSernoList);
+      theUC.PutDgv2Fields(/*thePCK_Artikl.PCK_Unikat_List*/ /*theSernoList*/ theSernoAndOpisList);
 
    }
 
@@ -4412,9 +4445,9 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       if(rowIdx.IsNegative()) return;
 
-      if(e.ColumnIndex != ci2.iT_PCK_artiklCD) return;
+      //if(e.ColumnIndex != ci.iT_PCK_ArtCD) return;
 
-      string artiklCD   = theG.GetStringCell(ci2.iT_PCK_artiklCD, rowIdx, false);
+      string artiklCD   = theG.GetStringCell(ci.iT_PCK_ArtCD, rowIdx, false);
       
       if(artiklCD.IsEmpty()) return; // znaci da smo u zutome probali doubleclickom inicirati editiranje cell-a 
 
@@ -4444,12 +4477,21 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    private void ThePCKBazeGrid_CellMouseClick_OpenThisBazaOnlyList(object sender, DataGridViewCellMouseEventArgs e)
    {
-      VvDataGridView    theG  = sender as VvDataGridView;
+      VvDataGridView theG     = sender as VvDataGridView        ;
       PCK_ArtiklList_UC theUC = theG.Parent as PCK_ArtiklList_UC;
 
       int rowIdx = e.RowIndex;
-     
+
       if(rowIdx.IsNegative()) return;
+
+      string selected_PCKbazaCD = PCK_BazeSintLines[rowIdx].PCK_BazaCD;
+      string selected_PCKsklCD  = PCK_BazeSintLines[rowIdx].PCK_SklCD ;
+
+      this.Artikl_rec = new Artikl() { PCK_BazaCD = selected_PCKbazaCD, SkladCD = selected_PCKsklCD };
+
+      Fld_Pck_Info_kind = ZXC.PCK_Info_Kind.OvaBazaOnly;
+
+      ShowPckinfo(null, EventArgs.Empty);
    }
 
    public override void GetFields(bool dirtyFlagging)
