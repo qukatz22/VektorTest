@@ -4466,7 +4466,7 @@ public class ArtiklSifrarFilterUC : VvFilterUC
                      tbx_kupDobCD, tbx_kupDobTiker, tbx_kupDobNaziv,
                      tbx_grupaPart, tbx_vezniDok, tbx_nacinPl, tbx_napomena;
 
-   public RadioButton rbt_artikL, rbt_artikP, rbt_robKartA, rbt_robKartAP, rbt_robKartB, rbt_robKartKol, rbt_transakc, rbt_rbKrtKolSerlot, rbt_robKartAMB, rbt_PCKinfo;
+   public RadioButton rbt_artikL, rbt_artikP, rbt_robKartA, rbt_robKartAP, rbt_robKartB, rbt_robKartKol, rbt_transakc, rbt_rbKrtKolSerlot, rbt_robKartAMB;
 
    private CheckBox cbx_biloGdjeUnapomeni, cbx_grupaPoStr, cbx_MPSkpoNBC;
    public  CheckBox cbx_isRobKartica;
@@ -4562,7 +4562,6 @@ public class ArtiklSifrarFilterUC : VvFilterUC
       rbt_transakc       = hamperPrintDoc.CreateVvRadioButton(0, 7, null, "Rekapitulacija transakcija"     , TextImageRelation.ImageBeforeText);
       rbt_artikL         = hamperPrintDoc.CreateVvRadioButton(0, 8, null, "Matični podaci (Landscape)"     , TextImageRelation.ImageBeforeText);
       rbt_artikP         = hamperPrintDoc.CreateVvRadioButton(0, 9, null, "Matični podaci (Portrait)"      , TextImageRelation.ImageBeforeText);
-      rbt_PCKinfo        = hamperPrintDoc.CreateVvRadioButton(0,10, null, "PCK Info"                       , TextImageRelation.ImageBeforeText);
 
       rbt_robKartA.Checked = true;
       rbt_robKartA.Tag     = true;
@@ -4624,8 +4623,6 @@ public class ArtiklSifrarFilterUC : VvFilterUC
      rbt_transakc.Enabled = !enable;
      rbt_transakc.Checked = !enable;
 
-      rbt_PCKinfo.Enabled = 
-      rbt_PCKinfo.Visible = ZXC.IsPCTOGO;
    }
 
    private void SetZaUpisOtvorenoZatvoreno(ZXC.ZaUpis zaUpis)
@@ -5031,7 +5028,6 @@ public class ArtiklSifrarFilterUC : VvFilterUC
          else if(rbt_robKartKol    .Checked) return ArtiklCardFilter.ArtiklCardsEnum.RobKartKol;
          else if(rbt_rbKrtKolSerlot.Checked) return ArtiklCardFilter.ArtiklCardsEnum.RbKrtKolSerlot;
          else if(rbt_transakc      .Checked) return ArtiklCardFilter.ArtiklCardsEnum.RekapTrans;
-         else if(rbt_PCKinfo       .Checked) return ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
 
          else throw new Exception("Fld_PrintSomeDebitDoc: who df is checked?");
       }
@@ -5048,7 +5044,6 @@ public class ArtiklSifrarFilterUC : VvFilterUC
             case ArtiklCardFilter.ArtiklCardsEnum.RobKartKol    : rbt_robKartKol    .Checked = true; break;
             case ArtiklCardFilter.ArtiklCardsEnum.RbKrtKolSerlot: rbt_rbKrtKolSerlot.Checked = true; break;
             case ArtiklCardFilter.ArtiklCardsEnum.RekapTrans    : rbt_transakc      .Checked = true; break;
-            case ArtiklCardFilter.ArtiklCardsEnum.PCKinfo       : rbt_PCKinfo       .Checked = true; break;
          }
       }
    }

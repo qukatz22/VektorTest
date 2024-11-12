@@ -1167,56 +1167,56 @@ public class RptR_ArtiklMaticni  : VvRiskReport
    }
 }
 
-public class RptR_PTG_Artikl_PCK_info : VvRiskReport
-{
-   public RptR_PTG_Artikl_PCK_info(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter) : base(_reportDocument, _reportName, _rptFilter, 
-         true , // ArtWars        
-         true , // ArtStat        
-         false, // Faktur         
-         false, // Rtrans         
-         false, // Kupdob         
-         false, // Prjkt          
-         false, // Rtrans4ruc     
-         false) // Artikl         
+//public class RptR_PTG_Artikl_PCK_info : VvRiskReport
+//{
+//   public RptR_PTG_Artikl_PCK_info(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter) : base(_reportDocument, _reportName, _rptFilter, 
+//         true , // ArtWars        
+//         true , // ArtStat        
+//         false, // Faktur         
+//         false, // Rtrans         
+//         false, // Kupdob         
+//         false, // Prjkt          
+//         false, // Rtrans4ruc     
+//         false) // Artikl         
 
-   {
-   }
+//   {
+//   }
 
-   public override int FillRiskReportLists()
-   {
-      ArtiklUC theUC = ((ArtiklCardFilter)RptFilter).theArtiklUC;
+//   public override int FillRiskReportLists()
+//   {
+//      ArtiklUC theUC = ((ArtiklCardFilter)RptFilter).theArtiklUC;
 
-      // TheArStatList
-      TheArtStatList.Add(ArtiklDao.GetArtiklStatus(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, theUC.Fld_NaDan));
+//      // TheArStatList
+//      TheArtStatList.Add(ArtiklDao.GetArtiklStatus(TheDbConnection, theUC.artikl_rec.ArtiklCD, theUC.TheCurrentSkladCD, theUC.Fld_NaDan));
 
-      // TheArtiklList
-      TheArtiklList.Add(theUC.artikl_rec);
+//      // TheArtiklList
+//      TheArtiklList.Add(theUC.artikl_rec);
 
-      if(theUC.artikl_rec.TS != ZXC.PCK_TS) return 0;
+//      if(theUC.artikl_rec.TS != ZXC.PCK_TS) return 0;
 
-      List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection,
-                                                                                              theUC.artikl_rec,
-                                                                                              theUC.TheCurrentSkladCD,
-                                                                                              theUC.pcKInfoUC.Fld_Pck_Info_kind,
-                                                                                              theUC.pcKInfoUC.Fld_IsIstaRamKlasa, 
-                                                                                              theUC.pcKInfoUC.Fld_IsIstaHddKlasa);
+//      List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection,
+//                                                                                              theUC.artikl_rec,
+//                                                                                              theUC.TheCurrentSkladCD,
+//                                                                                              theUC.pcKInfoUC.Fld_Pck_Info_kind,
+//                                                                                              theUC.pcKInfoUC.Fld_IsIstaRamKlasa, 
+//                                                                                              theUC.pcKInfoUC.Fld_IsIstaHddKlasa);
 
-      TheDeviznaSumaList = PCK_ArtiklInfo_List.Select(pck_line => new VvReportSourceUtil()
-      {
-         String3      = pck_line.PCK_BazaCD ,
-         ArtiklGrCD   = pck_line.PCK_ArtCD  ,
-         ArtiklGrName = pck_line.PCK_ArtName,
-         String1      = pck_line.PCK_RAMkind,
-         String2      = pck_line.PCK_HDDkind,
-         TheCD        = pck_line.PCK_SklCD  ,
-         TheMoney     = pck_line.PCK_RAM    ,
-         TheMoney2    = pck_line.PCK_HDD    ,
-         Kol          = pck_line.StanjeKol    
-      }).ToList();
+//      TheDeviznaSumaList = PCK_ArtiklInfo_List.Select(pck_line => new VvReportSourceUtil()
+//      {
+//         String3      = pck_line.PCK_BazaCD ,
+//         ArtiklGrCD   = pck_line.PCK_ArtCD  ,
+//         ArtiklGrName = pck_line.PCK_ArtName,
+//         String1      = pck_line.PCK_RAMkind,
+//         String2      = pck_line.PCK_HDDkind,
+//         TheCD        = pck_line.PCK_SklCD  ,
+//         TheMoney     = pck_line.PCK_RAM    ,
+//         TheMoney2    = pck_line.PCK_HDD    ,
+//         Kol          = pck_line.StanjeKol    
+//      }).ToList();
 
-      return TheDeviznaSumaList.Count;
-   }
-}
+//      return TheDeviznaSumaList.Count;
+//   }
+//}
 
 #endregion ArtiklUC's PrintRecordReports for Single Artikl
 

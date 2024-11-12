@@ -950,16 +950,6 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
       VirtualFilterUC.AddFilterMemberz(VirtualRptFilter, /*vvReport*/ null);
 
-      //07.11.2024.
-      if(ZXC.IsPCTOGO && TheVvReport is RptR_PTG_Artikl_PCK_info)
-      {
-         ArtiklUC artiklUC = this as ArtiklUC;
-         artiklUC.DecideIfShouldLoad_PCKinfo(null, null, null);
-         (VirtualRptFilter as ArtiklCardFilter).ArtiklCards = ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
-         artiklUC.TheArtiklFilterUC.Fld_ArtiklCard = ArtiklCardFilter.ArtiklCardsEnum.PCKinfo;
-
-      }
-
       norr = TheVvReport.FillDataSet_And_SetDataSource(null);
 
       if(isPreview) // ShowReportPreview
