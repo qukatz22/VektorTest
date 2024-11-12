@@ -3704,9 +3704,20 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
 
       TheUC.ThePCKInfoSumGrid.ClearSelection();
 
+      this.KeyDown += VvDialog_KeyDown;
+      this.KeyPreview = true;
+
       ResumeLayout();
 
    }
+   private void VvDialog_KeyDown(object sender, KeyEventArgs e)
+   {
+      if(e.KeyCode == Keys.Escape)
+      {
+         this.Close();
+      }
+   }
+
 }
 
 public enum PCK_ArtiklList_Caller
