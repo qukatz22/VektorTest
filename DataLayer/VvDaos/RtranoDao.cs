@@ -545,7 +545,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "thePCKwantsThisHDDkindOnly_Baza", artikl_rec.Grupa3CD, " = "));
       }
 
-      foreach(string currSkladCD in skladCDlist)
+      foreach(string currSkladCD in skladCDlist.OrderBy(skl => skl))
       {
          currSklCD_artiklList = new List<Artikl>();
 

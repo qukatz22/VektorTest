@@ -3738,8 +3738,8 @@ public class PCK_ArtiklList_UC : VvUserControl
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
 
-   List<PCK_Artikl> PCK_Lines;
-   List<PCK_Artikl> PCK_BazeSintLines;
+   List<PCK_Artikl> PCK_ArtiklList;
+   List<PCK_Artikl> PCK_BazeSintList;
 
    public VvDataGridView TheSernoGrid { get; set; }
    private VvTextBox vvtb_PCK_theSerno, vvtb_PCK_theSernoOp;
@@ -3851,24 +3851,26 @@ public class PCK_ArtiklList_UC : VvUserControl
       hamp_rbtBaza.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_rbtBaza.VvBottomMargin = hamp_rbtBaza.VvTopMargin;
 
-      rbt_ovaPCKbaza        = hamp_rbtBaza.CreateVvRadioButton(0, 0, /*new EventHandler(*/ShowPckinfo/*)*/, "Ista PCK baza"   , TextImageRelation.ImageBeforeText);
-      rbt_svePCKbaze        = hamp_rbtBaza.CreateVvRadioButton(1, 0, /*new EventHandler(*/ShowPckinfo/*)*/, "Sve PCK baze"    , TextImageRelation.ImageBeforeText);
-      rbt_svePCKbazeAndKomp = hamp_rbtBaza.CreateVvRadioButton(2, 0, /*new EventHandler(*/ShowPckinfo/*)*/, "PCK i komponente", TextImageRelation.ImageBeforeText);
-      rbt_ovaPCKbaza.Checked = true;
+      rbt_ovaPCKbaza        = hamp_rbtBaza.CreateVvRadioButton(0, 0,        new EventHandler(ShowPckinfo)  , "Ista PCK baza"   , TextImageRelation.ImageBeforeText);
+      rbt_svePCKbaze        = hamp_rbtBaza.CreateVvRadioButton(1, 0,        new EventHandler(ShowPckinfo)  , "Sve PCK baze"    , TextImageRelation.ImageBeforeText);
+      rbt_svePCKbazeAndKomp = hamp_rbtBaza.CreateVvRadioButton(2, 0,        new EventHandler(ShowPckinfo)  , "PCK i komponente", TextImageRelation.ImageBeforeText);
+      
+    //rbt_ovaPCKbaza.Checked = true;
 
    }
    private void ShowPckinfo(object sender, EventArgs e)
    {
       switch(TheCaller)
       {
-         case PCK_ArtiklList_Caller.ArtiklListUC  :                                                                   break; // LocalSkladCD already ok 
-         case PCK_ArtiklList_Caller.ArtiklUC      : LocalSkladCD = (ZXC.TheVvForm.TheVvUC as ArtiklUC).Fld_ZaSkladCD; break; 
-         case PCK_ArtiklList_Caller.SubModulAction:                                                                   break; // LocalSkladCD already ok 
+         case PCK_ArtiklList_Caller.ArtiklListUC  :                                                                        break; // LocalSkladCD already ok 
+         case PCK_ArtiklList_Caller.ArtiklUC      : this.LocalSkladCD = (ZXC.TheVvForm.TheVvUC as ArtiklUC).Fld_ZaSkladCD; break; 
+         case PCK_ArtiklList_Caller.SubModulAction:                                                                        break; // LocalSkladCD already ok 
       }
 
-      List<PCK_Artikl> PCK_ArtikList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind, Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
+      List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind            , Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
+      List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, null           , this.LocalSkladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false             , false             );
 
-      PutDgvFields(PCK_ArtikList, Artikl_rec.ArtiklCD);
+      PutDgvFields(PCK_ArtikList, PCK_SviArtikliList, Artikl_rec.ArtiklCD, this.LocalSkladCD);
    }
 
    private void CreateHamperCbx()
@@ -3894,15 +3896,28 @@ public class PCK_ArtiklList_UC : VvUserControl
       tbx_SkladCd   = hamp_cbxTbx.CreateVvTextBoxLookUp(3, 0, "tbx_SkladCd", "Skladište");
       tbx_SkladOpis = hamp_cbxTbx.CreateVvTextBox      (4, 0, "tbx_SkladOpiS", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
-      tbx_SkladCd.JAM_DataRequired = true;
-      tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
+    //tbx_SkladCd.JAM_DataRequired = true;
+    //tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
       tbx_SkladOpis.JAM_ReadOnly = true;
 
       tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
 
-
+      tbx_SkladCd.JAM_FieldExitMethod_2 = new EventHandler(OnExit_SkladCD_GetPCKlistsAndPutDGVfields);
    }
+
+   void OnExit_SkladCD_GetPCKlistsAndPutDGVfields(object sender, EventArgs e)
+   {
+      VvTextBox vvtb = sender as VvTextBox;
+
+      string newSkladCD = vvtb.Text;
+
+      this.TheCaller    = PCK_ArtiklList_Caller.SubModulAction;
+      this.LocalSkladCD = newSkladCD;
+
+      ShowPckinfo(null, EventArgs.Empty);
+   }
+
 
    #endregion hampers
 
@@ -4211,7 +4226,6 @@ public class PCK_ArtiklList_UC : VvUserControl
    {
       get
       {
-       //ZXC.TheVvForm.VvPref.findArtikl.LastUsedSkladCD = tbx_SkladCd.Text;
          return tbx_SkladCd.Text;
       }
       set
@@ -4220,32 +4234,46 @@ public class PCK_ArtiklList_UC : VvUserControl
       }
    }
 
-   
+   public string Fld_SkladOpis
+   {
+      get
+      {
+         return tbx_SkladOpis.Text;
+      }
+      set
+      {
+         tbx_SkladOpis.Text = value;
+      }
+   }
+
    #endregion Fld
 
    #region PutDgvFields
-   public void PutDgvFields(List<PCK_Artikl> _PCK_Lines, string initial_PCK_artikl_cd)
+   public void PutDgvFields(List<PCK_Artikl> _PCK_ArtiklList, List<PCK_Artikl> _PCK_SviArtikliList, string initial_PCK_artikl_cd, string initial_skladCD)
    {
+      Fld_SkladCD   = initial_skladCD;
+      Fld_SkladOpis = ZXC.luiListaSkladista.GetNameForThisCd(initial_skladCD);
+
       #region srednji, drugi grid (ThePCKInfoGrid - _PCK_Lines)
 
-      this.PCK_Lines = _PCK_Lines;
+      this.PCK_ArtiklList = _PCK_ArtiklList;
 
       int rowIdx;
 
       ThePCKInfoGrid.Rows.Clear();
       TheSernoGrid  .Rows.Clear();
 
-      if(_PCK_Lines != null)
+      if(_PCK_ArtiklList != null)
       {
-         for(rowIdx = 0; rowIdx < _PCK_Lines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         for(rowIdx = 0; rowIdx < _PCK_ArtiklList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             ThePCKInfoGrid.Rows.Add();
 
-            PutDgvLineFields(rowIdx, _PCK_Lines[rowIdx]);
+            PutDgvLineFields(rowIdx, _PCK_ArtiklList[rowIdx]);
 
             ThePCKInfoGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 
-            if(initial_PCK_artikl_cd.NotEmpty() && _PCK_Lines[rowIdx].PCK_ArtCD == initial_PCK_artikl_cd)
+            if(initial_PCK_artikl_cd.NotEmpty() && _PCK_ArtiklList[rowIdx].PCK_ArtCD == initial_PCK_artikl_cd)
             {
                ThePCKInfoGrid.ClearSelection();
 
@@ -4262,7 +4290,7 @@ public class PCK_ArtiklList_UC : VvUserControl
          }
       }
 
-      PutDgvSumFields(_PCK_Lines);
+      PutDgvSumFields(_PCK_ArtiklList);
 
       ThePCKInfoSumGrid.ClearSelection();
 
@@ -4270,33 +4298,29 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       #region lijevi, prvi grid (ThePCKBazeGrid - _PCK_Lines)
 
-      List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(/*TheDbConnection*/ZXC.TheVvForm.TheVvTabPage.TheDbConnection, null, "", ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
-
       // grupiraj po PCK_BazaCD + PCK_SklCD 
-      this.PCK_BazeSintLines = PCK_SviArtikliList.GroupBy(pck => pck.PCK_BazaCD + pck.PCK_SklCD).Select(npck => new PCK_Artikl(npck.First().PCK_ArtCD, npck.First().PCK_SklCD, npck.Sum(qwe => qwe.StanjeKol))).ToList();
-
-      //int rowIdx;
+      this.PCK_BazeSintList = _PCK_SviArtikliList.GroupBy(pck => pck.PCK_BazaCD + pck.PCK_SklCD).Select(npck => new PCK_Artikl(npck.First().PCK_ArtCD, npck.First().PCK_SklCD, npck.Sum(qwe => qwe.StanjeKol))).ToList();
 
       ThePCKBazeGrid.Rows.Clear();
 
-      if(this.PCK_BazeSintLines != null)
+      if(this.PCK_BazeSintList != null)
       {
-         for(rowIdx = 0; rowIdx < this.PCK_BazeSintLines.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         for(rowIdx = 0; rowIdx < this.PCK_BazeSintList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             ThePCKBazeGrid.Rows.Add();
 
-            PutDgvPCKbazeLineFields(rowIdx, this.PCK_BazeSintLines[rowIdx]);
+            PutDgvPCKbazeLineFields(rowIdx, this.PCK_BazeSintList[rowIdx]);
 
             ThePCKBazeGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 
-            if(initial_PCK_artikl_cd.NotEmpty() && PCK_BazeSintLines[rowIdx].PCK_BazaCD == Artikl.Get_PCK_BazaCD(initial_PCK_artikl_cd))
+            if(initial_PCK_artikl_cd.NotEmpty() && PCK_BazeSintList[rowIdx].PCK_BazaCD == Artikl.Get_PCK_BazaCD(initial_PCK_artikl_cd))
             {
                ThePCKBazeGrid.ClearSelection();
 
                ThePCKBazeGrid.Rows[rowIdx].Selected = true;
             }
 
-            if(initial_PCK_artikl_cd.IsEmpty() && PCK_BazeSintLines[rowIdx].PCK_BazaCD == this.Artikl_rec.PCK_BazaCD && PCK_BazeSintLines[rowIdx].PCK_SklCD == this.Artikl_rec.SkladCD)
+            if(initial_PCK_artikl_cd.IsEmpty() && PCK_BazeSintList[rowIdx].PCK_BazaCD == this.Artikl_rec.PCK_BazaCD && PCK_BazeSintList[rowIdx].PCK_SklCD == this.Artikl_rec.SkladCD)
             {
                ThePCKBazeGrid.ClearSelection();
 
@@ -4305,7 +4329,7 @@ public class PCK_ArtiklList_UC : VvUserControl
          }
       }
 
-      PutDgvPCKbazeSumFields(this.PCK_BazeSintLines);
+      PutDgvPCKbazeSumFields(this.PCK_BazeSintList);
 
       ThePCKBazeSumGrid.ClearSelection();
 
@@ -4382,13 +4406,14 @@ public class PCK_ArtiklList_UC : VvUserControl
      
       if(rowIdx.IsNegative()) return;
      
-      PCK_Artikl thePCK_Artikl = PCK_Lines[rowIdx];
+      PCK_Artikl thePCK_Artikl = PCK_ArtiklList[rowIdx];
 
       List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
 
-      Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD);
+      Artikl kurac = Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD);
+    //this.Artikl_rec = Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD);
       
-      if(artikl_rec.TS != ZXC.PCK_TS) return;
+      if(/*this.Artikl_rec*/kurac.TS != ZXC.PCK_TS) return;
 
       List<(string serno, string opis)> theSernoAndOpisList = new List<(string serno, string opis)>();
 
@@ -4484,8 +4509,8 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       if(rowIdx.IsNegative()) return;
 
-      string selected_PCKbazaCD = PCK_BazeSintLines[rowIdx].PCK_BazaCD;
-      string selected_PCKsklCD  = PCK_BazeSintLines[rowIdx].PCK_SklCD ;
+      string selected_PCKbazaCD = PCK_BazeSintList[rowIdx].PCK_BazaCD;
+      string selected_PCKsklCD  = PCK_BazeSintList[rowIdx].PCK_SklCD ;
 
       this.Artikl_rec = new Artikl() { PCK_BazaCD = selected_PCKbazaCD, SkladCD = selected_PCKsklCD };
 
