@@ -1494,13 +1494,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return rtransList;
    }
 
-   private static decimal Get_MOU_cij_OnCheckPrNabCij(XSqlConnection conn, Faktur MODfaktur_rec, ushort serial_MOUrtransa_kojiTrebaNovuCijenu)
-   {
-      decimal theCij = MOD_PTG_DUC.Calc_AndOptional_ADDREC_MOD_Rtrans_From_MOD_Rtrano(conn, MODfaktur_rec, serial_MOUrtransa_kojiTrebaNovuCijenu);
-      
-      return theCij;
-   }
-
    private static List<Rtrans> GetPIP_Rtranses_HavingDescrepancies_List(XSqlConnection conn, string pulxTT, string pizxTT, bool isByGR)
    {
       // 17.11.2016: !!! BIG NEWS !!!                   
@@ -1683,8 +1676,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
             if(rtransInDescrepancy != null)
             {
-               decimal oldVal = rtrans_rec.T_cij;  // by Delf 12.06.2015
-
                rtrans_rec.BeginEdit();
 
                //if(isZPCkol == false) // old, classic 
@@ -1701,7 +1692,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                   decimal MOU_cij = 0M;
                   bool isMOU = rtransInDescrepancy.T_TT == Faktur.TT_MOU;
 
-                  if(isMOU) MOU_cij = Get_MOU_cij_OnCheckPrNabCij(conn, /*(Faktur)faktur_rec.CreateNewRecordAndCloneItComplete()*/ MOD_faktur_rec, rtrans_rec.T_serial);
+                  if(isMOU) MOU_cij = MOD_PTG_DUC.Calc_AndOptional_ADDREC_MOD_Rtrans_From_MOD_Rtrano(conn, MOD_faktur_rec, rtrans_rec.T_serial);
 
                   #endregion MOU
 
@@ -1716,8 +1707,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                         /* is touched */ ref thisFakturIsTouched)
                      ;
 
-                  if(!thisFakturIsTouched) ZXC.aim_log("prnbc.Not touched line: [{0}-{1}] - [{2}-{3}]", rtrans_rec.T_TT, rtrans_rec.T_ttNum, rtrans_rec.T_cij.ToStringVv(), oldVal.ToStringVv());
-
                   // 20.05.2015:  za svaki slucaj, a ne skodi: 
                   if(rtrans_rec.T_TT == Faktur.TT_ZPC && thisFakturIsTouched)
                   {
@@ -1731,10 +1720,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                }
                else if(serviceKind == RtransServiceKind.CheckZPCkol)// ZPC popravak kolicine i/ili oldMPC 
                {
-                  ZXC.aim_log("zpc.RwtNewValues line: [{0}-{1}] art[{8}] . prc[{2}-{3}] . kol[{4}-{5}] . oldc[{6}-{7}]", rtrans_rec.T_TT, rtrans_rec.T_ttNum,
-                     rtrans_rec.T_cij.ToStringVv(), rtransInDescrepancy.TheAsEx.LastPrNabCij.ToStringVv(),
-                     rtrans_rec.T_kol.ToStringVv(), rtransInDescrepancy.TheAsEx.StanjeKol.ToStringVv(),
-                     rtrans_rec.T_doCijMal.ToStringVv(), rtransInDescrepancy.TheAsEx.PrevMalopCij.ToStringVv(), rtrans_rec.T_artiklCD);
                   //rtrans_rec.T_doCijMal.ToStringVv(), rtransInDescrepancy.TheAsEx.LastUlazMPC .ToStringVv());
 
                   rtrans_rec.T_kol = rtransInDescrepancy.TheAsEx.StanjeKol; // VOLIA ! 
@@ -1755,7 +1740,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
                   thisFakturIsTouched = true;  // alwaus, ankondišnl 
 
-                  ZXC.aim_log("TrimZPC line: [{0}-{1} - ser{2}] art [{3}-{4}]", rtrans_rec.T_TT, rtrans_rec.T_ttNum, rtrans_rec.T_serial, rtrans_rec.T_artiklCD, rtrans_rec.T_artiklName);
                }
                else  // classic, ChkPrNabCij ili ChkZPC, NOT if(serviceKind == RtransServiceKind.TrimZPC) 
                {
@@ -1763,7 +1747,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
                }
 
                // if(rtrans_rec.T_artiklCD == "SQ HHR")
-               ZXC.aim_log("_RwtNewValues line: [{0}-{1} - ser{2}] art [{3}] - [{4}-{5}]", rtrans_rec.T_TT, rtrans_rec.T_ttNum, rtrans_rec.T_serial, rtrans_rec.T_artiklCD, rtrans_rec.T_cij.ToStringVvKolDecimalPlaces(4), oldVal.ToStringVvKolDecimalPlaces(4));
 
             } // if(rtransInDescrepancy != null)
 
@@ -1780,8 +1763,6 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
          faktur_rec.EndEdit();
          if(hasPossibleExtender) faktur_rec.VirtualExtenderRecord.EndEdit();
-
-         ZXC.aim_log("t{6} fak.RwtNewValues 4: {0} isPULXpass {1} done {2}/{3} fakturs [{4}-{5}]", serviceKind, isPULXpass, ++debugCount, fakturList.Count, faktur_rec.TT, faktur_rec.TtNum, thisFakturIsTouched);
 
       } // foreach(Faktur faktur_rec in fakturList) 
 
