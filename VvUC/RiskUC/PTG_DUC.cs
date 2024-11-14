@@ -3743,7 +3743,7 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
 
       TheUC.ShowPckinfo(null, System.EventArgs.Empty);
 
-      this.Dispose();
+      //this.Dispose();
    }
 
 }
@@ -3810,8 +3810,12 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       //                           artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
       if(LocalArtiklCD.NotEmpty()) Artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
-      else                         Artikl_rec = Get_Artikl_FromVvUcSifrar(VvUserControl.ArtiklSifrar.First(art=> art.TS == "PCK").ArtiklCD);
-  
+      else 
+      {
+         if(VvUserControl.ArtiklSifrar == null) this.SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+         Artikl_rec = Get_Artikl_FromVvUcSifrar(VvUserControl.ArtiklSifrar.First(art=> art.TS == "PCK").ArtiklCD);
+      }
+
       CreateHamperRbt();
       CreateHamperCbx();
 
@@ -3856,22 +3860,20 @@ public class PCK_ArtiklList_UC : VvUserControl
    #region CalcLocationAndSize
    private void CalcLocationAndSize()
    {
-      //if(this.Parent is VvDialog)
-      //{
-         this.Size             = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
+      if(this.Parent is VvDialog) this.Size = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
+      else                        this.Size = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - ZXC.Q10un - ZXC.Q5un);
 
-         ThePCKBazeGrid.Height = this.Size.Height - ThePCKBazeSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
-         ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
-         TheSernoGrid  .Height = this.Size.Height                            - ZXC.Qun2 - hamp_rbtBaza.Bottom;
-         
-         ThePCKInfoSumGrid.Width    = ThePCKInfoGrid.Width;
-         ThePCKInfoSumGrid.Location = new Point(ThePCKInfoGrid.Location.X, ThePCKInfoGrid.Bottom + ZXC.Qun12);
-         ThePCKInfoSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+      ThePCKBazeGrid.Height = this.Size.Height - ThePCKBazeSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+      ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+      TheSernoGrid  .Height = this.Size.Height                            - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+      
+      ThePCKInfoSumGrid.Width    = ThePCKInfoGrid.Width;
+      ThePCKInfoSumGrid.Location = new Point(ThePCKInfoGrid.Location.X, ThePCKInfoGrid.Bottom + ZXC.Qun12);
+      ThePCKInfoSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
-         ThePCKBazeSumGrid.Width    = ThePCKBazeGrid.Width;
-         ThePCKBazeSumGrid.Location = new Point(ThePCKBazeGrid.Location.X, ThePCKBazeGrid.Bottom + ZXC.Qun12);
-         ThePCKBazeSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-      //}
+      ThePCKBazeSumGrid.Width    = ThePCKBazeGrid.Width;
+      ThePCKBazeSumGrid.Location = new Point(ThePCKBazeGrid.Location.X, ThePCKBazeGrid.Bottom + ZXC.Qun12);
+      ThePCKBazeSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
    }
 
    #endregion CalcLocationAndSize
@@ -3957,7 +3959,6 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       ShowPckinfo(null, EventArgs.Empty);
    }
-
 
    #endregion hampers
 
