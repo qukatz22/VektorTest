@@ -1605,7 +1605,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       if(ZXC.IsPCTOGO == false) return senderArtiklCD;
 
-      Artikl origArtikl_rec = ZXC.TheVvForm.TheVvUC.Get_Artikl_FromVvUcSifrar(senderArtiklCD);
+    //Artikl origArtikl_rec = ZXC.TheVvForm.TheVvUC.Get_Artikl_FromVvUcSifrar(senderArtiklCD); OVO JEBENO USPORAVA!!! 
+      Artikl origArtikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == senderArtiklCD);
 
       if(origArtikl_rec == null) return "";
 

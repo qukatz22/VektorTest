@@ -5638,7 +5638,7 @@ public class MOD_PTG_DUC : FakturPDUC
       decimal theCij   = 0M;
 
     //artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
-      artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD).MakeDeepCopy();
+      artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD);
 
       if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
       else                   t_jedMj = ""              ;
@@ -5688,10 +5688,10 @@ public class MOD_PTG_DUC : FakturPDUC
       bool isOLDartiklLoosingHDD = isOLDartikl  && HDDminusGB.NotZero(); 
 
       if(isKomponentaRAMizlaz ) ukRAMfinIzlazSUM += rtrans_rec.R_KC                                                                                                    ;
-      if(isOLDartiklLoosingRAM) ukRAMfinIzlazSUM += Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(rtrans_rec.T_cij, artikl_rec.PCK_RAM, RAMminusGB, _faktur_rec.DokDate);
+      if(isOLDartiklLoosingRAM) ukRAMfinIzlazSUM += Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(/*rtrans_rec.T_cij, artikl_rec.PCK_RAM,*/ RAMminusGB, _faktur_rec.DokDate);
 
       if(isKomponentaHDDizlaz ) ukHDDfinIzlazSUM += rtrans_rec.R_KC                                                                                                    ;
-      if(isOLDartiklLoosingHDD) ukHDDfinIzlazSUM += Get_MOD_PCK_OLDArtikl_HDDminusEstimatedValue(rtrans_rec.T_cij, artikl_rec.PCK_HDD, HDDminusGB, _faktur_rec.DokDate);
+      if(isOLDartiklLoosingHDD) ukHDDfinIzlazSUM += Get_MOD_PCK_OLDArtikl_HDDminusEstimatedValue(/*rtrans_rec.T_cij, artikl_rec.PCK_HDD,*/ HDDminusGB, _faktur_rec.DokDate);
 
       #endregion Calc ukRAMfinIzlazSUM, ukHDDfinIzlazSUM
 
@@ -5703,15 +5703,15 @@ public class MOD_PTG_DUC : FakturPDUC
       #region Init
 
       Rtrans  rtrans_rec   ;
-      Artikl  OLDartikl_rec;
+    //Artikl  OLDartikl_rec;
       Artikl  NEWartikl_rec;
       string  t_jedMj      ;
-      decimal theCij   = 0M;
+    //decimal theCij   = 0M;
 
     //OLDartikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.R_OldArtiklCD); // OLD!!! 
     //NEWartikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD   ); // NEW!!! 
-      OLDartikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.R_OldArtiklCD).MakeDeepCopy(); 
-      NEWartikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD   ).MakeDeepCopy();
+    //OLDartikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.R_OldArtiklCD); 
+      NEWartikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD   );
 
       if(NEWartikl_rec != null) t_jedMj = NEWartikl_rec.JedMj;
       else                      t_jedMj = ""                 ;
@@ -5739,8 +5739,8 @@ public class MOD_PTG_DUC : FakturPDUC
 
          decimal OLDartiklValue = rtrano_rec.T_komada;
 
-         decimal RAMminusValue  = Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(OLDartiklValue, OLDartikl_rec.PCK_RAM, RAMminusGB, _faktur_rec.DokDate);
-         decimal HDDminusValue  = Get_MOD_PCK_OLDArtikl_HDDminusEstimatedValue(OLDartiklValue, OLDartikl_rec.PCK_HDD, HDDminusGB, _faktur_rec.DokDate);
+         decimal RAMminusValue  = Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(/*OLDartiklValue, OLDartikl_rec.PCK_RAM,*/ RAMminusGB, _faktur_rec.DokDate);
+         decimal HDDminusValue  = Get_MOD_PCK_OLDArtikl_HDDminusEstimatedValue(/*OLDartiklValue, OLDartikl_rec.PCK_HDD,*/ HDDminusGB, _faktur_rec.DokDate);
 
          decimal NEWartiklValue = OLDartiklValue + RAMplusValue - RAMminusValue + HDDplusValue - HDDminusValue;
 
@@ -5769,7 +5769,7 @@ public class MOD_PTG_DUC : FakturPDUC
       _faktur_rec.Transes.Add(_rtrans_rec);
    }
 
-   private static decimal Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(decimal OLDartiklValue, decimal OLDartikl_RAM_GBcapacity, decimal RAMminusInGB, DateTime dokDate)
+   private static decimal Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(/*decimal OLDartiklValue, decimal OLDartikl_RAM_GBcapacity,*/ decimal RAMminusInGB, DateTime dokDate)
    {
     //decimal estimated_PCK_Artikl_RAM_Value = ZXC.VvGet_25_of_100(OLDartiklValue, 25M); // todo X posto od PCK artikla je procijenjena RAM vrijednost u PCK-u ... from ZXC.RRD 
     //decimal RAMpricePerGB = ZXC.DivSafe(estimated_PCK_Artikl_RAM_Value, OLDartikl_RAM_GBcapacity);
@@ -5779,7 +5779,7 @@ public class MOD_PTG_DUC : FakturPDUC
       return RAMminusInGB * RAMpricePerGB;
    }
 
-   private static decimal Get_MOD_PCK_OLDArtikl_HDDminusEstimatedValue(decimal OLDartiklValue, decimal OLDartikl_HDD_GBcapacity, decimal HDDminusInGB, DateTime dokDate)
+   private static decimal Get_MOD_PCK_OLDArtikl_HDDminusEstimatedValue(/*decimal OLDartiklValue, decimal OLDartikl_HDD_GBcapacity,*/ decimal HDDminusInGB, DateTime dokDate)
    {
     //decimal estimated_PCK_Artikl_HDD_Value = ZXC.VvGet_25_of_100(OLDartiklValue, 25M); // todo X posto od PCK artikla je procijenjena HDD vrijednost u PCK-u ... from ZXC.RRD 
     //decimal HDDpricePerGB = ZXC.DivSafe(estimated_PCK_Artikl_HDD_Value, OLDartikl_HDD_GBcapacity);

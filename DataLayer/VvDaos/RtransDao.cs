@@ -1044,11 +1044,11 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       List<Rtrans> rtransInTroubleList = GetRtransesWithAsEx_HavingDescrepancies_List(conn);
 
-      ZXC.aim_log("[=] Going to change: {0} Rtranses!", rtransInTroubleList.Count.ToString());
+      //ZXC.aim_log("[=] Going to change: {0} Rtranses!", rtransInTroubleList.Count.ToString());
 
       List<Faktur> fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, false, RtransServiceKind.CheckPrNabCij);
 
-      ZXC.aim_log("[=] Did change: {0} Fakturs!", fakturForRwtrecList.Count.ToString());
+      //ZXC.aim_log("[=] Did change: {0} Fakturs!", fakturForRwtrecList.Count.ToString());
 
       message = StringOfFakturList(fakturForRwtrecList, false);
 
