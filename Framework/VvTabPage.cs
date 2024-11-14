@@ -832,8 +832,9 @@ be_fast:
     //UserControl   otherUc;
     //VvUserControl otherUc;
       
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.SIN      ) TheVvUC = new SIN_UC    (panelZaUC, vvSubModul); 
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG) TheVvUC = new FUG_PTG_UC(panelZaUC, vvSubModul); 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.SIN         ) TheVvUC = new SIN_UC           (panelZaUC, vvSubModul); 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG   ) TheVvUC = new FUG_PTG_UC       (panelZaUC, vvSubModul); 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_PCKinf_PTG) TheVvUC = new PCK_ArtiklList_UC(panelZaUC, "", "", PCK_ArtiklList_Caller.SubModulAction); 
    }
 
    #endregion Create_OtherUC

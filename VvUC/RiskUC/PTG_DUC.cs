@@ -3664,9 +3664,9 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 public partial class PCK_ArtiklList_Dlg :  VvDialog
 {
    public PCK_ArtiklList_UC TheUC { get; set; }
-   private Button okButton;
+   private Button okButton, button_OpenTPage;
    private int dlgWidth, dlgHeight;
-
+   private VvHamper hampOpenTabPage;
    public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD, PCK_ArtiklList_Caller theCaller)
    {
       ZXC.CurrentForm = this;
@@ -3696,6 +3696,8 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       AddZatvoriButton  (out okButton, dlgWidth, dlgHeight);
       okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
+      CreateHamperOpenTabPage();
+
       TheUC.Anchor                =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.ThePCKInfoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.TheSernoGrid  .Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -3716,6 +3718,32 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       {
          this.Close();
       }
+   }
+
+   private void CreateHamperOpenTabPage()
+   {
+      hampOpenTabPage = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, okButton.Top, 0);
+
+      hampOpenTabPage.VvColWdt      = new int[] { ZXC.QunBtnW };
+      hampOpenTabPage.VvSpcBefCol   = new int[] {           0 };
+      hampOpenTabPage.VvRightMargin = hampOpenTabPage.VvLeftMargin;
+
+      hampOpenTabPage.VvRowHgt       = new int[] { ZXC.QunBtnH };
+      hampOpenTabPage.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hampOpenTabPage.VvBottomMargin = hampOpenTabPage.VvTopMargin;
+
+      button_OpenTPage    = hampOpenTabPage.CreateVvButton(0, 0, new EventHandler(OpenVvTabPage_Click), "Otvori listu");
+
+      hampOpenTabPage.Location = new Point(ZXC.QunMrgn, this.Bottom - 4 * ZXC.QunBtnH);
+      hampOpenTabPage.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left;
+    }
+   private void OpenVvTabPage_Click(object sender, System.EventArgs e)
+   {
+      ZXC.TheVvForm.OpenNew_Other_TabPage(ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PCKinf_PTG));
+
+      TheUC.ShowPckinfo(null, System.EventArgs.Empty);
+
+      //this.Dispose();
    }
 
 }
@@ -3782,6 +3810,11 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       //                           artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
       if(LocalArtiklCD.NotEmpty()) Artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
+      else 
+      {
+         if(VvUserControl.ArtiklSifrar == null) this.SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+         Artikl_rec = Get_Artikl_FromVvUcSifrar(VvUserControl.ArtiklSifrar.First(art=> art.TS == "PCK").ArtiklCD);
+      }
 
       CreateHamperRbt();
       CreateHamperCbx();
@@ -3827,22 +3860,20 @@ public class PCK_ArtiklList_UC : VvUserControl
    #region CalcLocationAndSize
    private void CalcLocationAndSize()
    {
-      if(this.Parent is VvDialog)
-      {
-         this.Size             = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
+      if(this.Parent is VvDialog) this.Size = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - 2*ZXC.Q10un);
+      else                        this.Size = new Size(ThePCKBazeGrid.Width + ThePCKInfoGrid.Width + 3 * ZXC.QunMrgn + TheSernoGrid.Width, SystemInformation.WorkingArea.Height - ZXC.Q10un - ZXC.Q5un);
 
-         ThePCKBazeGrid.Height = this.Size.Height - ThePCKBazeSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
-         ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
-         TheSernoGrid  .Height = this.Size.Height                            - ZXC.Qun2 - hamp_rbtBaza.Bottom;
-         
-         ThePCKInfoSumGrid.Width    = ThePCKInfoGrid.Width;
-         ThePCKInfoSumGrid.Location = new Point(ThePCKInfoGrid.Location.X, ThePCKInfoGrid.Bottom + ZXC.Qun12);
-         ThePCKInfoSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+      ThePCKBazeGrid.Height = this.Size.Height - ThePCKBazeSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+      ThePCKInfoGrid.Height = this.Size.Height - ThePCKInfoSumGrid.Height - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+      TheSernoGrid  .Height = this.Size.Height                            - ZXC.Qun2 - hamp_rbtBaza.Bottom;
+      
+      ThePCKInfoSumGrid.Width    = ThePCKInfoGrid.Width;
+      ThePCKInfoSumGrid.Location = new Point(ThePCKInfoGrid.Location.X, ThePCKInfoGrid.Bottom + ZXC.Qun12);
+      ThePCKInfoSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
-         ThePCKBazeSumGrid.Width    = ThePCKBazeGrid.Width;
-         ThePCKBazeSumGrid.Location = new Point(ThePCKBazeGrid.Location.X, ThePCKBazeGrid.Bottom + ZXC.Qun12);
-         ThePCKBazeSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-      }
+      ThePCKBazeSumGrid.Width    = ThePCKBazeGrid.Width;
+      ThePCKBazeSumGrid.Location = new Point(ThePCKBazeGrid.Location.X, ThePCKBazeGrid.Bottom + ZXC.Qun12);
+      ThePCKBazeSumGrid.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
    }
 
    #endregion CalcLocationAndSize
@@ -3869,7 +3900,7 @@ public class PCK_ArtiklList_UC : VvUserControl
     //rbt_ovaPCKbaza.Checked = true;
 
    }
-   private void ShowPckinfo(object sender, EventArgs e)
+   /*private*/ public void ShowPckinfo(object sender, EventArgs e)
    {
       switch(TheCaller)
       {
@@ -3897,8 +3928,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       hamp_cbxTbx.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_cbxTbx.VvBottomMargin = hamp_cbxTbx.VvTopMargin;
 
-      string RAMkindFilterLabel = "Samo " + Artikl_rec.Grupa2CD + " memorije";
-      string HDDkindFilterLabel = "Samo " + Artikl_rec.Grupa3CD + " diskovi";
+      string RAMkindFilterLabel = "Samo " + (Artikl_rec!=null ? Artikl_rec.Grupa2CD : "") + " memorije";
+      string HDDkindFilterLabel = "Samo " + (Artikl_rec!=null ? Artikl_rec.Grupa3CD : "") + " diskovi";
 
       cbx_RamKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
       cbx_HddKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
@@ -3928,7 +3959,6 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       ShowPckinfo(null, EventArgs.Empty);
    }
-
 
    #endregion hampers
 
