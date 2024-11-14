@@ -5732,11 +5732,11 @@ public class MOD_PTG_DUC : FakturPDUC
       return rtrans_rec;
    }
 
-   private static void AddRtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans rtrans_rec)
+   private static void AddRtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
    {
-      rtrans_rec.CalcTransResults(null);
-      rtrans_rec.SaveTransesWriteMode = ZXC.WriteMode.Add;
-      _faktur_rec.Transes.Add(rtrans_rec);
+      _rtrans_rec.CalcTransResults(null);
+      _rtrans_rec.SaveTransesWriteMode = ZXC.WriteMode.Add;
+      _faktur_rec.Transes.Add(_rtrans_rec);
    }
 
    private static decimal Get_MOD_PCK_OLDArtikl_RAMminusEstimatedValue(decimal OLDartiklValue, decimal OLDartikl_RAM_GBcapacity, decimal RAMminusInGB, DateTime dokDate)
