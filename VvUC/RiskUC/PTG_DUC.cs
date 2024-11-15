@@ -3760,6 +3760,17 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    public string LocalSkladCD;
 
+   // FilterMemberz bussiness: 
+   private string fm_PCKbaza;
+   private bool   fm_svePCKbaze;
+   private bool   fm_PCKAndKomp;
+   private string fm_skladCD;
+   private string fm_RAMkind;
+   private string fm_HDDkind;
+   // 19.11.2024: todo ... tu smo stali u petak 
+   // ovi sad trebaju svoje Fld_ ove, GetFilterFields, PutFilterFields i da      
+   // ih koriste svi FM-ovi kada se ide u Get_PCK_ArtiklList_ByPCK_Baza_AndSklad 
+
    internal Artikl Artikl_rec;
 
    //public PCK_ArtiklList_Caller TheCaller;
@@ -4421,11 +4432,9 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       List<(string serno, string opis)> theSernoAndOpisList = new List<(string serno, string opis)>();
 
-      // sda treba izbaciti one kojima zadnje stanje nije kao ovaj artikl 
-      // Get_LastRtrano_ForSerno 
-
       Rtrano rtrano_rec;
 
+      // sada treba izbaciti one kojima zadnje stanje nije kao ovaj artikl 
       for(int i = 0; i < theSernoList.Count; ++i)
       {
          rtrano_rec = new Rtrano();
@@ -5508,7 +5517,7 @@ public class MOD_PTG_DUC : FakturPDUC
       return theCount;
    }
 
-   internal bool ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(XSqlConnection conn, Artikl templateArtikl_rec, string newArtiklCD)
+   internal (bool OK, string newArtiklName) ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(XSqlConnection conn, Artikl templateArtikl_rec, string newArtiklCD)
    {
       Artikl newArtikl_rec = templateArtikl_rec.MakeDeepCopy();
 
@@ -5522,7 +5531,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
       bool OK = newArtikl_rec.VvDao.ADDREC(conn, newArtikl_rec, false, false, false, false);
 
-      return OK;
+      return (OK, newArtikl_rec.ArtiklName);
    }
 
    #region SintRtranoToRtransOnMOD

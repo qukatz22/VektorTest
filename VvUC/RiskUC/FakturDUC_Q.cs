@@ -2881,12 +2881,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                      if(Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
                      {
                         bool addnewOK = true;
+                        string newArtiklName;
 
                         Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
 
                         if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
 
-                        addnewOK = theDUC.ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
+                        (addnewOK, newArtiklName) = theDUC.ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
 
                         if(addnewOK == false)
                         {
@@ -2894,6 +2895,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                            e.Cancel = true;
                            break;
                         }
+
+                        TheG2.PutCell(ci2.iT_artiklName, rowIdx2, newArtiklName);
 
                         new_MOC_MOS_ArtiklCDlist.Add("Novi artikl: " + newArtiklCD);
 
