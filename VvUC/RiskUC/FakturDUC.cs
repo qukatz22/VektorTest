@@ -15205,6 +15205,21 @@ public class FakturPDUC : FakturExtDUC
       if(TheG2.CI_OK(ci2.iT_artiklName))
       {
          dgvRtrano_rec.T_artiklName = TheG2.GetStringCell(ci2.iT_artiklName, rIdx, dirtyFlagging);
+
+         if(dgvRtrano_rec.T_TT == Faktur.TT_MOC || dgvRtrano_rec.T_TT == Faktur.TT_MOS)
+         {
+            Artikl newArtikl_rec = Get_Artikl_FromVvUcSifrar(dgvRtrano_rec.T_artiklCD);
+            if(newArtikl_rec != null)
+            {
+               dgvRtrano_rec.T_artiklName = newArtikl_rec.ArtiklName;
+            }
+            else
+            {
+               dgvRtrano_rec.T_artiklName = "";
+            }
+
+         }
+
          if(DB_RWT) db_rec.T_artiklName = dgvRtrano_rec.T_artiklName;
       }
       if(TheG2.CI_OK(ci2.iT_paletaNo))
