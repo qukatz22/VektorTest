@@ -833,8 +833,21 @@ be_fast:
     //VvUserControl otherUc;
       
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.SIN         ) TheVvUC = new SIN_UC           (panelZaUC, vvSubModul); 
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG   ) TheVvUC = new FUG_PTG_UC       (panelZaUC, vvSubModul); 
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_PCKinf_PTG) TheVvUC = new PCK_ArtiklList_UC(panelZaUC, "", "", PCK_ArtiklList_Caller.SubModulAction); 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG   ) TheVvUC = new FUG_PTG_UC       (panelZaUC, vvSubModul);
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_PCKinf_PTG)
+      {
+         string artiklCD;
+         string skladCD = "ZNJ";
+
+         artiklCD = PCK_ArtiklList_UC.GetFirstActivePCKartiklCD(TheDbConnection, skladCD, "");
+
+         TheVvUC = new PCK_ArtiklList_UC(panelZaUC, artiklCD, skladCD/*, PCK_ArtiklList_Caller.SubModulAction*/);
+
+         List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, TheVvUC.Get_Artikl_FromVvUcSifrar(artiklCD), skladCD, ZXC.PCK_Info_Kind.OvaBazaOnly, false, false);
+         List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null                                       , skladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+
+         ((PCK_ArtiklList_UC)TheVvUC).PutDgvFields(PCK_ArtikList, PCK_SviArtikliList, artiklCD, skladCD);
+      }
    }
 
    #endregion Create_OtherUC

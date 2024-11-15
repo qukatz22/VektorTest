@@ -549,7 +549,7 @@ public class ArtiklListUC : VvRecLstUC
          List<PCK_Artikl> PCK_ArtiklInfo_List = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, Get_Artikl_FromVvUcSifrar(currArtiklCD), Fld_SituacijaZaSkladCD, ZXC.PCK_Info_Kind.OvaBazaOnly, false, false);
          List<PCK_Artikl> PCK_SviArtikliList  = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null                                   , Fld_SituacijaZaSkladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
 
-         PCK_ArtiklList_Dlg pckDaoDlg = new PCK_ArtiklList_Dlg(currArtiklCD, Fld_SituacijaZaSkladCD, PCK_ArtiklList_Caller.ArtiklListUC);
+         PCK_ArtiklList_Dlg pckDaoDlg = new PCK_ArtiklList_Dlg(currArtiklCD, Fld_SituacijaZaSkladCD/*, PCK_ArtiklList_Caller.ArtiklListUC*/);
          pckDaoDlg.TheUC.PutDgvFields(PCK_ArtiklInfo_List, PCK_SviArtikliList, currArtiklCD, Fld_SituacijaZaSkladCD);
          pckDaoDlg.ShowDialog();
          pckDaoDlg.Dispose();

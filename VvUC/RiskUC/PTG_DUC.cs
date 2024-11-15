@@ -3667,11 +3667,11 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
    private Button okButton, button_OpenTPage;
    private int dlgWidth, dlgHeight;
    private VvHamper hampOpenTabPage;
-   public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD, PCK_ArtiklList_Caller theCaller)
+   public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD/*, PCK_ArtiklList_Caller theCaller*/)
    {
       ZXC.CurrentForm = this;
 
-      TheUC = new PCK_ArtiklList_UC(this, currArtiklCD, currSkladCD, theCaller);
+      TheUC = new PCK_ArtiklList_UC(this, currArtiklCD, currSkladCD/*, theCaller*/);
 
       SuspendLayout();
 
@@ -3788,33 +3788,26 @@ public class PCK_ArtiklList_UC : VvUserControl
    private CheckBox cbx_RamKlasa, cbx_HddKlasa;
    private VvTextBox tbx_SkladCd, tbx_SkladOpis;
 
-   public string LocalArtiklCD, LocalSkladCD;
+   public string LocalSkladCD;
 
    internal Artikl Artikl_rec;
 
-   public PCK_ArtiklList_Caller TheCaller;
+   //public PCK_ArtiklList_Caller TheCaller;
 
    #endregion Fieldz
 
    #region Constructor
 
-   public PCK_ArtiklList_UC(Control _parent, string currArtiklCD, string currSkladCD, PCK_ArtiklList_Caller theCaller)
+   public PCK_ArtiklList_UC(Control _parent, string currArtiklCD, string currSkladCD/*, PCK_ArtiklList_Caller theCaller*/)
    {
       this.SuspendLayout();
 
       this.Parent = _parent;
 
-      this.LocalArtiklCD = currArtiklCD;
       this.LocalSkladCD  = currSkladCD ;
-      this.TheCaller     = theCaller   ;
+    //this.TheCaller     = theCaller   ;
 
-      //                           artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
-      if(LocalArtiklCD.NotEmpty()) Artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
-      else 
-      {
-         if(VvUserControl.ArtiklSifrar == null) this.SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
-         Artikl_rec = Get_Artikl_FromVvUcSifrar(VvUserControl.ArtiklSifrar.First(art=> art.TS == "PCK").ArtiklCD);
-      }
+      if(currArtiklCD.NotEmpty()) Artikl_rec = Get_Artikl_FromVvUcSifrar(currArtiklCD);
 
       CreateHamperRbt();
       CreateHamperCbx();
@@ -3902,12 +3895,12 @@ public class PCK_ArtiklList_UC : VvUserControl
    }
    /*private*/ public void ShowPckinfo(object sender, EventArgs e)
    {
-      switch(TheCaller)
-      {
-         case PCK_ArtiklList_Caller.ArtiklListUC  :                                                                        break; // LocalSkladCD already ok 
-         case PCK_ArtiklList_Caller.ArtiklUC      : this.LocalSkladCD = (ZXC.TheVvForm.TheVvUC as ArtiklUC).Fld_ZaSkladCD; break; 
-         case PCK_ArtiklList_Caller.SubModulAction:                                                                        break; // LocalSkladCD already ok 
-      }
+      //switch(TheCaller)
+      //{
+      //   case PCK_ArtiklList_Caller.ArtiklListUC  :                                                                        break; // LocalSkladCD already ok 
+      //   case PCK_ArtiklList_Caller.ArtiklUC      : this.LocalSkladCD = (ZXC.TheVvForm.TheVvUC as ArtiklUC).Fld_ZaSkladCD; break; 
+      //   case PCK_ArtiklList_Caller.SubModulAction:                                                                        break; // LocalSkladCD already ok 
+      //}
 
       List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind            , Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
       List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, null           , this.LocalSkladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false             , false             );
@@ -3954,7 +3947,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       string newSkladCD = vvtb.Text;
 
-      this.TheCaller    = PCK_ArtiklList_Caller.SubModulAction;
+    //this.TheCaller    = PCK_ArtiklList_Caller.SubModulAction;
       this.LocalSkladCD = newSkladCD;
 
       ShowPckinfo(null, EventArgs.Empty);
@@ -4566,6 +4559,33 @@ public class PCK_ArtiklList_UC : VvUserControl
    }
 
    #endregion MouseDouble/Click
+
+   public static string GetFirstActivePCKartiklCD(XSqlConnection conn, string skladCD, string PCK_baza)
+   {
+      bool success = true;
+
+      string artiklCD;
+
+      using(XSqlCommand cmd = VvSQL.GetFirstActivePCKartiklCD_Command(conn, skladCD, PCK_baza))
+      {
+         using(MySql.Data.MySqlClient.MySqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleResult | System.Data.CommandBehavior.SingleRow))
+         {
+            success = reader.HasRows;
+
+            if(reader.Read())
+            {
+               artiklCD = reader.GetString(0);
+               reader.Close();
+            }
+            else
+            {
+               artiklCD = "" /*"Unknown?"*/;
+            }
+         } // using reader 
+      } // using cmd 
+
+      return artiklCD;
+   }
 
 }
 

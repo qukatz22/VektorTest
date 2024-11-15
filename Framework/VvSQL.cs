@@ -4968,6 +4968,15 @@ public static class VvSQL
       return (cmd);
    }
 
+   internal static XSqlCommand GetFirstActivePCKartiklCD_Command(XSqlConnection conn, string skladCD, string PCK_baza)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      cmd.CommandText = @"SELECT t_artiklCD FROM artstat WHERE t_artiklCD LIKE '" + PCK_baza + @"%' AND artiklTS = 'PCK' AND t_skladCD = '" + skladCD + @"' ORDER BY t_artiklCD LIMIT 1" + " \n";
+
+      return (cmd);
+   }
+
    #endregion VvSkyLog Entry
 
    #region VvUcListMember
