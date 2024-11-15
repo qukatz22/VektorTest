@@ -3664,9 +3664,8 @@ public class VvBrojRataPlusMinus_PTG_Dlg : VvDialog
 public partial class PCK_ArtiklList_Dlg :  VvDialog
 {
    public PCK_ArtiklList_UC TheUC { get; set; }
-   private Button okButton, button_OpenTPage;
+   private Button okButton;
    private int dlgWidth, dlgHeight;
-   private VvHamper hampOpenTabPage;
    public PCK_ArtiklList_Dlg(string currArtiklCD, string currSkladCD/*, PCK_ArtiklList_Caller theCaller*/)
    {
       ZXC.CurrentForm = this;
@@ -3696,8 +3695,6 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       AddZatvoriButton  (out okButton, dlgWidth, dlgHeight);
       okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-      CreateHamperOpenTabPage();
-
       TheUC.Anchor                =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.ThePCKInfoGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.TheSernoGrid  .Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -3719,33 +3716,6 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
          this.Close();
       }
    }
-
-   private void CreateHamperOpenTabPage()
-   {
-      hampOpenTabPage = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, okButton.Top, 0);
-
-      hampOpenTabPage.VvColWdt      = new int[] { ZXC.QunBtnW };
-      hampOpenTabPage.VvSpcBefCol   = new int[] {           0 };
-      hampOpenTabPage.VvRightMargin = hampOpenTabPage.VvLeftMargin;
-
-      hampOpenTabPage.VvRowHgt       = new int[] { ZXC.QunBtnH };
-      hampOpenTabPage.VvSpcBefRow    = new int[] { ZXC.Qun4 };
-      hampOpenTabPage.VvBottomMargin = hampOpenTabPage.VvTopMargin;
-
-      button_OpenTPage    = hampOpenTabPage.CreateVvButton(0, 0, new EventHandler(OpenVvTabPage_Click), "Otvori listu");
-
-      hampOpenTabPage.Location = new Point(ZXC.QunMrgn, this.Bottom - 4 * ZXC.QunBtnH);
-      hampOpenTabPage.Anchor   = AnchorStyles.Bottom | AnchorStyles.Left;
-    }
-   private void OpenVvTabPage_Click(object sender, System.EventArgs e)
-   {
-      ZXC.TheVvForm.OpenNew_Other_TabPage(ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PCKinf_PTG));
-
-      TheUC.ShowPckinfo(null, System.EventArgs.Empty);
-
-      //this.Dispose();
-   }
-
 }
 
 public enum PCK_ArtiklList_Caller
@@ -3921,8 +3891,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       hamp_cbxTbx.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamp_cbxTbx.VvBottomMargin = hamp_cbxTbx.VvTopMargin;
 
-      string RAMkindFilterLabel = "Samo " + (Artikl_rec!=null ? Artikl_rec.Grupa2CD : "") + " memorije";
-      string HDDkindFilterLabel = "Samo " + (Artikl_rec!=null ? Artikl_rec.Grupa3CD : "") + " diskovi";
+      string RAMkindFilterLabel = "Samo " + Artikl_rec.Grupa2CD + " memorije";
+      string HDDkindFilterLabel = "Samo " + Artikl_rec.Grupa3CD + " diskovi" ;
 
       cbx_RamKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
       cbx_HddKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
@@ -4125,7 +4095,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      if(theGrid.Name == "ThePCKInfoGrid")
+           if(theGrid.Name == "ThePCKInfoGrid")
       { 
          vvtb_PCK_ArtCD   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_ArtCD"  , null, -12, "Šifra"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_ArtCD   , null, "R_PCK_ArtCD"  , "Šifra"    , ZXC.Q6un           ); vvtb_PCK_ArtCD   .JAM_ReadOnly = true; 
          vvtb_PCK_ArtName = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb_PCK_ArtName", null, -12, "Naziv"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_ArtName , null, "R_PCK_ArtName", "Naziv"    , ZXC.Q3un           ); vvtb_PCK_ArtName .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q10un + ZXC.Qun5;
@@ -4153,7 +4123,7 @@ public class PCK_ArtiklList_UC : VvUserControl
       else
       {
          vvtb_PCK_theSerno   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_PCK_theSerno"  , null, -12, "Serijski broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSerno  , null, "R_PCK_Serno"  , "Serijski broj", ZXC.Q6un); vvtb_PCK_theSerno  .JAM_ReadOnly = true;
-         vvtb_PCK_theSernoOp = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_PCK_theSernoOp", null, -12, "Opaska"       ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSernoOp, null, "R_PCK_SernoOp", "Opaska"       , ZXC.Q6un); vvtb_PCK_theSernoOp.JAM_ReadOnly = true;
+         vvtb_PCK_theSernoOp = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_PCK_theSernoOp", null, -12, "Opis"         ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_PCK_theSernoOp, null, "R_PCK_SernoOp", "Opaska"       , ZXC.Q6un); vvtb_PCK_theSernoOp.JAM_ReadOnly = true;
 
          colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
       }
