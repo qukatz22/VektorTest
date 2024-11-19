@@ -5263,14 +5263,26 @@ public class MOD_PTG_DUC : FakturPDUC
          decimal plusRAM  = TheG2.GetDecimalCell(ci2.iT_RAM_plus , rowIdx, false);
          decimal minusRAM = TheG2.GetDecimalCell(ci2.iT_RAM_minus, rowIdx, false);
          decimal newRAM   = oldRAM + plusRAM - minusRAM;
-         if(newRAM.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New RAM je NEGATIVAN!?");
+         if(newRAM.IsNegative())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "New RAM je NEGATIVAN!? Vraćam na nulu!");
+            plusRAM  = 0M; TheG2.PutCell(ci2.iT_RAM_plus , rowIdx, 0M);
+            minusRAM = 0M; TheG2.PutCell(ci2.iT_RAM_minus, rowIdx, 0M);
+            newRAM   = oldRAM;
+         }
          TheG2.PutCell(ci2.iT_RAM_new, rowIdx, newRAM);
 
          decimal oldHDD   = TheG2.GetDecimalCell(ci2.iR_hddOld   , rowIdx, false);
          decimal plusHDD  = TheG2.GetDecimalCell(ci2.iT_HDD_plus , rowIdx, false);
          decimal minusHDD = TheG2.GetDecimalCell(ci2.iT_HDD_minus, rowIdx, false);
          decimal newHDD   = oldHDD + plusHDD - minusHDD;
-         if(newHDD.IsNegative()) ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!?");
+         if(newHDD.IsNegative())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "New HDD je NEGATIVAN!? Vraćam na nulu!");
+            plusHDD  = 0M; TheG2.PutCell(ci2.iT_HDD_plus , rowIdx, 0M);
+            minusHDD = 0M; TheG2.PutCell(ci2.iT_HDD_minus, rowIdx, 0M);
+            newHDD   = oldHDD;
+         }
          TheG2.PutCell(ci2.iT_HDD_new, rowIdx, newHDD);
 
 
