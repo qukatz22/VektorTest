@@ -3755,8 +3755,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    public  VvHamper hamp_rbtBaza, hamp_cbxTbx;
    private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze, rbt_svePCKbazeAndKomp;
-   private CheckBox cbx_RamKlasa, cbx_HddKlasa;
-   private VvTextBox tbx_SkladCd, tbx_SkladOpis;
+   private VvTextBox tbx_SkladCd, tbx_SkladOpis, tbx_RamKlasa, tbx_HddKlasa;
 
    public string LocalSkladCD;
 
@@ -3891,11 +3890,11 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    private void CreateHamperCbx()
    {
-      hamp_cbxTbx = new VvHamper(5, 1, "", this, false);
+      hamp_cbxTbx = new VvHamper(7, 1, "", this, false);
       hamp_cbxTbx.Location = new Point(hamp_rbtBaza.Right, ZXC.QunMrgn);
 
-      hamp_cbxTbx.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un,ZXC.Q3un, ZXC.Q3un, ZXC.Q6un};
-      hamp_cbxTbx.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.Qun4};
+      hamp_cbxTbx.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q4un, ZXC.Q3un, ZXC.Q4un,ZXC.Q3un, ZXC.Q3un, ZXC.Q6un};
+      hamp_cbxTbx.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.Qun4};
       hamp_cbxTbx.VvRightMargin = 0;
 
       hamp_cbxTbx.VvRowHgt       = new int[] { ZXC.QUN };
@@ -3905,17 +3904,20 @@ public class PCK_ArtiklList_UC : VvUserControl
       string RAMkindFilterLabel = "Samo " + Artikl_rec.Grupa2CD + " memorije";
       string HDDkindFilterLabel = "Samo " + Artikl_rec.Grupa3CD + " diskovi" ;
 
-      cbx_RamKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(0, 0, ShowPckinfo, RAMkindFilterLabel, RightToLeft.No);
-      cbx_HddKlasa = hamp_cbxTbx.CreateVvCheckBox_OLD(1, 0, ShowPckinfo, HDDkindFilterLabel, RightToLeft.No);
+                     hamp_cbxTbx.CreateVvLabel        (0, 0, "RAM:", ContentAlignment.MiddleRight);
+      tbx_RamKlasa = hamp_cbxTbx.CreateVvTextBoxLookUp(1, 0, "tbx_RamKlasa", "RamKlasa");
+                     hamp_cbxTbx.CreateVvLabel        (2, 0, "HDD:", ContentAlignment.MiddleRight);
+      tbx_HddKlasa = hamp_cbxTbx.CreateVvTextBoxLookUp(3, 0, "tbx_HddKlasa", "HddKlasa");
 
-                      hamp_cbxTbx.CreateVvLabel        (2, 0, "Za Skl:", ContentAlignment.MiddleRight);
-      tbx_SkladCd   = hamp_cbxTbx.CreateVvTextBoxLookUp(3, 0, "tbx_SkladCd", "Skladište");
-      tbx_SkladOpis = hamp_cbxTbx.CreateVvTextBox      (4, 0, "tbx_SkladOpiS", "");
+                      hamp_cbxTbx.CreateVvLabel        (4, 0, "Za Skl:", ContentAlignment.MiddleRight);
+      tbx_SkladCd   = hamp_cbxTbx.CreateVvTextBoxLookUp(5, 0, "tbx_SkladCd", "Skladište");
+      tbx_SkladOpis = hamp_cbxTbx.CreateVvTextBox      (6, 0, "tbx_SkladOpiS", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
-    //tbx_SkladCd.JAM_DataRequired = true;
-    //tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
       tbx_SkladOpis.JAM_ReadOnly = true;
 
+      tbx_RamKlasa.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
+      tbx_HddKlasa.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
+      
       tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
 
@@ -4232,8 +4234,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       }
    }
 
-   public bool Fld_IsIstaRamKlasa { get { return cbx_RamKlasa.Checked; } set { cbx_RamKlasa.Checked = value; } }
-   public bool Fld_IsIstaHddKlasa { get { return cbx_HddKlasa.Checked; } set { cbx_HddKlasa.Checked = value; } }
+   public bool Fld_IsIstaRamKlasa { get { return false /*cbx_RamKlasa.Checked*/; } /*set { cbx_RamKlasa.Checked = value; } */}
+   public bool Fld_IsIstaHddKlasa { get { return false /*cbx_HddKlasa.Checked*/; } /*set { cbx_HddKlasa.Checked = value; } */}
 
  //public string Fld_CurrArtikl { get { return PCK_ArtCD + " [" + PCK_ArtName + "]" + " [" + PCK_RAMkind + "]" + " RAM: " + PCK_RAM.ToString0Vv() + "Gb [" + PCK_HDDkind + "] HDD: " + PCK_HDD.ToString0Vv() + " Gb"; ; } }
    public string Fld_CurrArtikl { get { return Artikl_rec.ArtiklCD + " " + Artikl_rec.ArtiklName; } }
@@ -4248,7 +4250,6 @@ public class PCK_ArtiklList_UC : VvUserControl
          tbx_SkladCd.Text = value;
       }
    }
-
    public string Fld_SkladOpis
    {
       get
@@ -4260,7 +4261,8 @@ public class PCK_ArtiklList_UC : VvUserControl
          tbx_SkladOpis.Text = value;
       }
    }
-
+   public string Fld_RamKlasa { get { return tbx_RamKlasa.Text; } set { tbx_RamKlasa.Text = value; } }
+   public string Fld_HddKlasa { get { return tbx_HddKlasa.Text; } set { tbx_HddKlasa.Text = value; } }
    #endregion Fld
 
    #region PutDgvFields
