@@ -3825,7 +3825,9 @@ public class PCK_ArtiklList_UC : VvUserControl
       //
       //Put_DGV_All_PCK_Baza_SintList(PCKbazeList);
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_SkladCd, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_SkladCd , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_RamKlasa, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_HddKlasa, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
    }
 
    #endregion Constructor
@@ -3882,8 +3884,12 @@ public class PCK_ArtiklList_UC : VvUserControl
       //   case PCK_ArtiklList_Caller.SubModulAction:                                                                        break; // LocalSkladCD already ok 
       //}
 
-      List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind            , Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
-      List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, null           , this.LocalSkladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false             , false             );
+    //List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind            , Fld_IsIstaRamKlasa, Fld_IsIstaHddKlasa);
+    //List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, null           , this.LocalSkladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false             , false             );
+      List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, this.Artikl_rec, this.LocalSkladCD, Fld_Pck_Info_kind            , Fld_RamKlasa      , Fld_HddKlasa      );
+      List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(ZXC.TheVvForm.TheDbConnection, null           , this.LocalSkladCD, ZXC.PCK_Info_Kind.SveBazeOnly, ""                , ""  );
+
+
 
       PutDgvFields(PCK_ArtikList, PCK_SviArtikliList, Artikl_rec.ArtiklCD, this.LocalSkladCD);
    }
@@ -3921,7 +3927,9 @@ public class PCK_ArtiklList_UC : VvUserControl
       tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
 
-      tbx_SkladCd.JAM_FieldExitMethod_2 = new EventHandler(OnExit_SkladCD_GetPCKlistsAndPutDGVfields);
+      tbx_SkladCd .JAM_FieldExitMethod_2 = new EventHandler(OnExit_SkladCD_GetPCKlistsAndPutDGVfields);
+      tbx_RamKlasa.JAM_FieldExitMethod_2 = new EventHandler(OnExit_RamOrHddKlasa_GetPCKlistsAndPutDGVfields);
+      tbx_HddKlasa.JAM_FieldExitMethod_2 = new EventHandler(OnExit_RamOrHddKlasa_GetPCKlistsAndPutDGVfields);
    }
 
    void OnExit_SkladCD_GetPCKlistsAndPutDGVfields(object sender, EventArgs e)
@@ -3933,6 +3941,11 @@ public class PCK_ArtiklList_UC : VvUserControl
     //this.TheCaller    = PCK_ArtiklList_Caller.SubModulAction;
       this.LocalSkladCD = newSkladCD;
 
+      ShowPckinfo(null, EventArgs.Empty);
+   }
+
+   void OnExit_RamOrHddKlasa_GetPCKlistsAndPutDGVfields(object sender, EventArgs e)
+   {
       ShowPckinfo(null, EventArgs.Empty);
    }
 

@@ -843,8 +843,10 @@ be_fast:
 
          TheVvUC = new PCK_ArtiklList_UC(panelZaUC, artiklCD, skladCD/*, PCK_ArtiklList_Caller.SubModulAction*/);
 
-         List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, TheVvUC.Get_Artikl_FromVvUcSifrar(artiklCD), skladCD, ZXC.PCK_Info_Kind.OvaBazaOnly, false, false);
-         List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null                                       , skladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+       //List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, TheVvUC.Get_Artikl_FromVvUcSifrar(artiklCD), skladCD, ZXC.PCK_Info_Kind.OvaBazaOnly, false, false);
+       //List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null                                       , skladCD, ZXC.PCK_Info_Kind.SveBazeOnly, false, false);
+         List<PCK_Artikl> PCK_ArtikList      = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, TheVvUC.Get_Artikl_FromVvUcSifrar(artiklCD), skladCD, ZXC.PCK_Info_Kind.OvaBazaOnly, ""    , ""  );
+         List<PCK_Artikl> PCK_SviArtikliList = RtranoDao.Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(TheDbConnection, null                                       , skladCD, ZXC.PCK_Info_Kind.SveBazeOnly, ""    , ""  );
 
          ((PCK_ArtiklList_UC)TheVvUC).PutDgvFields(PCK_ArtikList, PCK_SviArtikliList, artiklCD, skladCD);
       }

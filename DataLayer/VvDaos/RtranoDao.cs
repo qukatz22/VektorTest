@@ -482,7 +482,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
 
 #endif
-   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(XSqlConnection conn, Artikl artikl_rec, string skladCD, ZXC.PCK_Info_Kind info_Kind, bool wantsThisRAMkindOnly, bool wantsThisHDDkindOnly)
+ //public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(XSqlConnection conn, Artikl artikl_rec, string skladCD, ZXC.PCK_Info_Kind info_Kind, bool wantsThisRAMkindOnly, bool wantsThisHDDkindOnly)
+   public static List<PCK_Artikl> Get_PCK_ArtiklList_ByPCK_Baza_AndSklad(XSqlConnection conn, Artikl artikl_rec, string skladCD, ZXC.PCK_Info_Kind info_Kind, string wantsThisRAMkindOnly, string wantsThisHDDkindOnly)
    {
       List<Artikl>     currSklCD_artiklList;
       List<PCK_Artikl> all_SklCD_PCK_ArtiklList = new List<PCK_Artikl>();
@@ -536,15 +537,17 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
             break;
       }
 
-      if(wantsThisRAMkindOnly)
-      {
-         rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "thePCKwantsThisRAMkindOnly_Baza", artikl_rec.Grupa2CD, " = "));
-      }
-      if(wantsThisHDDkindOnly)
-      {
-         rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "thePCKwantsThisHDDkindOnly_Baza", artikl_rec.Grupa3CD, " = "));
-      }
-
+    //if(wantsThisRAMkindOnly)
+    //{
+    //   rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "thePCKwantsThisRAMkindOnly_Baza", artikl_rec.Grupa2CD, " = "));
+    //}
+    //if(wantsThisHDDkindOnly)
+    //{
+    //   rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "thePCKwantsThisHDDkindOnly_Baza", artikl_rec.Grupa3CD, " = "));
+    //}
+      if(artikl_rec != null && artikl_rec.Grupa2CD.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "wantsThisRAMkindOnly", artikl_rec.Grupa2CD, " = "));
+      if(artikl_rec != null && artikl_rec.Grupa3CD.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "wantsThisHDDkindOnly", artikl_rec.Grupa3CD, " = "));
+ 
       foreach(string currSkladCD in skladCDlist.OrderBy(skl => skl))
       {
          currSklCD_artiklList = new List<Artikl>();
