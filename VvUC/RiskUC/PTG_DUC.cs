@@ -3759,17 +3759,6 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    public string LocalSkladCD;
 
-   // FilterMemberz bussiness: 
-   private string fm_PCKbaza;
-   private bool   fm_svePCKbaze;
-   private bool   fm_PCKAndKomp;
-   private string fm_skladCD;
-   private string fm_RAMkind;
-   private string fm_HDDkind;
-   // 19.11.2024: todo ... tu smo stali u petak 
-   // ovi sad trebaju svoje Fld_ ove, GetFilterFields, PutFilterFields i da      
-   // ih koriste svi FM-ovi kada se ide u Get_PCK_ArtiklList_ByPCK_Baza_AndSklad 
-
    internal Artikl Artikl_rec;
 
    //public PCK_ArtiklList_Caller TheCaller;
@@ -4429,9 +4418,11 @@ public class PCK_ArtiklList_UC : VvUserControl
  //private void ThePCKGrid_CellMouseDoubleClick_OpenSernoList(object sender, DataGridViewCellMouseEventArgs e)
    private void ThePCKGrid_CellMouseClick_OpenSernoList(object sender, DataGridViewCellMouseEventArgs e)
    {
-      VvDataGridView theG = sender as VvDataGridView;
+      VvDataGridView theG     = sender as VvDataGridView        ;
       PCK_ArtiklList_UC theUC = theG.Parent as PCK_ArtiklList_UC;
 
+      theUC.TheSernoGrid.Rows.Clear();
+      
       int rowIdx = e.RowIndex;
      
       if(rowIdx.IsNegative()) return;
@@ -4440,10 +4431,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
       List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
 
-      Artikl kurac = Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD);
-    //this.Artikl_rec = Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD);
-      
-      if(/*this.Artikl_rec*/kurac.TS != ZXC.PCK_TS) return;
+      if(Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD).TS != ZXC.PCK_TS) return;
 
       List<(string serno, string opis)> theSernoAndOpisList = new List<(string serno, string opis)>();
 
@@ -4543,6 +4531,8 @@ public class PCK_ArtiklList_UC : VvUserControl
       this.Artikl_rec = new Artikl() { PCK_BazaCD = selected_PCKbazaCD, SkladCD = selected_PCKsklCD };
 
       Fld_Pck_Info_kind = ZXC.PCK_Info_Kind.OvaBazaOnly;
+
+      Fld_SkladCD       = this.LocalSkladCD = selected_PCKsklCD;
 
       ShowPckinfo(null, EventArgs.Empty);
    }

@@ -516,7 +516,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
           //if(artikl_rec != null)
           //{
-            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", artikl_rec.PCK_BazaCD, " = "));
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", artikl_rec.PCK_BazaCD              , " = "));
           //}
           //else
           //{
@@ -545,8 +545,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
     //{
     //   rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "thePCKwantsThisHDDkindOnly_Baza", artikl_rec.Grupa3CD, " = "));
     //}
-      if(artikl_rec != null && artikl_rec.Grupa2CD.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "wantsThisRAMkindOnly", artikl_rec.Grupa2CD, " = "));
-      if(artikl_rec != null && artikl_rec.Grupa3CD.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "wantsThisHDDkindOnly", artikl_rec.Grupa3CD, " = "));
+      if(artikl_rec != null && wantsThisRAMkindOnly.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "wantsThisRAMkindOnly", wantsThisRAMkindOnly, " = "));
+      if(artikl_rec != null && wantsThisHDDkindOnly.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "wantsThisHDDkindOnly", wantsThisHDDkindOnly, " = "));
  
       foreach(string currSkladCD in skladCDlist.OrderBy(skl => skl))
       {
