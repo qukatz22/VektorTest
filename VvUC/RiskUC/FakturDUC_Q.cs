@@ -2935,6 +2935,58 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
 
+            // Check RAM/HDD kind balance
+            if(this is MOD_PTG_DUC)
+            {
+               #region Get Lists 
+
+               List<Rtrano> rtranoList = faktur_rec.Transes2.ToList();
+
+               rtranoList.ForEach(rto => rto.T_artiklName = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa2CD); // RAM kind 
+               rtranoList.ForEach(rto => rto.T_serno      = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa3CD); // HDD kind 
+
+               List<string> RAM_kinds = rtranoList.Select(rto => rto.T_artiklName).Distinct().ToList();
+               List<string> HDD_kinds = rtranoList.Select(rto => rto.T_serno     ).Distinct().ToList();
+
+               // MOI minusi _________________________________________________________________________________________________________________________________________________________________________
+               List<Rtrano> MOIrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
+
+               List<VvReportSourceUtil> MOI_RAMkindSumsList = MOIrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
+               List<VvReportSourceUtil> MOI_HDDkindSumsList = MOIrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
+
+               // MOU plusevi _________________________________________________________________________________________________________________________________________________________________________
+               List<Rtrano> MOUrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
+
+               List<VvReportSourceUtil> MOU_RAMkindSumsList = MOUrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
+               List<VvReportSourceUtil> MOU_HDDkindSumsList = MOUrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
+
+               // MOCS minusi _________________________________________________________________________________________________________________________________________________________________________
+               List<Rtrano> MOCSrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
+
+               List<VvReportSourceUtil> MOCS_MINUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
+               List<VvReportSourceUtil> MOCS_MINUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
+
+               // MOCS plusevi _________________________________________________________________________________________________________________________________________________________________________
+               List<VvReportSourceUtil> MOCS_PLUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
+               List<VvReportSourceUtil> MOCS_PLUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
+
+               #endregion Get Lists 
+
+               foreach(string RAM_kind in RAM_kinds)
+               {
+                  int RAM_MOI_minus = MOI_RAMkindSumsList      .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOCS_plus = MOCS_PLUS_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+
+                  // TUSSA IDE PROVJERA, EVENT. JAVLJANJE I E.CANCEL 
+
+                  int RAM_MOU_plus   = MOU_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOCS_minus = MOCS_MINUS_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+
+                  // TUSSA IDE PROVJERA, EVENT. JAVLJANJE I E.CANCEL 
+
+               }
+            }
+
             if(this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty())
             {
                // 12.09.2024: pokusasj da se FORCE ucitavanje sifrara (a s obzirom na [sifrarArtiklLastLoaded < sifrarLastChanged]) 

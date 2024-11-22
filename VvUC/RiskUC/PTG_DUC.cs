@@ -5557,7 +5557,8 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
       {
-         modRtrans_rec.VvDao.DELREC(TheDbConnection, modRtrans_rec, false);
+         modRtrans_rec.VvDao.DELREC                                (TheDbConnection, modRtrans_rec, false);
+         modRtrans_rec.VvDao.Delete_Then_Renew_Cache_FromThisRtrans(TheDbConnection, modRtrans_rec, VvSQL.DB_RW_ActionType.DEL);
       }
 
       faktur_rec.InvokeTransClear();
