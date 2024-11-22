@@ -857,6 +857,11 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       ptransSumRec_beta14.T_opcRadCD    = ptransSumRec_alfa13.T_opcRadCD;
       ptransSumRec_beta14.T_stPrirez    = ptransSumRec_alfa13.T_stPrirez;
 
+      //novosti od 01.01.2024. - nema vise prireza i porezi dolaze sa Ptransa !!!!
+      ptransSumRec_beta14.T_stPorez1    = thisPersonWholeYearPtransList.First().T_stPorez1 /*ptransSumRec_alfa13.T_stPorez1*/;
+      ptransSumRec_beta14.T_stPorez2    = thisPersonWholeYearPtransList.First().T_stPorez2 /*ptransSumRec_alfa13.T_stPorez2*/;
+
+
 
       ptransSumRec_beta14.R_Odbitak     = ZakonomDozvoljenFondOdbitka(personRowOfCurrentTrans, thisPersonWholeYearPtransList, pR);
       
@@ -873,22 +878,38 @@ public sealed class PtransDao : VvDaoBase, IVvDao
                                         
       ptransSumRec_beta14.R_PorOsn3     = ptransSumRec_beta14.R_PorOsnAll > godMaxPorOsn2 ? ptransSumRec_beta14.R_PorOsnAll - godMaxPorOsn2 : 0.00M ;
 
-      // 03.12.2015: mozda i nepotrebno, a mozda i smeta?! start 
-      ptransSumRec_beta14.R_Por1Uk      = (ptransSumRec_beta14.R_PorOsn1 * pR._stpor1 / 100.00M).Ron2();
-      ptransSumRec_beta14.R_Por2Uk      = (ptransSumRec_beta14.R_PorOsn2 * pR._stpor2 / 100.00M).Ron2();
-      ptransSumRec_beta14.R_Por3Uk      = (ptransSumRec_beta14.R_PorOsn3 * pR._stpor3 / 100.00M).Ron2();
-      // 03.12.2015: mozda i nepotrebno, a mozda i smeta?! end 
+      //22.11.2024. dodan if jer od 01.01.2024. nema vise prireza i porez se racuna na drugaciji nacin
+      if(thisPersonWholeYearPtransList.First().T_dokDate < ZXC.Date01012024)
+      { 
+         // 03.12.2015: mozda i nepotrebno, a mozda i smeta?! start 
+         ptransSumRec_beta14.R_Por1Uk      = (ptransSumRec_beta14.R_PorOsn1 * pR._stpor1 / 100.00M).Ron2();
+         ptransSumRec_beta14.R_Por2Uk      = (ptransSumRec_beta14.R_PorOsn2 * pR._stpor2 / 100.00M).Ron2();
+         ptransSumRec_beta14.R_Por3Uk      = (ptransSumRec_beta14.R_PorOsn3 * pR._stpor3 / 100.00M).Ron2();
+         // 03.12.2015: mozda i nepotrebno, a mozda i smeta?! end 
 
-      ptransSumRec_beta14.R_PorezAll    = (ptransSumRec_beta14.R_PorOsn1 * pR._stpor1 / 100.00M).Ron2() + 
-                                          (ptransSumRec_beta14.R_PorOsn2 * pR._stpor2 / 100.00M).Ron2() +
-                                          (ptransSumRec_beta14.R_PorOsn3 * pR._stpor3 / 100.00M).Ron2();
-                                        
-      ptransSumRec_beta14.R_Prirez      = (ptransSumRec_beta14.R_PorezAll * ptransSumRec_alfa13.T_stPrirez / 100.00M).Ron2();
+         ptransSumRec_beta14.R_PorezAll    = (ptransSumRec_beta14.R_PorOsn1 * pR._stpor1 / 100.00M).Ron2() + 
+                                             (ptransSumRec_beta14.R_PorOsn2 * pR._stpor2 / 100.00M).Ron2() +
+                                             (ptransSumRec_beta14.R_PorOsn3 * pR._stpor3 / 100.00M).Ron2();
+                                           
+         ptransSumRec_beta14.R_Prirez      = (ptransSumRec_beta14.R_PorezAll * ptransSumRec_alfa13.T_stPrirez / 100.00M).Ron2();
 
-      ptransSumRec_beta14.R_NettoAftKrp = 
-      ptransSumRec_beta14.R_Netto       = ptransSumRec_beta14.R_Dohodak - ptransSumRec_beta14.R_PorezAll - ptransSumRec_beta14.R_Prirez;
+         ptransSumRec_beta14.R_NettoAftKrp = 
+         ptransSumRec_beta14.R_Netto       = ptransSumRec_beta14.R_Dohodak - ptransSumRec_beta14.R_PorezAll - ptransSumRec_beta14.R_Prirez;
 
-      ptransSumRec_beta14.R_PorPrirez   = ptransSumRec_beta14.R_PorezAll + ptransSumRec_beta14.R_Prirez;
+         ptransSumRec_beta14.R_PorPrirez   = ptransSumRec_beta14.R_PorezAll + ptransSumRec_beta14.R_Prirez;
+      }
+      else// od 01.01.2024.!!!
+      { 
+         ptransSumRec_beta14.R_PorezAll    = (ptransSumRec_beta14.R_PorOsn1 * ptransSumRec_beta14.T_stPorez1 / 100.00M).Ron2() + 
+                                             (ptransSumRec_beta14.R_PorOsn2 * ptransSumRec_beta14.T_stPorez2 / 100.00M).Ron2()  ;
+                                           
+         ptransSumRec_beta14.R_Prirez      = 0.00M;
+
+         ptransSumRec_beta14.R_NettoAftKrp = 
+         ptransSumRec_beta14.R_Netto       = ptransSumRec_beta14.R_Dohodak - ptransSumRec_beta14.R_PorezAll - ptransSumRec_beta14.R_Prirez;
+
+         ptransSumRec_beta14.R_PorPrirez   = ptransSumRec_beta14.R_PorezAll + ptransSumRec_beta14.R_Prirez;
+      }
 
       // koliko je za radnika uplaceno poreza toliko eventualno moze dobiti natrag a ne vise!!!!! OVO DOLJE NEVALJA
       if(ptransSumRec_beta14.R_PorPrirez * -1.00M > ptransSumRec_alfa13.R_PorPrirez/* || ptransSumRec_beta14.R_PorOsnAll < ptransSumRec_alfa13.R_PorOsnAll*/)
@@ -993,7 +1014,8 @@ public sealed class PtransDao : VvDaoBase, IVvDao
                                                                                           //R_Odbitak = T_koef.NotZero() ? alfa + beta : 0.00M;
             fondOdbitka += (ispravanKoef.NotZero() ? alfa + beta : 0.00M).Ron2();
          }
-         else//EURoERaStart 2023 godina NOVO!!!!!
+       //else//EURoERaStart 2023 godina NOVO!!!!!
+         else if (ptrGR.First().T_dokDate >= ZXC.EURoERAstart && ptrGR.First().T_dokDate < ZXC.Date01012024)//EURoERaStart 2023 godina NOVO!!!!! i 
          { 
             bool plUmjesecu_isSijecanj2023 = ptrGR.First().T_dokDate <= ZXC.Date31012023;
             decimal koefZaOsnOdb = 1.60M; 
@@ -1008,10 +1030,11 @@ public sealed class PtransDao : VvDaoBase, IVvDao
 
             if(ispravanKoef < 1.00M) fondOdbitka += ZXC.Ron2(alfa * ispravanKoef);
             else                     fondOdbitka += (alfa + beta)                        ;
-         
-         
          }
-
+         else // od 01.01.2024. opet neka "stara" pravila
+         {
+            fondOdbitka += (ispravanKoef * pR._osnOdb).Ron2();
+         }
       }
 
       return fondOdbitka.Ron2();
