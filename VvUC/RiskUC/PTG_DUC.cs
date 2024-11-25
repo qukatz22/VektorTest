@@ -3754,7 +3754,7 @@ public class PCK_ArtiklList_UC : VvUserControl
    private VvTextBox vvtb_PCK_theSerno, vvtb_PCK_theSernoOp;
 
    public  VvHamper hamp_rbtBaza, hamp_cbxTbx;
-   private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze, rbt_svePCKbazeAndKomp;
+   private RadioButton rbt_ovaPCKbaza, rbt_svePCKbaze, rbt_svePCKbazeAndKomp, rbt_komponenteOnly;
    private VvTextBox tbx_SkladCd, tbx_SkladOpis, tbx_RamKlasa, tbx_HddKlasa;
 
    public string LocalSkladCD;
@@ -3846,11 +3846,11 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    private void CreateHamperRbt()
    {
-      hamp_rbtBaza = new VvHamper(3, 1, "", this, false);
+      hamp_rbtBaza = new VvHamper(4, 1, "", this, false);
       hamp_rbtBaza.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
 
-      hamp_rbtBaza.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un, ZXC.Q10un + ZXC.Q2un };
-      hamp_rbtBaza.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamp_rbtBaza.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q6un, ZXC.Q6un, ZXC.Q6un};
+      hamp_rbtBaza.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamp_rbtBaza.VvRightMargin = 0;
 
       hamp_rbtBaza.VvRowHgt       = new int[] { ZXC.QUN };
@@ -3860,6 +3860,7 @@ public class PCK_ArtiklList_UC : VvUserControl
       rbt_ovaPCKbaza        = hamp_rbtBaza.CreateVvRadioButton(0, 0,        new EventHandler(ShowPckinfo)  , "Ista PCK baza"   , TextImageRelation.ImageBeforeText);
       rbt_svePCKbaze        = hamp_rbtBaza.CreateVvRadioButton(1, 0,        new EventHandler(ShowPckinfo)  , "Sve PCK baze"    , TextImageRelation.ImageBeforeText);
       rbt_svePCKbazeAndKomp = hamp_rbtBaza.CreateVvRadioButton(2, 0,        new EventHandler(ShowPckinfo)  , "PCK i komponente", TextImageRelation.ImageBeforeText);
+      rbt_komponenteOnly          = hamp_rbtBaza.CreateVvRadioButton(3, 0,        new EventHandler(ShowPckinfo)  , "Komponente"      , TextImageRelation.ImageBeforeText);
       
     //rbt_ovaPCKbaza.Checked = true;
 
@@ -4223,6 +4224,7 @@ public class PCK_ArtiklList_UC : VvUserControl
               if(rbt_ovaPCKbaza       .Checked) return ZXC.PCK_Info_Kind.OvaBazaOnly       ;
          else if(rbt_svePCKbaze       .Checked) return ZXC.PCK_Info_Kind.SveBazeOnly       ;
          else if(rbt_svePCKbazeAndKomp.Checked) return ZXC.PCK_Info_Kind.SveBazeIkomponente;
+         else if(rbt_komponenteOnly   .Checked) return ZXC.PCK_Info_Kind.KomponenteOnly    ;
          else                                   return ZXC.PCK_Info_Kind.OvaBazaOnly       ;
       }
       set
@@ -4232,6 +4234,7 @@ public class PCK_ArtiklList_UC : VvUserControl
             case ZXC.PCK_Info_Kind.OvaBazaOnly       : rbt_ovaPCKbaza       .Checked = true; break;
             case ZXC.PCK_Info_Kind.SveBazeOnly       : rbt_svePCKbaze       .Checked = true; break;
             case ZXC.PCK_Info_Kind.SveBazeIkomponente: rbt_svePCKbazeAndKomp.Checked  = true; break;
+            case ZXC.PCK_Info_Kind.KomponenteOnly    : rbt_komponenteOnly   .Checked  = true; break;
          }
       }
    }
