@@ -513,15 +513,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          case ZXC.PCK_Info_Kind.OvaBazaOnly:
 
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artiklTS ], "theTS"      , ZXC.PCK_TS                         , " = "));
-
-          //if(artikl_rec != null)
-          //{
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.carTarifa], "thePCK_Baza", artikl_rec.PCK_BazaCD              , " = "));
-          //}
-          //else
-          //{
-          //   int a = 4;
-          //}
             break;
 
          case ZXC.PCK_Info_Kind.SveBazeOnly:
@@ -535,16 +527,15 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.NONE    , false, "RAMgr1", ZXC.RAM_GR1, "", "", " = ", ""));
             rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.CLOSE_OR, false, "HDDgr1", ZXC.HDD_GR1, "", "", " = ", ""));
             break;
+
+         case ZXC.PCK_Info_Kind.KomponenteOnly:
+
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.OPEN_OR , false, "RAMgr1", ZXC.RAM_GR1, "", "", " = ", ""));
+            rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArsSch[ArsCI.artGrCd1], ZXC.FM_OR_Enum.CLOSE_OR, false, "HDDgr1", ZXC.HDD_GR1, "", "", " = ", ""));
+            break;
+
       }
 
-    //if(wantsThisRAMkindOnly)
-    //{
-    //   rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "thePCKwantsThisRAMkindOnly_Baza", artikl_rec.Grupa2CD, " = "));
-    //}
-    //if(wantsThisHDDkindOnly)
-    //{
-    //   rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "thePCKwantsThisHDDkindOnly_Baza", artikl_rec.Grupa3CD, " = "));
-    //}
       if(artikl_rec != null && wantsThisRAMkindOnly.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa2CD], "wantsThisRAMkindOnly", wantsThisRAMkindOnly, " = "));
       if(artikl_rec != null && wantsThisHDDkindOnly.NotEmpty()) rptFilter.FilterMembers.Add(new VvSqlFilterMember(ArtSch[ArtCI.grupa3CD], "wantsThisHDDkindOnly", wantsThisHDDkindOnly, " = "));
  

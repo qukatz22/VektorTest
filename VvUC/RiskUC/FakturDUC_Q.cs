@@ -2940,7 +2940,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             {
                #region Get Lists 
 
-               List<Rtrano> rtranoList = faktur_rec.Transes2.ToList();
+               List<Rtrano> rtranoList = faktur_rec.TrnNonDel2_ALL.ToList();
 
                rtranoList.ForEach(rto => rto.R_RAM_kind = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa2CD); // RAM kind 
                rtranoList.ForEach(rto => rto.R_HDD_kind = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa3CD); // HDD kind 
@@ -7596,6 +7596,7 @@ public partial class FakturExtDUC : FakturDUC
                (this as MOD_PTG_DUC).Fld_Decimal01    = 0M;
                (this as MOD_PTG_DUC).Fld_Decimal02    = 0M;
                (this as MOD_PTG_DUC).Fld_PTG_PCKbaza  = "";
+               (this as MOD_PTG_DUC).Fld_someMoney    = 0M;
             }
          }
       }
