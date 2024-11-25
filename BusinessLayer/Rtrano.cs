@@ -577,6 +577,9 @@ public class Rtrano : VvTransRecord
       }
    }
 
+   public string R_RAM_kind { get; set; }
+   public string R_HDD_kind { get; set; }
+
    #endregion PCTOGO propertiz
 
    #endregion propertiz 

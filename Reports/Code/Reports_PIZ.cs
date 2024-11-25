@@ -2451,17 +2451,30 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          List<Ptrans> thisPersonWholeYearPtransList;
          int mjeseciCount;
          bool thisPersonHasNot12Placa;
+         bool thisPersonHasSkracenoRV;
+         Person person_rec;
+         uint personCD;
 
          for(int rowIdx = 0; rowIdx < ptransSumTable.Rows.Count; ++rowIdx)
          {
+            personCD = ((DS_Placa.ptransSumRow)ptransSumTable.Rows[rowIdx]).P_personCD;
+
             PtransSumRec_alfa13 = PtransDao.GetPtransSum_alfa13(ZXC.TheVvForm.TheDbConnection /* poboljsaj ovo! */,
-                                                               ((DS_Placa.ptransSumRow)ptransSumTable.Rows[rowIdx]).P_personCD, out thisPersonWholeYearPtransList);
+                                                               personCD, out thisPersonWholeYearPtransList);
 
             mjeseciCount = thisPersonWholeYearPtransList.Where(pt => pt.T_TT == Placa.TT_REDOVANRAD).Select(ptr => ptr.T_dokDate.Month).Distinct().Count();
 
             thisPersonHasNot12Placa = (mjeseciCount < 12);
 
             if(thisPersonHasNot12Placa)
+            {
+               ptransSumTable.Rows.RemoveAt(rowIdx--);
+            }
+
+            // 25.11.2024: 
+            person_rec = VvUserControl.PersonSifrar.SingleOrDefault(per => per.PersonCD == personCD);
+            thisPersonHasSkracenoRV = person_rec.VrstaRadVrem == Person.VrstaRadnogVremenaEnum.SKRACENO;
+            if(thisPersonHasSkracenoRV)
             {
                ptransSumTable.Rows.RemoveAt(rowIdx--);
             }

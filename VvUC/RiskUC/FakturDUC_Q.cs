@@ -2942,49 +2942,81 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                List<Rtrano> rtranoList = faktur_rec.Transes2.ToList();
 
-               rtranoList.ForEach(rto => rto.T_artiklName = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa2CD); // RAM kind 
-               rtranoList.ForEach(rto => rto.T_serno      = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa3CD); // HDD kind 
+               rtranoList.ForEach(rto => rto.R_RAM_kind = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa2CD); // RAM kind 
+               rtranoList.ForEach(rto => rto.R_HDD_kind = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa3CD); // HDD kind 
 
-               List<string> RAM_kinds = rtranoList.Select(rto => rto.T_artiklName).Distinct().ToList();
-               List<string> HDD_kinds = rtranoList.Select(rto => rto.T_serno     ).Distinct().ToList();
+               List<string> RAM_kinds = rtranoList.Select(rto => rto.R_RAM_kind).Distinct().ToList();
+               List<string> HDD_kinds = rtranoList.Select(rto => rto.R_HDD_kind).Distinct().ToList();
 
-               // MOI minusi _________________________________________________________________________________________________________________________________________________________________________
+               // MOI minusi ________________________________________________________________________________________________________________________________________________________________________________________________
                List<Rtrano> MOIrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
 
-               List<VvReportSourceUtil> MOI_RAMkindSumsList = MOIrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
-               List<VvReportSourceUtil> MOI_HDDkindSumsList = MOIrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
+               List<VvReportSourceUtil> MOI_RAMkindSumsList        = MOIrtranoList .GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
+               List<VvReportSourceUtil> MOI_HDDkindSumsList        = MOIrtranoList .GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
 
-               // MOU plusevi _________________________________________________________________________________________________________________________________________________________________________
+               // MOU plusevi _______________________________________________________________________________________________________________________________________________________________________________________________
                List<Rtrano> MOUrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
 
-               List<VvReportSourceUtil> MOU_RAMkindSumsList = MOUrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
-               List<VvReportSourceUtil> MOU_HDDkindSumsList = MOUrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
+               List<VvReportSourceUtil> MOU_RAMkindSumsList        = MOUrtranoList .GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
+               List<VvReportSourceUtil> MOU_HDDkindSumsList        = MOUrtranoList .GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
 
-               // MOCS minusi _________________________________________________________________________________________________________________________________________________________________________
+               // MOCS minusi _______________________________________________________________________________________________________________________________________________________________________________________________
                List<Rtrano> MOCSrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
 
-               List<VvReportSourceUtil> MOCS_MINUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
-               List<VvReportSourceUtil> MOCS_MINUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
+               List<VvReportSourceUtil> MOCS_MINUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
+               List<VvReportSourceUtil> MOCS_MINUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
 
-               // MOCS plusevi _________________________________________________________________________________________________________________________________________________________________________
-               List<VvReportSourceUtil> MOCS_PLUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.T_artiklName).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
-               List<VvReportSourceUtil> MOCS_PLUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.T_serno     ).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
+               // MOCS plusevi ______________________________________________________________________________________________________________________________________________________________________________________________
+               List<VvReportSourceUtil> MOCS_PLUS_RAMkindSumsList  = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
+               List<VvReportSourceUtil> MOCS_PLUS_HDDkindSumsList  = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
 
                #endregion Get Lists 
 
+               bool warnOnly_RAM = false; // mozda todo, ako ipak odlucimo dat im sejvat 
+               bool warnOnly_HDD = true ; // mozda todo, ako ipak odlucimo dat im sejvat 
+
+               // RAM checks 
                foreach(string RAM_kind in RAM_kinds)
                {
-                  int RAM_MOI_minus = MOI_RAMkindSumsList      .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
-                  int RAM_MOCS_plus = MOCS_PLUS_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
-
-                  // TUSSA IDE PROVJERA, EVENT. JAVLJANJE I E.CANCEL 
-
-                  int RAM_MOU_plus   = MOU_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOCS_plus  = MOCS_PLUS_RAMkindSumsList .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
                   int RAM_MOCS_minus = MOCS_MINUS_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOU_plus   = MOU_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOI_minus  = MOI_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
 
-                  // TUSSA IDE PROVJERA, EVENT. JAVLJANJE I E.CANCEL 
+                  bool has_MOI_discrepancy = RAM_MOCS_plus  != RAM_MOI_minus;
+                  bool has_MOU_discrepancy = RAM_MOCS_minus != RAM_MOU_plus ;
 
+                  bool has_MOCS_plus_minus_discrepancy = (RAM_MOU_plus + RAM_MOI_minus).IsZero() && (RAM_MOCS_plus != RAM_MOCS_minus);
+
+                  MessageBoxIcon messageBoxIcon = warnOnly_RAM ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
+
+                  if(has_MOI_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "RAM " + RAM_kind + " MOI ima izlaz " + RAM_MOI_minus + " a ulaz u MOC/MOS "   + RAM_MOCS_plus ); if(warnOnly_RAM == false) e.Cancel = true; }
+                  if(has_MOU_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "RAM " + RAM_kind + " MOU ima ulaz "  + RAM_MOU_plus  + " a izlaz iz MOC/MOS " + RAM_MOCS_minus); if(warnOnly_RAM == false) e.Cancel = true; }
+
+                  if(has_MOCS_plus_minus_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "RAM " + RAM_kind + " nema MOU niti MOI a MOCS plus/minus su u neravnoteži "  + RAM_MOCS_plus + " vs " + RAM_MOCS_minus); if(warnOnly_RAM == false) e.Cancel = true; }
                }
+
+               // HDD checks 
+               foreach(string HDD_kind in HDD_kinds)
+               {
+                  int HDD_MOCS_plus  = MOCS_PLUS_HDDkindSumsList .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+                  int HDD_MOCS_minus = MOCS_MINUS_HDDkindSumsList.Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+                  int HDD_MOU_plus   = MOU_HDDkindSumsList       .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+                  int HDD_MOI_minus  = MOI_HDDkindSumsList       .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+
+                  bool has_MOI_discrepancy = HDD_MOCS_plus  != HDD_MOI_minus;
+                  bool has_MOU_discrepancy = HDD_MOCS_minus != HDD_MOU_plus ;
+
+                  bool has_MOCS_plus_minus_discrepancy = (HDD_MOU_plus + HDD_MOI_minus).IsZero() && (HDD_MOCS_plus != HDD_MOCS_minus);
+
+                  MessageBoxIcon messageBoxIcon = warnOnly_HDD ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
+
+                  if(has_MOI_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "HDD " + HDD_kind + " MOI ima izlaz " + HDD_MOI_minus + " a ulaz u MOC/MOS "   + HDD_MOCS_plus ); if(warnOnly_HDD == false) e.Cancel = true; }
+                  if(has_MOU_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "HDD " + HDD_kind + " MOU ima ulaz "  + HDD_MOU_plus  + " a izlaz iz MOC/MOS " + HDD_MOCS_minus); if(warnOnly_HDD == false) e.Cancel = true; }
+
+                  if(has_MOCS_plus_minus_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "HDD " + HDD_kind + " nema MOU niti MOI a MOCS plus/minus su u neravnoteži "  + HDD_MOCS_plus + " vs " + HDD_MOCS_minus); if(warnOnly_HDD == false) e.Cancel = true; }
+               }
+
             }
 
             if(this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty())
