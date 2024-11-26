@@ -7731,7 +7731,8 @@ public partial class FakturExtDUC : FakturDUC
 
       // 22.04.2016. veze
       //07.02.2022. za UGAN i DOD dodan if
-      if(!ovajDucNetrebaSumeProsireno)
+      // 26.11.2024: ipak vracamo veze na PTG duceve
+      if(true/*!ovajDucNetrebaSumeProsireno*/)
       {
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(fakLink_TabPageName, fakLink_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
       }
