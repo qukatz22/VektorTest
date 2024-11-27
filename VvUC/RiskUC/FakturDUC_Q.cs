@@ -5803,6 +5803,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       string upisaniArtiklCD = theGrid2.GetStringCell(ci2.iT_artiklCD, currRowIdx, false);
 
+      if(upisaniArtiklCD.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Question, "Koji je smisao zadavanja serno-a ako je artiklCD prazan?!");
+         return;
+      }
+
       if(sernoInfo == null)
       {
          if(upisaniArtiklCD.NotEmpty())
