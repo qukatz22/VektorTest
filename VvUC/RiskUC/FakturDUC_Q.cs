@@ -5783,7 +5783,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       #region Check for double serno entry
 
       GetDgvFields2(true);
-      int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno == theSerno).Count();
+      int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno == theSerno && rto.T_serno.NotEmpty()).Count();
 
       if(theSernoCount > 1)
       {
