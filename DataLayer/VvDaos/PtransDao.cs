@@ -1088,10 +1088,11 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       ptransSumRec_gama15.R_PorOsn2     = (ptransSumRec_beta14.R_PorOsn2     - ptransSumRec_alfa13.R_PorOsn2    ).Ron2();
       ptransSumRec_gama15.R_PorOsn3     = (ptransSumRec_beta14.R_PorOsn3     - ptransSumRec_alfa13.R_PorOsn3    ).Ron2();
 
+      // 26.11.2024. ipak smeta
       // 03.12.2015: mozda i nepotrebno, a mozda i smeta?! start 
-      ptransSumRec_gama15.R_Por1Uk      = (ptransSumRec_beta14.R_Por1Uk      - ptransSumRec_alfa13.R_Por1Uk     ).Ron2();
-      ptransSumRec_gama15.R_Por2Uk      = (ptransSumRec_beta14.R_Por2Uk      - ptransSumRec_alfa13.R_Por2Uk     ).Ron2();
-      ptransSumRec_gama15.R_Por3Uk      = (ptransSumRec_beta14.R_Por3Uk      - ptransSumRec_alfa13.R_Por3Uk     ).Ron2();
+      //ptransSumRec_gama15.R_Por1Uk      = (ptransSumRec_beta14.R_Por1Uk      - ptransSumRec_alfa13.R_Por1Uk     ).Ron2();
+      //ptransSumRec_gama15.R_Por2Uk      = (ptransSumRec_beta14.R_Por2Uk      - ptransSumRec_alfa13.R_Por2Uk     ).Ron2();
+      //ptransSumRec_gama15.R_Por3Uk      = (ptransSumRec_beta14.R_Por3Uk      - ptransSumRec_alfa13.R_Por3Uk     ).Ron2();
       // 03.12.2015: mozda i nepotrebno, a mozda i smeta?! end 
 
       ptransSumRec_gama15.R_PorezAll    = (ptransSumRec_beta14.R_PorezAll    - ptransSumRec_alfa13.R_PorezAll   ).Ron2();
