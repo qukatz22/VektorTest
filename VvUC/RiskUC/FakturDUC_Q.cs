@@ -2848,102 +2848,40 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             Rtrano rtrano_rec;
 
-            Artikl oldArtikl_rec;
-
-            var new_MOC_MOS_ArtiklCDlist = new List<string>();
-
-            for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
-            {
-               rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
-
-               artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
-
-               if(this is MOD_PTG_DUC)
-               {
-                  MOD_PTG_DUC theDUC = (MOD_PTG_DUC)this;
-
-                  string oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false);
-
-                  oldArtikl_rec = Get_Artikl_FromVvUcSifrar(oldArtiklCD);
-
-                  // ne daj prazni MOC/MOS NewArtiklCD 
-                  if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.IsEmpty())
-                  {
-                     ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka mora imati definirani 'Artikl NEW'.\n\nRedak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno);
-                     e.Cancel = true;
-                  }
-
-                  // dodaj nove MOC/MOS Artikle 
-                  if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.NotEmpty())
-                  {
-                     string newArtiklCD = rtrano_rec.T_artiklCD;
-
-                     if(Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
-                     {
-                        bool addnewOK = true;
-                        string newArtiklName;
-
-                        Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
-
-                        if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
-
-                        (addnewOK, newArtiklName) = theDUC.ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
-
-                        if(addnewOK == false)
-                        {
-                           ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka rezultira novim artiklom čije dodavanje nije uspjelo.\n\nArtikl [{2}] Redak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno, newArtiklCD);
-                           e.Cancel = true;
-                           break;
-                        }
-
-                        TheG2.PutCell(ci2.iT_artiklName, rowIdx2, newArtiklName);
-
-                        new_MOC_MOS_ArtiklCDlist.Add("Novi artikl: " + newArtiklCD);
-
-                     } // if(Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
-
-                  } // // dodaj nove MOC/MOS Artikle  
-
-                  #region check RAM/HDD kind 
-                  
-                  string mocRAMkind  = theDUC.Fld_PTG_RamKlasa;
-                  string mocHDDkind  = theDUC.Fld_PTG_HddKlasa;
-                  string rtoRAMkind  = /*artikl_rec.Grupa2CD    */TheG2.GetStringCell(ci2.iT_ramKlasa, rowIdx2, false);
-                  string rtoHDDkind  = /*artikl_rec.Grupa3CD    */TheG2.GetStringCell(ci2.iT_hddKlasa, rowIdx2, false);
-
-                  bool ramChanged    = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
-                  bool hddChanged    = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
-                  
-                  bool isMocDefined  = theDUC.Fld_PTG_MOC_PCK_ArtCD.NotEmpty();
-
-                  if(isMocDefined && ramChanged && mocRAMkind != rtoRAMkind)
-                  {
-                     ZXC.aim_emsg(MessageBoxIcon.Error, "RAM klasa {2} cilja modifikacije ne odgovara RAM klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocRAMkind, rtoRAMkind);
-                     e.Cancel = true;
-                     break;
-                  }
-                  if(isMocDefined && hddChanged && mocHDDkind != rtoHDDkind)
-                  {
-                     ZXC.aim_emsg(MessageBoxIcon.Error, "HDD klasa {2} cilja modifikacije ne odgovara HDD klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocHDDkind, rtoHDDkind);
-                     e.Cancel = true;
-                     break;
-                  }
-
-                  #endregion check RAM/HDD kind 
-
-               } // if(this is MOD_PTG_DUC)
-
-            } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
-
-            // Check RAM/HDD kind balance
             if(this is MOD_PTG_DUC)
             {
+               MOD_PTG_DUC theDUC = (MOD_PTG_DUC)this;
+
+               #region Check RAM/HDD kind balance
+
                #region Get Lists 
+
+               Artikl oldArtikl_rec;
+
+               string oldArtiklCD;
 
                List<Rtrano> rtranoList = faktur_rec.TrnNonDel2_ALL.ToList();
 
-               rtranoList.ForEach(rto => rto.R_RAM_kind = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa2CD); // RAM kind 
-               rtranoList.ForEach(rto => rto.R_HDD_kind = Get_Artikl_FromVvUcSifrar(rto.T_artiklCD).Grupa3CD); // HDD kind 
+               int rowIdx2 = 0;
+
+               foreach(Rtrano rto in rtranoList)
+               {
+                  rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+                  artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+                  oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false);
+
+                  oldArtikl_rec = Get_Artikl_FromVvUcSifrar(oldArtiklCD);
+
+                  if(oldArtikl_rec != null)
+                  {
+                     rto.R_RAM_kind = oldArtikl_rec.Grupa2CD;
+                     rto.R_HDD_kind = oldArtikl_rec.Grupa3CD;
+                  }
+
+                  ++rowIdx2;
+               }
 
                List<string> RAM_kinds = rtranoList.Select(rto => rto.R_RAM_kind).Distinct().ToList();
                List<string> HDD_kinds = rtranoList.Select(rto => rto.R_HDD_kind).Distinct().ToList();
@@ -2973,9 +2911,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                #endregion Get Lists 
 
                bool warnOnly_RAM = false; // mozda todo, ako ipak odlucimo dat im sejvat 
-               bool warnOnly_HDD = true ; // mozda todo, ako ipak odlucimo dat im sejvat 
+               bool warnOnly_HDD = true ; 
 
-               // RAM checks 
+               // RAM balance checks 
                foreach(string RAM_kind in RAM_kinds)
                {
                   int RAM_MOCS_plus  = MOCS_PLUS_RAMkindSumsList .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
@@ -2983,20 +2921,28 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   int RAM_MOU_plus   = MOU_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
                   int RAM_MOI_minus  = MOI_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
 
-                  bool has_MOI_discrepancy = RAM_MOCS_plus  != RAM_MOI_minus;
-                  bool has_MOU_discrepancy = RAM_MOCS_minus != RAM_MOU_plus ;
+                  int RAM_MOCS_saldo = RAM_MOCS_plus - RAM_MOCS_minus;
 
-                  bool has_MOCS_plus_minus_discrepancy = (RAM_MOU_plus + RAM_MOI_minus).IsZero() && (RAM_MOCS_plus != RAM_MOCS_minus);
+                  bool has_RAM_descrepancy = RAM_MOCS_saldo != (RAM_MOI_minus - RAM_MOU_plus); // do ovoga smo teškom mukom došli :-( 
 
                   MessageBoxIcon messageBoxIcon = warnOnly_RAM ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
 
-                  if(has_MOI_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "RAM " + RAM_kind + " MOI ima izlaz " + RAM_MOI_minus + " a ulaz u MOC/MOS "   + RAM_MOCS_plus ); if(warnOnly_RAM == false) e.Cancel = true; }
-                  if(has_MOU_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "RAM " + RAM_kind + " MOU ima ulaz "  + RAM_MOU_plus  + " a izlaz iz MOC/MOS " + RAM_MOCS_minus); if(warnOnly_RAM == false) e.Cancel = true; }
+                  if(has_RAM_descrepancy) 
+                  {
+                     int RAMplus  = RAM_MOCS_plus  + RAM_MOU_plus ;
+                     int RAMminus = RAM_MOCS_minus + RAM_MOI_minus;
 
-                  if(has_MOCS_plus_minus_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "RAM " + RAM_kind + " nema MOU niti MOI a MOCS plus/minus su u neravnoteži "  + RAM_MOCS_plus + " vs " + RAM_MOCS_minus); if(warnOnly_RAM == false) e.Cancel = true; }
-               }
+                     ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena plus/minus ravnoteža " + RAMplus + " ≠ " + RAMminus);
+                     if(warnOnly_RAM == false)
+                     {
+                        e.Cancel = true;
+                        return;
+                     }
+                  }
 
-               // HDD checks 
+               } // foreach(string RAM_kind in RAM_kinds) 
+
+               // HDD balance checks 
                foreach(string HDD_kind in HDD_kinds)
                {
                   int HDD_MOCS_plus  = MOCS_PLUS_HDDkindSumsList .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
@@ -3004,29 +2950,121 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   int HDD_MOU_plus   = MOU_HDDkindSumsList       .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
                   int HDD_MOI_minus  = MOI_HDDkindSumsList       .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
 
-                  bool has_MOI_discrepancy = HDD_MOCS_plus  != HDD_MOI_minus;
-                  bool has_MOU_discrepancy = HDD_MOCS_minus != HDD_MOU_plus ;
+                  int HDD_MOCS_saldo = HDD_MOCS_plus - HDD_MOCS_minus;
 
-                  bool has_MOCS_plus_minus_discrepancy = (HDD_MOU_plus + HDD_MOI_minus).IsZero() && (HDD_MOCS_plus != HDD_MOCS_minus);
+                  bool has_HDD_descrepancy = HDD_MOCS_saldo != (HDD_MOI_minus - HDD_MOU_plus); // do ovoga smo teškom mukom došli :-( 
 
                   MessageBoxIcon messageBoxIcon = warnOnly_HDD ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
 
-                  if(has_MOI_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "HDD " + HDD_kind + " MOI ima izlaz " + HDD_MOI_minus + " a ulaz u MOC/MOS "   + HDD_MOCS_plus ); if(warnOnly_HDD == false) e.Cancel = true; }
-                  if(has_MOU_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "HDD " + HDD_kind + " MOU ima ulaz "  + HDD_MOU_plus  + " a izlaz iz MOC/MOS " + HDD_MOCS_minus); if(warnOnly_HDD == false) e.Cancel = true; }
+                  if(has_HDD_descrepancy) 
+                  {
+                     int HDDplus  = HDD_MOCS_plus  + HDD_MOU_plus ;
+                     int HDDminus = HDD_MOCS_minus + HDD_MOI_minus;
 
-                  if(has_MOCS_plus_minus_discrepancy) { ZXC.aim_emsg(messageBoxIcon, "HDD " + HDD_kind + " nema MOU niti MOI a MOCS plus/minus su u neravnoteži "  + HDD_MOCS_plus + " vs " + HDD_MOCS_minus); if(warnOnly_HDD == false) e.Cancel = true; }
+                     ZXC.aim_emsg(messageBoxIcon, "Za HDD " + HDD_kind + " nije uspostavljena plus/minus ravnoteža " + HDDplus + " ≠ " + HDDminus);
+                     if(warnOnly_HDD == false)
+                     {
+                        e.Cancel = true;
+                        return;
+                     }
+                  }
+
+               } // foreach(string HDD_kind in HDD_kinds) 
+
+               #endregion Check RAM/HDD kind balance
+
+               #region ADD new MOC/MOS Artikl, check MOC RAM/HDD kind
+
+               List<string> new_MOC_MOS_ArtiklCDlist = new List<string>();
+
+               for(rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
+               {
+                  rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+                  artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+                  oldArtiklCD = TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false);
+
+                  // ne daj prazni MOC/MOS NewArtiklCD 
+                  if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.IsEmpty())
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka mora imati definirani 'Artikl NEW'.\n\nRedak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno);
+                     e.Cancel = true;
+                     return;
+                  }
+
+                  #region check MOC RAM/HDD kind 
+                  
+                  string mocRAMkind  = theDUC.Fld_PTG_RamKlasa;
+                  string mocHDDkind  = theDUC.Fld_PTG_HddKlasa;
+                  string rtoRAMkind  = /*artikl_rec.Grupa2CD    */TheG2.GetStringCell(ci2.iT_ramKlasa, rowIdx2, false);
+                  string rtoHDDkind  = /*artikl_rec.Grupa3CD    */TheG2.GetStringCell(ci2.iT_hddKlasa, rowIdx2, false);
+
+                  bool ramChanged    = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
+                  bool hddChanged    = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
+                  
+                  bool isMocDefined  = theDUC.Fld_PTG_MOC_PCK_ArtCD.NotEmpty();
+
+                  if(isMocDefined && ramChanged && mocRAMkind != rtoRAMkind)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "RAM klasa {2} cilja modifikacije ne odgovara RAM klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocRAMkind, rtoRAMkind);
+                     e.Cancel = true;
+                     /*break;*/ return;
+                  }
+                  if(isMocDefined && hddChanged && mocHDDkind != rtoHDDkind)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "HDD klasa {2} cilja modifikacije ne odgovara HDD klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocHDDkind, rtoHDDkind);
+                     e.Cancel = true;
+                     /*break;*/ return;
+                  }
+
+                  #endregion check MOC RAM/HDD kind 
+
+                  // dodaj nove MOC/MOS Artikle 
+                  if(rtrano_rec.TtInfo.Is_MOC_or_MOS_TT && rtrano_rec.T_artiklCD.NotEmpty())
+                  {
+                     string newArtiklCD = rtrano_rec.T_artiklCD;
+
+                     if(!e.Cancel && Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
+                     {
+                        bool addnewOK = true;
+                        string newArtiklName;
+
+                        Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
+
+                        if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
+
+                        (addnewOK, newArtiklName) = theDUC.ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
+
+                        if(addnewOK == false)
+                        {
+                           ZXC.aim_emsg(MessageBoxIcon.Error, "MOC / MOS stavka rezultira novim artiklom čije dodavanje nije uspjelo.\n\nArtikl [{2}] Redak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno, newArtiklCD);
+                           e.Cancel = true;
+                           break;
+                        }
+
+                        TheG2.PutCell(ci2.iT_artiklName, rowIdx2, newArtiklName);
+
+                        new_MOC_MOS_ArtiklCDlist.Add("Novi artikl: " + newArtiklCD);
+
+                     } // if(Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
+
+                  } // // dodaj nove MOC/MOS Artikle  
+
+               } // for(int rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
+
+               if(!e.Cancel && this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty())
+               {
+                  // 12.09.2024: pokusasj da se FORCE ucitavanje sifrara (a s obzirom na [sifrarArtiklLastLoaded < sifrarLastChanged]) 
+                  VvUserControl.sifrarArtiklLastLoaded = DateTime.MinValue;
+                  SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
+
+                  ZXC.aim_emsg_List(string.Format("Dodao {0} novih PCK artikla.", new_MOC_MOS_ArtiklCDlist.Count), new_MOC_MOS_ArtiklCDlist);
                }
 
-            }
+               #endregion ADD new MOC/MOS Artikl, check MOC RAM/HDD kind
 
-            if(this is MOD_PTG_DUC && new_MOC_MOS_ArtiklCDlist.NotEmpty())
-            {
-               // 12.09.2024: pokusasj da se FORCE ucitavanje sifrara (a s obzirom na [sifrarArtiklLastLoaded < sifrarLastChanged]) 
-               VvUserControl.sifrarArtiklLastLoaded = DateTime.MinValue;
-               SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
-
-               ZXC.aim_emsg_List(string.Format("Dodao {0} novih PCK artikla.", new_MOC_MOS_ArtiklCDlist.Count), new_MOC_MOS_ArtiklCDlist);
-            }
+            } // if(this is MOD_PTG_DUC)
 
          } // if(this is FakturPDUC) 
 
