@@ -14970,12 +14970,12 @@ public class FakturPDUC : FakturExtDUC
 
             TheG2.PutCell(ci2.iR_artiklCD_Old, rowIdx, oldArtiklCD);
             
-            TheG2.PutCell(ci2.iR_ramOld      , rowIdx, rtrano_rec.R_MOD_RAM_old);
-            TheG2.PutCell(ci2.iR_hddOld      , rowIdx, rtrano_rec.R_MOD_HDD_old);
+            TheG2.PutCell(ci2.iR_ramOld, rowIdx, rtrano_rec.R_MOD_RAM_old);
+            TheG2.PutCell(ci2.iR_hddOld, rowIdx, rtrano_rec.R_MOD_HDD_old);
 
             string R_opisOLD = rtrano_rec.T_serno.NotEmpty() ? RtranoDao.GetR_opisOLD(TheDbConnection, rtrano_rec) : "";
 
-            TheG2.PutCell(ci2.iR_grCD_Old    , rowIdx, R_opisOLD);
+            TheG2.PutCell(ci2.iR_grCD_Old, rowIdx, R_opisOLD);
          }
 
       } // if(ZXC.IsPCTOGO) 
@@ -15035,18 +15035,39 @@ public class FakturPDUC : FakturExtDUC
 
    }
 
+   internal List<Rtrano> RtranoDgvList { get; set; }
+   protected decimal RtranoDgvList_dimX { get { return this.RtranoDgvList.Sum(rtrno => rtrno.T_dimX); } }
+   protected decimal RtranoDgvList_dimY { get { return this.RtranoDgvList.Sum(rtrno => rtrno.T_dimY); } }
+   protected decimal RtranoDgvList_decA { get { return this.RtranoDgvList.Sum(rtrno => rtrno.T_decA); } }
+   protected decimal RtranoDgvList_decB { get { return this.RtranoDgvList.Sum(rtrno => rtrno.T_decB); } }
+
+   internal void Get_RtranoDgvList()
+   {
+      if(RtranoDgvList == null) RtranoDgvList = new List<Rtrano>();
+      else                      RtranoDgvList.Clear();
+
+      int effectiveRowCount;
+
+      if(TheG2.AllowUserToAddRows == false) effectiveRowCount = TheG2.RowCount    ;
+      else                                  effectiveRowCount = TheG2.RowCount - 1;
+
+      for(int rIdx = 0; rIdx < effectiveRowCount; ++rIdx)
+      {
+         RtranoDgvList.Add((Rtrano)GetDgvLineFields2(rIdx, false, null));
+      }
+   }
    public override void PutDgvTransSumFields2()
    {
-      // 03.02.2014: 
-      //TheSumGrid2[ci2.iT_kol, 0].Value = faktur_rec.TrnSum2_K;
       TheSumGrid2.PutCell(ci2.iT_kol, 0, faktur_rec.TrnSum2_K);
 
       if(this.Fld_TT == Faktur.TT_MOD)
       {
-         TheSumGrid2.PutCell(ci2.iT_RAM_plus , 0, faktur_rec./*TrnSum2_dimX*/TrnSum2_ALL_dimX);
-         TheSumGrid2.PutCell(ci2.iT_RAM_minus, 0, faktur_rec./*TrnSum2_dimY*/TrnSum2_ALL_dimY);
-         TheSumGrid2.PutCell(ci2.iT_HDD_plus , 0, faktur_rec./*TrnSum2_decA*/TrnSum2_ALL_decA);
-         TheSumGrid2.PutCell(ci2.iT_HDD_minus, 0, faktur_rec./*TrnSum2_decB*/TrnSum2_ALL_decB);
+         Get_RtranoDgvList();
+
+         TheSumGrid2.PutCell(ci2.iT_RAM_plus , 0, RtranoDgvList_dimX);
+         TheSumGrid2.PutCell(ci2.iT_RAM_minus, 0, RtranoDgvList_dimY);
+         TheSumGrid2.PutCell(ci2.iT_HDD_plus , 0, RtranoDgvList_decA);
+         TheSumGrid2.PutCell(ci2.iT_HDD_minus, 0, RtranoDgvList_decB);
       }
    }
 

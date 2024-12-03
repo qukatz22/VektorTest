@@ -1278,7 +1278,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 {
 
    #region FakturDUC_Validating & OnExit Set or Validate some fields
-
+   /// <summary>
+   /// Opaska od 03.12.2024: nacelno se NE MOZES u validaciji pozivati na bussiness podatke
+   /// jer ti se glavni integralni GetFields() poziva (u SaveVvDataRecord()) tek nakon poziva
+   /// validacije, pa bi se ovdje uvijek trebalo koristiti present.layer podacima, tj. Fld_ ovima
+   /// </summary>
+   /// <param name="sender"></param>
+   /// <param name="e"></param>
    void FakturDUC_Validating(object sender, CancelEventArgs e)
    {
       #region Should validate enivej?
@@ -2860,11 +2866,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                string oldArtiklCD;
 
-               List<Rtrano> rtranoList = faktur_rec.TrnNonDel2_ALL.ToList();
+             //List<Rtrano> rtranoList = faktur_rec.TrnNonDel2_ALL.ToList();
+               theDUC.Get_RtranoDgvList();
 
                int rowIdx2 = 0;
 
-               foreach(Rtrano rto in rtranoList)
+               foreach(Rtrano rto in theDUC.RtranoDgvList)
                {
                   rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
 
@@ -2883,23 +2890,23 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   ++rowIdx2;
                }
 
-               List<string> RAM_kinds = rtranoList.Select(rto => rto.R_RAM_kind).Distinct().ToList();
-               List<string> HDD_kinds = rtranoList.Select(rto => rto.R_HDD_kind).Distinct().ToList();
+               List<string> RAM_kinds = theDUC.RtranoDgvList.Select(rto => rto.R_RAM_kind).Distinct().ToList();
+               List<string> HDD_kinds = theDUC.RtranoDgvList.Select(rto => rto.R_HDD_kind).Distinct().ToList();
 
                // MOI minusi ________________________________________________________________________________________________________________________________________________________________________________________________
-               List<Rtrano> MOIrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
+               List<Rtrano> MOIrtranoList = theDUC.RtranoDgvList.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
 
                List<VvReportSourceUtil> MOI_RAMkindSumsList        = MOIrtranoList .GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
                List<VvReportSourceUtil> MOI_HDDkindSumsList        = MOIrtranoList .GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
 
                // MOU plusevi _______________________________________________________________________________________________________________________________________________________________________________________________
-               List<Rtrano> MOUrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
+               List<Rtrano> MOUrtranoList = theDUC.RtranoDgvList.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
 
                List<VvReportSourceUtil> MOU_RAMkindSumsList        = MOUrtranoList .GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
                List<VvReportSourceUtil> MOU_HDDkindSumsList        = MOUrtranoList .GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
 
                // MOCS minusi _______________________________________________________________________________________________________________________________________________________________________________________________
-               List<Rtrano> MOCSrtranoList = rtranoList.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
+               List<Rtrano> MOCSrtranoList = theDUC.RtranoDgvList.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
 
                List<VvReportSourceUtil> MOCS_MINUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
                List<VvReportSourceUtil> MOCS_MINUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();

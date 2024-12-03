@@ -5118,6 +5118,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    internal void Put_MOD_Semafor_Labels(/*MOD_PTG_DUC modDUC*/)
    {
+      return;
       Color okColor  = Color.Green;
       Color badColor = Color.Red  ;
 
@@ -5128,20 +5129,20 @@ public class MOD_PTG_DUC : FakturPDUC
       decimal RAMsaldo, RAMplus, RAMminus;
       decimal HDDsaldo, HDDplus, HDDminus;
 
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None)
-      {
-         RAMplus  = faktur_rec./*TrnSum2_dimX*/TrnSum2_ALL_dimX;
-         RAMminus = faktur_rec./*TrnSum2_dimY*/TrnSum2_ALL_dimY;
-         HDDplus  = faktur_rec./*TrnSum2_decA*/TrnSum2_ALL_decA;
-         HDDminus = faktur_rec./*TrnSum2_decB*/TrnSum2_ALL_decB;
-      }
-      else
-      {
+      //if(TheVvTabPage.WriteMode == ZXC.WriteMode.None)
+      //{
+      //   RAMplus  = faktur_rec./*TrnSum2_dimX*/TrnSum2_ALL_dimX;
+      //   RAMminus = faktur_rec./*TrnSum2_dimY*/TrnSum2_ALL_dimY;
+      //   HDDplus  = faktur_rec./*TrnSum2_decA*/TrnSum2_ALL_decA;
+      //   HDDminus = faktur_rec./*TrnSum2_decB*/TrnSum2_ALL_decB;
+      //}
+      //else
+      //{
          RAMplus  = TheCurrentSumGrid.GetDecimalCell(ci2.iT_RAM_plus , 0, false);
          RAMminus = TheCurrentSumGrid.GetDecimalCell(ci2.iT_RAM_minus, 0, false);
          HDDplus  = TheCurrentSumGrid.GetDecimalCell(ci2.iT_HDD_plus , 0, false);
          HDDminus = TheCurrentSumGrid.GetDecimalCell(ci2.iT_HDD_minus, 0, false);
-      }
+      //}
       RAMsaldo = RAMplus - RAMminus;
       HDDsaldo = HDDplus - HDDminus;
 
