@@ -15053,7 +15053,7 @@ public class FakturPDUC : FakturExtDUC
 
       for(int rIdx = 0; rIdx < effectiveRowCount; ++rIdx)
       {
-         RtranoDgvList.Add((Rtrano)GetDgvLineFields2(rIdx, false, null));
+         //RtranoDgvList.Add((Rtrano)GetDgvLineFields2(rIdx, false, null));
       }
    }
    public override void PutDgvTransSumFields2()

@@ -820,7 +820,8 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       // For TT 'Redovna Placa' only                                                                                                                                            
       drSchema = ZXC.PtransDao.TheSchemaTable.Rows[ZXC.PtransDao.CI.t_tt];
       filterMembers.Add(new VvSqlFilterMember(drSchema, ZXC.FM_OR_Enum.OPEN_OR , false, "elTTor1", Placa.TT_REDOVANRAD  , "", "", " = ", ""));
-      filterMembers.Add(new VvSqlFilterMember(drSchema, ZXC.FM_OR_Enum.CLOSE_OR, false, "elTTor2", Placa.TT_PLACAUNARAVI, "", "", " = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(drSchema, ZXC.FM_OR_Enum.NONE    , false, "elTTor2", Placa.TT_OSTALIPRIM  , "", "", " = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(drSchema, ZXC.FM_OR_Enum.CLOSE_OR, false, "elTTor3", Placa.TT_PLACAUNARAVI, "", "", " = ", ""));
     //filterMembers.Add(new VvSqlFilterMember(drSchema, ZXC.FM_OR_Enum.CLOSE_OR, false, "elTTor2", Placa.TT_NEPLACDOPUST, "", "", " = ", ""));
 
       // For wanted personCD only                                                                                                                                            
