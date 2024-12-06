@@ -1549,6 +1549,8 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2024, 04, 08), TH_Cjenik_Kind._5WShop_5WCjenik_ },
       { new DateTime(2024, 05, 13), TH_Cjenik_Kind._5WShop_6WCjenik_ },
       { new DateTime(2024, 06, 24), TH_Cjenik_Kind._5WShop_5WCjenik_ },
+      { new DateTime(2024, 12, 16), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      { new DateTime(2025, 01, 27), TH_Cjenik_Kind._5WShop_5WCjenik_ },
 
    };
 
@@ -1566,7 +1568,7 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2023, 01, 11), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
 
       { new DateTime(2024, 11, 13), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
-      { new DateTime(2024, 12, 11), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
+      { new DateTime(2025, 01, 18), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
 
    };
 
@@ -2236,13 +2238,13 @@ public class TH_PriceRuleForCycleMoment
          new TH_PriceRuleForCycleMoment(6,    1,  6,    0, 10M,    0, false, 0, "W5/6 Tjedan 1 Dan 6 10 posto"),
          new TH_PriceRuleForCycleMoment(6,    1,  7,    0, 10M,    0, false, 0, "W5/6 Tjedan 1 Dan 7 10 posto"),
 
-         new TH_PriceRuleForCycleMoment(6,    2,  1,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 1 20 posto kupon"),
-         new TH_PriceRuleForCycleMoment(6,    2,  2,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 2 20 posto kupon"),
-         new TH_PriceRuleForCycleMoment(6,    2,  3,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 3 20 posto kupon"),
-         new TH_PriceRuleForCycleMoment(6,    2,  4,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 4 20 posto kupon"),
-         new TH_PriceRuleForCycleMoment(6,    2,  5,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 5 20 posto kupon"),
-         new TH_PriceRuleForCycleMoment(6,    2,  6,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 6 20 posto kupon"),
-         new TH_PriceRuleForCycleMoment(6,    2,  7,    0,   0,    0, false, 0, "W5/6 Tjedan 2 Dan 7 20 posto kupon"),
+         new TH_PriceRuleForCycleMoment(6,    2,  1,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 1 20 posto"),
+         new TH_PriceRuleForCycleMoment(6,    2,  2,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 2 20 posto"),
+         new TH_PriceRuleForCycleMoment(6,    2,  3,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 3 20 posto"),
+         new TH_PriceRuleForCycleMoment(6,    2,  4,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 4 20 posto"),
+         new TH_PriceRuleForCycleMoment(6,    2,  5,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 5 20 posto"),
+         new TH_PriceRuleForCycleMoment(6,    2,  6,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 6 20 posto"),
+         new TH_PriceRuleForCycleMoment(6,    2,  7,    0, 20M,    0, false, 0, "W5/6 Tjedan 2 Dan 7 20 posto"),
 
          new TH_PriceRuleForCycleMoment(6,    3,  1,    0, 30M,    0, false, 0, "W5/6 Tjedan 3 Dan 1 30 posto"),
          new TH_PriceRuleForCycleMoment(6,    3,  2,    0, 30M,    0, false, 0, "W5/6 Tjedan 3 Dan 2 30 posto"),
@@ -2262,20 +2264,21 @@ public class TH_PriceRuleForCycleMoment
 
          new TH_PriceRuleForCycleMoment(6,    5,  1,   4M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 1 do   4 EUR"),
          new TH_PriceRuleForCycleMoment(6,    5,  2, 3.5M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 2 do 3,5 EUR"),
-         new TH_PriceRuleForCycleMoment(6,    5,  3,   3M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 3 do   3 EUR"),
+         new TH_PriceRuleForCycleMoment(6,    5,  3, 3.5M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 3 do 3,5 EUR"),
          new TH_PriceRuleForCycleMoment(6,    5,  4,   3M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 4 do   3 EUR"),
-         new TH_PriceRuleForCycleMoment(6,    5,  5, 2.5M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 5 do 2,5 EUR"),
+         new TH_PriceRuleForCycleMoment(6,    5,  5,   3M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 5 do   3 EUR"),
          new TH_PriceRuleForCycleMoment(6,    5,  6, 2.5M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 6 do 2,5 EUR"),
          new TH_PriceRuleForCycleMoment(6,    5,  7, 2.5M,   0,    0, false, 0, "W5/6 Tjedan 5 Dan 7 do 2,5 EUR"),
 
-         new TH_PriceRuleForCycleMoment(6,    6,  1,   2M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 1 do   2 EUR"),
+         new TH_PriceRuleForCycleMoment(6,    6,  1, 2.5M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 1 do 2,5 EUR"),
          new TH_PriceRuleForCycleMoment(6,    6,  2,   2M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 2 do   2 EUR"),
-         new TH_PriceRuleForCycleMoment(6,    6,  3, 1.5M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 3 do 1,5 EUR"),
-         new TH_PriceRuleForCycleMoment(6,    6,  4,   1M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 4 do   1 EUR"),
-         new TH_PriceRuleForCycleMoment(6,    6,  5, 0.5M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 5 do 0,5 EUR"),
+         new TH_PriceRuleForCycleMoment(6,    6,  3,   2M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 3 do   2 EUR"),
+         new TH_PriceRuleForCycleMoment(6,    6,  4, 1.5M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 4 do 1,5 EUR"),
+         new TH_PriceRuleForCycleMoment(6,    6,  5,   1M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 5 do   1 EUR"),
          new TH_PriceRuleForCycleMoment(6,    6,  6, 0.5M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 6 do 0,5 EUR"),
          new TH_PriceRuleForCycleMoment(6,    6,  7, 0.5M,   0,    0, false, 0, "W5/6 Tjedan 6 Dan 7 do 0,5 EUR"),
       };
+
 
       SetAndCheck_TH_PriceRuleList(ZXC.TH_PriceRuleList_W5_C6, TH_Cjenik_Kind._5WShop_6WCjenik_);
 
@@ -2463,8 +2466,8 @@ public class TH_PriceRuleForCycleMoment
          new TH_PriceRuleForCycleMoment(4,    1,  4,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 4 (SUB) 10 posto"  ),
          new TH_PriceRuleForCycleMoment(4,    1,  5,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 5 (NED) 10 posto"  ),
          new TH_PriceRuleForCycleMoment(4,    1,  6,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 6 (PON) 10 posto"  ),
-         new TH_PriceRuleForCycleMoment(4,    1,  7,    0, 10M,    0, false, 0, "W3/4 Tjedan 1 Dan 7 (UTO) 10 posto"  ),
-                                                                                                                        
+         new TH_PriceRuleForCycleMoment(4,    1,  7, 3.5M,   0,    0, false, 0, "W3/4 Tjedan 1 Dan 7 (UTO) do 3,5 EUR"),
+
          new TH_PriceRuleForCycleMoment(4,    2,  1, 3.5M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 1 (SRI) do 3,5 EUR"),
          new TH_PriceRuleForCycleMoment(4,    2,  2, 3.5M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 2 (ČET) do 3,5 EUR"),
          new TH_PriceRuleForCycleMoment(4,    2,  3,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 3 (PET) do 3 EUR"  ),
@@ -2472,25 +2475,24 @@ public class TH_PriceRuleForCycleMoment
          new TH_PriceRuleForCycleMoment(4,    2,  5,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 5 (NED) do 3 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    2,  6,   3M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 6 (PON) do 3 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    2,  7, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 2 Dan 7 (UTO) do 2,5 EUR"),
-                                                                                                                        
+
          new TH_PriceRuleForCycleMoment(4,    3,  1, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 1 (SRI) do 2,5 EUR"),
          new TH_PriceRuleForCycleMoment(4,    3,  2, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 2 (ČET) do 2,5 EUR"),
-         new TH_PriceRuleForCycleMoment(4,    3,  3,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 3 (PET) do 2 EUR"  ),
+         new TH_PriceRuleForCycleMoment(4,    3,  3, 2.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 3 (PET) do 2,5 EUR"),
          new TH_PriceRuleForCycleMoment(4,    3,  4,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 4 (SUB) do 2 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    3,  5,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 5 (NED) do 2 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    3,  6,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 6 (PON) do 2 EUR"  ),
-         new TH_PriceRuleForCycleMoment(4,    3,  7, 1.5M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 7 (UTO) do 1,5 EUR"),
-                                                                                                                       
-         new TH_PriceRuleForCycleMoment(4,    4,  1, 1.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 1 (SRI) do 1,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    3,  7,   2M,   0,    0, false, 0, "W3/4 Tjedan 3 Dan 7 (UTO) do 2 EUR"  ),
+
+         new TH_PriceRuleForCycleMoment(4,    4,  1,   2M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 1 (SRI) do 2 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    4,  2, 1.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 2 (ČET) do 1,5 EUR"),
          new TH_PriceRuleForCycleMoment(4,    4,  3,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 3 (PET) do 1 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    4,  4,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 4 (SUB) do 1 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    4,  5,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 5 (NED) do 1 EUR"  ),
-         new TH_PriceRuleForCycleMoment(4,    4,  6, 0.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 6 (PON) do 0,5 EUR"),
+         new TH_PriceRuleForCycleMoment(4,    4,  6,   1M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 6 (PON) do 1 EUR"  ),
          new TH_PriceRuleForCycleMoment(4,    4,  7, 0.5M,   0,    0, false, 0, "W3/4 Tjedan 4 Dan 7 (UTO) do 0,5 EUR"),
 
       };
-
 
       SetAndCheck_TH_PriceRuleList(ZXC.TH_PriceRuleList_W3_SRI_C4, TH_Cjenik_Kind._3WShop_SRI_4WCjenik_);
 

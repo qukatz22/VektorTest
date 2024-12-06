@@ -2615,6 +2615,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
       #endregion RAD1, RAD1_G
 
+      #region joppd oib.Empty
+
       if(this is RptP_JOPPD)
       {
          foreach(var person in personTable)
@@ -2625,6 +2627,23 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             }
          }
       }
+
+      #endregion joppd oib.Empty
+     
+      #region MaticniPodaciradnika u nizu
+
+      if(this is RptP_PersonMaticniPodaci)
+      {
+         for(int rowIdx = 0; rowIdx < personTable.Rows.Count; ++rowIdx)
+         {
+            if(personTable[rowIdx].isPlaca == 0)
+            {
+               personTable.Rows.RemoveAt(rowIdx);
+            }
+         }
+      }
+
+      #endregion MaticniPodaciradnika u nizu
 
       return true;
    }
@@ -7641,5 +7660,15 @@ public class RptP_NeoporezPrimici: RptP_JOPPD
 
       ZXC.luiListaNeoporPrim.LazyLoad();
 
+   }
+}
+
+//[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+] 
+
+public class RptP_PersonMaticniPodaci: RptP_JOPPD
+{
+   public RptP_PersonMaticniPodaci(ReportDocument _reportDocument, ZXC.VvRptExternTblChooser_Placa externTblChooser, string _reportName, VvRpt_Placa_Filter _rptFilter) : base(_reportDocument, externTblChooser, _reportName, _rptFilter)
+   {
+      IsForExport = false;
    }
 }

@@ -1692,8 +1692,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          tbx_decimal01 = hamper.CreateVvTextBox(0, 1, "tbx_decimal01", "", GetDB_ColumnSize(DB_ci.decimal01));
          tbx_decimal02 = hamper.CreateVvTextBox(1, 1, "tbx_decimal02", "", GetDB_ColumnSize(DB_ci.decimal02));
 
-         tbx_decimal01.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, false);
-         tbx_decimal02.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, false);
+       //tbx_decimal01.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, false);
+       //tbx_decimal02.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, false);
 
          tbx_decimal01.JAM_Highlighted = true;
          tbx_decimal02.JAM_Highlighted = true;
