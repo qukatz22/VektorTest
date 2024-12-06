@@ -2917,8 +2917,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                #endregion Get Lists 
 
-               bool warnOnly_RAM = false; // mozda todo, ako ipak odlucimo dat im sejvat 
-               bool warnOnly_HDD = true ; 
+               bool warnOnly_RAM = true; // mozda todo, ako ipak odlucimo NE dat im sejvat 
+               bool warnOnly_HDD = true; 
 
                // RAM balance checks 
                foreach(string RAM_kind in RAM_kinds)
@@ -2929,17 +2929,41 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   int RAM_MOI_minus  = MOI_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
 
                   int RAM_MOCS_saldo = RAM_MOCS_plus - RAM_MOCS_minus;
+                  int RAM_MOUI_saldo = RAM_MOI_minus - RAM_MOU_plus  ;
 
-                  bool has_RAM_descrepancy = RAM_MOCS_saldo != (RAM_MOI_minus - RAM_MOU_plus); // do ovoga smo teškom mukom došli :-( 
+                  bool has_RAM_MOCS_MOUI_saldo_descrepancy = RAM_MOCS_saldo != RAM_MOUI_saldo; // do ovoga smo teškom mukom došli :-( 
 
                   MessageBoxIcon messageBoxIcon = warnOnly_RAM ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
 
-                  if(has_RAM_descrepancy) 
+                  if(has_RAM_MOCS_MOUI_saldo_descrepancy) 
                   {
                      int RAMplus  = RAM_MOCS_plus  + RAM_MOU_plus ;
                      int RAMminus = RAM_MOCS_minus + RAM_MOI_minus;
 
-                     ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena plus/minus ravnoteža " + RAMplus + " ≠ " + RAMminus);
+                     ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena plus/minus SALDO ravnoteža " + RAMplus + " ≠ " + RAMminus);
+                     if(warnOnly_RAM == false)
+                     {
+                        e.Cancel = true;
+                        return;
+                     }
+                  }
+
+                  bool has_RAM_MOCS_plus_MOI_minus_descrepancy = RAM_MOCS_plus  != RAM_MOI_minus; // do ovoga smo teškom mukom došli :-( 
+                  bool has_RAM_MOCS_minus_MOU_plus_descrepancy = RAM_MOCS_minus != RAM_MOU_plus ; // do ovoga smo teškom mukom došli :-( 
+
+                  if(has_RAM_MOCS_plus_MOI_minus_descrepancy) 
+                  {
+                     ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena MOCS_plus/MOI_minus ravnoteža " + RAM_MOCS_plus + " ≠ " + RAM_MOI_minus);
+                     if(warnOnly_RAM == false)
+                     {
+                        e.Cancel = true;
+                        return;
+                     }
+                  }
+
+                  if(has_RAM_MOCS_minus_MOU_plus_descrepancy) 
+                  {
+                     ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena MOU_plus/MOCS_minus " + RAM_MOU_plus + " ≠ " + RAM_MOCS_minus);
                      if(warnOnly_RAM == false)
                      {
                         e.Cancel = true;

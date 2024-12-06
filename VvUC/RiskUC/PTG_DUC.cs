@@ -5118,7 +5118,6 @@ public class MOD_PTG_DUC : FakturPDUC
 
    internal void Put_MOD_Semafor_Labels(/*MOD_PTG_DUC modDUC*/)
    {
-      return;
       Color okColor  = Color.Green;
       Color badColor = Color.Red  ;
 

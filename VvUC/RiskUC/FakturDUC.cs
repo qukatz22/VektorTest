@@ -4222,6 +4222,129 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       fakLinkLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable
       DecideIfShouldLoad_FakLinkgrid(null, null, null);
 
+      #region PTG Additions
+
+      if(this is KUG_PTG_DUC)
+      {
+         KUG_PTG_DUC kugDUC = this as KUG_PTG_DUC;
+
+         if(CtrlOK(kugDUC.tbx_DanFakturiranja)) kugDUC.PTG_DanFakturiranjaString = fakturLocal_rec.OpciAvalue;
+                                                kugDUC.Fld_PTG_DanFakturiranjaOpis = ZXC.luiListaPTG_DanZaFaktur.GetNameForThisCd(kugDUC.PTG_DanFakturiranjaString);
+      }
+      if(this is UGNorAUN_PTG_DUC)  
+      {
+         UGNorAUN_PTG_DUC ptgDUC        = this as UGNorAUN_PTG_DUC;
+         PTG_Ugovor       ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
+         PTG_OtplatniPlan ptgOtplPlan   = new PTG_OtplatniPlan(TheDbConnection, ptgUgovor_rec);
+
+         if(CtrlOK(ptgDUC.tbx_DanFakturiranja)) ptgDUC.Fld_PTG_DanFakturiranjaString   = ptgUgovor_rec.PTG_DanFakturiranjaString;
+                                                ptgDUC.Fld_PTG_DanFakturiranjaOpis     = ZXC.luiListaPTG_DanZaFaktur.GetNameForThisCd(ptgUgovor_rec.PTG_DanFakturiranjaString);
+         if(CtrlOK(ptgDUC.tbx_NajamNaRok     )) ptgDUC.Fld_PTG_NajamNaRok              = ptgUgovor_rec.PTG_NajamNaRok     ;
+                                                ptgDUC.Fld_PTG_NajamNaRokOpis          = ZXC.luiListaPTG_NajamNaRok.GetNameForThisCd(ptgUgovor_rec.PTG_NajamNaRok);
+         if(CtrlOK(ptgDUC.tbx_vrstaNajma     )) ptgDUC.Fld_PTG_VrstaNajma              = ptgUgovor_rec.PTG_VrstaNajma     ;
+                                                ptgDUC.Fld_PTG_VrstaNajmaOpis          = ZXC.luiListaPTG_VrstaNajma.GetNameForThisCd(ptgUgovor_rec.PTG_VrstaNajma);
+         if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik )) ptgDUC.Fld_PTG_MjestoIsporuke          = ptgUgovor_rec.PTG_MjestoIsporuke ;
+
+         if(CtrlOK(ptgDUC.tbx_DokDate2  )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
+         if(CtrlOK(ptgDUC.tbx_SkladDate )) ptgDUC.Fld_PTG_DatSkidSaSklad  = ptgUgovor_rec.PTG_DatSkidSaSklad; 
+         if(CtrlOK(ptgDUC.tbx_DospDate  )) ptgDUC.Fld_PTG_DatPrvogRn      = ptgOtplPlan.DatumPrveRate   /*ptgUgovor_rec.PTG_DatPrvogRn  */; 
+         if(CtrlOK(ptgDUC.tbx_PonudDate )) ptgDUC.Fld_PTG_DatZadnjegRn    = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_DatZadnjegRn*/; 
+         if(CtrlOK(ptgDUC.tbx_RokIspDate)) ptgDUC.Fld_PTG_datIstekaUg     = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_datIstekaUg */; 
+         if(CtrlOK(ptgDUC.tbx_dateX     )) ptgDUC.Fld_PTG_DatPovrataOpr   = ptgUgovor_rec.PTG_DatPovrataOpr ;
+
+         if(CtrlOK(ptgDUC.tbx_Napomena_PTG     )) ptgDUC.Fld_PTG_Napomena      = ptgUgovor_rec.PTG_Napomena ;
+         if(CtrlOK(ptgDUC.tbx_opaskaServisa_PTG)) ptgDUC.Fld_PTG_OpaskaServisa = ptgUgovor_rec.PTG_OpaskaServisa ;
+
+         if(CtrlOK(ptgDUC.tbx_R_DodCount  )) ptgDUC.Fld_PTG_DodCount        = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD);
+         if(CtrlOK(ptgDUC.tbx_R_KopCount  )) ptgDUC.Fld_PTG_KopCount        = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Mixer .TT_KOP);
+         if(CtrlOK(ptgDUC.tbx_R_DodCount_2)) ptgDUC.Fld_PTG_DodCount_2      = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD);
+         if(CtrlOK(ptgDUC.tbx_R_KopCount_2)) ptgDUC.Fld_PTG_KopCount_2      = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Mixer .TT_KOP);
+
+         if(CtrlOK(ptgDUC.tbx_korekcijaRata_PTG  )) ptgDUC.Fld_PTG_KorekcijaRata   = ptgUgovor_rec.PTG_BrojNovihRata;
+         if(CtrlOK(ptgDUC.tbx_trajanjeUgovora_PTG)) ptgDUC.Fld_PTG_trajanjeUgovora = ptgUgovor_rec.PTG_TrajanjeUg   ;
+
+         if(CtrlOK(ptgDUC.tbx_OsigPlacanja  )) ptgDUC.Fld_PTG_OsigPlacanja     = ptgUgovor_rec.PTG_osigPlacanja     ;
+                                               ptgDUC.Fld_PTG_OsigPlacanjaOpis = ZXC.luiListaPTG_OsigPlacanja.GetNameForThisCd(ptgUgovor_rec.PTG_osigPlacanja);
+
+         ptgDUC.Fld_PTG_b1_povOprBezPen  = ptgUgovor_rec.PTG_b1_povOprBezPen ;
+         ptgDUC.Fld_PTG_b2_podnajam      = ptgUgovor_rec.PTG_b2_podnajam     ;
+         ptgDUC.Fld_PTG_b3_osigOpreme    = ptgUgovor_rec.PTG_b3_osigOpreme   ;
+         ptgDUC.Fld_PTG_b4_novaOprema    = ptgUgovor_rec.PTG_b4_novaOprema   ;
+         ptgDUC.Fld_PTG_b5_potpisan      = ptgUgovor_rec.PTG_b5_potpisan     ;
+         ptgDUC.Fld_PTG_b6_vracenaOprema = ptgUgovor_rec.PTG_b6_vracenaOprema;
+         ptgDUC.Fld_PTG_b7_otkup         = ptgUgovor_rec.PTG_b7_otkup        ;
+       //ptgDUC.Fld_PTG_b8_ispisnoRj     = ptgUgovor_rec.PTG_b8_ispisnoRj    ;
+       //ptgDUC.Fld_PTG_b9_isJednokratPl = ptgUgovor_rec.PTG_b9_isJednokratPl;
+
+
+         ptgDUC.Fld_PTG_b1_povOprBezPen_X  = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b1_povOprBezPen );
+         ptgDUC.Fld_PTG_b2_podnajam_X      = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b2_podnajam     );
+         ptgDUC.Fld_PTG_b3_osigOpreme_X    = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b3_osigOpreme   );
+         ptgDUC.Fld_PTG_b4_novaOprema_X    = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b4_novaOprema   );
+         ptgDUC.Fld_PTG_b5_potpisan_X      = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b5_potpisan     );
+         ptgDUC.Fld_PTG_b6_vracenaOprema_X = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b6_vracenaOprema);
+         ptgDUC.Fld_PTG_b7_otkup_X         = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b7_otkup        );
+         //ptgDUC.Fld_PTG_b8_ispisnoRj_X     = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b8_ispisnoRj    );
+         //ptgDUC.Fld_PTG_b9_isJednokratPl_X = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b9_isJednokratPl);
+
+         // kontakt ... start 
+         ptgDUC.Fld_PTG_KDCnaziv     = ptgUgovor_rec.PTG_PTG_KDCnaziv; // ime i prezime
+         ptgDUC.Fld_PTG_KDCFunkc_PTG = ptgDUC.Fld_PTG_KDCTel_PTG = ptgDUC.Fld_PTG_KDCEmail_PTG = "";
+         if(ptgUgovor_rec.PTG_PTG_KDCnaziv.NotEmpty())
+         {
+            Xtrans xtrans_rec = new Xtrans();
+            bool found = MixerDao.SetMeLast_KDCxtrans_ByKupdobCD_And_KDCname(TheDbConnection, xtrans_rec, ptgDUC.Fld_KupdobCd, ptgDUC.Fld_PTG_KDCnaziv);
+            if(found)
+            {
+               ptgDUC.Fld_PTG_KDCFunkc_PTG = xtrans_rec.T_kpdbZiroA_32;
+               ptgDUC.Fld_PTG_KDCTel_PTG   = xtrans_rec.T_kpdbUlBrA_32;
+               ptgDUC.Fld_PTG_KDCEmail_PTG = xtrans_rec.T_vezniDokA_64;
+            }
+         }
+         // kontakt ...  end  
+
+         //ThePolyGridTabControl.TabPages[ptgDod_TabPageName].Title = ptgDod_TabPageName + " (" + ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD).ToString() + ")";
+         //ThePolyGridTabControl.TabPages[ptgKop_TabPageName].Title = ptgKop_TabPageName + " (" + ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_KOP).ToString() + ")";
+
+         //if(CtrlOK(ptgDUC.tbx_OdgodaPl   )) ptgDUC.Fld_PTG_OdgodaPl = ptgUgovor_rec.PTG_OdgodaPl;
+
+         string textSernoDif = "SerNo " + fakturLocal_rec.PTG_HAS_This_RtranoWith_Serno_Count + "/" + fakturLocal_rec.PTG_NEEDS_This_RtranoWith_Serno_Count;
+
+         ptgDUC.SetMODsemaforLabelColorAndText(ptgDUC.lbl_serNoOk, fakturLocal_rec.PTG_MISSES_This_RtranoWith_Serno_Count.NotZero() ? Color.Red : Color.Green, fakturLocal_rec.PTG_MISSES_This_RtranoWith_Serno_Count.NotZero() ? textSernoDif : ""); 
+      }
+      if(this is DOD_PTG_DUC)
+      {
+         DOD_PTG_DUC ptgDUC        = this as DOD_PTG_DUC;
+         PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
+
+         if(CtrlOK(ptgDUC.tbx_DokDate2      )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
+         if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
+         if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
+      }
+      if(this is MOD_PTG_DUC)
+      {
+         MOD_PTG_DUC modDUC = this as MOD_PTG_DUC;
+
+         modDUC.Fld_PTG_RamKlasa = 
+         modDUC.Fld_PTG_HddKlasa = 
+         modDUC.Fld_PTG_PCKbaza  = "";
+
+         //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
+         Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == fakturLocal_rec.PrjArtCD);
+         if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
+         {
+            modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD  ;
+            modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD  ;
+            modDUC.Fld_PTG_PCKbaza  = artikl_rec.PCK_BazaCD;
+         }
+
+         modDUC.Put_MOD_Semafor_Labels();
+
+      }
+
+      #endregion PTG Additions
+
+
    }
 
    private string GetProjektName_ForTtTtNum(string ttTtNum)
@@ -13243,131 +13366,6 @@ public partial class FakturExtDUC : FakturDUC
       //30.08.2024.
       if(CtrlOK(cbx_isIncognito_Print)) Fld_IsIncognito_Print = false;
 
-
-#region PTG Additions
-
-      if(this is KUG_PTG_DUC)
-      {
-         KUG_PTG_DUC kugDUC = this as KUG_PTG_DUC;
-
-         if(CtrlOK(kugDUC.tbx_DanFakturiranja)) kugDUC.PTG_DanFakturiranjaString = faktEx.OpciAvalue;
-                                                kugDUC.Fld_PTG_DanFakturiranjaOpis = ZXC.luiListaPTG_DanZaFaktur.GetNameForThisCd(kugDUC.PTG_DanFakturiranjaString);
-      }
-
-      if(this is UGNorAUN_PTG_DUC)
-      {
-         UGNorAUN_PTG_DUC ptgDUC        = this as UGNorAUN_PTG_DUC;
-         PTG_Ugovor       ptgUgovor_rec = new PTG_Ugovor(faktur);
-         PTG_OtplatniPlan ptgOtplPlan   = new PTG_OtplatniPlan(TheDbConnection, ptgUgovor_rec);
-
-         if(CtrlOK(ptgDUC.tbx_DanFakturiranja)) ptgDUC.Fld_PTG_DanFakturiranjaString   = ptgUgovor_rec.PTG_DanFakturiranjaString;
-                                                ptgDUC.Fld_PTG_DanFakturiranjaOpis     = ZXC.luiListaPTG_DanZaFaktur.GetNameForThisCd(ptgUgovor_rec.PTG_DanFakturiranjaString);
-         if(CtrlOK(ptgDUC.tbx_NajamNaRok     )) ptgDUC.Fld_PTG_NajamNaRok              = ptgUgovor_rec.PTG_NajamNaRok     ;
-                                                ptgDUC.Fld_PTG_NajamNaRokOpis          = ZXC.luiListaPTG_NajamNaRok.GetNameForThisCd(ptgUgovor_rec.PTG_NajamNaRok);
-         if(CtrlOK(ptgDUC.tbx_vrstaNajma     )) ptgDUC.Fld_PTG_VrstaNajma              = ptgUgovor_rec.PTG_VrstaNajma     ;
-                                                ptgDUC.Fld_PTG_VrstaNajmaOpis          = ZXC.luiListaPTG_VrstaNajma.GetNameForThisCd(ptgUgovor_rec.PTG_VrstaNajma);
-         if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik )) ptgDUC.Fld_PTG_MjestoIsporuke          = ptgUgovor_rec.PTG_MjestoIsporuke ;
-
-         if(CtrlOK(ptgDUC.tbx_DokDate2  )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
-         if(CtrlOK(ptgDUC.tbx_SkladDate )) ptgDUC.Fld_PTG_DatSkidSaSklad  = ptgUgovor_rec.PTG_DatSkidSaSklad; 
-         if(CtrlOK(ptgDUC.tbx_DospDate  )) ptgDUC.Fld_PTG_DatPrvogRn      = ptgOtplPlan.DatumPrveRate   /*ptgUgovor_rec.PTG_DatPrvogRn  */; 
-         if(CtrlOK(ptgDUC.tbx_PonudDate )) ptgDUC.Fld_PTG_DatZadnjegRn    = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_DatZadnjegRn*/; 
-         if(CtrlOK(ptgDUC.tbx_RokIspDate)) ptgDUC.Fld_PTG_datIstekaUg     = ptgOtplPlan.DatumZadnjeRate /*ptgUgovor_rec.PTG_datIstekaUg */; 
-         if(CtrlOK(ptgDUC.tbx_dateX     )) ptgDUC.Fld_PTG_DatPovrataOpr   = ptgUgovor_rec.PTG_DatPovrataOpr ;
-
-         if(CtrlOK(ptgDUC.tbx_Napomena_PTG     )) ptgDUC.Fld_PTG_Napomena      = ptgUgovor_rec.PTG_Napomena ;
-         if(CtrlOK(ptgDUC.tbx_opaskaServisa_PTG)) ptgDUC.Fld_PTG_OpaskaServisa = ptgUgovor_rec.PTG_OpaskaServisa ;
-
-         if(CtrlOK(ptgDUC.tbx_R_DodCount  )) ptgDUC.Fld_PTG_DodCount        = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD);
-         if(CtrlOK(ptgDUC.tbx_R_KopCount  )) ptgDUC.Fld_PTG_KopCount        = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Mixer .TT_KOP);
-         if(CtrlOK(ptgDUC.tbx_R_DodCount_2)) ptgDUC.Fld_PTG_DodCount_2      = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD);
-         if(CtrlOK(ptgDUC.tbx_R_KopCount_2)) ptgDUC.Fld_PTG_KopCount_2      = ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Mixer .TT_KOP);
-
-         if(CtrlOK(ptgDUC.tbx_korekcijaRata_PTG  )) ptgDUC.Fld_PTG_KorekcijaRata   = ptgUgovor_rec.PTG_BrojNovihRata;
-         if(CtrlOK(ptgDUC.tbx_trajanjeUgovora_PTG)) ptgDUC.Fld_PTG_trajanjeUgovora = ptgUgovor_rec.PTG_TrajanjeUg   ;
-
-         if(CtrlOK(ptgDUC.tbx_OsigPlacanja  )) ptgDUC.Fld_PTG_OsigPlacanja     = ptgUgovor_rec.PTG_osigPlacanja     ;
-                                               ptgDUC.Fld_PTG_OsigPlacanjaOpis = ZXC.luiListaPTG_OsigPlacanja.GetNameForThisCd(ptgUgovor_rec.PTG_osigPlacanja);
-
-         ptgDUC.Fld_PTG_b1_povOprBezPen  = ptgUgovor_rec.PTG_b1_povOprBezPen ;
-         ptgDUC.Fld_PTG_b2_podnajam      = ptgUgovor_rec.PTG_b2_podnajam     ;
-         ptgDUC.Fld_PTG_b3_osigOpreme    = ptgUgovor_rec.PTG_b3_osigOpreme   ;
-         ptgDUC.Fld_PTG_b4_novaOprema    = ptgUgovor_rec.PTG_b4_novaOprema   ;
-         ptgDUC.Fld_PTG_b5_potpisan      = ptgUgovor_rec.PTG_b5_potpisan     ;
-         ptgDUC.Fld_PTG_b6_vracenaOprema = ptgUgovor_rec.PTG_b6_vracenaOprema;
-         ptgDUC.Fld_PTG_b7_otkup         = ptgUgovor_rec.PTG_b7_otkup        ;
-       //ptgDUC.Fld_PTG_b8_ispisnoRj     = ptgUgovor_rec.PTG_b8_ispisnoRj    ;
-       //ptgDUC.Fld_PTG_b9_isJednokratPl = ptgUgovor_rec.PTG_b9_isJednokratPl;
-
-
-         ptgDUC.Fld_PTG_b1_povOprBezPen_X  = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b1_povOprBezPen );
-         ptgDUC.Fld_PTG_b2_podnajam_X      = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b2_podnajam     );
-         ptgDUC.Fld_PTG_b3_osigOpreme_X    = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b3_osigOpreme   );
-         ptgDUC.Fld_PTG_b4_novaOprema_X    = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b4_novaOprema   );
-         ptgDUC.Fld_PTG_b5_potpisan_X      = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b5_potpisan     );
-         ptgDUC.Fld_PTG_b6_vracenaOprema_X = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b6_vracenaOprema);
-         ptgDUC.Fld_PTG_b7_otkup_X         = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b7_otkup        );
-         //ptgDUC.Fld_PTG_b8_ispisnoRj_X     = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b8_ispisnoRj    );
-         //ptgDUC.Fld_PTG_b9_isJednokratPl_X = VvCheckBox.GetString4Bool(ptgUgovor_rec.PTG_b9_isJednokratPl);
-
-         // kontakt ... start 
-         ptgDUC.Fld_PTG_KDCnaziv     = ptgUgovor_rec.PTG_PTG_KDCnaziv; // ime i prezime
-         ptgDUC.Fld_PTG_KDCFunkc_PTG = ptgDUC.Fld_PTG_KDCTel_PTG = ptgDUC.Fld_PTG_KDCEmail_PTG = "";
-         if(ptgUgovor_rec.PTG_PTG_KDCnaziv.NotEmpty())
-         {
-            Xtrans xtrans_rec = new Xtrans();
-            bool found = MixerDao.SetMeLast_KDCxtrans_ByKupdobCD_And_KDCname(TheDbConnection, xtrans_rec, Fld_KupdobCd, ptgDUC.Fld_PTG_KDCnaziv);
-            if(found)
-            {
-               ptgDUC.Fld_PTG_KDCFunkc_PTG = xtrans_rec.T_kpdbZiroA_32;
-               ptgDUC.Fld_PTG_KDCTel_PTG   = xtrans_rec.T_kpdbUlBrA_32;
-               ptgDUC.Fld_PTG_KDCEmail_PTG = xtrans_rec.T_vezniDokA_64;
-            }
-         }
-         // kontakt ...  end  
-
-         //ThePolyGridTabControl.TabPages[ptgDod_TabPageName].Title = ptgDod_TabPageName + " (" + ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_DOD).ToString() + ")";
-         //ThePolyGridTabControl.TabPages[ptgKop_TabPageName].Title = ptgKop_TabPageName + " (" + ptgUgovor_rec.Count_DODorKOPfakturList(TheDbConnection, Faktur.TT_KOP).ToString() + ")";
-
-         //if(CtrlOK(ptgDUC.tbx_OdgodaPl   )) ptgDUC.Fld_PTG_OdgodaPl = ptgUgovor_rec.PTG_OdgodaPl;
-
-         string textSernoDif = "SerNo " + faktur.PTG_HAS_This_RtranoWith_Serno_Count + "/" + faktur.PTG_NEEDS_This_RtranoWith_Serno_Count;
-
-         SetMODsemaforLabelColorAndText(ptgDUC.lbl_serNoOk, faktur.PTG_MISSES_This_RtranoWith_Serno_Count.NotZero() ? Color.Red : Color.Green, faktur.PTG_MISSES_This_RtranoWith_Serno_Count.NotZero() ? textSernoDif : ""); 
-      }
-
-      if(this is DOD_PTG_DUC)
-      {
-         DOD_PTG_DUC ptgDUC        = this as DOD_PTG_DUC;
-         PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(faktur);
-
-         if(CtrlOK(ptgDUC.tbx_DokDate2      )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
-         if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
-         if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
-      }
-      if(this is MOD_PTG_DUC)
-      {
-         MOD_PTG_DUC modDUC = this as MOD_PTG_DUC;
-
-         modDUC.Fld_PTG_RamKlasa = 
-         modDUC.Fld_PTG_HddKlasa = 
-         modDUC.Fld_PTG_PCKbaza  = "";
-
-         //SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
-         Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == faktEx.PrjArtCD);
-         if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
-         {
-            modDUC.Fld_PTG_RamKlasa = artikl_rec.Grupa2CD  ;
-            modDUC.Fld_PTG_HddKlasa = artikl_rec.Grupa3CD  ;
-            modDUC.Fld_PTG_PCKbaza  = artikl_rec.PCK_BazaCD;
-         }
-
-         modDUC.Put_MOD_Semafor_Labels();
-
-      }
-
-      #endregion PTG Additions
-
 //#if DEBUG
 //
 //      decimal a = Fld_S_ukKCR ;
@@ -13388,7 +13386,7 @@ public partial class FakturExtDUC : FakturDUC
 //#endif
    }
 
-   protected void SetMODsemaforLabelColorAndText(Label semaforLabel, Color color, string labelText)
+   internal void SetMODsemaforLabelColorAndText(Label semaforLabel, Color color, string labelText)
    {
       semaforLabel.BackColor = color;
       semaforLabel.Text      = labelText;
@@ -15053,7 +15051,7 @@ public class FakturPDUC : FakturExtDUC
 
       for(int rIdx = 0; rIdx < effectiveRowCount; ++rIdx)
       {
-         //RtranoDgvList.Add((Rtrano)GetDgvLineFields2(rIdx, false, null));
+         RtranoDgvList.Add((Rtrano)GetDgvLineFields2(rIdx, false, null));
       }
    }
    public override void PutDgvTransSumFields2()
