@@ -3108,6 +3108,7 @@ public class URA_PTG_DUC : FakturPDUC
 
       T_artiklCD_CreateColumn  (ZXC.Q4un   ,             isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                     isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn  (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn  (ZXC.Q3un, 0,             isVisible, "RAM"        , "RAM", false);
       T_noCijMal_CreateColumn  (ZXC.Q3un, 0,             isVisible, "HDD"        , "HDD");
       T_isIrmUsluga_CreateColumn(ZXC.QUN + ZXC.Qun4,     isVisible, "Usl"        , "Usluga");
@@ -3351,6 +3352,7 @@ public class IZD_PTG_DUC : FakturPDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla");
+      T_artiklTS_CreateColumn      (ZXC.Q2un             ,isVisible, "Tip"        , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,          isVisible, "RAM"        , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,          isVisible, "HDD"        , "HDD");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina");
@@ -3456,6 +3458,7 @@ public class MSI_PTG_DUC : FakturPDUC
       bool isVisible = true;
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,isVisible, "Šifra"  , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                    isVisible, "Naziv"  , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,        isVisible, "RAM", "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,        isVisible, "HDD", "HDD");
       T_kol_CreateColumn           (ZXC.Q4un, 2,        isVisible, "Kol"    , "Količina"      );
@@ -3549,6 +3552,7 @@ public class PST_PTG_DUC : FakturPDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q3un,            isVisible, "Šifra" , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                     isVisible, "Naziv" , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,         isVisible, "RAM"   , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,         isVisible, "HDD"   , "HDD");
       T_kol_CreateColumn           (ZXC.Q4un, 2,         isVisible, "Kol"   , "Količina");
@@ -4676,8 +4680,9 @@ public class MOD_PTG_DUC : FakturPDUC
 
       TheG2.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEC_Showing_DisableInput);
 
-    //hamp_S_pix.Location = new Point(TheG.Left, TheG.Bottom + ZXC.QunMrgn);
-
+      bool isClearZero = Fld_PrjArtCD.IsEmpty();
+      tbx_decimal01.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, isClearZero);
+      tbx_decimal02.JAM_MarkAsNumericTextBox(0, true, decimal.MaxValue, decimal.MinValue, isClearZero);
    }
 
    private void OnEC_Showing_DisableInput(object sender, DataGridViewEditingControlShowingEventArgs e)

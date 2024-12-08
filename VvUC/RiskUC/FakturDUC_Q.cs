@@ -4534,6 +4534,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             theGrid.PutCell(ci.iT_doCijMal, currRowIdx, artikl_rec.PCK_RAM);
             theGrid.PutCell(ci.iT_noCijMal, currRowIdx, artikl_rec.PCK_HDD);
 
+            theGrid.PutCell(ci.iT_artiklTS, currRowIdx, artikl_rec.TS);
          }
 
          #endregion ArtiklCD, ArtiklName, JedMj, Konto
