@@ -7307,6 +7307,20 @@ public static class VvSQL
       return (cmd);
    }
 
+   internal static XSqlCommand DeleteDeadArtikls_Command(XSqlConnection conn)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      cmd.CommandText =
+
+      "DELETE art FROM artstat ast     \n" +
+      "RIGHT JOIN artikl art           \n" +
+      "ON art.ArtiklCD = ast.t_artiklCD\n" +
+      "WHERE ast.recID IS NULL         \n" ;
+      
+      return (cmd);
+   }
+
    #endregion SqlSomeCheckQuery_Command
 
 }
