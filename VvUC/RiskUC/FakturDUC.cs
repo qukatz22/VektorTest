@@ -3691,8 +3691,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             if(ZXC.IsPCTOGO)
             {
-               VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd("ZNJ");
-               VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd("UNJ");
+               VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(/*"ZNJ"*/ZXC.PTG_ZNJ);
+               VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(/*"UNJ"*/ZXC.PTG_UNJ);
 
                if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DOD || Fld_TT == Faktur.TT_MOD))
                {

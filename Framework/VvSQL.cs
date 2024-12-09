@@ -7313,10 +7313,10 @@ public static class VvSQL
 
       cmd.CommandText =
 
-      "DELETE art FROM artstat ast     \n" +
+      "DELETE art FROM rtrans rtr      \n" +
       "RIGHT JOIN artikl art           \n" +
-      "ON art.ArtiklCD = ast.t_artiklCD\n" +
-      "WHERE ast.recID IS NULL         \n" ;
+      "ON art.ArtiklCD = rtr.t_artiklCD\n" +
+      "WHERE rtr.recID IS NULL         \n" ;
       
       return (cmd);
    }
