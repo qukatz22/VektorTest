@@ -168,6 +168,14 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
       ReportDatasetNeedsExternTable_Placa = true;
 
+      // 09.12.2024: 
+      if(reportDocument is Vektor.Reports.PIZ.CR_PersonMaticni)
+      {
+         //ReportDatasetNeedsExternTable_Placa = false;
+
+         ds_PlacaReport.Relations.Clear();
+      }
+
       if(externTblChooser.Person == true) ReportDatasetNeedsExternTable_Person = true;
       if(externTblChooser.PtranE == true) ReportDatasetNeedsExternTable_PtranE = true;
       if(externTblChooser.PtranO == true) ReportDatasetNeedsExternTable_PtranO = true;
@@ -2638,7 +2646,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          {
             if(personTable[rowIdx].isPlaca == 0)
             {
-               personTable.Rows.RemoveAt(rowIdx);
+               personTable.Rows.RemoveAt(rowIdx--);
             }
          }
       }
@@ -7665,7 +7673,7 @@ public class RptP_NeoporezPrimici: RptP_JOPPD
 
 //[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+]-[+] 
 
-public class RptP_PersonMaticniPodaci: RptP_JOPPD
+public class RptP_PersonMaticniPodaci: VvPlacaReport
 {
    public RptP_PersonMaticniPodaci(ReportDocument _reportDocument, ZXC.VvRptExternTblChooser_Placa externTblChooser, string _reportName, VvRpt_Placa_Filter _rptFilter) : base(_reportDocument, externTblChooser, _reportName, _rptFilter)
    {

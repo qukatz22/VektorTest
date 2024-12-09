@@ -6003,6 +6003,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // ak smo dosli do tu, znaci da je u pitanju postojeci serno 
       // pa mu idemo iskoristiti lastRtrano_rec stuff              
 
+      if(lastRtrano_rec_ovog_sernoa.T_skladCD == ZXC.PTG_UNJ)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Koji li je smisao modificiranja serijskog broja koji se nalazi na 'UNJ' skladištu?!");
+         e.Cancel = true;
+         theGrid.EndEdit();
+         theGrid.PutCell(ci2.iT_serno, currRowIdx, "");
+         return;
+      }
+
       if(ThisIs_MOC_rowIndex(currRowIdx) && thePCK_Unikat.PCK_BazaCD != the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD) // e, al' nedaj ako ne odgovara PCK baza a na prvih smo n 'MOC' redaka! 
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", the_MOD_DUC.Fld_PTG_MOC_RowCount, the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD);
@@ -6045,12 +6054,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       #endregion U 'Ispravi': Ponovno zadavanje serno-a, kojeg smo prvo pobrisali ili pregazili, a koji je postojao u DataLayeru prije ovog ispravka
 
       Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec_ovog_sernoa, currRowIdx);
-
-      if(lastRtrano_rec_ovog_sernoa.T_skladCD == ZXC.PTG_UNJ)
-      {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Koji li je smisao modificiranja serijskog broja koji se nalazi na 'UNJ' skladištu?!");
-         e.Cancel = true;
-      }
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
 
