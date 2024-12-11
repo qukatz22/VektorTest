@@ -4436,28 +4436,31 @@ public class PCK_ArtiklList_UC : VvUserControl
      
       PCK_Artikl thePCK_Artikl = PCK_ArtiklList[rowIdx];
 
-      List<string> theSernoList = MixerDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
-
       if(Get_Artikl_FromVvUcSifrar(thePCK_Artikl.PCK_ArtCD).TS != ZXC.PCK_TS) return;
+
+      List<string> theSernoList = RtranoDao.GetDistinctRtranoSernoForArtiklAndSklad(ZXC.TheVvForm.TheDbConnection, thePCK_Artikl.PCK_ArtCD, thePCK_Artikl.PCK_SklCD);
 
       List<(string serno, string opis)> theSernoAndOpisList = new List<(string serno, string opis)>();
 
-      Rtrano rtrano_rec;
+      Rtrano last_rtrano_rec_forThisSerno;
+      bool thisSernoHas_BadArtiklCD_or_SkladCD;
 
       // sada treba izbaciti one kojima zadnje stanje nije kao ovaj artikl 
       for(int i = 0; i < theSernoList.Count; ++i)
       {
-         rtrano_rec = new Rtrano();
+         last_rtrano_rec_forThisSerno = new Rtrano();
 
-         MixerDao.Get_LastRtrano_ForSerno(ZXC.TheVvForm.TheDbConnection, rtrano_rec, theSernoList[i]);
+         RtranoDao.Get_LastRtrano_ForSerno(ZXC.TheVvForm.TheDbConnection, last_rtrano_rec_forThisSerno, theSernoList[i]);
 
-         if(rtrano_rec.T_artiklCD != thePCK_Artikl.PCK_ArtCD)
+         thisSernoHas_BadArtiklCD_or_SkladCD = last_rtrano_rec_forThisSerno.T_artiklCD != thePCK_Artikl.PCK_ArtCD || last_rtrano_rec_forThisSerno.T_skladCD != thePCK_Artikl.PCK_SklCD;
+
+         if(thisSernoHas_BadArtiklCD_or_SkladCD)
          {
             theSernoList.RemoveAt(i--);
          }
          else // dojebi t_opis sa Rtrano-a 
          {
-            theSernoAndOpisList.Add((rtrano_rec.T_serno, rtrano_rec.T_grCD));
+            theSernoAndOpisList.Add((last_rtrano_rec_forThisSerno.T_serno, last_rtrano_rec_forThisSerno.T_grCD));
          }
       }
 

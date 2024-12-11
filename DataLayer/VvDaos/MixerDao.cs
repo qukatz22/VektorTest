@@ -644,47 +644,4 @@ public sealed class MixerDao : VvDaoBase, IVvDao
       return success;
    }
 
-   public static List<string> GetDistinctRtranoSernoForArtiklAndSklad(XSqlConnection conn, string _PCK_ArtCD, string _PCK_SklCD)
-   {
-      string theSerno;
-      List<string> theSernoList = new List<string>();
-
-      using(XSqlCommand cmd = VvSQL.GetDistinctRtranoSernoForArtiklAndSklad_Command(conn, _PCK_ArtCD, _PCK_SklCD))
-      {
-         using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult /*| CommandBehavior.SingleRow*/))
-         {
-            while(reader.HasRows && reader.Read())
-            {
-               theSerno = reader.GetString(0);
-
-               if(theSerno.NotEmpty())
-               {
-                  theSernoList.Add(theSerno);
-               }
-            }
-            reader.Close();
-         }
-      }
-
-      return theSernoList;
-   }
-
-   public static Rtrano Get_LastRtrano_ForSerno(XSqlConnection conn, Rtrano rtrano_rec, string _theSerno) 
-   { 
-      bool success = true;
-
-      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(1);
-
-      DataRowCollection  RtoSch = ZXC.RtranoDao.TheSchemaTable.Rows;
-      RtranoDao.RtranoCI RtoCI  = ZXC.RtranoDao.CI;
-
-      filterMembers.Add(new VvSqlFilterMember(RtoSch[RtoCI.t_serno], "theSerno", _theSerno, " = "));
-
-      string orderBy = Rtrans.artiklOrderBy_DESC.Replace("t_serial DESC ", "t_serial "); // jer VvSql.GetLastRecordBySomeOrder_Command doda "DESC LIMIT 1" 
-
-      success = ZXC.RtranoDao.GetLastRecordBySomeOrder(conn, rtrano_rec, filterMembers, orderBy, false, false);
-
-      return rtrano_rec;
-   }
-
 }

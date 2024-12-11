@@ -2615,7 +2615,7 @@ public class RtranoListUC : VvRecLstUC
       //if(rowIdx > TheGrid.RowCount - 1) return;
       Rtrano rtrano_rec = new Rtrano();
 
-      MixerDao.Get_LastRtrano_ForSerno(TheDbConnection, rtrano_rec, Fld_SerNo);
+      RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, rtrano_rec, Fld_SerNo);
 
       Fld_ArtiklCD   = rtrano_rec.T_artiklCD                            ;  //TheGrid[ 2, rowIdx].Value.ToString();
       Fld_ArtiklName = rtrano_rec.T_artiklName                          ;  //TheGrid[ 3, rowIdx].Value.ToString();

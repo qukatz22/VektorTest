@@ -5993,7 +5993,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Check for double serno entry
 
-      (PCK_Unikat thePCK_Unikat, Rtrano lastRtrano_rec_ovog_sernoa) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
+      (PCK_Unikat thePCK_Unikat, Rtrano last_rtrano_rec_forThisSerno) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
       if(thePCK_Unikat == null)
       {
@@ -6003,7 +6003,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // ak smo dosli do tu, znaci da je u pitanju postojeci serno 
       // pa mu idemo iskoristiti lastRtrano_rec stuff              
 
-      if(lastRtrano_rec_ovog_sernoa.T_skladCD == ZXC.PTG_UNJ)
+      if(last_rtrano_rec_forThisSerno.T_skladCD == ZXC.PTG_UNJ)
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Koji li je smisao modificiranja serijskog broja koji se nalazi na 'UNJ' skladištu?!");
          e.Cancel = true;
@@ -6042,10 +6042,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
           //string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(previousForThisSerno_Rtrano_rec.T_artiklCD, previousForThisSerno_Rtrano_rec.R_MOD_RAM_old, previousForThisSerno_Rtrano_rec.R_MOD_HDD_old);
             string oldArtiklCD = previousForThisSerno_Rtrano_rec.R_OldArtiklCD;
 
-            lastRtrano_rec_ovog_sernoa            = previousForThisSerno_Rtrano_rec.MakeDeepCopy();
-            lastRtrano_rec_ovog_sernoa.T_artiklCD = oldArtiklCD;
-            lastRtrano_rec_ovog_sernoa.T_PCK_RAM  = previousForThisSerno_Rtrano_rec.R_MOD_RAM_old;
-            lastRtrano_rec_ovog_sernoa.T_PCK_HDD  = previousForThisSerno_Rtrano_rec.R_MOD_HDD_old;
+            last_rtrano_rec_forThisSerno            = previousForThisSerno_Rtrano_rec.MakeDeepCopy();
+            last_rtrano_rec_forThisSerno.T_artiklCD = oldArtiklCD;
+            last_rtrano_rec_forThisSerno.T_PCK_RAM  = previousForThisSerno_Rtrano_rec.R_MOD_RAM_old;
+            last_rtrano_rec_forThisSerno.T_PCK_HDD  = previousForThisSerno_Rtrano_rec.R_MOD_HDD_old;
 
             ZXC.aim_emsg(MessageBoxIcon.Information, "Ovaj serijski broj je prije ispravka već bio na ovom dokumentu. Ponavljam njegovo 'OldArtikl' obilježje.");
          }
@@ -6053,7 +6053,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion U 'Ispravi': Ponovno zadavanje serno-a, kojeg smo prvo pobrisali ili pregazili, a koji je postojao u DataLayeru prije ovog ispravka
 
-      Put_PCK_info_MOD_DgvLineFields2(lastRtrano_rec_ovog_sernoa, currRowIdx);
+      Put_PCK_info_MOD_DgvLineFields2(last_rtrano_rec_forThisSerno, currRowIdx);
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
 
@@ -6077,6 +6077,38 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
    }
 
+   protected void OnExit_Check_PCK_Serno_For_PTG_Common_DUC(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      #region Init stuff
+
+      if(isPopulatingSifrar)                           return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvDataGridView theGrid = sender as VvDataGridView;
+
+      int currRowIdx = theGrid.CurrentRow.Index;
+
+      FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
+
+      #endregion Init stuff
+
+      string theSerno = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, true);
+      string theTT    = theGrid.GetStringCell(ci2.iT_TT   , currRowIdx, true);
+
+      Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
+
+      RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
+
+      bool sernoIsPresent = last_rtrano_rec_forThisSerno.T_TT   .NotEmpty() && 
+                            last_rtrano_rec_forThisSerno.T_ttNum.NotZero ();
+
+      bool sernoIsNEW     = !sernoIsPresent;
+
+    //FakturPDUC somePTG_DUC = (((System.Windows.Forms.Control)sender).ParentContainerControl) as FakturPDUC;
+      FakturPDUC somePTG_DUC = ((sender as VvDataGridView) /*as Control*/).Parent.Parent.Parent.Parent.Parent as FakturPDUC;
+
+   }
    private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, FakturPDUC.Rtrano_colIdx ci2)
    {
       theGrid.PutCell(ci2.iT_TT         , currRowIdx, "");
