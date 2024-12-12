@@ -5781,7 +5781,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(rtransov_t_serial_od_ovog_rtranoa.IsPositive() == false)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema rtrans serial-a?!");
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema vezu na stavku ugovora?!");
          return;
       }
 
@@ -5809,7 +5809,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
    }
 
-   protected void OnExit_Update_PCK_Serno_For_UgAnDo(object sender, System.ComponentModel.CancelEventArgs e)
+   protected void OnExit_Check_PCK_Serno_For_UgAnDo(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
 
@@ -5830,8 +5830,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Check for double serno entry
 
-      GetDgvFields2(true);
-      int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno == theSerno && rto.T_serno.NotEmpty()).Count();
+      List<string> sernosInUseList = new List<string>();
+
+      for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
+      {
+         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
+      }
+
+    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno           == theSerno          ).Count();
+    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno.ToLower() == theSerno.ToLower()).Count();
+      int theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
 
       if(theSernoCount > 1)
       {
@@ -5940,7 +5948,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
 
-   protected void OnExit_Update_PCK_Serno_For_MOD   (object sender, System.ComponentModel.CancelEventArgs e)
+   protected void OnExit_Check_PCK_Serno_For_MOD   (object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
 
@@ -5964,10 +5972,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
       theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
 
-      if(theSerno.IsEmpty())
-      {
-         return;
-      }
+      if(theSerno.IsEmpty()) return; 
 
       #region Check for double serno entry
 
@@ -5975,7 +5980,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
       {
-         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, false));
+         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
       }
 
     //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno           == theSerno          ).Count();
@@ -6094,7 +6099,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       #endregion Init stuff
 
       string theSerno = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, true);
-      string theTT    = theGrid.GetStringCell(ci2.iT_TT   , currRowIdx, true);
+
+      if(theSerno.IsEmpty()) return;
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
 
@@ -6105,10 +6111,36 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       bool sernoIsNEW     = !sernoIsPresent;
 
-    //FakturPDUC somePTG_DUC = (((System.Windows.Forms.Control)sender).ParentContainerControl) as FakturPDUC;
-      FakturPDUC somePTG_DUC = ((sender as VvDataGridView) /*as Control*/).Parent.Parent.Parent.Parent.Parent as FakturPDUC;
+      if(sernoIsNEW) return;
 
+      FakturPDUC somePTG_DUC = (this as FakturPDUC);
+
+      bool isUlaz = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_U;
+
+      if(isUlaz)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na ulazni dokument ne možete zadati prethodno već uparen serijski broj.\n\r\n\r{0}", last_rtrano_rec_forThisSerno);
+         theGrid.EndEdit();
+         theGrid.PutCell(ci2.iT_serno, currRowIdx, "");
+         e.Cancel = true;
+         return;
+      }
+
+      string documentSkladCD   = Fld_SkladCD;
+      string lastRtranoSkladCD = last_rtrano_rec_forThisSerno.T_skladCD;
+
+      if(documentSkladCD != lastRtranoSkladCD)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj\n\r\n\r{0}\n\r\n\rne može izaći sa skl. {1} budući da se nalazi na skl. {2}\n\r\n\r{3}", 
+            theSerno, documentSkladCD, lastRtranoSkladCD, last_rtrano_rec_forThisSerno);
+
+         theGrid.EndEdit();
+         theGrid.PutCell(ci2.iT_serno, currRowIdx, "");
+         e.Cancel = true;
+         return;
+      }
    }
+
    private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, FakturPDUC.Rtrano_colIdx ci2)
    {
       theGrid.PutCell(ci2.iT_TT         , currRowIdx, "");

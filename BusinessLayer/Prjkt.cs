@@ -894,7 +894,8 @@ public class Prjkt : Kupdob
    // TODO: as data layer 
    // 22.01.2018: 
  //public bool ShouldPrevYearLock_RISK { get { return true            ; } }
-   public bool ShouldPrevYearLock_RISK { get { return ShouldPeriodLock; } } // Koristimo 'ShouldPeriodLock' za jedno i drugo 
+   // a od 12.12.2024 ubijamo i koristimo 'ShouldPeriodLock' 
+   //public bool ShouldPrevYearLock_RISK { get { return ShouldPeriodLock; } } // Koristimo 'ShouldPeriodLock' za jedno i drugo 
 
    #endregion propertiz 
 

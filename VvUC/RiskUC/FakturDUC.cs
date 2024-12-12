@@ -14368,11 +14368,11 @@ public class FakturPDUC : FakturExtDUC
       else if(IsPTG_UgAnDo_DUC) // PCK serno handling 
       {
          vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(OnEntry_UgAnDo_Serno_Cell);
-         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno_For_UgAnDo);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_UgAnDo);
       }
       else if(IsPTG_MOD_DUC) // PCK serno handling for MOC/MOS rtrano row 
       {
-         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Update_PCK_Serno_For_MOD);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_MOD);
          vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
       else if(IsPTG_Common_DUC) // PRI, IZD, URA, IRA, PST, MSI, ... u PTG varijanti (sa serno-ima) 
@@ -15102,7 +15102,12 @@ public class FakturPDUC : FakturExtDUC
 
       faktur_rec.DiscardPreviouslyAddedTranses2();
 
-      for(rIdx = 0; rIdx < TheG2.RowCount - 1; ++rIdx)
+      // 12.12.2024: po prvi put PTG rtrano grid ima slucaj da je u žutom 'dgv.AllowUserToAddRows == false' 
+      // pa treba for petlje limit korigirati                                                               
+      int numOfUselessLastRow = TheG2.AllowUserToAddRows ? 1 : 0;
+
+    //for(rIdx = 0; rIdx < TheG2.RowCount -                   1; ++rIdx)
+      for(rIdx = 0; rIdx < TheG2.RowCount - numOfUselessLastRow; ++rIdx)
       {
          GetDgvLineFields2(rIdx, dirtyFlagging, recIDtable);
       }
