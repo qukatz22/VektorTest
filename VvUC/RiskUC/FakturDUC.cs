@@ -14940,11 +14940,11 @@ public class FakturPDUC : FakturExtDUC
          {
             TheG2.PutCell(ci2.iT_ramKlasa, rowIdx, artikl_rec.Grupa2CD );
             TheG2.PutCell(ci2.iT_hddKlasa, rowIdx, artikl_rec.Grupa3CD );
-            TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS       );
+          //TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS       );
             //SetColorsPCKartikl();
          }
          
-       //TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
+         TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
 
          if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
 
