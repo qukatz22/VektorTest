@@ -162,7 +162,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    internal bool IsPTG_UgAnDo_DUC    { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
    internal bool IsPTG_MOD_DUC       { get { return (this is MOD_PTG_DUC                            ); } }
-   internal bool IsPTG_Common_DUC    { get { return (this is PRI_PTG_DUC || this is IZD_PTG_DUC || this is PST_PTG_DUC || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
+   internal bool IsPTG_Common_DUC    { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is PST_PTG_DUC || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
    internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
 
    #endregion Fieldz
