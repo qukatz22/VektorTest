@@ -161,8 +161,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    private VvDateTimePickerColumn colDate;
 
    internal bool IsPTG_UgAnDo_DUC    { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
-   internal bool IsPTG_MOD_DUC       { get { return (this is MOD_PTG_DUC                            ); } }
    internal bool IsPTG_Common_DUC    { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is PST_PTG_DUC || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
+   internal bool IsPTG_MOD_DUC       { get { return (this is MOD_PTG_DUC                            ); } }
    internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
 
    #endregion Fieldz
@@ -14365,21 +14365,22 @@ public class FakturPDUC : FakturExtDUC
          vvtbT_serno.JAM_Set_LookUpTable(ZXC.luiListaBrojSobe, (int)ZXC.Kolona.prva);
          //vvtbT_serno.JAM_lookUp_NOTobligatory = true;
       }
-      else if(IsPTG_UgAnDo_DUC) // PCK serno handling 
+      else if(IsPTG_UgAnDo_DUC) // PCK serno handling - Rtrans vs Rtrano s LIJEVA na DESNO 
       {
          vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(OnEntry_UgAnDo_Serno_Cell);
-         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_UgAnDo);
+       //vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_UgAnDo);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC);
       }
-      else if(IsPTG_MOD_DUC) // PCK serno handling for MOC/MOS rtrano row 
-      {
-         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_MOD);
-         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
-      }
-      else if(IsPTG_Common_DUC) // PRI, IZD, URA, IRA, PST, MSI, ... u PTG varijanti (sa serno-ima) 
+      else if(IsPTG_Common_DUC) // PRI, IZD, URA, IRA, PST, MSI, ... u PTG varijanti (sa serno-ima) - Rtrans vs Rtrano s LIJEVA na DESNO 
       {
        //vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(fuse1); 
        //vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler(fuse2); 
-         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_PTG_Common_DUC);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC);
+      }
+      else if(IsPTG_MOD_DUC) // PCK serno handling for MOC/MOS rtrano row - Rtrans vs Rtrano s DESNA na LIJEVO 
+      {
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_MOD);
+         vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
       else // old, default PPUK 
       {

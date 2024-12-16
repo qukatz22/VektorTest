@@ -5809,6 +5809,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
    }
 
+#if someOLD_WAY
    protected void OnExit_Check_PCK_Serno_For_UgAnDo(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
@@ -5856,6 +5857,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       (PCK_Unikat thePCK_Unikat, Rtrano last_rtrano_rec_forThisSerno) = RtranoDao.Get_PCK_Unikat_And_LastRtrano(TheDbConnection, theSerno);
 
+      Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
+
       string upisaniArtiklCD = theGrid2.GetStringCell(ci2.iT_artiklCD, currRowIdx, false);
 
       if(upisaniArtiklCD.IsEmpty())
@@ -5889,7 +5892,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       bool wasEmptyRow = upisaniArtiklCD.IsEmpty();
 
-      // Provjera da li upisani serno odgovara UgAnDo rtrans izlaznom skladistu i UgAnDo rtrans PCK potpisu 
+      // Provjera da li upisani serno odgovara UgAnDo rtrans, izlaznom skladistu i UgAnDo rtrans PCK potpisu 
 
       uint rtransov_t_serial_od_ovog_rtranoa = theGrid2.GetUint32Cell (ci2.iT_paletaNo, currRowIdx, false);
       string izlaz_sklCD_ovog_rtranoa        = theGrid2.GetStringCell (ci2.iT_skladCD , currRowIdx, false);
@@ -5951,7 +5954,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
-
+#endif
    protected void OnExit_Check_PCK_Serno_For_MOD   (object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
@@ -6096,7 +6099,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
    }
 
-   protected void OnExit_Check_PCK_Serno_For_PTG_Common_DUC(object sender, System.ComponentModel.CancelEventArgs e)
+   protected void OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
 
@@ -6148,24 +6151,49 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          return;
       }
 
+      Rtrano this_rtrano_rec              = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
-
       RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
 
-      bool sernoIsPresent = last_rtrano_rec_forThisSerno.T_TT   .NotEmpty() && 
-                            last_rtrano_rec_forThisSerno.T_ttNum.NotZero ();
+      bool sernoIsOLD = last_rtrano_rec_forThisSerno.T_TT   .NotEmpty() && 
+                        last_rtrano_rec_forThisSerno.T_ttNum.NotZero ();
 
-      bool sernoIsNEW     = !sernoIsPresent;
-
-      if(sernoIsNEW) return;
-
-      // sernoIsOLD: 
+      bool sernoIsNEW = !sernoIsOLD;
 
       FakturPDUC somePTG_DUC = (this as FakturPDUC);
 
-      bool isUlaz = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_U;
+      bool isUlaz_DUC          = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_U;
+      bool isIzlaz_DUC         = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_I;
+      bool isUgAnDo_DUC        = somePTG_DUC.IsPTG_UgAnDo_DUC            ;
+      bool isIzlazOrUgAnDo_DUC = isIzlaz_DUC || isUgAnDo_DUC             ;
 
-      if(isUlaz)
+      // ======================================================================================================================= 
+
+      // Inicijalno uparivanje serno-a 
+      if(sernoIsNEW)
+      {
+         // provjera uparujemo li ga s adekvatnim TS-om 
+         string upisaniArtiklTS = theGrid2.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
+
+         bool isNOsernoTS =
+            upisaniArtiklTS == ZXC.USL_TS ||
+            upisaniArtiklTS == ZXC.KMP_TS ||
+            upisaniArtiklTS == ZXC.OTH_TS;
+
+         if(isNOsernoTS)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema smisla uparivati serijski broj sa uslugom, komponentom i 'ostalo'.");
+
+            //theGrid2.PutCell(ci2.iT_serno, currRowIdx, theSerno);
+            theGrid2.EditingControl.Text = "";
+            return;
+         }
+
+         return; // uspjesno upareno
+      }
+
+      // Na ulazu serno mora biti nov, nemere postojeći 
+      if(sernoIsOLD && isUlaz_DUC)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Na ulazni dokument ne možete zadati prethodno već uparen serijski broj.\n\r\n\r{0}", last_rtrano_rec_forThisSerno);
          theGrid2.EndEdit();
@@ -6174,21 +6202,40 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          return;
       }
 
-      // sernoIsOLD & isIzlaz: 
-
-      string documentSkladCD   = Fld_SkladCD;
-      string lastRtranoSkladCD = last_rtrano_rec_forThisSerno.T_skladCD;
-
-      if(documentSkladCD != lastRtranoSkladCD)
+      // Na izlazu ili UgAnDo-u, serno se mora nalaziti na izlaznom skladistu 
+      // Te se artikli moraju podudarati                                      
+      if(sernoIsOLD && isIzlazOrUgAnDo_DUC)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj\n\r\n\r{0}\n\r\n\rne može izaći sa skl. {1} budući da se nalazi na skl. {2}\n\r\n\r{3}", 
-            theSerno, documentSkladCD, lastRtranoSkladCD, last_rtrano_rec_forThisSerno);
+       //string documentSkladCD    = Fld_SkladCD;
+         string thisRtranoSkladCD  = this_rtrano_rec             .T_skladCD;
+         string lastRtranoSkladCD  = last_rtrano_rec_forThisSerno.T_skladCD;
 
-         theGrid2.EndEdit();
-         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
-         e.Cancel = true;
-         return;
+         string thisRtranoArtiklCD = this_rtrano_rec             .T_artiklCD;
+         string lastRtranoArtiklCD = last_rtrano_rec_forThisSerno.T_artiklCD;
+
+         if(thisRtranoSkladCD != lastRtranoSkladCD)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj\n\r\n\r{0}\n\r\n\rne može izaći sa skl. {1} budući da se nalazi na skl. {2}\n\r\n\r{3}", 
+               theSerno, thisRtranoSkladCD, lastRtranoSkladCD, last_rtrano_rec_forThisSerno);
+
+            theGrid2.EndEdit();
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            e.Cancel = true;
+            return;
+         }
+
+         if(thisRtranoArtiklCD != lastRtranoArtiklCD)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj\n\r\n\r{0}\n\r\n\revidentiran je kao artikl {1} a ova stavka se odnosi na artikl {2}\n\r\n\r{3}", 
+               theSerno, thisRtranoArtiklCD, lastRtranoArtiklCD, last_rtrano_rec_forThisSerno);
+
+            theGrid2.EndEdit();
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            e.Cancel = true;
+            return;
+         }
       }
+
    }
 
    private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, FakturPDUC.Rtrano_colIdx ci2)
