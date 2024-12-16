@@ -6206,9 +6206,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // Te se artikli moraju podudarati                                      
       if(sernoIsOLD && isIzlazOrUgAnDo_DUC)
       {
-       //string documentSkladCD    = Fld_SkladCD;
-         string thisRtranoSkladCD  = this_rtrano_rec             .T_skladCD;
-         string lastRtranoSkladCD  = last_rtrano_rec_forThisSerno.T_skladCD;
+         //string documentSkladCD   = Fld_SkladCD;
+         //string thisRtranoSkladCD = this_rtrano_rec             .T_skladCD;
+         string thisRtranoSkladCD   = this.faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == this_rtrano_rec.T_paletaNo).T_skladCD; // tam-nekako ovako!!!
+         string lastRtranoSkladCD   = last_rtrano_rec_forThisSerno.T_skladCD;
 
          string thisRtranoArtiklCD = this_rtrano_rec             .T_artiklCD;
          string lastRtranoArtiklCD = last_rtrano_rec_forThisSerno.T_artiklCD;

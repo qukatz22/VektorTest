@@ -220,16 +220,17 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
       hamp_DodAndKopCount.Location = new Point(TheG.Left, ZXC.Qun4);
 
-      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
+      //16.12.2024. premjestila na FakturP ya ostale ptg duceve koji imaju rtrano
+      //ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
    }
 
-   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
-   {
-      if(newPage.Enabled == false)
-      { 
-         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
-      }
-   }
+   //private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   //{
+   //   if(newPage.Enabled == false)
+   //   { 
+   //      theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
+   //   }
+   //}
 
 
    #endregion Constructor
@@ -1489,59 +1490,59 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
    #endregion VvFindDialog - CreateFind_Xtrans_Dialog
 
-   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
-   {
-      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
-      bool idemoUbijelo = !idemoUzuto                    ;
+   //public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
+   //{
+   //   bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+   //   bool idemoUbijelo = !idemoUzuto                    ;
 
-      bool isRtranO_zuto = idemoUzuto && ZXC.RISK_Edit_RtranoOnly_InProgress;
-      bool isRtranS_zuto = idemoUzuto && isRtranO_zuto == false;
+   //   bool isRtranO_zuto = idemoUzuto && ZXC.RISK_Edit_RtranoOnly_InProgress;
+   //   bool isRtranS_zuto = idemoUzuto && isRtranO_zuto == false;
 
-      int rtranStabIdx = 0;
-      int rtranOtabIdx = 1;
+   //   int rtranStabIdx = 0;
+   //   int rtranOtabIdx = 1;
 
-      if(isRtranS_zuto) ThePolyGridTabControl.SelectedIndex = rtranStabIdx;
-      if(isRtranO_zuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+   //   if(isRtranS_zuto) ThePolyGridTabControl.SelectedIndex = rtranStabIdx;
+   //   if(isRtranO_zuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
 
-      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
-      {
-         if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
-         else // idemoUzuto 
-         {
-                 if(i == rtranStabIdx && isRtranS_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
-            else if(i == rtranOtabIdx && isRtranO_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
-            else                                        ThePolyGridTabControl.TabPages[i].Enabled = false;
-         }
-      }
+   //   for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
+   //   {
+   //      if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
+   //      else // idemoUzuto 
+   //      {
+   //              if(i == rtranStabIdx && isRtranS_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+   //         else if(i == rtranOtabIdx && isRtranO_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+   //         else                                        ThePolyGridTabControl.TabPages[i].Enabled = false;
+   //      }
+   //   }
 
-      if(isRtranO_zuto)
-      {
-         foreach(VvHamper hamper in hamperLeft)
-         {
-            if(hamper.IsDUMMY) continue;
-            VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
-         }
+   //   if(isRtranO_zuto)
+   //   {
+   //      foreach(VvHamper hamper in hamperLeft)
+   //      {
+   //         if(hamper.IsDUMMY) continue;
+   //         VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+   //      }
 
-         VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
-      }
-      else
-      {
-         VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
-      }
+   //      VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
+   //   }
+   //   else
+   //   {
+   //      VvHamper.Open_Close_Fields_ForWriting(tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+   //   }
 
-      /*rtzrtz*/
-      if(isRtranS_zuto)
-      {
-         this.tbx_KupdobName.Select();
-      }
+   //   /*rtzrtz*/
+   //   if(isRtranS_zuto)
+   //   {
+   //      this.tbx_KupdobName.Select();
+   //   }
 
-      if(isRtranO_zuto)
-      {
-         this.TheG2.Select();
+   //   if(isRtranO_zuto)
+   //   {
+   //      this.TheG2.Select();
 
-      }
+   //   }
 
-   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+   //} // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
 

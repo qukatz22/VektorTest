@@ -14300,6 +14300,12 @@ public class FakturPDUC : FakturExtDUC
       if(ZXC.IsPCTOGO)
       {
          TheG2.CellMouseDoubleClick += TheG2_CellMouseDoubleClick_OpenSomeDUCorDialog;
+         
+         if(IsPTG_DUC_wRtrano)
+         { 
+            ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
+
+         }   
       }
 
       #endregion TheG2
@@ -14326,7 +14332,7 @@ public class FakturPDUC : FakturExtDUC
          vvtbT_artiklCD2.JAM_ReadOnly = true;
       }
 
-      if(IsPTG_UgAnDo_DUC) vvtbT_artiklCD2.JAM_ReadOnly = true;
+      if(IsPTG_DUC_wRtrano/*IsPTG_UgAnDo_DUC*/) vvtbT_artiklCD2.JAM_ReadOnly = true;
    }
 
    protected void T_artiklName2_CreateColumnFill(bool isVisible, string _colHeader, string _statusText)
@@ -14341,7 +14347,7 @@ public class FakturPDUC : FakturExtDUC
       colVvText.MinimumWidth = ZXC.Q5un;
       colVvText.Visible = isVisible;
 
-      if(IsPTG_UgAnDo_DUC) vvtbT_artiklName2.JAM_ReadOnly = true;
+      if(IsPTG_DUC_wRtrano/*IsPTG_UgAnDo_DUC*/) vvtbT_artiklName2.JAM_ReadOnly = true;
 
    }
    protected void T_artiklName2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
@@ -15503,6 +15509,75 @@ public class FakturPDUC : FakturExtDUC
       { }
 
    }
+
+   #region PTG rtrano DUC
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      if(newPage.Enabled == false)
+      { 
+         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
+      }
+   }
+
+   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
+   {
+      if(!ZXC.IsPCTOGO) return;
+
+      FakturPDUC theDUC = this as FakturPDUC;
+      
+      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+      bool idemoUbijelo = !idemoUzuto                    ;
+
+      bool isRtranO_zuto = idemoUzuto && ZXC.RISK_Edit_RtranoOnly_InProgress;
+      bool isRtranS_zuto = idemoUzuto && isRtranO_zuto == false;
+
+      int rtranStabIdx = 0;
+      int rtranOtabIdx = 1;
+
+      if(isRtranS_zuto) ThePolyGridTabControl.SelectedIndex = rtranStabIdx;
+      if(isRtranO_zuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+
+      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
+      {
+         if(idemoUbijelo) ThePolyGridTabControl.TabPages[i].Enabled = true;
+         else // idemoUzuto 
+         {
+                 if(i == rtranStabIdx && isRtranS_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else if(i == rtranOtabIdx && isRtranO_zuto) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else                                        ThePolyGridTabControl.TabPages[i].Enabled = false;
+         }
+      }
+
+      if(isRtranO_zuto)
+      {
+         foreach(VvHamper hamper in hamperLeft)
+         {
+            if(hamper.IsDUMMY) continue;
+            VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+         }
+
+         if(theDUC.IsPTG_UgAnDo_DUC) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
+      }
+      else
+      {
+         if(theDUC.IsPTG_UgAnDo_DUC) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+      }
+
+      /*rtzrtz*/
+      if(isRtranS_zuto)
+      {
+         this.tbx_KupdobName.Select();
+      }
+
+      if(isRtranO_zuto)
+      {
+         this.TheG2.Select();
+
+      }
+
+   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+
+   #endregion PTG rtrano DUC
 
 }
 
