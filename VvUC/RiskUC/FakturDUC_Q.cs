@@ -1074,7 +1074,16 @@ public struct TtInfo
 
       // tu jos nismo gotovi ... 
    };
+
    public bool HasRtranoForSernoTT { get { return hasRtranoForSernoTT.Contains(TheTT); } }
+
+   private static string[] isUgAnDoTT = new string[] {
+      Faktur.TT_AUN, // PCTGO tt 
+      Faktur.TT_UGN, // PCTGO tt 
+      Faktur.TT_DOD, // PCTGO tt 
+   };
+
+   public bool IsUgAnDoTT { get { return isUgAnDoTT.Contains(TheTT); } }
 
    #endregion IsV1andV2specialUse ... PTG ...
 
@@ -6202,22 +6211,25 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          return;
       }
 
-      // Na izlazu ili UgAnDo-u, serno se mora nalaziti na izlaznom skladistu 
+      // Na izlazu ili UgAnDo-u ili MSI-u, serno se mora nalaziti na izlaznom skladistu pripadnog rtrans-a 
       // Te se artikli moraju podudarati                                      
       if(sernoIsOLD && isIzlazOrUgAnDo_DUC)
       {
-         //string documentSkladCD   = Fld_SkladCD;
-         //string thisRtranoSkladCD = this_rtrano_rec             .T_skladCD;
-         string thisRtranoSkladCD   = this.faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == this_rtrano_rec.T_paletaNo).T_skladCD; // tam-nekako ovako!!!
-         string lastRtranoSkladCD   = last_rtrano_rec_forThisSerno.T_skladCD;
+         string lastRtranoSkladCD = last_rtrano_rec_forThisSerno.T_skladCD;
+
+         Rtrans thisRtrans_rec = this.faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == this_rtrano_rec.T_paletaNo);
+         if(thisRtrans_rec == null) throw new Exception("Rtrans is NULL for currRowIdx " + currRowIdx + " ugnSt " + this_rtrano_rec.T_paletaNo);
+
+         string thisRtransIzlazSkladCD = thisRtrans_rec.T_skladCD;
+         string thisRtranoIzlazSkladCD = thisRtransIzlazSkladCD;
 
          string thisRtranoArtiklCD = this_rtrano_rec             .T_artiklCD;
          string lastRtranoArtiklCD = last_rtrano_rec_forThisSerno.T_artiklCD;
 
-         if(thisRtranoSkladCD != lastRtranoSkladCD)
+         if(thisRtranoIzlazSkladCD != lastRtranoSkladCD)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj\n\r\n\r{0}\n\r\n\rne može izaći sa skl. {1} budući da se nalazi na skl. {2}\n\r\n\r{3}", 
-               theSerno, thisRtranoSkladCD, lastRtranoSkladCD, last_rtrano_rec_forThisSerno);
+               theSerno, thisRtranoIzlazSkladCD, lastRtranoSkladCD, last_rtrano_rec_forThisSerno);
 
             theGrid2.EndEdit();
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
@@ -6235,7 +6247,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             e.Cancel = true;
             return;
          }
-      }
+
+         theGrid2.PutCell(ci2.iT_grCD, currRowIdx, last_rtrano_rec_forThisSerno.T_grCD); // opis 
+
+      } // if(sernoIsOLD && isIzlazOrUgAnDo_DUC) 
 
    }
 

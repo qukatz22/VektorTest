@@ -14951,6 +14951,7 @@ public class FakturPDUC : FakturExtDUC
             //SetColorsPCKartikl();
          }
          
+         
          TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
 
          if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
