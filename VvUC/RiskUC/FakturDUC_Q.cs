@@ -5772,6 +5772,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
    #region Update_SERNO PTG
 
+   public void OnEntry_MOD_Serno_Cell(object sender, EventArgs e) // RTRANO !!! 
+   {
+      //FakturPDUC theDUC = this as FakturPDUC;
+      //
+      //VvTextBox vvtb = sender as VvTextBox;
+      //
+      //if(TheVvTabPage.WriteMode  != ZXC.WriteMode.Edit) return;
+      //if(vvtb                    == null              ) return;
+    ////if(vvtb.Text               == this.originalText ) return;
+    ////if(vvtb.EditedHasChanges() == false             ) return;
+    ////if(vvtb.Text.              IsEmpty()            ) return;
+      //
+      //int rowIdx = TheG2.CurrentRow.Index;
+      //
+      //Rtrano ovaj_rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx, false, null);
+
+
+   }
    public void OnEntry_UgAnDo_Serno_Cell(object sender, EventArgs e) // RTRANO !!! 
    {
       FakturPDUC theDUC = this as FakturPDUC;
@@ -5972,9 +5990,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
-      VvDataGridView theGrid = sender as VvDataGridView;
+      VvDataGridView theGrid2 = sender as VvDataGridView;
 
-      int currRowIdx = theGrid.CurrentRow.Index;
+      int currRowIdx = theGrid2.CurrentRow.Index;
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
@@ -5982,11 +6000,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Init stuff
 
-      string theSerno = theGrid.GetStringCell(ci2.iT_serno, currRowIdx, true);
+      VvTextBox currVvTextBox = theGrid2.EditingControl as VvTextBox;
 
-      theGrid.ClearRowContent(currRowIdx);
+      if(currVvTextBox.ReadOnly == true) return; // input was disabled, do nothing 
+
+      string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
+
+      theGrid2.ClearRowContent(currRowIdx);
       the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
-      theGrid.PutCell(ci2.iT_serno, currRowIdx, theSerno);
+      theGrid2.PutCell(ci2.iT_serno, currRowIdx, theSerno);
 
       if(theSerno.IsEmpty()) return; 
 
@@ -6006,8 +6028,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       if(theSernoCount > 1)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
-         theGrid.EndEdit();
-         theGrid.PutCell(ci2.iT_serno, currRowIdx, "");
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          e.Cancel = true;
          return;
       }
@@ -6020,8 +6042,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       if(artikl_rec != null && artikl_rec.TS != ZXC.PCK_TS)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj se ne odnosi na PCK artikl!");
-         theGrid.EndEdit();
-         theGrid.PutCell(ci2.iT_serno, currRowIdx, "");
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          e.Cancel = true;
          return;
       }
@@ -6038,8 +6060,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Koji li je smisao modificiranja serijskog broja koji se nalazi na 'UNJ' skladištu?!");
          e.Cancel = true;
-         theGrid.EndEdit();
-         theGrid.PutCell(ci2.iT_serno, currRowIdx, "");
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          return;
       }
 
@@ -6047,9 +6069,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Na prvih {0} redaka se očekuje MOC PCK artikl ({1}).", the_MOD_DUC.Fld_PTG_MOC_RowCount, the_MOD_DUC.Fld_PTG_MOC_PCK_baseCD);
 
-         theGrid.EndEdit(); // !!! 
+         theGrid2.EndEdit(); // !!! 
 
-         theGrid.ClearRowContent(currRowIdx);
+         theGrid2.ClearRowContent(currRowIdx);
          the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
          return;
       }

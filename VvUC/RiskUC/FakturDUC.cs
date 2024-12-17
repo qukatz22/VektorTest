@@ -14385,6 +14385,7 @@ public class FakturPDUC : FakturExtDUC
       }
       else if(IsPTG_MOD_DUC) // PCK serno handling for MOC/MOS rtrano row - Rtrans vs Rtrano s DESNA na LIJEVO 
       {
+       //vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(OnEntry_MOD_Serno_Cell);
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_MOD);
          vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler((this as MOD_PTG_DUC).SetRow_TT_and_Color_and_Calc_newRam_newHdd);
       }
