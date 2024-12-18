@@ -160,10 +160,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private VvDateTimePickerColumn colDate;
 
-   internal bool IsPTG_UgAnDo_DUC    { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
-   internal bool IsPTG_Common_DUC    { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is PST_PTG_DUC || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
-   internal bool IsPTG_MOD_DUC       { get { return (this is MOD_PTG_DUC                            ); } }
-   internal bool IsPTG_WithSerno_DUC { get { return (IsPTG_UgAnDo_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
+   internal bool IsPTG_UgAnDo_DUC         { get { return (this is UGNorAUN_PTG_DUC || this is DOD_PTG_DUC); } }
+   internal bool IsPTG_Common_DUC         { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is PST_PTG_DUC || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
+   internal bool IsPTG_MOD_DUC            { get { return (this is MOD_PTG_DUC                            ); } }       // 's desna na lijevo' 
+   internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDo_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
+   internal bool IsPTG_WithSerno_DUCwoMOD { get { return (IsPTG_UgAnDo_DUC                  || IsPTG_Common_DUC); } } // 's lijeva na desno' 
 
    #endregion Fieldz
 
@@ -14382,6 +14383,7 @@ public class FakturPDUC : FakturExtDUC
        //vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(fuse1); 
        //vvtbT_serno.JAM_FieldExitMethod               = new       EventHandler(fuse2); 
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC);
+
       }
       else if(IsPTG_MOD_DUC) // PCK serno handling for MOC/MOS rtrano row - Rtrans vs Rtrano s DESNA na LIJEVO 
       {
@@ -14971,10 +14973,32 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec./*CarTarifa*/PCK_BazaCD);
          }
 
-         if(IsPTG_UgAnDo_DUC && rtrano_rec.T_paletaNo.IsPositive())
+         if(IsPTG_WithSerno_DUCwoMOD && rtrano_rec.T_paletaNo.IsPositive())
          {
-            string skladCD1 = TheG.GetStringCell(ci.iT_skladCD, (int)rtrano_rec.T_paletaNo - 1, false); // rtrans-ov skladCD 
-            if(skladCD1 != null) TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
+            ushort rtransSerial = (ushort)rtrano_rec.T_paletaNo;
+
+            Rtrans rtrans_rec = faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_serial == rtransSerial);
+
+            if(rtrans_rec == null)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Na tablici serijskih brojeva u redku {0} je artikl {1} kojeg više nema na stavkama dokumenta?!", rtrano_rec.T_serial, rtrano_rec.T_artiklCD);
+            }
+            else
+            {
+               string skladCD1 = "!?!";
+
+               if(rtrans_rec.T_artiklCD != rtrano_rec.T_artiklCD)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Na tablici serijskih brojeva u redku {0} je artikl {1} vezan na stavku dokumenta {2} a koja sad upućuje na drugi artikl {3}?!",
+                     rtrano_rec.T_serial, rtrano_rec.T_artiklCD, rtransSerial, rtrans_rec.T_artiklCD);
+               }
+               else
+               {
+                  skladCD1 = TheG.GetStringCell(ci.iT_skladCD, (int)rtrano_rec.T_paletaNo - 1, false); // rtrans-ov skladCD 
+               }
+
+               TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
+            }
          }
 
          if(rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS)

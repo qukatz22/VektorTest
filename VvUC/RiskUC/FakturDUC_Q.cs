@@ -6273,7 +6273,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          theGrid2.PutCell(ci2.iT_grCD, currRowIdx, last_rtrano_rec_forThisSerno.T_grCD); // opis 
 
       } // if(sernoIsOLD && isIzlazOrUgAnDo_DUC) 
-
    }
 
    private static void Nullify_MOD_rtranoGridRow(VvDataGridView theGrid, int currRowIdx, FakturPDUC.Rtrano_colIdx ci2)
@@ -6373,6 +6372,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          TheG2.PutCell(localCi2.iT_artiklCD, rIdx, cilj_MOC_ArtiklCD);
       }
    }
+
+   protected void fuse2(object sender, EventArgs e)
+   {
+      //if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+      //
+      //int rowIdx = TheG2.CurrentRow.Index;
+      //int colIdx = TheG2.CurrentCell.ColumnIndex;
+      //
+      //TheG2[1, 2].Selected = true;
+   }
+
 
    #endregion Update_SERNO PTG
 
