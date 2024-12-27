@@ -6140,6 +6140,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       VvDataGridView theGrid2 = sender as VvDataGridView;
 
+      VvTextBoxEditingControl vvtb = theGrid2.EditingControl as VvTextBoxEditingControl;
+      if(vvtb.EditedHasChanges() == false) return;
+
       int currRowIdx = theGrid2.CurrentRow.Index;
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;

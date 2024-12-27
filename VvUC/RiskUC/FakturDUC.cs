@@ -5769,7 +5769,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    } // GetDgvLineFields1 
 
-   protected virtual void GetDgvFields2(bool dirtyFlagging) { }
+   public virtual void GetDgvFields2(bool dirtyFlagging) { }
    protected virtual void GetDgvFields3(bool dirtyFlagging) { }
    public override VvTransRecord GetDgvLineFields2(int rIdx, bool dirtyFlagging, uint[] recIDtable) { return null; }
    public override VvTransRecord GetDgvLineFields3(int rIdx, bool dirtyFlagging, uint[] recIDtable) { return null; }
@@ -15109,7 +15109,7 @@ public class FakturPDUC : FakturExtDUC
       }
    }
 
-   protected override void GetDgvFields2(bool dirtyFlagging)
+   public /*override*/ void GetDgvFields2ORIG(bool dirtyFlagging)
    {
       if(TheG2 == null) return;
 
@@ -15130,22 +15130,64 @@ public class FakturPDUC : FakturExtDUC
          return;
       }
 
+      // ============================================================================================== 
+
+      int usefullRowCount;
+
+      if(TheG2.AllowUserToAddRows) usefullRowCount = TheG2.RowCount - 1;
+      else                         usefullRowCount = TheG2.RowCount    ;
+
       if(TheG2.RowCount > 0) recIDtable = new uint[TheG2.RowCount - 1];
-      else recIDtable = null;
+      else                   recIDtable = null;
 
       faktur_rec.DiscardPreviouslyAddedTranses2();
 
-      // 12.12.2024: po prvi put PTG rtrano grid ima slucaj da je u žutom 'dgv.AllowUserToAddRows == false' 
-      // pa treba for petlje limit korigirati                                                               
-      int numOfUselessLastRow = TheG2.AllowUserToAddRows ? 1 : 0;
-
-    //for(rIdx = 0; rIdx < TheG2.RowCount -                   1; ++rIdx)
-      for(rIdx = 0; rIdx < TheG2.RowCount - numOfUselessLastRow; ++rIdx)
+      for(rIdx = 0; rIdx < TheG2.RowCount - 1; ++rIdx)
       {
          GetDgvLineFields2(rIdx, dirtyFlagging, recIDtable);
       }
 
       MarkTranses2ToDelete(recIDtable);
+   }
+   public override void GetDgvFields2/*NEW*/(bool dirtyFlagging)
+   {
+      if(TheG2 == null) return;
+
+      uint[] recIDtable;
+      int rIdx;
+
+      if(dirtyFlagging && ThePolyGridTabControl.SelectedTab.Title != TabPageTitle2) return;
+
+      if(dirtyFlagging == true && ZXC.TheVvForm.VvFlag_RowsAreAddingOrDeletingOrBoth == false)
+      {
+         if((TheG2.CurrentCell != null && TheG2.CurrentCell.IsInEditMode) || ZXC.TheVvForm.VvFlag_PretendDgvCurrentCellIsInEditMode)
+         {
+            GetDgvLineFields2(TheG2.CurrentRow.Index, dirtyFlagging, null);
+
+            ZXC.TheVvForm.VvFlag_PretendDgvCurrentCellIsInEditMode = false;
+         }
+
+         return;
+      }
+
+      // 12.12.2024: po prvi put PTG rtrano grid ima slucaj da je u žutom 'dgv.AllowUserToAddRows == false' 
+      // pa treba for petlje limit korigirati                                                               
+      int usefullRowCount;
+
+      if(TheG2.AllowUserToAddRows) usefullRowCount = TheG2.RowCount - 1;
+      else                         usefullRowCount = TheG2.RowCount    ;
+
+      if(/*TheG2.RowCount*/usefullRowCount >= 0) recIDtable = new uint[/*TheG2.RowCount - 1*/usefullRowCount];
+      else                                       recIDtable = null;
+
+      faktur_rec.DiscardPreviouslyAddedTranses2();
+
+      for(rIdx = 0; rIdx < /*TheG2.RowCount - 1*/usefullRowCount; ++rIdx)
+      {
+         GetDgvLineFields2(rIdx, dirtyFlagging, recIDtable);
+      }
+
+      if(recIDtable != null) MarkTranses2ToDelete(recIDtable);
    }
 
    public override VvTransRecord GetDgvLineFields2(int rIdx, bool dirtyFlagging, uint[] recIDtable)

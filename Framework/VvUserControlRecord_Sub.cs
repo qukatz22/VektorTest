@@ -579,7 +579,7 @@ public abstract class VvDocumentRecordUC  : VvDocumLikeRecordUC
       UpdateLineCount(theGrid);
    }
 
-   protected void grid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+   /*protected*/ public void grid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
    {
       VvDataGridView theGrid = sender as VvDataGridView;
       bool shouldDirtyFlagging;
