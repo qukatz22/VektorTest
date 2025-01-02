@@ -5146,10 +5146,10 @@ public class MOD_PTG_DUC : FakturPDUC
       //}
       //else
       //{
-         RAMplus  = TheCurrentSumGrid.GetDecimalCell(ci2.iT_RAM_plus , 0, false);
-         RAMminus = TheCurrentSumGrid.GetDecimalCell(ci2.iT_RAM_minus, 0, false);
-         HDDplus  = TheCurrentSumGrid.GetDecimalCell(ci2.iT_HDD_plus , 0, false);
-         HDDminus = TheCurrentSumGrid.GetDecimalCell(ci2.iT_HDD_minus, 0, false);
+         RAMplus  = TheSumGrid2.GetDecimalCell(ci2.iT_RAM_plus , 0, false);
+         RAMminus = TheSumGrid2.GetDecimalCell(ci2.iT_RAM_minus, 0, false);
+         HDDplus  = TheSumGrid2.GetDecimalCell(ci2.iT_HDD_plus , 0, false);
+         HDDminus = TheSumGrid2.GetDecimalCell(ci2.iT_HDD_minus, 0, false);
       //}
       RAMsaldo = RAMplus - RAMminus;
       HDDsaldo = HDDplus - HDDminus;

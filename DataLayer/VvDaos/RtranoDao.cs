@@ -581,7 +581,10 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          }
          else if(currSernoSignature != rtrano.PCK_ArtiklInfo_Signature && !rtrano.TtInfo.Is_MOC_or_MOS_TT)
          {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Serijskom broju: [{3}]\n\r\n\rPCK 'potpis' je izmijenjen bez modifikacije.\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}", currSernoSignature, rtrano, rtrano.PCK_ArtiklInfo_Signature, _theSerno);
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Serijskom broju: [{3}]\n\r\n\rPCK 'potpis' je izmijenjen bez modifikacije.\n\r\n\rSTARO: {0}\n\r\n\ra od stavke[{1}]\n\r\n\rNOVO: {2}\n\r\n\r{4}",
+               currSernoSignature, rtrano, rtrano.PCK_ArtiklInfo_Signature, _theSerno, "VJEROJATNO JE U PITANJU NETOČNA KRONOLOGIJA EVIDENCIJE TRANSAKCIJA");
+
+            ZXC.aim_emsg_List("Provjerite datume!", thisSerno_All_RtranoList.Select(rto => rto.ToString()).ToList());
          }
 
          currSernoArtiklCD  = rtrano.T_artiklCD              ;

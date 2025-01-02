@@ -1555,7 +1555,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       get
       {
-         return Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(this.ArtiklName, this.PCK_RAM, this.PCK_HDD, this.ZapreminaJM, this.DuljinaJM);
+            if(this.TS == ZXC.PCK_TS) return Get_New_ArtiklName_From_OldPCK_name_RAM_HDD(this.ArtiklName, this.PCK_RAM, this.PCK_HDD, this.ZapreminaJM, this.DuljinaJM);
+            else                      return "";
       }
    }
 
@@ -1609,6 +1610,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       Artikl origArtikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == senderArtiklCD);
 
       if(origArtikl_rec == null) return "";
+
+      if(origArtikl_rec.TS != ZXC.PCK_TS) return senderArtiklCD;
 
       Artikl newArtikl_rec = VvUserControl.ArtiklSifrar
          ./*Single*/FirstOrDefault(a => a.PCK_BazaCD.ToUpper() == origArtikl_rec.PCK_BazaCD.ToUpper() && 
