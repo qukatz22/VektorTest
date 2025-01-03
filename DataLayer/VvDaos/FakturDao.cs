@@ -4257,6 +4257,9 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
          ngFaktur_rec.DokDate = ZXC.nextYearFirstDay;
 
+         // tek 03.01.2025: 
+         ngFaktur_rec.Transes.ForEach(rtr => rtr.T_skladDate = ngFaktur_rec.DokDate);
+
          OK = ngFaktur_rec.VvDao.ADDREC(nextYearDbConnection, ngFaktur_rec);
 
          if(OK) nora++;
