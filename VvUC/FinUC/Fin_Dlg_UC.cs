@@ -91,6 +91,7 @@ public class PrenosPsDLG : VvDialog
    private VvTextBox tbx_dbName;
    private CheckBox  cbx_preskoci_WYRN;
    private bool      isFromNalog;
+   private VvTextBox tbx_skladCd, tbx_skladOpis;
 
    public PrenosPsDLG(string prevYear, string newYear, bool _isFromNalog)
    {
@@ -100,8 +101,10 @@ public class PrenosPsDLG : VvDialog
       this.isFromNalog   = _isFromNalog;
       
       CreateHamper();
+      
+      VvHamper.Open_Close_Fields_ForWriting(this, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
 
-      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgWidth = hamper.Right + ZXC.QunMrgn;
       dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
@@ -114,19 +117,30 @@ public class PrenosPsDLG : VvDialog
       hamper = new VvHamper(2, 4, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q10un };
+      hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q10un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = 0;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN, ZXC.QUN , ZXC.Q2un  };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN, ZXC.QUN , ZXC.QUN  };
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.QUN, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "Prošlogod. podaci:", ContentAlignment.MiddleRight);
+                   hamper.CreateVvLabel(0, 0, "Prošlogod. podaci:", ContentAlignment.MiddleRight);
       tbx_dbName = hamper.CreateVvTextBox(1, 0, "tbx_dbName", "");
+      
       cbx_preskoci_WYRN = hamper.CreateVvCheckBox_OLD(0, 1, null, 1, 2, "\t\tPRESKOČI kreiranje WYRN dokumenata\n\t\t(potrebnih za OPZ-STAT-1)", System.Windows.Forms.RightToLeft.No);
-
       cbx_preskoci_WYRN.Visible = isFromNalog;
+
+      Label lblSkl  = hamper.CreateVvLabel        (0, 2, "Samo za Sklad:", ContentAlignment.MiddleRight);
+      tbx_skladCd   = hamper.CreateVvTextBoxLookUp(0, 3, "tbx_skladCd", "Šifra skladišta");
+      tbx_skladOpis = hamper.CreateVvTextBox      (1, 3, "tbx_skladOpis_InVisible", "Naziv skladišta");
+      tbx_skladCd.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_skladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_skladCd.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis.JAM_Name;
+      tbx_skladOpis.JAM_ReadOnly = true;
+
+      lblSkl.Visible = tbx_skladCd.Visible = tbx_skladOpis.Visible = !isFromNalog;
+
    }
 
    void cancelButton_Click(object sender, EventArgs e)
@@ -136,7 +150,7 @@ public class PrenosPsDLG : VvDialog
 
    public string Fld_DBName        {  get { return tbx_dbName.Text;           }  set { tbx_dbName.Text          = value; } }
    public bool   Fld_Preskoci_WYRN {  get { return cbx_preskoci_WYRN.Checked; } set { cbx_preskoci_WYRN.Checked = value; } }
-
+   public string Fld_skladCD       { get { return tbx_skladCd.Text;           } set { tbx_skladCd.Text          = value; } }
 
 }
 
