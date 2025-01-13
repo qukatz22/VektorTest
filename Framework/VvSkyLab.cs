@@ -1551,6 +1551,8 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2024, 06, 24), TH_Cjenik_Kind._5WShop_5WCjenik_ },
       { new DateTime(2024, 12, 16), TH_Cjenik_Kind._5WShop_6WCjenik_ },
       { new DateTime(2025, 01, 27), TH_Cjenik_Kind._5WShop_5WCjenik_ },
+      { new DateTime(2025, 05, 12), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      { new DateTime(2025, 06, 23), TH_Cjenik_Kind._5WShop_5WCjenik_ },
 
    };
 
@@ -1568,8 +1570,9 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2023, 01, 11), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
 
       { new DateTime(2024, 11, 13), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
-      { new DateTime(2025, 01, 18), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
-
+      { new DateTime(2025, 01, 08), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
+      { new DateTime(2025, 11, 19), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
+      { new DateTime(2025, 12, 17), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
    };
 
 #if _puse_
