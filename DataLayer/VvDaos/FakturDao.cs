@@ -3422,7 +3422,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
    #region PS_RISK
 
-   internal static bool PS_RISK(XSqlConnection thisYconn, string pgDBname, string pgYear/*, bool isPrNBConly*/)
+   internal static bool PS_RISK(XSqlConnection thisYconn, string pgDBname, string pgYear/*, bool isPrNBConly*/, string thisSkladCDonly)
    {
       using(XSqlConnection prevYconn = VvSQL.CREATE_TEMP_XSqlConnection(pgDBname))
       {
@@ -3446,6 +3446,10 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
          foreach(VvLookUpItem lui in skladListW_sklNum)
          {
+
+            // 13.01.2025:
+            if(thisSkladCDonly.NotEmpty() && thisSkladCDonly != lui.Cd) continue;
+
             ArtiklDao.GetArtiklWithArtstatList(prevYconn, theArtiklWithArtstatList, lui.Cd, rptFilter.DatumDo, rptFilter, "", "artiklName ");
 
             if(theArtiklWithArtstatList.Count.NotZero())
