@@ -15629,11 +15629,13 @@ public class FakturPDUC : FakturExtDUC
             VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
          }
 
-         if(theDUC.IsPTG_UgAnDo_DUC) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
+       //if(theDUC.IsPTG_UgAnDo_DUC   ) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvRecordUC);
+         if(theDUC is UGNorAUN_PTG_DUC) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
       }
       else
       {
-         if(theDUC.IsPTG_UgAnDo_DUC) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+       //if(theDUC.IsPTG_UgAnDo_DUC   ) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
+         if(theDUC is UGNorAUN_PTG_DUC) VvHamper.Open_Close_Fields_ForWriting((theDUC as UGNorAUN_PTG_DUC).tbx_opaskaServisa_PTG, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvRecordUC);
       }
 
       /*rtzrtz*/
