@@ -3656,8 +3656,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // 23.04.2018: da ne provjerava
       bool isProjektTT = ZXC.TtInfo(Fld_TT).IsProjektTT;
 
-    //if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year                ) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
-      if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year && !isProjektTT) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
+    //if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year                                             ) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
+    //if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year && !isProjektTT                             ) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
+      if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Year != ZXC.projectYearFirstDay.Year && !isProjektTT && ZXC.IsManyYearDB == false) ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje. Zadali ste godinu koja nije 'radna'.");
 
       #region if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
 
