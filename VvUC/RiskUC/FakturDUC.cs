@@ -1074,7 +1074,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       tbx_TtOpis = hamper.CreateVvTextBox(2, 0, "tbx_ttOpis", "");
       // 23.10.2014: 
-      //tbx_TtNum = hamper.CreateVvTextBox(3, 0, "tbx_ttNum", "Ovo bolje ostavi kako je...", 6);
+    //tbx_TtNum = hamper.CreateVvTextBox(3, 0, "tbx_ttNum", "Ovo bolje ostavi kako je...", 6);
       tbx_TtNum = hamper.CreateVvTextBox(3, 0, "tbx_ttNum", "Ovo bolje ostavi kako je...", 7); // !!! 
       tbx_TT.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_TT.JAM_DataRequired = true;
@@ -1102,7 +1102,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
 
       tbx_TT.JAM_lui_NameTaker_JAM_Name = tbx_TtOpis.JAM_Name;
-      tbx_TT.JAM_ttNumTaker_JAM_Name = tbx_TtNum.JAM_Name;
+      tbx_TT.JAM_ttNumTaker_JAM_Name    = tbx_TtNum.JAM_Name;
 
       //tbx_TT.JAM_Highlighted = true;
       //tbx_TtNum.JAM_Highlighted = true;
