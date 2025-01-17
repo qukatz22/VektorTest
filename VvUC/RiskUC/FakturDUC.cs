@@ -112,7 +112,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected string specificFakturReportName;
 
    public Color clr_Izlaz, clr_Ulaz, clr_None, clr_Sklad, clr_komis, clr_PDV, clr_PdvSklad, clr_RUC, clr_RN, clr_malop, clr_klkPri, clr_UPA,
-                clr_UGAN_PTG, clr_DOD_PTG, clr_KOP_PTG, clr_OPL_PTG, clr_KOPLine_PTG;
+                clr_UGAN_PTG, clr_DOD_PTG, clr_PVR_PTG, clr_KOP_PTG, clr_OPL_PTG, clr_KOPLine_PTG;
    public bool IsRadNalog = false;
    public bool IsSklCD2 = false;
 
@@ -6397,6 +6397,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       clr_OPL_PTG     = Color.FromArgb(177, 235, 202);
       clr_KOP_PTG     = Color.FromArgb(252, 98, 98);
       clr_KOPLine_PTG = Color.FromArgb(255, 164, 164);
+      clr_PVR_PTG     = Color.FromArgb(197, 219, 162);
    }
    public void SetUpColor(Color clrTampHeader, Color lblCrta, Color tabPagePoly)
    {
