@@ -1642,6 +1642,31 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    public decimal PCK_RAM    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Zapremina; } set { if(ZXC.IsPCTOGO) this.Zapremina = value; } }
    public decimal PCK_HDD    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Duljina  ; } set { if(ZXC.IsPCTOGO) this.Duljina   = value; } }
 
+   internal static bool Does_thisArtiklCDNeeds_RtranoRow_ForSerno(string artiklCD) 
+   {
+      Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      if(artikl_rec == null)
+      {
+         return false;
+      }
+
+      return Does_thisArtiklTSNeeds_RtranoRow_ForSerno(artikl_rec.TS);
+   }
+
+   internal static bool Does_thisArtiklTSNeeds_RtranoRow_ForSerno(string artiklTS) 
+   {
+      bool isNOsernoTS =
+
+         artiklTS == ZXC.USL_TS ||
+         artiklTS == ZXC.KMP_TS ||
+         artiklTS == ZXC.OTH_TS;
+
+      bool isSernoTS = !isNOsernoTS;
+
+      return isSernoTS;
+   }
+
    #endregion Some Util - Results propertiz
 
    #region Ppmv - Posebni Porez Na Motorna Vozila 

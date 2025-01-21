@@ -3798,7 +3798,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       {
          if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
 
-         return (int)this.TrnNonDel.Where(rtr => VvForm.Does_thisRtransNeeds_RtranoRow_ForSerno(rtr.T_artiklCD)).Sum(rtr => rtr.T_kol); 
+         return (int)this.TrnNonDel.Where(rtr => Artikl.Does_thisArtiklCDNeeds_RtranoRow_ForSerno(rtr.T_artiklCD)).Sum(rtr => rtr.T_kol); 
       } 
    }
    internal int PTG_HAS_This_RtranoWith_Serno_Count 

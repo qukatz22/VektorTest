@@ -1937,10 +1937,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Check DokYear vs ZXC.projectYear
 
-      //if(faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay)
-      // 09.06.2022.
-      //if(isWYRN == false &&                                        faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
-      if(isWYRN == false && (this is UGNorAUN_PTG_DUC) == false && faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
+    //if(faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay)
+    //if(isWYRN == false &&                                        faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
+    //if(isWYRN == false && (this is UGNorAUN_PTG_DUC) == false && faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
+      if(isWYRN == false && (ZXC.IsPCTOGO            ) == false && faktur_rec.DokDate.Year != ZXC.projectYearFirstDay.Year && faktur_rec.DokDate.Date != ZXC.prevYearLastDay && faktur_rec.TtInfo.IsProjektTT == false)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Zadali ste nedozvoljenu godinu!");
          e.Cancel = true;
@@ -6210,10 +6210,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          // provjera uparujemo li ga s adekvatnim TS-om 
          string upisaniArtiklTS = theGrid2.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
 
-         bool isNOsernoTS =
-            upisaniArtiklTS == ZXC.USL_TS ||
-            upisaniArtiklTS == ZXC.KMP_TS ||
-            upisaniArtiklTS == ZXC.OTH_TS;
+         bool isNOsernoTS = Artikl.Does_thisArtiklTSNeeds_RtranoRow_ForSerno(upisaniArtiklTS) == false;
 
          if(isNOsernoTS)
          {
