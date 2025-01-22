@@ -1044,7 +1044,7 @@ public struct TtInfo
 
    #endregion IsSplitTTMalULAZ
 
-   #region IsV1andV2specialUse ... PTG ...
+   #region  ... PTG ... SPECIALS
 
    private static string[] isV1andV2specialUseTT = new string[] {
       Mixer .TT_KOP, // PCTGO tt 
@@ -1085,7 +1085,9 @@ public struct TtInfo
 
    public bool IsUgAnDoTT { get { return isUgAnDoTT.Contains(TheTT); } }
 
-   #endregion IsV1andV2specialUse ... PTG ...
+   public bool IsManyYearDB_But_NO_yearInTtNum { get { return IsUgAnDoTT /*|| TheTT == Faktur.TT_PON*/; } } // tu sad treba nadodati sve TT-ove za koje se NE zeli godina u ttNum-u 
+
+   #endregion ... PTG ... SPECIALS
 
    #region Constructors
 
