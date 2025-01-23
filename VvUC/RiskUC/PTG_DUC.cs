@@ -1598,16 +1598,16 @@ public class A1_ANU_PTG_DUC : UGNorAUN_PTG_DUC
    #endregion Constructor
 }
 
-public class DOD_PTG_DUC : FakturPDUC //FakturExtDUC
+public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
 {
    #region Constructor
 
-   public DOD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public DIZ_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[]
          {
-            Faktur.TT_DOD
+            Faktur.TT_DIZ
          });
    }
 
@@ -2590,11 +2590,11 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 }
 
 
-public class PRN_DOD_PTG_DUC : DOD_PTG_DUC
+public class PRN_DIZ_PTG_DUC : DIZ_PTG_DUC
 {
    #region Constructor
 
-   public PRN_DOD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PRN_DIZ_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 

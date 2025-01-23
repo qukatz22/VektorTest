@@ -502,6 +502,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
       Placa  placa_rec  = new Placa();
       Ptrans ptrans_rec = new Ptrans();
+      Person person_rec;
 
       DS_Placa.placaRow placaRowOfCurrentTranses;
 
@@ -513,6 +514,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       currParentID = ptransTable[0].t_parentID;
 
       OnFirstLineOfDocumentAction_InitializePlacaRec(currParentID, placa_rec, placaTable, out placaRowOfCurrentTranses, ptraneTable, ptranoTable);
+
+      ZXC.TheVvForm.TheVvUC.SetSifrarAndAutocomplete<Person>(null, VvSQL.SorterType.None);
 
       // 30.06.2015: 
       foreach(DS_Placa.kupdobRow kupdobRow in kupdobTable.Rows)
@@ -536,6 +539,14 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
                                                                   ptranE.t_parentID == ptransRow.t_parentID);
 
          ptrans_rec.FillFromDataRow_CalcResults_SetRowResults(ptransRow, placa_rec, ptraneRowsOfThisPtrans);
+
+         // 23.01.2025: 
+         person_rec = VvUserControl.PersonSifrar.SingleOrDefault(per => per.PersonCD == ptransRow.t_personCD);
+         if(person_rec == null)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu {0}\n\r\n\rnalazi se djelatnik {1}\n\r\n\rkojeg nema u datoteci Person!", placa_rec, ptransRow.t_prezime);
+            return false;
+         }
 
       } // foreach(DS_Placa.IzvjTableRow ptransRow in ptransTable.Rows) 
 
@@ -2451,7 +2462,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
       if(this is RptP_RAD1_G)
       {
-         ZXC.TheVvForm.TheVvUC.SetSifrarAndAutocomplete<Person>(null, VvSQL.SorterType.None);
+         //ZXC.TheVvForm.TheVvUC.SetSifrarAndAutocomplete<Person>(null, VvSQL.SorterType.None);
 
          foreach(var person in personTable)
          {
@@ -2464,7 +2475,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          int mjeseciCount;
          bool thisPersonHasNot12Placa;
          bool thisPersonHasSkracenoRV;
-         Person person_rec;
+         //Person person_rec;
          uint personCD;
 
          for(int rowIdx = 0; rowIdx < ptransSumTable.Rows.Count; ++rowIdx)

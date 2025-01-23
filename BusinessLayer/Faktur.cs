@@ -348,10 +348,11 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_KUG = "KUG"; // PTG - Krovni  Ugovor  za najam                        
    public const string TT_AUN = "AUN"; // PTG - Aneks   Ugovora za najam  - međuskladišni IZLAZ 
    public const string TT_UGN = "UGN"; // PTG -         Ugovor  za najam  - međuskladišni IZLAZ 
-   public const string TT_DOD = "DOD"; // PTG - Dodatak Ugovoru za najam  - međuskladišni IZLAZ 
+ //public const string TT_DOD = "DOD"; // PTG - Dodatak Ugovoru za najam  - međuskladišni IZLAZ 
+   public const string TT_DIZ = "DIZ"; // PTG - Dodatak Ugovoru za najam  - međuskladišni IZLAZ 
    public const string TT_AU2 = "AU2"; // PTG - Aneks   Ugovora za najam  - međuskladišni ULAZ  ... ovo su ujedno i Rtrano TT-ovi 
    public const string TT_UG2 = "UG2"; // PTG -         Ugovor  za najam  - međuskladišni ULAZ  ... ovo su ujedno i Rtrano TT-ovi 
-   public const string TT_DO2 = "DO2"; // PTG - Dodatak Ugovoru za najam  - međuskladišni ULAZ  ... ovo su ujedno i Rtrano TT-ovi 
+   public const string TT_DI2 = "DI2"; // PTG - Dodatak Ugovoru za najam  - međuskladišni ULAZ  ... ovo su ujedno i Rtrano TT-ovi 
    public const string TT_PVR = "PVR"; // PTG - Povrat po Ugovoru za najam- međuskladišni IZLAZ 
    public const string TT_PV2 = "PV2"; // PTG - Povrat po Ugovora za najam- međuskladišni ULAZ  
  //public const string TT_KOP = "KOP"; // PTG - Korekcija Otplatnog plana  preseljeno u Mixer   

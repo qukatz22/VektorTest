@@ -651,8 +651,8 @@ public static class VvUcList_AddNew
          case 275: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_KUG_PTG   .ToString(), "1", "2", "KUG_PTG_DUC"    , ZXC.IsTEXTHOany2 ? "valentina" : "");
          case 276: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_A1_KUG_PTG.ToString(), "1", "2", "A1_KUG_PTG_DUC" , ZXC.IsTEXTHOany2 ? "valentina" : "");
          case 277: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_A1_ANU_PTG.ToString(), "1", "2", "A1_ANU_PTG_DUC" , ZXC.IsTEXTHOany2 ? "valentina" : "");
-         case 278: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_DOD_PTG   .ToString(), "1", "2", "DOD_PTG_DUC"    , ZXC.IsTEXTHOany2 ? "valentina" : "");
-         case 279: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PR_DOD_PTG.ToString(), "1", "2", "PRN_DOD_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 278: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_DOD_PTG   .ToString(), "1", "2", "DIZ_PTG_DUC"    , ZXC.IsTEXTHOany2 ? "valentina" : "");
+         case 279: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_PR_DOD_PTG.ToString(), "1", "2", "PRN_DIZ_PTG_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          case 280: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_ZAH_SVD.ToString()   , "1", "2", "ZAH_SVD_DUC"    , ZXC.IsTEXTHOany2 ? "valentina" : "");
         

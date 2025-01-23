@@ -189,11 +189,11 @@ public struct TtInfo
       Faktur.TT_KUG, // PCTGO tt 
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
-      Faktur.TT_DOD, // PCTGO tt 
+      Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_UG2, // PCTGO tt ovo je mozda visak, al ziheraski 
-      Faktur.TT_DO2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_DI2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_PV2, // PCTGO tt ovo je mozda visak, al ziheraski 
 
       Faktur.TT_MOD, // PCTGO tt 
@@ -278,7 +278,7 @@ public struct TtInfo
 
             case Faktur.TT_AUN:
             case Faktur.TT_UGN:
-            case Faktur.TT_DOD:
+            case Faktur.TT_DIZ:
             case Faktur.TT_PVR:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
@@ -353,7 +353,7 @@ public struct TtInfo
 
       Faktur.TT_AUN,
       Faktur.TT_UGN,
-      Faktur.TT_DOD,
+      Faktur.TT_DIZ,
       Faktur.TT_PVR,
    };
 
@@ -392,7 +392,7 @@ public struct TtInfo
 
       Faktur.TT_AUN,
       Faktur.TT_UGN,
-      Faktur.TT_DOD,
+      Faktur.TT_DIZ,
       Faktur.TT_PVR,
    };
    /// <summary>
@@ -468,7 +468,7 @@ public struct TtInfo
 
       Faktur.TT_AUN,
       Faktur.TT_UGN,
-      Faktur.TT_DOD,
+      Faktur.TT_DIZ,
       Faktur.TT_PVR,
       Faktur.TT_MOI,
    };
@@ -536,7 +536,7 @@ public struct TtInfo
     //Faktur.TT_PUL, 
       Faktur.TT_AU2,
       Faktur.TT_UG2,
-      Faktur.TT_DO2,
+      Faktur.TT_DI2,
       Faktur.TT_PV2,
     //Faktur.TT_MOU,
    };
@@ -1051,11 +1051,11 @@ public struct TtInfo
       Faktur.TT_KUG, // PCTGO tt 
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
-      Faktur.TT_DOD, // PCTGO tt 
+      Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt 
       Faktur.TT_UG2, // PCTGO tt 
-      Faktur.TT_DO2, // PCTGO tt 
+      Faktur.TT_DI2, // PCTGO tt 
       Faktur.TT_PV2, // PCTGO tt 
       Faktur.TT_MOD, // PCTGO tt 
    };
@@ -1064,7 +1064,7 @@ public struct TtInfo
    private static string[] hasRtranoForSernoTT = new string[] {
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
-      Faktur.TT_DOD, // PCTGO tt 
+      Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
       Faktur.TT_PRI, // PCTGO tt 
       Faktur.TT_IZD, // PCTGO tt 
@@ -1080,7 +1080,7 @@ public struct TtInfo
    private static string[] isUgAnDoTT = new string[] {
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
-      Faktur.TT_DOD, // PCTGO tt 
+      Faktur.TT_DIZ, // PCTGO tt 
    };
 
    public bool IsUgAnDoTT { get { return isUgAnDoTT.Contains(TheTT); } }
@@ -1165,8 +1165,8 @@ public struct TtInfo
       if(TheTT == Faktur.TT_UG2) LinkedIzlazTT = Faktur.TT_UGN;
       if(TheTT == Faktur.TT_AUN) TwinTT        = Faktur.TT_AU2;
       if(TheTT == Faktur.TT_AU2) LinkedIzlazTT = Faktur.TT_AUN;
-      if(TheTT == Faktur.TT_DOD) TwinTT        = Faktur.TT_DO2;
-      if(TheTT == Faktur.TT_DO2) LinkedIzlazTT = Faktur.TT_DOD;
+      if(TheTT == Faktur.TT_DIZ) TwinTT        = Faktur.TT_DI2;
+      if(TheTT == Faktur.TT_DI2) LinkedIzlazTT = Faktur.TT_DIZ;
       if(TheTT == Faktur.TT_PVR) TwinTT        = Faktur.TT_PV2;
       if(TheTT == Faktur.TT_PV2) LinkedIzlazTT = Faktur.TT_PVR;
 
@@ -3709,7 +3709,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
     //if(CtrlOK(fakturDUC.tbx_DokDate2)        ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
       if(CtrlOK(fakturDUC.tbx_DokDate2)     &&
           this is UGNorAUN_PTG_DUC == false &&
-          this is DOD_PTG_DUC      == false    ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
+          this is DIZ_PTG_DUC      == false    ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
 
 
       if(this is FakturExtDUC == false) return;
@@ -5351,7 +5351,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          if(this is FakturExtDUC && 
             (faktur_rec.TtInfo.IsPrihodTT || faktur_rec.TtInfo.IsPonudaTT ||
-             this is UGNorAUN_PTG_DUC     || this is DOD_PTG_DUC)
+             this is UGNorAUN_PTG_DUC     || this is DIZ_PTG_DUC)
             )
          {
             Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);

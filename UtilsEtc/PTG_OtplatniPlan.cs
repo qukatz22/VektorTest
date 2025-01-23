@@ -279,7 +279,7 @@ public class PTG_OtplatniPlan
       DODfakturList = new List<PTG_Ugovor>();
       KOPMixer_List = new List<Mixer     >();
 
-      SetMe_DODfakturList(conn, DODfakturList, Faktur.TT_DOD);
+      SetMe_DODfakturList(conn, DODfakturList, Faktur.TT_DIZ);
       SetMe_KOPmixerList (conn, KOPMixer_List, Mixer .TT_KOP);
 
       #region AnaliticRtransList
@@ -1353,7 +1353,7 @@ public class PTG_Ugovor : Faktur
 
       List<VvSqlFilterMember> filterMembers;
 
-      if(wantedTT == Faktur.TT_DOD) filterMembers = PTG_OtplatniPlan.GetFilterMembers_DODfakturList(wantedTT, wantedKUGttNum, wantedUGANttNum);
+      if(wantedTT == Faktur.TT_DIZ) filterMembers = PTG_OtplatniPlan.GetFilterMembers_DODfakturList(wantedTT, wantedKUGttNum, wantedUGANttNum);
       else                          filterMembers = PTG_OtplatniPlan.GetFilterMembers_KOPxtransList(wantedTT, wantedKUGttNum, wantedUGANttNum);
 
       int? count = VvDaoBase.CountRecords(conn, filterMembers);
