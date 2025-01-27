@@ -1056,6 +1056,9 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
       bool isInMinus = false;
 
+      bool isUlazFromPrevYears  = ZXC.IsManyYearDB && TtInfo.IsFinKol_U && rtr.T_skladDate < ZXC.NowYearFirstDay;
+      bool isIzlazFromPrevYears = ZXC.IsManyYearDB && TtInfo.IsFinKol_I && rtr.T_skladDate < ZXC.NowYearFirstDay;
+
       if(IsMinusNotOK && (isReslovingMinusInProgress || rtr.MinusStatus == ZXC.MinusTrouble.IN_TROUBLE) && FrsMinTt.IsEmpty() && FrsMinTtNum.IsZero())
       {
          FrsMinTt    = TT;
@@ -1093,45 +1096,55 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
       #region POCETO STANJE
 
-      if(TtInfo.IsFinKol_PS)
+      // 24.01.2025: 
+    //if(TtInfo.IsFinKol_PS                                               )
+      if(TtInfo.IsFinKol_PS || isUlazFromPrevYears || isIzlazFromPrevYears)
       {
-           // 09.12.2015: 
-           bool isFKZ = this.ArtiklTS == Artikl.FinKorekArtTS; // financijska korekcija financijskog stanja skladista (zaliha) 
-           
-           // 15.07.2022: dodan if() tako da za CalcRtrans kolicina 1 izracuna r_KC, r_KCR, ... 
-           // a da ne utjece na RtrPstKol                                                       
-           if(!isFKZ)
-           RtrPstKol  = rtr.T_kol ;
-           UkPstKol  += RtrPstKol ;
-           RtrPstKol2 = rtr.T_kol2;
-           UkPstKol2 += RtrPstKol2;
-           
-           RtrPstCijNBC = rtr.T_cij    ; 
-           RtrPstCijMPC = rtr.R_CIJ_MSK; 
-           
-           RtrCijenaNBC = RtrPstCijNBC;
-           RtrCijenaMPC = RtrPstCijMPC;
+         if(isIzlazFromPrevYears) // !!! ************** !!! VOILA !!! 
+         {
+            rtr.T_kol *= -1;
+            rtr.T_cij = LastPrNabCij;
 
-           if(!isFKZ) // !!! normal     case 
-           {
-              RtrPstVrjNBC = rtr.R_KC;   
-           }
-           else // !!! korekturni case 
-           {
-              RtrPstVrjNBC = rtr.T_cij   ; //  ovako je kad korigiramo - direktan utjecaj na FinSt po NBC preko iznosa upisanog u polje t_cij (a moze biti poz. i negativan pa smanjujemo)
-           }
+            rtr.CalcTransResults(null);
+         }
 
-           RtrPstVrjMPC = rtr.R_MSK;
-           
-           UkPstFinNBC += RtrPstVrjNBC;
-           UkPstFinMPC += RtrPstVrjMPC;
-           
-           LastPrNabCij = /*PrNabCij*/RtrPstCijNBC;
-           LastUlazMPC  = /*MalopCij*/RtrPstCijMPC;
-           
-           DateZadPst = rtr.T_skladDate;
-           
-           RtrUlazKolFisycal = rtr.T_kol;
+         // 09.12.2015: 
+         bool isFKZ = this.ArtiklTS == Artikl.FinKorekArtTS; // financijska korekcija financijskog stanja skladista (zaliha) 
+         
+         // 15.07.2022: dodan if() tako da za CalcRtrans kolicina 1 izracuna r_KC, r_KCR, ... 
+         // a da ne utjece na RtrPstKol                                                       
+         if(!isFKZ)
+         RtrPstKol  = rtr.T_kol ;
+         UkPstKol  += RtrPstKol ;
+         RtrPstKol2 = rtr.T_kol2;
+         UkPstKol2 += RtrPstKol2;
+         
+         RtrPstCijNBC = rtr.T_cij    ; 
+         RtrPstCijMPC = rtr.R_CIJ_MSK; 
+         
+         RtrCijenaNBC = RtrPstCijNBC;
+         RtrCijenaMPC = RtrPstCijMPC;
+
+         if(!isFKZ) // !!! normal     case 
+         {
+            RtrPstVrjNBC = rtr.R_KC;   
+         }
+         else // !!! korekturni case 
+         {
+            RtrPstVrjNBC = rtr.T_cij   ; //  ovako je kad korigiramo - direktan utjecaj na FinSt po NBC preko iznosa upisanog u polje t_cij (a moze biti poz. i negativan pa smanjujemo)
+         }
+
+         RtrPstVrjMPC = rtr.R_MSK;
+         
+         UkPstFinNBC += RtrPstVrjNBC;
+         UkPstFinMPC += RtrPstVrjMPC;
+         
+         LastPrNabCij = /*PrNabCij*/RtrPstCijNBC;
+         LastUlazMPC  = /*MalopCij*/RtrPstCijMPC;
+         
+         DateZadPst = rtr.T_skladDate;
+         
+         RtrUlazKolFisycal = rtr.T_kol;
 
          #region #if(DEBUG)
 #if(DEBUG)

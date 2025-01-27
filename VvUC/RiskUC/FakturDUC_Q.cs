@@ -1170,6 +1170,11 @@ public struct TtInfo
       if(TheTT == Faktur.TT_PVR) TwinTT        = Faktur.TT_PV2;
       if(TheTT == Faktur.TT_PV2) LinkedIzlazTT = Faktur.TT_PVR;
 
+      if(TheTT == Faktur.TT_ZIZ) TwinTT        = Faktur.TT_ZI2;
+      if(TheTT == Faktur.TT_ZI2) LinkedIzlazTT = Faktur.TT_ZIZ;
+      if(TheTT == Faktur.TT_ZUL) TwinTT        = Faktur.TT_ZU2;
+      if(TheTT == Faktur.TT_ZU2) LinkedIzlazTT = Faktur.TT_ZUL;
+
       #endregion Meduskladisnice
 
       #region Proizvodnja - SplitTrans Technology
@@ -1191,6 +1196,9 @@ public struct TtInfo
 
       if(TheTT == Faktur.TT_MOI) SplitTT       = Faktur.TT_MOU;
       if(TheTT == Faktur.TT_MOU) LinkedIzlazTT = Faktur.TT_MOI;
+
+      if(TheTT == Faktur.TT_ZIZ) SplitTT       = Faktur.TT_ZUL;
+      if(TheTT == Faktur.TT_ZUL) LinkedIzlazTT = Faktur.TT_ZIZ;
 
       #endregion Proizvodnja
 

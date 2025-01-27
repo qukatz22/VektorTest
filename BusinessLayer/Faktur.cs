@@ -361,6 +361,12 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_MOI = "MOI"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) - npr. memorija sa skl rez. djelova - IZLAZ, nije međuskladišnica - samo NOT PCK-ovi            
    public const string TT_MOC = "MOC"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) -                                                                 - samo PCK-ovi                
    public const string TT_MOS = "MOS"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) -                                                                 - samo PCK-ovi                
+   public const string TT_MPI = "MPI"; // PTG - Meduskladisnica VELEP - IZLAZ 
+   public const string TT_MPU = "MPU"; // PTG - Meduskladisnica VELEP - ULAZ  
+   public const string TT_ZIZ = "ZIZ"; // PTG - Zamjena - međuskladišni IZLAZ                                   
+   public const string TT_ZI2 = "ZI2"; // PTG - Zamjena - međuskladišni ULAZ  ... ovo su ujedno i Rtrano TT-ovi 
+   public const string TT_ZUL = "ZUL"; // PTG - Zamjena - međuskladišni ULAZ                                    
+   public const string TT_ZU2 = "ZU2"; // PTG - Zamjena - međuskladišni IZLAZ ... ovo su ujedno i Rtrano TT-ovi 
 
    public const string TT_MSI = "MSI"; // Meduskladisnica VELEP - IZLAZ 
    public const string TT_MSU = "MSU"; // Meduskladisnica VELEP - ULAZ  
