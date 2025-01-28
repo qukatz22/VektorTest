@@ -1172,8 +1172,10 @@ public struct TtInfo
 
       if(TheTT == Faktur.TT_ZIZ) TwinTT        = Faktur.TT_ZI2;
       if(TheTT == Faktur.TT_ZI2) LinkedIzlazTT = Faktur.TT_ZIZ;
-      if(TheTT == Faktur.TT_ZUL) TwinTT        = Faktur.TT_ZU2;
-      if(TheTT == Faktur.TT_ZU2) LinkedIzlazTT = Faktur.TT_ZUL;
+      if(TheTT == Faktur.TT_ZUL) TwinTT        = Faktur.TT_ZU2; // ili ??? !!! 
+      if(TheTT == Faktur.TT_ZU2) LinkedIzlazTT = Faktur.TT_ZUL; // ili ??? !!! 
+    //if(TheTT == Faktur.TT_ZU2) TwinTT        = Faktur.TT_ZUL; // ili ??? !!! 
+    //if(TheTT == Faktur.TT_ZUL) LinkedIzlazTT = Faktur.TT_ZU2; // ili ??? !!! 
 
       #endregion Meduskladisnice
 
