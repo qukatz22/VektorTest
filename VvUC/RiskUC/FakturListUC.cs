@@ -787,7 +787,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
    protected override void CreateDataGridViewColumn()
    {
       DataGridViewTextBoxColumn col;
-      bool isDOKO = (ZXC.TheVvForm.TheVvUC is DIZ_PTG_DUC /*|| ZXC.TheVvForm.TheVvUC is KOP_PTG_DUC*/);
+      bool isDOKO = (ZXC.TheVvForm.TheVvUC is DIZ_PTG_DUC || ZXC.TheVvForm.TheVvUC is PVR_PTG_DUC || ZXC.TheVvForm.TheVvUC is ZIZ_PTG_DUC);
       bool isUGAN = (ZXC.TheVvForm.TheVvUC is UGO_PTG_DUC || ZXC.TheVvForm.TheVvUC is ANU_PTG_DUC);
       bool is2NPl = (ZXC.IsTETRAGRAM_ANY && (ZXC.TheVvForm.TheVvUC is IRA_MPC_DUC || ZXC.TheVvForm.TheVvUC is PON_MPC_DUC || ZXC.TheVvForm.TheVvUC is POT_DUC));
       

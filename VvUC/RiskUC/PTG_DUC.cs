@@ -2600,6 +2600,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
          {
             Faktur.TT_ZIZ
          });
+
+
    }
 
    #endregion Constructor
@@ -2947,7 +2949,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_SkladCd.JAM_DataRequired = true;
       tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
 
-      tbx_SkladCd  .JAM_ReadOnly = true;
+    //tbx_SkladCd  .JAM_ReadOnly = true;
       tbx_SkladOpis.JAM_ReadOnly = true;
       tbx_SkladBR  .JAM_ReadOnly = true;
 
@@ -2964,7 +2966,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_Sklad2Cd.JAM_DataRequired = true;
       tbx_Sklad2Cd.JAM_MustTabOutBeforeSubmit = true;
 
-      tbx_Sklad2Cd  .JAM_ReadOnly = true;
+    //tbx_Sklad2Cd  .JAM_ReadOnly = true;
       tbx_Sklad2Opis.JAM_ReadOnly = true;
       tbx_SkladRbr2.JAM_ReadOnly = true;
 
@@ -2989,19 +2991,22 @@ public class ZIZ_PTG_DUC : FakturPDUC
    public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
-      T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                        true, "Naziv"   , "Naziv artikla ili proizvoljan opis");
-      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
-      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
-      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSk"   , "Izlazno skladište");
-      T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
-      T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
-      T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"  , "Jedinična cijena"                  );
-      //T_rbt1St_CreateColumn        (ZXC.Q3un - ZXC.Qun4, 2, true, "Rbt"     , "Stopa rabata");
-      //R_cij_kcr_CreateColumn       (ZXC.Q4un           , 2, true, "CijSRbt" , "Cijena s rabatom");
-      //R_rbt1_CreateColumn          (ZXC.Q4un           , 2, true, "IznosRbt", "Iznos rabata");
-      R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos"   , "Ukupan iznos bez PDV-a");
+      T_TT_CreateColumnG1          (ZXC.Q3un,               true, "TT Izlaz"   , "Tip Izlaznog dokumenta", true);
+      R_Opis_CreateColumn          (ZXC.Q5un,               true, "TT Izl Opis", "Opis Izlaznog dokumenta");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSk"      , "Izlazno skladište");
+    //R_SkladIzl_CreateColumn      (ZXC.Q3un,               true, "SKL Izl"    , "Skladiste izlaza");
+      R_TT2_CreateColumn           (ZXC.Q3un,               true, "TT Ulaz"    , "Opis Ulaznog dokumenta");
+      R_Opis2_CreateColumn         (ZXC.Q5un,               true, "TT Ulz opis", "Tip Ulaznog dokumenta");
+      R_SkladUlz_CreateColumn      (ZXC.Q3un,               true, "UlzSkl"     , "Skladiste Ulaza");
+      T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                        true, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"        , "Tip artikla");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"        , "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"        , "HDD");
+      T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"         , "Jedinica mjere"                    );
+      T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"        , "Količina"                );
+      T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"     , "Jedinična cijena"                  );
+      R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos"      , "Ukupan iznos bez PDV-a");
    }
 
    #endregion TheG_Specific_Columns
@@ -5957,7 +5962,7 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       TheG.ColumnHeadersHeight = ZXC.Q2un;
 
-      T_TT_CreateColumnG1          (ZXC.Q2un,    true, "TT"       , "Tip dokumenta");
+      T_TT_CreateColumnG1          (ZXC.Q2un,    true, "TT"       , "Tip dokumenta", false);
       T_artiklCD_CreateColumn      (ZXC.Q3un,    true, "Šifra"    , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(             true, "Naziv"    , "Naziv artikla ili proizvoljan opis");
       T_artiklTS_CreateColumn      (ZXC.Q2un,    true, "Tip"      , "Tip artikla");
