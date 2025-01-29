@@ -2707,7 +2707,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       List<Rtrans> rtransList_ForProizvodSerlot = GetRtransList_ForSerlot(conn, proizvodSerlot);
 
-      string serlotSirovinaIzlazTT = ZXC.TtInfo(serlotProizvodUlazTT).LinkedIzlazTT;
+      string serlotSirovinaIzlazTT = ZXC.TtInfo(serlotProizvodUlazTT).LinkedDefaultTT;
 
       firstSirovinaIzlazRtrans_ForProizvodUlazSerlot = rtransList_ForProizvodSerlot.FirstOrDefault(rtr => rtr.T_TT == serlotSirovinaIzlazTT);
 

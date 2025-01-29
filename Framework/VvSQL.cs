@@ -7163,7 +7163,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   internal static XSqlCommand MsiMsu_Roundtrip_CheckBefSave_Command(XSqlConnection conn, string artiklCD_MsiNEW, DateTime skladDadte_MsiNEW, string skladCD_MsiNEW, string skladCD2_MsiNEW)
+   internal static XSqlCommand MsiMsu_Roundtrip_CheckBefSave_Command(string msiTT, XSqlConnection conn, string artiklCD_MsiNEW, DateTime skladDadte_MsiNEW, string skladCD_MsiNEW, string skladCD2_MsiNEW)
    { 
       XSqlCommand cmd = InitCommand(conn); 
 
@@ -7176,7 +7176,8 @@ public static class VvSQL
                                                                                                      
          "WHERE MsiPrevRtrans.t_artiklCD      =      ?prm_artiklCD_MsiNEW    # DUC T_artiklCD        \n" +
          "AND DATE(MsiPrevRtrans.t_skladDate) = DATE(?prm_skladDadte_MsiNEW) # DUC T_skladDate       \n" +
-         "AND MsiPrevRtrans.t_tt              = 'MSI'                        # DUC T_tt              \n" +
+       //"AND MsiPrevRtrans.t_tt              = 'MSI'                        # DUC T_tt              \n" +
+         "AND MsiPrevRtrans.t_tt              = ?prm_msiTT                   # DUC T_tt              \n" +
          "AND MsiPrevFaktur.SkladCD2          = ?prm_skladCD_MsiNEW          # DUC F_skladCD         \n" +
          "AND MsiPrevFaktur.SkladCD           = ?prm_skladCD2_MsiNEW         # DUC F_SkladCD2        \n" ;
 
@@ -7184,6 +7185,7 @@ public static class VvSQL
       CreateCommandParameter(cmd, "skladDadte_MsiNEW", skladDadte_MsiNEW, XSqlDbType.Date   , 12);
       CreateCommandParameter(cmd, "skladCD_MsiNEW"   , skladCD_MsiNEW   , XSqlDbType.VarChar,  6);
       CreateCommandParameter(cmd, "skladCD2_MsiNEW"  , skladCD2_MsiNEW  , XSqlDbType.VarChar,  6);
+      CreateCommandParameter(cmd, "msiTT"            , msiTT            , XSqlDbType.VarChar,  6);
 
       return (cmd);
    }

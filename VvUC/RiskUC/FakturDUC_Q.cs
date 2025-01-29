@@ -84,7 +84,7 @@ public struct TtInfo
    /// <summary>
    /// TT izlaznog dokumenta koji je i stvorio ovaj ulaz (ili TwinTT ili SplitTT slucaj)
    /// </summary>
-   public string LinkedIzlazTT { get; set; }
+   public string LinkedDefaultTT { get; set; }
 
    public bool IsArtiklStatusInfluencer { get { return (
       
@@ -191,10 +191,17 @@ public struct TtInfo
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_PVD, // PCTGO tt 
+      Faktur.TT_ZIZ, // PCTGO tt 
+      Faktur.TT_MPI, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_UG2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_DI2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_PV2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_PD2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_ZI2, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_ZUL, // PCTGO tt ovo je mozda visak, al ziheraski 
+      Faktur.TT_ZU2, // PCTGO tt ovo je mozda visak, al ziheraski 
 
       Faktur.TT_MOD, // PCTGO tt 
       Faktur.TT_MOI, // PCTGO tt 
@@ -280,12 +287,16 @@ public struct TtInfo
             case Faktur.TT_UGN:
             case Faktur.TT_DIZ:
             case Faktur.TT_PVR:
+            case Faktur.TT_PVD:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
 
 //case Faktur.TT_IZD: // SVD TEMP!!!
 
             case Faktur.TT_MSI:
+            case Faktur.TT_MPI:
+            case Faktur.TT_ZIZ:
+            case Faktur.TT_ZUL:
             case Faktur.TT_KIZ:
             case Faktur.TT_PIK:
             case Faktur.TT_VMI:
@@ -355,6 +366,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DIZ,
       Faktur.TT_PVR,
+      Faktur.TT_PVD,
    };
 
    public bool IsIRArucableTT { get { return arrayIRArucables.Contains(TheTT); } }
@@ -394,6 +406,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DIZ,
       Faktur.TT_PVR,
+      Faktur.TT_PVD,
    };
    /// <summary>
    /// Ovi TT-ovi u T_skladDate napucavaju F_skladDate a ne F_dokDate
@@ -405,9 +418,9 @@ public struct TtInfo
       {
          bool twinTTisSkladDateTT = false;
 
-         if(LinkedIzlazTT.NotEmpty())
+         if(LinkedDefaultTT.NotEmpty())
          {
-            TtInfo linkedIzlazttInfo = ZXC.TtInfo(LinkedIzlazTT);
+            TtInfo linkedIzlazttInfo = ZXC.TtInfo(LinkedDefaultTT);
 
             twinTTisSkladDateTT = linkedIzlazttInfo.IsSkladDateTT;
          }
@@ -430,6 +443,9 @@ public struct TtInfo
       Faktur.TT_RVI, 
       Faktur.TT_IRM, 
       Faktur.TT_MSI, 
+      Faktur.TT_MPI, 
+      Faktur.TT_ZIZ, 
+      Faktur.TT_ZUL, 
       Faktur.TT_MMI, 
       Faktur.TT_KIZ, 
       Faktur.TT_PIK, 
@@ -470,6 +486,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DIZ,
       Faktur.TT_PVR,
+      Faktur.TT_PVD,
       Faktur.TT_MOI,
    };
    // Za sada ovo sluzi samo pri 'AnyArtiklTextBox_OnGrid_Leave' na FakturDUC-u 
@@ -528,6 +545,7 @@ public struct TtInfo
    
    private static string[] arrayIsInternUlazTT_fromOneIzlaz = new string[] { 
       Faktur.TT_MSU, 
+      Faktur.TT_MPU, 
       Faktur.TT_MMU, 
       Faktur.TT_KUL, 
       Faktur.TT_PUK, 
@@ -538,6 +556,9 @@ public struct TtInfo
       Faktur.TT_UG2,
       Faktur.TT_DI2,
       Faktur.TT_PV2,
+      Faktur.TT_PD2,
+      Faktur.TT_ZI2,
+      Faktur.TT_ZUL,
     //Faktur.TT_MOU,
    };
    /// <summary>
@@ -563,6 +584,9 @@ public struct TtInfo
 
    private static string[] arrayIsInternIzlazTT = new string[] { 
       Faktur.TT_MSI, 
+      Faktur.TT_MPI, 
+      Faktur.TT_ZIZ, 
+      Faktur.TT_ZU2, 
       Faktur.TT_MMI, 
       Faktur.TT_KIZ, 
       Faktur.TT_PIK, 
@@ -1053,10 +1077,14 @@ public struct TtInfo
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt 
       Faktur.TT_UG2, // PCTGO tt 
       Faktur.TT_DI2, // PCTGO tt 
       Faktur.TT_PV2, // PCTGO tt 
+      Faktur.TT_PD2, // PCTGO tt 
+      Faktur.TT_ZIZ, // PCTGO tt 
+      Faktur.TT_ZI2, // PCTGO tt 
       Faktur.TT_MOD, // PCTGO tt 
    };
    public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
@@ -1066,10 +1094,14 @@ public struct TtInfo
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_PRI, // PCTGO tt 
       Faktur.TT_IZD, // PCTGO tt 
       Faktur.TT_URA, // PCTGO tt 
       Faktur.TT_IRA, // PCTGO tt 
+      Faktur.TT_MPI, // PCTGO tt 
+      Faktur.TT_ZIZ, // PCTGO tt 
+      Faktur.TT_ZUL, // PCTGO tt 
     //Faktur.TT_MOD, // PCTGO tt NE - namjerno 
 
       // tu jos nismo gotovi ... 
@@ -1143,64 +1175,65 @@ public struct TtInfo
 
       #region Meduskladisnice - TwinTrans Technology
 
-      if(TheTT == Faktur.TT_MSI) TwinTT        = Faktur.TT_MSU;
-      if(TheTT == Faktur.TT_MSU) LinkedIzlazTT = Faktur.TT_MSI;
+      if(TheTT == Faktur.TT_MSI) TwinTT          = Faktur.TT_MSU;
+      if(TheTT == Faktur.TT_MSU) LinkedDefaultTT = Faktur.TT_MSI;
 
-      if(TheTT == Faktur.TT_MMI) TwinTT        = Faktur.TT_MMU;
-      if(TheTT == Faktur.TT_MMU) LinkedIzlazTT = Faktur.TT_MMI;
+      if(TheTT == Faktur.TT_MMI) TwinTT          = Faktur.TT_MMU;
+      if(TheTT == Faktur.TT_MMU) LinkedDefaultTT = Faktur.TT_MMI;
 
-      if(TheTT == Faktur.TT_VMI) TwinTT        = Faktur.TT_VMU;
-      if(TheTT == Faktur.TT_VMU) LinkedIzlazTT = Faktur.TT_VMI;
+      if(TheTT == Faktur.TT_VMI) TwinTT          = Faktur.TT_VMU;
+      if(TheTT == Faktur.TT_VMU) LinkedDefaultTT = Faktur.TT_VMI;
 
-      if(TheTT == Faktur.TT_MVI) TwinTT        = Faktur.TT_MVU;
-      if(TheTT == Faktur.TT_MVU) LinkedIzlazTT = Faktur.TT_MVI;
+      if(TheTT == Faktur.TT_MVI) TwinTT          = Faktur.TT_MVU;
+      if(TheTT == Faktur.TT_MVU) LinkedDefaultTT = Faktur.TT_MVI;
 
-      if(TheTT == Faktur.TT_KIZ) TwinTT        = Faktur.TT_KUL;
-      if(TheTT == Faktur.TT_KUL) LinkedIzlazTT = Faktur.TT_KIZ;
+      if(TheTT == Faktur.TT_KIZ) TwinTT          = Faktur.TT_KUL;
+      if(TheTT == Faktur.TT_KUL) LinkedDefaultTT = Faktur.TT_KIZ;
 
-      if(TheTT == Faktur.TT_PIK) TwinTT        = Faktur.TT_PUK;
-      if(TheTT == Faktur.TT_PUK) LinkedIzlazTT = Faktur.TT_PIK;
+      if(TheTT == Faktur.TT_PIK) TwinTT          = Faktur.TT_PUK;
+      if(TheTT == Faktur.TT_PUK) LinkedDefaultTT = Faktur.TT_PIK;
 
-      if(TheTT == Faktur.TT_UGN) TwinTT        = Faktur.TT_UG2;
-      if(TheTT == Faktur.TT_UG2) LinkedIzlazTT = Faktur.TT_UGN;
-      if(TheTT == Faktur.TT_AUN) TwinTT        = Faktur.TT_AU2;
-      if(TheTT == Faktur.TT_AU2) LinkedIzlazTT = Faktur.TT_AUN;
-      if(TheTT == Faktur.TT_DIZ) TwinTT        = Faktur.TT_DI2;
-      if(TheTT == Faktur.TT_DI2) LinkedIzlazTT = Faktur.TT_DIZ;
-      if(TheTT == Faktur.TT_PVR) TwinTT        = Faktur.TT_PV2;
-      if(TheTT == Faktur.TT_PV2) LinkedIzlazTT = Faktur.TT_PVR;
-
-      if(TheTT == Faktur.TT_ZIZ) TwinTT        = Faktur.TT_ZI2;
-      if(TheTT == Faktur.TT_ZI2) LinkedIzlazTT = Faktur.TT_ZIZ;
-      if(TheTT == Faktur.TT_ZUL) TwinTT        = Faktur.TT_ZU2; // ili ??? !!! 
-      if(TheTT == Faktur.TT_ZU2) LinkedIzlazTT = Faktur.TT_ZUL; // ili ??? !!! 
-    //if(TheTT == Faktur.TT_ZU2) TwinTT        = Faktur.TT_ZUL; // ili ??? !!! 
-    //if(TheTT == Faktur.TT_ZUL) LinkedIzlazTT = Faktur.TT_ZU2; // ili ??? !!! 
+      if(TheTT == Faktur.TT_UGN) TwinTT          = Faktur.TT_UG2;
+      if(TheTT == Faktur.TT_UG2) LinkedDefaultTT = Faktur.TT_UGN;
+      if(TheTT == Faktur.TT_AUN) TwinTT          = Faktur.TT_AU2;
+      if(TheTT == Faktur.TT_AU2) LinkedDefaultTT = Faktur.TT_AUN;
+      if(TheTT == Faktur.TT_DIZ) TwinTT          = Faktur.TT_DI2;
+      if(TheTT == Faktur.TT_DI2) LinkedDefaultTT = Faktur.TT_DIZ;
+      if(TheTT == Faktur.TT_PVR) TwinTT          = Faktur.TT_PV2;
+      if(TheTT == Faktur.TT_PV2) LinkedDefaultTT = Faktur.TT_PVR;
+      if(TheTT == Faktur.TT_PVD) TwinTT          = Faktur.TT_PD2;
+      if(TheTT == Faktur.TT_PD2) LinkedDefaultTT = Faktur.TT_PVD;
+      if(TheTT == Faktur.TT_MPI) TwinTT          = Faktur.TT_MPU;
+      if(TheTT == Faktur.TT_MPU) LinkedDefaultTT = Faktur.TT_MPI;
+      if(TheTT == Faktur.TT_ZIZ) TwinTT          = Faktur.TT_ZI2;
+      if(TheTT == Faktur.TT_ZI2) LinkedDefaultTT = Faktur.TT_ZIZ;
+      if(TheTT == Faktur.TT_ZUL) TwinTT          = Faktur.TT_ZU2;
+      if(TheTT == Faktur.TT_ZU2) LinkedDefaultTT = Faktur.TT_ZUL;
 
       #endregion Meduskladisnice
 
       #region Proizvodnja - SplitTrans Technology
 
-      if(TheTT == Faktur.TT_PIZ) SplitTT       = Faktur.TT_PUL;
-      if(TheTT == Faktur.TT_PUL) LinkedIzlazTT = Faktur.TT_PIZ;
+      if(TheTT == Faktur.TT_PIZ) SplitTT         = Faktur.TT_PUL;
+      if(TheTT == Faktur.TT_PUL) LinkedDefaultTT = Faktur.TT_PIZ;
 
-      if(TheTT == Faktur.TT_PIX) SplitTT       = Faktur.TT_PUX;
-      if(TheTT == Faktur.TT_PUX) LinkedIzlazTT = Faktur.TT_PIX;
+      if(TheTT == Faktur.TT_PIX) SplitTT         = Faktur.TT_PUX;
+      if(TheTT == Faktur.TT_PUX) LinkedDefaultTT = Faktur.TT_PIX;
 
-      if(TheTT == Faktur.TT_PIM) SplitTT       = Faktur.TT_PUM;
-      if(TheTT == Faktur.TT_PUM) LinkedIzlazTT = Faktur.TT_PIM;
+      if(TheTT == Faktur.TT_PIM) SplitTT         = Faktur.TT_PUM;
+      if(TheTT == Faktur.TT_PUM) LinkedDefaultTT = Faktur.TT_PIM;
 
-      if(TheTT == Faktur.TT_TRI) SplitTT       = Faktur.TT_TRM;
-      if(TheTT == Faktur.TT_TRM) LinkedIzlazTT = Faktur.TT_TRI;
+      if(TheTT == Faktur.TT_TRI) SplitTT         = Faktur.TT_TRM;
+      if(TheTT == Faktur.TT_TRM) LinkedDefaultTT = Faktur.TT_TRI;
 
-      if(TheTT == Faktur.TT_RNM) SplitTT       = Faktur.TT_RNU;
-      if(TheTT == Faktur.TT_RNU) LinkedIzlazTT = Faktur.TT_RNM;
+      if(TheTT == Faktur.TT_RNM) SplitTT         = Faktur.TT_RNU;
+      if(TheTT == Faktur.TT_RNU) LinkedDefaultTT = Faktur.TT_RNM;
 
-      if(TheTT == Faktur.TT_MOI) SplitTT       = Faktur.TT_MOU;
-      if(TheTT == Faktur.TT_MOU) LinkedIzlazTT = Faktur.TT_MOI;
+      if(TheTT == Faktur.TT_MOI) SplitTT         = Faktur.TT_MOU;
+      if(TheTT == Faktur.TT_MOU) LinkedDefaultTT = Faktur.TT_MOI;
 
-      if(TheTT == Faktur.TT_ZIZ) SplitTT       = Faktur.TT_ZUL;
-      if(TheTT == Faktur.TT_ZUL) LinkedIzlazTT = Faktur.TT_ZIZ;
+      if(TheTT == Faktur.TT_ZIZ) SplitTT         = Faktur.TT_ZUL;
+      if(TheTT == Faktur.TT_ZUL) LinkedDefaultTT = Faktur.TT_ZIZ;
 
       #endregion Proizvodnja
 
@@ -1526,18 +1559,23 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region MSI-MSU Roundtrip
 
-         if(faktur_rec.TT == Faktur.TT_MSI)
+         // 29.01.2025: 
+       //if(faktur_rec.TT == Faktur.TT_MSI)
+         if(faktur_rec.TtInfo.HasTwinTT   )
          {
-            DateTime skladDate = Fld_DokDate;
-            string skladCD = Fld_SkladCD;
-            string skladCD2 = Fld_SkladCD2;
+            DateTime skladDate = Fld_DokDate ;
+            string skladCD     = Fld_SkladCD ;
+            string skladCD2    = Fld_SkladCD2;
+            string msiTT       = Fld_TT      ;
 
             List<ZXC.VvUtilDataPackage> theTtAndTtNumList;
             ZXC.MySqlCheck_Kind MySqlCheck_Kind = ZXC.MySqlCheck_Kind.M_MsiMsu_Roundtrip;
             bool hasMsiMsuProblem;
 
             hasMsiMsuProblem =
-               VvDaoBase.MsiMsu_Roundtrip_CheckBefSave(TheDbConnection, MySqlCheck_Kind, artiklCD, skladDate, skladCD, skladCD2, out theTtAndTtNumList);
+               // 29.01.2025: 
+             //VvDaoBase.MsiMsu_Roundtrip_CheckBefSave(       TheDbConnection, MySqlCheck_Kind, artiklCD, skladDate, skladCD, skladCD2, out theTtAndTtNumList);
+               VvDaoBase.MsiMsu_Roundtrip_CheckBefSave(msiTT, TheDbConnection, MySqlCheck_Kind, artiklCD, skladDate, skladCD, skladCD2, out theTtAndTtNumList);
             if(hasMsiMsuProblem)
             {
                string errMessage = VvForm.GetErrMessageList(theTtAndTtNumList);
@@ -6510,7 +6548,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          if(_tt == Faktur.TT_PRI) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PRI_PTG);
          if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_PTG);
-         if(_tt == Faktur.TT_MSI) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_MSI_PTG);
          if(_tt == Faktur.TT_URA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_URA_PTG);
          if(_tt == Faktur.TT_IRA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IRA_PTG);
 
