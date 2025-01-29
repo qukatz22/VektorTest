@@ -161,7 +161,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private VvDateTimePickerColumn colDate;
 
-   internal bool IsPTG_UgAnDo_DUC         { get { return (this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC); } }
+   internal bool IsPTG_UgAnDo_DUC         { get { return (this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is PVD_PTG_DUC || this is ZIZ_PTG_DUC); } }
    internal bool IsPTG_Common_DUC         { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is IRA_PTG_DUC /*|| this is PST_PTG_DUC*/ || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
    internal bool IsPTG_MOD_DUC            { get { return (this is MOD_PTG_DUC                            ); } }       // 's desna na lijevo' 
    internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDo_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
@@ -3316,6 +3316,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is UGNorAUN_PTG_DUC) tbx_TtNum.Text = value.ToString("0000000");
          else if(this is DIZ_PTG_DUC     ||
                  this is PVR_PTG_DUC     ||
+                 this is PVD_PTG_DUC     ||
                  this is ZIZ_PTG_DUC      ) tbx_TtNum.Text = value.ToString("0000000000");
        //else if(this is KOP_PTG_DUC     ) tbx_TtNum.Text = value.ToString("0000000000");
        //else if(this is ZAH_SVD_DUC     ) tbx_TtNum.Text = value.ToString("0000000");
@@ -3850,6 +3851,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is KUG_PTG_DUC ||
          this is DIZ_PTG_DUC ||
          this is PVR_PTG_DUC ||
+         this is PVD_PTG_DUC ||
          this is ZIZ_PTG_DUC ||
          this is MOD_PTG_DUC
          )
@@ -3864,6 +3866,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is A1_ANU_PTG_DUC || 
          this is    DIZ_PTG_DUC ||
          this is    PVR_PTG_DUC ||
+         this is    PVD_PTG_DUC ||
          this is    ZIZ_PTG_DUC //||
        //this is    KOP_PTG_DUC
          )
@@ -3871,7 +3874,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
       }
 
-      if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC ) // Dodatak DUC treba jos i UGNorAUNnum 
+      if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is PVD_PTG_DUC || this is ZIZ_PTG_DUC ) // Dodatak DUC treba jos i UGNorAUNnum 
       {
          UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
       }
@@ -4397,14 +4400,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
          if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
       }
-      if(this is PVR_PTG_DUC || this is ZIZ_PTG_DUC)
+      if(this is PVR_PTG_DUC || this is PVD_PTG_DUC || this is ZIZ_PTG_DUC)
       {
-         DIZ_PTG_DUC ptgDUC        = this as DIZ_PTG_DUC;
-         PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
-
-         if(CtrlOK(ptgDUC.tbx_DokDate2      )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
-       //if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
-         if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
+        // DIZ_PTG_DUC ptgDUC        = this as DIZ_PTG_DUC;
+        // PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
+        //
+        // if(CtrlOK(ptgDUC.tbx_DokDate2      )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
+       ////if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
+        // if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
       }
 
       if(this is MOD_PTG_DUC)
@@ -4617,6 +4620,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
           this is UGNorAUN_PTG_DUC == false &&
           this is DIZ_PTG_DUC      == false &&
           this is PVR_PTG_DUC      == false &&
+          this is PVD_PTG_DUC      == false &&
           this is ZIZ_PTG_DUC      == false 
         ) Fld_DokDate2 = dokDate;
    }
@@ -7924,7 +7928,7 @@ public partial class FakturExtDUC : FakturDUC
    private void AddTabPagesResultProsireno()
    {
       //02.02.2022. na UGAN i DOD ne trebaju tabovi Sume i Prošitreno
-      bool ovajDucNetrebaSumeProsireno = this is KUG_PTG_DUC || this is A1_KUG_PTG_DUC || this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC || this is PRN_DIZ_PTG_DUC || this is MOD_PTG_DUC;
+      bool ovajDucNetrebaSumeProsireno = this is KUG_PTG_DUC || this is A1_KUG_PTG_DUC || this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is PVD_PTG_DUC || this is ZIZ_PTG_DUC || this is PRN_DIZ_PTG_DUC || this is MOD_PTG_DUC;
 
       if(!ovajDucNetrebaSumeProsireno)
       {
