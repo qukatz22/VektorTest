@@ -4921,11 +4921,9 @@ public class MSI_PTG_DUC : FakturPDUC
       CreateArrOfHampers();
       SetParentOfHamperLeftHampers();
       SetLocationToHamperDeda();
-
-    //hamp_opis.VvColWdt[1] = 2 * ZXC.Q10un + ZXC.Q5un + ZXC.Qun4;
-    //hamp_opis.Location = new Point(0, hamp_skladCd.Bottom - ZXC.Qun4);
-    //
-    nextY = hamp_napomena.Bottom;
+      
+      hamp_tt.BringToFront();
+      nextY = hamp_napomena.Bottom;
    }
 
    private void CreateArrOfHampers()

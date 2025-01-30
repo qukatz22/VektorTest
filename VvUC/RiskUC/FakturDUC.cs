@@ -3312,14 +3312,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          //tbx_TtNum.Text = value.ToString(/*"00000"*/);
          //this.oldTtNum = value;
-              if(this is KUG_PTG_DUC     ) tbx_TtNum.Text = value.ToString("00");
-         else if(this is UGNorAUN_PTG_DUC) tbx_TtNum.Text = value.ToString("0000000");
+              if(this is KUG_PTG_DUC      ) tbx_TtNum.Text = value.ToString("00");
+         else if(this is UGNorAUN_PTG_DUC ) tbx_TtNum.Text = value.ToString("0000000");
          else if(this is DIZ_PTG_DUC     ||
                  this is PVR_PTG_DUC     ||
                  this is PVD_PTG_DUC     ||
                  this is ZIZ_PTG_DUC      ) tbx_TtNum.Text = value.ToString("0000000000");
-       //else if(this is KOP_PTG_DUC     ) tbx_TtNum.Text = value.ToString("0000000000");
-       //else if(this is ZAH_SVD_DUC     ) tbx_TtNum.Text = value.ToString("0000000");
+         else if(IsPTG_Common_DUC        ||
+                 this is MOD_PTG_DUC      ) tbx_TtNum.Text = value.ToString("00000000");
          else
          {
             tbx_TtNum.Text = value.ToString(/*"00000"*/);
@@ -3762,13 +3762,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(/*"ZNJ"*/ZXC.PTG_ZNJ);
                VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(/*"UNJ"*/ZXC.PTG_UNJ);
 
-               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ || Fld_TT == Faktur.TT_MOD))
+               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ || Fld_TT == Faktur.TT_MOD || Fld_TT == Faktur.TT_ZIZ))
                {
                   Fld_SkladCD    =       luiSkladZNJ.Cd     ;
                   Fld_SkladOpis  =       luiSkladZNJ.Name   ;
                   Fld_SkladBR    = (uint)luiSkladZNJ.Integer;
                }
-               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_PVR))
+               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_PVR || Fld_TT == Faktur.TT_PVD))
                {
                   Fld_SkladCD2   =       luiSkladZNJ.Cd     ;
                   Fld_Sklad2Opis =       luiSkladZNJ.Name   ;
@@ -3781,7 +3781,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                   Fld_Sklad2Opis =       luiSkladUNJ.Name   ;
                   Fld_SkladBR2   = (uint)luiSkladUNJ.Integer;
                }
-               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_PVR))
+               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_PVR || Fld_TT == Faktur.TT_PVD))
                {
                   Fld_SkladCD    =       luiSkladUNJ.Cd     ;
                   Fld_SkladOpis  =       luiSkladUNJ.Name   ;
