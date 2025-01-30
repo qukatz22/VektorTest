@@ -1109,15 +1109,30 @@ public struct TtInfo
 
    public bool HasRtranoForSernoTT { get { return hasRtranoForSernoTT.Contains(TheTT); } }
 
-   private static string[] isUgAnDoTT = new string[] {
-      Faktur.TT_AUN, // PCTGO tt 
+   private static string[] isPTG_UgAnDoTT = new string[] {
       Faktur.TT_UGN, // PCTGO tt 
+      Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
+      Faktur.TT_PVR, // PCTGO tt 
+      Faktur.TT_PVD, // PCTGO tt 
+      Faktur.TT_ZIZ, // PCTGO tt 
    };
 
-   public bool IsUgAnDoTT { get { return isUgAnDoTT.Contains(TheTT); } }
+   public bool IsPTG_UgAnDoTT { get { return isPTG_UgAnDoTT.Contains(TheTT); } }
 
-   public bool IsManyYearDB_But_NO_yearInTtNum { get { return IsUgAnDoTT /*|| TheTT == Faktur.TT_PON*/; } } // tu sad treba nadodati sve TT-ove za koje se NE zeli godina u ttNum-u 
+   private static string[] isPTG_YYinTtNum = new string[] {
+      Faktur.TT_MOD, // PCTGO tt 
+      Faktur.TT_PRI, // PCTGO tt 
+      Faktur.TT_URA, // PCTGO tt 
+      Faktur.TT_IZD, // PCTGO tt 
+      Faktur.TT_MPI, // PCTGO tt 
+      Faktur.TT_IRA, // PCTGO tt 
+   };
+
+   public bool IsPTG_YYinTtNum { get { return isPTG_YYinTtNum.Contains(TheTT); } }
+
+   public bool IsPTG_TT         { get { return IsPTG_UgAnDoTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
+   public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDoTT && TheTT != Faktur.TT_UGN) || TheTT == Mixer.TT_KOP; } } 
 
    #endregion ... PTG ... SPECIALS
 
