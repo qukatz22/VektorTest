@@ -3891,15 +3891,15 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       int eventualDokYear = 0;
 
-      if(ZXC.IsManyYearDB && !IsPTG_UgAnDo_DUC) eventualDokYear = Fld_DokDate.Year - 2000;
+      if(ZXC.IsManyYearDB && !IsPTG_UgAnDo_DUC) eventualDokYear = Fld_DokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : Fld_DokDate.Year - 2000;
 
       #endregion PTG news
 
-      // 09.10.2017: 
-      //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind                                       ));
-      // PTG news:                                                                                                                                                                                             
-      //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth                     ));
-      //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum));
+    // 09.10.2017: 
+    //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind                                       ));
+    // PTG news:                                                                                                                                                                                             
+    //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth                     ));
+    //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum));
       if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum, eventualDokYear));
 
       SetDefaulFakExDucFields();

@@ -444,6 +444,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    protected static FaktExDao.FaktExCI CIex                = ZXC.FaktExDao.CI;
 
    public static string tt_colName       = ZXC.FakturDao.GetSchemaColumnName(CI.tt      );
+   public static string ttNum_colName    = ZXC.FakturDao.GetSchemaColumnName(CI.ttNum   );
    public static string skladCd_colName  = ZXC.FakturDao.GetSchemaColumnName(CI.skladCD );
    public static string skladCd2_colName = ZXC.FakturDao.GetSchemaColumnName(CI.skladCD2);
 

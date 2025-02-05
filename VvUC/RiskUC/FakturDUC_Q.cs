@@ -1134,6 +1134,8 @@ public struct TtInfo
    public bool IsPTG_TT         { get { return IsPTG_UgAnDoTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
    public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDoTT && TheTT != Faktur.TT_UGN) || TheTT == Mixer.TT_KOP; } } 
 
+   public bool IsPTG_YYinTtNum_99999 { get { return IsPTG_YYinTtNum && IsPrihodTT; } }
+
    #endregion ... PTG ... SPECIALS
 
    #region Constructors
