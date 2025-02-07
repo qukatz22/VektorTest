@@ -6194,7 +6194,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is RNZDUC            ||
          this is URA_SVD_DUC       || this is IZD_SVD_DUC        || this is NRD_SVD_DUC       ||
          this is UGODUC            || this is ZAH_SVD_DUC        ||                             
-         this is POT_DUC           || this is POU_DUC            || this is POU_DUC             )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
+         this is POT_DUC           || this is POU_DUC            || this is POI_DUC             )  ThePanelForFilterUC_PrintTemplateUC.Width = 0;
       else if(this is URMDUC     || this is KalkulacijaMpDUC     ||
               this is URMDUC_2   || this is KalkulacijaMpDUC_2   || 
               this is URMDUC_Dev || this is KalkulacijaMpDUC_Dev                                ) ThePanelForFilterUC_PrintTemplateUC.Width = TheFakturDocFilterUC.Width; //tamo mu se postavlja sirina 
