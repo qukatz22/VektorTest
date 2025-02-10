@@ -4241,6 +4241,12 @@ public partial class RiskFilterUC : VvFilterUC
          riskMacro.RptFilter.DatumDo = Fld_DatumDo.EndOfDay();
       }
 
+      if(riskMacro.UseMacroDates == false && ZXC.IsTETRAGRAM_ANY && riskMacro.MacroName.StartsWith("Blag"))
+      {
+         riskMacro.RptFilter.DatumOd = DateTime.Today;
+         riskMacro.RptFilter.DatumDo = DateTime.Today;
+      }
+
       riskMacro.RptFilter.MacroName = riskMacro.MacroName;
 
       PutFilterFields(riskMacro.RptFilter);
