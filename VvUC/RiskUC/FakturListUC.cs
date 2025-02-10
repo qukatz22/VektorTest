@@ -830,11 +830,16 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
     
       if(is2NPl)
       { 
-         colWidth = ZXC.Q5un       ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Način plaćanja ", colWidth, false   , "ext_NacPlac" );
-         colWidth = ZXC.Q5un       ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Način plaćanja 2", colWidth, false   , "ext_NacPlac2");
+         colWidth = ZXC.Q5un           ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Način plaćanja " , colWidth, false  , "ext_NacPlac" );
+         colWidth = ZXC.Q5un           ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "Način plaćanja 2", colWidth, false  , "ext_NacPlac2");
+         colWidth = ZXC.Q2un - ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "V1 TT"           , colWidth, false  , "v1_TT");
+         colWidth = ZXC.Q3un - ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "Broj1"           , colWidth, true, 6, "v1_ttNum");
+         colWidth = ZXC.Q2un - ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "V2 TT"           , colWidth, false  , "v2_TT");
+         colWidth = ZXC.Q3un - ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (TheGrid, "Broj2"           , colWidth, true, 6, "v2_ttNum");
       }
 
       colWidth = ZXC.Q5un          ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (TheGrid, "OrigBrDok", colWidth, false   , "vezniDok");
+
       if(ZXC.IsSvDUH)
       {
          colWidth = ZXC.Q4un + ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Pac.Prezime", colWidth, false, "ext_opciAlabel");
