@@ -2093,8 +2093,8 @@ public class TH_PriceRuleForCycleMoment
          new TH_PriceRuleForCycleMoment(5,    2,  3,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 3 happy hour 20 posto"),
          new TH_PriceRuleForCycleMoment(5,    2,  4,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 4 happy hour 20 posto"),
          new TH_PriceRuleForCycleMoment(5,    2,  5,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 5 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  6,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 6 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  7,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 7 happy hour 20 posto"),
+         new TH_PriceRuleForCycleMoment(5,    2,  6,    0, 20M,    0, false,      0, "W5/5 Tjedan 2 Dan 6 20 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    2,  7,    0, 20M,    0, false,      0, "W5/5 Tjedan 2 Dan 7 20 posto"           ),
 
          new TH_PriceRuleForCycleMoment(5,    3,  1,    0,   0,  30M, false,      0, "W5/5 Tjedan 3 Dan 1 happy hour 30 posto"),
          new TH_PriceRuleForCycleMoment(5,    3,  2,    0,   0,  30M, false,      0, "W5/5 Tjedan 3 Dan 2 happy hour 30 posto"),
