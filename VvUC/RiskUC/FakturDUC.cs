@@ -3632,7 +3632,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
              //if(theLui == null)
                if(theLui == null || ZXC.IsSvDUH)
                {
-                  theLui = ZXC.luiListaSkladista.SingleOrDefault(lui => lui.Integer == 1); // probaj naci lui sa integerom '1' (integer nam je kao intera sifra skladista) 
+                  // 07.02.2025: 
+                //theLui = ZXC.luiListaSkladista.SingleOrDefault(lui => lui.Integer == 1)    ; // probaj naci lui sa integerom '1' (integer nam je kao intera sifra skladista) 
+                  theLui = ZXC.luiListaSkladista.OrderBy(lui => lui.Integer).FirstOrDefault(); // probaj naci lui sa najmanjim (integer nam je kao intera sifra skladista) 
                }
             }
 
