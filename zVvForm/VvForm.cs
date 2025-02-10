@@ -378,10 +378,10 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
 
 #if DEBUG
       // 10.08.2024: Buon compleano! Nono Lorenzo :-) 
-      if(/*ZXC.RRD.Dsc_IsIntrastat*/true) // TODO!!!
+      if(/*ZXC.RRD.Dsc_IsIntrastat*/ /*true*/ false) // TODO!!!
       {
          //VvPDFreporter.Initialize_FileSystemWatcher(@"D:\Dropboks");
-         //VvPDFreporter.Initialize_FileSystemWatcher(VvPDFreporter.GetDropBoxPath());
+         VvPDFreporter.Initialize_FileSystemWatcher(VvPDFreporter.GetDropBoxPath());
       }
 #endif
 
