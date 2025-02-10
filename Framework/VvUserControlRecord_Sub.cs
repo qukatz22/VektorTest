@@ -2048,8 +2048,6 @@ public abstract class VvSifrarRecordUC    : VvRecordUC
 
    protected (bool, VvSifrarRecord) IsThisSifra_Duplicated_InNY()
    {
-      //return false; // gasi ovo kad ...
-
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.Add && ZXC.IsSifrar_And_WeAreInPGyear(TheVvTabPage.TheVvDataRecord))
       {
          bool NY_dbExists = ZXC.Does_NY_dbExists(TheDbConnection);
