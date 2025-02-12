@@ -191,14 +191,14 @@ public struct TtInfo
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
-      Faktur.TT_PVD, // PCTGO tt 
+    //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_ZIZ, // PCTGO tt 
       Faktur.TT_MPI, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_UG2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_DI2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_PV2, // PCTGO tt ovo je mozda visak, al ziheraski 
-      Faktur.TT_PD2, // PCTGO tt ovo je mozda visak, al ziheraski 
+    //Faktur.TT_PD2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_ZI2, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_ZUL, // PCTGO tt ovo je mozda visak, al ziheraski 
       Faktur.TT_ZU2, // PCTGO tt ovo je mozda visak, al ziheraski 
@@ -287,7 +287,7 @@ public struct TtInfo
             case Faktur.TT_UGN:
             case Faktur.TT_DIZ:
             case Faktur.TT_PVR:
-            case Faktur.TT_PVD:
+          //case Faktur.TT_PVD:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
 
@@ -366,7 +366,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DIZ,
       Faktur.TT_PVR,
-      Faktur.TT_PVD,
+    //Faktur.TT_PVD,
    };
 
    public bool IsIRArucableTT { get { return arrayIRArucables.Contains(TheTT); } }
@@ -406,7 +406,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DIZ,
       Faktur.TT_PVR,
-      Faktur.TT_PVD,
+    //Faktur.TT_PVD,
    };
    /// <summary>
    /// Ovi TT-ovi u T_skladDate napucavaju F_skladDate a ne F_dokDate
@@ -486,7 +486,7 @@ public struct TtInfo
       Faktur.TT_UGN,
       Faktur.TT_DIZ,
       Faktur.TT_PVR,
-      Faktur.TT_PVD,
+    //Faktur.TT_PVD,
       Faktur.TT_MOI,
    };
    // Za sada ovo sluzi samo pri 'AnyArtiklTextBox_OnGrid_Leave' na FakturDUC-u 
@@ -556,7 +556,7 @@ public struct TtInfo
       Faktur.TT_UG2,
       Faktur.TT_DI2,
       Faktur.TT_PV2,
-      Faktur.TT_PD2,
+    //Faktur.TT_PD2,
       Faktur.TT_ZI2,
       Faktur.TT_ZUL,
     //Faktur.TT_MOU,
@@ -1077,12 +1077,12 @@ public struct TtInfo
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
-      Faktur.TT_PVD, // PCTGO tt 
+    //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt 
       Faktur.TT_UG2, // PCTGO tt 
       Faktur.TT_DI2, // PCTGO tt 
       Faktur.TT_PV2, // PCTGO tt 
-      Faktur.TT_PD2, // PCTGO tt 
+    //Faktur.TT_PD2, // PCTGO tt 
       Faktur.TT_ZIZ, // PCTGO tt 
       Faktur.TT_ZI2, // PCTGO tt 
       Faktur.TT_MOD, // PCTGO tt 
@@ -1094,7 +1094,7 @@ public struct TtInfo
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
-      Faktur.TT_PVD, // PCTGO tt 
+    //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_PRI, // PCTGO tt 
       Faktur.TT_IZD, // PCTGO tt 
       Faktur.TT_URA, // PCTGO tt 
@@ -1114,7 +1114,7 @@ public struct TtInfo
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
       Faktur.TT_PVR, // PCTGO tt 
-      Faktur.TT_PVD, // PCTGO tt 
+    //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_ZIZ, // PCTGO tt 
    };
 
@@ -1218,8 +1218,8 @@ public struct TtInfo
       if(TheTT == Faktur.TT_DI2) LinkedDefaultTT = Faktur.TT_DIZ;
       if(TheTT == Faktur.TT_PVR) TwinTT          = Faktur.TT_PV2;
       if(TheTT == Faktur.TT_PV2) LinkedDefaultTT = Faktur.TT_PVR;
-      if(TheTT == Faktur.TT_PVD) TwinTT          = Faktur.TT_PD2;
-      if(TheTT == Faktur.TT_PD2) LinkedDefaultTT = Faktur.TT_PVD;
+    //if(TheTT == Faktur.TT_PVD) TwinTT          = Faktur.TT_PD2;
+    //if(TheTT == Faktur.TT_PD2) LinkedDefaultTT = Faktur.TT_PVD;
       if(TheTT == Faktur.TT_MPI) TwinTT          = Faktur.TT_MPU;
       if(TheTT == Faktur.TT_MPU) LinkedDefaultTT = Faktur.TT_MPI;
       if(TheTT == Faktur.TT_ZIZ) TwinTT          = Faktur.TT_ZI2;

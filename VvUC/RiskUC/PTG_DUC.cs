@@ -2589,6 +2589,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
 }
 
+#if Njett
 public class PVD_PTG_DUC : FakturPDUC //FakturExtDUC
 {
    #region Constructor
@@ -3034,7 +3035,7 @@ public class PVD_PTG_DUC : FakturPDUC //FakturExtDUC
    }
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
 }
-
+#endif
 public class ZIZ_PTG_DUC : FakturPDUC 
 {
    #region Constructor

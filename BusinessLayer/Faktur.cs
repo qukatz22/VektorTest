@@ -355,8 +355,8 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_DI2 = "DI2"; // PTG - Dodatak Ugovoru za najam  - međuskladišni ULAZ  ... ovo su ujedno i Rtrano TT-ovi 
    public const string TT_PVR = "PVR"; // PTG - Povrat            po Ugovoru za najam- međuskladišni IZLAZ                        
    public const string TT_PV2 = "PV2"; // PTG - Povrat            po Ugovora za najam- međuskladišni ULAZ                         
-   public const string TT_PVD = "PVD"; // PTG - Povrat djelomični po Ugovoru za najam- međuskladišni IZLAZ                        
-   public const string TT_PD2 = "PD2"; // PTG - Povrat djelomični po Ugovora za najam- međuskladišni ULAZ                         
+ //public const string TT_PVD = "PVD"; // PTG - Povrat djelomični po Ugovoru za najam- međuskladišni IZLAZ                        ipak ne 
+ //public const string TT_PD2 = "PD2"; // PTG - Povrat djelomični po Ugovora za najam- međuskladišni ULAZ                         ipak ne 
  //public const string TT_KOP = "KOP"; // PTG - Korekcija Otplatnog plana  preseljeno u Mixer                                     
    public const string TT_MOD = "MOD"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) - npr. modidiciramo kapacitet RAM-a računalu - skladišni NEUTRAL  - samo zaglavlje (faktur_rec) 
    public const string TT_MOU = "MOU"; // PTG - Modifikator računala ('PCK' - ova; desktopa ili notebooka) - npr. memorija sa skl rez. djelova - ULAZ,  nije međuskladišnica - samo NOT PCK-ovi            
