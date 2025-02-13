@@ -1109,7 +1109,7 @@ public struct TtInfo
 
    public bool HasRtranoForSernoTT { get { return hasRtranoForSernoTT.Contains(TheTT); } }
 
-   private static string[] isPTG_UgAnDoTT = new string[] {
+   private static string[] array_UgAnDodTT = new string[] {
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
@@ -1118,7 +1118,18 @@ public struct TtInfo
       Faktur.TT_ZIZ, // PCTGO tt 
    };
 
-   public bool IsPTG_UgAnDoTT { get { return isPTG_UgAnDoTT.Contains(TheTT); } }
+   public bool IsPTG_UgAnDodTT { get { return array_UgAnDodTT.Contains(TheTT); } }
+
+   /*private*/ public static string[] array_DodTT = new string[] {
+    //Faktur.TT_UGN, // PCTGO tt 
+    //Faktur.TT_AUN, // PCTGO tt 
+      Faktur.TT_DIZ, // PCTGO tt 
+      Faktur.TT_PVR, // PCTGO tt 
+    //Faktur.TT_PVD, // PCTGO tt 
+      Faktur.TT_ZIZ, // PCTGO tt 
+   };
+
+   public bool IsPTG_DodTT { get { return array_DodTT.Contains(TheTT); } }
 
    private static string[] isPTG_YYinTtNum = new string[] {
       Faktur.TT_MOD, // PCTGO tt 
@@ -1131,8 +1142,10 @@ public struct TtInfo
 
    public bool IsPTG_YYinTtNum { get { return isPTG_YYinTtNum.Contains(TheTT); } }
 
-   public bool IsPTG_TT         { get { return IsPTG_UgAnDoTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
-   public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDoTT && TheTT != Faktur.TT_UGN) || TheTT == Mixer.TT_KOP; } } 
+   public bool IsPTG_TT         { get { return IsPTG_UgAnDodTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
+
+ //public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDodTT && TheTT != Faktur.TT_UGN)  || TheTT == Mixer.TT_KOP  ; } } 
+   public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDodTT && TheTT != Faktur.TT_UGN)/*|| TheTT == Mixer.TT_KOP*/; } } 
 
    public bool IsPTG_YYinTtNum_99999 { get { return IsPTG_YYinTtNum && IsPrihodTT; } }
 
@@ -3546,7 +3559,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       //         "Upozorenje: stari broj dokumenta {0} je u međuvremenu iskorišten, te dokument dobiva novi broj {1}", oldTtNum, newTtNum);
       //}
 
-      if((faktur_rec.TtInfo.IsSklCdInTtNum && Fld_TtNum.ToString().StartsWith(Fld_SkladBR.ToString()) == false) || Fld_TtNum.IsZero())
+      if(ZXC.IsPCTOGO)
+      {
+         if(faktur_rec.TtInfo.IsPTG_KUGinTtNum     ) ZXC.aim_emsg("todo!");
+         if(faktur_rec.TtInfo.IsPTG_DodTT          ) ZXC.aim_emsg("todo!");
+         if(faktur_rec.TtInfo.IsPTG_YYinTtNum      ) ZXC.aim_emsg("todo!");
+         if(faktur_rec.TtInfo.IsPTG_YYinTtNum_99999) ZXC.aim_emsg("todo!`");
+      }
+
+      // CLASSIC: 
+      else if((faktur_rec.TtInfo.IsSklCdInTtNum && Fld_TtNum.ToString().StartsWith(Fld_SkladBR.ToString()) == false) || Fld_TtNum.IsZero())
       {
          ZXC.aim_emsg(MessageBoxIcon.Error,
             " Brojčana oznaka skladišta {0} mora biti u korjenu broja dokumenta {1}, a nije!", Fld_SkladBR, Fld_TtNum);

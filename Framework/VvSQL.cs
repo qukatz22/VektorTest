@@ -2828,6 +2828,27 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand GetNext_PTG_YYinTtNum_Command(XSqlConnection conn, string wantedTT, uint rootPartNum_min, uint rootPartNum_max)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      // SELECT MAX(TtNum) FROM faktur         
+      //                                       
+      // WHERE TT = 'PRI'                      
+      //                                       
+      // AND TtNum > 24110000 #rootPartNum_Min 
+      // AND TtNum < 25110000 #rootPartNum_Max 
+
+      cmd.CommandText = "SELECT MAX(" + Faktur.ttNum_colName + ") FROM " + Faktur.recordName + "\n\n" +
+
+                        " WHERE TT = '" + wantedTT + "' \n\n" +
+                        
+                        "AND " + Faktur.ttNum_colName + " > " + rootPartNum_min + "\n" +
+                        "AND " + Faktur.ttNum_colName + " < " + rootPartNum_max        ;
+
+      return (cmd);
+   }
+
    public static XSqlCommand GetFirstDokDate_Command(XSqlConnection conn, string recordName)
    {
       XSqlCommand cmd = InitCommand(conn);
@@ -2933,14 +2954,17 @@ public static class VvSQL
       return (cmd);
    }
 
-   public static XSqlCommand GetNext_AUNorDOD_TtNum_Command(XSqlConnection conn, string recordName, string wantedTT, uint KUGnum, uint UGANnum, bool isDOKOnumWanted)
+   public static XSqlCommand GetNext_KUGinTtNum_TtNum_Command(XSqlConnection conn, string recordName, /*string wantedTT,*/ uint KUGnum, uint UGANnum, bool isDODnumWanted)
    {
       XSqlCommand cmd = InitCommand(conn);
 
+    //string whichTT = isDODnumWanted ? "(TT = 'DIZ' OR TT = 'PVR' OR TT = 'ZIZ')"    : "TT = 'AUN'";
+      string whichTT = isDODnumWanted ? "TT IN " + GetInSetClause(TtInfo.array_DodTT) : "TT = 'AUN'";
+
       cmd.CommandText = "SELECT MAX(" + VvSQL.ttNumColName + ") FROM " + recordName + " \n" +
-                        "WHERE "      + VvSQL.ttColName    + " = '"    + wantedTT   + "'\n" +
+                        "WHERE "      + whichTT                                     + " \n" +
                         "AND   "      + "v1_ttNum"         + " =  "    + KUGnum     + " \n" +
-                      (isDOKOnumWanted?
+                      (isDODnumWanted?
                         "AND   "      + "v2_ttNum"         + " =  "    + UGANnum    + " \n" : "");
 
       return (cmd);
