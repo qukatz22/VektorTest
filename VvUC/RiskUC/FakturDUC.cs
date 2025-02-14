@@ -3853,9 +3853,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is KUG_PTG_DUC ||
          this is DIZ_PTG_DUC ||
          this is PVR_PTG_DUC ||
-       //this is PVD_PTG_DUC ||
-         this is ZIZ_PTG_DUC ||
-         this is MOD_PTG_DUC
+         this is ZIZ_PTG_DUC 
+       //this is MOD_PTG_DUC
          )
       {
          skladCD4_ttNum    =    ""; 
