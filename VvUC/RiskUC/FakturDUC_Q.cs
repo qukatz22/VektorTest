@@ -3113,6 +3113,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                      return;
                   }
 
+                  // ne daj prazni OldArtiklCD ako je zadan t_serno 
+                  if(rtrano_rec.T_serno.NotEmpty() && oldArtiklCD.IsEmpty())
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "Ne smije se zadati novi serijski broj a da ga se ne upari sa artiklom.\n\nRedak {0} Serijski broj {1}", rowIdx2 + 1, rtrano_rec.T_serno);
+                     e.Cancel = true;
+                     return;
+                  }
+
                   #region check MOC RAM/HDD kind 
                   
                   string mocRAMkind  = theDUC.Fld_PTG_RamKlasa;

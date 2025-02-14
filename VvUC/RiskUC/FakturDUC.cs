@@ -15045,9 +15045,9 @@ public class FakturPDUC : FakturExtDUC
           //TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS       );
             //SetColorsPCKartikl();
          }
-         
-         
-         TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
+
+
+         if(artikl_rec != null) TheG2.PutCell(ci2.iT_artiklTS, rowIdx, artikl_rec.TS);
 
          if(this is MOD_PTG_DUC) SetColors_MOD_PTG_DUC(rtrano_rec.T_TT, rowIdx);
 
@@ -15354,6 +15354,8 @@ public class FakturPDUC : FakturExtDUC
          dgvRtrano_rec.T_artiklCD = TheG2.GetStringCell(ci2.iT_artiklCD, rIdx, dirtyFlagging); // ponavljamo jos dole klasicnao 
 
          dgvRtrano_rec.T_TT = (this as MOD_PTG_DUC).Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, isMOC_PCK_base, PCK_RAM, PCK_HDD, false);
+
+         //TheG2.PutCell(ci2.iT_TT, rIdx, dgvRtrano_rec.T_TT);
 
       } // if(HasRtrano_TT_Exposed)
 
