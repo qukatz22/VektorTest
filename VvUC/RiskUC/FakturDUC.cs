@@ -3770,20 +3770,20 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                   Fld_SkladOpis  =       luiSkladZNJ.Name   ;
                   Fld_SkladBR    = (uint)luiSkladZNJ.Integer;
                }
-               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_PVR || Fld_TT == Faktur.TT_ZIZ))
+               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_PVR))
                {
                   Fld_SkladCD2   =       luiSkladZNJ.Cd     ;
                   Fld_Sklad2Opis =       luiSkladZNJ.Name   ;
                   Fld_SkladBR2   = (uint)luiSkladZNJ.Integer;
                }
 
-               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ))
+               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ || Fld_TT == Faktur.TT_ZIZ))
                {
                   Fld_SkladCD2   =       luiSkladUNJ.Cd     ;
                   Fld_Sklad2Opis =       luiSkladUNJ.Name   ;
                   Fld_SkladBR2   = (uint)luiSkladUNJ.Integer;
                }
-               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_PVR || Fld_TT == Faktur.TT_ZIZ))
+               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_PVR))
                {
                   Fld_SkladCD    =       luiSkladUNJ.Cd     ;
                   Fld_SkladOpis  =       luiSkladUNJ.Name   ;
