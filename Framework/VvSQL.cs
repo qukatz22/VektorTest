@@ -2828,7 +2828,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   public static XSqlCommand GetNext_PTG_YYinTtNum_Command(XSqlConnection conn, string wantedTT, uint rootPartNum_min, uint rootPartNum_max)
+   public static XSqlCommand GetNext_PTG_YYinTtNum_Command(XSqlConnection conn, string wantedTT, uint rootPartNum_min, uint rootPartNum_max, string eventualSkladCD)
    {
       XSqlCommand cmd = InitCommand(conn);
 
@@ -2841,8 +2841,10 @@ public static class VvSQL
 
       cmd.CommandText = "SELECT MAX(" + Faktur.ttNum_colName + ") FROM " + Faktur.recordName + "\n\n" +
 
-                        " WHERE TT = '" + wantedTT + "' \n\n" +
+                        " WHERE TT = '" + wantedTT + "'\n\n" +
                         
+                        "AND " + Faktur.skladCd_colName + " = '" + eventualSkladCD + "'\n" +
+
                         "AND " + Faktur.ttNum_colName + " > " + rootPartNum_min + "\n" +
                         "AND " + Faktur.ttNum_colName + " < " + rootPartNum_max        ;
 

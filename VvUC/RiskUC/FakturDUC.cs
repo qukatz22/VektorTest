@@ -3580,6 +3580,75 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    #region PutFields(), GetFields()
 
+   private uint GetNewTtNum_2025()
+   {
+      string skladCD4_ttNum = GetSkladCD4_ttNum(/*out isSkladCD2*/);
+
+      bool isCentToCentMSI = (this is MedjuSkladDUC) &&
+                             Fld_SkladCD .StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) &&
+                             Fld_SkladCD2.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00"));
+
+      string vezniDokAsRNMkind = (this is RNMDUC || this is RNZDUC ? Fld_VezniDok      : "");
+      int    eventualRNZmonth  = (                  this is RNZDUC ? Fld_DokDate.Month :  0);
+
+      uint KUGnum      = 0;
+      uint UGNorAUNnum = 0;
+      if(this is UGNorAUN_PTG_DUC || // nijedan PTG DUC ne treba ove stvari 
+         this is KUG_PTG_DUC ||
+         this is DIZ_PTG_DUC ||
+         this is PVR_PTG_DUC ||
+         this is ZIZ_PTG_DUC 
+       //this is MOD_PTG_DUC
+         )
+      {
+         skladCD4_ttNum    =    ""; 
+         isCentToCentMSI   = false; 
+         vezniDokAsRNMkind =    ""; 
+         eventualRNZmonth  =     0;              
+      }
+
+      if(this is    ANU_PTG_DUC || // Aneksi i Dodaci i KOP trebaju svoj KUGnum 
+         this is A1_ANU_PTG_DUC || 
+         this is    DIZ_PTG_DUC ||
+         this is    PVR_PTG_DUC ||
+       //this is    PVD_PTG_DUC ||
+         this is    ZIZ_PTG_DUC //||
+       //this is    KOP_PTG_DUC
+         )
+      {
+         KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
+      }
+
+      if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC ) // Dodatak DUC treba jos i UGNorAUNnum 
+      {
+         UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
+      }
+
+      if(this is ANU_PTG_DUC) // Aneksi trebaju svoj KUG_KupdobTK (u 'konto') 
+      {
+         Fld_Konto = ZXC.FakturRec.KupdobTK;
+      }
+
+      if(this is ZAH_SVD_DUC) 
+      {
+         skladCD4_ttNum = ZXC.CURR_userName;
+      }
+
+      int eventual_PTG_DokYear = 0;
+
+    //if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventual_PTG_DokYear = Fld_DokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : Fld_DokDate.Year - 2000;
+      if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventual_PTG_DokYear = GetDokDate_YY(Fld_DokDate);
+
+      uint newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, skladCD4_ttNum, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum, eventual_PTG_DokYear);
+
+      return newTtNum;
+   }
+
+   private int GetDokDate_YY(DateTime dokDate)
+   { 
+      return dokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : dokDate.Year - 2000;
+   }
+
    public override void PutDefaultDUCfields()
    {
       bool ttIsGoodToGo = true;
@@ -3808,13 +3877,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       } // if(ttInfo.IsSklCdInTtNum ||
 
-      bool isCentToCentMSI = (this is MedjuSkladDUC) &&
-                             Fld_SkladCD.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) &&
-                             Fld_SkladCD2.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00"));
-
-      string skladCD4_ttNum = GetSkladCD4_ttNum(/*out isSkladCD2*/); // 12.12.2014: Logika za slijednost brojeva: vidi komentar kod GetSkladCD4_ttNum() 
-
-      // 26.03.2016: eventualRNMkind start 
       if(this is RNMDUC)
       {
          string defaultRNMkindCD, defaultRNMkindName;
@@ -3840,71 +3902,26 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          Fld_RNZ_RadnoMjesto_Broj = defaultRNZkindNum ;
       }
     //string vezniDokAsRNMkind = (this is RNMDUC                   ? Fld_VezniDok      : "");
-      string vezniDokAsRNMkind = (this is RNMDUC || this is RNZDUC ? Fld_VezniDok      : "");
-      int    eventualRNZmonth  = (                  this is RNZDUC ? Fld_DokDate.Month :  0);
+
+    //string vezniDokAsRNMkind = (this is RNMDUC || this is RNZDUC ? Fld_VezniDok      : "");
+    //int    eventualRNZmonth  = (                  this is RNZDUC ? Fld_DokDate.Month :  0);
       // 26.03.2016: eventualRNMkind end 
 
-      #region PTG news
-
-      // 13.07.2021: 
-      uint KUGnum      = 0;
-      uint UGNorAUNnum = 0;
-      if(this is UGNorAUN_PTG_DUC || // nijedan PTG DUC ne treba ove stvari 
-         this is KUG_PTG_DUC ||
-         this is DIZ_PTG_DUC ||
-         this is PVR_PTG_DUC ||
-         this is ZIZ_PTG_DUC 
-       //this is MOD_PTG_DUC
-         )
+      if(ttIsGoodToGo)
       {
-         skladCD4_ttNum    =    ""; 
-         isCentToCentMSI   = false; 
-         vezniDokAsRNMkind =    ""; 
-         eventualRNZmonth  =     0;              
+         // Voila! Odavdje se rađaju novi TtNum-ovi. Još na dva mjesta se mogu refrershati: 
+         // 1. OnExitSkladCD_SetTtNum_And_ValidateSkladCD                                   
+         // 2. dtp_DokDate_ValueChanged_SetSkladAndPdvDate                                  
+
+         // 17.02.2025: unificiran nacin new tt num - a                                     
+       //uint newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, skladCD4_ttNum, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum, eventualDokYear);
+       
+         Put_NewTT_Num(this.GetNewTtNum_2025());
       }
-
-      if(this is    ANU_PTG_DUC || // Aneksi i Dodaci i KOP trebaju svoj KUGnum 
-         this is A1_ANU_PTG_DUC || 
-         this is    DIZ_PTG_DUC ||
-         this is    PVR_PTG_DUC ||
-       //this is    PVD_PTG_DUC ||
-         this is    ZIZ_PTG_DUC //||
-       //this is    KOP_PTG_DUC
-         )
-      {
-         KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
-      }
-
-      if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC ) // Dodatak DUC treba jos i UGNorAUNnum 
-      {
-         UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
-      }
-
-      if(this is ANU_PTG_DUC) // Aneksi trebaju svoj KUG_KupdobTK (u 'konto') 
-      {
-         Fld_Konto = ZXC.FakturRec.KupdobTK;
-      }
-
-      if(this is ZAH_SVD_DUC) 
-      {
-         skladCD4_ttNum = ZXC.CURR_userName;
-      }
-
-      int eventualDokYear = 0;
-
-      if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventualDokYear = Fld_DokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : Fld_DokDate.Year - 2000;
-
-      #endregion PTG news
-
-    // 09.10.2017: 
-    //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind                                       ));
-    // PTG news:                                                                                                                                                                                             
-    //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth                     ));
-    //if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum));
-      if(ttIsGoodToGo) Put_NewTT_Num(TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum, eventualDokYear));
 
       SetDefaulFakExDucFields();
-   }
+
+   } // public override void PutDefaultDUCfields() 
 
    private VvLookUpItem GetTHskladCD1lui()
    {

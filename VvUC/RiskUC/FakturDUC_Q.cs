@@ -1070,7 +1070,7 @@ public struct TtInfo
 
    #region  ... PTG ... SPECIALS
 
-   private static string[] isV1andV2specialUseTT = new string[] {
+   private static string[] array_isV1andV2specialUseTT = new string[] {
       Mixer .TT_KOP, // PCTGO tt 
       Faktur.TT_KUG, // PCTGO tt 
       Faktur.TT_AUN, // PCTGO tt 
@@ -1087,9 +1087,9 @@ public struct TtInfo
       Faktur.TT_ZI2, // PCTGO tt 
       Faktur.TT_MOD, // PCTGO tt 
    };
-   public bool IsV1andV2specialUseTT { get { return isV1andV2specialUseTT.Contains(TheTT); } }
+   public bool IsV1andV2specialUseTT { get { return ZXC.IsPCTOGOdomena && array_isV1andV2specialUseTT.Contains(TheTT); } }
 
-   private static string[] hasRtranoForSernoTT = new string[] {
+   private static string[] array_hasRtranoForSernoTT = new string[] {
       Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
@@ -1106,8 +1106,7 @@ public struct TtInfo
 
       // tu jos nismo gotovi ... 
    };
-
-   public bool HasRtranoForSernoTT { get { return hasRtranoForSernoTT.Contains(TheTT); } }
+   public bool HasRtranoForSernoTT { get { return ZXC.IsPCTOGOdomena && array_hasRtranoForSernoTT.Contains(TheTT); } }
 
    private static string[] array_UgAnDodTT = new string[] {
       Faktur.TT_UGN, // PCTGO tt 
@@ -1117,8 +1116,7 @@ public struct TtInfo
     //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_ZIZ, // PCTGO tt 
    };
-
-   public bool IsPTG_UgAnDodTT { get { return array_UgAnDodTT.Contains(TheTT); } }
+   public bool IsPTG_UgAnDodTT { get { return ZXC.IsPCTOGOdomena && array_UgAnDodTT.Contains(TheTT); } }
 
    /*private*/ public static string[] array_DodTT = new string[] {
     //Faktur.TT_UGN, // PCTGO tt 
@@ -1128,10 +1126,9 @@ public struct TtInfo
     //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_ZIZ, // PCTGO tt 
    };
+   public bool IsPTG_DodTT { get { return ZXC.IsPCTOGOdomena && array_DodTT.Contains(TheTT); } }
 
-   public bool IsPTG_DodTT { get { return array_DodTT.Contains(TheTT); } }
-
-   private static string[] isPTG_YYinTtNum = new string[] {
+   private static string[] array_isPTG_YYinTtNum = new string[] {
       Faktur.TT_MOD, // PCTGO tt 
       Faktur.TT_PRI, // PCTGO tt 
       Faktur.TT_URA, // PCTGO tt 
@@ -1139,15 +1136,10 @@ public struct TtInfo
       Faktur.TT_MPI, // PCTGO tt 
       Faktur.TT_IRA, // PCTGO tt 
    };
-
-   public bool IsPTG_YYinTtNum { get { return isPTG_YYinTtNum.Contains(TheTT); } }
-
-   public bool IsPTG_TT         { get { return IsPTG_UgAnDodTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
-
- //public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDodTT && TheTT != Faktur.TT_UGN)  || TheTT == Mixer.TT_KOP  ; } } 
-   public bool IsPTG_KUGinTtNum { get { return (IsPTG_UgAnDodTT && TheTT != Faktur.TT_UGN)/*|| TheTT == Mixer.TT_KOP*/; } } 
-
-   public bool IsPTG_YYinTtNum_99999 { get { return IsPTG_YYinTtNum && IsPrihodTT; } }
+   public bool IsPTG_YYinTtNum_99999 { get { return ZXC.IsManyYearDB && IsPTG_YYinTtNum && IsPrihodTT; } }
+   public bool IsPTG_YYinTtNum       { get { return ZXC.IsManyYearDB && array_isPTG_YYinTtNum.Contains(TheTT); } }
+   public bool IsPTG_TT              { get { return ZXC.IsPCTOGOdomena && IsPTG_UgAnDodTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
+   public bool IsPTG_KUGinTtNum      { get { return ZXC.IsPCTOGOdomena && (IsPTG_UgAnDodTT && TheTT != Faktur.TT_UGN)/*|| TheTT == Mixer.TT_KOP*/; } } 
 
    #endregion ... PTG ... SPECIALS
 
@@ -3399,7 +3391,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       VvTextBox vvtb = sender as VvTextBox;
 
-      uint newTtNum=0;
+      //uint newTtNum=0;
 
       if(oldSkladCD != vvtb.Text) // promijenjeno skladiste 
       {
@@ -3424,18 +3416,26 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          bool isInEditNotInADD    = TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
          bool IsSklCd_NOT_InTtNum = !faktur_rec.TtInfo.IsSklCdInTtNum           ;
 
-         uint   arhivedTtNum   =  0;
-         string arhivedSkladCD = "";
+         uint   arhivedTtNum      =  0;
+         string arhivedSkladCD    = "";
+         int    arhivedDokDate_YY =  0;
 
          if(isInEditNotInADD)
          {
-            arhivedTtNum   = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum  ;
-            arhivedSkladCD = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
+            arhivedTtNum      =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum  ;
+            arhivedSkladCD    =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
+            arhivedDokDate_YY = GetDokDate_YY((TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).DokDate);
          }
 
          bool isJednakaSlijednost = GetIsJednakaSlijednost(Fld_TT, arhivedSkladCD, vvtb.Text);
 
-         if(isInEditNotInADD && arhivedSkladCD == vvtb.Text)
+         string newSkladCD    = vvtb.Text;
+         int    newDokDate_YY = GetDokDate_YY(Fld_DokDate);
+
+         bool is_skladCD_And_dokDate_YY_unchanged = arhivedSkladCD == newSkladCD && arhivedDokDate_YY == newDokDate_YY;
+
+       //if(isInEditNotInADD && arhivedSkladCD == vvtb.Text        )
+         if(isInEditNotInADD && is_skladCD_And_dokDate_YY_unchanged)
          {
             Put_NewTT_Num(arhivedTtNum);
          }
@@ -3446,8 +3446,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          }
          else
          {
-            newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, /*Fld_SkladCD*/skladCD4_ttNum/*, isSkladCD2*/, isCentToCentMSI);
-            Put_NewTT_Num(newTtNum);
+            // 17.02.2025: unificiran nacin new tt num-a
+          //string vezniDokAsRNMkind = (this is RNMDUC || this is RNZDUC ? Fld_VezniDok      : "");
+          //int    eventualRNZmonth  = (this is RNZDUC                   ? Fld_DokDate.Month : 0 );
+          //newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, skladCD4_ttNum, isCentToCentMSI);
+
+            Put_NewTT_Num(this.GetNewTtNum_2025());
          }
 
          // 18.03.2014: Komisija News 
@@ -3569,10 +3573,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(ZXC.IsPCTOGO)
       {
-         if(faktur_rec.TtInfo.IsPTG_KUGinTtNum     ) ZXC.aim_emsg("todo!");
-         if(faktur_rec.TtInfo.IsPTG_DodTT          ) ZXC.aim_emsg("todo!");
-         if(faktur_rec.TtInfo.IsPTG_YYinTtNum      ) ZXC.aim_emsg("todo!");
-         if(faktur_rec.TtInfo.IsPTG_YYinTtNum_99999) ZXC.aim_emsg("todo!`");
+         //if(faktur_rec.TtInfo.IsPTG_KUGinTtNum     ) ZXC.aim_emsg("todo!");
+         //if(faktur_rec.TtInfo.IsPTG_DodTT          ) ZXC.aim_emsg("todo!");
+         //if(faktur_rec.TtInfo.IsPTG_YYinTtNum      ) ZXC.aim_emsg("todo!");
+         //if(faktur_rec.TtInfo.IsPTG_YYinTtNum_99999) ZXC.aim_emsg("todo!");
+
+
       }
 
       // CLASSIC: 
@@ -3796,7 +3802,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion TRI - TRM
 
-
       FakturDUC fakturDUC = this as FakturDUC;
 
       //26.05.2015.
@@ -3806,6 +3811,38 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
           this is UGNorAUN_PTG_DUC == false &&
           this is DIZ_PTG_DUC      == false    ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
 
+      // 17.02.2025: 
+      if(ZXC.TtInfo(Fld_TT).IsPTG_YYinTtNum)
+      {
+         uint   arhivedTtNum      =  0;
+         int    arhivedDokDate_YY =  0;
+         string arhivedSkladCD    = "";
+
+         bool isInEditNotInADD = TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
+
+         DateTime newDokDate    = (sender as VvDateTimePicker).Value;
+         int      newDokDate_YY = GetDokDate_YY(newDokDate);
+         string   newSkladCD    = Fld_SkladCD;
+
+         if(isInEditNotInADD)
+         {
+            arhivedTtNum      =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum   ;
+            arhivedDokDate_YY = GetDokDate_YY((TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).DokDate);
+            arhivedSkladCD    =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
+         }
+
+         bool is_skladCD_And_dokDate_YY_unchanged = arhivedSkladCD == newSkladCD && arhivedDokDate_YY == newDokDate_YY;
+
+         //if(isInEditNotInADD && arhivedDokDate_YY == newDokDate_YY )
+         if(isInEditNotInADD && is_skladCD_And_dokDate_YY_unchanged)
+         {
+            Put_NewTT_Num(arhivedTtNum);
+         }
+         else
+         {
+            Put_NewTT_Num(this.GetNewTtNum_2025());
+         }
+      }
 
       if(this is FakturExtDUC == false) return;
       FakturExtDUC fakturExtDUC = this as FakturExtDUC;
