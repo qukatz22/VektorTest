@@ -161,11 +161,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private VvDateTimePickerColumn colDate;
 
-   internal bool IsPTG_UgAnDo_DUC         { get { return (this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC); } }
+   internal bool IsPTG_UgAnDod_DUC        { get { return (this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC); } }
    internal bool IsPTG_Common_DUC         { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is IRA_PTG_DUC /*|| this is PST_PTG_DUC*/ || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
    internal bool IsPTG_MOD_DUC            { get { return (this is MOD_PTG_DUC                            ); } }       // 's desna na lijevo' 
-   internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDo_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
-   internal bool IsPTG_WithSerno_DUCwoMOD { get { return (IsPTG_UgAnDo_DUC                  || IsPTG_Common_DUC); } } // 's lijeva na desno' 
+   internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDod_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
+   internal bool IsPTG_WithSerno_DUCwoMOD { get { return (IsPTG_UgAnDod_DUC                  || IsPTG_Common_DUC); } } // 's lijeva na desno' 
 
    #endregion Fieldz
 
@@ -2709,14 +2709,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
     //bool isUGANorDOD = this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC;
     //if(!isUGANorDOD) vvtbR_RUC.JAM_BackColor = Color.Aquamarine;
-      if(!IsPTG_UgAnDo_DUC) vvtbR_RUC.JAM_BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) vvtbR_RUC.JAM_BackColor = Color.Aquamarine;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbR_RUC, null, "R_RUC", _colHeader, _width);
 
       //vvtbR_RUC.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = _width;
       colVvText.Visible = false;
-      if(!IsPTG_UgAnDo_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
       colVvText.Visible = isVisible;
    }
    protected void R_RUV_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -2724,14 +2724,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbR_RUV = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColR_RUV", null, -12, _statusText);
       vvtbR_RUV.JAM_ReadOnly = true;
 
-      if(!IsPTG_UgAnDo_DUC) vvtbR_RUV.JAM_BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) vvtbR_RUV.JAM_BackColor = Color.Aquamarine;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbR_RUV, null, "R_RUV", _colHeader, _width);
 
       vvtbR_RUV.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = _width;
       colVvText.Visible = false;
-      if(!IsPTG_UgAnDo_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
       colVvText.Visible = isVisible;
    }
    protected void R_NV_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)//"NabVrij"
@@ -2739,14 +2739,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbR_NV = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColR_NV", null, -12, _statusText);
       vvtbR_NV.JAM_ReadOnly = true;
 
-      if(!IsPTG_UgAnDo_DUC) vvtbR_NV.JAM_BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) vvtbR_NV.JAM_BackColor = Color.Aquamarine;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbR_NV, null, "R_NV", _colHeader, _width);
 
       vvtbR_NV.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = _width;
       colVvText.Visible = false;
-      if(!IsPTG_UgAnDo_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
       colVvText.Visible = isVisible;
    }
    protected void R_NC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)//"NabCij"
@@ -2754,13 +2754,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbR_NC = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColR_NC", null, -12, _statusText);
       vvtbR_NC.JAM_ReadOnly = true;
 
-      if(!IsPTG_UgAnDo_DUC) vvtbR_NC.JAM_BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) vvtbR_NC.JAM_BackColor = Color.Aquamarine;
       colVvText = TheG.CreateVvTextBoxColumn(vvtbR_NC, null, "R_NC", _colHeader, _width);
 
       //vvtbR_NC.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = _width;
       colVvText.Visible = false;
-      if(!IsPTG_UgAnDo_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
       colVvText.Visible = isVisible;
    }
    protected void R_mskPdv_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)//"mskPdv"
@@ -3892,7 +3892,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       int eventualDokYear = 0;
 
-      if(ZXC.IsManyYearDB && !IsPTG_UgAnDo_DUC) eventualDokYear = Fld_DokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : Fld_DokDate.Year - 2000;
+      if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventualDokYear = Fld_DokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : Fld_DokDate.Year - 2000;
 
       #endregion PTG news
 
@@ -14464,7 +14464,7 @@ public class FakturPDUC : FakturExtDUC
          vvtbT_serno.JAM_Set_LookUpTable(ZXC.luiListaBrojSobe, (int)ZXC.Kolona.prva);
          //vvtbT_serno.JAM_lookUp_NOTobligatory = true;
       }
-      else if(IsPTG_UgAnDo_DUC) // PCK serno handling - Rtrans vs Rtrano s LIJEVA na DESNO 
+      else if(IsPTG_UgAnDod_DUC) // PCK serno handling - Rtrans vs Rtrano s LIJEVA na DESNO 
       {
          vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(OnEntry_UgAnDo_Serno_Cell);
        //vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_UgAnDo);
@@ -14609,7 +14609,7 @@ public class FakturPDUC : FakturExtDUC
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD2, TheVvDaoTrans2, DB_Tci2.t_skladCD, _colHeader, _width);
 
-      if(ZXC.IsPCTOGO && IsPTG_UgAnDo_DUC) vvtbT_skladCD2.JAM_ReadOnly = true;
+      if(ZXC.IsPCTOGO && IsPTG_UgAnDod_DUC) vvtbT_skladCD2.JAM_ReadOnly = true;
 
    }
    protected void T_decA_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -15352,6 +15352,7 @@ public class FakturPDUC : FakturExtDUC
          }
 
          dgvRtrano_rec.T_artiklCD = TheG2.GetStringCell(ci2.iT_artiklCD, rIdx, dirtyFlagging); // ponavljamo jos dole klasicnao 
+         dgvRtrano_rec.T_serno    = TheG2.GetStringCell(ci2.iT_serno   , rIdx, dirtyFlagging); // ponavljamo jos dole klasicnao 
 
          dgvRtrano_rec.T_TT = (this as MOD_PTG_DUC).Get_MOD_RtranoTT(rIdx, isPCK, dgvRtrano_rec, isMOC_PCK_base, PCK_RAM, PCK_HDD, false);
 

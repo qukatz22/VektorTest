@@ -6715,7 +6715,8 @@ public class MOD_PTG_DUC : FakturPDUC
                    MOC_wanted_NEW_RAM  == rtrano_rec./*T_dimZ*/T_PCK_RAM &&
                    MOC_wanted_NEW_HDD  == rtrano_rec./*T_decC*/T_PCK_HDD &&
                    isMOC_PCK_base                                        &&
-                   ThisIs_MOC_rowIndex(rowIdx); 
+                   ThisIs_MOC_rowIndex(rowIdx)                           &&
+                   rtrano_rec.T_serno.NotEmpty()                          ; // ovaj redak dodan 17.02.2025. ... jer kod sejvanja MOD-a kad ostavi prazni serno u 'možda MOC' retku radi sranja 
 
       if(isPCK)
       {

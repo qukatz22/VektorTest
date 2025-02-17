@@ -6296,7 +6296,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       bool isUlaz_DUC          = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_U;
       bool isIzlaz_DUC         = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_I;
-      bool isUgAnDo_DUC        = somePTG_DUC.IsPTG_UgAnDo_DUC            ;
+      bool isUgAnDo_DUC        = somePTG_DUC.IsPTG_UgAnDod_DUC            ;
       bool isIzlazOrUgAnDo_DUC = isIzlaz_DUC || isUgAnDo_DUC             ;
 
       // ======================================================================================================================= 
