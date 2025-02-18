@@ -4185,6 +4185,8 @@ public static class VvSQL
       List<string> OPPskladCDlist = ZXC.luiListaSkladista.GetOPPskladCDlist(skladCD, wantedTT);
       bool isMultiSklad = OPPskladCDlist != null && OPPskladCDlist.Count > 1;
 
+      string nowYear = ZXC.NowYearFirstDay.Year.ToString();
+
       cmd.CommandText = "SELECT         \n" +
                         theDateName + ", ttNum \n" +
 
@@ -4194,7 +4196,10 @@ public static class VvSQL
 
                         "WHERE tt      = '" + wantedTT + "'\n" +
                         "AND skladCD " + (isMultiSklad ? " IN " + GetInSetClause(OPPskladCDlist) : 
-                                                         " = '" + skladCD + "' ") + "\n" +
+                                                         " = '" + skladCD + "' ") + "\n\n" +
+
+                        // 18.02.2025: 
+                        (ZXC.TtInfo(wantedTT).IsPTG_YYinTtNum_99999 ? "AND YEAR(DokDate) = " + nowYear + "\n\n" : "") +
 
                         "ORDER BY " + theDateName + ", ttNum\n"; // u biti ovaj ORDER BY ti niti ne treba, jer kasnije presortiravas 
       return (cmd);

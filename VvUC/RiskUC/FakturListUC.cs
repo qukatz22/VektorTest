@@ -865,7 +865,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
          if(fldTextAsUint.NotZero() && 
             ZXC.TtInfo(Fld_FromTT).IsSklCdInTtNum && 
-            fldTextAsUint < Faktur.BaseTtNum)
+            fldTextAsUint < Faktur.NultiTtNum)
          {
             return Faktur.GetTtNumFromRbr(ZXC.TheVvForm.VvPref.findArtikl.LastUsedSkladCD, tbx_ttNum.GetSomeRecIDField());
          }

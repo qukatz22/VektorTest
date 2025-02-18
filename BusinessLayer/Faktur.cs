@@ -4974,13 +4974,13 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    // TtNum = TtNumSkBr * BaseTtNum + TtNumRbr 
 
-   public static uint BaseTtNum = 100000;
+   public static uint NultiTtNum = 100000;
    public uint TtNumRbr
    {
       get
       {
          // 29.01.2024: 
-         uint theBaseNum = Faktur.BaseTtNum;
+         uint theBaseNum = Faktur.NultiTtNum;
 
          uint OPP__BR = (uint)ZXC.luiListaSkladista.GetUintegerForThisCd(this.SkladCD); // pazi UInteger! 
 
@@ -5010,7 +5010,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       // 29.01.2024: 
 
-      uint theBaseNum = Faktur.BaseTtNum;
+      uint theBaseNum = Faktur.NultiTtNum;
 
       uint skladBR = (uint)ZXC.luiListaSkladista.GetIntegerForThisCd (skladCD);
       uint OPP__BR = (uint)ZXC.luiListaSkladista.GetUintegerForThisCd(skladCD); // pazi UInteger! 

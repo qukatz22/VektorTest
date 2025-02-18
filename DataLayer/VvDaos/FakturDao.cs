@@ -3967,21 +3967,33 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
       theList = theList.OrderBy(udp => udp.TheDate).ThenBy(udp => udp.TheUint).ToList();
 
-      uint okNum = skladBR * /*100000*/ Faktur.BaseTtNum;
+      uint nultiTtNum = skladBR * /*100000*/ Faktur.NultiTtNum;
 
-      // 13.11.204: 
-      if(skladBR > 9 /*dvoznamenkasti*/ && tt != Faktur.TT_IRM) okNum /= 10; 
+      if(ZXC.TtInfo(tt).IsPTG_YYinTtNum_99999)
+      {
+         VvLookUpItem theLui = ZXC.luiListaSkladista.GetLuiForThisCd(skladCD);
+
+         uint OPP__BR = /*theLui.Uinteger.NotZero() ?*/ theLui.Uinteger /*: (uint)theLui.Integer*/;
+
+         int dokYear = justAddedDokDate.VvDokDate_YY();
+
+         nultiTtNum = ((uint)dokYear * 10 + OPP__BR) * /*100000*/ ZXC.Base10TtNumBuffer(5);
+
+         skladBR = OPP__BR; // da se ne dogodi ovaj dole "nultiTtNum /= 10;" 
+      }
+
+      if(skladBR > 9 /*dvoznamenkasti*/ && tt != Faktur.TT_IRM) nultiTtNum /= 10; 
 
       for(int i = 0; i < theList.Count; ++i)
       {
-         if(++okNum == theList[i].TheUint)
+         if(++nultiTtNum == theList[i].TheUint)
          {
             theList.RemoveAt(i--);
          }
          else
          {
             the_rec        = theList[i];
-            the_rec.TheInt = (int)okNum;
+            the_rec.TheInt = (int)nultiTtNum;
             theList[i]     = the_rec;
          }
       }

@@ -3640,17 +3640,18 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       int eventual_PTG_DokYear = 0;
 
     //if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventual_PTG_DokYear = Fld_DokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : Fld_DokDate.Year - 2000;
-      if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventual_PTG_DokYear = GetDokDate_YY(Fld_DokDate);
+    //if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventual_PTG_DokYear = GetDokDate_YY(Fld_DokDate);
+      if(ZXC.IsManyYearDB && !IsPTG_UgAnDod_DUC) eventual_PTG_DokYear = Fld_DokDate.VvDokDate_YY();
 
       uint newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, skladCD4_ttNum, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum, eventual_PTG_DokYear);
 
       return newTtNum;
    }
 
-   private int GetDokDate_YY(DateTime dokDate)
-   { 
-      return dokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : dokDate.Year - 2000;
-   }
+   //private int GetDokDate_YY(DateTime dokDate)
+   //{ 
+   //   return dokDate.IsEmpty() ? ZXC.NowYearFirstDay.Year - 2000 : dokDate.Year - 2000;
+   //}
 
    public override void PutDefaultDUCfields()
    {

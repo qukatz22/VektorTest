@@ -3422,15 +3422,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          if(isInEditNotInADD)
          {
-            arhivedTtNum      =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum  ;
-            arhivedSkladCD    =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
-            arhivedDokDate_YY = GetDokDate_YY((TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).DokDate);
+            arhivedTtNum      = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum  ;
+            arhivedSkladCD    = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
+            arhivedDokDate_YY = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).DokDate.VvDokDate_YY();
          }
 
          bool isJednakaSlijednost = GetIsJednakaSlijednost(Fld_TT, arhivedSkladCD, vvtb.Text);
 
          string newSkladCD    = vvtb.Text;
-         int    newDokDate_YY = GetDokDate_YY(Fld_DokDate);
+         int    newDokDate_YY = Fld_DokDate.VvDokDate_YY();
 
          bool is_skladCD_And_dokDate_YY_unchanged = arhivedSkladCD == newSkladCD && arhivedDokDate_YY == newDokDate_YY;
 
@@ -3822,14 +3822,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          bool isInEditNotInADD = TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
 
          DateTime newDokDate    = (sender as VvDateTimePicker).Value;
-         int      newDokDate_YY = GetDokDate_YY(newDokDate);
+         int      newDokDate_YY = newDokDate.VvDokDate_YY();
          string   newSkladCD    = Fld_SkladCD;
 
          if(isInEditNotInADD)
          {
-            arhivedTtNum      =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum   ;
-            arhivedDokDate_YY = GetDokDate_YY((TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).DokDate);
-            arhivedSkladCD    =               (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
+            arhivedTtNum      = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).TtNum  ;
+            arhivedDokDate_YY = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).DokDate.VvDokDate_YY();
+            arhivedSkladCD    = (TheVvTabPage.TheVvForm.TheArhivedVvDataRecord as Faktur).SkladCD;
          }
 
          bool is_skladCD_And_dokDate_YY_unchanged = arhivedSkladCD == newSkladCD && arhivedDokDate_YY == newDokDate_YY;
@@ -3960,7 +3960,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       uint theUint = ZXC.ValOrZero_UInt(tbx_TtNum.Text);
 
-      if(theUint.NotZero() && faktur_rec.TtInfo.IsSklCdInTtNum && theUint < Faktur.BaseTtNum)
+      if(theUint.NotZero() && faktur_rec.TtInfo.IsSklCdInTtNum && theUint < Faktur.NultiTtNum)
       {
          newTtNum = Faktur.GetTtNumFromRbr(Fld_SkladCD, theUint);
       }
