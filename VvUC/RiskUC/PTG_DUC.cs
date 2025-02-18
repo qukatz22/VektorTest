@@ -392,6 +392,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       tbx_TT.JAM_ttNumTaker_JAM_Name = tbx_TtNum.JAM_Name;
 
       tbx_TtNum.JAM_IsSupressTab = true;
+      tbx_TtNum.JAM_ReadOnly    = true;
 
       tbx_TT.Font     = ZXC.vvFont.BaseBoldFont;
     //tbx_TtOpis.Font = ZXC.vvFont.BaseBoldFont;

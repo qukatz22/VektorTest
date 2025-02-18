@@ -619,7 +619,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    #endregion Constructor
 
    #region TabPages
-
    private void CreateTabPages()
    {
       TheTabControl.TabPages.Add(CreateVvInnerTabPages("Osnovno", "", ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
@@ -1120,6 +1119,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          tbx_TtNum.JAM_ReadOnly = true;
       }
+      if(ZXC.IsPCTOGOdomena)
+      {
+         tbx_TtNum.JAM_ReadOnly = true;
+      }
+
       //22.04.2024: 
       tbx_TtNum.JAM_FieldExitMethod = new EventHandler(OnExit_Beautify_TtNum);
    }
@@ -3593,12 +3597,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       uint KUGnum      = 0;
       uint UGNorAUNnum = 0;
-      if(this is UGNorAUN_PTG_DUC || // nijedan PTG DUC ne treba ove stvari 
-         this is KUG_PTG_DUC ||
-         this is DIZ_PTG_DUC ||
-         this is PVR_PTG_DUC ||
-         this is ZIZ_PTG_DUC 
-       //this is MOD_PTG_DUC
+      if(this is KUG_PTG_DUC || // nijedan PTG DUC ne treba ove stvari 
+         IsPTG_UgAnDod_DUC
+       //this is DIZ_PTG_DUC ||
+       //this is PVR_PTG_DUC ||
+       //this is ZIZ_PTG_DUC 
          )
       {
          skladCD4_ttNum    =    ""; 
@@ -3611,15 +3614,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is A1_ANU_PTG_DUC || 
          this is    DIZ_PTG_DUC ||
          this is    PVR_PTG_DUC ||
-       //this is    PVD_PTG_DUC ||
          this is    ZIZ_PTG_DUC //||
-       //this is    KOP_PTG_DUC
          )
       {
          KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
       }
 
-      if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC ) // Dodatak DUC treba jos i UGNorAUNnum 
+      if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC) // Dodatak DUC treba jos i UGNorAUNnum 
       {
          UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
       }
@@ -4634,12 +4635,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
     // 24.09.2021. za UGNorAUN_PTG_DUC
     //if(CtrlOK(tbx_DokDate2)) Fld_DokDate2 = dokDate;
-      if( CtrlOK(tbx_DokDate2)              && 
-          this is UGNorAUN_PTG_DUC == false &&
-          this is DIZ_PTG_DUC      == false &&
-          this is PVR_PTG_DUC      == false &&
+      if( CtrlOK(tbx_DokDate2)              && IsPTG_UgAnDod_DUC == false
+        //this is UGNorAUN_PTG_DUC == false &&
+        //this is DIZ_PTG_DUC      == false &&
+        //this is PVR_PTG_DUC      == false &&
         //this is PVD_PTG_DUC      == false &&
-          this is ZIZ_PTG_DUC      == false 
+        //this is ZIZ_PTG_DUC      == false 
         ) Fld_DokDate2 = dokDate;
    }
 
@@ -7946,7 +7947,7 @@ public partial class FakturExtDUC : FakturDUC
    private void AddTabPagesResultProsireno()
    {
       //02.02.2022. na UGAN i DOD ne trebaju tabovi Sume i Prošitreno
-      bool ovajDucNetrebaSumeProsireno = this is KUG_PTG_DUC || this is A1_KUG_PTG_DUC || this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC || */this is ZIZ_PTG_DUC || this is PRN_DIZ_PTG_DUC || this is MOD_PTG_DUC;
+      bool ovajDucNetrebaSumeProsireno = this is KUG_PTG_DUC || this is A1_KUG_PTG_DUC || /*this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC*/ IsPTG_UgAnDod_DUC || this is MOD_PTG_DUC || this is PRN_DIZ_PTG_DUC;
 
       if(!ovajDucNetrebaSumeProsireno)
       {

@@ -3808,8 +3808,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
     //27.06.2023.
     //if(CtrlOK(fakturDUC.tbx_DokDate2)        ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
       if(CtrlOK(fakturDUC.tbx_DokDate2)     &&
-          this is UGNorAUN_PTG_DUC == false &&
-          this is DIZ_PTG_DUC      == false    ) fakturDUC.Fld_DokDate2 = Fld_DokDate;
+        //this is UGNorAUN_PTG_DUC == false &&
+        //this is DIZ_PTG_DUC      == false    
+                IsPTG_UgAnDod_DUC == false) fakturDUC.Fld_DokDate2 = Fld_DokDate;
 
       // 17.02.2025: 
       if(ZXC.TtInfo(Fld_TT).IsPTG_YYinTtNum)
@@ -7841,8 +7842,8 @@ public partial class FakturExtDUC : FakturDUC
          Fld_RokPlac  = kupdob_rec.ValutaPl;
 
          //ptg 01.10.2021.
-         //                                    Fld_DospDate = Fld_DokDate + new TimeSpan(Fld_RokPlac, 0, 0, 0);
-         if(this is UGNorAUN_PTG_DUC == false) Fld_DospDate = Fld_DokDate + new TimeSpan(Fld_RokPlac, 0, 0, 0);
+         //                                                                   Fld_DospDate = Fld_DokDate + new TimeSpan(Fld_RokPlac, 0, 0, 0);
+         if(IsPTG_UgAnDod_DUC == false/*this is UGNorAUN_PTG_DUC == false*/ ) Fld_DospDate = Fld_DokDate + new TimeSpan(Fld_RokPlac, 0, 0, 0);
 
          Fld_DevName  = kupdob_rec.DevName;
       }
