@@ -10556,12 +10556,12 @@ public partial class FakturExtDUC : FakturDUC
 
    private string FindTTfromDUC(FakturExtDUC fakturExtDUC)
    {
-           if(fakturExtDUC is IFADUC                                                                                     ) return Faktur.TT_IFA;
-      else if(fakturExtDUC is IRADUC || fakturExtDUC is IRADUC_2 || fakturExtDUC is IRA_MPC_DUC || fakturExtDUC is IRPDUC) return Faktur.TT_IRA;
-      else if(fakturExtDUC is IRMDUC || fakturExtDUC is IRMDUC_2                                                         ) return Faktur.TT_IRM;
-      else if(fakturExtDUC is OdobrKupcuDUC                                                                              ) return Faktur.TT_IOD;
-      else if(fakturExtDUC is PovratKupcaDUC                                                                             ) return Faktur.TT_IPV;
-      else                                                                                                                 return "";
+           if(fakturExtDUC is IFADUC                                                                                                                    ) return Faktur.TT_IFA;
+      else if(fakturExtDUC is IRADUC || fakturExtDUC is IRA_PTG_DUC || fakturExtDUC is IRADUC_2 || fakturExtDUC is IRA_MPC_DUC || fakturExtDUC is IRPDUC) return Faktur.TT_IRA;
+      else if(fakturExtDUC is IRMDUC || fakturExtDUC is IRMDUC_2                                                                                        ) return Faktur.TT_IRM;
+      else if(fakturExtDUC is OdobrKupcuDUC                                                                                                             ) return Faktur.TT_IOD;
+      else if(fakturExtDUC is PovratKupcaDUC                                                                                                            ) return Faktur.TT_IPV;
+      else                                                                                                                                                return "";
    }
 
    private void SetVisibilitiToolstripbuttons(bool isVisible)

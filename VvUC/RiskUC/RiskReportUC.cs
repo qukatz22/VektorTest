@@ -1972,7 +1972,7 @@ public partial class RiskFilterUC : VvFilterUC
 
       #endregion bef2015
 
-      bool isNewEuroEra2023 = ZXC.projectYearAsInt > 2022;
+      bool isNewEuroEra2023 = ZXC.IsEURoERA_projectYear /*ZXC.projectYearAsInt > 2022*/;
 
                         hamper.CreateVvLabel  (0, 9-pomak1, "III.15. Ipravci pretpor:", 1, 0, ContentAlignment.MiddleRight);
       tbx_pdvIspravak = hamper.CreateVvTextBox(2, 9-pomak1, "tbx_pdvIspravak", "Ispravci pretporeza", 12);
@@ -7101,7 +7101,7 @@ public class FakturDocFilterUC    : VvFilterUC
          cbx_Necu_prikazEUR   .Visible = false;
       }
 
-      if(TheVvUC is IFADUC || TheVvUC is IRADUC || TheVvUC is IRADUC_2 || TheVvUC is IRA_MPC_DUC || TheVvUC is IRPDUC) cbx_Ocu_OTS_saldo.Visible = true;
+      if(TheVvUC is IFADUC || TheVvUC is IRADUC || TheVvUC is IRA_PTG_DUC || TheVvUC is IRADUC_2 || TheVvUC is IRA_MPC_DUC || TheVvUC is IRPDUC) cbx_Ocu_OTS_saldo.Visible = true;
       else                                                                                                             cbx_Ocu_OTS_saldo.Visible = false;
 
       //cbx_Ocu_BarkodTtNum.Visible = false;
@@ -7195,7 +7195,7 @@ public class FakturDocFilterUC    : VvFilterUC
       tbx_obrazacD.Font =
       tbx_obrazacE.Font = ZXC.vvFont.SmallFont;
 
-           if(TheVvUC is IFADUC || TheVvUC is PonMalDUC || TheVvUC is IRMDUC_2 || TheVvUC is IRPDUC)
+           if(TheVvUC is IFADUC || TheVvUC is PonMalDUC   || TheVvUC is IRMDUC_2 || TheVvUC is IRPDUC)
       {
          rbt_ira2    .Visible =
          rbt_ira3    .Visible =
@@ -7206,7 +7206,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
          rbt_ira5.Visible = tbx_obrazacE.Visible = false;
       }
-      else if(TheVvUC is IRADUC || TheVvUC is IRADUC_2  || TheVvUC is IRA_MPC_DUC)
+      else if(TheVvUC is IRADUC || TheVvUC is IRA_PTG_DUC || TheVvUC is IRADUC_2  || TheVvUC is IRA_MPC_DUC)
       {
          rbt_ira2.Visible =
          rbt_ira3.Visible =
