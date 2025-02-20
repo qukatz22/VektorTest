@@ -212,8 +212,10 @@ public class PTG_OtplatniPlan
    internal static List<VvSqlFilterMember> GetFilterMembers_DODfakturList(string wantedTT, uint wantedKUG, uint wantedUoA)
    {
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
-
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], "theTT" , wantedTT , " = "));
+    // 20.02.2025.
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ],                                 "theTT" , wantedTT , " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.OPEN_OR , false, "theTT" , "DIZ", "", "", "  = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.CLOSE_OR, false, "theTT2", "PVR", "", "", "  = ", ""));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.v1_ttNum], "KUGnum", wantedKUG, " = "));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.v2_ttNum], "UoAnum", wantedUoA, " = "));
 
@@ -279,6 +281,7 @@ public class PTG_OtplatniPlan
       DODfakturList = new List<PTG_Ugovor>();
       KOPMixer_List = new List<Mixer     >();
 
+    //SetMe_DODfakturList(conn, DODfakturList, Faktur.TT_DIZ);
       SetMe_DODfakturList(conn, DODfakturList, Faktur.TT_DIZ);
       SetMe_KOPmixerList (conn, KOPMixer_List, Mixer .TT_KOP);
 
@@ -389,7 +392,9 @@ public class PTG_OtplatniPlan
             DOD_rateList = new List<PTG_Rata>(UGAN_RateList.Count);
 
             DateTime DODdate  = DODfaktur_rec.DokDate;
-            decimal  DODmoney = DODfaktur_rec.S_ukKCR;
+          // 20.02.2025.
+          //decimal  DODmoney = DODfaktur_rec.S_ukKCR;
+            decimal DODmoney = DODfaktur_rec.S_ukKCR * (DODfaktur_rec.TT == Faktur.TT_PVR ? -1 : 1);
 
             DateTime firstNext_UGANrataDate, startDate;
 

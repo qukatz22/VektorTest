@@ -7120,19 +7120,23 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
          colIdx = 0;
 
+         decimal korekcijaMinusa = (UNArtrans_rec.T_TT == Faktur.TT_PVR) ? -1 : 1;
+         decimal kol = UNArtrans_rec.T_kol * korekcijaMinusa;
+
+
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_parentID;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.TtAndTtNum;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_serlot;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_kol;
+         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = kol /*UNArtrans_rec.T_kol*/; //20.02.2025.
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_cij;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.R_KCR;
 
          PTG_UNA_ANA_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 
-         sumaKol += UNArtrans_rec.T_kol;
+         sumaKol += kol /* UNArtrans_rec.T_kol*/; //20.02.2025.
          sumaKCR += UNArtrans_rec.R_KCR;
       }
 
@@ -7181,20 +7185,24 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          rowIdx = PTG_UNA_SIN_Grid.RowCount - idxCorrector;
 
          colIdx = 0;
+   
+         //20.02.2025.
+         decimal korekcijaMinusa = (UNArtrans_rec.T_TT == Faktur.TT_PVR) ? -1 : 1;
+         decimal kol = UNArtrans_rec.T_kol * korekcijaMinusa;
 
          PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_parentID;
        //PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.TtAndTtNum;
          PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
          PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
        //PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_serlot;
-         PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_kol;
+         PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = kol /*UNArtrans_rec.T_kol*/; //20.02.2025.
          PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_cij;
          PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.R_KCR;
          PTG_UNA_SIN_Grid[colIdx++, rowIdx].Value = UGANfaktur_rec.GetOtkupArtiklMoney(UNArtrans_rec.R_KCR);
 
          PTG_UNA_SIN_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 
-         sumaKol   += UNArtrans_rec.T_kol;
+         sumaKol   += kol /*UNArtrans_rec.T_kol*/;//20.02.2025.
          sumaKCR   += UNArtrans_rec.R_KCR;
          sumaOtkup += UGANfaktur_rec.GetOtkupArtiklMoney(UNArtrans_rec.R_KCR);
       }
