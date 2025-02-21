@@ -3087,7 +3087,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       uint wantedKUG = faktur_rec.V1_ttNum;
       uint wantedUoA = faktur_rec.V2_ttNum;
 
-      List<VvSqlFilterMember> filterMembers = PTG_OtplatniPlan.GetFilterMembers_DODfakturList(Faktur.TT_DIZ, wantedKUG, wantedUoA);
+      List<VvSqlFilterMember> filterMembers = PTG_OtplatniPlan.GetFilterMembers_DIZorPVR_fakturList(Faktur.TT_DIZ, wantedKUG, wantedUoA);
 
       VvDaoBase.LoadGenericVvDataRecordList<PTG_Ugovor>(conn, DOD_PTG_Ugovor_List, filterMembers, "", "dokDate, ttSort, ttNum", true);
 

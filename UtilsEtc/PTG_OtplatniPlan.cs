@@ -180,7 +180,7 @@ public class PTG_OtplatniPlan
       uint wantedKUG  = UGANfaktur_rec.V1_ttNum;
       uint wantedUoA  = UGANfaktur_rec.V2_ttNum;
 
-      List<VvSqlFilterMember> filterMembers = GetFilterMembers_DODfakturList(wantedTT, wantedKUG, wantedUoA);
+      List<VvSqlFilterMember> filterMembers = GetFilterMembers_DIZorPVR_fakturList(wantedTT, wantedKUG, wantedUoA);
 
       VvDaoBase.LoadGenericVvDataRecordList<PTG_Ugovor>(conn, _DODfakturList, filterMembers, "", "dokDate, ttSort, ttNum", true);
 
@@ -209,13 +209,13 @@ public class PTG_OtplatniPlan
       //return _DODorKOPfakturList;
    }
 
-   internal static List<VvSqlFilterMember> GetFilterMembers_DODfakturList(string wantedTT, uint wantedKUG, uint wantedUoA)
+   internal static List<VvSqlFilterMember> GetFilterMembers_DIZorPVR_fakturList(string wantedTT, uint wantedKUG, uint wantedUoA)
    {
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
     // 20.02.2025.
-    //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ],                                 "theTT" , wantedTT , " = "));
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.OPEN_OR , false, "theTT" , "DIZ", "", "", "  = ", ""));
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.CLOSE_OR, false, "theTT2", "PVR", "", "", "  = ", ""));
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ],                                 "theTT" , wantedTT              , " = "    ));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.OPEN_OR , false, "theTT" , Faktur.TT_DIZ, "", "", "  = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.CLOSE_OR, false, "theTT2", Faktur.TT_PVR, "", "", "  = ", ""));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.v1_ttNum], "KUGnum", wantedKUG, " = "));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.v2_ttNum], "UoAnum", wantedUoA, " = "));
 
@@ -392,18 +392,24 @@ public class PTG_OtplatniPlan
             DOD_rateList = new List<PTG_Rata>(UGAN_RateList.Count);
 
             DateTime DODdate  = DODfaktur_rec.DokDate;
-          // 20.02.2025.
-          //decimal  DODmoney = DODfaktur_rec.S_ukKCR;
-            decimal DODmoney = DODfaktur_rec.S_ukKCR * (DODfaktur_rec.TT == Faktur.TT_PVR ? -1 : 1);
+
+            // dodatno izdavanje / zaduženje kupca 
+            decimal DODmoney = DODfaktur_rec.S_ukKCR;
+
+            // povrat / razduženje kupca 
+            if(DODfaktur_rec.TtInfo.IsFinKol_U /* Faktur.TT_PVR */) 
+            {
+               DODmoney *= -1M; // mjenjamo predznak 
+            }
 
             DateTime firstNext_UGANrataDate, startDate;
 
             firstNext_UGANrataDate = UGAN_RateList.First/*OrDefault*/(r => r.RataDate > DODdate).RataDate; // nek skace exception aknema
 
             if(IsNaDanUgovora) firstRataKoef = Calc_firstRataKoef_DOD_naDanUgovora(DODdate, firstNext_UGANrataDate)/*.Ron2()*/;
-            else               firstRataKoef = Calc_firstRataKoef                 (DODdate                    )/*.Ron2()*/;
-            //lastRataKoef  = (1.00M - firstRataKoef)                                                            /*.Ron2()*/;
-            //lastRataKoef  = (1.00M                ) /* !!! */                                                  /*.Ron2()*/; ... koristi se UGAN-ova lastRataKoef gore izracunana 
+            else               firstRataKoef = Calc_firstRataKoef                 (DODdate                        )/*.Ron2()*/;
+            //lastRataKoef  = (1.00M - firstRataKoef)                                                              /*.Ron2()*/;
+            //lastRataKoef  = (1.00M                ) /* !!! */                                                    /*.Ron2()*/; ... koristi se UGAN-ova lastRataKoef gore izracunana 
 
             DateTime tempDODRataDate;
 
@@ -1358,7 +1364,7 @@ public class PTG_Ugovor : Faktur
 
       List<VvSqlFilterMember> filterMembers;
 
-      if(wantedTT == Faktur.TT_DIZ) filterMembers = PTG_OtplatniPlan.GetFilterMembers_DODfakturList(wantedTT, wantedKUGttNum, wantedUGANttNum);
+      if(wantedTT == Faktur.TT_DIZ) filterMembers = PTG_OtplatniPlan.GetFilterMembers_DIZorPVR_fakturList(wantedTT, wantedKUGttNum, wantedUGANttNum);
       else                          filterMembers = PTG_OtplatniPlan.GetFilterMembers_KOPxtransList(wantedTT, wantedKUGttNum, wantedUGANttNum);
 
       int? count = VvDaoBase.CountRecords(conn, filterMembers);
