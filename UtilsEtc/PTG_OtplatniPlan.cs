@@ -397,7 +397,8 @@ public class PTG_OtplatniPlan
             decimal DODmoney = DODfaktur_rec.S_ukKCR;
 
             // povrat / razduženje kupca 
-            if(DODfaktur_rec.TtInfo.IsFinKol_U /* Faktur.TT_PVR */) 
+          //if(DODfaktur_rec.TtInfo.IsFinKol_U /* Faktur.TT_PVR */) ovo treba provjeriti ?!?!? 21.02.2025.
+            if(DODfaktur_rec.TT == Faktur.TT_PVR) 
             {
                DODmoney *= -1M; // mjenjamo predznak 
             }
