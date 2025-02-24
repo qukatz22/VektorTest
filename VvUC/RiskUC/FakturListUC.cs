@@ -103,10 +103,8 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
          this.Default_TT = Faktur.TT_IRA;
       else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_IZD_MPC)
          this.Default_TT = Faktur.TT_IZD;
-  // else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_BUP && ZXC.RRD.Dsc_IsCashFakturToBlagajna) // sad ima ABU ABI submodulenum
-   //    this.Default_TT = Faktur.TT_ABU;
-   // else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_BIS && ZXC.RRD.Dsc_IsCashFakturToBlagajna)
-   //    this.Default_TT = Faktur.TT_ABI;
+      else if(this.MasterSubModulEnum == ZXC.VvSubModulEnum.R_OPN_MPC)
+         this.Default_TT = Faktur.TT_OPN;
       else
          this.Default_TT = vvMasterSubModul.subModul_shortName;
 
@@ -789,7 +787,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
       DataGridViewTextBoxColumn col;
       bool isDOKO = (ZXC.TheVvForm.TheVvUC is DIZ_PTG_DUC || ZXC.TheVvForm.TheVvUC is PVR_PTG_DUC || /*ZXC.TheVvForm.TheVvUC is PVD_PTG_DUC ||*/ ZXC.TheVvForm.TheVvUC is ZIZ_PTG_DUC);
       bool isUGAN = (ZXC.TheVvForm.TheVvUC is UGO_PTG_DUC || ZXC.TheVvForm.TheVvUC is ANU_PTG_DUC);
-      bool is2NPl = (ZXC.IsTETRAGRAM_ANY && (ZXC.TheVvForm.TheVvUC is IRA_MPC_DUC || ZXC.TheVvForm.TheVvUC is PON_MPC_DUC || ZXC.TheVvForm.TheVvUC is POT_DUC));
+      bool is2NPl = (ZXC.IsTETRAGRAM_ANY && (ZXC.TheVvForm.TheVvUC is IRA_MPC_DUC || ZXC.TheVvForm.TheVvUC is PON_MPC_DUC || ZXC.TheVvForm.TheVvUC is OPN_MPC_DUC || ZXC.TheVvForm.TheVvUC is POT_DUC));
       
       int numOfTtNum = isDOKO ? 10 : isUGAN ? 7 : 6;
 

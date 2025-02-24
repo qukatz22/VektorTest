@@ -5442,8 +5442,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          
          #region Tetragram pdvKolTip - oslobođeno od PDVa
        //27.06.2024.
-       //if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" &&  this is IRA_MPC_DUC                        )
-         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && (this is IRA_MPC_DUC || this is PON_MPC_DUC || this is IZD_MPC_DUC))
+         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "Ne" && (this is IRA_MPC_DUC || this is PON_MPC_DUC || this is OPN_MPC_DUC || this is IZD_MPC_DUC))
          {
             if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.EU)
             { 
@@ -6626,6 +6625,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          if(_tt == Faktur.TT_IRA) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IRA_MPC);
          if(_tt == Faktur.TT_PON) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_PON_MPC);
+         if(_tt == Faktur.TT_OPN) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_OPN_MPC);
          if(_tt == Faktur.TT_IZD) vvSubModulXY = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_IZD_MPC);
       }
 
@@ -7734,16 +7734,15 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion POT_DUC
 
-      #region PON_MPC_DUC
+      #region PON_MPC_DUC, OPN_MPC_DUC, IZD_MPC_DUC
 
       //27.06.2024.
-      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && (this is PON_MPC_DUC || this is IZD_MPC_DUC))
+      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode) && (this is PON_MPC_DUC || this is OPN_MPC_DUC || this is IZD_MPC_DUC))
       {
          Fld_PdvGEOkind = ZXC.PdvGEOkindEnum.EU;
       }
 
-      #endregion PON_MPC_DUC
-
+      #endregion PON_MPC_DUC, OPN_MPC_DUC, IZD_MPC_DUC
 
       #region KOMISIJA
 

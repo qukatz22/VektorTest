@@ -1614,7 +1614,6 @@ public class IRADUC_2              : FakturExtDUC
    }
 }
 
-
 public class IzdatnicaDUC        : FakturExtDUC
 {
    #region Constructor
@@ -8158,6 +8157,122 @@ public class PON_MPC_DUC           : FakturExtDUC
       T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
       T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV"     , "Jedinična cijena");
+
+    //T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
+      R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
+  
+    //R_cij_kcr_CreateColumn(ZXC.Q4un, 2, false, "VPC"   , "Veleprodajna cijena");
+    //R_NC_CreateColumn     (ZXC.Q4un, 2, false, "NabCij", "Nabavna cijena");
+    //R_NV_CreateColumn     (ZXC.Q4un, 2, false, "NabVri", "Nabavna vrijednost");
+    //R_RUC_CreateColumn    (ZXC.Q4un, 2, false, "RUC"   , "RUC - razlika u cijeni");
+    //R_RUV_CreateColumn    (ZXC.Q4un, 2, false, "RUV"   , "RUV - razlika u vrijednosti");
+
+      T_pdvSt_CreateColumn    (ZXC.Q2un, 0, isVisible, "PdvSt", "Stopa PDV-a");
+      T_pdvKolTip_CreateColumn(ZXC.QUN, isVisible);
+
+      T_IRA_MPC_CreateColumn(ZXC.Q4un+ ZXC.Qun4, 2, isVisible, "Cijena s PDV", "Jedinična cijena");
+      
+      R_KCRP_CreateColumn(ZXC.Q4un + ZXC.Qun2, 2, isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
+      T_ppmvOsn_CreateColumn(ZXC.Q5un, 2, false, "Osnovica", "Osnovica za obračun pdv-a na umjetninu", false);
+
+
+      vvtbT_cij.JAM_ReadOnly = true;
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturPonudaDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(Color.Empty, clr_Sklad, Color.Empty);
+   }
+}
+
+public class OPN_MPC_DUC           : FakturExtDUC
+{
+   #region Constructor
+
+   public OPN_MPC_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_OPN
+         });
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+
+      SetParentOfhampers();
+
+      SetLocationMigrators();
+     
+      SetSumeHampers(false, true, true, false);
+
+      hamp_PonudDate.Location = new Point(hamp_DospDate.Left, hamp_DospDate.Bottom - ZXC.Qun4);
+      hamp_RokPonude.Location = new Point(hamp_RokPlac.Left, hamp_DospDate.Bottom - ZXC.Qun4);
+     
+    //hamp_opis.Location = new Point(hamp_tt.Right, hamp_tt.Top);
+      hamp_opis.Location = new Point(hamp_v1TT.Right, hamp_tt.Top);
+      hamp_opis.BringToFront();
+
+      hamp_incognitoPrint.Location = new Point(ZXC.Qun4, hamp_IznosUvaluti.Top);
+      hamp_incognitoPrint.Visible = true;
+
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
+                                    hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_pdvGeokind, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_opis
+                                  };
+
+      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
+                                    hamp_VezniDok2, hamp_Fco, hamp_NacPlac,  hamp_osobaA, hamp_OsobaB ,
+                                    hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, hamp_tipOtpreme, hamp_osobaX,
+                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent, hamp_DatumX//,/*ovaj DatumX dodan 01.02.24.*///hamp_PonudDate, 08.11.2013. on je na osnovnom
+                                    //hamp_opis
+                                  };
+
+      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
+                                        hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_NacPlac, hampCbxM_OsobaA, hampCbxM_osobaB,
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme, hampCbxM_osobaX,
+                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent, hampCbxM_DatumX//, //hampCbxM_PonudDate, 08.11.2013 on je na sonovnom
+                                        //hampCbxM_opis                                   
+                                      };
+   }
+
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible       = true;
+      bool isOrgPakVisible = ZXC.RRD.Dsc_IsOrgPakVisible;
+
+      T_artiklCD_CreateColumn  (ZXC.Q4un,                                    isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                                         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_kol_CreateColumn       (ZXC.Q3un, 2,                                 isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn     (ZXC.Q2un   ,                                 isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2                      , isVisible, "Cij bez PDV", "Jedinična cijena");
+      T_kol2_CreateColumn      (ZXC.Q3un, ZXC.RRD.Dsc_KolNumOfDecimalPlaces, isVisible, "IspKol"     , "Isporučena količina");
 
     //T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
       R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");

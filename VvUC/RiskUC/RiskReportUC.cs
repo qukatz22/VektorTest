@@ -7230,7 +7230,7 @@ public class FakturDocFilterUC    : VvFilterUC
          rbt_ira5.Visible = tbx_obrazacE.Visible = false;
 
       }
-      else if(TheVvUC is PonudaDUC || TheVvUC is ObvezPonudaDUC || TheVvUC is PON_MPC_DUC)
+      else if(TheVvUC is PonudaDUC || TheVvUC is ObvezPonudaDUC || TheVvUC is PON_MPC_DUC || TheVvUC is OPN_MPC_DUC)
       {
          rbt_ira2    .Visible =
          tbx_obrazacB.Visible =true;

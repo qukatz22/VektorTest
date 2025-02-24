@@ -1422,6 +1422,12 @@
       <DependentUpon>CR_LagreEtikete.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_LagerLista_Kol.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_LagerLista_Kol.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_Migrators4FakEx.cs">
       <DependentUpon>CR_Migrators4FakEx.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3444,6 +3450,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_LagreEtikete.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_LagreEtikete.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_LagerLista_Kol.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_LagerLista_Kol.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_Migrators4FakEx.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
