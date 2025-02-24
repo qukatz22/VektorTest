@@ -1689,7 +1689,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          
          uint opnTtNum = VezaTtNumForTT(Faktur.TT_OPN);
 
-         bool shouldCheckOPNlink = /*ZXC.RRD.Is_Serlot_Active*/true && this.CouldClose_OPN && opnTtNum.IsZero();
+         bool shouldCheckOPNlink = ZXC.RRD.Dsc_IsUseOPN && this.CouldClose_OPN && opnTtNum.IsZero();
 
          if(shouldCheckOPNlink)
          {
@@ -9917,6 +9917,8 @@ public class RiskRulesDsc : VvLookupAsDsc
    public bool Dsc_IsM2PAY                     { get; set; }
    public int  Dsc_M2P_TimeOutSeconds          { get; set; }
 
+   public bool Dsc_IsUseOPN                    { get; set; }
+
    #endregion DataLayer Propertiz
 
    #region Constructor
@@ -10004,6 +10006,8 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_IsCashFakturToBlagajna   = false;
       Dsc_IsM2PAY                  = false;
       Dsc_M2P_TimeOutSeconds       = 2;
+
+      Dsc_IsUseOPN                 = false;
 
       #endregion defautValue
    }

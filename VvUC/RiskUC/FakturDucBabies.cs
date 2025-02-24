@@ -8267,15 +8267,15 @@ public class OPN_MPC_DUC           : FakturExtDUC
       bool isVisible       = true;
       bool isOrgPakVisible = ZXC.RRD.Dsc_IsOrgPakVisible;
 
-      T_artiklCD_CreateColumn  (ZXC.Q4un,                                    isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                                         isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_kol_CreateColumn       (ZXC.Q3un, 2,                                 isVisible, "Kol"        , "Količina"      );
-      T_jedMj_CreateColumn     (ZXC.Q2un   ,                                 isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2                      , isVisible, "Cij bez PDV", "Jedinična cijena");
-      T_kol2_CreateColumn      (ZXC.Q3un, ZXC.RRD.Dsc_KolNumOfDecimalPlaces, isVisible, "IspKol"     , "Isporučena količina");
-
-    //T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
-      R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
+      T_artiklCD_CreateColumn      (ZXC.Q4un,                                    isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                                             isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,                                 isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,                                 isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q4un+ ZXC.Qun4, 2                      , isVisible, "Cij bez PDV", "Jedinična cijena");
+      T_kol2_CreateColumn          (ZXC.Q3un, ZXC.RRD.Dsc_KolNumOfDecimalPlaces, isVisible, "IspKol"     , "Isporučena količina");
+      R_OPN_neispkol_CreateColumn  (ZXC.Q3un, ZXC.RRD.Dsc_KolNumOfDecimalPlaces, isVisible, "NeIspKol" , "NE Isporučena količina");
+    //T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
+      R_KCR_CreateColumn           (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
   
     //R_cij_kcr_CreateColumn(ZXC.Q4un, 2, false, "VPC"   , "Veleprodajna cijena");
     //R_NC_CreateColumn     (ZXC.Q4un, 2, false, "NabCij", "Nabavna cijena");

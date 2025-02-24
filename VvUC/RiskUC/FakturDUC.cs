@@ -63,7 +63,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_serlot, vvtbR_artiklLongOpis,
                        vvtbT_skladDate, tbx_Konto, vvtbT_skladCD, vvtbT_TT1,
                        vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramOld,vvtbT_hddOld,vvtbT_ramKlasa ,vvtbT_hddKlasa,
-                       vvtbR_Opis, vvtbR_SkladIzl, vvtbR_TT2, vvtbR_Opis2, vvtbR_SkladUlz ;
+                       vvtbR_Opis, vvtbR_SkladIzl, vvtbR_TT2, vvtbR_Opis2, vvtbR_SkladUlz, vvtbR_OPN_neispKol ;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -2965,6 +2965,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
+   protected void R_OPN_neispkol_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)//"Uk s Pdv-om";if(this is IRMDUC) headerText = "Iznos";
+   {
+      vvtbR_OPN_neispKol = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtbR_OPN_neispKol", null, -12, _statusText);
+      vvtbR_OPN_neispKol.JAM_ReadOnly = true;
+      vvtbR_OPN_neispKol.JAM_ForeColor = Color.Red;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_OPN_neispKol, null, "R_OPN_neispKol", _colHeader, _width);
+
+      vvtbR_OPN_neispKol.JAM_ShouldSumGrid = true;
+      colVvText.MinimumWidth = _width;
+      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      colVvText.Visible = isVisible;
+   }
+
+
    #endregion R_Columns
 
    #region SvDuh - ORG, BOP, COP, LongOpis
@@ -3165,7 +3180,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_TT2     ;
       internal int iT_Opis2   ;
       internal int iT_SkladUlz;
-
+      internal int iT_OPN_neispKol;
    }
 
    private void SetRtransColumnIndexes()
@@ -3258,6 +3273,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_Opis2             = TheG.IdxForColumn("R_Opis2"); 
       ci.iT_SkladUlz          = TheG.IdxForColumn("R_SkladUlz");
 
+      ci.iT_OPN_neispKol      = TheG.IdxForColumn("R_OPN_neispKol");
    }
 
    #endregion SetRtransColumnIndexes()
@@ -5061,6 +5077,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if((this is IRA_MPC_DUC || this is PON_MPC_DUC || this is OPN_MPC_DUC || this is IZD_MPC_DUC) && TheVvTabPage.WriteMode != ZXC.WriteMode.None)
       {
          TheG.PutCell(ci.iT_cij, rowIdx, VvCurrency(rtrans_rec.T_cij));
+      }
+      
+      if(this is OPN_MPC_DUC)
+      {
+         decimal neispKol = rtrans_rec.T_kol - rtrans_rec.T_kol2;
+         TheG.PutCell(ci.iT_OPN_neispKol, rowIdx, neispKol);
       }
    }
 
@@ -18000,7 +18022,7 @@ public class RiskRulesUC : VvOtherUC
                          cbx_isOpenSaldoKupca, cbx_isVisibleMtrosCol, cbx_isIRMttNum7, cbx_isProizvCijByArtGr, cbx_isDokDate2, cbx_isRetMoneyCalc, cbx_isIrmQuickPrint,
                          cbx_IsSklRestrictor, cbx_IsMSIttNumByPosl, cbx_IsPrintOTSafterIRA, cbx_isVisibleSerlotCol, cbx_isVisibleRabat2Col, cbx_isCentralaFindFaktur,
                          cbx_isOibOznOper, cbx_isIgnoreImportCij, cbx_isObligArtikl, cbx_isPamtiPrintDate, cbx_isBlgOrderByDokNum, cbx_isCashFakToBlag, cbx_isRbtFromPartner,
-                         cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD, cbx_isIntrastat, cbx_isM2PAY;
+                         cbx_isVisibleLotColOnIzlaz, cbx_useNAK, cbx_useOPN, cbx_isSintArt4Print, cbx_NOcheckDupUbyKMD, cbx_isIntrastat, cbx_isM2PAY;
 
    //public RiskRulesDsc RRD { get; set; }
 
@@ -18118,7 +18140,10 @@ public class RiskRulesUC : VvOtherUC
       tbx_komercProvSt.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_komercProvSt.JAM_IsForPercent = true;
 
-                       hamper.CreateVvLabel  (1, 13, "Upozori ako je RUC stavke manji od ", 1, 0, ContentAlignment.MiddleLeft);
+      cbx_useOPN = hamper.CreateVvCheckBox_OLD(4, 12, null, 1, 0, "Koristi OPN", RightToLeft.Yes);//24.02.2025. OPN obveyujuce ponude
+
+
+      hamper.CreateVvLabel  (1, 13, "Upozori ako je RUC stavke manji od ", 1, 0, ContentAlignment.MiddleLeft);
       tbx_rucGranica = hamper.CreateVvTextBox(3, 13, "tbx_rucGranica", "Ruc", 6 + 4);
                        hamper.CreateVvLabel  (4, 13, "kn", ContentAlignment.MiddleLeft);
       tbx_rucGranica.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
@@ -18425,6 +18450,8 @@ public class RiskRulesUC : VvOtherUC
 
    public uint Fld_M2P_TimeOutSeconds          { get { return tbx_M2P_sekunde.GetUintField();   } set { tbx_M2P_sekunde.PutUintField      (value); } }
    
+   public bool   Fld_IsUseOPN                  { get { return cbx_useOPN              .Checked; } set { cbx_useOPN               .Checked = value; } }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -18496,6 +18523,7 @@ public class RiskRulesUC : VvOtherUC
       Fld_IsIntrastat              = RRD.Dsc_IsIntrastat;
       Fld_IsM2PAY                  = RRD.Dsc_IsM2PAY;
       Fld_M2P_TimeOutSeconds       = (uint)RRD.Dsc_M2P_TimeOutSeconds;
+      Fld_IsUseOPN                 = RRD.Dsc_IsUseOPN;
 
    }
 
@@ -18557,6 +18585,7 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_IsIntrastat              = Fld_IsIntrastat ;
       ZXC.RRD.Dsc_IsM2PAY                  = Fld_IsM2PAY ;
       ZXC.RRD.Dsc_M2P_TimeOutSeconds       = (int)Fld_M2P_TimeOutSeconds ;
+      ZXC.RRD.Dsc_IsUseOPN                 = Fld_IsUseOPN;
 
       ZXC.RRD.SaveDscToLookUpItemList();
 
