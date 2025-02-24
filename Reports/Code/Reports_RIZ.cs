@@ -952,7 +952,10 @@ public class RptR_ArtiklKartica  : VvRiskReport
       // primjecujemo da u robnu karticu dolaze neki 'nepotrebni?' TT-ovi (npr PON, PNM) a ne znamo vise spisak koji su       
       // te zasto su uopce u cashu ... pa cemo ih od sada nadalje ovdje rucno iybacivati jednog po jednog kako budu otkrivani 
 
-      TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_PON || rtr.T_TT == Faktur.TT_PNM);
+      // 24.02.2025: idijote, ovaj rpt 'Robna Kartica' NEMA veze s cache-om. tu dolaze svi rtrans-ovi! (a ne artstat-i)       
+      // OVDJE treba poimence izbnaciti sve rtrans nezeljene TT-ove u robnoj kartici                                          
+
+      TheRtransList.RemoveAll(rtr => rtr.T_TT == Faktur.TT_PON || rtr.T_TT == Faktur.TT_PNM || rtr.T_TT == Faktur.TT_OPN || rtr.T_TT == Faktur.TT_ABU || rtr.T_TT == Faktur.TT_ABI);
 
       return TheRtransList.Count;
    }

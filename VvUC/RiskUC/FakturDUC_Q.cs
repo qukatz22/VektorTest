@@ -1685,6 +1685,30 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #endregion Artikl is neaktivan, isRashod, izuzet, ...
 
+         #region On save IRA check unlinked OPN
+         
+         uint opnTtNum = VezaTtNumForTT(Faktur.TT_OPN);
+
+         bool shouldCheckOPNlink = /*ZXC.RRD.Is_Serlot_Active*/true && this.CouldClose_OPN && opnTtNum.IsZero();
+
+         if(shouldCheckOPNlink)
+         {
+            List<Rtrans> neZatvorenOPNrtransList = RtransDao.Get_OPN_RtransList_For_Artikl_Sklad_And_Kupdob(TheDbConnection, artiklCD, Fld_SkladCD, (this as FakturExtDUC).Fld_KupdobCd);
+
+            neZatvorenOPNrtransList.RemoveAll(rtr => (rtr.T_kol - rtr.T_kol2).IsZero()); // makni zatvorene
+
+            bool hasOPNrtrans = neZatvorenOPNrtransList.NotEmpty();
+
+            if(hasOPNrtrans)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Nevezan OPN dokument za artikl!?\n\nRedak: {0} ArtiklCD: {1}\n\nOPN {2}", (rowIdx + 1), artiklCD, neZatvorenOPNrtransList[0]);
+             //ZXC.aim_emsg(MessageBoxIcon.Error  , "Nedozvoljeni artikl!\n\n(neaktivan ili izuzet)\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
+             //e.Cancel = true;
+            }
+         }
+
+         #endregion On save IRA check unlinked OPN
+
       } // for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx) 
 
       #endregion Check Column ArtiklCD, IsInMinus
@@ -3973,6 +3997,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       oldTtNum = Fld_TtNum;
    }
+
+   internal bool CouldClose_OPN { get { return (this is IRADUC || this is IzdatnicaDUC || this is IRA_MPC_DUC); } }
 
    #endregion FakturDUC_Validating
 

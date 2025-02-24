@@ -3104,4 +3104,26 @@ public sealed class RtransDao : VvDaoBase, IVvDao
    }
 
    #endregion Some PTG stuff
+
+   #region Some util Rtrans list
+
+   internal static List<Rtrans> Get_OPN_RtransList_For_Artikl_Sklad_And_Kupdob(XSqlConnection conn, string artiklCD, string skladCD, uint kupdobCD)
+   {
+      List<Rtrans> rtransList = new List<Rtrans>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(4);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt       ], "theTT"   , Faktur.TT_OPN, "  = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_skladCD  ], "skladCD" ,       skladCD, "  = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_artiklCD ], "artiklCD",      artiklCD, "  = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_kupdobCD ], "kupdobCD",      kupdobCD, "  = "));
+
+      VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(conn, rtransList, filterMembers, Rtrans.artiklOrderBy_ASC);
+
+      rtransList.ForEach(rtr => rtr.CalcTransResults(null));
+
+      return rtransList;
+   }
+
+   #endregion Some util Rtrans list
 }
