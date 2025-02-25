@@ -5160,6 +5160,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             ZXC.aim_emsg(MessageBoxIcon.Warning, "Ostvareno u ovoj godini po URA nije jednako Ostvareno u ovoj godini po artiklima!\n\nURA sum: {0}\n\nART sum: {1}",
                SVD_UGO_ostvarenoOGbyURA.ToStringVv(), SVD_UGO_ostvarenoOGbyART_KCRP_SUM.ToStringVv());
       }
+
+      if(this is OPN_MPC_DUC)
+      {
+         decimal neispKol = faktur_rec.TrnSum_K - faktur_rec.TrnSum_K2;
+         TheSumGrid.PutCell(ci.iT_OPN_neispKol, 0, neispKol);
+      }
    }
 
    /// <summary>
