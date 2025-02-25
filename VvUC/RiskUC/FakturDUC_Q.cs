@@ -4657,7 +4657,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Reset row results, recalc document results (in case this is old DGV row - zamjena artikla na stavci)
 
-      theGrid.ClearRowContent(currRowIdx);
+      Rtrans ZIZbackupRtrans_rec = null;
+
+      if(this is ZIZ_PTG_DUC) // save some data before ClearRowContent
+      {
+         ZIZbackupRtrans_rec = (Rtrans)GetDgvLineFields1(currRowIdx, false, null);
+      }
+
+      theGrid.ClearRowContent(currRowIdx); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+
+      if(this is ZIZ_PTG_DUC) // restore some data after ClearRowContent
+      {
+         //TheG.PutCell(ci.iT_TT      , currRowIdx, Faktur.TT_ZIZ                );
+         //TheG.PutCell(ci.iT_Opis    , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
+         //TheG.PutCell(ci.iT_skladCD , currRowIdx, Fld_SkladCD                  );
+         //TheG.PutCell(ci.iT_TT2     , currRowIdx, Faktur.TT_ZI2                );
+         //TheG.PutCell(ci.iT_Opis2   , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
+         //TheG.PutCell(ci.iT_SkladUlz, currRowIdx, luiSkladUNJ.Cd               );
+      }
 
       PutDgvTransSumFields();
       

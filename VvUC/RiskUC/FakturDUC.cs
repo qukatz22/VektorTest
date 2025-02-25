@@ -3853,7 +3853,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(/*"ZNJ"*/ZXC.PTG_ZNJ);
                VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(/*"UNJ"*/ZXC.PTG_UNJ);
 
-               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ || Fld_TT == Faktur.TT_MOD || Fld_TT == Faktur.TT_ZIZ))
+               if(luiSkladZNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ || Fld_TT == Faktur.TT_MOD))
                {
                   Fld_SkladCD    =       luiSkladZNJ.Cd     ;
                   Fld_SkladOpis  =       luiSkladZNJ.Name   ;
@@ -3865,8 +3865,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                   Fld_Sklad2Opis =       luiSkladZNJ.Name   ;
                   Fld_SkladBR2   = (uint)luiSkladZNJ.Integer;
                }
-
-               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ || Fld_TT == Faktur.TT_ZIZ))
+               if(luiSkladUNJ != null && (Fld_TT == Faktur.TT_UGN || Fld_TT == Faktur.TT_AUN || Fld_TT == Faktur.TT_DIZ))
                {
                   Fld_SkladCD2   =       luiSkladUNJ.Cd     ;
                   Fld_Sklad2Opis =       luiSkladUNJ.Name   ;
@@ -3877,6 +3876,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                   Fld_SkladCD    =       luiSkladUNJ.Cd     ;
                   Fld_SkladOpis  =       luiSkladUNJ.Name   ;
                   Fld_SkladBR    = (uint)luiSkladUNJ.Integer;
+               }
+               if(luiSkladZNJ != null && Fld_TT == Faktur.TT_ZIZ)
+               {
+                  Fld_SkladCD    =       luiSkladZNJ.Cd     ;
+                  Fld_SkladOpis  =       luiSkladZNJ.Name   ;
+                  Fld_SkladBR    = (uint)luiSkladZNJ.Integer;
+
+                  Fld_SkladCD2   =       luiSkladZNJ.Cd     ;
+                  Fld_Sklad2Opis =       luiSkladZNJ.Name   ;
+                  Fld_SkladBR2   = (uint)luiSkladZNJ.Integer;
                }
 
             } //if(ZXC.IsPCTOGO) 
@@ -13057,6 +13066,38 @@ public partial class FakturExtDUC : FakturDUC
       Fld_M2PayStatus          =   "";
 
       #endregion M2PAY reset Fld_ & M2P_xyz values
+
+      #region PTG ZIZ-ZUL / ZI2-ZU2
+
+      if(this is ZIZ_PTG_DUC)
+      {
+         ZIZ_PTG_DUC theDUC = (this as ZIZ_PTG_DUC);
+
+         VvLookUpItem luiZIZ_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZIZ);
+         VvLookUpItem luiZUL_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZUL);
+
+         VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_ZNJ);
+         VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_UNJ);
+
+         TheG.Rows.Add();
+
+         TheG.PutCell(ci.iT_TT      , 0, Faktur.TT_ZIZ                );
+         TheG.PutCell(ci.iT_Opis    , 0, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
+         TheG.PutCell(ci.iT_skladCD , 0, Fld_SkladCD                  );
+         TheG.PutCell(ci.iT_TT2     , 0, Faktur.TT_ZI2                );
+         TheG.PutCell(ci.iT_Opis2   , 0, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
+         TheG.PutCell(ci.iT_SkladUlz, 0, luiSkladUNJ.Cd               );
+
+         TheG.PutCell(ci.iT_TT      , 1, Faktur.TT_ZUL                );
+         TheG.PutCell(ci.iT_Opis    , 1, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
+         TheG.PutCell(ci.iT_skladCD , 1, luiSkladUNJ.Cd               );
+         TheG.PutCell(ci.iT_TT2     , 1, Faktur.TT_ZU2                );
+         TheG.PutCell(ci.iT_Opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
+         TheG.PutCell(ci.iT_SkladUlz, 1, Fld_SkladCD2                 );
+
+      }
+
+      #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
    }
 

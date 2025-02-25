@@ -3457,6 +3457,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
       R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos"      , "Ukupan iznos bez PDV-a");
    }
 
+   public static string ZIZ_DUC_izlazText = "Izlazi sa";
+   public static string ZIZ_DUC_ulazText  = "Ulazi Na";
+
    #endregion TheG_Specific_Columns
 
    #region TheG_Specific_Columns2
