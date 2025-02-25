@@ -63,7 +63,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_serlot, vvtbR_artiklLongOpis,
                        vvtbT_skladDate, tbx_Konto, vvtbT_skladCD, vvtbT_TT1,
                        vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramOld,vvtbT_hddOld,vvtbT_ramKlasa ,vvtbT_hddKlasa,
-                       vvtbR_Opis, vvtbR_SkladIzl, vvtbR_TT2, vvtbR_Opis2, vvtbR_SkladUlz, vvtbR_OPN_neispKol ;
+                       vvtbR_Opis, vvtbR_SkladIzl, vvtbR_TT2, vvtbR_Opis2, vvtbR_skladCd2, vvtbR_OPN_neispKol ;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -2929,14 +2929,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
-   protected void R_SkladIzl_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText ) 
-   {
-      vvtbR_SkladIzl = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_SkladIzl", TheVvDaoTrans, -24, _statusText);
-      vvtbR_SkladIzl.JAM_ReadOnly = true;
+   //protected void R_SkladIzl_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText ) 
+   //{
+   //   vvtbR_SkladIzl = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_SkladIzl", TheVvDaoTrans, -24, _statusText);
+   //   vvtbR_SkladIzl.JAM_ReadOnly = true;
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_SkladIzl, TheVvDaoTrans, "R_SkladIzl", _colHeader, _width);
-      colVvText.Visible = isVisible;
-   }
+   //   colVvText = TheG.CreateVvTextBoxColumn(vvtbR_SkladIzl, TheVvDaoTrans, "R_SkladIzl", _colHeader, _width);
+   //   colVvText.Visible = isVisible;
+   //}
 
    protected void R_TT2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText) 
    {
@@ -2956,12 +2956,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
-   protected void R_SkladUlz_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText ) 
+   protected void R_skladCd2_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText ) 
    {
-      vvtbR_SkladUlz = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_SkladUlz", TheVvDaoTrans, -24, _statusText);
-      vvtbR_SkladUlz.JAM_ReadOnly = true;
+      vvtbR_skladCd2 = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_skladCd2", TheVvDaoTrans, -24, _statusText);
+      vvtbR_skladCd2.JAM_ReadOnly = true;
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_SkladUlz, TheVvDaoTrans, "R_SkladUlz", _colHeader, _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_skladCd2, TheVvDaoTrans, "R_skladCd2", _colHeader, _width);
       colVvText.Visible = isVisible;
    }
 
@@ -3175,11 +3175,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_hddKlasa;
       internal int iT_TT;
       internal int iT_IRA_MPC;
-      internal int iT_Opis    ;
-      internal int iT_SkladIzl;
+      internal int iT_opis    ;
+    //internal int iT_SkladIzl;
       internal int iT_TT2     ;
-      internal int iT_Opis2   ;
-      internal int iT_SkladUlz;
+      internal int iT_opis2   ;
+      internal int iT_skladCd2;
       internal int iT_OPN_neispKol;
    }
 
@@ -3267,11 +3267,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       ci.iT_IRA_MPC           = TheG.IdxForColumn("T_IRA_MPC");// t_wanted  
 
-      ci.iT_Opis              = TheG.IdxForColumn("R_Opis"); 
-      ci.iT_SkladIzl          = TheG.IdxForColumn("R_SkladIzl"); 
+      ci.iT_opis              = TheG.IdxForColumn("R_Opis"); 
+    //ci.iT_SkladIzl          = TheG.IdxForColumn("R_SkladIzl"); 
       ci.iT_TT2               = TheG.IdxForColumn("R_TT2"); 
-      ci.iT_Opis2             = TheG.IdxForColumn("R_Opis2"); 
-      ci.iT_SkladUlz          = TheG.IdxForColumn("R_SkladUlz");
+      ci.iT_opis2             = TheG.IdxForColumn("R_Opis2"); 
+      ci.iT_skladCd2          = TheG.IdxForColumn("R_skladCd2");
 
       ci.iT_OPN_neispKol      = TheG.IdxForColumn("R_OPN_neispKol");
    }
@@ -3635,12 +3635,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is    ZIZ_PTG_DUC //||
          )
       {
-         KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
+       //25.02.2025.
+      //                          KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
+        if(ZXC.FakturRec != null) KUGnum = Fld_V1_ttNum = ZXC.FakturRec.V1_ttNum;
       }
 
       if(this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC) // Dodatak DUC treba jos i UGNorAUNnum 
       {
-         UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
+       //25.02.2025.
+       //                         UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
+        if(ZXC.FakturRec != null) UGNorAUNnum = Fld_V2_ttNum = ZXC.FakturRec.V2_ttNum;
       }
 
       if(this is ANU_PTG_DUC) // Aneksi trebaju svoj KUG_KupdobTK (u 'konto') 
@@ -13081,20 +13085,19 @@ public partial class FakturExtDUC : FakturDUC
 
          TheG.Rows.Add();
 
-         TheG.PutCell(ci.iT_TT      , 0, Faktur.TT_ZIZ                );
-         TheG.PutCell(ci.iT_Opis    , 0, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
-         TheG.PutCell(ci.iT_skladCD , 0, Fld_SkladCD                  );
-         TheG.PutCell(ci.iT_TT2     , 0, Faktur.TT_ZI2                );
-         TheG.PutCell(ci.iT_Opis2   , 0, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
-         TheG.PutCell(ci.iT_SkladUlz, 0, luiSkladUNJ.Cd               );
+         TheG.PutCell(ci.iT_TT      , 0, Faktur.TT_ZIZ               );
+         TheG.PutCell(ci.iT_opis    , 0, luiZIZ_TT.Name              );
+         TheG.PutCell(ci.iT_skladCD , 0, Fld_SkladCD                 );
+         TheG.PutCell(ci.iT_TT2     , 0, Faktur.TT_ZI2               );
+         TheG.PutCell(ci.iT_opis2   , 0, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
+         TheG.PutCell(ci.iT_skladCd2, 0, luiSkladUNJ.Cd              );
 
-         TheG.PutCell(ci.iT_TT      , 1, Faktur.TT_ZUL                );
-         TheG.PutCell(ci.iT_Opis    , 1, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
-         TheG.PutCell(ci.iT_skladCD , 1, luiSkladUNJ.Cd               );
-         TheG.PutCell(ci.iT_TT2     , 1, Faktur.TT_ZU2                );
-         TheG.PutCell(ci.iT_Opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
-         TheG.PutCell(ci.iT_SkladUlz, 1, Fld_SkladCD2                 );
-
+         TheG.PutCell(ci.iT_TT      , 1, Faktur.TT_ZUL               );
+         TheG.PutCell(ci.iT_opis    , 1, luiZUL_TT.Name              );
+         TheG.PutCell(ci.iT_skladCD , 1, luiSkladUNJ.Cd              );
+         TheG.PutCell(ci.iT_TT2     , 1, Faktur.TT_ZU2               );
+         TheG.PutCell(ci.iT_opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
+         TheG.PutCell(ci.iT_skladCd2, 1, Fld_SkladCD2                );
       }
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2

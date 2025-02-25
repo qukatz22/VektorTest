@@ -931,7 +931,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
                       hamper.CreateVvLabel        (0, 0, "IzlSkl:", ContentAlignment.MiddleRight);
       tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište u najam");
-      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpiS", "");
+      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpis", "");
       tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_SkladCd.JAM_DataRequired = true;
@@ -947,9 +947,9 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       tbx_SkladCd.VVtag2 = true;
 
                       hamper.CreateVvLabel         (0, 1, "UlzSkl:", ContentAlignment.MiddleRight);
-      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_SkladCd", "Skladište povrata iy najma");
-      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpiS", "");
-      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr", "");
+      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_Sklad2Cd", "Skladište povrata iz najma");
+      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpis2", "");
+      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr2", "");
       tbx_Sklad2Cd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_Sklad2Cd.JAM_DataRequired = true;
       tbx_Sklad2Cd.JAM_MustTabOutBeforeSubmit = true;
@@ -1975,7 +1975,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
 
                       hamper.CreateVvLabel        (0, 0, "IzlSkl:", ContentAlignment.MiddleRight);
       tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište u najam");
-      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpiS", "");
+      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpis", "");
       tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_SkladCd.JAM_DataRequired = true;
@@ -1986,14 +1986,14 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       tbx_SkladBR  .JAM_ReadOnly = true;
 
       tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-      tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
+      tbx_SkladCd.JAM_lui_NameTaker_JAM_Name    = tbx_SkladOpis.JAM_Name;
       tbx_SkladCd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladBR.JAM_Name;
       tbx_SkladCd.VVtag2 = true;
 
                       hamper.CreateVvLabel         (0, 1, "UlzSkl:", ContentAlignment.MiddleRight);
-      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_SkladCd", "Skladište povrata iy najma");
-      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpiS", "");
-      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr", "");
+      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_Sklad2Cd", "Skladište povrata iz najma");
+      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpis2", "");
+      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr2", "");
       tbx_Sklad2Cd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_Sklad2Cd.JAM_DataRequired = true;
       tbx_Sklad2Cd.JAM_MustTabOutBeforeSubmit = true;
@@ -2003,7 +2003,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       tbx_SkladRbr2.JAM_ReadOnly = true;
 
       tbx_Sklad2Cd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-      tbx_Sklad2Cd.JAM_lui_NameTaker_JAM_Name = tbx_Sklad2Opis.JAM_Name;
+      tbx_Sklad2Cd.JAM_lui_NameTaker_JAM_Name    = tbx_Sklad2Opis.JAM_Name;
       tbx_Sklad2Cd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladRbr2.JAM_Name;
       tbx_Sklad2Cd.VVtag2 = true;
 
@@ -2496,7 +2496,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
                       hamper.CreateVvLabel        (0, 0, "IzlSkl:", ContentAlignment.MiddleRight);
       tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište u najam");
-      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpiS", "");
+      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpis", "");
       tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_SkladCd.JAM_DataRequired = true;
@@ -2512,9 +2512,9 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       tbx_SkladCd.VVtag2 = true;
 
                       hamper.CreateVvLabel         (0, 1, "UlzSkl:", ContentAlignment.MiddleRight);
-      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_SkladCd", "Skladište povrata iy najma");
-      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpiS", "");
-      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr", "");
+      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_Sklad2Cd", "Skladište povrata iz najma");
+      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpis2", "");
+      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr2", "");
       tbx_Sklad2Cd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_Sklad2Cd.JAM_DataRequired = true;
       tbx_Sklad2Cd.JAM_MustTabOutBeforeSubmit = true;
@@ -3391,7 +3391,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
                       hamper.CreateVvLabel        (0, 0, "Izdajemo sa:", ContentAlignment.MiddleRight);
       tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Izadjemo sa skladista");
-      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpiS", "");
+      tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpis", "");
       tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_SkladCd.JAM_DataRequired = true;
@@ -3402,14 +3402,14 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_SkladBR  .JAM_ReadOnly = true;
 
       tbx_SkladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-      tbx_SkladCd.JAM_lui_NameTaker_JAM_Name = tbx_SkladOpis.JAM_Name;
+      tbx_SkladCd.JAM_lui_NameTaker_JAM_Name    = tbx_SkladOpis.JAM_Name;
       tbx_SkladCd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladBR.JAM_Name;
       tbx_SkladCd.VVtag2 = true;
 
                       hamper.CreateVvLabel         (0, 1, "Vraća se na:", ContentAlignment.MiddleRight);
-      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_SkladCd", "Vraća se na skladište");
-      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpiS", "");
-      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr", "");
+      tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_Sklad2Cd", "Vraća se na skladište");
+      tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpis2", "");
+      tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr2", "");
       tbx_Sklad2Cd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_Sklad2Cd.JAM_DataRequired = true;
       tbx_Sklad2Cd.JAM_MustTabOutBeforeSubmit = true;
@@ -3419,7 +3419,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_SkladRbr2.JAM_ReadOnly = true;
 
       tbx_Sklad2Cd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
-      tbx_Sklad2Cd.JAM_lui_NameTaker_JAM_Name = tbx_Sklad2Opis.JAM_Name;
+      tbx_Sklad2Cd.JAM_lui_NameTaker_JAM_Name    = tbx_Sklad2Opis.JAM_Name;
       tbx_Sklad2Cd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladRbr2.JAM_Name;
       tbx_Sklad2Cd.VVtag2 = true;
 
@@ -3439,26 +3439,25 @@ public class ZIZ_PTG_DUC : FakturPDUC
    public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
-      T_TT_CreateColumnG1          (ZXC.Q3un,               true, "TT Izlaz"   , "Tip Izlaznog dokumenta", true);
-      R_Opis_CreateColumn          (ZXC.Q5un,               true, "TT Izl Opis", "Opis Izlaznog dokumenta");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSk"      , "Izlazno skladište");
-    //R_SkladIzl_CreateColumn      (ZXC.Q3un,               true, "SKL Izl"    , "Skladiste izlaza");
-      R_TT2_CreateColumn           (ZXC.Q3un,               true, "TT Ulaz"    , "Opis Ulaznog dokumenta");
-      R_Opis2_CreateColumn         (ZXC.Q5un,               true, "TT Ulz opis", "Tip Ulaznog dokumenta");
-      R_SkladUlz_CreateColumn      (ZXC.Q3un,               true, "UlzSkl"     , "Skladiste Ulaza");
-      T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                        true, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"        , "Tip artikla");
-      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"        , "RAM", false);
-      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"        , "HDD");
-      T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"         , "Jedinica mjere"                    );
-      T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"        , "Količina"                );
-      T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"     , "Jedinična cijena"                  );
-      R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos"      , "Ukupan iznos bez PDV-a");
+      T_TT_CreateColumnG1          (ZXC.Q2un,               true, ""      , "Tip Izlaznog dokumenta", true);
+      R_Opis_CreateColumn          (ZXC.Q4un,               true, ""      , "Opis Izlaznog dokumenta");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "SaSkl" , "Izlaz sa skladišta");
+      R_TT2_CreateColumn           (ZXC.Q2un,               true, ""      , "Tip Ulaznog dokumenta");
+      R_Opis2_CreateColumn         (ZXC.Q3un,               true, ""      , "Opis Ulaznog dokumenta");
+      R_skladCd2_CreateColumn      (ZXC.Q3un,               true, "NaSkl" , "Ulaz na skladišta");
+      T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra" , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                        true, "Naziv" , "Naziv artikla ili proizvoljan opis");
+      T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"   , "Tip artikla");
+      T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"   , "RAM", false);
+      T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"   , "HDD");
+      T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"    , "Jedinica mjere"                    );
+      T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"   , "Količina"                );
+      T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena", "Jedinična cijena"                  );
+      R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos" , "Ukupan iznos bez PDV-a");
    }
 
    public static string ZIZ_DUC_izlazText = "Izlazi sa";
-   public static string ZIZ_DUC_ulazText  = "Ulazi Na";
+   public static string ZIZ_DUC_ulazText  = "Ulazi na";
 
    #endregion TheG_Specific_Columns
 

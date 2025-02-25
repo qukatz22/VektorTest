@@ -4669,11 +4669,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       if(this is ZIZ_PTG_DUC) // restore some data after ClearRowContent
       {
          //TheG.PutCell(ci.iT_TT      , currRowIdx, Faktur.TT_ZIZ                );
-         //TheG.PutCell(ci.iT_Opis    , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
+         //TheG.PutCell(ci.iT_opis    , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
          //TheG.PutCell(ci.iT_skladCD , currRowIdx, Fld_SkladCD                  );
          //TheG.PutCell(ci.iT_TT2     , currRowIdx, Faktur.TT_ZI2                );
-         //TheG.PutCell(ci.iT_Opis2   , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
-         //TheG.PutCell(ci.iT_SkladUlz, currRowIdx, luiSkladUNJ.Cd               );
+         //TheG.PutCell(ci.iT_opis2   , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
+         //TheG.PutCell(ci.iT_skladCd2, currRowIdx, luiSkladUNJ.Cd               );
       }
 
       PutDgvTransSumFields();
