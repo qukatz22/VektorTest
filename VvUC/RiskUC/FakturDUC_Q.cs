@@ -1582,8 +1582,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          #region MSI-MSU Roundtrip
 
          // 29.01.2025: 
-       //if(faktur_rec.TT == Faktur.TT_MSI)
-         if(faktur_rec.TtInfo.HasTwinTT   )
+       //if(faktur_rec.TT == Faktur.TT_MSI                               )
+       //if(faktur_rec.TtInfo.HasTwinTT                                  )
+         if(faktur_rec.TtInfo.HasTwinTT && faktur_rec.TT != Faktur.TT_ZIZ)
          {
             DateTime skladDate = Fld_DokDate ;
             string skladCD     = Fld_SkladCD ;
@@ -2338,7 +2339,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region TwinTrans Same SkladCD ?
 
-      if(faktur_rec.TtInfo.HasTwinTT && faktur_rec.SkladCD == faktur_rec.SkladCD2)
+      if(faktur_rec.TT == Faktur.TT_ZIZ) 
+      {
+         if(faktur_rec.SkladCD == ZXC.PTG_UNJ || faktur_rec.SkladCD2 == ZXC.PTG_UNJ)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "ZAMJENA NE MOŽE imati UNJ skladište u poljima Izadjemo sa ili Vraća se na!");
+
+            e.Cancel = true;
+         }
+      }
+      else if(faktur_rec.TtInfo.HasTwinTT && faktur_rec.SkladCD == faktur_rec.SkladCD2)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Međuskladišnica NE MOŽE imati isto odlazno i dolazno skladište!");
 
@@ -4657,23 +4667,31 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Reset row results, recalc document results (in case this is old DGV row - zamjena artikla na stavci)
 
-      Rtrans ZIZbackupRtrans_rec = null;
+      Rtrans                ZIZbackupRtrans_rec = null;
+      ZXC.VvUtilDataPackage ZIZbackupValues     = new ZXC.VvUtilDataPackage();
 
       if(this is ZIZ_PTG_DUC) // save some data before ClearRowContent
       {
          ZIZbackupRtrans_rec = (Rtrans)GetDgvLineFields1(currRowIdx, false, null);
+
+         ZIZbackupValues.TheStr1 = TheG.GetStringCell(ci.iT_opis    , currRowIdx, false);
+         ZIZbackupValues.TheStr2 = TheG.GetStringCell(ci.iT_skladCD , currRowIdx, false);
+         ZIZbackupValues.TheStr3 = TheG.GetStringCell(ci.iT_TT2     , currRowIdx, false);
+         ZIZbackupValues.TheStr4 = TheG.GetStringCell(ci.iT_opis2   , currRowIdx, false);
+         ZIZbackupValues.TheStr5 = TheG.GetStringCell(ci.iT_skladCD2, currRowIdx, false);
       }
 
       theGrid.ClearRowContent(currRowIdx); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 
       if(this is ZIZ_PTG_DUC) // restore some data after ClearRowContent
       {
-         //TheG.PutCell(ci.iT_TT      , currRowIdx, Faktur.TT_ZIZ                );
-         //TheG.PutCell(ci.iT_opis    , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_izlazText);
-         //TheG.PutCell(ci.iT_skladCD , currRowIdx, Fld_SkladCD                  );
-         //TheG.PutCell(ci.iT_TT2     , currRowIdx, Faktur.TT_ZI2                );
-         //TheG.PutCell(ci.iT_opis2   , currRowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText );
-         //TheG.PutCell(ci.iT_skladCd2, currRowIdx, luiSkladUNJ.Cd               );
+         // tu vrati kao da inicijaliziras a samo uzmi u obzir sacuvani tt i vidi Fld_ ove skladista
+         TheG.PutCell(ci.iT_TT      , currRowIdx, /*Faktur.TT_ZIZ                */ ZIZbackupRtrans_rec.T_TT);
+         TheG.PutCell(ci.iT_opis    , currRowIdx, /*ZIZ_PTG_DUC.ZIZ_DUC_izlazText*/ ZIZbackupValues.TheStr1 );
+         TheG.PutCell(ci.iT_skladCD , currRowIdx, /*Fld_SkladCD                  */ ZIZbackupValues.TheStr2 );
+         TheG.PutCell(ci.iT_TT2     , currRowIdx, /*Faktur.TT_ZI2                */ ZIZbackupValues.TheStr3 );
+         TheG.PutCell(ci.iT_opis2   , currRowIdx, /*ZIZ_PTG_DUC.ZIZ_DUC_ulazText */ ZIZbackupValues.TheStr4 );
+         TheG.PutCell(ci.iT_skladCD2, currRowIdx, /*luiSkladUNJ.Cd               */ ZIZbackupValues.TheStr5 );
       }
 
       PutDgvTransSumFields();

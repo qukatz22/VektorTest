@@ -785,9 +785,15 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
    {
       List<Rtrans> rtransesToRemoveList = new List<Rtrans>(transes.Count / 2);
 
+      bool shouldRemove;
+
       foreach(Rtrans rtrans_rec in transes)
       {
-         if(rtrans_rec.T_TT == twinTT_toBeRemoved) rtransesToRemoveList.Add(rtrans_rec);
+         shouldRemove = rtrans_rec.T_TT == twinTT_toBeRemoved;
+
+         if(twinTT_toBeRemoved == Faktur.TT_ZI2 && rtrans_rec.T_TT == Faktur.TT_ZU2) shouldRemove = true;
+
+         if(shouldRemove) rtransesToRemoveList.Add(rtrans_rec);
       }
 
       foreach(Rtrans rtrans_rec in rtransesToRemoveList)

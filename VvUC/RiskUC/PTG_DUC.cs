@@ -3435,7 +3435,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
    #endregion Fld
 
    #region TheG_Specific_Columns
-   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
    public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
