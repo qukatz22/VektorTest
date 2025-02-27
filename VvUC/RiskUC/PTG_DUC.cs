@@ -3423,6 +3423,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_Sklad2Cd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladRbr2.JAM_Name;
       tbx_Sklad2Cd.VVtag2 = true;
 
+      tbx_SkladCd .JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
+      tbx_Sklad2Cd.JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
    }
 
    #endregion Hampers

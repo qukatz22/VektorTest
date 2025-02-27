@@ -1688,9 +1688,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region On save IRA check unlinked OPN
          
-         uint opnTtNum = VezaTtNumForTT(Faktur.TT_OPN);
-
-         bool shouldCheckOPNlink = ZXC.RRD.Dsc_IsUseOPN && this.CouldClose_OPN && opnTtNum.IsZero();
+         bool shouldCheckOPNlink = ZXC.RRD.Dsc_IsUseOPN && this.CouldClose_OPN && VezaTtNumForTT(Faktur.TT_OPN).IsZero();
 
          if(shouldCheckOPNlink)
          {
@@ -3612,7 +3610,19 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          //if(faktur_rec.TtInfo.IsPTG_YYinTtNum      ) ZXC.aim_emsg("todo!");
          //if(faktur_rec.TtInfo.IsPTG_YYinTtNum_99999) ZXC.aim_emsg("todo!");
 
+         if(this is ZIZ_PTG_DUC)
+         {
+            Rtrans ZIZ_ZUL_rtrans_rec;
 
+            for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
+            {
+               ZIZ_ZUL_rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx, false, null);
+
+               if(ZIZ_ZUL_rtrans_rec.T_TT == Faktur.TT_ZIZ) TheG.PutCell(ci.iT_skladCD , rowIdx, Fld_SkladCD );
+               if(ZIZ_ZUL_rtrans_rec.T_TT == Faktur.TT_ZUL) TheG.PutCell(ci.iT_skladCD2, rowIdx, Fld_SkladCD2);
+
+            }
+         }
       }
 
       // CLASSIC: 
