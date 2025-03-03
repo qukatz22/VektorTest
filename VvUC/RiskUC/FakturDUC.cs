@@ -2531,7 +2531,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          vvtbT_TT1.JAM_CharacterCasing = CharacterCasing.Upper;
          vvtbT_TT1.JAM_Set_LookUpTable(ZXC.luiListaZIZ_TT, (int)ZXC.Kolona.prva);
 
-         vvtbT_TT1.JAM_FieldExitMethod = new EventHandler(OnExitTT_ZIZ_SetColor);
+         vvtbT_TT1.JAM_FieldExitMethod = new EventHandler(OnExitTT_ZUL_SetColor);
 
       }
       else
@@ -2544,7 +2544,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
-   public void OnExitTT_ZIZ_SetColor(object sender, EventArgs e)
+   public void OnExitTT_ZUL_SetColor(object sender, EventArgs e)
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
      
@@ -2552,7 +2552,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       VvTextBoxEditingControl vvTbTT = sender as VvTextBoxEditingControl;
       
-      if(vvTbTT.Text == Faktur.TT_ZIZ)
+      if(vvTbTT.Text == Faktur.TT_ZUL)
       {
          foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
          {
@@ -5049,7 +5049,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
          {
-            if(rtrans_rec.T_TT == Faktur.TT_ZIZ)
+            if(rtrans_rec.T_TT == Faktur.TT_ZUL)
             {
                tbxCell.Style.BackColor = Color.PaleGreen;
             }
@@ -13181,7 +13181,7 @@ public partial class FakturExtDUC : FakturDUC
          TheG.PutCell(ci.iT_opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
          TheG.PutCell(ci.iT_skladCD2, 1, Fld_SkladCD2                );
 
-         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[0].Cells)
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[1].Cells)
          {
             tbxCell.Style.BackColor = Color.PaleGreen;
          }

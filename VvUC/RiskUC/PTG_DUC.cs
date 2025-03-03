@@ -3343,7 +3343,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
       hamper.VvBottomMargin = ZXC.Qun8;
 
-                    hamper.CreateVvLabel  (0, 0, "DatumPVR:", ContentAlignment.MiddleRight);
+                    hamper.CreateVvLabel  (0, 0, "Datum:", ContentAlignment.MiddleRight);
       tbx_DokDate = hamper.CreateVvTextBox(1, 0, "tbx_dokDate", "Datum ugovora");
       tbx_DokDate.JAM_IsForDateTimePicker = true;
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
@@ -3485,7 +3485,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    protected override void AddColorsToBaby()
    {
-      SetUpColor(clr_PVR_PTG, Color.Empty, clr_PVR_PTG);
+      SetUpColor(clr_DOD_PTG, Color.Empty, clr_DOD_PTG);
    }
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
 }
