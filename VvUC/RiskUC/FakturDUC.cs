@@ -2530,6 +2530,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          vvtbT_TT1 = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_TT1", TheVvDaoTrans, DB_Tci.t_tt, _statusText);
          vvtbT_TT1.JAM_CharacterCasing = CharacterCasing.Upper;
          vvtbT_TT1.JAM_Set_LookUpTable(ZXC.luiListaZIZ_TT, (int)ZXC.Kolona.prva);
+
+         vvtbT_TT1.JAM_FieldExitMethod = new EventHandler(OnExitTT_ZIZ_SetColor);
+
       }
       else
       { 
@@ -2539,6 +2542,31 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_TT1, TheVvDaoTrans, DB_Tci.t_tt, _colHeader, _width);
       colVvText.Visible = isVisible;
+   }
+
+   public void OnExitTT_ZIZ_SetColor(object sender, EventArgs e)
+   {
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+     
+      int rowIdx = TheG.CurrentRow.Index;
+
+      VvTextBoxEditingControl vvTbTT = sender as VvTextBoxEditingControl;
+      
+      if(vvTbTT.Text == Faktur.TT_ZIZ)
+      {
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         {
+            tbxCell.Style.BackColor = Color.PaleGreen;
+         }
+      }
+      else
+      {
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         {
+            if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.None) tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor;
+            else                                                  tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_False_BackColor;
+         }
+      }
    }
 
    protected void T_IRA_MPC_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
@@ -5017,6 +5045,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZU2               );
             TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
             TheG.PutCell(ci.iT_skladCD2, rowIdx, faktur_rec.SkladCD2         );
+         }
+
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         {
+            if(rtrans_rec.T_TT == Faktur.TT_ZIZ)
+            {
+               tbxCell.Style.BackColor = Color.PaleGreen;
+            }
          }
       }
    }
@@ -13141,6 +13177,11 @@ public partial class FakturExtDUC : FakturDUC
          TheG.PutCell(ci.iT_TT2     , 1, Faktur.TT_ZU2               );
          TheG.PutCell(ci.iT_opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
          TheG.PutCell(ci.iT_skladCD2, 1, Fld_SkladCD2                );
+
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[0].Cells)
+         {
+            tbxCell.Style.BackColor = Color.PaleGreen;
+         }
       }
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2

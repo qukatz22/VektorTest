@@ -1664,6 +1664,8 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       hamp_sklad_PTG.Location = new Point(hamp_Dodatak_PTG.Left + ZXC.Q10un + ZXC.Qun2, hamp_Dodatak_PTG.Bottom);
 
       nextY = hamp_napomena_PTG.Bottom;
+
+      hamp_twin.Visible = false;
    }
 
    private void CreateArrOfHampers()
@@ -1965,7 +1967,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
    {
       hamper = new VvHamper(4, 2, "", null, false);
 
-      hamper.VvColWdt      = new int[] { labelWidth - ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un - ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { labelWidth + ZXC.Q2un, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un - ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -1973,7 +1975,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                      hamper.CreateVvLabel        (0, 0, "IzlSkl:", ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel        (0, 0, "Izdajemo sa:", ContentAlignment.MiddleRight);
       tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište u najam");
       tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpis", "");
       tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
@@ -1990,7 +1992,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       tbx_SkladCd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladBR.JAM_Name;
       tbx_SkladCd.VVtag2 = true;
 
-                      hamper.CreateVvLabel         (0, 1, "UlzSkl:", ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel         (0, 1, "Ulazi na:", ContentAlignment.MiddleRight);
       tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_Sklad2Cd", "Skladište povrata iz najma");
       tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpis2", "");
       tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr2", "");
@@ -2207,6 +2209,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       hamp_sklad_PTG.Location = new Point(hamp_TT_PTG.Left + ZXC.Q2un, hamp_partner_PTG.Bottom);
 
       nextY = hamp_napomena_PTG.Bottom;
+
+      hamp_twin.Visible = false;
    }
 
    private void CreateArrOfHampers()
@@ -2486,15 +2490,15 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
    {
       hamper = new VvHamper(4, 2, "", null, false);
 
-      hamper.VvColWdt      = new int[] { labelWidth - ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un - ZXC.Qun4 };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth + ZXC.Q2un, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un - ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] {         faBefFirstCol, faBefCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                      hamper.CreateVvLabel        (0, 0, "IzlSkl:", ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel        (0, 0, "Vraća se sa:", ContentAlignment.MiddleRight);
       tbx_SkladCd   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište u najam");
       tbx_SkladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_SkladOpis", "");
       tbx_SkladBR   = hamper.CreateVvTextBox      (3, 0, "tbx_SkladRbr", "");
@@ -2511,7 +2515,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       tbx_SkladCd.JAM_lui_IntegerTaker_JAM_Name = tbx_SkladBR.JAM_Name;
       tbx_SkladCd.VVtag2 = true;
 
-                      hamper.CreateVvLabel         (0, 1, "UlzSkl:", ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel         (0, 1, "Ulazi na:", ContentAlignment.MiddleRight);
       tbx_Sklad2Cd  = hamper.CreateVvTextBoxLookUp (1, 1, "tbx_Sklad2Cd", "Skladište povrata iz najma");
       tbx_Sklad2Opis = hamper.CreateVvTextBox      (2, 1, "tbx_SkladOpis2", "");
       tbx_SkladRbr2 = hamper.CreateVvTextBox       (3, 1, "tbx_SkladRbr2", "");
@@ -3102,6 +3106,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
       hamp_sklad_PTG.Location = new Point(hamp_TT_PTG.Left + ZXC.Q2un, hamp_partner_PTG.Bottom);
 
       nextY = hamp_napomena_PTG.Bottom;
+
+      hamp_twin.Visible = false;
    }
 
    private void CreateArrOfHampers()
@@ -3267,9 +3273,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
       hamper.VvSpcBefRow    = new int[] {           ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4};
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                       hamper.CreateVvLabel    (0, 0, "Partner:", ContentAlignment.MiddleRight);
-      tbx_KupdobCd   = hamper.CreateVvTextBox  (1, 0, "tbx_kupdobCd"  , "Sifra partnera" , 6);
-      tbx_KupdobTk   = hamper.CreateVvTextBox  (2, 0, "tbx_kupdobTk"  , "Ticker partnera", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kupdobTK));
+                       hamper.CreateVvLabel  (0, 0, "Partner:", ContentAlignment.MiddleRight);
+      tbx_KupdobCd   = hamper.CreateVvTextBox(1, 0, "tbx_kupdobCd"  , "Sifra partnera" , 6);
+      tbx_KupdobTk   = hamper.CreateVvTextBox(2, 0, "tbx_kupdobTk"  , "Ticker partnera", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kupdobTK));
       tbx_KupdobName = hamper.CreateVvTextBox(3, 0, "tbx_kupdobName", "Naziv partnera" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kupdobName), 2, 0);
       tbx_KupdobCd.JAM_MustTabOutBeforeSubmit =
       tbx_KupdobTk.JAM_MustTabOutBeforeSubmit =
@@ -3294,7 +3300,6 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_KupdobZip   .Visible =
       tbx_KupdobMjesto.Visible = false;
 
-
                      hamper.CreateVvLabel  (0, 1, "AdrFaktur:", ContentAlignment.MiddleRight);
       tbx_KdAdresa = hamper.CreateVvTextBox(1, 1, "kdAdresa", "Adresa partnera", 74, 2, 0);
 
@@ -3316,22 +3321,12 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_PosJedCd    .JAM_ReadOnly =
       tbx_PosJedTk    .JAM_ReadOnly =
       tbx_PosJedName  .JAM_ReadOnly =
-      tbx_PosJedAdresa.JAM_ReadOnly = true;
-
-      //                  hamper.CreateVvLabel  (4, 3, "Rabat:", ContentAlignment.MiddleRight);
-      //tbx_somePercent = hamper.CreateVvTextBox(5, 3, "tbx_somePercent", "", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.somePercent));//PTG_RabatKupcaPosto 
-      //tbx_somePercent.JAM_IsForPercent = true;
-      //tbx_somePercent.JAM_MarkAsNumericTextBox(2, false, decimal.MaxValue, 99.99M, true);
-
-      //              hamper.CreateVvLabel  (4, 4, "OdgodaPlać:", ContentAlignment.MiddleRight);
-      //tbx_RokPlac = hamper.CreateVvTextBox(5, 4, "tbx_RokPlac", "Odgoda plaćanja", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.rokPlac));//PTG_OdgodaPl
-      //tbx_RokPlac.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
-
-      tbx_KupdobCd   .JAM_ReadOnly = 
-      tbx_KupdobTk   .JAM_ReadOnly = 
-      tbx_KupdobName .JAM_ReadOnly = 
-      tbx_somePercent.JAM_ReadOnly = 
-      tbx_RokPlac    .JAM_ReadOnly = true;
+      tbx_PosJedAdresa.JAM_ReadOnly = 
+      tbx_KupdobTk    .JAM_ReadOnly = 
+      tbx_KupdobName  .JAM_ReadOnly = 
+      tbx_KupdobCd    .JAM_ReadOnly = false;
+      tbx_somePercent .JAM_ReadOnly = 
+      tbx_RokPlac     .JAM_ReadOnly = true;
 
    }
 
@@ -3456,6 +3451,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"   , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena", "Jedinična cijena"                  );
       R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos" , "Ukupan iznos bez PDV-a");
+
+      vvtbT_cij.JAM_ReadOnly = true;
+
    }
 
    public static string ZIZ_DUC_izlazText = "Izlazi sa";
@@ -4930,6 +4928,8 @@ public class MSI_PTG_DUC : FakturPDUC
       
       hamp_tt.BringToFront();
       nextY = hamp_napomena.Bottom;
+
+      hamp_twin.Visible = false;
    }
 
    private void CreateArrOfHampers()
