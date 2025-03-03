@@ -5668,6 +5668,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private bool CheckIfLastRowIsEmpty(int lastRowIdx)
    {
+      // 03.03.2025: 
+      if(/*ZXC.IsPCTOGO*/ this is ZIZ_PTG_DUC) return false;
+
       string artiklCD1 = "", artiklName1 = "";
       string artiklCD2 = "", artiklName2 = "";
 
