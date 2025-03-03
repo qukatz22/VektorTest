@@ -9220,11 +9220,11 @@ public partial class PopratniceZaglavlja
 public partial class PopratniceZaglavljaStavke
 {
 
-   private string CjRazred_clean { get { return CjRazred.TrimEnd(' '); } }
+   private string CjRazred_clean { get { return CjRazred == null ? "" : CjRazred.TrimEnd(' '); } }
   
  // 06.10.2016. HS promjenile popratnice - stavili su puno praznog prostora
-   private string NazivVrste_clean      { get { return NazivVrste     .Trim(); } }
-   private string NazivSortimenta_clean { get { return NazivSortimenta.Trim(); } }
+   private string NazivVrste_clean      { get { return NazivVrste == null ? "" : NazivVrste.Trim(); } }
+   private string NazivSortimenta_clean { get { return NazivSortimenta == null ? "" : NazivSortimenta.Trim(); } }
 
  //public string VvArtiklName { get { return NazivVrste       + " " + NazivSortimenta       + " " + CjRazred_clean + " " + CjDuljina; } } 
    public string VvArtiklName { get { return NazivVrste_clean + " " + NazivSortimenta_clean + " " + CjRazred_clean + " " + CjDuljina; } }
