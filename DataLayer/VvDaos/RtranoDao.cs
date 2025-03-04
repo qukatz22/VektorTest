@@ -634,11 +634,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return theSernoList;
    }
 
-   public static Rtrano Get_LastRtrano_ForSerno(XSqlConnection conn, Rtrano rtrano_rec, string _theSerno)
+   public static /*Rtrano*/bool Get_LastRtrano_ForSerno(XSqlConnection conn, Rtrano rtrano_rec, string _theSerno)
    {
       return Get_LastRtrano_ForSerno(conn, rtrano_rec, _theSerno, false);
    }
-   public static Rtrano Get_LastRtrano_ForSerno(XSqlConnection conn, Rtrano rtrano_rec, string _theSerno, bool shouldBeSilent) 
+   public static /*Rtrano*/bool Get_LastRtrano_ForSerno(XSqlConnection conn, Rtrano rtrano_rec, string _theSerno, bool shouldBeSilent) 
    { 
       bool success = true;
 
@@ -653,7 +653,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       success = ZXC.RtranoDao.GetLastRecordBySomeOrder(conn, rtrano_rec, filterMembers, orderBy, shouldBeSilent, false);
 
-      return rtrano_rec;
+      return /*rtrano_rec*/success;
    }
 
    #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
