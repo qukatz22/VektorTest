@@ -29,6 +29,7 @@ public static class VvSQL
 
    public enum ParamListType { Complete, Without_ID, ID_Only, Old_Values, LanSrvAndRecID_only };
    public enum DB_RW_ActionType { ADD, RWT, RWT_2, DEL, EQL, UTIL, NONE };
+   public enum DB_RW_SyncType { T1_IRA_2_T2_URA };
    public enum DBNavigActionType { FRS, PRV, NXT, LST };
    public enum OrderDirectEnum { ASC, DESC };
 

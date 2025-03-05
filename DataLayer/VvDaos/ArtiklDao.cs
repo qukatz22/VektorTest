@@ -2071,7 +2071,7 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       return artikl_rec.EditedHasChanges();
    }
 
-   internal bool SynchronizeArtiklSifrar(XSqlConnection conn, ZXC.WriteMode writeMode, Artikl orig_artikl_rec)
+   internal bool SynchronizeArtiklSifrar(XSqlConnection conn, ZXC.WriteMode writeMode, /*Artikl orig_artikl_rec*/ VvDataRecord orig_rec)
    {
       bool OK = true;
 
@@ -2087,10 +2087,30 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
       conn.ChangeDatabase(kontra_dbName);
 
-      Artikl kontra_artikl_rec = orig_artikl_rec.MakeDeepCopy();
+      Artikl orig_artikl_rec   = null;
+      Faktur orig_faktur_rec   = null;
+      Artikl kontra_artikl_rec = null;
+      Faktur kontra_faktur_rec = null;
 
-      // 01.07.2024: 
-      kontra_artikl_rec.SkladCD = "";
+      if(orig_rec is Artikl) { orig_artikl_rec = (orig_rec as Artikl); kontra_artikl_rec = (orig_rec as Artikl).MakeDeepCopy(); }
+    //if(orig_rec is Faktur) { orig_faktur_rec = (orig_rec as Faktur); kontra_faktur_rec = (orig_rec as Faktur).MakeDeepCopy(); }
+
+      bool isArtikl = kontra_artikl_rec != null;
+      bool isFaktur = kontra_faktur_rec != null;
+
+      if(isArtikl) kontra_artikl_rec.SkladCD = "";
+
+      if(isFaktur) kontra_faktur_rec = Set_URA_kontra_faktur_From_IRA_orig_faktur(orig_faktur_rec);
+
+
+
+
+      if(isFaktur) return false; // DELMELATTER ... safety break ... dok nije gotovo
+      // tu si stao 
+
+
+
+
 
       // ADDREC 
       if(writeMode == ZXC.WriteMode.Add) 
@@ -2160,6 +2180,13 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       conn.ChangeDatabase(orig_dbName);
 
       return OK;
+   }
+
+   private Faktur Set_URA_kontra_faktur_From_IRA_orig_faktur(Faktur orig_faktur_rec)
+   {
+      Faktur URA_kontra_faktur_rec = orig_faktur_rec.MakeDeepCopy();
+
+      return URA_kontra_faktur_rec;
    }
 
    #endregion Set_IMPORT_OFFIX_Columns
