@@ -7271,7 +7271,26 @@ public class RptR_PDV_Knjiga         : RptR_PDV
       }
       else // IRA 
       { 
-         FakturDao.LoadIraUnionIrmGroupedFakturList(TheDbConnection, TheFakturList, SetFilterMembers4KnjigaIRA()); 
+         FakturDao.LoadIraUnionIrmGroupedFakturList(TheDbConnection, TheFakturList, SetFilterMembers4KnjigaIRA());
+
+         // 07.03.2025: 
+         if(RptFilter.SkladCD.NotEmpty())
+         {
+            VvLookUpItem theLui = ZXC.luiListaSkladista.GetLuiForThisCd(RptFilter.SkladCD);
+
+            if(theLui != null)
+            {
+               uint OPP__BR = theLui.Uinteger.NotZero() ? theLui.Uinteger : (uint)theLui.Integer;
+
+               string theOPP = OPP__BR.ToString();
+
+               RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakSch[FakCI.skladCD], /*false*/true, "OPP", theOPP, theOPP, "Za OPP:", " = ", ""));
+
+               List<string> thisOPPskladList = ZXC.luiListaSkladista.Where(skl => skl.Uinteger == OPP__BR).Select(skl => skl.Cd).ToList();
+
+               TheFakturList.RemoveAll(fak => fak.SkladCD.In(thisOPPskladList) == false);
+            }
+         }
       }
 
       // Fill sumaRazdoblja, fill kumulativOdPg 

@@ -295,6 +295,7 @@ public sealed class FakturDao : VvDaoBase, IVvDao
          (isIRMgrouping ?   "ttSort    , \n" : "")               +
          (isIRMgrouping ?   "ttNum     , \n" : "")               +
          (isIRMgrouping ?   "dokDate   , \n" : "")               +
+         (isIRMgrouping ?   "skladCD   , \n" : "")               +
          (isIRMgrouping ?   "nacPlac   , \n" : "")               +
          (isIRMgrouping ?   "kupdobName, \n" : "")               +
          (isIRMgrouping ?   "kdOib     , \n" : "")               +
@@ -431,6 +432,7 @@ if(isIRMgrouping) faktur_rec.TT          = reader.GetString  (colIdx++);
 if(isIRMgrouping) faktur_rec.TtSort      = reader.GetInt16   (colIdx++);
 if(isIRMgrouping) faktur_rec.TtNum       = reader.GetUInt32  (colIdx++);
 if(isIRMgrouping) faktur_rec.DokDate     = reader.GetDateTime(colIdx++);
+if(isIRMgrouping) faktur_rec.SkladCD     = reader.GetString  (colIdx++);
 if(isIRMgrouping) faktur_rec.NacPlac     = reader.GetString  (colIdx++);
 if(isIRMgrouping) faktur_rec.KupdobName  = reader.GetString  (colIdx++);
 if(isIRMgrouping) faktur_rec.KdOib       = reader.GetString  (colIdx++);
