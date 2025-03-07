@@ -2071,7 +2071,7 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       return artikl_rec.EditedHasChanges();
    }
 
-   internal bool SynchronizeArtiklSifrar(XSqlConnection conn, ZXC.WriteMode writeMode, /*Artikl orig_artikl_rec*/ VvDataRecord orig_rec)
+   internal bool SynchronizeArtiklSifrar_OR_T1IRA_2_T2URA(XSqlConnection conn, ZXC.WriteMode writeMode, /*Artikl orig_artikl_rec*/ VvDataRecord orig_rec)
    {
       bool OK = true;
 
@@ -2087,25 +2087,23 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
       conn.ChangeDatabase(kontra_dbName);
 
-      Artikl orig_artikl_rec   = null;
-      Faktur orig_faktur_rec   = null;
-      Artikl kontra_artikl_rec = null;
-      Faktur kontra_faktur_rec = null;
+      Artikl orig_artikl_rec       = null;
+      Artikl kontra_artikl_rec     = null;
 
-      if(orig_rec is Artikl) { orig_artikl_rec = (orig_rec as Artikl); kontra_artikl_rec = (orig_rec as Artikl).MakeDeepCopy(); }
-    //if(orig_rec is Faktur) { orig_faktur_rec = (orig_rec as Faktur); kontra_faktur_rec = (orig_rec as Faktur).MakeDeepCopy(); }
+      Faktur orig_faktur_rec_IRA   = null;
+      Faktur kontra_faktur_rec_URA = null;
 
-      bool isArtikl = kontra_artikl_rec != null;
-      bool isFaktur = kontra_faktur_rec != null;
+      if(orig_rec is Artikl) { orig_artikl_rec     = (orig_rec as Artikl); kontra_artikl_rec     = (orig_rec as Artikl).MakeDeepCopy();                             }
+      if(orig_rec is Faktur) { orig_faktur_rec_IRA = (orig_rec as Faktur); kontra_faktur_rec_URA = Set_URA_kontra_faktur_From_IRA_orig_faktur(orig_faktur_rec_IRA); }
+
+      bool isArtikl = kontra_artikl_rec     != null;
+      bool isFaktur = kontra_faktur_rec_URA != null;
 
       if(isArtikl) kontra_artikl_rec.SkladCD = "";
 
-      if(isFaktur) kontra_faktur_rec = Set_URA_kontra_faktur_From_IRA_orig_faktur(orig_faktur_rec);
-
-
-
 
       if(isFaktur) return false; // DELMELATTER ... safety break ... dok nije gotovo
+      // odi gledaj u MySQL QuerryBrowser-u i za Faktur i za FaktEx i za Trans sta treba štelati! 
       // tu si stao 
 
 
@@ -2129,6 +2127,13 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       // RWTREC 
       else if(writeMode == ZXC.WriteMode.Edit) 
       {
+
+// jel bi tu sad ako je Faktur trebalo zapravo pobrisati URA-u pa rekonstruirati ADDREC_          
+// sta je s cacheom u T2?!                                                                        
+// zapravo ga treba pitati (sambunjaka), treba li on zaista ovo i za EDIT, DEL ili samo za ADD    
+// ovog jos nikad nije bilo u programu. ADDREC zbog kopiraj, kopi aut, init NY, ... itd ali       
+// NE i sinhronizacija kada se izvorni record ispravlja ili briše !!! !!! !!!                     
+// I to ne kao clone-irana varijanta (npr. Artikl) nego jos treba modificirati (set URA from IRA) 
          bool foundOK = SetMe_Record_bySomeUniqueColumn(conn, kontra_artikl_rec, orig_artikl_rec.ArtiklCD, ZXC.ArtiklSchemaRows[ZXC.ArtCI.artiklCD], false, false);
 
          if(foundOK == false)
@@ -2182,9 +2187,31 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       return OK;
    }
 
-   private Faktur Set_URA_kontra_faktur_From_IRA_orig_faktur(Faktur orig_faktur_rec)
+   private Faktur Set_URA_kontra_faktur_From_IRA_orig_faktur(Faktur orig_faktur_rec_IRA)
    {
-      Faktur URA_kontra_faktur_rec = orig_faktur_rec.MakeDeepCopy();
+      Faktur URA_kontra_faktur_rec = (Faktur)orig_faktur_rec_IRA.CreateNewRecordAndCloneItComplete();
+
+      // ovdje navesti sve sto treba modificirati Faktur rekordu kad iz IRA-e nestane URA         
+      // odi gledaj u MySQL QuerryBrowser-u i za Faktur i za FaktEx i za Trans sta treba štelati! 
+
+      URA_kontra_faktur_rec.TT = Faktur.TT_URA;
+
+      URA_kontra_faktur_rec.V1_tt    = "T1IRA";
+      URA_kontra_faktur_rec.V1_ttNum = orig_faktur_rec_IRA.TtNum;
+      URA_kontra_faktur_rec.V2_tt    = "RecID";
+      URA_kontra_faktur_rec.V2_ttNum = orig_faktur_rec_IRA.RecID;
+
+      for(int i = 0; i < URA_kontra_faktur_rec.Transes.Count; ++i)
+      {
+         // ovdje navesti sve sto treba modificirati Trans rekordu kad iz IRA-e nestane URA 
+         // odi gledaj u MySQL QuerryBrowser-u i za Faktur i za FaktEx i za Trans sta treba štelati! 
+
+         URA_kontra_faktur_rec.Transes[i].T_TT = URA_kontra_faktur_rec.TT;
+         URA_kontra_faktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(URA_kontra_faktur_rec.Transes[i].T_cij, URA_kontra_faktur_rec.Transes[i].T_pdvSt);
+         URA_kontra_faktur_rec.Transes[i].CalcTransResults(URA_kontra_faktur_rec);
+      }
+
+      URA_kontra_faktur_rec.TakeTransesSumToDokumentSum(true);
 
       return URA_kontra_faktur_rec;
    }
