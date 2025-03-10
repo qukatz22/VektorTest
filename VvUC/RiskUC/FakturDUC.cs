@@ -13799,7 +13799,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_r_puxK_iskor)) Fld_R_puxK_Iskor =           (faktur_rec.R_PIXPUX_ISKORISTIVOST      ).Ron2();
 
       if(CtrlOK(tbx_twin_pixK      )) Fld_TwinS_pixK       = Fld_S_pixK;
-      if(CtrlOK(tbx_twin_puxK_P    )) Fld_TwinS_puxK_P     = Fld_S_puxK_P;
+               if(CtrlOK(tbx_twin_puxK_P    )) Fld_TwinS_puxK_P     = Fld_S_puxK_P;
       if(CtrlOK(tbx_twin_pixK_O    )) Fld_TwinS_pixK_O     = Fld_R_puxK_O;
       if(CtrlOK(tbx_twin_puxK_All  )) Fld_TwinS_puxK_All   = Fld_S_puxK_All;
       if(CtrlOK(tbx_twin_puxK_Diff )) Fld_TwinS_puxK_Diff  = Fld_R_puxK_Diff;

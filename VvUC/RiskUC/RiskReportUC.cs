@@ -252,7 +252,7 @@ public partial class RiskFilterUC : VvFilterUC
    private VvTextBox tbx_artiklCdOD, tbx_artiklNazivOD, tbx_artiklNazivDO, tbx_fakturOD, tbx_fakturDO,
                             tbx_KD_naziv, tbx_KD_sifra, tbx_KD_ticker,
                             tbxLookUp_TT, tbx_TTOpis,
-                            tbx_skladCd, tbx_skladOpis, tbx_skladCd2, tbx_skladOpis2,
+                            tbx_skladCd, tbx_skladCd_PDV, tbx_skladOpis, tbx_skladCd2, tbx_skladOpis2,
                             tbx_MT_naziv, tbx_MT_sifra, tbx_MT_ticker,
                             tbx_NumOfGrups,
                             tbx_pdvKredit, tbx_pdvPovrat, tbx_pdvPredujam, tbx_pdvUstup,
@@ -291,7 +291,7 @@ public partial class RiskFilterUC : VvFilterUC
                             rbt_Lijek, rbt_Potros, rbt_LiP,
                             rbt_svdSvaSkl, rbt_svdDonac, rbt_svdNeDonac,
                             rbt_intrastatI, rbt_intrastatN, rbt_intrastat0, rbt_intrastatB;
-   private VvHamper hamper_OdDo, hamper_Partner, hamper_TTSklad, hamper_AllSklad, hamper_TopSort, hamper_pdv, hamper_NacPlac, hamper_IOS, hamper_ODDoArtikl, hamper_ODDoTT, 
+   private VvHamper hamper_OdDo, hamper_Partner, hamper_TTSklad, hamper_skladCD, hamper_AllSklad, hamper_TopSort, hamper_pdv, hamper_NacPlac, hamper_IOS, hamper_ODDoArtikl, hamper_ODDoTT, 
                     hamper_status, hamper_compDate, hamper_rptNap, hamper_OdDoVezDok2, hamper_svdLiP, hamper_svdSklad, hamper_uvozIzvoz, hamper_intrastat;
    public VvHamper hamper_Sort, hamper_HorLine, hamper_grupDok, hamper_grupArtikl, hamper_ArtSort, hamper_pdvRtip, 
                    hamp_macro, hamper_Color, hamper_Bool2;
@@ -421,6 +421,7 @@ public partial class RiskFilterUC : VvFilterUC
 
       hamper_pdv       .Visible = false;
       hamper_intrastat .Visible = false;
+      hamper_skladCD   .Visible = false;
       hamper_IOS       .Visible = false;
       hamper_Color     .Visible = false;
       hamper_ODDoArtikl.Visible = false;
@@ -482,6 +483,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_pdvRtip    .Visible = false;
       hamper_pdv        .Visible = false;
       hamper_intrastat  .Visible = false;
+      hamper_skladCD    .Visible = false;
       hamper_IOS        .Visible = true;
       hamper_Color      .Visible = true;
       hamper_ODDoArtikl .Visible = false;
@@ -549,6 +551,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = false;
       hamper_intrastat.Visible = false;
+      hamper_skladCD  .Visible = false;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_compDate .Visible = false;
@@ -611,6 +614,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = false;
       hamper_intrastat.Visible = false;
+      hamper_skladCD  .Visible = false;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_compDate .Visible = false;
@@ -664,9 +668,13 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_intrastat.Location = new Point(nextX, hamper_pdv.Top + ZXC.Q10un *2 + ZXC.Q2un);
       hamper_intrastat.BringToFront();
 
+      hamper_skladCD.Location = new Point(nextX, hamper_pdv.Top + ZXC.Q10un * 2 + ZXC.Q5un);
+      hamper_skladCD.BringToFront();
+
       VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_pdv      , MaxHamperWidth, razmakIzmjedjuHampera);
       VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_intrastat, MaxHamperWidth, razmakIzmjedjuHampera);
       VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_Partner  , MaxHamperWidth, razmakIzmjedjuHampera);
+      VvHamper.DesnoPoravnanjeHamperWidth_RadiLjepsegIzgleda(hamper_skladCD  , MaxHamperWidth, razmakIzmjedjuHampera);
 
       hamper_TTSklad   .Visible = false;
       hamper_ODDoTT    .Visible = false;
@@ -681,6 +689,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_pdvRtip  .Visible = false;
       hamper_pdv      .Visible = true;
       hamper_intrastat.Visible = ZXC.IsTETRAGRAM_ANY/* true*/;
+      hamper_skladCD  .Visible = true;
       hamper_IOS      .Visible = false;
       hamper_Color    .Visible = false;
       hamper_NacPlac  .Visible = false;
@@ -707,6 +716,8 @@ public partial class RiskFilterUC : VvFilterUC
    private void CreateHampers()
    {
       razmakIzmjedjuHampera = ZXC.Qun8;
+
+      InitializeHamper_SkladCD(out hamper_skladCD);
 
       InitializeHamper_OdDo_DateComp(out hamper_compDate);
       InitializeHamper_OdDo_Artikl(out hamper_ODDoArtikl);
@@ -1133,6 +1144,7 @@ public partial class RiskFilterUC : VvFilterUC
       tbx_skladCd.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis.JAM_Name;
       //  tbx_skladCd.Leave       += new EventHandler(/*TheVvUC.*/tbx_zaSkladCD_Leave_RememberTheLastUsedSkladCD);
       //tbx_skladCd.TextChanged += new EventHandler(TheVvUC.tbx_zaSkladCD_TextChanged_RememberTheLastUsedSkladCD);
+      tbx_skladCd.JAM_PairThisWithTwin(tbx_skladCd_PDV);
 
       tbx_skladOpis.JAM_ReadOnly = true;
       tbx_skladOpis.Tag = ZXC.vvColors.userControl_BackColor;
@@ -2133,6 +2145,33 @@ public partial class RiskFilterUC : VvFilterUC
 
    }
 
+   private void InitializeHamper_SkladCD(out VvHamper hamper)
+   {
+      hamper = new VvHamper(4, 1, "", this, false);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q2un + ZXC.Qun2, ZXC.Q3un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+         
+                      hamper.CreateVvLabel        (0, 0, "SkladCD:"  , ContentAlignment.MiddleRight);
+      tbx_skladCd_PDV   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_skladCd_PDV", "Šifra skladišta");
+      tbx_skladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_skladOpis_InVisible", "Naziv skladišta", 32, 1, 0);
+      tbx_skladCd_PDV.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_skladCd_PDV.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
+      tbx_skladCd_PDV.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis.JAM_Name;
+
+      tbx_skladOpis.JAM_ReadOnly = true;
+      tbx_skladOpis.Tag = ZXC.vvColors.userControl_BackColor;
+
+   }
+
    #endregion Pdv
 
    #endregion hampers
@@ -2441,6 +2480,9 @@ public partial class RiskFilterUC : VvFilterUC
          tbx_skladCd.Text = value;
       }
    }
+
+   public string Fld_SkladCD_PDV { set { tbx_skladCd_PDV.Text = value; } }
+
    public string Fld_SkladCD2 {  get{  return tbx_skladCd2.Text; } set { tbx_skladCd2.Text = value; } }
 
    public ZXC.PdvKnjigaEnum Fld_PdvKnjiga
@@ -3088,6 +3130,7 @@ public partial class RiskFilterUC : VvFilterUC
          Fld_TH_Kune                = TheRtransFilter.TH_Blg_uKunama;
 
          Fld_IsMalopUlazForPrmArtTT = TheRtransFilter.IsMalopUlazForPrmArtTT;
+         Fld_SkladCD_PDV            = Fld_SkladCD;
 
       }
 
