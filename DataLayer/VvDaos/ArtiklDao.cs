@@ -2172,35 +2172,6 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       return OK;
    }
 
-   private Faktur Set_URA_kontra_faktur_From_IRA_orig_faktur(Faktur orig_faktur_rec_IRA)
-   {
-      Faktur URA_kontra_faktur_rec = (Faktur)orig_faktur_rec_IRA.CreateNewRecordAndCloneItComplete();
-
-      // ovdje navesti sve sto treba modificirati Faktur rekordu kad iz IRA-e nestane URA         
-      // odi gledaj u MySQL QuerryBrowser-u i za Faktur i za FaktEx i za Trans sta treba štelati! 
-
-      URA_kontra_faktur_rec.TT = Faktur.TT_URA;
-
-      URA_kontra_faktur_rec.V1_tt    = "T1IRA";
-      URA_kontra_faktur_rec.V1_ttNum = orig_faktur_rec_IRA.TtNum;
-      URA_kontra_faktur_rec.V2_tt    = "RecID";
-      URA_kontra_faktur_rec.V2_ttNum = orig_faktur_rec_IRA.RecID;
-
-      for(int i = 0; i < URA_kontra_faktur_rec.Transes.Count; ++i)
-      {
-         // ovdje navesti sve sto treba modificirati Trans rekordu kad iz IRA-e nestane URA 
-         // odi gledaj u MySQL QuerryBrowser-u i za Faktur i za FaktEx i za Trans sta treba štelati! 
-
-         URA_kontra_faktur_rec.Transes[i].T_TT = URA_kontra_faktur_rec.TT;
-         URA_kontra_faktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(URA_kontra_faktur_rec.Transes[i].T_cij, URA_kontra_faktur_rec.Transes[i].T_pdvSt);
-         URA_kontra_faktur_rec.Transes[i].CalcTransResults(URA_kontra_faktur_rec);
-      }
-
-      URA_kontra_faktur_rec.TakeTransesSumToDokumentSum(true);
-
-      return URA_kontra_faktur_rec;
-   }
-
    #endregion Set_IMPORT_OFFIX_Columns
 
 

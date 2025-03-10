@@ -4293,6 +4293,8 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
    }
 
    #endregion GetPrihodTT_Skladista_InUse
+
+
 }
 
 public class Faktur2NalogRulesAndData

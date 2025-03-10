@@ -2160,7 +2160,7 @@ public partial class RiskFilterUC : VvFilterUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
          
-                      hamper.CreateVvLabel        (0, 0, "SkladCD:"  , ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel        (0, 0, "PoslP.:"  , ContentAlignment.MiddleRight);
       tbx_skladCd_PDV   = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_skladCd_PDV", "Šifra skladišta");
       tbx_skladOpis = hamper.CreateVvTextBox      (2, 0, "tbx_skladOpis_InVisible", "Naziv skladišta", 32, 1, 0);
       tbx_skladCd_PDV.JAM_CharacterCasing = CharacterCasing.Upper;
