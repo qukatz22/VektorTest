@@ -3325,8 +3325,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
     //}
     //else // ostale poslovnice imaju pravilo 'bar 5 eur' 
     //{
-         if(ukKC >= 5.00M) return false;
-         else              return true ;
+    // 10.03.2025: gasimo ovaj uvjet od minimalno 5 EUR, dakle prema njihovim uputama nema vise uvjeta za odobravanje rabata do daljnjega  
+       //if(ukKC >= 5.00M) return false;
+       //else              return true ;
+                           return false;
     //}
    }
 
