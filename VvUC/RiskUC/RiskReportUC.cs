@@ -3291,6 +3291,9 @@ public partial class RiskFilterUC : VvFilterUC
       
       TheRtransFilter.VrstaIntrastatObr      = Fld_VrstaIntrastatObr;
 
+      TheRtransFilter.OPP_PDV_LuiBr          = 0;
+      TheRtransFilter.OPP_PDV_LuiOPP         = 0;
+
    }
 
    #endregion PutFilterFields(), GetFilterFields()
