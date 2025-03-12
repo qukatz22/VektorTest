@@ -7274,7 +7274,8 @@ public class RptR_PDV_Knjiga         : RptR_PDV
          FakturDao.LoadIraUnionIrmGroupedFakturList(TheDbConnection, TheFakturList, SetFilterMembers4KnjigaIRA());
 
          // 07.03.2025: 
-         if(RptFilter.TheOPP_PDV.NotZero())
+       //if(RptFilter.TheOPP_PDV.NotZero())
+         if(RptFilter.OPP_PDV_LuiCd.NotEmpty())
          {
           //uint OPP__BR = theLui.Uinteger.NotZero() ? theLui.Uinteger : (uint)theLui.Integer;
             uint OPP__BR = RptFilter.TheOPP_PDV;
