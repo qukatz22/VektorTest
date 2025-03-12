@@ -90,6 +90,7 @@ public class VvTextBox : TextBox, IEditableObject
    private string    lui_FlagTaker_JAM_Name;
    private string    lui_IntegerTaker_JAM_Name;
    private string    lui_UintegerTaker_JAM_Name;
+   private string    lui_Int_OR_UInt_Taker_JAM_Name;
    private string    lui_DateTaker_JAM_Name;
    private VvLookUpItem chosenLookUpItem;
    private bool      isForPostotak;
@@ -915,6 +916,17 @@ public class VvTextBox : TextBox, IEditableObject
       }
    }
 
+   public string JAM_lui_Int_OR_UInt_Taker_JAM_Name
+   {
+      get { return lui_Int_OR_UInt_Taker_JAM_Name; }
+      set
+      {
+         JAM_FieldExitMethod = new EventHandler(OnExitSetLookUp_DataTakers);
+
+         lui_Int_OR_UInt_Taker_JAM_Name = value;
+      }
+   }
+
    /// <summary>
    /// this.vvtb je VvLookUp odabir koji ce pak ovome vvtb-u predati Date kolonu LookUp liste
    /// </summary>
@@ -1608,6 +1620,15 @@ public class VvTextBox : TextBox, IEditableObject
       {
          siblingTextBox = GetSiblingVvTextBoxTaker(vvtb, vvtb.JAM_lui_UintegerTaker_JAM_Name);
          siblingTextBox.PutUintField((chosenLui == null ? 0 : chosenLui.Uinteger));
+
+         if(siblingTextBox.JAM_ReadOnly == true) readOnlyTakerCount++;
+         sendTabCount++;
+      }
+
+      if(vvtb.JAM_lui_Int_OR_UInt_Taker_JAM_Name.NotEmpty())
+      {
+         siblingTextBox = GetSiblingVvTextBoxTaker(vvtb, vvtb.JAM_lui_Int_OR_UInt_Taker_JAM_Name);
+         siblingTextBox.PutUintField((chosenLui == null ? 0 : chosenLui.Uinteger.NotZero() ? chosenLui.Uinteger : (uint)chosenLui.Integer));
 
          if(siblingTextBox.JAM_ReadOnly == true) readOnlyTakerCount++;
          sendTabCount++;

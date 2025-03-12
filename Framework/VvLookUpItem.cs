@@ -101,6 +101,11 @@ public class VvLookUpItem : IDisposable, IEditableObject
       set {        this._uinteger = value; }
    }
 
+   public uint Int_OR_UInt
+   {
+      get { return this._uinteger.NotZero() ? _uinteger : (uint)_integer; }
+   }
+
    public string String2
    {
       get { return this._string2; }

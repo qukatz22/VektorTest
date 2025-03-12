@@ -7274,17 +7274,17 @@ public class RptR_PDV_Knjiga         : RptR_PDV
          FakturDao.LoadIraUnionIrmGroupedFakturList(TheDbConnection, TheFakturList, SetFilterMembers4KnjigaIRA());
 
          // 07.03.2025: 
-       //if(RptFilter.TheOPP_PDV.NotZero())
-         if(RptFilter.OPP_PDV_LuiCd.NotEmpty())
+         if(RptFilter.TheOPP_PDV.NotZero())
          {
           //uint OPP__BR = theLui.Uinteger.NotZero() ? theLui.Uinteger : (uint)theLui.Integer;
             uint OPP__BR = RptFilter.TheOPP_PDV;
 
             string theOPP = OPP__BR.ToString();
 
-            RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakSch[FakCI.skladCD], /*false*/true, "OPP", theOPP, theOPP, "Za OPP:", " = ", ""));
+          //RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakSch[FakCI.skladCD], /*false*/true, "OPP", theOPP, theOPP, "Za OPP:", " = ", ""));
 
-            List<string> thisOPPskladList = ZXC.luiListaSkladista.Where(skl => skl.Uinteger == OPP__BR).Select(skl => skl.Cd).ToList();
+          //List<string> thisOPPskladList = ZXC.luiListaSkladista.Where(skl => skl.Uinteger    == OPP__BR).Select(skl => skl.Cd).ToList();
+            List<string> thisOPPskladList = ZXC.luiListaSkladista.Where(skl => skl.Int_OR_UInt == OPP__BR).Select(skl => skl.Cd).ToList();
 
             TheFakturList.RemoveAll(fak => fak.SkladCD.In(thisOPPskladList) == false);
          }

@@ -2184,13 +2184,14 @@ public partial class RiskFilterUC : VvFilterUC
       tbx_OPP_PDV_LuiCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_OPP_PDV_LuiCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       
-      tbx_OPP_PDV_LuiCd.JAM_lui_NameTaker_JAM_Name     = tbx_OPP_PDV_LuiOpis.JAM_Name;
-      tbx_OPP_PDV_LuiCd.JAM_lui_IntegerTaker_JAM_Name  = tbx_OPP_PDV_LuiBr  .JAM_Name;
-      tbx_OPP_PDV_LuiCd.JAM_lui_UintegerTaker_JAM_Name = tbx_OPP_PDV_LuiOPP .JAM_Name;
+      tbx_OPP_PDV_LuiCd.JAM_lui_NameTaker_JAM_Name         = tbx_OPP_PDV_LuiOpis.JAM_Name;
+      tbx_OPP_PDV_LuiCd.JAM_lui_IntegerTaker_JAM_Name      = tbx_OPP_PDV_LuiBr  .JAM_Name;
+    //tbx_OPP_PDV_LuiCd.JAM_lui_UintegerTaker_JAM_Name     = tbx_OPP_PDV_LuiOPP .JAM_Name;
+      tbx_OPP_PDV_LuiCd.JAM_lui_Int_OR_UInt_Taker_JAM_Name = tbx_OPP_PDV_LuiOPP .JAM_Name;
 
       tbx_OPP_PDV_LuiOpis.JAM_ReadOnly = true;
-      tbx_OPP_PDV_LuiBr  .  JAM_ReadOnly = true;
-      tbx_OPP_PDV_LuiOPP . JAM_ReadOnly = true;
+      tbx_OPP_PDV_LuiBr  .JAM_ReadOnly = true;
+      tbx_OPP_PDV_LuiOPP .JAM_ReadOnly = true;
 
       tbx_OPP_PDV_LuiOpis.Tag = ZXC.vvColors.userControl_BackColor;
       tbx_OPP_PDV_LuiBr  .Tag = ZXC.vvColors.userControl_BackColor;
