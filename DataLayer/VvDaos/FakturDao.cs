@@ -4083,6 +4083,12 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       return theFakturList;
    }
 
+   public static uint CountNOTfiskalized_IRMs_2025(XSqlConnection conn)
+   {
+      List<Faktur> theFakturList = FakturDao.GetAllPreviously_NOTfiskalizedFakturs(conn);
+
+      return (uint)theFakturList.Count;
+   }
 
    #endregion Check NOT fiskalized PRIHOD_TT Rns
 
