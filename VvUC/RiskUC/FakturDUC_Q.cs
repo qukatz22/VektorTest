@@ -3819,7 +3819,26 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
        //   "RecalcPrNabCijAndResultFields?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
        //if(result != DialogResult.OK) return; 
 
-         RecalcPrNabCijAndResultFields();
+         // 18.03.2025: pocinje LJAŠ 2025 
+         if(this is FakturPDUC)
+         {
+            FakturPDUC thePduc = (this as FakturPDUC);
+
+            bool wasG2 = false;
+
+            Crownwood.DotNetMagic.Controls.TabPage currTabPage = thePduc.ThePolyGridTabControl.SelectedTab;
+
+            if(currTabPage.Title != TabPageTitle1) wasG2 = true;
+
+            if(wasG2) thePduc.ThePolyGridTabControl.TabPages[TabPageTitle1].Selected = true;
+
+            RecalcPrNabCijAndResultFields();
+
+            if(wasG2) thePduc.ThePolyGridTabControl.TabPages[TabPageTitle2].Selected = true;
+
+         }
+
+         else RecalcPrNabCijAndResultFields();
       }
 
       #endregion if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
