@@ -1183,6 +1183,18 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
          if(faktur_rec.TtNum.IsZero()) // !!!: Kad je AutoAddFaktur pozvan za neki import onda se preuzima ttNum iz importFile-a, a ako je neki Vektor-ov onda ga izracunaj 
          {
             faktur_rec.TtNum = fakturDao.GetNextTtNum(conn, faktur_rec.VirtualTT, faktur_rec.SkladCD);
+
+            // 19.03.2025: do sada je postojao samo ovaj GetNextTtNum(conn, faktur_rec.VirtualTT, faktur_rec.SkladCD);
+            // a od sada radimo skretnicu ovisno o PTG ...
+
+            if(ZXC.IsPCTOGO || ZXC.IsManyYearDB)
+            {
+               string theTT     = faktur_rec.VirtualTT;
+               TtInfo theTtInfo = ZXC.TtInfo(theTT)   ;
+
+               if(ZXC.IsPCTOGO     && theTtInfo.IsPTG_KUGinTtNum) faktur_rec.TtNum = fakturDao.GetNext_PTG_KUGinTtNum_TtNum(conn, theTT, faktur_rec.V1_ttNum, faktur_rec.V2_ttNum              );
+               if(ZXC.IsManyYearDB && theTtInfo.IsPTG_YYinTtNum ) faktur_rec.TtNum = VvDaoBase.GetNext_PTG_YYinTtNum_TtNum (conn, theTT, faktur_rec.SkladCD , faktur_rec.DokDate.VvDokDate_YY());
+            }
          }
 
          faktur_rec.TtSort = ZXC.TtInfo(faktur_rec.TT).TtSort;

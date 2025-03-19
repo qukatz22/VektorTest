@@ -501,7 +501,11 @@ public partial class UrudzbeniDUC : MixerDUC
       //Fld_StrD_32 = theUrBroj;
    }
 
-   public void GetNextSifraWroot_String_btnClick(object sender, EventArgs e)
+   // ovak je metoda GetNextSifraWroot_String_btnClick zatecena 19.03.2025.      
+   // Zarpica zove i oce drugacije, pa skuzimo da je tak i bilo nekad, a zasto   
+   // je zateceno ovako, pojma nemamo. Uglavnom, ovo ovako cuvamo a radimno novu 
+   // (staru) ovu dolje                                                          
+   public void GetNextSifraWroot_String_btnClick_Do19032025(object sender, EventArgs e)
    {
       string yyPrimitka = Fld_DokDate.ToString("yy");
 
@@ -512,6 +516,20 @@ public partial class UrudzbeniDUC : MixerDUC
 
     //string theUrBroj = Fld_KupDobCdAsTxt + "-" + yyPrimitka + "-" + theKlasa_rbrNum. ToString("0000");
       string theUrBroj = rootOfNum                                  + theUrBroj_rbrNum.ToString("0000");
+
+      Fld_StrD_32 = theUrBroj;
+      ZXC.TheVvForm.SetDirtyFlag(sender);
+   }
+
+   public void GetNextSifraWroot_String_btnClick(object sender, EventArgs e)
+   {
+      string yyPrimitka = Fld_DokDate.ToString("yy");
+
+      string rootOfNum = Fld_KupDobCdAsTxt + "-" + yyPrimitka + "-";
+
+      uint theKlasa_rbrNum = ZXC.MixerDao.GetNext_UrudzbeniBroj_Od_19032025(TheDbConnection, "strA_40", "SUBSTRING(strD_32, 11)", /*theKlasa*/Fld_StrA_40);
+
+      string theUrBroj = Fld_KupDobCdAsTxt + "-" + yyPrimitka + "-" + theKlasa_rbrNum. ToString("0000");
 
       Fld_StrD_32 = theUrBroj;
       ZXC.TheVvForm.SetDirtyFlag(sender);

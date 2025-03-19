@@ -6488,8 +6488,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          if(thisRtranoArtiklCD != lastRtranoArtiklCD)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Serijski broj\n\r\n\r{0}\n\r\n\revidentiran je kao artikl {1} a ova stavka se odnosi na artikl {2}\n\r\n\r{3}", 
-               theSerno, thisRtranoArtiklCD, lastRtranoArtiklCD, last_rtrano_rec_forThisSerno);
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Ova stavka se odnosi na artikl\n\r\n\r{0}\n\r\n\rA serijski broj\n\r\n\r{1}\n\r\n\revidentiran je kao artikl\n\r\n\r{2}\n\r\n\rpo dokumentu\n\r\n\r{3}",
+               thisRtranoArtiklCD, theSerno, lastRtranoArtiklCD, last_rtrano_rec_forThisSerno);
 
             theGrid2.EndEdit();
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");

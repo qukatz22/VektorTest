@@ -2938,6 +2938,17 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand GetNext_UrudzbeniBroj_Od_19032025_Command(XSqlConnection conn, string recordName, string ttColName, string ttNumColName, string wantedTT)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      cmd.CommandText = "SELECT MAX(" + ttNumColName + ") FROM " + recordName + "\n" +
+                        "WHERE " + ttColName + " = '" + wantedTT + "' ";
+
+      return (cmd);
+   }
+
+
    public static XSqlCommand GetNextArhivaRecordVersion_Command(XSqlConnection conn, string recordArhivaName, uint origRecID)
    {
       XSqlCommand cmd = InitCommand(conn);

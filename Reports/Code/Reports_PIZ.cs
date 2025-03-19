@@ -6610,7 +6610,7 @@ public class RptP_SEPA : RptP_Virmani
 #if SEPA_001_001_03
    public static bool ExecuteExportSEPA_001_001_03(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
-      // 16.10.2023: tu si stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
+      // 16.10.2023: t u s i stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
       // pa gore ugasiti nepotreban 'using PAIN_001_001_03;'                                    
       // pa u ExecuteExportValidationSEPA ugasiti                                               
       // sepa.hr.pain.001.001.03.NOVA                                                           
@@ -6888,7 +6888,7 @@ public class RptP_SEPA : RptP_Virmani
 
    public static bool ExecuteExportSEPA_001_001_09(string fullPathFileName, List<VirmanStruct> _theVirmanList, DateTime _znpDate, ZXC.VirmanBtchBookgKind _virmanGroup, bool isPlaca) // VOILA 
    {
-      // 16.10.2023: tu si stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
+      // 16.10.2023: t u s i stao. sada treba ovaj Document zamijeniti sa Document_PAIN_001_001_09
       // pa gore ugasiti nepotreban 'using PAIN_001_001_03;'                                    
       // pa u ExecuteExportValidationSEPA ugasiti                                               
       // sepa.hr.pain.001.001.03.NOVA                                                           

@@ -837,7 +837,7 @@ be_fast:
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_PCKinf_PTG)
       {
          string artiklCD;
-         string skladCD = "ZNJ";
+         string skladCD = ZXC.PTG_ZNJ/*"ZNJ"*/;
 
          artiklCD = PCK_ArtiklList_UC.GetFirstActivePCKartiklCD(TheDbConnection, skladCD, "");
 
