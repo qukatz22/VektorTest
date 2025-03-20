@@ -6820,7 +6820,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, ""            , ZXC.Q6un +
       AddDGVColum_Integer_4GridReadOnly (PTG_OplGrid, "Rata Dani"   , ZXC.Q4un - ZXC.Qun2, false, 2);
     //AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "Prva"        , ZXC.Q3un, false); 
     //AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "Zadnja"      , ZXC.Q3un, false); 
-      AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "IFA Broj"    , ZXC.Q4un          , false);
+      AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "IRA Broj"    , ZXC.Q5un          , false);
       AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP napomena", ZXC.Q3un          , true);
       AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP datum"   , ZXC.Q4un          , false);
       AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP napravio", ZXC.Q5un          , false);

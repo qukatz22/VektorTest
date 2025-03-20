@@ -1918,8 +1918,9 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
       dtp_DokDate.Name = "dtp_DokDate";
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
+      dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
 
-                     hamper.CreateVvLabel  (0, 1, "DatDostave:", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel  (0, 1, "DatDostave:", ContentAlignment.MiddleRight);
       tbx_DokDate2 = hamper.CreateVvTextBox(1, 1, "tbx_DokDate2", "Datum dostave");
       tbx_DokDate2.JAM_IsForDateTimePicker = true;
       dtp_DokDate2 = hamper.CreateVvDateTimePicker(1, 1, "", tbx_DokDate2);//PTG_DatDostave     
@@ -2462,6 +2463,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       tbx_DokDate.JAM_IsForDateTimePicker = true;
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
       dtp_DokDate.Name = "dtp_DokDate";
+      dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
+
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
    }
 
@@ -3348,6 +3351,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_DokDate.JAM_IsForDateTimePicker = true;
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
       dtp_DokDate.Name = "dtp_DokDate";
+      dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
+
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
    }
 
@@ -3703,7 +3708,7 @@ public class FUG_PTG_UC : VvUserControl
    {
       hamper = new VvHamper(8, 1, "", tabPage_ListaRata, false);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q5un, ZXC.Q2un - ZXC.Qun2, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q3un, ZXC.Q4un };
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q5un, ZXC.Q2un - ZXC.Qun2, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q3un, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8,            ZXC.Qun8, ZXC.Qun8, ZXC.QUN , ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -3760,10 +3765,10 @@ public class FUG_PTG_UC : VvUserControl
       hamper.CreateVvLabel(0, 0, "Račun od:", ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(2, 0, "do:", ContentAlignment.MiddleRight);
 
-      tbx_RacunOd               = hamper.CreateVvTextBox(1, 0, "tbx_RacunOd", "Račun od", 6);
+      tbx_RacunOd               = hamper.CreateVvTextBox(1, 0, "tbx_RacunOd", "Račun od", 8);
       tbx_RacunOd.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_RacunOd.JAM_MarkAsNumericTextBox(0, false, decimal.MaxValue, decimal.MinValue, true);
-      tbx_RacunDo = hamper.CreateVvTextBox(3, 0, "tbx_RacunDo", "Račun do", 6);
+      tbx_RacunDo = hamper.CreateVvTextBox(3, 0, "tbx_RacunDo", "Račun do", 8);
       tbx_RacunDo.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_RacunDo.JAM_MarkAsNumericTextBox(0, false, decimal.MaxValue, decimal.MinValue, true);
 
