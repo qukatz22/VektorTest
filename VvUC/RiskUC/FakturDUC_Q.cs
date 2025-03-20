@@ -2849,8 +2849,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          // 22.05.2023: 'e nece rabat ici bezuvjetno!'            
          // 27.02.2024: 'e bas hoce rabat ici bezuvjetno!'        
          // 11.03.2024: 'vracamo uvjet ali osim u nekom periodu!' 
+         // 20.03.2025: dodajemo bool isKupon                     
        //if(false)
-         if(TexthoRabatIsNeopravdan(theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol), theIRMDUC.Fld_DokDate))
+       //if(TexthoRabatIsNeopravdan(                                                          theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol), theIRMDUC.Fld_DokDate))
+         if(TexthoRabatIsNeopravdan((is_KPN_IN_TtNum_NOT_EMPTY && is_KPN_IN_RbtSt_NOT_EMPTY), theIRMDUC.Fld_SkladCD, theIRMDUC.Fld_S_ukRbt1, theIRMDUC.Fld_S_ukKC, /*theIRMDUC.Fld_S_ukK*/ faktur_rec.Transes.Where(rtr => rtr.T_artiklCD.StartsWith("VR") == false).ToList().Sum(rtr => rtr.T_kol), theIRMDUC.Fld_DokDate))
          {
             DialogResult result = MessageBox.Show("Nije ostvaren uvjet za odobravanje rabata!\n\r\n\rŽelite li poništiti rabat?\n\r\n\rDA - poništi rabat i usnimi račun\n\rNE - vrati se na unos računa da bi ga dopunio.)",
                "Nije ostvaren uvjet za odobravanje rabata!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
@@ -3306,7 +3308,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
    // 10.10.2023: abrakadabra_oldRtransKol_forCheckMinus
    private decimal dataLayerT_kol;
 
-   private bool TexthoRabatIsNeopravdan(string skladCD, decimal ukRbt1, decimal ukKC, decimal ukK, DateTime dokDate)
+   private bool TexthoRabatIsNeopravdan(bool isKupon, string skladCD, decimal ukRbt1, decimal ukKC, decimal ukK, DateTime dokDate)
    {
       if(ukRbt1.IsZero()) return false;
 
@@ -3317,19 +3319,32 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       ukKC = Math.Abs(ukKC); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
       ukK  = Math.Abs(ukK ); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 
 
-    //05.04.2024. Velika Gorica I Koprivnica više nisu special cycle trgovine 
-    //if(skladCD == "20M5" || skladCD == "74M5") // Velika Gorica i Koprivnica imaju pravilo 'bar 2 komada'
-    //{
-    //   if(ukK >= 2) return false;
-    //   else         return true ;
-    //}
-    //else // ostale poslovnice imaju pravilo 'bar 5 eur' 
-    //{
-    // 10.03.2025: gasimo ovaj uvjet od minimalno 5 EUR, dakle prema njihovim uputama nema vise uvjeta za odobravanje rabata do daljnjega  
-       //if(ukKC >= 5.00M) return false;
-       //else              return true ;
-                           return false;
-    //}
+      // 20.03.2025: ovako, a dole sve remarckiramo 
+      if(isKupon)
+      {
+         return false; // do dalnjega, odobravanje rabata na zaprimljeni kupon ide bezuvjetno 
+      }
+      else // not kupon, classic rabat
+      {
+         if(ukKC >= 5.00M) return false;
+         else              return true ;
+      }
+
+#if nekkad_bilo
+      //05.04.2024. Velika Gorica I Koprivnica više nisu special cycle trgovine 
+      //if(skladCD == "20M5" || skladCD == "74M5") // Velika Gorica i Koprivnica imaju pravilo 'bar 2 komada'
+      //{
+      //   if(ukK >= 2) return false;
+      //   else         return true ;
+      //}
+      //else // ostale poslovnice imaju pravilo 'bar 5 eur' 
+      //{
+      // 10.03.2025: gasimo ovaj uvjet od minimalno 5 EUR, dakle prema njihovim uputama nema vise uvjeta za odobravanje rabata do daljnjega  
+      //if(ukKC >= 5.00M) return false;
+      //else              return true ;
+      return false;
+      //}
+#endif
    }
 
    public string GetPIZ_IntersectTT()

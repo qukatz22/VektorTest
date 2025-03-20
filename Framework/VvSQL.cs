@@ -2829,7 +2829,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   public static XSqlCommand GetNext_PTG_YYinTtNum_Command(XSqlConnection conn, string wantedTT, uint rootPartNum_min, uint rootPartNum_max, string eventualSkladCD)
+   public static XSqlCommand GetNext_PTG_YYinTtNum_Command(XSqlConnection conn, string wantedTT, uint rootPartNum_min, uint rootPartNum_max, string eventualSkladCD, bool isPTG_YYinTtNum_99999, string[] skladCDarray)
    {
       XSqlCommand cmd = InitCommand(conn);
 
@@ -2840,11 +2840,17 @@ public static class VvSQL
       // AND TtNum > 24110000 #rootPartNum_Min 
       // AND TtNum < 25110000 #rootPartNum_Max 
 
+      string skladOrOPP_restrictor = isPTG_YYinTtNum_99999 ?
+
+         "AND " + Faktur.skladCd_colName + " IN " + TtInfo.GetSql_IN_Clause(skladCDarray) : 
+
+         "AND " + Faktur.skladCd_colName + " = '" + eventualSkladCD + "'";
+
       cmd.CommandText = "SELECT MAX(" + Faktur.ttNum_colName + ") FROM " + Faktur.recordName + "\n\n" +
 
                         " WHERE TT = '" + wantedTT + "'\n\n" +
-                        
-                        "AND " + Faktur.skladCd_colName + " = '" + eventualSkladCD + "'\n" +
+
+                       skladOrOPP_restrictor       + " \n\n" +
 
                         "AND " + Faktur.ttNum_colName + " > " + rootPartNum_min + "\n" +
                         "AND " + Faktur.ttNum_colName + " < " + rootPartNum_max        ;
