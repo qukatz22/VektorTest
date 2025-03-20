@@ -7087,7 +7087,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
       ugan_rec.LoadOtplatniPlan(TheDbConnection);
 
-      ugan_rec.TheOtplatniPlan.GetAllRate_IFA_TtNum(TheDbConnection);
+      ugan_rec.TheOtplatniPlan.GetAllRate_IRA_TtNum(TheDbConnection);
 
       foreach(PTG_Rata ptgRata in ugan_rec.TheOtplatniPlan.UGAN_RateList)
       {
@@ -7112,7 +7112,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.RataDani;
        //PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.IsFirstRata ? "X" : "";
        //PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.IsLastRata  ? "X" : "";
-         PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.IFA_TtNum.IsZero() ? "" : "IFA-" + ptgRata.IFA_TtNum.ToString();
+         PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.IRA_TtNum.IsZero() ? "" : "IRA-" + ptgRata.IRA_TtNum.ToString();
          PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.KOPxtransNapomena;
          PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.KOPxtransDate.Equals(DateTime.MinValue) ? "" : ptgRata.KOPxtransDate.ToString(ZXC.VvDateFormat);
          PTG_OplGrid[colIdx++, rowIdx].Value = ptgRata.KOPxtransAdduid;
@@ -7125,7 +7125,9 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
          if(ptgRata.KOPfakStop          ) PTG_OplGrid.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 164, 164);
 
-         if(ptgRata.RataDate.Year < ZXC.projectYearAsInt && ptgRata.IFA_TtNum.NotZero()) PTG_OplGrid.Columns["IFA broj"].DataGridView.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
+       //20.03.2025. nemamo vise projectYearAsInt jer smo od 2018
+       //if(ptgRata.RataDate.Year < ZXC.projectYearAsInt     && ptgRata.IFA_TtNum.NotZero()) PTG_OplGrid.Columns["IRA broj"].DataGridView.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
+         if(ptgRata.RataDate.Year < ZXC.NowYearFirstDay.Year && ptgRata.IRA_TtNum.NotZero()) PTG_OplGrid.Columns["IRA broj"].DataGridView.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
 
 
          sumaRata += ptgRata.RataMoney;
@@ -7396,7 +7398,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       if(rowIdx.IsNegative()) return;
 
       int fakStop_CI  = theG.IdxForColumn("NeFak"   );
-      int IFAtipBr_CI = theG.IdxForColumn("IFA Broj");
+      int IRAtipBr_CI = theG.IdxForColumn("IRA Broj");
       int DODtipBr_CI = theG.IdxForColumn("");
 
       int rataDate_CI = theG.IdxForColumn("Datum Rate");
@@ -7411,7 +7413,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          TheVvTabPage.TheVvForm.PTG_CreateNew_OrEditExisting_KOP(new PTG_Ugovor(((Faktur)ZXC.TheVvForm.TheVvDataRecord)));
       }
 
-      else if(e.ColumnIndex == IFAtipBr_CI)
+      else if(e.ColumnIndex == IRAtipBr_CI)
       {
          DateTime rataDate = theG.GetDateCell(rataDate_CI, rowIdx, false);
 
@@ -7421,7 +7423,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
             return;
          }
 
-         string tipBr = theG.GetStringCell(IFAtipBr_CI, rowIdx, false);
+         string tipBr = theG.GetStringCell(IRAtipBr_CI, rowIdx, false);
 
          ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
       }

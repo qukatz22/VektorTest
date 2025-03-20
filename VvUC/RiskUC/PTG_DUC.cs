@@ -4048,7 +4048,7 @@ public class FUG_PTG_UC : VvUserControl
 
    private void CreateColumn_gridListafaktura(VvDataGridView theGrid)
    {
-      vvtb_racun      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_racun"     , null, -12, "RačunBr"           ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_racun     , null, "R_brRacuna"  , "Broj računa"      , ZXC.Q4un - ZXC.Qun8);
+      vvtb_racun      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_racun"     , null, -12, "RačunBr"           ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_racun     , null, "R_brRacuna"  , "Broj računa"      , ZXC.Q4un + ZXC.Qun2);
       vvtb_datumRn    = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_datumRn"   , null, -12, "Datum"             ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_datumRn   , null, "R_datumRn"   , "Datum računa"     , ZXC.Q4un           );
       vvtb_iznosRn    = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_iznosRn"   , null, -12, "Iznos"             ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznosRn   , null, "R_iznosRn"   , "Iznos računa"     , ZXC.Q4un           ); colVvText.DefaultCellStyle.Alignment = colVvText.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
       vvtb_fugId      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_fugId"     , null, -12, "FUG ID"            ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fugId     , null, "R_fugId"     , "FUG ID"           , ZXC.Q4un           );

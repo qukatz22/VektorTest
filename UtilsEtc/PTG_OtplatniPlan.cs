@@ -18,9 +18,9 @@ public class PTG_OtplatniPlan
    public List<PTG_Rata> UGAN_RateList     ;
    public List<PTG_Rata> UGANwoKOP_RateList;
 
-   public List<PTG_Rata> UGAN_NeFakturirane_RateList     { get { return                            UGAN_RateList.Where(rata => rata.IFA_TtNum.IsZero()).ToList()       ; } }
-   public List<PTG_Rata> UGAN_NeFakturirane_RateList_UGN { get { return UGAN_TT == Faktur.TT_UGN ? UGAN_RateList.Where(rata => rata.IFA_TtNum.IsZero()).ToList() : null; } }
-   public List<PTG_Rata> UGAN_NeFakturirane_RateList_AUN { get { return UGAN_TT == Faktur.TT_AUN ? UGAN_RateList.Where(rata => rata.IFA_TtNum.IsZero()).ToList() : null; } }
+   public List<PTG_Rata> UGAN_NeFakturirane_RateList     { get { return                            UGAN_RateList.Where(rata => rata.IRA_TtNum.IsZero()).ToList()       ; } }
+   public List<PTG_Rata> UGAN_NeFakturirane_RateList_UGN { get { return UGAN_TT == Faktur.TT_UGN ? UGAN_RateList.Where(rata => rata.IRA_TtNum.IsZero()).ToList() : null; } }
+   public List<PTG_Rata> UGAN_NeFakturirane_RateList_AUN { get { return UGAN_TT == Faktur.TT_AUN ? UGAN_RateList.Where(rata => rata.IRA_TtNum.IsZero()).ToList() : null; } }
 
    //private XSqlConnection theDbConnection;
 
@@ -755,15 +755,15 @@ public class PTG_OtplatniPlan
       return ZXC.DivSafe(brojDana, mjesecImaDana);
    }
 
-   internal void GetAllRate_IFA_TtNum(XSqlConnection conn)
+   internal void GetAllRate_IRA_TtNum(XSqlConnection conn)
    {
       foreach(PTG_Rata rata in this.UGAN_RateList)
       {
-         rata.IFA_TtNum = GetIFA_TtNum_ForThisRata(conn, /*UGANfaktur_rec.TtNum, rata.RataRbr*/rata);
+         rata.IRA_TtNum = GetIRA_TtNum_ForThisRata(conn, /*UGANfaktur_rec.TtNum, rata.RataRbr*/rata);
       }
    }
 
-   private uint GetIFA_TtNum_ForThisRata(XSqlConnection conn, PTG_Rata rata)
+   private uint GetIRA_TtNum_ForThisRata(XSqlConnection conn, PTG_Rata rata)
    {
       bool           isSomePreviousYear;
       XSqlConnection          conn4year;
@@ -782,7 +782,7 @@ public class PTG_OtplatniPlan
 
          conn4year = isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : conn;
 
-         rtransList.AddRange(RtransDao.GetRtransList_ForTT_And_Serlot(conn4year, Faktur.TT_IFA, serlot4Rtrans));
+         rtransList.AddRange(RtransDao.GetRtransList_ForTT_And_Serlot(conn4year, Faktur.TT_IRA, serlot4Rtrans));
       }
 
       if(rtransList.IsEmpty()) return 0;
@@ -944,7 +944,7 @@ public class PTG_Rata
  //public string        TipBr           { get { return PTG_Ugovor.GetTipBrFromTtNum(        UGANttNum); } }
    public string        TipBr           { get { return Faktur.Set_TT_And_TtNum     (UGANtt, UGANttNum); } }
 
-   public uint IFA_TtNum;
+   public uint IRA_TtNum;
 
    public string   KOPxtransNapomena;
    public DateTime KOPxtransDate    ;
@@ -1399,7 +1399,7 @@ public class PTG_Ugovor : Faktur
 
       UGANList.ForEach(ugan => ugan.LoadOtplatniPlan(conn));
 
-      UGANList.ForEach(ugan => ugan.TheOtplatniPlan.GetAllRate_IFA_TtNum(conn));
+      UGANList.ForEach(ugan => ugan.TheOtplatniPlan.GetAllRate_IRA_TtNum(conn));
 
       UGANList_UGN = UGANList.Where(ugan => ugan.TT == Faktur.TT_UGN).ToList();
       UGANList_AUN = UGANList.Where(ugan => ugan.TT == Faktur.TT_AUN).ToList();
