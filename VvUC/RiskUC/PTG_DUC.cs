@@ -213,6 +213,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_UNA_ANA_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_UNA_SIN_Grid);
+      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_StanjeSerno_Grid);
 
       //ThePolyGridTabControl.TabPages["Osnovno"].Title = ptgOsn_TabPageName;
 
@@ -2573,7 +2574,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
    protected override void InitializeDUC_Specific_Columns2()
    {
       bool isVisible = true;
-
+      T_isNesto_CreateColumn        (ZXC.Q2un,    isVisible, "Odabir"       , "Odabir"                            );
       T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
       T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
