@@ -6399,7 +6399,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       List<string> sernosInUseList = new List<string>();
 
-      for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
+      int effectiveRowCount;
+
+      if(TheG2.AllowUserToAddRows == false) effectiveRowCount = TheG2.RowCount    ;
+      else                                  effectiveRowCount = TheG2.RowCount - 1;
+
+      for(int rowIdx = 0; rowIdx < /*TheG2.RowCount - 1*/ effectiveRowCount; ++rowIdx)
       {
          sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
       }

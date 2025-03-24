@@ -658,4 +658,70 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
    #endregion Get_PCK_ArtiklInfo_List_ForArtiklAndSklad
 
+   #region Get_UGAN_RtranoList
+
+   /// <summary>
+   /// Ovo daje listu svih Rtrano-a koji pripadaju izvornom UgAn-u ili od njega rođenim 
+   /// DIZ-ovima, ZIZ-ovima i PVR-ovima
+   /// Tu su mogući ovi Rtrano TT-ovi: UG2, AU2, DI2, PV2, ZI2, ZU2
+   /// </summary>
+   /// <param name="conn"></param>
+   /// <param name="_UGAN_ttNum"></param>
+   /// <returns></returns>
+   public static List<Rtrano> Get_UGAN_RtranoList(XSqlConnection conn, /*string UGAN_tt,*/ uint _UGAN_ttNum, bool stillUNJonly)
+   {
+      List<Rtrano> UGAN_RtranoList = new List<Rtrano>();
+
+      if(_UGAN_ttNum.IsZero()) return UGAN_RtranoList;
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum], ZXC.FM_OR_Enum.OPEN_OR , false, "uganTtNum", _UGAN_ttNum, "", "", " = ", ""   ));
+      filterMembers.Add(new VvSqlFilterMember("(t_ttNum - (t_ttNum MOD 1000)) / 1000", ZXC.FM_OR_Enum.CLOSE_OR,                     _UGAN_ttNum        , " = "    , 0));
+
+      VvDaoBase.LoadGenericVvDataRecordList<Rtrano>(conn, UGAN_RtranoList, filterMembers, Rtrans.artiklOrderBy_ASC);
+
+      if(stillUNJonly == false) return UGAN_RtranoList;
+
+      // stillUNJonly == true ... zelimo samo one koju su jos uvijek u najmu 
+
+      List<Rtrano> thisSerno_RtranoList;
+
+      int    thisSernoCount;
+      string thisSerno     ;
+      bool   leaveLastOne  ;
+      bool   deleteAll     ;
+
+      for(int i = 0; i < UGAN_RtranoList.Count; ++i) // outer loop 
+      {
+         thisSerno = UGAN_RtranoList[i].T_serno;   
+
+         thisSernoCount = UGAN_RtranoList.Count(rto => rto.T_serno == thisSerno);
+
+         if(thisSernoCount == 1) continue;
+
+         leaveLastOne = thisSernoCount.IsOdd(); // ostavi zadnjega ako je neparan broj pojava u listi 
+         deleteAll    = !leaveLastOne;
+
+         if(deleteAll)
+         {
+            UGAN_RtranoList.RemoveAll(rto => rto.T_serno == thisSerno);
+         }
+         else // leaveLastOne == true (ima ih neparno, bar 3) 
+         {
+            thisSerno_RtranoList = UGAN_RtranoList.Where(rto => rto.T_serno == thisSerno).ToList();
+
+            for(int k = 0; k < thisSerno_RtranoList.Count-1; ++k)
+            {
+               UGAN_RtranoList.Remove(thisSerno_RtranoList[k]);
+            }
+         }
+
+         i--; // !!! 
+      }
+
+      return UGAN_RtranoList;
+   }
+
+   #endregion Get_UGAN_RtranoList
 }

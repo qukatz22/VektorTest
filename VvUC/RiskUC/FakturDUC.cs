@@ -7425,14 +7425,14 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    {
       int rowIdx, idxCorrector, colIdx;
 
-      List<Rtrano> UGANrtrano_list = faktur_rec.Transes2;
+      List<Rtrano> UGAN_rtranoList = RtranoDao.Get_UGAN_RtranoList(TheDbConnection, faktur_rec.TtNum, true);
 
       PTG_StanjeSerno_Loaded = true;
       PTG_UNA_StanjeSerno_Grid.Rows.Clear();
 
       idxCorrector = GetDGVsIdxCorrrector(PTG_UNA_StanjeSerno_Grid);
 
-      foreach(Rtrano UNArtrano_rec in UGANrtrano_list)
+      foreach(Rtrano UNJrtrano_rec in UGAN_rtranoList)
       {
          PTG_UNA_StanjeSerno_Grid.Rows.Add();
       
@@ -7440,10 +7440,10 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       
          colIdx = 0;
       
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNArtrano_rec.T_parentID  ; /*"RecID"    */   
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNArtrano_rec.T_serno     ; /*"SerBroj"  */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNArtrano_rec.T_artiklCD  ; /*"Šifra"    */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNArtrano_rec.T_artiklName; /*"Naziv"    */
+         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */   
+         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_serno     ; /*"SerBroj"  */
+         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklCD  ; /*"Šifra"    */
+         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklName; /*"Naziv"    */
          PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Tip"      */
          PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM klasa"*/
          PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD klasa"*/
@@ -7454,7 +7454,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          PTG_UNA_StanjeSerno_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
 
-      return UGANrtrano_list;
+      return UGAN_rtranoList;
    }
 
    #endregion Load OPL or DOD or UNA List and PutDgvFields
