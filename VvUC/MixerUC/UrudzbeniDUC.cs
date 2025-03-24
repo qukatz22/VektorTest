@@ -145,7 +145,8 @@ public partial class UrudzbeniDUC : MixerDUC
 
       hamper.CreateVvLabel(3, 2, "Urudžbeni broj:", ContentAlignment.MiddleRight);
       tbx_strD_32 = hamper.CreateVvTextBox(4, 2, "tbx_UrBrAl", "Urudžbeni broj", GetDB_ColumnSize(DB_ci.strD_32), 1, 0);
-      tbx_strD_32.JAM_ReadOnly = true;
+      //24.03.2025. privremeno
+    //tbx_strD_32.JAM_ReadOnly = true;
 
       btn_nextNum = hamper.CreateVvButton(6, 2, new EventHandler(GetNextSifraWroot_String_btnClick), "");
       btn_nextNum.Name = "btn_nextNum";

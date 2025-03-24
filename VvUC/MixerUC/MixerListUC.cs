@@ -1062,6 +1062,7 @@ public class MixerListUC : /*VvRecLstUC*/VvDocumRecLstUC
          colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Partner"       , colWidth, false, "kupDobName");
          colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Urudžbeni broj", colWidth, false, "strD_32");
          colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Predmet"       , colWidth, false, "strB_128");
+         colWidth = ZXC.Q6un; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly(TheGrid, "Klasa"         , colWidth, false, "strA_40");
       }
       if(this.Default_TT == Mixer.TT_NZI)
       {

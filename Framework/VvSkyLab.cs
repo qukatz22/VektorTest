@@ -2088,37 +2088,37 @@ public class TH_PriceRuleForCycleMoment
          new TH_PriceRuleForCycleMoment(5,    1,  6,    0, 10M,    0,  true,     0, "W5/5 Tjedan 1 Dan 6 10 posto"            ),
          new TH_PriceRuleForCycleMoment(5,    1,  7,    0, 10M,    0,  true,     0, "W5/5 Tjedan 1 Dan 7 10 posto"            ),
 
-         new TH_PriceRuleForCycleMoment(5,    2,  1,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 1 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  2,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 2 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  3,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 3 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  4,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 4 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  5,    0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 5 happy hour 20 posto"),
-         new TH_PriceRuleForCycleMoment(5,    2,  6,    0, 20M,    0, false,      0, "W5/5 Tjedan 2 Dan 6 20 posto"           ),
-         new TH_PriceRuleForCycleMoment(5,    2,  7,    0, 20M,    0, false,      0, "W5/5 Tjedan 2 Dan 7 20 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    2,  1,    0,   0,/*20M*/0, false,  0, "W5/5 Tjedan 2 Dan 1"/* happy hour 20 posto"*/),//24.03.2025 tu sad idu kuponi bezuvjetno!
+         new TH_PriceRuleForCycleMoment(5,    2,  2,    0,   0,/*20M*/0, false,  0, "W5/5 Tjedan 2 Dan 2"/* happy hour 20 posto"*/),//24.03.2025 tu sad idu kuponi bezuvjetno!
+         new TH_PriceRuleForCycleMoment(5,    2,  3,    0,   0,/*20M*/0, false,  0, "W5/5 Tjedan 2 Dan 3"/* happy hour 20 posto"*/),//24.03.2025 tu sad idu kuponi bezuvjetno!
+         new TH_PriceRuleForCycleMoment(5,    2,  4,    0,   0,/*20M*/0, false,  0, "W5/5 Tjedan 2 Dan 4"/* happy hour 20 posto"*/),//24.03.2025 tu sad idu kuponi bezuvjetno!
+         new TH_PriceRuleForCycleMoment(5,    2,  5,    0,   0,/*20M*/0, false,  0, "W5/5 Tjedan 2 Dan 5"/* happy hour 20 posto"*/),//24.03.2025 tu sad idu kuponi bezuvjetno!
+         new TH_PriceRuleForCycleMoment(5,    2,  6,    0, 20M,    0, false,     0, "W5/5 Tjedan 2 Dan 6 20 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    2,  7,    0, 20M,    0, false,     0, "W5/5 Tjedan 2 Dan 7 20 posto"           ),
 
-         new TH_PriceRuleForCycleMoment(5,    3,  1,    0,   0,  30M, false,      0, "W5/5 Tjedan 3 Dan 1 happy hour 30 posto"),
-         new TH_PriceRuleForCycleMoment(5,    3,  2,    0,   0,  30M, false,      0, "W5/5 Tjedan 3 Dan 2 happy hour 30 posto"),
-         new TH_PriceRuleForCycleMoment(5,    3,  3,    0, 30M,    0, false,      0, "W5/5 Tjedan 3 Dan 3 30 posto"           ),
-         new TH_PriceRuleForCycleMoment(5,    3,  4,    0, 30M,    0, false,      0, "W5/5 Tjedan 3 Dan 4 30 posto"           ),
-         new TH_PriceRuleForCycleMoment(5,    3,  5,    0, 50M,    0, false,      0, "W5/5 Tjedan 3 Dan 5 50 posto"           ),
-         new TH_PriceRuleForCycleMoment(5,    3,  6,    0, 50M,    0, false,      0, "W5/5 Tjedan 3 Dan 6 50 posto"           ),
-         new TH_PriceRuleForCycleMoment(5,    3,  7,    0, 50M,    0, false,      0, "W5/5 Tjedan 3 Dan 7 50 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    3,  1,    0,   0,  30M, false,     0, "W5/5 Tjedan 3 Dan 1 happy hour 30 posto"),
+         new TH_PriceRuleForCycleMoment(5,    3,  2,    0,   0,  30M, false,     0, "W5/5 Tjedan 3 Dan 2 happy hour 30 posto"),
+         new TH_PriceRuleForCycleMoment(5,    3,  3,    0, 30M,    0, false,     0, "W5/5 Tjedan 3 Dan 3 30 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    3,  4,    0, 30M,    0, false,     0, "W5/5 Tjedan 3 Dan 4 30 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    3,  5,    0, 50M,    0, false,     0, "W5/5 Tjedan 3 Dan 5 50 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    3,  6,    0, 50M,    0, false,     0, "W5/5 Tjedan 3 Dan 6 50 posto"           ),
+         new TH_PriceRuleForCycleMoment(5,    3,  7,    0, 50M,    0, false,     0, "W5/5 Tjedan 3 Dan 7 50 posto"           ),
 
-         new TH_PriceRuleForCycleMoment(5,    4,  1,   4M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 1 do   4 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    4,  2, 3.5M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 2 do 3,5 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    4,  3, 3.5M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 3 do 3,5 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    4,  4,   3M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 4 do   3 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    4,  5,   3M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 5 do   3 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    4,  6, 2.5M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 6 do 2,5 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    4,  7, 2.5M,   0,    0, false,      0, "W5/5 Tjedan 4 Dan 7 do 2,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  1,   4M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 1 do   4 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  2, 3.5M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 2 do 3,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  3, 3.5M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 3 do 3,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  4,   3M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 4 do   3 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  5,   3M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 5 do   3 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  6, 2.5M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 6 do 2,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    4,  7, 2.5M,   0,    0, false,     0, "W5/5 Tjedan 4 Dan 7 do 2,5 EUR"         ),
 
-         new TH_PriceRuleForCycleMoment(5,    5,  1, 2.5M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 1 do 2,5 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    5,  2,   2M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 2 do   2 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    5,  3,   2M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 3 do   2 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    5,  4, 1.5M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 4 do 1,5 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    5,  5,   1M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 5 do   1 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    5,  6, 0.5M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 6 do 0,5 EUR"         ),
-         new TH_PriceRuleForCycleMoment(5,    5,  7, 0.5M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 7 do 0,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  1, 2.5M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 1 do 2,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  2,   2M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 2 do   2 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  3,   2M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 3 do   2 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  4, 1.5M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 4 do 1,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  5,   1M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 5 do   1 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  6, 0.5M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 6 do 0,5 EUR"         ),
+         new TH_PriceRuleForCycleMoment(5,    5,  7, 0.5M,   0,    0, false,     0, "W5/5 Tjedan 5 Dan 7 do 0,5 EUR"         ),
      };
 
 
