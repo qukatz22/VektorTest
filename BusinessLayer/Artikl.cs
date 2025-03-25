@@ -1658,9 +1658,9 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       bool isNOsernoTS =
 
-         artiklTS == ZXC.USL_TS ||
+         artiklTS == ZXC.USL_TS /*||
          artiklTS == ZXC.KMP_TS ||
-         artiklTS == ZXC.OTH_TS;
+         artiklTS == ZXC.OTH_TS*/;
 
       bool isSernoTS = !isNOsernoTS;
 

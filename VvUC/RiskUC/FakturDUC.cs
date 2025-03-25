@@ -70,9 +70,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbR_SVDartRealizOG, vvtbR_SVDRealizKol, vvtbR_utilUint, vvtbR_utilString, vvtbT_IRA_MPC;
 
    protected VvTextBoxColumn colVvText;
-   public VvCheckBox vvcbx_isProdukt, vvcbx_selection;
+   public VvCheckBox vvcbx_isProdukt/*, vvcbx_selection*/;
    private VvCheckBoxColumn colCbox;
    private CheckBox cbx_isHappyHour;
+   public  CheckBox vvcbx_selection;
 
    /*protected*/
    public ZXC.DbNavigationRestrictor dbNavigationRestrictor_TT;
@@ -14634,6 +14635,7 @@ public class FakturPDUC : FakturExtDUC
                        vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT, vvtbT_skladCD1, vvtbT_PCK_baza;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
+   private DataGridViewCheckBoxColumn colCboxClassic;
 
    protected virtual void InitializeDUC_Specific_Columns2() { }
 
@@ -14979,12 +14981,13 @@ public class FakturPDUC : FakturExtDUC
    }
    protected void T_selection_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
-      vvcbx_selection = new VvCheckBox();
+      vvcbx_selection = new /*Vv*/CheckBox();
 
-      colCbox = TheG2.CreateVvCheckBoxColumn(vvcbx_selection, TheVvDaoTrans, /*DB_Tci.t_is*/111, _colHeader, _width);
-      colCbox.VvSupressClearingOnClearAllRowValues = true;
+      colCboxClassic = TheG2./*CreateVvCheckBoxColumn*/CreateClassicCheckBoxColumn(vvcbx_selection, TheVvDaoTrans2, /*DB_Tci.t_is*/222, _colHeader, _width);
 
-      colCbox.Visible = isVisible;
+      //colCboxClassic.VvSupressClearingOnClearAllRowValues = true;
+
+      colCboxClassic.Visible = isVisible;
 
     //TheG2.CellLeave += new DataGridViewCellEventHandler(TheG_IsProdukt_CellLeave_RecalcDUC);
    }

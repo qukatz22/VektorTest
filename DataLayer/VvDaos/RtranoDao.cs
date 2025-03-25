@@ -698,7 +698,8 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
          thisSernoCount = UGAN_RtranoList.Count(rto => rto.T_serno == thisSerno);
 
-         if(thisSernoCount == 1) continue;
+       //if(thisSernoCount == 1                       ) continue;
+         if(thisSernoCount == 1 || thisSerno.IsEmpty()) continue;
 
          leaveLastOne = thisSernoCount.IsOdd(); // ostavi zadnjega ako je neparan broj pojava u listi 
          deleteAll    = !leaveLastOne;

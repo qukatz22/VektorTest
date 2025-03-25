@@ -706,8 +706,9 @@ public class VvDataGridView : DataGridView
 
       colCbox.Tag = vvCheckBox;
 
-      if(dbColIdx == 111) colCbox.Name = "T_isProductLine";
-      else                colCbox.Name = vvDao.GetSchemaColumnName(dbColIdx);
+           if(dbColIdx == 111) colCbox.Name = "T_isProductLine";
+      else if(dbColIdx == 222) colCbox.Name = "T_selection";
+      else                     colCbox.Name = vvDao.GetSchemaColumnName(dbColIdx);
       
       colCbox.HeaderText = headerText;
       colCbox.ValueType = typeof(bool);
@@ -727,7 +728,9 @@ public class VvDataGridView : DataGridView
 
       colCbox.Tag = classicCheckBox;
 
-      colCbox.Name = vvDao.GetSchemaColumnName(dbColIdx);
+           if(dbColIdx == 111) colCbox.Name = "T_isProductLine";
+      else if(dbColIdx == 222) colCbox.Name = "T_selection";
+      else                     colCbox.Name = vvDao.GetSchemaColumnName(dbColIdx);
 
       colCbox.HeaderText = headerText;
       colCbox.ValueType = typeof(bool);
