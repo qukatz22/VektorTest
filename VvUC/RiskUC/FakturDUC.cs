@@ -15175,6 +15175,7 @@ public class FakturPDUC : FakturExtDUC
       internal int iT_HDD_plus ;
       internal int iT_HDD_minus;
       internal int iT_HDD_new  ;
+      internal int iT_selection  ;
 
    }
 
@@ -15212,6 +15213,7 @@ public class FakturPDUC : FakturExtDUC
       ci2.iR_artiklCD_Old = TheG2.IdxForColumn("R_artiklCD_Old");
       ci2.iR_grCD_Old     = TheG2.IdxForColumn("R_grCD_Old");
       ci2.iR_PCK_baza     = TheG2.IdxForColumn("R_PCK_baza");
+      ci2.iT_selection    = TheG2.IdxForColumn("T_selection");
 
       ci2.iT_RAM_plus  = ci2.iT_dimX;
       ci2.iT_RAM_minus = ci2.iT_dimY;
