@@ -70,7 +70,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbR_SVDartRealizOG, vvtbR_SVDRealizKol, vvtbR_utilUint, vvtbR_utilString, vvtbT_IRA_MPC;
 
    protected VvTextBoxColumn colVvText;
-   public VvCheckBox vvcbx_isProdukt, vvcbx_isNesto;
+   public VvCheckBox vvcbx_isProdukt, vvcbx_selection;
    private VvCheckBoxColumn colCbox;
    private CheckBox cbx_isHappyHour;
 
@@ -14977,11 +14977,11 @@ public class FakturPDUC : FakturExtDUC
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_TT, TheVvDaoTrans2, DB_Tci2.t_tt, _colHeader, _width);
       colVvText.Visible = isVisible;
    }
-   protected void T_isNesto_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)//"Nesto"
+   protected void T_selection_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
    {
-      vvcbx_isNesto = new VvCheckBox();
+      vvcbx_selection = new VvCheckBox();
 
-      colCbox = TheG2.CreateVvCheckBoxColumn(vvcbx_isNesto, TheVvDaoTrans, /*DB_Tci.t_is*/111, _colHeader, _width);
+      colCbox = TheG2.CreateVvCheckBoxColumn(vvcbx_selection, TheVvDaoTrans, /*DB_Tci.t_is*/111, _colHeader, _width);
       colCbox.VvSupressClearingOnClearAllRowValues = true;
 
       colCbox.Visible = isVisible;

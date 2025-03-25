@@ -2159,6 +2159,20 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          {
             Faktur.TT_PVR
          });
+
+      ThePolyGridTabControl.SelectedIndex = 1;
+
+      ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
+
+      TheSumGrid.Visible = false;
+
+   }
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      if(newPage.Enabled == false)
+      {
+         theTabControl.SelectedIndex = theTabControl.TabPages.IndexOf(oldPage); // vrati ga nazad 
+      }
    }
 
    #endregion Constructor
@@ -2574,7 +2588,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
    protected override void InitializeDUC_Specific_Columns2()
    {
       bool isVisible = true;
-      T_isNesto_CreateColumn        (ZXC.Q2un,    isVisible, "Odabir"       , "Odabir"                            );
+      T_selection_CreateColumn      (ZXC.Q2un,    isVisible, "", "");
       T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
       T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
@@ -2596,6 +2610,35 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       SetUpColor(clr_PVR_PTG, Color.Empty, clr_PVR_PTG);
    }
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
+   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
+   {
+      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+      bool idemoUbijelo = !idemoUzuto                    ;
+
+      int rtranStabIdx = 0;
+      int rtranOtabIdx = 1;
+
+      if(idemoUzuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+
+      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
+      {
+         if(idemoUbijelo)
+         { 
+            ThePolyGridTabControl.TabPages[i].Enabled = true;
+            vvcbx_selection.Visible = false;
+         
+         }
+         else // idemoUzuto 
+         {
+            if(i == rtranOtabIdx) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else                  ThePolyGridTabControl.TabPages[i].Enabled = false;
+
+            vvcbx_selection.Visible = true;
+         }
+      }
+   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+
 }
 
 #if Njett
