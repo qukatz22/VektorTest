@@ -211,8 +211,10 @@ public class PTG_OtplatniPlan
 
    internal static List<VvSqlFilterMember> GetFilterMembers_DIZorPVR_fakturList(string wantedTT, uint wantedKUG, uint wantedUoA)
    {
-      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
     // 20.02.2025.
+    //List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(4);
+    
     //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ],                                 "theTT" , wantedTT              , " = "    ));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.OPEN_OR , false, "theTT" , Faktur.TT_DIZ, "", "", "  = ", ""));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.CLOSE_OR, false, "theTT2", Faktur.TT_PVR, "", "", "  = ", ""));

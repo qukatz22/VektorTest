@@ -6942,12 +6942,12 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    private void AddColumnsToGrid_PTG_DOD() 
    {
       AddDGVColum_RecID_4GridReadOnly   (PTG_DodGrid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Broj"      , ZXC.Q5un, false );
+      AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Dokument"  , ZXC.Q6un, false );
     //AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "DOD num"   , ZXC.Q4un, false);  
       AddDGVColum_DateTime_4GridReadOnly(PTG_DodGrid, "Datum"     , ZXC.Q4un          );
       AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Šifra"     , ZXC.Q5un, false);
       AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Naziv"     , ZXC.Q6un, true);
-      AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "SerBroj"   , ZXC.Q6un, false);
+    //AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "SerBroj"   , ZXC.Q6un, false);
       AddDGVColum_Decimal_4GridReadOnly (PTG_DodGrid, "Kol"       , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_DodGrid, "Cijena"    , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_DodGrid, "Iznos"     , ZXC.Q5un,        2);
@@ -6958,11 +6958,11 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    private void AddColumnsToGrid_PTG_UNA_ANA() 
    {
       AddDGVColum_RecID_4GridReadOnly   (PTG_UNA_ANA_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Dokument"  , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Dokument"  , ZXC.Q6un, false   );
       AddDGVColum_DateTime_4GridReadOnly(PTG_UNA_ANA_Grid, "Datum"     , ZXC.Q4un          );
       AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Šifra"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Naziv"     , ZXC.Q5un, true    );
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "SerBroj"   , ZXC.Q6un, false   );
+    //AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "SerBroj"   , ZXC.Q6un, false   );
       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Kol"       , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Cijena"    , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Iznos"     , ZXC.Q5un,        2);
@@ -6985,6 +6985,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    private void AddColumnsToGrid_PTG_UNA_StanjeSerno() 
    {
       AddDGVColum_RecID_4GridReadOnly (PTG_UNA_StanjeSerno_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Dokument"  , ZXC.Q6un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "SerBroj"   , ZXC.Q6un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Šifra"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Naziv"     , ZXC.Q5un, true    );
@@ -7236,12 +7237,12 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          colIdx = 0;
 
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_parentID;
-         PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_ttNum.ToString("0000000000");
+         PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_TT + " " + DODrtrans_rec.T_ttNum.ToString("0000000000");
        //PTG_DodGrid[colIdx++, rowIdx].Value = "";   //DODrtrans.PTG_DOKOnum.ToString("000");
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_artiklCD;
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_artiklName;
-         PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_serlot;
+       //PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_serlot;
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_kol;
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_cij;
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.R_KCR;
@@ -7305,7 +7306,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_serlot;
+       //PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_serlot;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = kol /*UNArtrans_rec.T_kol*/; //20.02.2025.
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_cij;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.R_KCR;
@@ -7441,7 +7442,8 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       
          colIdx = 0;
       
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */   
+         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */
+         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_TT + "-"+ UNJrtrano_rec.T_ttNum.ToString();
          PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_serno     ; /*"SerBroj"  */
          PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklCD  ; /*"Šifra"    */
          PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklName; /*"Naziv"    */
@@ -14635,7 +14637,7 @@ public class FakturPDUC : FakturExtDUC
                        vvtbT_ramOld2, vvtbT_hddOld2, vvtbT_ramKlasa2, vvtbT_hddKlasa2, vvtbT_artiklTS2, vvtbT_TT, vvtbT_skladCD1, vvtbT_PCK_baza;
    private VvCheckBox vvcbx_isKomDummy;
    private VvCheckBoxColumn colCbox;
-   private DataGridViewCheckBoxColumn colCboxClassic;
+   public  DataGridViewCheckBoxColumn colCboxClassic;
 
    protected virtual void InitializeDUC_Specific_Columns2() { }
 
@@ -15327,6 +15329,13 @@ public class FakturPDUC : FakturExtDUC
          TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
       }
 
+      //25.03.2025.
+      if(this is ZIZ_PTG_DUC)
+      { 
+         TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
+       //SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);
+      }
+
       if(ZXC.IsPCTOGO)
       {
          Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrano_rec.T_artiklCD);
@@ -15671,6 +15680,13 @@ public class FakturPDUC : FakturExtDUC
          if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
       }
 
+      //25.03.2025.
+      if(faktur_rec.TT == Faktur.TT_ZIZ)
+      { 
+         dgvRtrano_rec.T_TT = TheG2.GetStringCell(ci2.iT_TT, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_TT = dgvRtrano_rec.T_TT;
+      }
+
       dgvRtrano_rec.T_ttNum = faktur_rec.TtNum;
       if(DB_RWT) db_rec.T_ttNum = dgvRtrano_rec.T_ttNum;
 
@@ -15869,6 +15885,25 @@ public class FakturPDUC : FakturExtDUC
       TheG2.Rows[rowIdx].Cells[ci2.iT_grCD    ].Style.BackColor = clr;
       
     //TheG2.Rows[rowIdx].Cells["scrol"        ].Style.BackColor = clr;
+   }
+
+   protected void SetColors_ZIZ_ZUL_PTG_DUC(string TT, int rowIdx)
+   {
+      if(TT == Faktur.TT_ZU2)
+      {
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         {
+            tbxCell.Style.BackColor = Color.PaleGreen;
+         }
+      }
+      else
+      {
+         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         {
+            if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.None) tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor;
+            else tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_False_BackColor;
+         }
+      }
    }
 
    #endregion PutDgvFields2(), GetDgvFields2()

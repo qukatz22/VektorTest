@@ -4921,6 +4921,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                            bool isSklKomisija    = skladLUI  == null ? false : skladLUI.Integer  > 10;
                            if(isSklKomisija && skladLUI .Cd.ToUpper().StartsWith("VPSK")) isSklKomisija  = false; // ako SkladCD1 pocne sa 'VPSK' tada NIJE komisija bez obzira na druge obzire 
 
+                           //25.03.2025. PCTOGO ima dvocifrena skladista ali nema komisiju
+                           if(ZXC.IsPCTOGO) isSklKomisija = false; 
+
                            if(isSklKomisija)
                            {
                               string komArtCD = ((Rtrans)GetDgvLineFields1(currRowIdx, false, null)).T_artiklCD;

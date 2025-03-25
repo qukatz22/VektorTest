@@ -2588,7 +2588,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
    protected override void InitializeDUC_Specific_Columns2()
    {
       bool isVisible = true;
-      T_selection_CreateColumn      (ZXC.Q2un,    isVisible, "", "");
+      T_selection_CreateColumn      (ZXC.Q2un,    false    , "", "");
       T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
       T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
@@ -2616,7 +2616,6 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
       bool idemoUbijelo = !idemoUzuto                    ;
 
-      int rtranStabIdx = 0;
       int rtranOtabIdx = 1;
 
       if(idemoUzuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
@@ -2626,7 +2625,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          if(idemoUbijelo)
          { 
             ThePolyGridTabControl.TabPages[i].Enabled = true;
-            vvcbx_selection.Visible = false;
+            colCboxClassic.Visible = false;
          
          }
          else // idemoUzuto 
@@ -2634,7 +2633,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
             if(i == rtranOtabIdx) ThePolyGridTabControl.TabPages[i].Enabled = true ;
             else                  ThePolyGridTabControl.TabPages[i].Enabled = false;
 
-            vvcbx_selection.Visible = true;
+            colCboxClassic.Visible = true;
          }
       }
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
@@ -3516,6 +3515,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
    {
       bool isVisible = true;
 
+      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        );
       T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
       T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
