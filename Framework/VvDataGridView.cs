@@ -879,5 +879,14 @@ public class VvDataGridView : DataGridView
          }
       }
    }
+
+   public int VvIspunjeniRowCount
+   {
+      get 
+      {
+         if(this.AllowUserToAddRows == true) return this.RowCount - 1;
+         else                                return this.RowCount    ; 
+      }
+   }
 }
 

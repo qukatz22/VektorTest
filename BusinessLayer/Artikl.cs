@@ -1658,13 +1658,61 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    {
       bool isNOsernoTS =
 
-         artiklTS == ZXC.USL_TS /*||
+         artiklTS == ZXC.USL_TS ||
          artiklTS == ZXC.KMP_TS ||
-         artiklTS == ZXC.OTH_TS*/;
+         artiklTS == ZXC.OTH_TS  ;
 
       bool isSernoTS = !isNOsernoTS;
 
       return isSernoTS;
+   }
+
+   internal static bool Does_thisPTG_ArtiklCD_Could_PVR(string artiklCD) 
+   {
+      Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+
+      if(artikl_rec == null)
+      {
+         return false;
+      }
+
+      return Does_thisPTG_ArtiklTS_Could_PVR(artikl_rec.TS);
+   }
+
+   internal static bool Does_thisPTG_ArtiklTS_Could_PVR(string artiklTS) 
+   {
+      bool isNO_PVR_TS =
+
+         artiklTS == ZXC.USL_TS /*||
+         artiklTS == ZXC.KMP_TS ||
+         artiklTS == ZXC.OTH_TS*/;
+
+      bool is_PVR_TS = !isNO_PVR_TS;
+
+      return is_PVR_TS;
+   }
+
+   internal static bool ThisArtiklTS_Needs_Real_Serno(string artiklTS) 
+   {
+      return
+         artiklTS == ZXC.PCK_TS ||
+         artiklTS == ZXC.ROB_TS  ;
+
+   }
+
+   internal static bool ThisArtiklTS_Needs_Artificial_Serno(string artiklTS) 
+   {
+      return
+         artiklTS == ZXC.KMP_TS ||
+         artiklTS == ZXC.OTH_TS  ;
+
+   }
+
+   internal static bool ThisArtiklTS_Needs_No_Serno(string artiklTS) 
+   {
+      return
+         artiklTS == ZXC.USL_TS  ;
+
    }
 
    #endregion Some Util - Results propertiz

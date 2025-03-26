@@ -580,6 +580,13 @@ public class Rtrano : VvTransRecord
    public string R_RAM_kind { get; set; }
    public string R_HDD_kind { get; set; }
 
+   internal string Get_PTG_artificial_serno(string _TS)
+   {
+      string preffix1 = Artikl.ThisArtiklTS_Needs_Real_Serno(_TS) ? "?_" : "!_";
+
+      return preffix1 + this.T_ttNum.ToString() + "_" + this.T_serial.ToString() + "~" + this.T_artiklCD;
+   }
+
    #endregion PCTOGO propertiz
 
    #endregion propertiz 

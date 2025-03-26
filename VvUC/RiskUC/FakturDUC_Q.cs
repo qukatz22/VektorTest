@@ -2962,10 +2962,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region Rtrano validacije
 
-         if(this is FakturPDUC) 
+         int rowIdx2 = 0;
+
+         if(this is FakturPDUC)
          {
             FakturPDUC thePduc = this as FakturPDUC;
-            FakturPDUC.Rtrano_colIdx ci2  = thePduc.DgvCI2;
+            FakturPDUC.Rtrano_colIdx ci2 = thePduc.DgvCI2;
 
             Rtrano rtrano_rec;
 
@@ -2981,10 +2983,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                string oldArtiklCD;
 
-             //List<Rtrano> rtranoList = faktur_rec.TrnNonDel2_ALL.ToList();
+               //List<Rtrano> rtranoList = faktur_rec.TrnNonDel2_ALL.ToList();
                theDUC.Get_RtranoDgvList();
-
-               int rowIdx2 = 0;
 
                foreach(Rtrano rto in theDUC.RtranoDgvList)
                {
@@ -3011,48 +3011,48 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                // MOI minusi ________________________________________________________________________________________________________________________________________________________________________________________________
                List<Rtrano> MOIrtranoList = theDUC.RtranoDgvList.Where(rto => rto.T_TT == Faktur.TT_MOI).ToList();
 
-               List<VvReportSourceUtil> MOI_RAMkindSumsList        = MOIrtranoList .GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
-               List<VvReportSourceUtil> MOI_HDDkindSumsList        = MOIrtranoList .GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
+               List<VvReportSourceUtil> MOI_RAMkindSumsList = MOIrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) }).ToList();
+               List<VvReportSourceUtil> MOI_HDDkindSumsList = MOIrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) }).ToList();
 
                // MOU plusevi _______________________________________________________________________________________________________________________________________________________________________________________________
                List<Rtrano> MOUrtranoList = theDUC.RtranoDgvList.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();
 
-               List<VvReportSourceUtil> MOU_RAMkindSumsList        = MOUrtranoList .GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
-               List<VvReportSourceUtil> MOU_HDDkindSumsList        = MOUrtranoList .GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
+               List<VvReportSourceUtil> MOU_RAMkindSumsList = MOUrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) }).ToList();
+               List<VvReportSourceUtil> MOU_HDDkindSumsList = MOUrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) }).ToList();
 
                // MOCS minusi _______________________________________________________________________________________________________________________________________________________________________________________________
                List<Rtrano> MOCSrtranoList = theDUC.RtranoDgvList.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();
 
-               List<VvReportSourceUtil> MOCS_MINUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) } ).ToList();
-               List<VvReportSourceUtil> MOCS_MINUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) } ).ToList();
+               List<VvReportSourceUtil> MOCS_MINUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimY) }).ToList();
+               List<VvReportSourceUtil> MOCS_MINUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decB) }).ToList();
 
                // MOCS plusevi ______________________________________________________________________________________________________________________________________________________________________________________________
-               List<VvReportSourceUtil> MOCS_PLUS_RAMkindSumsList  = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) } ).ToList();
-               List<VvReportSourceUtil> MOCS_PLUS_HDDkindSumsList  = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) } ).ToList();
+               List<VvReportSourceUtil> MOCS_PLUS_RAMkindSumsList = MOCSrtranoList.GroupBy(R => R.R_RAM_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_dimX) }).ToList();
+               List<VvReportSourceUtil> MOCS_PLUS_HDDkindSumsList = MOCSrtranoList.GroupBy(R => R.R_HDD_kind).Select(grp => new VvReportSourceUtil { ArtiklGrCD = grp.Key, Count = grp.Sum(R => (int)R.T_decA) }).ToList();
 
                #endregion Get Lists 
 
                bool warnOnly_RAM = true; // mozda todo, ako ipak odlucimo NE dat im sejvat 
-               bool warnOnly_HDD = true; 
+               bool warnOnly_HDD = true;
 
                // RAM balance checks 
                foreach(string RAM_kind in RAM_kinds)
                {
-                  int RAM_MOCS_plus  = MOCS_PLUS_RAMkindSumsList .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOCS_plus = MOCS_PLUS_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
                   int RAM_MOCS_minus = MOCS_MINUS_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
-                  int RAM_MOU_plus   = MOU_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
-                  int RAM_MOI_minus  = MOI_RAMkindSumsList       .Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOU_plus = MOU_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
+                  int RAM_MOI_minus = MOI_RAMkindSumsList.Where(sume => sume.ArtiklGrCD == RAM_kind).Sum(suma => suma.Count);
 
                   int RAM_MOCS_saldo = RAM_MOCS_plus - RAM_MOCS_minus;
-                  int RAM_MOUI_saldo = RAM_MOI_minus - RAM_MOU_plus  ;
+                  int RAM_MOUI_saldo = RAM_MOI_minus - RAM_MOU_plus;
 
                   bool has_RAM_MOCS_MOUI_saldo_descrepancy = RAM_MOCS_saldo != RAM_MOUI_saldo; // do ovoga smo teškom mukom došli :-( 
 
                   MessageBoxIcon messageBoxIcon = warnOnly_RAM ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
 
-                  if(has_RAM_MOCS_MOUI_saldo_descrepancy) 
+                  if(has_RAM_MOCS_MOUI_saldo_descrepancy)
                   {
-                     int RAMplus  = RAM_MOCS_plus  + RAM_MOU_plus ;
+                     int RAMplus = RAM_MOCS_plus + RAM_MOU_plus;
                      int RAMminus = RAM_MOCS_minus + RAM_MOI_minus;
 
                      ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena plus/minus SALDO ravnoteža " + RAMplus + " ≠ " + RAMminus);
@@ -3063,10 +3063,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                      }
                   }
 
-                  bool has_RAM_MOCS_plus_MOI_minus_descrepancy = RAM_MOCS_plus  != RAM_MOI_minus; // do ovoga smo teškom mukom došli :-( 
-                  bool has_RAM_MOCS_minus_MOU_plus_descrepancy = RAM_MOCS_minus != RAM_MOU_plus ; // do ovoga smo teškom mukom došli :-( 
+                  bool has_RAM_MOCS_plus_MOI_minus_descrepancy = RAM_MOCS_plus != RAM_MOI_minus; // do ovoga smo teškom mukom došli :-( 
+                  bool has_RAM_MOCS_minus_MOU_plus_descrepancy = RAM_MOCS_minus != RAM_MOU_plus; // do ovoga smo teškom mukom došli :-( 
 
-                  if(has_RAM_MOCS_plus_MOI_minus_descrepancy) 
+                  if(has_RAM_MOCS_plus_MOI_minus_descrepancy)
                   {
                      ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena MOCS_plus/MOI_minus ravnoteža " + RAM_MOCS_plus + " ≠ " + RAM_MOI_minus);
                      if(warnOnly_RAM == false)
@@ -3076,7 +3076,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                      }
                   }
 
-                  if(has_RAM_MOCS_minus_MOU_plus_descrepancy) 
+                  if(has_RAM_MOCS_minus_MOU_plus_descrepancy)
                   {
                      ZXC.aim_emsg(messageBoxIcon, "Za RAM " + RAM_kind + " nije uspostavljena MOU_plus/MOCS_minus " + RAM_MOU_plus + " ≠ " + RAM_MOCS_minus);
                      if(warnOnly_RAM == false)
@@ -3091,10 +3091,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                // HDD balance checks 
                foreach(string HDD_kind in HDD_kinds)
                {
-                  int HDD_MOCS_plus  = MOCS_PLUS_HDDkindSumsList .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+                  int HDD_MOCS_plus = MOCS_PLUS_HDDkindSumsList.Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
                   int HDD_MOCS_minus = MOCS_MINUS_HDDkindSumsList.Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
-                  int HDD_MOU_plus   = MOU_HDDkindSumsList       .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
-                  int HDD_MOI_minus  = MOI_HDDkindSumsList       .Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+                  int HDD_MOU_plus = MOU_HDDkindSumsList.Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
+                  int HDD_MOI_minus = MOI_HDDkindSumsList.Where(sume => sume.ArtiklGrCD == HDD_kind).Sum(suma => suma.Count);
 
                   int HDD_MOCS_saldo = HDD_MOCS_plus - HDD_MOCS_minus;
 
@@ -3102,9 +3102,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                   MessageBoxIcon messageBoxIcon = warnOnly_HDD ? MessageBoxIcon.Warning : MessageBoxIcon.Error;
 
-                  if(has_HDD_descrepancy) 
+                  if(has_HDD_descrepancy)
                   {
-                     int HDDplus  = HDD_MOCS_plus  + HDD_MOU_plus ;
+                     int HDDplus = HDD_MOCS_plus + HDD_MOU_plus;
                      int HDDminus = HDD_MOCS_minus + HDD_MOI_minus;
 
                      ZXC.aim_emsg(messageBoxIcon, "Za HDD " + HDD_kind + " nije uspostavljena plus/minus ravnoteža " + HDDplus + " ≠ " + HDDminus);
@@ -3148,28 +3148,30 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   }
 
                   #region check MOC RAM/HDD kind 
-                  
-                  string mocRAMkind  = theDUC.Fld_PTG_RamKlasa;
-                  string mocHDDkind  = theDUC.Fld_PTG_HddKlasa;
-                  string rtoRAMkind  = /*artikl_rec.Grupa2CD    */TheG2.GetStringCell(ci2.iT_ramKlasa, rowIdx2, false);
-                  string rtoHDDkind  = /*artikl_rec.Grupa3CD    */TheG2.GetStringCell(ci2.iT_hddKlasa, rowIdx2, false);
 
-                  bool ramChanged    = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
-                  bool hddChanged    = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
-                  
-                  bool isMocDefined  = theDUC.Fld_PTG_MOC_PCK_ArtCD.NotEmpty();
+                  string mocRAMkind = theDUC.Fld_PTG_RamKlasa;
+                  string mocHDDkind = theDUC.Fld_PTG_HddKlasa;
+                  string rtoRAMkind = /*artikl_rec.Grupa2CD    */TheG2.GetStringCell(ci2.iT_ramKlasa, rowIdx2, false);
+                  string rtoHDDkind = /*artikl_rec.Grupa3CD    */TheG2.GetStringCell(ci2.iT_hddKlasa, rowIdx2, false);
+
+                  bool ramChanged = (rtrano_rec.T_dimX + rtrano_rec.T_dimY).NotZero();
+                  bool hddChanged = (rtrano_rec.T_decA + rtrano_rec.T_decB).NotZero();
+
+                  bool isMocDefined = theDUC.Fld_PTG_MOC_PCK_ArtCD.NotEmpty();
 
                   if(isMocDefined && ramChanged && mocRAMkind != rtoRAMkind)
                   {
                      ZXC.aim_emsg(MessageBoxIcon.Error, "RAM klasa {2} cilja modifikacije ne odgovara RAM klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocRAMkind, rtoRAMkind);
                      e.Cancel = true;
-                     /*break;*/ return;
+                     /*break;*/
+                     return;
                   }
                   if(isMocDefined && hddChanged && mocHDDkind != rtoHDDkind)
                   {
                      ZXC.aim_emsg(MessageBoxIcon.Error, "HDD klasa {2} cilja modifikacije ne odgovara HDD klasi {3} stavke.\n\nArtikl [{0}] Redak {1}", oldArtiklCD, rowIdx2 + 1, mocHDDkind, rtoHDDkind);
                      e.Cancel = true;
-                     /*break;*/ return;
+                     /*break;*/
+                     return;
                   }
 
                   #endregion check MOC RAM/HDD kind 
@@ -3179,14 +3181,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   {
                      string newArtiklCD = rtrano_rec.T_artiklCD;
 
-                     if(!e.Cancel && Get_Artikl_FromVvUcSifrar(newArtiklCD) == null) 
+                     if(!e.Cancel && Get_Artikl_FromVvUcSifrar(newArtiklCD) == null)
                      {
                         bool addnewOK = true;
                         string newArtiklName;
 
                         Artikl MOC_MOS_OLD_artikl_rec = Get_Artikl_FromVvUcSifrar(TheG2.GetStringCell(ci2.iR_artiklCD_Old, rowIdx2, false));
 
-                        if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break;  }
+                        if(MOC_MOS_OLD_artikl_rec == null) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {1} OLD Artikl ne postoji!? [{0}]", MOC_MOS_OLD_artikl_rec, rowIdx2 + 1); e.Cancel = true; break; }
 
                         (addnewOK, newArtiklName) = theDUC.ADDREC_NewMOC_MOS_PCK_ArtiklFromOld(TheDbConnection, MOC_MOS_OLD_artikl_rec, newArtiklCD);
 
@@ -3220,7 +3222,32 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             } // if(this is MOD_PTG_DUC)
 
-         } // if(this is FakturPDUC) 
+            #region PTG Set Artificial Serno
+
+            if(faktur_rec.TtInfo.IsPTG_UgAnDodTT)
+            {
+               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
+               {
+                  rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+                  if(rtrano_rec.T_serno.IsEmpty())
+                  {
+                     artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+                     if(Artikl.Does_thisArtiklCDNeeds_RtranoRow_ForSerno(rtrano_rec.T_artiklCD) == false)
+                     {
+                        string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec.TS);
+
+                        thePduc.TheG2.PutCell(thePduc.DgvCI2.iT_serno, rowIdx2, artificial_serno);
+                     }
+                  }
+               }
+
+            } // IsPTG_UgAnDodTT
+
+            #endregion PTG Set Artificial Serno
+
+         } // if(this is FakturPDUC)
 
          #endregion Rtrano validacije
 
