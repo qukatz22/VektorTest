@@ -15333,7 +15333,7 @@ public class FakturPDUC : FakturExtDUC
       if(this is ZIZ_PTG_DUC)
       { 
          TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
-       //SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);
+         SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);
       }
 
       if(ZXC.IsPCTOGO)
@@ -15891,17 +15891,17 @@ public class FakturPDUC : FakturExtDUC
    {
       if(TT == Faktur.TT_ZU2)
       {
-         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         foreach(DataGridViewTextBoxCell tbxCell in TheG2.Rows[rowIdx].Cells)
          {
             tbxCell.Style.BackColor = Color.PaleGreen;
          }
       }
       else
       {
-         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         foreach(DataGridViewTextBoxCell tbxCell in TheG2.Rows[rowIdx].Cells)
          {
             if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.None) tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor;
-            else tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_False_BackColor;
+            else                                                  tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_False_BackColor;
          }
       }
    }
