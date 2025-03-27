@@ -1002,6 +1002,11 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
          } // Faktur RWTREC: Datum Zadnjeg Printa 
 
+         //26.03.2025.
+         if(ZXC.IsTETRAGRAM_ANY && ((Faktur)TheVvTabPage.TheVvDataRecord).TT == Faktur.TT_IRA && this is FakturExtDUC && ((FakturExtDUC)this).cbx_PrintIzjava.Checked)
+         {
+            TheVvTabPage.TheVvForm.AfterPrint_IRA_MPC_PrintIzjava((FakturExtDUC)this);
+         }
       }
 
       recordReportLoaded = true;

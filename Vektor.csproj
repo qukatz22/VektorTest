@@ -2064,6 +2064,12 @@
       <DependentUpon>CR_TemboWebShopExport.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_TG_IzjavaIoIzvoruImovine.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_TG_IzjavaIoIzvoruImovine.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_TopNChart.cs">
       <DependentUpon>CR_TopNChart.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3878,6 +3884,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_TemboWebShopExport.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_TemboWebShopExport.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_TG_IzjavaIoIzvoruImovine.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_TG_IzjavaIoIzvoruImovine.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_TopNChart.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

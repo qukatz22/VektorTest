@@ -8117,7 +8117,7 @@ public class PON_MPC_DUC           : FakturExtDUC
 
       hamp_incognitoPrint.Location = new Point(ZXC.Qun4, hamp_IznosUvaluti.Top);
       hamp_incognitoPrint.Visible = true;
-
+      cbx_PrintIzjava    .Visible = false;
    }
 
    private void CreateArrOfHampers()
@@ -8232,6 +8232,7 @@ public class OPN_MPC_DUC           : FakturExtDUC
 
       hamp_incognitoPrint.Location = new Point(ZXC.Qun4, hamp_IznosUvaluti.Top);
       hamp_incognitoPrint.Visible = true;
+      cbx_PrintIzjava    .Visible = false;
 
    }
 

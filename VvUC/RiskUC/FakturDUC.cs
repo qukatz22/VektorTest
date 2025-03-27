@@ -8144,7 +8144,7 @@ public partial class FakturExtDUC : FakturDUC
    protected /*private*/ RadioButton rbt_nijeCarina, rbt_spediter, rbt_carina;
    private CheckBox cbx_isCash, cbx_isCash2, cbx_isRed/*, cbx_isKpnOUT*/;
 
-    public CheckBox cbx_isKpnOUT, cbx_isIncognito_Print;
+    public CheckBox cbx_isKpnOUT, cbx_isIncognito_Print, cbx_PrintIzjava;
 
    // 07.06.2018: 
    public DateTime Prev_ParagonIRM_Date;
@@ -10184,10 +10184,10 @@ public partial class FakturExtDUC : FakturDUC
 
    private void InitializeHamper_IsIncognitoPrint(out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 1, "", ThePolyGridTabControl.TabPages[0], false);
+      hamper = new VvHamper(2, 1, "", ThePolyGridTabControl.TabPages[0], false);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
+      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q7un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun2, ZXC.Qun2 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };
@@ -10196,6 +10196,9 @@ public partial class FakturExtDUC : FakturDUC
 
       cbx_isIncognito_Print  = hamper.CreateVvCheckBox_OLD(0, 0, null, "Maloprodaja", System.Windows.Forms.RightToLeft.No);
       cbx_isIncognito_Print.Tag = hamp_incognitoPrint;  // zato da se ponasa neovisno o bijelo/zuto
+
+      cbx_PrintIzjava     = hamper.CreateVvCheckBox_OLD(1, 0, null, "Izjava", System.Windows.Forms.RightToLeft.No);
+      cbx_PrintIzjava.Tag = hamp_incognitoPrint;  // zato da se ponasa neovisno o bijelo/zuto
 
       hamper.Visible = false;
    }
@@ -13108,6 +13111,7 @@ public partial class FakturExtDUC : FakturDUC
    }
 
    public bool Fld_IsIncognito_Print { get { return cbx_isIncognito_Print.Checked; } set { cbx_isIncognito_Print.Checked = value; } }
+   public bool Fld_PrintIzjava       { get { return cbx_PrintIzjava      .Checked; } set { cbx_PrintIzjava      .Checked = value; } }
 
    #endregion Fld_
 
@@ -13235,6 +13239,7 @@ public partial class FakturExtDUC : FakturDUC
 
       //30.08.2024. za novi
       Fld_IsIncognito_Print = false;
+      Fld_PrintIzjava       = false;
 
       #region M2PAY reset Fld_ & M2P_xyz values
 
@@ -13739,6 +13744,7 @@ public partial class FakturExtDUC : FakturDUC
 
       //30.08.2024.
       if(CtrlOK(cbx_isIncognito_Print)) Fld_IsIncognito_Print = false;
+      if(CtrlOK(cbx_isIncognito_Print)) Fld_PrintIzjava       = false;
 
 //#if DEBUG
 //
