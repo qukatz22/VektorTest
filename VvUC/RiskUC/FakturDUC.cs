@@ -147,9 +147,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected VvDataGridView  PTG_Una_Sin_Grid_SumGrid;
    protected bool            PTG_Una_Sin_Loaded;
 
-   public VvDataGridViewFind PTG_UNA_StanjeSerno_Grid;
-   protected VvDataGridView  PTG_Una_StanjeSerno_SumGrid;
+   public VvDataGridViewFind PTG_StanjeSerno_Grid;
+   protected VvDataGridView  PTG_StanjeSerno_SumGrid;
    protected bool            PTG_StanjeSerno_Loaded;
+
+   public VvDataGridViewFind PTG_Dokumenti_Grid;
+   protected VvDataGridView  PTG_Dokumenti_SumGrid;
+   protected bool            PTG_Dokumenti_Loaded;
 
    //protected bool isThisMalopDUC;
    //protected bool isThisVelepDUC;
@@ -351,6 +355,25 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          #endregion PTG_OplGrid
 
+         #region PTG_DokumentiUzUGAN
+
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDokumenti_TabPageName, ptgDokumenti_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+
+         PTG_Dokumenti_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgDokumenti_TabPageName], ptgDokumenti_TabPageName);
+
+         AddColumnsToGrid_PTG_Dokumenti();
+         GridLocationAndSize(PTG_Dokumenti_Grid);
+
+         PTG_Dokumenti_SumGrid = CreatePtgOplAndDodSumGrid(PTG_Dokumenti_Grid, PTG_Dokumenti_Grid.Parent, "SUM" + ptgDokumenti_TabPageName);
+         InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_Dokumenti_Grid);
+         //
+         GridLocationAndSize_PTG_OplAndDodGrids(PTG_Dokumenti_Grid, 0);
+
+       //PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+
+         #endregion PTG_DokumentiUzUGAN
+
+
          #region PTG_DodGrid
 
          //20.10.2021. !!!! pazi, mne smijes kod Add-anja InnerTabPage-a u Title stavljati ne[to varijabilno jer ga to kasnije smeta tako da Tiotle dodaj naknadno!!!!
@@ -412,15 +435,15 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptg_StanjeSerno_TabPageName, ptg_StanjeSerno_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_UNA_StanjeSerno_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptg_StanjeSerno_TabPageName], ptg_StanjeSerno_TabPageName);
+         PTG_StanjeSerno_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptg_StanjeSerno_TabPageName], ptg_StanjeSerno_TabPageName);
 
          AddColumnsToGrid_PTG_UNA_StanjeSerno();
-         GridLocationAndSize(PTG_UNA_StanjeSerno_Grid);
+         GridLocationAndSize(PTG_StanjeSerno_Grid);
 
-         PTG_Una_StanjeSerno_SumGrid = CreatePtgOplAndDodSumGrid(PTG_UNA_StanjeSerno_Grid, PTG_UNA_StanjeSerno_Grid.Parent, "SUM" + ptg_StanjeSerno_TabPageName);
-         InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_UNA_StanjeSerno_Grid);
+         PTG_StanjeSerno_SumGrid = CreatePtgOplAndDodSumGrid(PTG_StanjeSerno_Grid, PTG_StanjeSerno_Grid.Parent, "SUM" + ptg_StanjeSerno_TabPageName);
+         InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_StanjeSerno_Grid);
          //
-         GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_StanjeSerno_Grid, 0);
+         GridLocationAndSize_PTG_OplAndDodGrids(PTG_StanjeSerno_Grid, 0);
 
          #endregion PTG_UnaAnaGrid
 
@@ -4310,11 +4333,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          PTG_Una_Sin_Loaded        = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_DOD_rtransList_Loaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_StanjeSerno_Loaded    = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
+         PTG_Dokumenti_Loaded      = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          IfShould_Load_PTG_OPL_Grid        (null, null, null);
          IfShould_Load_PTG_DOD_Grid        (null, null, null);
          IfShould_Load_PTG_UNA_ANA_Grid    (null, null, null);
          IfShould_Load_PTG_UNA_SIN_Grid    (null, null, null);
          IfShould_Load_PTG_StanjeSerno_Grid(null, null, null);
+         IfShould_Load_PTG_Dokumenti_Grid  (null, null, null);
+                
 
          // 13.09.2021: start za PTG ove kompozitne TtNum-ove stavljamo sami u sebe svoje baze kakve su i dalje u sljedbenicima - ovisnicima (u istim tim V1/V2 poljima) 
          if(faktur_rec.TT == Faktur.TT_KUG && faktur_rec.V1_ttNum != faktur_rec.TtNum                                     ) ZXC.aim_emsg(MessageBoxIcon.Warning, "faktur_rec.V1_ttNum != faktur_rec.TtNum                                     ");
@@ -6820,6 +6846,7 @@ if(isRNM) { colOp = AddDGVColum_Decimal_4GridReadOnly (RealizacGrid, R_cijOP_Col
    internal const string ptgUna_Ana_TabPageName      = ". SVE STAVKE .";
    internal const string ptgUna_Sin_TabPageName      = ". STANJE NAJMA .";
    internal const string ptg_StanjeSerno_TabPageName = ". STANJE NAJMA SERIJSKI BROJEVI .";
+   internal const string ptgDokumenti_TabPageName    = ". DOKUMENTI .";
 
    #endregion TabPageName
 
@@ -6970,31 +6997,37 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    private void AddColumnsToGrid_PTG_UNA_SIN() 
    {
-      AddDGVColum_RecID_4GridReadOnly   (PTG_UNA_SIN_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-    //AddDGVColum_String_4GridReadOnly  (PTG_UNA_SIN_Grid, "Dokument"  , ZXC.Q5un, false   );
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_SIN_Grid, "Šifra"     , ZXC.Q5un, false   );
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_SIN_Grid, "Naziv"     , ZXC.Q5un, true    );
-    //AddDGVColum_String_4GridReadOnly  (PTG_UNA_SIN_Grid, "SerBroj"   , ZXC.Q6un, false   );
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Kol"       , ZXC.Q5un,        2);
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Cijena"    , ZXC.Q5un,        2);
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Iznos"     , ZXC.Q5un,        2);
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Otkup"     , ZXC.Q5un,        2);
-      
+       AddDGVColum_RecID_4GridReadOnly   (PTG_UNA_SIN_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+       AddDGVColum_String_4GridReadOnly  (PTG_UNA_SIN_Grid, "Šifra"     , ZXC.Q5un, false   );
+       AddDGVColum_String_4GridReadOnly  (PTG_UNA_SIN_Grid, "Naziv"     , ZXC.Q5un, true    );
+       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Kol"       , ZXC.Q5un,        2);
+       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Cijena"    , ZXC.Q5un,        2);
+       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Iznos"     , ZXC.Q5un,        2);
+       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_SIN_Grid, "Otkup"     , ZXC.Q5un,        2);
    }
 
    private void AddColumnsToGrid_PTG_UNA_StanjeSerno() 
    {
-      AddDGVColum_RecID_4GridReadOnly (PTG_UNA_StanjeSerno_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Dokument"  , ZXC.Q6un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "SerBroj"   , ZXC.Q6un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Šifra"     , ZXC.Q5un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Naziv"     , ZXC.Q5un, true    );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Tip"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "RAM klasa" , ZXC.Q4un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "HDD klasa" , ZXC.Q4un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "RAM"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "HDD"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_UNA_StanjeSerno_Grid, "Opis"      , ZXC.Q6un, false   );
+      AddDGVColum_RecID_4GridReadOnly (PTG_StanjeSerno_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Dokument"  , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "SerBroj"   , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Šifra"     , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Naziv"     , ZXC.Q5un, true    );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Tip"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "RAM klasa" , ZXC.Q4un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "HDD klasa" , ZXC.Q4un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "RAM"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "HDD"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Opis"      , ZXC.Q6un, false   );
+   }
+
+   private void AddColumnsToGrid_PTG_Dokumenti()
+   { 
+      AddDGVColum_RecID_4GridReadOnly (PTG_Dokumenti_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Dokument"  , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Broj"      , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Datum"     , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Iznos"     , ZXC.Q6un, false   );
    }
 
    private void GridLocationAndSize_OPLgrid(VvDataGridViewFind theGrid, VvHamper hamperAboveDgv)
@@ -7116,11 +7149,23 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       {
          Load_PTG_StanjeSerno_And_PutDgvFields(); // UGN or AUN 
 
-         PTG_UNA_StanjeSerno_Grid.TabStop = false;
-         PTG_UNA_StanjeSerno_Grid.ClearSelection();
+         PTG_StanjeSerno_Grid.TabStop = false;
+         PTG_StanjeSerno_Grid.ClearSelection();
       }
    }
 
+   public /*override*/ void IfShould_Load_PTG_Dokumenti_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDokumenti_TabPageName;
+
+      if(PTG_Dokumenti_Loaded == false && this is UGNorAUN_PTG_DUC && dokumenti_TabPageIsVisible)
+      {
+         Load_PTG_Dokumenti_And_PutDgvFields(); // UGN or AUN 
+
+         PTG_Dokumenti_Grid.TabStop = false;
+         PTG_Dokumenti_Grid.ClearSelection();
+      }
+   }
 
    #endregion IfShould_Load_PTG OPL DOD UNA Grid
 
@@ -7430,34 +7475,66 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       List<Rtrano> UGAN_rtranoList = RtranoDao.Get_UGAN_RtranoList(TheDbConnection, faktur_rec.TtNum, true);
 
       PTG_StanjeSerno_Loaded = true;
-      PTG_UNA_StanjeSerno_Grid.Rows.Clear();
+      PTG_StanjeSerno_Grid.Rows.Clear();
 
-      idxCorrector = GetDGVsIdxCorrrector(PTG_UNA_StanjeSerno_Grid);
+      idxCorrector = GetDGVsIdxCorrrector(PTG_StanjeSerno_Grid);
 
       foreach(Rtrano UNJrtrano_rec in UGAN_rtranoList)
       {
-         PTG_UNA_StanjeSerno_Grid.Rows.Add();
+         PTG_StanjeSerno_Grid.Rows.Add();
       
-         rowIdx = PTG_UNA_StanjeSerno_Grid.RowCount - idxCorrector;
+         rowIdx = PTG_StanjeSerno_Grid.RowCount - idxCorrector;
       
          colIdx = 0;
       
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_TT + "-"+ UNJrtrano_rec.T_ttNum.ToString();
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_serno     ; /*"SerBroj"  */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklCD  ; /*"Šifra"    */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklName; /*"Naziv"    */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Tip"      */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM klasa"*/
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD klasa"*/
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM"      */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD"      */
-         PTG_UNA_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Opis"     */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_TT + "-"+ UNJrtrano_rec.T_ttNum.ToString();
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_serno     ; /*"SerBroj"  */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklCD  ; /*"Šifra"    */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklName; /*"Naziv"    */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Tip"      */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM klasa"*/
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD klasa"*/
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM"      */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD"      */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Opis"     */
       
-         PTG_UNA_StanjeSerno_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         PTG_StanjeSerno_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
 
       return UGAN_rtranoList;
+   }
+
+   public List<Faktur> Load_PTG_Dokumenti_And_PutDgvFields()
+   {
+      int rowIdx, idxCorrector, colIdx;
+
+      List<Faktur> UGAN_fakturList = new List<Faktur>();
+
+      PTG_Dokumenti_Loaded = true;
+      PTG_Dokumenti_Grid.Rows.Clear();
+
+      idxCorrector = GetDGVsIdxCorrrector(PTG_Dokumenti_Grid);
+
+      foreach(Faktur faktur_rec in UGAN_fakturList)
+      {
+         PTG_Dokumenti_Grid.Rows.Add();
+      
+         rowIdx = PTG_Dokumenti_Grid.RowCount - idxCorrector;
+      
+         colIdx = 0;
+      
+         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.RecID           ;
+         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.TT              ;
+         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.TtNum.ToString();
+         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.DokDate         ; 
+         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.S_ukKCRP        ;
+
+         PTG_Dokumenti_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+      }
+
+      return UGAN_fakturList;
+
    }
 
    #endregion Load OPL or DOD or UNA List and PutDgvFields
@@ -14997,7 +15074,13 @@ public class FakturPDUC : FakturExtDUC
 
       colCboxClassic.Visible = isVisible;
 
-    //TheG2.CellLeave += new DataGridViewCellEventHandler(TheG_IsProdukt_CellLeave_RecalcDUC);
+      TheG2.CellClick += TheG2_CellClick;
+   }
+   private void TheG2_CellClick(object sender, DataGridViewCellEventArgs e)
+   {
+      DataGridViewCell cell = ((System.Windows.Forms.DataGridView)sender).CurrentCell;
+      
+      if(cell is DataGridViewCheckBoxCell)  SendKeys.Send("{TAB}");
    }
 
    #endregion TheGrid2_Columns

@@ -1749,7 +1749,8 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable         = true;
 
-      string text     = name.TrimEnd(':').Substring(1);
+    //string text = name.TrimEnd(':').Substring(1);
+      string text = "NoSerBr";
       cbx_isSerBr = hamper.CreateVvCheckBox_OLD(0, 0, null, text, System.Windows.Forms.RightToLeft.Yes);
    }
 

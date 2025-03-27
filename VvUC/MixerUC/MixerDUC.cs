@@ -3285,12 +3285,20 @@ public partial class MixerDUC : VvPolyDocumRecordUC
       { // Clasic CheckBox: 
          cbx_fakStop = new CheckBox();
          colCbxClassic = TheG.CreateClassicCheckBoxColumn(cbx_fakStop, TheVvDaoTrans, DB_Tci.t_intB, _colHeader, _width);
+         TheG.CellClick += TheG_CellClick;
+
       }
 
-    //{ // VvCheckBox: 
-    //   vvcbx_isIntB = new VvCheckBox();
-    //   colCbox = TheG.CreateVvCheckBoxColumn(vvcbx_isIntB, TheVvDaoTrans, DB_Tci.t_intB, _colHeader, _width);
-    //}
+      //{ // VvCheckBox: 
+      //   vvcbx_isIntB = new VvCheckBox();
+      //   colCbox = TheG.CreateVvCheckBoxColumn(vvcbx_isIntB, TheVvDaoTrans, DB_Tci.t_intB, _colHeader, _width);
+      //}
+   }
+   private void TheG_CellClick(object sender, DataGridViewCellEventArgs e)
+   {
+      DataGridViewCell cell = ((System.Windows.Forms.DataGridView)sender).CurrentCell;
+
+      if(cell is DataGridViewCheckBoxCell) SendKeys.Send("{TAB}");
    }
 
 
