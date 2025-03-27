@@ -1642,7 +1642,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    public decimal PCK_RAM    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Zapremina; } set { if(ZXC.IsPCTOGO) this.Zapremina = value; } }
    public decimal PCK_HDD    { get { if(ZXC.IsPCTOGO == false) return 0M; return this.Duljina  ; } set { if(ZXC.IsPCTOGO) this.Duljina   = value; } }
 
-   internal static bool Does_thisArtiklCDNeeds_RtranoRow_ForSerno(string artiklCD) 
+   internal static bool DoesThisArtikl_Needs_RtranoRow_ForSerno(string artiklCD, string theTT) 
    {
       Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
 
@@ -1651,69 +1651,93 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
          return false;
       }
 
-      return Does_thisArtiklTSNeeds_RtranoRow_ForSerno(artikl_rec.TS);
+      string theTS       = artikl_rec.TS.NotEmpty() ? artikl_rec.TS : ZXC.OTH_TS;
+      bool   noSernoNeed = artikl_rec.IsSerNo;
+
+      return Does_thisArtiklTSNeeds_RtranoRow_ForSerno(theTS, theTT, noSernoNeed);
    }
 
-   internal static bool Does_thisArtiklTSNeeds_RtranoRow_ForSerno(string artiklTS) 
+   /*internal*/private static bool Does_thisArtiklTSNeeds_RtranoRow_ForSerno(string artiklTS, string theTT, bool noSernoNeed) 
    {
-      bool isNOsernoTS =
+      if(artiklTS == ZXC.PCK_TS) return true ;
 
-         artiklTS == ZXC.USL_TS ||
-         artiklTS == ZXC.KMP_TS ||
-         artiklTS == ZXC.OTH_TS  ;
+      if(artiklTS == ZXC.USL_TS) return false;
+      if(artiklTS == ZXC.UDP_TS) return false;
 
-      bool isSernoTS = !isNOsernoTS;
+      TtInfo ttinfo = ZXC.TtInfo(theTT);
 
-      return isSernoTS;
+      if(ttinfo.IsPTG_UgAnDodTT) return true; // u Ping - Pong (UGN, AUN, DIZ, ZIZ, PVR) trebamo uvijek serno iako ga artikl nema, zbog automatskog stvaranja liste za povrat 
+
+      // ako smo dosli do ovdje, znaci da smo na PRI, URA, IZD, MPI, IRA       
+      // na ovim TT-ovima serno trebaju samo oni koji zaista imaju pravi serno 
+
+      if(artiklTS == ZXC.KMP_TS) return false;
+      if(artiklTS == ZXC.OTH_TS) return false;
+
+      // ako smo dosli do ovdje, znaci da je ovo 'roba' 
+
+      if(artiklTS != ZXC.ROB_TS) throw new Exception("Does_thisArtiklTSNeeds_RtranoRow_ForSerno ... nesto je krivo shvaceno");
+
+      if(noSernoNeed) return false;
+      else            return true ;
    }
 
-   internal static bool Does_thisPTG_ArtiklCD_Could_PVR(string artiklCD) 
+   internal static bool ThisArtikl_Have_Real_Serno(string artiklCD)
    {
-      Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
-
-      if(artikl_rec == null)
-      {
-         return false;
-      }
-
-      return Does_thisPTG_ArtiklTS_Could_PVR(artikl_rec.TS);
+      return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "");
    }
 
-   internal static bool Does_thisPTG_ArtiklTS_Could_PVR(string artiklTS) 
-   {
-      bool isNO_PVR_TS =
 
-         artiklTS == ZXC.USL_TS /*||
-         artiklTS == ZXC.KMP_TS ||
-         artiklTS == ZXC.OTH_TS*/;
 
-      bool is_PVR_TS = !isNO_PVR_TS;
 
-      return is_PVR_TS;
-   }
 
-   internal static bool ThisArtiklTS_Needs_Real_Serno(string artiklTS) 
-   {
-      return
-         artiklTS == ZXC.PCK_TS ||
-         artiklTS == ZXC.ROB_TS  ;
-
-   }
-
-   internal static bool ThisArtiklTS_Needs_Artificial_Serno(string artiklTS) 
-   {
-      return
-         artiklTS == ZXC.KMP_TS ||
-         artiklTS == ZXC.OTH_TS  ;
-
-   }
-
-   internal static bool ThisArtiklTS_Needs_No_Serno(string artiklTS) 
-   {
-      return
-         artiklTS == ZXC.USL_TS  ;
-
-   }
+   //internal static bool Does_thisPTG_ArtiklCD_Could_PVR(string artiklCD) 
+   //{
+   //   Artikl artikl_rec = VvUserControl.ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD);
+   //
+   //   if(artikl_rec == null)
+   //   {
+   //      return false;
+   //   }
+   //
+   //   return Does_thisPTG_ArtiklTS_Could_PVR(artikl_rec.TS);
+   //}
+   //
+   //internal static bool Does_thisPTG_ArtiklTS_Could_PVR(string artiklTS) 
+   //{
+   //   bool isNO_PVR_TS =
+   //
+   //      artiklTS == ZXC.USL_TS /*||
+   //      artiklTS == ZXC.KMP_TS ||
+   //      artiklTS == ZXC.OTH_TS*/;
+   //
+   //   bool is_PVR_TS = !isNO_PVR_TS;
+   //
+   //   return is_PVR_TS;
+   //}
+   //
+   //internal static bool ThisArtiklTS_Needs_Real_Serno(string artiklTS) 
+   //{
+   //   return
+   //      artiklTS == ZXC.PCK_TS ||
+   //      artiklTS == ZXC.ROB_TS  ;
+   //
+   //}
+   //
+   //internal static bool ThisArtiklTS_Needs_Artificial_Serno(string artiklTS) 
+   //{
+   //   return
+   //      artiklTS == ZXC.KMP_TS ||
+   //      artiklTS == ZXC.OTH_TS  ;
+   //
+   //}
+   //
+   //internal static bool ThisArtiklTS_Needs_No_Serno(string artiklTS) 
+   //{
+   //   return
+   //      artiklTS == ZXC.USL_TS  ;
+   //
+   //}
 
    #endregion Some Util - Results propertiz
 

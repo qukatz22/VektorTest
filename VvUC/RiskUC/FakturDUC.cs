@@ -4489,7 +4489,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          //if(CtrlOK(ptgDUC.tbx_OdgodaPl   )) ptgDUC.Fld_PTG_OdgodaPl = ptgUgovor_rec.PTG_OdgodaPl;
 
-         string textSernoDif = "SerNo " + fakturLocal_rec.PTG_HAS_This_RtranoWith_Serno_Count + "/" + fakturLocal_rec.PTG_NEEDS_This_RtranoWith_Serno_Count;
+         string textSernoDif = "SerNo " + fakturLocal_rec.PTG_HAS_This_RtranoWith_RealSerno_Count + "/" + fakturLocal_rec.PTG_NEEDS_This_RtranoWith_RealSerno_Count;
 
          ptgDUC.SetMODsemaforLabelColorAndText(ptgDUC.lbl_serNoOk, fakturLocal_rec.PTG_MISSES_This_RtranoWith_Serno_Count.NotZero() ? Color.Red : Color.Green, fakturLocal_rec.PTG_MISSES_This_RtranoWith_Serno_Count.NotZero() ? textSernoDif : ""); 
       }

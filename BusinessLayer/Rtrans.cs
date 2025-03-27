@@ -1817,6 +1817,20 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    public bool Is_VelepByMPC                            { get { return ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON || this.T_TT == Faktur.TT_OPN || this.T_TT == Faktur.TT_IZD); } } // TODO: kasnije iz RRD rulsa 
    public bool Is_VelepByMPC_4Umj                       { get { return Is_VelepByMPC && this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN; } }
 
+   internal static bool Does_thisArtiklTSNeeds_RtranoRow_ForSerno(string artiklTS) 
+   {
+      bool isNOsernoTS =
+
+         artiklTS == ZXC.USL_TS ||
+         artiklTS == ZXC.KMP_TS ||
+         artiklTS == ZXC.OTH_TS  ;
+
+      bool isSernoTS = !isNOsernoTS;
+
+      return isSernoTS;
+   }
+
+
    #endregion Propertiz
 
    #region ToString

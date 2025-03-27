@@ -582,9 +582,10 @@ public class Rtrano : VvTransRecord
 
    internal string Get_PTG_artificial_serno(string _TS)
    {
-      string preffix1 = Artikl.ThisArtiklTS_Needs_Real_Serno(_TS) ? "?_" : "!_";
+    //string preffix1 = Artikl.ThisArtiklTS_Needs_Real_Serno(_TS) ? "?_" : "!_";
+      string preffix1 = _TS == ZXC.PCK_TS ? ZXC.PCK_unknown_SernoPreffix : ZXC.PTG_artifitial_SernoPreffix;
 
-      return preffix1 + this.T_ttNum.ToString() + "_" + this.T_serial.ToString() + "~" + this.T_artiklCD;
+      return preffix1 + this.T_TT + " " + this.T_ttNum.ToString() + "_" + this.T_serial.ToString() /*+ "~" + this.T_artiklCD*/;
    }
 
    #endregion PCTOGO propertiz

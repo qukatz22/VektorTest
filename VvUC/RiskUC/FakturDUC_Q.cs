@@ -1089,24 +1089,24 @@ public struct TtInfo
    };
    public bool IsV1andV2specialUseTT { get { return ZXC.IsPCTOGOdomena && array_isV1andV2specialUseTT.Contains(TheTT); } }
 
-   private static string[] array_hasRtranoForSernoTT = new string[] {
-      Faktur.TT_AUN, // PCTGO tt 
-      Faktur.TT_UGN, // PCTGO tt 
-      Faktur.TT_DIZ, // PCTGO tt 
-      Faktur.TT_PVR, // PCTGO tt 
-    //Faktur.TT_PVD, // PCTGO tt 
-      Faktur.TT_PRI, // PCTGO tt 
-      Faktur.TT_IZD, // PCTGO tt 
-      Faktur.TT_URA, // PCTGO tt 
-      Faktur.TT_IRA, // PCTGO tt 
-      Faktur.TT_MPI, // PCTGO tt 
-      Faktur.TT_ZIZ, // PCTGO tt 
-      Faktur.TT_ZUL, // PCTGO tt 
-    //Faktur.TT_MOD, // PCTGO tt NE - namjerno 
-
-      // tu jos nismo gotovi ... 
-   };
-   public bool HasRtranoForSernoTT { get { return ZXC.IsPCTOGOdomena && array_hasRtranoForSernoTT.Contains(TheTT); } }
+   //private static string[] array_hasRtranoForSernoTT = new string[] {
+   //   Faktur.TT_AUN, // PCTGO tt 
+   //   Faktur.TT_UGN, // PCTGO tt 
+   //   Faktur.TT_DIZ, // PCTGO tt 
+   //   Faktur.TT_PVR, // PCTGO tt 
+   // //Faktur.TT_PVD, // PCTGO tt 
+   //   Faktur.TT_PRI, // PCTGO tt 
+   //   Faktur.TT_IZD, // PCTGO tt 
+   //   Faktur.TT_URA, // PCTGO tt 
+   //   Faktur.TT_IRA, // PCTGO tt 
+   //   Faktur.TT_MPI, // PCTGO tt 
+   //   Faktur.TT_ZIZ, // PCTGO tt 
+   //   Faktur.TT_ZUL, // PCTGO tt 
+   // //Faktur.TT_MOD, // PCTGO tt NE - namjerno 
+   //
+   //   // tu jos nismo gotovi ... 
+   //};
+   //public bool HasRtranoForSernoTT { get { return ZXC.IsPCTOGOdomena && array_hasRtranoForSernoTT.Contains(TheTT); } }
 
    private static string[] array_UgAnDodTT = new string[] {
       Faktur.TT_UGN, // PCTGO tt 
@@ -3234,7 +3234,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   {
                      artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
 
-                     if(Artikl.Does_thisArtiklCDNeeds_RtranoRow_ForSerno(rtrano_rec.T_artiklCD) == false)
+                     if(Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtrano_rec.T_artiklCD, faktur_rec.TT)/* == false*/)
                      {
                         string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec.TS);
 
@@ -6475,7 +6475,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       bool isUlaz_DUC          = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_U;
       bool isIzlaz_DUC         = somePTG_DUC.faktur_rec.TtInfo.IsFinKol_I;
-      bool isUgAnDo_DUC        = somePTG_DUC.IsPTG_UgAnDod_DUC            ;
+      bool isUgAnDo_DUC        = somePTG_DUC.IsPTG_UgAnDod_DUC           ;
       bool isIzlazOrUgAnDo_DUC = isIzlaz_DUC || isUgAnDo_DUC             ;
 
       // ======================================================================================================================= 
@@ -6484,11 +6484,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       if(sernoIsNEW)
       {
          // provjera uparujemo li ga s adekvatnim TS-om 
-         string upisaniArtiklTS = theGrid2.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
+       //string upisaniArtiklTS = theGrid2.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
 
-         bool isNOsernoTS = Artikl.Does_thisArtiklTSNeeds_RtranoRow_ForSerno(upisaniArtiklTS) == false;
+       //bool isNO_realSernoArtikl = Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(upisaniArtiklCD, faktur_rec.TT) == false;
+         bool isNO_realSernoArtikl = Artikl.ThisArtikl_Have_Real_Serno             (upisaniArtiklCD               ) == false;
 
-         if(isNOsernoTS)
+         if(isNO_realSernoArtikl)
          {
             ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema smisla uparivati serijski broj sa uslugom, komponentom i 'ostalo'.");
 

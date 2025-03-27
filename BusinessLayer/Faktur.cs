@@ -3802,22 +3802,22 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    #region PCTOGO / PTG
 
-   internal int PTG_NEEDS_This_RtranoWith_Serno_Count 
+   internal int PTG_NEEDS_This_RtranoWith_RealSerno_Count 
    { 
       get 
       {
-         if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
+         //if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
 
-         return (int)this.TrnNonDel.Where(rtr => Artikl.Does_thisArtiklCDNeeds_RtranoRow_ForSerno(rtr.T_artiklCD)).Sum(rtr => rtr.T_kol); 
+         return (int)this.TrnNonDel.Where(rtr => Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtr.T_artiklCD, rtr.T_TT)).Sum(rtr => rtr.T_kol); 
       } 
    }
-   internal int PTG_HAS_This_RtranoWith_Serno_Count 
+   internal int PTG_HAS_This_RtranoWith_RealSerno_Count 
    { 
       get 
       {
-         if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
+         //if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
 
-         return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty()); 
+         return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty() && rto.T_serno.Contains(ZXC.PCK_unknown_SernoPreffix) == false); 
       } 
    }
 
@@ -3828,7 +3828,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    {
       get
       {
-         return PTG_NEEDS_This_RtranoWith_Serno_Count - PTG_HAS_This_RtranoWith_Serno_Count;
+         return PTG_NEEDS_This_RtranoWith_RealSerno_Count - PTG_HAS_This_RtranoWith_RealSerno_Count;
       }
    }
 
