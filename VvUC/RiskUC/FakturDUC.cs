@@ -4334,12 +4334,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          PTG_DOD_rtransList_Loaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_StanjeSerno_Loaded    = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_Dokumenti_Loaded      = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
-         IfShould_Load_PTG_OPL_Grid        (null, null, null);
-         IfShould_Load_PTG_DOD_Grid        (null, null, null);
-         IfShould_Load_PTG_UNA_ANA_Grid    (null, null, null);
-         IfShould_Load_PTG_UNA_SIN_Grid    (null, null, null);
-         IfShould_Load_PTG_StanjeSerno_Grid(null, null, null);
-         IfShould_Load_PTG_Dokumenti_Grid  (null, null, null);
+
+         IfShould_Load_PTG_OPL_Grid               (null, null, null);
+         IfShould_Load_PTG_DOD_Rtrans_Grid        (null, null, null);
+         IfShould_Load_PTG_UgAn_i_DOD_Rtrans_Grid (null, null, null);
+         IfShould_Load_PTG_NajamStanje_Rtrans_Grid(null, null, null);
+         IfShould_Load_PTG_NajamStanje_Rtrano_Grid(null, null, null);
+         IfShould_Load_PTG_DOD_Faktur_Grid        (null, null, null);
                 
 
          // 13.09.2021: start za PTG ove kompozitne TtNum-ove stavljamo sami u sebe svoje baze kakve su i dalje u sljedbenicima - ovisnicima (u istim tim V1/V2 poljima) 
@@ -6185,7 +6186,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          return this.specificFakturReportName;
       }
-   }
+   }   
 
    public override VvReport CreateVvRecordReport(string reportName, VvRptFilter vvRptFilter)
    {
@@ -7099,7 +7100,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_DOD_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void IfShould_Load_PTG_DOD_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       bool DOD_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDod_TabPageName;
 
@@ -7115,20 +7116,20 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_UNA_ANA_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void IfShould_Load_PTG_UgAn_i_DOD_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgUna_Ana_TabPageName;
 
       if(PTG_Una_Ana_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_ANA_TabPageIsVisible)
       {
-         Load_PTG_UNA_ANA_And_PutDgvFields(); // UGN or AUN 
+         Load_UgAn_i_DOD_rtrans_list_And_PutDgvFields(); // UGN or AUN 
 
          PTG_UNA_ANA_Grid.TabStop = false;
          PTG_UNA_ANA_Grid.ClearSelection();
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_UNA_SIN_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       bool UNA_SIN_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgUna_Sin_TabPageName;
 
@@ -7141,26 +7142,26 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_StanjeSerno_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrano_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       bool StanjeSerno_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptg_StanjeSerno_TabPageName;
 
       if(PTG_StanjeSerno_Loaded == false && this is UGNorAUN_PTG_DUC && StanjeSerno_TabPageIsVisible)
       {
-         Load_PTG_StanjeSerno_And_PutDgvFields(); // UGN or AUN 
+         Load_PTG_NajamStanje_Rtrano_And_PutDgvFields(); // UGN or AUN 
 
          PTG_StanjeSerno_Grid.TabStop = false;
          PTG_StanjeSerno_Grid.ClearSelection();
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_Dokumenti_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void IfShould_Load_PTG_DOD_Faktur_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
       bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDokumenti_TabPageName;
 
       if(PTG_Dokumenti_Loaded == false && this is UGNorAUN_PTG_DUC && dokumenti_TabPageIsVisible)
       {
-         Load_PTG_Dokumenti_And_PutDgvFields(); // UGN or AUN 
+         Load_PTG_DOD_Faktur_And_PutDgvFields(); 
 
          PTG_Dokumenti_Grid.TabStop = false;
          PTG_Dokumenti_Grid.ClearSelection();
@@ -7255,7 +7256,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    {
       if(PTG_DOD_rtransList_Loaded == false)
       {
-         (this as UGNorAUN_PTG_DUC).RtransList_allDOD = RtransDao.GetRtransList_allDOD(TheDbConnection, faktur_rec);
+         (this as UGNorAUN_PTG_DUC).RtransList_allDOD = RtransDao.Get_DOD_RtransList(TheDbConnection, faktur_rec);
 
          PTG_DOD_rtransList_Loaded = true;
       }
@@ -7319,11 +7320,11 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       PTG_DodGrid.ColorNegativValue(6);
    }
 
-   public List<Rtrans> Load_PTG_UNA_ANA_And_PutDgvFields()
+   public List<Rtrans> Load_UgAn_i_DOD_rtrans_list_And_PutDgvFields()
    {
-      List<Rtrans> UGANrtrans_list     = faktur_rec.Transes;
-      List<Rtrans> DODrtrans_list      = Load_PTG_DOD_rtransList();
-      List<Rtrans> UNA_ANA_rtrans_list = Get_UNA_ANA_rtrans_list(UGANrtrans_list, DODrtrans_list);
+      List<Rtrans> UGANrtrans_list        = faktur_rec.Transes;
+      List<Rtrans> DODrtrans_list         = Load_PTG_DOD_rtransList();
+      List<Rtrans> UgAn_i_DOD_rtrans_list = Get_UgAn_i_DOD_rtrans_list(UGANrtrans_list, DODrtrans_list);
 
       int rowIdx, idxCorrector, colIdx;
       PTG_Una_Ana_Loaded = true;
@@ -7334,7 +7335,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
       decimal sumaKol = 0.00M, sumaKCR = 0.00M;
 
-      foreach(Rtrans UNArtrans_rec in UNA_ANA_rtrans_list)
+      foreach(Rtrans UNArtrans_rec in UgAn_i_DOD_rtrans_list)
       {
          PTG_UNA_ANA_Grid.Rows.Add();
 
@@ -7365,7 +7366,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       int sumaKol_CI = PTG_UNA_ANA_Grid.IdxForColumn("Kol");
       int sumaKCR_CI = PTG_UNA_ANA_Grid.IdxForColumn("Iznos");
 
-      if(UNA_ANA_rtrans_list.NotEmpty())
+      if(UgAn_i_DOD_rtrans_list.NotEmpty())
       {
          PTG_Una_Ana_Grid_SumGrid[sumaKol_CI, 0].Value = sumaKol;
          PTG_Una_Ana_Grid_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
@@ -7379,7 +7380,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       PTG_UNA_ANA_Grid.GrouppingColor(1);
       PTG_UNA_ANA_Grid.ColorNegativValue(6);
 
-      return UNA_ANA_rtrans_list;
+      return UgAn_i_DOD_rtrans_list;
    }
 
    public List<Rtrans> Load_PTG_UNA_SIN_And_PutDgvFields()
@@ -7449,7 +7450,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       return UNA_SIN_rtrans_list;
    }
 
-   internal static List<Rtrans> Get_UNA_ANA_rtrans_list(List<Rtrans> UGANrtrans_list, List<Rtrans> DODrtrans_list)
+   internal static List<Rtrans> Get_UgAn_i_DOD_rtrans_list(List<Rtrans> UGANrtrans_list, List<Rtrans> DODrtrans_list)
    {
       List<Rtrans> UNA_ANA_rtrans_list = new List<Rtrans>(UGANrtrans_list.Count + DODrtrans_list.Count);
 
@@ -7461,14 +7462,14 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    internal static List<Rtrans> Get_UNA_SIN_rtrans_list(List<Rtrans> UGANrtrans_list, List<Rtrans> DODrtrans_list)
    {
-      List<Rtrans> UNA_ANA_rtrans_list = Get_UNA_ANA_rtrans_list(UGANrtrans_list, DODrtrans_list);
+      List<Rtrans> UgAn_i_DOD_rtrans_list = Get_UgAn_i_DOD_rtrans_list(UGANrtrans_list, DODrtrans_list);
 
-      List<Rtrans> UNA_SIN_rtrans_list = VvRiskReport.SintRtransList_By_ArtiklCD_And_R_CIJ_KCRP(UNA_ANA_rtrans_list);
+      List<Rtrans> UNA_SIN_rtrans_list = VvRiskReport.SintRtransList_By_ArtiklCD_And_R_CIJ_KCRP(UgAn_i_DOD_rtrans_list);
 
       return UNA_SIN_rtrans_list.Where(rtr => rtr.T_kol.NotZero()).ToList(); // ukloni 'vraćene' artikle 
    }
 
-   public List<Rtrano> Load_PTG_StanjeSerno_And_PutDgvFields()
+   public List<Rtrano> Load_PTG_NajamStanje_Rtrano_And_PutDgvFields()
    {
       int rowIdx, idxCorrector, colIdx;
 
@@ -7505,18 +7506,18 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       return UGAN_rtranoList;
    }
 
-   public List<Faktur> Load_PTG_Dokumenti_And_PutDgvFields()
+   public List<Faktur> Load_PTG_DOD_Faktur_And_PutDgvFields()
    {
       int rowIdx, idxCorrector, colIdx;
 
-      List<Faktur> UGAN_fakturList = new List<Faktur>();
+      List<Faktur> DOD_FakturList = RtransDao.Get_DOD_FakturList(TheDbConnection, faktur_rec);
 
       PTG_Dokumenti_Loaded = true;
       PTG_Dokumenti_Grid.Rows.Clear();
 
       idxCorrector = GetDGVsIdxCorrrector(PTG_Dokumenti_Grid);
 
-      foreach(Faktur faktur_rec in UGAN_fakturList)
+      foreach(Faktur faktur_rec in DOD_FakturList)
       {
          PTG_Dokumenti_Grid.Rows.Add();
       
@@ -7533,7 +7534,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          PTG_Dokumenti_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
 
-      return UGAN_fakturList;
+      return DOD_FakturList;
 
    }
 
@@ -14565,147 +14566,6 @@ public partial class FakturExtDUC : FakturDUC
    }
 
 #endregion InitializeAndPutMigratorsStates
-
-   //#region DataGridView
-
-   //private void CreateDataGrid_InitializeTheGrid_ReadOnly_Columns()
-   //{
-   //   ftransGrid       = CreateDataGridView_ReadOnly(TheTabControl.TabPages[ftrans_TabPageName], ftrans_TabPageName);
-   //   int minGridWIdth = InitializeTheGrid_ReadOnly_Columns();
-   //   ftransGrid.Dock  = DockStyle.Fill;
-
-   //   ftransGrid.DoubleClick    += new EventHandler        (theFIRST_TransGrid_DoubleClick);
-   //}
-
-   //private int InitializeTheGrid_ReadOnly_Columns()
-   //{
-   //   int sumOfColWidth = 0, colWidth;
-   //   int colDateWidth  = ZXC.Q4un + ZXC.Qun4;
-   //   int colSif6Width  = ZXC.Q3un + ZXC.Qun8;
-
-   //   sumOfColWidth += ftransGrid.RowHeadersWidth;
-   //   colWidth = colSif6Width       ;                            AddDGVColum_RecID_4GridReadOnly   (ftransGrid, "RecID"    , colWidth, false, 0);
-   //   colWidth = colDateWidth       ; sumOfColWidth += colWidth; AddDGVColum_DateTime_4GridReadOnly(ftransGrid, "Datum"    , colWidth          );
-   //   colWidth = colSif6Width       ; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (ftransGrid, "Nalog"    , colWidth, true , 6);
-   //   colWidth = ZXC.Q2un + ZXC.Qun4; sumOfColWidth += colWidth; AddDGVColum_Integer_4GridReadOnly (ftransGrid, "Red"      , colWidth, false, 0);
-   //   colWidth = ZXC.Q2un           ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (ftransGrid, "VK"       , colWidth, false   );
-   //   colWidth = ZXC.Q6un           ; sumOfColWidth += colWidth; AddDGVColum_String_4GridReadOnly  (ftransGrid, "Opis"     , colWidth, true    );
-   //   colWidth = ZXC.Q6un           ; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (ftransGrid, "Otvoreno" , colWidth, 2       );
-   //   colWidth = ZXC.Q6un           ; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (ftransGrid, "Zatvoreno", colWidth, 2       );
-   //   colWidth = ZXC.Q6un           ; sumOfColWidth += colWidth; AddDGVColum_Decimal_4GridReadOnly (ftransGrid, "Saldo"    , colWidth, 2       );
-
-   //   return sumOfColWidth;
-   //}
-
-   //private void SetRedColorSaldo()
-   //{
-   //   DataGridViewTextBoxColumn dgvCol = (DataGridViewTextBoxColumn)ftransGrid.Columns["Saldo"];
-
-   //   int rowCount = ftransGrid.RowCount;
-
-   //   if(rowCount > 0) ftransGrid.Rows[rowCount - 1].Cells["Saldo"].Style.ForeColor = Color.Red;
-   //}
-
-   //private void theFIRST_TransGrid_DoubleClick(object sender, EventArgs e)
-   //{
-   //   TheVvTabPage.TheVvForm.OpenNew_Record_TabPage(TheVvTabPage.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.NAL_F), (uint?)SelectedRecIDIn_TransGrid);
-   //}
-   //private int SelectedRecIDIn_TransGrid
-   //{
-   //   get
-   //   {
-   //      if(ftransGrid.CurrentRow != null)
-   //         return int.Parse(ftransGrid.CurrentRow.Cells[0].Value.ToString());
-   //      else
-   //         return -1;
-   //   }
-   //}
-
-   //#endregion DataGridView
-
-   //#region Put SaldaKonti DGV Fileds
-
-   //private const string ftrans_TabPageName = "SaldaKonti";
-
-   //public override void DecideIfShouldLoad_TransDGV(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
-   //{
-   //   ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
-
-   //   if(fransesLoaded == false &&
-   //      innerTabPageKind == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
-   //   {
-   //      LoadRecordList_AND_PutTransDgvFields();
-   //   }
-
-   //   if(ftransGrid != null) SetRedColorSaldo();
-
-   //}
-
-   //List<Ftrans> FtransList;
-   //public override void LoadRecordList_AND_PutTransDgvFields()
-   //{
-   //   int rowIdx, idxCorrector;
-
-
-   //   if(FtransList == null) FtransList = new List<Ftrans>();
-   //   else                   FtransList.Clear();
-
-   //   VvDaoBase.LoadGenericVvDataRecordList<Ftrans>(TheDbConnection, FtransList, SetFilterMembers4LoadFtranses(faktur_rec.RecID), "t_dokDate ASC, t_dokNum ASC, t_serial ASC");
-
-   //   fransesLoaded = true;
-
-   //   ftransGrid.Rows.Clear();
-
-   //   idxCorrector = GetDGVsIdxCorrrector(ftransGrid);
-
-   //   decimal ukRac = 0.00M, ukUpl = 0.00M, ukDug = 0.00M;
-
-   //   foreach(Ftrans ftrans_rec in FtransList)
-   //   {
-   //      ftransGrid.Rows.Add();   
-
-   //      rowIdx = ftransGrid.RowCount - idxCorrector;
-
-   //      if(faktur_rec.TtInfo.IsUlazniPdvTT) // URA, ... 
-   //      {
-   //         if(ftrans_rec.T_otsKind == ZXC.OtsKindEnum.OTVARANJE) { ukRac = ftrans_rec.T_pot - ftrans_rec.T_dug; ukUpl =                               0.00M; }
-   //         else                                                  { ukRac =                               0.00M; ukUpl = ftrans_rec.T_dug - ftrans_rec.T_pot; }
-   //      }
-   //      else // IRA, ... 
-   //      {
-   //         if(ftrans_rec.T_otsKind == ZXC.OtsKindEnum.OTVARANJE) { ukRac = ftrans_rec.T_dug - ftrans_rec.T_pot; ukUpl =                               0.00M; }
-   //         else                                                  { ukRac =                               0.00M; ukUpl = ftrans_rec.T_pot - ftrans_rec.T_dug; }
-   //      }
-
-   //      ukDug += ukRac - ukUpl;
-
-   //      ftransGrid[0,  rowIdx].Value = ftrans_rec.T_parentID;
-   //      ftransGrid[1,  rowIdx].Value = ftrans_rec.T_dokDate;
-   //      ftransGrid[2,  rowIdx].Value = ftrans_rec.T_dokNum;
-   //      ftransGrid[3,  rowIdx].Value = ftrans_rec.T_serial;
-   //      ftransGrid[4,  rowIdx].Value = ftrans_rec.T_TT;
-   //      ftransGrid[5,  rowIdx].Value = ftrans_rec.T_opis;
-   //      ftransGrid[6,  rowIdx].Value = /* RACUN; */ ukRac;
-   //      ftransGrid[7,  rowIdx].Value = /* UPLATA */ ukUpl;
-   //      ftransGrid[8,  rowIdx].Value = /* STANJE */ ukDug;
-
-   //      ftransGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx+1).ToString();
-   //   }
-
-   //}
-
-   //private List<VvSqlFilterMember> SetFilterMembers4LoadFtranses(uint fakturRecID)
-   //{
-   //   List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
-
-   //   filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "", fakturRecID, "", "", " = ", ""));
-   //   //filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_konto]   , false, "", fakturRecID, "", "", " = ", ""));
-   //   filterMembers.Add(new VvSqlFilterMember("SUBSTRING(t_konto, 1, 2)", "('12', '22')", " IN "));
-
-   //   return filterMembers;
-   //}
-
-   //#endregion Put Trans DGV Fileds
 
 }
 

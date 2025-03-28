@@ -3080,27 +3080,49 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
    #region Some PTG stuff
 
-   internal static List<Rtrans> GetRtransList_allDOD(XSqlConnection conn, Faktur faktur_rec)
+   internal static List<Faktur> Get_DOD_FakturList(XSqlConnection conn, Faktur faktur_rec)
    {
-      List<PTG_Ugovor> DOD_PTG_Ugovor_List = new List<PTG_Ugovor>();
+      List<Faktur> DOD_FakturList = new List<Faktur>();
 
       uint wantedKUG = faktur_rec.V1_ttNum;
       uint wantedUoA = faktur_rec.V2_ttNum;
 
-      List<VvSqlFilterMember> filterMembers = PTG_OtplatniPlan.GetFilterMembers_DIZorPVR_fakturList(Faktur.TT_DIZ, wantedKUG, wantedUoA);
+      List<VvSqlFilterMember> filterMembers = PTG_OtplatniPlan.GetFilterMembers_DOD_FakturList(wantedKUG, wantedUoA, true);
 
-      VvDaoBase.LoadGenericVvDataRecordList<PTG_Ugovor>(conn, DOD_PTG_Ugovor_List, filterMembers, "", "dokDate, ttSort, ttNum", true);
+      VvDaoBase.LoadGenericVvDataRecordList<Faktur>(conn, DOD_FakturList, filterMembers, "", "dokDate, ttSort, ttNum", true);
 
-      List<Rtrans> rtransList_allDOD  = new List<Rtrans>();
-      List<Rtrans> rtransList_thisDOD = new List<Rtrans>();
+      return DOD_FakturList;
+   }
+   internal static List<Rtrans> Get_DOD_RtransList(XSqlConnection conn, Faktur faktur_rec)
+   {
+      List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, faktur_rec);
 
-      foreach(PTG_Ugovor thisDOD in DOD_PTG_Ugovor_List)
+      List<Rtrans> DOD_RtransList = new List<Rtrans>();
+      List<Rtrans> rtransList_thisDOD;
+
+      foreach(Faktur thisDOD in DOD_FakturList)
       {
          rtransList_thisDOD = RtransDao.GetRtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum, "", false);
-         rtransList_allDOD.AddRange(rtransList_thisDOD);
+         DOD_RtransList.AddRange(rtransList_thisDOD);
       }
 
-      return rtransList_allDOD;
+      return DOD_RtransList;
+   }
+
+   internal static List<Rtrano> Get_DOD_RtranoList(XSqlConnection conn, Faktur faktur_rec)
+   {
+      List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, faktur_rec);
+
+      List<Rtrano> DOD_RtranoList = new List<Rtrano>();
+      List<Rtrano> rtranoList_thisDOD;
+
+      foreach(Faktur thisDODfaktur in DOD_FakturList)
+      {
+         rtranoList_thisDOD = RtranoDao.GetRtranoList_ForTT_And_TtNum(conn, thisDODfaktur.TT, thisDODfaktur.TtNum);
+         DOD_RtranoList.AddRange(rtranoList_thisDOD);
+      }
+
+      return DOD_RtranoList;
    }
 
    #endregion Some PTG stuff

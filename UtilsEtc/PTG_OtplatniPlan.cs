@@ -175,12 +175,12 @@ public class PTG_OtplatniPlan
       UGANfaktur_rec.VvDao.LoadTranses(conn, UGANfaktur_rec, false);
    }
 
-   private void SetMe_DODfakturList(XSqlConnection conn, List<PTG_Ugovor> _DODfakturList, string wantedTT)
+   private void Get_DOD_FakturList(XSqlConnection conn, List<PTG_Ugovor> _DODfakturList, bool isZIZwanted)
    {
       uint wantedKUG  = UGANfaktur_rec.V1_ttNum;
       uint wantedUoA  = UGANfaktur_rec.V2_ttNum;
 
-      List<VvSqlFilterMember> filterMembers = GetFilterMembers_DIZorPVR_fakturList(wantedTT, wantedKUG, wantedUoA);
+      List<VvSqlFilterMember> filterMembers = GetFilterMembers_DOD_FakturList(wantedKUG, wantedUoA, isZIZwanted);
 
       VvDaoBase.LoadGenericVvDataRecordList<PTG_Ugovor>(conn, _DODfakturList, filterMembers, "", "dokDate, ttSort, ttNum", true);
 
@@ -209,14 +209,16 @@ public class PTG_OtplatniPlan
       //return _DODorKOPfakturList;
    }
 
-   internal static List<VvSqlFilterMember> GetFilterMembers_DIZorPVR_fakturList(string wantedTT, uint wantedKUG, uint wantedUoA)
+   internal static List<VvSqlFilterMember> GetFilterMembers_DOD_FakturList(uint wantedKUG, uint wantedUoA, bool isZIZwanted)
    {
     // 20.02.2025.
     //List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
-      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(4);
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(5);
     
     //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ],                                 "theTT" , wantedTT              , " = "    ));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.OPEN_OR , false, "theTT" , Faktur.TT_DIZ, "", "", "  = ", ""));
+      if(isZIZwanted)
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.NONE    , false, "theTT3", Faktur.TT_ZIZ, "", "", "  = ", ""));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt      ], ZXC.FM_OR_Enum.CLOSE_OR, false, "theTT2", Faktur.TT_PVR, "", "", "  = ", ""));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.v1_ttNum], "KUGnum", wantedKUG, " = "));
       filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.v2_ttNum], "UoAnum", wantedUoA, " = "));
@@ -284,7 +286,7 @@ public class PTG_OtplatniPlan
       KOPMixer_List = new List<Mixer     >();
 
     //SetMe_DODfakturList(conn, DODfakturList, Faktur.TT_DIZ);
-      SetMe_DODfakturList(conn, DODfakturList, Faktur.TT_DIZ);
+      Get_DOD_FakturList (conn, DODfakturList, false        );
       SetMe_KOPmixerList (conn, KOPMixer_List, Mixer .TT_KOP);
 
       #region AnaliticRtransList
@@ -1367,8 +1369,8 @@ public class PTG_Ugovor : Faktur
 
       List<VvSqlFilterMember> filterMembers;
 
-      if(wantedTT == Faktur.TT_DIZ) filterMembers = PTG_OtplatniPlan.GetFilterMembers_DIZorPVR_fakturList(wantedTT, wantedKUGttNum, wantedUGANttNum);
-      else                          filterMembers = PTG_OtplatniPlan.GetFilterMembers_KOPxtransList(wantedTT, wantedKUGttNum, wantedUGANttNum);
+      if(wantedTT == Faktur.TT_DIZ) filterMembers = PTG_OtplatniPlan.GetFilterMembers_DOD_FakturList(          wantedKUGttNum, wantedUGANttNum, true);
+      else                          filterMembers = PTG_OtplatniPlan.GetFilterMembers_KOPxtransList (wantedTT, wantedKUGttNum, wantedUGANttNum      );
 
       int? count = VvDaoBase.CountRecords(conn, filterMembers);
 
@@ -1420,7 +1422,7 @@ public class PTG_Ugovor : Faktur
    internal decimal GetOtkupRataMoney(XSqlConnection conn)
    {
       decimal UGAN_artikliUnajmuMoney = this.Transes                              .Sum(rtr => rtr.R_KCRP);
-      decimal DOD_artikliUnajmuMoney  = RtransDao.GetRtransList_allDOD(conn, this).Sum(rtr => rtr.R_KCRP);
+      decimal DOD_artikliUnajmuMoney  = RtransDao.Get_DOD_RtransList(conn, this).Sum(rtr => rtr.R_KCRP);
       decimal THE_artikliUnajmuMoney  = UGAN_artikliUnajmuMoney + DOD_artikliUnajmuMoney;
 
       decimal otkupRataMoney = ZXC.VvGet_25_of_100(THE_artikliUnajmuMoney, PTG_OtkupPosto); 
