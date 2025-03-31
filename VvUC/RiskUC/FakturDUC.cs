@@ -155,6 +155,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected VvDataGridView  PTG_Dokumenti_SumGrid;
    protected bool            PTG_Dokumenti_Loaded;
 
+   public VvDataGridViewFind PTG_DODrtrano_Grid;
+   protected VvDataGridView  PTG_DODrtrano_SumGrid;
+   protected bool            PTG_DODrtrano_Loaded;
+
    //protected bool isThisMalopDUC;
    //protected bool isThisVelepDUC;
 
@@ -357,14 +361,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          #region PTG_DokumentiUzUGAN
 
-         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDokumenti_TabPageName, ptgDokumenti_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDodFaktur_TabPageName, ptgDodFaktur_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_Dokumenti_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgDokumenti_TabPageName], ptgDokumenti_TabPageName);
+         PTG_Dokumenti_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgDodFaktur_TabPageName], ptgDodFaktur_TabPageName);
 
          AddColumnsToGrid_PTG_Dokumenti();
          GridLocationAndSize(PTG_Dokumenti_Grid);
 
-         PTG_Dokumenti_SumGrid = CreatePtgOplAndDodSumGrid(PTG_Dokumenti_Grid, PTG_Dokumenti_Grid.Parent, "SUM" + ptgDokumenti_TabPageName);
+         PTG_Dokumenti_SumGrid = CreatePtgOplAndDodSumGrid(PTG_Dokumenti_Grid, PTG_Dokumenti_Grid.Parent, "SUM" + ptgDodFaktur_TabPageName);
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_Dokumenti_Grid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_Dokumenti_Grid, 0);
@@ -373,19 +377,18 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          #endregion PTG_DokumentiUzUGAN
 
-
          #region PTG_DodGrid
 
          //20.10.2021. !!!! pazi, mne smijes kod Add-anja InnerTabPage-a u Title stavljati ne[to varijabilno jer ga to kasnije smeta tako da Tiotle dodaj naknadno!!!!
          //ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDod_TabPageName + " ()", ptgDod_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
-         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDod_TabPageName, ptgDod_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDodRtrans_TabPageName, ptgDodRtrans_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_DodGrid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgDod_TabPageName], ptgDod_TabPageName);
+         PTG_DodGrid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgDodRtrans_TabPageName], ptgDodRtrans_TabPageName);
 
          AddColumnsToGrid_PTG_DOD();
          GridLocationAndSize(PTG_DodGrid);
 
-         PTG_DodGrid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_DodGrid, PTG_DodGrid.Parent, "SUM" + ptgDod_TabPageName);
+         PTG_DodGrid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_DodGrid, PTG_DodGrid.Parent, "SUM" + ptgDodRtrans_TabPageName);
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_DodGrid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_DodGrid, 0);
@@ -395,18 +398,36 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          #endregion PTG_DodGrid
 
+         #region PTG_DODrtrano
+
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDODrtrano_TabPageName, ptgDODrtrano_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+
+         PTG_DODrtrano_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgDODrtrano_TabPageName], ptgDODrtrano_TabPageName);
+
+         AddColumnsToGrid_PTG_DOD_Rtrano();
+         GridLocationAndSize(PTG_DODrtrano_Grid);
+
+         PTG_DODrtrano_SumGrid = CreatePtgOplAndDodSumGrid(PTG_DODrtrano_Grid, PTG_DODrtrano_Grid.Parent, "SUM" + ptgDODrtrano_TabPageName);
+         InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_DODrtrano_Grid);
+         //
+         GridLocationAndSize_PTG_OplAndDodGrids(PTG_DODrtrano_Grid, 0);
+
+         //PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+
+         #endregion PTG_DODrtrano
+
          #region PTG_UnaAnaGrid
 
          //20.10.2021. !!!! pazi, mne smijes kod Add-anja InnerTabPage-a u Title stavljati ne[to varijabilno jer ga to kasnije smeta tako da Tiotle dodaj naknadno!!!!
          //ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDod_TabPageName + " ()", ptgDod_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
-         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgUna_Ana_TabPageName, ptgUna_Ana_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgUgAnDodRtrans_TabPageName, ptgUgAnDodRtrans_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_UNA_ANA_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgUna_Ana_TabPageName], ptgUna_Ana_TabPageName);
+         PTG_UNA_ANA_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgUgAnDodRtrans_TabPageName], ptgUgAnDodRtrans_TabPageName);
 
          AddColumnsToGrid_PTG_UNA_ANA();
          GridLocationAndSize(PTG_UNA_ANA_Grid);
 
-         PTG_Una_Ana_Grid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_UNA_ANA_Grid, PTG_UNA_ANA_Grid.Parent, "SUM" + ptgUna_Ana_TabPageName);
+         PTG_Una_Ana_Grid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_UNA_ANA_Grid, PTG_UNA_ANA_Grid.Parent, "SUM" + ptgUgAnDodRtrans_TabPageName);
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_UNA_ANA_Grid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_ANA_Grid, 0);
@@ -417,14 +438,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          //20.10.2021. !!!! pazi, mne smijes kod Add-anja InnerTabPage-a u Title stavljati ne[to varijabilno jer ga to kasnije smeta tako da Tiotle dodaj naknadno!!!!
          //ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDod_TabPageName + " ()", ptgDod_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
-         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgUna_Sin_TabPageName, ptgUna_Sin_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgStanjeNajmaRtrans_TabPageName, ptgStanjeNajmaRtrans_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_UNA_SIN_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgUna_Sin_TabPageName], ptgUna_Sin_TabPageName);
+         PTG_UNA_SIN_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgStanjeNajmaRtrans_TabPageName], ptgStanjeNajmaRtrans_TabPageName);
 
          AddColumnsToGrid_PTG_UNA_SIN();
          GridLocationAndSize(PTG_UNA_SIN_Grid);
 
-         PTG_Una_Sin_Grid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_UNA_SIN_Grid, PTG_UNA_SIN_Grid.Parent, "SUM" + ptgUna_Sin_TabPageName);
+         PTG_Una_Sin_Grid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_UNA_SIN_Grid, PTG_UNA_SIN_Grid.Parent, "SUM" + ptgStanjeNajmaRtrans_TabPageName);
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_UNA_SIN_Grid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_SIN_Grid, 0);
@@ -433,14 +454,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          #region PTG_UNA_StanjeSerno_Grid
 
-         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptg_StanjeSerno_TabPageName, ptg_StanjeSerno_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+         ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgStanjeNajmaRtrano_TabPageName, ptgStanjeNajmaRtrano_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_StanjeSerno_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptg_StanjeSerno_TabPageName], ptg_StanjeSerno_TabPageName);
+         PTG_StanjeSerno_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgStanjeNajmaRtrano_TabPageName], ptgStanjeNajmaRtrano_TabPageName);
 
          AddColumnsToGrid_PTG_UNA_StanjeSerno();
          GridLocationAndSize(PTG_StanjeSerno_Grid);
 
-         PTG_StanjeSerno_SumGrid = CreatePtgOplAndDodSumGrid(PTG_StanjeSerno_Grid, PTG_StanjeSerno_Grid.Parent, "SUM" + ptg_StanjeSerno_TabPageName);
+         PTG_StanjeSerno_SumGrid = CreatePtgOplAndDodSumGrid(PTG_StanjeSerno_Grid, PTG_StanjeSerno_Grid.Parent, "SUM" + ptgStanjeNajmaRtrano_TabPageName);
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_StanjeSerno_Grid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_StanjeSerno_Grid, 0);
@@ -4332,6 +4353,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          PTG_Una_Ana_Loaded        = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_Una_Sin_Loaded        = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_DOD_rtransList_Loaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
+         PTG_DODrtrano_Loaded      = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_StanjeSerno_Loaded    = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_Dokumenti_Loaded      = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
 
@@ -4341,6 +4363,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          IfShould_Load_PTG_NajamStanje_Rtrans_Grid(null, null, null);
          IfShould_Load_PTG_NajamStanje_Rtrano_Grid(null, null, null);
          IfShould_Load_PTG_DOD_Faktur_Grid        (null, null, null);
+         IfShould_Load_PTG_DOD_Rtrano_Grid        (null, null, null);
                 
 
          // 13.09.2021: start za PTG ove kompozitne TtNum-ove stavljamo sami u sebe svoje baze kakve su i dalje u sljedbenicima - ovisnicima (u istim tim V1/V2 poljima) 
@@ -6267,7 +6290,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is UGNorAUN_PTG_DUC)
          {
                if(ThePolyGridTabControl.SelectedTab.Title == ptgOpl_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_OPL() */, reportName, fakturFilter);
-          else if(ThePolyGridTabControl.SelectedTab.Title == ptgDod_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_DOD() */, reportName, fakturFilter);
+          else if(ThePolyGridTabControl.SelectedTab.Title == ptgDodRtrans_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_DOD() */, reportName, fakturFilter);
           else                                                                   return new RptR_IRA(new Vektor.Reports.RIZ.CR_VMI_DUC()/*CR_PTG_UGAN()*/, reportName, fakturFilter);
          }
          else if(this is POT_DUC)
@@ -6841,13 +6864,14 @@ if(isRNM) { colOp = AddDGVColum_Decimal_4GridReadOnly (RealizacGrid, R_cijOP_Col
 
    #region TabPageName
 
-   internal const string ptgOsn_TabPageName          = ". STAVKE UGOVORA .";
-   internal const string ptgOpl_TabPageName          = ". OTPLATNI PLAN .";
-   internal const string ptgDod_TabPageName          = ". STAVKE DODATAKA .";
-   internal const string ptgUna_Ana_TabPageName      = ". SVE STAVKE .";
-   internal const string ptgUna_Sin_TabPageName      = ". STANJE NAJMA .";
-   internal const string ptg_StanjeSerno_TabPageName = ". STANJE NAJMA SERIJSKI BROJEVI .";
-   internal const string ptgDokumenti_TabPageName    = ". DOKUMENTI .";
+   internal const string ptgOsn_TabPageName           = ". STAVKE UGOVORA .";
+   internal const string ptgOpl_TabPageName           = ". OTPLATNI PLAN  .";
+   internal const string ptgDodFaktur_TabPageName     = ". DODACI DOKUMENTI.";
+   internal const string ptgDodRtrans_TabPageName     = ". DODACI STAVKE.";
+   internal const string ptgDODrtrano_TabPageName     = ". DODACI SR.BR .";
+   internal const string ptgUgAnDodRtrans_TabPageName = ". UGOVOR SVE STAVKE .";
+   internal const string ptgStanjeNajmaRtrans_TabPageName       = ". UGOVOR STANJE NAJMA .";
+   internal const string ptgStanjeNajmaRtrano_TabPageName  = ". UGOVOR STANJE NAJMA SR.BR. .";
 
    #endregion TabPageName
 
@@ -7022,11 +7046,27 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Opis"      , ZXC.Q6un, false   );
    }
 
+   private void AddColumnsToGrid_PTG_DOD_Rtrano() 
+   {
+      AddDGVColum_RecID_4GridReadOnly (PTG_DODrtrano_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Dokument"  , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "SerBroj"   , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Šifra"     , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Naziv"     , ZXC.Q5un, true    );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Tip"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "RAM klasa" , ZXC.Q4un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "HDD klasa" , ZXC.Q4un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "RAM"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "HDD"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Opis"      , ZXC.Q6un, false   );
+   }
+
+
    private void AddColumnsToGrid_PTG_Dokumenti()
    { 
       AddDGVColum_RecID_4GridReadOnly (PTG_Dokumenti_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Dokument"  , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Broj"      , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Dokument"  , ZXC.Q6un, false   );
+   // AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Broj"      , ZXC.Q6un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Datum"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Iznos"     , ZXC.Q6un, false   );
    }
@@ -7102,7 +7142,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    public /*override*/ void IfShould_Load_PTG_DOD_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      bool DOD_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDod_TabPageName;
+      bool DOD_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDodRtrans_TabPageName;
 
       if(PTG_DOD_Grid_Loaded == false && this is UGNorAUN_PTG_DUC && DOD_TabPageIsVisible)
       {
@@ -7118,7 +7158,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    public /*override*/ void IfShould_Load_PTG_UgAn_i_DOD_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgUna_Ana_TabPageName;
+      bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgUgAnDodRtrans_TabPageName;
 
       if(PTG_Una_Ana_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_ANA_TabPageIsVisible)
       {
@@ -7131,7 +7171,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      bool UNA_SIN_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgUna_Sin_TabPageName;
+      bool UNA_SIN_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStanjeNajmaRtrans_TabPageName;
 
       if(PTG_Una_Sin_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_SIN_TabPageIsVisible)
       {
@@ -7144,7 +7184,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrano_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      bool StanjeSerno_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptg_StanjeSerno_TabPageName;
+      bool StanjeSerno_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStanjeNajmaRtrano_TabPageName;
 
       if(PTG_StanjeSerno_Loaded == false && this is UGNorAUN_PTG_DUC && StanjeSerno_TabPageIsVisible)
       {
@@ -7157,7 +7197,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    public /*override*/ void IfShould_Load_PTG_DOD_Faktur_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDokumenti_TabPageName;
+      bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDodFaktur_TabPageName;
 
       if(PTG_Dokumenti_Loaded == false && this is UGNorAUN_PTG_DUC && dokumenti_TabPageIsVisible)
       {
@@ -7165,6 +7205,19 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
          PTG_Dokumenti_Grid.TabStop = false;
          PTG_Dokumenti_Grid.ClearSelection();
+      }
+   }
+
+   public /*override*/ void IfShould_Load_PTG_DOD_Rtrano_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      bool dodRtrano_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDODrtrano_TabPageName;
+
+      if(PTG_DODrtrano_Loaded == false && this is UGNorAUN_PTG_DUC && dodRtrano_TabPageIsVisible)
+      {
+         Load_PTG_DOD_Rtrano_And_PutDgvFields();
+
+         PTG_DODrtrano_Grid.TabStop = false;
+         PTG_DODrtrano_Grid.ClearSelection();
       }
    }
 
@@ -7283,7 +7336,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          colIdx = 0;
 
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_parentID;
-         PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_TT + " " + DODrtrans_rec.T_ttNum.ToString("0000000000");
+         PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_TT + "-" + DODrtrans_rec.T_ttNum.ToString();
        //PTG_DodGrid[colIdx++, rowIdx].Value = "";   //DODrtrans.PTG_DOKOnum.ToString("000");
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
          PTG_DodGrid[colIdx++, rowIdx].Value = DODrtrans_rec.T_artiklCD;
@@ -7348,7 +7401,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
 
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_parentID;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.TtAndTtNum;
+         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_TT + "-"+ UNArtrans_rec.T_ttNum.ToString();
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
@@ -7526,8 +7579,8 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          colIdx = 0;
       
          PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.RecID           ;
-         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.TT              ;
-         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.TtNum.ToString();
+         PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.TT + "-" + faktur_rec.TtNum.ToString();
+       //PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.TtNum.ToString();
          PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.DokDate         ; 
          PTG_Dokumenti_Grid[colIdx++, rowIdx].Value = faktur_rec.S_ukKCRP        ;
 
@@ -7537,6 +7590,44 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       return DOD_FakturList;
 
    }
+
+   public List<Rtrano> Load_PTG_DOD_Rtrano_And_PutDgvFields()
+   {
+      int rowIdx, idxCorrector, colIdx;
+
+      List<Rtrano> DOD_rtranoList = RtransDao.Get_DOD_RtranoList(TheDbConnection, faktur_rec);
+
+      PTG_DODrtrano_Loaded = true;
+      PTG_DODrtrano_Grid.Rows.Clear();
+
+      idxCorrector = GetDGVsIdxCorrrector(PTG_DODrtrano_Grid);
+
+      foreach(Rtrano dodRtrano_rec in DOD_rtranoList)
+      {
+         PTG_DODrtrano_Grid.Rows.Add();
+      
+         rowIdx = PTG_DODrtrano_Grid.RowCount - idxCorrector;
+      
+         colIdx = 0;
+      
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_recID  ; /*"RecID"    */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_TT + "-"+ dodRtrano_rec.T_ttNum.ToString();
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_serno     ; /*"SerBroj"  */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_artiklCD  ; /*"Šifra"    */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_artiklName; /*"Naziv"    */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"Tip"      */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM klasa"*/
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD klasa"*/
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM"      */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD"      */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"Opis"     */
+
+         PTG_DODrtrano_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+      }
+
+      return DOD_rtranoList;
+   }
+
 
    #endregion Load OPL or DOD or UNA List and PutDgvFields
 

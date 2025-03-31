@@ -215,6 +215,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_UgAn_i_DOD_Rtrans_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrans_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrano_Grid);
+      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Rtrano_Grid);
 
       //ThePolyGridTabControl.TabPages["Osnovno"].Title = ptgOsn_TabPageName;
 
@@ -1421,7 +1422,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    {
       SetUpColor(clr_UGAN_PTG, clr_UPA, clr_UGAN_PTG);
       ThePolyGridTabControl.TabPages[ptgOpl_TabPageName].Tag = clr_OPL_PTG;
-      ThePolyGridTabControl.TabPages[ptgDod_TabPageName].Tag = clr_DOD_PTG;
+      ThePolyGridTabControl.TabPages[ptgDodRtrans_TabPageName].Tag = clr_DOD_PTG;
    }
    #endregion Colors
 
