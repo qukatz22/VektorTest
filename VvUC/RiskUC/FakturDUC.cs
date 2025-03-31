@@ -373,7 +373,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_Dokumenti_Grid, 0);
 
-       //PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
 
          #endregion PTG_DokumentiUzUGAN
 
@@ -412,7 +412,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_DODrtrano_Grid, 0);
 
-         //PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
 
          #endregion PTG_DODrtrano
 
@@ -7645,17 +7645,24 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    private void PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC(object sender, DataGridViewCellMouseEventArgs e)
    {
-      uint selectedRecID = 0;
-      string selectedTT = Faktur.TT_DIZ/* ""*/;
+      //  uint selectedRecID = 0;
+      //  string selectedTT = Faktur.TT_DIZ/* ""*/;
+      ////if(PTG_DodGrid.CurrentRow != null) selectedTT    = PTG_DodGrid.CurrentRow.Cells["TT"].Value.ToString();
+      //  if(PTG_DodGrid.CurrentRow != null) selectedRecID = ZXC.ValOrZero_UInt(PTG_DodGrid.CurrentRow.Cells[0].Value.ToString());
+      //  if(selectedRecID.IsZero()/* || selectedTT.IsEmpty()*/) return;
+      //  ZXC.VvSubModulEnum vvSubModulEnum = TheVvTabPage.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(selectedTT);
+      //  Point xy = TheVvTabPage.TheVvForm.GetSubModulXY(vvSubModulEnum);
+      //  TheVvTabPage.TheVvForm.OpenNew_Record_TabPage(xy, (uint?)selectedRecID);
+    
+      VvDataGridView theG = sender as VvDataGridView;
 
-    //if(PTG_DodGrid.CurrentRow != null) selectedTT    = PTG_DodGrid.CurrentRow.Cells["TT"].Value.ToString();
-      if(PTG_DodGrid.CurrentRow != null) selectedRecID = ZXC.ValOrZero_UInt(PTG_DodGrid.CurrentRow.Cells[0].Value.ToString());
+      int rowIdx = e.RowIndex;
 
-      if(selectedRecID.IsZero()/* || selectedTT.IsEmpty()*/) return;
+      if(rowIdx.IsNegative()) return;
 
-      ZXC.VvSubModulEnum vvSubModulEnum = TheVvTabPage.TheVvForm.GetVvSubModulEnumFrom_SubModulShortName(selectedTT);
-      Point xy = TheVvTabPage.TheVvForm.GetSubModulXY(vvSubModulEnum);
-      TheVvTabPage.TheVvForm.OpenNew_Record_TabPage(xy, (uint?)selectedRecID);
+      string tipBr = theG.GetStringCell(1, rowIdx, false);
+
+      ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
    }
 
    private void PTG_OplGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)
