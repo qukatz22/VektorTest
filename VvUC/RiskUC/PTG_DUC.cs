@@ -2640,6 +2640,85 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       }
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 
+   internal void SintRtranoToRtransOnPVR(VvForm theVvForm)
+   {
+      foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
+      {
+         modRtrans_rec.VvDao.DELREC                                (TheDbConnection, modRtrans_rec, false);
+         modRtrans_rec.VvDao.Delete_Then_Renew_Cache_FromThisRtrans(TheDbConnection, modRtrans_rec, VvSQL.DB_RW_ActionType.DEL);
+      }
+
+      faktur_rec.InvokeTransClear();
+
+      theVvForm.BeginEdit(faktur_rec);
+
+      #region ADDREC_PVR_Rtrans_From_PVR_Rtrano
+
+      Rtrans rtrans_rec = null;
+
+      ushort t_serial = 0;
+
+      foreach(Rtrano rtrano_rec in faktur_rec.Transes2)
+      {
+         #region Init, Get theCij
+
+         Artikl  artikl_rec   ;
+         string  t_jedMj      ;
+         decimal theCij   = 0M;
+
+    //   artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+         artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD);
+
+         if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
+         else                   t_jedMj = ""              ;
+
+         Rtrans limiterRtrans_rec = new Rtrans()
+         {
+            T_artiklCD  = rtrano_rec.T_artiklCD,
+            T_skladCD   = rtrano_rec.T_skladCD,
+            T_skladDate = rtrano_rec.T_skladDate,
+            T_ttSort    = rtrano_rec.T_ttSort,
+            T_ttNum     = rtrano_rec.T_ttNum,
+            T_serial    = /*rtrano_rec.T_serial*/ (ushort)(t_serial + 1),
+         };
+
+    //   ArtStat artStat = ArtiklDao.GetArtiklStatus(conn, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
+         ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, limiterRtrans_rec);
+
+         theCij = artStat != null ? artStat.PrNabCij : 0.00M;
+
+         if(theCij.IsZero()) // za OLD Artikle i Komponente ocekujemo imati neku odprije cijenu 
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r[{0}]", artikl_rec);
+         }
+
+         #endregion Init
+
+         rtrano_rec.T_kol = 1.00M; // !!! ovoga nema na MOD varijanti 
+
+         rtrans_rec = new Rtrans(Faktur./*TT_MOI*/TT_PVR, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
+
+         rtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
+         rtrans_rec.T_cij    = theCij            ; // this is what we are living for 
+
+         rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+
+         MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, rtrans_rec);
+      }
+
+      #endregion ADDREC_PVR_Rtrans_From_PVR_Rtrano
+
+      faktur_rec.TakeTransesSumToDokumentSum(false);
+
+      bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
+
+      if(!OK) { theVvForm.CancelEdit(faktur_rec); return; }
+
+      theVvForm.EndEdit(faktur_rec);
+
+      theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
+   }
+
 }
 
 #if Njett
@@ -7092,7 +7171,7 @@ public class MOD_PTG_DUC : FakturPDUC
       return rtrans_rec;
    }
 
-   private static void AddRtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
+   /*private*/internal static void AddRtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
    {
       _rtrans_rec.CalcTransResults(null);
       _rtrans_rec.SaveTransesWriteMode = ZXC.WriteMode.Add;
