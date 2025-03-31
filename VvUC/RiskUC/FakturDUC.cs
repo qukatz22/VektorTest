@@ -614,6 +614,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             skladWeWant = ZXC.RRD.Dsc_PreferedSkladOnUCLoad;
          }
 
+         if(ZXC.IsTETRAGRAMdomena)
+         {
+            VvLookUpItem skladLUI = ZXC.GetTetragram_PreferredSkladCD_LookUpItem();
+
+            if(skladLUI != null)
+            {
+               skladWeWant = skladLUI.Cd;
+            }
+         }
+
          dbNavigationRestrictor_SKL = new ZXC.DbNavigationRestrictor
             (Faktur.skladCd_colName, new string[]
          {

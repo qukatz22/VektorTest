@@ -724,14 +724,15 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return UGAN_RtranoList;
    }
 
-   internal static List<Rtrano> GetRtranoList_ForTT_And_TtNum(XSqlConnection conn, string theTT, uint theTtNum)
+   internal static List<Rtrano> GetRtranoList_ForTT_And_TtNum(XSqlConnection conn, uint theParentID)
    {
       List<Rtrano> UGAN_RtranoList = new List<Rtrano>();
 
-      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>();
 
-      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_tt   ], "theTT"   , theTT   , " = "));
-      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum], "theTtNum", theTtNum, " = "));
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_tt   ], "theTT"         , theTT      , " = "));
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum], "theTtNum"      , theTtNum   , " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_parentID], "theParentID", theParentID, " = "));
 
       VvDaoBase.LoadGenericVvDataRecordList<Rtrano>(conn, UGAN_RtranoList, filterMembers, Rtrans.artiklOrderBy_ASC);
 

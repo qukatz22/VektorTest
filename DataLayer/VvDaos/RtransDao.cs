@@ -3118,7 +3118,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       foreach(Faktur thisDODfaktur in DOD_FakturList)
       {
-         rtranoList_thisDOD = RtranoDao.GetRtranoList_ForTT_And_TtNum(conn, thisDODfaktur.TT, thisDODfaktur.TtNum);
+         rtranoList_thisDOD = RtranoDao.GetRtranoList_ForTT_And_TtNum(conn, thisDODfaktur.RecID);
          DOD_RtranoList.AddRange(rtranoList_thisDOD);
       }
 
