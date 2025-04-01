@@ -7531,6 +7531,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
    public virtual bool HasRtrano_TT_Exposed          { get { return false; } }
    public virtual bool IsRtransTT_MOD_kindDependable { get { return false; } }
 
+   public uint UGAN_ttNum_ofThisDUC
+   {
+      get { return this.faktur_rec.V1_ttNum * ZXC.Base10TtNumBuffer(5) + this.faktur_rec.V2_ttNum; }
+   }
+
    #endregion Some PTG virtual bools
 
    #region Implementation of Events.Required, Events.Statu (M2PAY stuff)

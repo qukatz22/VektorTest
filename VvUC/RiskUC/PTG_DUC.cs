@@ -2654,7 +2654,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
       #region ADDREC_PVR_Rtrans_From_PVR_Rtrano
 
-      Rtrans rtrans_rec = null;
+      Rtrans PVRrtrans_rec = null; // new rtrans                            
+      Rtrans UGNrtrans_rec = null; // UGN rtrans koji nas je poslao u najam 
 
       ushort t_serial = 0;
 
@@ -2666,44 +2667,32 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          string  t_jedMj      ;
          decimal theCij   = 0M;
 
-    //   artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
          artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD);
 
          if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
          else                   t_jedMj = ""              ;
 
-         Rtrans limiterRtrans_rec = new Rtrans()
+         UGNrtrans_rec = Get_UGNrtrans_4PVR(TheDbConnection, rtrano_rec, this.UGAN_ttNum_ofThisDUC);
+
+         theCij = UGNrtrans_rec.T_cij;
+
+         if(theCij.IsZero()) 
          {
-            T_artiklCD  = rtrano_rec.T_artiklCD,
-            T_skladCD   = rtrano_rec.T_skladCD,
-            T_skladDate = rtrano_rec.T_skladDate,
-            T_ttSort    = rtrano_rec.T_ttSort,
-            T_ttNum     = rtrano_rec.T_ttNum,
-            T_serial    = /*rtrano_rec.T_serial*/ (ushort)(t_serial + 1),
-         };
-
-    //   ArtStat artStat = ArtiklDao.GetArtiklStatus(conn, rtrano_rec.T_artiklCD, rtrano_rec.T_skladCD, rtrano_rec.T_skladDate);
-         ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, limiterRtrans_rec);
-
-         theCij = artStat != null ? artStat.PrNabCij : 0.00M;
-
-         if(theCij.IsZero()) // za OLD Artikle i Komponente ocekujemo imati neku odprije cijenu 
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema cijene za artikl\n\r\n\r[{0}]", artikl_rec);
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Nema UGN cijene za artikl\n\r\n\r[{0}]", artikl_rec);
          }
 
          #endregion Init
 
          rtrano_rec.T_kol = 1.00M; // !!! ovoga nema na MOD varijanti 
 
-         rtrans_rec = new Rtrans(Faktur./*TT_MOI*/TT_PVR, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
+         PVRrtrans_rec = new Rtrans(Faktur./*TT_MOI*/TT_PVR, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
 
-         rtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
-         rtrans_rec.T_cij    = theCij            ; // this is what we are living for 
+         PVRrtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
+         PVRrtrans_rec.T_cij    = theCij            ; // this is what we are living for 
 
-         rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+         PVRrtrans_rec.T_artiklName = artikl_rec.ArtiklName;
 
-         MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, rtrans_rec);
+         MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, PVRrtrans_rec);
       }
 
       #endregion ADDREC_PVR_Rtrans_From_PVR_Rtrano
@@ -2719,6 +2708,19 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
    }
 
+   private Rtrans Get_UGNrtrans_4PVR(XSqlConnection theDbConnection, Rtrano rtrano_rec, uint UGAN_ttNum)
+   {
+      Rtrans UGNrtrans_rec = new Rtrans();
+
+      // NE preko UGAN_ttNum jer imas i dodatke
+      // treba preko sernoa naci rtrano iylaza u najam
+      // pa onda njegov rtrans 
+
+
+      UGNrtrans_rec.T_cij = 123.45M;
+
+      return UGNrtrans_rec;
+   }
 }
 
 #if Njett
