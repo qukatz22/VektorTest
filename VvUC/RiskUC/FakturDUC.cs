@@ -412,7 +412,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_DODrtrano_Grid, 0);
 
-         PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_DODrtrano_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
 
          #endregion PTG_DODrtrano
 

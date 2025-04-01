@@ -2166,7 +2166,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
       ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
 
-      TheSumGrid.Visible = false;
+      TheSumGrid.Visible = true;
 
    }
    private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
@@ -2691,6 +2691,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          PVRrtrans_rec.T_cij    = theCij            ; // this is what we are living for 
 
          PVRrtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+         
+         //PVRrtrans_rec.T_skladCD = ;
 
          MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, PVRrtrans_rec);
       }
