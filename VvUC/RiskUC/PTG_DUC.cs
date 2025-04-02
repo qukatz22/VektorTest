@@ -2573,7 +2573,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSk"   , "Izlazno skladište");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "UlzSkl"  , "Ulazno skladište");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"  , "Jedinična cijena"                  );

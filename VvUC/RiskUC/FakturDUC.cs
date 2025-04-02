@@ -431,10 +431,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_UNA_ANA_Grid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_ANA_Grid, 0);
+         PTG_UNA_ANA_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
 
          #endregion PTG_UnaAnaGrid
 
-         #region PTG_UnaSinGrid
+         #region STANJE NAJMA - rtrans
 
          //20.10.2021. !!!! pazi, mne smijes kod Add-anja InnerTabPage-a u Title stavljati ne[to varijabilno jer ga to kasnije smeta tako da Tiotle dodaj naknadno!!!!
          //ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDod_TabPageName + " ()", ptgDod_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
@@ -450,9 +451,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_SIN_Grid, 0);
 
-         #endregion PTG_UnaAnaGrid
+         #endregion STANJE NAJMA - rtrans
 
-         #region PTG_UNA_StanjeSerno_Grid
+         #region STANJE NAJMA - rtrano
 
          ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgStanjeNajmaRtrano_TabPageName, ptgStanjeNajmaRtrano_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
@@ -466,7 +467,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_StanjeSerno_Grid, 0);
 
-         #endregion PTG_UnaAnaGrid
+         PTG_StanjeSerno_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+
+         #endregion STANJE NAJMA - rtrano
 
       } // if(this is UGNorAUN_PTG_DUC) 
 
