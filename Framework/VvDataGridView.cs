@@ -476,6 +476,8 @@ public class VvDataGridView : DataGridView
    {
       for(int i = 0; i < this.ColumnCount; i++)
       {
+         if(this.Columns[i] is DataGridViewCheckBoxColumn) { this.Rows[rowIdx].Cells[i].Value = false; continue; }
+
          if(this.Columns[i] is VvCheckBoxColumn && ((VvCheckBoxColumn)this.Columns[i]).VvSupressClearingOnClearAllRowValues) continue;
 
          this.Rows[rowIdx].Cells[i].Value = "";

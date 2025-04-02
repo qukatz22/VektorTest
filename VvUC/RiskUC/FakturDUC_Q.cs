@@ -2959,7 +2959,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(ZXC.IsPCTOGO)
       {
-
          #region Rtrano validacije
 
          int rowIdx2 = 0;
@@ -3232,6 +3231,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                   if(rtrano_rec.T_serno.IsEmpty())
                   {
+
+                     if(rtrano_rec.T_artiklCD.IsEmpty())
+                     {
+                        ZXC.aim_emsg(MessageBoxIcon.Error, "Redak [{0}] je prazan! Pobrišite ga prije usnimavanja.", rowIdx2 + 1);
+                        e.Cancel = true;
+                     }
+
                      artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
 
                      if(Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtrano_rec.T_artiklCD, faktur_rec.TT)/* == false*/)
@@ -6254,7 +6260,77 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       ZXC.TheVvForm.SetDirtyFlag(sender);
    }
 #endif
-   protected void OnExit_Check_PCK_Serno_For_MOD   (object sender, System.ComponentModel.CancelEventArgs e)
+   protected void OnExit_Check_PCK_Serno_For_PVR_PTG_DUC(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      #region Init stuff
+
+      if(isPopulatingSifrar)                           return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvDataGridView theGrid2 = sender as VvDataGridView;
+
+      int currRowIdx = theGrid2.CurrentRow.Index;
+
+      FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
+
+      PVR_PTG_DUC the_PVR_DUC = this as PVR_PTG_DUC;
+
+
+      VvTextBox currVvTextBox = theGrid2.EditingControl as VvTextBox;
+
+      if(currVvTextBox.ReadOnly == true) return; // input was disabled, do nothing 
+
+      string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
+
+      theGrid2.ClearRowContent(currRowIdx);
+    //the_PVR_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
+      theGrid2.PutCell(ci2.iT_serno, currRowIdx, theSerno);
+
+      if(theSerno.IsEmpty()) return;
+
+      #endregion Init stuff
+
+      #region Check for double serno entry
+
+      List<string> sernosInUseList = new List<string>();
+
+      for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
+      {
+         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
+      }
+
+      int theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
+
+      if(theSernoCount > 1)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         e.Cancel = true;
+         return;
+      }
+
+      #endregion Check for double serno entry
+
+      Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
+
+      bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
+
+      if(isLastRtrano_ForSerno_found == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Nepoznat serijski broj?!");
+         e.Cancel = true;
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         return;
+      }
+
+      // tu si stao, sad treba provjewriti da li je prema last_rtrano_rec_forThisSerno 
+      // taj serno primjeren za ovaj povrat                                            
+      // qweqwe smije li ovaj serno doc na ovaj POVRAT?
+   }
+   protected void OnExit_Check_PCK_Serno_For_MOD(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
 
@@ -7530,6 +7606,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
    public virtual bool HasRtrano_SkladCD_Exposed     { get { return false; } }
    public virtual bool HasRtrano_TT_Exposed          { get { return false; } }
    public virtual bool IsRtransTT_MOD_kindDependable { get { return false; } }
+   /// <summary>
+   /// DUC se popunjava 's desna na lijevo', nema <F3>, MOD i PVR
+   /// </summary>
+   public virtual bool Is_Rtrans_Readonly            { get { return false; } }
 
    public uint UGAN_ttNum_ofThisDUC
    {

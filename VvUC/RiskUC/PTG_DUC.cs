@@ -2566,6 +2566,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
    #region TheG_Specific_Columns
    public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
    public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool Is_Rtrans_Readonly        { get { return true; } }
+
    protected override void InitializeDUC_Specific_Columns()
    {
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra"   , "Šifra artikla"                     );
@@ -2690,7 +2692,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          PVRrtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
          PVRrtrans_rec.T_cij    = theCij            ; // this is what we are living for 
 
-         PVRrtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+         if(artikl_rec != null) PVRrtrans_rec.T_artiklName = artikl_rec.ArtiklName;
          
          //PVRrtrans_rec.T_skladCD = ;
 
@@ -2699,7 +2701,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
       #endregion ADDREC_PVR_Rtrans_From_PVR_Rtrano
 
-      faktur_rec.TakeTransesSumToDokumentSum(false);
+      faktur_rec.TakeTransesSumToDokumentSum(true);
 
       bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
 
@@ -6538,10 +6540,12 @@ public class MOD_PTG_DUC : FakturPDUC
    #endregion Fld
 
    #region TheG_Specific_Columns
-   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
-   public override bool HasRtrano_TT_Exposed      { get { return true; } }
+   public override bool HasRtrans_SkladCD_Exposed     { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed     { get { return true; } }
+   public override bool HasRtrano_TT_Exposed          { get { return true; } }
    public override bool IsRtransTT_MOD_kindDependable { get { return true; } }
+   public override bool Is_Rtrans_Readonly            { get { return true; } }
+
    protected override void InitializeDUC_Specific_Columns()
    {
       TheG.ColumnHeadersHeight = ZXC.Q2un;
@@ -6970,7 +6974,7 @@ public class MOD_PTG_DUC : FakturPDUC
       //   faktur_rec.Transes[serial].SaveTransesWriteMode = ZXC.WriteMode.Edit;
       //}
 
-      faktur_rec.TakeTransesSumToDokumentSum(false);
+      faktur_rec.TakeTransesSumToDokumentSum(true);
 
       bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
 
