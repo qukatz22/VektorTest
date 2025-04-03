@@ -6329,6 +6329,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // tu si stao, sad treba provjewriti da li je prema last_rtrano_rec_forThisSerno 
       // taj serno primjeren za ovaj povrat                                            
       // qweqwe smije li ovaj serno doc na ovaj POVRAT?
+      // 
+      //UgAnDod_rtrans_rec_Found = UgAnDod_rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, UgAnDod_rtrans_rec, rtrano_rec.T_rtrRecID, false, false);
+
+      string povratNaSkladCD = the_PVR_DUC.faktur_rec.SkladCD2;
+
+      last_rtrano_rec_forThisSerno.T_skladCD = povratNaSkladCD;
+
+      uint theT_RecID = Get_UgAnDod_T_recID_fromRtrano(last_rtrano_rec_forThisSerno);
+
+      last_rtrano_rec_forThisSerno.T_rtrRecID = theT_RecID;
+   }
+
+   internal uint Get_UgAnDod_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
+   {
+      Rtrans UgAnDod_rtrans_rec = new Rtrans();
+
+      string theTT       = ZXC.TtInfo(last_rtrano_rec_forThisSerno.T_TT).LinkedDefaultTT; // imam/znam 'UG2' a trebam 'UGN' 
+      uint   theTtNum    = last_rtrano_rec_forThisSerno.T_ttNum                         ;
+      uint   theSerial   = last_rtrano_rec_forThisSerno.T_paletaNo                      ;
+
+      RtransDao.SetMe_Rtrans_byTt_TtNum_Serial(TheDbConnection, UgAnDod_rtrans_rec, theTT, theTtNum, theSerial);
+
+      return UgAnDod_rtrans_rec.T_recID;
    }
    protected void OnExit_Check_PCK_Serno_For_MOD(object sender, System.ComponentModel.CancelEventArgs e)
    {

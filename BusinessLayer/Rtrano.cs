@@ -588,6 +588,8 @@ public class Rtrano : VvTransRecord
       return preffix1 + this.T_TT + " " + this.T_ttNum.ToString() + "_" + this.T_serial.ToString() /*+ "~" + this.T_artiklCD*/;
    }
 
+   public uint R_kurac { get; set; }
+
    #endregion PCTOGO propertiz
 
    #endregion propertiz 

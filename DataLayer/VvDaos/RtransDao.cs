@@ -3125,6 +3125,30 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return DOD_RtranoList;
    }
 
+   internal static bool SetMe_Rtrans_byTt_TtNum_Serial(XSqlConnection conn, Rtrans rtrans_rec, string wanted_tt, uint wanted_ttNum, uint wanted_serial)
+   {
+      bool success = true;
+
+      using(XSqlCommand cmd = VvSQL.SetMe_Rtrans_byTt_TtNum_Serial_Command(conn, wanted_tt, wanted_ttNum, wanted_serial))
+      {
+         using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow))
+         {
+            success = reader.HasRows;
+            if(reader.Read()) rtrans_rec.VvDao.FillFromDataReader((VvDataRecord)rtrans_rec, reader, false);
+            else success = false;
+            reader.Close();
+         } // using reader 
+      }    // using cmd    
+
+      if(!success)
+      {
+         VvSQL.ReportGeneric_DB_Error("", "Rtrans: [" + wanted_tt + "_" + wanted_ttNum + "_" + wanted_serial + "] u datoteci ne postoji.", System.Windows.Forms.MessageBoxButtons.OK);
+      }
+
+      return success;
+   }
+
+
    #endregion Some PTG stuff
 
    #region Some util Rtrans list

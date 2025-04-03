@@ -2605,6 +2605,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
       T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "PvrSt"        , "PVR stavka"                     );
+      T_rtrRecID_CreateColumn       (ZXC.Q3un,    false    , "RtrRecID"     , "RtrRecID"                       );
    }
 
    #endregion TheG_Specific_Columns2
@@ -2642,7 +2643,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       }
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 
-   internal void SintRtranoToRtransOnPVR(VvForm theVvForm)
+   internal void SintRtranoToRtransOnPVR(VvForm theVvForm) // On <SAVE> 
    {
       foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
       {
@@ -2656,8 +2657,10 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
       #region ADDREC_PVR_Rtrans_From_PVR_Rtrano
 
-      Rtrans PVRrtrans_rec = null; // new rtrans                            
-      Rtrans UGNrtrans_rec = null; // UGN rtrans koji nas je poslao u najam 
+      Rtrans PVR_rtrans_rec     = null; // new rtrans                        
+      Rtrans UgAnDod_rtrans_rec = null; // rtrans koji nas je poslao u najam 
+
+      bool UgAnDod_rtrans_rec_Found;
 
       ushort t_serial = 0;
 
@@ -2674,9 +2677,12 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
          else                   t_jedMj = ""              ;
 
-         UGNrtrans_rec = Get_UGNrtrans_4PVR(TheDbConnection, rtrano_rec, this.UGAN_ttNum_ofThisDUC);
+         UgAnDod_rtrans_rec = new Rtrans();
 
-         theCij = UGNrtrans_rec.T_cij;
+         UgAnDod_rtrans_rec_Found = UgAnDod_rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, UgAnDod_rtrans_rec, rtrano_rec.T_rtrRecID, false, false);
+       //UgAnDod_rtrans_rec = Get_UgAnDod_rtrans_4PVR(TheDbConnection, rtrano_rec, this.UGAN_ttNum_ofThisDUC);
+
+         theCij = UgAnDod_rtrans_rec.T_cij;
 
          if(theCij.IsZero()) 
          {
@@ -2687,16 +2693,16 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
          rtrano_rec.T_kol = 1.00M; // !!! ovoga nema na MOD varijanti 
 
-         PVRrtrans_rec = new Rtrans(Faktur./*TT_MOI*/TT_PVR, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
+         PVR_rtrans_rec = new Rtrans(Faktur./*TT_MOI*/TT_PVR, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
 
-         PVRrtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
-         PVRrtrans_rec.T_cij    = theCij            ; // this is what we are living for 
+         PVR_rtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
+         PVR_rtrans_rec.T_cij    = theCij            ; // this is what we are living for 
 
-         if(artikl_rec != null) PVRrtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+         if(artikl_rec != null) PVR_rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
          
          //PVRrtrans_rec.T_skladCD = ;
 
-         MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, PVRrtrans_rec);
+         MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, PVR_rtrans_rec);
       }
 
       #endregion ADDREC_PVR_Rtrans_From_PVR_Rtrano
@@ -2710,21 +2716,25 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       theVvForm.EndEdit(faktur_rec);
 
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
-   }
+}
 
-   private Rtrans Get_UGNrtrans_4PVR(XSqlConnection theDbConnection, Rtrano rtrano_rec, uint UGAN_ttNum)
-   {
-      Rtrans UGNrtrans_rec = new Rtrans();
-
-      // NE preko UGAN_ttNum jer imas i dodatke
-      // treba preko sernoa naci rtrano iylaza u najam
-      // pa onda njegov rtrans 
-
-
-      UGNrtrans_rec.T_cij = 123.45M;
-
-      return UGNrtrans_rec;
-   }
+   //private Rtrans Get_UgAnDod_rtrans_4PVR(XSqlConnection conn, Rtrano newRtrano_rec, uint UGAN_ttNum)
+   //{
+   //   Rtrans UgAnDod_rtrans_rec = new Rtrans();
+   //
+   //   Rtrano origRtrano_rec = ZXC.Rtrano_List.SingleOrDefault(rto => rto.T_serno == newRtrano_rec.T_serno);
+   //   // NE preko UGAN_ttNum jer imas i dodatke
+   //   // treba preko sernoa naci rtrano iylaza u najam
+   //   // pa onda njegov rtrans 
+   //
+   //   string theTT       = ZXC.TtInfo(origRtrano_rec.T_TT).LinkedDefaultTT; // imam/znam 'UG2' a trebam 'UGN' 
+   //   uint   theTtNum    = origRtrano_rec.T_ttNum                         ;
+   //   uint   theSerial   = origRtrano_rec.T_rtrRecID                      ;
+   //
+   //   RtransDao.SetMe_Rtrans_byTt_TtNum_Serial(conn, UgAnDod_rtrans_rec, theTT, theTtNum, theSerial);
+   //   
+   //   return UgAnDod_rtrans_rec;
+   //}
 }
 
 #if Njett

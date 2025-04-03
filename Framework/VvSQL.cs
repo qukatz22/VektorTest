@@ -6830,6 +6830,20 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand SetMe_Rtrans_byTt_TtNum_Serial_Command(XSqlConnection conn, string wanted_tt, uint wanted_ttNum, uint wanted_serial)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "t_tt"    , wanted_tt    , ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt    ]);
+      CreateCommandNamedParameter(cmd, "", "t_ttnUM" , wanted_ttNum , ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum ]);
+      CreateCommandNamedParameter(cmd, "", "t_serial", wanted_serial, ZXC.RtransSchemaRows[ZXC.RtrCI.t_serial]); 
+
+      cmd.CommandText = "SELECT * FROM " + Rtrans.recordName + "\n" + 
+
+                        " WHERE " + "t_tt = ?t_tt AND t_ttNum = ?t_ttNum AND t_serial = ?t_serial";
+      return (cmd);
+   }
+
    #endregion RISK specials
 
    #region    MIXER specials

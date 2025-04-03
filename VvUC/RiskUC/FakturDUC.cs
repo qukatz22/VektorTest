@@ -15398,6 +15398,8 @@ public class FakturPDUC : FakturExtDUC
 
       if(ZXC.IsPCTOGO)
       {
+         TheG2.PutCell(ci2.iT_rtrRecID, rowIdx, rtrano_rec.T_rtrRecID);
+
          Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrano_rec.T_artiklCD);
 
          if(artikl_rec != null && (artikl_rec.TS == ZXC.PCK_TS || artikl_rec.TS == ZXC.KMP_TS))
@@ -15427,7 +15429,8 @@ public class FakturPDUC : FakturExtDUC
             TheG2.PutCell(ci2.iR_PCK_baza, rowIdx, artikl_rec./*CarTarifa*/PCK_BazaCD);
          }
 
-         if(IsPTG_WithSerno_DUCwoMOD && rtrano_rec.T_paletaNo.IsPositive())
+       //if(IsPTG_WithSerno_DUCwoMOD    && rtrano_rec.T_paletaNo.IsPositive())
+         if(Is_Rtrans_Readonly == false && rtrano_rec.T_paletaNo.IsPositive())
          {
             ushort rtransSerial = (ushort)rtrano_rec.T_paletaNo;
 
@@ -15766,6 +15769,13 @@ public class FakturPDUC : FakturExtDUC
          dgvRtrano_rec.T_serno = TheG2.GetStringCell(ci2.iT_serno, rIdx, dirtyFlagging);
          if(DB_RWT) db_rec.T_serno = dgvRtrano_rec.T_serno;
       }
+
+      if(TheG2.CI_OK(ci2.iT_rtrRecID))
+      {
+         dgvRtrano_rec.T_rtrRecID     = TheG2.GetUint32Cell(ci2.iT_rtrRecID, rIdx, dirtyFlagging);
+         if(DB_RWT) db_rec.T_rtrRecID = dgvRtrano_rec.T_rtrRecID;
+      }
+
       // 20.03.2013. u ptrane se koristi ci a ne ci2 za persona (linija 3663) i kaj da onda tu koristimo a postoji i ci2
       // to je pitanje za artiklCD i artiklName
       // sto je sa ostalim rtrano stvarima
