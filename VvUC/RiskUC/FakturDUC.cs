@@ -15009,6 +15009,9 @@ public class FakturPDUC : FakturExtDUC
       vvtbT_rtrRecID = TheG2.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb4ColT_rtrRecID", TheVvDaoTrans2, DB_Tci2.t_rtrRecID, _statusText);
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_rtrRecID, TheVvDaoTrans2, DB_Tci2.t_rtrRecID, _colHeader, _width);
+
+      colVvText.Visible = isVisible;
+
    }
    protected void T_kolg2_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
