@@ -5141,6 +5141,17 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             }
          }
       }
+
+      if(this is PVR_PTG_DUC)
+      {
+         Rtrans PV2rtrans_rec = new Rtrans();
+
+         if(PV2rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, PV2rtrans_rec, rtrans_rec.T_twinID, false, false))
+         {
+            TheG.PutCell(ci.iT_skladCD2, rowIdx, PV2rtrans_rec.T_skladCD);
+         }
+      }
+
    }
 
    public static decimal GetDiffKol_PlanVsRealizacijaPIPR(string artiklCD, List<Rtrans> realizacijaRtransList, decimal planKol)
@@ -14944,8 +14955,7 @@ public class FakturPDUC : FakturExtDUC
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_skladCD2, TheVvDaoTrans2, DB_Tci2.t_skladCD, _colHeader, _width);
 
-      if(ZXC.IsPCTOGO && IsPTG_UgAnDod_DUC) vvtbT_skladCD2.JAM_ReadOnly = true;
-
+      if(ZXC.IsPCTOGO && IsPTG_UgAnDod_DUC && !(this is PVR_PTG_DUC)) vvtbT_skladCD2.JAM_ReadOnly = true;
    }
    protected void T_decA_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
    {
@@ -15392,13 +15402,6 @@ public class FakturPDUC : FakturExtDUC
          TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
       }
 
-      //25.03.2025.
-      if(this is ZIZ_PTG_DUC)
-      { 
-         TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
-         SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);
-      }
-
       if(ZXC.IsPCTOGO)
       {
          TheG2.PutCell(ci2.iT_rtrRecID, rowIdx, rtrano_rec.T_rtrRecID);
@@ -15433,7 +15436,7 @@ public class FakturPDUC : FakturExtDUC
          }
 
        //if(IsPTG_WithSerno_DUCwoMOD    && rtrano_rec.T_paletaNo.IsPositive())
-         if(Is_Rtrans_Readonly == false && rtrano_rec.T_paletaNo.IsPositive())
+         if(Is_Rtrans_Readonly == false && rtrano_rec.T_paletaNo.IsPositive()) // Nismo niti na MOD niti na PVR ... nego smo npr UGN, PRI
          {
             ushort rtransSerial = (ushort)rtrano_rec.T_paletaNo;
 
@@ -15462,6 +15465,11 @@ public class FakturPDUC : FakturExtDUC
             }
          }
 
+         if(rtrano_rec.T_TT == Faktur.TT_PV2)
+         {
+            TheG2.PutCell(ci2.iT_skladCD1, rowIdx, ZXC.PTG_UNJ);
+         }
+
          if(rtrano_rec.T_TT == Faktur.TT_MOC || rtrano_rec.T_TT == Faktur.TT_MOS)
          {
           //string oldArtiklCD = Artikl.Get_PTG_CalculatedArtiklCD_From_SenderArtiklCD_NewRAM_NewHDD(rtrano_rec.T_artiklCD, rtrano_rec.R_MOD_RAM_old, rtrano_rec.R_MOD_HDD_old);
@@ -15475,6 +15483,13 @@ public class FakturPDUC : FakturExtDUC
             string R_opisOLD = rtrano_rec.T_serno.NotEmpty() ? RtranoDao.GetR_opisOLD(TheDbConnection, rtrano_rec) : "";
 
             TheG2.PutCell(ci2.iR_grCD_Old, rowIdx, R_opisOLD);
+         }
+
+         //25.03.2025.
+         if(this is ZIZ_PTG_DUC)
+         {
+            TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
+            SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);
          }
 
       } // if(ZXC.IsPCTOGO) 

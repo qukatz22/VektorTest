@@ -6336,12 +6336,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       last_rtrano_rec_forThisSerno.T_skladCD = povratNaSkladCD;
 
-      uint theT_RecID = Get_UgAnDod_T_recID_fromRtrano(last_rtrano_rec_forThisSerno);
+      uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(last_rtrano_rec_forThisSerno);
 
       last_rtrano_rec_forThisSerno.T_rtrRecID = theT_RecID;
    }
 
-   internal uint Get_UgAnDod_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
+   internal uint Get_UgAnDod_Rtrans_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
    {
       Rtrans UgAnDod_rtrans_rec = new Rtrans();
 

@@ -2575,7 +2575,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "UlzSkl"  , "Ulazno skladište");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSkl"  , "Izlazno skladište");
+      R_skladCd2_CreateColumn      (ZXC.Q3un,               true, "UlzSkl"  , "Ulaz na skladišta");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"  , "Jedinična cijena"                  );
@@ -2645,10 +2646,17 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
    internal void SintRtranoToRtransOnPVR(VvForm theVvForm) // On <SAVE> 
    {
-      foreach(VvTransRecord modRtrans_rec in faktur_rec.Transes)
+      foreach(VvTransRecord pvrRtrans_rec in faktur_rec.Transes)
       {
-         modRtrans_rec.VvDao.DELREC                                (TheDbConnection, modRtrans_rec, false);
-         modRtrans_rec.VvDao.Delete_Then_Renew_Cache_FromThisRtrans(TheDbConnection, modRtrans_rec, VvSQL.DB_RW_ActionType.DEL);
+         pvrRtrans_rec.VvDao.DELREC(TheDbConnection, pvrRtrans_rec, false);
+
+         VvTransRecord twinTrans_rec2 = VvDaoBase.SetTwinTransRec2(TheDbConnection, faktur_rec, pvrRtrans_rec, ZXC.WriteMode.Delete);
+
+         ZXC.InAddTwinIzlazParentId = (twinTrans_rec2 as VvTransRecord).VirtualParentRecID;
+
+         twinTrans_rec2.VvDao.DELREC(TheDbConnection, twinTrans_rec2, false, false);
+
+         pvrRtrans_rec.VvDao.Delete_Then_Renew_Cache_FromThisRtrans(TheDbConnection, pvrRtrans_rec, VvSQL.DB_RW_ActionType.DEL);
       }
 
       faktur_rec.InvokeTransClear();
@@ -2693,14 +2701,15 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 
          rtrano_rec.T_kol = 1.00M; // !!! ovoga nema na MOD varijanti 
 
-         PVR_rtrans_rec = new Rtrans(Faktur./*TT_MOI*/TT_PVR, rtrano_rec, /*theCij,*/ t_jedMj, ++t_serial);
+         PVR_rtrans_rec = new Rtrans(Faktur.TT_PVR, rtrano_rec, t_jedMj, ++t_serial);
 
          PVR_rtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
          PVR_rtrans_rec.T_cij    = theCij            ; // this is what we are living for 
 
          if(artikl_rec != null) PVR_rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
          
-         //PVRrtrans_rec.T_skladCD = ;
+         PVR_rtrans_rec.R_utilString = PVR_rtrans_rec.T_skladCD;
+         PVR_rtrans_rec.T_skladCD    = ZXC.PTG_UNJ;
 
          MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, PVR_rtrans_rec);
       }
