@@ -886,7 +886,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
    }
 
-   private void ValidateDOD_dokDate(object sender, EventArgs e)
+   public void ValidateDOD_dokDate(object sender, EventArgs e)
    {
       if(this.IsPTG_Dodaci_DUC)
       {

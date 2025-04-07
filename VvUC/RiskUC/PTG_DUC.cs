@@ -1669,6 +1669,8 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       nextY = hamp_napomena_PTG.Bottom;
 
       hamp_twin.Visible = false;
+      hamp_IznosUvaluti.Visible = false;
+
    }
 
    private void CreateArrOfHampers()
@@ -1915,13 +1917,14 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
       hamper.VvBottomMargin = ZXC.Qun8;
 
-                    hamper.CreateVvLabel  (0, 0, "DatumDOD:", ContentAlignment.MiddleRight);
+                    hamper.CreateVvLabel  (0, 0, "Datum:", ContentAlignment.MiddleRight);
       tbx_DokDate = hamper.CreateVvTextBox(1, 0, "tbx_dokDate", "Datum ugovora");
       tbx_DokDate.JAM_IsForDateTimePicker = true;
-      dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
+      dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);
       dtp_DokDate.Name = "dtp_DokDate";
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
       dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
+      dtp_DokDate.Leave += new EventHandler(ValidateDOD_dokDate);
 
       hamper.CreateVvLabel  (0, 1, "DatDostave:", ContentAlignment.MiddleRight);
       tbx_DokDate2 = hamper.CreateVvTextBox(1, 1, "tbx_DokDate2", "Datum dostave");
@@ -2229,6 +2232,8 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       nextY = hamp_napomena_PTG.Bottom;
 
       hamp_twin.Visible = false;
+      hamp_IznosUvaluti.Visible = false;
+
    }
 
    private void CreateArrOfHampers()
@@ -2475,12 +2480,13 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
       hamper.VvBottomMargin = ZXC.Qun8;
 
-                    hamper.CreateVvLabel  (0, 0, "DatumPVR:", ContentAlignment.MiddleRight);
+                    hamper.CreateVvLabel  (0, 0, "Datum:", ContentAlignment.MiddleRight);
       tbx_DokDate = hamper.CreateVvTextBox(1, 0, "tbx_dokDate", "Datum ugovora");
       tbx_DokDate.JAM_IsForDateTimePicker = true;
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
       dtp_DokDate.Name = "dtp_DokDate";
       dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
+      dtp_DokDate.Leave += new EventHandler(ValidateDOD_dokDate);
 
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
    }
@@ -2796,6 +2802,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
       nextY = hamp_napomena_PTG.Bottom;
 
       hamp_twin.Visible = false;
+      hamp_IznosUvaluti.Visible = false;
+
    }
 
    private void CreateArrOfHampers()
@@ -3037,6 +3045,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);//PTG_DatUgovora     
       dtp_DokDate.Name = "dtp_DokDate";
       dtp_DokDate.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_SetSkladAndPdvDate);
+      dtp_DokDate.Leave += new EventHandler(ValidateDOD_dokDate);
 
       tbx_DokDate.Font = ZXC.vvFont.BaseBoldFont;
    }
