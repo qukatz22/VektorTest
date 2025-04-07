@@ -3093,6 +3093,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       return DOD_FakturList;
    }
+   
    internal static List<Rtrans> Get_DOD_RtransList(XSqlConnection conn, Faktur faktur_rec)
    {
       List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, faktur_rec);

@@ -2717,12 +2717,15 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
          PVR_rtrans_rec.R_utilString = PVR_rtrans_rec.T_skladCD;
          PVR_rtrans_rec.T_skladCD    = ZXC.PTG_UNJ;
 
-         MOD_PTG_DUC.AddRtransToFakturTransesCollection(faktur_rec, PVR_rtrans_rec);
+         Add_or_Sint_RtransToFakturTransesCollection(faktur_rec, PVR_rtrans_rec);
       }
 
       #endregion ADDREC_PVR_Rtrans_From_PVR_Rtrano
 
       faktur_rec.TakeTransesSumToDokumentSum(true);
+
+    //PutFields(faktur_rec); 
+    //theVvForm.SintSameArtiklRows(this, EventArgs.Empty);
 
       bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
 
@@ -2731,6 +2734,24 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       theVvForm.EndEdit(faktur_rec);
 
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
+   }
+   private void Add_or_Sint_RtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
+   {
+      Rtrans existingRtrans_rec = _faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_artiklCD == _rtrans_rec.T_artiklCD && rtr.T_cij == _rtrans_rec.T_cij);
+      
+      bool isToSint = existingRtrans_rec != null;
+      if(isToSint)
+      {
+         existingRtrans_rec.T_kol += _rtrans_rec.T_kol;
+
+         existingRtrans_rec.CalcTransResults(null);
+      }
+      else // first occurence of this T_artiklCD & T_cij 
+      {
+         _rtrans_rec.CalcTransResults(null);
+         _rtrans_rec.SaveTransesWriteMode = ZXC.WriteMode.Add;
+         _faktur_rec.Transes.Add(_rtrans_rec);
+      }
    }
 
 }
@@ -6758,7 +6779,7 @@ public class MOD_PTG_DUC : FakturPDUC
       return rtrans_rec;
    }
 
-   /*private*/internal static void AddRtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
+   private static void AddRtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
    {
       _rtrans_rec.CalcTransResults(null);
       _rtrans_rec.SaveTransesWriteMode = ZXC.WriteMode.Add;

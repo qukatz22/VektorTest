@@ -6936,14 +6936,14 @@ if(isRNM) { colOp = AddDGVColum_Decimal_4GridReadOnly (RealizacGrid, R_cijOP_Col
 
    #region TabPageName
 
-   internal const string ptgOsn_TabPageName           = ". STAVKE UGOVORA .";
-   internal const string ptgOpl_TabPageName           = ". OTPLATNI PLAN  .";
-   internal const string ptgDodFaktur_TabPageName     = ". DODACI DOKUMENTI.";
-   internal const string ptgDodRtrans_TabPageName     = ". DODACI STAVKE.";
-   internal const string ptgDODrtrano_TabPageName     = ". DODACI SR.BR .";
-   internal const string ptgUgAnDodRtrans_TabPageName = ". UGOVOR SVE STAVKE .";
-   internal const string ptgStanjeNajmaRtrans_TabPageName       = ". UGOVOR STANJE NAJMA .";
-   internal const string ptgStanjeNajmaRtrano_TabPageName  = ". UGOVOR STANJE NAJMA SR.BR. .";
+   internal const string ptgOsn_TabPageName                = "~ STAVKE UGOVORA ~";
+   internal const string ptgOpl_TabPageName                = "~ OTPLATNI PLAN ~";
+   internal const string ptgDodFaktur_TabPageName          = "~ DODACI DOKUMENTI ~";
+   internal const string ptgDodRtrans_TabPageName          = "~ DODACI STAVKE ~";
+   internal const string ptgDODrtrano_TabPageName          = "~ DODACI SER.BR. ~";
+   internal const string ptgUgAnDodRtrans_TabPageName      = "~ STAV. UG. I DODATAKA ~";
+   internal const string ptgStanjeNajmaRtrans_TabPageName  = "~ UGOVOR STANJE NAJMA ~";
+   internal const string ptgStanjeNajmaRtrano_TabPageName  = "~ SERIJSKI BROJEVI UNJ ~";
 
    #endregion TabPageName
 
@@ -7468,8 +7468,9 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
          colIdx = 0;
 
-         decimal korekcijaMinusa = (UNArtrans_rec.T_TT == Faktur.TT_PVR) ? -1 : 1;
-         decimal kol = UNArtrans_rec.T_kol * korekcijaMinusa;
+         // 07.04.2025: ukinuo korekcijaMinusa i tu logiku ugradio u 'Get_UgAn_i_DOD_rtrans_list()' 
+       //decimal korekcijaMinusa = (UNArtrans_rec.T_TT == Faktur.TT_PVR) ? -1 : 1;
+       //decimal kol = UNArtrans_rec.T_kol * korekcijaMinusa;
 
 
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_parentID;
@@ -7478,13 +7479,13 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
        //PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_serlot;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = kol /*UNArtrans_rec.T_kol*/; //20.02.2025.
+         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = /*kol*/ UNArtrans_rec.T_kol;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_cij;
          PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.R_KCR;
 
          PTG_UNA_ANA_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 
-         sumaKol += kol /* UNArtrans_rec.T_kol*/; //20.02.2025.
+         sumaKol += /*kol*/ UNArtrans_rec.T_kol; 
          sumaKCR += UNArtrans_rec.R_KCR;
       }
 
@@ -7577,12 +7578,20 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    internal static List<Rtrans> Get_UgAn_i_DOD_rtrans_list(List<Rtrans> UGANrtrans_list, List<Rtrans> DODrtrans_list)
    {
-      List<Rtrans> UNA_ANA_rtrans_list = new List<Rtrans>(UGANrtrans_list.Count + DODrtrans_list.Count);
+      List<Rtrans> UgAn_i_DOD_rtrans_list = new List<Rtrans>(UGANrtrans_list.Count + DODrtrans_list.Count);
 
-      UNA_ANA_rtrans_list.AddRange(UGANrtrans_list);
-      UNA_ANA_rtrans_list.AddRange(DODrtrans_list );
+      UgAn_i_DOD_rtrans_list.AddRange(UGANrtrans_list);
+      UgAn_i_DOD_rtrans_list.AddRange(DODrtrans_list );
 
-      return UNA_ANA_rtrans_list.OrderBy(rtr => rtr.T_skladDate).ThenBy(rtr => rtr.T_serial).ToList();
+      // 07.04.2025: 
+      foreach(Rtrans vracaSeIzNajma_rtrans_rec in UgAn_i_DOD_rtrans_list.Where(rtr => rtr.T_TT == Faktur.TT_PVR || rtr.T_TT == Faktur.TT_ZU2))
+      {
+         //vracaSeIzNajma_rtrans_rec.T_kol = -vracaSeIzNajma_rtrans_rec.T_kol;         // jer kad togglas SIN / ANA onda opet izvrne na pozitivni T_kol 
+         vracaSeIzNajma_rtrans_rec.T_kol = -Math.Abs(vracaSeIzNajma_rtrans_rec.T_kol); // jer kad togglas SIN / ANA onda opet izvrne na pozitivni T_kol 
+         vracaSeIzNajma_rtrans_rec.CalcTransResults(null);
+      }
+
+      return UgAn_i_DOD_rtrans_list.OrderBy(rtr => rtr.T_skladDate).ThenBy(rtr => rtr.T_serial).ToList();
    }
 
    internal static List<Rtrans> Get_UNA_SIN_rtrans_list(List<Rtrans> UGANrtrans_list, List<Rtrans> DODrtrans_list)
