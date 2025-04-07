@@ -174,7 +174,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private VvDateTimePickerColumn colDate;
 
-   internal bool IsPTG_UgAnDod_DUC        { get { return (this is UGNorAUN_PTG_DUC || this is DIZ_PTG_DUC || this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC); } }
+   internal bool IsPTG_Dodaci_DUC         { get { return (this is DIZ_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC); } }
+   internal bool IsPTG_UgAnDod_DUC        { get { return (this is UGNorAUN_PTG_DUC || IsPTG_Dodaci_DUC); } }
    internal bool IsPTG_Common_DUC         { get { return (this is PRI_PTG_DUC || this is URA_PTG_DUC || this is IZD_PTG_DUC || this is IRA_PTG_DUC /*|| this is PST_PTG_DUC*/ || this is MSI_PTG_DUC); } } // todo: !!!  dodati ih jos 
    internal bool IsPTG_MOD_DUC            { get { return (this is MOD_PTG_DUC                            ); } }       // 's desna na lijevo' 
    internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDod_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
@@ -856,7 +857,54 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       this.ControlForInitialFocus = dtp_DokDate; // ovo je zbog internih fak koji nemaju partnera
 
+      if(this is MOD_PTG_DUC)
+      {
+         dtp_DokDate.Leave += new EventHandler(ValidateMOD_dokDate);
+      }
+      if(this.IsPTG_Dodaci_DUC)
+      {
+         dtp_DokDate.Leave += new EventHandler(ValidateDOD_dokDate);
+      }
    }
+
+   private void ValidateMOD_dokDate(object sender, EventArgs e)
+   {
+      if(this is MOD_PTG_DUC)
+      {
+         MOD_PTG_DUC theDUC = (this as MOD_PTG_DUC);
+
+         VvDateTimePicker dtp = sender as VvDateTimePicker;
+
+         DateTime maxDate = theDUC.Get_PTG_MOD_MAX_DokDate();
+
+         if(dtp.Value.Date > maxDate)
+         {
+            ZXC.RaiseErrorProvider(dtp.TheVvTextBox, "Datum modifikacije ne smije biti veći od datuma UgAn-a " + maxDate.ToString(ZXC.VvDateFormat));
+            //e.Cancel = true;
+            Fld_DokDate = maxDate;
+         }
+      }
+   }
+
+   private void ValidateDOD_dokDate(object sender, EventArgs e)
+   {
+      if(this.IsPTG_Dodaci_DUC)
+      {
+         FakturPDUC theDUC = (this as FakturPDUC);
+
+         VvDateTimePicker dtp = sender as VvDateTimePicker;
+
+         DateTime minDate = theDUC.Get_PTG_DOD_MIN_DokDate();
+
+         if(dtp.Value.Date < minDate)
+         {
+            ZXC.RaiseErrorProvider(theDUC.tbx_DokDate, "Datum dodatka ne smije biti manji od datuma UgAn-a " + minDate.ToString(ZXC.VvDateFormat));
+            //e.Cancel = true;
+            Fld_DokDate = minDate;
+         }
+      }
+   }
+
    private void InitializeHamper_dokDate2(out VvHamper hamper)
    {
       hamper = new VvHamper(2, 1, "", null, false);
@@ -16158,6 +16206,22 @@ public class FakturPDUC : FakturExtDUC
       }
 
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
+
+   public DateTime Get_PTG_DOD_MIN_DokDate()
+   { 
+      string myUgAn_TT    = Fld_V1_ttNum.IsZero() ? Faktur.TT_UGN : Faktur.TT_AUN;
+      uint   myUgAn_TtNum = (Fld_V1_ttNum * 100000) + Fld_V2_ttNum;
+
+      if(myUgAn_TT.IsEmpty() || myUgAn_TtNum.IsZero()) return DateTimePicker.MinimumDateTime;
+
+      Faktur myUgAnFaktur_rec = new Faktur();
+
+      bool found = FakturDao.SetMeFaktur(TheDbConnection, myUgAnFaktur_rec, myUgAn_TT, myUgAn_TtNum, false); 
+
+      if(!found) return DateTimePicker.MinimumDateTime;
+
+      return myUgAnFaktur_rec.DokDate; 
+   }
 
    #endregion PTG rtrano DUC
 

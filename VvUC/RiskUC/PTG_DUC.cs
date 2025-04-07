@@ -6101,6 +6101,21 @@ public class MOD_PTG_DUC : FakturPDUC
    public override bool IsRtransTT_MOD_kindDependable { get { return true; } }
    public override bool Is_Rtrans_Readonly            { get { return true; } }
 
+   public DateTime Get_PTG_MOD_MAX_DokDate()
+   { 
+      string myUgAn_TT    = this.faktur_rec.V1_tt   ;
+      uint   myUgAn_TtNum = this.faktur_rec.V1_ttNum;
+
+      if(myUgAn_TT.IsEmpty() || myUgAn_TtNum.IsZero()) return DateTimePicker.MaximumDateTime;
+
+      Faktur myUgAnFaktur_rec = new Faktur();
+
+      bool found = FakturDao.SetMeFaktur(TheDbConnection, myUgAnFaktur_rec, myUgAn_TT, myUgAn_TtNum, false); 
+
+      if(!found) return DateTimePicker.MaximumDateTime;
+
+      return myUgAnFaktur_rec.DokDate; 
+   }
    protected override void InitializeDUC_Specific_Columns()
    {
       TheG.ColumnHeadersHeight = ZXC.Q2un;

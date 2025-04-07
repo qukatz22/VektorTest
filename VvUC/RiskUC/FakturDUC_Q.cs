@@ -3219,7 +3219,34 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                #endregion ADD new MOC/MOS Artikl, check MOC RAM/HDD kind
 
+               #region ValidateMOD_dokDate
+
+               DateTime maxDate = theDUC.Get_PTG_MOD_MAX_DokDate();
+
+               if(Fld_DokDate.Date > maxDate)
+               {
+                  ZXC.RaiseErrorProvider(theDUC.tbx_DokDate, "Datum modifikacije ne smije biti veći od datuma UgAn-a " + maxDate.ToString(ZXC.VvDateFormat));
+                  e.Cancel = true;
+                  //Fld_DokDate = maxDate;
+               }
+
+               #endregion ValidateMOD_dokDate
+
             } // if(this is MOD_PTG_DUC)
+
+            if(this.IsPTG_Dodaci_DUC) // DIZ, PVR, ZIZ 
+            {
+               FakturPDUC theDUC = (FakturPDUC)this;
+
+               DateTime minDate = theDUC.Get_PTG_DOD_MIN_DokDate();
+
+               if(Fld_DokDate.Date < minDate)
+               {
+                  ZXC.RaiseErrorProvider(theDUC.tbx_DokDate, "Datum dodatka ne smije biti manji od datuma UgAn-a " + minDate.ToString(ZXC.VvDateFormat));
+                  e.Cancel = true;
+                  //Fld_DokDate = maxDate;
+               }
+            }
 
             #region PTG Set Artificial Serno
 
@@ -6274,7 +6301,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
-      PVR_PTG_DUC the_PVR_DUC = this as PVR_PTG_DUC;
+      PVR_PTG_DUC thePVR_DUC = this as PVR_PTG_DUC;
 
 
       VvTextBox currVvTextBox = theGrid2.EditingControl as VvTextBox;
@@ -6288,6 +6315,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       theGrid2.PutCell(ci2.iT_serno, currRowIdx, theSerno);
 
       if(theSerno.IsEmpty()) return;
+
+      Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
 
       #endregion Init stuff
 
@@ -6313,7 +6342,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Check for double serno entry
 
-      Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
+      #region Postoji li uopce u bazi ovaj serno?
 
       bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
 
@@ -6326,19 +6355,42 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          return;
       }
 
-      // tu si stao, sad treba provjewriti da li je prema last_rtrano_rec_forThisSerno 
-      // taj serno primjeren za ovaj povrat                                            
-      // qweqwe smije li ovaj serno doc na ovaj POVRAT?
-      // 
-      //UgAnDod_rtrans_rec_Found = UgAnDod_rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, UgAnDod_rtrans_rec, rtrano_rec.T_rtrRecID, false, false);
+      #endregion postoji li uopce u bazi ovaj serno?
 
-      string povratNaSkladCD = the_PVR_DUC.faktur_rec.SkladCD2;
+      #region Smije li ovaj serno doc na ovaj POVRAT?
 
-      last_rtrano_rec_forThisSerno.T_skladCD = povratNaSkladCD;
+      uint UGAN_ttNum = thePVR_DUC.UGAN_ttNum_ofThisDUC;
 
-      uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(last_rtrano_rec_forThisSerno);
+      List<Rtrano> UGAN_RtranoList = RtranoDao.Get_UGAN_RtranoList(TheDbConnection, UGAN_ttNum, true);
 
-      last_rtrano_rec_forThisSerno.T_rtrRecID = theT_RecID;
+      if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
+         e.Cancel = true;
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         return;
+      }
+
+      #endregion smije li ovaj serno doc na ovaj POVRAT?
+
+      #region Korigiraj SklaCD, RtrRecID i pukni ga na grid 
+
+      string povratNaSkladCD = thePVR_DUC.faktur_rec.SkladCD2;
+
+      Rtrano newPVR_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+
+      newPVR_rtrano_rec.T_skladCD = povratNaSkladCD;
+
+      uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(newPVR_rtrano_rec);
+
+      newPVR_rtrano_rec.T_rtrRecID = theT_RecID;
+
+      thePVR_DUC.PutDgvLineFields2(newPVR_rtrano_rec, currRowIdx, true);
+
+      theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
+
+      #endregion korigiraj SklaCD, RtrRecID i pukni ga na grid 
    }
 
    internal uint Get_UgAnDod_Rtrans_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
