@@ -6361,7 +6361,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       uint UGAN_ttNum = thePVR_DUC.UGAN_ttNum_ofThisDUC;
 
-      List<Rtrano> UGAN_RtranoList = RtranoDao.Get_UGAN_RtranoList(TheDbConnection, UGAN_ttNum, true);
+      List<Rtrano> UGAN_RtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, UGAN_ttNum);
 
       if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
       {

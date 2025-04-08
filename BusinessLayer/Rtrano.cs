@@ -590,6 +590,27 @@ public class Rtrano : VvTransRecord
 
    public uint R_kurac { get; set; }
 
+   public bool R_PTG_Rtrano_TT_is_Ulaz_fromUNJ
+   {
+      get
+      {
+         return
+            this.T_TT == Faktur.TT_PV2 ||
+            this.T_TT == Faktur.TT_ZU2  ;
+      }
+   }
+   public bool R_PTG_Rtrano_TT_is_Izlaz_toUNJ
+   {
+      get
+      {
+         return 
+            this.T_TT == Faktur.TT_UG2 || 
+            this.T_TT == Faktur.TT_AU2 || 
+            this.T_TT == Faktur.TT_DI2 || 
+            this.T_TT == Faktur.TT_ZI2  ;
+      }
+   }
+
    #endregion PCTOGO propertiz
 
    #endregion propertiz 

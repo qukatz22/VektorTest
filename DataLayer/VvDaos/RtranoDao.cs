@@ -660,6 +660,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
    #region Get_UGAN_RtranoList
 
+   public static List<Rtrano> Get_UGAN_RtranoList_stillUNJonly(XSqlConnection conn, uint _UGAN_ttNum)
+   {
+      return Get_UGAN_RtranoList(conn, _UGAN_ttNum, true);
+   }
+
    /// <summary>
    /// Ovo daje listu svih Rtrano-a koji pripadaju izvornom UgAn-u ili od njega rođenim 
    /// DIZ-ovima, ZIZ-ovima i PVR-ovima
@@ -668,7 +673,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
    /// <param name="conn"></param>
    /// <param name="_UGAN_ttNum"></param>
    /// <returns></returns>
-   public static List<Rtrano> Get_UGAN_RtranoList(XSqlConnection conn, /*string UGAN_tt,*/ uint _UGAN_ttNum, bool stillUNJonly)
+   public static List<Rtrano> Get_UGAN_RtranoList(XSqlConnection conn, uint _UGAN_ttNum, bool stillUNJonly)
    {
       List<Rtrano> UGAN_RtranoList = new List<Rtrano>();
 
@@ -687,7 +692,11 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       List<Rtrano> thisSerno_RtranoList;
 
-      int    thisSernoCount;
+      int    thisSernoCount      ;
+      int    thisSernoCount_SALDO;
+      int    thisSernoCount_Izlaz;
+      int    thisSernoCount_Ulaz ;
+
       string thisSerno     ;
       bool   leaveLastOne  ;
       bool   deleteAll     ;
@@ -698,11 +707,23 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
          thisSernoCount = UGAN_RtranoList.Count(rto => rto.T_serno == thisSerno);
 
+         thisSernoCount_Izlaz = UGAN_RtranoList.Count(rto => rto.T_serno == thisSerno && rto.R_PTG_Rtrano_TT_is_Izlaz_toUNJ );
+         thisSernoCount_Ulaz  = UGAN_RtranoList.Count(rto => rto.T_serno == thisSerno && rto.R_PTG_Rtrano_TT_is_Ulaz_fromUNJ);
+
+         thisSernoCount_SALDO = thisSernoCount_Izlaz - thisSernoCount_Ulaz;
+
+         if(thisSernoCount != thisSernoCount_Izlaz + thisSernoCount_Ulaz) throw new Exception("thisSernoCount != thisSernoCount_Izlaz + thisSernoCount_Ulaz");
+
        //if(thisSernoCount == 1                       ) continue;
          if(thisSernoCount == 1 || thisSerno.IsEmpty()) continue;
 
-         leaveLastOne = thisSernoCount.IsOdd(); // ostavi zadnjega ako je neparan broj pojava u listi 
+       //leaveLastOne = thisSernoCount.IsOdd(); // ostavi zadnjega ako je neparan broj pojava u listi 
+         leaveLastOne = thisSernoCount_SALDO.NotZero();
          deleteAll    = !leaveLastOne;
+
+         if(thisSernoCount_SALDO != 0 && thisSernoCount_SALDO != 1) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serno [{0}] ima nekonzistentan promet!\n\r\n\rIzlaza u najam {1}\n\r\n\rPovrata iznajma {2}", 
+
+            thisSerno, thisSernoCount_Izlaz, thisSernoCount_Ulaz);
 
          if(deleteAll)
          {
