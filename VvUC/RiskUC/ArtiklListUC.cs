@@ -2482,8 +2482,12 @@ public class RtranoListUC : VvRecLstUC
       tbx_PCK_HDD   , 
       tbx_PCK_Opis  ,
       tbx_skladDate ,
-      tbx_skladCD   ;
-   
+      tbx_skladCD   ,
+      tbx_kupDobCD     ,  
+      tbx_kupDobNaziv    ,  
+      tbx_TT        ,            
+      tbx_TtNum     ;
+
    #endregion Fieldz
 
    #region Constructor
@@ -2502,8 +2506,13 @@ public class RtranoListUC : VvRecLstUC
       grBoxLimitiraj.Visible = false;
 
       SetControlForInitialFocus();
-      
 
+      this.button_Reset.Visible = false;
+
+      if(parent is VvFindDialog)
+      {
+         (parent as VvFindDialog).button_AddSifrarRec.Visible = false;
+      }
    }
 
    protected override void InitializeFindFormSpecifics()
@@ -2527,10 +2536,10 @@ public class RtranoListUC : VvRecLstUC
 
    protected override void CreateHamperSpecifikum()
    {
-      hampSpecifikum = new VvHamper(9, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
-
-      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q7un,ZXC.Q6un, ZXC.Q9un,ZXC.Q3un, ZXC.Q3un,ZXC.Q5un, ZXC.Q4un, ZXC.Q4un };
-      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4,ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hampSpecifikum = new VvHamper(13, 1, "", this, true, ZXC.Qun4, nextY, razmakHamp);
+      //                                             0          1         2         3        4         5         6               7             8         9         10            11            12
+      hampSpecifikum.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q7un, ZXC.Q6un, ZXC.Q9un, ZXC.Q3un, ZXC.Q3un, ZXC.Q5un, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un, ZXC.Q4un, ZXC.Q4un-ZXC.Qun4, ZXC.Q2un };
+      hampSpecifikum.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8         , ZXC.Qun8 };
       hampSpecifikum.VvRightMargin = hampSpecifikum.VvLeftMargin;
 
       hampSpecifikum.VvRowHgt       = new int[] { ZXC.QUN };
@@ -2541,27 +2550,35 @@ public class RtranoListUC : VvRecLstUC
       tbx_serno = hampSpecifikum.CreateVvTextBox (1, 0, "tbx_serno", "", 32);
       tbx_serno.TextChanged += new EventHandler(FindSifrarTextBox_TextChanged_PERFORM_button_Go_Prev_Next_Action);
 
-      tbx_artiklCD   = hampSpecifikum.CreateVvTextBox(2, 0, "tbx_artiklCD"  , "", 32);
-      tbx_artiklName = hampSpecifikum.CreateVvTextBox(3, 0, "tbx_artiklName", "", 32);
-      tbx_PCK_RAM    = hampSpecifikum.CreateVvTextBox(4, 0, "tbx_PCK_RAM"   , "", 32);
-      tbx_PCK_HDD    = hampSpecifikum.CreateVvTextBox(5, 0, "tbx_PCK_HDD"   , "", 32);
-      tbx_PCK_Opis   = hampSpecifikum.CreateVvTextBox(6, 0, "tbx_PCK_Opis"  , "", 32);
-      tbx_skladDate  = hampSpecifikum.CreateVvTextBox(7, 0, "tbx_skladDate" , "", 32);
-      tbx_skladCD    = hampSpecifikum.CreateVvTextBox(8, 0, "tbx_skladCD"   , "", 32);
+      tbx_artiklCD    = hampSpecifikum.CreateVvTextBox( 2, 0, "tbx_artiklCD"  , "", 32);
+      tbx_artiklName  = hampSpecifikum.CreateVvTextBox( 3, 0, "tbx_artiklName", "", 32);
+      tbx_PCK_RAM     = hampSpecifikum.CreateVvTextBox( 4, 0, "tbx_PCK_RAM"   , "", 32);
+      tbx_PCK_HDD     = hampSpecifikum.CreateVvTextBox( 5, 0, "tbx_PCK_HDD"   , "", 32);
+      tbx_PCK_Opis    = hampSpecifikum.CreateVvTextBox( 6, 0, "tbx_PCK_Opis"  , "", 32);
+      tbx_kupDobCD    = hampSpecifikum.CreateVvTextBox( 7, 0, "tbx_kpdCD"     , "", 6 );
+      tbx_kupDobNaziv = hampSpecifikum.CreateVvTextBox( 8, 0, "tbx_kupDob"    , "", 32);
+      tbx_TT          = hampSpecifikum.CreateVvTextBox( 9, 0, "tbx_TT"        , "", 3 );
+      tbx_TtNum       = hampSpecifikum.CreateVvTextBox(10, 0, "tbx_TtNum"     , "", 10);
+      tbx_skladDate   = hampSpecifikum.CreateVvTextBox(11, 0, "tbx_skladDate" , "", 32);
+      tbx_skladCD     = hampSpecifikum.CreateVvTextBox(12, 0, "tbx_skladCD"   , "", 32);
 
       tbx_PCK_RAM.JAM_ForeColor   = Color.Red  ;
       tbx_PCK_HDD.JAM_ForeColor   = Color.Green;
       tbx_PCK_RAM.JAM_Highlighted = true;
       tbx_PCK_HDD.JAM_Highlighted = true;
 
-      VvHamper.Open_Close_Fields_ForWriting(tbx_serno     , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_RAM   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_HDD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_Opis  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_skladDate , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
-      VvHamper.Open_Close_Fields_ForWriting(tbx_skladCD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_serno      , ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklCD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_artiklName , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_RAM    , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_HDD    , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_PCK_Opis   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_skladDate  , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_skladCD    , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_kupDobCD   , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_kupDobNaziv, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_TT         , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_TtNum      , ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
    }
 
    
@@ -2587,7 +2604,7 @@ public class RtranoListUC : VvRecLstUC
          AddDGV_ArhivaColumns(ref sumOfColWidth);
       }
       
-      colWidth = colSif6Width;                                  AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RecID"    , colWidth, false, 0, "recID");
+      colWidth = colSif6Width;                              AddDGVColum_RecID_4GridReadOnly   (TheGrid, "RecID"           , colWidth, false, 0, "recID");
       
       colWidth = ZXC.Q5un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Serno"           , colWidth, false  , "t_serno"     );
       colWidth = ZXC.Q6un; sumOfColWidth += colWidth;       AddDGVColum_String_4GridReadOnly  (TheGrid, "Šifra Artikla"   , colWidth, false  , "t_artiklCD"  );
@@ -2617,13 +2634,20 @@ public class RtranoListUC : VvRecLstUC
 
       RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, rtrano_rec, Fld_SerNo);
 
-      Fld_ArtiklCD   = rtrano_rec.T_artiklCD                            ;  //TheGrid[ 2, rowIdx].Value.ToString();
-      Fld_ArtiklName = rtrano_rec.T_artiklName                          ;  //TheGrid[ 3, rowIdx].Value.ToString();
-      Fld_PCK_RAM    = rtrano_rec.T_PCK_RAM.ToString0Vv()               ;  //((decimal)TheGrid[ 4, rowIdx].Value).ToString0Vv();
-      Fld_PCK_HDD    = rtrano_rec.T_PCK_HDD.ToString0Vv()               ;  //((decimal)TheGrid[ 5, rowIdx].Value).ToString0Vv();
-      Fld_PCK_Opis   = rtrano_rec.T_grCD                                ;  //((decimal)TheGrid[ 5, rowIdx].Value).ToString0Vv();
-      Fld_SkladDate  = rtrano_rec.T_skladDate.ToString(ZXC.VvDateFormat);  //TheGrid[10, rowIdx].Value.ToString();
-      Fld_SkladCD    = rtrano_rec.T_skladCD                             ;  //TheGrid[11, rowIdx].Value.ToString();
+      Kupdob kupdob_rec = this.Get_Kupdob_FromVvUcSifrar(rtrano_rec.T_kupdobCD);
+
+
+      Fld_ArtiklCD    = rtrano_rec.T_artiklCD                            ; 
+      Fld_ArtiklName  = rtrano_rec.T_artiklName                          ; 
+      Fld_PCK_RAM     = rtrano_rec.T_PCK_RAM.ToString0Vv()               ; 
+      Fld_PCK_HDD     = rtrano_rec.T_PCK_HDD.ToString0Vv()               ; 
+      Fld_PCK_Opis    = rtrano_rec.T_grCD                                ; 
+      Fld_SkladDate   = rtrano_rec.T_skladDate.ToString(ZXC.VvDateFormat); 
+      Fld_SkladCD     = rtrano_rec.T_skladCD                             ; 
+      Fld_KupdobCd    = rtrano_rec.T_kupdobCD                            ; 
+      Fld_KupDobNaziv = kupdob_rec.Naziv                                 ; 
+      Fld_TT          = rtrano_rec.T_TT                                  ; 
+      Fld_TtNum       = rtrano_rec.T_ttNum.ToString()                    ; 
    }
 
    #endregion DataGridView
@@ -2637,7 +2661,12 @@ public class RtranoListUC : VvRecLstUC
    public string Fld_PCK_HDD    { get { return tbx_PCK_HDD   .Text; } set { tbx_PCK_HDD   .Text = value; } }
    public string Fld_SkladDate  { get { return tbx_skladDate .Text; } set { tbx_skladDate .Text = value; } }
    public string Fld_SkladCD    { get { return tbx_skladCD   .Text; } set { tbx_skladCD   .Text = value; } }
-   public string Fld_PCK_Opis      { get { return tbx_PCK_Opis   .Text; } set { tbx_PCK_Opis  .Text = value; } }
+   public string Fld_PCK_Opis   { get { return tbx_PCK_Opis   .Text; } set { tbx_PCK_Opis  .Text = value; } }
+   public uint Fld_KupdobCd     { get { return tbx_kupDobCD.GetSomeRecIDField(); } set { tbx_kupDobCD.PutSomeRecIDField(value); } }
+   public string Fld_KupDobNaziv{ get { return tbx_kupDobNaziv.Text; } set { tbx_kupDobNaziv.Text = value; } }
+   public string Fld_TT         { get { return tbx_TT         .Text; } set { tbx_TT         .Text = value; } }
+   public string Fld_TtNum      { get { return tbx_TtNum      .Text; } set { tbx_TtNum      .Text = value; } }
+  
    public string SelectedTT
    {
       get

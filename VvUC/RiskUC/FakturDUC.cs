@@ -7067,16 +7067,12 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    {
       AddDGVColum_RecID_4GridReadOnly   (PTG_DodGrid, "RecID"     , ZXC.Q2un, false, 0);   
       AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Dokument"  , ZXC.Q6un, false );
-    //AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "DOD num"   , ZXC.Q4un, false);  
       AddDGVColum_DateTime_4GridReadOnly(PTG_DodGrid, "Datum"     , ZXC.Q4un          );
       AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Šifra"     , ZXC.Q5un, false);
       AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Naziv"     , ZXC.Q6un, true);
-    //AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "SerBroj"   , ZXC.Q6un, false);
       AddDGVColum_Decimal_4GridReadOnly (PTG_DodGrid, "Kol"       , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_DodGrid, "Cijena"    , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_DodGrid, "Iznos"     , ZXC.Q5un,        2);
-    //AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Napomena"  , ZXC.Q5un, true);
-    //AddDGVColum_String_4GridReadOnly  (PTG_DodGrid, "Račun Broj", ZXC.Q5un, false);
    }
 
    private void AddColumnsToGrid_PTG_UNA_ANA() 
@@ -7086,7 +7082,6 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       AddDGVColum_DateTime_4GridReadOnly(PTG_UNA_ANA_Grid, "Datum"     , ZXC.Q4un          );
       AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Šifra"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Naziv"     , ZXC.Q5un, true    );
-    //AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "SerBroj"   , ZXC.Q6un, false   );
       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Kol"       , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Cijena"    , ZXC.Q5un,        2);
       AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Iznos"     , ZXC.Q5un,        2);
@@ -7107,7 +7102,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    {
       AddDGVColum_RecID_4GridReadOnly (PTG_StanjeSerno_Grid, "RecID"     , ZXC.Q2un, false, 0);   
       AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Dokument"  , ZXC.Q6un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "SerBroj"   , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "SerBroj"   , ZXC.Q8un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Šifra"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Naziv"     , ZXC.Q5un, true    );
       AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Tip"       , ZXC.Q3un, false   );
@@ -7122,7 +7117,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    {
       AddDGVColum_RecID_4GridReadOnly (PTG_DODrtrano_Grid, "RecID"     , ZXC.Q2un, false, 0);   
       AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Dokument"  , ZXC.Q6un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "SerBroj"   , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "SerBroj"   , ZXC.Q8un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Šifra"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Naziv"     , ZXC.Q5un, true    );
       AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Tip"       , ZXC.Q3un, false   );

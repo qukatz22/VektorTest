@@ -2863,7 +2863,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
                this.Width = grid_Width + 2 * ZXC.QUN;
                TheGrid.Width = grid_Width;
             }
-            else if(hampFilter.Right > (hampSpecifikum.Right + hampIzlistaj.Width + ZXC.Qun2) && hampFilter.Right > grid_Width)
+        //else if(hampFilter.Right > (hampSpecifikum.Right + hampIzlistaj.Width + ZXC.Qun2) && hampFilter.Right > grid_Width)
+            else if(hampFilter!= null && hampFilter.Right > (hampSpecifikum.Right + hampIzlistaj.Width + ZXC.Qun2) && hampFilter.Right > grid_Width)
             {
                this.Width = hampFilter.Right + ZXC.QUN + ZXC.Qun2;
                TheGrid.Width = this.Width - 2 * ZXC.QunMrgn;

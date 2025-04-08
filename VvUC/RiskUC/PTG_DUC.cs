@@ -2611,7 +2611,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                           );
       T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
       T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
-      T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "PvrSt"        , "PVR stavka"                     );
+      T_paletaNo_CreateColumn       (ZXC.Q3un,    false    , "PvrSt"        , "PVR stavka"                     );
       T_rtrRecID_CreateColumn       (ZXC.Q3un,    false    , "RtrRecID"     , "RtrRecID"                       );
    }
 
