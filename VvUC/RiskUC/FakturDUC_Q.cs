@@ -2825,13 +2825,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          // ili i jedno i drugo puno ili i jedno i drugo prazno
          // ... + validacija TtNum-a 
 
+         // 09.04.2025: takoder, ako je aktiviran 'slovacki' kupon (taj nije izdan iz Vektora)      
+         bool izdanJe20postotniKupon = Fld_V2_ttNum == 20; // 
+
          bool is_KPN_IN_TtNum_IS_EMPTY  = theIRMDUC.Fld_V2_ttNum .IsZero ();
          bool is_KPN_IN_TtNum_NOT_EMPTY = theIRMDUC.Fld_V2_ttNum .NotZero();
          bool is_KPN_IN_RbtSt_IS_EMPTY  = theIRMDUC.Fld_Decimal02.IsZero ();
          bool is_KPN_IN_RbtSt_NOT_EMPTY = theIRMDUC.Fld_Decimal02.NotZero();
 
          if((is_KPN_IN_TtNum_NOT_EMPTY || is_KPN_IN_RbtSt_NOT_EMPTY) &&
-            (is_KPN_IN_TtNum_IS_EMPTY  || is_KPN_IN_RbtSt_IS_EMPTY))
+            (is_KPN_IN_TtNum_IS_EMPTY  || is_KPN_IN_RbtSt_IS_EMPTY)  &&
+            izdanJe20postotniKupon == false)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Za ZAPRIMANJE KUPONA potrebno je zadati i broj kupona (broj računa) i iznos popusta!");
             e.Cancel = true;
@@ -3374,6 +3378,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       // 11.03.2024: 'vracamo uvjet ali osim u nekom periodu 5w poslovnice mogu sto hoce!' 
       bool ostvareniSuUvjetiZaBezuvjetniRabat = ZXC.IsTH_5WeekShop(skladCD) && ZXC.IsTH_specialPeriod(dokDate);
+
+      // 09.04.2025: takoder, ako je aktiviran 'slovacki' kupon (taj nije izdan iz Vektora)      
+      bool izdanJe20postotniKupon = Fld_V2_ttNum == 20; // 
+
+      if(izdanJe20postotniKupon) ostvareniSuUvjetiZaBezuvjetniRabat = true;
+
       if(ostvareniSuUvjetiZaBezuvjetniRabat) return false;
 
       ukKC = Math.Abs(ukKC); // za slucaj kada je storno, ne zelimo proglasavati neopravdanost 

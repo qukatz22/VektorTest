@@ -1978,6 +1978,9 @@ public class IRMDUC              : FakturExtDUC
    {
       if(ZXC.IsTEXTHOshop == false) return false;
 
+      // 09.04.2025: slovacki kupon od 20%
+      if(Fld_V2_ttNum == 20) return false;
+
       if(Fld_V2_ttNum < 1400001 || Fld_V2_ttNum > 9999999) return true;
 
       return false;
