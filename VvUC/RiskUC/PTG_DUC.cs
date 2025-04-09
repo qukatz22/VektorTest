@@ -1550,6 +1550,51 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
 
+   public bool GetLastFakturForThisSerno(XSqlConnection conn, Faktur faktur_rec, string theSerno/*, bool shouldBeSilent*/)
+   {
+      Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
+
+      bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(conn, last_rtrano_rec_forThisSerno, theSerno, true);
+
+      if(isLastRtrano_ForSerno_found == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Nepoznat serijski broj?!");
+         return false;
+      }
+
+      (string UgAn_TT, uint UgAn_TtNum) = Get_UgAnFaktur_TtAndTtNum_ForThisTtAndTtNum(last_rtrano_rec_forThisSerno.T_TT, last_rtrano_rec_forThisSerno.T_ttNum);
+
+      FakturDao.SetMeFaktur(conn, faktur_rec, UgAn_TT, UgAn_TtNum, false);
+
+      return true;
+   }
+
+   internal static (string UgAn_TT, uint UgAn_TtNum) Get_UgAnFaktur_TtAndTtNum_ForThisTtAndTtNum(string _theTT, uint _theTtNum)
+   {
+      string UgAnFaktur_TT = "";
+      uint   UgAn_TtNum   ;
+
+      TtInfo ttInfo = ZXC.TtInfo(_theTT);
+
+      // Trazimo TT Faktur dokumenta na osnovi Rtrano ili Rtrans TT-a 
+
+           if(ttInfo.IsPTGFaktur_UgAnTT    ) { UgAnFaktur_TT =                 _theTT; UgAn_TtNum = _theTtNum; } // UGN, AUN ... ostavi nepromijenjeno 
+      else if(ttInfo.IsPTGTwinRtrans_UgAnTT) { UgAnFaktur_TT = ttInfo.LinkedDefaultTT; UgAn_TtNum = _theTtNum; } // UG2, AU2 ... ostavi nepromijenjeno 
+
+      else // DODACI (DIZ, PVR, ZIZ) 
+      {
+         bool isUGN = _theTtNum < 100000000;
+         bool isAUN = !isUGN;
+
+         if(isUGN) UgAnFaktur_TT = Faktur.TT_UGN;
+         if(isAUN) UgAnFaktur_TT = Faktur.TT_AUN;
+
+         UgAn_TtNum = _theTtNum / 1000;
+      }
+
+      return (UgAnFaktur_TT, UgAn_TtNum);
+   }
+
 }
 
 // staru nomenklaturu "UGO" (nova je UGN) smo morali ostaviti kod naziva DUC-a jer je vec otislo u vvusercontrol 

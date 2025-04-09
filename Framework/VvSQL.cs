@@ -2979,7 +2979,7 @@ public static class VvSQL
       XSqlCommand cmd = InitCommand(conn);
 
     //string whichTT = isDODnumWanted ? "(TT = 'DIZ' OR TT = 'PVR' OR TT = 'ZIZ')"    : "TT = 'AUN'";
-      string whichTT = isDODnumWanted ? "TT IN " + GetInSetClause(TtInfo.array_DodTT) : "TT = 'AUN'";
+      string whichTT = isDODnumWanted ? "TT IN " + GetInSetClause(TtInfo.array_FakturDodTT) : "TT = 'AUN'";
 
       cmd.CommandText = "SELECT MAX(" + VvSQL.ttNumColName + ") FROM " + recordName + " \n" +
                         "WHERE "      + whichTT                                     + " \n" +

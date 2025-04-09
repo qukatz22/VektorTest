@@ -1108,17 +1108,16 @@ public struct TtInfo
    //};
    //public bool HasRtranoForSernoTT { get { return ZXC.IsPCTOGOdomena && array_hasRtranoForSernoTT.Contains(TheTT); } }
 
-   private static string[] array_UgAnDodTT = new string[] {
+   private static string[] array_FakturUgAnTT = new string[] {
       Faktur.TT_UGN, // PCTGO tt 
       Faktur.TT_AUN, // PCTGO tt 
-      Faktur.TT_DIZ, // PCTGO tt 
-      Faktur.TT_PVR, // PCTGO tt 
+    //Faktur.TT_DIZ, // PCTGO tt 
+    //Faktur.TT_PVR, // PCTGO tt 
     //Faktur.TT_PVD, // PCTGO tt 
-      Faktur.TT_ZIZ, // PCTGO tt 
+    //Faktur.TT_ZIZ, // PCTGO tt 
    };
-   public bool IsPTG_UgAnDodTT { get { return ZXC.IsPCTOGOdomena && array_UgAnDodTT.Contains(TheTT); } }
 
-   /*private*/ public static string[] array_DodTT = new string[] {
+   /*private*/ public static string[] array_FakturDodTT = new string[] {
     //Faktur.TT_UGN, // PCTGO tt 
     //Faktur.TT_AUN, // PCTGO tt 
       Faktur.TT_DIZ, // PCTGO tt 
@@ -1126,7 +1125,27 @@ public struct TtInfo
     //Faktur.TT_PVD, // PCTGO tt 
       Faktur.TT_ZIZ, // PCTGO tt 
    };
-   public bool IsPTG_DodTT { get { return ZXC.IsPCTOGOdomena && array_DodTT.Contains(TheTT); } }
+   public bool IsPTGFaktur_UgAnTT    { get { return ZXC.IsPCTOGOdomena && array_FakturUgAnTT.Contains(TheTT); } }
+   public bool IsPTGFaktur_DodTT     { get { return ZXC.IsPCTOGOdomena && array_FakturDodTT.Contains(TheTT); } }
+   public bool IsPTGFaktur_UgAnDodTT { get { return IsPTGFaktur_UgAnTT || IsPTGFaktur_DodTT; } }
+
+
+   private static string[] array_TwinRtransUgAnTT = new string[] {
+      Faktur.TT_UG2, // PCTGO tt 
+      Faktur.TT_AU2, // PCTGO tt 
+   };
+
+   /*private*/ public static string[] array_TwinRtransDodTT = new string[] {
+      Faktur.TT_DI2, // PCTGO tt 
+      Faktur.TT_PV2, // PCTGO tt 
+      Faktur.TT_ZI2, // PCTGO tt 
+
+      Faktur.TT_ZU2, // PCTGO tt 
+   };
+   public bool IsPTGTwinRtrans_UgAnTT    { get { return ZXC.IsPCTOGOdomena && array_TwinRtransUgAnTT.Contains(TheTT); } }
+   public bool IsPTGTwinRtrans_DodTT     { get { return ZXC.IsPCTOGOdomena && array_TwinRtransDodTT.Contains(TheTT); } }
+   public bool IsPTGTwinRtrans_UgAnDodTT { get { return IsPTGTwinRtrans_UgAnTT || IsPTGTwinRtrans_DodTT; } }
+
 
    private static string[] array_isPTG_YYinTtNum = new string[] {
       Faktur.TT_MOD, // PCTGO tt 
@@ -1138,8 +1157,8 @@ public struct TtInfo
    };
    public bool IsPTG_YYinTtNum_99999 { get { return ZXC.IsManyYearDB && IsPTG_YYinTtNum && IsPrihodTT; } }
    public bool IsPTG_YYinTtNum       { get { return ZXC.IsManyYearDB && array_isPTG_YYinTtNum.Contains(TheTT); } }
-   public bool IsPTG_TT              { get { return ZXC.IsPCTOGOdomena && IsPTG_UgAnDodTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
-   public bool IsPTG_KUGinTtNum      { get { return ZXC.IsPCTOGOdomena && (IsPTG_UgAnDodTT && TheTT != Faktur.TT_UGN)/*|| TheTT == Mixer.TT_KOP*/; } } 
+   public bool IsPTG_TT              { get { return ZXC.IsPCTOGOdomena && IsPTGFaktur_UgAnDodTT || IsPTG_YYinTtNum || TheTT == Faktur.TT_KUG; } } // 6 + 6 + 1 = 13 PTG TT-ova 
+   public bool IsPTG_KUGinTtNum      { get { return ZXC.IsPCTOGOdomena && (IsPTGFaktur_UgAnDodTT && TheTT != Faktur.TT_UGN)/*|| TheTT == Mixer.TT_KOP*/; } } 
 
    #endregion ... PTG ... SPECIALS
 
@@ -3254,7 +3273,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             #region PTG Set Artificial Serno
 
-            if(faktur_rec.TtInfo.IsPTG_UgAnDodTT)
+            if(faktur_rec.TtInfo.IsPTGFaktur_UgAnDodTT)
             {
                for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
                {

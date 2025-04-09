@@ -1666,7 +1666,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
 
       TtInfo ttinfo = ZXC.TtInfo(theTT);
 
-      if(ttinfo.IsPTG_UgAnDodTT) return true; // u Ping - Pong (UGN, AUN, DIZ, ZIZ, PVR) trebamo uvijek serno iako ga artikl nema, zbog automatskog stvaranja liste za povrat 
+      if(ttinfo.IsPTGFaktur_UgAnDodTT) return true; // u Ping - Pong (UGN, AUN, DIZ, ZIZ, PVR) trebamo uvijek serno iako ga artikl nema, zbog automatskog stvaranja liste za povrat 
 
       // ako smo dosli do ovdje, znaci da smo na PRI, URA, IZD, MPI, IRA       
       // na ovim TT-ovima serno trebaju samo oni koji zaista imaju pravi serno 
