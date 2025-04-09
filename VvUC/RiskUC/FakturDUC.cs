@@ -374,7 +374,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_Dokumenti_Grid, 0);
 
-         PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_Dokumenti_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
 
          #endregion PTG_DokumentiUzUGAN
 
@@ -395,7 +395,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_DodGrid, 0);
 
 
-         PTG_DodGrid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_DodGrid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
 
          #endregion PTG_DodGrid
 
@@ -413,7 +413,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_DODrtrano_Grid, 0);
 
-         PTG_DODrtrano_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_DODrtrano_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
 
          #endregion PTG_DODrtrano
 
@@ -432,7 +432,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_UNA_ANA_Grid);
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_ANA_Grid, 0);
-         PTG_UNA_ANA_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_UNA_ANA_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
 
          #endregion PTG_UnaAnaGrid
 
@@ -452,6 +452,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_SIN_Grid, 0);
 
+         PTG_UNA_SIN_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
+
          #endregion STANJE NAJMA - rtrans
 
          #region STANJE NAJMA - rtrano
@@ -468,7 +470,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //
          GridLocationAndSize_PTG_OplAndDodGrids(PTG_StanjeSerno_Grid, 0);
 
-         PTG_StanjeSerno_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC);
+         PTG_StanjeSerno_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
 
          #endregion STANJE NAJMA - rtrano
 
@@ -3486,21 +3488,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       get { return ZXC.ValOrZero_UInt(tbx_TtNum.Text); }
       set
       {
-         //tbx_TtNum.Text = value.ToString(/*"00000"*/);
-         //this.oldTtNum = value;
-              if(this is KUG_PTG_DUC      ) tbx_TtNum.Text = value.ToString("00");
-         else if(this is UGNorAUN_PTG_DUC ) tbx_TtNum.Text = value.ToString("0000000");
-         else if(this is DIZ_PTG_DUC     ||
-                 this is PVR_PTG_DUC     ||
-               //this is PVD_PTG_DUC     ||
-                 this is ZIZ_PTG_DUC      ) tbx_TtNum.Text = value.ToString("0000000000");
-         else if(IsPTG_Common_DUC        ||
-                 this is MOD_PTG_DUC      ) tbx_TtNum.Text = value.ToString("00000000");
-         else
-         {
-            tbx_TtNum.Text = value.ToString(/*"00000"*/);
-            this.oldTtNum  = value;
-         }
+         tbx_TtNum.Text = value.ToString(/*"00000"*/);
+         this.oldTtNum = value;
+       //     if(this is KUG_PTG_DUC      ) tbx_TtNum.Text = value.ToString("00");
+       //else if(this is UGNorAUN_PTG_DUC ) tbx_TtNum.Text = value.ToString("0000000");
+       //else if(this is DIZ_PTG_DUC     ||
+       //        this is PVR_PTG_DUC     ||
+       //      //this is PVD_PTG_DUC     ||
+       //        this is ZIZ_PTG_DUC      ) tbx_TtNum.Text = value.ToString("0000000000");
+       //else if(IsPTG_Common_DUC        ||
+       //        this is MOD_PTG_DUC      ) tbx_TtNum.Text = value.ToString("00000000");
+       //else
+       //{
+       //   tbx_TtNum.Text = value.ToString(/*"00000"*/);
+       //   this.oldTtNum  = value;
+       //}
       }
    }
    public string Fld_SkladCD
@@ -7100,40 +7102,38 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    private void AddColumnsToGrid_PTG_UNA_StanjeSerno() 
    {
-      AddDGVColum_RecID_4GridReadOnly (PTG_StanjeSerno_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Dokument"  , ZXC.Q6un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "SerBroj"   , ZXC.Q8un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Šifra"     , ZXC.Q5un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Naziv"     , ZXC.Q5un, true    );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Tip"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "RAM klasa" , ZXC.Q4un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "HDD klasa" , ZXC.Q4un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "RAM"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "HDD"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid, "Opis"      , ZXC.Q6un, false   );
+      AddDGVColum_RecID_4GridReadOnly (PTG_StanjeSerno_Grid , "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "Dokument"  , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "SerBroj"   , ZXC.Q9un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "Šifra"     , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "Naziv"     , ZXC.Q5un, true    );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "Tip"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "RAM klasa" , ZXC.Q4un, false   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "HDD klasa" , ZXC.Q4un, false   );
+      AddDGVColum_Decimal_4GridReadOnly(PTG_StanjeSerno_Grid, "RAM"       , ZXC.Q3un, 0   );
+      AddDGVColum_Decimal_4GridReadOnly(PTG_StanjeSerno_Grid, "HDD"       , ZXC.Q3un, 0   );
+      AddDGVColum_String_4GridReadOnly(PTG_StanjeSerno_Grid , "Opis"      , ZXC.Q6un, false   );
    }
 
    private void AddColumnsToGrid_PTG_DOD_Rtrano() 
    {
-      AddDGVColum_RecID_4GridReadOnly (PTG_DODrtrano_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Dokument"  , ZXC.Q6un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "SerBroj"   , ZXC.Q8un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Šifra"     , ZXC.Q5un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Naziv"     , ZXC.Q5un, true    );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Tip"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "RAM klasa" , ZXC.Q4un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "HDD klasa" , ZXC.Q4un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "RAM"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "HDD"       , ZXC.Q3un, false   );
-      AddDGVColum_String_4GridReadOnly(PTG_DODrtrano_Grid, "Opis"      , ZXC.Q6un, false   );
+      AddDGVColum_RecID_4GridReadOnly  (PTG_DODrtrano_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "Dokument"  , ZXC.Q6un, false   );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "SerBroj"   , ZXC.Q9un, false   );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "Šifra"     , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "Naziv"     , ZXC.Q5un, true    );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "Tip"       , ZXC.Q3un, false   );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "RAM klasa" , ZXC.Q4un, false   );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "HDD klasa" , ZXC.Q4un, false   );
+      AddDGVColum_Decimal_4GridReadOnly(PTG_DODrtrano_Grid, "RAM"       , ZXC.Q3un, 0      );
+      AddDGVColum_Decimal_4GridReadOnly(PTG_DODrtrano_Grid, "HDD"       , ZXC.Q3un, 0      );
+      AddDGVColum_String_4GridReadOnly (PTG_DODrtrano_Grid, "Opis"      , ZXC.Q6un, false   );
    }
-
 
    private void AddColumnsToGrid_PTG_Dokumenti()
    { 
       AddDGVColum_RecID_4GridReadOnly (PTG_Dokumenti_Grid, "RecID"     , ZXC.Q2un, false, 0);   
       AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Dokument"  , ZXC.Q6un, false   );
-   // AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Broj"      , ZXC.Q6un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Datum"     , ZXC.Q5un, false   );
       AddDGVColum_String_4GridReadOnly(PTG_Dokumenti_Grid, "Iznos"     , ZXC.Q6un, false   );
    }
@@ -7616,18 +7616,20 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          rowIdx = PTG_StanjeSerno_Grid.RowCount - idxCorrector;
       
          colIdx = 0;
-      
+
+         Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(UNJrtrano_rec.T_artiklCD);
+
          PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */
          PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_TT + "-"+ UNJrtrano_rec.T_ttNum.ToString();
          PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_serno     ; /*"SerBroj"  */
          PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklCD  ; /*"Šifra"    */
          PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_artiklName; /*"Naziv"    */
-         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Tip"      */
-         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM klasa"*/
-         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD klasa"*/
-         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM"      */
-         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD"      */
-         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = "";                         /*"Opis"     */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = artikl_rec.TS             ; /*"Tip"      */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = artikl_rec.Grupa2CD       ; /*"RAM klasa"*/
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = artikl_rec.Grupa3CD       ; /*"HDD klasa"*/
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_PCK_RAM   ; /*"RAM"      */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_PCK_HDD   ; /*"HDD"      */
+         PTG_StanjeSerno_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_grCD      ; /*"Opis"     */
       
          PTG_StanjeSerno_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
@@ -7686,17 +7688,19 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       
          colIdx = 0;
       
+         Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(dodRtrano_rec.T_artiklCD);
+      
          PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_recID  ; /*"RecID"    */
          PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_TT + "-"+ dodRtrano_rec.T_ttNum.ToString();
          PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_serno     ; /*"SerBroj"  */
          PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_artiklCD  ; /*"Šifra"    */
          PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_artiklName; /*"Naziv"    */
-         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"Tip"      */
-         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM klasa"*/
-         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD klasa"*/
-         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"RAM"      */
-         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"HDD"      */
-         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = "";                         /*"Opis"     */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = artikl_rec.TS             ; /*"Tip"      */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = artikl_rec.Grupa2CD       ; /*"RAM klasa"*/
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = artikl_rec.Grupa3CD       ; /*"HDD klasa"*/
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_PCK_RAM   ; /*"RAM"      */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_PCK_HDD   ; /*"HDD"      */
+         PTG_DODrtrano_Grid[colIdx++, rowIdx].Value = dodRtrano_rec.T_grCD      ; /*"Opis"     */
 
          PTG_DODrtrano_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
@@ -7709,7 +7713,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    #region PTG Mouse Clicks
 
-   private void PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC(object sender, DataGridViewCellMouseEventArgs e)
+   private void PTG_DodGrid_CellMouseDoubleClick_OpenDOD_PTG_DUC_old(object sender, DataGridViewCellMouseEventArgs e)
    {
       //  uint selectedRecID = 0;
       //  string selectedTT = Faktur.TT_DIZ/* ""*/;
@@ -7729,6 +7733,53 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       string tipBr = theG.GetStringCell(1, rowIdx, false);
 
       ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+   }
+
+   private void PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      int dokument_CI   = theG.IdxForColumn("Dokument");
+      int artiklCD_CI   = theG.IdxForColumn("Šifra");
+      int artiklName_CI = theG.IdxForColumn("Naziv");
+
+      if(false) { }
+
+      else if(e.ColumnIndex == dokument_CI)
+      {
+         string tipBr = theG.GetStringCell(dokument_CI, rowIdx, false);
+
+         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+      }
+
+      else if(e.ColumnIndex == artiklCD_CI || e.ColumnIndex == artiklName_CI)
+      {
+         string artiklCD = theG.GetStringCell(artiklCD_CI, rowIdx, false);
+
+         if(artiklCD.IsEmpty()) return; // znaci da smo u zutome probali doubleclickom inicirati editiranje cell-a 
+
+         SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name);
+
+         Artikl artikl_rec;
+         try
+         {
+            artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == artiklCD).MakeDeepCopy();
+         }
+         catch(Exception ex)
+         {
+            artikl_rec = null;
+         }
+
+         if(artikl_rec != null)
+         {
+            TheVvTabPage.TheVvForm.OpenNew_Record_TabPage_wInitialRecord(TheVvTabPage.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.ART), artikl_rec);
+         }
+      }
+
    }
 
    private void PTG_OplGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)
