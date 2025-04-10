@@ -3268,6 +3268,17 @@ public class ZIZ_PTG_DUC : FakturPDUC
       SetUpColor(clr_DOD_PTG, Color.Empty, clr_DOD_PTG);
    }
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
+   public bool IsZIZ_completed 
+   { 
+      get 
+      {
+         // ZIZ je kompletiran kada je uspost simetrija:
+         // 1. ukZelenaKOL = ukBijelaKol
+         // 2. ukZelenaKOL + ukBijelaKol = ukPopunjenihSernoaCount
+         return false;
+      } 
+   }
 }
 
 public class PRN_DIZ_PTG_DUC : DIZ_PTG_DUC
