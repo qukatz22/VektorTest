@@ -8449,8 +8449,7 @@ public partial class FakturExtDUC : FakturDUC
    //private bool fransesLoaded;
    protected /*private*/ RadioButton rbt_nijeCarina, rbt_spediter, rbt_carina;
    private CheckBox cbx_isCash, cbx_isCash2, cbx_isRed/*, cbx_isKpnOUT*/;
-
-    public CheckBox cbx_isKpnOUT, cbx_isIncognito_Print, cbx_PrintIzjava;
+   public CheckBox cbx_isKpnOUT, cbx_isIncognito_Print, cbx_PrintIzjava;
 
    // 07.06.2018: 
    public DateTime Prev_ParagonIRM_Date;
@@ -22357,7 +22356,6 @@ public class VvGetLastFakturForThisSernoDlg : VvDialog
    private VvHamper hamper;
    private int dlgWidth, dlgHeight;
    private VvTextBox tbx_theWantedSerno;
-   public  Label lbl_nijeUgAn;
       
 #endregion Filedz
 
@@ -22386,28 +22384,165 @@ public class VvGetLastFakturForThisSernoDlg : VvDialog
 
    private void CreateHamper()
    {
-      hamper = new VvHamper(2, 3, "", this, false);
+      hamper = new VvHamper(2, 1, "", this, false);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q9un };
+      hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q9un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Q2un, ZXC.Q2un, ZXC.Q2un };
-      hamper.VvBottomMargin = hamper.VvTopMargin;
+      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Q2un };
+      hamper.VvBottomMargin = ZXC.QUN;
 
                            hamper.CreateVvLabel  (0, 0, "Serijski broj:", ContentAlignment.MiddleRight);
       tbx_theWantedSerno = hamper.CreateVvTextBox(1, 0, "tbx_theWantedSerno", "theWantedSerno");
-
-      lbl_nijeUgAn       = hamper.CreateVvLabel(0, 1, "", 1, 1, ContentAlignment.MiddleRight);
-
    }
 
    #endregion hamper
 
-   #region Fld_
-
+#region Fld_
    public string Fld_TheWantedSerno { get { return tbx_theWantedSerno.Text;   } set { tbx_theWantedSerno.Text   = value; } }
+
+#endregion Fld_
+}
+
+public class VvGetFirstFakturForThisArtiklAndKupdobDlg : VvDialog
+{
+#region Filedz
+
+   private Button okButton, cancelButton;
+   private VvHamper hamper;
+   private int dlgWidth, dlgHeight;
+   private VvTextBox tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName, tbx_ArtiklCd, tbx_ArtiklName;
+   public  Label lbl_nijeUgAn;
+      
+#endregion Filedz
+
+#region Constructor
+
+   public VvGetFirstFakturForThisArtiklAndKupdobDlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Tražilica";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right  + ZXC.Q3un;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_KupdobCd  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_KupdobTk  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_KupdobName, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_ArtiklCd  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_ArtiklName, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+#endregion Constructor
+
+#region hamper
+
+   private void CreateHamper()
+   {
+      hamper = new VvHamper(4, 2, "", this, false);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q3un, ZXC.Q4un, ZXC.Q10un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Q2un, ZXC.Q2un };
+      hamper.VvBottomMargin = ZXC.QUN;
+
+                       hamper.CreateVvLabel  (0, 0, "Partner:", ContentAlignment.MiddleRight);
+      tbx_KupdobCd   = hamper.CreateVvTextBox(1, 0, "tbx_kupdobCd"  , "Sifra partnera" , 6 );
+      tbx_KupdobTk   = hamper.CreateVvTextBox(2, 0, "tbx_kupdobTk"  , "Ticker partnera", 6 );
+      tbx_KupdobName = hamper.CreateVvTextBox(3, 0, "tbx_kupdobName", "Naziv partnera" , 32);
+          
+      // 04.12.2015: 
+      tbx_KupdobCd  .JAM_MustTabOutBeforeSubmit =
+      tbx_KupdobTk  .JAM_MustTabOutBeforeSubmit =
+      tbx_KupdobName.JAM_MustTabOutBeforeSubmit = true;
+
+      tbx_KupdobCd.JAM_CharEdits       = ZXC.JAM_CharEdits.DigitsOnly;
+      tbx_KupdobTk.JAM_CharacterCasing = CharacterCasing.Upper;
+
+      tbx_KupdobCd  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType   , new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra) , new EventHandler(AnyKupdobTextBoxLeave));
+      tbx_KupdobTk  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyKupdobTextBoxLeave));
+      tbx_KupdobName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType , new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyKupdobTextBoxLeave));
+
+
+                       hamper.CreateVvLabel  (0, 1, "Artikl:",  ContentAlignment.MiddleRight);
+      tbx_ArtiklCd   = hamper.CreateVvTextBox(1, 1, "tbx_ArtCD  ", "Sifra", 32, 1, 0 );
+      tbx_ArtiklName = hamper.CreateVvTextBox(3, 1, "tbx_ArtName", "Naziv",64);
+
+      tbx_ArtiklCd  .JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType  , new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_Leave));
+      tbx_ArtiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType, new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Artikl_sorterName) , new EventHandler(AnyArtiklTextBox_Leave));
+   }
+   void AnyKupdobTextBoxLeave(object sender, EventArgs e)
+   {
+      if(ZXC.TheVvForm.TheVvUC.isPopulatingSifrar) return;
+
+      //if(ZXC.TheVvForm.TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      TextBox tb = sender as TextBox;
+      Kupdob  kupdob_rec;
+
+      if(tb.Text != ZXC.TheVvForm.TheVvUC.originalText)
+      {
+         ZXC.TheVvForm.TheVvUC.originalText = tb.Text;
+         kupdob_rec = VvUserControl.KupdobSifrar.Find(ZXC.TheVvForm.TheVvUC.FoundInSifrar<Kupdob>);
+
+         if(kupdob_rec != null && tb.Text != "")
+         {
+            Fld_KupdobName = kupdob_rec.Naziv;
+            Fld_KupdobCd   = kupdob_rec.KupdobCD;
+            Fld_KupdobTk   = kupdob_rec.Ticker;
+         }
+         else
+         {
+            Fld_KupdobName = Fld_KupdobTk = Fld_KupdobCdAsTxt = "";
+         }
+      }
+   }
+
+   private void AnyArtiklTextBox_Leave(object sender, EventArgs e)
+   {
+      if(ZXC.TheVvForm.TheVvUC.isPopulatingSifrar) return;
+
+      TextBox tb = sender as TextBox;
+      Artikl  artikl_rec;
+
+      if(tb.Text != ZXC.TheVvForm.TheVvUC.originalText)
+      {
+         ZXC.TheVvForm.TheVvUC.originalText = tb.Text;
+
+         artikl_rec = VvUserControl.ArtiklSifrar.Find(ZXC.TheVvForm.TheVvUC.FoundInSifrar<Artikl>);
+
+         if(artikl_rec != null && tb.Text != "")
+         {
+            Fld_ArtiklCd   = artikl_rec.ArtiklCD;
+            Fld_ArtiklName = artikl_rec.ArtiklName;
+         }
+         else
+         {
+            Fld_ArtiklCd = Fld_ArtiklName = "";
+         }
+      }
+   }
+
+#endregion hamper
+
+ #region Fld_
+   public uint Fld_KupdobCd        { get { return tbx_KupdobCd.GetSomeRecIDField(); } set { tbx_KupdobCd.PutSomeRecIDField(value); } }
+   public string Fld_KupdobCdAsTxt { get { return tbx_KupdobCd.Text;   }  set { tbx_KupdobCd  .Text = value; } }
+   public string Fld_KupdobTk      { get { return tbx_KupdobTk.Text;   }  set { tbx_KupdobTk  .Text = value; } }
+   public string Fld_KupdobName    { get { return tbx_KupdobName.Text; }  set { tbx_KupdobName.Text = value; } }
+   public string Fld_ArtiklCd      { get { return tbx_ArtiklCd.Text;   }  set { tbx_ArtiklCd  .Text = value; } }
+   public string Fld_ArtiklName    { get { return tbx_ArtiklName.Text; }  set { tbx_ArtiklName.Text = value; } }
 
 #endregion Fld_
 

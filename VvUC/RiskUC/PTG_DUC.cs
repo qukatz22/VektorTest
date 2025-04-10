@@ -2837,9 +2837,10 @@ public class ZIZ_PTG_DUC : FakturPDUC
    public VvHamper hamp_partner_PTG, hamp_TT_PTG, hamp_v1TT_PTG, hamp_v2TT_PTG, hamp_KUGpartner_PTG, hamp_PvrNum_PTG,
                    hamp_napomena_PTG, hamp_sklad_PTG;
    public RadioButton rbt_mjIsp_Korisnik, rbt_mjIsp_PcToGo, rbt_mjIsp_KorisOvers;
+   private CheckBox cbx_zizStatus;
 
    #endregion Fieldz
-   
+
    #region Hampers
 
    protected override void SetLocationAndParentOfHampersOnBaby()
@@ -3153,14 +3154,14 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    private void InitializeHamper_Skladista_PTG(out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 2, "", null, false);
+      hamper = new VvHamper(4, 3, "", null, false);
 
       hamper.VvColWdt      = new int[] { labelWidth + ZXC.Q2un, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q2un - ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
                       hamper.CreateVvLabel        (0, 0, "Izdajemo sa:", ContentAlignment.MiddleRight);
@@ -3199,6 +3200,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
       tbx_SkladCd .JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
       tbx_Sklad2Cd.JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
+
+      cbx_zizStatus = hamper.CreateVvCheckBox_OLD(1, 2, null, 1, 0, "ZIZ status", RightToLeft.No);
+      cbx_zizStatus.Enabled = false;
    }
 
    #endregion Hampers
@@ -3207,6 +3211,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    public DateTime Fld_PTG_DatDostave { get { return dtp_DokDate2.Value; } set { if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime) { dtp_DokDate2.Value = value; } } }
 
+   public bool Fld_PTG_ZizStatus { get { return cbx_zizStatus.Checked; } set { cbx_zizStatus.Checked = value; } }
 
    #endregion Fld
 
