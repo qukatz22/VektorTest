@@ -8756,44 +8756,35 @@ public class PrnFakDsc : VvLookupAsDsc
    public bool    Dsc_CentarNapKaoNaslov     { get; set; }
    public bool    Dsc_OibIspodAdreseOnlyP    { get; set; }
    public bool    Dsc_VisibleProjektCd       { get; set; }
-
    public bool    Dsc_OcuDevCijAndDevTec     { get; set; }
    public bool    Dsc_OcuRokIsporDokDate     { get; set; }
    public bool    Dsc_OcuMtrosName           { get; set; }
-
    public string  Dsc_TextPostoBefore        { get; set; }
    public string  Dsc_TextPostoAfter         { get; set; }
-
-
    public bool    Dsc_OcuPomakVirmana        { get; set; }
    public bool    Dsc_OcuDateX               { get; set; }
    public string  Dsc_LblDateX               { get; set; }
-
    public bool    Dsc_OcuPosPrint            { get; set; }
    public bool    Dsc_OcuMojuPoslJed         { get; set; }
    public string  Dsc_BelowOnPOS             { get; set; }
-
    public string  Dsc_MemoPOS                { get; set; }
    public string  Dsc_MemoAdd                { get; set; }
-
    public bool    Dsc_OcuDatumRacuna         { get; set; }   
    public bool    Dsc_OcuNapomUmjKupDob      { get; set; }   
    public bool    Dsc_OcuLikvidator          { get; set; }
-
    public decimal Dsc_ScalingLogo2_FP        { get; set; }
    public string  Dsc_AlignmentLogo2_FP      { get; set; }
    public string  Dsc_IsLogo2_FPN            { get; set; }
    public string  Dsc_AlignmentMemoAdd       { get; set; }
-
    public bool    Dsc_OcuOTS_saldo           { get; set; }
    public bool    Dsc_OcuDugoImeOnlyP        { get; set; }
    public bool    Dsc_OcuBarkodTtNum         { get; set; }
    public bool    Dsc_OcuBarKodPDF417        { get; set; }
    public bool    Dsc_OcuMemoAddGore         { get; set; }
    public bool    Dsc_NecuFiskalDodatak      { get; set; }
-
    public string  Dsc_TekstOslobodenPDV      { get; set; }
    public bool    Dsc_Necu_prikazEUR         { get; set; }
+   public bool    Dsc_OcuSkladDate           { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -9003,7 +8994,8 @@ public class PrnFakDsc : VvLookupAsDsc
       Dsc_OcuMemoAddGore      = false; // 11.04.2019. 
       Dsc_NecuFiskalDodatak   = false; // 15.06.2020. za dostavnicu za koju to ne treba 
 
-      Dsc_Necu_prikazEUR     = false;
+      Dsc_Necu_prikazEUR      = false;
+      Dsc_OcuSkladDate        = false;
 
       #endregion defautValue
 

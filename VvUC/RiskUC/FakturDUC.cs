@@ -22346,5 +22346,68 @@ public class Vv_PDF417_Dlg : VvDialog
    #endregion Fld_
 }
 
+public class VvGetLastFakturForThisSernoDlg : VvDialog
+{
+#region Filedz
+
+   private Button okButton, cancelButton;
+   private VvHamper hamper;
+   private int dlgWidth, dlgHeight;
+   private VvTextBox tbx_theWantedSerno;
+   public  Label lbl_nijeUgAn;
+      
+#endregion Filedz
+
+#region Constructor
+
+   public VvGetLastFakturForThisSernoDlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Tražilica";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right  + ZXC.Q3un;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_theWantedSerno, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+#endregion Constructor
+
+#region hamper
+
+   private void CreateHamper()
+   {
+      hamper = new VvHamper(2, 3, "", this, false);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q9un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Q2un, ZXC.Q2un, ZXC.Q2un };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                           hamper.CreateVvLabel  (0, 0, "Serijski broj:", ContentAlignment.MiddleRight);
+      tbx_theWantedSerno = hamper.CreateVvTextBox(1, 0, "tbx_theWantedSerno", "theWantedSerno");
+
+      lbl_nijeUgAn       = hamper.CreateVvLabel(0, 1, "", 1, 1, ContentAlignment.MiddleRight);
+
+   }
+
+   #endregion hamper
+
+   #region Fld_
+
+   public string Fld_TheWantedSerno { get { return tbx_theWantedSerno.Text;   } set { tbx_theWantedSerno.Text   = value; } }
+
+#endregion Fld_
+
+}
 
 #endregion Other RISK Dialogs and UserControls

@@ -5481,7 +5481,7 @@ public class FakturDocFilterUC    : VvFilterUC
                      cbx_R_pdv        , cbx_R_cij_KCRP   , cbx_R_KCRP       , cbx_T_doCijMal   , cbx_T_noCijMal   , cbx_R_mjMasaN,
                      cbx_razmak       , cbx_ocuHeader    , cbx_ocuFooter    , cbx_ocuFooter2, cbx_ocuLogo      , cbx_ocuPnb, cbx_ocuR12,
                      cbx_blgOcuColKonto  , cbx_blgOcuColRacun  , cbx_blgOcu2na1strani, cbx_blgOcuOkvirUplsp,
-                     cbx_OcuKupDobTel       , cbx_OcuProjektTel        , cbx_OcuKupDobOpis,
+                     cbx_OcuKupDobTel       , cbx_OcuProjektTel        , cbx_OcuKupDobOpis, cbx_OcuSkladDate,
                      cbx_OcuKupDobFax       , cbx_OcuProjektFax        ,
                      cbx_OcuKupDobOib       , cbx_OcuProjektOib        ,
                      cbx_OcuKupDobMail      , cbx_OcuProjektMail       ,
@@ -7081,7 +7081,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHampCbxOstalo       (out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 23, "", tabControlPrintFak.TabPages[TabPageTitle7], false, hamp_valuta.Right + ZXC.Qun4, nextY, razmakHampGroup);
+      hamper = new VvHamper(1, 24, "", tabControlPrintFak.TabPages[TabPageTitle7], false, hamp_valuta.Right + ZXC.Qun4, nextY, razmakHampGroup);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
@@ -7121,6 +7121,7 @@ public class FakturDocFilterUC    : VvFilterUC
       cbx_necuFiskalDodatak  = hamper.CreateVvCheckBox_OLD(0, 19, null, "Ne prikazuj Fiskal dodatak"                                      , RightToLeft.No);
       cbx_Ocu_BarKodPDF417   = hamper.CreateVvCheckBox_OLD(0, 20, null, "Prikaži barkod podataka za plaćanje računa"                      , RightToLeft.No);
       cbx_Necu_prikazEUR     = hamper.CreateVvCheckBox_OLD(0, 21, null, "Ne prikazuj dvojno iskazivanje ukupnog iznosa po fiksnom tečaju" , RightToLeft.No);
+      cbx_OcuSkladDate       = hamper.CreateVvCheckBox_OLD(0, 22, null, "Prikaži sklad datum"                                             , RightToLeft.No);
 
 
       if(TheVvUC is BlgIsplatDUC || TheVvUC is BlgUplatDUC || TheVvUC is BlgUplat_M_DUC || TheVvUC is BlgIsplat_M_DUC)
@@ -7147,6 +7148,7 @@ public class FakturDocFilterUC    : VvFilterUC
          cbx_necuFiskalDodatak .Visible = 
          cbx_Ocu_BarKodPDF417  .Visible =
          cbx_Necu_prikazEUR    .Visible = 
+         cbx_OcuSkladDate      .Visible = 
          cbx_ocuZiro           .Visible = false;
       }
 
@@ -7172,11 +7174,12 @@ public class FakturDocFilterUC    : VvFilterUC
          cbx_necuFiskalDodatak.Visible =
          cbx_OcuKDZiro_Vir    .Visible = 
          lbl_Ostalo           .Visible = 
+         cbx_OcuSkladDate     .Visible = 
          cbx_Necu_prikazEUR   .Visible = false;
       }
 
       if(TheVvUC is IFADUC || TheVvUC is IRADUC || TheVvUC is IRA_PTG_DUC || TheVvUC is IRADUC_2 || TheVvUC is IRA_MPC_DUC || TheVvUC is IRPDUC) cbx_Ocu_OTS_saldo.Visible = true;
-      else                                                                                                             cbx_Ocu_OTS_saldo.Visible = false;
+      else                                                                                                                                       cbx_Ocu_OTS_saldo.Visible = false;
 
       //cbx_Ocu_BarkodTtNum.Visible = false;
         cbx_Ocu_BarkodTtNum .Visible = true;
@@ -8637,6 +8640,7 @@ public class FakturDocFilterUC    : VvFilterUC
    public bool    Fld_OcuMemoAddGore    { get { return cbx_Ocu_MemoAddGore  .Checked; } set { cbx_Ocu_MemoAddGore  .Checked = value; } }
    public bool    Fld_NecuFiskalDodatak { get { return cbx_necuFiskalDodatak.Checked; } set { cbx_necuFiskalDodatak.Checked = value; } }
    public bool    Fld_Necu_prikazEUR    { get { return cbx_Necu_prikazEUR   .Checked; } set { cbx_Necu_prikazEUR   .Checked = value; } }
+   public bool    Fld_OcuSkladDate      { get { return cbx_OcuSkladDate     .Checked; } set { cbx_OcuSkladDate     .Checked = value; } }
 
    #endregion Fld_
 
@@ -8888,6 +8892,7 @@ public class FakturDocFilterUC    : VvFilterUC
          Fld_NecuFiskalDodatak      = TheFakturDocFilter.PFD.Dsc_NecuFiskalDodatak ;
 
          Fld_OcuKupDobOpisOnlyP     = TheFakturDocFilter.PFD.Dsc_OcuDugoImeOnlyP;
+         Fld_OcuSkladDate           = TheFakturDocFilter.PFD.Dsc_OcuSkladDate   ;
 
       }
 
@@ -9126,7 +9131,8 @@ public class FakturDocFilterUC    : VvFilterUC
       TheFakturDocFilter.PFD.Dsc_NecuFiskalDodatak      = Fld_NecuFiskalDodatak     ;
       TheFakturDocFilter.PFD.Dsc_OcuDugoImeOnlyP        = Fld_OcuKupDobOpisOnlyP    ;
       TheFakturDocFilter.PFD.Dsc_TekstOslobodenPDV      = Fld_TekstOslobodenPDV     ;
-      TheFakturDocFilter.PFD.Dsc_Necu_prikazEUR         = Fld_Necu_prikazEUR ;
+      TheFakturDocFilter.PFD.Dsc_Necu_prikazEUR         = Fld_Necu_prikazEUR        ;
+      TheFakturDocFilter.PFD.Dsc_OcuSkladDate           = Fld_OcuSkladDate          ;
 
 
       if(TheVvUC is IRMDUC)
