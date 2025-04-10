@@ -3817,7 +3817,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       {
          //if(this.TtInfo.HasRtranoForSernoTT == false) return 0;
 
-         return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty() && rto.T_serno.Contains(ZXC.PCK_unknown_SernoPreffix) == false); 
+         return this.TrnNonDel2.Count(rto => rto.T_serno.NotEmpty() && rto.T_serno.Contains(ZXC.PCK_missing_SernoPreffix) == false); 
       } 
    }
 

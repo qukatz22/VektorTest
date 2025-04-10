@@ -580,10 +580,11 @@ public class Rtrano : VvTransRecord
    public string R_RAM_kind { get; set; }
    public string R_HDD_kind { get; set; }
 
-   internal string Get_PTG_artificial_serno(string _TS)
+   internal string Get_PTG_artificial_serno(Artikl artikl_rec /*string _TS*/)
    {
-    //string preffix1 = Artikl.ThisArtiklTS_Needs_Real_Serno(_TS) ? "?_" : "!_";
-      string preffix1 = _TS == ZXC.PCK_TS ? ZXC.PCK_unknown_SernoPreffix : ZXC.PTG_artifitial_SernoPreffix;
+      bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
+
+      string preffix1 = needsRealSerno ? ZXC.PCK_missing_SernoPreffix : ZXC.PTG_dummy_SernoPreffix;
 
       return preffix1 + this.T_TT + " " + this.T_ttNum.ToString() + "_" + this.T_serial.ToString() /*+ "~" + this.T_artiklCD*/;
    }

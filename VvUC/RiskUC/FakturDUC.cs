@@ -180,6 +180,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    internal bool IsPTG_MOD_DUC            { get { return (this is MOD_PTG_DUC                            ); } }       // 's desna na lijevo' 
    internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDod_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
    internal bool IsPTG_WithSerno_DUCwoMOD { get { return (IsPTG_UgAnDod_DUC                  || IsPTG_Common_DUC); } } // 's lijeva na desno' 
+   internal bool IsPTG_ReadOnlyRtrans_DUC { get { return (this is MOD_PTG_DUC || this is PVR_PTG_DUC); } } // 'SVI s desna na lijevo' 
+   internal bool IsPTG_RightToLeft_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC                    ; } } // 'SVI s desna na lijevo' 
+   internal bool IsPTG_LeftToRight_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC == false           ; } } // 'SVI s lijeva na desno' 
 
    #endregion Fieldz
 

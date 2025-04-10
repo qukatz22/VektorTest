@@ -3292,7 +3292,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                      if(Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtrano_rec.T_artiklCD, faktur_rec.TT)/* == false*/)
                      {
-                        string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec.TS);
+                        string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec/*.TS*/);
 
                         thePduc.TheG2.PutCell(thePduc.DgvCI2.iT_serno, rowIdx2, artificial_serno);
                      }
@@ -3302,6 +3302,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             } // IsPTG_UgAnDodTT
 
             #endregion PTG Set Artificial Serno
+
+            #region For Left To Right, check Rtrano vs Rtrans 
+
+            if(this.IsPTG_LeftToRight_DUC)
+            {
+               bool rtransFound;
+
+               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
+               {
+                  rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+                  rtransFound = faktur_rec.Transes.Count(rtr => rtr.T_artiklCD == rtrano_rec.T_artiklCD).NotZero();
+
+                  if(rtransFound == false)
+                  {
+                     ZXC.aim_emsg(MessageBoxIcon.Error, "U 'desnoj' tablici ser. brojeva postoji artikl [{0}] redak [{1}] kojeg više nema na 'lijevoj' tablici stavaka.\n\r\n\rPobrišite prvo taj redak u 'desnoj' tablici.",
+                        rtrano_rec.T_artiklCD, rowIdx2 + 1);
+                     e.Cancel = true;
+                  }
+               }
+            }
+
+            #endregion For Left To Right, check Rtrano vs Rtrans 
 
          } // if(this is FakturPDUC)
 

@@ -1562,34 +1562,48 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
          return false;
       }
 
-      (string UgAn_TT, uint UgAn_TtNum) = Get_UgAnFaktur_TtAndTtNum_ForThisTtAndTtNum(last_rtrano_rec_forThisSerno.T_TT, last_rtrano_rec_forThisSerno.T_ttNum);
+      (string UgAn_TT, uint UgAn_TtNum) = Get_UgAnFaktur_TtAndTtNum_ForThisTtAndTtNum(last_rtrano_rec_forThisSerno);
+
+      if(UgAn_TT.IsEmpty() || UgAn_TtNum.IsZero()) return false;
 
       FakturDao.SetMeFaktur(conn, faktur_rec, UgAn_TT, UgAn_TtNum, false);
 
       return true;
    }
 
-   internal static (string UgAn_TT, uint UgAn_TtNum) Get_UgAnFaktur_TtAndTtNum_ForThisTtAndTtNum(string _theTT, uint _theTtNum)
+   internal static (string UgAn_TT, uint UgAn_TtNum) Get_UgAnFaktur_TtAndTtNum_ForThisTtAndTtNum(Rtrano last_rtrano_rec_forThisSerno)
    {
+      string theSerno          = last_rtrano_rec_forThisSerno.T_serno;
+      string last_rtrano_TT    = last_rtrano_rec_forThisSerno.T_TT   ;
+      uint   last_rtrano_TtNum = last_rtrano_rec_forThisSerno.T_ttNum;
+
       string UgAnFaktur_TT = "";
       uint   UgAn_TtNum   ;
 
-      TtInfo ttInfo = ZXC.TtInfo(_theTT);
+      TtInfo last_rtrano_ttInfo = ZXC.TtInfo(last_rtrano_TT);
+
+      if(last_rtrano_ttInfo.IsPTGTwinRtrans_UgAnDodTT == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj\n\r\n\r{0}\n\r\n\rnije ni pod kojim ugovorom / aneksom.\n\r\n\rZadnja pojava mu je na skladištu {1}\n\r\n\r{2}", 
+            theSerno, last_rtrano_rec_forThisSerno.T_skladCD, last_rtrano_rec_forThisSerno);
+
+         return ("", 0);
+      }
 
       // Trazimo TT Faktur dokumenta na osnovi Rtrano ili Rtrans TT-a 
 
-           if(ttInfo.IsPTGFaktur_UgAnTT    ) { UgAnFaktur_TT =                 _theTT; UgAn_TtNum = _theTtNum; } // UGN, AUN ... ostavi nepromijenjeno 
-      else if(ttInfo.IsPTGTwinRtrans_UgAnTT) { UgAnFaktur_TT = ttInfo.LinkedDefaultTT; UgAn_TtNum = _theTtNum; } // UG2, AU2 ... ostavi nepromijenjeno 
+           if(last_rtrano_ttInfo.IsPTGFaktur_UgAnTT    ) { UgAnFaktur_TT = last_rtrano_TT;                     UgAn_TtNum = last_rtrano_TtNum; } // UGN, AUN ... ostavi nepromijenjeno 
+      else if(last_rtrano_ttInfo.IsPTGTwinRtrans_UgAnTT) { UgAnFaktur_TT = last_rtrano_ttInfo.LinkedDefaultTT; UgAn_TtNum = last_rtrano_TtNum; } // UG2, AU2 ... ostavi nepromijenjeno 
 
       else // DODACI (DIZ, PVR, ZIZ) 
       {
-         bool isUGN = _theTtNum < 100000000;
+         bool isUGN = last_rtrano_TtNum < 100000000;
          bool isAUN = !isUGN;
 
          if(isUGN) UgAnFaktur_TT = Faktur.TT_UGN;
          if(isAUN) UgAnFaktur_TT = Faktur.TT_AUN;
 
-         UgAn_TtNum = _theTtNum / 1000;
+         UgAn_TtNum = last_rtrano_TtNum / 1000;
       }
 
       return (UgAnFaktur_TT, UgAn_TtNum);
