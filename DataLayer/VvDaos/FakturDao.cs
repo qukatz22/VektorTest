@@ -1159,6 +1159,28 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
       else         return prevRtrans_rec;
    }
 
+   public static /*bool*/Rtrano SetMePreviousRtranoForThisSerno(XSqlConnection conn, string theSerno, Rtrano forThisRtrano_rec)
+   {
+      bool success = true;
+
+      Rtrano prevRtrano_rec = new Rtrano();
+
+      using(XSqlCommand cmd = VvSQL.SetMePreviousRtranoForThisSerno_Command(conn, theSerno, forThisRtrano_rec))
+      {
+         success = ZXC.RtranoDao.ExecuteSingleFillFromDataReader(prevRtrano_rec, false, cmd, false);
+      } // using cmd 
+
+      //if(!success && !_shouldBeSilent)
+      //{
+      //   VvSQL.ReportGeneric_DB_Error("", "Podatak: [" + artiklCD + " - " + _tt + "] ne postoji u datoteci [" + Rtrans.recordName + ".", System.Windows.Forms.MessageBoxButtons.OK);
+      //}
+
+      //return success;
+
+      if(!success) return null          ;
+      else         return prevRtrano_rec;
+   }
+
    #endregion Find Faktur by tt + ttNum
 
    #region AutoAddFaktur

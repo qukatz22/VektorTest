@@ -14665,14 +14665,21 @@ public partial class FakturExtDUC : FakturDUC
          faktur_rec.      CurrentData = ptgUgovor_rec.      CurrentData;
          faktur_rec.TheEx.CurrentData = ptgUgovor_rec.TheEx.CurrentData;
       }
+      if(this is ZIZ_PTG_DUC)
+      {
+         ZIZ_PTG_DUC theDUC = this as ZIZ_PTG_DUC;
+
+         bool isZIZ_completed = theDUC.IsZIZ_completed;
+      }
 
 
 #endregion PTG Additions
+
    }
 
-#endregion PutExtFields(), GetExtFields()
+   #endregion PutExtFields(), GetExtFields()
 
-#region Eventi
+   #region Eventi
 
    private void AnyMtrosTextBoxLeave(object sender, EventArgs e)
    {
@@ -22364,7 +22371,7 @@ public class VvGetLastFakturForThisSernoDlg : VvDialog
    public VvGetLastFakturForThisSernoDlg()
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "Tražilica";
+      this.Text = "UgAn Tražilica preko serijskog broja";
 
       CreateHamper();
 
@@ -22423,7 +22430,7 @@ public class VvGetFirstFakturForThisArtiklAndKupdobDlg : VvDialog
    public VvGetFirstFakturForThisArtiklAndKupdobDlg()
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "Tražilica";
+      this.Text = "UgAn Tražilica preko partnera i artikla ... daj prvog takvog";
 
       CreateHamper();
 

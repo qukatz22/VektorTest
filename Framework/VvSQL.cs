@@ -6844,6 +6844,60 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand Getfirst_UgAn_rec_forThis_KupdobAndArtikl_Command(XSqlConnection conn, uint kupdobCD, string artiklCD)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "kupdobCD"  , kupdobCD, ZXC.FaktExSchemaRows[ZXC.FexCI.kupdobCD  ]);
+      CreateCommandNamedParameter(cmd, "", "t_artiklCD", artiklCD, ZXC.RtransSchemaRows[ZXC.RtrCI.t_artiklCD]); 
+
+      cmd.CommandText = 
+
+      "SELECT f.* FROM faktur f "                             + "\n" +
+
+      "LEFT JOIN faktEx x ON f.recID = x.fakturRecID "        + "\n" +
+      "LEFT JOIN rtrans r ON f.recID = r.t_parentID "         + "\n" +
+
+      "WHERE (t_tt = '" + Faktur.TT_UGN + "' OR t_tt = '" + Faktur.TT_AUN + "')"  + "\n" +
+
+     (kupdobCD.NotZero() ?
+      "AND   kupdobCD   = ?kupdobCD " : " ")   + "\n" +
+
+      "AND   t_artiklCD = ?t_artiklCD " + "\n" +
+
+      "ORDER BY ttNum " + "\n" +
+      "LIMIT 1 "        + "\n";
+
+      return (cmd);
+   }
+
+
+   // 11.04.2024: za potrebu nadji mi gdje je ovaj serno u ovom trenutku / ili prije ovog (rtrano-a ili rtrans-a ... jos nisi odlucio)
+   public static XSqlCommand SetMePreviousRtranoForThisSerno_Command(XSqlConnection conn, string theSerno, Rtrano forThisRtrano_rec)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "serno" , theSerno                          , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_skladCD  ]); // = 
+      CreateCommandNamedParameter(cmd, "", "ttSort", forThisRtrano_rec.T_ttSort        , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttSort   ]); // prev 
+      CreateCommandNamedParameter(cmd, "", "ttNum" , forThisRtrano_rec.T_ttNum         , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum    ]); // prev 
+      CreateCommandNamedParameter(cmd, "", "date"  , forThisRtrano_rec.T_skladDate     , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_skladDate]); // prev 
+      CreateCommandNamedParameter(cmd, "", "serial", forThisRtrano_rec.T_serial        , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_serial   ]); // prev 
+
+      cmd.CommandText = "SELECT * FROM " + Rtrano.recordName + "\n" +
+
+                        " WHERE " + "t_serno = ?serno AND " + "\n" +
+
+                        "((                                                                 T_skladDate < ?date) OR " + "\n" +
+                        " (                                           T_ttSort < ?ttSort && T_skladDate = ?date) OR " + "\n" +
+                        " (                       T_ttNum < ?ttNum && T_ttSort = ?ttSort && T_skladDate = ?date) OR " + "\n" +
+                      //" (T_serial <= ?serial && T_ttNum = ?ttNum && T_ttSort = ?ttSort && T_skladDate = ?date))   " + "\n" +
+                        " (T_serial <  ?serial && T_ttNum = ?ttNum && T_ttSort = ?ttSort && T_skladDate = ?date))   " + "\n" +
+
+                        "ORDER BY " + Rtrans.artiklOrderBy_DESC + " LIMIT 1";
+      return (cmd);
+   }
+
+
    #endregion RISK specials
 
    #region    MIXER specials

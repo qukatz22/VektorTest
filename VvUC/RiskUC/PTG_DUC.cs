@@ -1609,6 +1609,12 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       return (UgAnFaktur_TT, UgAn_TtNum);
    }
 
+   internal bool Getfirst_UgAn_rec_forThis_KupdobAndArtikl(XSqlConnection conn, Faktur first_UgAnFaktur_rec_forThis_KupdobAndArtikl, uint theWantedKupdobCD, string theWantedArtiklCD)
+   {
+      bool uganFakturFound = RtransDao.Getfirst_UgAn_rec_forThis_KupdobAndArtikl(conn, first_UgAnFaktur_rec_forThis_KupdobAndArtikl, theWantedKupdobCD, theWantedArtiklCD);
+
+      return uganFakturFound;
+   }
 }
 
 // staru nomenklaturu "UGO" (nova je UGN) smo morali ostaviti kod naziva DUC-a jer je vec otislo u vvusercontrol 
@@ -3278,9 +3284,26 @@ public class ZIZ_PTG_DUC : FakturPDUC
    { 
       get 
       {
+         // tu si stao 
          // ZIZ je kompletiran kada je uspost simetrija:
          // 1. ukZelenaKOL = ukBijelaKol
          // 2. ukZelenaKOL + ukBijelaKol = ukPopunjenihSernoaCount
+
+         decimal ZIZkol = faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZIZ).Sum(rtr => rtr.T_kol);
+         decimal ZULkol = faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZUL).Sum(rtr => rtr.T_kol);
+
+         Rtrano prevRtrano_rec, rtrano_rec;
+
+         for(int rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
+         {
+            rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+            prevRtrano_rec = FakturDao.SetMePreviousRtranoForThisSerno(TheDbConnection, rtrano_rec.T_serno, rtrano_rec);
+         }
+
+         // tu si stao 
+         // primjer: na ZIZ 15002 imas lon2 zeleni radak a on je yapravo prema UGN 16 otiso u najam 
+         // a ti si na ZIZ 15 .. pa treba reagirati 
          return false;
       } 
    }
