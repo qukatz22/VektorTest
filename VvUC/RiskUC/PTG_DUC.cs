@@ -3287,7 +3287,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
          Rtrans                 rtrans_rec;
          Rtrano prevRtrano_rec, rtrano_rec;
 
+         return true;
          // tu si stao 
+         // NEMOJ ovo kao property i vidi kad s ga pozivati (nemoj na saki get fields nego sdamo kod sejvanja)
          // ZIZ je kompletiran kada je uspost simetrija:
          // 1. ukZelenaKOL = ukBijelaKol
          // 2. ukZelenaKOL + ukBijelaKol = ukPopunjenihSernoaCount
@@ -3295,7 +3297,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
          decimal ZIZkol = /*faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZIZ).Sum(rtr => rtr.T_kol)*/ 0M;
          decimal ZULkol = /*faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZUL).Sum(rtr => rtr.T_kol)*/ 0M;
 
-         for(int rowIdx1 = 0; rowIdx1 < TheG./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx1)
+         for(int rowIdx1 = 0; rowIdx1 < TheG./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx1)
          {
             rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx1, false, null);
 
@@ -3309,7 +3311,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
          uint prevRtrano_TtNum;
 
-         for(int rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
+         for(int rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
          {
             rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
 

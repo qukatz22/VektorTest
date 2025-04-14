@@ -3145,7 +3145,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                List<string> new_MOC_MOS_ArtiklCDlist = new List<string>();
 
-               for(rowIdx2 = 0; rowIdx2 < TheG2.RowCount - 1; ++rowIdx2)
+               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
                {
                   rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
 
@@ -3275,13 +3275,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             if(faktur_rec.TtInfo.IsPTGFaktur_UgAnDodTT)
             {
-               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
+               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
                {
                   rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
 
-                  if(rtrano_rec.T_serno.IsEmpty())
+                  if(rtrano_rec.T_serno.IsEmpty() && rtrano_rec.T_TT != Faktur.TT_ZU2)
                   {
-
                      if(rtrano_rec.T_artiklCD.IsEmpty())
                      {
                         ZXC.aim_emsg(MessageBoxIcon.Error, "Redak [{0}] je prazan! Pobrišite ga prije usnimavanja.", rowIdx2 + 1);
@@ -3309,7 +3308,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             {
                bool rtransFound;
 
-               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvIspunjeniRowCount; ++rowIdx2)
+               for(rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
                {
                   rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
 
@@ -6376,7 +6375,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       List<string> sernosInUseList = new List<string>();
 
-      for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
+      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
       {
          sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
       }
@@ -6445,6 +6444,135 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       #endregion korigiraj SklaCD, RtrRecID i pukni ga na grid 
    }
 
+   protected void OnExit_Check_PCK_Serno_For_ZIZ_PTG_DUC(object sender, System.ComponentModel.CancelEventArgs e)
+   {
+      #region Init stuff
+
+      if(isPopulatingSifrar) return;
+
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+
+      VvDataGridView theGrid2 = sender as VvDataGridView;
+
+      VvTextBoxEditingControl vvtb = theGrid2.EditingControl as VvTextBoxEditingControl;
+      if(vvtb.EditedHasChanges() == false) return;
+
+      int currRowIdx = theGrid2.CurrentRow.Index;
+
+      FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
+
+      ZIZ_PTG_DUC theZIZ_DUC = this as ZIZ_PTG_DUC;
+
+      VvTextBox currVvTextBox = theGrid2.EditingControl as VvTextBox;
+
+      if(currVvTextBox.ReadOnly == true) return; // input was disabled, do nothing 
+
+      string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
+      string theTT    = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
+
+      if(theSerno.IsEmpty()) return;
+
+      Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
+
+      #endregion Init stuff
+
+      #region ZIZ Rules - Bijeli redak like DIZ
+
+      if(theTT == Faktur.TT_ZI2) // ponasaj se (provjeravaj) kao da smo na DIZ-u 
+      {
+         OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC(sender, e);
+         return;
+      }
+
+      #endregion ZIZ Rules - Bijeli redak like DIZ
+
+
+      // ##########################################################################
+      // Ako smo dosli do ovdje, znaci da smo na ZUL Rules - Zeleni redak like PVR 
+      // ##########################################################################
+
+
+      #region Check for double serno entry
+
+      List<string> sernosInUseList = new List<string>();
+
+      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
+      {
+         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
+      }
+
+      int theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
+
+      if(theSernoCount > 1)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         e.Cancel = true;
+         return;
+      }
+
+      #endregion Check for double serno entry
+
+      #region ZUL Rules - Zeleni redak like PVR
+
+      if(theTT == Faktur.TT_ZU2)
+      {
+         #region Postoji li uopce u bazi ovaj serno?
+
+         bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
+
+         if(isLastRtrano_ForSerno_found == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Nepoznat serijski broj?!");
+            e.Cancel = true;
+            theGrid2.EndEdit();
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            return;
+         }
+
+         #endregion postoji li uopce u bazi ovaj serno?
+
+         #region Smije li ovaj serno doc na ovaj POVRAT?
+
+         uint UGAN_ttNum = theZIZ_DUC.UGAN_ttNum_ofThisDUC;
+
+         List<Rtrano> UGAN_RtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, UGAN_ttNum);
+
+         if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
+            e.Cancel = true;
+            theGrid2.EndEdit();
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            return;
+         }
+
+         #endregion smije li ovaj serno doc na ovaj POVRAT?
+
+      }
+
+      #endregion ZUL Rules - Zeleni redak like PVR
+
+      #region Korigiraj SklaCD, RtrRecID i pukni ga na grid 
+
+      string povratNaSkladCD = theZIZ_DUC.faktur_rec.SkladCD2;
+
+      Rtrano newPVR_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+
+      newPVR_rtrano_rec.T_skladCD = povratNaSkladCD;
+
+      uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(newPVR_rtrano_rec);
+
+      newPVR_rtrano_rec.T_rtrRecID = theT_RecID;
+
+      theZIZ_DUC.PutDgvLineFields2(newPVR_rtrano_rec, currRowIdx, true);
+
+      theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
+
+      #endregion korigiraj SklaCD, RtrRecID i pukni ga na grid 
+   }
+
    internal uint Get_UgAnDod_Rtrans_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
    {
       Rtrans UgAnDod_rtrans_rec = new Rtrans();
@@ -6491,7 +6619,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       List<string> sernosInUseList = new List<string>();
 
-      for(int rowIdx = 0; rowIdx < TheG2.RowCount - 1; ++rowIdx)
+      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
       {
          sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
       }
@@ -6634,10 +6762,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       int effectiveRowCount;
 
-      if(TheG2.AllowUserToAddRows == false) effectiveRowCount = TheG2.RowCount    ;
-      else                                  effectiveRowCount = TheG2.RowCount - 1;
-
-      for(int rowIdx = 0; rowIdx < /*TheG2.RowCount - 1*/ effectiveRowCount; ++rowIdx)
+      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
       {
          sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
       }

@@ -14926,6 +14926,10 @@ public class FakturPDUC : FakturExtDUC
       {
          vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_PVR_PTG_DUC);
       }
+      else if(this is ZIZ_PTG_DUC) // PCK serno handling - Zamjena unaprijed? dobar TtNum?  
+      {
+         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_ZIZ_PTG_DUC);
+      }
       else if(IsPTG_UgAnDod_DUC) // PCK serno handling - Rtrans vs Rtrano s LIJEVA na DESNO 
       {
          vvtbT_serno.JAM_FieldEntryMethod              = new       EventHandler(OnEntry_UgAnDo_Serno_Cell);

@@ -882,7 +882,7 @@ public class VvDataGridView : DataGridView
       }
    }
 
-   public int VvIspunjeniRowCount
+   public int VvEffectiveRowCount
    {
       get 
       {
