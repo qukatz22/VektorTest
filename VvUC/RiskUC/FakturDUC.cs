@@ -4618,16 +4618,18 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
          if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
       }
-      if(this is PVR_PTG_DUC || /*this is PVD_PTG_DUC ||*/ this is ZIZ_PTG_DUC)
+      if(this is PVR_PTG_DUC)
       {
-        // DIZ_PTG_DUC ptgDUC        = this as DIZ_PTG_DUC;
-        // PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
-        //
-        // if(CtrlOK(ptgDUC.tbx_DokDate2      )) ptgDUC.Fld_PTG_DatDostave      = ptgUgovor_rec.PTG_DatDostave    ;   
-       ////if(CtrlOK(ptgDUC.rbt_mjIsp_Korisnik)) ptgDUC.Fld_PTG_MjestoIsporuke  = ptgUgovor_rec.PTG_MjestoIsporuke;
-        // if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
+         PVR_PTG_DUC ptgDUC        = this as PVR_PTG_DUC;
+         PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
+         if(CtrlOK(ptgDUC.tbx_PTG_DodNum    )) ptgDUC.Fld_PTG_DodNum          = ptgUgovor_rec.PTG_DOKOnum       ;
       }
-
+      if(this is ZIZ_PTG_DUC)
+      {
+         ZIZ_PTG_DUC ptgDUC = this as ZIZ_PTG_DUC;
+         PTG_Ugovor ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
+         if(CtrlOK(ptgDUC.tbx_PTG_DodNum)) ptgDUC.Fld_PTG_DodNum = ptgUgovor_rec.PTG_DOKOnum;
+      }
       if(this is MOD_PTG_DUC)
       {
          MOD_PTG_DUC modDUC = this as MOD_PTG_DUC;
