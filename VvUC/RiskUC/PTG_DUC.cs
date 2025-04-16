@@ -5116,6 +5116,8 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    //public PCK_ArtiklList_Caller TheCaller;
 
+   private System.Windows.Forms.Timer AutoRefreshTimer;
+
    #endregion Fieldz
 
    #region Constructor
@@ -5170,6 +5172,31 @@ public class PCK_ArtiklList_UC : VvUserControl
       VvHamper.Open_Close_Fields_ForWriting(tbx_SkladCd , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_RamKlasa, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_HddKlasa, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+
+      #region Auto Refresh Via Timer Tick
+
+      //NeedsAutoRefresh = true; // todo odremarkiraj ovo kada slozis uvjet 
+
+      if(/*NeedsAutoRefresh*/true) 
+      {
+         int seconds = 15; // todo 
+
+         AutoRefreshTimer = new System.Windows.Forms.Timer();
+         AutoRefreshTimer.Interval = seconds * 1000; // milliseconds 
+         AutoRefreshTimer.Tick += new System.EventHandler(autoRefreshTimer_Tick);
+         AutoRefreshTimer.Start();
+      }
+
+      #endregion Auto Refresh Via Timer Tick
+
+   }
+
+   private void autoRefreshTimer_Tick(object sender, EventArgs e)
+   {
+      //button_Go_Prev_Next_Action(this, EventArgs.Empty);
+      //button_GO_Click(this, EventArgs.Empty);
+
+      ShowPckinfo(null, EventArgs.Empty);
    }
 
    #endregion Constructor

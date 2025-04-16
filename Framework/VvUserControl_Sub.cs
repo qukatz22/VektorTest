@@ -2183,7 +2183,85 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
    #region COPY RECORDS
 
+   // Tetragram IRA To Rozel IFA 
    private void btnUtil_copyIn_Click(object sender, System.EventArgs e)
+   {
+#if DEBUG
+      #region Init
+
+      string host     = "79.143.181.154";
+      string username = "superuser"     ;
+      string cvbcvb   = "cvbcvb"        ;
+      string ticker   = "TGPROJ"        ;
+
+      string dbname   = ZXC.VvDB_NameConstructor(ZXC.projectYear, ticker, 1);
+
+
+      XSqlConnection skylab_dbConn = VvSQL.CREATE_AND_OPEN_XSqlConnection(host, username, ZXC.EncryptThis_UserUC_Password(cvbcvb, username), dbname);
+
+      bool okConn = (skylab_dbConn != null && skylab_dbConn.State == System.Data.ConnectionState.Open);
+
+      if(!okConn) return;
+
+      DateTime dateOD = new DateTime(2025, 1,  1);
+      DateTime dateDO = new DateTime(2025, 1, 31);
+
+      int newCount = 0;
+
+      #endregion Init
+
+      List<Faktur> fakturIRAlist = new List<Faktur>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.dokDate], "theDateOD", dateOD       , " >= "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.dokDate], "theDateDO", dateDO       , " <= "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt     ], "tt"       , Faktur.TT_IRA,  " = "));
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.SetStatusText("Preuzimam IRA zaglavlja");
+
+      bool OK = VvDaoBase.LoadGenericVvDataRecordList<Faktur>(skylab_dbConn, fakturIRAlist, filterMembers, "", "dokDate, ttSort, ttNum", true);
+
+      ZXC.SetStatusText("Preuzimam IRA stavke");
+
+      if(OK) fakturIRAlist.ForEach(fak => fak.VvDao.LoadTranses(skylab_dbConn, fak, false));
+
+      var msgList = new List<string>();
+
+      var skladGroups = fakturIRAlist.GroupBy(fak => fak.SkladCD); // tu bi trebalo po OPP-u a ne pos skladCD-u 
+
+      foreach(var/*List<Faktur>*/ skladGroupFakturList in skladGroups)
+      {
+         msgList.Add(String.Format("Sklad: [{0}]      BrojOD: [{1}]      BrojDO: [{2}]", skladGroupFakturList.Key, skladGroupFakturList.Min(fak => fak.TtNum), skladGroupFakturList.Max(fak => fak.TtNum)));
+      }
+
+      ZXC.ClearStatusText();
+
+      ZXC.aim_emsg_List(string.Format("Uèitavanje IRA od datuma {0} do datuma {1} .", dateOD.ToString(ZXC.VvDateFormat), dateDO.ToString(ZXC.VvDateFormat)), msgList);
+
+      DialogResult result = MessageBox.Show("Da li zaista želite uèitati ove IRA-a?", "NASTAVITI?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+      if(result != DialogResult.Yes) return;
+
+      #region finish
+
+      skylab_dbConn.Close();
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.aim_emsg(MessageBoxIcon.Information, "Gotovo. Dodao {0} novih IFA", newCount);
+
+      #endregion finish
+
+#else
+
+      ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne za RELEASE verziju");
+
+#endif
+   }
+   private void btnUtil_copyIn_ClickORIG(object sender, System.EventArgs e)
    {
       // 23.11.2012: 
     //if(VvSQL.GetDbNameForThisTableName(VirtualDataRecord.VirtualRecordName) == TheVvTabPage.TheVvForm.GetvvDB_prjktDB_name() /*ZXC.vvDB_prjktDB_Name*/)

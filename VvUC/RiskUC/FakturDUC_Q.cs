@@ -6516,6 +6516,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region ZUL Rules - Zeleni redak like PVR
 
+      // tu si stao 
       if(theTT == Faktur.TT_ZU2)
       {
          #region Postoji li uopce u bazi ovaj serno?
