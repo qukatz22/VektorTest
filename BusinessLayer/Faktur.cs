@@ -5348,6 +5348,14 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    //   }
    //}
 
+   internal static Faktur Get_localIFA_from_skylabIRA_faktur(Faktur skylab_IRA_faktur)
+   {
+      Faktur local_IFA_faktur = (Faktur)skylab_IRA_faktur.CreateNewRecordAndCloneItComplete();
+
+      return local_IFA_faktur;
+   }
+
+
    #endregion All About SKY
 
    //public System.Drawing.Image TtSort_And_TtNum_EAN8_Image

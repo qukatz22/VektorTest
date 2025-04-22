@@ -2203,12 +2203,14 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       if(!okConn) return;
 
-      DateTime dateOD = new DateTime(2025, 1,  1);
-      DateTime dateDO = new DateTime(2025, 1, 31);
+      DateTime dateOD = new DateTime(2025, 01,       01);
+      DateTime dateDO = new DateTime(2025, 01, /*31*/02).EndOfDay(); // !!! pazi kad ces raditi get dialog fields da dateDO dode na kraj dana 
 
       int newCount = 0;
 
       #endregion Init
+
+      #region Get Skylab's IRA fakturs
 
       List<Faktur> fakturIRAlist = new List<Faktur>();
 
@@ -2228,6 +2230,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       if(OK) fakturIRAlist.ForEach(fak => fak.VvDao.LoadTranses(skylab_dbConn, fak, false));
 
+      skylab_dbConn.Close();
+
       var msgList = new List<string>();
 
       var skladGroups = fakturIRAlist.GroupBy(fak => fak.SkladCD); // tu bi trebalo po OPP-u a ne pos skladCD-u 
@@ -2239,15 +2243,41 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       ZXC.ClearStatusText();
 
-      ZXC.aim_emsg_List(string.Format("Uèitavanje IRA od datuma {0} do datuma {1} .", dateOD.ToString(ZXC.VvDateFormat), dateDO.ToString(ZXC.VvDateFormat)), msgList);
+      ZXC.aim_emsg_List(string.Format("Uèitavanje {2} IRA od datuma {0} do datuma {1} .", dateOD.ToString(ZXC.VvDateFormat), dateDO.ToString(ZXC.VvDateFormat), fakturIRAlist.Count), msgList);
 
       DialogResult result = MessageBox.Show("Da li zaista želite uèitati ove IRA-a?", "NASTAVITI?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
       if(result != DialogResult.Yes) return;
 
-      #region finish
+      #endregion Get Skylab's IRAs
 
-      skylab_dbConn.Close();
+      #region ADD local IFA fakturs
+
+      Faktur local_IFA_faktur;
+
+      bool ADD_OK;
+
+      foreach(Faktur skylab_IRA_faktur in fakturIRAlist)
+      {
+         local_IFA_faktur = Faktur.Get_localIFA_from_skylabIRA_faktur(skylab_IRA_faktur);
+
+         ADD_OK = local_IFA_faktur.VvDao.ADDREC(TheDbConnection, local_IFA_faktur);
+
+         if(ADD_OK)
+         {
+            newCount++;
+         }
+         else
+         {
+            result = MessageBox.Show("Da li želite nastaviti uèitatavanje IRA-a?", "Pojavio se problem, NASTAVITI?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if(result != DialogResult.Yes) return;
+         }
+      }
+
+      #endregion ADD local IFA fakturs
+
+      #region finish
 
       Cursor.Current = Cursors.Default;
 
