@@ -671,26 +671,28 @@ public class PrimkaVpDUC         : FakturExtDUC
       SetLocationMigrators();
 
       SetSumeHampers(false, true, true, false);
+
+      hamp_pdvGeokind.Visible = ZXC.RRD.Dsc_IsIntrastat;
    }
 
    private void CreateArrOfHampers()
    {
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
-                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_napomena, 
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_napomena, hamp_pdvGeokind,/*za Tg intrastat*/
                                     hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
                                     hamp_VezniDok2, hamp_Fco, hamp_NacPlac,  hamp_osobaA, hamp_OsobaB ,
-                                    hamp_OpciA, hamp_OpciB,  hamp_osobaX,/* hamp_rokIsporuke, hamp_rokIspDate, hamp_tipOtpreme,*/
+                                    hamp_OpciA, hamp_OpciB,  hamp_osobaX,/* hamp_rokIsporuke, hamp_rokIspDate,*/ hamp_tipOtpreme,
                                     hamp_externLink1, hamp_externLink2,hamp_prjIdent,
                                     hamp_opis
                                   };
 
       hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
                                         hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_NacPlac, hampCbxM_OsobaA, hampCbxM_osobaB,
-                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_osobaX,/* hampCbxM_rokIsporuke, hampCbxM_rokIspDate	, hampCbxM_tipOtpreme,*/
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_osobaX,/* hampCbxM_rokIsporuke, hampCbxM_rokIspDate,*/ hampCbxM_tipOtpreme,
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,
                                         hampCbxM_opis                                   
                                       };
@@ -703,6 +705,8 @@ public class PrimkaVpDUC         : FakturExtDUC
    protected override void InitializeDUC_Specific_Columns()
    {
       bool isVisible = true;
+    //23.04.2025. za Tetragram
+      bool isVisibleZTR = ZXC.IsTETRAGRAM_ANY;
 
       T_artiklCD_CreateColumn      (ZXC.Q4un   ,          isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
@@ -717,7 +721,9 @@ public class PrimkaVpDUC         : FakturExtDUC
       R_KCRM_CreateColumn          (ZXC.Q4un, 2,          isVisible, "Iznos"      , "Iznos");
 
       // 29.3.2011:
-      R_ztr_CreateColumn(ZXC.Q4un, 4, /*isVisible*/ false, "ZTR", "Zavisni troškovi");
+    //R_ztr_CreateColumn(ZXC.Q4un, 4, /*isVisible*/ false, "ZTR", "Zavisni troškovi");
+      //23.04.2025.
+      R_ztr_CreateColumn(ZXC.Q4un, 4, isVisibleZTR, "ZTR", "Zavisni troškovi");
       // ili mozda dovoljno ovo dole?
       //CreateAllwaysInvisibleDataGridViewColumn(TheG, "R_ztr");
    }

@@ -8885,7 +8885,7 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(3, 1, "", null, false);
 
-      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC || this is PrimkaVpDUC))
       {
          hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q3un, ZXC.Q7un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + faBefCol };
          hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
@@ -8905,7 +8905,7 @@ public partial class FakturExtDUC : FakturDUC
 
       string textN = "Napom2:";
 
-      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC ))
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC || this is PrimkaVpDUC))
       { 
                              hamper.CreateVvLabel        (0, 0, "VrstPosla:", ContentAlignment.MiddleRight);
          tbx_Napomena2     = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Napomena2", "Intrastat Vrsta posla", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2));
@@ -8983,7 +8983,7 @@ public partial class FakturExtDUC : FakturDUC
       //   tbx_VezniDok2.JAM_Set_LookUpTable(ZXC.luiListaFinFond, (int)ZXC.Kolona.prva);
       //   tbx_VezniDok2.JAM_lui_NameTaker_JAM_Name = tbx_VezniDok2Opis.JAM_Name;
       //}
-      else if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC ))
+      else if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC || this is PrimkaVpDUC))
       { 
                              hamper.CreateVvLabel        (0, 0, "Incoterm:", ContentAlignment.MiddleRight);
          tbx_VezniDok2     = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_VezniDok2", "Intrastat Incoterm", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.vezniDok2));
@@ -9057,7 +9057,7 @@ public partial class FakturExtDUC : FakturDUC
          tbx_Fco = hamper.CreateVvTextBox(1, 0, "tbx_Fco", "Način štićenja", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fco), 1, 0);
          tbx_Fco.JAM_ReadOnly = true;
       }
-      else if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC ))
+      else if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC || this is PrimkaVpDUC))
       { 
                    hamper.CreateVvLabel        (0, 0, "Isporuka:"  , ContentAlignment.MiddleRight);
          tbx_Fco = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Fco"    , "Intrastat teritorij isporuke", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fco));
@@ -10021,7 +10021,7 @@ public partial class FakturExtDUC : FakturDUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
 
-      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC || this is PrimkaVpDUC))
       {
                           hamper.CreateVvLabel        (0, 0, "VrstProm:", ContentAlignment.MiddleRight);
          tbx_TipOtpreme = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_tbx_TipOtpreme", "Intrastat vrsta prometa:", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.tipOtpreme));
@@ -13994,7 +13994,7 @@ public partial class FakturExtDUC : FakturDUC
       if((                                 ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_FOND) && (this is WYRNDUC == false)) if(CtrlOK(tbx_Fco)      ) Fld_FcoOpis       = ZXC.luiListaFinFond         .GetNameForThisCd(faktEx.Fco      );
 
       //26.03.2024. intrastat
-      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC))
+      if(ZXC.RRD.Dsc_IsIntrastat && (this is IRADUC || this is IRA_MPC_DUC || this is URADUC || this is PrimkaVpDUC))
       {
          if(CtrlOK(tbx_VezniDok2 )) Fld_VezniDok2Opis  = ZXC.luiListaIncoterms      .GetNameForThisCd(faktEx.VezniDok2 );
          if(CtrlOK(tbx_Napomena2 )) Fld_Napomena2Opis  = ZXC.luiListaIntrastVrPosla .GetNameForThisCd(faktEx.Napomena2 );
@@ -22560,5 +22560,110 @@ public class VvGetFirstFakturForThisArtiklAndKupdobDlg : VvDialog
 #endregion Fld_
 
 }
+
+public class VvTetragamIRA_to_RozelIFA_Dlg : VvDialog
+{
+#region Filedz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+   private VvTextBox        tbx_DateOd, tbx_DateDo;
+   private VvDateTimePicker dtp_DateOd, dtp_DateDo;
+
+#endregion Filedz
+
+#region Constructor
+
+   public VvTetragamIRA_to_RozelIFA_Dlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Raydoblje ucitavanja izlanih racuna";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_DateOd , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_DateDo, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+#endregion Constructor
+
+#region hamper
+
+   private void CreateHamper()
+   {
+      hamper          = new VvHamper(2, 2, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q8un, ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = 0;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                   hamper.CreateVvLabel  (0, 0, "Datum od:", ContentAlignment.MiddleRight);
+      tbx_DateOd = hamper.CreateVvTextBox(1, 0, "tbx_DateOd", "Datum od");
+      tbx_DateOd.JAM_IsForDateTimePicker = true;
+      dtp_DateOd = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DateOd);
+      dtp_DateOd.Name = "dtp_DateOd";
+      tbx_DateOd.JAM_Highlighted = true;
+
+
+                   hamper.CreateVvLabel  (0, 1, "Datum do:", ContentAlignment.MiddleRight);
+      tbx_DateDo = hamper.CreateVvTextBox(1, 1, "tbx_DateDo","Datum do");
+      tbx_DateDo.JAM_IsForDateTimePicker = true;
+      dtp_DateDo = hamper.CreateVvDateTimePicker(1, 1, "", tbx_DateDo);
+      dtp_DateDo.Name = "dtp_DateDo";
+      tbx_DateDo.JAM_Highlighted = true;
+   }
+
+#endregion hamper
+
+#region Button_Click
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+#endregion Button_Click
+
+#region Fld_
+
+   public DateTime Fld_DatumOd
+   {
+      get { return dtp_DateOd.Value; }
+      set
+      {
+         if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
+         {
+            dtp_DateOd.Value = value;
+         }
+      }
+   }
+   public DateTime Fld_DatumDo
+   {
+      get { return dtp_DateDo.Value; }
+      set
+      {
+         if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
+         {
+            dtp_DateDo.Value = value;
+         }
+      }
+   }
+
+#endregion Fld_
+}
+
 
 #endregion Other RISK Dialogs and UserControls
