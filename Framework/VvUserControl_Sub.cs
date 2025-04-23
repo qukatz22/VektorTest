@@ -2206,7 +2206,8 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
       DateTime dateOD = new DateTime(2025, 01,       01);
       DateTime dateDO = new DateTime(2025, 01, /*31*/02).EndOfDay(); // !!! pazi kad ces raditi get dialog fields da dateDO dode na kraj dana 
 
-      int newCount = 0;
+      int newCount_Faktur = 0;
+      int newCount_Kupdob = 0;
 
       #endregion Init
 
@@ -2253,19 +2254,32 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       #region ADD local IFA fakturs
 
-      Faktur local_IFA_faktur;
+      Faktur Rozel_IFA_faktur;
+      Kupdob newKupdob_rec   ;
 
       bool ADD_OK;
 
       foreach(Faktur skylab_IRA_faktur in fakturIRAlist)
       {
-         local_IFA_faktur = Faktur.Get_localIFA_from_skylabIRA_faktur(skylab_IRA_faktur);
+         (Rozel_IFA_faktur, newKupdob_rec) = Faktur.Get_RozelIFA_from_skylabIRA_faktur(TheDbConnection, skylab_IRA_faktur);
 
-         ADD_OK = local_IFA_faktur.VvDao.ADDREC(TheDbConnection, local_IFA_faktur);
+         ADD_OK = Rozel_IFA_faktur.VvDao.ADDREC(TheDbConnection, Rozel_IFA_faktur);
 
          if(ADD_OK)
          {
-            newCount++;
+            newCount_Faktur++;
+
+            #region eventual ADD NEW Kupdob
+
+            if(newKupdob_rec != null)
+            {
+               ADD_OK = newKupdob_rec.VvDao.ADDREC(TheDbConnection, newKupdob_rec);
+
+               if(ADD_OK) newCount_Kupdob++;
+               else       ZXC.aim_emsg(MessageBoxIcon.Error, "Kupac nije dodan u adresar!\n\r\n\r", newKupdob_rec);
+            }
+
+            #endregion eventual ADD NEW Kupdob
          }
          else
          {
@@ -2281,7 +2295,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       Cursor.Current = Cursors.Default;
 
-      ZXC.aim_emsg(MessageBoxIcon.Information, "Gotovo. Dodao {0} novih IFA", newCount);
+      ZXC.aim_emsg(MessageBoxIcon.Information, "Gotovo. Dodao {0} novih IFA", newCount_Faktur);
 
       #endregion finish
 

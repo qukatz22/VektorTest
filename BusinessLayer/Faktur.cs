@@ -5348,11 +5348,29 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    //   }
    //}
 
-   internal static Faktur Get_localIFA_from_skylabIRA_faktur(Faktur skylab_IRA_faktur)
+   internal static (Faktur, Kupdob) Get_RozelIFA_from_skylabIRA_faktur(XSqlConnection conn, Faktur skylab_IRA_faktur)
    {
-      Faktur local_IFA_faktur = (Faktur)skylab_IRA_faktur.CreateNewRecordAndCloneItComplete();
+      Kupdob newKupdob_rec = null, oldKupdob_rec;
 
-      return local_IFA_faktur;
+      Faktur Rozel_IFA_faktur = (Faktur)skylab_IRA_faktur.CreateNewRecordAndCloneItComplete();
+
+      Rozel_IFA_faktur.TT     =            Faktur.TT_IFA;
+      Rozel_IFA_faktur.TtSort = ZXC.TtInfo(Faktur.TT_IFA).TtSort;
+      Rozel_IFA_faktur.TtNum  = Rozel_IFA_faktur.VvDao.GetNextTtNum(conn, Faktur.TT_IFA, Rozel_IFA_faktur.SkladCD);
+
+      // imaju li SVI skylab kupci upisan OIB?
+      // trebaju li maloproddjni kupci bez oiba uopce u adresaru? 
+      oldKupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
+
+      if(oldKupdob_rec == null) // treba nam novi kupdob 
+      {
+         newKupdob_rec = new Kupdob();
+
+         // qweqwe tu si stao 
+         // tu sad vidi kaj sve ima u 'PutAllKupdobFields' na fakturDUC_Q 
+      }
+
+      return (Rozel_IFA_faktur, newKupdob_rec);
    }
 
 
