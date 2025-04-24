@@ -5354,9 +5354,38 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       Faktur Rozel_IFA_faktur = (Faktur)skylab_IRA_faktur.CreateNewRecordAndCloneItComplete();
 
-      Rozel_IFA_faktur.TT     =            Faktur.TT_IFA;
-      Rozel_IFA_faktur.TtSort = ZXC.TtInfo(Faktur.TT_IFA).TtSort;
-      Rozel_IFA_faktur.TtNum  = Rozel_IFA_faktur.VvDao.GetNextTtNum(conn, Faktur.TT_IFA, Rozel_IFA_faktur.SkladCD);
+      Rozel_IFA_faktur.TT      =            Faktur.TT_IFA;
+      Rozel_IFA_faktur.TtSort  = ZXC.TtInfo(Faktur.TT_IFA).TtSort;
+      Rozel_IFA_faktur.SkladCD = "VPSK";
+      Rozel_IFA_faktur.TtNum   = Rozel_IFA_faktur.VvDao.GetNextTtNum(conn, Faktur.TT_IFA, Rozel_IFA_faktur.SkladCD);
+
+      //Rozel_IFA_faktur.VezniDok = skylab_IRA_faktur.TtNumFiskal;
+      #region Vezni dok
+
+      string TtNumRbr  = (skylab_IRA_faktur.TtNum % 10000).ToString();
+      string TtNumSkPp = "";
+      switch(skylab_IRA_faktur.SkladCD[0])
+      {
+         case 'Z': TtNumSkPp = "11"; break;
+         case 'L': TtNumSkPp = "11"; break;
+         case 'S': TtNumSkPp = "12"; break;
+         case 'O': TtNumSkPp = "13"; break;
+         case 'R': TtNumSkPp = "14"; break;
+      }
+      #endregion Vezni dok
+
+      Rozel_IFA_faktur.VezniDok = TtNumRbr + Faktur.TtNumFiskalSeparator + TtNumSkPp + Faktur.TtNumFiskalSeparator + Faktur.TtNumFiskalONU;
+
+      foreach(Rtrans rtrans_rec in Rozel_IFA_faktur.Transes)
+      {
+         rtrans_rec.T_TT      = Rozel_IFA_faktur.TT     ;
+         rtrans_rec.T_ttSort  = Rozel_IFA_faktur.TtSort ;
+         rtrans_rec.T_skladCD = Rozel_IFA_faktur.SkladCD;
+         rtrans_rec.T_ttNum   = Rozel_IFA_faktur.TtNum  ;
+         rtrans_rec.T_wanted  = 0M                      ;
+
+         rtrans_rec.CalcTransResults(null);
+      }
 
       // imaju li SVI skylab kupci upisan OIB?
       // trebaju li maloproddjni kupci bez oiba uopce u adresaru? 

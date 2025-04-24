@@ -22641,7 +22641,7 @@ public class VvTetragamIRA_to_RozelIFA_Dlg : VvDialog
 
    public DateTime Fld_DatumOd
    {
-      get { return dtp_DateOd.Value; }
+      get { return dtp_DateOd.Value.Date; }
       set
       {
          if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
@@ -22652,7 +22652,7 @@ public class VvTetragamIRA_to_RozelIFA_Dlg : VvDialog
    }
    public DateTime Fld_DatumDo
    {
-      get { return dtp_DateDo.Value; }
+      get { return dtp_DateDo.Value.EndOfDay(); }
       set
       {
          if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime)
