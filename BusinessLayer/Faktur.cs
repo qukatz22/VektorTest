@@ -5391,17 +5391,28 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       // trebaju li maloproddjni kupci bez oiba uopce u adresaru? 
       oldKupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
 
+      #region Add New Kupdob From IRA Faktur
+      
       if(oldKupdob_rec == null) // treba nam novi kupdob 
       {
          newKupdob_rec = new Kupdob();
 
-         // qweqwe tu si stao 
-         // tu sad vidi kaj sve ima u 'PutAllKupdobFields' na fakturDUC_Q 
+         newKupdob_rec.KupdobCD     = skylab_IRA_faktur.KupdobCD    ;
+         newKupdob_rec.Ticker       = skylab_IRA_faktur.KupdobTK    ;
+         newKupdob_rec.Naziv        = skylab_IRA_faktur.KupdobName  ;
+         newKupdob_rec.Oib          = skylab_IRA_faktur.KdOib       ;
+         newKupdob_rec.VatCntryCode = skylab_IRA_faktur.VatCntryCode;
+         newKupdob_rec.Ulica2       = skylab_IRA_faktur.KdUlica     ;
+         newKupdob_rec.PostaBr      = skylab_IRA_faktur.KdZip       ;
+         newKupdob_rec.Grad         = skylab_IRA_faktur.KdMjesto    ;
+         newKupdob_rec.Ziro1        = skylab_IRA_faktur.ZiroRn      ;
+         newKupdob_rec.KontoPot     = skylab_IRA_faktur.Konto       ;
       }
+
+      #endregion Add New Kupdob From IRA Faktur
 
       return (Rozel_IFA_faktur, newKupdob_rec);
    }
-
 
    #endregion All About SKY
 
