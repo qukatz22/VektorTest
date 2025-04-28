@@ -5348,9 +5348,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    //   }
    //}
 
-   internal static (Faktur, Kupdob) Get_RozelIFA_from_skylabIRA_faktur(XSqlConnection conn, Faktur skylab_IRA_faktur)
+   internal static (Faktur, Kupdob) Get_RozelIFA_from_skylabIRA_faktur(XSqlConnection conn, Faktur skylab_IRA_faktur, Kupdob skylab_IRA_kupdob)
    {
-      Kupdob newKupdob_rec = null, oldKupdob_rec;
+      Kupdob newKupdob_rec = null, rozKupdob_rec;
 
       Faktur Rozel_IFA_faktur = (Faktur)skylab_IRA_faktur.CreateNewRecordAndCloneItComplete();
 
@@ -5389,24 +5389,54 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       // imaju li SVI skylab kupci upisan OIB?
       // trebaju li maloproddjni kupci bez oiba uopce u adresaru? 
-      oldKupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
+      if(Rozel_IFA_faktur.KdOib.NotEmpty()) rozKupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
+      else                                  rozKupdob_rec = null;
 
       #region Add New Kupdob From IRA Faktur
-      
-      if(oldKupdob_rec == null) // treba nam novi kupdob 
-      {
-         newKupdob_rec = new Kupdob();
 
-         newKupdob_rec.KupdobCD     = skylab_IRA_faktur.KupdobCD    ;
-         newKupdob_rec.Ticker       = skylab_IRA_faktur.KupdobTK    ;
-         newKupdob_rec.Naziv        = skylab_IRA_faktur.KupdobName  ;
-         newKupdob_rec.Oib          = skylab_IRA_faktur.KdOib       ;
-         newKupdob_rec.VatCntryCode = skylab_IRA_faktur.VatCntryCode;
-         newKupdob_rec.Ulica2       = skylab_IRA_faktur.KdUlica     ;
-         newKupdob_rec.PostaBr      = skylab_IRA_faktur.KdZip       ;
-         newKupdob_rec.Grad         = skylab_IRA_faktur.KdMjesto    ;
-         newKupdob_rec.Ziro1        = skylab_IRA_faktur.ZiroRn      ;
-         newKupdob_rec.KontoPot     = skylab_IRA_faktur.Konto       ;
+      if(rozKupdob_rec == null) // treba nam novi kupdob 
+      {
+         //newKupdob_rec = new Kupdob();
+         //
+         //newKupdob_rec.KupdobCD     = skylab_IRA_faktur.KupdobCD    ;
+         //newKupdob_rec.Ticker       = skylab_IRA_faktur.KupdobTK    ;
+         //newKupdob_rec.Naziv        = skylab_IRA_faktur.KupdobName  ;
+         //newKupdob_rec.Oib          = skylab_IRA_faktur.KdOib       ;
+         //newKupdob_rec.VatCntryCode = skylab_IRA_faktur.VatCntryCode;
+         //newKupdob_rec.Ulica2       = skylab_IRA_faktur.KdUlica     ;
+         //newKupdob_rec.PostaBr      = skylab_IRA_faktur.KdZip       ;
+         //newKupdob_rec.Grad         = skylab_IRA_faktur.KdMjesto    ;
+         //newKupdob_rec.Ziro1        = skylab_IRA_faktur.ZiroRn      ;
+         //newKupdob_rec.KontoPot     = skylab_IRA_faktur.Konto       ;
+
+         newKupdob_rec = (Kupdob)skylab_IRA_kupdob.CreateNewRecordAndCloneItComplete();
+
+         uint newSifra = newKupdob_rec.VvDao.GetNextSifra_Uint(conn, newKupdob_rec.VirtualRecordName, /*sifraColName*/"kupdobCD", newKupdob_rec.UintSifraRootNum, newKupdob_rec.UintSifraBaseFactor);
+
+         newKupdob_rec.KupdobCD = newSifra;
+      }
+      else // nasli smo po oib-u kupdoba u rozel adresaru, sada treba na IFA-i pregaziti Tetragram kupac podatke sa Rozel isti taj kupac podacima 
+      {
+         Rozel_IFA_faktur.KupdobCD     = rozKupdob_rec.KupdobCD    ;
+         Rozel_IFA_faktur.KupdobName   = rozKupdob_rec.Naziv       ;
+         Rozel_IFA_faktur.KupdobTK     = rozKupdob_rec.Ticker      ;
+         Rozel_IFA_faktur.VatCntryCode = rozKupdob_rec.VatCntryCode;
+         Rozel_IFA_faktur.KdUlica      = rozKupdob_rec.Ulica2      ;
+         Rozel_IFA_faktur.KdZip        = rozKupdob_rec.PostaBr     ;
+         Rozel_IFA_faktur.KdMjesto     = rozKupdob_rec.Grad        ;
+         Rozel_IFA_faktur.Konto        = rozKupdob_rec.KontoPot    ;
+
+         if(ZXC.EU_VatCodes_woHR.Contains(rozKupdob_rec.VatCntryCode))
+         {
+            Rozel_IFA_faktur.PdvKnjiga  = ZXC.PdvKnjigaEnum.REDOVNA;
+            Rozel_IFA_faktur.PdvGEOkind = ZXC.PdvGEOkindEnum.EU    ;
+            Rozel_IFA_faktur.PdvR12     = ZXC.PdvR12Enum.R1        ;
+         }
+         else // zbog "EKO Zlato" 
+         {
+            Rozel_IFA_faktur.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
+         }
+
       }
 
       #endregion Add New Kupdob From IRA Faktur
