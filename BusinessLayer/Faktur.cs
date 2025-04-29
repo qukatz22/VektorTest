@@ -5389,7 +5389,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       // imaju li SVI skylab kupci upisan OIB?
       // trebaju li maloproddjni kupci bez oiba uopce u adresaru? 
-      if(Rozel_IFA_faktur.KdOib.NotEmpty()) rozKupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
+      if(Rozel_IFA_faktur.KdOib.NotEmpty()) rozKupdob_rec = VvUserControl.KupdobSifrar./*Single*/FirstOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
       else                                  rozKupdob_rec = null;
 
       #region Add New Kupdob From IRA Faktur
@@ -5413,7 +5413,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
          uint newSifra = newKupdob_rec.VvDao.GetNextSifra_Uint(conn, newKupdob_rec.VirtualRecordName, /*sifraColName*/"kupdobCD", newKupdob_rec.UintSifraRootNum, newKupdob_rec.UintSifraBaseFactor);
 
-         newKupdob_rec.KupdobCD = newSifra;
+         newKupdob_rec.KupdobCD = Rozel_IFA_faktur.KupdobCD = newSifra;
       }
       else // nasli smo po oib-u kupdoba u rozel adresaru, sada treba na IFA-i pregaziti Tetragram kupac podatke sa Rozel isti taj kupac podacima 
       {
