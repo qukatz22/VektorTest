@@ -3687,6 +3687,14 @@ public partial class RiskFilterUC : VvFilterUC
             ZXC.aim_emsg(MessageBoxIcon.Warning, "MalopUlazForPrmArt filter dozvoljen je samo za izvještaj 'Promet Artikla'\n\r\n\rpostavljam filter TipTrans na {0}", text);
          }
       }
+
+      else if(theVvRiskReport is RptR_Intrastat && theRptFilter.TT == Faktur.TT_URA)
+      {
+         string IN_clause = TtInfo.GetSql_IN_Clause(new string[] { "URA", "PRI" });
+
+         theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "Primitak", IN_clause, "Primitak - URA, PRI", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+      }
+      
       else // Classic, just one/all TT filter 
       {
          drSchema = ZXC.FakturSchemaRows[ZXC.FakCI.tt];
