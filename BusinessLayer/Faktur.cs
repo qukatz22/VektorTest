@@ -5387,14 +5387,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          rtrans_rec.CalcTransResults(null);
       }
 
-      // imaju li SVI skylab kupci upisan OIB?
-      // trebaju li maloproddjni kupci bez oiba uopce u adresaru? 
-      if(Rozel_IFA_faktur.KdOib.NotEmpty()) rozKupdob_rec = VvUserControl.KupdobSifrar./*Single*/FirstOrDefault(k => k.Oib == Rozel_IFA_faktur.KdOib);
-      else                                  rozKupdob_rec = null;
+      uint tetragramNoName_KupdobCD = 4513;
+      uint rozelNoName_KupdobCD     =   16;
+
+      if(skylab_IRA_kupdob.KupdobCD == tetragramNoName_KupdobCD) rozKupdob_rec = VvUserControl.KupdobSifrar.  Single                (k => k.KupdobCD == rozelNoName_KupdobCD  );
+      else if(Rozel_IFA_faktur.KdOib.NotEmpty())                 rozKupdob_rec = VvUserControl.KupdobSifrar./*Single*/FirstOrDefault(k => k.Oib      == Rozel_IFA_faktur.KdOib);
+      else                                                       rozKupdob_rec = null;
 
       #region Add New Kupdob From IRA Faktur
 
-      if(rozKupdob_rec == null) // treba nam novi kupdob 
+      if(rozKupdob_rec == null) // treba nam novi kupdob jer: ili ga po OIB-u nema u Rozelovom adresaru ili je OIB prazan 
       {
          //newKupdob_rec = new Kupdob();
          //
