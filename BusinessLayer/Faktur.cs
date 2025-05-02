@@ -5359,8 +5359,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       Rozel_IFA_faktur.SkladCD = "VPSK";
       Rozel_IFA_faktur.TtNum   = Rozel_IFA_faktur.VvDao.GetNextTtNum(conn, Faktur.TT_IFA, Rozel_IFA_faktur.SkladCD);
 
-      //Rozel_IFA_faktur.VezniDok = skylab_IRA_faktur.TtNumFiskal;
       #region Vezni dok
+
+      //Rozel_IFA_faktur.VezniDok = skylab_IRA_faktur.TtNumFiskal;
 
       string TtNumRbr  = (skylab_IRA_faktur.TtNum % 10000).ToString();
       string TtNumSkPp = "";
@@ -5372,6 +5373,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          case 'O': TtNumSkPp = "13"; break;
          case 'R': TtNumSkPp = "14"; break;
       }
+
       #endregion Vezni dok
 
       Rozel_IFA_faktur.VezniDok = TtNumRbr + Faktur.TtNumFiskalSeparator + TtNumSkPp + Faktur.TtNumFiskalSeparator + Faktur.TtNumFiskalONU;
@@ -5391,7 +5393,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       uint rozelNoName_KupdobCD     =   16;
 
       if(skylab_IRA_kupdob.KupdobCD == tetragramNoName_KupdobCD) rozKupdob_rec = VvUserControl.KupdobSifrar.  Single                (k => k.KupdobCD == rozelNoName_KupdobCD  );
-      else if(Rozel_IFA_faktur.KdOib.NotEmpty())                 rozKupdob_rec = VvUserControl.KupdobSifrar./*Single*/FirstOrDefault(k => k.Oib      == Rozel_IFA_faktur.KdOib);
+      else if(Rozel_IFA_faktur.KdOib./*NotEmpty*/  IsValidOIB()) rozKupdob_rec = VvUserControl.KupdobSifrar./*Single*/FirstOrDefault(k => k.Oib      == Rozel_IFA_faktur.KdOib);
       else                                                       rozKupdob_rec = null;
 
       #region Add New Kupdob From IRA Faktur
