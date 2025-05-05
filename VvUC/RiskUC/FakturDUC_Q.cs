@@ -6476,6 +6476,46 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Init stuff
 
+      #region NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
+
+      bool wantsFindArtikl = theSerno.ToUpper() == "XXX";
+
+      if(wantsFindArtikl)
+      {
+         theGrid2.EndEdit();
+
+         VvTextBox _VvTextBox = theGrid2.Columns[ci2.iT_artiklCD].Tag as VvTextBox;
+
+         object findResult = VvUserControl.UpdateVvDataRecord(_VvTextBox.JAM_AutoCompleteRecordName,
+                                                              _VvTextBox.JAM_AutoCompleteSorterType,
+                                                              _VvTextBox.JAM_AutoCompleteRestrictor,
+                                                              _VvTextBox.Text,
+                                                              _VvTextBox);
+         if(findResult != null)
+         {
+            Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(findResult.ToString());
+
+            theGrid2.PutCell(ci2.iT_artiklCD   , currRowIdx, artikl_rec.ArtiklCD  );
+            theGrid2.PutCell(ci2.iT_artiklName , currRowIdx, artikl_rec.ArtiklName);
+            theGrid2.PutCell(ci2.iT_jm         , currRowIdx, artikl_rec.JedMj     );
+            theGrid2.PutCell(ci2.iT_artiklTS   , currRowIdx, artikl_rec.TS        );
+
+            Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
+            
+            string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec/*.TS*/);
+
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, artificial_serno);
+         }
+         else // stisnuo je 'odustani' na find dialogu 
+         {
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         }
+
+         return;
+      }
+
+      #endregion NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
+
       #region ZIZ Rules - Bijeli redak like DIZ
 
       if(theTT == Faktur.TT_ZI2) // ponasaj se (provjeravaj) kao da smo na DIZ-u 

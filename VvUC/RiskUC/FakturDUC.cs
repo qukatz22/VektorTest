@@ -14808,8 +14808,10 @@ public partial class FakturExtDUC : FakturDUC
 public class FakturPDUC : FakturExtDUC
 {
    #region Fieldz
+   
+   internal VvTextBox vvtbT_serno;
 
-   protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklCD2_Old, vvtbT_artiklName2, vvtbT_serno, vvtbT_grCD, vvtbT_grName, vvtbT_grCD_Old,
+   protected VvTextBox vvtbT_artiklCD2, vvtbT_artiklCD2_Old, vvtbT_artiklName2, /*vvtbT_serno,*/ vvtbT_grCD, vvtbT_grName, vvtbT_grCD_Old,
                        vvtbT_paletaNo, vvtbT_dimX, vvtbT_dimY, vvtbT_dimZ, vvtbT_komada,
                        vvtbT_kolG2, vvtbR_jm, vvtbT_skladCD2, vvtbT_kolg2,
                        vvtbT_decA, vvtbT_decB, vvtbT_decC, vvtbT_rtrRecID,
@@ -14930,7 +14932,7 @@ public class FakturPDUC : FakturExtDUC
       }
       else if(this is ZIZ_PTG_DUC) // PCK serno handling - Zamjena unaprijed? dobar TtNum?  
       {
-         vvtbT_serno.JAM_FieldExitWithValidationMethod = new CancelEventHandler(OnExit_Check_PCK_Serno_For_ZIZ_PTG_DUC);
+         vvtbT_serno.JAM_FieldExitWithValidationMethod += new CancelEventHandler(OnExit_Check_PCK_Serno_For_ZIZ_PTG_DUC);
       }
       else if(IsPTG_UgAnDod_DUC) // PCK serno handling - Rtrans vs Rtrano s LIJEVA na DESNO 
       {
