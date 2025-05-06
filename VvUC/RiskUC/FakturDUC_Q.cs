@@ -6478,7 +6478,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
 
-      bool wantsFindArtikl = theSerno.ToUpper() == "XXX";
+    //bool wantsFindArtikl = theSerno.ToUpper() == "XXX";
+      bool wantsFindArtikl = theSerno.StartsWith("   ");
 
       if(wantsFindArtikl)
       {
@@ -6489,7 +6490,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          object findResult = VvUserControl.UpdateVvDataRecord(_VvTextBox.JAM_AutoCompleteRecordName,
                                                               _VvTextBox.JAM_AutoCompleteSorterType,
                                                               _VvTextBox.JAM_AutoCompleteRestrictor,
-                                                              _VvTextBox.Text,
+                                                              /*_VvTextBox.Text*/theSerno.TrimStart(' '),
                                                               _VvTextBox);
          if(findResult != null)
          {
@@ -6595,7 +6596,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion ZUL Rules - Zeleni redak like PVR
 
-      #region Korigiraj SklaCD, RtrRecID i pukni ga na grid 
+      #region Korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
 
       string povratNaSkladCD = theZIZ_DUC.faktur_rec.SkladCD2;
 
@@ -6611,7 +6612,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
 
-      #endregion korigiraj SklaCD, RtrRecID i pukni ga na grid 
+      #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
    }
 
    internal uint Get_UgAnDod_Rtrans_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
