@@ -180,9 +180,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    internal bool IsPTG_MOD_DUC            { get { return (this is MOD_PTG_DUC                            ); } }       // 's desna na lijevo' 
    internal bool IsPTG_WithSerno_DUC      { get { return (IsPTG_UgAnDod_DUC || IsPTG_MOD_DUC || IsPTG_Common_DUC); } }
    internal bool IsPTG_WithSerno_DUCwoMOD { get { return (IsPTG_UgAnDod_DUC                  || IsPTG_Common_DUC); } } // 's lijeva na desno' 
-   internal bool IsPTG_ReadOnlyRtrans_DUC { get { return (this is MOD_PTG_DUC || this is PVR_PTG_DUC); } } // 'SVI s desna na lijevo' 
-   internal bool IsPTG_RightToLeft_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC                    ; } } // 'SVI s desna na lijevo' 
-   internal bool IsPTG_LeftToRight_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC == false           ; } } // 'SVI s lijeva na desno' 
+   internal bool IsPTG_ReadOnlyRtrans_DUC { get { return (this is MOD_PTG_DUC || this is PVR_PTG_DUC || this is ZIZ_PTG_DUC); } } // 'SVI s desna na lijevo' 
+   internal bool IsPTG_RightToLeft_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC                                           ; } } // 'SVI s desna na lijevo' 
+   internal bool IsPTG_LeftToRight_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC == false                                  ; } } // 'SVI s lijeva na desno' 
 
    #endregion Fieldz
 
@@ -2656,13 +2656,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    protected void T_TT_CreateColumnG1(int _width, bool isVisible, string _colHeader, string _statusText, bool hasLookUpList)
    {
-      if(hasLookUpList)
+      if(hasLookUpList) // od kad je ziz sa desna nema vise 
       {
          vvtbT_TT1 = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_TT1", TheVvDaoTrans, DB_Tci.t_tt, _statusText);
-         vvtbT_TT1.JAM_CharacterCasing = CharacterCasing.Upper;
-         vvtbT_TT1.JAM_Set_LookUpTable(ZXC.luiListaZIZ_TT, (int)ZXC.Kolona.prva);
-
-         vvtbT_TT1.JAM_FieldExitMethod = new EventHandler(OnExitTT_ZUL_SetColor);
+       //vvtbT_TT1.JAM_CharacterCasing = CharacterCasing.Upper;
+       //vvtbT_TT1.JAM_Set_LookUpTable(ZXC.luiListaZIZ_TT, (int)ZXC.Kolona.prva);
+       //
+       //vvtbT_TT1.JAM_FieldExitMethod = new EventHandler(OnExitTT_ZUL_SetColor);
 
       }
       else
@@ -2679,20 +2679,20 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
      
-      int rowIdx = TheG.CurrentRow.Index;
+      int rowIdx = TheG2.CurrentRow.Index;
 
       VvTextBoxEditingControl vvTbTT = sender as VvTextBoxEditingControl;
       
-      if(vvTbTT.Text == Faktur.TT_ZUL)
+      if(vvTbTT.Text == Faktur.TT_ZU2)
       {
-         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         foreach(DataGridViewTextBoxCell tbxCell in TheG2.Rows[rowIdx].Cells)
          {
             tbxCell.Style.BackColor = Color.PaleGreen;
          }
       }
       else
       {
-         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
+         foreach(DataGridViewTextBoxCell tbxCell in TheG2.Rows[rowIdx].Cells)
          {
             if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.None) tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor;
             else                                                  tbxCell.Style.BackColor = ZXC.vvColors.dataGridCellReadOnly_False_BackColor;
@@ -5160,33 +5160,34 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is ZIZ_PTG_DUC)
       {
-         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
-
-         ZIZ_PTG_DUC theDUC = (this as ZIZ_PTG_DUC);
-
-         VvLookUpItem luiZIZ_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZIZ);
-         VvLookUpItem luiZUL_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZUL);
-
-         VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_ZNJ);
-         VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_UNJ);
-
-         if(rtrans_rec.T_TT == Faktur.TT_ZIZ)
-         { 
-            TheG.PutCell(ci.iT_opis    , rowIdx, luiZIZ_TT.Name              );
-            TheG.PutCell(ci.iT_skladCD , rowIdx, faktur_rec.SkladCD          );
-            TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZI2               );
-            TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
-            TheG.PutCell(ci.iT_skladCD2, rowIdx, luiSkladUNJ.Cd              );
-         }
-
-         if(rtrans_rec.T_TT == Faktur.TT_ZUL)
-         { 
-            TheG.PutCell(ci.iT_opis    , rowIdx, luiZUL_TT.Name              );
-            TheG.PutCell(ci.iT_skladCD , rowIdx, luiSkladUNJ.Cd              );
-            TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZU2               );
-            TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
-            TheG.PutCell(ci.iT_skladCD2, rowIdx, faktur_rec.SkladCD2         );
-         }
+       //12.05.2025.
+       //TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
+       //
+       //ZIZ_PTG_DUC theDUC = (this as ZIZ_PTG_DUC);
+       //
+       //VvLookUpItem luiZIZ_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZIZ);
+       //VvLookUpItem luiZUL_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZUL);
+       //
+       //VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_ZNJ);
+       //VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_UNJ);
+       //
+       //if(rtrans_rec.T_TT == Faktur.TT_ZIZ)
+       //{ 
+       //   TheG.PutCell(ci.iT_opis    , rowIdx, luiZIZ_TT.Name              );
+       //   TheG.PutCell(ci.iT_skladCD , rowIdx, faktur_rec.SkladCD          );
+       //   TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZI2               );
+       //   TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
+       //   TheG.PutCell(ci.iT_skladCD2, rowIdx, luiSkladUNJ.Cd              );
+       //}
+       //
+       //if(rtrans_rec.T_TT == Faktur.TT_ZUL)
+       //{ 
+       //   TheG.PutCell(ci.iT_opis    , rowIdx, luiZUL_TT.Name              );
+       //   TheG.PutCell(ci.iT_skladCD , rowIdx, luiSkladUNJ.Cd              );
+       //   TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZU2               );
+       //   TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
+       //   TheG.PutCell(ci.iT_skladCD2, rowIdx, faktur_rec.SkladCD2         );
+       //}
 
          foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
          {
@@ -15160,10 +15161,22 @@ public class FakturPDUC : FakturExtDUC
       }
 
    }
-   protected void T_TT_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText)
+   protected void T_TT_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText, bool hasLookUpList)
    {
-      vvtbT_TT = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_TT", TheVvDaoTrans2, DB_Tci2.t_tt, _statusText);
-      vvtbT_TT.JAM_ReadOnly = true;
+      if(hasLookUpList)
+      {
+         vvtbT_TT = TheG.CreateVvTextBoxFor_LookUp_ColumnTemplate("vvtb4ColT_TT", TheVvDaoTrans2, DB_Tci2.t_tt, _statusText);
+         vvtbT_TT.JAM_CharacterCasing = CharacterCasing.Upper;
+         vvtbT_TT.JAM_Set_LookUpTable(ZXC.luiListaZIZ_TT, (int)ZXC.Kolona.prva);
+
+         vvtbT_TT.JAM_FieldExitMethod = new EventHandler(OnExitTT_ZUL_SetColor);
+         vvtbT_TT.JAM_ReadOnly = false;
+      }
+      else
+      {
+         vvtbT_TT = TheG2.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_TT", TheVvDaoTrans2, DB_Tci2.t_tt, _statusText);
+         vvtbT_TT.JAM_ReadOnly = true;
+      }
 
       colVvText = TheG2.CreateVvTextBoxColumn(vvtbT_TT, TheVvDaoTrans2, DB_Tci2.t_tt, _colHeader, _width);
       colVvText.Visible = isVisible;
@@ -22580,7 +22593,7 @@ public class VvTetragamIRA_to_RozelIFA_Dlg : VvDialog
    public VvTetragamIRA_to_RozelIFA_Dlg()
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "Raydoblje ucitavanja izlanih racuna";
+      this.Text = "Razdoblje učitavanja izlanih računa";
 
       CreateHamper();
 

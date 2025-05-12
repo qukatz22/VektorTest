@@ -2832,8 +2832,6 @@ public class ZIZ_PTG_DUC : FakturPDUC
          {
             Faktur.TT_ZIZ
          });
-
-
    }
 
    #endregion Constructor
@@ -3226,7 +3224,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
    public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
    protected override void InitializeDUC_Specific_Columns()
    {
-      T_TT_CreateColumnG1          (ZXC.Q2un,               true, ""      , "Tip Izlaznog dokumenta", true);
+      T_TT_CreateColumnG1          (ZXC.Q2un,               true, ""      , "Tip Izlaznog dokumenta", false);
       R_Opis_CreateColumn          (ZXC.Q4un,               true, ""      , "Opis Izlaznog dokumenta");
       T_skladCD_CreateColumn       (ZXC.Q3un,               true, "SaSkl" , "Izlaz sa skladišta");
       R_TT2_CreateColumn           (ZXC.Q2un,               true, ""      , "Tip Ulaznog dokumenta");
@@ -3257,19 +3255,20 @@ public class ZIZ_PTG_DUC : FakturPDUC
    {
       bool isVisible = true;
 
-      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        );
-      T_serno_CreateColumn          (ZXC.Q8un,    isVisible, "Serijski broj", "Serijski broj artikla"             );
-      T_artiklCD2_CreateColumn      (ZXC.Q5un,    isVisible, "Šifra"        , "Šifra artikla"                     );
-      T_artiklName2_CreateColumnFill(             isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      T_TT_CreateColumn             (ZXC.Q2un + ZXC.Qun2,         true, "TT"           , "Tip dokumenta"        , true);
+      T_serno_CreateColumn          (ZXC.Q8un           ,    isVisible, "Serijski broj", "Serijski broj artikla"             );
+      T_artiklCD2_CreateColumn      (ZXC.Q5un           ,    isVisible, "Šifra"        , "Šifra artikla"                     );
+      T_artiklName2_CreateColumnFill(                        isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
-      R_ramKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "RAM klasa"    , "RAM klasa");
-      R_hddKlasa2_CreateColumn      (ZXC.Q3un,    isVisible, "HDD klasa"    , "RAM klasa");
-      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
-      T_dimZ_CreateColumn           (ZXC.Q3un, 0, isVisible, "RAM"          , "RAM"                           );
-      T_decC_CreateColumn           (ZXC.Q3un, 0, isVisible, "HDD"          , "HDD old"                           );
-      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
-      T_paletaNo_CreateColumn       (ZXC.Q3un,    isVisible, "PvrSt"        , "PVR stavka"                     );
+      R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
+      R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
+      R_skladCD1_CreateColumn       (ZXC.Q3un,               isVisible, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "UlzSkl"       , "Ulazno skladište"                 );
+      T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                           );
+      T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,               isVisible, "Opis"         , "Opis"                       , false);
+      T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "PvrSt"        , "PVR stavka"                     );
+
    }
 
    #endregion TheG_Specific_Columns2
@@ -3279,6 +3278,29 @@ public class ZIZ_PTG_DUC : FakturPDUC
       SetUpColor(clr_DOD_PTG, Color.Empty, clr_DOD_PTG);
    }
    public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
+   public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
+   {
+      bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
+      bool idemoUbijelo = !idemoUzuto                    ;
+
+      int rtranOtabIdx = 1;
+
+      if(idemoUzuto) ThePolyGridTabControl.SelectedIndex = rtranOtabIdx;
+
+      for(int i = 0; i < ThePolyGridTabControl.TabPages.Count; ++i)
+      {
+         if(idemoUbijelo)
+         { 
+            ThePolyGridTabControl.TabPages[i].Enabled = true;
+         }
+         else // idemoUzuto 
+         {
+            if(i == rtranOtabIdx) ThePolyGridTabControl.TabPages[i].Enabled = true ;
+            else                  ThePolyGridTabControl.TabPages[i].Enabled = false;
+         }
+      }
+   } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 
    public bool IsZIZ_completed 
    { 
@@ -6332,7 +6354,7 @@ public class MOD_PTG_DUC : FakturPDUC
    {
       TheG2.ColumnHeadersHeight = ZXC.Q2un;
 
-      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        );
+      T_TT_CreateColumn             (ZXC.Q2un,         true, "TT"           , "Tip dokumenta"        , false);
       T_serno_CreateColumn          (ZXC.Q8un,         true, "Serijski broj", "Serijski broj artikla");
 
       R_PCK_baza_CreateColumn       (ZXC.Q4un         ,true, "PCK baza"     , "PCK baza"             );
