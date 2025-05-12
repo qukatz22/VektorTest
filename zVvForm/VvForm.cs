@@ -265,7 +265,10 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
          {
             //13.02.2018: idemo LoadDevTec via async
             ZXC.SetStatusText("LoadDevTec_Async");
-            LoadDevTec();
+
+         // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+          //LoadDevTec();
+
             ZXC.SetStatusText("InitializeCrystalReports_LoadDLL_ForDummyReport_InTheBackGround");
             InitializeCrystalReports_LoadDLL_ForDummyReport_InTheBackGround();
 

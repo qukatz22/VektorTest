@@ -34,7 +34,9 @@ public class DevTec : VvDocumentRecord
 {
    #region Fildz
 
+   // 12.05.2025. vidi opasku u ZXC.cs                                                                          
    public const string recordName = "devTec";
+   //public const string recordName = "devTec2";
    public const string recordNameArhiva = recordName + VvDataRecord.ArhRecNameExstension;
 
    private DevTecStruct currentData;

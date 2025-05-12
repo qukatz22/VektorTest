@@ -27,7 +27,9 @@ public class Htrans : VvTransRecord
 
    #region Fildz
 
-   public const string recordName = "htrans";
+   // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+ public const string recordName = "htrans";
+   //public const string recordName = "htrans2";
    public const string recordNameArhiva = recordName + VvDataRecord.ArhRecNameExstension;
 
    private HtransStruct currentData;

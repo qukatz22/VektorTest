@@ -390,7 +390,9 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    {
       if(valuta == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum || valuta == ZXC.ValutaNameEnum.EMPTY) return 1.00M;
 
-      DateTime validHNBdate = GetValidHNBdate(forThisDate);
+      // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+    //DateTime validHNBdate = GetValidHNBdate(forThisDate);
+      DateTime validHNBdate =                (forThisDate);
 
       //15.05.2023.
       if(forThisDate.Date == ZXC.Date01012023) validHNBdate = ZXC.Date01012023;
@@ -493,38 +495,39 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       VvDaoBase.LoadGenericVvDataRecordList<Htrans>(conn, ZXC.HtransList, null, "t_tt,            t_dokDate, t_serial");
    }
 
-   // 11.04.2012: dodan ovaj try-catch 
-   private DateTime GetValidHNBdate(DateTime forThisDate)
-   {
-      try
-      {
-         return ZXC.HNB_DevTecDays_Array.Last(devTecDay => devTecDay <= forThisDate);
-      }
-      catch(System.InvalidOperationException)
-      {
-         return ZXC.HNB_DevTecDays_Array.First(devTecDay => devTecDay >= forThisDate);
-      }
-   }
+   // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+   //private DateTime GetValidHNBdate(DateTime forThisDate)
+   //{
+   //   try
+   //   {
+   //      return ZXC.HNB_DevTecDays_Array.Last(devTecDay => devTecDay <= forThisDate);
+   //   }
+   //   catch(System.InvalidOperationException)
+   //   {
+   //      return ZXC.HNB_DevTecDays_Array.First(devTecDay => devTecDay >= forThisDate);
+   //   }
+   //}
 
-   public static void CheckAndDownloadMissingDevTec(XSqlConnection conn)
-   {
-      List<DevTec> devTecList = GetExistingDevTecList(conn);
-
-      var existingDevTecDates = devTecList.Select(devTec_rec => devTec_rec.DokDate);
-
-      bool OK = true;
-
-      foreach(DateTime dateOnWhich_HNB_ShouldExists in ZXC.HNB_DevTecDays_Array)
-      {
-         if(dateOnWhich_HNB_ShouldExists > DateTime.Today) break;
-
-         if(existingDevTecDates.Contains(dateOnWhich_HNB_ShouldExists) == false)
-         {
-            OK = DownloadAndAutoSet_HNB_DevTec(dateOnWhich_HNB_ShouldExists, true);
-         }
-      }
-      return /*OK*/;
-   }
+   // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+   //public static void CheckAndDownloadMissingDevTec(XSqlConnection conn)
+   //{
+   //   List<DevTec> devTecList = GetExistingDevTecList(conn);
+   //
+   //   var existingDevTecDates = devTecList.Select(devTec_rec => devTec_rec.DokDate);
+   //
+   //   bool OK = true;
+   //
+   //   foreach(DateTime dateOnWhich_HNB_ShouldExists in ZXC.HNB_DevTecDays_Array)
+   //   {
+   //      if(dateOnWhich_HNB_ShouldExists > DateTime.Today) break;
+   //
+   //      if(existingDevTecDates.Contains(dateOnWhich_HNB_ShouldExists) == false)
+   //      {
+   //         OK = DownloadAndAutoSet_HNB_DevTec(dateOnWhich_HNB_ShouldExists, true);
+   //      }
+   //   }
+   //   return /*OK*/;
+   //}
 
    private static List<DevTec> GetExistingDevTecList(XSqlConnection conn)
    {
@@ -581,14 +584,16 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       {
        //AutoSetDevTec(ZXC.PrjConnection, ref line,
          AutoSetDevTec(ZXC.TheSecondDbConn_OtherDB(ZXC.TheVvForm.GetvvDB_prjktDB_name()), ref line,
-            hnbDevTec.HeadRecord._dokDate,
+            // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+          //hnbDevTec.HeadRecord._dokDate,
+                                  dokDate,
             "HNB",
             hnbDevTec.HeadRecord._napomena,
             hnbDevTec.HeadRecord._dateCreated,
             hnbDevTec.HeadRecord._extDokNum,
             htrans_rec._t_valName,
             htrans_rec._t_kupovni,
-            htrans_rec._t_srednji,
+            htrans_rec._t_srednji,  
             htrans_rec._t_prodajni);
       }
 
