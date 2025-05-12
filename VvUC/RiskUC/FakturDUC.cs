@@ -22580,7 +22580,7 @@ public class VvTetragamIRA_to_RozelIFA_Dlg : VvDialog
    public VvTetragamIRA_to_RozelIFA_Dlg()
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "Raydoblje ucitavanja izlanih racuna";
+      this.Text = "Razdoblje učitavanja izlanih računa";
 
       CreateHamper();
 

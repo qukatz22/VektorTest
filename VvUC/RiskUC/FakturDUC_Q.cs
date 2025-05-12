@@ -8874,6 +8874,7 @@ public class PrnFakDsc : VvLookupAsDsc
    public bool    Dsc_BlgOcuColRacun      { get; set; }
    public bool    Dsc_BlgOcu2na1strani    { get; set; }
    public bool    Dsc_BlgOcuOkvirUplsp    { get; set; }
+   public bool    Dsc_BlgOcuSvrhaUplsp    { get; set; }
 
    // new________________________________________________
 
@@ -9652,7 +9653,8 @@ public class PrnFakDsc : VvLookupAsDsc
          Dsc_BlgOcu2na1strani =
          Dsc_BlgOcuOkvirUplsp =
          Dsc_TableBorder      = true;
-         Dsc_OcuFooter2 = false;
+         Dsc_OcuFooter2       = false;
+         Dsc_BlgOcuSvrhaUplsp = false;
       }
       
       else if(TT == "CJE" /*Faktur.TT_CJ_DE || TT == Faktur.TT_CJ_MK ||TT == Faktur.TT_CJ_MP ||TT == Faktur.TT_CJ_MRZ ||TT == Faktur.TT_CJ_RB1 ||TT == Faktur.TT_CJ_RB2 ||TT == Faktur.TT_CJ_VP1 ||TT == Faktur.TT_CJ_VP2*/)
