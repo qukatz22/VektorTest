@@ -7902,8 +7902,7 @@ public class VvArtikl_FRAG_Importer : VvDataRecordImporter
 
 }
 
-public class 
-   VvKupdob_TGPLEM_Importer : VvDataRecordImporter
+public class VvKupdob_TGPLEM_Importer : VvDataRecordImporter
 {
    private List<RawData> RawDataList { get; set; }
 
@@ -8036,6 +8035,164 @@ public class
 
 }
 
+public class VvArtikl_PCTOGO_Importer : VvDataRecordImporter // iskopirani METAFLEX Artikl Importer
+{
+   private List<RawData> RawDataList { get; set; }
+
+   internal struct RawData
+   {
+      /* A 01 */  internal string  _artiklCD   ;
+      /* B 02 */  internal string  _artiklName ;
+      /* C 03 */  internal string  _jedMmj     ;
+    ///* D 04 */  internal string  _ts         ;
+      /* D 04 */  internal string  _masaKG     ;
+   }
+
+   public VvArtikl_PCTOGO_Importer(XSqlConnection conn, string fullPathFileName, string delimiter) : base(conn, fullPathFileName, delimiter)
+   {
+      this.RawDataList = new List<RawData>();
+   }
+
+   protected override void ProcessLine(XSqlConnection conn, ref ushort line, bool addrecGoesOnPostprocess)
+   {
+      //Artikl artikl_rec = new Artikl();
+      RawData rawDatStruct = new RawData();
+
+      rawDatStruct._artiklCD   = GetString (01);
+      rawDatStruct._artiklName = GetString (02);
+      rawDatStruct._jedMmj     = GetString (03);
+      rawDatStruct._masaKG     = GetString (04);
+
+      if(addrecGoesOnPostprocess == true) // ne bus jos nis ADDREC-al, samo spremi u listu za PostProcessLines(). 
+      {
+         this.RawDataList.Add(rawDatStruct);
+      }
+      else // Odmah ADDREC-aj, PostProcessLines() nije potrebno. 
+      {
+
+      }
+
+   }
+
+   protected override void PostProcessLines(XSqlConnection conn)
+   {
+      Artikl artikl_rec = new Artikl();
+
+      //Kupdob kupdob_rec;
+
+      bool dbOK;
+      int errCount = 0, okCount=0;
+      List<string> errMessageList = null;
+
+      ZXC.TheVvForm.TheVvUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+
+      foreach(RawData rawDatStruct in this.RawDataList)
+      {
+         if(rawDatStruct._artiklCD == "qweqwe") continue;
+
+         artikl_rec.Memset0(0);
+
+         artikl_rec.ArtiklCD    = LimitedStr(rawDatStruct._artiklCD   , ZXC.ArtCI.artiklCD  );
+         artikl_rec.ArtiklName  = LimitedStr(rawDatStruct._artiklName , ZXC.ArtCI.artiklName);
+       //artikl_rec.TS          = LimitedStr(rawDatStruct._ts         , ZXC.ArtCI.ts        );
+         artikl_rec.MasaNetto   = ZXC.ValOrZero_Decimal(rawDatStruct._masaKG, 2);
+         if(artikl_rec.MasaNetto.NotZero())
+            artikl_rec.MasaNettoJM = "KG";
+         artikl_rec.JedMj       = LimitedStr(rawDatStruct._jedMmj     , ZXC.ArtCI.jedMj     );
+       //artikl_rec.Grupa1CD    = LimitedStr(rawDatStruct._artGrCdA   , ZXC.ArtCI.grupa1CD  );
+       //artikl_rec.Napomena    = LimitedStr(rawDatStruct._opis       , ZXC.ArtCI.napomena  );
+       //artikl_rec.SkladCD     = "SVPS";
+       //artikl_rec.PdvKat      = "25";
+
+         if(ZXC.SubstringSafe(artikl_rec.ArtiklCD, 0, 1) == "1" || ZXC.SubstringSafe(artikl_rec.ArtiklCD, 0, 1) == "2") artikl_rec.TS = "MAT";
+         if(ZXC.SubstringSafe(artikl_rec.ArtiklCD, 0, 1) == "4" || ZXC.SubstringSafe(artikl_rec.ArtiklCD, 0, 1) == "5") artikl_rec.TS = "SIT";
+         if(ZXC.SubstringSafe(artikl_rec.ArtiklCD, 0, 1) == "6"                                                       ) artikl_rec.TS = "PRO";
+
+
+         if(artikl_rec.ArtiklName.IsEmpty()) artikl_rec.ArtiklName = artikl_rec.ArtiklCD;
+
+         //kupdob_rec = VvUserControl.KupdobSifrar.SingleOrDefault(kpd => kpd.Naziv == rawDatStruct._ducatiCD);
+
+         //if(kupdob_rec != null) 
+         //{
+         //   artikl_rec.ProizCD = kupdob_rec.KupdobCD;
+         //}
+
+         #region ADDREC
+
+         dbOK = artikl_rec.VvDao.ADDREC(conn, artikl_rec, false, false, false, /*false*/ true); // don't report errors, save them in the list
+
+         if(dbOK == false && ZXC.sqlErrNo == (int)XSqlErrorCode.DuplicateKeyEntry && ZXC.sqlErrMessage.Contains("BY_artName")) // Meaning, ADDREC failed bikoz Microline's artiklName is duplicated (artiklCD is ok, I guess?) 
+         {
+            artikl_rec.Napomena   = LimitedStr(rawDatStruct._artiklName, ZXC.ArtCI.napomena);
+
+            string uniqueAddition = " (" + artikl_rec.ArtiklCD + ")";
+            artikl_rec.ArtiklName = LimitedStrWithAddition(artikl_rec.ArtiklName, uniqueAddition, ZXC.ArtCI.artiklName);
+
+            dbOK = artikl_rec.VvDao.ADDREC(conn, artikl_rec, false, false, false, /*false*/ true); // don't report errors, save them in the list
+         }
+
+         if(dbOK == false && ZXC.sqlErrNo == (int)XSqlErrorCode.DuplicateKeyEntry && ZXC.sqlErrMessage.Contains("BY_artCD")) 
+         {
+            artikl_rec.Napomena = LimitedStr(rawDatStruct._artiklCD, ZXC.ArtCI.napomena);
+
+          //string uniqueAddition = " (" + artikl_rec.ArtiklCD2 + ")";
+            string uniqueAddition = " (" + "2" + ")";
+            artikl_rec.ArtiklCD   = LimitedStrWithAddition(artikl_rec.ArtiklCD, uniqueAddition, ZXC.ArtCI.artiklCD);
+
+            dbOK = artikl_rec.VvDao.ADDREC(conn, artikl_rec, false, false, false, /*false*/ true); // don't report errors, save them in the list
+         }
+
+         #endregion ADDREC
+
+         #region Report Errors manager
+
+         if(dbOK == false)
+         {
+            errCount++;
+
+            if(errMessageList == null) errMessageList = new List<string>();
+
+            errMessageList.Add("Err " + errCount.ToString("0000") + ": " + ZXC.sqlErrMessage);
+         }
+         else okCount++;
+
+         #endregion Report Errors manager
+
+      } // foreach(RawData rawDatStruct in this.RawDataList) 
+
+      #region Report Errors manager
+
+      if(errCount.NotZero())
+      {
+         string fName = ZXC.TheVvForm.Get_MyDocumentsLocation_ProjectAndUser_Dependent(false) + @"\VvArtikl_METFLX_Importer.txt";
+
+         using(StreamWriter sw = new StreamWriter(fName, false, Encoding.GetEncoding(1250)))
+         {
+            foreach(string error in errMessageList)
+            {
+               sw.WriteLine(error);
+            }
+         }
+
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Bilo je {0} error-a.\n\nVidi datoteku: {1}.\n\nOK records: {2}. ", errCount, fName, okCount);
+      }
+
+      #endregion Report Errors manager
+
+   }
+
+   private string LimitedStr(string data, int cIdx)
+   {
+      return ZXC.LenLimitedStr(data, ZXC.ArtiklDao.GetSchemaColumnSize(cIdx));
+   }
+
+   private string LimitedStrWithAddition(string data, string uniqueAddition, int cIdx)
+   {
+      return ZXC.LenLimitedStrWithAddition(data, uniqueAddition, ZXC.ArtiklDao.GetSchemaColumnSize(cIdx));
+   }
+
+}
 
 #endif
 
