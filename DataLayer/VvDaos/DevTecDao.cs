@@ -392,7 +392,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
       // 12.05.2025. vidi opasku u ZXC.cs                                                                          
     //DateTime validHNBdate = GetValidHNBdate(forThisDate);
-      DateTime validHNBdate =                (forThisDate);
+      DateTime validHNBdate =                (forThisDate.Date);
 
       //15.05.2023.
       if(forThisDate.Date == ZXC.Date01012023) validHNBdate = ZXC.Date01012023;

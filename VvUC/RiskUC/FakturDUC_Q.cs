@@ -6470,7 +6470,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
       string theTT    = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
 
-      if(theSerno.IsEmpty()) return;
+    //13.05.2025.
+    //if(theSerno.IsEmpty()) return;
+      if(theSerno == "") return;
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
 
@@ -6521,6 +6523,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(theTT == Faktur.TT_ZI2) // ponasaj se (provjeravaj) kao da smo na DIZ-u 
       {
+        //13.05.2025. ali ovdje je artikl prayam i trebalo bi kao na MOD-u kad se upise serno
          OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC(sender, e);
          return;
       }

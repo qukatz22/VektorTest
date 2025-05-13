@@ -5160,7 +5160,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is ZIZ_PTG_DUC)
       {
-       //12.05.2025.
+       //13.05.2025.
        //TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
        //
        //ZIZ_PTG_DUC theDUC = (this as ZIZ_PTG_DUC);
@@ -13569,27 +13569,28 @@ public partial class FakturExtDUC : FakturDUC
          VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_ZNJ);
          VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_UNJ);
 
-         TheG.Rows.Add();
-         TheG.Rows.Add();
+       //13.05.2025.
+       //TheG.Rows.Add();
+       //TheG.Rows.Add();
+       //
+       //TheG.PutCell(ci.iT_TT      , 0, Faktur.TT_ZIZ               );
+       //TheG.PutCell(ci.iT_opis    , 0, luiZIZ_TT.Name              );
+       //TheG.PutCell(ci.iT_skladCD , 0, Fld_SkladCD                 );
+       //TheG.PutCell(ci.iT_TT2     , 0, Faktur.TT_ZI2               );
+       //TheG.PutCell(ci.iT_opis2   , 0, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
+       //TheG.PutCell(ci.iT_skladCD2, 0, luiSkladUNJ.Cd              );
+       //
+       //TheG.PutCell(ci.iT_TT      , 1, Faktur.TT_ZUL               );
+       //TheG.PutCell(ci.iT_opis    , 1, luiZUL_TT.Name              );
+       //TheG.PutCell(ci.iT_skladCD , 1, luiSkladUNJ.Cd              );
+       //TheG.PutCell(ci.iT_TT2     , 1, Faktur.TT_ZU2               );
+       //TheG.PutCell(ci.iT_opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
+       //TheG.PutCell(ci.iT_skladCD2, 1, Fld_SkladCD2                );
 
-         TheG.PutCell(ci.iT_TT      , 0, Faktur.TT_ZIZ               );
-         TheG.PutCell(ci.iT_opis    , 0, luiZIZ_TT.Name              );
-         TheG.PutCell(ci.iT_skladCD , 0, Fld_SkladCD                 );
-         TheG.PutCell(ci.iT_TT2     , 0, Faktur.TT_ZI2               );
-         TheG.PutCell(ci.iT_opis2   , 0, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
-         TheG.PutCell(ci.iT_skladCD2, 0, luiSkladUNJ.Cd              );
-
-         TheG.PutCell(ci.iT_TT      , 1, Faktur.TT_ZUL               );
-         TheG.PutCell(ci.iT_opis    , 1, luiZUL_TT.Name              );
-         TheG.PutCell(ci.iT_skladCD , 1, luiSkladUNJ.Cd              );
-         TheG.PutCell(ci.iT_TT2     , 1, Faktur.TT_ZU2               );
-         TheG.PutCell(ci.iT_opis2   , 1, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
-         TheG.PutCell(ci.iT_skladCD2, 1, Fld_SkladCD2                );
-
-         foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[1].Cells)
-         {
-            tbxCell.Style.BackColor = Color.PaleGreen;
-         }
+       //foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[1].Cells)
+       //{
+       //   tbxCell.Style.BackColor = Color.PaleGreen;
+       //}
       }
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
