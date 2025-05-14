@@ -1878,7 +1878,7 @@ public static class VvSQL
       uint actualInFileTableVersion = vvTableMetaData.TableVersion;
 
       // 11.02.2015:                                                                                             ovo IsNotRipley7 dodano 08.11.2016 da ubrzam ulazak u vvTH 
-      if(ZXC.ThisIsSkyLabProject == false && tableName != DevTec.recordName && tableName != Htrans.recordName && ZXC.IsRipleyOrKristal == false &&
+      if(ZXC.ThisIsSkyLabProject == false && tableName != DevTec2.recordName && tableName != Htrans2.recordName && ZXC.IsRipleyOrKristal == false &&
          // Za 'vvDB_ServerID_CENTRALA' NEMOJ provjeravati OSIM ako si superuser na localhostu)
          //(ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA ||  ZXC.vvDB_IsLocalhost                                                       )) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
          (ZXC.vvDB_ServerID != ZXC.vvDB_ServerID_CENTRALA || (ZXC.vvDB_IsLocalhost && ZXC.CURR_userName == ZXC.vvDB_programSuperUserName))) VvSqlMaintenanceCheckTable(conn, dbName, tableName);
@@ -2225,11 +2225,11 @@ public static class VvSQL
          case SkyRule.recordName:        
          case SkyRule.recordNameArhiva:return (SkyRuleDao.TableVersionStatic);
 
-         case DevTec.recordName:
-         case DevTec.recordNameArhiva: return (DevTecDao.TableVersionStatic);
+         case DevTec2.recordName:
+         case DevTec2.recordNameArhiva: return (DevTecDao.TableVersionStatic);
 
-         case Htrans.recordName:
-         case Htrans.recordNameArhiva: return (HtransDao.TableVersionStatic);
+         case Htrans2.recordName:
+         case Htrans2.recordNameArhiva: return (HtransDao.TableVersionStatic);
 
          case Artikl.recordName:
          case Artikl.recordNameArhiva: return (ArtiklDao.TableVersionStatic);
@@ -2329,11 +2329,11 @@ public static class VvSQL
          case SkyRule.recordName:      return (SkyRuleDao.Create_table_definition(false));
          case SkyRule.recordNameArhiva:return (SkyRuleDao.Create_table_definition(true));
 
-         case DevTec.recordName:       return (DevTecDao.Create_table_definition(false));
-         case DevTec.recordNameArhiva: return (DevTecDao.Create_table_definition(true));
+         case DevTec2.recordName:       return (DevTecDao.Create_table_definition(false));
+         case DevTec2.recordNameArhiva: return (DevTecDao.Create_table_definition(true));
 
-         case Htrans.recordName:       return (HtransDao.Create_table_definition());
-         case Htrans.recordNameArhiva: return (HtransDao.Create_table_definition());
+         case Htrans2.recordName:       return (HtransDao.Create_table_definition());
+         case Htrans2.recordNameArhiva: return (HtransDao.Create_table_definition());
 
          case ArtStat.recordName:      return (ArtStatDao.Create_table_definition(false));
 
@@ -2627,11 +2627,11 @@ public static class VvSQL
          case SkyRule.recordName:       return (SkyRuleDao.Alter_table_definition(catchingVersion, false));
          case SkyRule.recordNameArhiva: return (SkyRuleDao.Alter_table_definition(catchingVersion, true));
                                         
-         case DevTec.recordName:        return (DevTecDao.Alter_table_definition(catchingVersion, false));
-         case DevTec.recordNameArhiva:  return (DevTecDao.Alter_table_definition(catchingVersion, true));
+         case DevTec2.recordName:        return (DevTecDao.Alter_table_definition(catchingVersion, false));
+         case DevTec2.recordNameArhiva:  return (DevTecDao.Alter_table_definition(catchingVersion, true));
                                         
-         case Htrans.recordName:        return (HtransDao.Alter_table_definition(catchingVersion, false));
-         case Htrans.recordNameArhiva:  return (HtransDao.Alter_table_definition(catchingVersion, true));
+         case Htrans2.recordName:        return (HtransDao.Alter_table_definition(catchingVersion, false));
+         case Htrans2.recordNameArhiva:  return (HtransDao.Alter_table_definition(catchingVersion, true));
                                         
          case Mixer.recordName:         return (MixerDao.Alter_table_definition(catchingVersion, false));
          case Mixer.recordNameArhiva:   return (MixerDao.Alter_table_definition(catchingVersion, true));
@@ -3045,8 +3045,8 @@ public static class VvSQL
          tableName.StartsWith(User   .recordName) ||
          tableName.StartsWith(Prvlg  .recordName) ||
          tableName.StartsWith(SkyRule.recordName) ||
-         tableName.StartsWith(DevTec .recordName) ||
-         tableName.StartsWith(Htrans .recordName) || // dodano tek 14.10.2017 
+         tableName.StartsWith(DevTec2 .recordName) ||
+         tableName.StartsWith(Htrans2 .recordName) || // dodano tek 14.10.2017 
          tableName.StartsWith(ZXC.vvDB_luiPrefix) /*||
          tableName.StartsWith(ZXC.vvDB_SKYlogTableName)*/) 
       {

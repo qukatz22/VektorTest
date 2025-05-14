@@ -24,7 +24,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
     [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.DataSet")]
     public partial class DS_findDevTec : global::System.Data.DataSet {
         
-        private devTecDataTable tabledevTec;
+        private devTec2DataTable tabledevTec2;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -54,8 +54,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
             if ((this.DetermineSchemaSerializationMode(info, context) == global::System.Data.SchemaSerializationMode.IncludeSchema)) {
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXmlSchema(new global::System.Xml.XmlTextReader(new global::System.IO.StringReader(strSchema)));
-                if ((ds.Tables["devTec"] != null)) {
-                    base.Tables.Add(new devTecDataTable(ds.Tables["devTec"]));
+                if ((ds.Tables["devTec2"] != null)) {
+                    base.Tables.Add(new devTec2DataTable(ds.Tables["devTec2"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -79,9 +79,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public devTecDataTable devTec {
+        public devTec2DataTable devTec2 {
             get {
-                return this.tabledevTec;
+                return this.tabledevTec2;
             }
         }
         
@@ -152,8 +152,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.Reset();
                 global::System.Data.DataSet ds = new global::System.Data.DataSet();
                 ds.ReadXml(reader);
-                if ((ds.Tables["devTec"] != null)) {
-                    base.Tables.Add(new devTecDataTable(ds.Tables["devTec"]));
+                if ((ds.Tables["devTec2"] != null)) {
+                    base.Tables.Add(new devTec2DataTable(ds.Tables["devTec2"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -188,10 +188,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         internal void InitVars(bool initTable) {
-            this.tabledevTec = ((devTecDataTable)(base.Tables["devTec"]));
+            this.tabledevTec2 = ((devTec2DataTable)(base.Tables["devTec2"]));
             if ((initTable == true)) {
-                if ((this.tabledevTec != null)) {
-                    this.tabledevTec.InitVars();
+                if ((this.tabledevTec2 != null)) {
+                    this.tabledevTec2.InitVars();
                 }
             }
         }
@@ -204,13 +204,13 @@ namespace Vektor.DataLayer.DS_FindRecord {
             this.Namespace = "http://tempuri.org/DS_findDevTec.xsd";
             this.EnforceConstraints = false;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
-            this.tabledevTec = new devTecDataTable();
-            base.Tables.Add(this.tabledevTec);
+            this.tabledevTec2 = new devTec2DataTable();
+            base.Tables.Add(this.tabledevTec2);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-        private bool ShouldSerializedevTec() {
+        private bool ShouldSerializedevTec2() {
             return false;
         }
         
@@ -270,14 +270,14 @@ namespace Vektor.DataLayer.DS_FindRecord {
         }
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-        public delegate void devTecRowChangeEventHandler(object sender, devTecRowChangeEvent e);
+        public delegate void devTec2RowChangeEventHandler(object sender, devTec2RowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class devTecDataTable : global::System.Data.TypedTableBase<devTecRow> {
+        public partial class devTec2DataTable : global::System.Data.TypedTableBase<devTec2Row> {
             
             private global::System.Data.DataColumn columnrecID;
             
@@ -315,8 +315,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecDataTable() {
-                this.TableName = "devTec";
+            public devTec2DataTable() {
+                this.TableName = "devTec2";
                 this.BeginInit();
                 this.InitClass();
                 this.EndInit();
@@ -324,7 +324,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            internal devTecDataTable(global::System.Data.DataTable table) {
+            internal devTec2DataTable(global::System.Data.DataTable table) {
                 this.TableName = table.TableName;
                 if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
                     this.CaseSensitive = table.CaseSensitive;
@@ -341,7 +341,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            protected devTecDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+            protected devTec2DataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
             }
@@ -493,33 +493,33 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecRow this[int index] {
+            public devTec2Row this[int index] {
                 get {
-                    return ((devTecRow)(this.Rows[index]));
+                    return ((devTec2Row)(this.Rows[index]));
                 }
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event devTecRowChangeEventHandler devTecRowChanging;
+            public event devTec2RowChangeEventHandler devTec2RowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event devTecRowChangeEventHandler devTecRowChanged;
+            public event devTec2RowChangeEventHandler devTec2RowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event devTecRowChangeEventHandler devTecRowDeleting;
+            public event devTec2RowChangeEventHandler devTec2RowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public event devTecRowChangeEventHandler devTecRowDeleted;
+            public event devTec2RowChangeEventHandler devTec2RowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void AdddevTecRow(devTecRow row) {
+            public void AdddevTec2Row(devTec2Row row) {
                 this.Rows.Add(row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecRow AdddevTecRow(
+            public devTec2Row AdddevTec2Row(
                         uint recID, 
                         System.DateTime addTS, 
                         System.DateTime modTS, 
@@ -537,7 +537,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         string arAction, 
                         System.DateTime arTS, 
                         string arUID) {
-                devTecRow rowdevTecRow = ((devTecRow)(this.NewRow()));
+                devTec2Row rowdevTec2Row = ((devTec2Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         recID,
                         addTS,
@@ -556,22 +556,22 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         arAction,
                         arTS,
                         arUID};
-                rowdevTecRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowdevTecRow);
-                return rowdevTecRow;
+                rowdevTec2Row.ItemArray = columnValuesArray;
+                this.Rows.Add(rowdevTec2Row);
+                return rowdevTec2Row;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecRow FindByrecID(uint recID) {
-                return ((devTecRow)(this.Rows.Find(new object[] {
+            public devTec2Row FindByrecID(uint recID) {
+                return ((devTec2Row)(this.Rows.Find(new object[] {
                             recID})));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public override global::System.Data.DataTable Clone() {
-                devTecDataTable cln = ((devTecDataTable)(base.Clone()));
+                devTec2DataTable cln = ((devTec2DataTable)(base.Clone()));
                 cln.InitVars();
                 return cln;
             }
@@ -579,7 +579,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Data.DataTable CreateInstance() {
-                return new devTecDataTable();
+                return new devTec2DataTable();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -671,28 +671,28 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecRow NewdevTecRow() {
-                return ((devTecRow)(this.NewRow()));
+            public devTec2Row NewdevTec2Row() {
+                return ((devTec2Row)(this.NewRow()));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new devTecRow(builder);
+                return new devTec2Row(builder);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Type GetRowType() {
-                return typeof(devTecRow);
+                return typeof(devTec2Row);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanged(e);
-                if ((this.devTecRowChanged != null)) {
-                    this.devTecRowChanged(this, new devTecRowChangeEvent(((devTecRow)(e.Row)), e.Action));
+                if ((this.devTec2RowChanged != null)) {
+                    this.devTec2RowChanged(this, new devTec2RowChangeEvent(((devTec2Row)(e.Row)), e.Action));
                 }
             }
             
@@ -700,8 +700,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowChanging(e);
-                if ((this.devTecRowChanging != null)) {
-                    this.devTecRowChanging(this, new devTecRowChangeEvent(((devTecRow)(e.Row)), e.Action));
+                if ((this.devTec2RowChanging != null)) {
+                    this.devTec2RowChanging(this, new devTec2RowChangeEvent(((devTec2Row)(e.Row)), e.Action));
                 }
             }
             
@@ -709,8 +709,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleted(e);
-                if ((this.devTecRowDeleted != null)) {
-                    this.devTecRowDeleted(this, new devTecRowChangeEvent(((devTecRow)(e.Row)), e.Action));
+                if ((this.devTec2RowDeleted != null)) {
+                    this.devTec2RowDeleted(this, new devTec2RowChangeEvent(((devTec2Row)(e.Row)), e.Action));
                 }
             }
             
@@ -718,14 +718,14 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
                 base.OnRowDeleting(e);
-                if ((this.devTecRowDeleting != null)) {
-                    this.devTecRowDeleting(this, new devTecRowChangeEvent(((devTecRow)(e.Row)), e.Action));
+                if ((this.devTec2RowDeleting != null)) {
+                    this.devTec2RowDeleting(this, new devTec2RowChangeEvent(((devTec2Row)(e.Row)), e.Action));
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void RemovedevTecRow(devTecRow row) {
+            public void RemovedevTec2Row(devTec2Row row) {
                 this.Rows.Remove(row);
             }
             
@@ -752,7 +752,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 type.Attributes.Add(attribute1);
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "devTecDataTable";
+                attribute2.FixedValue = "devTec2DataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -796,25 +796,25 @@ namespace Vektor.DataLayer.DS_FindRecord {
         /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
-        public partial class devTecRow : global::System.Data.DataRow {
+        public partial class devTec2Row : global::System.Data.DataRow {
             
-            private devTecDataTable tabledevTec;
+            private devTec2DataTable tabledevTec2;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            internal devTecRow(global::System.Data.DataRowBuilder rb) : 
+            internal devTec2Row(global::System.Data.DataRowBuilder rb) : 
                     base(rb) {
-                this.tabledevTec = ((devTecDataTable)(this.Table));
+                this.tabledevTec2 = ((devTec2DataTable)(this.Table));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public uint recID {
                 get {
-                    return ((uint)(this[this.tabledevTec.recIDColumn]));
+                    return ((uint)(this[this.tabledevTec2.recIDColumn]));
                 }
                 set {
-                    this[this.tabledevTec.recIDColumn] = value;
+                    this[this.tabledevTec2.recIDColumn] = value;
                 }
             }
             
@@ -822,10 +822,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public System.DateTime addTS {
                 get {
-                    return ((global::System.DateTime)(this[this.tabledevTec.addTSColumn]));
+                    return ((global::System.DateTime)(this[this.tabledevTec2.addTSColumn]));
                 }
                 set {
-                    this[this.tabledevTec.addTSColumn] = value;
+                    this[this.tabledevTec2.addTSColumn] = value;
                 }
             }
             
@@ -833,10 +833,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public System.DateTime modTS {
                 get {
-                    return ((global::System.DateTime)(this[this.tabledevTec.modTSColumn]));
+                    return ((global::System.DateTime)(this[this.tabledevTec2.modTSColumn]));
                 }
                 set {
-                    this[this.tabledevTec.modTSColumn] = value;
+                    this[this.tabledevTec2.modTSColumn] = value;
                 }
             }
             
@@ -844,10 +844,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string addUID {
                 get {
-                    return ((string)(this[this.tabledevTec.addUIDColumn]));
+                    return ((string)(this[this.tabledevTec2.addUIDColumn]));
                 }
                 set {
-                    this[this.tabledevTec.addUIDColumn] = value;
+                    this[this.tabledevTec2.addUIDColumn] = value;
                 }
             }
             
@@ -855,10 +855,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string modUID {
                 get {
-                    return ((string)(this[this.tabledevTec.modUIDColumn]));
+                    return ((string)(this[this.tabledevTec2.modUIDColumn]));
                 }
                 set {
-                    this[this.tabledevTec.modUIDColumn] = value;
+                    this[this.tabledevTec2.modUIDColumn] = value;
                 }
             }
             
@@ -866,10 +866,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public uint dokNum {
                 get {
-                    return ((uint)(this[this.tabledevTec.dokNumColumn]));
+                    return ((uint)(this[this.tabledevTec2.dokNumColumn]));
                 }
                 set {
-                    this[this.tabledevTec.dokNumColumn] = value;
+                    this[this.tabledevTec2.dokNumColumn] = value;
                 }
             }
             
@@ -877,10 +877,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public System.DateTime dokDate {
                 get {
-                    return ((global::System.DateTime)(this[this.tabledevTec.dokDateColumn]));
+                    return ((global::System.DateTime)(this[this.tabledevTec2.dokDateColumn]));
                 }
                 set {
-                    this[this.tabledevTec.dokDateColumn] = value;
+                    this[this.tabledevTec2.dokDateColumn] = value;
                 }
             }
             
@@ -888,10 +888,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string tt {
                 get {
-                    return ((string)(this[this.tabledevTec.ttColumn]));
+                    return ((string)(this[this.tabledevTec2.ttColumn]));
                 }
                 set {
-                    this[this.tabledevTec.ttColumn] = value;
+                    this[this.tabledevTec2.ttColumn] = value;
                 }
             }
             
@@ -899,10 +899,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public uint ttNum {
                 get {
-                    return ((uint)(this[this.tabledevTec.ttNumColumn]));
+                    return ((uint)(this[this.tabledevTec2.ttNumColumn]));
                 }
                 set {
-                    this[this.tabledevTec.ttNumColumn] = value;
+                    this[this.tabledevTec2.ttNumColumn] = value;
                 }
             }
             
@@ -910,10 +910,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string napomena {
                 get {
-                    return ((string)(this[this.tabledevTec.napomenaColumn]));
+                    return ((string)(this[this.tabledevTec2.napomenaColumn]));
                 }
                 set {
-                    this[this.tabledevTec.napomenaColumn] = value;
+                    this[this.tabledevTec2.napomenaColumn] = value;
                 }
             }
             
@@ -921,10 +921,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public byte flagA {
                 get {
-                    return ((byte)(this[this.tabledevTec.flagAColumn]));
+                    return ((byte)(this[this.tabledevTec2.flagAColumn]));
                 }
                 set {
-                    this[this.tabledevTec.flagAColumn] = value;
+                    this[this.tabledevTec2.flagAColumn] = value;
                 }
             }
             
@@ -932,10 +932,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public System.DateTime dateCreated {
                 get {
-                    return ((global::System.DateTime)(this[this.tabledevTec.dateCreatedColumn]));
+                    return ((global::System.DateTime)(this[this.tabledevTec2.dateCreatedColumn]));
                 }
                 set {
-                    this[this.tabledevTec.dateCreatedColumn] = value;
+                    this[this.tabledevTec2.dateCreatedColumn] = value;
                 }
             }
             
@@ -943,10 +943,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public uint origRecID {
                 get {
-                    return ((uint)(this[this.tabledevTec.origRecIDColumn]));
+                    return ((uint)(this[this.tabledevTec2.origRecIDColumn]));
                 }
                 set {
-                    this[this.tabledevTec.origRecIDColumn] = value;
+                    this[this.tabledevTec2.origRecIDColumn] = value;
                 }
             }
             
@@ -954,10 +954,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public ushort recVer {
                 get {
-                    return ((ushort)(this[this.tabledevTec.recVerColumn]));
+                    return ((ushort)(this[this.tabledevTec2.recVerColumn]));
                 }
                 set {
-                    this[this.tabledevTec.recVerColumn] = value;
+                    this[this.tabledevTec2.recVerColumn] = value;
                 }
             }
             
@@ -965,10 +965,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string arAction {
                 get {
-                    return ((string)(this[this.tabledevTec.arActionColumn]));
+                    return ((string)(this[this.tabledevTec2.arActionColumn]));
                 }
                 set {
-                    this[this.tabledevTec.arActionColumn] = value;
+                    this[this.tabledevTec2.arActionColumn] = value;
                 }
             }
             
@@ -976,10 +976,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public System.DateTime arTS {
                 get {
-                    return ((global::System.DateTime)(this[this.tabledevTec.arTSColumn]));
+                    return ((global::System.DateTime)(this[this.tabledevTec2.arTSColumn]));
                 }
                 set {
-                    this[this.tabledevTec.arTSColumn] = value;
+                    this[this.tabledevTec2.arTSColumn] = value;
                 }
             }
             
@@ -987,10 +987,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string arUID {
                 get {
-                    return ((string)(this[this.tabledevTec.arUIDColumn]));
+                    return ((string)(this[this.tabledevTec2.arUIDColumn]));
                 }
                 set {
-                    this[this.tabledevTec.arUIDColumn] = value;
+                    this[this.tabledevTec2.arUIDColumn] = value;
                 }
             }
         }
@@ -999,22 +999,22 @@ namespace Vektor.DataLayer.DS_FindRecord {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-        public class devTecRowChangeEvent : global::System.EventArgs {
+        public class devTec2RowChangeEvent : global::System.EventArgs {
             
-            private devTecRow eventRow;
+            private devTec2Row eventRow;
             
             private global::System.Data.DataRowAction eventAction;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecRowChangeEvent(devTecRow row, global::System.Data.DataRowAction action) {
+            public devTec2RowChangeEvent(devTec2Row row, global::System.Data.DataRowAction action) {
                 this.eventRow = row;
                 this.eventAction = action;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public devTecRow Row {
+            public devTec2Row Row {
                 get {
                     return this.eventRow;
                 }

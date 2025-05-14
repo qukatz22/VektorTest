@@ -7297,7 +7297,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          IsShowingConvertedMoney == false                     )
       {
          return _money;
-      }
+      }  
       else if(TheVvTabPage.WriteMode != ZXC.WriteMode.None)
       {
          return _money;

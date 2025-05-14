@@ -4322,8 +4322,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             Fld_PrjIdent = fakturLocal_rec.ProjektIdent1;
          }
 
-
-         Fld_DevTecaj = fakturLocal_rec.DevTecaj.ToString();
+         // 14.05.2025: 
+       //Fld_DevTecaj = fakturLocal_rec.DevTecaj.ToString();
+         Fld_DevTecaj = ZXC.DevTecDao.GetHnbTecaj(this.Fld_ShowInValutaLookUp, fakturLocal_rec.DokDate).ToString();
 
          if(CtrlOK(tbx_decimal01)) Fld_Decimal01 = fakturLocal_rec.Decimal01;
          if(CtrlOK(tbx_decimal02)) Fld_Decimal02 = fakturLocal_rec.Decimal02;

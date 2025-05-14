@@ -22,14 +22,14 @@ public struct HtransStruct
 
 #endregion struct HtransStruct
 
-public class Htrans : VvTransRecord
+public class Htrans2 : VvTransRecord
 {
 
    #region Fildz
 
    // 12.05.2025. vidi opasku u ZXC.cs                                                                          
- public const string recordName = "htrans";
-   //public const string recordName = "htrans2";
+ //public const string recordName = "htrans";
+   public const string recordName = "htrans2";
    public const string recordNameArhiva = recordName + VvDataRecord.ArhRecNameExstension;
 
    private HtransStruct currentData;
@@ -39,11 +39,11 @@ public class Htrans : VvTransRecord
 
    #region Constructors
 
-   public Htrans() : this(0)
+   public Htrans2() : this(0)
    {
    }
 
-   public Htrans(uint ID) : base()
+   public Htrans2(uint ID) : base()
    {
       this.currentData = new HtransStruct();
 
@@ -110,17 +110,17 @@ public class Htrans : VvTransRecord
 
    public override string VirtualRecordName
    {
-      get { return Htrans.recordName; }
+      get { return Htrans2.recordName; }
    }
 
    public override string VirtualRecordNameArhiva
    {
-      get { return Htrans.recordNameArhiva; }
+      get { return Htrans2.recordNameArhiva; }
    }
 
    public override string DocumentRecordName
    {
-      get { return DevTec.recordName; }
+      get { return DevTec2.recordName; }
    }
 
    [System.Xml.Serialization.XmlIgnoreAttribute()] // Da GetDgvLineFields ne misli krivo: "if(recID > 0) // Postojeci redak" 
@@ -292,7 +292,7 @@ public class Htrans : VvTransRecord
 
    public override object Clone()
    {
-      Htrans newObject = new Htrans();
+      Htrans2 newObject = new Htrans2();
 
       Generic_CloneData<HtransStruct>(this.currentData, this.backupData, ref newObject.currentData, ref newObject.backupData);
 
@@ -302,9 +302,9 @@ public class Htrans : VvTransRecord
       return newObject;
    }
 
-   public Htrans MakeDeepCopy()
+   public Htrans2 MakeDeepCopy()
    {
-      return (Htrans)Clone();
+      return (Htrans2)Clone();
    }
 
    #endregion
@@ -313,17 +313,17 @@ public class Htrans : VvTransRecord
 
    public override VvDataRecord VvDataRecordFactory()
    {
-      return new Htrans();
+      return new Htrans2();
    }
 
    public override void TakeCurrentDataFrom(VvDataRecord vvDataRecord)
    {
-      this.currentData = ((Htrans)vvDataRecord).currentData;
+      this.currentData = ((Htrans2)vvDataRecord).currentData;
    }
 
    public override void TakeInBackupData_CurrentDataFrom(VvDataRecord vvDataRecord)
    {
-      this.backupData = ((Htrans)vvDataRecord).currentData;
+      this.backupData = ((Htrans2)vvDataRecord).currentData;
    }
 
 

@@ -19,7 +19,7 @@ public sealed class HtransDao : VvDaoBase, IVvDao
 
    private static HtransDao instance;
 
-   private HtransDao(XSqlConnection conn, string dbName) : base(dbName, Htrans.recordName, conn) // nedas da se moze instancirati, a ono sealed goreje da se neda inheritirati  
+   private HtransDao(XSqlConnection conn, string dbName) : base(dbName, Htrans2.recordName, conn) // nedas da se moze instancirati, a ono sealed goreje da se neda inheritirati  
    {
    }
 
@@ -71,8 +71,8 @@ public sealed class HtransDao : VvDaoBase, IVvDao
    {
       string tableName;
 
-      if(isArhiva) tableName = Htrans.recordNameArhiva;
-      else         tableName = Htrans.recordName;
+      if(isArhiva) tableName = Htrans2.recordNameArhiva;
+      else         tableName = Htrans2.recordName;
 
       switch(catchingVersion)
       {
@@ -88,7 +88,7 @@ public sealed class HtransDao : VvDaoBase, IVvDao
    public void SetCommandParamValues(XSqlCommand cmd, VvDataRecord vvDataRecord, VvSQL.ParamListType plt, bool dummy)
    {
       string preffix;
-      Htrans htrans = (Htrans)vvDataRecord;
+      Htrans2 htrans = (Htrans2)vvDataRecord;
 
       if(plt == VvSQL.ParamListType.Old_Values)
          preffix = "old_";
@@ -143,7 +143,7 @@ public sealed class HtransDao : VvDaoBase, IVvDao
       /* 09 */      rdrData._t_srednji    = reader.GetDecimal (CI.t_srednji );
       /* 10 */      rdrData._t_prodajni   = reader.GetDecimal (CI.t_prodajni);
 
-      ((Htrans)vvDataRecord).CurrentData = rdrData;
+      ((Htrans2)vvDataRecord).CurrentData = rdrData;
 
       return;
    }

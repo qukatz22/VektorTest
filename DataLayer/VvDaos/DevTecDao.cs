@@ -24,7 +24,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    private static DevTecDao instance;
 
-   private DevTecDao(XSqlConnection conn, string dbName) : base(dbName, DevTec.recordNameArhiva, conn) // nedas da se moze instancirati, a ono sealed goreje da se neda inheritirati  
+   private DevTecDao(XSqlConnection conn, string dbName) : base(dbName, DevTec2.recordNameArhiva, conn) // nedas da se moze instancirati, a ono sealed goreje da se neda inheritirati  
    {
    }
 
@@ -83,8 +83,8 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    {
       string tableName;
 
-      if(isArhiva) tableName = DevTec.recordNameArhiva;
-      else         tableName = DevTec.recordName;
+      if(isArhiva) tableName = DevTec2.recordNameArhiva;
+      else         tableName = DevTec2.recordName;
 
       switch(catchingVersion)
       {
@@ -103,7 +103,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    public void SetCommandParamValues(XSqlCommand cmd, VvDataRecord vvDataRecord, VvSQL.ParamListType plt, bool isArhiva)
    {
       string preffix;
-      DevTec devTec = (DevTec)vvDataRecord;
+      DevTec2 devTec = (DevTec2)vvDataRecord;
 
       if(plt == VvSQL.ParamListType.Old_Values)
          preffix = "old_";
@@ -176,7 +176,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       /* 11 */      rdrData._dateCreated  = reader.GetDateTime (CI.dateCreated);
       /* 12 */      rdrData._extDokNum    = reader.GetUInt32   (CI.extDokNum);
 
-      ((DevTec)vvDataRecord).CurrentData = rdrData;
+      ((DevTec2)vvDataRecord).CurrentData = rdrData;
 
       if(isArhiva)
       {
@@ -200,12 +200,12 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    public override void LoadTranses(XSqlConnection conn, VvDocumentRecord vvDocumentRecord, bool isArhiva)
    {
-      DevTec devTec_rec = (DevTec)vvDocumentRecord;
+      DevTec2 devTec_rec = (DevTec2)vvDocumentRecord;
 
-      if(devTec_rec.Transes == null) devTec_rec.Transes = new List<Htrans>();
+      if(devTec_rec.Transes == null) devTec_rec.Transes = new List<Htrans2>();
       else                           devTec_rec.Transes.Clear();
 
-      LoadGenericTransesList<Htrans>(conn, devTec_rec.Transes, devTec_rec.RecID, isArhiva);
+      LoadGenericTransesList<Htrans2>(conn, devTec_rec.Transes, devTec_rec.RecID, isArhiva);
    }
 
    #endregion LoadTranses
@@ -277,7 +277,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    private static uint currDokNum_ForAutoAddDevTec;
 
-   private static void AutoAddDevTec(XSqlConnection conn, ref ushort line, DevTec devTec_rec, Htrans htrans_rec)
+   private static void AutoAddDevTec(XSqlConnection conn, ref ushort line, DevTec2 devTec_rec, Htrans2 htrans_rec)
    {
       IVvDao devTecDao  = devTec_rec.VvDao;
       IVvDao htransDao  = htrans_rec.VvDao;
@@ -293,7 +293,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
          //devTec_rec.VirtualTranses = new List<VvTransRecord>(); // ?? !! bez ovoga zajebava. 
 
-         currDokNum_ForAutoAddDevTec = devTecDao.GetNextDokNum(conn, DevTec.recordName);
+         currDokNum_ForAutoAddDevTec = devTecDao.GetNextDokNum(conn, DevTec2.recordName);
 
          devTec_rec.DokNum = currDokNum_ForAutoAddDevTec;
          devTec_rec.TtNum  = devTecDao.GetNextTtNum(conn, devTec_rec.VirtualTT, null);
@@ -323,7 +323,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    }
 
-   public static void AutoSetDevTec(XSqlConnection conn, ref ushort line, DevTec devTec_rec, Htrans htrans_rec)
+   public static void AutoSetDevTec(XSqlConnection conn, ref ushort line, DevTec2 devTec_rec, Htrans2 htrans_rec)
    {
       AutoAddDevTec(conn, ref line, devTec_rec, htrans_rec);
    }
@@ -345,8 +345,8 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       decimal  t_prodajni)
    {
 
-      DevTec  devTec_rec = new DevTec();
-      Htrans  htrans_rec = new Htrans();
+      DevTec2  devTec_rec = new DevTec2();
+      Htrans2  htrans_rec = new Htrans2();
 
       devTec_rec.DokDate     = dokDate;
       devTec_rec.TT          = tt;
@@ -383,6 +383,12 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    {
       if(valuta == /*ZXC.ValutaNameEnum.HRK*/ZXC.EURorHRK_NameEnum || valuta == ZXC.ValutaNameEnum.EMPTY) return 1.00M;
 
+      // 14.05.2025: 
+      if(valuta == ZXC.ValutaNameEnum.HRK)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Ne postoji HNB HRK tečaj za traženi datum. Koristim '7.5345'");
+         return 1M / ZXC.HRD_tecaj;
+      }
       return GetTecaj(ZXC.TheMainDbConnection, ZXC.BankaEnum.HNB, valuta, ZXC.TipTecajaEnum.SREDNJI, forThisDate);
    }
 
@@ -401,7 +407,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       Prepare_ZXC_HtransList(conn);
       ZXC.SetMainDbConnDatabaseName(origDBname);
 
-      Htrans htrans_rec = 
+      Htrans2 htrans_rec = 
          // 15.06.2015. 
        //ZXC.HtransList.SingleOrDefault
          ZXC.HtransList.LastOrDefault
@@ -470,9 +476,11 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    {
       DateTime htransListLastChanged;
 
-      htransListLastChanged = VvDaoBase.GetTableLastChangeTimestamp(DevTec.recordName);
+      htransListLastChanged = VvDaoBase.GetTableLastChangeTimestamp(DevTec2.recordName);
 
-      if(htransListLastLoaded < htransListLastChanged)
+      // 14.05.2025: 
+    //if(htransListLastLoaded < htransListLastChanged)
+      if(htransListLastLoaded < htransListLastChanged || htransListLastLoaded == DateTime.MinValue)
       {
          Load_ZXC_HtransList(conn);
 
@@ -484,15 +492,15 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    {
       if(ZXC.HtransList == null)
       {
-         ZXC.HtransList = new List<Htrans>();
+         ZXC.HtransList = new List<Htrans2>();
       }
       else
       {
          ZXC.HtransList.Clear();
       }
 
-    //VvDaoBase.LoadGenericVvDataRecordList<Htrans>(conn, ZXC.HtransList, null, "t_tt, t_valName, t_dokDate"          );
-      VvDaoBase.LoadGenericVvDataRecordList<Htrans>(conn, ZXC.HtransList, null, "t_tt,            t_dokDate, t_serial");
+    //VvDaoBase.LoadGenericVvDataRecordList<Htrans2>(conn, ZXC.HtransList, null, "t_tt, t_valName, t_dokDate"          );
+      VvDaoBase.LoadGenericVvDataRecordList<Htrans2>(conn, ZXC.HtransList, null, "t_tt,            t_dokDate, t_serial");
    }
 
    // 12.05.2025. vidi opasku u ZXC.cs                                                                          
@@ -529,15 +537,15 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
    //   return /*OK*/;
    //}
 
-   private static List<DevTec> GetExistingDevTecList(XSqlConnection conn)
+   private static List<DevTec2> GetExistingDevTecList(XSqlConnection conn)
    {
-      List<DevTec> devTecList = new List<DevTec>();
+      List<DevTec2> devTecList = new List<DevTec2>();
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(1);
 
       filterMembers.Add(new VvSqlFilterMember(ZXC.DevTecSchemaRows[ZXC.DTecCI.tt], "elTT", ZXC.BankaEnum.HNB.ToString(), " = "));
 
-      VvDaoBase.LoadGenericVvDataRecordList<DevTec>(conn, devTecList, filterMembers, "DokDate");
+      VvDaoBase.LoadGenericVvDataRecordList<DevTec2>(conn, devTecList, filterMembers, "DokDate");
 
       return devTecList;
    }
@@ -658,7 +666,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
    private static string GetLocalDirectoryForDownload()
    {
-      string theDirectory = VvForm.GetMyDocumentsLocation(ZXC.vv_PRODUCT_Name, false) + @"\" + DevTec.recordName;
+      string theDirectory = VvForm.GetMyDocumentsLocation(ZXC.vv_PRODUCT_Name, false) + @"\" + DevTec2.recordName;
 
       if(!System.IO.Directory.Exists(theDirectory))
       {

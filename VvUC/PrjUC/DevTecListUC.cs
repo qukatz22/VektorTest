@@ -11,13 +11,13 @@ public class DevTecListUC : VvRecLstUC
                             rBtcurrChecked;
    private VvTextBox        tbx_dokNum, tbx_dokDate, tbx_VKnum, tbx_VK, tbx_filtVKnj,tbx_filtVKOpis, tbx_filtNapomena;
    private VvDateTimePicker dtp_datum;
-   private DevTec           devTec_rec;
+   private DevTec2           devTec_rec;
 
    #endregion Fieldz
 
    #region Constructor
 
-   public DevTecListUC(Control parent, DevTec _devTec, VvForm.VvSubModul vvSubModul) : base(parent)
+   public DevTecListUC(Control parent, DevTec2 _devTec, VvForm.VvSubModul vvSubModul) : base(parent)
    {
       this.devTec_rec = _devTec;
 
@@ -34,7 +34,7 @@ public class DevTecListUC : VvRecLstUC
 
    protected override void InitializeFindFormSpecifics()
    {
-      recordSorter = DevTec.sorterDokNum;
+      recordSorter = DevTec2.sorterDokNum;
 
       this.ds_devTec = new Vektor.DataLayer.DS_FindRecord.DS_findDevTec();
 
@@ -170,7 +170,7 @@ public class DevTecListUC : VvRecLstUC
    {
       RadioButton rbt   = sender as RadioButton;
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
-      this.recordSorter = DevTec.sorterDokNum;
+      this.recordSorter = DevTec2.sorterDokNum;
 
       VvHamper.Open_Close_Fields_ForWriting(dtp_datum, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_VKnum, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
@@ -180,7 +180,7 @@ public class DevTecListUC : VvRecLstUC
    {
       RadioButton rbt   = sender as RadioButton;
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
-      this.recordSorter = DevTec.sorterDokDate;
+      this.recordSorter = DevTec2.sorterDokDate;
 
       VvHamper.Open_Close_Fields_ForWriting(dtp_datum, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_VKnum, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
@@ -190,7 +190,7 @@ public class DevTecListUC : VvRecLstUC
    {
       RadioButton rbt   = sender as RadioButton;
       rBtcurrChecked    = OpenClose_VvTextBoxOnFindDialog(rbt, rBtcurrChecked);
-      this.recordSorter = DevTec.sorterTtNum;
+      this.recordSorter = DevTec2.sorterTtNum;
 
       VvHamper.Open_Close_Fields_ForWriting(dtp_datum, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvFindDialog);
       VvHamper.Open_Close_Fields_ForWriting(tbx_VKnum, ZXC.ZaUpis.Otvoreno , ZXC.ParentControlKind.VvFindDialog);
@@ -268,7 +268,7 @@ public class DevTecListUC : VvRecLstUC
    public override VvDataRecord VirtualDataRecord
    {
       get { return this.devTec_rec; }
-      set {        this.devTec_rec = (DevTec)value; }
+      set {        this.devTec_rec = (DevTec2)value; }
    }
 
    public override VvDaoBase TheVvDao

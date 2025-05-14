@@ -30,13 +30,13 @@ public struct DevTecStruct
 
 #endregion struct DevTecStruct
 
-public class DevTec : VvDocumentRecord
+public class DevTec2 : VvDocumentRecord
 {
    #region Fildz
 
    // 12.05.2025. vidi opasku u ZXC.cs                                                                          
-   public const string recordName = "devTec";
-   //public const string recordName = "devTec2";
+   //public const string recordName = "devTec";
+   public const string recordName = "devTec2";
    public const string recordNameArhiva = recordName + VvDataRecord.ArhRecNameExstension;
 
    private DevTecStruct currentData;
@@ -49,11 +49,11 @@ public class DevTec : VvDocumentRecord
 
    #region Constructors
 
-   public DevTec() : this(0)
+   public DevTec2() : this(0)
    {
    }
 
-   public DevTec(uint ID) : base()
+   public DevTec2(uint ID) : base()
    {
       this.currentData = new DevTecStruct();
 
@@ -81,7 +81,7 @@ public class DevTec : VvDocumentRecord
       /* 11 */      this.currentData._dateCreated  = DateTime.MinValue;
       /* 12 */      this.currentData._extDokNum    = 0;
 
-      this.Transes = new List<Htrans>();
+      this.Transes = new List<Htrans2>();
 
    }
 
@@ -89,20 +89,20 @@ public class DevTec : VvDocumentRecord
 
    #region Sorters
 
-   public static VvSQL.RecordSorter sorterDokNum = new VvSQL.RecordSorter(DevTec.recordName, DevTec.recordNameArhiva, new VvSQL.IndexSegment[]  
+   public static VvSQL.RecordSorter sorterDokNum = new VvSQL.RecordSorter(DevTec2.recordName, DevTec2.recordNameArhiva, new VvSQL.IndexSegment[]  
       {
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.dokNum]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer], true)
       }, "Br Dok", VvSQL.SorterType.DokNum, false);
 
-   public static VvSQL.RecordSorter sorterDokDate = new VvSQL.RecordSorter(DevTec.recordName, DevTec.recordNameArhiva, new VvSQL.IndexSegment[]
+   public static VvSQL.RecordSorter sorterDokDate = new VvSQL.RecordSorter(DevTec2.recordName, DevTec2.recordNameArhiva, new VvSQL.IndexSegment[]
       {
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.dokDate]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.dokNum]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.recVer], true)
       }, "DatDok", VvSQL.SorterType.DokDate, false);
 
-   public static VvSQL.RecordSorter sorterTtNum = new VvSQL.RecordSorter(DevTec.recordName, DevTec.recordNameArhiva, new VvSQL.IndexSegment[]
+   public static VvSQL.RecordSorter sorterTtNum = new VvSQL.RecordSorter(DevTec2.recordName, DevTec2.recordNameArhiva, new VvSQL.IndexSegment[]
       {
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.tt]),
          new VvSQL.IndexSegment(TheSchemaTable.Rows[CI.ttNum]),
@@ -139,7 +139,7 @@ public class DevTec : VvDocumentRecord
 
    public override VvSQL.RecordSorter DefaultSorter
    {
-      get { return DevTec.sorterDokDate; }
+      get { return DevTec2.sorterDokDate; }
    }
 
    #endregion Sorters
@@ -159,22 +159,22 @@ public class DevTec : VvDocumentRecord
 
    public override string VirtualRecordName
    {
-      get { return DevTec.recordName; }
+      get { return DevTec2.recordName; }
    }
 
    public override string VirtualRecordNameArhiva
    {
-      get { return DevTec.recordNameArhiva; }
+      get { return DevTec2.recordNameArhiva; }
    }
 
    public override string TransRecordName
    {
-      get { return Htrans.recordName; }
+      get { return Htrans2.recordName; }
    }
 
    public override string TransRecordNameArhiva
    {
-      get { return Htrans.recordNameArhiva; }
+      get { return Htrans2.recordNameArhiva; }
    }
 
    public override uint VirtualRecID
@@ -224,7 +224,7 @@ public class DevTec : VvDocumentRecord
    /// <summary>
    /// Gets or sets a list of htrans (line items) for the devTec.
    /// </summary>
-   public List<Htrans> Transes { get; set; }
+   public List<Htrans2> Transes { get; set; }
 
    /// <summary>
    /// PAZI!!! Ovdje a'o po jajima. Metode nemozes pozivati nego Invoke()... vidi dolje.
@@ -256,7 +256,7 @@ public class DevTec : VvDocumentRecord
 
    public override void InvokeTransRemove(VvTransRecord trans_rec)
    {
-      this.Transes.Remove((Htrans)trans_rec);
+      this.Transes.Remove((Htrans2)trans_rec);
    }
 
    public override bool IsSomeOfPossibleForeignKeyFieldsChanged
@@ -357,7 +357,7 @@ public class DevTec : VvDocumentRecord
 
    /**/
 
-   private Htrans[] TransesNonDeleted
+   private Htrans2[] TransesNonDeleted
    {
       get
       {
@@ -415,41 +415,41 @@ public class DevTec : VvDocumentRecord
 
    public override object Clone()
    {
-      DevTec newObject = new DevTec();
+      DevTec2 newObject = new DevTec2();
 
       Generic_CloneData<DevTecStruct>(this.currentData, this.backupData, ref newObject.currentData, ref newObject.backupData);
 
       return newObject;
    }
 
-   public DevTec MakeDeepCopy()
+   public DevTec2 MakeDeepCopy()
    {
-      return (DevTec)Clone();
+      return (DevTec2)Clone();
    }
 
    public override void TakeTheseTranses(List<VvTransRecord> transList)
    {
       if(transList.IsEmpty()) return;
 
-      this.Transes = transList.ConvertAll(trans => trans as Htrans);
+      this.Transes = transList.ConvertAll(trans => trans as Htrans2);
    }
 
    public override void TakeTransesFrom(VvDocumentRecord _vvDocumentRecord)
    {
       if(_vvDocumentRecord.VirtualTranses == null) return;
 
-      this.Transes = _vvDocumentRecord.CloneTranses().ConvertAll(trans => trans as Htrans);
+      this.Transes = _vvDocumentRecord.CloneTranses().ConvertAll(trans => trans as Htrans2);
    }
 
    public override List<VvTransRecord> CloneTranses()
    {
       if(this.Transes == null) return null;
 
-      List<Htrans> newList = new List<Htrans>(this.Transes.Count);
+      List<Htrans2> newList = new List<Htrans2>(this.Transes.Count);
 
-      foreach(Htrans htrans_rec in this.Transes)
+      foreach(Htrans2 htrans_rec in this.Transes)
       {
-         newList.Add((Htrans)htrans_rec.Clone());
+         newList.Add((Htrans2)htrans_rec.Clone());
       }
 
       return (newList.ConvertAll(trans => trans as VvTransRecord));
@@ -461,22 +461,22 @@ public class DevTec : VvDocumentRecord
 
    public override VvDataRecord VvDataRecordFactory()
    {
-      return new DevTec();
+      return new DevTec2();
    }
 
    public override void TakeCurrentDataFrom(VvDataRecord vvDataRecord)
    {
-      this.currentData = ((DevTec)vvDataRecord).currentData;
+      this.currentData = ((DevTec2)vvDataRecord).currentData;
    }
 
    public override void TakeInBackupData_CurrentDataFrom(VvDataRecord vvDataRecord)
    {
-      this.backupData = ((DevTec)vvDataRecord).currentData;
+      this.backupData = ((DevTec2)vvDataRecord).currentData;
    }
 
    public override VvTransRecord VvTransRecordFactory()
    {
-      return new Htrans();
+      return new Htrans2();
    }
 
    public override string SaveSerialized_VvDataRecord_ToXmlFile(string fileName, bool _isAutoCreat)
@@ -488,7 +488,7 @@ public class DevTec : VvDocumentRecord
 
    public override VvDataRecord Deserialize_VvDataRecord_FromXmlFile(string fileName)
    {
-      return DeserializeFromXmlFile<DevTec>(fileName);
+      return DeserializeFromXmlFile<DevTec2>(fileName);
    }
 
 

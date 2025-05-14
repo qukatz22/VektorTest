@@ -11,8 +11,8 @@ public class DevTecUC : VvDocumentRecordUC
 {
    #region Fieldz
 
-   private DevTec devTec_rec;
-   private Htrans dgvHtrans_rec;
+   private DevTec2 devTec_rec;
+   private Htrans2 dgvHtrans_rec;
 
    private VvHamper zaglavljeHamper;
 
@@ -30,7 +30,7 @@ public class DevTecUC : VvDocumentRecordUC
 
    #region Constructor
 
-   public DevTecUC(Control parent, DevTec _devTec, VvForm.VvSubModul vvSubModul)
+   public DevTecUC(Control parent, DevTec2 _devTec, VvForm.VvSubModul vvSubModul)
    {
       devTec_rec = _devTec;
 
@@ -317,7 +317,7 @@ public class DevTecUC : VvDocumentRecordUC
 
    public override void PutFields(VvDataRecord devTec)
    {
-      devTec_rec = (DevTec)devTec;
+      devTec_rec = (DevTec2)devTec;
       if(devTec_rec != null)
       {
 
@@ -403,7 +403,7 @@ public class DevTecUC : VvDocumentRecordUC
       {
        //  SetSifrarAndAutocomplete<Osred>(null, VvSQL.SorterType.None);
 
-         foreach(Htrans htrans_rec in devTec_rec.Transes)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         foreach(Htrans2 htrans_rec in devTec_rec.Transes)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
          {
             TheG.Rows.Add();
 
@@ -424,7 +424,7 @@ public class DevTecUC : VvDocumentRecordUC
 
    public override void PutDgvLineFields(VvTransRecord trans_rec, int rowIdx, bool skipRecID_andSerial_Columns)
    {
-      Htrans htrans_rec = (Htrans)trans_rec;
+      Htrans2 htrans_rec = (Htrans2)trans_rec;
 
       VvLookUpItem lui =  ZXC.luiListaDeviza.GetLuiForThisCd(htrans_rec.T_ValName);
 
@@ -461,7 +461,7 @@ public class DevTecUC : VvDocumentRecordUC
       uint recID;
       bool DB_RWT;
       uint[] recIDtable;
-      Htrans dgv_rec, db_rec;
+      Htrans2 dgv_rec, db_rec;
 
       if(TheG.RowCount > 0) recIDtable = new uint[TheG.RowCount - 1];
       else recIDtable = null;
@@ -471,7 +471,7 @@ public class DevTecUC : VvDocumentRecordUC
       //foreach(DataGridViewRow gridRow in TheG.Rows)
       for(rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
       {
-         dgv_rec = new Htrans();
+         dgv_rec = new Htrans2();
 
          if(TheG.CI_OK(ci.iT_recID)) { recID = recIDtable[rIdx] = dgv_rec.T_recID = TheG.GetUint32Cell(ci.iT_recID, rIdx, dirtyFlagging); }
          else { recID = 0; ZXC.aim_emsg("!!! Column T_recID MISSING!!!"); }
@@ -591,7 +591,7 @@ public class DevTecUC : VvDocumentRecordUC
    {
       uint recID;
       bool DB_RWT;
-      Htrans db_rec;
+      Htrans2 db_rec;
 
       // dgvHtrans_rec: buffer za GetField iz DataGridWievRow-a                                        
       // db_rec : pointer na existing row u DB-u kojega ako je EditedHasChanges treba RWTREC-ati 
@@ -600,7 +600,7 @@ public class DevTecUC : VvDocumentRecordUC
 
       if(recIDtable != null) recIDtable[rIdx] = recID;
 
-      dgvHtrans_rec = new Htrans();
+      dgvHtrans_rec = new Htrans2();
 
       if(recID > 0) // Postojeci redak 
       {
@@ -680,13 +680,13 @@ public class DevTecUC : VvDocumentRecordUC
    public override VvDataRecord VirtualDataRecord
    {
       get { return this.devTec_rec; }
-      set {        this.devTec_rec = (DevTec)value; }
+      set {        this.devTec_rec = (DevTec2)value; }
    }
 
    public override VvDocumentRecord VirtualDocumentRecord
    {
       get { return this.VirtualDataRecord as VvDocumentRecord; }
-      set {        this.VirtualDataRecord = (DevTec)value; }
+      set {        this.VirtualDataRecord = (DevTec2)value; }
    }
 
    public override VvDaoBase TheVvDao
@@ -732,7 +732,7 @@ public class DevTecUC : VvDocumentRecordUC
       VvDataRecord    vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();
-      VvRecLstUC   vvRecListUC  = new DevTecListUC(vvFindDialog, (DevTec)vvDataRecord, vvSubModul);
+      VvRecLstUC   vvRecListUC  = new DevTecListUC(vvFindDialog, (DevTec2)vvDataRecord, vvSubModul);
 
       vvFindDialog.TheRecListUC = vvRecListUC;
 
