@@ -12446,6 +12446,11 @@ public partial class FakturExtDUC : FakturDUC
          hampCbxM_DatumX.Location            = new Point(hamp_OsobaB.Right + 0, hamp_osobaX.Bottom);
          panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, /*hamp_externLink2*/hamp_eRproc.Bottom);
 
+         hamp_NacPlac.Location                = new Point(hamp_Mtros.Right + ZXC.QUN, hamp_Fco.Bottom);
+         hamp_NacPlac.VvInitialHamperLocation = new Point(hamp_Mtros.Right + ZXC.QUN, hamp_Fco.Bottom);
+         hampCbxM_NacPlac.Location            = new Point(hamp_Mtros.Right, hamp_Fco.Bottom);
+         panel_MigratorsRightA.Size           = new Size(hamp_tipOtpreme.Right, /*hamp_externLink2*/hamp_eRproc.Bottom);
+
       }
       else
       {
