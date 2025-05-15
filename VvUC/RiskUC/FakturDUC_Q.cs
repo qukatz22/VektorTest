@@ -6468,7 +6468,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       if(currVvTextBox.ReadOnly == true) return; // input was disabled, do nothing 
 
       string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
-      string theTT    = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
+      string theT_TT  = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
 
     //13.05.2025.
     //if(theSerno.IsEmpty()) return;
@@ -6507,6 +6507,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             
             string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec/*.TS*/);
 
+            if(theT_TT == Faktur.TT_ZU2)
+            {
+               //artificial_serno = kurac();
+            }
+
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, artificial_serno);
          }
          else // stisnuo je 'odustani' na find dialogu 
@@ -6521,7 +6526,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region ZIZ Rules - Bijeli redak like DIZ
 
-      if(theTT == Faktur.TT_ZI2) // ponasaj se (provjeravaj) kao da smo na DIZ-u 
+      if(theT_TT == Faktur.TT_ZI2) // ponasaj se (provjeravaj) kao da smo na DIZ-u 
       {
         //13.05.2025. ali ovdje je artikl prayam i trebalo bi kao na MOD-u kad se upise serno
          OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC(sender, e);
@@ -6560,8 +6565,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region ZUL Rules - Zeleni redak like PVR
 
-      // tu si stao 
-      if(theTT == Faktur.TT_ZU2)
+      if(theT_TT == Faktur.TT_ZU2)
       {
          #region Postoji li uopce u bazi ovaj serno?
 
@@ -6595,27 +6599,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #endregion smije li ovaj serno doc na ovaj POVRAT?
 
+         #region Korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
+
+         string povratNaSkladCD = theZIZ_DUC.faktur_rec.SkladCD2;
+
+         Rtrano newPVR_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+
+         newPVR_rtrano_rec.T_skladCD = povratNaSkladCD;
+
+         uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(newPVR_rtrano_rec);
+
+         newPVR_rtrano_rec.T_rtrRecID = theT_RecID;
+         newPVR_rtrano_rec.T_TT       = theT_TT   ;
+
+         theZIZ_DUC.PutDgvLineFields2(newPVR_rtrano_rec, currRowIdx, true);
+
+         theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
+
+         #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
+
       }
 
       #endregion ZUL Rules - Zeleni redak like PVR
 
-      #region Korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
-
-      string povratNaSkladCD = theZIZ_DUC.faktur_rec.SkladCD2;
-
-      Rtrano newPVR_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
-
-      newPVR_rtrano_rec.T_skladCD = povratNaSkladCD;
-
-      uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(newPVR_rtrano_rec);
-
-      newPVR_rtrano_rec.T_rtrRecID = theT_RecID;
-
-      theZIZ_DUC.PutDgvLineFields2(newPVR_rtrano_rec, currRowIdx, true);
-
-      theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
-
-      #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
    }
 
    internal uint Get_UgAnDod_Rtrans_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)

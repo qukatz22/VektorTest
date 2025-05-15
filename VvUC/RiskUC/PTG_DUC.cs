@@ -3221,7 +3221,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    #region TheG_Specific_Columns
    public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
-   public override bool HasRtrano_SkladCD_Exposed { get { return true; } }
+   public override bool HasRtrano_SkladCD_Exposed { get { return true ; } }
+   public override bool Is_Rtrans_Readonly        { get { return true ; } }
+   public override bool HasRtrano_TT_Exposed      { get { return true ; } }
    protected override void InitializeDUC_Specific_Columns()
    {
       T_TT_CreateColumnG1          (ZXC.Q2un,               true, ""      , "Tip Izlaznog dokumenta", false);

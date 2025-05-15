@@ -15850,7 +15850,7 @@ public class FakturPDUC : FakturExtDUC
 
       dgvRtrano_rec.T_TT = faktur_rec.TT;
       // PTG news 
-      if(HasRtrano_TT_Exposed)
+      if(HasRtrano_TT_Exposed && !(this is ZIZ_PTG_DUC)) // dakle, nemoj za ZIZ jer ZIZu je t_TT žuti a MODu nije žuti neg bijeli 
       {
          //string artiklCD = Fld_PrjArtCD ;
          decimal PCK_RAM = Fld_Decimal01;
