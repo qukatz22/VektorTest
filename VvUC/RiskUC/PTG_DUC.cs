@@ -3269,8 +3269,6 @@ public class ZIZ_PTG_DUC : FakturPDUC
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                           );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
       T_grCD_CreateColumn           (ZXC.Q5un,               isVisible, "Opis"         , "Opis"                       , false);
-      T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "PvrSt"        , "PVR stavka"                     );
-
    }
 
    #endregion TheG_Specific_Columns2

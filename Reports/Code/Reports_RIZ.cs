@@ -13223,6 +13223,8 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
          item.ItemNr                 = (uint)(i+1)         ;
 
+         if(!IsUlaz) item.VATNumber  = rsu[i].KupdobName   ;
+
          item.CN8Code                = rsu[i].ArtiklGrCD   ;
          item.GoodsDescription       = rsu[i].ArtiklGrName ;
          item.DestinationCountryCode = rsu[i].FakturGR     ;

@@ -15629,6 +15629,13 @@ public class FakturPDUC : FakturExtDUC
          if(this is ZIZ_PTG_DUC)
          {
             TheG2.PutCell(ci2.iT_TT, rowIdx, rtrano_rec.T_TT);
+
+            if(rtrano_rec.T_TT == Faktur.TT_ZU2)
+            { 
+               TheG2.PutCell(ci2.iT_skladCD1, rowIdx, ZXC.PTG_UNJ);
+               TheG2.PutCell(ci2.iT_skladCD , rowIdx, this.Fld_SkladCD2);
+            }
+
             SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);
          }
 
@@ -22498,9 +22505,9 @@ public class VvGetFirstFakturForThisArtiklAndKupdobDlg : VvDialog
       tbx_KupdobName = hamper.CreateVvTextBox(3, 0, "tbx_kupdobName", "Naziv partnera" , 32);
           
       // 04.12.2015: 
-      tbx_KupdobCd  .JAM_MustTabOutBeforeSubmit =
-      tbx_KupdobTk  .JAM_MustTabOutBeforeSubmit =
-      tbx_KupdobName.JAM_MustTabOutBeforeSubmit = true;
+    //tbx_KupdobCd  .JAM_MustTabOutBeforeSubmit =
+    //tbx_KupdobTk  .JAM_MustTabOutBeforeSubmit =
+    //tbx_KupdobName.JAM_MustTabOutBeforeSubmit = true;
 
       tbx_KupdobCd.JAM_CharEdits       = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_KupdobTk.JAM_CharacterCasing = CharacterCasing.Upper;
