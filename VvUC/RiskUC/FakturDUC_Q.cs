@@ -6476,11 +6476,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
 
+      List<string> sernosInUseList;
+
+      int theSernoCount;
+
       #endregion Init stuff
 
       #region NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
 
-    //bool wantsFindArtikl = theSerno.ToUpper() == "XXX";
+      //bool wantsFindArtikl = theSerno.ToUpper() == "XXX";
       bool wantsFindArtikl = theSerno.StartsWith("   ");
 
       if(wantsFindArtikl)
@@ -6509,15 +6513,59 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             if(theT_TT == Faktur.TT_ZU2)
             {
-               //artificial_serno = kurac();
+               (string UgAn_TT, uint UGAN_ofThisZIZ_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(rtrano_rec);
+
+               List<Rtrano> UGAN_rtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, /*faktur_rec.TtNum*/ UGAN_ofThisZIZ_TtNum);
+
+               Rtrano firstOfThisArtikl_UNJ_rtrano_rec = UGAN_rtranoList.FirstOrDefault(rto => rto.T_artiklCD == artikl_rec.ArtiklCD);
+
+               if(firstOfThisArtikl_UNJ_rtrano_rec != null)
+               {
+                  artificial_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
+               }
+               else
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Artikla\n\r\n\r{0}\n\r\n\rNEMA u najmu?!", artikl_rec);
+
+                  artificial_serno = "";
+
+                  theGrid2.PutCell(ci2.iT_artiklCD   , currRowIdx, "");
+                  theGrid2.PutCell(ci2.iT_artiklName , currRowIdx, "");
+                  theGrid2.PutCell(ci2.iT_jm         , currRowIdx, "");
+                  theGrid2.PutCell(ci2.iT_artiklTS   , currRowIdx, "");
+               }
             }
 
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, artificial_serno);
+
+            theSerno = artificial_serno;
          }
          else // stisnuo je 'odustani' na find dialogu 
          {
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          }
+
+         #region Check for double serno entry
+
+         sernosInUseList = new List<string>();
+
+         for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
+         {
+            sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
+         }
+
+         theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
+
+         if(theSernoCount > 1)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+            theGrid2.EndEdit();
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            e.Cancel = true;
+            return;
+         }
+
+         #endregion Check for double serno entry
 
          return;
       }
@@ -6543,14 +6591,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Check for double serno entry
 
-      List<string> sernosInUseList = new List<string>();
+      sernosInUseList = new List<string>();
 
       for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
       {
          sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
       }
 
-      int theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
+      theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
 
       if(theSernoCount > 1)
       {
