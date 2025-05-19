@@ -6470,9 +6470,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
       string theT_TT  = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
 
-    //13.05.2025.
+    //13.05.2025. zbog 3 space-a 
     //if(theSerno.IsEmpty()) return;
-      if(theSerno == "") return;
+      if(theSerno == ""    ) return;
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
 
@@ -6481,6 +6481,28 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       int theSernoCount;
 
       #endregion Init stuff
+
+      #region Check for double serno entry
+
+      sernosInUseList = new List<string>();
+
+      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
+      {
+         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
+      }
+
+      theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
+
+      if(theSernoCount > 1)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         e.Cancel = true;
+         return;
+      }
+
+      #endregion Check for double serno entry
 
       #region NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
 
@@ -6516,12 +6538,19 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                (string UgAn_TT, uint UGAN_ofThisZIZ_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(rtrano_rec);
 
                List<Rtrano> UGAN_rtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, /*faktur_rec.TtNum*/ UGAN_ofThisZIZ_TtNum);
+               
+               List<Rtrano> UGAN_Artikl_rtranoList = UGAN_rtranoList.Where(rto => rto.T_artiklCD == artikl_rec.ArtiklCD).ToList();
 
-               Rtrano firstOfThisArtikl_UNJ_rtrano_rec = UGAN_rtranoList.FirstOrDefault(rto => rto.T_artiklCD == artikl_rec.ArtiklCD);
+             //Rtrano firstOfThisArtikl_UNJ_rtrano_rec = UGAN_rtranoList       .FirstOrDefault(rto => rto.T_artiklCD == artikl_rec.ArtiklCD);
+               Rtrano firstOfThisArtikl_UNJ_rtrano_rec = UGAN_Artikl_rtranoList.FirstOrDefault();
 
                if(firstOfThisArtikl_UNJ_rtrano_rec != null)
                {
-                  artificial_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
+                  //artificial_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
+
+                  List<ZXC.VvUtilDataPackage> udpList = UGAN_Artikl_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno } ).ToList();
+
+                  artificial_serno = ZXC.ChooseUDP(udpList).TheStr1;
                }
                else
                {
@@ -6534,7 +6563,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   theGrid2.PutCell(ci2.iT_jm         , currRowIdx, "");
                   theGrid2.PutCell(ci2.iT_artiklTS   , currRowIdx, "");
                }
-            }
+
+            } // if(theT_TT == Faktur.TT_ZU2)
 
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, artificial_serno);
 
@@ -6545,43 +6575,48 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          }
 
-         #region Check for double serno entry
-
-         sernosInUseList = new List<string>();
-
-         for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
-         {
-            sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
-         }
-
-         theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
-
-         if(theSernoCount > 1)
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
-            theGrid2.EndEdit();
-            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
-            e.Cancel = true;
-            return;
-         }
-
-         #endregion Check for double serno entry
-
-         return;
+         //return;
       }
 
       #endregion NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
 
-      #region ZIZ Rules - Bijeli redak like DIZ
+      #region Nađi last_rtrano_rec_forThisSerno i pukni ga na grid
+      
+      bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
+
+      #endregion Nađi last_rtrano_rec_forThisSerno i pukni ga na grid
+
+      #region ZI2 Rules - Bijeli redak like DIZ
 
       if(theT_TT == Faktur.TT_ZI2) // ponasaj se (provjeravaj) kao da smo na DIZ-u 
       {
-        //13.05.2025. ali ovdje je artikl prayam i trebalo bi kao na MOD-u kad se upise serno
-         OnExit_Check_PCK_Serno_For_PTG_UgAnDo_or_Common_DUC(sender, e);
-         return;
-      }
+         string izdajemoSaSkladCD = theZIZ_DUC.faktur_rec.SkladCD;
 
-      #endregion ZIZ Rules - Bijeli redak like DIZ
+         if(last_rtrano_rec_forThisSerno.T_skladCD != izdajemoSaSkladCD)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Serno nije na skladištu izdavanja [{0}]", izdajemoSaSkladCD);
+            e.Cancel = true;
+            theGrid2.EndEdit();
+            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            return;
+         }
+
+         #region Korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
+
+         Rtrano new_ZI2_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+
+         new_ZI2_rtrano_rec.T_skladCD = ZXC.PTG_UNJ;
+         new_ZI2_rtrano_rec.T_TT      = theT_TT    ;
+
+         theZIZ_DUC.PutDgvLineFields2(new_ZI2_rtrano_rec, currRowIdx, true);
+
+         theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, izdajemoSaSkladCD);
+
+         #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
+
+      } // if(theT_TT == Faktur.TT_ZI2) 
+
+      #endregion ZI2 Rules - Bijeli redak like DIZ
 
 
       // ##########################################################################
@@ -6589,35 +6624,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // ##########################################################################
 
 
-      #region Check for double serno entry
-
-      sernosInUseList = new List<string>();
-
-      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
-      {
-         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
-      }
-
-      theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
-
-      if(theSernoCount > 1)
-      {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
-         theGrid2.EndEdit();
-         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
-         e.Cancel = true;
-         return;
-      }
-
-      #endregion Check for double serno entry
-
-      #region ZUL Rules - Zeleni redak like PVR
+      #region ZU2 Rules - Zeleni redak like PVR
 
       if(theT_TT == Faktur.TT_ZU2)
       {
          #region Postoji li uopce u bazi ovaj serno?
-
-         bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
 
          if(isLastRtrano_ForSerno_found == false)
          {
@@ -6651,24 +6662,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          string povratNaSkladCD = theZIZ_DUC.faktur_rec.SkladCD2;
 
-         Rtrano newPVR_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+         Rtrano new_ZU2_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
 
-         newPVR_rtrano_rec.T_skladCD = povratNaSkladCD;
+         new_ZU2_rtrano_rec.T_skladCD = povratNaSkladCD;
 
-         uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(newPVR_rtrano_rec);
+         uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(new_ZU2_rtrano_rec);
 
-         newPVR_rtrano_rec.T_rtrRecID = theT_RecID;
-         newPVR_rtrano_rec.T_TT       = theT_TT   ;
+         new_ZU2_rtrano_rec.T_rtrRecID = theT_RecID;
+         new_ZU2_rtrano_rec.T_TT       = theT_TT   ;
 
-         theZIZ_DUC.PutDgvLineFields2(newPVR_rtrano_rec, currRowIdx, true);
+         theZIZ_DUC.PutDgvLineFields2(new_ZU2_rtrano_rec, currRowIdx, true);
 
          theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
 
          #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
 
-      }
+      } // if(theT_TT == Faktur.TT_ZU2) 
 
-      #endregion ZUL Rules - Zeleni redak like PVR
+      #endregion ZU2 Rules - Zeleni redak like PVR
 
    }
 
