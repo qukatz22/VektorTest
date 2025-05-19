@@ -957,22 +957,23 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       if(this is ProizvodnjaDUC ||
-         this is MedjuSkladDUC ||
-         this is PIZpDUC ||
-         this is RNMDUC) hamper.CreateVvLabel(0, 0, "IzlaznoSkl:", ContentAlignment.MiddleRight);
-      else if(this is KIZDUC) hamper.CreateVvLabel(0, 0, "Naše Skl:", ContentAlignment.MiddleRight);
-      else if(this is PIKDUC) hamper.CreateVvLabel(0, 0, "Komis.Skl:", ContentAlignment.MiddleRight);
-      else if(this is TransformDUC) hamper.CreateVvLabel(0, 0, "VPSK:", ContentAlignment.MiddleRight);
+         this is MedjuSkladDUC  ||
+         this is MSI_PTG_DUC    ||
+         this is PIZpDUC        ||
+         this is RNMDUC                ) hamper.CreateVvLabel(0, 0, "IzlaznoSkl:", ContentAlignment.MiddleRight);
+      else if(this is KIZDUC           ) hamper.CreateVvLabel(0, 0, "Naše Skl:",   ContentAlignment.MiddleRight);
+      else if(this is PIKDUC           ) hamper.CreateVvLabel(0, 0, "Komis.Skl:",  ContentAlignment.MiddleRight);
+      else if(this is TransformDUC     ) hamper.CreateVvLabel(0, 0, "VPSK:",       ContentAlignment.MiddleRight);
       else if(this is MedjuSkladVMIuDUC ||
-              this is MedjuSkladVMI2DUC) hamper.CreateVvLabel(0, 0, "VPSK:", ContentAlignment.MiddleRight);
+              this is MedjuSkladVMI2DUC) hamper.CreateVvLabel(0, 0, "VPSK:",    ContentAlignment.MiddleRight);
       else if(this is MedjuSkladMVIDUC ||
-              this is MedjuSkladMVI2DUC) hamper.CreateVvLabel(0, 0, "MPSK:", ContentAlignment.MiddleRight);
-      else if(this is ZAH_SVD_DUC) hamper.CreateVvLabel(0, 0, "Sklad:", ContentAlignment.MiddleRight);
-      else hamper.CreateVvLabel(0, 0, "Skl/Opp:", ContentAlignment.MiddleRight);
+              this is MedjuSkladMVI2DUC) hamper.CreateVvLabel(0, 0, "MPSK:",    ContentAlignment.MiddleRight);
+      else if(this is ZAH_SVD_DUC)       hamper.CreateVvLabel(0, 0, "Sklad:",   ContentAlignment.MiddleRight);
+      else                               hamper.CreateVvLabel(0, 0, "Skl/Opp:", ContentAlignment.MiddleRight);
 
-      tbx_SkladCd = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište");
+      tbx_SkladCd =   hamper.CreateVvTextBoxLookUp(1, 0, "tbx_SkladCd", "Skladište");
       tbx_SkladOpis = hamper.CreateVvTextBox(2, 0, "tbx_SkladOpiS", "");
-      tbx_SkladBR = hamper.CreateVvTextBox(3, 0, "tbx_SkladRbr", "");
+      tbx_SkladBR =   hamper.CreateVvTextBox(3, 0, "tbx_SkladRbr", "");
       tbx_SkladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_SkladCd.JAM_DataRequired = true;
       tbx_SkladCd.JAM_MustTabOutBeforeSubmit = true;
@@ -1146,26 +1147,27 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    {
       hamper = new VvHamper(4, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q4un - ZXC.Qun4 };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q4un - ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       if(this is ProizvodnjaDUC ||
-         this is MedjuSkladDUC ||
-         this is PIZpDUC ||
-         this is RNMDUC) hamper.CreateVvLabel(0, 0, "UlaznoSkl:", ContentAlignment.MiddleRight);
-      else if(this is KIZDUC) hamper.CreateVvLabel(0, 0, "Komis.Skl:", ContentAlignment.MiddleRight);
-      else if(this is PIKDUC) hamper.CreateVvLabel(0, 0, "Naše Skl:", ContentAlignment.MiddleRight);
-      else if(this is TransformDUC) hamper.CreateVvLabel(0, 0, "MPSK:", ContentAlignment.MiddleRight);
+         this is MedjuSkladDUC  ||
+         this is MSI_PTG_DUC    ||
+         this is PIZpDUC        ||
+         this is RNMDUC                ) hamper.CreateVvLabel(0, 0, "UlaznoSkl:", ContentAlignment.MiddleRight);
+      else if(this is KIZDUC           ) hamper.CreateVvLabel(0, 0, "Komis.Skl:", ContentAlignment.MiddleRight);
+      else if(this is PIKDUC           ) hamper.CreateVvLabel(0, 0, "Naše Skl:", ContentAlignment.MiddleRight);
+      else if(this is TransformDUC     ) hamper.CreateVvLabel(0, 0, "MPSK:", ContentAlignment.MiddleRight);
       else if(this is MedjuSkladVMIuDUC ||
               this is MedjuSkladVMI2DUC) hamper.CreateVvLabel(0, 0, "MPSK:", ContentAlignment.MiddleRight);
       else if(this is MedjuSkladMVIDUC ||
               this is MedjuSkladMVI2DUC) hamper.CreateVvLabel(0, 0, "VPSK:", ContentAlignment.MiddleRight);
-      else hamper.CreateVvLabel(0, 0, "Skladište2:", ContentAlignment.MiddleRight);
+      else                               hamper.CreateVvLabel(0, 0, "Skladište2:", ContentAlignment.MiddleRight);
 
 
       tbx_Sklad2Cd = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_sklad2Cd", "Skladište2");
@@ -22504,10 +22506,9 @@ public class VvGetFirstFakturForThisArtiklAndKupdobDlg : VvDialog
       tbx_KupdobTk   = hamper.CreateVvTextBox(2, 0, "tbx_kupdobTk"  , "Ticker partnera", 6 );
       tbx_KupdobName = hamper.CreateVvTextBox(3, 0, "tbx_kupdobName", "Naziv partnera" , 32);
           
-      // 04.12.2015: 
-    //tbx_KupdobCd  .JAM_MustTabOutBeforeSubmit =
-    //tbx_KupdobTk  .JAM_MustTabOutBeforeSubmit =
-    //tbx_KupdobName.JAM_MustTabOutBeforeSubmit = true;
+      tbx_KupdobCd  .JAM_MustTabOutBeforeSubmit =
+      tbx_KupdobTk  .JAM_MustTabOutBeforeSubmit =
+      tbx_KupdobName.JAM_MustTabOutBeforeSubmit = true;
 
       tbx_KupdobCd.JAM_CharEdits       = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_KupdobTk.JAM_CharacterCasing = CharacterCasing.Upper;
@@ -22523,6 +22524,9 @@ public class VvGetFirstFakturForThisArtiklAndKupdobDlg : VvDialog
 
       tbx_ArtiklCd  .JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterCD.SortType  , new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Artikl_sorterSifra), new EventHandler(AnyArtiklTextBox_Leave));
       tbx_ArtiklName.JAM_SetAutoCompleteData(Artikl.recordName, Artikl.sorterName.SortType, new EventHandler(ZXC.TheVvForm.TheVvUC.OnVvTBEnter_SetAutocmplt_Artikl_sorterName) , new EventHandler(AnyArtiklTextBox_Leave));
+
+      tbx_ArtiklCd  .JAM_MustTabOutBeforeSubmit =
+      tbx_ArtiklName.JAM_MustTabOutBeforeSubmit = true;
    }
    void AnyKupdobTextBoxLeave(object sender, EventArgs e)
    {

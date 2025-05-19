@@ -2636,7 +2636,6 @@ public class RtranoListUC : VvRecLstUC
 
       Kupdob kupdob_rec = this.Get_Kupdob_FromVvUcSifrar(rtrano_rec.T_kupdobCD);
 
-
       Fld_ArtiklCD    = rtrano_rec.T_artiklCD                            ; 
       Fld_ArtiklName  = rtrano_rec.T_artiklName                          ; 
       Fld_PCK_RAM     = rtrano_rec.T_PCK_RAM.ToString0Vv()               ; 
@@ -2645,7 +2644,7 @@ public class RtranoListUC : VvRecLstUC
       Fld_SkladDate   = rtrano_rec.T_skladDate.ToString(ZXC.VvDateFormat); 
       Fld_SkladCD     = rtrano_rec.T_skladCD                             ; 
       Fld_KupdobCd    = rtrano_rec.T_kupdobCD                            ; 
-      Fld_KupDobNaziv = kupdob_rec.Naziv                                 ; 
+      Fld_KupDobNaziv = kupdob_rec == null ? "" : kupdob_rec.Naziv       ; //19.05.2025.???
       Fld_TT          = rtrano_rec.T_TT                                  ; 
       Fld_TtNum       = rtrano_rec.T_ttNum.ToString()                    ; 
    }

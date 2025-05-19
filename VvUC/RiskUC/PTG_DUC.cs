@@ -4822,7 +4822,8 @@ public class MSI_PTG_DUC : FakturPDUC
    #endregion HamperLocation
 
    #region TheG_Specific_Columns
-      
+   public override bool HasRtrano_SkladCD_Exposed     { get { return true; } }
+
    protected override void InitializeDUC_Specific_Columns()
    {
       CreateAllwaysInvisibleDataGridViewColumn(TheG, "t_twinID");
@@ -4854,7 +4855,8 @@ public class MSI_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "Sklad"        , "Izlazno skladište"                 );
+      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
       T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
