@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Reflection;
+using static ZXC;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -7022,5 +7023,187 @@ public class MOD_PTG_DUC : FakturPDUC
    }
 
    #endregion SintRtranoToRtransOnMOD
+
+}
+
+public partial class UDP_Dlg :  VvDialog
+{
+   #region Filedz
+
+   private Button okButton, cancelButton;
+   private int dlgWidth, dlgHeight;
+   public  VvDataGridView grid;
+   private VvTextBoxColumn colVvText;
+   private DataGridViewTextBoxColumn colScrol;
+   private VvTextBox vvtb_udp;
+   private int rowIdx;
+
+   #endregion Filedz
+
+   #region Constructor
+
+   public UDP_Dlg(List<VvUtilDataPackage> udpList)
+   {
+      SuspendLayout();
+
+      this.Font        = ZXC.vvFont.BaseFont;
+      this.Style       = ZXC.vvColors.vvform_VisualStyle;
+      this.BackColor   = ZXC.vvColors.userControl_BackColor;
+
+      this.StartPosition = FormStartPosition.CenterScreen;
+
+      grid = CreateTheGrid("udpGrid");
+
+      dlgWidth  = grid.Width  + ZXC.Q2un;//TheUC.Width;
+      dlgHeight = grid.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      PutDgvFields(udpList);
+      ResumeLayout();
+
+      grid.CellMouseDoubleClick += Grid_CellMouseDoubleClick;
+      grid.CellMouseClick += Grid_CellMouseClick;  
+   }
+
+   #endregion Constructor
+
+   #region TheGrid
+
+   private VvDataGridView CreateTheGrid(string name)
+   {
+      VvDataGridView theGrid = new VvDataGridView();
+      theGrid.Name     = name;
+      theGrid.Parent   = this;
+      theGrid.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+
+      theGrid.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+      theGrid.AutoGenerateColumns                  = false;
+
+      theGrid.RowHeadersBorderStyle = theGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+      theGrid.ColumnHeadersHeight   = ZXC.QUN - ZXC.Qun8;
+      theGrid.RowTemplate.Height    = ZXC.QUN - ZXC.Qun8;
+      theGrid.RowHeadersWidth       = ZXC.Q3un;
+      theGrid.Height                = theGrid.ColumnHeadersHeight + theGrid.RowTemplate.Height;
+
+      theGrid.CellFormatting += new DataGridViewCellFormattingEventHandler(VvDocumentRecordUC.grid_CellFormatting_FormatVvDateTime);
+      theGrid.Validating += new System.ComponentModel.CancelEventHandler(VvDocumentRecordUC.grid_Validating);
+
+      theGrid.ReadOnly = true;
+
+      VvHamper.ApplyVVColorAndStyleTabCntrolChange(theGrid);
+      VvHamper.Open_Close_Fields_ForWriting(theGrid, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvOtherUC);
+
+      theGrid.AllowUserToAddRows       =
+      theGrid.AllowUserToDeleteRows    =
+      theGrid.AllowUserToOrderColumns  =
+      theGrid.AllowUserToResizeColumns =
+      theGrid.AllowUserToResizeRows    = false;
+
+      theGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.PowderBlue;
+      theGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.DarkSlateGray;
+      theGrid.RowHeadersDefaultCellStyle.BackColor    = Color.PowderBlue; //Color.FloralWhite;
+      theGrid.RowHeadersDefaultCellStyle.ForeColor    = Color.DarkSlateGray;
+
+      CreateColumn(theGrid);
+
+      int sumoOfColumns = 0;
+      foreach(DataGridViewColumn dc in theGrid.Columns)
+      {
+         sumoOfColumns += dc.Width;
+      }
+
+      theGrid.Width  = sumoOfColumns + theGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
+      theGrid.Height = this.Size.Height - ZXC.QUN;
+
+      theGrid.Scroll += new ScrollEventHandler(Grid_VScroll);
+
+      return theGrid;
+
+   }
+
+   private void Grid_VScroll(object sender, ScrollEventArgs e)
+   {
+      VvDataGridView theGrid = sender as VvDataGridView;
+      DataGridView theSumGrid = theGrid.TheLinkedGrid_Sum;
+
+      theSumGrid.HorizontalScrollingOffset = theGrid.HorizontalScrollingOffset;
+
+   }
+
+   #endregion TheGrid
+
+   #region TheGridColumn
+
+   private void CreateColumn(VvDataGridView theGrid)
+   {
+      vvtb_udp  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_udp", null, -12, ""); 
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_udp  , null, "R_udpString1", "", ZXC.Q10un); 
+      vvtb_udp  .JAM_ReadOnly = true;
+      
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+   }
+
+   #endregion TheGridColumn
+
+   #region SetColumnIndexes()
+
+   private Udp_colIdx ci;
+   public struct Udp_colIdx
+   {
+      internal int iT_R_udpString1;
+   }
+   public void SetColumnIndexes()
+   {
+      ci = new Udp_colIdx();
+      ci.iT_R_udpString1 = grid.IdxForColumn("R_udpString1");
+   }
+   #endregion SetColumnIndexes()
+
+   #region PutDgvFields + Click
+   public void PutDgvFields(List<VvUtilDataPackage> udpList)
+   {
+      int rowIdx;
+
+      grid.Rows.Clear();
+
+      if(udpList != null)
+      {
+         for(rowIdx = 0; rowIdx < udpList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+         {
+            grid.Rows.Add();
+
+            grid.PutCell(ci.iT_R_udpString1, rowIdx, udpList[rowIdx].TheStr1);
+
+            grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         }
+      }
+      grid.ClearSelection();
+   }
+
+   private void Grid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      this.Close();
+   }
+   private void Grid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+   }
+
+   public int RowIdx { get { return rowIdx; } }
+
+   #endregion PutDgvFields + Click
 
 }
