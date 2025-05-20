@@ -612,6 +612,11 @@ public class Rtrano : VvTransRecord
       }
    }
 
+   public static bool IsSernoDummy(string theSerno)
+   {
+      return theSerno.StartsWith(ZXC.PTG_dummy_SernoPreffix);
+   }
+
    #endregion PCTOGO propertiz
 
    #endregion propertiz 

@@ -6470,8 +6470,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
       string theT_TT  = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
 
-    //13.05.2025. zbog 3 space-a 
-    //if(theSerno.IsEmpty()) return;
+      if(theT_TT.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Zadajte prvo TT - tip transakcije u prvoj koloni redka!");
+         e.Cancel = true;
+         theGrid2.EndEdit();
+         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         return;
+      }
+
+      //13.05.2025. zbog 3 space-a 
+      //if(theSerno.IsEmpty()) return;
       if(theSerno == ""    ) return;
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
@@ -6479,6 +6488,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       List<string> sernosInUseList;
 
       int theSernoCount;
+
+      Artikl artikl_rec;
 
       #endregion Init stuff
 
@@ -6506,7 +6517,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
 
-      //bool wantsFindArtikl = theSerno.ToUpper() == "XXX";
       bool wantsFindArtikl = theSerno.StartsWith("   ");
 
       if(wantsFindArtikl)
@@ -6522,12 +6532,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                                                               _VvTextBox);
          if(findResult != null)
          {
-            Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(findResult.ToString());
+            artikl_rec = Get_Artikl_FromVvUcSifrar(findResult.ToString());
 
             theGrid2.PutCell(ci2.iT_artiklCD   , currRowIdx, artikl_rec.ArtiklCD  );
             theGrid2.PutCell(ci2.iT_artiklName , currRowIdx, artikl_rec.ArtiklName);
             theGrid2.PutCell(ci2.iT_jm         , currRowIdx, artikl_rec.JedMj     );
             theGrid2.PutCell(ci2.iT_artiklTS   , currRowIdx, artikl_rec.TS        );
+
+            theGrid2.PutCell(ci2.iT_RAM_new    , currRowIdx, artikl_rec.PCK_RAM   );
+            theGrid2.PutCell(ci2.iT_HDD_new    , currRowIdx, artikl_rec.PCK_HDD   );
 
             Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
             
@@ -6592,7 +6605,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          string izdajemoSaSkladCD = theZIZ_DUC.faktur_rec.SkladCD;
 
-         if(last_rtrano_rec_forThisSerno.T_skladCD != izdajemoSaSkladCD)
+         if(isLastRtrano_ForSerno_found && last_rtrano_rec_forThisSerno.T_skladCD != izdajemoSaSkladCD)
          {
             ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Serno nije na skladištu izdavanja [{0}]", izdajemoSaSkladCD);
             e.Cancel = true;
@@ -6603,7 +6616,46 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region Korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
 
-         Rtrano new_ZI2_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+         Rtrano new_ZI2_rtrano_rec;
+
+         if(isLastRtrano_ForSerno_found)
+         {
+            new_ZI2_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
+         }
+         else // uparivanje serno-a sa artiklom 
+         {
+            string artiklCD = theGrid2.GetStringCell(ci2.iT_artiklCD, currRowIdx, true);
+
+            if(artiklCD.IsEmpty())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj je nepoznat. Za uparivanje novog ser. broja prvo sa '3 razmaknice' odaberite artikl.");
+               e.Cancel = true;
+               theGrid2.EndEdit();
+               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               return;
+            }
+
+            artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD);
+
+            bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
+
+            if(theSerno.NotEmpty() && needsRealSerno == false) // nedaj uparivati novi serno sa 'poklopcem' tj. artikl TS-om koji nema serno 
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj je nepoznat. Nema smisla uparivati ser. broj sa artikolom koji ga ne treba.");
+               e.Cancel = true;
+               theGrid2.EndEdit();
+               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               return;
+            }
+
+            new_ZI2_rtrano_rec = new Rtrano()
+            {
+               T_artiklCD   = artikl_rec.ArtiklCD  ,
+               T_artiklName = artikl_rec.ArtiklName,
+               T_dimZ       = artikl_rec.PCK_RAM   ,
+               T_decC       = artikl_rec.PCK_HDD   
+            };
+         }
 
          new_ZI2_rtrano_rec.T_skladCD = ZXC.PTG_UNJ;
          new_ZI2_rtrano_rec.T_TT      = theT_TT    ;
@@ -6617,12 +6669,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       } // if(theT_TT == Faktur.TT_ZI2) 
 
       #endregion ZI2 Rules - Bijeli redak like DIZ
-
-
-      // ##########################################################################
-      // Ako smo dosli do ovdje, znaci da smo na ZUL Rules - Zeleni redak like PVR 
-      // ##########################################################################
-
 
       #region ZU2 Rules - Zeleni redak like PVR
 

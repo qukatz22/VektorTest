@@ -3367,6 +3367,14 @@ public class ZIZ_PTG_DUC : FakturPDUC
          return (isKolOK && isTtNumOK);
       } 
    }
+
+   public bool IsZIZ_Unaprijed
+   { 
+      get 
+      {
+         return Fld_V1_ttNum.IsZero() && Fld_V2_ttNum.IsZero();
+      } 
+   }
 }
 
 public class PRN_DIZ_PTG_DUC : DIZ_PTG_DUC
