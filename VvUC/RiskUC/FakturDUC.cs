@@ -14679,13 +14679,18 @@ public partial class FakturExtDUC : FakturDUC
       }
       if(this is ZIZ_PTG_DUC)
       {
-         ZIZ_PTG_DUC theDUC = this as ZIZ_PTG_DUC;
+         ZIZ_PTG_DUC ptgDUC        = this as ZIZ_PTG_DUC;
+         PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(faktur_rec);
 
-         bool isZIZ_completed = theDUC.IsZIZ_completed;
+         bool isZIZ_completed = ptgDUC.IsZIZ_completed;
+
+         // tu si stao, treba odabrati neki bool bussiness i njemu dati Fld_PTG_IsZIZunaprijed value. 
+         // fali i u PutExtFields Fld_PTG_IsZIZunaprijed
+         //ptgUgovor_rec.is  = ptgDUC.Fld_PTG_IsZIZunaprijed;
       }
 
 
-#endregion PTG Additions
+      #endregion PTG Additions
 
    }
 
@@ -15636,6 +15641,11 @@ public class FakturPDUC : FakturExtDUC
             { 
                TheG2.PutCell(ci2.iT_skladCD1, rowIdx, ZXC.PTG_UNJ);
                TheG2.PutCell(ci2.iT_skladCD , rowIdx, this.Fld_SkladCD2);
+            }
+            if(rtrano_rec.T_TT == Faktur.TT_ZI2)
+            {
+               TheG2.PutCell(ci2.iT_skladCD , rowIdx, ZXC.PTG_UNJ);
+               TheG2.PutCell(ci2.iT_skladCD1, rowIdx, this.Fld_SkladCD);
             }
 
             SetColors_ZIZ_ZUL_PTG_DUC(rtrano_rec.T_TT, rowIdx);

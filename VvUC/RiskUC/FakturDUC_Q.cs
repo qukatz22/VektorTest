@@ -6480,7 +6480,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       //13.05.2025. zbog 3 space-a 
-      //if(theSerno.IsEmpty()) return;
+    //if(theSerno.IsEmpty()) return;
       if(theSerno == ""    ) return;
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
@@ -6639,9 +6639,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
 
-            if(theSerno.NotEmpty() && needsRealSerno == false) // nedaj uparivati novi serno sa 'poklopcem' tj. artikl TS-om koji nema serno 
+            if(theSerno.NotEmpty() && Rtrano.IsSernoReal(theSerno) && needsRealSerno == false) // nedaj uparivati novi serno sa 'poklopcem' tj. artikl TS-om koji nema serno 
             {
-               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj je nepoznat. Nema smisla uparivati ser. broj sa artikolom koji ga ne treba.");
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj je u sustavu nepoznat (novi) te ga nema smisla uparivati sa artiklom koji ga ne treba.");
                e.Cancel = true;
                theGrid2.EndEdit();
                theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
@@ -6653,7 +6653,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                T_artiklCD   = artikl_rec.ArtiklCD  ,
                T_artiklName = artikl_rec.ArtiklName,
                T_dimZ       = artikl_rec.PCK_RAM   ,
-               T_decC       = artikl_rec.PCK_HDD   
+               T_decC       = artikl_rec.PCK_HDD   ,
+
+               T_serno      = theSerno              
             };
          }
 
@@ -6687,19 +6689,36 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #endregion postoji li uopce u bazi ovaj serno?
 
-         #region Smije li ovaj serno doc na ovaj POVRAT?
+         #region Smije li ovaj serno doc na ovaj POVRAT (ZU2)?
 
          uint UGAN_ttNum = theZIZ_DUC.UGAN_ttNum_ofThisDUC;
 
          List<Rtrano> UGAN_RtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, UGAN_ttNum);
 
-         if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
+         if(theZIZ_DUC.IsZIZ_Unaprijed)
          {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
-            e.Cancel = true;
-            theGrid2.EndEdit();
-            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
-            return;
+            // Da li je ovaj serno u ikojem najmu kod ovog Kupdoba 
+            if(last_rtrano_rec_forThisSerno.T_kupdobCD != theZIZ_DUC.Fld_KupdobCd || 
+               last_rtrano_rec_forThisSerno.T_skladCD  != ZXC.PTG_UNJ              )
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u najmu kod ovog kupca?!");
+               e.Cancel = true;
+               theGrid2.EndEdit();
+               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               return;
+            }
+         }
+         else // Normalan ZIZ, nije unaprijed 
+         {
+            // Da li je ovaj serno u ovom najmu (UgAn 'ECO Sustavu') 
+            if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
+               e.Cancel = true;
+               theGrid2.EndEdit();
+               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               return;
+            }
          }
 
          #endregion smije li ovaj serno doc na ovaj POVRAT?
@@ -6721,6 +6740,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
 
+         if(theZIZ_DUC.IsZIZ_Unaprijed)
+         {
+            Rtrans UgAnDod_rtrans_rec = Get_UgAnDod_Rtrans_fromRtrano(new_ZU2_rtrano_rec);
+
+            uint KUGnum, UGANnum;
+
+            (KUGnum, UGANnum) = UGNorAUN_PTG_DUC.Get_V1iV2_ttNum_fromTtNum(last_rtrano_rec_forThisSerno.T_ttNum);
+
+            uint ZIZ_TtNum = TheVvDao.GetNext_PTG_KUGinTtNum_TtNum(TheDbConnection, Faktur.TT_ZIZ, KUGnum, UGANnum);
+         }
+
          #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
 
       } // if(theT_TT == Faktur.TT_ZU2) 
@@ -6731,6 +6761,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
    internal uint Get_UgAnDod_Rtrans_T_recID_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
    {
+      return Get_UgAnDod_Rtrans_fromRtrano(last_rtrano_rec_forThisSerno).T_recID;
+   }
+
+   internal Rtrans Get_UgAnDod_Rtrans_fromRtrano(Rtrano last_rtrano_rec_forThisSerno)
+   {
       Rtrans UgAnDod_rtrans_rec = new Rtrans();
 
       string theTT       = ZXC.TtInfo(last_rtrano_rec_forThisSerno.T_TT).LinkedDefaultTT; // imam/znam 'UG2' a trebam 'UGN' 
@@ -6739,8 +6774,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       RtransDao.SetMe_Rtrans_byTt_TtNum_Serial(TheDbConnection, UgAnDod_rtrans_rec, theTT, theTtNum, theSerial);
 
-      return UgAnDod_rtrans_rec.T_recID;
+      return UgAnDod_rtrans_rec;
    }
+
    protected void OnExit_Check_PCK_Serno_For_MOD(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff

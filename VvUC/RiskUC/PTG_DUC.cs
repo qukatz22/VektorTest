@@ -1609,6 +1609,11 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       return (UgAnFaktur_TT, UgAn_TtNum);
    }
 
+   public static (uint V1_ttNum, uint V2_ttNum) Get_V1iV2_ttNum_fromTtNum(uint ttNum)
+   {
+      return (ttNum / ZXC.Base10TtNumBuffer(5), ttNum % ZXC.Base10TtNumBuffer(5));
+   }
+
    internal bool Getfirst_UgAn_rec_forThis_KupdobAndArtikl(XSqlConnection conn, Faktur first_UgAnFaktur_rec_forThis_KupdobAndArtikl, uint theWantedKupdobCD, string theWantedArtiklCD)
    {
       bool uganFakturFound = RtransDao.Getfirst_UgAn_rec_forThis_KupdobAndArtikl(conn, first_UgAnFaktur_rec_forThis_KupdobAndArtikl, theWantedKupdobCD, theWantedArtiklCD);
@@ -2841,7 +2846,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
    public VvHamper hamp_partner_PTG, hamp_TT_PTG, hamp_v1TT_PTG, hamp_v2TT_PTG, hamp_KUGpartner_PTG, hamp_PvrNum_PTG,
                    hamp_napomena_PTG, hamp_sklad_PTG;
    public RadioButton rbt_mjIsp_Korisnik, rbt_mjIsp_PcToGo, rbt_mjIsp_KorisOvers;
-   private CheckBox cbx_zizStatus;
+   private CheckBox cbx_isUnaprijed;
 
    #endregion Fieldz
 
@@ -3205,8 +3210,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_SkladCd .JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
       tbx_Sklad2Cd.JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
 
-      cbx_zizStatus = hamper.CreateVvCheckBox_OLD(1, 2, null, 1, 0, "ZIZ status", RightToLeft.No);
-      cbx_zizStatus.Enabled = false;
+      cbx_isUnaprijed = hamper.CreateVvCheckBox_OLD(1, 2, null, 1, 0, "ZIZ UNAPRIJED", RightToLeft.No);
+      cbx_isUnaprijed.Enabled = false;
    }
 
    #endregion Hampers
@@ -3215,7 +3220,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    public DateTime Fld_PTG_DatDostave { get { return dtp_DokDate2.Value; } set { if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime) { dtp_DokDate2.Value = value; } } }
 
-   public bool Fld_PTG_ZizStatus { get { return cbx_zizStatus.Checked; } set { cbx_zizStatus.Checked = value; } }
+   public bool Fld_PTG_IsZIZunaprijed { get { return cbx_isUnaprijed.Checked; } set { cbx_isUnaprijed.Checked = value; } }
 
    #endregion Fld
 

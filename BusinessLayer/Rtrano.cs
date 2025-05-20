@@ -614,7 +614,12 @@ public class Rtrano : VvTransRecord
 
    public static bool IsSernoDummy(string theSerno)
    {
-      return theSerno.StartsWith(ZXC.PTG_dummy_SernoPreffix);
+      return theSerno.StartsWith(ZXC.PTG_dummy_SernoPreffix) == true;
+   }
+
+   public static bool IsSernoReal(string theSerno)
+   {
+      return theSerno.StartsWith(ZXC.PTG_dummy_SernoPreffix) == false;
    }
 
    #endregion PCTOGO propertiz
@@ -625,7 +630,7 @@ public class Rtrano : VvTransRecord
 
    public override string ToString()
    {
-      return T_serno + " TT: "     + T_TT + "-" + T_ttNum + " (" + T_skladDate.ToShortDateString() + ")" +
+      return T_serno + " TT: "     + T_TT + "-" + T_ttNum + " (" /*+ T_skladDate.ToShortDateString()*/ + ")" +
              " Red: "    + T_serial +
              " Artikl: " + T_artiklCD + "-" + T_artiklName;
                       
