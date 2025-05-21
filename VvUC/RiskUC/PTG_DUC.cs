@@ -7042,7 +7042,7 @@ public partial class UDP_Dlg :  VvDialog
 
    #region Constructor
 
-   public UDP_Dlg(List<VvUtilDataPackage> udpList)
+   public UDP_Dlg(List<VvUtilDataPackage> udpList, string name)
    {
       SuspendLayout();
 
@@ -7051,11 +7051,12 @@ public partial class UDP_Dlg :  VvDialog
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text          = name;
 
       grid = CreateTheGrid("udpGrid");
 
       dlgWidth  = grid.Width  + ZXC.Q2un;//TheUC.Width;
-      dlgHeight = grid.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      dlgHeight = grid.Height + ZXC.QunMrgn * 3 + ZXC.QunBtnH;
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
@@ -7065,7 +7066,7 @@ public partial class UDP_Dlg :  VvDialog
       ResumeLayout();
 
       grid.CellMouseDoubleClick += Grid_CellMouseDoubleClick;
-      grid.CellMouseClick += Grid_CellMouseClick;  
+      grid.CellMouseClick       += Grid_CellMouseClick;  
    }
 
    #endregion Constructor
@@ -7130,7 +7131,6 @@ public partial class UDP_Dlg :  VvDialog
       DataGridView theSumGrid = theGrid.TheLinkedGrid_Sum;
 
       theSumGrid.HorizontalScrollingOffset = theGrid.HorizontalScrollingOffset;
-
    }
 
    #endregion TheGrid
@@ -7186,10 +7186,11 @@ public partial class UDP_Dlg :  VvDialog
    private void Grid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
    {
       VvDataGridView theG = sender as VvDataGridView;
-
+   
       rowIdx = e.RowIndex;
-
+   
       if(rowIdx.IsNegative()) return;
+      this.DialogResult = DialogResult.OK;
 
       this.Close();
    }

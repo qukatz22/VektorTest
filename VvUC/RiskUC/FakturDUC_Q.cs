@@ -6594,7 +6594,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   {
                      List<ZXC.VvUtilDataPackage> udpList = UGAN_Artikl_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno }).ToList();
 
-                     olfa_serno = ZXC.ChooseUDP(udpList).TheStr1;
+                     olfa_serno = ZXC.ChooseUDP(udpList, "Olfa serno").TheStr1;
+
+                     if(olfa_serno == null)
+                     { 
+                        theGrid2.EndEdit();
+
+                        ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
+
+                        e.Cancel = true;
+                        return;
+                     }
 
                      bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
                      bool isSernoReal    = olfa_serno.StartsWith(ZXC.PCK_missing_SernoPreffix) == false;
