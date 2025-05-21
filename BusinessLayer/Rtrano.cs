@@ -580,7 +580,7 @@ public class Rtrano : VvTransRecord
    public string R_RAM_kind { get; set; }
    public string R_HDD_kind { get; set; }
 
-   internal string Get_PTG_artificial_serno(Artikl artikl_rec /*string _TS*/)
+   internal string Get_PTG_olfa_serno(Artikl artikl_rec /*string _TS*/)
    {
       bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
 

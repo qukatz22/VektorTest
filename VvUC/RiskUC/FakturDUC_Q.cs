@@ -3291,7 +3291,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                      if(Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtrano_rec.T_artiklCD, faktur_rec.TT)/* == false*/)
                      {
-                        string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec/*.TS*/);
+                        string artificial_serno = rtrano_rec.Get_PTG_olfa_serno(artikl_rec/*.TS*/);
 
                         thePduc.TheG2.PutCell(thePduc.DgvCI2.iT_serno, rowIdx2, artificial_serno);
                      }
@@ -6444,6 +6444,37 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       #endregion korigiraj SklaCD, RtrRecID i pukni ga na grid 
    }
 
+   private /*bool*/int SernoCountOnGrid(VvDataGridView theGrid2, string theSerno)
+   {
+      int theSernoCount;
+
+      List<string> sernosInUseList = new List<string>();
+
+      FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
+
+      for(int rowIdx = 0; rowIdx < theGrid2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
+      {
+         sernosInUseList.Add(theGrid2.GetStringCell(ci2.iT_serno, rowIdx, true));
+      }
+
+      theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
+
+      return theSernoCount /*> 1*/;
+   }
+
+   private void ClearZIZrtranoDGVRow(VvDataGridView theGrid2, FakturPDUC.Rtrano_colIdx ci2, int currRowIdx)
+   {
+      theGrid2.PutCell(ci2.iT_serno      , currRowIdx, "");
+
+      theGrid2.PutCell(ci2.iT_artiklCD   , currRowIdx, "");
+      theGrid2.PutCell(ci2.iT_artiklName , currRowIdx, "");
+      theGrid2.PutCell(ci2.iT_jm         , currRowIdx, "");
+      theGrid2.PutCell(ci2.iT_artiklTS   , currRowIdx, "");
+
+      theGrid2.PutCell(ci2.iT_RAM_new    , currRowIdx, "");
+      theGrid2.PutCell(ci2.iT_HDD_new    , currRowIdx, "");
+      theGrid2.PutCell(ci2.iT_grCD       , currRowIdx, "");
+   }
    protected void OnExit_Check_PCK_Serno_For_ZIZ_PTG_DUC(object sender, System.ComponentModel.CancelEventArgs e)
    {
       #region Init stuff
@@ -6480,29 +6511,25 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       //13.05.2025. zbog 3 space-a 
-    //if(theSerno.IsEmpty()) return;
-      if(theSerno == ""    ) return;
+      //if(theSerno.IsEmpty()) return;
+      if(theSerno == "")
+      {
+         ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
+
+         return;
+      }
 
       Rtrano last_rtrano_rec_forThisSerno = new Rtrano();
 
-      List<string> sernosInUseList;
+      Artikl artikl_rec;
 
       int theSernoCount;
-
-      Artikl artikl_rec;
 
       #endregion Init stuff
 
       #region Check for double serno entry
 
-      sernosInUseList = new List<string>();
-
-      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
-      {
-         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
-      }
-
-      theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
+      theSernoCount = SernoCountOnGrid(theGrid2, theSerno);
 
       if(theSernoCount > 1)
       {
@@ -6528,7 +6555,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          object findResult = VvUserControl.UpdateVvDataRecord(_VvTextBox.JAM_AutoCompleteRecordName,
                                                               _VvTextBox.JAM_AutoCompleteSorterType,
                                                               _VvTextBox.JAM_AutoCompleteRestrictor,
-                                                              /*_VvTextBox.Text*/theSerno.TrimStart(' '),
+                                                            /*_VvTextBox.Text*/theSerno.TrimStart(' '),
                                                               _VvTextBox);
          if(findResult != null)
          {
@@ -6544,7 +6571,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
             
-            string artificial_serno = rtrano_rec.Get_PTG_artificial_serno(artikl_rec/*.TS*/);
+            string olfa_serno = rtrano_rec.Get_PTG_olfa_serno(artikl_rec/*.TS*/);
 
             if(theT_TT == Faktur.TT_ZU2)
             {
@@ -6559,29 +6586,68 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                if(firstOfThisArtikl_UNJ_rtrano_rec != null)
                {
-                  //artificial_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
+                  if(UGAN_Artikl_rtranoList.Count() == 1)
+                  {
+                     olfa_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
+                  }
+                  else // Select serno from ChooseUDP Dialog 
+                  {
+                     List<ZXC.VvUtilDataPackage> udpList = UGAN_Artikl_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno }).ToList();
 
-                  List<ZXC.VvUtilDataPackage> udpList = UGAN_Artikl_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno } ).ToList();
+                     olfa_serno = ZXC.ChooseUDP(udpList).TheStr1;
 
-                  artificial_serno = ZXC.ChooseUDP(udpList).TheStr1;
+                     bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
+                     bool isSernoReal    = olfa_serno.StartsWith(ZXC.PCK_missing_SernoPreffix) == false;
+
+                     if(needsRealSerno && isSernoReal) // za PCK, monitore, ... ne damo da s liste odabera pravi serno neg samo olfaSerno 
+                     {
+                        ZXC.aim_emsg(MessageBoxIcon.Error, "Na ovaj način smiju se birati samo olfa serijski brojevi.\n\r\n\rRealni serijski broj zadajte barkod readerom.");
+
+                        olfa_serno = "";
+
+                        theGrid2.EndEdit();
+
+                        ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
+
+                        e.Cancel = true;
+                        return;
+                     }
+                  }
                }
                else
                {
                   ZXC.aim_emsg(MessageBoxIcon.Error, "Artikla\n\r\n\r{0}\n\r\n\rNEMA u najmu?!", artikl_rec);
 
-                  artificial_serno = "";
+                  olfa_serno = "";
 
-                  theGrid2.PutCell(ci2.iT_artiklCD   , currRowIdx, "");
-                  theGrid2.PutCell(ci2.iT_artiklName , currRowIdx, "");
-                  theGrid2.PutCell(ci2.iT_jm         , currRowIdx, "");
-                  theGrid2.PutCell(ci2.iT_artiklTS   , currRowIdx, "");
+                  theGrid2.EndEdit();
+
+                  ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
+
+                  e.Cancel = true;
+                  return;
                }
 
             } // if(theT_TT == Faktur.TT_ZU2)
 
-            theGrid2.PutCell(ci2.iT_serno, currRowIdx, artificial_serno);
+            theSernoCount = SernoCountOnGrid(theGrid2, olfa_serno);
 
-            theSerno = artificial_serno;
+            if(theSernoCount > 0) // nota bene '> 0' a ne od 1 jer serno kojeg ispitujemo jos nije na gridu 
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+               theGrid2.EndEdit();
+
+               ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
+
+               e.Cancel = true;
+               return;
+            }
+            else
+            {
+               theGrid2.PutCell(ci2.iT_serno, currRowIdx, olfa_serno);
+
+               theSerno = olfa_serno;
+            }
          }
          else // stisnuo je 'odustani' na find dialogu 
          {
