@@ -6598,7 +6598,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   {
                      List<ZXC.VvUtilDataPackage> udpList = UGAN_Artikl_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno }).ToList();
 
-                     olfa_serno = ZXC.ChooseUDP(udpList, "Olfa serno").TheStr1;
+                     string text = "olfa serno za artikl: " + artikl_rec.ArtiklName + " na " +  UgAn_TT + "-" + UGAN_ofThisZIZ_TtNum.ToString();
+
+                     olfa_serno = ZXC.ChooseUDP(udpList, text).TheStr1;
 
                      if(olfa_serno == null)
                      { 
@@ -6645,6 +6647,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                }
 
             } // if(theT_TT == Faktur.TT_ZU2)
+
+          // Tu si stao: 22.05.2025.
+          // ako je if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Unaprijed)                                                   
+          // trazimo listu rtrano oi artiklu i kupdobu na skl UNj preko metode Trazilica  - RISK_GetFirst_UgAn_ForKupdobAndArtikl
+          // umjesto rtransa ide rtrano i miče se limit 1                                                          
+          // a iz liste bi trebali izbaciti real sernoe tj ostaviti samo olfaSerno i pendingSerno (na čekanju)
+          // a mogli bi i iz ove gore liste isto izbaciti realSerno-e ?!
 
             theSernoCount = SernoCountOnGrid(theGrid2, olfa_serno);
 
@@ -6826,6 +6835,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          if(theZIZ_DUC.IsZIZ_Unaprijed)
          {
+          // !!! 22.05.2025. ja mislim da ovdje uopce nije potrebno ici po rtrans Rtrans UgAnDod_rtrans_rec = Get_UgAnDod_Rtrans_fromRtrano(new_ZU2_rtrano_rec);
+          // zbog toga nam je i ispadala velika greska jer se tu salje new_ZU2_rtrano_rec
+          // a za njega u momentu dodavanja nemamo rtrasn
+          // a ionako sve potrebno vadimo i imamo iz last_rtrano_rec_forThisSerno
+          // u kojem imamo vez na rtrans na koji je vezan
+          // ali ostavljam ovako ...
             Rtrans UgAnDod_rtrans_rec = Get_UgAnDod_Rtrans_fromRtrano(new_ZU2_rtrano_rec);
 
             uint KUGnum, UGANnum;

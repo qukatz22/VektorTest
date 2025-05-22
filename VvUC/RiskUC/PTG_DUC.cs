@@ -7049,7 +7049,7 @@ public partial class UDP_Dlg :  VvDialog
 
    #region Constructor
 
-   public UDP_Dlg(List<VvUtilDataPackage> udpList, string name)
+   public UDP_Dlg(List<VvUtilDataPackage> udpList, string text)
    {
       SuspendLayout();
 
@@ -7058,7 +7058,7 @@ public partial class UDP_Dlg :  VvDialog
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = name;
+      this.Text          = text;
 
       grid = CreateTheGrid("udpGrid");
 
