@@ -582,7 +582,7 @@ public class Rtrano : VvTransRecord
 
    internal string Get_PTG_olfa_serno(Artikl artikl_rec /*string _TS*/)
    {
-      bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
+      bool needsRealSerno = Artikl.ThisArtikl_Has_Real_Serno(artikl_rec.ArtiklCD);
 
       string preffix1 = needsRealSerno ? ZXC.PCK_missing_SernoPreffix : ZXC.PTG_dummy_SernoPreffix;
 

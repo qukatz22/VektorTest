@@ -6474,6 +6474,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       theGrid2.PutCell(ci2.iT_RAM_new    , currRowIdx, "");
       theGrid2.PutCell(ci2.iT_HDD_new    , currRowIdx, "");
       theGrid2.PutCell(ci2.iT_grCD       , currRowIdx, "");
+
+      theGrid2.PutCell(ci2.iT_skladCD    , currRowIdx, "");
+      theGrid2.PutCell(ci2.iT_skladCD1   , currRowIdx, "");
+
    }
    protected void OnExit_Check_PCK_Serno_For_ZIZ_PTG_DUC(object sender, System.ComponentModel.CancelEventArgs e)
    {
@@ -6486,7 +6490,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       VvDataGridView theGrid2 = sender as VvDataGridView;
 
       VvTextBoxEditingControl vvtb = theGrid2.EditingControl as VvTextBoxEditingControl;
-      if(vvtb.EditedHasChanges() == false) return;
+    //if(vvtb.EditedHasChanges() == false) return;
 
       int currRowIdx = theGrid2.CurrentRow.Index;
 
@@ -6506,7 +6510,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Zadajte prvo TT - tip transakcije u prvoj koloni redka!");
          e.Cancel = true;
          theGrid2.EndEdit();
-         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
          return;
       }
 
@@ -6535,14 +6539,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
          theGrid2.EndEdit();
-         theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+         ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
          e.Cancel = true;
          return;
       }
 
       #endregion Check for double serno entry
 
-      #region NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
+      #region 3 Spaces - Set Rtrano via Artikl (insted Serno) 
 
       bool wantsFindArtikl = theSerno.StartsWith("   ");
 
@@ -6573,7 +6577,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             
             string olfa_serno = rtrano_rec.Get_PTG_olfa_serno(artikl_rec/*.TS*/);
 
-            if(theT_TT == Faktur.TT_ZU2)
+            if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Normalan) // Zeleni redak povrata i nije unaprijed nego normalan 
             {
                (string UgAn_TT, uint UGAN_ofThisZIZ_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(rtrano_rec);
 
@@ -6606,10 +6610,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                         return;
                      }
 
-                     bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
-                     bool isSernoReal    = olfa_serno.StartsWith(ZXC.PCK_missing_SernoPreffix) == false;
+                     bool artiklHasRealSerno = Artikl.ThisArtikl_Has_Real_Serno(artikl_rec.ArtiklCD);
+                     bool sernoIsReal        = olfa_serno.StartsWith(ZXC.PCK_missing_SernoPreffix) == false;
 
-                     if(needsRealSerno && isSernoReal) // za PCK, monitore, ... ne damo da s liste odabera pravi serno neg samo olfaSerno 
+                     if(artiklHasRealSerno && sernoIsReal) // za PCK, monitore, ... ne damo da s liste odabera pravi serno neg samo olfaSerno 
                      {
                         ZXC.aim_emsg(MessageBoxIcon.Error, "Na ovaj način smiju se birati samo olfa serijski brojevi.\n\r\n\rRealni serijski broj zadajte barkod readerom.");
 
@@ -6623,7 +6627,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                         return;
                      }
                   }
-               }
+
+               } // if(firstOfThisArtikl_UNJ_rtrano_rec != null)
+
                else
                {
                   ZXC.aim_emsg(MessageBoxIcon.Error, "Artikla\n\r\n\r{0}\n\r\n\rNEMA u najmu?!", artikl_rec);
@@ -6658,19 +6664,22 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                theSerno = olfa_serno;
             }
-         }
+
+         } // if(findResult != null)
+
          else // stisnuo je 'odustani' na find dialogu 
          {
-            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
+
+            return;
          }
 
-         //return;
-      }
+      } // if(wantsFindArtikl) 
 
-      #endregion NOVO - ako na ZIZ-u u serno upišeš "XXX", odglumi kao da si u T_artiklCD stisnuo <Ctrl> + <F>
+      #endregion 3 Spaces - Set Rtrano via Artikl (insted Serno) 
 
       #region Nađi last_rtrano_rec_forThisSerno i pukni ga na grid
-      
+
       bool isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(TheDbConnection, last_rtrano_rec_forThisSerno, theSerno, true);
 
       #endregion Nađi last_rtrano_rec_forThisSerno i pukni ga na grid
@@ -6686,7 +6695,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može. Serno nije na skladištu izdavanja [{0}]", izdajemoSaSkladCD);
             e.Cancel = true;
             theGrid2.EndEdit();
-            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
             return;
          }
 
@@ -6707,20 +6716,20 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj je nepoznat. Za uparivanje novog ser. broja prvo sa '3 razmaknice' odaberite artikl.");
                e.Cancel = true;
                theGrid2.EndEdit();
-               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
                return;
             }
 
             artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD);
 
-            bool needsRealSerno = Artikl.ThisArtikl_Have_Real_Serno(artikl_rec.ArtiklCD);
+            bool needsRealSerno = Artikl.ThisArtikl_Has_Real_Serno(artikl_rec.ArtiklCD);
 
             if(theSerno.NotEmpty() && Rtrano.IsSernoReal(theSerno) && needsRealSerno == false) // nedaj uparivati novi serno sa 'poklopcem' tj. artikl TS-om koji nema serno 
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj je u sustavu nepoznat (novi) te ga nema smisla uparivati sa artiklom koji ga ne treba.");
                e.Cancel = true;
                theGrid2.EndEdit();
-               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
                return;
             }
 
@@ -6759,7 +6768,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             ZXC.aim_emsg(MessageBoxIcon.Stop, "Nepoznat serijski broj?!");
             e.Cancel = true;
             theGrid2.EndEdit();
-            theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+            ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
             return;
          }
 
@@ -6780,7 +6789,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u najmu kod ovog kupca?!");
                e.Cancel = true;
                theGrid2.EndEdit();
-               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
                return;
             }
          }
@@ -6792,7 +6801,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
                e.Cancel = true;
                theGrid2.EndEdit();
-               theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
+               ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
                return;
             }
          }
@@ -6805,12 +6814,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          Rtrano new_ZU2_rtrano_rec = last_rtrano_rec_forThisSerno.MakeDeepCopy();
 
-         new_ZU2_rtrano_rec.T_skladCD = povratNaSkladCD;
+         uint theRtrans_T_recID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(new_ZU2_rtrano_rec);
 
-         uint theT_RecID = Get_UgAnDod_Rtrans_T_recID_fromRtrano(new_ZU2_rtrano_rec);
-
-         new_ZU2_rtrano_rec.T_rtrRecID = theT_RecID;
-         new_ZU2_rtrano_rec.T_TT       = theT_TT   ;
+         new_ZU2_rtrano_rec.T_TT       = theT_TT          ;
+         new_ZU2_rtrano_rec.T_skladCD  = povratNaSkladCD  ;
+         new_ZU2_rtrano_rec.T_rtrRecID = theRtrans_T_recID;
 
          theZIZ_DUC.PutDgvLineFields2(new_ZU2_rtrano_rec, currRowIdx, true);
 
@@ -7083,7 +7091,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
        //string upisaniArtiklTS = theGrid2.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
 
        //bool isNO_realSernoArtikl = Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(upisaniArtiklCD, faktur_rec.TT) == false;
-         bool isNO_realSernoArtikl = Artikl.ThisArtikl_Have_Real_Serno             (upisaniArtiklCD               ) == false;
+         bool isNO_realSernoArtikl = Artikl.ThisArtikl_Has_Real_Serno             (upisaniArtiklCD               ) == false;
 
          if(isNO_realSernoArtikl)
          {

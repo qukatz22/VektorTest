@@ -1682,7 +1682,7 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       else            return true ;
    }
 
-   internal static bool ThisArtikl_Have_Real_Serno(string artiklCD)
+   internal static bool ThisArtikl_Has_Real_Serno(string artiklCD)
    {
       return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "");
    }
