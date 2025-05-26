@@ -1610,17 +1610,37 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       return (UgAnFaktur_TT, UgAn_TtNum);
    }
 
-   public static (uint V1_ttNum, uint V2_ttNum) Get_V1iV2_ttNum_fromTtNum(uint ttNum)
+   public static (uint V1_KUGnum, uint V2_UGANnum) Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(Rtrano UgAnDod_rtrano_rec)
    {
-      return (ttNum / ZXC.Base10TtNumBuffer(5), ttNum % ZXC.Base10TtNumBuffer(5));
+      uint rtranoTtNum = UgAnDod_rtrano_rec.T_ttNum;
+      uint V1_KUGnum ;
+      uint V2_UGANnum;
+
+      string wantedTT = UgAnDod_rtrano_rec.T_TT;
+
+    //bool isDOD = wantedTT == Faktur.TT_DIZ || wantedTT == Faktur.TT_PVR || wantedTT == Faktur.TT_ZIZ;
+      bool isDOD = ZXC.TtInfo(wantedTT).IsPTGFaktur_DodTT;
+
+      // 300001001 :
+      // 03 00001 001
+      if(isDOD)
+      {
+         // tu si stao 26.05.2025
+         V2_UGANnum = rtranoTtNum / ZXC.Base10TtNumBuffer(3);
+      }
+
+
+
+
+
+      // if(isAUNnumWanted) return KUGnum * /*    100000 */ ZXC.Base10TtNumBuffer(5) + 1;
+      // if(isDODnumWanted) return KUGnum * /* 100000000 */ ZXC.Base10TtNumBuffer(8) + UGANnum * /* 1000 */ ZXC.Base10TtNumBuffer(3) + 1;
+
+      //return (ttNum / ZXC.Base10TtNumBuffer(5), ttNum % ZXC.Base10TtNumBuffer(5));
+
+      return (111, 222);
    }
 
-   internal bool Getfirst_UgAn_rec_forThis_KupdobAndArtikl(XSqlConnection conn, Faktur first_UgAnFaktur_rec_forThis_KupdobAndArtikl, uint theWantedKupdobCD, string theWantedArtiklCD)
-   {
-      bool uganFakturFound = RtransDao.Getfirst_UgAn_rec_forThis_KupdobAndArtikl(conn, first_UgAnFaktur_rec_forThis_KupdobAndArtikl, theWantedKupdobCD, theWantedArtiklCD);
-
-      return uganFakturFound;
-   }
 }
 
 // staru nomenklaturu "UGO" (nova je UGN) smo morali ostaviti kod naziva DUC-a jer je vec otislo u vvusercontrol 

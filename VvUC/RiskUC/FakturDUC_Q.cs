@@ -6546,7 +6546,23 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Check for double serno entry
 
-      #region 3 Spaces - Set Rtrano via Artikl (insted Serno) 
+      // A1 theT_TT == Faktur.TT_ZI2 
+      // A2 theT_TT == Faktur.TT_ZU2 
+
+      // B1 theZIZ_DUC.IsZIZ_Normalan  
+      // B2 theZIZ_DUC.IsZIZ_Unaprijed 
+
+      // C1 Artikl.ThisArtikl_Ima_Real_Serno (artikl_rec.ArtiklCD) 
+      // C2 Artikl.ThisArtikl_Nema_Real_Serno(artikl_rec.ArtiklCD) 
+
+      // D1 Rtrano.IsSernoReal    (theSerno)
+      // D2 Rtrano.IsSerno_PENDING(theSerno)
+      // D3 Rtrano.IsSerno_OLFA   (theSerno)
+
+
+
+
+      #region 3 Sp aces - Set Rtrano via Artikl (insted Serno) 
 
       bool wantsFindArtikl = theSerno.StartsWith("   ");
 
@@ -6612,8 +6628,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                         return;
                      }
 
-                     bool artiklHasRealSerno = Artikl.ThisArtikl_Has_Real_Serno(artikl_rec.ArtiklCD);
-                     bool sernoIsReal        = olfa_serno.StartsWith(ZXC.PCK_missing_SernoPreffix) == false;
+                     bool artiklHasRealSerno = Artikl.ThisArtikl_Ima_Real_Serno(artikl_rec.ArtiklCD);
+                     bool sernoIsReal        = olfa_serno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == false;
 
                      if(artiklHasRealSerno && sernoIsReal) // za PCK, monitore, ... ne damo da s liste odabera pravi serno neg samo olfaSerno 
                      {
@@ -6646,14 +6662,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   return;
                }
 
-            } // if(theT_TT == Faktur.TT_ZU2)
+            } // if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Normalan) // Zeleni redak povrata i nije unaprijed nego normalan 
 
-          // Tu si stao: 22.05.2025.
-          // ako je if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Unaprijed)                                                   
+            // Odaberi UnReal Serno sa liste mogućih pa će onda                           
+            // ZIZ 'Unaprijed' preći u 'Normalan' ... postavi TtNum pravog realnog UgAn-a 
+            if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Unaprijed)
+            {
+               //kuracY2Y3
+            }
           // trazimo listu rtrano oi artiklu i kupdobu na skl UNj preko metode Trazilica  - RISK_GetFirst_UgAn_ForKupdobAndArtikl
           // umjesto rtransa ide rtrano i miče se limit 1                                                          
           // a iz liste bi trebali izbaciti real sernoe tj ostaviti samo olfaSerno i pendingSerno (na čekanju)
-          // a mogli bi i iz ove gore liste isto izbaciti realSerno-e ?!
 
             theSernoCount = SernoCountOnGrid(theGrid2, olfa_serno);
 
@@ -6731,7 +6750,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             artikl_rec = Get_Artikl_FromVvUcSifrar(artiklCD);
 
-            bool needsRealSerno = Artikl.ThisArtikl_Has_Real_Serno(artikl_rec.ArtiklCD);
+            bool needsRealSerno = Artikl.ThisArtikl_Ima_Real_Serno(artikl_rec.ArtiklCD);
 
             if(theSerno.NotEmpty() && Rtrano.IsSernoReal(theSerno) && needsRealSerno == false) // nedaj uparivati novi serno sa 'poklopcem' tj. artikl TS-om koji nema serno 
             {
@@ -6801,6 +6820,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
                return;
             }
+
+            if(Rtrano.IsSernoReal(theSerno)) // ZIZ 'Unaprijed' prelazi u 'Normalan' ... postavi next ZIZ dod TtNum ovisan o TtNum-u pravog realnog UgAn-a 
+            {
+               //uint ugan_TtNum         = Daj_UGANttnumNaOsnovuRtranoTtNuma(last_rtrano_rec_forThisSerno.T_ttNum);
+               //uint next_ZIZ_dod_TtNum = Daj_next_ZIZ_dod_TtNum_NaOsnovu_UgAnTtNuma(ugan_TtNum);
+               //
+               //Fld_TtNum = next_ZIZ_dod_TtNum;
+            }
          }
          else // Normalan ZIZ, nije unaprijed 
          {
@@ -6835,19 +6862,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          if(theZIZ_DUC.IsZIZ_Unaprijed)
          {
-          // !!! 22.05.2025. ja mislim da ovdje uopce nije potrebno ici po rtrans Rtrans UgAnDod_rtrans_rec = Get_UgAnDod_Rtrans_fromRtrano(new_ZU2_rtrano_rec);
-          // zbog toga nam je i ispadala velika greska jer se tu salje new_ZU2_rtrano_rec
-          // a za njega u momentu dodavanja nemamo rtrasn
-          // a ionako sve potrebno vadimo i imamo iz last_rtrano_rec_forThisSerno
-          // u kojem imamo vez na rtrans na koji je vezan
-          // ali ostavljam ovako ...
-            Rtrans UgAnDod_rtrans_rec = Get_UgAnDod_Rtrans_fromRtrano(new_ZU2_rtrano_rec);
+            (uint V1_KUGnum, uint V2_UGANnum) = UGNorAUN_PTG_DUC.Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(last_rtrano_rec_forThisSerno);
+            uint next_ZIZ_dod_TtNum     = TheVvDao.GetNext_PTG_KUGinTtNum_TtNum(TheDbConnection, Faktur.TT_ZIZ, V1_KUGnum, V2_UGANnum );
 
-            uint KUGnum, UGANnum;
+            Fld_V1_ttNum = V1_KUGnum         ;
+            Fld_V2_ttNum = V2_UGANnum        ;
+            Fld_TtNum    = next_ZIZ_dod_TtNum;
 
-            (KUGnum, UGANnum) = UGNorAUN_PTG_DUC.Get_V1iV2_ttNum_fromTtNum(last_rtrano_rec_forThisSerno.T_ttNum);
-
-            uint ZIZ_TtNum = TheVvDao.GetNext_PTG_KUGinTtNum_TtNum(TheDbConnection, Faktur.TT_ZIZ, KUGnum, UGANnum);
          }
 
          #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 
@@ -7106,7 +7127,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
        //string upisaniArtiklTS = theGrid2.GetStringCell(ci2.iT_artiklTS, currRowIdx, false);
 
        //bool isNO_realSernoArtikl = Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(upisaniArtiklCD, faktur_rec.TT) == false;
-         bool isNO_realSernoArtikl = Artikl.ThisArtikl_Has_Real_Serno             (upisaniArtiklCD               ) == false;
+         bool isNO_realSernoArtikl = Artikl.ThisArtikl_Ima_Real_Serno             (upisaniArtiklCD               ) == false;
 
          if(isNO_realSernoArtikl)
          {

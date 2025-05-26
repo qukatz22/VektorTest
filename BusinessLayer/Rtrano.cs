@@ -582,9 +582,9 @@ public class Rtrano : VvTransRecord
 
    internal string Get_PTG_olfa_serno(Artikl artikl_rec /*string _TS*/)
    {
-      bool needsRealSerno = Artikl.ThisArtikl_Has_Real_Serno(artikl_rec.ArtiklCD);
+      bool needsRealSerno = Artikl.ThisArtikl_Ima_Real_Serno(artikl_rec.ArtiklCD);
 
-      string preffix1 = needsRealSerno ? ZXC.PCK_missing_SernoPreffix : ZXC.PTG_dummy_SernoPreffix;
+      string preffix1 = needsRealSerno ? ZXC.PTG_PENDING_SernoPreffix : ZXC.PTG_OLFA_SernoPreffix;
 
       return preffix1 + this.T_TT + " " + this.T_ttNum.ToString() + "_" + this.T_serial.ToString() /*+ "~" + this.T_artiklCD*/;
    }
@@ -612,14 +612,25 @@ public class Rtrano : VvTransRecord
       }
    }
 
-   public static bool IsSernoDummy(string theSerno)
+   public static bool IsSerno_OLFA(string theSerno)
    {
-      return theSerno.StartsWith(ZXC.PTG_dummy_SernoPreffix) == true;
+      return theSerno.StartsWith(ZXC.PTG_OLFA_SernoPreffix) == true;
    }
 
+   public static bool IsSerno_PENDING(string theSerno)
+   {
+      return theSerno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == true;
+   }
    public static bool IsSernoReal(string theSerno)
    {
-      return theSerno.StartsWith(ZXC.PTG_dummy_SernoPreffix) == false;
+      return 
+         theSerno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == false &&
+         theSerno.StartsWith(ZXC.PTG_OLFA_SernoPreffix   ) == false  ;
+   }
+
+   public static bool IsSernoUnReal(string theSerno)
+   {
+      return IsSernoReal(theSerno) == false;
    }
 
    #endregion PCTOGO propertiz

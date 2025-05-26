@@ -1682,10 +1682,9 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
       else            return true ;
    }
 
-   internal static bool ThisArtikl_Has_Real_Serno(string artiklCD)
-   {
-      return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "");
-   }
+   internal static bool ThisArtikl_Ima_Real_Serno(string artiklCD)  { return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "") == true ; }
+
+   internal static bool ThisArtikl_Nema_Real_Serno(string artiklCD) { return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "") == false; }
 
    #endregion Some Util - Results propertiz
 
