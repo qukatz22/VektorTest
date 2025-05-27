@@ -6559,9 +6559,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // D2 Rtrano.IsSerno_PENDING(theSerno)
       // D3 Rtrano.IsSerno_OLFA   (theSerno)
 
-
-
-
       #region 3 Sp aces - Set Rtrano via Artikl (insted Serno) 
 
       bool wantsFindArtikl = theSerno.StartsWith("   ");
@@ -6669,6 +6666,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Unaprijed)
             {
                //kuracY2Y3
+               olfa_serno = "~~???~~ UG2 15_1";
+
             }
           // trazimo listu rtrano oi artiklu i kupdobu na skl UNj preko metode Trazilica  - RISK_GetFirst_UgAn_ForKupdobAndArtikl
           // umjesto rtransa ide rtrano i miče se limit 1                                                          
@@ -6860,15 +6859,40 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
 
-         if(theZIZ_DUC.IsZIZ_Unaprijed)
+         if(theZIZ_DUC.IsZIZ_Unaprijed) // ZIZ unaprijed prelazi u normalnoga 
          {
-            (uint V1_KUGnum, uint V2_UGANnum) = UGNorAUN_PTG_DUC.Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(last_rtrano_rec_forThisSerno);
-            uint next_ZIZ_dod_TtNum     = TheVvDao.GetNext_PTG_KUGinTtNum_TtNum(TheDbConnection, Faktur.TT_ZIZ, V1_KUGnum, V2_UGANnum );
+            (string uganTT, uint UgAn_TtNum2, uint V1_KUGnum, uint V2_UGANnum) = UGNorAUN_PTG_DUC.Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(last_rtrano_rec_forThisSerno);
+
+            uint next_ZIZ_dod_TtNum = TheVvDao.GetNext_PTG_KUGinTtNum_TtNum(TheDbConnection, Faktur.TT_ZIZ, V1_KUGnum, V2_UGANnum );
 
             Fld_V1_ttNum = V1_KUGnum         ;
             Fld_V2_ttNum = V2_UGANnum        ;
             Fld_TtNum    = next_ZIZ_dod_TtNum;
 
+            #region Apply next_ZIZ_dod_TtNum to all 'tilda' sernos
+
+            Rtrano DGVrtrano_rec;
+            string oldSerno;
+            string newSerno;
+            string oldTtNumStr = "1"                          ; // TODO !!! 
+            string newTtNumStr = next_ZIZ_dod_TtNum.ToString();
+
+            for(int rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
+            {
+               DGVrtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+               if(Rtrano.IsSernoUnReal(DGVrtrano_rec.T_serno))
+               {
+                  oldSerno = DGVrtrano_rec.T_serno;
+                  newSerno = DGVrtrano_rec.T_serno.Replace(" " + oldTtNumStr + "_", " " + newTtNumStr + "_");
+
+                  theGrid2.PutCell(ci2.iT_serno, rowIdx2, newSerno);
+               }
+            }
+
+            #endregion Apply next_ZIZ_dod_TtNum to all 'tilda' sernos
+
+            ZXC.aim_emsg(MessageBoxIcon.Information, "Ovime je ova zamjena 'unaprijed' pretvorena u normalnu zamjenu.\n\r\n\rPridružena je ugovoru\n\r\n\r{0} {1}", uganTT, UgAn_TtNum2);
          }
 
          #endregion korigiraj T_skladCD, T_rtrRecID i pukni ga na grid 

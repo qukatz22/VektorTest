@@ -1610,35 +1610,38 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       return (UgAnFaktur_TT, UgAn_TtNum);
    }
 
-   public static (uint V1_KUGnum, uint V2_UGANnum) Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(Rtrano UgAnDod_rtrano_rec)
+   public static (string tt, uint UgAn_TtNum, uint V1_KUGnum, uint V2_UGANnum) Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(Rtrano UgAnDod_rtrano_rec)
    {
-      uint rtranoTtNum = UgAnDod_rtrano_rec.T_ttNum;
-      uint V1_KUGnum ;
-      uint V2_UGANnum;
+      //              v1  v2  DodNum
+      //      15    (  0, 15)   0   
+      //      15003 (  0, 15)   3   
+      // 8900015    ( 89, 15)   0   
+      // 8900015001 ( 89, 15)   1   
 
-      string wantedTT = UgAnDod_rtrano_rec.T_TT;
+      (string UgAn_TT, uint UgAn_TtNum) = Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(UgAnDod_rtrano_rec);
 
-    //bool isDOD = wantedTT == Faktur.TT_DIZ || wantedTT == Faktur.TT_PVR || wantedTT == Faktur.TT_ZIZ;
-      bool isDOD = ZXC.TtInfo(wantedTT).IsPTGFaktur_DodTT;
+      #region A verzija 
 
-      // 300001001 :
-      // 03 00001 001
-      if(isDOD)
-      {
-         // tu si stao 26.05.2025
-         V2_UGANnum = rtranoTtNum / ZXC.Base10TtNumBuffer(3);
-      }
+      // Faktur faktur_rec = new Faktur();
+      // 
+      // bool dbOK = FakturDao.SetMeFaktur(ZXC.TheVvForm.TheDbConnection, faktur_rec, UgAn_TT, UgAn_TtNum, false);
+      // 
+      // uint V1_KUGnum  = dbOK ? faktur_rec.V1_ttNum : 0;
+      // uint V2_UGANnum = dbOK ? faktur_rec.V2_ttNum : 0;
 
+      #endregion A verzija 
 
+      #region B verzija 
 
+      bool isUGN = UgAnDod_rtrano_rec.T_ttNum < 100000000;
+      bool isAUN = !isUGN;
 
+      uint V1_KUGnum  = isAUN ? UgAn_TtNum / ZXC.Base10TtNumBuffer(5) :          0;
+      uint V2_UGANnum = isAUN ? UgAn_TtNum % ZXC.Base10TtNumBuffer(5) : UgAn_TtNum;
 
-      // if(isAUNnumWanted) return KUGnum * /*    100000 */ ZXC.Base10TtNumBuffer(5) + 1;
-      // if(isDODnumWanted) return KUGnum * /* 100000000 */ ZXC.Base10TtNumBuffer(8) + UGANnum * /* 1000 */ ZXC.Base10TtNumBuffer(3) + 1;
+      #endregion B verzija 
 
-      //return (ttNum / ZXC.Base10TtNumBuffer(5), ttNum % ZXC.Base10TtNumBuffer(5));
-
-      return (111, 222);
+      return (UgAn_TT, UgAn_TtNum, V1_KUGnum, V2_UGANnum);
    }
 
 }
