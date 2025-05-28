@@ -3119,7 +3119,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       foreach(Faktur thisDODfaktur in DOD_FakturList)
       {
-         rtranoList_thisDOD = RtranoDao.GetRtranoList_ForTT_And_TtNum(conn, thisDODfaktur.RecID);
+         rtranoList_thisDOD = RtranoDao.GetRtranoList_For_T_parentID(conn, thisDODfaktur.RecID);
          DOD_RtranoList.AddRange(rtranoList_thisDOD);
       }
 
@@ -3171,6 +3171,56 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       }
 
       return success;
+   }
+
+   public static List<Faktur> GetUgAnFakturList_forThis_KupdobAndArtikl(XSqlConnection conn, uint kupdobCD, string artiklCD)
+   {
+      bool success = true;
+      Faktur uganFaktur_rec = new Faktur();
+      List<Faktur> uganFakturList = new List<Faktur>();
+
+      ZXC.sqlErrNo = 0;
+
+      if(artiklCD.IsEmpty() && kupdobCD.IsZero()) return uganFakturList;
+
+      using(XSqlCommand cmd = (VvSQL.GetUgAnFakturList_forThis_KupdobAndArtikl_Command(conn, kupdobCD, artiklCD)))
+      {
+         try
+         {
+            using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult))
+            {
+               success = reader.HasRows;
+
+               while(success && reader.Read())
+               {
+                  uganFaktur_rec = new Faktur();
+
+                  ZXC.FakturDao.FillFromDataReader(uganFaktur_rec, reader, false);
+
+                  if(uganFaktur_rec.TtInfo.IsExtendableTT)
+                  {
+                     uganFaktur_rec.TheEx = new FaktEx();
+                     uganFaktur_rec.TheEx.IsFillingFromJoinReader = true;
+                     //linkedFaktur_rec.TheEx.IsFillingFrom_Fak2Nal_URM = true;
+                     uganFaktur_rec.TheEx.VvDao.FillFromDataReader(uganFaktur_rec.TheEx, reader, false);
+                     uganFaktur_rec.TheEx.IsFillingFromJoinReader = false;
+                  }
+
+                  uganFakturList.Add(uganFaktur_rec);
+               }
+               reader.Close();
+            }
+         }
+         catch(XSqlException ex)
+         {
+            success = false;
+            VvSQL.ReportSqlError("GetUgAnFakturList_forThis_KupdobAndArtikl", ex, System.Windows.Forms.MessageBoxButtons.OK);
+
+            ZXC.sqlErrNo = ex.Number;
+         }
+      } // using 
+
+      return uganFakturList;
    }
 
    #endregion Some PTG stuff

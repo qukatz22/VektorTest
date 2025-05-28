@@ -688,7 +688,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       if(stillUNJonly == false) return UGAN_RtranoList;
 
-      // stillUNJonly == true ... zelimo samo one koju su jos uvijek u najmu 
+      // stillUNJonly == true ... zelimo samo one koju su jos uvijek u najmu: 
 
       List<Rtrano> thisSerno_RtranoList;
 
@@ -721,9 +721,7 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
          leaveLastOne = thisSernoCount_SALDO.NotZero();
          deleteAll    = !leaveLastOne;
 
-         if(thisSernoCount_SALDO != 0 && thisSernoCount_SALDO != 1) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serno [{0}] ima nekonzistentan promet!\n\r\n\rIzlaza u najam {1}\n\r\n\rPovrata iznajma {2}", 
-
-            thisSerno, thisSernoCount_Izlaz, thisSernoCount_Ulaz);
+         if(thisSernoCount_SALDO != 0 && thisSernoCount_SALDO != 1) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Serno [{0}] ima nekonzistentan promet!\n\r\n\rIzlaza u najam {1}\n\r\n\rPovrata iznajma {2}", thisSerno, thisSernoCount_Izlaz, thisSernoCount_Ulaz);
 
          if(deleteAll)
          {
@@ -745,19 +743,32 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
       return UGAN_RtranoList;
    }
 
-   internal static List<Rtrano> GetRtranoList_ForTT_And_TtNum(XSqlConnection conn, uint theParentID)
+   internal static List<Rtrano> GetRtranoList_For_T_parentID(XSqlConnection conn, uint theParentID)
    {
       List<Rtrano> UGAN_RtranoList = new List<Rtrano>();
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>();
 
-    //filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_tt   ], "theTT"         , theTT      , " = "));
-    //filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum], "theTtNum"      , theTtNum   , " = "));
       filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_parentID], "theParentID", theParentID, " = "));
 
       VvDaoBase.LoadGenericVvDataRecordList<Rtrano>(conn, UGAN_RtranoList, filterMembers, Rtrans.artiklOrderBy_ASC);
 
       return UGAN_RtranoList;
+   }
+
+   internal static List<Rtrano> GetRtranoList_For_KupdobCdAndArtiklCd(XSqlConnection conn, uint kupdobCD, string artiklCD)
+   {
+      List<Faktur> fakturList = new List<Faktur>();
+      List<Rtrano> rtranoList = new List<Rtrano>();
+
+      fakturList = RtransDao.GetUgAnFakturList_forThis_KupdobAndArtikl(conn, kupdobCD, artiklCD);
+
+      foreach(Faktur faktur in fakturList)
+      {
+         rtranoList.AddRange(Get_UGAN_RtranoList(conn, faktur.TtNum, true));
+      }
+
+      return rtranoList.Where(rto => rto.T_artiklCD == artiklCD).ToList();
    }
 
    #endregion Get_UGAN_RtranoList

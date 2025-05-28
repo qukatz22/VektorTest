@@ -580,7 +580,7 @@ public class Rtrano : VvTransRecord
    public string R_RAM_kind { get; set; }
    public string R_HDD_kind { get; set; }
 
-   internal string Get_PTG_olfa_serno(Artikl artikl_rec /*string _TS*/)
+   internal string Get_PTG_tilda_serno(Artikl artikl_rec /*string _TS*/)
    {
       bool needsRealSerno = Artikl.ThisArtikl_Ima_Real_Serno(artikl_rec.ArtiklCD);
 
@@ -621,14 +621,14 @@ public class Rtrano : VvTransRecord
    {
       return theSerno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == true;
    }
-   public static bool IsSernoReal(string theSerno)
+   public static bool IsSernoReal(string theSerno) // realni stvarni serno 
    {
       return 
          theSerno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == false &&
          theSerno.StartsWith(ZXC.PTG_OLFA_SernoPreffix   ) == false  ;
    }
 
-   public static bool IsSernoUnReal(string theSerno)
+   public static bool IsSernoUnReal(string theSerno) // 'tilda' serno 
    {
       return IsSernoReal(theSerno) == false;
    }

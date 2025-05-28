@@ -3291,7 +3291,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                      if(Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtrano_rec.T_artiklCD, faktur_rec.TT)/* == false*/)
                      {
-                        string artificial_serno = rtrano_rec.Get_PTG_olfa_serno(artikl_rec/*.TS*/);
+                        string artificial_serno = rtrano_rec.Get_PTG_tilda_serno(artikl_rec/*.TS*/);
 
                         thePduc.TheG2.PutCell(thePduc.DgvCI2.iT_serno, rowIdx2, artificial_serno);
                      }
@@ -6502,6 +6502,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(currVvTextBox.ReadOnly == true) return; // input was disabled, do nothing 
 
+      string tilda_serno = "";
+
       string theSerno = theGrid2.GetStringCell(ci2.iT_serno, currRowIdx, true);
       string theT_TT  = theGrid2.GetStringCell(ci2.iT_TT   , currRowIdx, true);
 
@@ -6546,19 +6548,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Check for double serno entry
 
-      // A1 theT_TT == Faktur.TT_ZI2 
-      // A2 theT_TT == Faktur.TT_ZU2 
-
-      // B1 theZIZ_DUC.IsZIZ_Normalan  
-      // B2 theZIZ_DUC.IsZIZ_Unaprijed 
-
-      // C1 Artikl.ThisArtikl_Ima_Real_Serno (artikl_rec.ArtiklCD) 
-      // C2 Artikl.ThisArtikl_Nema_Real_Serno(artikl_rec.ArtiklCD) 
-
-      // D1 Rtrano.IsSernoReal    (theSerno)
-      // D2 Rtrano.IsSerno_PENDING(theSerno)
-      // D3 Rtrano.IsSerno_OLFA   (theSerno)
-
       #region 3 Sp aces - Set Rtrano via Artikl (insted Serno) 
 
       bool wantsFindArtikl = theSerno.StartsWith("   ");
@@ -6587,52 +6576,70 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             theGrid2.PutCell(ci2.iT_HDD_new    , currRowIdx, artikl_rec.PCK_HDD   );
 
             Rtrano rtrano_rec = (Rtrano)GetDgvLineFields2(currRowIdx, false, null);
-            
-            string olfa_serno = rtrano_rec.Get_PTG_olfa_serno(artikl_rec/*.TS*/);
 
-            if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Normalan) // Zeleni redak povrata i nije unaprijed nego normalan 
+            #region ZI2 Rules - Bijeli redak like DIZ
+
+            if(theT_TT == Faktur.TT_ZI2)
             {
-               (string UgAn_TT, uint UGAN_ofThisZIZ_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(rtrano_rec);
+               tilda_serno = rtrano_rec.Get_PTG_tilda_serno(artikl_rec/*.TS*/);
+            }
 
-               List<Rtrano> UGAN_rtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, /*faktur_rec.TtNum*/ UGAN_ofThisZIZ_TtNum);
+            #endregion ZI2 Rules - Bijeli redak like DIZ
+
+            #region ZU2 Rules - Zeleni redak like PVR
+
+            if(theT_TT == Faktur.TT_ZU2)
+            {
+               List<Rtrano> chooseFromThis_UNJ_rtranoList = null;
+
+               if(theZIZ_DUC.IsZIZ_Normalan)
+               {
+                  (string UgAn_TT, uint UGAN_ofThisZIZ_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(rtrano_rec);
                
-               List<Rtrano> UGAN_Artikl_rtranoList = UGAN_rtranoList.Where(rto => rto.T_artiklCD == artikl_rec.ArtiklCD).ToList();
+                  List<Rtrano> UGAN_stillUNJ_rtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, /*faktur_rec.TtNum*/ UGAN_ofThisZIZ_TtNum);
 
-             //Rtrano firstOfThisArtikl_UNJ_rtrano_rec = UGAN_rtranoList       .FirstOrDefault(rto => rto.T_artiklCD == artikl_rec.ArtiklCD);
-               Rtrano firstOfThisArtikl_UNJ_rtrano_rec = UGAN_Artikl_rtranoList.FirstOrDefault();
+                  chooseFromThis_UNJ_rtranoList = UGAN_stillUNJ_rtranoList.Where(rto => rto.T_artiklCD == artikl_rec.ArtiklCD).ToList();
+               }
 
+               if(theZIZ_DUC.IsZIZ_Unaprijed)
+               {
+                  chooseFromThis_UNJ_rtranoList = RtranoDao.GetRtranoList_For_KupdobCdAndArtiklCd(TheDbConnection, rtrano_rec.T_kupdobCD, rtrano_rec.T_artiklCD);
+               }
+
+               Rtrano firstOfThisArtikl_UNJ_rtrano_rec = chooseFromThis_UNJ_rtranoList.FirstOrDefault();
+             
                if(firstOfThisArtikl_UNJ_rtrano_rec != null)
                {
-                  if(UGAN_Artikl_rtranoList.Count() == 1)
+                  if(chooseFromThis_UNJ_rtranoList.Count() == 1)
                   {
-                     olfa_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
+                     tilda_serno = firstOfThisArtikl_UNJ_rtrano_rec.T_serno;
                   }
                   else // Select serno from ChooseUDP Dialog 
                   {
-                     List<ZXC.VvUtilDataPackage> udpList = UGAN_Artikl_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno }).ToList();
-
-                     string text = "olfa serno za artikl: " + artikl_rec.ArtiklName + " na " +  UgAn_TT + "-" + UGAN_ofThisZIZ_TtNum.ToString();
-
-                     olfa_serno = ZXC.ChooseUDP(udpList, text).TheStr1;
-
-                     if(olfa_serno == null)
+                     List<ZXC.VvUtilDataPackage> udpList = chooseFromThis_UNJ_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno }).ToList();
+             
+                     string text = "tilda serno za artikl: " + artikl_rec.ArtiklName /*+ " na " +  UgAn_TT + "-" + UGAN_ofThisZIZ_TtNum.ToString()*/;
+             
+                     tilda_serno = UDP_Dlg.ChooseUDP(udpList, text).TheStr1;
+             
+                     if(tilda_serno == null)
                      { 
                         theGrid2.EndEdit();
-
+             
                         ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
-
+             
                         e.Cancel = true;
                         return;
                      }
-
+             
                      bool artiklHasRealSerno = Artikl.ThisArtikl_Ima_Real_Serno(artikl_rec.ArtiklCD);
-                     bool sernoIsReal        = olfa_serno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == false;
-
+                     bool sernoIsReal        = tilda_serno.StartsWith(ZXC.PTG_PENDING_SernoPreffix) == false;
+             
                      if(artiklHasRealSerno && sernoIsReal) // za PCK, monitore, ... ne damo da s liste odabera pravi serno neg samo olfaSerno 
                      {
                         ZXC.aim_emsg(MessageBoxIcon.Error, "Na ovaj način smiju se birati samo olfa serijski brojevi.\n\r\n\rRealni serijski broj zadajte barkod readerom.");
 
-                        olfa_serno = "";
+                        tilda_serno = "";
 
                         theGrid2.EndEdit();
 
@@ -6642,38 +6649,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                         return;
                      }
                   }
-
+             
                } // if(firstOfThisArtikl_UNJ_rtrano_rec != null)
-
+             
                else
                {
                   ZXC.aim_emsg(MessageBoxIcon.Error, "Artikla\n\r\n\r{0}\n\r\n\rNEMA u najmu?!", artikl_rec);
-
-                  olfa_serno = "";
-
+               
+                  tilda_serno = "";
+               
                   theGrid2.EndEdit();
-
+               
                   ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
-
+               
                   e.Cancel = true;
                   return;
                }
-
-            } // if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Normalan) // Zeleni redak povrata i nije unaprijed nego normalan 
-
-            // Odaberi UnReal Serno sa liste mogućih pa će onda                           
-            // ZIZ 'Unaprijed' preći u 'Normalan' ... postavi TtNum pravog realnog UgAn-a 
-            if(theT_TT == Faktur.TT_ZU2 && theZIZ_DUC.IsZIZ_Unaprijed)
-            {
-               //kuracY2Y3
-               olfa_serno = "~~???~~ UG2 15_1";
-
             }
-          // trazimo listu rtrano oi artiklu i kupdobu na skl UNj preko metode Trazilica  - RISK_GetFirst_UgAn_ForKupdobAndArtikl
-          // umjesto rtransa ide rtrano i miče se limit 1                                                          
-          // a iz liste bi trebali izbaciti real sernoe tj ostaviti samo olfaSerno i pendingSerno (na čekanju)
 
-            theSernoCount = SernoCountOnGrid(theGrid2, olfa_serno);
+            #endregion ZU2 Rules - Zeleni redak like PVR
+
+            #region Check for double serno entry
+
+            theSernoCount = SernoCountOnGrid(theGrid2, tilda_serno);
 
             if(theSernoCount > 0) // nota bene '> 0' a ne od 1 jer serno kojeg ispitujemo jos nije na gridu 
             {
@@ -6685,11 +6683,14 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                e.Cancel = true;
                return;
             }
-            else
-            {
-               theGrid2.PutCell(ci2.iT_serno, currRowIdx, olfa_serno);
 
-               theSerno = olfa_serno;
+            #endregion Check for double serno entry
+
+            else // it's OK, nije double serno entry 
+            {
+               theSerno = tilda_serno;
+
+               theGrid2.PutCell(ci2.iT_serno, currRowIdx, theSerno);
             }
 
          } // if(findResult != null)
@@ -6818,14 +6819,6 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                theGrid2.EndEdit();
                ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
                return;
-            }
-
-            if(Rtrano.IsSernoReal(theSerno)) // ZIZ 'Unaprijed' prelazi u 'Normalan' ... postavi next ZIZ dod TtNum ovisan o TtNum-u pravog realnog UgAn-a 
-            {
-               //uint ugan_TtNum         = Daj_UGANttnumNaOsnovuRtranoTtNuma(last_rtrano_rec_forThisSerno.T_ttNum);
-               //uint next_ZIZ_dod_TtNum = Daj_next_ZIZ_dod_TtNum_NaOsnovu_UgAnTtNuma(ugan_TtNum);
-               //
-               //Fld_TtNum = next_ZIZ_dod_TtNum;
             }
          }
          else // Normalan ZIZ, nije unaprijed 

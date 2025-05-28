@@ -7056,7 +7056,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
 }
 
-public partial class UDP_Dlg :  VvDialog
+public class UDP_Dlg :  VvDialog
 {
    #region Filedz
 
@@ -7236,5 +7236,21 @@ public partial class UDP_Dlg :  VvDialog
    public int RowIdx { get { return rowIdx; } }
 
    #endregion PutDgvFields + Click
+
+   internal static VvUtilDataPackage ChooseUDP(List<VvUtilDataPackage> udpList, string text)
+   {
+      UDP_Dlg dlg = new UDP_Dlg(udpList, text);
+
+      if(dlg.ShowDialog() == DialogResult.Cancel)
+      {
+         dlg.Dispose();
+         return new VvUtilDataPackage();
+      }
+      else
+      {
+         dlg.Dispose();
+         return udpList[dlg.RowIdx];
+      }
+   }
 
 }

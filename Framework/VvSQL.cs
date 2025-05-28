@@ -6871,6 +6871,32 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand GetUgAnFakturList_forThis_KupdobAndArtikl_Command(XSqlConnection conn, uint kupdobCD, string artiklCD)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "kupdobCD"  , kupdobCD, ZXC.FaktExSchemaRows[ZXC.FexCI.kupdobCD  ]);
+      CreateCommandNamedParameter(cmd, "", "t_artiklCD", artiklCD, ZXC.RtransSchemaRows[ZXC.RtrCI.t_artiklCD]); 
+
+      cmd.CommandText = 
+
+      "SELECT f.*, x.* FROM faktur f "                             + "\n" +
+
+      "LEFT JOIN faktEx x ON f.recID = x.fakturRecID "        + "\n" +
+      "LEFT JOIN rtrans r ON f.recID = r.t_parentID "         + "\n" +
+
+      "WHERE (t_tt = '" + Faktur.TT_UGN + "' OR t_tt = '" + Faktur.TT_AUN + "')"  + "\n" +
+
+     (kupdobCD.NotZero() ?
+      "AND   kupdobCD   = ?kupdobCD " : " ")   + "\n" +
+
+      "AND   t_artiklCD = ?t_artiklCD " + "\n" +
+
+      "ORDER BY ttNum " + "\n" /*+
+      "LIMIT 1 "        + "\n"*/;
+
+      return (cmd);
+   }
 
    // 11.04.2024: za potrebu nadji mi gdje je ovaj serno u ovom trenutku / ili prije ovog (rtrano-a ili rtrans-a ... jos nisi odlucio)
    public static XSqlCommand SetMePreviousRtranoForThisSerno_Command(XSqlConnection conn, string theSerno, Rtrano forThisRtrano_rec)
