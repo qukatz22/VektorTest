@@ -7065,14 +7065,14 @@ public class UDP_Dlg :  VvDialog
    public  VvDataGridView grid;
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
-   private VvTextBox vvtb_udp;
-   private int rowIdx;
+   private VvTextBox vvtb_udpStr1, vvtb_udpStr2;
+   private int rowIdx, numOfCol;
 
    #endregion Filedz
 
    #region Constructor
 
-   public UDP_Dlg(List<VvUtilDataPackage> udpList, string text)
+   public UDP_Dlg(List<VvUtilDataPackage> udpList, string _naziv, int _numOfCol)
    {
       SuspendLayout();
 
@@ -7081,19 +7081,22 @@ public class UDP_Dlg :  VvDialog
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = text;
+      this.Text          = _naziv;
+      this.numOfCol      = _numOfCol;
 
       grid = CreateTheGrid("udpGrid");
 
-      dlgWidth  = grid.Width  + ZXC.Q2un;//TheUC.Width;
-      dlgHeight = grid.Height + ZXC.QunMrgn * 3 + ZXC.QunBtnH;
+      dlgWidth        = grid.Width  + ZXC.QunMrgn * 2;
+      dlgHeight       = grid.Height + ZXC.QunMrgn * 3 + ZXC.QunBtnH;
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
       AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
       okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-      PutDgvFields(udpList);
+      
       ResumeLayout();
+      
+      SetColumnIndexes();
+      PutDgvFields(udpList);
 
       grid.CellMouseDoubleClick += Grid_CellMouseDoubleClick;
       grid.CellMouseClick       += Grid_CellMouseClick;  
@@ -7152,7 +7155,6 @@ public class UDP_Dlg :  VvDialog
       theGrid.Scroll += new ScrollEventHandler(Grid_VScroll);
 
       return theGrid;
-
    }
 
    private void Grid_VScroll(object sender, ScrollEventArgs e)
@@ -7169,10 +7171,17 @@ public class UDP_Dlg :  VvDialog
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      vvtb_udp  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_udp", null, -12, ""); 
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_udp  , null, "R_udpString1", "", ZXC.Q10un); 
-      vvtb_udp  .JAM_ReadOnly = true;
+       vvtb_udpStr1  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_udpStr1", null, -12, ""); 
+       colVvText     = theGrid.CreateVvTextBoxColumn(vvtb_udpStr1  , null, "R_udpStr1", "", ZXC.Q10un); 
+       vvtb_udpStr1  .JAM_ReadOnly = true;
       
+      if(numOfCol == 2)
+      {
+         vvtb_udpStr2  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_udpStr2", null, -12, ""); 
+         colVvText     = theGrid.CreateVvTextBoxColumn(vvtb_udpStr2  , null, "R_udpStr2", "", ZXC.Q10un); 
+         vvtb_udpStr2  .JAM_ReadOnly = true;
+      }
+
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
@@ -7183,16 +7192,19 @@ public class UDP_Dlg :  VvDialog
    private Udp_colIdx ci;
    public struct Udp_colIdx
    {
-      internal int iT_R_udpString1;
+      internal int iT_R_udpStr1;
+      internal int iT_R_udpStr2;
    }
    public void SetColumnIndexes()
    {
       ci = new Udp_colIdx();
-      ci.iT_R_udpString1 = grid.IdxForColumn("R_udpString1");
+      ci.iT_R_udpStr1 = grid.IdxForColumn("R_udpStr1");
+      ci.iT_R_udpStr2 = grid.IdxForColumn("R_udpStr2");
    }
    #endregion SetColumnIndexes()
 
    #region PutDgvFields + Click
+
    public void PutDgvFields(List<VvUtilDataPackage> udpList)
    {
       int rowIdx;
@@ -7205,7 +7217,12 @@ public class UDP_Dlg :  VvDialog
          {
             grid.Rows.Add();
 
-            grid.PutCell(ci.iT_R_udpString1, rowIdx, udpList[rowIdx].TheStr1);
+            grid.PutCell(ci.iT_R_udpStr1, rowIdx, udpList[rowIdx].TheStr1);
+
+            if(numOfCol==2)
+            {
+               grid.PutCell(ci.iT_R_udpStr2, rowIdx, udpList[rowIdx].TheStr2);
+            } 
 
             grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
          }
@@ -7237,9 +7254,10 @@ public class UDP_Dlg :  VvDialog
 
    #endregion PutDgvFields + Click
 
-   internal static VvUtilDataPackage ChooseUDP(List<VvUtilDataPackage> udpList, string text)
+   #region ChooseUDP
+   internal static VvUtilDataPackage ChooseUDP(List<VvUtilDataPackage> udpList, string naziv, int numOfCol)
    {
-      UDP_Dlg dlg = new UDP_Dlg(udpList, text);
+      UDP_Dlg dlg = new UDP_Dlg(udpList, naziv, numOfCol);
 
       if(dlg.ShowDialog() == DialogResult.Cancel)
       {
@@ -7252,5 +7270,76 @@ public class UDP_Dlg :  VvDialog
          return udpList[dlg.RowIdx];
       }
    }
+
+   #endregion ChooseUDP
+}
+
+public class VvRenameSernoDlg : VvDialog
+{
+   #region Fieldz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+   internal VvTextBox tbx_realSerno;
+
+   #endregion Fieldz
+
+   #region Constructor
+
+   public VvRenameSernoDlg(bool isRenameNaziv)
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text          = "Real serno";
+
+      CreateHamper(isRenameNaziv);
+
+      dlgWidth        = hamper.Right + ZXC.QunMrgn;
+      dlgHeight       = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_realSerno, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+   #endregion Constructor
+
+   #region hamper
+
+   private void CreateHamper(bool isRenameNaziv)
+   {
+      hamper          = new VvHamper(2, 1, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q6un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = 0;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                      hamper.CreateVvLabel  (0, 0, "Real serno:", ContentAlignment.MiddleRight);
+      tbx_realSerno = hamper.CreateVvTextBox(1, 0, "tbx_realSerno", "", 64);
+   }
+
+   #endregion hamper
+
+   #region Event cancelButton
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+   #endregion Event cancelButton
+
+   #region Fld_
+
+   public string Fld_RealSerno { get { return tbx_realSerno.Text; } set { tbx_realSerno.Text = value; } }
+
+   #endregion Fld_
 
 }

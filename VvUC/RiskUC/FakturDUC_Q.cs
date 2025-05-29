@@ -6618,9 +6618,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   {
                      List<ZXC.VvUtilDataPackage> udpList = chooseFromThis_UNJ_rtranoList.Select(rto => new ZXC.VvUtilDataPackage() { TheStr1 = rto.T_serno }).ToList();
              
-                     string text = "tilda serno za artikl: " + artikl_rec.ArtiklName /*+ " na " +  UgAn_TT + "-" + UGAN_ofThisZIZ_TtNum.ToString()*/;
+                     string text = "Tilda serno za artikl: " + artikl_rec.ArtiklName /*+ " na " +  UgAn_TT + "-" + UGAN_ofThisZIZ_TtNum.ToString()*/;
              
-                     tilda_serno = UDP_Dlg.ChooseUDP(udpList, text).TheStr1;
+                     tilda_serno = UDP_Dlg.ChooseUDP(udpList, text, 1).TheStr1;
              
                      if(tilda_serno == null)
                      { 
