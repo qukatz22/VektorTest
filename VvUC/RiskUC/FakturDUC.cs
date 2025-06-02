@@ -4110,7 +4110,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          // 17.02.2025: unificiran nacin new tt num - a                                     
        //uint newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, skladCD4_ttNum, isCentToCentMSI, vezniDokAsRNMkind, eventualRNZmonth, KUGnum, UGNorAUNnum, eventualDokYear);
        
-         Put_NewTT_Num(this.GetNewTtNum_2025());
+         uint newTtNum = this.GetNewTtNum_2025();
+
+         Put_NewTT_Num(newTtNum);
       }
 
       SetDefaulFakExDucFields();

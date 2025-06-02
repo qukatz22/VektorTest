@@ -1026,7 +1026,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       {
          DialogResult result =
             MessageBox.Show
-            ("Usljed promjene podataka koju su uvjetovali pros. nabavnu cijenu, na nekim dokumentima je ona kriva.\n\nDa li želite automatski revalorizirati cijenu na tim dokumentima?\n\nZa " + descrepancyCount + " stavaka.",
+            ("Uslijed promjene podataka koju su uvjetovali pros. nabavnu cijenu, na nekim dokumentima je ona kriva.\n\nDa li želite automatski revalorizirati cijenu na tim dokumentima?\n\nZa " + descrepancyCount + " stavaka.",
             "Promijenjena Prosječna Nabavna Cijena?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
          if(result != DialogResult.Yes) return allOK;

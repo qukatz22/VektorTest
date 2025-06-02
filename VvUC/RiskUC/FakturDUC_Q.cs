@@ -3291,9 +3291,49 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
                      if(Artikl.DoesThisArtikl_Needs_RtranoRow_ForSerno(rtrano_rec.T_artiklCD, faktur_rec.TT)/* == false*/)
                      {
-                        string artificial_serno = rtrano_rec.Get_PTG_tilda_serno(artikl_rec/*.TS*/);
+                        string artificial_serno = rtrano_rec.Get_PTG_tilda_serno(artikl_rec);
 
                         thePduc.TheG2.PutCell(thePduc.DgvCI2.iT_serno, rowIdx2, artificial_serno);
+                     }
+                  }
+
+                  // tilda serno. provjeri sadrzaj nakon preffixa 
+                  if(Rtrano.IsSernoUnReal(rtrano_rec.T_serno) &&
+                     (rtrano_rec.T_TT == Faktur.TT_UG2 ||
+                      rtrano_rec.T_TT == Faktur.TT_AU2 ||
+                      rtrano_rec.T_TT == Faktur.TT_DI2 ||
+                      rtrano_rec.T_TT == Faktur.TT_ZI2  )) 
+                  {
+                     artikl_rec = Get_Artikl_FromVvUcSifrar(rtrano_rec.T_artiklCD);
+
+                     string shouldBeTildaSerno = rtrano_rec.Get_PTG_tilda_serno(artikl_rec);
+                     string actualTildaSerno   = rtrano_rec.T_serno                        ;
+
+                     if(shouldBeTildaSerno != actualTildaSerno)
+                     {
+                        ZXC.aim_emsg(MessageBoxIcon.Information, "Uslijed promjene parametara, 'tilda' serno\n\r\n\r{0}\n\r\n\rću prepraviti na\n\r\n\r{1}", actualTildaSerno, shouldBeTildaSerno);
+
+                        List<Rtrano> rtranoList = RtranoDao.GetRtranoList_For_SERNO(TheDbConnection, actualTildaSerno);
+
+                        rtranoList.Remove(rtrano_rec); // da ne rwtreca sam sebe 
+
+                        foreach(Rtrano rtrano in rtranoList)
+                        {
+                           TheVvTabPage.TheVvForm.BeginEdit(rtrano);
+
+                           rtrano.T_serno = shouldBeTildaSerno;
+
+                           rtrano.VvDao.RWTREC(TheDbConnection, rtrano, false, true, false);
+
+                           TheVvTabPage.TheVvForm.EndEdit(rtrano);
+                        }
+
+                        thePduc.TheG2.PutCell(thePduc.DgvCI2.iT_serno, rowIdx2, shouldBeTildaSerno);
+
+                        if(rtranoList.Count().NotZero())
+                        {
+                           ZXC.aim_emsg("Preimenovao sam i {0} prijašnjih stavaka.", rtranoList.Count());
+                        }
                      }
                   }
                }
@@ -3889,7 +3929,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             if(changeReported == false)
             {
              //ZXC.aim_emsg(MessageBoxIcon.Warning, "Redak {0} cijena je kriva usljed promjene skladišta i/ili datuma.\n\nIspraviti ću je automatski.", rowIdx + 1);
-               ZXC.aim_emsg(MessageBoxIcon.Warning, "Usljed promjene skladišta i/ili datuma, neke su cijene krive.\n\nIspraviti ću ih automatski.");
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Uslijed promjene skladišta i/ili datuma, neke su cijene krive.\n\nIspraviti ću ih automatski.");
                changeReported = true;
             }
 
