@@ -4151,7 +4151,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          // 14.01.2015.
          //jpdBstranaRow.b_radVr     = ptransRow.t_isPoluSat == 0      ? "1" : "2"; // jos treba doraditi
-         jpdBstranaRow.b_radVr = ((ptransRow.t_dnFondSati == 0 || ptransRow.t_dnFondSati == 8) && ptransRow.t_isPoluSat == 0) ? "1" : "2"; 
+     //29.05.2025. kako jos doraditi ya HZTK da dodje broj 3???????
+        jpdBstranaRow.b_radVr = ((ptransRow.t_dnFondSati == 0 || ptransRow.t_dnFondSati == 8) && ptransRow.t_isPoluSat == 0) ? "1" : "2"; 
          
          jpdBstranaRow.b_nacIsplCD = ptransRow.t_nacIsplCD.IsEmpty() ? "1" : ptransRow.t_nacIsplCD; ;
 //       jpdBstranaRow.b_MioOsn    = ptransRow.R_TheBruto;  15.10.2014. kada je osnovica min ili maks onda ne dolazi dobro, ne zanm kak to do sada nitko nije primjetio

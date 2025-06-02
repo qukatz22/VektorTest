@@ -5389,6 +5389,22 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          rtrans_rec.CalcTransResults(null);
       }
 
+      for(int i = 0; i < Rozel_IFA_faktur.Transes.Count; ++i)
+      {
+         switch(Rozel_IFA_faktur.Transes[i].T_pdvColTip)
+         { 
+            case ZXC.PdvKolTipEnum.KOL14: Rozel_IFA_faktur.Transes[i].T_konto = "7600" ; break;
+            case ZXC.PdvKolTipEnum.KOL15: Rozel_IFA_faktur.Transes[i].T_konto = "7610" ; break;
+            case ZXC.PdvKolTipEnum.KOL16: Rozel_IFA_faktur.Transes[i].T_konto = "76001"; break;
+            case ZXC.PdvKolTipEnum.KOL07: Rozel_IFA_faktur.Transes[i].T_konto = "76001"; break;
+            case ZXC.PdvKolTipEnum.KOL09: Rozel_IFA_faktur.Transes[i].T_konto = "7611" ; break;
+            case ZXC.PdvKolTipEnum.KOL10: Rozel_IFA_faktur.Transes[i].T_konto = "7531" ; break;
+            case ZXC.PdvKolTipEnum.NIJE : Rozel_IFA_faktur.Transes[i].T_konto = "7603" ; break;
+            
+            default: Rozel_IFA_faktur.Transes[i].T_konto = ""; break;
+         }
+      }
+
       uint tetragramNoName_KupdobCD = 4513;
       uint rozelNoName_KupdobCD     =   16;
 
