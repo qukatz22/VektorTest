@@ -22415,11 +22415,10 @@ public class VvGetLastFakturForThisSernoDlg : VvDialog
 
 #region Constructor
 
-   public VvGetLastFakturForThisSernoDlg()
+   public VvGetLastFakturForThisSernoDlg(string _naziv)
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "UgAn Tražilica preko serijskog broja";
-
+      this.Text = _naziv; 
       CreateHamper();
 
       dlgWidth  = hamper.Right  + ZXC.Q3un;

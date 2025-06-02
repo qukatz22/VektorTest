@@ -7267,7 +7267,9 @@ public class UDP_Dlg :  VvDialog
       else
       {
          dlg.Dispose();
-         return udpList[dlg.RowIdx];
+
+         if(udpList.Count == 0) return new VvUtilDataPackage();
+         else                   return udpList[dlg.RowIdx];
       }
    }
 
