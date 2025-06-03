@@ -6424,7 +6424,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(theSernoCount > 1)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!\n\r\n\r{0}", theSerno);
          theGrid2.EndEdit();
          theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          e.Cancel = true;
@@ -6579,7 +6579,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(theSernoCount > 1)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!\n\r\n\r{0}", theSerno);
          theGrid2.EndEdit();
          ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
          e.Cancel = true;
@@ -6715,7 +6715,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             if(theSernoCount > 0) // nota bene '> 0' a ne od 1 jer serno kojeg ispitujemo jos nije na gridu 
             {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!\n\r\n\r{0}", tilda_serno);
                theGrid2.EndEdit();
 
                ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
@@ -6999,7 +6999,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(theSernoCount > 1)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!\n\r\n\r{0}", theSerno);
          theGrid2.EndEdit();
          theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          e.Cancel = true;
@@ -7142,7 +7142,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(theSernoCount > 1)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Na dokumentu ovaj serijski broj već postoji!\n\r\n\r{0}", theSerno);
          theGrid2.EndEdit();
          theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
          e.Cancel = true;
