@@ -5184,7 +5184,7 @@ public class PCK_ArtiklList_UC : VvUserControl
 
    //public PCK_ArtiklList_Caller TheCaller;
 
-   private System.Windows.Forms.Timer AutoRefreshTimer;
+   internal System.Windows.Forms.Timer AutoRefreshTimer;
 
    #endregion Fieldz
 
@@ -5264,7 +5264,10 @@ public class PCK_ArtiklList_UC : VvUserControl
       //button_Go_Prev_Next_Action(this, EventArgs.Empty);
       //button_GO_Click(this, EventArgs.Empty);
 
-      ShowPckinfo(null, EventArgs.Empty);
+      if(this.Visible)
+      {
+         ShowPckinfo(null, EventArgs.Empty);
+      }
    }
 
    #endregion Constructor

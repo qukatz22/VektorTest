@@ -1547,6 +1547,12 @@ be_fast:
 
             //===================================================
 
+            // 04.06.2025:
+            if(this.TheVvUC is PCK_ArtiklList_UC)
+            {
+               (this.TheVvUC as PCK_ArtiklList_UC).AutoRefreshTimer.Dispose();
+            }
+
             this.alreadyDisposed = true;
          }
          finally

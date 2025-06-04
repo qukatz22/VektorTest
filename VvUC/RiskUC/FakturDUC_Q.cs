@@ -6413,14 +6413,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Check for double serno entry
 
-      List<string> sernosInUseList = new List<string>();
-
-      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
-      {
-         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
-      }
-
-      int theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
+      int theSernoCount = SernoCountOnGrid(theGrid2, theSerno);
 
       if(theSernoCount > 1)
       {
@@ -6456,7 +6449,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!\n\r\n\r{0}", last_rtrano_rec_forThisSerno);
          e.Cancel = true;
          theGrid2.EndEdit();
          theGrid2.PutCell(ci2.iT_serno, currRowIdx, "");
@@ -6484,7 +6477,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       #endregion korigiraj SklaCD, RtrRecID i pukni ga na grid 
    }
 
-   private /*bool*/int SernoCountOnGrid(VvDataGridView theGrid2, string theSerno)
+   internal /*bool*/int SernoCountOnGrid(VvDataGridView theGrid2, string theSerno)
    {
       int theSernoCount;
 
@@ -6866,7 +6859,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             // Da li je ovaj serno u ovom najmu (UgAn 'ECO Sustavu') 
             if(UGAN_RtranoList.Contains(last_rtrano_rec_forThisSerno) == false)
             {
-               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!");
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Serijski broj NIJE u ovom najmu?!\n\r\n\r{0}", last_rtrano_rec_forThisSerno);
                e.Cancel = true;
                theGrid2.EndEdit();
                ClearZIZrtranoDGVRow(theGrid2, ci2, currRowIdx);
@@ -6982,20 +6975,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       the_MOD_DUC.Put_MOD_RAM_HDD_PlusMinus_ColSum_OnSumGrid();
       theGrid2.PutCell(ci2.iT_serno, currRowIdx, theSerno);
 
-      if(theSerno.IsEmpty()) return; 
+      if(theSerno.IsEmpty()) return;
 
       #region Check for double serno entry
 
-      List<string> sernosInUseList = new List<string>();
-
-      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
-      {
-         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
-      }
-
-    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno           == theSerno          ).Count();
-    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno.ToLower() == theSerno.ToLower()).Count();
-      int theSernoCount = sernosInUseList.Where(siu =>               siu.ToLower() == theSerno.ToLower()).Count();
+      int theSernoCount = SernoCountOnGrid(theGrid2, theSerno);
 
       if(theSernoCount > 1)
       {
@@ -7127,18 +7111,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region Check for double serno entry
 
-      List<string> sernosInUseList = new List<string>();
-
-      int effectiveRowCount;
-
-      for(int rowIdx = 0; rowIdx < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx)
-      {
-         sernosInUseList.Add(TheG2.GetStringCell(ci2.iT_serno, rowIdx, true));
-      }
-
-    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno           == theSerno          ).Count();
-    //int theSernoCount = faktur_rec.TrnNonDel2.Where(rto => rto.T_serno.ToLower() == theSerno.ToLower()).Count();
-      int theSernoCount = sernosInUseList.Where(siu => siu.ToLower() == theSerno.ToLower()).Count();
+      int theSernoCount = SernoCountOnGrid(theGrid2, theSerno);
 
       if(theSernoCount > 1)
       {
