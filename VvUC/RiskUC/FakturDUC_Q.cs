@@ -287,6 +287,9 @@ public struct TtInfo
             case Faktur.TT_UGN:
             case Faktur.TT_DIZ:
             case Faktur.TT_PVR:
+            case Faktur.TT_ZIZ:
+            case Faktur.TT_ZUL:
+
           //case Faktur.TT_PVD:
 
                return ZXC.TtProposeCijenaKindEnum.Propose_CJENIK;
@@ -295,8 +298,6 @@ public struct TtInfo
 
             case Faktur.TT_MSI:
             case Faktur.TT_MPI:
-            case Faktur.TT_ZIZ:
-            case Faktur.TT_ZUL:
             case Faktur.TT_KIZ:
             case Faktur.TT_PIK:
             case Faktur.TT_VMI:

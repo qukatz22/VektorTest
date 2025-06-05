@@ -2872,6 +2872,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
    public RadioButton rbt_mjIsp_Korisnik, rbt_mjIsp_PcToGo, rbt_mjIsp_KorisOvers;
    private CheckBox cbx_isUnaprijed;
 
+   public override bool IsPTG_DUC_wRtrano { get { return true; } }
+
    #endregion Fieldz
 
    #region Hampers
@@ -3302,12 +3304,11 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    #endregion TheG_Specific_Columns2
 
+   #region Tamara
    protected override void AddColorsToBaby()
    {
       SetUpColor(clr_DOD_PTG, Color.Empty, clr_DOD_PTG);
    }
-   public override bool IsPTG_DUC_wRtrano { get { return true; } }
-
    public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC)
    {
       bool idemoUzuto   = writeMode != ZXC.WriteMode.None;
@@ -3331,6 +3332,9 @@ public class ZIZ_PTG_DUC : FakturPDUC
       }
    } // public override void OpenCloseForWriting_AdditionalAction_UCspecific(ZXC.WriteMode writeMode, bool isESC) 
 
+   #endregion Tamara
+
+   #region IsZIZ_ ...
    public bool IsZIZ_completed 
    { 
       get 
@@ -3410,6 +3414,41 @@ public class ZIZ_PTG_DUC : FakturPDUC
       {
          return !IsZIZ_Unaprijed;
       }
+   }
+
+   #endregion IsZIZ_ ...
+
+   internal void SintRtranoToRtransOnZIZ(VvForm theVvForm) // On <SAVE> 
+   {
+      foreach(VvTransRecord pvrRtrans_rec in faktur_rec.Transes)
+      {
+         pvrRtrans_rec.VvDao.DELREC(TheDbConnection, pvrRtrans_rec, false);
+
+         VvTransRecord twinTrans_rec2 = VvDaoBase.SetTwinTransRec2(TheDbConnection, faktur_rec, pvrRtrans_rec, ZXC.WriteMode.Delete);
+
+         ZXC.InAddTwinIzlazParentId = (twinTrans_rec2 as VvTransRecord).VirtualParentRecID;
+
+         twinTrans_rec2.VvDao.DELREC(TheDbConnection, twinTrans_rec2, false, false);
+
+         pvrRtrans_rec.VvDao.Delete_Then_Renew_Cache_FromThisRtrans(TheDbConnection, pvrRtrans_rec, VvSQL.DB_RW_ActionType.DEL);
+      }
+
+      faktur_rec.InvokeTransClear();
+
+      theVvForm.BeginEdit(faktur_rec);
+
+      // tu si stao ... actual ADDREC 
+
+      faktur_rec.TakeTransesSumToDokumentSum(true);
+
+      bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);
+
+      if(!OK) { theVvForm.CancelEdit(faktur_rec); return; }
+
+      theVvForm.EndEdit(faktur_rec);
+
+      theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
+
    }
 }
 
