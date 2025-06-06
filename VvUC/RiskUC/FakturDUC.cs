@@ -5038,6 +5038,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(HasRtrans_SkladCD_Exposed)
       {
          TheG.PutCell(ci.iT_skladCD, rowIdx, rtrans_rec.T_skladCD);
+
+         if(rtrans_rec.T_TT == Faktur.TT_ZIZ) TheG.PutCell(ci.iT_skladCD, rowIdx, Fld_SkladCD);// 06.06.2025.
       }
 
       if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
@@ -5165,34 +5167,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is ZIZ_PTG_DUC)
       {
-       //13.05.2025.
-       //TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
-       //
-       //ZIZ_PTG_DUC theDUC = (this as ZIZ_PTG_DUC);
-       //
-       //VvLookUpItem luiZIZ_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZIZ);
-       //VvLookUpItem luiZUL_TT = ZXC.luiListaZIZ_TT.GetLuiForThisCd(Faktur.TT_ZUL);
-       //
-       //VvLookUpItem luiSkladZNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_ZNJ);
-       //VvLookUpItem luiSkladUNJ = ZXC.luiListaSkladista.GetLuiForThisCd(ZXC.PTG_UNJ);
-       //
-       //if(rtrans_rec.T_TT == Faktur.TT_ZIZ)
-       //{ 
-       //   TheG.PutCell(ci.iT_opis    , rowIdx, luiZIZ_TT.Name              );
-       //   TheG.PutCell(ci.iT_skladCD , rowIdx, faktur_rec.SkladCD          );
-       //   TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZI2               );
-       //   TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
-       //   TheG.PutCell(ci.iT_skladCD2, rowIdx, luiSkladUNJ.Cd              );
-       //}
-       //
-       //if(rtrans_rec.T_TT == Faktur.TT_ZUL)
-       //{ 
-       //   TheG.PutCell(ci.iT_opis    , rowIdx, luiZUL_TT.Name              );
-       //   TheG.PutCell(ci.iT_skladCD , rowIdx, luiSkladUNJ.Cd              );
-       //   TheG.PutCell(ci.iT_TT2     , rowIdx, Faktur.TT_ZU2               );
-       //   TheG.PutCell(ci.iT_opis2   , rowIdx, ZIZ_PTG_DUC.ZIZ_DUC_ulazText);
-       //   TheG.PutCell(ci.iT_skladCD2, rowIdx, faktur_rec.SkladCD2         );
-       //}
+         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT); // sa MODa 06.06.2025.
+
+         Rtrans ZIZrtrans_rec = new Rtrans(); // sa PVR 06.06.2025.
+
+         if(ZIZrtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, ZIZrtrans_rec, rtrans_rec.T_twinID, false, false))
+         {
+            TheG.PutCell(ci.iT_skladCD2, rowIdx, ZIZrtrans_rec.T_skladCD);
+         }
 
          foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)
          {
@@ -5849,7 +5831,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    public override VvTransRecord GetDgvLineFields1(int rIdx, bool dirtyFlagging, uint[] recIDtable)
    {
-    return null;
+      //return null;
       uint recID;
       bool DB_RWT;
       Rtrans db_rec;

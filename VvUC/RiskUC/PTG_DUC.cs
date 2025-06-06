@@ -3251,17 +3251,17 @@ public class ZIZ_PTG_DUC : FakturPDUC
    #endregion Fld
 
    #region TheG_Specific_Columns
-   public override bool HasRtrans_SkladCD_Exposed { get { return false; } }
+   public override bool HasRtrans_SkladCD_Exposed { get { return true; } }
    public override bool HasRtrano_SkladCD_Exposed { get { return true ; } }
    public override bool Is_Rtrans_Readonly        { get { return true ; } }
    public override bool HasRtrano_TT_Exposed      { get { return true ; } }
    protected override void InitializeDUC_Specific_Columns()
    {
-      T_TT_CreateColumnG1          (ZXC.Q2un,               true, ""      , "Tip Izlaznog dokumenta", false);
-      R_Opis_CreateColumn          (ZXC.Q4un,               true, ""      , "Opis Izlaznog dokumenta");
+      T_TT_CreateColumnG1          (ZXC.Q2un,               true, "TT"    , "Tip Izlaznog dokumenta", false);
+    //R_Opis_CreateColumn          (ZXC.Q4un,               true, ""      , "Opis Izlaznog dokumenta");
       T_skladCD_CreateColumn       (ZXC.Q3un,               true, "SaSkl" , "Izlaz sa skladišta");
-      R_TT2_CreateColumn           (ZXC.Q2un,               true, ""      , "Tip Ulaznog dokumenta");
-      R_Opis2_CreateColumn         (ZXC.Q3un,               true, ""      , "Opis Ulaznog dokumenta");
+    //R_TT2_CreateColumn           (ZXC.Q2un,               true, ""      , "Tip Ulaznog dokumenta");
+    //R_Opis2_CreateColumn         (ZXC.Q3un,               true, ""      , "Opis Ulaznog dokumenta");
       R_skladCd2_CreateColumn      (ZXC.Q3un,               true, "NaSkl" , "Ulaz na skladišta");
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra" , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                        true, "Naziv" , "Naziv artikla ili proizvoljan opis");
@@ -3288,18 +3288,20 @@ public class ZIZ_PTG_DUC : FakturPDUC
    {
       bool isVisible = true;
 
-      T_TT_CreateColumn             (ZXC.Q2un + ZXC.Qun2,         true, "TT"           , "Tip dokumenta"        , true);
-      T_serno_CreateColumn          (ZXC.Q8un           ,    isVisible, "Serijski broj", "Serijski broj artikla"             );
-      T_artiklCD2_CreateColumn      (ZXC.Q5un           ,    isVisible, "Šifra"        , "Šifra artikla"                     );
-      T_artiklName2_CreateColumnFill(                        isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
-      R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
-      R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
-      R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-      R_skladCD1_CreateColumn       (ZXC.Q3un,               isVisible, "IzlSkl"       , "Izlazno skladište");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,               isVisible, "UlzSkl"       , "Ulazno skladište"                 );
-      T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                           );
-      T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
-      T_grCD_CreateColumn           (ZXC.Q5un,               isVisible, "Opis"         , "Opis"                       , false);
+      T_TT_CreateColumn             (ZXC.Q2un + ZXC.Qun2,       true, "TT"           , "Tip dokumenta"        , true);
+      T_serno_CreateColumn          (ZXC.Q8un           ,  isVisible, "Serijski broj", "Serijski broj artikla"             );
+      T_artiklCD2_CreateColumn      (ZXC.Q5un           ,  isVisible, "Šifra"        , "Šifra artikla"                     );
+      T_artiklName2_CreateColumnFill(                      isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,  isVisible, "Tip"          , "Tip artikla");
+      R_ramKlasa2_CreateColumn      (ZXC.Q3un,             isVisible, "RAM klasa"    , "RAM klasa");
+      R_hddKlasa2_CreateColumn      (ZXC.Q3un,             isVisible, "HDD klasa"    , "RAM klasa");
+      R_skladCD1_CreateColumn       (ZXC.Q3un,             isVisible, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,             isVisible, "UlzSkl"       , "Ulazno skladište"                 );
+      T_dimZ_CreateColumn           (ZXC.Q3un, 0,          isVisible, "RAM"          , "RAM"                           );
+      T_decC_CreateColumn           (ZXC.Q3un, 0,          isVisible, "HDD"          , "HDD old"                           );
+      T_grCD_CreateColumn           (ZXC.Q5un,             isVisible, "Opis"         , "Opis"                       , false);
+      T_paletaNo_CreateColumn       (ZXC.Q3un,               false  , "PvrSt"        , "PVR stavka"                     );
+      T_rtrRecID_CreateColumn       (ZXC.Q3un,               false  , "RtrRecID"     , "RtrRecID"                       );
    }
 
    #endregion TheG_Specific_Columns2
@@ -5052,8 +5054,8 @@ public class MSI_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-      R_skladCD1_CreateColumn       (ZXC.Q3un,    isVisible, "IzlSkl"       , "Izlazno skladište");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    isVisible, "UlzSkl"       , "Ulazno skladište"                 );
+      R_skladCD1_CreateColumn       (ZXC.Q3un,    false, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    false, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
       T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
