@@ -5849,6 +5849,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    public override VvTransRecord GetDgvLineFields1(int rIdx, bool dirtyFlagging, uint[] recIDtable)
    {
+    return null;
       uint recID;
       bool DB_RWT;
       Rtrans db_rec;

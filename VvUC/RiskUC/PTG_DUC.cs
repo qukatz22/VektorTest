@@ -3437,7 +3437,101 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
       theVvForm.BeginEdit(faktur_rec);
 
-      // tu si stao ... actual ADDREC 
+      #region ADDREC_ZIZ_ZUL_Rtrans_From_ZI2_ZU2_Rtrano
+
+      Rtrans ZIZ_ZUL_rtrans_rec = null; // new rtrans                                          
+      Rtrans UgAnDod_rtrans_rec = null; // rtrans za ZUL cijenu ... koji nas je poslao u najam 
+
+      bool UgAnDod_rtrans_rec_Found;
+
+      string ZIZ_ZUL_TT;
+
+      ushort t_serial = 0;
+
+      Artikl  artikl_rec ;
+      string  t_jedMj    ;
+      decimal theCij = 0M;
+
+      foreach(Rtrano rtrano_rec in faktur_rec.Transes2)
+      {
+         #region Init, Get theCij
+
+         artikl_rec = ArtiklSifrar.SingleOrDefault(art => art.ArtiklCD == rtrano_rec.T_artiklCD);
+
+         if(artikl_rec != null) t_jedMj = artikl_rec.JedMj;
+         else                   t_jedMj = ""              ;
+
+         if(rtrano_rec.T_TT == Faktur.TT_ZU2) // Zeleni ulaz / povrat 
+         {
+            UgAnDod_rtrans_rec = new Rtrans();
+
+            UgAnDod_rtrans_rec_Found = UgAnDod_rtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, UgAnDod_rtrans_rec, rtrano_rec.T_rtrRecID, false, false);
+
+            theCij = UgAnDod_rtrans_rec.T_cij;
+
+            ZIZ_ZUL_TT = Faktur.TT_ZUL;
+
+            if(theCij.IsZero())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "ZUL: Nema UGN cijene za artikl\n\r\n\r[{0}]", artikl_rec);
+            }
+         }
+         else // (rtrano_rec.T_TT == Faktur.TT_ZI2) Bijeli izlaz / dodatno izdavanje 
+         {
+            // 'MSI' TT: 
+            string LinkedDefaultTT = rtrano_rec.TtInfo.LinkedDefaultTT;
+
+            short rtransT_ttSort = ZXC.TtInfo(LinkedDefaultTT).TtSort;
+
+            Rtrans limiterRtrans_rec = new Rtrans()
+            {
+               T_artiklCD  = rtrano_rec.T_artiklCD ,
+               T_skladCD   = rtrano_rec.T_skladCD  ,
+               T_skladDate = rtrano_rec.T_skladDate,
+             //T_ttSort    = rtrano_rec.T_ttSort   ,
+               T_ttSort    = rtransT_ttSort        ,
+               T_ttNum     = rtrano_rec.T_ttNum    ,
+               T_serial    = /*rtrano_rec.T_serial*/ (ushort)(t_serial + 1),
+            };
+
+            ArtStat artStat = ArtiklDao.GetArtiklStatus(TheDbConnection, limiterRtrans_rec);
+
+            theCij = artStat != null ? artStat.PrNabCij : 0.00M;
+
+            ZIZ_ZUL_TT = LinkedDefaultTT; // tj. Faktur.TT_ZIZ 
+
+            if(theCij.IsZero())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "ZIZ: Nema PrNabCij cijene na skl [{0}]\n\r\n\rza artikl\n\r\n\r[{1}]", limiterRtrans_rec.T_skladCD, artikl_rec);
+            }
+         }
+
+         #endregion Init
+
+         rtrano_rec.T_kol = 1.00M; // !!! ovoga nema na MOD varijanti 
+
+         ZIZ_ZUL_rtrans_rec = new Rtrans(ZIZ_ZUL_TT, rtrano_rec, t_jedMj, ++t_serial);
+
+       //PVR_rtrans_rec.T_twinID = rtrano_rec.T_recID; // Link it!                       
+         ZIZ_ZUL_rtrans_rec.T_cij= theCij            ; // this is what we are living for 
+
+         if(artikl_rec != null) ZIZ_ZUL_rtrans_rec.T_artiklName = artikl_rec.ArtiklName;
+
+         if(rtrano_rec.T_TT == Faktur.TT_ZU2) // Zeleni ulaz / povrat 
+         { 
+            ZIZ_ZUL_rtrans_rec.R_utilString = ZIZ_ZUL_rtrans_rec.T_skladCD;
+            ZIZ_ZUL_rtrans_rec.T_skladCD    = ZXC.PTG_UNJ;
+         }
+         else // (rtrano_rec.T_TT == Faktur.TT_ZI2) Bijeli izlaz / dodatno izdavanje 
+         {
+            ZIZ_ZUL_rtrans_rec.R_utilString = ZXC.PTG_UNJ;
+         }
+
+         Add_or_Sint_RtransToFakturTransesCollection(faktur_rec, ZIZ_ZUL_rtrans_rec);
+      }
+
+      #endregion ADDREC_ZIZ_ZUL_Rtrans_From_ZI2_ZU2_Rtrano
+
 
       faktur_rec.TakeTransesSumToDokumentSum(true);
 
@@ -3450,6 +3544,26 @@ public class ZIZ_PTG_DUC : FakturPDUC
       theVvForm.PutFieldsActions(TheDbConnection, faktur_rec, this);
 
    }
+
+   private void Add_or_Sint_RtransToFakturTransesCollection(Faktur _faktur_rec, Rtrans _rtrans_rec)
+   {
+      Rtrans existingRtrans_rec = _faktur_rec.Transes.SingleOrDefault(rtr => rtr.T_artiklCD == _rtrans_rec.T_artiklCD && rtr.T_cij == _rtrans_rec.T_cij && rtr.T_TT == _rtrans_rec.T_TT);
+
+      bool isToSint = existingRtrans_rec != null;
+      if(isToSint)
+      {
+         existingRtrans_rec.T_kol += _rtrans_rec.T_kol;
+
+         existingRtrans_rec.CalcTransResults(null);
+      }
+      else // first occurence of this T_artiklCD & T_cij 
+      {
+         _rtrans_rec.CalcTransResults(null);
+         _rtrans_rec.SaveTransesWriteMode = ZXC.WriteMode.Add;
+         _faktur_rec.Transes.Add(_rtrans_rec);
+      }
+   }
+
 }
 
 public class PRN_DIZ_PTG_DUC : DIZ_PTG_DUC
@@ -6860,8 +6974,8 @@ public class MOD_PTG_DUC : FakturPDUC
 
    internal static decimal Calc_AndOptional_ADDREC_MOD_Rtrans_From_MOD_Rtrano(XSqlConnection conn, Faktur _faktur_rec, ushort serial_MOUrtransa_kojiTrebaNovuCijenu)
    {
-      bool isCheckPrNabCij = serial_MOUrtransa_kojiTrebaNovuCijenu.NotZero();
-      bool isSaveMODfaktur = serial_MOUrtransa_kojiTrebaNovuCijenu.IsZero ();
+      //bool isCheckPrNabCij = serial_MOUrtransa_kojiTrebaNovuCijenu.NotZero();
+      //bool isSaveMODfaktur = serial_MOUrtransa_kojiTrebaNovuCijenu.IsZero ();
 
       decimal theMOUcij  = 0M  ;
       Rtrans  rtrans_rec = null;
@@ -6877,7 +6991,7 @@ public class MOD_PTG_DUC : FakturPDUC
       foreach(Rtrano KMP_rtrano_rec in moi_list)                                                                                                                      // --- 
       {                                                                                                                                                               // --- 
          rtrans_rec = Get_MOD_Rtrans_From_MOD_Rtrano_MOI(conn, _faktur_rec, KMP_rtrano_rec, ref t_serial, ref ukRAMfinIzlazSUM, ref ukHDDfinIzlazSUM);  // MOI KMP Artikl bijeli IZLAZ 
-      }                                                                                                                                                               // --- 
+      }                                                                                                                   // --- 
       // ------------------------------------------------------------------------------------------------------------------------------------------------------------ // --- 
       List<Rtrano> moc_mos_list = _faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOC || rto.T_TT == Faktur.TT_MOS).ToList();                                 // --- 
                                                                                                                                                                       // --- 
@@ -6891,7 +7005,7 @@ public class MOD_PTG_DUC : FakturPDUC
                                                                                                                                                                       // --- 
          PCK_rtrano_rec.T_artiklCD = origT_artiklCD ;                                                                                                                 // --- 
          PCK_rtrano_rec.T_komada   = rtrans_rec.R_KC; // cuvamo OLD Artikl Fin                                                                                        // --- 
-      }                                                                                                                                                               // --- 
+      }                                                                                                               // --- 
                                                                                                                                                                       // --- 
       // ------------------------------------------------------------------------------------------------------------------------------------------------------------ // --- 
       List<Rtrano> mou_list = _faktur_rec.Transes2.Where(rto => rto.T_TT == Faktur.TT_MOU).ToList();                                                                  // --- 
@@ -6904,7 +7018,7 @@ public class MOD_PTG_DUC : FakturPDUC
          rtrans_rec = Get_MOD_Rtrans_From_MOD_Rtrano_MOU(conn, _faktur_rec, KMP_rtrano_rec, ref t_serial, false, ukRAMfinIzlazSUM, RAMplusGB_SUM, ukHDDfinIzlazSUM, HDDplusGB_SUM);  // MOU KMP Artikl zeleni ULAZ 
                                                                                                                                                                       // --- 
          if(rtrans_rec.T_serial == serial_MOUrtransa_kojiTrebaNovuCijenu) theMOUcij = rtrans_rec.T_cij;                                                               // --- 
-      }                                                                                                                                                               // --- 
+      }                                                                                                                   // --- 
       // ------------------------------------------------------------------------------------------------------------------------------------------------------------ // --- 
                                                                                                                                                                       // --- 
       foreach(Rtrano PCK_rtrano_rec in moc_mos_list) // NEW PCK Artikl                                                                                                // --- 
@@ -6912,7 +7026,7 @@ public class MOD_PTG_DUC : FakturPDUC
          rtrans_rec = Get_MOD_Rtrans_From_MOD_Rtrano_MOU(conn, _faktur_rec, PCK_rtrano_rec, ref t_serial, true, ukRAMfinIzlazSUM, RAMplusGB_SUM, ukHDDfinIzlazSUM, HDDplusGB_SUM);   // MOU NEW PCK Artikl zeleni ULAZ 
                                                                                                                                                                       // --- 
          if(rtrans_rec.T_serial == serial_MOUrtransa_kojiTrebaNovuCijenu) theMOUcij = rtrans_rec.T_cij;                                                               // --- 
-      }                                                                                                                                                               // --- 
+      }                                                                                                               // --- 
       // ------------------------------------------------------------------------------------------------------------------------------------------------------------ // --- 
 
       return theMOUcij;
