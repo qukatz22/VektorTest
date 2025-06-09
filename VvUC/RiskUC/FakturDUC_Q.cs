@@ -6390,12 +6390,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       VvDataGridView theGrid2 = sender as VvDataGridView;
 
+            VvTextBoxEditingControl vvTbEc  = theGrid2.EditingControl as VvTextBoxEditingControl;
+      bool sernoIsEditedAndHasChanges = vvTbEc.EditedHasChanges();
+      bool sernoIsUnchanged           = !sernoIsEditedAndHasChanges;
+
+      bool unchangedSernoinEditWriteMode = sernoIsUnchanged && TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
+
       int currRowIdx = theGrid2.CurrentRow.Index;
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
 
       PVR_PTG_DUC thePVR_DUC = this as PVR_PTG_DUC;
-
 
       VvTextBox currVvTextBox = theGrid2.EditingControl as VvTextBox;
 
@@ -6524,8 +6529,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       VvDataGridView theGrid2 = sender as VvDataGridView;
 
-      VvTextBoxEditingControl vvtb = theGrid2.EditingControl as VvTextBoxEditingControl;
-    //if(vvtb.EditedHasChanges() == false) return;
+      VvTextBoxEditingControl vvTbEc  = theGrid2.EditingControl as VvTextBoxEditingControl;
+      bool sernoIsEditedAndHasChanges = vvTbEc.EditedHasChanges();
+      bool sernoIsUnchanged           = !sernoIsEditedAndHasChanges;
+
+      bool unchangedSernoinEditWriteMode = sernoIsUnchanged && TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
 
       int currRowIdx = theGrid2.CurrentRow.Index;
 

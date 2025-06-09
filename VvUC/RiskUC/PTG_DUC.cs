@@ -3534,7 +3534,6 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
       #endregion ADDREC_ZIZ_ZUL_Rtrans_From_ZI2_ZU2_Rtrano
 
-
       faktur_rec.TakeTransesSumToDokumentSum(true);
 
       bool OK = theVvForm.TheVvDao.RWTREC(TheDbConnection, faktur_rec);

@@ -5765,6 +5765,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    /*private !!! */
    public void GetDgvFields1(bool dirtyFlagging)
    {
+      // 09.06.2025: 
+      if(Is_Rtrans_Readonly) return;
+
       uint[] recIDtable;
       int rIdx;
 
