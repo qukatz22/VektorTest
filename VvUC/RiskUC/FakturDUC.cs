@@ -4633,7 +4633,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       {
          ZIZ_PTG_DUC ptgDUC = this as ZIZ_PTG_DUC;
          PTG_Ugovor ptgUgovor_rec = new PTG_Ugovor(fakturLocal_rec);
-         if(CtrlOK(ptgDUC.tbx_PTG_DodNum)) ptgDUC.Fld_PTG_DodNum = ptgUgovor_rec.PTG_DOKOnum;
+         if(CtrlOK(ptgDUC.tbx_PTG_DodNum)) ptgDUC.Fld_PTG_DodNum         = ptgUgovor_rec.PTG_DOKOnum;
+                                           ptgDUC.Fld_PTG_IsZIZunaprijed = ptgUgovor_rec.PTG_isXXX  ;
       }
       if(this is MOD_PTG_DUC)
       {
@@ -4657,7 +4658,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
 
       #endregion PTG Additions
-
 
    }
 
@@ -14670,13 +14670,8 @@ public partial class FakturExtDUC : FakturDUC
          ZIZ_PTG_DUC ptgDUC        = this as ZIZ_PTG_DUC;
          PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(faktur_rec);
 
-         bool isZIZ_completed = ptgDUC.IsZIZ_completed;
-
-         // tu si stao, treba odabrati neki bool bussiness i njemu dati Fld_PTG_IsZIZunaprijed value. 
-         // fali i u PutExtFields Fld_PTG_IsZIZunaprijed
-         //ptgUgovor_rec.is  = ptgDUC.Fld_PTG_IsZIZunaprijed;
+         ptgUgovor_rec.PTG_isXXX = ptgDUC.IsZIZ_Unaprijed;
       }
-
 
       #endregion PTG Additions
 

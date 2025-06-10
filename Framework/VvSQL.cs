@@ -6898,12 +6898,11 @@ public static class VvSQL
       return (cmd);
    }
 
-   // 11.04.2024: za potrebu nadji mi gdje je ovaj serno u ovom trenutku / ili prije ovog (rtrano-a ili rtrans-a ... jos nisi odlucio)
    public static XSqlCommand SetMePreviousRtranoForThisSerno_Command(XSqlConnection conn, string theSerno, Rtrano forThisRtrano_rec)
    {
       XSqlCommand cmd = InitCommand(conn);
 
-      CreateCommandNamedParameter(cmd, "", "serno" , theSerno                          , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_skladCD  ]); // = 
+      CreateCommandNamedParameter(cmd, "", "serno" , theSerno                          , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_serno    ]); // = 
       CreateCommandNamedParameter(cmd, "", "ttSort", forThisRtrano_rec.T_ttSort        , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttSort   ]); // prev 
       CreateCommandNamedParameter(cmd, "", "ttNum" , forThisRtrano_rec.T_ttNum         , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum    ]); // prev 
       CreateCommandNamedParameter(cmd, "", "date"  , forThisRtrano_rec.T_skladDate     , ZXC.RtranoSchemaRows[ZXC.RtoCI.t_skladDate]); // prev 

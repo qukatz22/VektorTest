@@ -3246,7 +3246,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    public DateTime Fld_PTG_DatDostave { get { return dtp_DokDate2.Value; } set { if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime) { dtp_DokDate2.Value = value; } } }
 
-   public bool Fld_PTG_IsZIZunaprijed { get { return cbx_isUnaprijed.Checked; } set { cbx_isUnaprijed.Checked = value; } }
+   public bool Fld_PTG_IsZIZunaprijed { /*get { return cbx_isUnaprijed.Checked; }*/ set { cbx_isUnaprijed.Checked = value; } }
 
    #endregion Fld
 
@@ -3337,72 +3337,68 @@ public class ZIZ_PTG_DUC : FakturPDUC
    #endregion Tamara
 
    #region IsZIZ_ ...
-   public bool IsZIZ_completed 
+
+#if PUSEEE
+   public bool IsZIZ_completed() 
    { 
-      get 
+      if(IsZIZ_Unaprijed)    return false;
+
+      Rtrans                 rtrans_rec;
+      Rtrano prevRtrano_rec, rtrano_rec;
+
+      return true;
+      // tu si stao 
+      // NEMOJ ovo kao property i vidi kad s ga pozivati (nemoj na saki get fields nego sdamo kod sejvanja)
+      // ZIZ je kompletiran kada je uspost simetrija:
+      // 1. ukZelenaKOL = ukBijelaKol
+      // 2. ukZelenaKOL + ukBijelaKol = ukPopunjenihSernoaCount
+
+      decimal ZIZkol = /*faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZIZ).Sum(rtr => rtr.T_kol)*/ 0M;
+      decimal ZULkol = /*faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZUL).Sum(rtr => rtr.T_kol)*/ 0M;
+
+      for(int rowIdx1 = 0; rowIdx1 < TheG./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx1)
       {
-         Rtrans                 rtrans_rec;
-         Rtrano prevRtrano_rec, rtrano_rec;
+         rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx1, false, null);
 
-         return true;
-         // tu si stao 
-         // NEMOJ ovo kao property i vidi kad s ga pozivati (nemoj na saki get fields nego sdamo kod sejvanja)
-         // ZIZ je kompletiran kada je uspost simetrija:
-         // 1. ukZelenaKOL = ukBijelaKol
-         // 2. ukZelenaKOL + ukBijelaKol = ukPopunjenihSernoaCount
+         if(rtrans_rec.T_TT == Faktur.TT_ZIZ) ZIZkol += rtrans_rec.T_kol;
+         if(rtrans_rec.T_TT == Faktur.TT_ZUL) ZULkol += rtrans_rec.T_kol;
+      }
 
-         decimal ZIZkol = /*faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZIZ).Sum(rtr => rtr.T_kol)*/ 0M;
-         decimal ZULkol = /*faktur_rec.Transes.Where(rtr => rtr.T_TT == Faktur.TT_ZUL).Sum(rtr => rtr.T_kol)*/ 0M;
+      bool isKolOK = ZIZkol == ZULkol;
+      bool isTtNumOK;
 
-         for(int rowIdx1 = 0; rowIdx1 < TheG./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx1)
+      uint prevRtrano_TtNum;
+
+      for(int rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
+      {
+         rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
+
+         if(rtrano_rec.T_TT != Faktur.TT_ZU2) continue; // provjeravaj samo zeleni / ulazni ZU2 serno ... da li je bio na tom UgAnTtNum-u
+
+         prevRtrano_rec = FakturDao.SetMePreviousRtranoForThisSerno(TheDbConnection, rtrano_rec.T_serno, rtrano_rec);
+
+         if(prevRtrano_rec == null)
          {
-            rtrans_rec = (Rtrans)GetDgvLineFields1(rowIdx1, false, null);
+            ZXC.aim_emsg(MessageBoxIcon.Error, "NEMA PreviousRtranoForThisSerno [{0}]", rtrano_rec.T_serno);
 
-            if(rtrans_rec.T_TT == Faktur.TT_ZIZ) ZIZkol += rtrans_rec.T_kol;
-            if(rtrans_rec.T_TT == Faktur.TT_ZUL) ZULkol += rtrans_rec.T_kol;
+            isTtNumOK = false;
+
+            continue;
          }
 
-         bool isKolOK = ZIZkol == ZULkol;
+         prevRtrano_TtNum = prevRtrano_rec.T_ttNum;
 
-         bool isTtNumOK = true;
+         (string prevUgAn_TT, uint prevUgAn_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(prevRtrano_rec);
 
-         uint prevRtrano_TtNum;
-
-         for(int rowIdx2 = 0; rowIdx2 < TheG2./*RowCount - 1*/VvEffectiveRowCount; ++rowIdx2)
+         if(Fld_V2_ttNum != prevUgAn_TtNum)
          {
-            rtrano_rec = (Rtrano)GetDgvLineFields2(rowIdx2, false, null);
-
-            if(rtrano_rec.T_TT != Faktur.TT_ZU2) continue; // provjeravaj samo zeleni / ulazni ZU2 serno ... da li je bio na tom UgAnTtNum-u
-
-            prevRtrano_rec = FakturDao.SetMePreviousRtranoForThisSerno(TheDbConnection, rtrano_rec.T_serno, rtrano_rec);
-
-            if(prevRtrano_rec == null)
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "NEMA PreviousRtranoForThisSerno [{0}]", rtrano_rec.T_serno);
-
-               isTtNumOK = false;
-
-               continue;
-            }
-
-            prevRtrano_TtNum = prevRtrano_rec.T_ttNum;
-
-            (string prevUgAn_TT, uint prevUgAn_TtNum) = UGNorAUN_PTG_DUC.Get_UgAnFaktur_TtAndTtNum_ForThisRtranoTtAndTtNum(prevRtrano_rec);
-
-            if(Fld_V2_ttNum != prevUgAn_TtNum)
-            {
-               isTtNumOK = false;
-            }
+            isTtNumOK = false;
          }
+      }
 
-         // tu si stao 
-         // primjer: na ZIZ 15002 imas lon2 zeleni radak a on je yapravo prema UGN 16 otiso u najam 
-         // a ti si na ZIZ 15 .. pa treba reagirati 
-
-         return (isKolOK && isTtNumOK);
-      } 
+      return (isKolOK && isTtNumOK);
    }
-
+#endif
    public bool IsZIZ_Unaprijed
    { 
       get 

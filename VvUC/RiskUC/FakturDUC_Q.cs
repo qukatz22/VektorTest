@@ -6396,6 +6396,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       bool unchangedSernoinEditWriteMode = sernoIsUnchanged && TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
 
+      if(unchangedSernoinEditWriteMode) return; // STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP 
+
       int currRowIdx = theGrid2.CurrentRow.Index;
 
       FakturPDUC.Rtrano_colIdx ci2 = (this as FakturPDUC).DgvCI2;
@@ -6534,6 +6536,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       bool sernoIsUnchanged           = !sernoIsEditedAndHasChanges;
 
       bool unchangedSernoinEditWriteMode = sernoIsUnchanged && TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
+
+      if(unchangedSernoinEditWriteMode) return; // STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP 
 
       int currRowIdx = theGrid2.CurrentRow.Index;
 

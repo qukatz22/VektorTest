@@ -100,7 +100,7 @@ public class PTG_OtplatniPlan
    public int NumOf_OtPlan_Rows_UgBrojRata  { get { return      UGANfaktur_rec.PTG_BrojRata     ; } }
    public int NumOf_OtPlan_Rows_DodPredRata { get; set; }
    public int NumOf_OtPlan_Rows_KorekRata   { get { return (int)UGANfaktur_rec.PTG_BrojNovihRata; } }
-   public int NumOf_OtPlan_Rows_OtkupRata   { get { return      UGANfaktur_rec.HasOtkup ? 1 : 0 ; } }
+   public int NumOf_OtPlan_Rows_OtkupRata   { get { return      UGANfaktur_rec.PTG_HasOtkup ? 1 : 0 ; } }
 
    public int NumOf_OtPlan_Rows_OsnovRate
    {
@@ -554,7 +554,7 @@ public class PTG_OtplatniPlan
 
       #region ADD eventual OTKUP rata Voila 3
 
-      if(UGANfaktur_rec.HasOtkup) 
+      if(UGANfaktur_rec.PTG_HasOtkup) 
       {
          decimal otkupRataMoney = UGANfaktur_rec.GetOtkupRataMoney(conn);
 
@@ -1223,7 +1223,6 @@ public class PTG_Ugovor : Faktur
 
    private bool GetIndexedBool_From_PdvNum(int positionFromRight)
    {
-    //return true; // TODO !!!??? 
       if(ZXC.IsPCTOGO == false && this.TT != TT_UGN && this.TT != TT_AUN) return false; // !!! PROVJERI 
 
       if(PdvNum.IsZero())
@@ -1351,7 +1350,9 @@ public class PTG_Ugovor : Faktur
 
    public string PTG_osigPlacanja { get { return this.currentData._osobaX; } set { this.currentData._osobaX = value; } }
 
-   public bool   HasOtkup         { get { return this.PTG_OtkupPosto.NotZero() && this.PTG_b7_otkup == true;         } }
+   public bool   PTG_HasOtkup         { get { return this.PTG_OtkupPosto.NotZero() && this.PTG_b7_otkup == true;         } }
+
+   public bool   PTG_isXXX        { get { return this.TheEx.currentData._isNpCash2; } set { this.TheEx.currentData._isNpCash2 = value; } }
 
    #endregion PTG 
 
@@ -1432,7 +1433,7 @@ public class PTG_Ugovor : Faktur
 
    internal decimal GetOtkupArtiklMoney(decimal artiklRataMoney)
    {
-      if(HasOtkup) return ZXC.VvGet_25_of_100(artiklRataMoney, PTG_OtkupPosto);
+      if(PTG_HasOtkup) return ZXC.VvGet_25_of_100(artiklRataMoney, PTG_OtkupPosto);
       else         return                                                0.00M;
    }
 
