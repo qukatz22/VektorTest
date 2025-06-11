@@ -13072,7 +13072,9 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
    public override int FillRiskReportLists()
    {
-      RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind], "pdvGEOkind", ZXC.PdvGEOkindEnum.EU, " = "));
+      RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind],"pdvGEOkind", ZXC.PdvGEOkindEnum.EU, " = "));
+    //RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind  ], ZXC.FM_OR_Enum.OPEN_OR , false, "pdvGEOkind"  , ZXC.PdvGEOkindEnum.EU, "", "", " = ", ""));
+    //RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.vatCntryCode], ZXC.FM_OR_Enum.CLOSE_OR, false, "vatCntryCode", ZXC.EU_VatCodes_woHR , "", "", " IN ", ""));
 
       base.FillRiskReportLists();
 
