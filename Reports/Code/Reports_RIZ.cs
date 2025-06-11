@@ -13072,9 +13072,12 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
    public override int FillRiskReportLists()
    {
-      RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind],"pdvGEOkind", ZXC.PdvGEOkindEnum.EU, " = "));
-    //RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind  ], ZXC.FM_OR_Enum.OPEN_OR , false, "pdvGEOkind"  , ZXC.PdvGEOkindEnum.EU, "", "", " = ", ""));
+      string IN_clause = TtInfo.GetSql_IN_Clause(ZXC.EU_VatCodes_woHR);
+
+    //RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind],"pdvGEOkind", ZXC.PdvGEOkindEnum.EU, " = "));
+      RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.pdvGEOkind  ], ZXC.FM_OR_Enum.OPEN_OR , false, "pdvGEOkind"  , ZXC.PdvGEOkindEnum.EU, "", "", " = ", ""));
     //RptFilter.FilterMembers.Add(new VvSqlFilterMember(FakExSch[FakExCI.vatCntryCode], ZXC.FM_OR_Enum.CLOSE_OR, false, "vatCntryCode", ZXC.EU_VatCodes_woHR , "", "", " IN ", ""));
+      RptFilter.FilterMembers.Add(new VvSqlFilterMember("vatCntryCode", ZXC.FM_OR_Enum.CLOSE_OR, IN_clause, " IN ", 0)); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
 
       base.FillRiskReportLists();
 
