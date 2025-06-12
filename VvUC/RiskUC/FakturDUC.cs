@@ -6938,10 +6938,10 @@ if(isRNM) { colOp = AddDGVColum_Decimal_4GridReadOnly (RealizacGrid, R_cijOP_Col
    internal const string ptgOsn_TabPageName                = "~ STAVKE UGOVORA ~";
    internal const string ptgOpl_TabPageName                = "~ OTPLATNI PLAN ~";
    internal const string ptgDodFaktur_TabPageName          = "~ DODACI DOKUMENTI ~";
-   internal const string ptgDodRtrans_TabPageName          = "~ DODACI STAVKE ~";
-   internal const string ptgDODrtrano_TabPageName          = "~ DODACI SER.BR. ~";
-   internal const string ptgUgAnDodRtrans_TabPageName      = "~ STAV. UG. I DODATAKA ~";
-   internal const string ptgStanjeNajmaRtrans_TabPageName  = "~ UGOVOR STANJE NAJMA ~";
+   internal const string ptgDodRtrans_TabPageName          = "~ STAVKE DODATAKA ~";
+   internal const string ptgDODrtrano_TabPageName          = "~ SERIJSKI BROJEVI DOD ~";
+   internal const string ptgUgAnDodRtrans_TabPageName      = "~ STAVKE UGOVORA I DOD ~";
+   internal const string ptgStanjeNajmaRtrans_TabPageName  = "~ STANJE NAJMA UGOVORA ~";
    internal const string ptgStanjeNajmaRtrano_TabPageName  = "~ SERIJSKI BROJEVI UNJ ~";
 
    #endregion TabPageName
@@ -14600,7 +14600,7 @@ public partial class FakturExtDUC : FakturDUC
       //22.11.2018.
       if(CtrlOK(tbx_eRproc)) faktur_rec.PdvKolTip = Fld_eRproc;
 
-#region PTG Additions
+      #region PTG Additions
 
       if(this is KUG_PTG_DUC)
       {
@@ -14670,7 +14670,10 @@ public partial class FakturExtDUC : FakturDUC
          ZIZ_PTG_DUC ptgDUC        = this as ZIZ_PTG_DUC;
          PTG_Ugovor  ptgUgovor_rec = new PTG_Ugovor(faktur_rec);
 
-         ptgUgovor_rec.PTG_isXXX = ptgDUC.IsZIZ_Unaprijed;
+         ptgUgovor_rec.PTG_isXXX = ptgDUC.Fld_PTG_IsZIZunaprijed = ptgDUC.Fld_PTG_IsZIZunaprijed;
+
+         faktur_rec.      CurrentData = ptgUgovor_rec.      CurrentData;
+         faktur_rec.TheEx.CurrentData = ptgUgovor_rec.TheEx.CurrentData;
       }
 
       #endregion PTG Additions
@@ -16142,7 +16145,7 @@ public class FakturPDUC : FakturExtDUC
 
    public override string TabPageTitle2
    {
-      get { return ZXC.IsPCTOGO ? ". SERIJSKI BROJEVI ." : "Detalji"; }
+      get { return ZXC.IsPCTOGO ? "~ SERIJSKI BROJEVI UG ~" : "Detalji"; }
    }
 
    #endregion TabPageTitle2

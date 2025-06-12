@@ -2268,8 +2268,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          bool shouldBeIsNpCash2 = ZXC.luiListaRiskVrstaPl.GetFlagForThisCd(nacPlac2);
 
-       //if(isNpCash2 != shouldBeIsNpCash                                           )
-         if(isNpCash2 != shouldBeIsNpCash2 && faktur_rec.TtInfo.IsBlagajnaTT == false)
+       //if(isNpCash2 != shouldBeIsNpCash                                            )
+       //if(isNpCash2 != shouldBeIsNpCash2 && faktur_rec.TtInfo.IsBlagajnaTT == false)
+         if(isNpCash2 != shouldBeIsNpCash2 && faktur_rec.TtInfo.IsBlagajnaTT == false && !ZXC.IsPCTOGO)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja2!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
             e.Cancel = true;
@@ -6648,7 +6649,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                   chooseFromThis_UNJ_rtranoList = UGAN_stillUNJ_rtranoList.Where(rto => rto.T_artiklCD == artikl_rec.ArtiklCD).ToList();
                }
 
-               if(theZIZ_DUC.IsZIZ_Unaprijed)
+               if(theZIZ_DUC.Fld_PTG_IsZIZunaprijed)
                {
                   chooseFromThis_UNJ_rtranoList = RtranoDao.GetRtranoList_For_KupdobCdAndArtiklCd(TheDbConnection, rtrano_rec.T_kupdobCD, rtrano_rec.T_artiklCD);
                }
@@ -6855,7 +6856,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          List<Rtrano> UGAN_RtranoList = RtranoDao.Get_UGAN_RtranoList_stillUNJonly(TheDbConnection, UGAN_ttNum);
 
-         if(theZIZ_DUC.IsZIZ_Unaprijed)
+         if(theZIZ_DUC.Fld_PTG_IsZIZunaprijed)
          {
             // Da li je ovaj serno u ikojem najmu kod ovog Kupdoba 
             if(last_rtrano_rec_forThisSerno.T_kupdobCD != theZIZ_DUC.Fld_KupdobCd || 
@@ -6899,7 +6900,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          theGrid2.PutCell(ci2.iT_skladCD1, currRowIdx, ZXC.PTG_UNJ);
 
-         if(theZIZ_DUC.IsZIZ_Unaprijed) // ZIZ unaprijed prelazi u normalnoga 
+         if(theZIZ_DUC.Fld_PTG_IsZIZunaprijed) // ZIZ unaprijed prelazi u normalnoga 
          {
             (string uganTT, uint UgAn_TtNum2, uint V1_KUGnum, uint V2_UGANnum) = UGNorAUN_PTG_DUC.Get_KUGnum_and_UGANnum_from_UgAnDod_Rtrano(last_rtrano_rec_forThisSerno);
 
@@ -6931,6 +6932,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             }
 
             #endregion Apply next_ZIZ_dod_TtNum to all 'tilda' sernos
+
+            theZIZ_DUC.Fld_PTG_IsZIZunaprijed = false;
 
             ZXC.aim_emsg(MessageBoxIcon.Information, "Ovime je ova zamjena 'unaprijed' pretvorena u normalnu zamjenu.\n\r\n\rPridružena je ugovoru\n\r\n\r{0} {1}", uganTT, UgAn_TtNum2);
          }

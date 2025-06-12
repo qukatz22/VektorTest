@@ -3246,7 +3246,25 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
    public DateTime Fld_PTG_DatDostave { get { return dtp_DokDate2.Value; } set { if(value >= DateTimePicker.MinimumDateTime && value <= DateTimePicker.MaximumDateTime) { dtp_DokDate2.Value = value; } } }
 
-   public bool Fld_PTG_IsZIZunaprijed { /*get { return cbx_isUnaprijed.Checked; }*/ set { cbx_isUnaprijed.Checked = value; } }
+   public bool Fld_PTG_IsZIZunaprijed 
+   { 
+      get 
+      { 
+         return Fld_V1_ttNum.IsZero() && Fld_V2_ttNum.IsZero(); 
+      } 
+      set 
+      { 
+         cbx_isUnaprijed.Checked = value; 
+      } 
+   }
+
+   public bool IsZIZ_Normalan
+   {
+      get
+      {
+         return !Fld_PTG_IsZIZunaprijed;
+      }
+   }
 
    #endregion Fld
 
@@ -3399,20 +3417,6 @@ public class ZIZ_PTG_DUC : FakturPDUC
       return (isKolOK && isTtNumOK);
    }
 #endif
-   public bool IsZIZ_Unaprijed
-   { 
-      get 
-      {
-         return Fld_V1_ttNum.IsZero() && Fld_V2_ttNum.IsZero();
-      } 
-   }
-   public bool IsZIZ_Normalan 
-   {
-      get
-      {
-         return !IsZIZ_Unaprijed;
-      }
-   }
 
    #endregion IsZIZ_ ...
 
