@@ -2864,7 +2864,7 @@ public class RptR_StandardRiskReport : VvRiskReport
       }
 
       // 06.07.2022: 
-      if(isPrmRazdoblja) 
+      if(false/*isPrmRazdoblja*/) 
       {
          TheArtiklList.RemoveAll(art => art.AS_UkUlazKol.IsZero() && art.AS_UkIzlazKol.IsZero()); // makni van one koji NEMAJU promet u zadanom razdoblju 
       }
@@ -3117,9 +3117,12 @@ public class RptR_StandardRiskReport : VvRiskReport
 
    private /*List<Artikl>*/ void SetArtiklListForRazdoblje(List<Artikl> endList, List<Artikl> startList)
    {
-      foreach(Artikl endArtikl_rec in endList)
+      List<Artikl> unionList = startList.Union(endList, new Artikl.VvArtiklComparer()).ToList();
+
+      foreach(Artikl unijaArtikl_rec in unionList)
       {
-         Artikl startArtikl_rec = startList.SingleOrDefault(start => start.ArtiklCD == endArtikl_rec.ArtiklCD);
+         Artikl startArtikl_rec = startList.SingleOrDefault(start => start.ArtiklCD == unijaArtikl_rec.ArtiklCD);
+         Artikl endArtikl_rec   = endList  .SingleOrDefault(end   => end  .ArtiklCD == unijaArtikl_rec.ArtiklCD);
 
          // 16.12.2016: pitamo se: 'A zasto smo do sada izbacivali artikle koji nemaju promjenu u razdoblju?' 
          // te taj uvjet gasimo                                                                               
@@ -3150,8 +3153,14 @@ public class RptR_StandardRiskReport : VvRiskReport
          startArtikl_rec = new Artikl();
       }
 
+      if(endArtikl_rec == null) // znaci artikl je dobio promet tek u razdoblju, prije ga nije ni bilo 
+      {
+         endArtikl_rec = new Artikl();
+      }
+
       // KOLICINE: 
-      /* Stanje pocetak razdoblja */ artiklRazdoblje.AS_UkUlazKolFisycal  = startArtikl_rec.AS_StanjeKol;
+      /* Stanje pocetak razdoblja */
+      artiklRazdoblje.AS_UkUlazKolFisycal  = startArtikl_rec.AS_StanjeKol;
       /* U Razdoblju - ULAZ       */ artiklRazdoblje.AS_UkUlazKol         = endArtikl_rec  .AS_UkUlazKol  - startArtikl_rec.AS_UkUlazKol ;
       /* U Razdoblju - IZLAZ      */ artiklRazdoblje.AS_UkIzlazKol        = endArtikl_rec  .AS_UkIzlazKol - startArtikl_rec.AS_UkIzlazKol;
       /* U Razdoblju - SALDO      */ artiklRazdoblje.AS_UkStanjeKolRezerv = endArtikl_rec  .AS_StanjeKol;

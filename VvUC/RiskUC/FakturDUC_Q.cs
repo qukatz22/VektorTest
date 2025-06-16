@@ -949,6 +949,12 @@ public struct TtInfo
 
    public static string MalopUlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arrayMalopUlazForPrmArtTT); } }
 
+   private static string[] arraySkladUlazForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_U).Select(tti => tti.TheTT).ToArray(); } }
+   public static string SkladUlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySkladUlazForPrmArtTT); } }
+
+   private static string[] arraySkladIzlazForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_I).Select(tti => tti.TheTT).ToArray(); } }
+   public static string SkladIzlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySkladIzlazForPrmArtTT); } }
+
 
    #endregion IsMalopUlazForPrmArtTT
 
@@ -2256,7 +2262,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          bool shouldBeIsNpCash = ZXC.luiListaRiskVrstaPl.GetFlagForThisCd(nacPlac);
 
        //if(isNpCash != shouldBeIsNpCash                                           )
-         if(isNpCash != shouldBeIsNpCash && faktur_rec.TtInfo.IsBlagajnaTT == false)
+         if(isNpCash != shouldBeIsNpCash && faktur_rec.TtInfo.IsBlagajnaTT == false && !ZXC.IsPCTOGO)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nDogodila se greška: Nekonzistentna oznaka GOTOVINE (Novčanica) kod Načina Plaćanja!\n\nPromjenite Način Plaćanja, pa ga vratite na željeni.");
             e.Cancel = true;

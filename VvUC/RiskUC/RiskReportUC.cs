@@ -3490,8 +3490,17 @@ public partial class RiskFilterUC : VvFilterUC
       if(dateOD == dateDO) comparer = " = " ;
       else                 comparer = " >= ";
 
-      theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DateOD", dateOD, dateODorig.ToString("dd.MM.yyyy."), "Od datuma:", comparer, ""));
-      theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DateDO", dateDO, dateDOorig.ToString("dd.MM.yyyy."), "Do datuma:", " <= ", ""));
+      // 16.06.2025: dodan if(), zbog toga sto PrometArtikla mjenjamo iz ZXC.RIZ_FilterStyle.Faktur u ZXC.RIZ_FilterStyle.Rtrans
+      if(filterStyle == ZXC.RIZ_FilterStyle.Rtrans)
+      {
+         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DateOD", dateOD, dateODorig.ToString("dd.MM.yyyy."), "Od datuma:", comparer, "", "R"));
+         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DateDO", dateDO, dateDOorig.ToString("dd.MM.yyyy."), "Do datuma:", " <= "  , "", "R"));
+      }
+      else // old, classic 
+      { 
+         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DateOD", dateOD, dateODorig.ToString("dd.MM.yyyy."), "Od datuma:", comparer, ""));
+         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "DateDO", dateDO, dateDOorig.ToString("dd.MM.yyyy."), "Do datuma:", " <= "  , ""));
+      }
 
       // Fld_TTnumOdDo                                                                                                                                     
 
@@ -3672,10 +3681,12 @@ public partial class RiskFilterUC : VvFilterUC
       {
          if(theVvRiskReport is RptR_PrometArtikla)
          { 
-            string IN_clause = TtInfo.MalopUlazForPrmArt_IN_Clause;
+            // PRIVREMENO!!! 
+          //string UlazIzlaz_IN_clause = TtInfo.MalopUlazForPrmArt_IN_Clause;
+            string UlazIzlaz_IN_clause = /*isUlaz*/true ? TtInfo.SkladUlazForPrmArt_IN_Clause : TtInfo.SkladIzlazForPrmArt_IN_Clause;
    
           //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
-            theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "MalopUlazForPrmArt", IN_clause, "MalopUlazForPrmArt - KLK, URM", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+            theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "MalopUlazForPrmArt", UlazIzlaz_IN_clause, "MalopUlazForPrmArt - KLK, URM", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
          }
          else // oznacio je 'MalopUlazForPrmArtTT' a nije odabrao Promet Artikla ... vratik ga na 'URM' 
          {
@@ -3718,9 +3729,15 @@ public partial class RiskFilterUC : VvFilterUC
 
       if(text.NotEmpty())
       {
-         // 01.09.2015: 
-       //theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "SkladCD", text, text,                              "Za skladište:", " = ", ""));
-         theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "SkladCD", text, text, is2sklad ? "Sa skladišta:" : "Za skladište:", " = ", ""));
+         // 16.06.2025: dodan if(), zbog toga sto PrometArtikla mjenjamo iz ZXC.RIZ_FilterStyle.Faktur u ZXC.RIZ_FilterStyle.Rtrans
+         if(filterStyle == ZXC.RIZ_FilterStyle.Rtrans)
+         {
+            theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "SkladCD", text, text, is2sklad ? "Sa skladišta:" : "Za skladište:", " = ", "", "R"));
+         }
+         else // old, classic 
+         {
+            theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "SkladCD", text, text, is2sklad ? "Sa skladišta:" : "Za skladište:", " = ", ""));
+         }
       }
 
       // 27.08.2015: Fld_SkladCD2                                                                                                                                                   

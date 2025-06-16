@@ -2038,6 +2038,18 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
 
    #endregion Ppmv - Posebni Porez Na Motorna Vozila
 
+   public class VvArtiklComparer : IEqualityComparer<Artikl>
+   {
+      public bool Equals(Artikl x, Artikl y)
+      {
+         return x.ArtiklCD == y.ArtiklCD; // Compare based on specific property
+      }
+
+      public int GetHashCode(Artikl obj)
+      {
+         return obj.ArtiklCD.GetHashCode(); // Hash based on specific property
+      }
+   }
 }
 
 public class BMW
