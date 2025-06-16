@@ -5053,11 +5053,11 @@ public class MSI_PTG_DUC : FakturPDUC
       R_artiklTS_CreateColumn       (ZXC.Q3un - ZXC.Qun2,    isVisible, "Tip"          , "Tip artikla");
       R_ramKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "RAM klasa"    , "RAM klasa");
       R_hddKlasa2_CreateColumn      (ZXC.Q3un,               isVisible, "HDD klasa"    , "RAM klasa");
-      R_skladCD1_CreateColumn       (ZXC.Q3un,    false, "IzlSkl"       , "Izlazno skladište");
-      T_skladCD2_CreateColumn       (ZXC.Q3un,    false, "UlzSkl"       , "Ulazno skladište"                 );
+      R_skladCD1_CreateColumn       (ZXC.Q3un,    true/*false*/, "IzlSkl"       , "Izlazno skladište");
+      T_skladCD2_CreateColumn       (ZXC.Q3un,    true/*false*/, "UlzSkl"       , "Ulazno skladište"                 );
       T_dimZ_CreateColumn           (ZXC.Q3un, 0,            isVisible, "RAM"          , "RAM"                               );
       T_decC_CreateColumn           (ZXC.Q3un, 0,            isVisible, "HDD"          , "HDD old"                           );
-      T_grCD_CreateColumn           (ZXC.Q5un,    isVisible, "Opis"         , "Opis"                       , false);
+      T_grCD_CreateColumn           (ZXC.Q5un,               isVisible, "Opis"         , "Opis"                       , false);
       T_paletaNo_CreateColumn       (ZXC.Q3un,               isVisible, "Stavka"       , "UGANDO stavka"                     );
    }
 

@@ -5167,10 +5167,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is ZIZ_PTG_DUC)
       {
-         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT); // sa MODa 06.06.2025.
+         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT); 
 
-         Rtrans ZIZrtrans_rec = new Rtrans(); // sa PVR 06.06.2025.
+         Rtrans ZIZrtrans_rec = new Rtrans();
 
+         // 12.06.2025. ovo bi trebalo vrijediti samo za ZUL!!! jer je kao PVR 
          if(ZIZrtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, ZIZrtrans_rec, rtrans_rec.T_twinID, false, false))
          {
             TheG.PutCell(ci.iT_skladCD2, rowIdx, ZIZrtrans_rec.T_skladCD);
@@ -5194,7 +5195,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             TheG.PutCell(ci.iT_skladCD2, rowIdx, PV2rtrans_rec.T_skladCD);
          }
       }
-
    }
 
    public static decimal GetDiffKol_PlanVsRealizacijaPIPR(string artiklCD, List<Rtrans> realizacijaRtransList, decimal planKol)
@@ -15595,6 +15595,12 @@ public class FakturPDUC : FakturExtDUC
                }
 
                TheG2.PutCell(ci2.iT_skladCD1, rowIdx, skladCD1);
+            }
+
+            if(rtrano_rec.T_TT == Faktur.TT_MPU)
+            { 
+               TheG2.PutCell(ci2.iT_skladCD1, rowIdx, Fld_SkladCD);
+               TheG2.PutCell(ci2.iT_skladCD , rowIdx, Fld_SkladCD2);
             }
          }
 
