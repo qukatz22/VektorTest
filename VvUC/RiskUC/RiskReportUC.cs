@@ -311,6 +311,8 @@ public partial class RiskFilterUC : VvFilterUC
    private ComboBox combbx_macro;
    private CheckBox[] cbx_sklad;
 
+   public enum PrmArt_TTset { NONE, VelepUlaz, VelepIzlaz, MalopUlaz, MalopIzlaz }
+
    #endregion Fieldz
 
    #region  Constructor
@@ -3679,7 +3681,7 @@ public partial class RiskFilterUC : VvFilterUC
       }
 
       //  Fld_TT                                                                                                                                                                           
-      
+
       if(theVvRiskReport is RptR_StanjePoDobav)
       {
          string ulazIzlazClause = ArtiklDao.Rtr_UlazIzlaz_Kol;
@@ -3690,25 +3692,26 @@ public partial class RiskFilterUC : VvFilterUC
       {
          string IN_clause = TtInfo.Prihod_IN_Clause;
 
-       //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
+         //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "prihod", IN_clause, "Prihod - IFA, IRA, IRM, IOD, IPV", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
       }
-      else if(theRptFilter.IsRashodTT                                             ) // UFA, URA, URM, UOD, UPV, UPM, UFM, UPA    
+      else if(theRptFilter.IsRashodTT) // UFA, URA, URM, UOD, UPV, UPM, UFM, UPA    
       {
          string IN_clause = TtInfo.Rashod_IN_Clause;
 
-       //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
+         //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "rashod", IN_clause, "Rashod - UFA, URA, URM, UOD, UPV, UPM, UFM, UPA", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
       }
-      else if(theRptFilter.IsMalopUlazForPrmArtTT) // KLK, URM ... ali samo za 'Promet Artikla' 
+
+      #region PrometArtikl TT set
+
+      // 17.06.2025: ubijen ovaj nacin  
+      else if(false/*theRptFilter.IsMalopUlazForPrmArtTT*/) // KLK, URM ... ali samo za 'Promet Artikla' 
       {
          if(theVvRiskReport is RptR_PrometArtikla)
-         { 
-            // PRIVREMENO!!! 
-          //string UlazIzlaz_IN_clause = TtInfo.MalopUlazForPrmArt_IN_Clause;
-            string UlazIzlaz_IN_clause = /*isUlaz*/true ? TtInfo.SkladUlazForPrmArt_IN_Clause : TtInfo.SkladIzlazForPrmArt_IN_Clause;
-   
-          //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", IN_clause, " IN "));
+         {
+            string UlazIzlaz_IN_clause = TtInfo.MalopUlazForPrmArt_IN_Clause;
+
             theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "MalopUlazForPrmArt", UlazIzlaz_IN_clause, "MalopUlazForPrmArt - KLK, URM", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
          }
          else // oznacio je 'MalopUlazForPrmArtTT' a nije odabrao Promet Artikla ... vratik ga na 'URM' 
@@ -3722,13 +3725,49 @@ public partial class RiskFilterUC : VvFilterUC
          }
       }
 
+      else if(theVvRiskReport is RptR_PrometArtikla)
+      {
+         PrmArt_TTset prmArt_TTset = PrmArt_TTset.NONE;
+
+         if(theRptFilter.IsVelepUlazForPrmArtTT ) prmArt_TTset = PrmArt_TTset.VelepUlaz ;
+         if(theRptFilter.IsVelepIzlazForPrmArtTT) prmArt_TTset = PrmArt_TTset.VelepIzlaz;
+         if(theRptFilter.IsMalopUlazForPrmArtTT ) prmArt_TTset = PrmArt_TTset.MalopUlaz ;
+         if(theRptFilter.IsMalopIzlazForPrmArtTT) prmArt_TTset = PrmArt_TTset.MalopIzlaz;
+
+         string IN_clause = "", strValue = "";
+
+         switch(prmArt_TTset)
+         {
+            case PrmArt_TTset.VelepUlaz : IN_clause = TtInfo.Sklad_VelepUlaz_ForPrmArt_IN_Clause ; strValue = "Ulazni prometi veleprodaje" ; break;
+            case PrmArt_TTset.VelepIzlaz: IN_clause = TtInfo.Sklad_VelepIzlaz_ForPrmArt_IN_Clause; strValue = "Izlazni prometi veleprodaje"; break;
+            case PrmArt_TTset.MalopUlaz : IN_clause = TtInfo.Sklad_MalopUlaz_ForPrmArt_IN_Clause ; strValue = "Ulazni prometi maloprodaje" ; break;
+            case PrmArt_TTset.MalopIzlaz: IN_clause = TtInfo.Sklad_MalopIzlaz_ForPrmArt_IN_Clause; strValue = "Izlazni prometi maloprodaje"; break;
+         }
+
+         if(prmArt_TTset == PrmArt_TTset.NONE) // classic 
+         {
+          //drSchema = ZXC.FakturSchemaRows[ZXC.FakCI.tt];
+            drSchema = ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt];
+
+            text = theRptFilter.TT;
+            if(text.NotEmpty()) { theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TT", text, text, "Za tip:", " = ", "", "R")); }
+         }
+         else
+         {
+          //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt",   strValue, IN_clause, strValue, "Za TT:", " IN ")                        ); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+            theRptFilter.FilterMembers.Add(new VvSqlFilterMember("t_tt", strValue, IN_clause, strValue, "Za TT:", " IN ") { forcedPreffix = "R" }); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+         }
+      }
+
+      #endregion PrometArtikl TT set
+
       else if(theVvRiskReport is RptR_Intrastat && theRptFilter.TT == Faktur.TT_URA)
       {
          string IN_clause = TtInfo.GetSql_IN_Clause(new string[] { "URA", "PRI" });
 
          theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt", "Primitak", IN_clause, "Primitak - URA, PRI", "Za tip:", " IN ")); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
       }
-      
+
       else // Classic, just one/all TT filter 
       {
          drSchema = ZXC.FakturSchemaRows[ZXC.FakCI.tt];

@@ -949,11 +949,17 @@ public struct TtInfo
 
    public static string MalopUlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arrayMalopUlazForPrmArtTT); } }
 
-   private static string[] arraySkladUlazForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_U).Select(tti => tti.TheTT).ToArray(); } }
-   public static string SkladUlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySkladUlazForPrmArtTT); } }
+   private static string[] arraySklad_VelepUlaz_ForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_U && tti.IsMalopTT == false).Select(tti => tti.TheTT).ToArray(); } }
+   public static string Sklad_VelepUlaz_ForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySklad_VelepUlaz_ForPrmArtTT); } }
 
-   private static string[] arraySkladIzlazForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_I).Select(tti => tti.TheTT).ToArray(); } }
-   public static string SkladIzlazForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySkladIzlazForPrmArtTT); } }
+   private static string[] arraySklad_VelepIzlaz_ForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_I && tti.IsMalopTT == false).Select(tti => tti.TheTT).ToArray(); } }
+   public static string Sklad_VelepIzlaz_ForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySklad_VelepIzlaz_ForPrmArtTT); } }
+
+   private static string[] arraySklad_MalopUlaz_ForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_U && tti.IsMalopTT == true).Select(tti => tti.TheTT).ToArray(); } }
+   public static string Sklad_MalopUlaz_ForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySklad_MalopUlaz_ForPrmArtTT); } }
+
+   private static string[] arraySklad_MalopIzlaz_ForPrmArtTT { get { return ZXC.TtInfoArray.Where(tti => tti.IsFinKol_I && tti.IsMalopTT == true).Select(tti => tti.TheTT).ToArray(); } }
+   public static string Sklad_MalopIzlaz_ForPrmArt_IN_Clause { get { return GetSql_IN_Clause(arraySklad_MalopIzlaz_ForPrmArtTT); } }
 
 
    #endregion IsMalopUlazForPrmArtTT
@@ -3561,6 +3567,28 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(oldSkladCD2 == vvtb.Text) return; // nepromijenjeno skladiste 
 
+      // 17.06.2025:
+      if(IsPTG_ANY_DUC)
+      {
+         bool isGrid1NotEmpty = TheG .VvEffectiveRowCount.NotZero();
+         bool isGrid2NotEmpty = TheG2.VvEffectiveRowCount.NotZero();
+
+         bool doesCareAboutMinus = ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL ||
+                                   ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL;
+
+
+         bool shouldForbid = isGrid2NotEmpty || (isGrid1NotEmpty && doesCareAboutMinus);
+
+         if(shouldForbid)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop,
+               " Nedozvoljena promjena skladišta nakon unosa podatka na stavke dokumenta!");
+            e.Cancel = true;
+            Fld_SkladCD2 = oldSkladCD2;
+            return;
+         }
+      }
+
       bool isCentToCentMSI = (this is MedjuSkladDUC) &&
                              Fld_SkladCD .StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) &&
                              Fld_SkladCD2.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00"));
@@ -3603,6 +3631,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(oldSkladCD != vvtb.Text) // promijenjeno skladiste 
       {
+
+         // 17.06.2025:
+         if(IsPTG_ANY_DUC)
+         {
+            bool isGrid1NotEmpty = TheG .VvEffectiveRowCount.NotZero();
+            bool isGrid2NotEmpty = TheG2.VvEffectiveRowCount.NotZero();
+
+            bool doesCareAboutMinus = ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_ALL ||
+                                      ZXC.CURR_prjkt_rec.MinusPolicy == ZXC.MinusPolicy.DENY_VEL_ALLOW_MAL;
+
+
+            bool shouldForbid = isGrid2NotEmpty || (isGrid1NotEmpty && doesCareAboutMinus);
+
+            if(shouldForbid)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop,
+                  " Nedozvoljena promjena skladišta nakon unosa podatka na stavke dokumenta!");
+               e.Cancel = true;
+               Fld_SkladCD = oldSkladCD;
+               return;
+            }
+         }
+
          bool isCentToCentMSI = (this is MedjuSkladDUC) && 
                                 Fld_SkladCD .StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00")) && 
                                 Fld_SkladCD2.StartsWith(ZXC.vvDB_ServerID_CENTRALA.ToString("00"));

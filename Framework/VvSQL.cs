@@ -3202,14 +3202,24 @@ public static class VvSQL
             if(member.value is decimal) nonParameterizedValue = ((decimal)member.value).ToString(ZXC.VvNumberFormatInfo2_ForceDot);
             else                        nonParameterizedValue = member.value.ToString();
 
+            // 17.06.2025: start 
+            fullColumnName = member.forcedColName;
+
+            if(member.forcedPreffix.NotEmpty())
+            {
+               fullColumnName = member.forcedPreffix + "." + member.forcedColName;
+            }
+
+            // 17.06.2025:  end  
+
             if(member.or_state == ZXC.FM_OR_Enum.OPEN_OR) // start OR 
             {
-               sb.Append(where_or_and + "(" + member.forcedColName + member.operand + nonParameterizedValue + " \n");
+               sb.Append(where_or_and + "(" + fullColumnName + member.operand + nonParameterizedValue + " \n");
                OR_active = true;
             }
             else if(OR_active)
             {
-               sb.Append("OR " + member.forcedColName + member.operand + nonParameterizedValue + " \n");
+               sb.Append("OR " + fullColumnName + member.operand + nonParameterizedValue + " \n");
 
                if(member.or_state == ZXC.FM_OR_Enum.CLOSE_OR) // end OR 
                {
@@ -3219,7 +3229,7 @@ public static class VvSQL
             }
             else // default, standard case 
             {
-               sb.Append(where_or_and + member.forcedColName + member.operand + nonParameterizedValue + " \n");
+               sb.Append(where_or_and + fullColumnName + member.operand + nonParameterizedValue + " \n");
             }
 
          } // doslovni columnName i ne parametrizirani value 

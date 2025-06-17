@@ -184,6 +184,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    internal bool IsPTG_RightToLeft_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC                                           ; } } // 'SVI s desna na lijevo' 
    internal bool IsPTG_LeftToRight_DUC    { get { return IsPTG_ReadOnlyRtrans_DUC == false                                  ; } } // 'SVI s lijeva na desno' 
 
+   internal bool IsPTG_ANY_DUC            { get { return (IsPTG_WithSerno_DUC /* ovaj, mislimo, pokriva sve za sada */ ); } }
+
    #endregion Fieldz
 
    #region Virtual Metodz

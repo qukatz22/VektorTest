@@ -2864,7 +2864,7 @@ public class RptR_StandardRiskReport : VvRiskReport
       }
 
       // 06.07.2022: 
-      if(false/*isPrmRazdoblja*/) 
+      if(isPrmRazdoblja) 
       {
          TheArtiklList.RemoveAll(art => art.AS_UkUlazKol.IsZero() && art.AS_UkIzlazKol.IsZero()); // makni van one koji NEMAJU promet u zadanom razdoblju 
       }
@@ -3117,6 +3117,7 @@ public class RptR_StandardRiskReport : VvRiskReport
 
    private /*List<Artikl>*/ void SetArtiklListForRazdoblje(List<Artikl> endList, List<Artikl> startList)
    {
+      // 16.06.2025: implementiramo 'Union' ali zakljucujemo da je 1. nepotrebno. 2. da ne smeta pa ostavljamo uniju 
       List<Artikl> unionList = startList.Union(endList, new Artikl.VvArtiklComparer()).ToList();
 
       foreach(Artikl unijaArtikl_rec in unionList)
@@ -12268,9 +12269,15 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       VvRpt_RiSk_Filter filter = reportUC.TheRptFilter;
 
     //if(filter.TT.IsEmpty() && filter.IsPrihodTT == false)
-      if(filter.TT.IsEmpty() && filter.IsPrihodTT == false && filter.IsRashodTT == false && filter.IsMalopUlazForPrmArtTT == false)
+    //if(filter.TT.IsEmpty() && filter.IsPrihodTT == false && filter.IsRashodTT == false && filter.IsMalopUlazForPrmArtTT == false)
+      if(filter.TT.IsEmpty() && filter.IsPrihodTT == false && filter.IsRashodTT == false 
+         && filter.IsMalopUlazForPrmArtTT  == false
+         && filter.IsMalopIzlazForPrmArtTT == false
+         && filter.IsVelepUlazForPrmArtTT  == false
+         && filter.IsVelepIzlazForPrmArtTT == false
+         )
       {
-         ZXC.aim_emsg("Molim, zadajte Tip Transakcije ili oznacite 'Prihod: IFA, IRA, IRM, IOD, IPV' ili 'Rashod: UFA, URA, URM, UOD, UPV' ili 'MalopUlaz PrmArt: URM, KLK' .");
+         ZXC.aim_emsg("Molim, zadajte Tip Transakcije na jedan od adekvatnih načina.");
          return false;
       }
 
