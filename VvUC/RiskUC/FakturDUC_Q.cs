@@ -892,6 +892,7 @@ public struct TtInfo
       Faktur.TT_IRM,
       Faktur.TT_IOD,
       Faktur.TT_IPV,
+      Faktur.TT_POI, //17.06.2025. Tetragram ?????
    };
    /// <summary>
    /// Ovi TT-ovi su REALIZACIJA / PRIHOD 
@@ -929,6 +930,8 @@ public struct TtInfo
       Faktur.TT_UPV,
       Faktur.TT_UPM,
       Faktur.TT_UPA,
+      Faktur.TT_POT,//17.06.2025. Tetragram
+      Faktur.TT_POU,//17.06.2025. Tetragram??????
    };
    /// <summary>
    /// Ovi TT-ovi su ULAZ, trosak / Rashod 

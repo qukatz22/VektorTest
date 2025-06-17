@@ -291,7 +291,8 @@ public partial class RiskFilterUC : VvFilterUC
                             rbt_svaSklad, rbt_onlyVelepSkl, rbt_onlyMalopSkl, rbt_TMB_VpskVps2,
                             rbt_Lijek, rbt_Potros, rbt_LiP,
                             rbt_svdSvaSkl, rbt_svdDonac, rbt_svdNeDonac,
-                            rbt_intrastatI, rbt_intrastatN, rbt_intrastat0, rbt_intrastatB;
+                            rbt_intrastatI, rbt_intrastatN, rbt_intrastat0, rbt_intrastatB,
+                            rbt_IsPR_TT, rbt_isRashodTT, rbt_isPrihodTT, rbt_IsZaliha_TT, rbt_IsMalopUlazForPrmArtTT, rbt_IsMalopIzlazForPrmArtTT, rbt_IsVelepUlazForPrmArtTT, rbt_IsVelepIzlazForPrmArtTT;
    private VvHamper hamper_OdDo, hamper_Partner, hamper_TTSklad, hamper_OPP_PDV, hamper_AllSklad, hamper_TopSort, hamper_pdv, hamper_NacPlac, hamper_IOS, hamper_ODDoArtikl, hamper_ODDoTT, 
                     hamper_status, hamper_compDate, hamper_rptNap, hamper_OdDoVezDok2, hamper_svdLiP, hamper_svdSklad, hamper_uvozIzvoz, hamper_intrastat;
    public VvHamper hamper_Sort, hamper_HorLine, hamper_grupDok, hamper_grupArtikl, hamper_ArtSort, hamper_pdvRtip, 
@@ -3750,7 +3751,7 @@ public partial class RiskFilterUC : VvFilterUC
             drSchema = ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt];
 
             text = theRptFilter.TT;
-            if(text.NotEmpty()) { theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TT", text, text, "Za tip:", " = ", "", "R")); }
+            if(text.NotEmpty()) { theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TT", text, text, "Za: ", " = ", "", "R")); }
          }
          else
          {
