@@ -3234,7 +3234,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
       tbx_Sklad2Cd.VVtag2 = true;
 
       tbx_SkladCd .JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
-      tbx_Sklad2Cd.JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD_SetTtNum_And_ValidateSkladCD);
+      tbx_Sklad2Cd.JAM_FieldExitWithValidationMethod += new System.ComponentModel.CancelEventHandler(OnExitSkladCD2_SetKomisijaPartner         );
 
       cbx_isUnaprijed = hamper.CreateVvCheckBox_OLD(1, 2, null, 1, 0, "ZIZ UNAPRIJED", RightToLeft.No);
       cbx_isUnaprijed.Enabled = false;

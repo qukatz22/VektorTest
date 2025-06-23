@@ -12083,6 +12083,22 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
       #endregion SVD_PrmArt4Nabava
 
+      #region Check NoNeedForZaliha_ArtiklTSs
+
+      // 23.06.2025:
+      var noSkladArtiklList = TheRtransList.Where(rtr => ZXC.NoNeedForZaliha_ArtiklTSs.Contains(rtr.A_ArtiklTS)).ToList();
+
+      if(noSkladArtiklList.NotEmpty())
+      {
+         var messageList = new List<string>();
+
+         noSkladArtiklList.ForEach(rtrans => messageList.Add(String.Format("{0} {1} Tip Artikla: [{2}]", rtrans.T_artiklCD, rtrans.T_artiklName, rtrans.A_ArtiklTS)));
+
+         ZXC.aim_emsg_List(string.Format("UPOZORENJE: {0} artikala ima Tip Artikla koji ne utječe na izvještaje stanja skladišta.", messageList.Count), messageList);
+      }
+
+      #endregion Check NoNeedForZaliha_ArtiklTSs
+
       return TheDeviznaSumaList.Count;
    }
 

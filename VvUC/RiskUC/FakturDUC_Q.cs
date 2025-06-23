@@ -3562,7 +3562,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       return errMsgCD + errMsgName;
    }
 
-   private void OnExitSkladCD2_SetKomisijaPartner(object sender, System.ComponentModel.CancelEventArgs e)
+   protected void OnExitSkladCD2_SetKomisijaPartner(object sender, System.ComponentModel.CancelEventArgs e)
    {
       if(this.Visible == false) return;
 
@@ -3676,6 +3676,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          // 28.01.2016: 
          bool isInEditNotInADD    = TheVvTabPage.WriteMode == ZXC.WriteMode.Edit;
+         bool IsSklCd_YES_InTtNum =  faktur_rec.TtInfo.IsSklCdInTtNum           ;
          bool IsSklCd_NOT_InTtNum = !faktur_rec.TtInfo.IsSklCdInTtNum           ;
 
          uint   arhivedTtNum      =  0;
@@ -3713,7 +3714,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
           //int    eventualRNZmonth  = (this is RNZDUC                   ? Fld_DokDate.Month : 0 );
           //newTtNum = TheVvDao.GetNextTtNum(TheDbConnection, Fld_TT, skladCD4_ttNum, isCentToCentMSI);
 
-            Put_NewTT_Num(this.GetNewTtNum_2025());
+            // 23.06.2025: 
+          //                        Put_NewTT_Num(this.GetNewTtNum_2025());
+            if(IsSklCd_YES_InTtNum) Put_NewTT_Num(this.GetNewTtNum_2025());
          }
 
          // 18.03.2014: Komisija News 
@@ -3772,7 +3775,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #endregion if(faktur_rec.TtInfo.IsDokCijShouldBePrNabCij) RecalcPrNabCijAndResultFields();
 
-      }
+      } // if(oldSkladCD != vvtb.Text) // promijenjeno skladiste 
+
       //if(TheVvTabPage.WriteMode == ZXC.WriteMode.Add)
       //{
       //   if(oldSkladCD != vvtb.Text) // promijenjeno skladiste 
