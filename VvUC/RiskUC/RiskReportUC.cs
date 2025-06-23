@@ -1134,8 +1134,8 @@ public partial class RiskFilterUC : VvFilterUC
    {
       hamper = new VvHamper(3, 6, "", this, false);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q2un + ZXC.Qun2, ZXC.Q6un};
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,            ZXC.Qun8, ZXC.Qun8};
+      hamper.VvColWdt      = new int[] { ZXC.Q3un + ZXC.Qun2, ZXC.Q2un + ZXC.Qun2, ZXC.Q6un - ZXC.Qun2 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8           ,            ZXC.Qun8, ZXC.Qun8};
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
