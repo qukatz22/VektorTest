@@ -5040,8 +5040,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(HasRtrans_SkladCD_Exposed)
       {
          TheG.PutCell(ci.iT_skladCD, rowIdx, rtrans_rec.T_skladCD);
-
-         if(rtrans_rec.T_TT == Faktur.TT_ZIZ) TheG.PutCell(ci.iT_skladCD, rowIdx, Fld_SkladCD);// 06.06.2025.
       }
 
       if(artikl_rec != null && artikl_rec.TS == ZXC.PCK_TS)
@@ -5169,14 +5167,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       if(this is ZIZ_PTG_DUC)
       {
-         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT); 
+         TheG.PutCell(ci.iT_TT, rowIdx, rtrans_rec.T_TT);
 
-         Rtrans ZIZrtrans_rec = new Rtrans();
+         Rtrans twinRtrans_rec = new Rtrans();
 
-         // 12.06.2025. ovo bi trebalo vrijediti samo za ZUL!!! jer je kao PVR 
-         if(ZIZrtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, ZIZrtrans_rec, rtrans_rec.T_twinID, false, false))
+         if(twinRtrans_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, twinRtrans_rec, rtrans_rec.T_twinID, false, false))
          {
-            TheG.PutCell(ci.iT_skladCD2, rowIdx, ZIZrtrans_rec.T_skladCD);
+            TheG.PutCell(ci.iT_skladCD2, rowIdx, twinRtrans_rec.T_skladCD);
          }
 
          foreach(DataGridViewTextBoxCell tbxCell in TheG.Rows[rowIdx].Cells)

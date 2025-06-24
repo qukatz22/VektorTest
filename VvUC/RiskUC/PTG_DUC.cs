@@ -3488,7 +3488,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
             Rtrans limiterRtrans_rec = new Rtrans()
             {
                T_artiklCD  = rtrano_rec.T_artiklCD ,
-               T_skladCD   = rtrano_rec.T_skladCD  ,
+               T_skladCD   = /*rtrano_rec.T_skladCD*/ faktur_rec.SkladCD, // Izdajemo sa 
                T_skladDate = rtrano_rec.T_skladDate,
              //T_ttSort    = rtrano_rec.T_ttSort   ,
                T_ttSort    = rtransT_ttSort        ,
@@ -3521,12 +3521,13 @@ public class ZIZ_PTG_DUC : FakturPDUC
 
          if(rtrano_rec.T_TT == Faktur.TT_ZU2) // Zeleni ulaz / povrat 
          { 
-            ZIZ_ZUL_rtrans_rec.R_utilString = ZIZ_ZUL_rtrans_rec.T_skladCD;
-            ZIZ_ZUL_rtrans_rec.T_skladCD    = ZXC.PTG_UNJ;
+            ZIZ_ZUL_rtrans_rec.R_utilString = ZIZ_ZUL_rtrans_rec.T_skladCD; // Vraca se na 
+            ZIZ_ZUL_rtrans_rec.T_skladCD    = ZXC.PTG_UNJ; // Vracamo sa
          }
          else // (rtrano_rec.T_TT == Faktur.TT_ZI2) Bijeli izlaz / dodatno izdavanje 
          {
-            ZIZ_ZUL_rtrans_rec.R_utilString = ZXC.PTG_UNJ;
+            ZIZ_ZUL_rtrans_rec.R_utilString = ZXC.PTG_UNJ; // Izdajemo na 
+            ZIZ_ZUL_rtrans_rec.T_skladCD    = /*ZIZ_ZUL_rtrans_rec.T_skladCD*/ faktur_rec.SkladCD; // Izdajemo sa 
          }
 
          Add_or_Sint_RtransToFakturTransesCollection(faktur_rec, ZIZ_ZUL_rtrans_rec);

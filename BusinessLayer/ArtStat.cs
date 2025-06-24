@@ -1208,15 +1208,26 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
          
             // 11.11.2014: tek sad?! 
             RtrUlazCijNBC = rtr.R_CIJ_KCR /*= linkedIzlazDokPrNabCij*/;
+
+            // ipak jos ne 
+            //// 24.06.2025: 
+            //if(TtInfo.IsPTGTwinRtrans_UgAnDodTT && PrNabCij.NotZero()) // UG2 
+            //{                                    // AU2 
+            //   RtrUlazCijNBC = PrNabCij;         // DI2 
+            //                                     // PV2 
+            //                                     // ZI2 
+            //}                                    // ZU2 
+
+
          }
 
          #endregion InternUlaz_From One or Many Izlaz
 
          // ugaseno 14.10.2024. ... nez cem sluzi, smeta, valjda dio onog starog dizajna MOD-a 
-       //else if(TtInfo.IsMODulazTT)
-       //{
-       //   RtrUlazCijNBC = PrNBCBefThisUlaz; // jer TT_MOU nema t_cij nit' na gridu nit' u dataLayer-u 
-       //}
+         //else if(TtInfo.IsMODulazTT)
+         //{
+         //   RtrUlazCijNBC = PrNBCBefThisUlaz; // jer TT_MOU nema t_cij nit' na gridu nit' u dataLayer-u 
+         //}
          else
          {
             RtrUlazCijNBC = rtr.R_CIJ_KCR; // ex 'nab'
