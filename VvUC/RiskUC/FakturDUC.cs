@@ -7574,7 +7574,6 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       UgAn_i_DOD_rtrans_list.AddRange(UGANrtrans_list);
       UgAn_i_DOD_rtrans_list.AddRange(DODrtrans_list );
 
-      //25.06.2025. !!! 
       foreach(Rtrans vracaSeIzNajma_rtrans_rec in UgAn_i_DOD_rtrans_list.Where(rtr => rtr.T_TT == Faktur.TT_PVR || rtr.T_TT == Faktur.TT_ZU2))
       {
        //vracaSeIzNajma_rtrans_rec.T_kol = -vracaSeIzNajma_rtrans_rec.T_kol;           // jer kad togglas SIN / ANA onda opet izvrne na pozitivni T_kol 

@@ -2356,10 +2356,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return projektRtransList;
    }
 
-   internal static List<Rtrans> GetRtransList_ForTT_And_TtNum(XSqlConnection conn, string theTT_And_TtNum, string orderBy)
-   {
-      return GetRtransList_ForTT_And_TtNum(conn, theTT_And_TtNum, orderBy, false);
-   }
+   // 25.06.2025: ovoga treba unistiti 
    internal static List<Rtrans> GetRtransList_ForTT_And_TtNum(XSqlConnection conn, string theTT_And_TtNum, string orderBy, bool needsSplitOrTwinTranses)
    {
       List<Rtrans> rtransList = new List<Rtrans>();
@@ -2374,13 +2371,13 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       if(needsSplitOrTwinTranses)
       {
          if(ZXC.TtInfo(theTT).HasSplitTT) theTT = ZXC.TtInfo(theTT).SplitTT;
-         if(ZXC.TtInfo(theTT).HasTwinTT) theTT = ZXC.TtInfo(theTT).TwinTT;
+         if(ZXC.TtInfo(theTT).HasTwinTT ) theTT = ZXC.TtInfo(theTT).TwinTT;
       }
 
       VvRptFilter rptFilter = new VvRptFilter();
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
-      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt], "theTT", theTT, " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt   ], "theTT"   , theTT   , " = "));
       filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum], "theTtNum", theTtNum, " = "));
 
       rptFilter.FilterMembers = filterMembers;
@@ -2389,6 +2386,57 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       return rtransList;
    }
+
+   internal static List<Rtrans> Get_PTG_4SkladUNJ_RtransList_ForTT_And_TtNum(XSqlConnection conn, string theTT_And_TtNum)
+   {
+      List<Rtrans> rtransList = new List<Rtrans>();
+
+      string theTT;
+      uint theTtNum;
+
+      string orderBy = Rtrans.artiklOrderBy_ASC;
+
+      Ftrans.ParseTipBr(theTT_And_TtNum, out theTT, out theTtNum);
+
+      if(theTT.IsEmpty() || theTtNum.IsZero()) return rtransList;
+
+      string theTTpreffix = ZXC.SubstringSafe(theTT, 0, 2);
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum  ], "ttNum", theTtNum          , " = "   ));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_skladCD], "sklCD", ZXC.PTG_UNJ       , " = "   ));
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt     ], "theTT", theTTpreffix + "%", " LIKE "));
+
+      VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(conn, rtransList, filterMembers, orderBy);
+
+      #region ZUL Additions 
+
+      if(theTT == Faktur.TT_ZIZ)
+      {
+         theTTpreffix = "ZU";
+
+         filterMembers = new List<VvSqlFilterMember>(3);
+
+         filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum  ], "ttNum", theTtNum          , " = "   ));
+         filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_skladCD], "sklCD", ZXC.PTG_UNJ       , " = "   ));
+
+         filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt     ], "theTT", theTTpreffix + "%", " LIKE "));
+
+         VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(conn, rtransList, filterMembers, orderBy);
+      }
+
+      #endregion ZUL Additions 
+
+      return rtransList;
+   }
+
+
+
+
+
+
 
    private static decimal Get_KoefDovrsenosti_From_RNM_PPR_PIP_list_JOB(List<Rtrans> rtrans_RNM_RNU_list, List<Rtrans> rtrans_PPR_PIP_list, decimal ukKol_Kg_UlazPG, bool isOGonly)
    {
@@ -3103,7 +3151,9 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       foreach(Faktur thisDOD in DOD_FakturList)
       {
-         rtransList_thisDOD = RtransDao.GetRtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum, "", false);
+         rtransList_thisDOD = RtransDao.GetRtransList_ForTT_And_TtNum               (conn, thisDOD.TT_And_TtNum, "", false);
+       //rtransList_thisDOD = RtransDao.Get_PTG_4SkladUNJ_RtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum           );
+         
          DOD_RtransList.AddRange(rtransList_thisDOD);
       }
 
