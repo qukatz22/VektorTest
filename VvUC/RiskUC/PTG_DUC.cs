@@ -1423,7 +1423,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    {
       SetUpColor(clr_UGAN_PTG, clr_UPA, clr_UGAN_PTG);
       ThePolyGridTabControl.TabPages[ptgOpl_TabPageName].Tag = clr_OPL_PTG;
-      ThePolyGridTabControl.TabPages[ptgDodRtrans_TabPageName].Tag = clr_DOD_PTG;
+      ThePolyGridTabControl.TabPages[ptgStavkeDodataka_TabPageName].Tag = clr_DOD_PTG;
    }
    #endregion Colors
 
@@ -2200,7 +2200,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
       T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"     , "Tip artikla");
       T_doCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "RAM"     , "RAM", false);
       T_noCijMal_CreateColumn      (ZXC.Q3un, 0,            true, "HDD"     , "HDD");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSk"   , "Izlazno skladište");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSkl"  , "Izlazno skladište");
       T_jedMj_CreateColumn         (ZXC.Q2un           ,    true, "JM"      , "Jedinica mjere"                    );
       T_kol_CreateColumn           (ZXC.Q3un           , 2, true, "Kol"     , "Količina"                );
       T_cij_CreateColumn           (ZXC.Q4un           , 4, true, "Cijena"  , "Jedinična cijena"                  );
@@ -3276,11 +3276,8 @@ public class ZIZ_PTG_DUC : FakturPDUC
    protected override void InitializeDUC_Specific_Columns()
    {
       T_TT_CreateColumnG1          (ZXC.Q2un,               true, "TT"    , "Tip Izlaznog dokumenta", false);
-    //R_Opis_CreateColumn          (ZXC.Q4un,               true, ""      , "Opis Izlaznog dokumenta");
-      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "SaSkl" , "Izlaz sa skladišta");
-    //R_TT2_CreateColumn           (ZXC.Q2un,               true, ""      , "Tip Ulaznog dokumenta");
-    //R_Opis2_CreateColumn         (ZXC.Q3un,               true, ""      , "Opis Ulaznog dokumenta");
-      R_skladCd2_CreateColumn      (ZXC.Q3un,               true, "NaSkl" , "Ulaz na skladišta");
+      T_skladCD_CreateColumn       (ZXC.Q3un,               true, "IzlSkl", "Izlaz sa skladišta");
+      R_skladCd2_CreateColumn      (ZXC.Q3un,               true, "UlzSkl", "Ulaz na skladišta");
       T_artiklCD_CreateColumn      (ZXC.Q3un           ,    true, "Šifra" , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                        true, "Naziv" , "Naziv artikla ili proizvoljan opis");
       T_artiklTS_CreateColumn      (ZXC.Q2un,               true, "Tip"   , "Tip artikla");
@@ -3292,7 +3289,6 @@ public class ZIZ_PTG_DUC : FakturPDUC
       R_KCR_CreateColumn           (ZXC.Q4un,            2, true, "Iznos" , "Ukupan iznos bez PDV-a");
 
       vvtbT_cij.JAM_ReadOnly = true;
-
    }
 
    public static string ZIZ_DUC_izlazText = "Izlazi sa";
