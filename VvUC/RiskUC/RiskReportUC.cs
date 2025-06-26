@@ -3645,12 +3645,16 @@ public partial class RiskFilterUC : VvFilterUC
 
       switch(filterStyle)
       {
-         //case ZXC.RIZ_FilterStyle.Artikl: drSchema = ArsSch[ArsCI.t_skladDate]; break;
-         case ZXC.RIZ_FilterStyle.Faktur: drSchema = FakSch[FakCI.dokDate]; break;
+         case ZXC.RIZ_FilterStyle.Faktur: drSchema = FakSch[FakCI.dokDate    ]; break;
          case ZXC.RIZ_FilterStyle.Rtrans: drSchema = RtrSch[RtrCI.t_skladDate]; break;
-         //case ZXC.RIZ_FilterStyle.Ftrans: drSchema = FtrSch[FtrCI.t_dokDate  ]; break;
 
          default: drSchema = null; break;
+      }
+
+      // 26.06.2025:
+      if(theVvRiskReport is RptR_PrometArtikla)
+      {
+         drSchema = FakExSch[FakExCI.skladDate];
       }
 
       dateODorig = dateOD = theRptFilter.DatumOd;
@@ -3899,16 +3903,16 @@ public partial class RiskFilterUC : VvFilterUC
 
          if(prmArt_TTset == PrmArt_TTset.NONE) // classic 
          {
-          //drSchema = ZXC.FakturSchemaRows[ZXC.FakCI.tt];
-            drSchema = ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt];
+            drSchema = ZXC.FakturSchemaRows[ZXC.FakCI.tt];
+          //drSchema = ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt];
 
             text = theRptFilter.TT;
-            if(text.NotEmpty()) { theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TT", text, text, "Za: ", " = ", "", "R")); }
+            if(text.NotEmpty()) { theRptFilter.FilterMembers.Add(new VvSqlFilterMember(drSchema, false, "TT", text, text, "Za: ", " = ", "", /*"T"*/"")); }
          }
          else
          {
-          //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt",   strValue, IN_clause, strValue, "Za TT:", " IN ")                        ); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
-            theRptFilter.FilterMembers.Add(new VvSqlFilterMember("t_tt", strValue, IN_clause, strValue, "Za TT:", " IN ") { forcedPreffix = "R" }); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+            theRptFilter.FilterMembers.Add(new VvSqlFilterMember("tt",   strValue, IN_clause, strValue, "Za TT:", " IN ")                        ); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
+          //theRptFilter.FilterMembers.Add(new VvSqlFilterMember("t_tt", strValue, IN_clause, strValue, "Za TT:", " IN ") { forcedPreffix = "T" }); // MORA BITI NONPARAMETERIZED VALUE za IN_clause!!!
          }
       }
 
@@ -3932,7 +3936,7 @@ public partial class RiskFilterUC : VvFilterUC
 
       switch(theVvRiskReport.FilterStyle)
       {
-         //case ZXC.RIZ_FilterStyle.Artikl: drSchema = ArsSch[ArsCI.t_skladCD]; break;
+       //case ZXC.RIZ_FilterStyle.Artikl: drSchema = ArsSch[ArsCI.t_skladCD]; break;
          case ZXC.RIZ_FilterStyle.Faktur: drSchema = FakSch[FakCI.skladCD]; break;
          case ZXC.RIZ_FilterStyle.Rtrans: drSchema = RtrSch[RtrCI.t_skladCD]; break;
 

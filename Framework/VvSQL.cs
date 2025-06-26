@@ -3795,11 +3795,12 @@ public static class VvSQL
 
       XSqlCommand cmd = InitCommand(conn);
 
-      cmd.CommandText = "SELECT R.*, A.* FROM  faktur L \n" +
+      // 26.06.2025: Rtrans alias mjenjamo iz R u T
+      cmd.CommandText = "SELECT T.*, A.* FROM  faktur L \n" +
                         "LEFT  JOIN  faktEx  X ON L.RecID = X.fakturRecID \n" +
-         /* RIGHT JOIN,odervajs*/"RIGHT JOIN  rtrans  R ON L.RecID = R.t_parentID  \n" +
-         /* je null exc. kada  */"LEFT  JOIN  artstat A ON R.RecID = A.rtransRecID \n" +
-         /* fak nema stavaka   */
+/* RIGHT JOIN,odervajs*/"RIGHT JOIN  rtrans  T ON L.RecID = T.t_parentID  \n" +
+/* je null exc. kada  */"LEFT  JOIN  artstat A ON T.RecID = A.rtransRecID \n" +
+/* fak nema stavaka   */
                         (filterMembers == null ? "" : VvSQL.EventualRelatedTblName_ForWhereClause_FromFilterMembers(RptFilter)) +
 
                          anotherJoinClause + // kocnica za vec prebacene dane ili mjesece (dakle da ne moze dva puta prenijeti)
