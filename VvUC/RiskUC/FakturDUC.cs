@@ -139,9 +139,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected bool            PTG_DOD_Grid_Loaded;
    protected bool            PTG_DOD_rtransList_Loaded;
 
-   public VvDataGridViewFind PTG_UNA_ANA_Grid;
-   protected VvDataGridView  PTG_Una_Ana_Grid_SumGrid;
-   protected bool            PTG_Una_Ana_Loaded;
+   public VvDataGridViewFind PTG_StavkeUGANiDOD_Grid;
+   protected VvDataGridView  PTG_StavkeUGANiDOD_SumGrid;
+   protected bool            PTG_StavkeUGANiDOD_Loaded;
 
    public VvDataGridViewFind PTG_StanejNajma_Rtrans_Grid;
    protected VvDataGridView  PTG_Una_Sin_Grid_SumGrid;
@@ -428,16 +428,16 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          //ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgDod_TabPageName + " ()", ptgDod_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
          ThePolyGridTabControl.TabPages.Add(CreateVvInnerTabPages(ptgStavkeUGANiDOD_TabPageName, ptgStavkeUGANiDOD_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-         PTG_UNA_ANA_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgStavkeUGANiDOD_TabPageName], ptgStavkeUGANiDOD_TabPageName);
+         PTG_StavkeUGANiDOD_Grid = CreateDataGridView_ReadOnly(ThePolyGridTabControl.TabPages[ptgStavkeUGANiDOD_TabPageName], ptgStavkeUGANiDOD_TabPageName);
 
          AddColumnsToGrid_PTG_UNA_ANA();
-         GridLocationAndSize(PTG_UNA_ANA_Grid);
+         GridLocationAndSize(PTG_StavkeUGANiDOD_Grid);
 
-         PTG_Una_Ana_Grid_SumGrid = CreatePtgOplAndDodSumGrid(PTG_UNA_ANA_Grid, PTG_UNA_ANA_Grid.Parent, "SUM" + ptgStavkeUGANiDOD_TabPageName);
-         InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_UNA_ANA_Grid);
+         PTG_StavkeUGANiDOD_SumGrid = CreatePtgOplAndDodSumGrid(PTG_StavkeUGANiDOD_Grid, PTG_StavkeUGANiDOD_Grid.Parent, "SUM" + ptgStavkeUGANiDOD_TabPageName);
+         InitializePTG_OplAndDodGrid_SumGrid_Columns(PTG_StavkeUGANiDOD_Grid);
          //
-         GridLocationAndSize_PTG_OplAndDodGrids(PTG_UNA_ANA_Grid, 0);
-         PTG_UNA_ANA_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
+         GridLocationAndSize_PTG_OplAndDodGrids(PTG_StavkeUGANiDOD_Grid, 0);
+         PTG_StavkeUGANiDOD_Grid.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(PTG_UgAnReadOnlyGrid_CellMouseDoubleClick_OpenDOD_DUC_or_ArtiklUC);
 
          #endregion PTG_UnaAnaGrid
 
@@ -4423,7 +4423,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          PTG_OplLoaded             = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_DOD_Grid_Loaded       = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
-         PTG_Una_Ana_Loaded        = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
+         PTG_StavkeUGANiDOD_Loaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_Una_Sin_Loaded        = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_DOD_rtransList_Loaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
          PTG_DODrtrano_Loaded      = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable 
@@ -7075,14 +7075,14 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    private void AddColumnsToGrid_PTG_UNA_ANA() 
    {
-      AddDGVColum_RecID_4GridReadOnly   (PTG_UNA_ANA_Grid, "RecID"     , ZXC.Q2un, false, 0);   
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Dokument"  , ZXC.Q6un, false   );
-      AddDGVColum_DateTime_4GridReadOnly(PTG_UNA_ANA_Grid, "Datum"     , ZXC.Q4un          );
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Šifra"     , ZXC.Q5un, false   );
-      AddDGVColum_String_4GridReadOnly  (PTG_UNA_ANA_Grid, "Naziv"     , ZXC.Q5un, true    );
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Kol"       , ZXC.Q5un,        2);
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Cijena"    , ZXC.Q5un,        2);
-      AddDGVColum_Decimal_4GridReadOnly (PTG_UNA_ANA_Grid, "Iznos"     , ZXC.Q5un,        2);
+      AddDGVColum_RecID_4GridReadOnly   (PTG_StavkeUGANiDOD_Grid, "RecID"     , ZXC.Q2un, false, 0);   
+      AddDGVColum_String_4GridReadOnly  (PTG_StavkeUGANiDOD_Grid, "Dokument"  , ZXC.Q6un, false   );
+      AddDGVColum_DateTime_4GridReadOnly(PTG_StavkeUGANiDOD_Grid, "Datum"     , ZXC.Q4un          );
+      AddDGVColum_String_4GridReadOnly  (PTG_StavkeUGANiDOD_Grid, "Šifra"     , ZXC.Q5un, false   );
+      AddDGVColum_String_4GridReadOnly  (PTG_StavkeUGANiDOD_Grid, "Naziv"     , ZXC.Q5un, true    );
+      AddDGVColum_Decimal_4GridReadOnly (PTG_StavkeUGANiDOD_Grid, "Kol"       , ZXC.Q5un,        2);
+      AddDGVColum_Decimal_4GridReadOnly (PTG_StavkeUGANiDOD_Grid, "Cijena"    , ZXC.Q5un,        2);
+      AddDGVColum_Decimal_4GridReadOnly (PTG_StavkeUGANiDOD_Grid, "Iznos"     , ZXC.Q5un,        2);
    }
 
    private void AddColumnsToGrid_PTG_UNA_SIN() 
@@ -7223,12 +7223,12 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    {
       bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStavkeUGANiDOD_TabPageName;
 
-      if(PTG_Una_Ana_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_ANA_TabPageIsVisible)
+      if(PTG_StavkeUGANiDOD_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_ANA_TabPageIsVisible)
       {
          Load_UgAn_i_DOD_rtrans_list_And_PutDgvFields(); // UGN or AUN 
 
-         PTG_UNA_ANA_Grid.TabStop = false;
-         PTG_UNA_ANA_Grid.ClearSelection();
+         PTG_StavkeUGANiDOD_Grid.TabStop = false;
+         PTG_StavkeUGANiDOD_Grid.ClearSelection();
       }
    }
 
@@ -7443,19 +7443,19 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       List<Rtrans> UgAn_i_DOD_rtrans_list = Get_UgAn_i_DOD_rtrans_list(UGANrtrans_list, DODrtrans_list);
 
       int rowIdx, idxCorrector, colIdx;
-      PTG_Una_Ana_Loaded = true;
+      PTG_StavkeUGANiDOD_Loaded = true;
 
-      PTG_UNA_ANA_Grid.Rows.Clear();
+      PTG_StavkeUGANiDOD_Grid.Rows.Clear();
 
-      idxCorrector = GetDGVsIdxCorrrector(PTG_UNA_ANA_Grid);
+      idxCorrector = GetDGVsIdxCorrrector(PTG_StavkeUGANiDOD_Grid);
 
       decimal sumaKol = 0.00M, sumaKCR = 0.00M;
 
       foreach(Rtrans UNArtrans_rec in UgAn_i_DOD_rtrans_list)
       {
-         PTG_UNA_ANA_Grid.Rows.Add();
+         PTG_StavkeUGANiDOD_Grid.Rows.Add();
 
-         rowIdx = PTG_UNA_ANA_Grid.RowCount - idxCorrector;
+         rowIdx = PTG_StavkeUGANiDOD_Grid.RowCount - idxCorrector;
 
          colIdx = 0;
 
@@ -7464,38 +7464,38 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
        //decimal kol = UNArtrans_rec.T_kol * korekcijaMinusa;
 
 
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_parentID;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_TT + "-"+ UNArtrans_rec.T_ttNum.ToString();
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_parentID;
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_TT + "-"+ UNArtrans_rec.T_ttNum.ToString();
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_skladDate.ToString(ZXC.VvDateFormat);
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklCD;
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_artiklName;
        //PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_serlot;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = /*kol*/ UNArtrans_rec.T_kol;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_cij;
-         PTG_UNA_ANA_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.R_KCR;
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = /*kol*/ UNArtrans_rec.T_kol;
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.T_cij;
+         PTG_StavkeUGANiDOD_Grid[colIdx++, rowIdx].Value = UNArtrans_rec.R_KCR;
 
-         PTG_UNA_ANA_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+         PTG_StavkeUGANiDOD_Grid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 
          sumaKol += /*kol*/ UNArtrans_rec.T_kol; 
          sumaKCR += UNArtrans_rec.R_KCR;
       }
 
-      int sumaKol_CI = PTG_UNA_ANA_Grid.IdxForColumn("Kol");
-      int sumaKCR_CI = PTG_UNA_ANA_Grid.IdxForColumn("Iznos");
+      int sumaKol_CI = PTG_StavkeUGANiDOD_Grid.IdxForColumn("Kol");
+      int sumaKCR_CI = PTG_StavkeUGANiDOD_Grid.IdxForColumn("Iznos");
 
       if(UgAn_i_DOD_rtrans_list.NotEmpty())
       {
-         PTG_Una_Ana_Grid_SumGrid[sumaKol_CI, 0].Value = sumaKol;
-         PTG_Una_Ana_Grid_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
+         PTG_StavkeUGANiDOD_SumGrid[sumaKol_CI, 0].Value = sumaKol;
+         PTG_StavkeUGANiDOD_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
       }
       else
       {
-         PTG_Una_Ana_Grid_SumGrid[sumaKol_CI, 0].Value = 0.00M;
-         PTG_Una_Ana_Grid_SumGrid[sumaKCR_CI, 0].Value = 0.00M;
+         PTG_StavkeUGANiDOD_SumGrid[sumaKol_CI, 0].Value = 0.00M;
+         PTG_StavkeUGANiDOD_SumGrid[sumaKCR_CI, 0].Value = 0.00M;
       }
 
-      PTG_UNA_ANA_Grid.GrouppingColor(1);
-      PTG_UNA_ANA_Grid.ColorNegativValue(6);
+      PTG_StavkeUGANiDOD_Grid.GrouppingColor(1);
+      PTG_StavkeUGANiDOD_Grid.ColorNegativValue(6);
 
       return UgAn_i_DOD_rtrans_list;
    }
