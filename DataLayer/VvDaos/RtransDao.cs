@@ -3142,17 +3142,17 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return DOD_FakturList;
    }
    
-   internal static List<Rtrans> Get_DOD_RtransList(XSqlConnection conn, Faktur faktur_rec)
+   internal static List<Rtrans> Get_DOD_RtransList(XSqlConnection conn, Faktur uganFaktur_rec)
    {
-      List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, faktur_rec);
+      List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, uganFaktur_rec);
 
       List<Rtrans> DOD_RtransList = new List<Rtrans>();
       List<Rtrans> rtransList_thisDOD;
 
       foreach(Faktur thisDOD in DOD_FakturList)
       {
-         rtransList_thisDOD = RtransDao.GetRtransList_ForTT_And_TtNum               (conn, thisDOD.TT_And_TtNum, "", false);
-       //rtransList_thisDOD = RtransDao.Get_PTG_4SkladUNJ_RtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum           );
+         //rtransList_thisDOD = RtransDao.GetRtransList_ForTT_And_TtNum               (conn, thisDOD.TT_And_TtNum, "", false);
+       rtransList_thisDOD = RtransDao.Get_PTG_4SkladUNJ_RtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum           );
          
          DOD_RtransList.AddRange(rtransList_thisDOD);
       }

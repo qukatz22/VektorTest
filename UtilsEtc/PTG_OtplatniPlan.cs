@@ -1422,7 +1422,7 @@ public class PTG_Ugovor : Faktur
    // treba tu jos vidit da li da ovo bude tuten ili ga dat static pa mu faktur_rec slati kao parametaar 
    internal decimal GetOtkupRataMoney(XSqlConnection conn)
    {
-      decimal UGAN_artikliUnajmuMoney = this.Transes                              .Sum(rtr => rtr.R_KCRP);
+      decimal UGAN_artikliUnajmuMoney = this.Transes                            .Sum(rtr => rtr.R_KCRP);
       decimal DOD_artikliUnajmuMoney  = RtransDao.Get_DOD_RtransList(conn, this).Sum(rtr => rtr.R_KCRP);
       decimal THE_artikliUnajmuMoney  = UGAN_artikliUnajmuMoney + DOD_artikliUnajmuMoney;
 
