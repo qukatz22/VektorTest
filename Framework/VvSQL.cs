@@ -3795,8 +3795,6 @@ public static class VvSQL
 
       XSqlCommand cmd = InitCommand(conn);
 
-      // 26.06.2025: Rtrans alias mjenjamo iz R u T
-      // 26.06.2025: Rtrans alias vracamo  iz T u R
       cmd.CommandText = "SELECT R.*, A.* FROM  faktur L \n" +
                         "LEFT  JOIN  faktEx  X ON L.RecID = X.fakturRecID \n" +
 /* RIGHT JOIN,odervajs*/"RIGHT JOIN  rtrans  R ON L.RecID = R.t_parentID  \n" +
