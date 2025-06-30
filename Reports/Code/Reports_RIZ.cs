@@ -313,8 +313,51 @@ public abstract partial class VvRiskReport : VvReport
             // koji moraju biti isti da bi sazmi imalo smisla (mora biti ista i cijena, pdvSt, rbt, ...) 
             // !!! 
           //if(outerArtiklCD == innerArtiklCD)
-          //if(outerArtiklCD == innerArtiklCD && outerR_CIJ_KCRP        == innerR_CIJ_KCRP       ) // NOVO! u SubModulima ovo ne provjeravas  //28.12.2021. ja b ovje stavila Ron2()!!!!!!!
-            if(outerArtiklCD == innerArtiklCD && outerR_CIJ_KCRP.Ron2() == innerR_CIJ_KCRP.Ron2()) // NOVO! u SubModulima ovo ne provjeravas  //28.12.2021. ja b ovje stavila Ron2()!!!!!!!
+          //if(outerArtiklCD == innerArtiklCD && outerR_CIJ_KCRP        == innerR_CIJ_KCRP       ) // NOVO! u SubModulima ovo ne provjeravas 
+            if(outerArtiklCD == innerArtiklCD && outerR_CIJ_KCRP.Ron2() == innerR_CIJ_KCRP.Ron2()) // NOVO! u SubModulima ovo ne provjeravas 
+            {
+               outerKol = SIN_rtransList[outerRowIdx].T_kol;
+               innerKol = SIN_rtransList[innerRowIdx].T_kol;
+
+               SIN_rtransList[outerRowIdx].T_kol = outerKol + innerKol;
+
+               SIN_rtransList.RemoveAt(innerRowIdx--);
+
+               SIN_rtransList[outerRowIdx].CalcTransResults(null);
+
+            }
+         } // for(int innerRowIdx = outerRowIdx + 1; innerRowIdx < TheRtransList.Count - 1; ++innerRowIdx)
+      } // for(int outerRowIdx = 0; outerRowIdx < TheRtransList.Count/* - 1*/; ++outerRowIdx)
+
+      return SIN_rtransList;
+   }
+
+   public static List<Rtrans> SintRtransList_By_ArtiklCD/*_And_R_CIJ_KCRP*/(List<Rtrans> ANA_rtransList)
+   {
+      string  outerArtiklCD, innerArtiklCD;
+      decimal outerKol     , innerKol     ;
+      decimal outerR_CIJ_KCRP, innerR_CIJ_KCRP;
+
+    //List<Rtrans> SIN_rtransList = new List<Rtrans>(ANA_rtransList.ToList());
+      List<Rtrans> SIN_rtransList = ANA_rtransList.ConvertAll(r => ZXC.DeepCopy(r));
+
+      for(int outerRowIdx = 0; outerRowIdx < SIN_rtransList.Count/* - 1*/; ++outerRowIdx)
+      {
+         outerArtiklCD   = SIN_rtransList[outerRowIdx].T_artiklCD;
+         outerR_CIJ_KCRP = SIN_rtransList[outerRowIdx].R_CIJ_KCRP/*.Ron2()*/;
+
+         for(int innerRowIdx = outerRowIdx + 1; innerRowIdx < SIN_rtransList.Count/* - 1*/; ++innerRowIdx)
+         {
+            innerArtiklCD   = SIN_rtransList[innerRowIdx].T_artiklCD;
+            innerR_CIJ_KCRP = SIN_rtransList[innerRowIdx].R_CIJ_KCRP/*.Ron2()*/;
+
+            // !!! 
+            // PAZI !!! Observacija od 21.05.2020: Ovdje ne provjeravas jednakost ostalih parametara rtrans calc-a a 
+            // koji moraju biti isti da bi sazmi imalo smisla (mora biti ista i cijena, pdvSt, rbt, ...) 
+            // !!! 
+          //if(outerArtiklCD == innerArtiklCD)
+          //if(outerArtiklCD == innerArtiklCD /*&& outerR_CIJ_KCRP        == innerR_CIJ_KCRP       */) // NOVO! u SubModulima ovo ne provjeravas
+            if(outerArtiklCD == innerArtiklCD /*&& outerR_CIJ_KCRP.Ron2() == innerR_CIJ_KCRP.Ron2()*/) // NOVO! u SubModulima ovo ne provjeravas
             {
                outerKol = SIN_rtransList[outerRowIdx].T_kol;
                innerKol = SIN_rtransList[innerRowIdx].T_kol;

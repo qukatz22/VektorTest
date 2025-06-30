@@ -5464,6 +5464,24 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       return (Rozel_IFA_faktur, newKupdob_rec);
    }
 
+   internal List<Rtrans> GetTwinTranses(XSqlConnection conn)
+   {
+      string twinTT = ZXC.TtInfo(this.TT).TwinTT;
+
+      List<Rtrans> twinRtranses = RtransDao.GetRtransList_ForTT_And_TtNum(conn, twinTT, this.TtNum);
+
+      if(ZXC.TtInfo(this.TT).HasSplitTT)
+      {
+         string splitTT = ZXC.TtInfo(this.TT).SplitTT;
+
+         string splitTwinTT = ZXC.TtInfo(splitTT).TwinTT;
+
+         twinRtranses.AddRange(RtransDao.GetRtransList_ForTT_And_TtNum(conn, splitTwinTT, this.TtNum));
+      }
+
+      return twinRtranses;
+   }
+
    #endregion All About SKY
 
    //public System.Drawing.Image TtSort_And_TtNum_EAN8_Image

@@ -189,7 +189,7 @@ public class A1_KUG_PTG_DUC : KUG_PTG_DUC
 public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC 
 {
    internal PTG_Ugovor   PtgUgovor_rec     { get; set; }
-   internal List<Rtrans> RtransList_allDOD { get; set; }
+   internal List<Rtrans> RtransList_DOD { get; set; }
 
    internal static string PCK_Signature_ToString(decimal RAM, decimal HDD)
    {
@@ -202,7 +202,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    {
       this.PtgUgovor_rec = new PTG_Ugovor(faktur_rec);
 
-      this.RtransList_allDOD = new List<Rtrans>();
+      this.RtransList_DOD = new List<Rtrans>();
 
    //dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
    //(Faktur.tt_colName, new string[]
@@ -213,7 +213,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_OPL_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Faktur_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Rtrans_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_UgAn_i_DOD_Rtrans_Grid);
+      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrans_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrano_Grid);
       ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Rtrano_Grid);

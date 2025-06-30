@@ -2356,33 +2356,22 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return projektRtransList;
    }
 
-   // 25.06.2025: ovoga treba unistiti 
-   internal static List<Rtrans> GetRtransList_ForTT_And_TtNum(XSqlConnection conn, string theTT_And_TtNum, string orderBy, bool needsSplitOrTwinTranses)
+   internal static List<Rtrans> GetRtransList_ForTT_And_TtNum(XSqlConnection conn, string theTT, uint theTtNum)
    {
       List<Rtrans> rtransList = new List<Rtrans>();
 
-      string theTT;
-      uint theTtNum;
-
-      Ftrans.ParseTipBr(theTT_And_TtNum, out theTT, out theTtNum);
-
       if(theTT.IsEmpty() || theTtNum.IsZero()) return rtransList;
 
-      if(needsSplitOrTwinTranses)
-      {
-         if(ZXC.TtInfo(theTT).HasSplitTT) theTT = ZXC.TtInfo(theTT).SplitTT;
-         if(ZXC.TtInfo(theTT).HasTwinTT ) theTT = ZXC.TtInfo(theTT).TwinTT;
-      }
-
-      VvRptFilter rptFilter = new VvRptFilter();
+      string orderBy = Rtrans.artiklOrderBy_ASC;
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+
       filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_tt   ], "theTT"   , theTT   , " = "));
       filterMembers.Add(new VvSqlFilterMember(ZXC.RtransSchemaRows[ZXC.RtrCI.t_ttNum], "theTtNum", theTtNum, " = "));
 
-      rptFilter.FilterMembers = filterMembers;
+      VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(conn, rtransList, filterMembers, orderBy);
 
-      ZXC.RtransDao.LoadManyDocumentsTtranses(conn, rtransList, rptFilter, orderBy);
+      rtransList.ForEach(rtr => rtr.CalcTransResults(null));
 
       return rtransList;
    }
@@ -2429,14 +2418,10 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       #endregion ZUL Additions 
 
+      rtransList.ForEach(rtr => rtr.CalcTransResults(null));
+
       return rtransList;
    }
-
-
-
-
-
-
 
    private static decimal Get_KoefDovrsenosti_From_RNM_PPR_PIP_list_JOB(List<Rtrans> rtrans_RNM_RNU_list, List<Rtrans> rtrans_PPR_PIP_list, decimal ukKol_Kg_UlazPG, bool isOGonly)
    {
@@ -3142,7 +3127,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return DOD_FakturList;
    }
    
-   internal static List<Rtrans> Get_DOD_RtransList(XSqlConnection conn, Faktur uganFaktur_rec)
+   internal static List<Rtrans> Get_DOD_RtransList_4StanjeNajma(XSqlConnection conn, Faktur uganFaktur_rec)
    {
       List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, uganFaktur_rec);
 
@@ -3151,8 +3136,25 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       foreach(Faktur thisDOD in DOD_FakturList)
       {
-         //rtransList_thisDOD = RtransDao.GetRtransList_ForTT_And_TtNum               (conn, thisDOD.TT_And_TtNum, "", false);
-       rtransList_thisDOD = RtransDao.Get_PTG_4SkladUNJ_RtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum           );
+         rtransList_thisDOD = RtransDao.Get_PTG_4SkladUNJ_RtransList_ForTT_And_TtNum(conn, thisDOD.TT_And_TtNum);
+         
+         DOD_RtransList.AddRange(rtransList_thisDOD);
+      }
+
+      return DOD_RtransList;
+   }
+   internal static List<Rtrans> Get_DOD_RtransList(XSqlConnection conn, Faktur uganFaktur_rec)
+   {
+      List<Faktur> DOD_FakturList = Get_DOD_FakturList(conn, uganFaktur_rec);
+
+      List<Rtrans> DOD_RtransList = new List<Rtrans>();
+      List<Rtrans> rtransList_thisDOD;
+
+      foreach(Faktur DOD_Faktur in DOD_FakturList)
+      {
+         DOD_Faktur.VvDao.LoadTranses(conn, DOD_Faktur, false);
+
+         rtransList_thisDOD = DOD_Faktur.Transes;
          
          DOD_RtransList.AddRange(rtransList_thisDOD);
       }
