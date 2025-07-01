@@ -7625,6 +7625,8 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
          Artikl artikl_rec = Get_Artikl_FromVvUcSifrar(UNJrtrano_rec.T_artiklCD);
 
+         if(artikl_rec == null) continue;
+
          PTG_Rtrano_U_Najmu_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_parentID  ; /*"RecID"    */
          PTG_Rtrano_U_Najmu_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_TT + "-"+ UNJrtrano_rec.T_ttNum.ToString();
          PTG_Rtrano_U_Najmu_Grid[colIdx++, rowIdx].Value = UNJrtrano_rec.T_serno     ; /*"SerBroj"  */

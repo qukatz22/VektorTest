@@ -681,10 +681,12 @@ public sealed class RtranoDao : VvDaoBase, IVvDao
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
 
-      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum], ZXC.FM_OR_Enum.OPEN_OR , false, "uganTtNum", _UGAN_ttNum, "", "", " = ", ""   ));
-      filterMembers.Add(new VvSqlFilterMember("(t_ttNum - (t_ttNum MOD 1000)) / 1000", ZXC.FM_OR_Enum.CLOSE_OR,                     _UGAN_ttNum        , " = "    , 0));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.RtranoSchemaRows[ZXC.RtoCI.t_ttNum], ZXC.FM_OR_Enum.OPEN_OR , false, "uganTtNum", _UGAN_ttNum  , "", "", " = " , ""   ));
+      filterMembers.Add(new VvSqlFilterMember("(t_ttNum - (t_ttNum MOD 1000)) / 1000", ZXC.FM_OR_Enum.CLOSE_OR,                     _UGAN_ttNum  ,         " = " ,     0));
 
       VvDaoBase.LoadGenericVvDataRecordList<Rtrano>(conn, UGAN_RtranoList, filterMembers, Rtrans.artiklOrderBy_ASC);
+
+      UGAN_RtranoList.RemoveAll(rto => rto.T_TT == Faktur.TT_ZI2 && rto.T_ttNum == _UGAN_ttNum); // izbaci ZI2 od onih 'unaprijed' 
 
       if(stillUNJonly == false) return UGAN_RtranoList;
 
