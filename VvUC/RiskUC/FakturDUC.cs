@@ -7427,19 +7427,19 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
       }
 
-      int sumaKol_CI = PTG_Rtrans_DOD_Grid.IdxForColumn("Kol");
-      int sumaKCR_CI = PTG_Rtrans_DOD_Grid.IdxForColumn("Iznos");
-
-      if(/*rtransList_allDOD*/(this as UGNorAUN_PTG_DUC).RtransList_DOD.NotEmpty())
-      {
-         PTG_Rtrans_DOD_SumGrid[sumaKol_CI, 0].Value = sumaKol;
-         PTG_Rtrans_DOD_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
-      }
-      else
-      {
-         PTG_Rtrans_DOD_SumGrid[sumaKol_CI, 0].Value = 0.00M;
-         PTG_Rtrans_DOD_SumGrid[sumaKCR_CI, 0].Value = 0.00M;
-      }
+    //int sumaKol_CI = PTG_Rtrans_DOD_Grid.IdxForColumn("Kol");
+    //int sumaKCR_CI = PTG_Rtrans_DOD_Grid.IdxForColumn("Iznos");
+    //
+    //if(/*rtransList_allDOD*/(this as UGNorAUN_PTG_DUC).RtransList_DOD.NotEmpty())
+    //{
+    //   PTG_Rtrans_DOD_SumGrid[sumaKol_CI, 0].Value = sumaKol;
+    //   PTG_Rtrans_DOD_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
+    //}
+    //else
+    //{
+    //   PTG_Rtrans_DOD_SumGrid[sumaKol_CI, 0].Value = 0.00M;
+    //   PTG_Rtrans_DOD_SumGrid[sumaKCR_CI, 0].Value = 0.00M;
+    //}
 
       PTG_Rtrans_DOD_Grid.GrouppingColor(1);
       PTG_Rtrans_DOD_Grid.ColorNegativValue(6);
@@ -7492,16 +7492,16 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       int sumaKol_CI = PTG_Rtrans_Merged_UGANiDOD_Grid.IdxForColumn("Kol");
       int sumaKCR_CI = PTG_Rtrans_Merged_UGANiDOD_Grid.IdxForColumn("Iznos");
 
-      if(UgAn_i_DOD_rtrans_list.NotEmpty())
-      {
-         PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKol_CI, 0].Value = sumaKol;
-         PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
-      }
-      else
-      {
-         PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKol_CI, 0].Value = 0.00M;
-         PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKCR_CI, 0].Value = 0.00M;
-      }
+    //if(UgAn_i_DOD_rtrans_list.NotEmpty())
+    //{
+    //   PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKol_CI, 0].Value = sumaKol;
+    //   PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKCR_CI, 0].Value = sumaKCR;
+    //}
+    //else
+    //{
+    //   PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKol_CI, 0].Value = 0.00M;
+    //   PTG_Rtrans_Merged_UGANiDOD_SumGrid[sumaKCR_CI, 0].Value = 0.00M;
+    //}
 
       PTG_Rtrans_Merged_UGANiDOD_Grid.GrouppingColor(1);
       PTG_Rtrans_Merged_UGANiDOD_Grid.ColorNegativValue(6);
