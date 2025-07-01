@@ -3154,6 +3154,12 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       {
          DOD_Faktur.VvDao.LoadTranses(conn, DOD_Faktur, false);
 
+         foreach(Rtrans vracaSeIzNajma_rtrans_rec in DOD_Faktur.Transes.Where(rtr => rtr.T_TT == Faktur.TT_PVR || rtr.T_TT == Faktur.TT_ZUL))
+         {
+            vracaSeIzNajma_rtrans_rec.T_kol = -Math.Abs(vracaSeIzNajma_rtrans_rec.T_kol);
+            vracaSeIzNajma_rtrans_rec.CalcTransResults(null);
+         }
+
          rtransList_thisDOD = DOD_Faktur.Transes;
          
          DOD_RtransList.AddRange(rtransList_thisDOD);

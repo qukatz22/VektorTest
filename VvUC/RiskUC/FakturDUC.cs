@@ -7378,7 +7378,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
       if(PTG_Rtrans_DOD_Loaded == false && is4StanjeNajma == false)
       {
-         (this as UGNorAUN_PTG_DUC).RtransList_DOD = RtransDao.Get_DOD_RtransList             (TheDbConnection, faktur_rec);
+         (this as UGNorAUN_PTG_DUC).RtransList_DOD = RtransDao.Get_DOD_RtransList(TheDbConnection, faktur_rec);
 
          PTG_Rtrans_DOD_Loaded = true;
       }
@@ -7489,8 +7489,8 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
          sumaKCR += UNArtrans_rec.R_KCR;
       }
 
-      int sumaKol_CI = PTG_Rtrans_Merged_UGANiDOD_Grid.IdxForColumn("Kol");
-      int sumaKCR_CI = PTG_Rtrans_Merged_UGANiDOD_Grid.IdxForColumn("Iznos");
+    //int sumaKol_CI = PTG_Rtrans_Merged_UGANiDOD_Grid.IdxForColumn("Kol");
+    //int sumaKCR_CI = PTG_Rtrans_Merged_UGANiDOD_Grid.IdxForColumn("Iznos");
 
     //if(UgAn_i_DOD_rtrans_list.NotEmpty())
     //{
