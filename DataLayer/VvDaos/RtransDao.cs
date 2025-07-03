@@ -1017,6 +1017,15 @@ public sealed class RtransDao : VvDaoBase, IVvDao
             allOK = message.Length.IsZero();
          }
 
+         // 03.07.2025: 
+         // !!! ______________________________________________________         //     
+         if(ZXC.IsPCTOGO)
+         {
+            CheckPrNabDokCij_PTG_XY2_Additions(conn, /*false*/true, ref message);
+            allOK = allOK && message.Length.IsZero();
+         }
+         // !!! ______________________________________________________         //     
+
          return allOK; // break whole checking operation 
       }
 
@@ -1121,6 +1130,12 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       CheckPrNabDokCij_PULX_Additions(conn, false, ref message); // !!! 
       // !!! ___________________________________________________ //     
 
+      // 03.07.2025: 
+      // !!! ______________________________________________________ //     
+      if(ZXC.IsPCTOGO)                                              //     
+      CheckPrNabDokCij_PTG_XY2_Additions(conn, false, ref message); // !!! 
+      // !!! ______________________________________________________ //     
+
       #endregion PULX Additions
 
       Cursor.Current = Cursors.Default;
@@ -1146,6 +1161,36 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return allOK;
 
       // izlaz iz niskoga - rekurzivnoga 
+
+   }
+
+   public static void CheckPrNabDokCij_PTG_XY2_Additions(XSqlConnection conn, bool isExplicitCall, ref string message) // isExplicitCall: false if called from CheckPrNabDokCij, true if called as some SubmodulAction 
+   {
+      return; // DELME!
+      List<Rtrans> rtransInTroubleList;
+      List<Faktur> fakturForRwtrecList;
+
+      rtransInTroubleList = GetXY2Rtranses_HavingDescrepancies_List(conn);
+
+      if(rtransInTroubleList != null)
+      {
+         fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
+         ZXC.aim_log("UgAn_DOD Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+
+         foreach(Rtrans rtrans_rec in rtransInTroubleList) ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+
+         ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+
+         if(isExplicitCall)
+         {
+            message += StringOfFakturList(fakturForRwtrecList, true);
+            ZXC.aim_emsg(MessageBoxIcon.Information, "Revalorizacija PUL cijene je gotova. Dokumenti:\n\n{0}", message);
+         }
+      }
 
    }
 
@@ -1473,6 +1518,37 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       decimal correctCij;
 
       using(XSqlCommand cmd = VvSQL.GetPulRtranses_HavingDescrepancies_Command(conn, pulxTT, pizxTT, isByGR))
+      {
+         using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult /*| CommandBehavior.SingleRow*/))
+         {
+            if(reader.HasRows == false) return null;
+            while(reader.HasRows && reader.Read())
+            {
+               rtrans_rec = new Rtrans();
+               ZXC.RtransDao.FillFromDataReader(rtrans_rec, reader, false);
+               //rtrans_rec.CalcTransResults(null);
+               correctCij = reader.GetDecimal(lastRtransCI + 1); // trik, GetPulRtranses_HavingDescrepancies_Command() ti vrati cio Rtrans + jos jedan decimal gdje je 'correctCij' 
+               rtrans_rec.TmpDecimal = correctCij; // trik, da gore kod RWTREC-a znas koja je korektna cijena 
+
+               rtransList.Add(rtrans_rec);
+            }
+            reader.Close();
+         } // using(XSqlDataReader reader 
+      } // using(XSqlCommand cmd 
+
+      return rtransList;
+   }
+
+   private static List<Rtrans> GetXY2Rtranses_HavingDescrepancies_List(XSqlConnection conn)
+   {
+      List<Rtrans> rtransList = new List<Rtrans>();
+      Rtrans rtrans_rec;
+
+      decimal correctCij;
+
+      string[] XY2_TTarray = TtInfo.array_TwinRtransUgAnTT.Concat(TtInfo.array_TwinRtransDodTT).ToArray();
+
+      using(XSqlCommand cmd = VvSQL.GetXY2Rtranses_HavingDescrepancies_Command(conn, TtInfo.GetSql_IN_Clause(XY2_TTarray)))
       {
          using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult /*| CommandBehavior.SingleRow*/))
          {

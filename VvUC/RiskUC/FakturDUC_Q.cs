@@ -1146,7 +1146,7 @@ public struct TtInfo
    public bool IsPTGFaktur_UgAnDodTT { get { return IsPTGFaktur_UgAnTT || IsPTGFaktur_DodTT; } }
 
 
-   private static string[] array_TwinRtransUgAnTT = new string[] {
+   /*private*/ public static string[] array_TwinRtransUgAnTT = new string[] {
       Faktur.TT_UG2, // PCTGO tt 
       Faktur.TT_AU2, // PCTGO tt 
    };

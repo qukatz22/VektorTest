@@ -5795,6 +5795,22 @@ public static class VvSQL
          "AND R.t_tt IN " + dokCijShouldBePrNabCijTTList + " ";
    }
 
+   internal static XSqlCommand GetXY2Rtranses_HavingDescrepancies_Command(XSqlConnection conn, string XY2_TTlist)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      cmd.CommandText =
+
+         "SELECT R.*, A.lastPrNabCij FROM rtrans R " + "\n" +
+         "LEFT JOIN       artstat A                " + "\n" +
+       "ON R.recID = A.rtransRecID               " + "\n" +
+         //"ON R.recID = A.rtransTwinRecID           "     + "\n" + // TODO 
+         "WHERE ABS  (t_cij - lastPrNabCij) >      " + RtransDao.ChkPrNbC_diff_tolerancy + " \n" +
+         "AND R.t_artiklCD != ''                   " + "\n" +
+         "AND R.t_tt IN " + XY2_TTlist + " ";
+
+      return (cmd);
+   }
    internal static XSqlCommand GetPulRtranses_HavingDescrepancies_Command(XSqlConnection conn, string pulxTT, string pizxTT, bool isByGR)
    {
       XSqlCommand cmd = InitCommand(conn);
