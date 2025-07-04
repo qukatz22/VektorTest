@@ -5803,8 +5803,8 @@ public static class VvSQL
 
          "SELECT R.*, A.lastPrNabCij FROM rtrans R " + "\n" +
          "LEFT JOIN       artstat A                " + "\n" +
-       "ON R.recID = A.rtransRecID               " + "\n" +
-         //"ON R.recID = A.rtransTwinRecID           "     + "\n" + // TODO 
+       //"ON R.recID = A.rtransRecID               " + "\n" +
+         "ON R.recID = A.transRBR                  " + "\n" + // u transRBR je 'MSU' RecID ... tj. TwinRecID 
          "WHERE ABS  (t_cij - lastPrNabCij) >      " + RtransDao.ChkPrNbC_diff_tolerancy + " \n" +
          "AND R.t_artiklCD != ''                   " + "\n" +
          "AND R.t_tt IN " + XY2_TTlist + " ";

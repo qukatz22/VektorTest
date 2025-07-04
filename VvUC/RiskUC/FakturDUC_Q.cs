@@ -559,7 +559,7 @@ public struct TtInfo
       Faktur.TT_PV2,
     //Faktur.TT_PD2,
       Faktur.TT_ZI2,
-      Faktur.TT_ZUL,
+      Faktur.TT_ZU2,
     //Faktur.TT_MOU,
    };
    /// <summary>

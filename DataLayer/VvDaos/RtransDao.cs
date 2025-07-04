@@ -980,6 +980,10 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       ZXC.ClearStatusText();
 
+      // 04.07.2025: 
+
+      ZXC.RISK_CheckPrNabDokCij_inProgress = false;
+
       return allOK;
 
       // izlaz iz visokoga 
@@ -1017,7 +1021,7 @@ public sealed class RtransDao : VvDaoBase, IVvDao
             allOK = message.Length.IsZero();
          }
 
-         // 03.07.2025: 
+         // 04.07.2025: 
          // !!! ______________________________________________________         //     
          if(ZXC.IsPCTOGO)
          {
@@ -1025,6 +1029,23 @@ public sealed class RtransDao : VvDaoBase, IVvDao
             allOK = allOK && message.Length.IsZero();
          }
          // !!! ______________________________________________________         //     
+
+         // 04.07.2025: 
+         if(!allOK)
+         {
+            ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+
+            bool hasBadMsu = ArtiklDao.Check_MSU_Cache(conn, false);
+
+            ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+            ZXC.RISK_BadMSU_Checked = true;
+
+            if(/*hasBadMsu &&*/ ZXC.IsPCTOGO)
+            {
+               CheckPrNabDokCij_PTG_XY2_Additions(conn, false, ref message); // !!! 
+            }
+         }
 
          return allOK; // break whole checking operation 
       }
@@ -1138,6 +1159,26 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       #endregion PULX Additions
 
+      // 04.07.2025: BIIIIIG NEWS ___ START ________________________________________________________________________________________________
+      
+      if(rtransInTroubleList != null)
+      {
+         ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+         
+         bool hasBadMsu = ArtiklDao.Check_MSU_Cache(conn, false); 
+         
+         ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+         ZXC.RISK_BadMSU_Checked = true;
+
+         if(/*hasBadMsu &&*/ ZXC.IsPCTOGO)
+         {
+            CheckPrNabDokCij_PTG_XY2_Additions(conn, false, ref message); // !!! 
+         }
+      }
+
+      // 04.07.2025: BIIIIIG NEWS ___  END  ________________________________________________________________________________________________
+
       Cursor.Current = Cursors.Default;
 
       // 26.02.2013: Go RECURSIVE in case of chain reaction needs 
@@ -1166,30 +1207,41 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
    public static void CheckPrNabDokCij_PTG_XY2_Additions(XSqlConnection conn, bool isExplicitCall, ref string message) // isExplicitCall: false if called from CheckPrNabDokCij, true if called as some SubmodulAction 
    {
-      return; // DELME!
       List<Rtrans> rtransInTroubleList;
-      List<Faktur> fakturForRwtrecList;
+    //List<Faktur> fakturForRwtrecList;
+      uint debugCount = 0;
 
       rtransInTroubleList = GetXY2Rtranses_HavingDescrepancies_List(conn);
 
-      if(rtransInTroubleList != null)
+      if(rtransInTroubleList == null) return;
+
+      ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+
+      foreach(Rtrans rtrans_rec in rtransInTroubleList)
       {
-         fakturForRwtrecList = GetFakturForRwtrecList_And_RwtNewValues(conn, rtransInTroubleList, true, RtransServiceKind.CheckPrNabCij);
-         ZXC.aim_log("UgAn_DOD Faktur list: {0}", StringOfFakturList(fakturForRwtrecList, true));
+         rtrans_rec.BeginEdit();
 
-         ZXC.RISK_CheckPrNabDokCij_inProgress = false; // privremeno, da ne zaustavi ..._JOB 
+         rtrans_rec.T_cij = rtrans_rec.TmpDecimal; // trik, GetPulRtranses_HavingDescrepancies_Command() ti vrati cio Rtrans + jos jedan decimal gdje je 'correctCij' a spremis ga u TmpDecimal 
 
-         foreach(Rtrans rtrans_rec in rtransInTroubleList) ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+         rtrans_rec.VvDao.RWTREC(conn, rtrans_rec, false, false);
 
-         ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+         ZXC.aim_log("_RwtNewValuesFor_ XY2 Rtranses: done {0}. of {1} rtranses [{2}-{3}]", ++debugCount, rtransInTroubleList.Count, rtrans_rec.T_TT, rtrans_rec.T_ttNum);
 
-         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+         rtrans_rec.EndEdit();
 
-         if(isExplicitCall)
-         {
-            message += StringOfFakturList(fakturForRwtrecList, true);
-            ZXC.aim_emsg(MessageBoxIcon.Information, "Revalorizacija PUL cijene je gotova. Dokumenti:\n\n{0}", message);
-         }
+         ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, rtrans_rec, VvSQL.DB_RW_ActionType.UTIL, 0);
+
+         message += rtrans_rec.ToShortString();
+
+      }
+
+      ZXC.RISK_CheckPrNabDokCij_inProgress = true;
+
+      if(isExplicitCall)
+      {
+         //message += StringOfFakturList(fakturForRwtrecList, true);
+
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Revalorizacija XY2 cijene je gotova. Dokumenti:\n\n{0}", message);
       }
 
    }
@@ -1727,10 +1779,10 @@ public sealed class RtransDao : VvDaoBase, IVvDao
          switch(serviceKind)
          {
             // 04.09.2015: 
-            //case RtransServiceKind.CheckPrNabCij: arhivaLabel =                           "AUTO_NBC"; break;
-            case RtransServiceKind.CheckPrNabCij: arhivaLabel = isPULXpass ? "AUT2_NBC" : "AUTO_NBC"; break;
-            case RtransServiceKind.CheckZPCkol  : arhivaLabel = "CHCK_ZPC"; break;
-            case RtransServiceKind.TrimZPC      : arhivaLabel = "TRIM_ZPC"; break;
+          //case RtransServiceKind.CheckPrNabCij     : arhivaLabel =                           "AUTO_NBC"; break;
+            case RtransServiceKind.CheckPrNabCij     : arhivaLabel = isPULXpass ? "AUT2_NBC" : "AUTO_NBC"; break;
+            case RtransServiceKind.CheckZPCkol       : arhivaLabel =                           "CHCK_ZPC"; break;
+            case RtransServiceKind.TrimZPC           : arhivaLabel =                           "TRIM_ZPC"; break;
          }
 
          arhivedFaktur_rec = faktur_rec.CreateArhivedDataRecord(conn, arhivaLabel);

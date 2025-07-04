@@ -1608,7 +1608,8 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
 
          try
          {
-            ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans(conn, badMSU_rtrans, VvSQL.DB_RW_ActionType.DEL);
+          //ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans(conn, badMSU_rtrans, VvSQL.DB_RW_ActionType.DEL);
+            ZXC.RtransDao.Delete_Then_Renew_Cache_FromThisRtrans_JOB(conn, badMSU_rtrans, VvSQL.DB_RW_ActionType.UTIL, 0);
          }
          catch(MySqlException mysqlEx)
          {

@@ -508,7 +508,13 @@ public class ArtStat : VvDataRecord, IComparable<ArtStat>, IVvExtenderDataRecord
       get { return this.currentData._t_serial; }
       set {        this.currentData._t_serial = value; }
    }
-   /* 09 */ public uint     TransRbr    
+   /* 09a */ public uint     TransRbr    
+   {
+      get { return this.currentData._transRbr; }
+      set {        this.currentData._transRbr = value; }
+   }
+
+   /* 09b */ public uint RtransTwinRecID
    {
       get { return this.currentData._transRbr; }
       set {        this.currentData._transRbr = value; }
@@ -1034,19 +1040,21 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
    {
       #region SET IDENTITY of Rtrans sender
 
-      /* 01 */ RtransRecID = rtr.T_recID          ;
-      /* 02 */ ArtiklCD    = /*rtrans.T*/_artiklCD;
-      /* 03 */ SkladCD     = /*rtrans.T*/_skladCD ;
-      /* 04 */ SkladDate   = rtr.T_skladDate      ;
-      /* 05 */ TT          = rtr.T_TT             ;
-      /* 06 */ TtSort      = rtr.T_ttSort         ;
-      /* 07 */ TtNum       = rtr.T_ttNum          ;
-      /* 08 */ Serial      = rtr.T_serial         ;
-      /* 09 */ TransRbr++                         ;
-      // 11.05.2015:                               
-               RtrParentID   = rtr.T_parentID     ;
-               RtrPdvSt      = rtr.T_pdvSt        ;
-               RtrIsIrmUslug = rtr.T_isIrmUsluga  ;
+      /* 01 */ RtransRecID     = rtr.T_recID          ;
+      /* 02 */ ArtiklCD        = /*rtrans.T*/_artiklCD;
+      /* 03 */ SkladCD         = /*rtrans.T*/_skladCD ;
+      /* 04 */ SkladDate       = rtr.T_skladDate      ;
+      /* 05 */ TT              = rtr.T_TT             ;
+      /* 06 */ TtSort          = rtr.T_ttSort         ;
+      /* 07 */ TtNum           = rtr.T_ttNum          ;
+      /* 08 */ Serial          = rtr.T_serial         ;
+      // 04.07.2025: 
+      // 09 */ TransRbr++                             ; // NOVO u 2025 ... za PTG XY2 rtrans.T_cij 
+      /* 09 */ RtransTwinRecID = rtr.T_twinID         ; // NOVO u 2025 ... za PTG XY2 rtrans.T_cij 
+      // 11.05.2015:                                   
+               RtrParentID       = rtr.T_parentID     ;
+               RtrPdvSt          = rtr.T_pdvSt        ;
+               RtrIsIrmUslug     = rtr.T_isIrmUsluga  ;
 
     //RtrPstCijNBC = RtrPstVrjNBC = RtrUlazCijNBC = RtrUlazVrjNBC     = RtrIzlazCijNBC     = RtrIzlazVrjNBC = RtrCijenaNBC     =
     //RtrPstCijMPC = RtrPstVrjMPC = RtrUlazCijMPC = RtrUlazVrjMPC     = RtrIzlazCijMPC     = RtrIzlazVrjMPC = RtrCijenaMPC     =
@@ -1209,14 +1217,22 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
             // 11.11.2014: tek sad?! 
             RtrUlazCijNBC = rtr.R_CIJ_KCR /*= linkedIzlazDokPrNabCij*/;
 
-            // ipak jos ne 
-            //// 24.06.2025: 
-            //if(TtInfo.IsPTGTwinRtrans_UgAnDodTT && PrNabCij.NotZero()) // UG2 
-            //{                                    // AU2 
-            //   RtrUlazCijNBC = PrNabCij;         // DI2 
-            //                                     // PV2 
-            //                                     // ZI2 
-            //}                                    // ZU2 
+            // 04.07.2025: 
+            if(TtInfo.IsPTGTwinRtrans_UgAnDodTT) // UG2 
+            {                                    // AU2 
+                                                 // DI2 
+                                                 // PV2 
+                                                 // ZI2 
+                                                 // ZU2 
+
+             //decimal theCij = PrNabCij    ; // ILI ILI 
+               decimal theCij = rtr.R_theVPC; // ILI ILI 
+
+               if(theCij.NotZero())
+               {
+                  RtrUlazCijNBC = theCij;
+               }
+            }
 
 
          }
