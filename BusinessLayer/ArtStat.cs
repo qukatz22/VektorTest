@@ -1232,10 +1232,10 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
                {
                   RtrUlazCijNBC = theCij;
                }
-            }
 
+            } // if(TtInfo.IsPTGTwinRtrans_UgAnDodTT) // UG2 ... 
 
-         }
+         } // MSU, PUX, XY2, ...
 
          #endregion InternUlaz_From One or Many Izlaz
 
@@ -1313,7 +1313,9 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
          RtrCijenaNBC = RtrUlazCijNBC;
          RtrCijenaMPC = RtrUlazCijMPC;
 
-         RtrUlazVrjNBC = rtr.R_KCR;
+         // 04.07.2025: 
+       //RtrUlazVrjNBC = rtr.R_KCR;
+         RtrUlazVrjNBC = RtrUlazKol * RtrUlazCijNBC;
          RtrUlazVrjMPC = rtr.R_MSK;
 
          // 14.01.2019: isplivalo da kako gore u '#region STORNO ULAZA - POVRAT kao zadnja stavka kartice (FinSaldo ne ode inace na nulu)' 
