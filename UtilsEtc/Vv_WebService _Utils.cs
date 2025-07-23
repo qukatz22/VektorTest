@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Net;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Threading;
-using System.ComponentModel;
 using System.Windows.Forms;
-using Outlook = Microsoft.Office.Interop.Outlook;
-using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 using System.Xml;
-using System.Xml.Serialization;
 using System.Text;
 
 public static class Vv_WS

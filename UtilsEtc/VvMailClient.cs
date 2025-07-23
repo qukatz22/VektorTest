@@ -5,7 +5,8 @@ using System.Net.Mime;
 using System.Threading;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Outlook = Microsoft.Office.Interop.Outlook;
+// 23.07.2025: 
+//using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
@@ -121,6 +122,10 @@ public sealed class VvMailClient
       ZXC.luiListaOutlookItems.Clear();
       List<ZXC.CdAndName_CommonStruct> contactList = new List<ZXC.CdAndName_CommonStruct>();
 
+      // 23.07.2025: gasim ovo da vise ne trebamo         
+      // using Outlook = Microsoft.Office.Interop.Outlook;
+
+#if noenimor
       #region Outlook Addressbook
 
       try
@@ -150,7 +155,7 @@ public sealed class VvMailClient
       }
 
       #endregion Outlook Addressbook
-
+#endif
       return contactList;
    }
 
@@ -191,8 +196,12 @@ public sealed class VvMailClient
    // !!! //
    public bool SendViaOutlook(string[] mailAddressList, bool isDisplay)
    {
+      // 23.07.2025: gasim ovo da vise ne trebamo         
+      // using Outlook = Microsoft.Office.Interop.Outlook;
+
       bool OK = true;
 
+#if noenimore
       Outlook.Application outlookApplication;
       outlookApplication = new Outlook.Application();
 
@@ -221,47 +230,52 @@ public sealed class VvMailClient
       else          ((Outlook._MailItem)myOutlookMail).Send();
 
       if(!isDisplay) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Mail poslan.\n\nKopija je u Outlook-ovom Sent Items");
-
+#endif
       return OK;
    }
 
    public static bool IsOutlookInstalled()
    {
-      try
-      {
-         Outlook.Application outlookApplication;
-         outlookApplication = new Outlook.Application();
+      // 23.07.2025: gasim ovo da vise ne trebamo         
+      // using Outlook = Microsoft.Office.Interop.Outlook;
 
-       //var officeType = Type.GetTypeFromProgID("Outlook.Application");
-       //if(officeType         == null)
-         if(outlookApplication == null)
-         {
-            // Outlook is not installed.   
-            return false;
-         }
-         else
-         {
-            // '14.0.0.7113' ... Ti je Outlook 2010 version
-            // tu bi mozda trebalo provjeravati i verziju outlook-a 
-            // ... ali .StartsWith() 
+      return false;
 
-           // case "7.0": sVersion = "95";   break;
-           // case "8.0": sVersion = "97";   break;
-           // case "9.0": sVersion = "2000"; break;
-           // case "10.0":sVersion = "2002"; break;
-           // case "11.0":sVersion = "2003"; break;
-           // case "12.0":sVersion = "2007"; break;
-           // case "14.0":sVersion = "2010"; break;
-           //default: sVersion = "Too Old!"; break;
-
-            // Outlook is installed.      
-            return true;
-         }
-      }
-      catch(System.Exception ex)
-      {
-         return false;
-      }
+      //try
+      //{
+      //   Outlook.Application outlookApplication;
+      //   outlookApplication = new Outlook.Application();
+      //
+      // //var officeType = Type.GetTypeFromProgID("Outlook.Application");
+      // //if(officeType         == null)
+      //   if(outlookApplication == null)
+      //   {
+      //      // Outlook is not installed.   
+      //      return false;
+      //   }
+      //   else
+      //   {
+      //      // '14.0.0.7113' ... Ti je Outlook 2010 version
+      //      // tu bi mozda trebalo provjeravati i verziju outlook-a 
+      //      // ... ali .StartsWith() 
+      //
+      //     // case "7.0": sVersion = "95";   break;
+      //     // case "8.0": sVersion = "97";   break;
+      //     // case "9.0": sVersion = "2000"; break;
+      //     // case "10.0":sVersion = "2002"; break;
+      //     // case "11.0":sVersion = "2003"; break;
+      //     // case "12.0":sVersion = "2007"; break;
+      //     // case "14.0":sVersion = "2010"; break;
+      //     //default: sVersion = "Too Old!"; break;
+      //
+      //      // Outlook is installed.      
+      //      return true;
+      //   }
+      //}
+      //catch(System.Exception ex)
+      //{
+      //   return false;
+      //}
    }
 
    #endregion MS Outlook 2010
