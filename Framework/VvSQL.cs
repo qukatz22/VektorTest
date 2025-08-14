@@ -7171,7 +7171,9 @@ public static class VvSQL
          "WHERE t_parentID = " + t_parentID + "                                    " + "\n" +
          "AND recID IN                                                             " + "\n" +
          "(                                                                        " + "\n" +
-         "SELECT MIN(subRtr.recID)                                                 " + "\n" +
+         // 08.08.2025: 
+       //"SELECT MIN(subRtr.recID)                                                 " + "\n" +
+         "SELECT MAX(subRtr.recID)                                                 " + "\n" +
          "FROM (SELECT * FROM rtrans WHERE t_parentID = " + t_parentID + ") subRtr " + "\n" + 
          "GROUP BY subRtr.t_tt, subRtr.t_ttNum, subRtr.t_serial                    " + "\n" +
          "HAVING COUNT(*) > 1                                                      " + "\n" +
