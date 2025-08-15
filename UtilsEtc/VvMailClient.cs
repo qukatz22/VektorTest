@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Mail;
-using System.Net.Mime;
-using System.Threading;
 using System.ComponentModel;
 using System.Windows.Forms;
 // 23.07.2025: 
@@ -11,14 +9,125 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using System.Xml;
-using System.Xml.Serialization;
+
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+
+/// <summary>
+/// Ovo mi je gpt napravio
+/// </summary>
+
+public struct EmailMessageData_GPT
+{
+   // SMTP settings
+   public string SmtpServer { get; set; }
+   public int SmtpPort { get; set; }
+   public string SmtpUser { get; set; }
+   public string SmtpPass { get; set; }
+
+   // Email addresses
+   public string FromAddress { get; set; }
+   public string FromName { get; set; }
+   public List<string> ToAddresses { get; set; }
+   public List<string> CcAddresses { get; set; }
+   public List<string> BccAddresses { get; set; }
+
+   // Email content
+   public string Subject { get; set; }
+   public string Body { get; set; }
+   public bool IsHtml { get; set; }
+
+   // Attachments
+   public List<string> AttachmentPaths { get; set; }
+}
+
+public static class EmailHelper_GPT
+{
+   public static void SendEmail(EmailMessageData_GPT data)
+   {
+      SendEmail(
+       data.SmtpServer,
+       data.SmtpPort,
+       data.SmtpUser,
+       data.SmtpPass,
+       data.FromAddress,
+       data.FromName,
+       data.ToAddresses,
+       data.CcAddresses,
+       data.BccAddresses,
+       data.Subject,
+       data.Body,
+       data.IsHtml = false,
+       data.AttachmentPaths = null);
+   }
+   public static void SendEmail(
+       string smtpServer,
+       int smtpPort,
+       string smtpUser,
+       string smtpPass,
+       string fromAddress,
+       string fromName,
+       IEnumerable<string> toAddresses,
+       IEnumerable<string> ccAddresses,
+       IEnumerable<string> bccAddresses,
+       string subject,
+       string body,
+       bool isHtml = false,
+       IEnumerable<string> attachmentPaths = null)
+   {
+      var message = new MimeMessage();
+
+      // From
+      message.From.Add(new MailboxAddress(fromName, fromAddress));
+
+      // To
+      if(toAddresses != null) { foreach(var to in toAddresses) message.To.Add(MailboxAddress.Parse(to)); }
+
+      // CC
+      if(ccAddresses != null) { foreach(var cc in ccAddresses) message.Cc.Add(MailboxAddress.Parse(cc)); }
+
+      // BCC
+      if(bccAddresses != null) { foreach(var bcc in bccAddresses) message.Bcc.Add(MailboxAddress.Parse(bcc)); }
+
+      message.Subject = subject;
+
+      var bodyBuilder = new BodyBuilder();
+
+      if(isHtml) bodyBuilder.HtmlBody = body;
+      else       bodyBuilder.TextBody = body;
+
+      // Attachments
+      if(attachmentPaths != null)
+      {
+         foreach(var filePath in attachmentPaths)
+         {
+            if(File.Exists(filePath)) bodyBuilder.Attachments.Add(filePath);
+            else                      Console.WriteLine($"Warning: Attachment not found: {filePath}");
+         }
+      }
+
+      message.Body = bodyBuilder.ToMessageBody();
+
+      using(var client = new MailKit.Net.Smtp.SmtpClient())
+      {
+         // For testing only - bypass cert validation (remove for production)
+         client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+         client.Connect(smtpServer, smtpPort, SecureSocketOptions.SslOnConnect);
+         client.Authenticate(smtpUser, smtpPass);
+         client.Send(message);
+         client.Disconnect(true);
+      }
+   }
+}
 
 public sealed class VvMailClient
 {
    #region Propertiz, Fieldz, defaults 
 
    private MailMessage MailMessage { get; set; }
-   private SmtpClient  SmtpClient  { get; set; }
+   private System.Net.Mail.SmtpClient  SmtpClient  { get; set; }
 
  //public System.Net.Mail.Attachment[] MailAttachmentList { get; set; }
    public string[] MailAttachmentFileNameList { get; set; }
@@ -301,6 +410,14 @@ public sealed class VvMailClient
    // !!! //
    public bool SendMail_Normal(bool _isNotSilent, string[] mailTO_AddressList)
    {
+      // 14.08.2025: plus hosting inzistira na SSL/TLS 
+      //ukoliko koristite port 587 tada je potrebno odabrati TLS kao "encryption method",
+      //ukoliko koristite port 465 tada možete postaviti "encryption method" SSL.
+      // dole fiksno stavljamo da je default port 587 te kada tu po novome fiksno upalimo EnableSSL 
+      // zavrsit cemo na TLS (a 465 i SSL ode u timeout) 
+      // ako ces ubuduce 465 onda koristi danas preko chatgpt dodan 'EmailHelper_GPT' 
+      EnableSSL = true; // !!! 
+
       //CreateMailFromAndToAddresses(mailAddressList);
 
       isNotSilent = _isNotSilent;
@@ -335,8 +452,8 @@ public sealed class VvMailClient
          List<string> mailTO_stringList = new List<string>(mailTO_AddressList);
 
          // 31.10.2022: 
-       //using(SmtpClient = new SmtpClient(MailHost, (PortNo.IsZero() ?  25 : PortNo))) // port 25 je default 
-         using(SmtpClient = new SmtpClient(MailHost, (PortNo.IsZero() ? 587 : PortNo))) // port 25 je default 
+       //using(SmtpClient = new                 SmtpClient(MailHost, (PortNo.IsZero() ?  25 : PortNo))) // port 25 je default 
+         using(SmtpClient = new System.Net.Mail.SmtpClient(MailHost, (PortNo.IsZero() ? 587 : PortNo))) // port 25 je default 
          {
             // !!! NOTA BENE !!!
             // 1. pozivanje SETtera od 'UseDefaultCredentials'  postavlja SmtpClient.Credentials na NULL!  
@@ -393,6 +510,45 @@ public sealed class VvMailClient
       return mailSent;
    }
 
+   public static bool gpt()
+   {
+      string smtpServer = ZXC.ViperMailHost      ;
+      int smtpPort      = 465                    ;
+      string smtpUser   = ZXC.SkyLabEmailAddress ;
+      string smtpPass   = ZXC.SkyLabEmailPassword;
+
+      string fromAddress = ZXC.SkyLabEmailAddress ;
+      string toAddress   = "viper@zg.htnet.hr.com"; 
+      string subject     = "Test Email"           ;
+      string body        = "Hello! This is a test email sent via C# using SSL/TLS.";
+
+      try
+      {
+         using(var client = new System.Net.Mail.SmtpClient(smtpServer, smtpPort))
+         {
+            client.EnableSsl             = true; // Enable SSL/TLS
+            client.Credentials           = new NetworkCredential(smtpUser, smtpPass);
+            client.DeliveryMethod        = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+
+            // NOTE: SmtpClient supports implicit SSL only via ports like 465 in some .NET versions.
+            // If issues arise, you might need MailKit (NuGet) for modern SSL support.
+
+            using(var message = new MailMessage(fromAddress, toAddress, subject, body))
+            {
+               client.Send(message);
+            }
+         }
+
+         Console.WriteLine("Email sent successfully!");
+      }
+      catch(Exception ex)
+      {
+         Console.WriteLine("Error sending email: " + ex.Message);
+      }
+
+      return true;
+   }
    public bool SendMail_Async (bool _isNotSilent, string mailTO_Address)
    {
       return SendMail_Async(_isNotSilent, new string[] { mailTO_Address });
@@ -427,7 +583,7 @@ public sealed class VvMailClient
 
       if(IsMissingSomeMailData()) { mailSent = false; return false; }
 
-      SmtpClient = new SmtpClient(MailHost, (PortNo.IsZero() ? 25 : PortNo));
+      SmtpClient = new System.Net.Mail.SmtpClient(MailHost, (PortNo.IsZero() ? 25 : PortNo));
 
      // !!! NOTA BENE !!!
      // 1. pozivanje SETtera od 'UseDefaultCredentials'  postavlja SmtpClient.Credentials na NULL!  
@@ -624,148 +780,6 @@ public sealed class VvMailClient
 
 
 //#if NeuspjeoPokusajSentItems
-
-public static class SmtpClientExtensions
-{
-   static System.IO.StreamWriter sw = null;
-   static System.Net.Sockets.TcpClient tcpc = null;
-   static System.Net.Security.SslStream ssl = null;
-   static string path;
-   static int bytes = -1;
-   static byte[] buffer;
-   static System.Text.StringBuilder sb = new System.Text.StringBuilder();
-   static byte[] dummy;
-
-   /// <summary>
-   /// Communication with server
-   /// </summary>
-   /// <param name="command">The command beeing sent</param>
-   private static void SendCommandAndReceiveResponse(string command)
-   {
-      try
-      {
-         if(command != "")
-         {
-            if(tcpc.Connected)
-            {
-               dummy = System.Text.Encoding.ASCII.GetBytes(command);
-               ssl.Write(dummy, 0, dummy.Length);
-            }
-            else
-            {
-               throw new System.ApplicationException("TCP CONNECTION DISCONNECTED");
-            }
-         }
-         ssl.Flush();
-
-         buffer = new byte[2048];
-         bytes = ssl.Read(buffer, 0, 2048);
-         sb.Append(System.Text.Encoding.ASCII.GetString(buffer));
-
-         sw.WriteLine(sb.ToString());
-         sb = new System.Text.StringBuilder();
-      }
-      catch(System.Exception ex)
-      {
-         throw new System.ApplicationException(ex.Message);
-      }
-   }
-
-   /// <summary>
-   /// Saving a mail message before beeing sent by the SMTP client
-   /// </summary>
-   /// <param name="self">The caller</param>
-   /// <param name="imapServer">The address of the IMAP server</param>
-   /// <param name="imapPort">The port of the IMAP server</param>
-   /// <param name="userName">The username to log on to the IMAP server</param>
-   /// <param name="password">The password to log on to the IMAP server</param>
-   /// <param name="sentFolderName">The name of the folder where the message will be saved</param>
-   /// <param name="mailMessage">The message being saved</param>
-   public static void SendAndSaveMessageToIMAP(this System.Net.Mail.SmtpClient self, System.Net.Mail.MailMessage mailMessage, string imapServer, int imapPort, string userName, string password, string sentFolderName)
-   {
-      try
-      {
-         path = System.Environment.CurrentDirectory + "\\emailresponse.txt";
-
-         if(System.IO.File.Exists(path))
-            System.IO.File.Delete(path);
-
-         sw = new System.IO.StreamWriter(System.IO.File.Create(path));
-
-         tcpc = new System.Net.Sockets.TcpClient(imapServer, imapPort);
-
-         ssl = new System.Net.Security.SslStream(tcpc.GetStream());
-         ssl.AuthenticateAsClient(imapServer);
-         SendCommandAndReceiveResponse("");
-
-         SendCommandAndReceiveResponse(string.Format("$ LOGIN {1} {2}  {0}", System.Environment.NewLine, userName, password));
-
-         using(var m = mailMessage.RawMessage())
-         {
-            m.Position = 0;
-            var sr = new System.IO.StreamReader(m);
-            var myStr = sr.ReadToEnd();
-            SendCommandAndReceiveResponse(string.Format("$ APPEND {1} (\\Seen) {{{2}}}{0}", System.Environment.NewLine, sentFolderName, myStr.Length));
-            SendCommandAndReceiveResponse(string.Format("{1}{0}", System.Environment.NewLine, myStr));
-         }
-         SendCommandAndReceiveResponse(string.Format("$ LOGOUT{0}", System.Environment.NewLine));
-      }
-      catch(System.Exception ex)
-      {
-       //System.Diagnostics.Debug.WriteLine("error: " + ex.Message);
-         ZXC.aim_emsg(MessageBoxIcon.Error, "SendAndSaveMessageToIMAP (writ IMAP folder) error:\n\n" + ex.Message);
-      }
-      finally
-      {
-         if(sw != null)
-         {
-            sw.Close();
-            sw.Dispose();
-         }
-         if(ssl != null)
-         {
-            ssl.Close();
-            ssl.Dispose();
-         }
-         if(tcpc != null)
-         {
-            tcpc.Close();
-         }
-      }
-
-      self.Send(mailMessage);
-   }
-}
-
-public static class MailMessageExtensions
-{
-   private static readonly System.Reflection.BindingFlags Flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
-   private static readonly System.Type MailWriter = typeof(System.Net.Mail.SmtpClient).Assembly.GetType("System.Net.Mail.MailWriter");
-   private static readonly System.Reflection.ConstructorInfo MailWriterConstructor = MailWriter.GetConstructor(Flags, null, new[] { typeof(System.IO.Stream) }, null);
-   private static readonly System.Reflection.MethodInfo CloseMethod = MailWriter.GetMethod("Close", Flags);
-   private static readonly System.Reflection.MethodInfo SendMethod = typeof(System.Net.Mail.MailMessage).GetMethod("Send", Flags);
-
-   /// <summary>
-   /// A little hack to determine the number of parameters that we
-   /// need to pass to the SaveMethod.
-   /// </summary>
-   private static readonly bool IsRunningInDotNetFourPointFive = SendMethod.GetParameters().Length == 3;
-
-   /// <summary>
-   /// The raw contents of this MailMessage as a MemoryStream.
-   /// </summary>
-   /// <param name="self">The caller.</param>
-   /// <returns>A MemoryStream with the raw contents of this MailMessage.</returns>
-   public static System.IO.MemoryStream RawMessage(this System.Net.Mail.MailMessage self)
-   {
-      var result = new System.IO.MemoryStream();
-      var mailWriter = MailWriterConstructor.Invoke(new object[] { result });
-      SendMethod.Invoke(self, Flags, null, IsRunningInDotNetFourPointFive ? new[] { mailWriter, true, true } : new[] { mailWriter, true }, null);
-      result = new System.IO.MemoryStream(result.ToArray());
-      CloseMethod.Invoke(mailWriter, Flags, null, new object[] { }, null);
-      return result;
-   }
-}
 
 public static class Vv_Http_Web_request
 {
