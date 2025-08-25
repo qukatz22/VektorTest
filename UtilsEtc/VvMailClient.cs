@@ -10,6 +10,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Xml;
 
+#if MailKit_cemo_poceti_koristiti_umj_smtpclient
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -122,6 +123,7 @@ public static class EmailHelper_GPT
    }
 }
 
+#endif
 public sealed class VvMailClient
 {
    #region Propertiz, Fieldz, defaults 
