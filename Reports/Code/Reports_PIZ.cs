@@ -7141,42 +7141,60 @@ public class RptP_SEPA : RptP_Virmani
    {
       CreditTransferTransaction34 theTx = new CreditTransferTransaction34();
 
-//    theTx.PmtTpInfSpecified  = 
-//    theTx.UltmtDbtrSpecified = 
-//    theTx.UltmtCdtrSpecified = 
-//    theTx.PurpSpecified      = false;
-//    theTx.CdtrAgtSpecified   = false;
+      //    theTx.PmtTpInfSpecified  = 
+      //    theTx.UltmtDbtrSpecified = 
+      //    theTx.UltmtCdtrSpecified = 
+      //    theTx.PurpSpecified      = false;
+      //    theTx.CdtrAgtSpecified   = false;
 
-      theTx.PmtId            = new PaymentIdentification6();
+      theTx.PmtId = new PaymentIdentification6();
       theTx.PmtId.EndToEndId = virman_rec.PnbzMod + virman_rec.Pnbz; // poziv na broj platitelja
 
-      theTx.Amt              = new AmountType4Choice();
-      theTx.Amt.InstdAmt     = new ActiveOrHistoricCurrencyAndAmount();
+      theTx.Amt = new AmountType4Choice();
+      theTx.Amt.InstdAmt = new ActiveOrHistoricCurrencyAndAmount();
       theTx.Amt.InstdAmt.Ccy = /*"HRK"*/ ZXC.EURorHRKstr;
       theTx.Amt.InstdAmt.Value = virman_rec.Money.Ron2();
 
       theTx.ChrgBr = ChargeBearerType1Code.SLEV; //a ako nije popunjeno SLEV, podrazumijeva se Troškovna opcija SLEV
 
-      theTx.Cdtr    = new PartyIdentification135_1();
+      theTx.Cdtr = new PartyIdentification135_1();
       theTx.Cdtr.Nm = virman_rec.Prim1;
-//      theTx.Cdtr.IdSpecified = false;
+      //      theTx.Cdtr.IdSpecified = false;
 
-    //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
-    //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
-      theTx.Cdtr.PstlAdr         = new PostalAddress24();
+      //theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim2);
+      //if(virman_rec.Prim3.NotEmpty()) theTx.Cdtr.PstlAdr.AdrLine.Add(virman_rec.Prim3);
 
-      // 19.03.2024: 
-      theTx.Cdtr.PstlAdr.Ctry    = "HR";
 
-      // 19.03.2024: 
-    //theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim2.NotEmpty() ? virman_rec.Prim3 : " " };
-      theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2,                               virman_rec.Prim3       };
+      theTx.Cdtr.PstlAdr = new PostalAddress24();
 
-      // 19.03.2024: 
-      if(virman_rec.Prim2.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazna 'AdrLine1' primatelja možda bude problem?!");
-      if(virman_rec.Prim3.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazan 'AdrLine2' primatelja možda bude problem?!");
+      // ======== 2025 news start =================================== 
 
-      theTx.CdtrAcct         = new CashAccount38Cdtr();
+      // PstlAdr moze ici nestrukturirano, hibridno i strukturirano. u 08.2025 mislimo da ce strukturirano biti obavezno 
+      // tek od 11.2026. ali se pripremamo za unaprijed                                                                  
+
+      if(virman_rec.SEPA_PstlAdr.TwnNm .NotEmpty()) theTx.Cdtr.PstlAdr.TwnNm  = virman_rec.SEPA_PstlAdr.TwnNm ;
+      if(virman_rec.SEPA_PstlAdr.Ctry  .NotEmpty()) theTx.Cdtr.PstlAdr.Ctry   = virman_rec.SEPA_PstlAdr.Ctry  ;
+      if(virman_rec.SEPA_PstlAdr.StrtNm.NotEmpty()) theTx.Cdtr.PstlAdr.StrtNm = virman_rec.SEPA_PstlAdr.StrtNm;
+      if(virman_rec.SEPA_PstlAdr.BldgNb.NotEmpty()) theTx.Cdtr.PstlAdr.BldgNb = virman_rec.SEPA_PstlAdr.BldgNb;
+      if(virman_rec.SEPA_PstlAdr.PstCd .NotEmpty()) theTx.Cdtr.PstlAdr.PstCd  = virman_rec.SEPA_PstlAdr.PstCd ;
+
+      if(theTx.Cdtr.PstlAdr.Ctry.IsEmpty() || theTx.Cdtr.PstlAdr.TwnNm.IsEmpty()) // nemre strukturirano 
+      {
+         if(virman_rec.SEPA_PstlAdr.Ctry.NotEmpty()) theTx.Cdtr.PstlAdr.Ctry = virman_rec.SEPA_PstlAdr.Ctry;
+         else                                        theTx.Cdtr.PstlAdr.Ctry = "HR";
+   
+         // 19.03.2024: 
+       //theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim2.NotEmpty() ? virman_rec.Prim3 : " " };
+         theTx.Cdtr.PstlAdr.AdrLine = new string[] { virman_rec.Prim2, virman_rec.Prim3 };
+   
+         // 19.03.2024: 
+         if(virman_rec.Prim2.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazna 'AdrLine1' primatelja možda bude problem?!");
+         if(virman_rec.Prim3.IsEmpty()) ZXC.aim_emsg(MessageBoxIcon.Warning, "Pri izradi SEPA datoteke prazan 'AdrLine2' primatelja možda bude problem?!");
+      }
+
+      // ======== 2025 news end   =================================== 
+
+      theTx.CdtrAcct = new CashAccount38Cdtr();
       theTx.CdtrAcct.Id      = new AccountIdentification4Choice_2();
       theTx.CdtrAcct.Id.Item = virman_rec.Ziro2.TrimStart(' ').TrimEnd(' ');
 

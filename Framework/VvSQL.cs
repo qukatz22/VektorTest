@@ -1528,7 +1528,20 @@ public static class VvSQL
 
    private static string GetConnectionString(string _server, string _user, string _password, string _dbName)
    {
-      string theUser = ZXC.GetUserNameWithWwwPreffix(_user);
+      string theUser;
+      if(false/*_server == "j635.your-database.de"*/)
+      {
+         _user = "t1root";
+         _password = "aXbrAKZzv20VH10WUwMHTQ==";
+
+         theUser = (_user);
+
+      }
+
+      else
+      {
+         theUser = ZXC.GetUserNameWithWwwPreffix(_user);
+      }
 
       if(_dbName.IsEmpty())
       {

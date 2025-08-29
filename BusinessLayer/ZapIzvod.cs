@@ -2119,12 +2119,15 @@ public /*struct*/ class VirmanStruct
       }
    }
 
+   public PAIN_001_001_09.PostalAddress24 SEPA_PstlAdr {  get; set; }
+
    #endregion Propertiz
 
    #region Constructors
 
    public VirmanStruct()
    {
+      this.SEPA_PstlAdr = new PAIN_001_001_09.PostalAddress24();
    }
 
 
