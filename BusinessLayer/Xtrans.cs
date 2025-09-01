@@ -42,7 +42,7 @@ public struct XtransStruct
          
    /*  29 */   internal int       _t_intA          ;  /*              |              | PocSt Kilomet.       |         | EuroNorma*/
    /*  30 */   internal int       _t_intB          ;  /*              |              | ZavSt Kilomet.       |         |          */
-   /*  31 */   internal string    _t_konto         ;  /*              |              |                      |         |          */
+   /*  31 */   internal string    _t_konto         ;  /* primDržava   |              |                      |         |          */
    /*  32 */   internal uint      _t_personCD      ;  /*              |              |                      | X       |          */
    /*  33 */   internal decimal   _t_moneyB        ;  /*              |              |                      |         |  CO2     */   
    /*  34 */   internal decimal   _t_moneyC        ;  /*              |              |                      |         |  cm3     */   

@@ -37,6 +37,7 @@ public class VirmanDUC       : MixerDUC
       /* 10 */      T_kpdbNameB_50_CreateColumn  (ZXC.Q7un, "PrimateljNaziv" , "Primatelj Naziv");
       /* 11 */      T_kpdbUlBrB_32_CreateColumn  (ZXC.Q6un, "PrimateljAdresa", "Primatelj Adresa");
       /* 12 */      T_kpdbMjestoB_32_CreateColumn(ZXC.Q4un, "PrimateljMjesto", "Primatelj Mjesto");
+                    T_konto_CreateColumn         (ZXC.Q2un, "Država"         , "Primatelj Država");
       /* 13 */      T_kpdbZiroB_32_CreateColumn  (ZXC.Q7un, "PrimateljŽiro"  , "Primatelj Žiro-račun", null);
       /* 17 */      T_strB_2_CreateColumn        (ZXC.Q2un, "ModPrim"        , "Model Poziva na broj Odobrenja - Primatelja");
       /* 19 */      T_vezniDokB_64_CreateColumn  (ZXC.Q7un, "PnbOdob"        , "Poziva na broj Odobrenja - Primatelja");

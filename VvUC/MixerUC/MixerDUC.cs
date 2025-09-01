@@ -1139,9 +1139,16 @@ public partial class MixerDUC : VvPolyDocumRecordUC
    protected void T_konto_CreateColumn(int _width, string _colHeader, string _statusText)
    {
       vvtbT_konto = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_konto", TheVvDaoTrans, DB_Tci.t_konto, _statusText);
-      vvtbT_konto.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
-      vvtbT_konto.JAM_SetAutoCompleteData(Kplan.recordName, VvSQL.SorterType.KontoNaziv, ZXC.AutoCompleteRestrictor.KPL_Analitika_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_KplanNaziv_sorterCode), null);
-      vvtbT_konto.JAM_FieldExitMethod = new EventHandler(OnExitKonto_ClearPreffix);
+    
+    // 01.09.2025. konto se ne koristi nigdje za konto već na ExternomCjeniku za DevName i od 01.09.2025. na Virmanu za državu primatelja
+    //vvtbT_konto.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+    //vvtbT_konto.JAM_SetAutoCompleteData(Kplan.recordName, VvSQL.SorterType.KontoNaziv, ZXC.AutoCompleteRestrictor.KPL_Analitika_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_KplanNaziv_sorterCode), null);
+    //vvtbT_konto.JAM_FieldExitMethod = new EventHandler(OnExitKonto_ClearPreffix);
+      if(this is VirmanDUC)
+      {
+         vvtbT_konto.JAM_CharEdits   = ZXC.JAM_CharEdits.LettersOnly;
+         vvtbT_konto.CharacterCasing = CharacterCasing.Upper;
+      } 
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_konto, TheVvDaoTrans, DB_Tci.t_konto, _colHeader, _width);
    }
@@ -4721,17 +4728,19 @@ public partial class MixerDUC : VvPolyDocumRecordUC
 
          if(kupdob_rec != null && vvtb_editingControl.Text != "")
          {
-            TheG.PutCell(ci.iT_kpdbNameB_50, currRow, kupdob_rec.Naziv);
-            TheG.PutCell(ci.iT_kpdbUlBrB_32, currRow, kupdob_rec.Ulica1);
+            TheG.PutCell(ci.iT_kpdbNameB_50  , currRow, kupdob_rec.Naziv);
+            TheG.PutCell(ci.iT_kpdbUlBrB_32  , currRow, kupdob_rec.Ulica1);
             TheG.PutCell(ci.iT_kpdbMjestoB_32, currRow, kupdob_rec.Grad);
-            TheG.PutCell(ci.iT_kpdbZiroB_32, currRow, ZXC.GetIBANfromOldZiro(kupdob_rec.Ziro1));
+            TheG.PutCell(ci.iT_kpdbZiroB_32  , currRow, ZXC.GetIBANfromOldZiro(kupdob_rec.Ziro1));
+            TheG.PutCell(ci.iT_konto         , currRow, kupdob_rec.VatCntryCode); //01.09.2025.
          }
          else
          {
-            TheG.PutCell(ci.iT_kpdbNameB_50, currRow, "");
-            TheG.PutCell(ci.iT_kpdbUlBrB_32, currRow, "");
+            TheG.PutCell(ci.iT_kpdbNameB_50  , currRow, "");
+            TheG.PutCell(ci.iT_kpdbUlBrB_32  , currRow, "");
             TheG.PutCell(ci.iT_kpdbMjestoB_32, currRow, "");
-            TheG.PutCell(ci.iT_kpdbZiroB_32, currRow, "");
+            TheG.PutCell(ci.iT_kpdbZiroB_32  , currRow, "");
+            TheG.PutCell(ci.iT_konto         , currRow, "");//01.09.2025.
          }
 
          // samo za DUC-eve
