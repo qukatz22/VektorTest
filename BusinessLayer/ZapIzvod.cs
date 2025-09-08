@@ -1,13 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Globalization;
-using System.Linq;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
 using ZXing;
 using ZXing.Common;
 using ZXing.Rendering;
-using System.Drawing;
+//using static Vektor.DataLayer.DS_Reports.DS_Placa;
 
 public sealed class ZapIzvod
 {
@@ -2187,6 +2188,10 @@ public /*struct*/ class VirmanStruct
       SifraPl    = xtrans_rec.T_strC_2;
 
       Money      = xtrans_rec.T_moneyA.Ron2();
+
+    // 01.09.2025. upali ovo za strukturiranu sepu samo sa gradom i državom
+    //SEPA_PstlAdr.Ctry  = xtrans_rec.T_konto;
+    //SEPA_PstlAdr.TwnNm = xtrans_rec.T_kpdbMjestoB_32;
    }
 
    public VirmanStruct(Vektor.DataLayer.DS_Reports.DS_Placa.virmanRow virmanRow) : this()

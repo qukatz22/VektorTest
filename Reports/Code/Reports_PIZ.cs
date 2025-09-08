@@ -2346,6 +2346,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
             virman_rec.VirKind = (ZXC.VirmanEnum)virman.virKind;
 
+          // 01.09.2025. upali ovo za strukturiranu sepu samo sa gradom i državom
+          //virman_rec.SEPA_PstlAdr.TwnNm = virman.mjesto2;
+          //virman_rec.SEPA_PstlAdr.Ctry  = "HR";
+
             virman.HUB3Data_PDF417 = virman_rec.HUB3Data_PDF417;
 
             if(this is RptP_SEPA)
@@ -2826,7 +2830,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.MIO1:
 
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO I stup";
-            virmanRow.prim3 = "A. Mihanovića 3";
+            virmanRow.prim3   = "A. Mihanovića 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -2858,9 +2863,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
             // 28.12.2012: 
           //virmanRow.ziro2 = "1001005-1700036001";
-            virmanRow.ziro2 = "HR7610010051700036001";
-            virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO II stup";
-            virmanRow.prim3 = "A. Mihanovića 3";
+            virmanRow.ziro2   = "HR7610010051700036001";
+            virmanRow.prim2   = virmanRow.opisPl = "Doprinos za MIO II stup";
+            virmanRow.prim3   = "A. Mihanovića 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -2897,8 +2903,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             }
 
 
-            virmanRow.prim2 = virmanRow.opisPl = "Dopr. za ZDRAVSTVENO osiguranje";
-            virmanRow.prim3 = "Margaretska 3";
+            virmanRow.prim2   = virmanRow.opisPl = "Dopr. za ZDRAVSTVENO osiguranje";
+            virmanRow.prim3   = "Margaretska 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -2934,8 +2941,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
                virmanRow.ziro2 = "HR6510010051550100001";
             }
 
-            virmanRow.prim2 = virmanRow.opisPl = "Dopr za ZOs od ozljedNaRadu";
-            virmanRow.prim3 = "Margaretska 3";
+            virmanRow.prim2   = virmanRow.opisPl = "Dopr za ZOs od ozljedNaRadu";
+            virmanRow.prim3   = "Margaretska 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -2964,8 +2972,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
                virmanRow.ziro2 = "HR6510010051550100001";
             }
 
-            virmanRow.prim2 = virmanRow.opisPl = "Dopr za ZOs za put u inozemstvo";
-            virmanRow.prim3 = "Margaretska 3";
+            virmanRow.prim2   = virmanRow.opisPl = "Dopr za ZOs za put u inozemstvo";
+            virmanRow.prim3   = "Margaretska 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -2980,8 +2989,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          case ZXC.VirmanEnum.ZAP:
 
-            virmanRow.prim2 = virmanRow.opisPl = "Doprinos za ZAPOŠLJAVANJE";
-            virmanRow.prim3 = "DZAP";
+            virmanRow.prim2   = virmanRow.opisPl = "Doprinos za ZAPOŠLJAVANJE";
+            virmanRow.prim3   = "DZAP";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -2998,8 +3008,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          case ZXC.VirmanEnum.ZPP:
 
-            virmanRow.prim2 = virmanRow.opisPl = "Doprinos za ZAPOŠLJAVANJE 2";
-            virmanRow.prim3 = "DZAP2";
+            virmanRow.prim2   = virmanRow.opisPl = "Doprinos za ZAPOŠLJAVANJE 2";
+            virmanRow.prim3   = "DZAP2";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -3016,8 +3027,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
        
          case ZXC.VirmanEnum.MIO1NA:
 
-            virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO I staž s povećanim trajanjem";
-            virmanRow.prim3 = "A. Mihanovića 3";
+            virmanRow.prim2   = virmanRow.opisPl = "Doprinos za MIO I staž s povećanim trajanjem";
+            virmanRow.prim3   = "A. Mihanovića 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -3034,9 +3046,10 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
             // 28.12.2012: 
             //virmanRow.ziro2 = "1001005-1700036001";
-            virmanRow.ziro2 = "HR7610010051700036001";
-            virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO II staž s povećanim trajanjem";
-            virmanRow.prim3 = "A. Mihanovića 3";
+            virmanRow.ziro2   = "HR7610010051700036001";
+            virmanRow.prim2   = virmanRow.opisPl = "Doprinos za MIO II staž s povećanim trajanjem";
+            virmanRow.prim3   = "A. Mihanovića 3";
+            virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
 
             if(isPlacaBef2014)
             {
@@ -3118,7 +3131,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.POR:
 
             virmanRow.prim2  = "POREZ NA DOHODAK";
-            virmanRow.prim3  = "PU " + opcName;
+            virmanRow.prim3    = "PU " + opcName;
+            virmanRow.mjesto2  = opcName;//01.09.2025.
+
             if(pvi.aJeOtherDohodak) virmanRow.opisPl = prezimeIme      + " " + virmanRow.prim2;
             else                    virmanRow.opisPl = virmanRow.prim3 + " " + virmanRow.prim2;
 
@@ -3127,7 +3142,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          case ZXC.VirmanEnum.PRI:
 
             virmanRow.prim2 = "PRIREZ porezu na dohodak";
-            virmanRow.prim3 = "Prirez " + opcName;
+            virmanRow.prim3   = "Prirez " + opcName;
+            virmanRow.mjesto2  = opcName;
+
 
             // 14.11.2022: nekom tam parseru smeta "%" 
           //if(pvi.aJeOtherDohodak) virmanRow.opisPl = prezimeIme      + " " + stopaPri + @"%(" + prirezOsnova + ")";
