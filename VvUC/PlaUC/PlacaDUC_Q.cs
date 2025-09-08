@@ -691,8 +691,17 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
       // 29.03.2024. a sad su euri : 565,04 eura/4.257,28
     //decimal maxHZZO_NetoAdd = 4257.28M;
       decimal maxHZZO_NetoAdd;
-      if(ZXC.IsEURoERA_projectYear) maxHZZO_NetoAdd =  565.04M;
-      else                          maxHZZO_NetoAdd = 4257.28M;
+    //if(ZXC.IsEURoERA_projectYear) maxHZZO_NetoAdd =  565.04M;
+    //else                          maxHZZO_NetoAdd = 4257.28M;
+      if(!ZXC.IsEURoERA_projectYear)
+      {
+         maxHZZO_NetoAdd = 4257.28M;
+      }
+      else
+      { 
+         if(Fld_DokDate < ZXC.Date01082025) maxHZZO_NetoAdd = 565.04M;
+         else                               maxHZZO_NetoAdd = 995.45M;      
+      }
 
       //10.04.2024.
       KtoShemaPlacaDsc kspl = new KtoShemaPlacaDsc(ZXC.dscLuiLst_KtoShemaPlaca);
