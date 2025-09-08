@@ -3268,6 +3268,7 @@ public static class VvSQL
          case Ptrano .recordName: return "ptrno";
          case ArtStat.recordName: return "artst";
          case Faktur .recordName: return "fakt" ; 
+         case Nalog  .recordName: return "nalog"; 
          case Ftrans .recordName: return "ftrn" ; 
 
          default: ZXC.aim_emsg("VvSQL.GetShortRecordName: UInknown recordName! " + recordName); return "XY";
@@ -3466,6 +3467,16 @@ public static class VvSQL
                      sb +=("\n JOIN " + Faktur.recordName       + " "   + GetShortRecordName(Faktur.recordName) + 
                            "   ON "   + Rtrans.recordName + "." + Rtrans.FakturForeignKey + 
                            " = "      + GetShortRecordName(Faktur.recordName) + ".recID \n");
+                  }
+                  break;
+
+               case Nalog.recordName:
+                  if(!filter.FromClauseGot_Nalog_TableName)
+                  {
+                     filter.FromClauseGot_Nalog_TableName = true;
+                     sb +=("\n JOIN " + Nalog.recordName        + " "   + GetShortRecordName(Nalog.recordName) + 
+                           "   ON "   + Ftrans.recordName + "." + Ftrans.NalogForeignKey + 
+                           " = "      + GetShortRecordName(Nalog.recordName) + ".recID \n");
                   }
                   break;
 

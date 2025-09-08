@@ -24,8 +24,8 @@ public static class VvSkyLog_Ex
          "syncMessage   varchar(1024)           NOT NULL DEFAULT ''                    COMMENT 'Error ili neki drugi message',                         \n" +
          "operation     enum ('NONE', 'RECEIVE', 'SEND', 'SendAndReceive', 'OpenSyncTran') NOT NULL,                                                   \n" +
          "resultAction  enum('ADD','RWT','DEL', 'NONE', 'UTIL') NOT NULL COMMENT 'resulting action za eventualni paket pojava recID-a',                \n" +
-         "thisSyncTS    timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'TS ove       sinhronizacije ',                         \n" +
-         "prevSyncTS    timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'TS prethodne sinhronizacije ',                         \n" +
+         "thisSyncTS    timestamp                        NULL DEFAULT NULL COMMENT 'TS ove       sinhronizacije ',                         \n" +
+         "prevSyncTS    timestamp                        NULL DEFAULT NULL COMMENT 'TS prethodne sinhronizacije ',                         \n" +
          "skyLogTS      timestamp               NOT NULL DEFAULT CURRENT_TIMESTAMP     COMMENT 'TS nastanka ovog LogEntry-a',                          \n" +
          "skyLogID      int(10) unsigned        NOT NULL AUTO_INCREMENT                COMMENT 'vlastiti recID - PrimaryKey',                          \n" +
          "ruleRecID     int(10) unsigned        NOT NULL DEFAULT 0                     COMMENT 'Veza na SkyRule record koji je stvorio ovaj log entry',\n" +
@@ -38,10 +38,10 @@ public static class VvSkyLog_Ex
          "skladCD       varchar(6)              NOT NULL DEFAULT '',                                                                 \n" +
          "skladCD2      varchar(6)              NOT NULL DEFAULT '',                                                                 \n" +
          "action        enum('ADD','RWT','DEL') NOT NULL,                                                                            \n" +
-         "lanLogTS      timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00',                                              \n" +
+         "lanLogTS      timestamp                        NULL DEFAULT NULL,                                              \n" +
          "lanLogUID     varchar(16)             NOT NULL DEFAULT '',                                                                 \n" +
-         "addTS         timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00',                                              \n" +
-         "modTS         timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00',                                              \n" +
+         "addTS         timestamp                        NULL DEFAULT NULL,                                              \n" +
+         "modTS         timestamp                        NULL DEFAULT NULL,                                              \n" +
          "addUID        varchar(16)             NOT NULL DEFAULT '',                                                                 \n" +
          "modUID        varchar(16)             NOT NULL DEFAULT '',                                                                 \n" +
          "lanServerID   int(4) unsigned         NOT NULL DEFAULT 0,                                                                  \n" +
@@ -72,8 +72,8 @@ public static class VvLog_Ex
          "action        enum('ADD','RWT','DEL') NOT NULL,                                                                            \n" +
          "logTS         timestamp               NOT NULL DEFAULT CURRENT_TIMESTAMP,                                                  \n" +
          "logUID        varchar(16)             NOT NULL DEFAULT '',                                                                 \n" +
-         "addTS         timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00',                                              \n" +
-         "modTS         timestamp               NOT NULL DEFAULT '0000-00-00 00:00:00',                                              \n" +
+         "addTS         timestamp                        NULL DEFAULT NULL,                                              \n" +
+         "modTS         timestamp                        NULL DEFAULT NULL,                                              \n" +
          "addUID        varchar(16)             NOT NULL DEFAULT '',                                                                 \n" +
          "modUID        varchar(16)             NOT NULL DEFAULT '',                                                                 \n" +
          "lanServerID   int(4) unsigned         NOT NULL DEFAULT 0,                                                                  \n" +
@@ -100,8 +100,8 @@ public static class VvLog_Ex
    //      " ADD COLUMN tt VARCHAR(6)                     NOT NULL DEFAULT ''                    AFTER origRecID  ," + "\n" +
    //      " ADD COLUMN skladCD         VARCHAR(6)        NOT NULL DEFAULT ''                    AFTER tt         ," + "\n" +
    //      " ADD COLUMN skladCD2        VARCHAR(6)        NOT NULL DEFAULT ''                    AFTER skladCD    ," + "\n" +
-   //      " ADD COLUMN addTS           TIMESTAMP         NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER logUID     ," + "\n" +
-   //      " ADD COLUMN modTS           TIMESTAMP         NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER addTS      ," + "\n" +
+   //      " ADD COLUMN addTS           TIMESTAMP         NOT NULL NULL DEFAULT NULL AFTER logUID     ," + "\n" +
+   //      " ADD COLUMN modTS           TIMESTAMP         NOT NULL NULL DEFAULT NULL AFTER addTS      ," + "\n" +
    //      " ADD COLUMN addUID          VARCHAR(16)       NOT NULL DEFAULT ''                    AFTER modTS      ," + "\n" +
    //      " ADD COLUMN modUID          VARCHAR(16)       NOT NULL DEFAULT ''                    AFTER addUID     ," + "\n" +
    //      " ADD COLUMN lanServerID INT(4) UNSIGNED       NOT NULL DEFAULT 0                     AFTER modUID     ," + "\n" +

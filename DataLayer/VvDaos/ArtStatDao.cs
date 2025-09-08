@@ -52,7 +52,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
       (
         " recID int(10)               unsigned NOT NULL auto_increment,\n" +
 
-/* 01 */" addTS timestamp                 default '0000-00-00 00:00:00'  ,\n" +
+/* 01 */" addTS timestamp                 NULL DEFAULT NULL  ,\n" +
 /* 02 */" addUID varchar(16)     NOT NULL default 'XY'                   ,\n" +
 /* 03 */" rtransRecID      int(10)        unsigned NOT NULL default '0',\n" +   
 /* 04 */" t_artiklCD       varchar(32)             NOT NULL default '' ,\n" +
@@ -174,7 +174,7 @@ public sealed class ArtStatDao : VvDaoBase, IVvDao
       {
          case 2: return ("VvRECREATE"); // Dakle, kada zelis force-ati regeneraciju cache-a samo gore inkrementiras 'TableVersion' i tu dodas noci case da returna "VvRECREATE" 
          case 3: return ("VvRECREATE"); // Dakle, kada zelis force-ati regeneraciju cache-a samo gore inkrementiras 'TableVersion' i tu dodas noci case da returna "VvRECREATE" 
-         case 4: return ("ADD COLUMN addTS timestamp                 default '0000-00-00 00:00:00' AFTER recID, \n" +
+         case 4: return ("ADD COLUMN addTS timestamp                 NULL DEFAULT NULL AFTER recID, \n" +
                          "ADD COLUMN addUID varchar(16)     NOT NULL default 'XY'                  AFTER addTS; \n");
          case 5: 
          case 6:

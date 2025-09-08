@@ -109,7 +109,7 @@ public sealed class KplanDao : VvDaoBase, IVvDao
       return 
       (
         "recID int(10) unsigned NOT NULL auto_increment,\n" +
-        "addTS timestamp                 default '0000-00-00 00:00:00',\n" +
+        "addTS timestamp                 NULL DEFAULT NULL,\n" +
         "modTS timestamp                 default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,\n" +
         "addUID varchar(16)     NOT NULL default 'XY',\n" +
         "modUID varchar(16)     NOT NULL default '',\n"   +

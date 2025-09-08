@@ -50,7 +50,7 @@ public sealed class MixerDao : VvDaoBase, IVvDao
    {
       return (
          /* 00 */  "recID        int(10)    unsigned NOT NULL auto_increment,\n" +
-         /* 01 */  "addTS        timestamp                    default '0000-00-00 00:00:00',\n" +
+         /* 01 */  "addTS        timestamp                    NULL DEFAULT NULL,\n" +
          /* 02 */  "modTS        timestamp                    default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,\n" +
          /* 03 */  "addUID       varchar(16)         NOT NULL default 'XY',\n" +
          /* 04 */  "modUID       varchar(16)         NOT NULL default '',\n" +
