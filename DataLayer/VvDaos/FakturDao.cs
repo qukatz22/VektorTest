@@ -659,6 +659,14 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
          /* 02 */ faktur_rec.TtSort          = reader.GetInt16   (colIdx++);
          /* 03 */ faktur_rec.TtNum           = reader.GetUInt32  (colIdx++);
          /* 04 */ faktur_rec.KupdobName      = reader.GetString  (colIdx++);
+         
+         ///* 04 */ faktur_rec.KupdobName      = "";
+         //byte[] byteArray = reader["KupdobName"] as byte[];
+         //if(byteArray != null)
+         //{
+         //   string stringValue = System.Text.Encoding.UTF8.GetString(byteArray);
+         //}
+
          /* 05 */ faktur_rec.S_ukKCRP        = reader.GetDecimal (colIdx++);
          /* 06 */ faktur_rec.S_ukKCRP_usl    = reader.GetDecimal (colIdx++);
          /* 07 */ faktur_rec.S_ukMSK_00      = reader.GetDecimal (colIdx++);

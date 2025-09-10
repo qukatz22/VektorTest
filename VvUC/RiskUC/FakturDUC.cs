@@ -5791,7 +5791,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       faktur_rec.DiscardPreviouslyAddedTranses();
 
-      for(rIdx = 0; rIdx < TheG.RowCount - 1; ++rIdx)
+      for(rIdx = 0;     rIdx < TheG.RowCount - 1; ++rIdx)
       {
          // 09.08.2011: da zabranim zadnji prazan redak 
          if(dirtyFlagging == false && rIdx == (TheG.RowCount - 1 - 1) && CheckIfLastRowIsEmpty(rIdx))
