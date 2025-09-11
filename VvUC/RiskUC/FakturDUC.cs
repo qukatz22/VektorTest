@@ -19379,6 +19379,76 @@ public class VvNewRabatDlg : VvDialog
 #endregion Fld_
 
 }
+public class VvBaksaDlg : VvDialog
+{
+#region Filedz
+
+   private Button okButton, cancelButton;
+   private VvHamper hamper;
+   private int dlgWidth, dlgHeight;
+   private VvTextBox tbx_baksa;
+
+#endregion Filedz
+
+#region Constructor
+
+   public VvBaksaDlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text = "Preplata gotovine po računima";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_baksa, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+   }
+
+#endregion Constructor
+
+#region hamper
+
+   private void CreateHamper()
+   {
+      hamper          = new VvHamper(3, 1, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un, ZXC.QUN };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun8 };
+      hamper.VvRightMargin = 0;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                     hamper.CreateVvLabel  (0, 0, "Iznos preplate:", ContentAlignment.MiddleRight);
+      tbx_baksa = hamper.CreateVvTextBox(1, 0, "tbx_newRabat", "", 8);
+      tbx_baksa.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+                        }
+
+#endregion hamper
+
+#region Button_Click
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+#endregion Button_Click
+
+#region Fld_
+
+   public decimal Fld_Baksa { get { return tbx_baksa.GetDecimalField(); } set { tbx_baksa.PutDecimalField(value); } }
+
+#endregion Fld_
+
+}
 
 
 public class AddArtiklUMJDlg : VvDialog
