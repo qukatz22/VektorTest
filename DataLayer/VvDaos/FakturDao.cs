@@ -608,7 +608,7 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
 /*02*/ preffix + (unionRbr == 1 ? "ttSort " : unionRbr == 2 ? "ttSort " : /*unionRbr == 3*/"0 ") + "as ttSort,\n" +
 /*03*/ preffix + "ttNum   as ttNum  , \n" +
 
-/*04*/ preffix + (unionRbr == 1 ? "CONCAT(tt, '-', ttNum, ' ', kupdobName) " : unionRbr == 2 ? "CONCAT(MIN(ttNum), '-', MAX(ttNum), ' Popusti i Dnevni Promet Maloprodaje')" : /*unionRbr == 3*/"' NIVELACIJA po IRM'") + "as KupdobName   , \n" +
+/*04*/ preffix + (unionRbr == 1 ? "CAST(CONCAT(tt, '-', ttNum, ' ', kupdobName) AS CHAR) " : unionRbr == 2 ? "CAST(CONCAT(MIN(ttNum), '-', MAX(ttNum), ' Popusti i Dnevni Promet Maloprodaje') AS CHAR)" : /*unionRbr == 3*/"' NIVELACIJA po IRM'") + "as KupdobName   , \n" +
 
 /*05*/ preffix + (unionRbr == 1 ? "X.s_ukKCRMP                             " : unionRbr == 2 ? "SUM(X.s_ukKCRMP            ) " : /*unionRbr == 3*/"0 "                     ) + "as S_ukKCRP     ,\n" +
 /*06*/ preffix + (unionRbr == 1 ? "X.s_ukKCRP_usl                          " : unionRbr == 2 ? "SUM(X.s_ukKCRP_usl         ) " : /*unionRbr == 3*/"0 "                     ) + "as S_ukKCRP_usl ,\n" +
