@@ -821,6 +821,12 @@ public class Artikl : VvSifrarRecord
       set {        this.currentData._partNo = value; }
    }
 
+   /* 61 */ public string KPD
+   {
+      get { return this.currentData._partNo; }
+      set {        this.currentData._partNo = value; }
+   }
+
    /* 62 */ public string Napomena
    {
       get { return this.currentData._napomena; }
