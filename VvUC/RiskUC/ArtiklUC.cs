@@ -24,7 +24,7 @@ public class ArtiklUC : VvSifrarRecordUC
    #region Fieldz
 
    private VvTextBox tbx_artiklCD, /*tbx_artiklName,*/ tbx_barCode1, tbx_skladCD, tbx_skladOpis, tbx_grupa1CD, tbx_grupa1Opis, tbx_jedMj,
-                     tbx_ts, tbx_tsOpis, tbx_konto, tbx_longOpis, tbx_pdvKat, tbx_pdvKatOpis,
+                     tbx_ts, tbx_tsOpis, tbx_konto, tbx_longOpis, tbx_pdvKat, tbx_pdvKatOpis, tbx_kpdOpis,
                      tbx_artiklCD2, tbx_artiklName2,
                      tbx_barCode2, tbx_serNo, tbx_grupa2CD, tbx_grupa2Opis, tbx_grupa3CD, tbx_grupa3Opis,
                      tbx_placement, tbx_linkArtCD, tbx_linkArtName, tbx_dateProizv, tbx_prefValName, tbx_orgPak,
@@ -173,6 +173,7 @@ public class ArtiklUC : VvSifrarRecordUC
    private void SetToolTipsForPredugackys()
    {
       tbx_artiklName2.TextAsToolTip(toolTip);
+      tbx_kpdOpis.TextAsToolTip(toolTip);
    }
 
    private void SetColorsOfResultTbx()
@@ -231,11 +232,12 @@ public class ArtiklUC : VvSifrarRecordUC
 
    private void InitializeNazivHamper(out VvHamper hamper)
    {
-      hamper = new VvHamper(11, 5, "", TheTabControl.TabPages[0], false, nextX, nextY, razmakHamp);
+      hamper = new VvHamper(12/*11*/, 5, "", TheTabControl.TabPages[0], false, nextX, nextY, razmakHamp);
 
-      //                                       0                 1                     2                3                  4                                 5                                        6              7             8                       9  
-      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth-(ZXC.QUN )+ ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, labelWidth,  ZXC.QUN + ZXC.Qun2+ ZXC.Qun4, ZXC.Q3un, labelWidth, ZXC.Q10un + ZXC.QUN };
-      hamper.VvSpcBefCol   = new int[] {   ZXC.Qun4,            ZXC.Qun4,            ZXC.Qun4,                 0,   0,            ZXC.Qun4,   ZXC.Qun4,                      ZXC.Qun4, ZXC.Qun4,   ZXC.Qun4,             ZXC.Qun4 };
+      //                                       0                 1                     2                3                      4                                 5             6                    7                               8               9           10              
+    //hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth-(ZXC.QUN )+ ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, labelWidth,  ZXC.QUN + ZXC.Qun2+ ZXC.Qun4, ZXC.Q3un                         , labelWidth, ZXC.Q10un + ZXC.QUN };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth-(ZXC.QUN )+ ZXC.Qun2, ZXC.Q3un - ZXC.Qun2,   ZXC.Qun2,                    labelWidth,  ZXC.QUN + ZXC.Qun2+ ZXC.Qun4, ZXC.Q3un-ZXC.Qun4, labelWidth, ZXC.Q10un + ZXC.QUN };
+      hamper.VvSpcBefCol   = new int[] {   ZXC.Qun4,            ZXC.Qun4,            ZXC.Qun4,                 0,                               0,            ZXC.Qun4,   ZXC.Qun4,                      ZXC.Qun8,                      ZXC.Qun8,          ZXC.Qun8,   ZXC.Qun4,             ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -246,7 +248,7 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lbl_artiklCD, lbl_artiklName, lbl_barCode1, lbl_skladCD, lbl_grupa1CD, lbl_jedMj,
-            lbl_ts, lbl_konto, lbl_longOpis, lbl_pdvKat, lbl_polCij;
+            lbl_ts, lbl_konto, lbl_longOpis, lbl_pdvKat;
       
       
       lbl_artiklName = hamper.CreateVvLabel  (0, 0, "Naziv:", ContentAlignment.MiddleRight);
@@ -268,7 +270,7 @@ public class ArtiklUC : VvSifrarRecordUC
       btn_numCd.Visible = false;
 
       lbl_barCode1 = hamper.CreateVvLabel  (4, 1, "BarKod:"   , ContentAlignment.MiddleRight);
-      tbx_barCode1 = hamper.CreateVvTextBox(5, 1, "tbx_barCode1", "Barkod artikla", GetDB_ColumnSize(DB_ci.barCode1), 1, 0);
+      tbx_barCode1 = hamper.CreateVvTextBox(5, 1, "tbx_barCode1", "Barkod artikla", GetDB_ColumnSize(DB_ci.barCode1), 2, 0);
       
 
       lbl_ts = hamper.CreateVvLabel        (0, 2, "Tip:", ContentAlignment.MiddleRight);
@@ -288,7 +290,7 @@ public class ArtiklUC : VvSifrarRecordUC
       // 02.07.2018: 
       if(ZXC.IsSvDUH) tbx_grupa1CD.JAM_DataRequired = true;
 
-      lbl_skladCD = hamper.CreateVvLabel        (0, 4, "Uob Sklad:", ContentAlignment.MiddleRight);
+      lbl_skladCD = hamper.CreateVvLabel        (0, 4, "UobSklad:", ContentAlignment.MiddleRight);
       tbx_skladCD = hamper.CreateVvTextBoxLookUp(1, 4, "tbx_skladCD", "", GetDB_ColumnSize(DB_ci.skladCD));
       tbx_skladOpis = hamper.CreateVvTextBox    (2, 4, "tbx_skladOpis", "", 32);
       tbx_skladOpis.JAM_ReadOnly = true;
@@ -299,21 +301,31 @@ public class ArtiklUC : VvSifrarRecordUC
       lbl_jedMj = hamper.CreateVvLabel  (3, 2, "JM:", 1, 0, ContentAlignment.MiddleRight);
       tbx_jedMj = hamper.CreateVvTextBox(5, 2, "tbx_jedMj", "Jedinica mjere", GetDB_ColumnSize(DB_ci.jedMj));
     
-      lbl_konto = hamper.CreateVvLabel  (6, 2, "Konto:"   , 1, 0, ContentAlignment.MiddleRight);
-      tbx_konto = hamper.CreateVvTextBox(8, 2, "tbx_konto", "Konto", GetDB_ColumnSize(DB_ci.konto));
+    //lbl_konto = hamper.CreateVvLabel  (6, 2, "Konto:"   , 1, 0, ContentAlignment.MiddleRight);
+      lbl_konto = hamper.CreateVvLabel  (/*7*/8, 2, "Kto:"   ,       ContentAlignment.MiddleRight);
+      tbx_konto = hamper.CreateVvTextBox(/*8*/9, 2, "tbx_konto", "Konto", GetDB_ColumnSize(DB_ci.konto));
       tbx_konto.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_konto.JAM_SetAutoCompleteData(Kplan.recordName, Kplan.sorterKonto.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kplan_sorterCode), null);
 
 
-      lbl_polCij = hamper.CreateVvLabel      (3, 3, "ProdCij:", 1, 0, ContentAlignment.MiddleRight);
-      rbt_vpc1   = hamper.CreateVvRadioButton(5, 3, null, "VPC1",  TextImageRelation.TextBeforeImage);
-      rbt_marza  = hamper.CreateVvRadioButton(6, 3, null, "Marža",  TextImageRelation.TextBeforeImage);
 
-      cbx_isRashod = hamper.CreateVvCheckBox_OLD(7, 3, null, 1, 0, "Neaktivan", System.Windows.Forms.RightToLeft.Yes);
+    //lbl_polCij = hamper.CreateVvLabel        (3, 3, "ProdCij:", 1, 0, ContentAlignment.MiddleRight);
+    //rbt_vpc1   = hamper.CreateVvRadioButton  (5, 3, null, "VPC1",  TextImageRelation.TextBeforeImage);
+    //rbt_marza  = hamper.CreateVvRadioButton  (6, 3, null, "Marža",  TextImageRelation.TextBeforeImage);
+                   hamper.CreateVvLabel        (3, 3, "KPD:", 1, 0, ContentAlignment.MiddleRight);
+    //tbx_partNo = hamper.CreateVvTextBoxLookUp(5, 3, "tbx_partNo", "KPD", GetDB_ColumnSize(DB_ci.partNo));
+      tbx_partNo = hamper.CreateVvTextBoxLookUp("tbx_partNo", 5, 3,  "KPD", GetDB_ColumnSize(DB_ci.partNo), 1, 0);
+      tbx_partNo.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+      tbx_kpdOpis = hamper.CreateVvTextBox  (7, 3, "tbx_kpdOpis", "", 128, 2, 0);
+      tbx_kpdOpis.JAM_ReadOnly = true;
+      tbx_partNo.JAM_lui_NameTaker_JAM_Name = tbx_kpdOpis.JAM_Name;
+
+    //cbx_isRashod = hamper.CreateVvCheckBox_OLD(7, 3, null, 1, 0, "Neaktivan", System.Windows.Forms.RightToLeft.Yes);
+      cbx_isRashod = hamper.CreateVvCheckBox_OLD(7, 2, null, "Neakt", System.Windows.Forms.RightToLeft.Yes);
 
       lbl_pdvKat     = hamper.CreateVvLabel        (3, 4, "PDV razred:", 1, 0, ContentAlignment.MiddleRight);
       tbx_pdvKat     = hamper.CreateVvTextBoxLookUp(5, 4, "tbx_pdvKat", "", GetDB_ColumnSize(DB_ci.pdvKat));
-      tbx_pdvKatOpis = hamper.CreateVvTextBox      (6, 4, "tbx_pdvKatOpis", "PDV razred (npr 23%, 10%, 0%, oslob, ...)", 32, 2, 0);
+      tbx_pdvKatOpis = hamper.CreateVvTextBox      (6, 4, "tbx_pdvKatOpis", "PDV razred (npr 23%, 10%, 0%, oslob, ...)", 32, 3, 0);
       tbx_pdvKatOpis.JAM_ReadOnly = true;
       tbx_pdvKat.JAM_Set_LookUpTable(ZXC.luiListaPdvKat, (int)ZXC.Kolona.prva);
       tbx_pdvKat.JAM_lui_NameTaker_JAM_Name = tbx_pdvKatOpis.JAM_Name;
@@ -325,8 +337,8 @@ public class ArtiklUC : VvSifrarRecordUC
       //rbt_zadano.TextAlign  = ContentAlignment.MiddleRight;
       //rbt_marza.TextAlign   = ContentAlignment.MiddleRight;
 
-      lbl_longOpis = hamper.CreateVvLabel  (8, 1, "Opis:", ContentAlignment.MiddleRight);
-      tbx_longOpis = hamper.CreateVvTextBox(9, 0, "tbx_longOpis", "Opširan opis artikla", GetDB_ColumnSize(DB_ci.longOpis), 1, 4);
+      lbl_longOpis = hamper.CreateVvLabel  (/*8*/9, 1, "Opis:", ContentAlignment.MiddleRight);
+      tbx_longOpis = hamper.CreateVvTextBox(/*9*/10, 0, "tbx_longOpis", "Opširan opis artikla", GetDB_ColumnSize(DB_ci.longOpis), 1, 4);
       tbx_longOpis.Font = ZXC.vvFont.SmallFont;
 
       tbx_longOpis.Multiline = true;
@@ -1135,12 +1147,35 @@ public class ArtiklUC : VvSifrarRecordUC
 
    }
 
+   //private void Initialize_PartNoHamper(out VvHamper hamper, string name, int _nextX, int _nextY)
+   //{
+   //   hamper = new VvHamper(2, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp);
+
+   //   hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q10un + ZXC.QUN};
+   //   hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
+   //   hamper.VvRightMargin = hamper.VvLeftMargin;
+
+   //   hamper.VvRowHgt       = new int[] { ZXC.QUN };
+   //   hamper.VvSpcBefRow    = new int[] { ZXC.Qun8};
+   //   hamper.VvBottomMargin = hamper.VvTopMargin;
+
+   //   hamper.Name = name;
+   //   hamper.VvInitialHamperLocation  = new Point(_nextX, _nextY);
+   //   hamper.VvIsMigrateable = true;
+
+   //                hamper.CreateVvLabel        (0, 0, hamper.Name, ContentAlignment.MiddleRight);
+   // //tbx_partNo = hamper.CreateVvTextBox      (1, 0, "tbx_partNo", "PartNo", GetDB_ColumnSize(DB_ci.partNo));
+   //   tbx_partNo = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_partNo", "KPD", GetDB_ColumnSize(DB_ci.partNo));
+   //   tbx_partNo.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+
+   //}
+
    private void Initialize_PartNoHamper(out VvHamper hamper, string name, int _nextX, int _nextY)
    {
-      hamper = new VvHamper(2, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp);
+      hamper = new VvHamper(4, 1, "", MigratorRightParentA, false, _nextX, _nextY, razmakHamp);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q10un + ZXC.QUN};
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4};
+      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q3un + ZXC.QUN, ZXC.Q3un - ZXC.Qun4, ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4          , ZXC.Qun4           ,        0 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       hamper.VvRowHgt       = new int[] { ZXC.QUN };
@@ -1151,12 +1186,12 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation  = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
 
-                   hamper.CreateVvLabel        (0, 0, hamper.Name, ContentAlignment.MiddleRight);
-    //tbx_partNo = hamper.CreateVvTextBox      (1, 0, "tbx_partNo", "PartNo", GetDB_ColumnSize(DB_ci.partNo));
-      tbx_partNo = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_partNo", "PartNo", GetDB_ColumnSize(DB_ci.partNo));
-      tbx_partNo.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
 
+                   hamper.CreateVvLabel      (0, 0, "AProdCij:"   , ContentAlignment.MiddleRight);
+      rbt_vpc1   = hamper.CreateVvRadioButton(1, 0, null, "VPC1" , TextImageRelation.TextBeforeImage);
+      rbt_marza  = hamper.CreateVvRadioButton(2, 0, null, "Marža", TextImageRelation.TextBeforeImage);
    }
+
 
    private void Initialize_CarTarifaHamper(out VvHamper hamper, string name, int _nextX, int _nextY)
    {
@@ -1917,6 +1952,11 @@ public class ArtiklUC : VvSifrarRecordUC
    {
       set { tbx_tsOpis.Text = value; }
    }
+  /*    */ public string Fld_KpdOpis
+   {
+      set { tbx_kpdOpis.Text = value; }
+   }
+
    /* 15 */ public string Fld_BarCode2
       {
          get { return tbx_barCode2.Text; }
@@ -2700,7 +2740,8 @@ public class ArtiklUC : VvSifrarRecordUC
          Fld_Grupa2Opis = artikl_rec.Grupa2Name;
          Fld_Grupa3Opis = artikl_rec.Grupa3Name;
          Fld_TsOpis     = artikl_rec.TsName    ;
-
+         
+         Fld_KpdOpis    = ZXC.luiListaKPD2025.GetNameForThisCd(artikl_rec.PartNo); ;
          Fld_MadeInOpis = ZXC.luiListaGeonomenklatura.GetNameForThisCd(artikl_rec.MadeIn);
 
       //===================== 

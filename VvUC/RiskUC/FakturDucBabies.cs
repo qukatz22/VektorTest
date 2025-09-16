@@ -1304,19 +1304,20 @@ public class IFADUC              : FakturExtDUC
       string serlotCol  = ZXC.IsPCTOGO ? "UGAN Rata" : "Šarža/LOT";
       string serlotOpis = ZXC.IsPCTOGO ? "Broj ugovora i rate" : "Broj Šarže/Lota";
 
-      T_artiklCD_CreateColumn      (ZXC.IsPCTOGO ? ZXC.Q2un : ZXC.Q4un, isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                                    isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_serlot_CreateColumn        (ZXC.IsPCTOGO ? ZXC.Q6un : ZXC.Q4un, isSerlotVisible, serlotCol, serlotOpis);
-      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                 isVisible, "Usl"         , "Usluga");
-      T_konto_CreateColumn         (ZXC.Q3un   ,                        isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
-      T_jedMj_CreateColumn         (ZXC.Q2un   ,                        isVisible, "JM"         , "Jedinica mjere");
-      T_kol_CreateColumn           (ZXC.Q3un, 2,                        isVisible, "Kol"        , "Količina"      );
-      T_cij_CreateColumn           (ZXC.Q4un, 4,                        isVisible, "Cijena"     , "Jedinična cijena");
-      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2,               isVisible, "Rb1"        , "Stopa rabata 1");
-      R_KCR_CreateColumn           (ZXC.Q4un, 2,                        isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
-      T_pdvSt_CreateColumn         (ZXC.Q2un, 0,                        isVisible, "PdvSt"      , "Stopa PDV-a"           );
-      T_pdvKolTip_CreateColumn     (ZXC.QUN    ,                        isVisible);
-      R_KCRP_CreateColumn          (ZXC.Q4un + ZXC.Qun2 , 2,            isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
+      T_artiklCD_CreateColumn      (ZXC.IsPCTOGO ? ZXC.Q2un : ZXC.Q4un, isVisible, "Šifra"         , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                                    isVisible, "Naziv"         , "Naziv artikla ili proizvoljan opis");
+      R_KPD_CreateColumn           (ZXC.Q3un   ,                        ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
+      T_serlot_CreateColumn        (ZXC.IsPCTOGO ? ZXC.Q6un : ZXC.Q4un, isSerlotVisible, serlotCol , serlotOpis);
+      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                 isVisible, "Usl"           , "Usluga");
+      T_konto_CreateColumn         (ZXC.Q3un   ,                        isVisible, "Konto"         , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,                        isVisible, "JM"            , "Jedinica mjere");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,                        isVisible, "Kol"           , "Količina"      );
+      T_cij_CreateColumn           (ZXC.Q4un, 4,                        isVisible, "Cijena"        , "Jedinična cijena");
+      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2,               isVisible, "Rb1"           , "Stopa rabata 1");
+      R_KCR_CreateColumn           (ZXC.Q4un, 2,                        isVisible, "Uk bez Pdv"    , "Ukupan iznos bez PDV-a");
+      T_pdvSt_CreateColumn         (ZXC.Q2un, 0,                        isVisible, "PdvSt"         , "Stopa PDV-a"           );
+      T_pdvKolTip_CreateColumn     (ZXC.QUN    ,                        isVisible);                
+      R_KCRP_CreateColumn          (ZXC.Q4un + ZXC.Qun2 , 2,            isVisible, "Uk s PDV-om"   , "Ukupno s PDV-om");
    
    }
 
@@ -1353,18 +1354,19 @@ public class IFAdevDUC           : IFADUC
    {
       bool isVisible = true;
 
-      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklCD_CreateColumn   (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"         , "Usluga");
-      T_konto_CreateColumn     (ZXC.Q3un   ,          isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
-      T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
-      T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
-      T_cij_CreateColumn       (ZXC.Q6un, 8,          isVisible, "Cijena"     , "Jedinična cijena");
-      T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
-      R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
-      T_pdvSt_CreateColumn     (ZXC.Q2un, 0,          isVisible, "PdvSt"      , "Stopa PDV-a"           );
-      T_pdvKolTip_CreateColumn (ZXC.QUN    ,          isVisible);
-      R_KCRP_CreateColumn      (ZXC.Q4un + ZXC.Qun2 , 2,          isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
+      R_KPD_CreateColumn        (ZXC.Q3un   ,ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
+      T_isIrmUsluga_CreateColumn(ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"         , "Usluga");
+      T_konto_CreateColumn      (ZXC.Q3un   ,          isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      T_jedMj_CreateColumn      (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
+      T_kol_CreateColumn        (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
+      T_cij_CreateColumn        (ZXC.Q6un, 8,          isVisible, "Cijena"     , "Jedinična cijena");
+      T_rbt1St_CreateColumn     (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
+      R_KCR_CreateColumn        (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
+      T_pdvSt_CreateColumn      (ZXC.Q2un, 0,          isVisible, "PdvSt"      , "Stopa PDV-a"           );
+      T_pdvKolTip_CreateColumn  (ZXC.QUN    ,          isVisible);
+      R_KCRP_CreateColumn       (ZXC.Q4un + ZXC.Qun2 , 2,          isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
    }
 
    #endregion TheG_Specific_Columns
@@ -1442,6 +1444,7 @@ public class IRADUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,                                                      isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                                                         isVisible, "Naziv"      , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un          ,ZXC.RRD.Dsc_IsVisibleKPD_VP                                    , "KPD"         , "KPD");
       T_serlot_CreateColumn        (ZXC.Q4un          , ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible, "Šarža/LOT"  , "Broj Šarže/Lota");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                                                      isVisible, "Usl"        , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un          ,                                                      isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
@@ -1564,6 +1567,7 @@ public class IRADUC_2              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,                                                      isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                                                         isVisible, "Naziv"      , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un          ,ZXC.RRD.Dsc_IsVisibleKPD_VP                                    , "KPD"         , "KPD");
       T_serlot_CreateColumn        (ZXC.Q4un          , ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible, "Šarža/LOT"  , "Broj Šarže/Lota");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                                                      isVisible, "Usl"        , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un          ,                                                      isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
@@ -1872,6 +1876,7 @@ public class IRMDUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible,      "Šifra"      , "Šifra artikla");
       T_artiklName_CreateColumnFill(                      isVisible,      "Naziv"      , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_MP, "KPD"         , "KPD");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible,      "Usl"        , "Usluga");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible,      "Kol"        , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible,      "JM"         , "Jedinica mjere");
@@ -2079,6 +2084,7 @@ public class IRMDUC_2            : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible,      "Šifra"       , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible,      "Naziv"       , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_MP, "KPD"         , "KPD");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible,      "Usl"         , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un   ,          isKontoVisible, "Konto"       , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible,      "Kol"         , "Količina"      );
@@ -2740,6 +2746,7 @@ public class ObvezPonudaDUC      : FakturExtDUC
 
       T_artiklCD_CreateColumn  (ZXC.Q4un,                      isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                           isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
+      R_KPD_CreateColumn       (ZXC.Q3un,    ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
       T_kol_CreateColumn       (ZXC.Q3un, 2,                   isVisible, "Kol"          , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,                   isVisible, "JM"           , "Jedinica mjere");
       T_cij_CreateColumn       (ZXC.Q4un, 4,                   isVisible, "Cijena"       , "Jedinična cijena");
@@ -2845,11 +2852,12 @@ public class PonudaDUC           : FakturExtDUC
       bool isVisible       = true;
       bool isOrgPakVisible = ZXC.RRD.Dsc_IsOrgPakVisible;
 
-      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
-      T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un, 4,          isVisible, "Cijena"     , "Jedinična cijena");
+      T_artiklCD_CreateColumn  (ZXC.Q4un,                  isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                       isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      R_KPD_CreateColumn       (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
+      T_kol_CreateColumn       (ZXC.Q3un, 2,               isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn     (ZXC.Q2un   ,               isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn       (ZXC.Q4un, 4,               isVisible, "Cijena"     , "Jedinična cijena");
 
       R_kolOP_CreateColumn(ZXC.Q3un, 2, ZXC.RRD.Dsc_IsOrgPakVisible, R_kolOP_ColName, "Količina originalnog pakiranja");
       R_cijOP_CreateColumn(ZXC.Q4un, 2, ZXC.RRD.Dsc_IsOrgPakVisible, R_cijOP_ColName, "Cijena originalnog pakiranja");
@@ -2959,16 +2967,17 @@ public class PonMalDUC           : FakturExtDUC
       bool isVisible = true;
       bool isPkVisible = ZXC.RRD.Dsc_IsPKvisible; //20.11.2013. zbog umjetnina
 
-      T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible, "Šifra"   , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"   , "Naziv artikla");
-      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"     , "Usluga");
-      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"     , "Količina"      );
-      T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"      , "Jedinica mjere");
-      T_cij_CreateColumn           (ZXC.Q5un, 4,          isVisible, "Cijena"  , "Jedinična cijena");
-      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Popust"  , "Popust");
-      T_pdvSt_CreateColumn         (ZXC.Q2un, 0,          isVisible, "StPdv"   , "Stopa PDV-a");
-      T_pdvKolTip_CreateColumn     (ZXC.QUN    ,          isPkVisible);
-      R_cij_kcrp_CreateColumn      (ZXC.Q5un, 2,          isVisible, "CijSaPop", "Cijena sa popustom");
+      T_artiklCD_CreateColumn      (ZXC.Q4un,                  isVisible, "Šifra"   , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                           isVisible, "Naziv"   , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_MP, "KPD"         , "KPD");
+      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,        isVisible, "Usl"     , "Usluga");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,               isVisible, "Kol"     , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,               isVisible, "JM"      , "Jedinica mjere");
+      T_cij_CreateColumn           (ZXC.Q5un, 4,               isVisible, "Cijena"  , "Jedinična cijena");
+      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2,      isVisible, "Popust"  , "Popust");
+      T_pdvSt_CreateColumn         (ZXC.Q2un, 0,               isVisible, "StPdv"   , "Stopa PDV-a");
+      T_pdvKolTip_CreateColumn     (ZXC.QUN    ,               isPkVisible);
+      R_cij_kcrp_CreateColumn      (ZXC.Q5un, 2,               isVisible, "CijSaPop", "Cijena sa popustom");
 
       R_cij_kcr_CreateColumn(ZXC.Q4un, 2, false, "VPC"   , "Veleprodajna cijena");
       R_NC_CreateColumn     (ZXC.Q4un, 2, false, "NabCij", "Nabavna cijena");
@@ -6409,10 +6418,11 @@ public class IRPDUC              : FakturPDUC
    {
       bool isVisible = true;
 
-      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla");
-      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"         , "Usluga");
-      T_konto_CreateColumn     (ZXC.Q3un   ,          isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      T_artiklCD_CreateColumn      (ZXC.Q4un,                  isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                           isVisible, "Naziv"      , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
+      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,        isVisible, "Usl"         , "Usluga");
+      T_konto_CreateColumn         (ZXC.Q3un   ,               isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
      
     //if(ZXC.IsPCTOGO)
     //{
@@ -8161,11 +8171,12 @@ public class PON_MPC_DUC           : FakturExtDUC
       bool isVisible       = true;
       bool isOrgPakVisible = ZXC.RRD.Dsc_IsOrgPakVisible;
 
-      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
-      T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV"     , "Jedinična cijena");
+      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible     , "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                  isVisible     , "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      R_KPD_CreateColumn       (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
+      T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible     , "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible     , "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2,isVisible     , "Cij bez PDV"     , "Jedinična cijena");
 
     //T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
       R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
@@ -8279,6 +8290,7 @@ public class OPN_MPC_DUC           : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,                                    isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                             isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      R_KPD_CreateColumn           (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_VP                  , "KPD"         , "KPD");
       T_kol_CreateColumn           (ZXC.Q3un, 2,                                 isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,                                 isVisible, "JM"         , "Jedinica mjere");
       T_cij_CreateColumn           (ZXC.Q4un+ ZXC.Qun4, 2                      , isVisible, "Cij bez PDV", "Jedinična cijena");
@@ -8408,6 +8420,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,   isVisible, "Šifra"           , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"           , "Naziv artikla");
+      R_KPD_CreateColumn           (ZXC.Q3un,ZXC.RRD.Dsc_IsVisibleKPD_VP, "KPD"         , "KPD");
     //T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"             , "Usluga");
     //T_konto_CreateColumn         (ZXC.Q3un          ,   isVisible, "Konto"           , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"             , "Količina"      );

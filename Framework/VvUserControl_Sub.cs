@@ -1075,7 +1075,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    public    Button btn_PlusMinusFilter;
    public    Button button_GO, button_Reset;
    protected CheckBox checkBox_shouldLimit;
-   public    VvTextBox tbx_limitNum, tbx_filColumn;
+   public    VvTextBox tbx_limitNum, tbx_filColumn, tbx_KPD;
    protected Label labelMin, labelMax, labelPositionInfo;
    protected HScrollBar scrollBarNorrWoLimit;
    public    GroupBox grBoxLimitiraj;
@@ -1084,7 +1084,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    protected Label lblCrta;
    protected int nextX = ZXC.QunMrgn, nextY = 0, razmakHamp = ZXC.Qun10, nextY4grBox;
    
-   protected Button btnUtil_del, btnUtil_copyIn, btnUtil_copyOut;
+   protected Button btnUtil_del, btnUtil_copyIn, btnUtil_copyOut, btnUtil_KPD;
 
    // news: 22.10.2010 DataGridViewFind ---> VvDataGridViewFind
    private VvDataGridViewFind dataGridView;
@@ -1912,7 +1912,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
       hampIzlistaj.VvSpcBefRow    = new int[] { ZXC.Qun2, ZXC.Qun4 };
       hampIzlistaj.VvBottomMargin = hampIzlistaj.VvTopMargin;
 
-      button_GO = hampIzlistaj.CreateVvButton(0, 0, new EventHandler(button_GO_Click), "Izlistaj");
+      button_GO    = hampIzlistaj.CreateVvButton(0, 0, new EventHandler(button_GO_Click), "Izlistaj");
       button_Reset = hampIzlistaj.CreateVvButton(0, 1, new EventHandler(button_Reset_Click), "Reset");
       hampIzlistaj.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
@@ -1946,10 +1946,11 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    {
       CreateHamperOpenUtil();
 
-      hampUtil = new VvHamper(3, 1, "", this, true, hampOpenUtil.Left, hampOpenUtil.Top, razmakHamp);
+    //hampUtil = new VvHamper(3, 1, "", this, true, hampOpenUtil.Left, hampOpenUtil.Top, razmakHamp);
+      hampUtil = new VvHamper(5, 1, "", this, true, hampOpenUtil.Left, hampOpenUtil.Top, razmakHamp);
 
-      hampUtil.VvColWdt      = new int[] { ZXC.QunBtnW, ZXC.QunBtnW, ZXC.QunBtnW };
-      hampUtil.VvSpcBefCol   = new int[] { ZXC.Q6un, ZXC.Q4un, ZXC.Q4un };
+      hampUtil.VvColWdt      = new int[] { ZXC.QunBtnW, ZXC.QunBtnW, ZXC.QunBtnW , ZXC.QunBtnW , ZXC.QunBtnW };
+      hampUtil.VvSpcBefCol   = new int[] { ZXC.Q6un      , ZXC.Q4un, ZXC.Q4un    , ZXC.Q4un    , ZXC.QUN    };
       hampUtil.VvRightMargin = hampUtil.VvLeftMargin;
 
       hampUtil.VvRowHgt       = new int[] { ZXC.QunBtnH };
@@ -1959,6 +1960,15 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
       btnUtil_del     = hampUtil.CreateVvButton(0, 0, new EventHandler(btnUtil_del_Click)    , "Briši");
       btnUtil_copyIn  = hampUtil.CreateVvButton(1, 0, new EventHandler(btnUtil_copyIn_Click) , "KopirajIn");
       btnUtil_copyOut = hampUtil.CreateVvButton(2, 0, new EventHandler(btnUtil_copyOut_Click), "KopirajOut");
+
+      if(this is ArtiklListUC)
+      { 
+         btnUtil_KPD = hampUtil.CreateVvButton(3, 0,  new EventHandler(btnUtil_KPD_Click), "KPD");
+         tbx_KPD     = hampUtil.CreateVvTextBoxLookUp(4, 0, "KPD", "");
+         tbx_KPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+
+         VvHamper.Open_Close_Fields_ForWriting(tbx_KPD, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvFindDialog);
+      }
 
       hampUtil.Visible = false;
    }
@@ -2611,6 +2621,10 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    }
 
    #endregion COPY RECORDS
+
+   private void btnUtil_KPD_Click(object sender, System.EventArgs e)
+   {
+   }
 
    #endregion UtilEvent
 
