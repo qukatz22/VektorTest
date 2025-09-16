@@ -1151,8 +1151,10 @@ public class ArtiklUC : VvSifrarRecordUC
       hamper.VvInitialHamperLocation  = new Point(_nextX, _nextY);
       hamper.VvIsMigrateable = true;
 
-                   hamper.CreateVvLabel  (0, 0, hamper.Name, ContentAlignment.MiddleRight);
-      tbx_partNo = hamper.CreateVvTextBox(1, 0, "tbx_partNo", "PartNo", GetDB_ColumnSize(DB_ci.partNo));
+                   hamper.CreateVvLabel        (0, 0, hamper.Name, ContentAlignment.MiddleRight);
+    //tbx_partNo = hamper.CreateVvTextBox      (1, 0, "tbx_partNo", "PartNo", GetDB_ColumnSize(DB_ci.partNo));
+      tbx_partNo = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_partNo", "PartNo", GetDB_ColumnSize(DB_ci.partNo));
+      tbx_partNo.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
 
    }
 
