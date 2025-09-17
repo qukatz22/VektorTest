@@ -257,6 +257,14 @@ namespace EN16931.UBL
             ElectronicMail = new ElectronicMailType { Value = Prj2eR__String("BT043") },
          };
 
+       //new 2025-2026
+       //the_eRacun.AccountingSupplierParty.SellerContact = new ContactType
+       //{
+       //   ID   = new IDType    { Value = "oib" },
+       //   Name = new NameType1 { Value = "operater1" }
+       //};
+
+
          #endregion BG-4 BG-5 Prodavatelj (Prjkt)
 
          #region BG -8 Kupac
@@ -1025,6 +1033,11 @@ namespace EN16931.UBL
             //BT-154 Opis artikla
             //BT-155 Identifikator artikla  ID = sifra Artikla
             invoiceLine.Item.Name = new NameType1 { Value = Fak2eR__String("BT153", faktur_rec, rtrans_rec) };
+
+            //new 2025-2026
+            //invoiceLine.Item.CommodityClassification
+            //< cbc:ItemClassificationCode listID = "CG" > 62.90.90 </ cbc:ItemClassificationCode >
+
 
             if(rtrans_rec.T_artiklCD.NotEmpty())
             {
