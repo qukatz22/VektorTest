@@ -325,6 +325,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             private global::System.Data.DataColumn columnartiklName2;
             
+            private global::System.Data.DataColumn columnpartNo;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public artiklDataTable() {
@@ -544,6 +546,14 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn partNoColumn {
+                get {
+                    return this.columnpartNo;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -602,7 +612,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         decimal ext_RucVpc1, 
                         decimal ext_KolFisycal, 
                         string artiklCD2, 
-                        string artiklName2) {
+                        string artiklName2, 
+                        string partNo) {
                 artiklRow rowartiklRow = ((artiklRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         recID,
@@ -627,7 +638,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         ext_RucVpc1,
                         ext_KolFisycal,
                         artiklCD2,
-                        artiklName2};
+                        artiklName2,
+                        partNo};
                 rowartiklRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowartiklRow);
                 return rowartiklRow;
@@ -673,6 +685,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnext_KolFisycal = base.Columns["ext_KolFisycal"];
                 this.columnartiklCD2 = base.Columns["artiklCD2"];
                 this.columnartiklName2 = base.Columns["artiklName2"];
+                this.columnpartNo = base.Columns["partNo"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -724,6 +737,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 base.Columns.Add(this.columnartiklCD2);
                 this.columnartiklName2 = new global::System.Data.DataColumn("artiklName2", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnartiklName2);
+                this.columnpartNo = new global::System.Data.DataColumn("partNo", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnpartNo);
                 this.columnrecID.AllowDBNull = false;
                 this.columnaddTS.AllowDBNull = false;
                 this.columnmodTS.AllowDBNull = false;
@@ -764,6 +779,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnartiklCD2.MaxLength = 32;
                 this.columnartiklName2.AllowDBNull = false;
                 this.columnartiklName2.MaxLength = 80;
+                this.columnpartNo.MaxLength = 32;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1155,6 +1171,34 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 set {
                     this[this.tableartikl.artiklName2Column] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string partNo {
+                get {
+                    try {
+                        return ((string)(this[this.tableartikl.partNoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'partNo\' in table \'artikl\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableartikl.partNoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IspartNoNull() {
+                return this.IsNull(this.tableartikl.partNoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetpartNoNull() {
+                this[this.tableartikl.partNoColumn] = global::System.Convert.DBNull;
             }
         }
         

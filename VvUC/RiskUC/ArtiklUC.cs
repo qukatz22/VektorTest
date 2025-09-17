@@ -2320,6 +2320,12 @@ public class ArtiklUC : VvSifrarRecordUC
       set {        tbx_partNo.Text = value; }
    }
 
+   /* 61 */ public string Fld_KPD
+   {
+      get { return tbx_partNo.Text; }
+      set {        tbx_partNo.Text = value; }
+   }
+
    /* 62 */
    public string Fld_Napomena
    {
@@ -3321,6 +3327,8 @@ public class ArtiklUC : VvSifrarRecordUC
       // 02.07.2018: 
     //                 Fld_ArtiklCd = newSifra.ToString("000000");
       if(!ZXC.IsSvDUH) Fld_ArtiklCd = newSifra.ToString("000000");
+
+      Fld_KPD = ZXC.RRD.Dsc_OrgPakText;
    }
 
    public override void PutNew_Sifra_Field(string newSifra)

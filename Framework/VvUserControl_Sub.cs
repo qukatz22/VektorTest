@@ -2622,9 +2622,71 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
    #endregion COPY RECORDS
 
+   #region SET MASS KPD
    private void btnUtil_KPD_Click(object sender, System.EventArgs e)
    {
+      ArtiklListUC theUC = this as ArtiklListUC;
+      string theKPD = theUC.Fld_TheKPD;
+
+      // ipak ne. sama LuiLista je dovoljna validacija, a s njom onda mozes i brisati (ostavis prayan tbx) 
+      //if(Artikl.ValidateKPD(theKPD) == false) return;
+
+      // here we go:
+
+      Execute_MassSetKPDsifra(TheDbConnection, theKPD);
+
    }
+
+   private void Execute_MassSetKPDsifra(XSqlConnection conn, string theKPD)
+   {
+      uint recID, okCount=0;
+      bool OK;
+
+      string message = "Da li zaista zelite postaviti ovu KPD šifru na " + TheGrid.RowCount.ToString() + " prikazanih zapisa tablice [" + TheDataTable.TableName + "]\n\n" +
+                       " U database: [" + conn.Database + "]!?";
+
+      DialogResult result = MessageBox.Show(message, "Potvrdite KPD?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+      if(result != DialogResult.Yes) return;
+
+      //-------- Here we go! --------------------------------------------------------------------------------------------------------------------------------- 
+      //-------- Here we go! --------------------------------------------------------------------------------------------------------------------------------- 
+      //-------- Here we go! --------------------------------------------------------------------------------------------------------------------------------- 
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.CopyOut_InProgress = true;
+
+      for(int rIdx = 0; rIdx < TheGrid.RowCount; ++rIdx)
+      {
+         recID = ZXC.ValOrZero_UInt(TheGrid["recID", rIdx].Value.ToString());
+
+         OK = ZXC.TheVvForm.TheVvDao.SetMe_Record_byRecID(TheDbConnection, VirtualDataRecord, recID, false);
+
+         if(!OK) continue;
+
+         ZXC.TheVvForm.BeginEdit(VirtualDataRecord);
+
+         (VirtualDataRecord as Artikl).KPD = theKPD;
+
+         bool rwtOK = VirtualDataRecord.VvDao.RWTREC(TheDbConnection, VirtualDataRecord);
+
+         ZXC.TheVvForm.EndEdit(VirtualDataRecord);
+
+         if(OK) okCount++;
+
+      } // for(int rIdx = 0; rIdx < TheGrid.RowCount; ++rIdx)
+
+      button_GO.PerformClick(); // refresh DGV 
+
+      ZXC.CopyOut_InProgress = false;
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.aim_emsg(MessageBoxIcon.Information, "Gotovo. Postavio {0} KPD ", okCount);
+   }
+
+   #endregion SET MASS KPD
 
    #endregion UtilEvent
 

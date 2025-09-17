@@ -827,6 +827,11 @@ public class Artikl : VvSifrarRecord
       set {        this.currentData._partNo = value; }
    }
 
+   public string ER_KPD
+   {
+      get { return this.KPD.SubstringSafe(1); }
+   }
+
    /* 62 */ public string Napomena
    {
       get { return this.currentData._napomena; }
@@ -1691,6 +1696,30 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
    internal static bool ThisArtikl_Ima_Real_Serno(string artiklCD)  { return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "") == true ; }
 
    internal static bool ThisArtikl_Nema_Real_Serno(string artiklCD) { return DoesThisArtikl_Needs_RtranoRow_ForSerno(artiklCD, /*theTT*/ "") == false; }
+
+   internal static bool ValidateKPD(string theKPD)
+   {
+      return ValidateKPD(theKPD, false);
+   }
+   internal static bool ValidateKPD(string theKPD, bool shouldBeSilent)
+   {
+      bool OK = true;
+
+      //if(theKPD.IsEmpty())         OK = false;
+      //if(theKPD.Length != 9)       OK = false;
+      //if(!Char.IsUpper(theKPD[0])) OK = false;
+
+      System.Text.RegularExpressions.Regex kpdPattern = new System.Text.RegularExpressions.Regex(@"^[A-Z]\d{2}\.\d{2}\.\d{2}$");
+
+      OK = kpdPattern.IsMatch(theKPD);
+
+      if(!shouldBeSilent && !OK)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "KPD šifra [{0}] nema očekivani oblik (npr 'A12.34.56')", theKPD);
+      }
+
+      return OK;
+   }
 
    #endregion Some Util - Results propertiz
 
