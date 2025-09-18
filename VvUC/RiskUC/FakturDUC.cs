@@ -63,7 +63,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_serlot, vvtbR_artiklLongOpis,
                        vvtbT_skladDate, tbx_Konto, vvtbT_skladCD, vvtbT_TT1,
                        vvtbT_ramPlus  ,vvtbT_ramMinus ,vvtbT_hddPlus  ,vvtbT_hddMinus ,vvtbT_ramOld,vvtbT_hddOld,vvtbT_ramKlasa ,vvtbT_hddKlasa,
-                       vvtbR_Opis, vvtbR_SkladIzl, vvtbR_TT2, vvtbR_Opis2, vvtbR_skladCd2, vvtbR_OPN_neispKol, vvtbR_KPD;
+                       vvtbR_Opis, vvtbR_SkladIzl, vvtbR_TT2, vvtbR_Opis2, vvtbR_skladCd2, vvtbR_OPN_neispKol, vvtbT_KPD;
 
    /*public*/
    protected VvTextBox vvtbT_kol, vvtbT_cij, vvtbR_cij_uk, vvtbR_cij_vel, vvtbR_cij_MSK, vvtbR_ZPC_DiffCij, vvtbR_org, vvtbR_bop, vvtbR_cop,
@@ -3140,12 +3140,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       colVvText.Visible = isVisible;
    }
 
-   protected void R_KPD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText) 
+   protected void T_KPD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText) 
    {
-      vvtbR_KPD = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_KPD", TheVvDaoTrans, -24, _statusText);
-      vvtbR_KPD.JAM_ReadOnly = true;
-
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_KPD, TheVvDaoTrans, "R_KPD", _colHeader, ZXC.Q4un);
+      vvtbT_KPD = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_KPD", TheVvDaoTrans, -24, _statusText);
+      
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_KPD, TheVvDaoTrans, "T_KPD", _colHeader, ZXC.Q4un);
       colVvText.Visible = isVisible;
    }
 
@@ -3444,7 +3443,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_skladCD2          = TheG.IdxForColumn("R_skladCd2");
 
       ci.iT_OPN_neispKol      = TheG.IdxForColumn("R_OPN_neispKol");
-      ci.iT_KPD               = TheG.IdxForColumn("R_KPD");
+      ci.iT_KPD               = TheG.IdxForColumn("T_KPD");
 
    }
 
@@ -18566,7 +18565,7 @@ public class RiskRulesUC : VvOtherUC
    private VvHamper  hamp_mpc, hamp_kupdobNaziv, hamp_ciljaniMPC, hamp_numDecmal, hamp_fiskal, hamp_kpd;
    private VvTextBox tbx_VpcMpcMarza, tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName, tbx_kolNumDecimal, tbx_ambKolNumDecimal, tbx_cekanjeFiskal,
                      tbx_pnpSt, tbx_komercProvSt, tbx_rucGranica, tbx_omjerPdv, tbx_blgMin, tbx_OrgPakText, tbx_koefPlanCijProizv,
-                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy, tbx_M2P_sekunde;
+                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy, tbx_M2P_sekunde, tbxDefaultKPD;
 
    protected RadioButton rbt_stMarze, rbt_vpc, rbt_mpc, rbt_ciljMPCknjigMPC, rbt_ciljMPCrabat;
    protected CheckBox    cbx_VpcMpcMarzaTheSame4VPC, cbx_IsSupressSHADOWing, cbx_IsBarCode, cbx_IsPkVisible, cbx_IsZtrViaOrgPak,
@@ -18886,10 +18885,10 @@ public class RiskRulesUC : VvOtherUC
 
    private void InitializeHamper_KPD(out VvHamper hamper)
    { 
-      hamper = new VvHamper(1, 3, "", this, false, hamp_ciljaniMPC.Right + ZXC.Q7un, hamp_ciljaniMPC.Top, 0);
+      hamper = new VvHamper(2, 1, "", this, false, hamp_ciljaniMPC.Right + ZXC.Q3un, hamp_ciljaniMPC.Top, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q5un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q5un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -18899,9 +18898,10 @@ public class RiskRulesUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                     hamper.CreateVvLabel       (0, 0, "Prikaz KPD kolone na:"   , ContentAlignment.MiddleRight);
-      cbx_isVisibleKPD_MP = hamper.CreateVvCheckBox_OLD(0, 1, null, "IRM"     , RightToLeft.No);
-      cbx_isVisibleKPD_VP = hamper.CreateVvCheckBox_OLD(0, 2, null, "IRA, IFA", RightToLeft.No);
+                     hamper.CreateVvLabel         (0, 0, "DeafaultKPD:", ContentAlignment.MiddleRight);
+      tbxDefaultKPD = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefaultKPD", "Default KPD");
+      tbxDefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+
    }
 
 #endregion Hampers 
@@ -19023,6 +19023,8 @@ public class RiskRulesUC : VvOtherUC
    public bool Fld_IsVisibleKPD_MP             { get { return cbx_isVisibleKPD_MP     .Checked; } set { cbx_isVisibleKPD_MP      .Checked = value; } }
    public bool Fld_IsVisibleKPD_VP             { get { return cbx_isVisibleKPD_VP     .Checked; } set { cbx_isVisibleKPD_VP      .Checked = value; } }
 
+   public string Fld_DefaultKPD                { get { return tbxDefaultKPD.Text; } set { tbxDefaultKPD.Text = value; } }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -19095,9 +19097,7 @@ public class RiskRulesUC : VvOtherUC
       Fld_IsM2PAY                  = RRD.Dsc_IsM2PAY;
       Fld_M2P_TimeOutSeconds       = (uint)RRD.Dsc_M2P_TimeOutSeconds;
       Fld_IsUseOPN                 = RRD.Dsc_IsUseOPN;
-      Fld_IsVisibleKPD_MP          = RRD.Dsc_IsVisibleKPD_MP;
-      Fld_IsVisibleKPD_VP          = RRD.Dsc_IsVisibleKPD_VP;
-
+      Fld_DefaultKPD               = RRD.Dsc_DefaultKPD;
    }
 
    public void GetDscFields()
@@ -19159,9 +19159,8 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_IsM2PAY                  = Fld_IsM2PAY ;
       ZXC.RRD.Dsc_M2P_TimeOutSeconds       = (int)Fld_M2P_TimeOutSeconds ;
       ZXC.RRD.Dsc_IsUseOPN                 = Fld_IsUseOPN;
-      ZXC.RRD.Dsc_IsVisibleKPD_MP          = Fld_IsVisibleKPD_MP;
-      ZXC.RRD.Dsc_IsVisibleKPD_VP          = Fld_IsVisibleKPD_VP;
-
+      ZXC.RRD.Dsc_DefaultKPD               = Fld_DefaultKPD;
+      
       ZXC.RRD.SaveDscToLookUpItemList();
 
       ZXC.RRD.SetMalopKupdob_rec(null);

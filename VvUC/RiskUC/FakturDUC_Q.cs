@@ -10788,8 +10788,7 @@ public class RiskRulesDsc : VvLookupAsDsc
    public bool Dsc_IsM2PAY                     { get; set; }
    public int  Dsc_M2P_TimeOutSeconds          { get; set; }
    public bool Dsc_IsUseOPN                    { get; set; }
-   public bool Dsc_IsVisibleKPD_MP             { get; set; }
-   public bool Dsc_IsVisibleKPD_VP             { get; set; }
+   public string Dsc_DefaultKPD                { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -10880,9 +10879,8 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_M2P_TimeOutSeconds       = 2;
 
       Dsc_IsUseOPN                 = false;
-      Dsc_IsVisibleKPD_MP          = false;
-      Dsc_IsVisibleKPD_VP          = false;
-
+      Dsc_DefaultKPD               = "";
+      
       #endregion defautValue
    }
 

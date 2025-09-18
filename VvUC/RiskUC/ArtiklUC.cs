@@ -3328,7 +3328,7 @@ public class ArtiklUC : VvSifrarRecordUC
     //                 Fld_ArtiklCd = newSifra.ToString("000000");
       if(!ZXC.IsSvDUH) Fld_ArtiklCd = newSifra.ToString("000000");
 
-      Fld_KPD = ZXC.RRD.Dsc_OrgPakText;
+      Fld_KPD = ZXC.RRD.Dsc_DefaultKPD;
    }
 
    public override void PutNew_Sifra_Field(string newSifra)

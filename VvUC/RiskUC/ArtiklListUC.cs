@@ -27,7 +27,7 @@ public class ArtiklListUC : VvRecLstUC
                      tbx_kolStDo, tbx_prNabCijDo, tbx_finStDo, tbx_izlRezervKolDo, tbx_KolStFreeDo,
                      tbx_cjenikVpc1Od, tbx_rucOd, tbx_VPC2Od, tbx_MPC1Od, tbx_devCOd, tbx_rabat1Od, tbx_rabat2Od, tbx_minKolOd, tbx_marzaOd,
                      tbx_cjenikVpc1Do, tbx_rucDo, tbx_VPC2Do, tbx_MPC1Do, tbx_devCDo, tbx_rabat1Do, tbx_rabat2Do, tbx_minKolDo, tbx_marzaDo,
-                     tbx_zaSkladCD, tbx_zaSkladOpis, tbx_snagaOd, tbx_snagaDo;
+                     tbx_zaSkladCD, tbx_zaSkladOpis, tbx_snagaOd, tbx_snagaDo, tbx_KPDFilter;
 
    private CheckBox    cbx_biloGdjeUArtiklName, cbx_isWKolOnly, cbx_isStatus, cbx_ikadaUminusu;
    private Artikl      artikl_rec;
@@ -592,13 +592,6 @@ public class ArtiklListUC : VvRecLstUC
       tbx_ts.JAM_Set_LookUpTable(ZXC.luiListaArtiklTS, (int)ZXC.Kolona.prva);
       tbx_ts.JAM_lui_NameTaker_JAM_Name = tbx_tsOpis.JAM_Name;
 
-      //                     hampFilter.CreateVvLabel        (0, 2, "Grupa A:", ContentAlignment.MiddleRight);
-      //tbx_grupa1CD       = hampFilter.CreateVvTextBoxLookUp(1, 2, "tbx_grupa1CD", "");
-      //tbx_grupa1Opis     = hampFilter.CreateVvTextBox      (2, 2, "tbx_grupa1Opis", "");
-      //tbx_grupa1Opis.JAM_ReadOnly = true;
-      //tbx_grupa1CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa1Artikla, (int)ZXC.Kolona.prva);
-      //tbx_grupa1CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa1Opis.JAM_Name;
-
                           hampFilter.CreateVvLabel        (0, 3, "Uob Sklad:", ContentAlignment.MiddleRight);
       tbx_skladCD       = hampFilter.CreateVvTextBoxLookUp(1, 3, "tbx_skladCD", "");
       tbx_skladOpis     = hampFilter.CreateVvTextBox      (2, 3, "tbx_skladOpis", "");
@@ -613,20 +606,11 @@ public class ArtiklListUC : VvRecLstUC
       tbx_pdvKat.JAM_Set_LookUpTable(ZXC.luiListaPdvKat, (int)ZXC.Kolona.prva);
       tbx_pdvKat.JAM_lui_NameTaker_JAM_Name = tbx_pdvKatOpis.JAM_Name;
 
-      //                     hampFilter.CreateVvLabel        (0, 5, "Grupa B:", ContentAlignment.MiddleRight);
-      //tbx_grupa2CD       = hampFilter.CreateVvTextBoxLookUp(1, 5, "tbx_grupa2CD", "");
-      //tbx_grupa2Opis     = hampFilter.CreateVvTextBox      (2, 5, "tbx_grupa2Opis", "");
-      //tbx_grupa2Opis.JAM_ReadOnly = true;
-      //tbx_grupa2CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa2Artikla, (int)ZXC.Kolona.prva);
-      //tbx_grupa2CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa2Opis.JAM_Name;
 
-      //                     hampFilter.CreateVvLabel        (0, 6, "Grupa C:", ContentAlignment.MiddleRight);
-      //tbx_grupa3CD       = hampFilter.CreateVvTextBoxLookUp(1, 6, "tbx_grupa3CD", "");
-      //tbx_grupa3Opis     = hampFilter.CreateVvTextBox      (2, 6, "tbx_grupa3Opis", "");
-      //tbx_grupa3Opis.JAM_ReadOnly = true;
-      //tbx_grupa3CD.JAM_Set_LookUpTable(ZXC.luiListaGrupa3Artikla, (int)ZXC.Kolona.prva);
-      //tbx_grupa3CD.JAM_lui_NameTaker_JAM_Name = tbx_grupa3Opis.JAM_Name;
-
+                      hampFilter.CreateVvLabel   (0, 6, "KPD:", ContentAlignment.MiddleRight);
+      tbx_KPDFilter = hampFilter.CreateVvTextBoxLookUp("tbx_KPD", 1, 6,  "", 9, 1, 0);
+      tbx_KPDFilter.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+    
                   hampFilter.CreateVvLabel  (0, 7, "Serijski broj:", ContentAlignment.MiddleRight);
       tbx_serNo = hampFilter.CreateVvTextBox(1, 7, "tbx_serNo", "Serijski broj", 32, 1, 0);
 
@@ -1323,6 +1307,10 @@ public class ArtiklListUC : VvRecLstUC
    {
       get { return tbx_KPD.Text; }
    }
+   public string Fld_TheKPDFilter
+   {
+      get { return tbx_KPDFilter.Text; }
+   }
 
    #endregion Fld_
 
@@ -1815,6 +1803,15 @@ public class ArtiklListUC : VvRecLstUC
       if(decimDo.NotZero() && decimDo != decimOd)
       {
          this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "SnagaDo", decimDo, " <= "));
+      }
+
+      // Fld_KPDFilter                                                                                                                                    
+      drSchema = ArtiklSchema[ArtCI.partNo];
+      text = Fld_TheKPDFilter;
+
+      if(text.NotEmpty())
+      {
+         this.TheFilterMembers.Add(new VvSqlFilterMember(drSchema, "KPDFilter", text, " = "));
       }
 
       #endregion Artikl Filter Members
