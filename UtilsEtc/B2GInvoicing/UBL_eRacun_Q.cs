@@ -874,18 +874,51 @@ namespace EN16931.UBL
          Artikl artikl_rec;
 
        //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.Transes                  .Count ];        
-         the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length]; // !!! 
+       //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length]; // !!! 
+         // Od 18.09.2025: 
+         the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Where(rtr => rtr.T_artiklCD.NotEmpty()).Count()]; // !!! 
 
-         for(int i = 0; i < the_eRacun.InvoiceLine.Length; ++i)
+         bool isStavkaForAdditionalOpis;
+
+         List<string> additionalOpises = new List<string>();
+
+         // 18.09.2025: 
+       //for(int i = 0; i < the_eRacun.InvoiceLine.Length               ; ++i)
+         for(int i = 0, invLineIdx = 0; i < faktur_rec.TrnNonDel_WO_AVANS_STORNO.Count(); ++i)
          {
-            invoiceLine = the_eRacun.InvoiceLine[i] = new InvoiceLineType();
-
           //rtrans_rec  = faktur_rec.Transes                  [i];        
             rtrans_rec  = faktur_rec.TrnNonDel_WO_AVANS_STORNO[i]; // !!! 
 
             artikl_rec  = artiklSifrar.SingleOrDefault(a => a.ArtiklCD.ToUpper() == rtrans_rec.T_artiklCD.ToUpper());
 
-            invoiceLine.ID               = new IDType               { Value = (i + 1).ToString()                             }; //BT-126 Identifikator stavke računa 	  Identifikator 1..1
+            isStavkaForAdditionalOpis = rtrans_rec.T_artiklCD.IsEmpty();
+
+            if(isStavkaForAdditionalOpis)
+            {
+               additionalOpises.Add(rtrans_rec.T_artiklName);
+
+               continue;
+            }
+            else
+            {
+               if(additionalOpises.NotEmpty())
+               {
+                  string prevValue = "";
+
+                  if(the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description != null && the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description.Length.NotZero())
+                  {
+                     prevValue = the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description[0].Value;
+                  }
+
+                  the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description = new DescriptionType[] { new DescriptionType { Value = prevValue + string.Join("\n", additionalOpises) } };
+
+                  additionalOpises.Clear();
+               }
+            }
+
+            invoiceLine = the_eRacun.InvoiceLine[invLineIdx++] = new InvoiceLineType();
+
+            invoiceLine.ID               = new IDType               { Value = (invLineIdx /*+ 1*/).ToString()                 };//BT-126 Identifikator stavke računa 	  Identifikator 1..1
             invoiceLine.InvoicedQuantity = new InvoicedQuantityType { Value = Fak2eR_Decimal("BT129", faktur_rec, rtrans_rec),  //BT-129 Obračunata količina Količina artikala Količina 1..1
                                                                    unitCode = Fak2eR__String("BT130", faktur_rec, rtrans_rec) };//BT-130 Šifra jedinica mjere	   @unitCode     Kod     1..1
 
