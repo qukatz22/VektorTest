@@ -236,7 +236,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
       //                                       0                 1                     2                3                      4                                 5             6                    7                               8               9           10              
     //hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth-(ZXC.QUN )+ ZXC.Qun2, ZXC.Q3un - ZXC.Qun2, labelWidth,  ZXC.QUN + ZXC.Qun2+ ZXC.Qun4, ZXC.Q3un                         , labelWidth, ZXC.Q10un + ZXC.QUN };
-      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth-(ZXC.QUN )+ ZXC.Qun2, ZXC.Q3un - ZXC.Qun2,   ZXC.Qun2,                    labelWidth,  ZXC.QUN + ZXC.Qun2+ ZXC.Qun4, ZXC.Q3un-ZXC.Qun4, labelWidth, ZXC.Q10un + ZXC.QUN };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q8un + ZXC.Qun4,ZXC.QUN - ZXC.Qun4, labelWidth-(ZXC.QUN )+ ZXC.Qun2, ZXC.Q3un - ZXC.Qun2,   /*ZXC.Qun2*/ZXC.QUN,         labelWidth- ZXC.Qun2,  ZXC.QUN + ZXC.Qun2+ ZXC.Qun4, ZXC.Q3un-ZXC.Qun4, labelWidth, ZXC.Q10un + ZXC.QUN };
       hamper.VvSpcBefCol   = new int[] {   ZXC.Qun4,            ZXC.Qun4,            ZXC.Qun4,                 0,                               0,            ZXC.Qun4,   ZXC.Qun4,                      ZXC.Qun8,                      ZXC.Qun8,          ZXC.Qun8,   ZXC.Qun4,             ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -321,7 +321,7 @@ public class ArtiklUC : VvSifrarRecordUC
       tbx_partNo.JAM_lui_NameTaker_JAM_Name = tbx_kpdOpis.JAM_Name;
 
     //cbx_isRashod = hamper.CreateVvCheckBox_OLD(7, 3, null, 1, 0, "Neaktivan", System.Windows.Forms.RightToLeft.Yes);
-      cbx_isRashod = hamper.CreateVvCheckBox_OLD(7, 2, null, "Neakt", System.Windows.Forms.RightToLeft.Yes);
+      cbx_isRashod = hamper.CreateVvCheckBox_OLD(6, 2, null, 1, 0, "Neakt", System.Windows.Forms.RightToLeft.Yes);
 
       lbl_pdvKat     = hamper.CreateVvLabel        (3, 4, "PDV razred:", 1, 0, ContentAlignment.MiddleRight);
       tbx_pdvKat     = hamper.CreateVvTextBoxLookUp(5, 4, "tbx_pdvKat", "", GetDB_ColumnSize(DB_ci.pdvKat));
