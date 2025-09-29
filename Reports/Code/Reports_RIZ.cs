@@ -6357,12 +6357,12 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
 
       //TheFakturList.RemoveAll(faktur => faktur.IsFiskalDutyFaktur_ONLINE == false || faktur.FiskJIR.NotEmpty());
 
-      List<VvMER_Json_Status_Data> vvMER_Json_StatusList_Data = null;
+      List<VvMER_Response_Data_Status> vvMER_Json_StatusList_Data = null;
 
       bool getStatusOK = true;
       try
       {
-         vvMER_Json_StatusList_Data = Vv_Http_Web_request.Get_eRacun_STATUS_List_MER_WebService(RptFilter.DatumOd, RptFilter.DatumDo);
+         vvMER_Json_StatusList_Data = Vv_Http_Web_request.VvMER_WebService_StatusList(RptFilter.DatumOd, RptFilter.DatumDo);
       }
       catch(Exception ex)
       {
@@ -6372,7 +6372,7 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
 
       if(getStatusOK)
       {
-         VvMER_Json_Status_Data status;
+         VvMER_Response_Data_Status status;
 
          foreach(FakturLight fakturLight in TheFakturLightList)
          {

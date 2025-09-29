@@ -2231,7 +2231,8 @@ public sealed class NalogDao : VvDaoBase, IVvDao
             {
                while(reader.HasRows && reader.Read())
                {
-                  kupdobCDlist.Append(reader.GetString(0) + ",");
+                //kupdobCDlist.Append(reader.GetString(0)           + ",");
+                  kupdobCDlist.Append(reader.GetValue(0).ToString() + ","); // Kada novi MySql.Data koristi, onda GetString zna puknuti na null
                }
                reader.Close();
             }

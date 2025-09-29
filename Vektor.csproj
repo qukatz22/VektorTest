@@ -2444,6 +2444,7 @@
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceClient.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceOperation.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\Outgoing_eRacun_parameters.cs" />
+    <Compile Include="UtilsEtc\F2eRacuni.cs" />
     <Compile Include="UtilsEtc\instIr002a.cs" />
     <Compile Include="UtilsEtc\PTG_OtplatniPlan.cs" />
     <Compile Include="UtilsEtc\sepa_hr_pain_001_001_09_11-2023-2.cs" />
