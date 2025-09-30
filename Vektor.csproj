@@ -2447,6 +2447,7 @@
     <Compile Include="UtilsEtc\F2eRacuni.cs" />
     <Compile Include="UtilsEtc\instIr002a.cs" />
     <Compile Include="UtilsEtc\PTG_OtplatniPlan.cs" />
+    <Compile Include="UtilsEtc\Qtmp4AI.cs" />
     <Compile Include="UtilsEtc\sepa_hr_pain_001_001_09_11-2023-2.cs" />
     <Compile Include="UtilsEtc\Vv_WebService _Utils.cs" />
     <Compile Include="UtilsEtc\Fiskalizacija\CentralniInformacijskiSustav.cs" />

@@ -8,9 +8,11 @@ using System.Text;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Xml;
+using System.Linq;
 
-public static class Vv_Http_Web_request
+public static class Vv_Http_Web_request_QAI
 {
+   #region Private common methods
    private static HttpWebResponse Vv_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString)
    {
       HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddress);
@@ -23,19 +25,85 @@ public static class Vv_Http_Web_request
          streamWriter.Flush();
       }
 
-      HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-      return httpResponse;
+      return (HttpWebResponse)httpWebRequest.GetResponse();
    }
 
-   // ############################################################################################################################################################################################################################################################
+   private static T VvMER_PostJson<T>(string webAddress, string jsonRequestString, Action<T, string> saveToFile = null, string fileName = null)
+      where T : class, new()
+   {
+      T deserializedResponseData = null;
 
-   public static VvMER_Response_Data_SEND         VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+      try
+      {
+         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
+
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseJson = streamReader.ReadToEnd();
+
+            if(responseJson.NotEmpty())
+            {
+               try
+               {
+                  deserializedResponseData = JsonConvert.DeserializeObject<T>(responseJson);
+
+                  // Optionally save to file if provided
+                  saveToFile?.Invoke(deserializedResponseData, fileName);
+               }
+               catch(Exception ex2)
+               {
+                  // Fallback error handling for deserialization
+                  deserializedResponseData = new T();
+                  var errorMsg = new List<string>();
+                  int errMsgRowIdx = 0;
+
+                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
+                  while(reader.Read())
+                  {
+                     if(reader.Value != null)
+                     {
+                        errMsgRowIdx++;
+                        errorMsg.Add(reader.Value.ToString());
+                     }
+                  }
+                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", errorMsg);
+               }
+            }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
+               deserializedResponseData = new T();
+            }
+         }
+      }
+      catch(WebException ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+      }
+
+      return deserializedResponseData;
+   }
+
+   private static JsonSerializerSettings VvMER_JsonSerializerSettings_Default()
+   {
+      return new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
+   }
+
+   private static string VvMER_JsonRequestString_AllActions(VvMER_Request_Data_AllActions json_AllActions_Request_Data)
+   {
+      return JsonConvert.SerializeObject(json_AllActions_Request_Data, Newtonsoft.Json.Formatting.Indented, VvMER_JsonSerializerSettings_Default());
+   }
+
+   #endregion Private common methods
+
+   //######################## https://www.moj-eracun.hr/apis/v2/send #########################################################################################################
+
+   public  static VvMER_Response_Data_SEND VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       //string webAddress = @"http://demo.moj-eracun.hr/hr/";
       //string webAddress = @"https://demo.moj-eracun.hr/apis/v2/send";
 
-    //string webAddress_SEND        = @"https://www.moj-eracun.hr/apis/v2/send"       ;
+      //string webAddress_SEND        = @"https://www.moj-eracun.hr/apis/v2/send"       ;
       string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
 
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
@@ -54,387 +122,83 @@ public static class Vv_Http_Web_request
       //string companyId  = "04192765979";
       //string softwareId = "Test-001"   ;
 
-      string webAddress_SEND = @"https://www.moj-eracun.hr/apis/v2/send"; // PRODUKCIJA 
-    //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena); // PRODUKCIJA 
-    //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted       ; // PRODUKCIJA 
-    //string companyId  = ZXC.CURR_prjkt_rec.Oib                        ; // PRODUKCIJA 
-    //string companyBu  = ""                                            ; // PRODUKCIJA 
-    //string softwareId = "Vektor-001"                                  ; // PRODUKCIJA 
+      string webAddress = @"https://www.moj-eracun.hr/apis/v2/send"; // PRODUKCIJA 
+                                                                          //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena); // PRODUKCIJA 
+                                                                          //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted       ; // PRODUKCIJA 
+                                                                          //string companyId  = ZXC.CURR_prjkt_rec.Oib                        ; // PRODUKCIJA 
+                                                                          //string companyBu  = ""                                            ; // PRODUKCIJA 
+                                                                          //string softwareId = "Vektor-001"                                  ; // PRODUKCIJA 
 
-//#if DEBUG
-//         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
-//
-//         username = 8633        ;
-//         password   = "T22zsEY" ;
-//         softwareId = "Test-001";
-//
-//         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
-//#endif
+      //#if DEBUG
+      //         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
+      //
+      //         username = 8633        ;
+      //         password   = "T22zsEY" ;
+      //         softwareId = "Test-001";
+      //
+      //         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
+      //#endif
 
       VvMER_Request_Data_AllActions json_SEND_Request_Data = new VvMER_Request_Data_AllActions(xmlString); // produkcija 
 
-      JsonSerializerSettings settings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
+      string jsonRequestString = JsonConvert.SerializeObject(json_SEND_Request_Data, Newtonsoft.Json.Formatting.Indented/*, VvMER_JsonSerializerSettings_Default()*/);
 
-      string jsonRequestString = JsonConvert.SerializeObject(json_SEND_Request_Data, Newtonsoft.Json.Formatting.Indented);
-
-      VvMER_Response_Data_SEND deserializedResponseData = Vv_Http_Web_request.VvMER_PostJson_SEND(webAddress_SEND, jsonRequestString, fullPath_XML_FileName);
+      VvMER_Response_Data_SEND deserializedResponseData = VvMER_PostJson_SEND(webAddress, jsonRequestString, fullPath_XML_FileName);
 
       return deserializedResponseData;
    }
 
-   public static VvMER_Response_Data_Status       VvMER_WebService_OneSingleStatus(int electronicID)
+   private static VvMER_Response_Data_SEND VvMER_PostJson_SEND(string webAddress, string jsonRequestString, string fullPath_eRacun_XML_FileName)
    {
-      string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // PRODUKCIJA 
-    //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena)              ; // PRODUKCIJA 
-    //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ; // PRODUKCIJA 
-    //string companyId  = ZXC.CURR_prjkt_rec.Oib                                      ; // PRODUKCIJA 
-    //string companyBu  = ""                                                          ; // PRODUKCIJA 
-    //string softwareId = "Vektor-001"                                                ; // PRODUKCIJA 
+      return VvMER_PostJson<VvMER_Response_Data_SEND>(
+         webAddress,
+         jsonRequestString,
+         (data, fileName) => { if(fileName.NotEmpty()) data.SaveToFile(fileName); },
+         fullPath_eRacun_XML_FileName.Replace(".xml", "_RES.xml")
+      );
+   }
 
-//#if DEBUG
-//         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
-//
-//         username = 8633        ;
-//         password   = "T22zsEY" ;
-//         softwareId = "Test-001";
-//
-//         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
-//#endif
+   //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single status ##############################################################################
 
-      VvMER_Request_Data_AllActions json_OneSingleSTATUS_Request_Data = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
+   public  static VvMER_Response_Data_Status VvMER_WebService_OneSingleStatus(int electronicID)
+   {
+      string webAddress = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // PRODUKCIJA 
 
-      JsonSerializerSettings settings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
+      VvMER_Request_Data_AllActions json_Request_Data = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
-      string jsonRequestString = JsonConvert.SerializeObject(json_OneSingleSTATUS_Request_Data, Newtonsoft.Json.Formatting.Indented, settings);
-
-      VvMER_Response_Data_Status deserializedResponseData = Vv_Http_Web_request.VvMER_PostJson_OneSingleStatus(webAddress_QueryOutbox, jsonRequestString);
+      VvMER_Response_Data_Status deserializedResponseData = VvMER_PostJson_OneSingleStatus(webAddress, VvMER_JsonRequestString_AllActions(json_Request_Data));
 
       return deserializedResponseData;
    }
 
-   public static List<VvMER_Response_Data_Status> VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
+   private static VvMER_Response_Data_Status VvMER_PostJson_OneSingleStatus(string webAddress, string jsonRequestString)
    {
-      string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // PRODUKCIJA 
-    //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena)              ; // PRODUKCIJA 
-    //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ; // PRODUKCIJA 
-    //string companyId  = ZXC.CURR_prjkt_rec.Oib                                      ; // PRODUKCIJA 
-    //string companyBu  = ""                                                          ; // PRODUKCIJA 
-    //string softwareId = "Vektor-001"                                                ; // PRODUKCIJA 
+      List<VvMER_Response_Data_Status> statusList = VvMER_PostJson<List<VvMER_Response_Data_Status>>(webAddress, jsonRequestString);
 
-//#if DEBUG
-//         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
-//
-//         username = 8633        ;
-//         password   = "T22zsEY" ;
-//         softwareId = "Test-001";
-//
-//         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
-//#endif
+      VvMER_Response_Data_Status status = statusList.FirstOrDefault();
 
-      VvMER_Request_Data_AllActions json_STATUS_List_Request_Data = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+      return status;
+   }
 
-      JsonSerializerSettings settings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
+   //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - Status List ####################################################################################
 
-      string jsonString = JsonConvert.SerializeObject(json_STATUS_List_Request_Data, Newtonsoft.Json.Formatting.Indented, settings);
+   public  static List<VvMER_Response_Data_Status> VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
+   {
+      string webAddress = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
 
-      List<VvMER_Response_Data_Status> eRacun_STATUS_List = Vv_Http_Web_request.VvMER_PostJson_StatusList(webAddress_QueryOutbox, jsonString);
+      VvMER_Request_Data_AllActions json_Request_Data = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+
+      List<VvMER_Response_Data_Status> eRacun_STATUS_List = VvMER_PostJson_StatusList(webAddress, VvMER_JsonRequestString_AllActions(json_Request_Data));
 
       return eRacun_STATUS_List;
    }
 
-   // ############################################################################################################################################################################################################################################################
-
-   public static VvMER_Response_Data_SEND         VvMER_PostJson_SEND(string webAddress, string jsonRequestString, string fullPath_eRacun_XML_FileName)
+   private static List<VvMER_Response_Data_Status> VvMER_PostJson_StatusList(string webAddress, string jsonRequestString)
    {
-      VvMER_Response_Data_SEND deserializedResponseData = null;
-
-      string fullPath_send_response_XML_FileName = fullPath_eRacun_XML_FileName.Replace(".xml", "_RES.xml");
-
-      try
-      {
-         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
-
-         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-         {
-            string responseJson = streamReader.ReadToEnd();
-
-            if(responseJson.NotEmpty())
-            {
-               try
-               {
-                  deserializedResponseData = VvMER_Response_Deserializator_SEND(responseJson);
-
-                  if(deserializedResponseData.ElectronicId.IsZero()) throw new Exception("Zero ElectronicID in response JSON!");
-                  if(deserializedResponseData == null              ) throw new Exception("Deserialized Response Data is null!");
-
-                  if(fullPath_send_response_XML_FileName.NotEmpty())
-                  {
-                     deserializedResponseData.SaveToFile(fullPath_send_response_XML_FileName); // !!! Voila! 
-                  }
-
-               }
-               catch(Exception ex2) // nije uspio Deserializirati, odi preko JsonTextReader 
-               {
-                  List<string> responseMsgList = new List<string>();
-
-                  deserializedResponseData = new VvMER_Response_Data_SEND { StatusName = "Err " };
-
-                  int errMsgRowIdx = 0;
-
-                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
-                  while(reader.Read())
-                  {
-                     if(reader.Value != null)
-                     {
-                        errMsgRowIdx++;
-
-                        if(errMsgRowIdx == 1) deserializedResponseData.Error_PropertyName  = reader.Value.ToString();
-                        if(errMsgRowIdx == 3) deserializedResponseData.Error_PropertyValue = reader.Value.ToString();
-                        if(errMsgRowIdx == 5) deserializedResponseData.Error_Message       = reader.Value.ToString();
-
-                        if(errMsgRowIdx == 1 || errMsgRowIdx == 3 || errMsgRowIdx == 5)
-                        {
-                         //responseMsgList.Add(String.Format("{0}, Value: {1}", reader.TokenType, reader.Value          ));
-                         //responseMsgList.Add(String.Format("{0}: {1}"       , reader.TokenType, reader.Value          ));
-                           responseMsgList.Add(                                                   reader.Value.ToString());
-                        }
-                     }
-                     else
-                     {
-                      //responseMsgList.Add(String.Format("{0}", reader.TokenType));
-                     }
-                  }
-
-                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", responseMsgList);
-
-                  deserializedResponseData.StatusName += deserializedResponseData.Error_PropertyName;
-
-                  if(fullPath_send_response_XML_FileName.NotEmpty())
-                  {
-                     deserializedResponseData.SaveToFile(fullPath_send_response_XML_FileName); // !!! Voila! 
-                  }
-               }
-
-               //Now you have your response.
-               //or false depending on information in the response     
-
-            } // if(responseJson.NotEmpty())
-            else
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
-               deserializedResponseData = new VvMER_Response_Data_SEND { StatusName = "JSON empty" };
-
-               if(fullPath_send_response_XML_FileName.NotEmpty())
-               {
-                  deserializedResponseData.SaveToFile(fullPath_send_response_XML_FileName); // !!! Voila! 
-               }
-            }
-
-         } // using(var streamReader = new StreamReader(httpResponse.GetResponseStream())) 
-
-      } // try 
-
-      catch(WebException ex)
-      {
-         ZXC.aim_emsg(ex.Message);
-      }
-
-      return deserializedResponseData;
+      return VvMER_PostJson<List<VvMER_Response_Data_Status>>(webAddress, jsonRequestString);
    }
 
-   public static VvMER_Response_Data_Status       VvMER_PostJson_OneSingleStatus(string webAddress, string jsonRequestString)
-   {
-      VvMER_Response_Data_Status deserializedResponseData = null;
-
-      try
-      {       
-         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
-      
-         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-         {
-            string responseJson = streamReader.ReadToEnd();
-      
-            if(responseJson.NotEmpty())
-            {
-               try
-               {
-                  deserializedResponseData = VvMER_Response_Deserializator_OneSingleStatus(responseJson);
-      
-                  if(deserializedResponseData.ElectronicId.IsZero()) throw new Exception("Zero ElectronicID in response JSON!");
-                  if(deserializedResponseData == null              ) throw new Exception("Deserialized Response Data is null!");
-               }
-               catch(Exception ex2) // nije uspio Deserializirati, odi preko JsonTextReader 
-               {
-                  List<string> responseMsgList = new List<string>();
-      
-                  deserializedResponseData = new VvMER_Response_Data_Status { StatusName = "Err " };
-      
-                  int errMsgRowIdx = 0;
-      
-                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
-                  while(reader.Read())
-                  {
-                     if(reader.Value != null)
-                     {
-                        errMsgRowIdx++;
-      
-                        if(errMsgRowIdx == 1) deserializedResponseData.Error_PropertyName  = reader.Value.ToString();
-                        if(errMsgRowIdx == 3) deserializedResponseData.Error_PropertyValue = reader.Value.ToString();
-                        if(errMsgRowIdx == 5) deserializedResponseData.Error_Message       = reader.Value.ToString();
-      
-                        if(errMsgRowIdx == 1 || errMsgRowIdx == 3 || errMsgRowIdx == 5)
-                        {
-                         //responseMsgList.Add(String.Format("{0}, Value: {1}", reader.TokenType, reader.Value          ));
-                         //responseMsgList.Add(String.Format("{0}: {1}"       , reader.TokenType, reader.Value          ));
-                           responseMsgList.Add(                                                   reader.Value.ToString());
-                        }
-                     }
-                     else
-                     {
-                      //responseMsgList.Add(String.Format("{0}", reader.TokenType));
-                     }
-                  }
-      
-                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", responseMsgList);
-      
-                  deserializedResponseData.StatusName += deserializedResponseData.Error_PropertyName;
-               }
-      
-               //Now you have your response.
-               //or false depending on information in the response     
-      
-            } // if(responseJson.NotEmpty())
-            else
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
-               deserializedResponseData = new VvMER_Response_Data_Status { StatusName = "JSON empty" };
-            }
-      
-         } // using(var streamReader = new StreamReader(httpResponse.GetResponseStream())) 
-      
-      } // try 
-      
-      catch(WebException ex)
-      {
-         ZXC.aim_emsg(ex.Message);
-      }
-
-      return deserializedResponseData;
-   }
-
-   public static List<VvMER_Response_Data_Status> VvMER_PostJson_StatusList(string webAddress, string jsonRequestString)
-   {
-      List<VvMER_Response_Data_Status> deserializedResponseDataList = null;
-
-      try
-      {       
-         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
-      
-         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-         {
-            string responseJson = streamReader.ReadToEnd();
-      
-            if(responseJson.NotEmpty())
-            {
-               try
-               {
-                  deserializedResponseDataList = VvMER_Response_Deserializator_StatusList(responseJson);
-      
-                //if(deserializedResponseDataList.ElectronicId.IsZero()) throw new Exception("Zero ElectronicID in response JSON!");
-                  if(deserializedResponseDataList == null              ) throw new Exception("Deserialized Response Data is null!");
-               }
-               catch(Exception ex2) // nije uspio Deserializirati, odi preko JsonTextReader 
-               {
-                  List<string> responseMsgList = new List<string>();
-      
-                  deserializedResponseDataList = new List<VvMER_Response_Data_Status> { new VvMER_Response_Data_Status { StatusName = "Err " } };
-      
-                  int errMsgRowIdx = 0;
-                  int listIdx = 0;
-
-                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
-                  while(reader.Read())
-                  {
-                     if(reader.Value != null)
-                     {
-                        errMsgRowIdx++;
-      
-                        if(errMsgRowIdx == 1) deserializedResponseDataList[0].Error_PropertyName  = reader.Value.ToString();
-                        if(errMsgRowIdx == 3) deserializedResponseDataList[0].Error_PropertyValue = reader.Value.ToString();
-                        if(errMsgRowIdx == 5) deserializedResponseDataList[0].Error_Message       = reader.Value.ToString();
-      
-                        if(errMsgRowIdx == 1 || errMsgRowIdx == 3 || errMsgRowIdx == 5)
-                        {
-                         //responseMsgList.Add(String.Format("{0}, Value: {1}", reader.TokenType, reader.Value          ));
-                         //responseMsgList.Add(String.Format("{0}: {1}"       , reader.TokenType, reader.Value          ));
-                           responseMsgList.Add(                                                   reader.Value.ToString());
-                        }
-                     }
-                     else
-                     {
-                      //responseMsgList.Add(String.Format("{0}", reader.TokenType));
-                     }
-                  }
-      
-                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", responseMsgList);
-      
-                  deserializedResponseDataList[listIdx].StatusName += deserializedResponseDataList[listIdx].Error_PropertyName;
-                  listIdx++;
-               }
-      
-               //Now you have your response.
-               //or false depending on information in the response     
-      
-            } // if(responseJson.NotEmpty())
-            else
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
-               deserializedResponseDataList[0] = new VvMER_Response_Data_Status { StatusName = "JSON empty" };
-            }
-      
-         } // using(var streamReader = new StreamReader(httpResponse.GetResponseStream())) 
-      
-      } // try 
-      
-      catch(WebException ex)
-      {
-         ZXC.aim_emsg(ex.Message);
-      }
-
-      return deserializedResponseDataList;
-   }
-
-   // ############################################################################################################################################################################################################################################################
-
-   public static VvMER_Response_Data_SEND         VvMER_Response_Deserializator_SEND(string jsonResponseString)
-   {
-      VvMER_Response_Data_SEND deserializedResponseData = JsonConvert.DeserializeObject<VvMER_Response_Data_SEND>(jsonResponseString);
-
-      return deserializedResponseData;
-   }
-
-   public static VvMER_Response_Data_Status       VvMER_Response_Deserializator_OneSingleStatus(string jsonResponseString)
-   {
-      VvMER_Response_Data_Status deserializedResponseData = null;
-
-      List<VvMER_Response_Data_Status> Statuses  = JsonConvert.DeserializeObject<List<VvMER_Response_Data_Status>>(jsonResponseString);
-
-      if(Statuses.NotEmpty())
-      {
-         deserializedResponseData = Statuses[0]/*.ThisSTATUS_as_VvMER_Json_SEND_Response_Data*/;
-      }
-
-      return deserializedResponseData;
-   }
-
-   public static List<VvMER_Response_Data_Status> VvMER_Response_Deserializator_StatusList(string jsonResponseString)
-   {
-      List<VvMER_Response_Data_Status> deserializedResponseData = JsonConvert.DeserializeObject<List<VvMER_Response_Data_Status>>(jsonResponseString);
-
-      return deserializedResponseData;
-   }
-
-   // ############################################################################################################################################################################################################################################################
+   // ########################################################################################################################################################################
 
 }
 
@@ -847,31 +611,442 @@ public class VvMER_Response_Data_Status
 
 
 
+// Ovo dole je Trash & Tmp ##########################################################################################################################################################################
 
 
 
+#if PUSE_Vv_Http_Web_request_byQ
+
+public static class Vv_Http_Web_request
+{
+   private static HttpWebResponse Vv_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString)
+   {
+      HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddress);
+      httpWebRequest.ContentType = "application/json; charset=utf-8";
+      httpWebRequest.Method = "POST";
+
+      using(StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+      {
+         streamWriter.Write(jsonRequestString);
+         streamWriter.Flush();
+      }
+
+      HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+      return httpResponse;
+   }
+
+   // ############################################################################################################################################################################################################################################################
+
+   public static VvMER_Response_Data_SEND          VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   {
+      //string webAddress = @"http://demo.moj-eracun.hr/hr/";
+      //string webAddress = @"https://demo.moj-eracun.hr/apis/v2/send";
+
+    //string webAddress_SEND        = @"https://www.moj-eracun.hr/apis/v2/send"       ;
+      string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
+
+      // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
+      // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
+
+      // ID: 8633
+      // Lozinka: T22zsEY
+      // SoftwareID: Test-001
 
 
+      //int    username   = 6072         ;
+      //string password   = "buV733eX"   ;
+      //int    username   = 8633         ;
+      //string password   = "T22zsEY"    ;
+      //string companyId  = "60042587515";
+      //string companyId  = "04192765979";
+      //string softwareId = "Test-001"   ;
 
+      string webAddress_SEND = @"https://www.moj-eracun.hr/apis/v2/send"; // PRODUKCIJA 
+    //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena); // PRODUKCIJA 
+    //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted       ; // PRODUKCIJA 
+    //string companyId  = ZXC.CURR_prjkt_rec.Oib                        ; // PRODUKCIJA 
+    //string companyBu  = ""                                            ; // PRODUKCIJA 
+    //string softwareId = "Vektor-001"                                  ; // PRODUKCIJA 
 
+//#if DEBUG
+//         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
+//
+//         username = 8633        ;
+//         password   = "T22zsEY" ;
+//         softwareId = "Test-001";
+//
+//         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
+//#endif
 
+      VvMER_Request_Data_AllActions json_SEND_Request_Data = new VvMER_Request_Data_AllActions(xmlString); // produkcija 
 
+      JsonSerializerSettings settings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
 
+      string jsonRequestString = JsonConvert.SerializeObject(json_SEND_Request_Data, Newtonsoft.Json.Formatting.Indented);
 
+      VvMER_Response_Data_SEND deserializedResponseData = Vv_Http_Web_request.VvMER_PostJson_SEND(webAddress_SEND, jsonRequestString, fullPath_XML_FileName);
 
+      return deserializedResponseData;
+   }
+                                                   
+   public static VvMER_Response_Data_Status        VvMER_WebService_OneSingleStatus(int electronicID)
+   {
+      string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // PRODUKCIJA 
+    //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena)              ; // PRODUKCIJA 
+    //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ; // PRODUKCIJA 
+    //string companyId  = ZXC.CURR_prjkt_rec.Oib                                      ; // PRODUKCIJA 
+    //string companyBu  = ""                                                          ; // PRODUKCIJA 
+    //string softwareId = "Vektor-001"                                                ; // PRODUKCIJA 
 
+//#if DEBUG
+//         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
+//
+//         username = 8633        ;
+//         password   = "T22zsEY" ;
+//         softwareId = "Test-001";
+//
+//         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
+//#endif
 
+      VvMER_Request_Data_AllActions json_OneSingleSTATUS_Request_Data = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
+      JsonSerializerSettings settings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
 
+      string jsonRequestString = JsonConvert.SerializeObject(json_OneSingleSTATUS_Request_Data, Newtonsoft.Json.Formatting.Indented, settings);
 
+      VvMER_Response_Data_Status deserializedResponseData = Vv_Http_Web_request.VvMER_PostJson_OneSingleStatus(webAddress_QueryOutbox, jsonRequestString);
 
+      return deserializedResponseData;
+   }
+                                                   
+   public static List<VvMER_Response_Data_Status>  VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
+   {
+      string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // PRODUKCIJA 
+    //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena)              ; // PRODUKCIJA 
+    //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ; // PRODUKCIJA 
+    //string companyId  = ZXC.CURR_prjkt_rec.Oib                                      ; // PRODUKCIJA 
+    //string companyBu  = ""                                                          ; // PRODUKCIJA 
+    //string softwareId = "Vektor-001"                                                ; // PRODUKCIJA 
 
+//#if DEBUG
+//         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
+//
+//         username = 8633        ;
+//         password   = "T22zsEY" ;
+//         softwareId = "Test-001";
+//
+//         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
+//#endif
 
+      VvMER_Request_Data_AllActions json_STATUS_List_Request_Data = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
+      JsonSerializerSettings settings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
 
+      string jsonString = JsonConvert.SerializeObject(json_STATUS_List_Request_Data, Newtonsoft.Json.Formatting.Indented, settings);
 
+      List<VvMER_Response_Data_Status> eRacun_STATUS_List = Vv_Http_Web_request.VvMER_PostJson_StatusList(webAddress_QueryOutbox, jsonString);
 
+      return eRacun_STATUS_List;
+   }
 
+   // ############################################################################################################################################################################################################################################################
+
+   private static VvMER_Response_Data_SEND         VvMER_PostJson_SEND(string webAddress, string jsonRequestString, string fullPath_eRacun_XML_FileName)
+   {
+      VvMER_Response_Data_SEND deserializedResponseData = null;
+
+      string fullPath_send_response_XML_FileName = fullPath_eRacun_XML_FileName.Replace(".xml", "_RES.xml");
+
+      try
+      {
+         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
+
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseJson = streamReader.ReadToEnd();
+
+            if(responseJson.NotEmpty())
+            {
+               try
+               {
+                  deserializedResponseData = VvMER_Response_Deserializator_SEND(responseJson);
+
+                  if(deserializedResponseData.ElectronicId.IsZero()) throw new Exception("Zero ElectronicID in response JSON!");
+                  if(deserializedResponseData == null              ) throw new Exception("Deserialized Response Data is null!");
+
+                  if(fullPath_send_response_XML_FileName.NotEmpty())
+                  {
+                     deserializedResponseData.SaveToFile(fullPath_send_response_XML_FileName); // !!! Voila! 
+                  }
+
+               }
+               catch(Exception ex2) // nije uspio Deserializirati, odi preko JsonTextReader 
+               {
+                  List<string> responseMsgList = new List<string>();
+
+                  deserializedResponseData = new VvMER_Response_Data_SEND { StatusName = "Err " };
+
+                  int errMsgRowIdx = 0;
+
+                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
+                  while(reader.Read())
+                  {
+                     if(reader.Value != null)
+                     {
+                        errMsgRowIdx++;
+
+                        if(errMsgRowIdx == 1) deserializedResponseData.Error_PropertyName  = reader.Value.ToString();
+                        if(errMsgRowIdx == 3) deserializedResponseData.Error_PropertyValue = reader.Value.ToString();
+                        if(errMsgRowIdx == 5) deserializedResponseData.Error_Message       = reader.Value.ToString();
+
+                        if(errMsgRowIdx == 1 || errMsgRowIdx == 3 || errMsgRowIdx == 5)
+                        {
+                         //responseMsgList.Add(String.Format("{0}, Value: {1}", reader.TokenType, reader.Value          ));
+                         //responseMsgList.Add(String.Format("{0}: {1}"       , reader.TokenType, reader.Value          ));
+                           responseMsgList.Add(                                                   reader.Value.ToString());
+                        }
+                     }
+                     else
+                     {
+                      //responseMsgList.Add(String.Format("{0}", reader.TokenType));
+                     }
+                  }
+
+                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", responseMsgList);
+
+                  deserializedResponseData.StatusName += deserializedResponseData.Error_PropertyName;
+
+                  if(fullPath_send_response_XML_FileName.NotEmpty())
+                  {
+                     deserializedResponseData.SaveToFile(fullPath_send_response_XML_FileName); // !!! Voila! 
+                  }
+               }
+
+               //Now you have your response.
+               //or false depending on information in the response     
+
+            } // if(responseJson.NotEmpty())
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
+               deserializedResponseData = new VvMER_Response_Data_SEND { StatusName = "JSON empty" };
+
+               if(fullPath_send_response_XML_FileName.NotEmpty())
+               {
+                  deserializedResponseData.SaveToFile(fullPath_send_response_XML_FileName); // !!! Voila! 
+               }
+            }
+
+         } // using(var streamReader = new StreamReader(httpResponse.GetResponseStream())) 
+
+      } // try 
+
+      catch(WebException ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+      }
+
+      return deserializedResponseData;
+   }
+
+   private static VvMER_Response_Data_Status       VvMER_PostJson_OneSingleStatus(string webAddress, string jsonRequestString)
+   {
+      VvMER_Response_Data_Status deserializedResponseData = null;
+
+      try
+      {       
+         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
+      
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseJson = streamReader.ReadToEnd();
+      
+            if(responseJson.NotEmpty())
+            {
+               try
+               {
+                  deserializedResponseData = VvMER_Response_Deserializator_OneSingleStatus(responseJson);
+      
+                  if(deserializedResponseData.ElectronicId.IsZero()) throw new Exception("Zero ElectronicID in response JSON!");
+                  if(deserializedResponseData == null              ) throw new Exception("Deserialized Response Data is null!");
+               }
+               catch(Exception ex2) // nije uspio Deserializirati, odi preko JsonTextReader 
+               {
+                  List<string> responseMsgList = new List<string>();
+      
+                  deserializedResponseData = new VvMER_Response_Data_Status { StatusName = "Err " };
+      
+                  int errMsgRowIdx = 0;
+      
+                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
+                  while(reader.Read())
+                  {
+                     if(reader.Value != null)
+                     {
+                        errMsgRowIdx++;
+      
+                        if(errMsgRowIdx == 1) deserializedResponseData.Error_PropertyName  = reader.Value.ToString();
+                        if(errMsgRowIdx == 3) deserializedResponseData.Error_PropertyValue = reader.Value.ToString();
+                        if(errMsgRowIdx == 5) deserializedResponseData.Error_Message       = reader.Value.ToString();
+      
+                        if(errMsgRowIdx == 1 || errMsgRowIdx == 3 || errMsgRowIdx == 5)
+                        {
+                         //responseMsgList.Add(String.Format("{0}, Value: {1}", reader.TokenType, reader.Value          ));
+                         //responseMsgList.Add(String.Format("{0}: {1}"       , reader.TokenType, reader.Value          ));
+                           responseMsgList.Add(                                                   reader.Value.ToString());
+                        }
+                     }
+                     else
+                     {
+                      //responseMsgList.Add(String.Format("{0}", reader.TokenType));
+                     }
+                  }
+      
+                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", responseMsgList);
+      
+                  deserializedResponseData.StatusName += deserializedResponseData.Error_PropertyName;
+               }
+      
+               //Now you have your response.
+               //or false depending on information in the response     
+      
+            } // if(responseJson.NotEmpty())
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
+               deserializedResponseData = new VvMER_Response_Data_Status { StatusName = "JSON empty" };
+            }
+      
+         } // using(var streamReader = new StreamReader(httpResponse.GetResponseStream())) 
+      
+      } // try 
+      
+      catch(WebException ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+      }
+
+      return deserializedResponseData;
+   }
+
+   private static List<VvMER_Response_Data_Status> VvMER_PostJson_StatusList(string webAddress, string jsonRequestString)
+   {
+      List<VvMER_Response_Data_Status> deserializedResponseDataList = null;
+
+      try
+      {       
+         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
+      
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseJson = streamReader.ReadToEnd();
+      
+            if(responseJson.NotEmpty())
+            {
+               try
+               {
+                  deserializedResponseDataList = VvMER_Response_Deserializator_StatusList(responseJson);
+      
+                //if(deserializedResponseDataList.ElectronicId.IsZero()) throw new Exception("Zero ElectronicID in response JSON!");
+                  if(deserializedResponseDataList == null              ) throw new Exception("Deserialized Response Data is null!");
+               }
+               catch(Exception ex2) // nije uspio Deserializirati, odi preko JsonTextReader 
+               {
+                  List<string> responseMsgList = new List<string>();
+      
+                  deserializedResponseDataList = new List<VvMER_Response_Data_Status> { new VvMER_Response_Data_Status { StatusName = "Err " } };
+      
+                  int errMsgRowIdx = 0;
+                  int listIdx = 0;
+
+                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
+                  while(reader.Read())
+                  {
+                     if(reader.Value != null)
+                     {
+                        errMsgRowIdx++;
+      
+                        if(errMsgRowIdx == 1) deserializedResponseDataList[0].Error_PropertyName  = reader.Value.ToString();
+                        if(errMsgRowIdx == 3) deserializedResponseDataList[0].Error_PropertyValue = reader.Value.ToString();
+                        if(errMsgRowIdx == 5) deserializedResponseDataList[0].Error_Message       = reader.Value.ToString();
+      
+                        if(errMsgRowIdx == 1 || errMsgRowIdx == 3 || errMsgRowIdx == 5)
+                        {
+                         //responseMsgList.Add(String.Format("{0}, Value: {1}", reader.TokenType, reader.Value          ));
+                         //responseMsgList.Add(String.Format("{0}: {1}"       , reader.TokenType, reader.Value          ));
+                           responseMsgList.Add(                                                   reader.Value.ToString());
+                        }
+                     }
+                     else
+                     {
+                      //responseMsgList.Add(String.Format("{0}", reader.TokenType));
+                     }
+                  }
+      
+                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", responseMsgList);
+      
+                  deserializedResponseDataList[listIdx].StatusName += deserializedResponseDataList[listIdx].Error_PropertyName;
+                  listIdx++;
+               }
+      
+               //Now you have your response.
+               //or false depending on information in the response     
+      
+            } // if(responseJson.NotEmpty())
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
+               deserializedResponseDataList[0] = new VvMER_Response_Data_Status { StatusName = "JSON empty" };
+            }
+      
+         } // using(var streamReader = new StreamReader(httpResponse.GetResponseStream())) 
+      
+      } // try 
+      
+      catch(WebException ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+      }
+
+      return deserializedResponseDataList;
+   }
+
+   // ############################################################################################################################################################################################################################################################
+
+   private static VvMER_Response_Data_SEND         VvMER_Response_Deserializator_SEND(string jsonResponseString)
+   {
+      VvMER_Response_Data_SEND deserializedResponseData = JsonConvert.DeserializeObject<VvMER_Response_Data_SEND>(jsonResponseString);
+
+      return deserializedResponseData;
+   }
+
+   private static VvMER_Response_Data_Status       VvMER_Response_Deserializator_OneSingleStatus(string jsonResponseString)
+   {
+      VvMER_Response_Data_Status deserializedResponseData = null;
+
+      List<VvMER_Response_Data_Status> Statuses  = JsonConvert.DeserializeObject<List<VvMER_Response_Data_Status>>(jsonResponseString);
+
+      if(Statuses.NotEmpty())
+      {
+         deserializedResponseData = Statuses[0]/*.ThisSTATUS_as_VvMER_Json_SEND_Response_Data*/;
+      }
+
+      return deserializedResponseData;
+   }
+
+   private static List<VvMER_Response_Data_Status> VvMER_Response_Deserializator_StatusList(string jsonResponseString)
+   {
+      List<VvMER_Response_Data_Status> deserializedResponseData = JsonConvert.DeserializeObject<List<VvMER_Response_Data_Status>>(jsonResponseString);
+
+      return deserializedResponseData;
+   }
+
+   // ############################################################################################################################################################################################################################################################
+
+}
+
+#endif
 
 namespace MER_ApiClient
 {
