@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -7,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 using System.Linq;
 
@@ -93,6 +93,11 @@ public static class Vv_Http_Web_request_QAI
    {
       return JsonConvert.SerializeObject(json_AllActions_Request_Data, Newtonsoft.Json.Formatting.Indented, VvMER_JsonSerializerSettings_Default());
    }
+
+   public static string VvMER_UserName   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
+   public static string VvMER_Password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
+   public static string VvMER_CompanyId  = ZXC.CURR_prjkt_rec.Oib                                      ;
+   public static string VvMER_SoftwareId = "Vektor-001"                                                ;
 
    #endregion Private common methods
 
@@ -203,26 +208,40 @@ public static class Vv_Http_Web_request_QAI
 }
 
 #region Bussiness Classes for JSON Request/Response
-public class VvMER_Request_Data_AllActions
+public class MER_Credentials_Data
 {
-   // "\"Username\" : "     + username   + " ,"   +
-   // "\"Password\" : \""   + password   + "\" ," +
-   // "\"CompanyId\" : \""  + companyId  + "\" ," +
-   // "\"CompanyBu\" : \""  + companyBu  + "\" ," +
-   // "\"SoftwareId\" : \"" + softwareId + "\" ," +
-   // "\"File\" : \""       + xmlString  + "\" ," +
+   [JsonPropertyName("Username")]
+   public string Username { get; set; }
 
-   public int    Username   { get; set; }
-   public string Password   { get; set; }
-   public string CompanyId  { get; set; }
-   public string CompanyBu  { get; set; }
+   [JsonPropertyName("Password")]
+   public string Password { get; set; }
+
+   [JsonPropertyName("CompanyId")]
+   public string CompanyId { get; set; }
+
+   [JsonPropertyName("CompanyBu")]
+   public string CompanyBu { get; set; }
+
+   [JsonPropertyName("SoftwareId")]
    public string SoftwareId { get; set; }
+}
+
+public class VvMER_Request_Data_AllActions : MER_Credentials_Data
+{
+   //public int    Username   { get; set; }
+   //public string Password   { get; set; }
+   //public string CompanyId  { get; set; }
+   //public string CompanyBu  { get; set; }
+   //public string SoftwareId { get; set; }
+
+   [JsonPropertyName("File")]
    public string File       { get; set; }
 
    // za testiranje, pa sa test parametrima 
-   public VvMER_Request_Data_AllActions(int username, string password, string companyId, string companyBu, string softwareId, string xmlString)
+   public VvMER_Request_Data_AllActions(/*int username,*/ string password, string companyId, string companyBu, string softwareId, string xmlString)
    {
-      this.Username   = username  ;
+    //this.Username   = username  ;
+      this.Username   = Vv_Http_Web_request_QAI.VvMER_UserName;
       this.Password   = password  ;
       this.CompanyId  = companyId ;
       this.CompanyBu  = companyBu ;
@@ -232,40 +251,47 @@ public class VvMER_Request_Data_AllActions
 
    public VvMER_Request_Data_AllActions(string xmlString) // za slanje jednog eRacuna 
    {
-      this.Username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena);
-      this.Password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted          ;
-      this.CompanyId  = ZXC.CURR_prjkt_rec.Oib                           ;
-      this.CompanyBu  = ""                                               ;
-      this.SoftwareId = "Vektor-001"                                     ;
-      this.File       = xmlString                                        ;
+      this.Username   = Vv_Http_Web_request_QAI.VvMER_UserName  ;
+      this.Password   = Vv_Http_Web_request_QAI.VvMER_Password  ;
+      this.CompanyId  = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
+      this.CompanyBu  = ""                                      ;
+      this.SoftwareId = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
+      this.File       = xmlString                               ;
    }
 
    // Query Inbox / Outbox Additions: 
 
-   public int      ElectronicId { get; set; }
-   public int      StatusId     { get; set; }
-   public DateTime From         { get; set; } // DeteOD 
-   public DateTime To           { get; set; } // DateDO 
+   [JsonPropertyName("ElectronicId")]
+   public int ElectronicId { get; set; }
+
+   [JsonPropertyName("StatusId")]
+   public int StatusId     { get; set; }
+
+   [JsonPropertyName("From")]
+   public DateTime From    { get; set; } // DeteOD 
+
+   [JsonPropertyName("To")]
+   public DateTime To      { get; set; } // DateDO 
 
    public VvMER_Request_Data_AllActions(int electronicId) // za jedan racun 
    {
-      this.Username    = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena);
-      this.Password    = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted          ;
-      this.CompanyId   = ZXC.CURR_prjkt_rec.Oib                           ;
-      this.CompanyBu   = ""                                               ;
-      this.SoftwareId  = "Vektor-001"                                     ;
-      this.ElectronicId = electronicId                                    ;
+      this.Username    = Vv_Http_Web_request_QAI.VvMER_UserName  ;
+      this.Password    = Vv_Http_Web_request_QAI.VvMER_Password  ;
+      this.CompanyId   = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
+      this.CompanyBu   = ""                                      ;
+      this.SoftwareId  = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
+      this.ElectronicId = electronicId                           ;
    }
 
    public VvMER_Request_Data_AllActions(DateTime dateOD, DateTime dateDO) // za report 
    {
-      this.Username    = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena);
-      this.Password    = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted          ;
-      this.CompanyId   = ZXC.CURR_prjkt_rec.Oib                           ;
-      this.CompanyBu   = ""                                               ;
-      this.SoftwareId  = "Vektor-001"                                     ;
-      this.From        = dateOD                                           ;
-      this.To          = dateDO                                           ;
+      this.Username    = Vv_Http_Web_request_QAI.VvMER_UserName  ;
+      this.Password    = Vv_Http_Web_request_QAI.VvMER_Password  ;
+      this.CompanyId   = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
+      this.CompanyBu   = ""                                      ;
+      this.SoftwareId  = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
+      this.From        = dateOD                                  ;
+      this.To          = dateDO                                  ;
    }
 
 }
@@ -300,10 +326,10 @@ public class VvMER_Response_Data_SEND // Dis uan iz olso Serializable / Deserial
    public string Modified                { get; set; }
    public bool?  Delivered               { get; set; }
 
-   public string Error_PropertyName  { get; set; }
-   public string Error_PropertyValue { get; set; }
-   public string Error_Message       { get; set; }
-
+   public string Error_PropertyName      { get; set; }
+   public string Error_PropertyValue     { get; set; }
+   public string Error_Message           { get; set; }
+                                         
    #region Serialize/Deserialize
 
    private static System.Xml.Serialization.XmlSerializer serializer;
@@ -607,7 +633,6 @@ public class VvMER_Response_Data_Status
 }
 
 #endregion Bussiness Classes for JSON Request/Response
-
 
 
 
@@ -1058,20 +1083,20 @@ namespace MER_ApiClient
       }
 
       [JsonProperty("username")]
-      public /*int*/string    Username { get { return ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString(); } }
+      public /*int*/string    Username { get { return Vv_Http_Web_request_QAI.VvMER_UserName; } }
     //public /*int*/string    Username { get { return @"viper@zg.htnet.hr"; } }
     //public string Username { get; set; }
 
       [JsonProperty("password")]
-      public string Password { get { return ZXC.CURR_prjkt_rec.SkyPasswordDecrypted; } }
+      public string Password { get { return Vv_Http_Web_request_QAI.VvMER_Password; } }
     //public string Password { get; set; }
 
       [JsonProperty("companyId")]
-      public string CompanyId { get { return ZXC.CURR_prjkt_rec.Oib; } }
+      public string CompanyId { get { return Vv_Http_Web_request_QAI.VvMER_CompanyId; } }
     //public string CompanyId { get; set; }
 
       [JsonProperty("softwareId")]
-      public string SoftwareId { get { return "Vektor-001"; } }
+      public string SoftwareId { get { return Vv_Http_Web_request_QAI.VvMER_SoftwareId; } }
     //public string SoftwareId { get; set; }
 
       [JsonProperty("identifierType")]
