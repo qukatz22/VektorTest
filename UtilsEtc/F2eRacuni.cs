@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using System.Linq;
-
 public static class Vv_Http_Web_request_QAI
 {
    #region Private common methods
@@ -54,19 +53,20 @@ public static class Vv_Http_Web_request_QAI
                {
                   // Fallback error handling for deserialization
                   deserializedResponseData = new T();
-                  var errorMsg = new List<string>();
-                  int errMsgRowIdx = 0;
+                  var jsonMsg = new List<string>();
+                  int jsonMsgRowIdx = 0;
 
                   JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
                   while(reader.Read())
                   {
                      if(reader.Value != null)
                      {
-                        errMsgRowIdx++;
-                        errorMsg.Add(reader.Value.ToString());
+                        jsonMsgRowIdx++;
+                        jsonMsg.Add(reader.Value.ToString());
                      }
                   }
-                  ZXC.aim_emsg_List("Response Messages from JsonTextReader", errorMsg);
+                //ZXC.aim_emsg_List("Response Messages from JsonTextReader", errorMsg);
+                  ZXC.aim_emsg_List("Exception: " + ex2.Message, jsonMsg);
                }
             }
             else
@@ -97,7 +97,10 @@ public static class Vv_Http_Web_request_QAI
    public static string VvMER_UserName   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
    public static string VvMER_Password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
    public static string VvMER_CompanyId  = ZXC.CURR_prjkt_rec.Oib                                      ;
-   public static string VvMER_SoftwareId = "Vektor-001"                                                ;
+   public const  string VvMER_SoftwareId = "Vektor-001"                                                ;
+
+   public const string VvMER_webAddress_Send        = @"https://www.moj-eracun.hr/apis/v2/send"       ;
+   public const string VvMER_webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
 
    #endregion Private common methods
 
@@ -105,18 +108,13 @@ public static class Vv_Http_Web_request_QAI
 
    public  static VvMER_Response_Data_SEND VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
-      //string webAddress = @"http://demo.moj-eracun.hr/hr/";
-      //string webAddress = @"https://demo.moj-eracun.hr/apis/v2/send";
-
-      //string webAddress_SEND        = @"https://www.moj-eracun.hr/apis/v2/send"       ;
-      string webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
-
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
       // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
 
-      // ID: 8633
-      // Lozinka: T22zsEY
-      // SoftwareID: Test-001
+      // DEMO old             
+      // ID: 8633             
+      // Lozinka: T22zsEY     
+      // SoftwareID: Test-001 
 
 
       //int    username   = 6072         ;
@@ -127,58 +125,31 @@ public static class Vv_Http_Web_request_QAI
       //string companyId  = "04192765979";
       //string softwareId = "Test-001"   ;
 
-      string webAddress = @"https://www.moj-eracun.hr/apis/v2/send"; // PRODUKCIJA 
-                                                                          //int username   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena); // PRODUKCIJA 
-                                                                          //string password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted       ; // PRODUKCIJA 
-                                                                          //string companyId  = ZXC.CURR_prjkt_rec.Oib                        ; // PRODUKCIJA 
-                                                                          //string companyBu  = ""                                            ; // PRODUKCIJA 
-                                                                          //string softwareId = "Vektor-001"                                  ; // PRODUKCIJA 
-
-      //#if DEBUG
-      //         webAddress_SEND = @"https://demo.moj-eracun.hr/apis/v2/send";
-      //
-      //         username = 8633        ;
-      //         password   = "T22zsEY" ;
-      //         softwareId = "Test-001";
-      //
-      //         VvMER_Json_SEND_Request_Data json_SEND_Request_Data = new VvMER_Json_SEND_Request_Data(username, password, companyId, companyBu, softwareId, xmlString); // DEMO testiranje 
-      //#endif
-
-      VvMER_Request_Data_AllActions json_SEND_Request_Data = new VvMER_Request_Data_AllActions(xmlString); // produkcija 
+      VvMER_Request_Data_AllActions json_SEND_Request_Data = new VvMER_Request_Data_AllActions(xmlString);
 
       string jsonRequestString = JsonConvert.SerializeObject(json_SEND_Request_Data, Newtonsoft.Json.Formatting.Indented/*, VvMER_JsonSerializerSettings_Default()*/);
 
-      VvMER_Response_Data_SEND deserializedResponseData = VvMER_PostJson_SEND(webAddress, jsonRequestString, fullPath_XML_FileName);
+    //VvMER_Response_Data_SEND deserializedResponseData = VvMER_PostJson_SEND(VvMER_webAddress_Send, jsonRequestString, fullPath_XML_FileName);
+      VvMER_Response_Data_SEND deserializedResponseData = 
+         
+         VvMER_PostJson<VvMER_Response_Data_SEND>
+         (
+            VvMER_webAddress_Send,
+            jsonRequestString,
+            (data, fileName) => { if(fileName.NotEmpty()) data.SaveToFile(fileName); },
+            fullPath_XML_FileName.Replace(".xml", "_RES.xml")
+         );
 
       return deserializedResponseData;
-   }
-
-   private static VvMER_Response_Data_SEND VvMER_PostJson_SEND(string webAddress, string jsonRequestString, string fullPath_eRacun_XML_FileName)
-   {
-      return VvMER_PostJson<VvMER_Response_Data_SEND>(
-         webAddress,
-         jsonRequestString,
-         (data, fileName) => { if(fileName.NotEmpty()) data.SaveToFile(fileName); },
-         fullPath_eRacun_XML_FileName.Replace(".xml", "_RES.xml")
-      );
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single status ##############################################################################
 
    public  static VvMER_Response_Data_Status VvMER_WebService_OneSingleStatus(int electronicID)
    {
-      string webAddress = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // PRODUKCIJA 
-
       VvMER_Request_Data_AllActions json_Request_Data = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
-      VvMER_Response_Data_Status deserializedResponseData = VvMER_PostJson_OneSingleStatus(webAddress, VvMER_JsonRequestString_AllActions(json_Request_Data));
-
-      return deserializedResponseData;
-   }
-
-   private static VvMER_Response_Data_Status VvMER_PostJson_OneSingleStatus(string webAddress, string jsonRequestString)
-   {
-      List<VvMER_Response_Data_Status> statusList = VvMER_PostJson<List<VvMER_Response_Data_Status>>(webAddress, jsonRequestString);
+      List<VvMER_Response_Data_Status> statusList = VvMER_PostJson<List<VvMER_Response_Data_Status>>(VvMER_webAddress_QueryOutbox, VvMER_JsonRequestString_AllActions(json_Request_Data));
 
       VvMER_Response_Data_Status status = statusList.FirstOrDefault();
 
@@ -189,22 +160,16 @@ public static class Vv_Http_Web_request_QAI
 
    public  static List<VvMER_Response_Data_Status> VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
    {
-      string webAddress = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
-
       VvMER_Request_Data_AllActions json_Request_Data = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
-      List<VvMER_Response_Data_Status> eRacun_STATUS_List = VvMER_PostJson_StatusList(webAddress, VvMER_JsonRequestString_AllActions(json_Request_Data));
+      string jsonRequestString = VvMER_JsonRequestString_AllActions(json_Request_Data);
 
-      return eRacun_STATUS_List;
-   }
+      List<VvMER_Response_Data_Status> statusList = VvMER_PostJson<List<VvMER_Response_Data_Status>>(VvMER_webAddress_QueryOutbox, jsonRequestString);
 
-   private static List<VvMER_Response_Data_Status> VvMER_PostJson_StatusList(string webAddress, string jsonRequestString)
-   {
-      return VvMER_PostJson<List<VvMER_Response_Data_Status>>(webAddress, jsonRequestString);
+      return statusList;
    }
 
    // ########################################################################################################################################################################
-
 }
 
 #region Bussiness Classes for JSON Request/Response
@@ -225,7 +190,6 @@ public class MER_Credentials_Data
    [JsonPropertyName("SoftwareId")]
    public string SoftwareId { get; set; }
 }
-
 public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 {
    //public int    Username   { get; set; }
@@ -295,344 +259,140 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    }
 
 }
-
-public class VvMER_Response_Data_SEND // Dis uan iz olso Serializable / Deserializable 
+public class VvMER_Response_Data_SEND : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_SEND>
 {
-   // "ElectronicId": 394167,
-   // "DocumentNr": "20156256",
-   // "DocumentTypeId": 1,
-   // "DocumentTypeName": "Račun",
-   // "StatusId": 30,
-   // "StatusName": "Sent",
-   // "RecipientBusinessNumber": "99999999927",
-   // "RecipientBusinessUnit": "",
-   // "RecipientBusinessName": "Test Klising d.o.o.",
-   // "Created": "2016-04-18T08:23:08.5879877+02:00",
-   // "Sent": "2016-04-18T08:23:09.6730491+02:00",
-   // "Modified": "2016-04-18T08:23:09.6840519+02:00",
-   // "Delivered": null
+   [JsonPropertyName("ElectronicId")]
+   public int ElectronicId { get; set; }
 
-   public int    ElectronicId            { get; set; }
-   public string DocumentNr              { get; set; }
-   public int    DocumentTypeId          { get; set; }
-   public string DocumentTypeName        { get; set; }
-   public int    StatusId                { get; set; }
-   public string StatusName              { get; set; }
+   [JsonPropertyName("DocumentNr")]
+   public string DocumentNr { get; set; }
+
+   [JsonPropertyName("DocumentTypeId")]
+   public int DocumentTypeId { get; set; }
+
+   [JsonPropertyName("DocumentTypeName")]
+   public string DocumentTypeName { get; set; }
+
+   [JsonPropertyName("StatusId")]
+   public int StatusId { get; set; }
+
+   [JsonPropertyName("StatusName")]
+   public string StatusName { get; set; }
+
+   [JsonPropertyName("RecipientBusinessNumber")]
    public string RecipientBusinessNumber { get; set; }
-   public string RecipientBusinessUnit   { get; set; }
-   public string RecipientBusinessName   { get; set; }
-   public string Created                 { get; set; }
-   public string Sent                    { get; set; }
-   public string Modified                { get; set; }
-   public bool?  Delivered               { get; set; }
 
-   public string Error_PropertyName      { get; set; }
-   public string Error_PropertyValue     { get; set; }
-   public string Error_Message           { get; set; }
-                                         
-   #region Serialize/Deserialize
+   [JsonPropertyName("RecipientBusinessUnit")]
+   public string RecipientBusinessUnit { get; set; }
 
-   private static System.Xml.Serialization.XmlSerializer serializer;
-   private static System.Xml.Serialization.XmlSerializer Serializer
-   {
-      get
-      {
-         if((serializer == null))
-         {
-            serializer = new System.Xml.Serialization.XmlSerializer(typeof(VvMER_Response_Data_SEND));
-         }
-         return serializer;
-      }
-   }
+   [JsonPropertyName("RecipientBusinessName")]
+   public string RecipientBusinessName { get; set; }
 
-   /// <summary>
-   /// Serializes current sObrazacURA object into an XML sObrazacURA
-   /// </summary>
-   /// <returns>string XML value</returns>
-   public virtual string Serialize(System.Text.Encoding encoding)
-   {
-      System.IO.StreamReader streamReader = null;
-      System.IO.MemoryStream memoryStream = null;
-      string xmlString = "";
+   [JsonPropertyName("Created")]
+   public string Created { get; set; }
 
-      try
-      {
-         System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings()
-         {
-            Encoding = encoding,
-            Indent = true, // byQ 
-            IndentChars = "   ", // byQ 
-         };
+   [JsonPropertyName("Sent")]
+   public string Sent { get; set; }
 
-         memoryStream = new System.IO.MemoryStream();
+   [JsonPropertyName("Modified")]
+   public string Modified { get; set; }
 
-         System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
-         Serializer.Serialize(xmlWriter, this);
-         memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
-         streamReader = new System.IO.StreamReader(memoryStream);
-         xmlString = streamReader.ReadToEnd();
+   [JsonPropertyName("Updated")]
+   public string Updated { get; set; } // za status 
 
-         return xmlString;
-      }
-      finally
-      {
-         if((streamReader != null))
-         {
-            streamReader.Dispose();
-         }
-         if((memoryStream != null))
-         {
-            memoryStream.Dispose();
-         }
-      }
-   }
+   //public bool?  Delivered { get; set; }
 
-   public virtual string Serialize()
-   {
-      return Serialize(/*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
-   }
+   [JsonPropertyName("Delivered")]
+   public string Delivered { get; set; }
 
-   /// <summary>
-   /// Deserializes workflow markup into an sObrazacURA object
-   /// </summary>
-   /// <param name="xml">string workflow markup to deserialize</param>
-   /// <param name="obj">Output sObrazacURA object</param>
-   /// <param name="exception">output Exception value if deserialize failed</param>
-   /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
-   public static bool Deserialize(string xml, out VvMER_Response_Data_SEND obj, out System.Exception exception)
-   {
-      exception = null;
-      obj = default(VvMER_Response_Data_SEND);
-      try
-      {
-         obj = Deserialize(xml);
-         return true;
-      }
-      catch(System.Exception ex)
-      {
-         exception = ex;
-         return false;
-      }
-   }
+   [JsonPropertyName("Error_PropertyName")]
+   public string Error_PropertyName { get; set; }
 
-   public static bool Deserialize(string xml, out VvMER_Response_Data_SEND obj)
-   {
-      System.Exception exception = null;
-      return Deserialize(xml, out obj, out exception);
-   }
+   [JsonPropertyName("Error_PropertyValue")]
+   public string Error_PropertyValue { get; set; }
 
-   public static VvMER_Response_Data_SEND Deserialize(string xml)
-   {
-      System.IO.StringReader stringReader = null;
-      try
-      {
-         stringReader = new System.IO.StringReader(xml);
-         return ((VvMER_Response_Data_SEND)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
-      }
-      finally
-      {
-         if((stringReader != null))
-         {
-            stringReader.Dispose();
-         }
-      }
-   }
-
-   /// <summary>
-   /// Serializes current sObrazacURA object into file
-   /// </summary>
-   /// <param name="fileName">full path of outupt xml file</param>
-   /// <param name="exception">output Exception value if failed</param>
-   /// <returns>true if can serialize and save into file; otherwise, false</returns>
-   public virtual string SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
-   {
-      exception = null;
-      try
-      {
-         return SaveToFile(fileName, encoding);
-         //return true;
-      }
-      catch(System.Exception e)
-      {
-         exception = e;
-         return "";
-      }
-   }
-
-   public virtual string SaveToFile(string fileName, out System.Exception exception)
-   {
-      return SaveToFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM, out exception);
-   }
-
-   public virtual string SaveToFile(string fileName)
-   {
-      return SaveToFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
-   }
-
-   public virtual string SaveToFile(string fileName, System.Text.Encoding encoding)
-   {
-      string xmlString = "";
-
-      System.IO.StreamWriter streamWriter = null;
-      try
-      {
-         xmlString = Serialize(encoding);
-         streamWriter = new System.IO.StreamWriter(fileName, false, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
-         streamWriter.WriteLine(xmlString);
-         streamWriter.Close();
-      }
-      finally
-      {
-         if((streamWriter != null))
-         {
-            streamWriter.Dispose();
-         }
-      }
-
-      return xmlString;
-   }
-
-   public bool VvSaveToFile(string xmlString, string fileName, System.Text.Encoding encoding)
-   {
-      System.IO.StreamWriter streamWriter = null;
-
-      bool isOK = true;
-      try
-      {
-         streamWriter = new System.IO.StreamWriter(fileName, false, encoding /*Encoding.UTF8*/ /*ZXC.VvUTF8Encoding_noBOM*/);
-         streamWriter.WriteLine(xmlString);
-         streamWriter.Close();
-      }
-      catch(Exception)
-      {
-         isOK = false;
-      }
-      finally
-      {
-         if((streamWriter != null))
-         {
-            streamWriter.Dispose();
-         }
-      }
-
-      return isOK;
-   }
-
-   /// <summary>
-   /// Deserializes xml markup from file into an sObrazacURA object
-   /// </summary>
-   /// <param name="fileName">string xml file to load and deserialize</param>
-   /// <param name="the_eRacun">Output sObrazacURA object</param>
-   /// <param name="exception">output Exception value if deserialize failed</param>
-   /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
-   public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out VvMER_Response_Data_SEND the_eRacun, out System.Exception exception)
-   {
-      exception = null;
-      the_eRacun = default(VvMER_Response_Data_SEND);
-      try
-      {
-         the_eRacun = LoadFromFile(fileName, encoding);
-         return true;
-      }
-      catch(System.Exception ex)
-      {
-         exception = ex;
-         return false;
-      }
-   }
-
-   public static bool LoadFromFile(string fileName, out VvMER_Response_Data_SEND the_eRacun, out System.Exception exception)
-   {
-      return LoadFromFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM, out the_eRacun, out exception);
-   }
-
-   public static bool LoadFromFile(string fileName, out VvMER_Response_Data_SEND the_eRacun)
-   {
-      System.Exception exception = null;
-      return LoadFromFile(fileName, out the_eRacun, out exception);
-   }
-
-   //public static sObrazacURA LoadFromFile(string fileName)
-   //{
-   //   return LoadFromFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
-   //}
-
-   public static VvMER_Response_Data_SEND LoadFromFile(string fileName, System.Text.Encoding encoding)
-   {
-      System.IO.FileStream file = null;
-      System.IO.StreamReader sr = null;
-      try
-      {
-         file = new System.IO.FileStream(fileName, FileMode.Open, FileAccess.Read);
-         sr = new System.IO.StreamReader(file, encoding);
-         string xmlString = sr.ReadToEnd();
-         sr.Close();
-         file.Close();
-         return Deserialize(xmlString);
-      }
-      finally
-      {
-         if((file != null))
-         {
-            file.Dispose();
-         }
-         if((sr != null))
-         {
-            sr.Dispose();
-         }
-      }
-   }
-
-   #endregion Serialize/Deserialize
+   [JsonPropertyName("Error_Message")]
+   public string Error_Message { get; set; }
 
 }
-
-public class VvMER_Response_Data_Status
+public class VvMER_Response_Data_Status //: Vv_XSD_Bussiness_BASE<VvMER_Response_Data_Status>
 {
-   public int    ElectronicId            { get; set; }
-   public string DocumentNr              { get; set; }
-   public int    DocumentTypeId          { get; set; }
-   public string DocumentTypeName        { get; set; }
-   public int    StatusId                { get; set; }
-   public string StatusName              { get; set; }
+   [JsonPropertyName("ElectronicId")]
+   public int ElectronicId { get; set; }
+
+   [JsonPropertyName("DocumentNr")]
+   public string DocumentNr { get; set; }
+
+   [JsonPropertyName("DocumentTypeId")]
+   public int DocumentTypeId { get; set; }
+
+   [JsonPropertyName("DocumentTypeName")]
+   public string DocumentTypeName { get; set; }
+
+   [JsonPropertyName("StatusId")]
+   public int StatusId { get; set; }
+
+   [JsonPropertyName("StatusName")]
+   public string StatusName { get; set; }
+
+   [JsonPropertyName("RecipientBusinessNumber")]
    public string RecipientBusinessNumber { get; set; }
-   public string RecipientBusinessUnit   { get; set; }
-   public string RecipientBusinessName   { get; set; }
-   public string Created                 { get; set; }
-   public string Sent                    { get; set; }
-   public string Updated                 { get; set; }
-   public string Delivered               { get; set; }
 
-   public string Error_PropertyName  { get; set; }
+   [JsonPropertyName("RecipientBusinessUnit")]
+   public string RecipientBusinessUnit { get; set; }
+
+   [JsonPropertyName("RecipientBusinessName")]
+   public string RecipientBusinessName { get; set; }
+
+   [JsonPropertyName("Created")]
+   public string Created { get; set; }
+
+   [JsonPropertyName("Sent")]
+   public string Sent { get; set; }
+
+   [JsonPropertyName("Modified")]
+   public string Modified { get; set; }
+
+   [JsonPropertyName("Updated")]
+   public string Updated { get; set; } // za status 
+
+   //[JsonPropertyName("Delivered0")]
+   //public bool? Delivered0 { get; set; } // po send API-ju 
+
+   [JsonPropertyName("Delivered")]
+   public string Delivered { get; set; } // po queryOutbox API-ju ... ovoga ako bas mora biti jer s njim radi i send i querryOutbox ... nota bene: raditi ce i send i querryOutbox sa oba ugasena, tj. nijednim 
+
+   [JsonPropertyName("Error_PropertyName")]
+   public string Error_PropertyName { get; set; }
+
+   [JsonPropertyName("Error_PropertyValue")]
    public string Error_PropertyValue { get; set; }
-   public string Error_Message       { get; set; }
 
-   //public VvMER_Json_SEND_Response_Data ThisSTATUS_as_VvMER_Json_SEND_Response_Data
-   //{
-   //   get
-   //   { 
-   //      VvMER_Json_SEND_Response_Data vvMER_Json_SEND_Response_Data = new VvMER_Json_SEND_Response_Data();
-   //
-   //      vvMER_Json_SEND_Response_Data.ElectronicId            = this.ElectronicId           ;
-   //      vvMER_Json_SEND_Response_Data.DocumentNr              = this.DocumentNr             ;
-   //      vvMER_Json_SEND_Response_Data.DocumentTypeId          = this.DocumentTypeId         ;
-   //      vvMER_Json_SEND_Response_Data.DocumentTypeName        = this.DocumentTypeName       ;
-   //      vvMER_Json_SEND_Response_Data.StatusId                = this.StatusId               ;
-   //      vvMER_Json_SEND_Response_Data.StatusName              = this.StatusName             ;
-   //      vvMER_Json_SEND_Response_Data.RecipientBusinessNumber = this.RecipientBusinessNumber;
-   //      vvMER_Json_SEND_Response_Data.RecipientBusinessUnit   = this.RecipientBusinessUnit  ;
-   //      vvMER_Json_SEND_Response_Data.RecipientBusinessName   = this.RecipientBusinessName  ;
-   //      vvMER_Json_SEND_Response_Data.Created                 = this.Created                ;
-   //      vvMER_Json_SEND_Response_Data.Sent                    = this.Sent                   ;
-   //      vvMER_Json_SEND_Response_Data.Modified                = this.Updated                ;
-   //      vvMER_Json_SEND_Response_Data.Delivered               = this.Delivered.NotEmpty()   ;
-   //
-   //      return vvMER_Json_SEND_Response_Data;
-   //   }
-   //}
+   [JsonPropertyName("Error_Message")]
+   public string Error_Message { get; set; }
+
 }
 
 #endregion Bussiness Classes for JSON Request/Response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
