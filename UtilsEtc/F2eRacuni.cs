@@ -9,10 +9,26 @@ using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using System.Linq;
+using System.Web;
+using System.Reflection;
 public static class Vv_Http_Web_request_QAI
 {
-   #region Private common methods
-   private static HttpWebResponse Vv_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString)
+   #region MER Web Service URLs - API endpoints web addresses
+
+   public const string VvMER_webAddress_Send        = @"https://www.moj-eracun.hr/apis/v2/send"       ; // POST 
+   public const string VvMER_webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // POST 
+   public const string VvMER_webAddress_Ping        = @"https://www.moj-eracun.hr/apis/v2/Ping"       ; // GET! 
+
+   // MER authorisation parameters: 
+   public static string VvMER_UserName   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
+   public static string VvMER_Password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
+   public static string VvMER_CompanyId  = ZXC.CURR_prjkt_rec.Oib                                      ;
+   public const  string VvMER_SoftwareId = "Vektor-001"                                                ;
+
+   #endregion MER Web Service URLs - API endpoints web addresses
+
+   #region Private common methods - Voila!
+   private static HttpWebResponse Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString)
    {
       HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddress);
       httpWebRequest.ContentType = "application/json; charset=utf-8";
@@ -27,14 +43,23 @@ public static class Vv_Http_Web_request_QAI
       return (HttpWebResponse)httpWebRequest.GetResponse();
    }
 
-   private static T VvMER_PostJson<T>(string webAddress, string jsonRequestString, Action<T, string> saveToFile = null, string fileName = null)
+   private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams)
+   {
+      HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlWithParams);
+      httpWebRequest.ContentType = "application/json; charset=utf-8";
+      httpWebRequest.Method = "GET";
+
+      return (HttpWebResponse)httpWebRequest.GetResponse();
+   }
+
+   private static T VvMER_POSTmethod_Json<T>(string webAddress, string jsonRequestString, Action<T, string> saveToFile = null, string fileName = null)
       where T : class, new()
    {
       T deserializedResponseData = null;
 
       try
       {
-         HttpWebResponse httpResponse = Vv_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
+         HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
 
          using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
          {
@@ -84,29 +109,122 @@ public static class Vv_Http_Web_request_QAI
       return deserializedResponseData;
    }
 
+   private static T VvMER_GETmethod_Json<T, TRequest>(string webAddress, TRequest request, Action<T, string> saveToFile = null, string fileName = null)
+       where T : class, new()
+       where TRequest : class
+   {
+      T deserializedResponseData = null;
+
+      try
+      {
+         // Build URL with query parameters from request object properties
+         var uriBuilder = new UriBuilder(webAddress);
+         var query = HttpUtility.ParseQueryString(string.Empty);
+
+         // Use reflection to get all properties with JsonPropertyName attribute
+         var properties = typeof(TRequest).GetProperties()
+             .Where(p => p.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any());
+
+         foreach(var prop in properties)
+         {
+            var value = prop.GetValue(request);
+            if(value != null)
+            {
+               var jsonAttr = (JsonPropertyNameAttribute)prop.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).First();
+               string paramName = jsonAttr.Name;
+
+               // Handle different types of values using traditional if-else
+               string paramValue;
+               if(value is DateTime dateTime)
+               {
+                  paramValue = dateTime.ToString("yyyy-MM-dd'T'HH:mm:ss");
+               }
+             //else if(value is DateTime? nullableDateTime)
+             //{
+             //   paramValue = nullableDateTime?.ToString("yyyy-MM-dd'T'HH:mm:ss");
+             //}
+               else if(prop.PropertyType == typeof(DateTime?))
+               {
+                  var nullableDateTime = (DateTime?)value;
+                  paramValue = nullableDateTime?.ToString("yyyy-MM-dd'T'HH:mm:ss");
+               }
+               else
+               {
+                  paramValue = value.ToString();
+               }
+
+               query[paramName] = paramValue;
+            }
+         }
+
+         uriBuilder.Query = query.ToString();
+         string urlWithParams = uriBuilder.ToString();
+
+         HttpWebResponse httpResponse = Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(urlWithParams);
+
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseJson = streamReader.ReadToEnd();
+
+            if(responseJson.NotEmpty())
+            {
+               try
+               {
+                  deserializedResponseData = JsonConvert.DeserializeObject<T>(responseJson);
+                  saveToFile?.Invoke(deserializedResponseData, fileName);
+               }
+               catch(Exception ex2)
+               {
+                  // Fallback error handling for deserialization
+                  deserializedResponseData = new T();
+                  var jsonMsg = new List<string>();
+                  int jsonMsgRowIdx = 0;
+
+                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
+                  while(reader.Read())
+                  {
+                     if(reader.Value != null)
+                     {
+                        jsonMsgRowIdx++;
+                        jsonMsg.Add(reader.Value.ToString());
+                     }
+                  }
+                  ZXC.aim_emsg_List("Exception: " + ex2.Message, jsonMsg);
+               }
+            }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
+               deserializedResponseData = new T();
+            }
+         }
+      }
+      catch(WebException ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+      }
+
+      return deserializedResponseData;
+   }
+
+   #endregion Private common methods - Voila!
+
+   #region Utils
    private static JsonSerializerSettings VvMER_JsonSerializerSettings_Default()
    {
       return new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
    }
 
-   private static string VvMER_JsonRequestString_AllActions(VvMER_Request_Data_AllActions json_AllActions_Request_Data)
+   private static string VvMER_Json_SerializeObjectForRequestString_AllActions(VvMER_Request_Data_AllActions json_AllActions_Request_Data)
    {
       return JsonConvert.SerializeObject(json_AllActions_Request_Data, Newtonsoft.Json.Formatting.Indented, VvMER_JsonSerializerSettings_Default());
    }
 
-   public static string VvMER_UserName   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
-   public static string VvMER_Password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
-   public static string VvMER_CompanyId  = ZXC.CURR_prjkt_rec.Oib                                      ;
-   public const  string VvMER_SoftwareId = "Vektor-001"                                                ;
-
-   public const string VvMER_webAddress_Send        = @"https://www.moj-eracun.hr/apis/v2/send"       ;
-   public const string VvMER_webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox";
-
-   #endregion Private common methods
+   #endregion Utils
 
    //######################## https://www.moj-eracun.hr/apis/v2/send #########################################################################################################
 
-   public  static VvMER_Response_Data_SEND VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
       // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
@@ -125,14 +243,13 @@ public static class Vv_Http_Web_request_QAI
       //string companyId  = "04192765979";
       //string softwareId = "Test-001"   ;
 
-      VvMER_Request_Data_AllActions json_SEND_Request_Data = new VvMER_Request_Data_AllActions(xmlString);
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(xmlString);
 
-      string jsonRequestString = JsonConvert.SerializeObject(json_SEND_Request_Data, Newtonsoft.Json.Formatting.Indented/*, VvMER_JsonSerializerSettings_Default()*/);
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-    //VvMER_Response_Data_SEND deserializedResponseData = VvMER_PostJson_SEND(VvMER_webAddress_Send, jsonRequestString, fullPath_XML_FileName);
-      VvMER_Response_Data_SEND deserializedResponseData = 
+      VvMER_Response_Data_AllActions responseData_AllActions = 
          
-         VvMER_PostJson<VvMER_Response_Data_SEND>
+         VvMER_POSTmethod_Json<VvMER_Response_Data_AllActions>
          (
             VvMER_webAddress_Send,
             jsonRequestString,
@@ -140,35 +257,57 @@ public static class Vv_Http_Web_request_QAI
             fullPath_XML_FileName.Replace(".xml", "_RES.xml")
          );
 
-      return deserializedResponseData;
+      return responseData_AllActions;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single status ##############################################################################
 
-   public  static VvMER_Response_Data_Status VvMER_WebService_OneSingleStatus(int electronicID)
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_OneSingleStatus(int electronicID)
    {
-      VvMER_Request_Data_AllActions json_Request_Data = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
-      List<VvMER_Response_Data_Status> statusList = VvMER_PostJson<List<VvMER_Response_Data_Status>>(VvMER_webAddress_QueryOutbox, VvMER_JsonRequestString_AllActions(json_Request_Data));
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      VvMER_Response_Data_Status status = statusList.FirstOrDefault();
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddress_QueryOutbox, jsonRequestString);
 
-      return status;
+      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.FirstOrDefault();
+
+      return responseData_AllActions;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - Status List ####################################################################################
 
-   public  static List<VvMER_Response_Data_Status> VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
+   public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
    {
-      VvMER_Request_Data_AllActions json_Request_Data = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
-      string jsonRequestString = VvMER_JsonRequestString_AllActions(json_Request_Data);
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_Status> statusList = VvMER_PostJson<List<VvMER_Response_Data_Status>>(VvMER_webAddress_QueryOutbox, jsonRequestString);
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddress_QueryOutbox, jsonRequestString);
 
-      return statusList;
+      return responseData_AllActions_List;
    }
 
+   //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ##############################################################################
+
+   public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
+   
+      VvMER_Response_Data_AllActions responseData_AllActions = VvMER_GETmethod_Json<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddress_Ping, request_Data_AllActions);
+   
+      return responseData_AllActions;
+   }
+
+   // ########################################################################################################################################################################
+   //                                                                                                                                                                         
+   //  Kako dodavati nove API-je:                                                                                                                                             
+   //                                                                                                                                                                         
+   //  1. Da li je GET ili POST                                                                                                                                               
+   //  2. Da li vraća 1 responseData_AllActions ili responseData_AllActions_List                                                                                              
+   //  3. VvMER_webAddress_XYZ                                                                                                                                                
+   //  4. Constructor od VvMER_Request_Data_AllActions() prilagođen zahtjevima dotičnog API-ja                                                                                
+   //                                                                                                                                                                         
    // ########################################################################################################################################################################
 }
 
@@ -192,14 +331,15 @@ public class MER_Credentials_Data
 }
 public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 {
-   //public int    Username   { get; set; }
-   //public string Password   { get; set; }
-   //public string CompanyId  { get; set; }
-   //public string CompanyBu  { get; set; }
-   //public string SoftwareId { get; set; }
-
-   [JsonPropertyName("File")]
-   public string File       { get; set; }
+   #region Constructors and Init
+   private void InitMER_Credentials()
+   {
+      this.Username   = Vv_Http_Web_request_QAI.VvMER_UserName  ;
+      this.Password   = Vv_Http_Web_request_QAI.VvMER_Password  ;
+      this.CompanyId  = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
+      this.CompanyBu  = ""                                      ;
+      this.SoftwareId = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
+   }
 
    // za testiranje, pa sa test parametrima 
    public VvMER_Request_Data_AllActions(/*int username,*/ string password, string companyId, string companyBu, string softwareId, string xmlString)
@@ -215,15 +355,339 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    public VvMER_Request_Data_AllActions(string xmlString) // za slanje jednog eRacuna 
    {
+      InitMER_Credentials();
+
+      this.File = xmlString;
+   }
+
+   public VvMER_Request_Data_AllActions(int electronicId) // za jedan racun 
+   {
+      InitMER_Credentials();
+
+      this.ElectronicId = electronicId;
+   }
+
+   public VvMER_Request_Data_AllActions(DateTime dateOD, DateTime dateDO) // za report 
+   {
+      InitMER_Credentials();
+
+      this.From = dateOD;
+      this.To   = dateDO;
+   }
+
+   public VvMER_Request_Data_AllActions()  
+   {
+      InitMER_Credentials();
+   }
+
+   #endregion Constructors and Init
+
+   // Document core properties
+   [JsonPropertyName("ElectronicId")]
+   public long? ElectronicId { get; set; }
+
+   [JsonPropertyName("StatusId")]
+   public int? StatusId { get; set; }
+
+   [JsonPropertyName("File")]
+   public string File { get; set; }
+
+   [JsonPropertyName("Filter")]
+   public string Filter { get; set; }
+
+   [JsonPropertyName("ActionType")]
+   public string ActionType { get; set; }
+
+   [JsonPropertyName("RejectReason")]
+   public string RejectReason { get; set; }
+
+   // Payment related
+   [JsonPropertyName("PaymentDate")]
+   public DateTime? PaymentDate { get; set; }
+
+   [JsonPropertyName("PaymentAmount")]
+   public decimal? PaymentAmount { get; set; }
+
+   [JsonPropertyName("PaymentMethod")]
+   public string PaymentMethod { get; set; }
+
+   // Query date range
+   [JsonPropertyName("From")]
+   public DateTime? From { get; set; }
+
+   [JsonPropertyName("To")]
+   public DateTime? To { get; set; }
+
+   // Registration and identification
+   [JsonPropertyName("CompanyNumber")]
+   public string CompanyNumber { get; set; }
+
+   [JsonPropertyName("IdentifierType")]
+   public int? IdentifierType { get; set; }
+
+   [JsonPropertyName("IdentifierValue")]
+   public string IdentifierValue { get; set; }
+
+   // Classification
+   [JsonPropertyName("KPDCode")]
+   public string KPDCode { get; set; }
+
+}
+public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
+{
+   // Document identification
+   [JsonPropertyName("ElectronicId")]
+   public long? ElectronicId { get; set; }
+
+   [JsonPropertyName("DocumentNr")]
+   public string DocumentNr { get; set; }
+
+   [JsonPropertyName("DocumentTypeId")]
+   public int? DocumentTypeId { get; set; }
+
+   [JsonPropertyName("DocumentTypeName")]
+   public string DocumentTypeName { get; set; }
+
+   // Status information
+   [JsonPropertyName("Status")]
+   public string Status { get; set; }
+
+   [JsonPropertyName("StatusId")]
+   public int? StatusId { get; set; }
+
+   [JsonPropertyName("StatusName")]
+   public string StatusName { get; set; }
+
+   [JsonPropertyName("DokumentProcessStatus")]
+   public int? DokumentProcessStatus { get; set; }
+
+   // Success indicators
+   [JsonPropertyName("Success")]
+   public bool? Success { get; set; }
+
+   [JsonPropertyName("IsSuccess")]
+   public bool? IsSuccess { get; set; }
+
+   [JsonPropertyName("IsRegistered")]
+   public bool? IsRegistered { get; set; }
+
+   // Business entities information
+   [JsonPropertyName("SenderBusinessNumber")]
+   public string SenderBusinessNumber { get; set; }
+
+   [JsonPropertyName("SenderBusinessUnit")]
+   public string SenderBusinessUnit { get; set; }
+
+   [JsonPropertyName("SenderBusinessName")]
+   public string SenderBusinessName { get; set; }
+
+   [JsonPropertyName("RecipientBusinessNumber")]
+   public string RecipientBusinessNumber { get; set; }
+
+   [JsonPropertyName("RecipientBusinessUnit")]
+   public string RecipientBusinessUnit { get; set; }
+
+   [JsonPropertyName("RecipientBusinessName")]
+   public string RecipientBusinessName { get; set; }
+
+   [JsonPropertyName("CompanyName")]
+   public string CompanyName { get; set; }
+
+   // Timestamps
+   [JsonPropertyName("Created")]
+   public DateTime? Created { get; set; }
+
+   [JsonPropertyName("Modified")]
+   public DateTime? Modified { get; set; }
+
+   [JsonPropertyName("Updated")]
+   public DateTime? Updated { get; set; }
+
+   [JsonPropertyName("Sent")]
+   public DateTime? Sent { get; set; }
+
+   [JsonPropertyName("Delivered")]
+   public DateTime? Delivered { get; set; }
+
+   [JsonPropertyName("Issued")]
+   public DateTime? Issued { get; set; }
+
+   [JsonPropertyName("UpdateDate")]
+   public DateTime? UpdateDate { get; set; }
+
+   [JsonPropertyName("FiscalizationDate")]
+   public DateTime? FiscalizationDate { get; set; }
+
+   [JsonPropertyName("FiscalizationTimestamp")]
+   public DateTime? FiscalizationTimestamp { get; set; }
+
+   [JsonPropertyName("RejectTimestamp")]
+   public DateTime? RejectTimestamp { get; set; }
+
+   [JsonPropertyName("RegistrationDate")]
+   public DateTime? RegistrationDate { get; set; }
+
+   // Document content
+   [JsonPropertyName("DocumentXml")]
+   public string DocumentXml { get; set; }
+
+   [JsonPropertyName("EncodedXml")]
+   public string EncodedXml { get; set; }
+
+   [JsonPropertyName("Description")]
+   public string Description { get; set; }
+
+   //// Collection properties
+   //[JsonPropertyName("Documents")]
+   //public List<DocumentInfo_Data> Documents { get; set; }
+
+   // State indicators
+   [JsonPropertyName("Imported")]
+   public bool? Imported { get; set; }
+
+   // Messages
+   [JsonPropertyName("Message")]
+   public string Message { get; set; }
+
+}
+
+//public class DocumentInfo_Data
+//{
+//   [JsonPropertyName("ElectronicId")]
+//   public long ElectronicId { get; set; }
+//
+//   [JsonPropertyName("DocumentNr")]
+//   public string DocumentNr { get; set; }
+//
+//   [JsonPropertyName("DocumentTypeId")]
+//   public int DocumentTypeId { get; set; }
+//
+//   [JsonPropertyName("DocumentTypeName")]
+//   public string DocumentTypeName { get; set; }
+//
+//   [JsonPropertyName("StatusId")]
+//   public int StatusId { get; set; }
+//
+//   [JsonPropertyName("StatusName")]
+//   public string StatusName { get; set; }
+//
+//   [JsonPropertyName("SenderBusinessNumber")]
+//   public string SenderBusinessNumber { get; set; }
+//
+//   [JsonPropertyName("SenderBusinessUnit")]
+//   public string SenderBusinessUnit { get; set; }
+//
+//   [JsonPropertyName("SenderBusinessName")]
+//   public string SenderBusinessName { get; set; }
+//
+//   [JsonPropertyName("RecipientBusinessNumber")]
+//   public string RecipientBusinessNumber { get; set; }
+//
+//   [JsonPropertyName("RecipientBusinessUnit")]
+//   public string RecipientBusinessUnit { get; set; }
+//
+//   [JsonPropertyName("RecipientBusinessName")]
+//   public string RecipientBusinessName { get; set; }
+//
+//   [JsonPropertyName("Created")]
+//   public DateTime Created { get; set; }
+//
+//   [JsonPropertyName("Updated")]
+//   public DateTime? Updated { get; set; }
+//
+//   [JsonPropertyName("Sent")]
+//   public DateTime? Sent { get; set; }
+//
+//   [JsonPropertyName("Delivered")]
+//   public DateTime? Delivered { get; set; }
+//
+//   [JsonPropertyName("Issued")]
+//   public DateTime? Issued { get; set; }
+//
+//   [JsonPropertyName("Imported")]
+//   public bool? Imported { get; set; }
+//}
+
+#endregion Bussiness Classes for JSON Request/Response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Ovo dole je Trash & Tmp ##########################################################################################################################################################################
+
+public class VvMER_Request_Data_AllActions_OLD : MER_Credentials_Data
+{
+   #region Constructors and Init
+   private void InitMER_Credentials()
+   {
       this.Username   = Vv_Http_Web_request_QAI.VvMER_UserName  ;
       this.Password   = Vv_Http_Web_request_QAI.VvMER_Password  ;
       this.CompanyId  = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
       this.CompanyBu  = ""                                      ;
       this.SoftwareId = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
-      this.File       = xmlString                               ;
    }
 
-   // Query Inbox / Outbox Additions: 
+   // za testiranje, pa sa test parametrima 
+   public VvMER_Request_Data_AllActions_OLD(/*int username,*/ string password, string companyId, string companyBu, string softwareId, string xmlString)
+   {
+    //this.Username   = username  ;
+      this.Username   = Vv_Http_Web_request_QAI.VvMER_UserName;
+      this.Password   = password  ;
+      this.CompanyId  = companyId ;
+      this.CompanyBu  = companyBu ;
+      this.SoftwareId = softwareId;
+      this.File       =  xmlString;
+   }
+
+   public VvMER_Request_Data_AllActions_OLD(string xmlString) // za slanje jednog eRacuna 
+   {
+      InitMER_Credentials();
+
+      this.File = xmlString;
+   }
+
+   public VvMER_Request_Data_AllActions_OLD(int electronicId) // za jedan racun 
+   {
+      InitMER_Credentials();
+
+      this.ElectronicId = electronicId;
+   }
+
+   public VvMER_Request_Data_AllActions_OLD(DateTime dateOD, DateTime dateDO) // za report 
+   {
+      InitMER_Credentials();
+
+      this.From = dateOD;
+      this.To   = dateDO;
+   }
+
+   public VvMER_Request_Data_AllActions_OLD()  
+   {
+      InitMER_Credentials();
+   }
+
+   #endregion Constructors and Init
+
+   [JsonPropertyName("File")]
+   public string File       { get; set; }
 
    [JsonPropertyName("ElectronicId")]
    public int ElectronicId { get; set; }
@@ -237,28 +701,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    [JsonPropertyName("To")]
    public DateTime To      { get; set; } // DateDO 
 
-   public VvMER_Request_Data_AllActions(int electronicId) // za jedan racun 
-   {
-      this.Username    = Vv_Http_Web_request_QAI.VvMER_UserName  ;
-      this.Password    = Vv_Http_Web_request_QAI.VvMER_Password  ;
-      this.CompanyId   = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
-      this.CompanyBu   = ""                                      ;
-      this.SoftwareId  = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
-      this.ElectronicId = electronicId                           ;
-   }
-
-   public VvMER_Request_Data_AllActions(DateTime dateOD, DateTime dateDO) // za report 
-   {
-      this.Username    = Vv_Http_Web_request_QAI.VvMER_UserName  ;
-      this.Password    = Vv_Http_Web_request_QAI.VvMER_Password  ;
-      this.CompanyId   = Vv_Http_Web_request_QAI.VvMER_CompanyId ;
-      this.CompanyBu   = ""                                      ;
-      this.SoftwareId  = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
-      this.From        = dateOD                                  ;
-      this.To          = dateDO                                  ;
-   }
-
 }
+
 public class VvMER_Response_Data_SEND : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_SEND>
 {
    [JsonPropertyName("ElectronicId")]
@@ -372,31 +816,6 @@ public class VvMER_Response_Data_Status //: Vv_XSD_Bussiness_BASE<VvMER_Response
    public string Error_Message { get; set; }
 
 }
-
-#endregion Bussiness Classes for JSON Request/Response
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Ovo dole je Trash & Tmp ##########################################################################################################################################################################
 
 
 

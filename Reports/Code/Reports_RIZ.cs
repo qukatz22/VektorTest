@@ -6357,7 +6357,7 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
 
       //TheFakturList.RemoveAll(faktur => faktur.IsFiskalDutyFaktur_ONLINE == false || faktur.FiskJIR.NotEmpty());
 
-      List<VvMER_Response_Data_Status> vvMER_Json_StatusList_Data = null;
+      List<VvMER_Response_Data_AllActions> vvMER_Json_StatusList_Data = null;
 
       bool getStatusOK = true;
       try
@@ -6372,7 +6372,7 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
 
       if(getStatusOK)
       {
-         VvMER_Response_Data_Status status;
+         VvMER_Response_Data_AllActions status;
 
          foreach(FakturLight fakturLight in TheFakturLightList)
          {
