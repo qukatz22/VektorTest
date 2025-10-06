@@ -11,6 +11,7 @@ using System.Xml;
 using System.Linq;
 using System.Web;
 using System.Reflection;
+using System.Net.Http.Headers;
 public static class Vv_Http_Web_request_QAI
 {
    #region MER Web Service URLs - API endpoints web addresses
@@ -28,19 +29,76 @@ public static class Vv_Http_Web_request_QAI
    #endregion MER Web Service URLs - API endpoints web addresses
 
    #region Private common methods - Voila!
+
+   /// <summary>
+   /// Sends a synchronous POST request with JSON content using HttpWebRequest
+   /// and returns the HttpWebResponse.
+   /// Includes explicit try/catch for safer error handling.
+   /// </summary>
+   // Za PND: 
+   private static HttpWebResponse Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString, string token)
+   {
+      HttpWebRequest  httpWebRequest  = null;
+      HttpWebResponse httpWebResponse = null;
+
+      try
+      {
+         // Create the request
+         httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddress);
+         httpWebRequest.ContentType = "application/json; charset=utf-8";
+         httpWebRequest.Method = "POST";
+
+         // Add Authorization header if provided
+         if(token.NotEmpty())
+         {
+            httpWebRequest.Headers["Authorization"] = token;
+         }
+
+         // Convert JSON string to UTF-8 bytes (no BOM)
+         byte[] requestBytes = Encoding.UTF8.GetBytes(jsonRequestString);
+
+         // Write bytes to request stream
+         Stream requestStream = httpWebRequest.GetRequestStream();
+         try
+         {
+            requestStream.Write(requestBytes, 0, requestBytes.Length);
+         }
+         finally
+         {
+            requestStream.Close();
+         }
+
+         // Send request and get response
+         httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+         return httpWebResponse;
+      }
+      catch(WebException webEx)
+      {
+         // Handle HTTP errors (e.g., 400, 500)
+         if(webEx.Response != null)
+         {
+            httpWebResponse = (HttpWebResponse)webEx.Response;
+            return httpWebResponse;
+         }
+         else
+         {
+            throw; // rethrow if no response is available
+         }
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+
+         // General exception handling
+         Console.WriteLine("Exception while sending HTTP request: " + ex.Message);
+         throw;
+      }
+   }
+
+   // Za MER: 
    private static HttpWebResponse Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString)
    {
-      HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddress);
-      httpWebRequest.ContentType = "application/json; charset=utf-8";
-      httpWebRequest.Method = "POST";
-
-      using(StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-      {
-         streamWriter.Write(jsonRequestString);
-         streamWriter.Flush();
-      }
-
-      return (HttpWebResponse)httpWebRequest.GetResponse();
+      return Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString, null);
    }
 
    private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams)
