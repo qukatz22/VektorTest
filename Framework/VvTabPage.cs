@@ -832,8 +832,12 @@ be_fast:
     //UserControl   otherUc;
     //VvUserControl otherUc;
       
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.SIN         ) TheVvUC = new SIN_UC           (panelZaUC, vvSubModul); 
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG   ) TheVvUC = new FUG_PTG_UC       (panelZaUC, vvSubModul);
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.SIN      ) TheVvUC = new SIN_UC           (panelZaUC, vvSubModul); 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG) TheVvUC = new FUG_PTG_UC       (panelZaUC, vvSubModul);
+      
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2I) TheVvUC = new F2_Izlaz_UC(panelZaUC, vvSubModul);
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2U) TheVvUC = new F2_Ulaz_UC (panelZaUC, vvSubModul);
+      
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_PCKinf_PTG)
       {
          string artiklCD;
