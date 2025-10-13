@@ -8868,15 +8868,14 @@ public class F2_Izlaz_UC : VvUserControl
                       
                      vvtb_electrID , 
                      vvtb_dateSlanja,
-                     vvtb_stPosiljke,
-                     vvtb_stDokumenta,
+                     vvtb_status,
                      vvtb_stFisk,
 
-                     vvtb_iznosUpl,
-                     vvtb_dateUpl,
+                     vvtb_uplata,
+                     //vvtb_dateUpl,
                      vvtb_markPaid,
 
-                     vvtb_dateArhiva
+                     vvtb_arhiv
 
                      ;
 
@@ -8884,7 +8883,10 @@ public class F2_Izlaz_UC : VvUserControl
    private DataGridViewTextBoxColumn colScrol, colRazmak;
    List<Faktur> IzlazList { get; set; }
 
-   Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back, clr_arhiva_Back;
+   Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
+   Image img_red, img_yellow, img_green;
+
+   DataGridViewImageColumn ams, fis;
 
    #endregion Fieldz
 
@@ -8939,33 +8941,49 @@ public class F2_Izlaz_UC : VvUserControl
       vvtb_fiskTtNum   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_fiskTtNum", null, -12, "Fiskalni broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fiskTtNum , null, "R_fiskTtNum", "Fiskalni IntBr", ZXC.Q4un           ); vvtb_fiskTtNum.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_extBrRn     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_origBrRn" , null, -12, "Externi broj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_extBrRn   , null, "R_extBrRn"  , "Externi Broj"  , ZXC.Q4un           ); vvtb_extBrRn  .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
       vvtb_date        = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_date"     , null, -12, "Datum"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_date      , null, "R_date"     , "Datum"         , ZXC.Q4un + ZXC.Qun4); vvtb_date     .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_partner     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_partner"  , null, -12, "Partner"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner   , null, "R_partner"  , "Partner"       , ZXC.Q9un           ); vvtb_partner  .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un;    colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-      vvtb_ams         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_ams"      , null, -12, "AMS"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ams       , null, "R_ams"      , "AMS"           , ZXC.Q2un           ); vvtb_ams      .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_ams         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_ams"      , null, -12, "AMS"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ams       , null, "R_ams"      , "AMS"           , ZXC.Q2un - ZXC.Qun4); vvtb_ams      .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+
+      ams = new DataGridViewImageColumn();
+      ams.Name       = "ams";
+      ams.HeaderText = "AMS";
+      ams.Width      = ZXC.Q2un;
+      ams.Image      =  VvIco.UnMarkAsSENDed.ToBitmap();
+      ams.DefaultCellStyle.BackColor = clr_colIfa_Back;
+      theGrid.Columns.Add(ams);
+
+      vvtb_partner = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_partner"  , null, -12, "Partner"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner   , null, "R_partner"  , "Partner"       , ZXC.Q9un           ); vvtb_partner  .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un;    colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
       vvtb_iznos       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (    2, "vvtb_iznos"    , null, -12, "Iznos"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznos     , null, "R_iznos"    , "Iznos"         , ZXC.Q4un           ); vvtb_iznos    .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
      
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
       
-      vvtb_electrID    = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_electrID"   , null, -12, "Electronic ID"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_electrID   , null, "R_electrID"   , "ElectronicID"           , ZXC.Q4un           ); vvtb_electrID  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_arhiva_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_dateSlanja  = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_dateSlanja" , null, -12, "Datum Slanja Dokumenta" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateSlanja , null, "R_dateSlanja" , "Datum Slanja"           , ZXC.Q4un - ZXC.Qun4); vvtb_dateSlanja.JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_arhiva_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_stPosiljke  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stPosiljke" , null, -12, "Status Slanja Dokumenta"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stPosiljke , null, "R_stPosiljke" , "Status Slanja Dokumenta", ZXC.Q6un           ); vvtb_stPosiljke.JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_arhiva_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_stFisk      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stFisk"     , null, -12, "Status Fiskalizacije"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stFisk     , null, "R_stFisk"     , "Status Fiskalizacije"   , ZXC.Q3un           ); vvtb_stFisk    .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_arhiva_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_dateArhiva  = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_dateArhiva" , null, -12, "Datum Arhive"           ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateArhiva , null, "R_dateArhiva" , "Datum Arhive"           , ZXC.Q4un - ZXC.Qun4); vvtb_dateArhiva.JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_arhiva_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_electrID    = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_electrID"   , null, -12, "Electronic ID"         ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_electrID  , null, "R_electrID"   , "ElectronicID" , ZXC.Q4un           ); vvtb_electrID  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_dateSlanja  = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_dateSlanja" , null, -12, "Datum Slanja Dokumenta"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateSlanja, null, "R_dateSlanja" , "Datum Slanja" , ZXC.Q4un - ZXC.Qun4); vvtb_dateSlanja.JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_status      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stDokumenta", null, -12, "Status Dokumenta"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_status    , null, "R_status"     , "Status"       , ZXC.Q6un           ); vvtb_status    .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_stFisk      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stFisk"     , null, -12, "Status Fiskalizacije"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stFisk    , null, "R_stFisk"     , "Status Fisk"  , ZXC.Q3un - ZXC.Qun2); vvtb_stFisk    .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+  
+      fis = new DataGridViewImageColumn();
+      fis.Name = "fis";
+      fis.HeaderText = "FIS";
+      fis.Width = ZXC.Q2un;
+      fis.Image = VvIco.MarkAsRECEIVEd.ToBitmap();
+      fis.DefaultCellStyle.BackColor = clr_eRacun_Back;
+      theGrid.Columns.Add(fis);
 
-      colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
-
-      vvtb_stDokumenta = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stDokumenta", null, -12, "Status Obrade Dokumenta"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stDokumenta, null, "R_stDokumenta", "Status  Dokumenta"     , ZXC.Q6un); vvtb_stDokumenta.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_arhiv       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_arhiv"      , null, -12, "Arhivirano"            ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_arhiv     , null, "R_arhiv"      , "Arhiv"        , ZXC.Q3un - ZXC.Qun2); vvtb_arhiv     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
 
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
   
-      vvtb_iznosUpl    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_iznosUpl" , null, -12, "Iznos Uplate"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznosUpl, null, "R_iznosUpl", "Iznos Uplate"       , ZXC.Q4un           ); vvtb_iznosUpl.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_dateUpl     = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_dateUpl" , null, -12, "Datum Uplate"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateUpl , null, "R_dateUpl" , "Datum Uplate"       , ZXC.Q4un + ZXC.Qun4); vvtb_dateUpl .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_markPaid    = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_markPaid", null, -12, "Datum slanja izvj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid, null, "R_markPaid", "Prijavljena Naplata", ZXC.Q4un + ZXC.Qun4); vvtb_markPaid.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_uplata      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_uplata"   , null, -12, "Iznos Uplate"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata  , null, "R_uplata"  , "Naplaćeno"          , ZXC.Q4un           ); vvtb_uplata.JAM_ReadOnly   = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_markPaid    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2,  "vvtb_markPaid", null, -12, "Poslan izvj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid, null, "R_markPaid", "Prijavljena naplata", ZXC.Q4un           ); vvtb_markPaid.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
 
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
+
+
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
 
       colScrol.DefaultCellStyle.BackColor = TheG.ColumnHeadersDefaultCellStyle.BackColor;
+
    }
    private void SetColors()
    {
@@ -8977,7 +8995,11 @@ public class F2_Izlaz_UC : VvUserControl
       clr_colIfa_Back = Color.LightCyan;
       clr_eRacun_Back = Color.Honeydew;
       clr_Mp_Back     = Color.Linen;//LavenderBlush
-      clr_arhiva_Back = Color.LightYellow;
+      //clr_arhiva_Back = Color.LightYellow;
+
+      img_red    = VvIco.MarkAsSENDed  .ToBitmap();
+      img_yellow = VvIco.CheckPrNabCij .ToBitmap();
+      img_green  = VvIco.MarkAsRECEIVEd.ToBitmap();
    }
    #endregion TheGridColumn
 
@@ -8987,23 +9009,21 @@ public class F2_Izlaz_UC : VvUserControl
    public Izlaz_colIdx DgvCI { get { return ci; } }
    public struct Izlaz_colIdx
    {
-      internal int iT_tt         ;
-      internal int iT_ttNum      ;
-      internal int iT_fiskTtNum  ;
-      internal int iT_extBrRn    ;
-      internal int iT_date       ;
-      internal int iT_partner    ;
-      internal int iT_ams        ;
-      internal int iT_iznos      ;
-      internal int iT_electrID   ;
-      internal int iT_dateSlanja ;
-      internal int iT_stPosiljke ;
-      internal int iT_stDokumenta;
-      internal int iT_stFisk     ;
-      internal int iT_iznosUpl   ;
-      internal int iT_dateUpl    ;
-      internal int iT_markPaid   ;
-      internal int iT_dateArhiva ;
+      internal int iT_tt        ;
+      internal int iT_ttNum     ;
+      internal int iT_fiskTtNum ;
+      internal int iT_extBrRn   ;
+      internal int iT_date      ;
+      internal int iT_partner   ;
+      internal int iT_ams       ;
+      internal int iT_iznos     ;
+      internal int iT_electrID  ;
+      internal int iT_dateSlanja;
+      internal int iT_status    ;
+      internal int iT_stFisk    ;
+      internal int iT_uplata    ;
+      internal int iT_markPaid  ;
+      internal int iT_arhiv     ;
    }
 
    private void SetColumnIndexes()
@@ -9020,13 +9040,11 @@ public class F2_Izlaz_UC : VvUserControl
       ci.iT_iznos      = TheG.IdxForColumn("R_iznos"      );
       ci.iT_electrID   = TheG.IdxForColumn("R_electrID"   );
       ci.iT_dateSlanja = TheG.IdxForColumn("R_dateSlanja" );
-      ci.iT_stPosiljke = TheG.IdxForColumn("R_stPosiljke" );
-      ci.iT_stDokumenta= TheG.IdxForColumn("R_stDokumenta");
+      ci.iT_status     = TheG.IdxForColumn("R_status"     );
       ci.iT_stFisk     = TheG.IdxForColumn("R_stFisk"     );
-      ci.iT_iznosUpl   = TheG.IdxForColumn("R_iznosUpl"   );
-      ci.iT_dateUpl    = TheG.IdxForColumn("R_dateUpl"    );
+      ci.iT_uplata     = TheG.IdxForColumn("R_uplata"     );
       ci.iT_markPaid   = TheG.IdxForColumn("R_markPaid"   );
-      ci.iT_dateArhiva = TheG.IdxForColumn("R_dateArhiva" );
+      ci.iT_arhiv      = TheG.IdxForColumn("R_arhiv"      );
    }
 
    #endregion SetColumnIndexes)
@@ -9064,13 +9082,22 @@ public class F2_Izlaz_UC : VvUserControl
          TheG.PutCell(ci.iT_iznos      , 0, 1234.55M                   );
          TheG.PutCell(ci.iT_electrID   , 0, 120968402);
          TheG.PutCell(ci.iT_dateSlanja , 0, "03.10.2025.");
-         TheG.PutCell(ci.iT_stPosiljke , 0, "Preuzet");
-         TheG.PutCell(ci.iT_stDokumenta, 0, "");
-         TheG.PutCell(ci.iT_stFisk     , 0, "x");
-         TheG.PutCell(ci.iT_iznosUpl   , 0, 1234.56);
-         TheG.PutCell(ci.iT_dateUpl    , 0, DateTime.Now);
-         TheG.PutCell(ci.iT_markPaid   , 0, "03.11.2025.");
-         TheG.PutCell(ci.iT_dateArhiva , 0, "05.10.2025.");
+         TheG.PutCell(ci.iT_status     , 0, "Preuzet");
+         TheG.PutCell(ci.iT_stFisk     , 0, "X");
+         TheG.PutCell(ci.iT_arhiv      , 0, "X");
+         TheG.PutCell(ci.iT_uplata     , 0, 1234.56);
+         TheG.PutCell(ci.iT_markPaid   , 0, 1000.00);
+
+         if(DateTime.Now.Second % 2 != 0)
+         {
+            ams.Image = img_red;
+            fis.Image = img_green;
+         }
+         else
+         { 
+            ams.Image =  img_green;
+            fis.Image =  img_yellow;
+         }
 
          TheG.Rows[0].HeaderCell.Value = (0 + 1).ToString();
       }
@@ -9087,12 +9114,10 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_ams        , rowIdx, ""                         );
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP        );
       TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.MER_ElectronicID);
-      TheG.PutCell(ci.iT_dateSlanja   , rowIdx, "");
-      TheG.PutCell(ci.iT_stPosiljke , rowIdx, "");
-      TheG.PutCell(ci.iT_stDokumenta, rowIdx, "");
+      TheG.PutCell(ci.iT_dateSlanja , rowIdx, "");
+      TheG.PutCell(ci.iT_status     ,  rowIdx, "");
       TheG.PutCell(ci.iT_stFisk     , rowIdx, "");
-      TheG.PutCell(ci.iT_iznosUpl   , rowIdx, "");
-      TheG.PutCell(ci.iT_dateUpl    , rowIdx, "");
+      TheG.PutCell(ci.iT_uplata     , rowIdx, "");
       TheG.PutCell(ci.iT_markPaid   , rowIdx, "");
    }
 
