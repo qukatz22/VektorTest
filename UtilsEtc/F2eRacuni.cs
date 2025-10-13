@@ -14,19 +14,44 @@ using System.Reflection;
 using System.Net.Http.Headers;
 public static class Vv_Http_Web_request_QAI
 {
+
+   private const bool DEMO = true;
+
    #region MER Web Service URLs - API endpoints web addresses
 
-   public const string VvMER_webAddress_Send        = @"https://www.moj-eracun.hr/apis/v2/send"       ; // POST 
-   public const string VvMER_webAddress_QueryOutbox = @"https://www.moj-eracun.hr/apis/v2/queryOutbox"; // POST 
-   public const string VvMER_webAddress_Ping        = @"https://www.moj-eracun.hr/apis/v2/Ping"       ; // GET! 
+   public const string VvMER_baseAddress_production = @"https://www.moj-eracun.hr"     ; 
+   public const string VvMER_baseAddress_demo       = @"https://www-demo.moj-eracun.hr"; 
+
+   public const string VvMER_webAddressPOST_Send        = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/send"       ; // POST 
+   public const string VvMER_webAddressPOST_QueryOutbox = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryOutbox"; // POST 
+   public const string VvMER_webAddressGET_Ping         = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/Ping"       ; // GET! 
+
+   public const string VvPND_baseAddress_production = @"https://eracun.eposlovanje.hr"; 
+   public const string VvPND_baseAddress_demo       = @"https://test.eposlovanje.hr"; 
+
+   public const string VvPND_webAddressPOST_Send        = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/send"    ; // POST 
+   public const string VvPND_webAddressPOST_outgoing    = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/outgoing"; // GET! 
+   public const string VvPND_webAddressGET_Ping         = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ping"             ; // GET! 
 
    // MER authorisation parameters: 
-   public static string VvMER_UserName   = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
-   public static string VvMER_Password   = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
-   public static string VvMER_CompanyId  = ZXC.CURR_prjkt_rec.Oib                                      ;
-   public const  string VvMER_SoftwareId = "Vektor-001"                                                ;
+   public static string VvMER_UserName   = DEMO ? "8633"    : ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
+   public static string VvMER_Password   = DEMO ? "T22zsEY" : ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
+   public static string VvMER_CompanyId  =                    ZXC.CURR_prjkt_rec.Oib                                      ;
+   public const  string VvMER_SoftwareId =                    "Vektor-001"                                                ;
+
+   // PND authorisation parameters: 
+   public static string VvPND_API_Key    = "1042a7915a7f66a23a8e0e98d93cb44c6d968263638a8cec54e07cb5abc2ae2f";
+   public static string VvPND_CompanyId  = ZXC.CURR_prjkt_rec.Oib;
+   public const  string VvPND_SoftwareId = "Vektor-001"          ;
+
 
    #endregion MER Web Service URLs - API endpoints web addresses
+
+   #region PND Web Service URLs - API endpoints web addresses
+
+   //qweqwe
+
+   #endregion PND Web Service URLs - API endpoints web addresses
 
    #region Private common methods - Voila!
 
@@ -35,8 +60,7 @@ public static class Vv_Http_Web_request_QAI
    /// and returns the HttpWebResponse.
    /// Includes explicit try/catch for safer error handling.
    /// </summary>
-   // Za PND: 
-   private static HttpWebResponse Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString, string token)
+   private static HttpWebResponse Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString, string token = null)
    {
       HttpWebRequest  httpWebRequest  = null;
       HttpWebResponse httpWebResponse = null;
@@ -95,17 +119,17 @@ public static class Vv_Http_Web_request_QAI
       }
    }
 
-   // Za MER: 
-   private static HttpWebResponse Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(string webAddress, string jsonRequestString)
-   {
-      return Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString, null);
-   }
-
-   private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams)
+   private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams, string token = null)
    {
       HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlWithParams);
-      httpWebRequest.ContentType = "application/json; charset=utf-8";
-      httpWebRequest.Method = "GET";
+      httpWebRequest.ContentType    = "application/json; charset=utf-8";
+      httpWebRequest.Method         = "GET";
+
+      // Add Authorization header if provided
+      if(token.NotEmpty())
+      {
+         httpWebRequest.Headers["Authorization"] = token;
+      }
 
       return (HttpWebResponse)httpWebRequest.GetResponse();
    }
@@ -167,7 +191,7 @@ public static class Vv_Http_Web_request_QAI
       return deserializedResponseData;
    }
 
-   private static T VvMER_GETmethod_Json<T, TRequest>(string webAddress, TRequest request, Action<T, string> saveToFile = null, string fileName = null)
+   private static T VvMER_GETmethod_Json<T, TRequest>(string webAddress, TRequest request, Action<T, string> saveToFile = null, string fileName = null, string token = null)
        where T : class, new()
        where TRequest : class
    {
@@ -197,10 +221,6 @@ public static class Vv_Http_Web_request_QAI
                {
                   paramValue = dateTime.ToString("yyyy-MM-dd'T'HH:mm:ss");
                }
-             //else if(value is DateTime? nullableDateTime)
-             //{
-             //   paramValue = nullableDateTime?.ToString("yyyy-MM-dd'T'HH:mm:ss");
-             //}
                else if(prop.PropertyType == typeof(DateTime?))
                {
                   var nullableDateTime = (DateTime?)value;
@@ -218,7 +238,8 @@ public static class Vv_Http_Web_request_QAI
          uriBuilder.Query = query.ToString();
          string urlWithParams = uriBuilder.ToString();
 
-         HttpWebResponse httpResponse = Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(urlWithParams);
+         // Use the new overload that accepts a token
+         HttpWebResponse httpResponse = Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(urlWithParams, token);
 
          using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
          {
@@ -309,7 +330,7 @@ public static class Vv_Http_Web_request_QAI
          
          VvMER_POSTmethod_Json<VvMER_Response_Data_AllActions>
          (
-            VvMER_webAddress_Send,
+            VvMER_webAddressPOST_Send,
             jsonRequestString,
             (data, fileName) => { if(fileName.NotEmpty()) data.SaveToFile(fileName); },
             fullPath_XML_FileName.Replace(".xml", "_RES.xml")
@@ -326,7 +347,7 @@ public static class Vv_Http_Web_request_QAI
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddress_QueryOutbox, jsonRequestString);
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
 
       VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.FirstOrDefault();
 
@@ -341,7 +362,7 @@ public static class Vv_Http_Web_request_QAI
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddress_QueryOutbox, jsonRequestString);
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
 
       return responseData_AllActions_List;
    }
@@ -352,8 +373,27 @@ public static class Vv_Http_Web_request_QAI
    {
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
    
-      VvMER_Response_Data_AllActions responseData_AllActions = VvMER_GETmethod_Json<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddress_Ping, request_Data_AllActions);
+      VvMER_Response_Data_AllActions responseData_AllActions = VvMER_GETmethod_Json<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddressGET_Ping, request_Data_AllActions);
    
+      return responseData_AllActions;
+   }
+
+   public static VvMER_Response_Data_AllActions VvPND_WebService_Ping()
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
+
+      string authToken = VvPND_API_Key;
+
+      VvMER_Response_Data_AllActions responseData_AllActions =
+          VvMER_GETmethod_Json<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
+          (
+              VvPND_webAddressGET_Ping,
+              request_Data_AllActions,
+              null,
+              null,
+              authToken  // Using just the API key
+          );
+
       return responseData_AllActions;
    }
 
