@@ -36,7 +36,7 @@ namespace B2GSendInvoicePKIClient.XML
             MemoryStream memoryStream   = new MemoryStream();
             xmlSerializer.Serialize(memoryStream, invoice, xmlSerializerNamespaces);
 
-            UBLSigner ublSigner = new UBLSigner(clientCertificatePath, clientCertificatePassword, "Invoice");
+            // rem2025: UBLSigner ublSigner = new UBLSigner(clientCertificatePath, clientCertificatePassword, "Invoice");
 
 
          string vvSignedXmlString = @"<?xml version=""1.0"" encoding=""UTF - 8"" standalone=""no""?><Invoice xmlns=""urn: oasis: names: specification: ubl: schema: xsd: Invoice - 2"" xmlns:cac=""urn: oasis: names: specification: ubl: schema: xsd: CommonAggregateComponents - 2"" xmlns:cbc=""urn: oasis: names: specification: ubl: schema: xsd: CommonBasicComponents - 2"" xmlns:ext=""urn: oasis: names: specification: ubl: schema: xsd: CommonExtensionComponents - 2"" xmlns:sac=""urn: oasis: names: specification: ubl: schema: xsd: SignatureAggregateComponents - 2"" xmlns:sbc=""urn: oasis: names: specification: ubl: schema: xsd: SignatureBasicComponents - 2"" xmlns:sig=""urn: oasis: names: specification: ubl: schema: xsd: CommonSignatureComponents - 2""><ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent><sig:UBLDocumentSignatures><sac:SignatureInformation><Signature xmlns=""http://www.w3.org/2000/09/xmldsig#"" Id=""data_signature""><SignedInfo><CanonicalizationMethod Algorithm=""http://www.w3.org/2001/10/xml-exc-c14n#WithComments""/><SignatureMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#rsa-sha1""/><Reference Type=""http://www.w3.org/2000/09/xmldsig#SignatureProperties"" URI=""#ide2664030-fc8c-457f-ba12-d55b4e95aa24""><Transforms><Transform Algorithm=""http://www.w3.org/2001/10/xml-exc-c14n#WithComments""/></Transforms><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1""/><DigestValue>0q4HxVm6sSZyezJoUTCP2Z562rk=</DigestValue></Reference><Reference URI=""""><Transforms><Transform Algorithm=""http://www.w3.org/2002/06/xmldsig-filter2""><XPath xmlns=""http://www.w3.org/2002/06/xmldsig-filter2"" xmlns:inv=""urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"" Filter=""intersect"">here()/ancestor::inv:Invoice[1]</XPath><XPath xmlns=""http://www.w3.org/2002/06/xmldsig-filter2"" xmlns:inv=""urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"" Filter=""subtract"">here()/ancestor::ext:UBLExtensions/ext:UBLExtension[last()]</XPath></Transform><Transform Algorithm=""http://www.w3.org/2001/10/xml-exc-c14n#WithComments""/></Transforms><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1""/><DigestValue>KWqsL+WeVym/HW9b4zPzxHQLmaM=</DigestValue></Reference></SignedInfo><SignatureValue>k9CJnswYD6HLOFO/Zpt1y+76yRN/9KB75pg1T9IYW+noH7spVFp/Vx4Zbz3LVaBQgYnQMeQ3kqfK
@@ -84,9 +84,9 @@ tQ ==</ X509Certificate ></ X509Data ></ KeyInfo >< Object >< SignaturePropertie
 
 
 
-         byte[] signedXML = ublSigner.signUBLDocument(memoryStream.ToArray());
-
-            return signedXML;
+         // rem2025: byte[] signedXML = ublSigner.signUBLDocument(memoryStream.ToArray());
+         // rem2025: 
+         // rem2025:    return signedXML;
         }
     }
 }

@@ -5,7 +5,7 @@ using Crownwood.DotNetMagic.Controls;
 using System.Collections.Generic;
 using CrystalDecisions.Windows.Forms;
 using System.Linq;
-using ikvm.lang;
+//using ikvm.lang;
 
 public interface IVvHasSumInDataLayerDocumentRecordUC
 {
