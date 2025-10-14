@@ -8561,6 +8561,17 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion EU VAT Code Action
 
+      #region F2 eRacun Poslovni Proces
+
+      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode)== false && faktur_rec.TtInfo.IsIzlazniPdvTT)
+      {
+       //Fld_eRproc      = ZXC.RRD.Dsc_Default_eRposProc;
+         tbx_eRproc.Text = ZXC.RRD.Dsc_Default_eRposProc;
+      }
+
+      #endregion F2 eRacun Poslovni Proces
+
+
       #region RNZ - radni nalog zastitara (ugovor i nacin sticenja)
 
       if(this is RNZDUC) // ugovor + nacin zastite 
@@ -10789,7 +10800,8 @@ public class RiskRulesDsc : VvLookupAsDsc
    public int  Dsc_M2P_TimeOutSeconds          { get; set; }
    public bool Dsc_IsUseOPN                    { get; set; }
    public string Dsc_DefaultKPD                { get; set; }
-
+   public string Dsc_Default_eRposProc          { get; set; }
+   
    #endregion DataLayer Propertiz
 
    #region Constructor
@@ -10880,7 +10892,8 @@ public class RiskRulesDsc : VvLookupAsDsc
 
       Dsc_IsUseOPN                 = false;
       Dsc_DefaultKPD               = "";
-      
+      Dsc_Default_eRposProc        = "";
+
       #endregion defautValue
    }
 

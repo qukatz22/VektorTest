@@ -85,8 +85,15 @@ namespace EN16931.UBL
          //BT-22 Napomena na računu	Tekst 1..1
          List<NoteType> noteList = new List<NoteType>();
 
-         noteList.Add(new NoteType { Value = Fak2eR__String("BT022 operater", faktur_rec, null) });
-         noteList.Add(new NoteType { Value = Fak2eR__String("BT022 vrijemeR", faktur_rec, null) });
+         //14.10.2025. ovo od 1.1.26. ide zasebno te se moze maknuti iz napomene!!!!
+         //noteList.Add(new NoteType { Value = Fak2eR__String("BT022 operater", faktur_rec, null) });
+         //noteList.Add(new NoteType { Value = Fak2eR__String("BT022 vrijemeR", faktur_rec, null) });
+         if(!ZXC.IsF2_2026_rules)
+         { 
+            noteList.Add(new NoteType { Value = Fak2eR__String("BT022 operater", faktur_rec, null) });
+            noteList.Add(new NoteType { Value = Fak2eR__String("BT022 vrijemeR", faktur_rec, null) });
+         }
+
          noteList.Add(new NoteType { Value = Prj2eR__String("BT022 odgOsoba") });
 
          if(faktur_rec.Napomena.NotEmpty()) noteList.Add(new NoteType { Value = Fak2eR__String("BT022 napomena", faktur_rec, null) });
@@ -261,13 +268,15 @@ namespace EN16931.UBL
             ElectronicMail = new ElectronicMailType { Value = Prj2eR__String("BT043") },
          };
 
-       //new 2025-2026
-       //the_eRacun.AccountingSupplierParty.SellerContact = new ContactType
-       //{
-       //   ID   = new IDType    { Value = "oib" },
-       //   Name = new NameType1 { Value = "operater1" }
-       //};
-
+       //14.10.2025. 
+       if(ZXC.IsF2_2026_rules)
+       { 
+         the_eRacun.AccountingSupplierParty.SellerContact = new ContactType
+         {
+            ID   = new IDType    { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) },
+            Name = new NameType1 { Value = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) }
+         };
+       }
 
          #endregion BG-4 BG-5 Prodavatelj (Prjkt)
 
@@ -1073,9 +1082,19 @@ namespace EN16931.UBL
             //BT-155 Identifikator artikla  ID = sifra Artikla
             invoiceLine.Item.Name = new NameType1 { Value = Fak2eR__String("BT153", faktur_rec, rtrans_rec) };
 
-            //new 2025-2026
-            //invoiceLine.Item.CommodityClassification
+            //14.10.2025. KPD
             //< cbc:ItemClassificationCode listID = "CG" > 62.90.90 </ cbc:ItemClassificationCode >
+            invoiceLine.Item.CommodityClassification = new CommodityClassificationType[]
+            {
+               new CommodityClassificationType
+               {
+                  ItemClassificationCode = new ItemClassificationCodeType
+                  {
+                     listID = "CG",
+                     Value  = artikl_rec.ER_KPD
+                  }
+               }
+            }; 
 
 
             if(rtrans_rec.T_artiklCD.NotEmpty())
@@ -1244,13 +1263,13 @@ namespace EN16931.UBL
             case "BT022 napomena": theString = faktur_rec.Napomena                                                       ; break; //BT-22 napomena                                   
             case "BT022 operater": theString = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) + "#Oznaka operatera" ; break; //BT-22 operater                                   
 
-            // 16.12.2022: MojEracun nam kaze da se TISAK buni kad ucitava dragicin eRacun jer je time hh:mm a oni ocekuju hh:mm:ss, pa ih evo uslisujemo ?! 
+          // 16.12.2022: MojEracun nam kaze da se TISAK buni kad ucitava dragicin eRacun jer je time hh:mm a oni ocekuju hh:mm:ss, pa ih evo uslisujemo ?! 
           //case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat ) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
             case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
 
             case "BT022 opis"    : theString = faktur_rec.Opis                                                           ; break;
             case "BT023"         : theString = "P" + (faktur_rec.PdvKolTip_u.ToString())                                 ; break; //BT-23 Vrsta poslovnog procesa ProfileID
-            case "BT024"         : theString = VvUBL_CustomizationID                                                     ; break; //BT-24 Identifikator specifikacije                          
+            case "BT024"         : theString = ZXC.IsF2_2026_rules ? VvUBL_CustomizationID_2026 : VvUBL_CustomizationID       ; break; //BT-24 Identifikator specifikacije                          
             case "BT044"         : theString = faktur_rec.KupdobName                                                     ; break; //BT-44 Ime Kupca                                            
             case "BT050"         : theString = faktur_rec.KdUlica                                                        ; break; //BT-50 Adresa Kupca Obično naziv ulice i broj               
             case "BT050x"        : theString = faktur_rec.KdUlica + ", " + faktur_rec.KdZip + " " + faktur_rec.KdMjesto  ; break; //BT-50 Adresa Kupca Obično naziv ulice i broj               
@@ -1521,7 +1540,11 @@ namespace EN16931.UBL
       // supplied under conditions agreed between seller and buyer. 
       private static string VvUBL_InvoiceTypeCode { get { return "380"; } }
 
+    
       private static string VvUBL_CustomizationID { get { return "urn:cen.eu:en16931:2017"; } }
+
+      //14.10.2025.
+      private static string VvUBL_CustomizationID_2026 { get { return "urn:cen.eu:en16931:2017#compliant#urn:mfin.gov.hr:cius-2025:1.0#conformant#urn:mfin.gov.hr:ext-2025:1.0"; } }
 
       private static string VvUBL_UnitCode(string t_jm)
       {

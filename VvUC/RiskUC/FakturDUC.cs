@@ -10493,6 +10493,7 @@ public partial class FakturExtDUC : FakturDUC
       tbx_eRprocOpis = hamper.CreateVvTextBox      (2, 0, "tbx_eRprocOpis", "Opis");
       tbx_eRproc.JAM_Set_LookUpTable(ZXC.luiListaeRacPoslProc, (int)ZXC.Kolona.prva);
       tbx_eRproc.JAM_lui_NameTaker_JAM_Name = tbx_eRprocOpis.JAM_Name;
+      tbx_eRprocOpis.JAM_ReadOnly = true;
 
       tbx_eRproc.JAM_IsSupressTab = true;
 
@@ -18565,7 +18566,8 @@ public class RiskRulesUC : VvOtherUC
    private VvHamper  hamp_mpc, hamp_kupdobNaziv, hamp_ciljaniMPC, hamp_numDecmal, hamp_fiskal, hamp_kpd;
    private VvTextBox tbx_VpcMpcMarza, tbx_KupdobCd, tbx_KupdobTk, tbx_KupdobName, tbx_kolNumDecimal, tbx_ambKolNumDecimal, tbx_cekanjeFiskal,
                      tbx_pnpSt, tbx_komercProvSt, tbx_rucGranica, tbx_omjerPdv, tbx_blgMin, tbx_OrgPakText, tbx_koefPlanCijProizv,
-                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy, tbx_M2P_sekunde, tbxDefaultKPD;
+                     tbx_tolerancOstUlCij, tbx_norKolNumDecimal, tbx_PreferedSkladOnUCLoad, tbxOpcina, tbxOpcCd_PNP, tbx_PdvMathTolerancy, tbx_M2P_sekunde, 
+                     tbxDefaultKPD, tbxDefault_eRposProc, tbxDefault_eRpp_Opis;
 
    protected RadioButton rbt_stMarze, rbt_vpc, rbt_mpc, rbt_ciljMPCknjigMPC, rbt_ciljMPCrabat;
    protected CheckBox    cbx_VpcMpcMarzaTheSame4VPC, cbx_IsSupressSHADOWing, cbx_IsBarCode, cbx_IsPkVisible, cbx_IsZtrViaOrgPak,
@@ -18615,7 +18617,7 @@ public class RiskRulesUC : VvOtherUC
       InitializeHamper_ciljaniMPC       (out hamp_ciljaniMPC);
       InitializeHamper_numDecimal       (out hamp_numDecmal);
       InitializeHamper_fiskal           (out hamp_fiskal);
-      InitializeHamper_KPD              (out hamp_kpd);
+      InitializeHamper_F2news              (out hamp_kpd);
    }
 
    private void InitializeHamper_obracunMPC(out VvHamper hamper)
@@ -18883,12 +18885,12 @@ public class RiskRulesUC : VvOtherUC
 
    }
 
-   private void InitializeHamper_KPD(out VvHamper hamper)
+   private void InitializeHamper_F2news(out VvHamper hamper)
    { 
-      hamper = new VvHamper(2, 1, "", this, false, hamp_ciljaniMPC.Right + ZXC.Q3un, hamp_ciljaniMPC.Top, 0);
+      hamper = new VvHamper(3, 2, "", this, false, hamp_ciljaniMPC.Right + ZXC.Q2un, hamp_ciljaniMPC.Top, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q5un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q2un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -18899,9 +18901,15 @@ public class RiskRulesUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
                      hamper.CreateVvLabel         (0, 0, "DeafaultKPD:", ContentAlignment.MiddleRight);
-      tbxDefaultKPD = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefaultKPD", "Default KPD");
+      tbxDefaultKPD = hamper.CreateVvTextBoxLookUp("tbxDefaultKPD", 1, 0, "Default KPD", 12, 1, 0);
       tbxDefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
 
+                             hamper.CreateVvLabel        (0, 1, "eR PoslProces:"      , ContentAlignment.MiddleRight);
+      tbxDefault_eRposProc = hamper.CreateVvTextBoxLookUp(1, 1, "tbxDefault_eRposProc", "Default poslovni proces");
+      tbxDefault_eRpp_Opis = hamper.CreateVvTextBox      (2, 1, "", "tbxDefault_eRpp_Opis");
+      tbxDefault_eRposProc.JAM_Set_LookUpTable(ZXC.luiListaeRacPoslProc, (int)ZXC.Kolona.prva);
+      tbxDefault_eRposProc.JAM_lui_NameTaker_JAM_Name = tbxDefault_eRpp_Opis.JAM_Name;
+      tbxDefault_eRpp_Opis.JAM_ReadOnly = true;
    }
 
 #endregion Hampers 
@@ -19024,6 +19032,9 @@ public class RiskRulesUC : VvOtherUC
    public bool Fld_IsVisibleKPD_VP             { get { return cbx_isVisibleKPD_VP     .Checked; } set { cbx_isVisibleKPD_VP      .Checked = value; } }
 
    public string Fld_DefaultKPD                { get { return tbxDefaultKPD.Text; } set { tbxDefaultKPD.Text = value; } }
+   public string Fld_Default_eRposProc         { get { return tbxDefault_eRposProc.Text; } set { tbxDefault_eRposProc.Text = value; } }
+   public string Fld_Default_eRpp_Opis         { set { tbxDefault_eRpp_Opis.Text = value; }  }
+
 
    #endregion Fld_
 
@@ -19098,6 +19109,7 @@ public class RiskRulesUC : VvOtherUC
       Fld_M2P_TimeOutSeconds       = (uint)RRD.Dsc_M2P_TimeOutSeconds;
       Fld_IsUseOPN                 = RRD.Dsc_IsUseOPN;
       Fld_DefaultKPD               = RRD.Dsc_DefaultKPD;
+      Fld_Default_eRposProc        = RRD.Dsc_Default_eRposProc;
    }
 
    public void GetDscFields()
@@ -19160,7 +19172,9 @@ public class RiskRulesUC : VvOtherUC
       ZXC.RRD.Dsc_M2P_TimeOutSeconds       = (int)Fld_M2P_TimeOutSeconds ;
       ZXC.RRD.Dsc_IsUseOPN                 = Fld_IsUseOPN;
       ZXC.RRD.Dsc_DefaultKPD               = Fld_DefaultKPD;
+      ZXC.RRD.Dsc_Default_eRposProc        = Fld_Default_eRposProc;
       
+
       ZXC.RRD.SaveDscToLookUpItemList();
 
       ZXC.RRD.SetMalopKupdob_rec(null);
