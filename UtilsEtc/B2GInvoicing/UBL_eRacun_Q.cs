@@ -51,15 +51,19 @@ namespace EN16931.UBL
 
          the_eRacun.ID              = new IDType              { Value = Fak2eR__String("BT001", faktur_rec, null) }; //BT-1 Broj računa 	 Identifikator 1..1 
          the_eRacun.InvoiceTypeCode = new InvoiceTypeCodeType { Value = Fak2eR__String("BT003", faktur_rec, null) }; //BT-3 Šifra vrste 	 Šifra         1..1 
-         the_eRacun.IssueDate       = new IssueDateType       { Value = Fak2eR____Date("BT002", faktur_rec, null) }; //BT-2 Datum izdavanja Datum       1..1 
-         the_eRacun.TaxPointDate    = new TaxPointDateType    { Value = Fak2eR____Date("BTqwe", faktur_rec, null) }; //BT-2 Datum izdavanja Datum       1..1 
+         the_eRacun.IssueDate       = new IssueDateType       { Value = Fak2eR____Date("BT002", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
+         the_eRacun.TaxPointDate    = new TaxPointDateType    { Value = Fak2eR____Date("BTqwe", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
 
-         // 24.06.2019. moj-eracun kaze da ovo ne postoji u EU normi
-         if(isMojeRacunNotFina == false)
-            the_eRacun.IssueTime = new IssueTimeType { Value = Fak2eR____Date("BT002 Time", faktur_rec, null) }; //BT-2 Vrijeme izdavanja Time       1..1 
+         // 24.06.2019. moj-eracun kaze da ovo ne postoji u EU normi    
+         // 14.10.2025 - ipak postoji u EU normi ali cemo ga tek u 2026 
+         //if(isMojeRacunNotFina == false)
+         if(ZXC.IsF2_2026_rules)
+         the_eRacun.IssueTime            = new IssueTimeType            { Value          = Fak2eR____Date("BT002 Time", faktur_rec, null)     }; //BT-2 Vrijeme izdavanja Time   1..1 
+         /* byQ timeAbrakakobredabra: */
+       //the_eRacun.IssueTime            = new IssueTimeType            { ValueFormatted = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) }; //BT-2 Vrijeme izdavanja Time   1..1 
 
-         the_eRacun.DueDate              = new DueDateType              { Value = Fak2eR____Date("BT002 Dosp", faktur_rec, null) }; //BT-2 Dospjece placanja Datum       1..1 
-         the_eRacun.DocumentCurrencyCode = new DocumentCurrencyCodeType { Value = Fak2eR__String("BT005"     , faktur_rec, null) }; //BT-5 Šifra valute 	 Šifra      1..1 
+         the_eRacun.DueDate              = new DueDateType              { Value = Fak2eR____Date("BT002 Dosp", faktur_rec, null) }; //BT-2 Dospjece placanja Datum  1..1 
+         the_eRacun.DocumentCurrencyCode = new DocumentCurrencyCodeType { Value = Fak2eR__String("BT005"     , faktur_rec, null) }; //BT-5 Šifra valute 	 Šifra     1..1 
          the_eRacun.TaxCurrencyCode      = new TaxCurrencyCodeType      { Value = Fak2eR__String("BT006"     , faktur_rec, null) }; //????BT-6 Šifra valute obracunatog PDV-a valjda
 
          if(faktur_rec.PdvKolTip_u.NotZero()) // u 'PdvKolTip_u' napucavamo P1, ... P12 - Poslovni Proces eRacuna 
@@ -876,7 +880,9 @@ namespace EN16931.UBL
        //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.Transes                  .Count ];        
        //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length]; // !!! 
          // Od 18.09.2025: 
-         the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Where(rtr => rtr.T_artiklCD.NotEmpty()).Count()]; // !!! 
+
+         if(ZXC.IsF2_2026_rules) the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Where(rtr => rtr.T_artiklCD.NotEmpty()).Count()]; // NEW way 
+         else                    the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length];                                          // OLD way 
 
          bool isStavkaForAdditionalOpis;
 
@@ -1382,7 +1388,14 @@ namespace EN16931.UBL
          switch(BT_ID)
          {
             case "BT002"     : theDate = faktur_rec.DokDate ; break; //BT-2 Datum izdavanja
-            case "BT002 Time": theDate = faktur_rec.DokDate ; break; //BT-2 Vrijeme izdavanja
+          //case "BT002 Time": theDate = faktur_rec.DokDate ; break; //BT-2 Vrijeme izdavanja
+            case "BT002 Time": DateTime dateTime = faktur_rec.DokDate;
+                             //theDate = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second, DateTimeKind.Unspecified); break;
+                             //theDate = new DateTime(1, 1, 1, dateTime.Hour, dateTime.Minute, dateTime.Second, DateTimeKind.Unspecified); break;
+               // Use TimeOfDay to strip milliseconds and create a clean time
+               TimeSpan cleanTime = new TimeSpan(dateTime.Hour, dateTime.Minute, dateTime.Second);
+               theDate = DateTime.Today.Add(cleanTime); break;
+
             case "BT002 Dosp": theDate = faktur_rec.DospDate; break; //BT-2 Dospjece placanja
             case "BT072"     : theDate = faktur_rec.DokDate ; break; // 24.06.2019.ActualDeliveryDate
 

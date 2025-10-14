@@ -2987,6 +2987,32 @@ namespace EN16931.UBL {
         }
     }
     
+    //public partial class TimeType {
+    //    
+    //    private System.DateTime valueField;
+    //
+    //  /// <remarks/>
+    //  /* byQ timeAbrakakobredabra: *///[System.Xml.Serialization.XmlTextAttribute(DataType="time")]
+    //  /* byQ timeAbrakakobredabra: */
+    //  [XmlIgnore]
+    //    public System.DateTime Value {
+    //        get {
+    //            return this.valueField;
+    //        }
+    //        set {
+    //            this.valueField = value;
+    //        }
+    //    }
+    //
+    //  /* byQ timeAbrakakobredabra: */[XmlText]
+    //  /* byQ timeAbrakakobredabra: */public string ValueFormatted
+    //  /* byQ timeAbrakakobredabra: */{
+    //  /* byQ timeAbrakakobredabra: */   get { return Value.ToString("HH:mm:ss"); }
+    //  /* byQ timeAbrakakobredabra: */   set { Value = System.DateTime.Parse(value); }
+    //  /* byQ timeAbrakakobredabra: */}
+    //
+    //}
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
     [System.SerializableAttribute()]

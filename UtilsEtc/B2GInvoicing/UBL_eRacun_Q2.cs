@@ -22,11 +22,41 @@ using B2GSendInvoicePKIClient.B2GSendInvoicePKIWebService;
 using B2GSendInvoicePKIClient.WSClient;
 using B2GSendInvoicePKIClient.Operations;
 using B2GSendInvoicePKIClient.XML;
+using System.Globalization;
 
 namespace EN16931.UBL
 {
    public partial class InvoiceType
    {
+      // 14.10.2025: serializator za Time zaprlja nesto sa milisekundama pa da s ovim ocistimo
+      /* byQ timeAbrakakobredabra: */
+      private static string NormalizeIssueTimeToHHmmss(string xml)
+      {
+         // Match the cbc:IssueTime content regardless of what .NET emitted (e.g., 11:34:37.0000000+02:00)
+         // and replace it with HH:mm:ss.
+         return System.Text.RegularExpressions.Regex.Replace(
+            xml,
+            @"(<cbc:IssueTime>)([^<]+)(</cbc:IssueTime>)",
+            m =>
+            {
+               var raw = m.Groups[2].Value.Trim();
+
+               // Try DateTimeOffset first (handles offsets), then DateTime as fallback.
+               if(DateTimeOffset.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dto))
+               {
+                  return m.Groups[1].Value + dto.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + m.Groups[3].Value;
+               }
+               if(DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dt))
+               {
+                  return m.Groups[1].Value + dt.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + m.Groups[3].Value;
+               }
+
+               // If parsing fails, leave as-is.
+               return m.Value;
+            },
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+      }
+
       #region VvConstructors
 
       public InvoiceType()
@@ -99,6 +129,10 @@ namespace EN16931.UBL
             memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
             streamReader = new System.IO.StreamReader(memoryStream);
             xmlString = streamReader.ReadToEnd();
+
+            // 14.10.2025: Normalize cbc:IssueTime to HH:mm:ss (EN16931 requires hh:mm:ss with no fraction/offset)
+            /* byQ timeAbrakakobredabra: */ // ILI ćeš sa NormalizeIssueTimeToHHmmss, ILI sa XmlIgnore za IssueTime u InvoiceType.cs
+            xmlString = NormalizeIssueTimeToHHmmss(xmlString);
 
             return xmlString;
          }
