@@ -1099,5 +1099,266 @@ namespace MojEracun.Api
       [JsonPropertyName("Message")]
       public string Message { get; set; }
    }
- 
+
+}
+
+namespace EPoslovanje.Api
+{
+   // Common
+
+   public class ApiError_Data
+   {
+      [JsonPropertyName("Code")]
+      public int? Code { get; set; }
+
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      // Unknown/extra fields from server
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   public class Paging_Data
+   {
+      [JsonPropertyName("Page")]
+      public int? Page { get; set; }
+
+      [JsonPropertyName("PageSize")]
+      public int? PageSize { get; set; }
+
+      [JsonPropertyName("TotalCount")]
+      public int? TotalCount { get; set; }
+
+      [JsonPropertyName("TotalPages")]
+      public int? TotalPages { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   // Document list (GET /dokumenti)
+   public class DocumentsListResponse_Data
+   {
+      [JsonPropertyName("Documents")]
+      public List<DocumentInfo_Data> Documents { get; set; }
+
+      // Some APIs return meta/paging information in a sibling object
+      [JsonPropertyName("Paging")]
+      public Paging_Data Paging { get; set; }
+
+      // Optional message or status text
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      // Error if present
+      [JsonPropertyName("Error")]
+      public ApiError_Data Error { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   // Document summary info (items in list)
+   public class DocumentInfo_Data
+   {
+      [JsonPropertyName("ElectronicId")]
+      public long ElectronicId { get; set; }
+
+      [JsonPropertyName("DocumentNr")]
+      public string DocumentNr { get; set; }
+
+      [JsonPropertyName("DocumentTypeId")]
+      public int? DocumentTypeId { get; set; }
+
+      [JsonPropertyName("DocumentTypeName")]
+      public string DocumentTypeName { get; set; }
+
+      [JsonPropertyName("StatusId")]
+      public int? StatusId { get; set; }
+
+      [JsonPropertyName("StatusName")]
+      public string StatusName { get; set; }
+
+      [JsonPropertyName("SenderBusinessNumber")]
+      public string SenderBusinessNumber { get; set; }
+
+      [JsonPropertyName("SenderBusinessUnit")]
+      public string SenderBusinessUnit { get; set; }
+
+      [JsonPropertyName("SenderBusinessName")]
+      public string SenderBusinessName { get; set; }
+
+      [JsonPropertyName("RecipientBusinessNumber")]
+      public string RecipientBusinessNumber { get; set; }
+
+      [JsonPropertyName("RecipientBusinessUnit")]
+      public string RecipientBusinessUnit { get; set; }
+
+      [JsonPropertyName("RecipientBusinessName")]
+      public string RecipientBusinessName { get; set; }
+
+      [JsonPropertyName("Created")]
+      public DateTime? Created { get; set; }
+
+      [JsonPropertyName("Updated")]
+      public DateTime? Updated { get; set; }
+
+      [JsonPropertyName("Sent")]
+      public DateTime? Sent { get; set; }
+
+      [JsonPropertyName("Delivered")]
+      public DateTime? Delivered { get; set; }
+
+      [JsonPropertyName("Issued")]
+      public DateTime? Issued { get; set; }
+
+      [JsonPropertyName("Imported")]
+      public bool? Imported { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   // Document details (GET /dokumenti/{id})
+   public class DocumentDetailsResponse_Data : DocumentInfo_Data
+   {
+      // Some endpoints return embedded content/extra fields
+      [JsonPropertyName("DocumentXml")]
+      public string DocumentXml { get; set; }
+
+      [JsonPropertyName("EncodedXml")]
+      public string EncodedXml { get; set; }
+
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      [JsonPropertyName("Error")]
+      public ApiError_Data Error { get; set; }
+   }
+
+   // Create/send document (POST /dokumenti)
+   public class SendDocumentResponse_Data
+   {
+      [JsonPropertyName("ElectronicId")]
+      public long ElectronicId { get; set; }
+
+      [JsonPropertyName("DocumentNr")]
+      public string DocumentNr { get; set; }
+
+      [JsonPropertyName("DocumentTypeId")]
+      public int? DocumentTypeId { get; set; }
+
+      [JsonPropertyName("DocumentTypeName")]
+      public string DocumentTypeName { get; set; }
+
+      [JsonPropertyName("StatusId")]
+      public int? StatusId { get; set; }
+
+      [JsonPropertyName("StatusName")]
+      public string StatusName { get; set; }
+
+      [JsonPropertyName("RecipientBusinessNumber")]
+      public string RecipientBusinessNumber { get; set; }
+
+      [JsonPropertyName("RecipientBusinessUnit")]
+      public string RecipientBusinessUnit { get; set; }
+
+      [JsonPropertyName("RecipientBusinessName")]
+      public string RecipientBusinessName { get; set; }
+
+      [JsonPropertyName("Created")]
+      public DateTime? Created { get; set; }
+
+      [JsonPropertyName("Sent")]
+      public DateTime? Sent { get; set; }
+
+      [JsonPropertyName("Delivered")]
+      public DateTime? Delivered { get; set; }
+
+      [JsonPropertyName("Modified")]
+      public DateTime? Modified { get; set; }
+
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      [JsonPropertyName("Error")]
+      public ApiError_Data Error { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   // Download content (e.g., GET /dokumenti/{id}/sadrzaj)
+   public class DocumentContentResponse_Data
+   {
+      [JsonPropertyName("DocumentXml")]
+      public string DocumentXml { get; set; }
+
+      [JsonPropertyName("EncodedXml")]
+      public string EncodedXml { get; set; }
+
+      // If binary content is returned as Base64, this can be used
+      [JsonPropertyName("Content")]
+      public string Content { get; set; }
+
+      [JsonPropertyName("ContentType")]
+      public string ContentType { get; set; }
+
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      [JsonPropertyName("Error")]
+      public ApiError_Data Error { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   // Update status/process (PATCH/POST /dokumenti/{id}/status or similar)
+   public class UpdateDocumentStatusResponse_Data
+   {
+      [JsonPropertyName("ElectronicId")]
+      public long ElectronicId { get; set; }
+
+      [JsonPropertyName("StatusId")]
+      public int? StatusId { get; set; }
+
+      [JsonPropertyName("StatusName")]
+      public string StatusName { get; set; }
+
+      [JsonPropertyName("DokumentProcessStatus")]
+      public int? DokumentProcessStatus { get; set; }
+
+      [JsonPropertyName("UpdateDate")]
+      public DateTime? UpdateDate { get; set; }
+
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      [JsonPropertyName("Error")]
+      public ApiError_Data Error { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
+
+   // Generic success/failure (for actions like reject, mark paid, etc.)
+   public class ActionResultResponse_Data
+   {
+      [JsonPropertyName("Success")]
+      public bool? Success { get; set; }
+
+      [JsonPropertyName("IsSuccess")]
+      public bool? IsSuccess { get; set; }
+
+      [JsonPropertyName("Message")]
+      public string Message { get; set; }
+
+      [JsonPropertyName("Error")]
+      public ApiError_Data Error { get; set; }
+
+      [JsonExtensionData]
+      public Dictionary<string, object> ExtensionData { get; set; }
+   }
 }

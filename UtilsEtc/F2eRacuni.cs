@@ -102,6 +102,9 @@ public static class Vv_Http_Web_request_QAI
          if(webEx.Response != null)
          {
             httpWebResponse = (HttpWebResponse)webEx.Response;
+
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: code:[{0}] description:[{1}]", httpWebResponse.StatusCode, httpWebResponse.StatusDescription);
+
             return httpWebResponse;
          }
          else
@@ -115,6 +118,7 @@ public static class Vv_Http_Web_request_QAI
 
          // General exception handling
          Console.WriteLine("Exception while sending HTTP request: " + ex.Message);
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Exception while sending HTTP request: {0}", ex.Message);
          throw;
       }
    }
@@ -134,14 +138,14 @@ public static class Vv_Http_Web_request_QAI
       return (HttpWebResponse)httpWebRequest.GetResponse();
    }
 
-   private static T VvMER_POSTmethod_Json<T>(string webAddress, string jsonRequestString, Action<T, string> saveToFile = null, string fileName = null)
+   private static T Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, Action<T, string> saveToFile = null, string fileName = null, string token = null)
       where T : class, new()
    {
       T deserializedResponseData = null;
 
       try
       {
-         HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString);
+         HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString, token);
 
          using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
          {
@@ -191,7 +195,7 @@ public static class Vv_Http_Web_request_QAI
       return deserializedResponseData;
    }
 
-   private static T VvMER_GETmethod_Json<T, TRequest>(string webAddress, TRequest request, Action<T, string> saveToFile = null, string fileName = null, string token = null)
+   private static T Vv_GETmethod_ExecuteJson<T, TRequest>(string webAddress, TRequest request, Action<T, string> saveToFile = null, string fileName = null, string token = null)
        where T : class, new()
        where TRequest : class
    {
@@ -328,12 +332,32 @@ public static class Vv_Http_Web_request_QAI
 
       VvMER_Response_Data_AllActions responseData_AllActions = 
          
-         VvMER_POSTmethod_Json<VvMER_Response_Data_AllActions>
+         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
          (
             VvMER_webAddressPOST_Send,
             jsonRequestString,
             (data, fileName) => { if(fileName.NotEmpty()) data.SaveToFile(fileName); },
             fullPath_XML_FileName.Replace(".xml", "_RES.xml")
+         );
+
+      return responseData_AllActions;
+   }
+
+   public  static VvMER_Response_Data_AllActions VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(xmlString);
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      VvMER_Response_Data_AllActions responseData_AllActions = 
+         
+         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         (
+            VvPND_webAddressPOST_Send,
+            jsonRequestString,
+            (data, fileName) => { if(fileName.NotEmpty()) data.SaveToFile(fileName); },
+            fullPath_XML_FileName.Replace(".xml", "_RES.xml"),
+            VvPND_API_Key
          );
 
       return responseData_AllActions;
@@ -347,7 +371,7 @@ public static class Vv_Http_Web_request_QAI
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
 
       VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.FirstOrDefault();
 
@@ -362,7 +386,7 @@ public static class Vv_Http_Web_request_QAI
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = VvMER_POSTmethod_Json<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
 
       return responseData_AllActions_List;
    }
@@ -373,7 +397,7 @@ public static class Vv_Http_Web_request_QAI
    {
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
    
-      VvMER_Response_Data_AllActions responseData_AllActions = VvMER_GETmethod_Json<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddressGET_Ping, request_Data_AllActions);
+      VvMER_Response_Data_AllActions responseData_AllActions = Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddressGET_Ping, request_Data_AllActions);
    
       return responseData_AllActions;
    }
@@ -385,7 +409,7 @@ public static class Vv_Http_Web_request_QAI
       string authToken = VvPND_API_Key;
 
       VvMER_Response_Data_AllActions responseData_AllActions =
-          VvMER_GETmethod_Json<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
+          Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
           (
               VvPND_webAddressGET_Ping,
               request_Data_AllActions,
@@ -439,6 +463,13 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       this.SoftwareId = Vv_Http_Web_request_QAI.VvMER_SoftwareId;
    }
 
+   private void InitPND_Credentials()
+   {
+      //this.CompanyId  = Vv_Http_Web_request_QAI.VvPND_CompanyId ; // da ili ne? 
+    //this.CompanyBu  = ""                                      ;
+      //this.SoftwareId = Vv_Http_Web_request_QAI.VvPND_SoftwareId;
+   }
+
    // za testiranje, pa sa test parametrima 
    public VvMER_Request_Data_AllActions(/*int username,*/ string password, string companyId, string companyBu, string softwareId, string xmlString)
    {
@@ -453,21 +484,31 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    public VvMER_Request_Data_AllActions(string xmlString) // za slanje jednog eRacuna 
    {
-      InitMER_Credentials();
-
-      this.File = xmlString;
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider.MER: InitMER_Credentials(); this.File     = xmlString; break;
+         case ZXC.F2_Provider.PND: InitPND_Credentials(); this.document = xmlString; break;
+      }
    }
 
    public VvMER_Request_Data_AllActions(int electronicId) // za jedan racun 
    {
-      InitMER_Credentials();
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider.MER: InitMER_Credentials(); break;
+         case ZXC.F2_Provider.PND: InitPND_Credentials(); break;
+      }
 
       this.ElectronicId = electronicId;
    }
 
    public VvMER_Request_Data_AllActions(DateTime dateOD, DateTime dateDO) // za report 
    {
-      InitMER_Credentials();
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider.MER: InitMER_Credentials(); break;
+         case ZXC.F2_Provider.PND: InitPND_Credentials(); break;
+      }
 
       this.From = dateOD;
       this.To   = dateDO;
@@ -475,7 +516,12 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    public VvMER_Request_Data_AllActions()  
    {
-      InitMER_Credentials();
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider.MER: InitMER_Credentials(); break;
+         case ZXC.F2_Provider.PND: InitPND_Credentials(); break;
+      }
+     
    }
 
    #endregion Constructors and Init
@@ -529,6 +575,11 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    // Classification
    [JsonPropertyName("KPDCode")]
    public string KPDCode { get; set; }
+
+   // PND specific
+   [JsonPropertyName("document")]
+   public string document { get; set; }
+
 
 }
 public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
@@ -644,8 +695,15 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    public bool? Imported { get; set; }
 
    // Messages
-   [JsonPropertyName("Message")]
-   public string Message { get; set; }
+   [JsonPropertyName("message")]
+   public string message { get; set; }
+
+   // PND fields
+   [JsonPropertyName("id")]
+   public long Id { get; set; } // If the API returns a GUID/string, change to string.
+
+   [JsonPropertyName("insertedOn")]
+   public DateTime? InsertedOn { get; set; }
 
 }
 
