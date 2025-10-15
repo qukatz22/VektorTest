@@ -1070,11 +1070,6 @@ namespace EN16931.UBL
                };
              }
 
-
-
-
-
-
             #region Artikl
 
             //BT-153 Naziv artikla. Tekst 1..1
@@ -1084,18 +1079,20 @@ namespace EN16931.UBL
 
             //14.10.2025. KPD
             //< cbc:ItemClassificationCode listID = "CG" > 62.90.90 </ cbc:ItemClassificationCode >
-            invoiceLine.Item.CommodityClassification = new CommodityClassificationType[]
-            {
-               new CommodityClassificationType
+            if(ZXC.IsF2_2026_rules)
+            { 
+               invoiceLine.Item.CommodityClassification = new CommodityClassificationType[]
                {
-                  ItemClassificationCode = new ItemClassificationCodeType
+                  new CommodityClassificationType
                   {
-                     listID = "CG",
-                     Value  = artikl_rec.ER_KPD
+                     ItemClassificationCode = new ItemClassificationCodeType
+                     {
+                        listID = "CG",
+                        Value  = artikl_rec.ER_KPD
+                     }
                   }
-               }
-            }; 
-
+               }; 
+            }
 
             if(rtrans_rec.T_artiklCD.NotEmpty())
             {
