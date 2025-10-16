@@ -98,19 +98,39 @@ public static class Vv_Http_Web_request_QAI
       }
       catch(WebException webEx)
       {
-         // Handle HTTP errors (e.g., 400, 500)
          if(webEx.Response != null)
          {
-            httpWebResponse = (HttpWebResponse)webEx.Response;
+            var resp = (HttpWebResponse)webEx.Response;
+            string body = string.Empty;
 
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: code:[{0}] description:[{1}]", httpWebResponse.StatusCode, httpWebResponse.StatusDescription);
+            try
+            {
+               var stream = resp.GetResponseStream();
+               if(stream != null)
+               {
+                  using(var sr = new StreamReader(stream))
+                  {
+                     body = sr.ReadToEnd(); // Note: consumes the stream
+                  }
+               }
+            }
+            catch
+            {
+               // Swallow logging read errors
+            }
 
-            return httpWebResponse;
+            //ZXC.aim_emsg(MessageBoxIcon.Error, "{0}\n\r\n\r{1}", resp.StatusDescription, body.Replace("{", "").Replace("}", ""));
+
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
+                "HTTP {0} {1}\r\nBody: {2}",
+                (int)resp.StatusCode,
+                resp.StatusDescription,
+                body);
+
+            return resp; // If callers need the stream, avoid reading it here.
          }
-         else
-         {
-            throw; // rethrow if no response is available
-         }
+
+         throw;
       }
       catch(Exception ex)
       {
@@ -190,6 +210,10 @@ public static class Vv_Http_Web_request_QAI
       catch(WebException ex)
       {
          ZXC.aim_emsg(ex.Message);
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška pri Vv_POSTmethod_ExecuteJson: {0}", ex.Message);
       }
 
       return deserializedResponseData;
@@ -448,8 +472,13 @@ public class MER_Credentials_Data
    [JsonPropertyName("CompanyBu")]
    public string CompanyBu { get; set; }
 
+   // MER ima veliko slovo S u SoftwareId 
+   // PND ima malo   slovo s u softwareId 
+   // jos ne znamo koje su reperkusije toga 
    [JsonPropertyName("SoftwareId")]
    public string SoftwareId { get; set; }
+   //[JsonPropertyName("softwareId")]
+   //public string softwareId { get; set; }
 }
 public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 {
@@ -465,9 +494,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    private void InitPND_Credentials()
    {
-      //this.CompanyId  = Vv_Http_Web_request_QAI.VvPND_CompanyId ; // da ili ne? 
-    //this.CompanyBu  = ""                                      ;
-      //this.SoftwareId = Vv_Http_Web_request_QAI.VvPND_SoftwareId;
+      //this.softwareId = Vv_Http_Web_request_QAI.VvPND_SoftwareId;
+        this.SoftwareId = Vv_Http_Web_request_QAI.VvPND_SoftwareId;
    }
 
    // za testiranje, pa sa test parametrima 
@@ -486,8 +514,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    {
       switch(ZXC.F2_TheProvider)
       {
-         case ZXC.F2_Provider.MER: InitMER_Credentials(); this.File     = xmlString; break;
-         case ZXC.F2_Provider.PND: InitPND_Credentials(); this.document = xmlString; break;
+         case ZXC.F2_Provider_enum.MER: InitMER_Credentials(); this.File     = xmlString; break;
+         case ZXC.F2_Provider_enum.PND: InitPND_Credentials(); this.document = xmlString; break;
       }
    }
 
@@ -495,8 +523,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    {
       switch(ZXC.F2_TheProvider)
       {
-         case ZXC.F2_Provider.MER: InitMER_Credentials(); break;
-         case ZXC.F2_Provider.PND: InitPND_Credentials(); break;
+         case ZXC.F2_Provider_enum.MER: InitMER_Credentials(); break;
+         case ZXC.F2_Provider_enum.PND: InitPND_Credentials(); break;
       }
 
       this.ElectronicId = electronicId;
@@ -506,8 +534,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    {
       switch(ZXC.F2_TheProvider)
       {
-         case ZXC.F2_Provider.MER: InitMER_Credentials(); break;
-         case ZXC.F2_Provider.PND: InitPND_Credentials(); break;
+         case ZXC.F2_Provider_enum.MER: InitMER_Credentials(); break;
+         case ZXC.F2_Provider_enum.PND: InitPND_Credentials(); break;
       }
 
       this.From = dateOD;
@@ -518,8 +546,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    {
       switch(ZXC.F2_TheProvider)
       {
-         case ZXC.F2_Provider.MER: InitMER_Credentials(); break;
-         case ZXC.F2_Provider.PND: InitPND_Credentials(); break;
+         case ZXC.F2_Provider_enum.MER: InitMER_Credentials(); break;
+         case ZXC.F2_Provider_enum.PND: InitPND_Credentials(); break;
       }
      
    }
@@ -695,8 +723,8 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    public bool? Imported { get; set; }
 
    // Messages
-   [JsonPropertyName("message")]
-   public string message { get; set; }
+   [JsonPropertyName("Message")]
+   public string Message { get; set; }
 
    // PND fields
    [JsonPropertyName("id")]
