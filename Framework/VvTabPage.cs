@@ -1267,8 +1267,7 @@ be_fast:
 
       tamponPanel_Header.Parent    = this;
       tamponPanel_Header.Location  = new Point(0, 0);
-    //tamponPanel_Header.Size      = new Size(this.Width, ZXC.Q2un);
-      tamponPanel_Header.Size      = new Size(this.Width, ZXC.Q3un);
+      tamponPanel_Header.Size      = new Size(this.Width, ZXC.Q2un);
       tamponPanel_Header.Anchor    = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       tamponPanel_Header.BackColor = ZXC.vvColors.tamponPanel_BackColor;
 
@@ -1277,8 +1276,6 @@ be_fast:
 
       CreateLabelaArhiva();
       CreateLabelaDeviza();
-
-      CreateHamper_F2();
 
       labTamPanCrta           = new Label();
       labTamPanCrta.Parent    = this.tamponPanel_Header;
@@ -1455,30 +1452,6 @@ be_fast:
       tbx_arVer.Anchor       = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
     
       VvHamper.Open_Close_Fields_ForWriting(tbx_arVer, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.TamponPanel_Footer);
-   }
-
-   private void CreateHamper_F2()
-   { 
-      hamp_F2 = new VvHamper(5, 1, "", tamponPanel_Header, false, ZXC.Qun10, ZXC.QUN + ZXC.Qun10, ZXC.Qun10);
-
-      hamp_F2.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q8un, ZXC.Q4un, ZXC.Q5un , ZXC.Q5un };
-      hamp_F2.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 , ZXC.Qun4 };
-      hamp_F2.VvRightMargin = hampModul.VvLeftMargin;
-
-      hamp_F2.VvRowHgt       = new int[] { ZXC.QUN };
-      hamp_F2.VvSpcBefRow    = new int[] { ZXC.Qun4 };
-      hamp_F2.VvBottomMargin = hampModul.VvTopMargin;
-
-      Label lbl1 = hamp_F2.CreateVvLabel(0, 0, "ID: 12345678"        , ContentAlignment.MiddleLeft);
-      Label lbl2 = hamp_F2.CreateVvLabel(1, 0, "Poslano: 13.01.2026.", ContentAlignment.MiddleLeft);
-      Label lbl3 = hamp_F2.CreateVvLabel(2, 0, "Preuzet"             , ContentAlignment.MiddleLeft);
-      Label lbl4 = hamp_F2.CreateVvLabel(3, 0, "Fiskaliziran"        , ContentAlignment.MiddleLeft);
-      Label lbl5 = hamp_F2.CreateVvLabel(4, 0, "Arhiviran"           , ContentAlignment.MiddleLeft);
-
-      lbl1.ForeColor = lbl2.ForeColor = lbl3.ForeColor = lbl4.ForeColor = lbl5.ForeColor = Color.AntiqueWhite;
-      //lbl1.ForeColor = lbl2.ForeColor = lbl3.ForeColor = lbl4.ForeColor = lbl5.ForeColor = Color.AntiqueWhite;
-
-      //VvHamper.Open_Close_Fields_ForWriting(hampModul, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.TamponPanel_HeaderLeft);
    }
 
    public void InitializePanelZaUC()
