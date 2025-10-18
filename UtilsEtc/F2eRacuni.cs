@@ -143,11 +143,27 @@ public static class Vv_Http_Web_request_QAI
       }
    }
 
+   //staro, dellmelatter
+   //private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams, string token = null)
+   //{
+   //   HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlWithParams);
+   //   httpWebRequest.ContentType    = "application/json; charset=utf-8";
+   //   httpWebRequest.Method         = "GET";
+   //
+   //   // Add Authorization header if provided
+   //   if(token.NotEmpty())
+   //   {
+   //      httpWebRequest.Headers["Authorization"] = token;
+   //   }
+   //
+   //   return (HttpWebResponse)httpWebRequest.GetResponse();
+   //}
+
    private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams, string token = null)
    {
       HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlWithParams);
-      httpWebRequest.ContentType    = "application/json; charset=utf-8";
-      httpWebRequest.Method         = "GET";
+      httpWebRequest.ContentType = "application/json; charset=utf-8";
+      httpWebRequest.Method = "GET";
 
       // Add Authorization header if provided
       if(token.NotEmpty())
@@ -155,7 +171,51 @@ public static class Vv_Http_Web_request_QAI
          httpWebRequest.Headers["Authorization"] = token;
       }
 
-      return (HttpWebResponse)httpWebRequest.GetResponse();
+      try
+      {
+         return (HttpWebResponse)httpWebRequest.GetResponse();
+      }
+      catch(WebException webEx)
+      {
+         if(webEx.Response != null)
+         {
+            var resp = (HttpWebResponse)webEx.Response;
+            string body = string.Empty;
+
+            try
+            {
+               var stream = resp.GetResponseStream();
+               if(stream != null)
+               {
+                  using(var sr = new StreamReader(stream))
+                  {
+                     body = sr.ReadToEnd(); // Note: consumes the stream
+                  }
+               }
+            }
+            catch
+            {
+               // Swallow logging read errors
+            }
+
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
+                "HTTP {0} {1}\r\nBody: {2}",
+                (int)resp.StatusCode,
+                resp.StatusDescription,
+                body);
+
+            return resp; // If callers need the stream, avoid reading it here.
+         }
+
+         throw;
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+         Console.WriteLine("Exception while sending HTTP request: " + ex.Message);
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Exception while sending HTTP request: {0}", ex.Message);
+         throw;
+      }
    }
 
    private static T Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, /*Action<T, string> saveToFile = null, string fileName = null,*/ string token = null)
