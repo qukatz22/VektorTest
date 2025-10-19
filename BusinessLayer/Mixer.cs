@@ -101,7 +101,7 @@ public class Mixer : VvPolyDocumRecord
    public const string TT_MVR       = "MVR";  // evidencija Mjesecna radnog VRemena 
    public const string TT_AVR       = "AVR";  // analiticki raspored mjesecni radnog VRemena 
 
-   public const string TT_M2P       = "M2P";  // analiticki raspored mjesecni radnog VRemena 
+   public const string TT_M2P       = "M2P";  // M2P results 
 
    public static string[] aTT_ZAHT = new string[] 
    {
@@ -204,6 +204,9 @@ public class Mixer : VvPolyDocumRecord
    public const string TT_KOP     = "KOP"; // PCTOGO Korekcija otplatnog plana
 
    public const string TT_KDC     = "KDC"; // KONTAKTI kupdoba                
+
+   public const string TT_AUR     = "AUR"; // F2 - Arhiva ulaznih  racuna 
+   public const string TT_AIR     = "AIR"; // F2 - Arhiva izlaznih racuna 
 
 
    private MixerStruct currentData;

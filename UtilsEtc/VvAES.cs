@@ -102,7 +102,7 @@ public static class VvAES //http://tinyurl.com/2gcy64
    }
 }
 
-internal static class StringCompressor
+internal static class VvStringCompressor
 {
    ///  <summary> 
    /// Compresses the string. 
@@ -151,6 +151,41 @@ internal static class StringCompressor
          }
 
          return Encoding.UTF8.GetString(buffer);
+      }
+   }
+
+   /// <summary>
+   /// Compresses an XML string to a GZip-compressed byte array suitable for BLOB storage.
+   /// </summary>
+   public static byte[] CompressXml(string xml)
+   {
+      if(string.IsNullOrEmpty(xml))
+         return new byte[0];
+
+      byte[] buffer = Encoding.UTF8.GetBytes(xml);
+      using(var memoryStream = new MemoryStream())
+      {
+         using(var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
+         {
+            gZipStream.Write(buffer, 0, buffer.Length);
+         }
+         return memoryStream.ToArray();
+      }
+   }
+   /// <summary>
+   /// Decompresses a GZip-compressed byte array back to the original XML string.
+   /// </summary>
+   public static string DecompressXml(byte[] compressedData)
+   {
+      if(compressedData == null || compressedData.Length == 0)
+         return string.Empty;
+
+      using(var memoryStream = new MemoryStream(compressedData))
+      using(var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+      using(var resultStream = new MemoryStream())
+      {
+         gZipStream.CopyTo(resultStream);
+         return Encoding.UTF8.GetString(resultStream.ToArray());
       }
    }
 }

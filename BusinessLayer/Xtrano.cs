@@ -17,6 +17,8 @@ public struct XtranoStruct
    /* 08 */   internal string    _t_opis_128      ;  /* opis troska             */
    /* 09 */   internal string    _t_konto         ;  
    /* 10 */   internal string    _t_devName       ;  /* Valuta                  */
+
+   /* 11 */   internal byte[]    _t_XmlZip; // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
 }
 
 #endregion struct XtranoStruct
@@ -67,6 +69,7 @@ public class Xtrano : VvTransRecord
       /* 08 */ this.currentData._t_opis_128         = "";
       /* 09 */ this.currentData._t_konto            = ""; 
       /* 10 */ this.currentData._t_devName          = ""; 
+      /* 11 */ this.currentData._t_XmlZip           = null; 
 
    }
 
@@ -236,6 +239,13 @@ public class Xtrano : VvTransRecord
       set {        this.currentData._t_devName = value; }
    }
    /* */
+
+   // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
+   public byte[] T_XmpZip
+   {
+      get { return this.currentData._t_XmlZip; }
+      set {        this.currentData._t_XmlZip = value; }
+   }
 
    #endregion propertiz
 

@@ -15,7 +15,7 @@ using System.Net.Http.Headers;
 public static class Vv_Http_Web_request_QAI
 {
 
-   private const bool DEMO = true;
+   private const bool DEMO = /*true*/false;
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -23,7 +23,9 @@ public static class Vv_Http_Web_request_QAI
    public const string VvMER_baseAddress_demo       = @"https://www-demo.moj-eracun.hr"; 
 
    public const string VvMER_webAddressPOST_Send        = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/send"       ; // POST 
+   public const string VvMER_webAddressPOST_Receive     = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/receive"    ; // POST 
    public const string VvMER_webAddressPOST_QueryOutbox = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryOutbox"; // POST 
+   public const string VvMER_webAddressPOST_QueryInbox  = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryInbox" ; // POST 
    public const string VvMER_webAddressGET_Ping         = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/Ping"       ; // GET! 
 
    public const string VvPND_baseAddress_production = @"https://eracun.eposlovanje.hr"; 
@@ -449,7 +451,7 @@ public static class Vv_Http_Web_request_QAI
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single status ##############################################################################
 
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_OneSingleStatus(int electronicID)
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_Single(int electronicID)
    {
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
@@ -464,13 +466,26 @@ public static class Vv_Http_Web_request_QAI
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - Status List ####################################################################################
 
-   public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_StatusList(DateTime dateOD, DateTime dateDO)
+   public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryOutbox_List(DateTime dateOD, DateTime dateDO)
    {
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
       List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
+
+      return responseData_AllActions_List;
+   }
+
+   //######################## https://www.moj-eracun.hr/apis/v2/queryInbox - Status List ####################################################################################
+
+   public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryInbox_List(DateTime dateOD, DateTime dateDO)
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryInbox, jsonRequestString);
 
       return responseData_AllActions_List;
    }
@@ -504,6 +519,47 @@ public static class Vv_Http_Web_request_QAI
 
       return responseData_AllActions;
    }
+
+   //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ##############################################################################
+
+   public static VvMER_Response_Data_AllActions VvMER_WebService_Receive_XML(int electronicID)
+   {
+      VvMER_Response_Data_AllActions responseData = new VvMER_Response_Data_AllActions();
+
+      try
+      {
+         VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za RECEIVE jednog racuna (electronicID-a) 
+
+         string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+         HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(VvMER_webAddressPOST_Receive, jsonRequestString);
+
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseXml = streamReader.ReadToEnd();
+            if(responseXml.NotEmpty())
+            {
+               responseData.DocumentXml = responseXml;
+            }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "XML response is empty!");
+            }
+         }
+      }
+      catch(WebException ex)
+      {
+         ZXC.aim_emsg(ex.Message);
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška pri VvMER_WebService_Receive_XML: {0}", ex.Message);
+      }
+
+      return responseData;
+   }
+
+
 
    // ########################################################################################################################################################################
    //                                                                                                                                                                         
@@ -792,6 +848,31 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
    [JsonPropertyName("insertedOn")]
    public DateTime? InsertedOn { get; set; }
+
+   public static Xtrano F2_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec = null)
+   {
+      byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
+
+      //string JSON4xtrano = ZXC.LenLimitedStr(zipped_xmlString, ZXC.XtranoDao.GetSchemaColumnSize(ZXC.XtoCI.t_opis_128));
+
+      Xtrano xmlXtrano_rec = new Xtrano()
+      {
+         //T_opis_128 = JSON4xtrano        ,
+         T_XmpZip = zipped_xmlString,
+
+         T_TT = F2_TT,
+         //T_parentID = faktur_rec.RecID   , // NE! Nemas jos faktur_rec.RecID u ovom trenutku 
+         //T_dokDate  = faktur_rec.DokDate ,
+         //T_ttNum    = faktur_rec.TtNum   ,
+         //T_dokNum   = faktur_rec.DokNum  ,
+         //T_serial   = 1                  ,
+         //T_moneyA   = faktur_rec.S_ukKCRP,
+         //T_konto    = ""                 , // fuse 
+         //T_devName  = faktur_rec.DevName  
+      };
+
+      return xmlXtrano_rec;
+   }
 
 }
 
