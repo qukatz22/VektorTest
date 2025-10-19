@@ -115,6 +115,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
          "m2pApikey        varchar(128)        NOT NULL default ''   ,\n" +
          "m2pSerno         varchar(16)         NOT NULL default ''   ,\n" +
          "m2pModel         varchar(16)         NOT NULL default ''   ,\n" +
+         "f2_Provider      tinyint(1) unsigned NOT NULL default '0'  ,\n" +
 
          ""
       );
@@ -199,10 +200,12 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsBtchBookg     , TheSchemaTable.Rows[CI.isBtchBookg     ]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.IsNoAutoFiskal  , TheSchemaTable.Rows[CI.isNoAutoFiskal  ]);
 
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PshaSecEncodedAsInFile, TheSchemaTable.Rows[CI.m2pShaSec]);
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PapikeyEncodedAsInFile, TheSchemaTable.Rows[CI.m2pApikey]);
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pserno , TheSchemaTable.Rows[CI.m2pSerno] );
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pmodel , TheSchemaTable.Rows[CI.m2pModel] );
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PshaSecEncodedAsInFile, TheSchemaTable.Rows[CI.m2pShaSec]  );
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2PapikeyEncodedAsInFile, TheSchemaTable.Rows[CI.m2pApikey]  );
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pserno                , TheSchemaTable.Rows[CI.m2pSerno]   );
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pmodel                , TheSchemaTable.Rows[CI.m2pModel]   );
+
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_Provider             , TheSchemaTable.Rows[CI.f2_Provider]);
 
    }
 
@@ -252,6 +255,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       rdrData._m2pApikey = reader.GetString(CI.m2pApikey);
       rdrData._m2pSerno  = reader.GetString(CI.m2pSerno );
       rdrData._m2pModel  = reader.GetString(CI.m2pModel );
+
+      rdrData._f2_Provider = reader.GetUInt16(CI.f2_Provider);
 
       #region Tu budalasaš dok ne savladas tehniku ucitavanja slika...
 
@@ -443,6 +448,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       internal int m2pApikey       ;
       internal int m2pSerno        ;
       internal int m2pModel        ;
+      internal int f2_Provider     ;
 
       internal int origRecID;
       internal int recVer;
@@ -524,6 +530,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       CI.m2pApikey       = GetSchemaColumnIndex("m2pApikey");
       CI.m2pSerno        = GetSchemaColumnIndex("m2pSerno" );
       CI.m2pModel        = GetSchemaColumnIndex("m2pModel" );
+      CI.f2_Provider     = GetSchemaColumnIndex("f2_Provider");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");
@@ -533,11 +540,6 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
    }
 
    #endregion PrjktCI struct & InitializeSchemaColumnIndexes()
-
-
-
-
-
 
 
    #region IsThisRecordInSomeRelation

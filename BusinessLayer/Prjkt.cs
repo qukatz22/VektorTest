@@ -87,7 +87,9 @@ public struct PrjktExtensionStruct
    internal string _m2pApikey;
    internal string _m2pSerno ;
    internal string _m2pModel ;
-   
+
+   internal ushort _f2_Provider;
+
 }
 
 #endregion struct PrjktStruct
@@ -191,7 +193,9 @@ public class Prjkt : Kupdob
       this.currentExtData._m2pSerno  = "";
       this.currentExtData._m2pModel  = "";
 
-   sorterKCD     = Kupdob.sorterKCD;
+      this.currentExtData._f2_Provider = 0;
+
+      sorterKCD = Kupdob.sorterKCD;
       sorterCity    = Kupdob.sorterCity;
       sorterOIB     = Kupdob.sorterOIB;
       sorterNaziv   = Kupdob.sorterNaziv;
@@ -600,6 +604,9 @@ public class Prjkt : Kupdob
    public string M2PapikeyEncodedAsInFile { get { return this.currentExtData._m2pApikey; } set { this.currentExtData._m2pApikey = value; } }
    public string M2Pserno  { get { return this.currentExtData._m2pSerno ; } set { this.currentExtData._m2pSerno  = value; } }
    public string M2Pmodel  { get { return this.currentExtData._m2pModel ; } set { this.currentExtData._m2pModel  = value; } }
+
+   public ZXC.F2_Provider_enum F2_Provider { get { return (ZXC.F2_Provider_enum)this.currentExtData._f2_Provider; } set { this.currentExtData._f2_Provider = (ushort)value; } }
+
 
    // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
    public byte[] TheLogo
