@@ -8884,12 +8884,13 @@ public class F2_Izlaz_UC : VvUserControl
 
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol, colRazmak;
-   List<Faktur> IzlazList { get; set; }
 
    Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
    Image img_red, img_yellow, img_green;
 
    DataGridViewImageColumn ams, fis, arh;
+
+   internal List<Faktur> TheFakturList { get; set; }
 
    #endregion Fieldz
 
@@ -9068,346 +9069,346 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheG.Rows.Clear();
 
-      if(IzlazList != null)
+      if(TheFakturList.IsEmpty()) return;
+
+      for(rowIdx = 0; rowIdx < TheFakturList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
       {
-         for(rowIdx = 0; rowIdx < IzlazList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
-         {
-            TheG.Rows.Add();
+         TheG.Rows.Add();
 
-            PutDgvLineFields(rowIdx, IzlazList[rowIdx]);
+         PutDgvLineFields(rowIdx, TheFakturList[rowIdx]);
 
-            TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-         }
+         TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
-      else // ovo je samo dok isprobavam kako izgleda
-      {
-         int xi = 0;
 
-         TheG.Rows.Add();
+      //else // ovo je samo dok isprobavam kako izgleda
+      //{
+      //   int xi = 0;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-         TheG.Rows.Add();
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
 
-         TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
-         TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
-         TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
-         TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
-         TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
-         TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
-       //TheG.PutCell(ci.iT_ams        , xi, "X");
-         TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
-         TheG.PutCell(ci.iT_electrID   , xi, 120968402);
-         TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
-         TheG.PutCell(ci.iT_status     , xi, "Preuzet");
-       //TheG.PutCell(ci.iT_stFisk     , xi, "X");
-       //TheG.PutCell(ci.iT_arhiv      , xi, "X");
-         TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
-         TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
+      //   TheG.Rows.Add();
 
-         if(DateTime.Now.Second % 2 != 0)
-         {
-          //ams.Image = img_red;
+      //   TheG.PutCell(ci.iT_tt         , xi, "IFA"                );
+      //   TheG.PutCell(ci.iT_ttNum      , xi, 100159               );
+      //   TheG.PutCell(ci.iT_fiskTtNum  , xi, "159-1-1"            );
+      //   TheG.PutCell(ci.iT_extBrRn    , xi, "23159-59-125"       );
+      //   TheG.PutCell(ci.iT_date       , xi, DateTime.Now.Date    );
+      //   TheG.PutCell(ci.iT_partner    , xi, "PERO I DJURO d.o.o.");
+      // //TheG.PutCell(ci.iT_ams        , xi, "X");
+      //   TheG.PutCell(ci.iT_iznos      , xi, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_electrID   , xi, 120968402);
+      //   TheG.PutCell(ci.iT_dateSlanja , xi, "03.10.2025.");
+      //   TheG.PutCell(ci.iT_status     , xi, "Preuzet");
+      // //TheG.PutCell(ci.iT_stFisk     , xi, "X");
+      // //TheG.PutCell(ci.iT_arhiv      , xi, "X");
+      //   TheG.PutCell(ci.iT_uplata     , xi, 1234.56);
+      //   TheG.PutCell(ci.iT_markPaid   , xi, 1000.00);
 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
-         }
-         else
-         { 
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
-            ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
-         }
+      //   if(DateTime.Now.Second % 2 != 0)
+      //   {
+      //    //ams.Image = img_red;
 
-         TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
-         xi++;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_red;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_green;
+      //   }
+      //   else
+      //   { 
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["ams"]).Value = img_yellow;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["fis"]).Value = img_green;
+      //      ((DataGridViewImageCell)TheG.Rows[xi].Cells["arh"]).Value = img_red;
+      //   }
 
-      }
+      //   TheG.Rows[xi].HeaderCell.Value = (xi + 1).ToString();
+      //   xi++;
+
+      //}
    }
 
    private void PutDgvLineFields(int rowIdx, Faktur faktur_rec)
@@ -9422,7 +9423,7 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP        );
       TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.MER_ElectronicID);
       TheG.PutCell(ci.iT_dateSlanja , rowIdx, "");
-      TheG.PutCell(ci.iT_status     ,  rowIdx, "");
+      TheG.PutCell(ci.iT_status     , rowIdx, "");
       TheG.PutCell(ci.iT_stFisk     , rowIdx, "");
       TheG.PutCell(ci.iT_uplata     , rowIdx, "");
       TheG.PutCell(ci.iT_markPaid   , rowIdx, "");
@@ -9459,7 +9460,7 @@ public class F2_Ulaz_UC : VvUserControl
 
    Color colHeaderBack, colHeaderFore, rowHeaderBack, rowHeaderFore;
 
-   List<Faktur> UlazList { get; set; }
+   internal List<Faktur> TheFakturList { get; set; }
 
    #endregion Fieldz
 
@@ -9576,34 +9577,34 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheG.Rows.Clear();
 
-      if(UlazList != null)
-      {
-         for(rowIdx = 0; rowIdx < UlazList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
-         {
-            TheG.Rows.Add();
+      if(TheFakturList.IsEmpty()) return;
 
-            PutDgvLineFields(rowIdx, UlazList[rowIdx]);
-
-            TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-         }
-      }
-      else // ovo je samo dok isprobavam kako izgleda
+      for(rowIdx = 0; rowIdx < TheFakturList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
       {
          TheG.Rows.Add();
 
-         TheG.PutCell(ci.iT_tt      , 0, ""                      );
-         TheG.PutCell(ci.iT_ttNum   , 0, ""                  );
-         TheG.PutCell(ci.iT_date    , 0, DateTime.Now.Date          );
-         TheG.PutCell(ci.iT_partner , 0, "PERO I DJURO d.o.o."      );
-         TheG.PutCell(ci.iT_oib     , 0, "12345678998"              );
-         TheG.PutCell(ci.iT_iznos   , 0, 1234.55M                   );
-         TheG.PutCell(ci.iT_origBrRn, 0, "123-45-76"                );
-         TheG.PutCell(ci.iT_elID    , 0, 12345679                   );
-         TheG.PutCell(ci.iT_fisk    , 0, "da"                       );
-         TheG.PutCell(ci.iT_odbijen , 0, ""                         );
+         PutDgvLineFields(rowIdx, TheFakturList[rowIdx]);
 
-         TheG.Rows[0].HeaderCell.Value = (0 + 1).ToString();
+         TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
+
+      //else // ovo je samo dok isprobavam kako izgleda
+      //{
+      //   TheG.Rows.Add();
+
+      //   TheG.PutCell(ci.iT_tt      , 0, ""                      );
+      //   TheG.PutCell(ci.iT_ttNum   , 0, ""                  );
+      //   TheG.PutCell(ci.iT_date    , 0, DateTime.Now.Date          );
+      //   TheG.PutCell(ci.iT_partner , 0, "PERO I DJURO d.o.o."      );
+      //   TheG.PutCell(ci.iT_oib     , 0, "12345678998"              );
+      //   TheG.PutCell(ci.iT_iznos   , 0, 1234.55M                   );
+      //   TheG.PutCell(ci.iT_origBrRn, 0, "123-45-76"                );
+      //   TheG.PutCell(ci.iT_elID    , 0, 12345679                   );
+      //   TheG.PutCell(ci.iT_fisk    , 0, "da"                       );
+      //   TheG.PutCell(ci.iT_odbijen , 0, ""                         );
+
+      //   TheG.Rows[0].HeaderCell.Value = (0 + 1).ToString();
+      //}
    }
 
    private void PutDgvLineFields(int rowIdx, Faktur faktur_rec)
