@@ -2828,7 +2828,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       switch(virmanEnum)
       {
          case ZXC.VirmanEnum.MIO1:
-
+            virmanRow.prim1 = "DRŽAVNI PRORAČUN REPUBLIKE HRVATSKE"; //20.10.2025. 
             virmanRow.prim2 = virmanRow.opisPl = "Doprinos za MIO I stup";
             virmanRow.prim3   = "A. Mihanovića 3";
             virmanRow.mjesto2 = "Zagreb"; //01.09.2025.
@@ -2861,8 +2861,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          case ZXC.VirmanEnum.MIO2:
 
-            // 28.12.2012: 
-          //virmanRow.ziro2 = "1001005-1700036001";
+            virmanRow.prim1   = "DOPR.ZA MIROV.OSIG. ZA STAROST"; //20.10.2025. 
             virmanRow.ziro2   = "HR7610010051700036001";
             virmanRow.prim2   = virmanRow.opisPl = "Doprinos za MIO II stup";
             virmanRow.prim3   = "A. Mihanovića 3";
@@ -3130,7 +3129,8 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       {
          case ZXC.VirmanEnum.POR:
 
-            virmanRow.prim2  = "POREZ NA DOHODAK";
+            virmanRow.prim1    = "POREZ NA DOHODAK"; //20.10.2025.
+            virmanRow.prim2    = "POREZ NA DOHODAK";
             virmanRow.prim3    = "PU " + opcName;
             virmanRow.mjesto2  = opcName;//01.09.2025.
 

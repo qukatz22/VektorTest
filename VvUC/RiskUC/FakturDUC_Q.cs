@@ -10800,8 +10800,11 @@ public class RiskRulesDsc : VvLookupAsDsc
    public int  Dsc_M2P_TimeOutSeconds          { get; set; }
    public bool Dsc_IsUseOPN                    { get; set; }
    public string Dsc_DefaultKPD                { get; set; }
-   public string Dsc_Default_eRposProc          { get; set; }
-   
+   public string Dsc_Default_eRposProc         { get; set; }
+   public int Dsc_F2_NumOfRows                 { get; set; }
+   public string Dsc_F2_TT                     { get; set; }
+   public bool Dsc_F2_IsAsc                    { get; set; }
+
    #endregion DataLayer Propertiz
 
    #region Constructor
@@ -10893,6 +10896,10 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_IsUseOPN                 = false;
       Dsc_DefaultKPD               = "";
       Dsc_Default_eRposProc        = "";
+
+      Dsc_F2_TT                    = "";
+      Dsc_F2_NumOfRows             = 10;
+      Dsc_F2_IsAsc                = true;
 
       #endregion defautValue
    }

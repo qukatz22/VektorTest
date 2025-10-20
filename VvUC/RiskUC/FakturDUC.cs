@@ -19250,6 +19250,283 @@ public class RiskRulesUC : VvOtherUC
 }
 
 
+public class F2_Rules_Dlg : VvDialog
+{
+   private Button   okButton, cancelButton;
+   private int      dlgWidth, dlgHeight;
+
+   public F2_Rules_UC TheUC { get; private set; }
+
+   public F2_Rules_Dlg()
+   {
+
+      TheUC = new F2_Rules_UC();
+
+      SuspendLayout();
+
+      this.Font        = ZXC.vvFont.BaseFont;
+      this.Style       = ZXC.vvColors.vvform_VisualStyle;
+      this.BackColor   = ZXC.vvColors.userControl_BackColor;
+
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text          = "Pravila";
+
+      CreateTheUC();
+
+      dlgWidth        = TheUC.Width;
+      dlgHeight       = TheUC.Height + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      ResumeLayout();
+
+   }
+
+   private void CreateTheUC()
+   {
+      TheUC.Parent   = this;
+      TheUC.Location = new Point(0, 0);
+   }
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+}
+
+public class F2_Rules_UC : VvOtherUC
+{
+   #region Fieldz
+
+   private VvHamper  hamp_eRproces, hamp_kpd, hamp_ascDesc, hamp_TT, hamp_numOfRows;
+   private VvTextBox tbx_DefaultKPD, tbx_Default_eRposProc, tbx_F2_TT, tbx_numOfRows;
+   private RadioButton rbt_Ascending, rbt_Descending, 
+                       rbt_F2_IFA, rbt_F2_IRA, rbt_F2_IRM, rbt_F2_none;
+
+   public /*protected*/ VvSQL.OrderDirectEnum asc_or_desc = VvSQL.OrderDirectEnum.ASC;
+
+   #endregion Fieldz
+
+   #region Constructor
+
+   public F2_Rules_UC()
+   {
+      SuspendLayout();
+
+      CreateHampers();
+
+      this.Size = new Size(hamp_TT.Right + 2*ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QunMrgn);
+
+
+      if(ZXC.CURR_userName == ZXC.vvDB_systemSuperUserName || ZXC.CURR_userName == ZXC.vvDB_programSuperUserName || ZXC.CURR_user_rec.IsSuper)
+               VvHamper.Open_Close_Fields_ForWriting(this, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+      else
+               VvHamper.Open_Close_Fields_ForWriting(this, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.VvOtherUC);
+       
+      PutDscFields(ZXC.RRD);
+
+      ResumeLayout();
+   }
+
+   #endregion Constructor
+
+   #region Hampers 
+
+   private void CreateHampers()
+   {
+      InitializeHamper_TT       (out hamp_TT       );
+      InitializeHamper_eRproc   (out hamp_eRproces );
+      InitializeHamper_KPD      (out hamp_kpd      );
+      InitializeHamper_AscDesc  (out hamp_ascDesc  );
+      InitializeHamper_NumOfRows(out hamp_numOfRows);
+   }
+   private void InitializeHamper_TT(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(5, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+ 
+                    hamper.CreateVvLabel      (0, 0, "F2 Tip dokumenta:", ContentAlignment.MiddleRight);
+      rbt_F2_none = hamper.CreateVvRadioButton(1, 0, null, "Nema", TextImageRelation.ImageAboveText);
+      rbt_F2_IFA  = hamper.CreateVvRadioButton(2, 0, null, "IFA", TextImageRelation.ImageAboveText);
+      rbt_F2_IRA  = hamper.CreateVvRadioButton(3, 0, null, "IRA", TextImageRelation.ImageAboveText);
+      rbt_F2_IRM  = hamper.CreateVvRadioButton(4, 0, null, "IRM", TextImageRelation.ImageAboveText);
+      rbt_F2_none.Checked = true;
+   }
+
+   private void InitializeHamper_eRproc(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_TT.Bottom + ZXC.Qun2, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q2un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                             hamper.CreateVvLabel        (0, 0, "eR PoslProces:"      , ContentAlignment.MiddleRight);
+      tbx_Default_eRposProc = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefault_eRposProc", "Default poslovni proces");
+      tbx_Default_eRposProc.JAM_Set_LookUpTable(ZXC.luiListaeRacPoslProc, (int)ZXC.Kolona.prva);
+   }
+
+   private void InitializeHamper_KPD(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_eRproces.Bottom + ZXC.Qun2, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q5un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                      hamper.CreateVvLabel        (0, 0, "DeafaultKPD:", ContentAlignment.MiddleRight);
+      tbx_DefaultKPD = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefaultKPD", "Default KPD");
+      tbx_DefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+   }
+
+
+   protected void InitializeHamper_AscDesc(out VvHamper hamper)
+   {
+      hamper = new VvHamper(3, 1, "", this, true, ZXC.QunMrgn, hamp_kpd.Bottom + ZXC.Qun2, 0);
+      
+      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q4un + ZXC.Qun4, ZXC.Q4un + ZXC.Qun4 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4,            ZXC.Qun4,            ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+      
+      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                      hamper.CreateVvLabel      (0, 0, "Poredak:", ContentAlignment.MiddleRight);
+      rbt_Ascending = hamper.CreateVvRadioButton(1, 0, new EventHandler(radioButtonAscending_Click), "Lista raste", TextImageRelation.ImageAboveText);
+      rbt_Ascending .Checked = true;
+      rbt_Descending = hamper.CreateVvRadioButton(2, 0, new EventHandler(radioButtonDescending_Click), "Lista pada", TextImageRelation.ImageAboveText);
+   }
+
+   private void InitializeHamper_NumOfRows(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_ascDesc.Bottom + ZXC.Qun2, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                      hamper.CreateVvLabel  (0, 0, "Broj prikazanih dokumenata:", ContentAlignment.MiddleRight);
+      tbx_numOfRows = hamper.CreateVvTextBox(1, 0, "tbx_numOfRows", "tbx_numOfRows");
+   }
+
+
+   #endregion Hampers 
+
+   #region Fld_
+
+   public string Fld_DefaultKPD        { get { return tbx_DefaultKPD.Text; } set { tbx_DefaultKPD.Text = value; } }
+   public string Fld_Default_eRposProc { get { return tbx_Default_eRposProc.Text; } set { tbx_Default_eRposProc.Text = value; } }
+   public int    Fld_F2_NumOfRows      {  get { return tbx_numOfRows.GetIntField(); } set { tbx_numOfRows.PutIntField(value); } }
+   public bool   Fld_F2_IsAsc          
+    { 
+      get 
+      {
+         if(rbt_Descending.Checked) return false;
+         else                       return true;
+      } 
+      set 
+      {
+         if(value == true) rbt_Ascending .Checked = true;
+         else              rbt_Descending.Checked = true;
+      } 
+   }
+
+   public string Fld_F2_TT
+   {
+      get
+      {
+              if(rbt_F2_none.Checked) return ""            ;
+         else if(rbt_F2_IFA .Checked) return Faktur.TT_IFA ;
+         else if(rbt_F2_IRA .Checked) return Faktur.TT_IRA ;
+         else if(rbt_F2_IRM .Checked) return Faktur.TT_IRM ;
+
+         else throw new Exception("Fld_F2_TT: who df is checked?");
+      }
+      set
+      {
+         switch(value)
+         {
+            case ""           : rbt_F2_none.Checked = true; break;
+            case Faktur.TT_IFA: rbt_F2_IFA .Checked = true; break;
+            case Faktur.TT_IRA: rbt_F2_IRA .Checked = true; break;
+            case Faktur.TT_IRM: rbt_F2_IRM .Checked = true; break;
+         }
+      }
+   }
+
+   #endregion Fld_
+
+   #region PutFields(), GetFields()
+
+   private void PutDscFields(RiskRulesDsc RRD)
+   {
+      Fld_DefaultKPD        = RRD.Dsc_DefaultKPD       ;
+      Fld_Default_eRposProc = RRD.Dsc_Default_eRposProc;
+      Fld_F2_NumOfRows      = RRD.Dsc_F2_NumOfRows     ;
+      Fld_F2_IsAsc          = RRD.Dsc_F2_IsAsc         ;
+      Fld_F2_TT             = RRD.Dsc_F2_TT            ;
+   }
+
+   public void GetDscFields()
+   {
+      ZXC.RRD.Dsc_DefaultKPD        = Fld_DefaultKPD;
+      ZXC.RRD.Dsc_Default_eRposProc = Fld_Default_eRposProc;
+      ZXC.RRD.Dsc_F2_NumOfRows      = Fld_F2_NumOfRows     ;
+      ZXC.RRD.Dsc_F2_IsAsc          = Fld_F2_IsAsc         ;
+      ZXC.RRD.Dsc_F2_TT             = Fld_F2_TT            ;
+
+      ZXC.RRD.SaveDscToLookUpItemList();
+   }
+
+   #endregion PutFields(), GetFields()
+
+   private void radioButtonAscending_Click(object sender, System.EventArgs e)
+   {
+      this.asc_or_desc = VvSQL.OrderDirectEnum.ASC;
+   }
+
+   private void radioButtonDescending_Click(object sender, System.EventArgs e)
+   {
+      this.asc_or_desc = VvSQL.OrderDirectEnum.DESC;
+   }
+
+}
+
+
 public class FiskalizePoslProstorDlg : VvDialog
 {
    private Button   okButton, cancelButton;
