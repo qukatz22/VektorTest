@@ -604,7 +604,7 @@ public static class Vv_Http_Web_request_QAI
 
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
 
-      kuracMethod();
+      //kuracMethod();
    }
 
    internal static void Load_F2UR_FakturList_And_PutDgvFields(F2_Ulaz_UC _theVvUC)
