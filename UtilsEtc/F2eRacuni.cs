@@ -391,9 +391,11 @@ public static class Vv_Http_Web_request_QAI
 
    #endregion Utils
 
+   #region Concrete API / EndPoint methods implementations - 'ZEBRA'
+
    //######################## https://www.moj-eracun.hr/apis/v2/send #########################################################################################################
 
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public static VvMER_Response_Data_AllActions VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
       // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
@@ -571,6 +573,91 @@ public static class Vv_Http_Web_request_QAI
    //  4. Constructor od VvMER_Request_Data_AllActions() prilagođen zahtjevima dotičnog API-ja                                                                                
    //                                                                                                                                                                         
    // ########################################################################################################################################################################
+
+
+
+   #endregion Concrete API / EndPoint methods implementations - 'ZEBRA'
+
+
+
+
+
+   #region F2IR / F2UR Load List and SubmodulActions
+   internal static void Load_F2IR_FakturList_And_PutDgvFields(F2_Izlaz_UC _theVvUC)
+   {
+      F2_Izlaz_UC theUC = _theVvUC as F2_Izlaz_UC;
+
+      theUC.TheFakturList = new List<Faktur>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>();
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt], "theTT", ZXC.RRD.Dsc_F2_TT, " = "));
+
+      string asdDscStr;
+      string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
+
+      if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
+      else                              asdDscStr = " ASC " ;
+
+
+      VvDaoBase.LoadGenericVvDataRecordList<Faktur>(_theVvUC.TheDbConnection, theUC.TheFakturList, filterMembers, "", "ttNum " + asdDscStr + limitStr, true);
+
+      if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
+
+      //kuracMethod();
+   }
+
+   internal static void Load_F2UR_FakturList_And_PutDgvFields(F2_Ulaz_UC _theVvUC)
+   {
+      F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
+
+      theUC.TheFakturList = new List<Faktur>();
+
+      List<VvMER_Response_Data_AllActions> vvMER_Json_StatusList_Data = null;
+
+      bool getStatusOK = true;
+      try
+      {
+         vvMER_Json_StatusList_Data = Vv_Http_Web_request_QAI.VvMER_WebService_QueryInbox_List(DateTime.MinValue, DateTime.MaxValue);
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+         getStatusOK = false;
+      }
+
+      if(getStatusOK)
+      {
+         int counter = 0;
+         Faktur F2UR_faktur_rec;
+
+         foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
+         {
+            if(counter++ > ZXC.RRD.Dsc_F2_NumOfRows) break;
+
+            F2UR_faktur_rec = new Faktur()
+            {
+               TT          = "F2UR"                         ,
+               KupdobName  = responseData.SenderBusinessName,
+               VezniDok    = responseData.DocumentNr        ,
+               FiskPrgBr   = responseData.ElectronicId.ToString(),
+             //F2_DocumID  = responseData.ElectronicId      ,
+             //F2_SentTS   = responseData.Sent              ,
+             //F2_StatusCD = responseData.StatusId          ,
+               TtNum       = (uint)(responseData.StatusId)
+            };
+
+            theUC.TheFakturList.Add(F2UR_faktur_rec);
+
+         } // foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
+
+      }
+
+      if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
+   }
+
+   #endregion F2IR / F2UR Load List and SubmodulActions
+
 }
 
 #region Bussiness Classes for JSON Request/Response
@@ -654,8 +741,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
          case ZXC.F2_Provider_enum.PND: InitPND_Credentials(); break;
       }
 
-      this.From = dateOD;
-      this.To   = dateDO;
+      if(dateOD != DateTime.MinValue) this.From = dateOD;
+      if(dateDO != DateTime.MaxValue) this.To   = dateDO;
    }
 
    public VvMER_Request_Data_AllActions()  

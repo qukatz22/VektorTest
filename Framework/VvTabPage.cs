@@ -835,9 +835,6 @@ be_fast:
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.SIN      ) TheVvUC = new SIN_UC           (panelZaUC, vvSubModul); 
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_FUG_PTG) TheVvUC = new FUG_PTG_UC       (panelZaUC, vvSubModul);
       
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2I) TheVvUC = new F2_Izlaz_UC(panelZaUC, vvSubModul);
-      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2U) TheVvUC = new F2_Ulaz_UC (panelZaUC, vvSubModul);
-      
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_PCKinf_PTG)
       {
          string artiklCD;
@@ -854,6 +851,23 @@ be_fast:
 
          ((PCK_ArtiklList_UC)TheVvUC).PutDgvFields(PCK_ArtikList, PCK_SviArtikliList, artiklCD, skladCD);
       }
+
+      // IZLAZNI RACUNI 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2I)
+      {
+         TheVvUC = new F2_Izlaz_UC(panelZaUC, vvSubModul);
+
+         Vv_Http_Web_request_QAI.Load_F2IR_FakturList_And_PutDgvFields((F2_Izlaz_UC)TheVvUC);
+      }
+
+      // ULAZNI RACUNI 
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2U) 
+      {
+         TheVvUC = new F2_Ulaz_UC(panelZaUC, vvSubModul);
+
+         Vv_Http_Web_request_QAI.Load_F2UR_FakturList_And_PutDgvFields((F2_Ulaz_UC)TheVvUC);
+      }
+
    }
 
    #endregion Create_OtherUC
