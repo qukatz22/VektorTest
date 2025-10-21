@@ -27,6 +27,7 @@ public static class Vv_Http_Web_request_QAI
    public const string VvMER_webAddressPOST_QueryOutbox = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryOutbox"; // POST 
    public const string VvMER_webAddressPOST_QueryInbox  = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryInbox" ; // POST 
    public const string VvMER_webAddressGET_Ping         = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/Ping"       ; // GET! 
+   public const string VvMER_webAddressPOST_Check       = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/mps/check"      ; // POST 
 
    public const string VvPND_baseAddress_production = @"https://eracun.eposlovanje.hr"; 
    public const string VvPND_baseAddress_demo       = @"https://test.eposlovanje.hr"; 
@@ -492,36 +493,6 @@ public static class Vv_Http_Web_request_QAI
       return responseData_AllActions_List;
    }
 
-   //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ##############################################################################
-
-   public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
-   {
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
-   
-      VvMER_Response_Data_AllActions responseData_AllActions = Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddressGET_Ping, request_Data_AllActions);
-   
-      return responseData_AllActions;
-   }
-
-   public static VvMER_Response_Data_AllActions VvPND_WebService_Ping()
-   {
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
-
-      string authToken = VvPND_API_Key;
-
-      VvMER_Response_Data_AllActions responseData_AllActions =
-          Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
-          (
-              VvPND_webAddressGET_Ping,
-              request_Data_AllActions,
-              null,
-              null,
-              authToken  // Using just the API key
-          );
-
-      return responseData_AllActions;
-   }
-
    //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ##############################################################################
 
    public static VvMER_Response_Data_AllActions VvMER_WebService_Receive_XML(int electronicID)
@@ -559,6 +530,53 @@ public static class Vv_Http_Web_request_QAI
       }
 
       return responseData;
+   }
+
+   //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ##############################################################################
+
+   public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
+   
+      VvMER_Response_Data_AllActions responseData_AllActions = Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(VvMER_webAddressGET_Ping, request_Data_AllActions);
+   
+      return responseData_AllActions;
+   }
+
+   public static VvMER_Response_Data_AllActions VvPND_WebService_Ping()
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
+
+      string authToken = VvPND_API_Key;
+
+      VvMER_Response_Data_AllActions responseData_AllActions =
+          Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
+          (
+              VvPND_webAddressGET_Ping,
+              request_Data_AllActions,
+              null,
+              null,
+              authToken  // Using just the API key
+          );
+
+      return responseData_AllActions;
+   }
+
+   //######################## https://www.moj-eracun.hr/api/mps/check - Check Identifier ##############################################################################
+
+   public static VvMER_Response_Data_AllActions VvMER_WebService_CheckAMS(string _Identifiervalue)
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions() 
+      { 
+         IdentifierValue = _Identifiervalue,
+         IdentifierType  = 0,
+      };
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      VvMER_Response_Data_AllActions responseData_AllActions = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(VvMER_webAddressPOST_Check, jsonRequestString);
+   
+      return responseData_AllActions;
    }
 
 

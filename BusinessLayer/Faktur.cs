@@ -4972,7 +4972,10 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       );
    }
 
-   public bool IsFiskalDutyFaktur_ONLINE 
+   public bool IsFX { get { return !IsF1 && !IsF2; } }
+   public bool IsF2 { get { return !IsF1 /*&& F2_IsAMS*/; } } // TODO: !!!!! 
+   public bool IsF1 { get { return IsFiskalDutyFaktur_ONLINE; } }
+   public bool IsFiskalDutyFaktur_ONLINE
    { 
       get 
       {
