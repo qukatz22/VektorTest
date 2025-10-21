@@ -2861,7 +2861,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
          case ZXC.VirmanEnum.MIO2:
 
-            virmanRow.prim1   = "DOPR.ZA MIROV.OSIG. ZA STAROST"; //20.10.2025. 
+            virmanRow.prim1   = "DOPR.ZA MIROV.OSIG. ZA STAROST NA"; //20.10.2025. 
             virmanRow.ziro2   = "HR7610010051700036001";
             virmanRow.prim2   = virmanRow.opisPl = "Doprinos za MIO II stup";
             virmanRow.prim3   = "A. Mihanovića 3";
