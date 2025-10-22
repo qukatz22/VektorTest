@@ -47,6 +47,14 @@ public static class Vv_Http_Web_request_QAI
    public static string VvPND_CompanyId  = ZXC.CURR_prjkt_rec.Oib;
    public const  string VvPND_SoftwareId = "Vektor-001"          ;
 
+   public static readonly Dictionary<string, string> MER_TransportStatuses = new Dictionary<string, string>
+   {
+      { "20", "U obradi"             },
+      { "30", "Poslan"               },
+      { "40", "Preuzet"              },
+      { "45", "Povućeno preuzimanje" },
+      { "50", "Neuspjelo"            }
+   };
 
    #endregion MER Web Service URLs - API endpoints web addresses
 
@@ -601,7 +609,7 @@ public static class Vv_Http_Web_request_QAI
 
 
    #region F2IR / F2UR Load List and SubmodulActions
-   internal static void Load_F2IR_FakturList_And_PutDgvFields(F2_Izlaz_UC _theVvUC)
+   internal static void F2_Load_IRn_FakturList_And_PutDgvFields(F2_Izlaz_UC _theVvUC)
    {
       F2_Izlaz_UC theUC = _theVvUC as F2_Izlaz_UC;
 
@@ -617,7 +625,6 @@ public static class Vv_Http_Web_request_QAI
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
 
-
       VvDaoBase.LoadGenericVvDataRecordList<Faktur>(_theVvUC.TheDbConnection, theUC.TheFakturList, filterMembers, "", "ttNum " + asdDscStr + limitStr, true);
 
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
@@ -625,7 +632,7 @@ public static class Vv_Http_Web_request_QAI
       //kuracMethod();
    }
 
-   internal static void Load_F2UR_FakturList_And_PutDgvFields(F2_Ulaz_UC _theVvUC)
+   internal static void F2_Load_URn_FakturList_And_PutDgvFields(F2_Ulaz_UC _theVvUC)
    {
       F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
 
@@ -1040,3 +1047,70 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
 #endregion Bussiness Classes for JSON Request/Response
 
+public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagicForm
+{
+   private void F2_ReceiveSingle(object sender, EventArgs e)
+   {
+      VvMER_Response_Data_AllActions responseData = null;
+
+      bool receiveOK = true;
+      try
+      {
+         responseData = Vv_Http_Web_request_QAI.VvMER_WebService_Receive_XML(119499736);
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+         receiveOK = false;
+      }
+
+      if(receiveOK)
+      {
+         Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AUR);
+
+         if(F2arhivaXtrano_rec != null)
+         {
+            bool OK = ZXC.XtranoDao.ADDREC(TheDbConnection, F2arhivaXtrano_rec, false, false, false, false);
+
+
+
+
+
+            Xtrano check_rec = new Xtrano();
+            F2arhivaXtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, check_rec, 1, false);
+            string decompXml = VvStringCompressor.DecompressXml(check_rec.T_XmpZip);
+         }
+      }
+   }
+
+   private void RISK_F2_Rules(object sender, EventArgs e)
+   {
+      F2_Rules_Dlg dlg = new F2_Rules_Dlg();
+
+      if(dlg.ShowDialog() != DialogResult.OK) { dlg.Dispose(); return; }
+
+      dlg.TheUC.GetDscFields();
+
+      dlg.Dispose();
+   }
+
+   private void F2_RefreshOutbox(object sender, EventArgs e)
+   {
+      F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
+      Faktur F2_IRn_faktur_rec;
+
+      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+      {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
+
+         if(F2_IRn_faktur_rec.IsF2 == false) continue;
+
+         if(F2_IRn_faktur_rec.F2_IsNoSense_RefreshTransportStatus) continue;
+
+         // tu smo stali 
+         // za svaki F2IR racun, uzmi status sa web servisa i azuriraj u bazi
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+   }
+
+}

@@ -857,7 +857,7 @@ be_fast:
       {
          TheVvUC = new F2_Izlaz_UC(panelZaUC, vvSubModul);
 
-         Vv_Http_Web_request_QAI.Load_F2IR_FakturList_And_PutDgvFields((F2_Izlaz_UC)TheVvUC);
+         Vv_Http_Web_request_QAI.F2_Load_IRn_FakturList_And_PutDgvFields((F2_Izlaz_UC)TheVvUC);
       }
 
       // ULAZNI RACUNI 
@@ -865,7 +865,7 @@ be_fast:
       {
          TheVvUC = new F2_Ulaz_UC(panelZaUC, vvSubModul);
 
-         Vv_Http_Web_request_QAI.Load_F2UR_FakturList_And_PutDgvFields((F2_Ulaz_UC)TheVvUC);
+         Vv_Http_Web_request_QAI.F2_Load_URn_FakturList_And_PutDgvFields((F2_Ulaz_UC)TheVvUC);
       }
 
    }

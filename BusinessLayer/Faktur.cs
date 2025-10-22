@@ -4972,6 +4972,17 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       );
    }
 
+   public bool F2_IsNoSense_RefreshTransportStatus 
+   { 
+      get 
+      {
+         if(/*F2_DocumID*/ MER_ElectronicID.IsZero())                                     return true; // nije jos ni poslan         - nema smisla osvjezavati status transporta 
+         if(/*F2_StatusCD*/"TODO" == Vv_Http_Web_request_QAI.MER_TransportStatuses["40"]) return true; // Delivered - konacan status - nema smisla osvjezavati status transporta 
+         if(/*F2_StatusCD*/"TODO" == Vv_Http_Web_request_QAI.MER_TransportStatuses["45"]) return true; // Canceled  - konacan status - nema smisla osvjezavati status transporta 
+
+         return false;
+      } 
+   }
    public bool IsFX { get { return !IsF1 && !IsF2; } }
    public bool IsF2 { get { return !IsF1 /*&& F2_IsAMS*/; } } // TODO: !!!!! 
    public bool IsF1 { get { return IsFiskalDutyFaktur_ONLINE; } }

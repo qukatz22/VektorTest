@@ -906,7 +906,7 @@ namespace EN16931.UBL
 
             artikl_rec  = artiklSifrar.SingleOrDefault(a => a.ArtiklCD.ToUpper() == rtrans_rec.T_artiklCD.ToUpper());
 
-            isStavkaForAdditionalOpis = rtrans_rec.T_artiklCD.IsEmpty();
+            isStavkaForAdditionalOpis = ZXC.IsF2_2026_rules && rtrans_rec.T_artiklCD.IsEmpty(); // novo za 2026 
 
             if(isStavkaForAdditionalOpis)
             {
