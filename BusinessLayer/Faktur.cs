@@ -4972,13 +4972,15 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       );
    }
 
+   public int F2_ElectronicID { get { return MER_ElectronicID; } set { } } // TODO: !!!!! 
+   public int F2_StatusCD     { get; set; } // TODO: !!!!! 
    public bool F2_IsNoSense_RefreshTransportStatus 
    { 
       get 
       {
-         if(/*F2_DocumID*/ MER_ElectronicID.IsZero())                                     return true; // nije jos ni poslan         - nema smisla osvjezavati status transporta 
-         if(/*F2_StatusCD*/"TODO" == Vv_Http_Web_request_QAI.MER_TransportStatuses["40"]) return true; // Delivered - konacan status - nema smisla osvjezavati status transporta 
-         if(/*F2_StatusCD*/"TODO" == Vv_Http_Web_request_QAI.MER_TransportStatuses["45"]) return true; // Canceled  - konacan status - nema smisla osvjezavati status transporta 
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan         - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 40)        return true; // Delivered - konacan status - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 45)        return true; // Canceled  - konacan status - nema smisla osvjezavati status transporta 
 
          return false;
       } 

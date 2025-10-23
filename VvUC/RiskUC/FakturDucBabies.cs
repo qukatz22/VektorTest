@@ -9411,7 +9411,7 @@ public class F2_Izlaz_UC : VvUserControl
       //}
    }
 
-   private void PutDgvLineFields(int rowIdx, Faktur faktur_rec)
+   /*private*/internal void PutDgvLineFields(int rowIdx, Faktur faktur_rec)
    {
       TheG.PutCell(ci.iT_tt         , rowIdx, faktur_rec.TT              );
       TheG.PutCell(ci.iT_ttNum      , rowIdx, faktur_rec.TtNum           );
@@ -9421,9 +9421,9 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName      );
       TheG.PutCell(ci.iT_ams        , rowIdx, ""                         );
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP        );
-      TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.MER_ElectronicID);
+      TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.F2_ElectronicID );
       TheG.PutCell(ci.iT_dateSlanja , rowIdx, "");
-      TheG.PutCell(ci.iT_status     , rowIdx, "");
+      TheG.PutCell(ci.iT_status     , rowIdx, Vv_Http_Web_request_QAI.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
       TheG.PutCell(ci.iT_stFisk     , rowIdx, "");
       TheG.PutCell(ci.iT_uplata     , rowIdx, "");
       TheG.PutCell(ci.iT_markPaid   , rowIdx, "");

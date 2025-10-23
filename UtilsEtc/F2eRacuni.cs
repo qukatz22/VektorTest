@@ -47,13 +47,14 @@ public static class Vv_Http_Web_request_QAI
    public static string VvPND_CompanyId  = ZXC.CURR_prjkt_rec.Oib;
    public const  string VvPND_SoftwareId = "Vektor-001"          ;
 
-   public static readonly Dictionary<string, string> MER_TransportStatuses = new Dictionary<string, string>
+   public static readonly Dictionary</*string*/int, string> MER_TransportStatuses = new Dictionary</*string*/int, string>
    {
-      { "20", "U obradi"             },
-      { "30", "Poslan"               },
-      { "40", "Preuzet"              },
-      { "45", "Povućeno preuzimanje" },
-      { "50", "Neuspjelo"            }
+      {           0, ""                     },
+      { /*"20"*/ 20, "U obradi"             },
+      { /*"30"*/ 30, "Poslan"               },
+      { /*"40"*/ 40, "Preuzet"              },
+      { /*"45"*/ 45, "Povućeno preuzimanje" },
+      { /*"50"*/ 50, "Neuspjelo"            }
    };
 
    #endregion MER Web Service URLs - API endpoints web addresses
@@ -609,6 +610,7 @@ public static class Vv_Http_Web_request_QAI
 
 
    #region F2IR / F2UR Load List and SubmodulActions
+
    internal static void F2_Load_IRn_FakturList_And_PutDgvFields(F2_Izlaz_UC _theVvUC)
    {
       F2_Izlaz_UC theUC = _theVvUC as F2_Izlaz_UC;
@@ -662,14 +664,14 @@ public static class Vv_Http_Web_request_QAI
 
             F2UR_faktur_rec = new Faktur()
             {
-               TT          = "F2UR"                         ,
-               KupdobName  = responseData.SenderBusinessName,
-               VezniDok    = responseData.DocumentNr        ,
-               FiskPrgBr   = responseData.ElectronicId.ToString(),
-             //F2_DocumID  = responseData.ElectronicId      ,
-             //F2_SentTS   = responseData.Sent              ,
-             //F2_StatusCD = responseData.StatusId          ,
-               TtNum       = (uint)(responseData.StatusId)
+               TT                = "F2UR"                         ,
+               KupdobName        = responseData.SenderBusinessName,
+               VezniDok          = responseData.DocumentNr        ,
+               FiskPrgBr         = responseData.ElectronicId.ToString(),
+               //F2_ElectronicId = responseData.ElectronicId      ,
+               //F2_SentTS       = responseData.Sent              ,
+               //F2_StatusCD     = responseData.StatusId          ,
+               TtNum = (uint)(responseData.StatusId)
             };
 
             theUC.TheFakturList.Add(F2UR_faktur_rec);
@@ -1099,6 +1101,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
       Faktur F2_IRn_faktur_rec;
 
+      Cursor.Current = Cursors.WaitCursor;
+
       for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
       {
          F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
@@ -1110,7 +1114,63 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
          // tu smo stali 
          // za svaki F2IR racun, uzmi status sa web servisa i azuriraj u bazi
 
+         int justRefreshedTransportStatusCD = Get_RefreshedTransportStatusCD(F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID);
+
+         if(justRefreshedTransportStatusCD.IsPositive() && justRefreshedTransportStatusCD != F2_IRn_faktur_rec.F2_StatusCD)
+         {
+            // azuriraj u bazi
+
+            BeginEdit(F2_IRn_faktur_rec);
+            
+            F2_IRn_faktur_rec.F2_StatusCD = justRefreshedTransportStatusCD;
+
+            bool OK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
+            
+            EndEdit(F2_IRn_faktur_rec);
+
+            if(OK) theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+
+         }
       } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+
+      Cursor.Current = Cursors.Default;
+
    }
 
+   private int Get_RefreshedTransportStatusCD(int electronicID)
+   {
+      VvMER_Response_Data_AllActions responseData = null;
+      bool getStatusOK = true;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+         {
+            try
+            {
+               responseData = Vv_Http_Web_request_QAI.VvMER_WebService_QueryOutbox_Single(electronicID);
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+               getStatusOK = false;
+            }
+            if(getStatusOK)
+            {
+               return responseData.StatusId.HasValue ? responseData.StatusId.Value : -1;
+            }
+            else
+            {
+               return -1;
+            }
+         }
+
+         case ZXC.F2_Provider_enum.PND:
+         {
+            throw new NotImplementedException("Get_RefreshedTransportStatusCD: F2 Provider PND not implemented yet.");
+         }
+      }
+
+      return -1;
+   }
 }
