@@ -10895,11 +10895,11 @@ public class RiskRulesDsc : VvLookupAsDsc
 
       Dsc_IsUseOPN                 = false;
       Dsc_DefaultKPD               = "";
-      Dsc_Default_eRposProc        = "";
+      Dsc_Default_eRposProc        = "3";
 
       Dsc_F2_TT                    = "";
-      Dsc_F2_NumOfRows             = 10;
-      Dsc_F2_IsAsc                = true;
+      Dsc_F2_NumOfRows             = 100;
+      Dsc_F2_IsAsc                = false;
 
       #endregion defautValue
    }

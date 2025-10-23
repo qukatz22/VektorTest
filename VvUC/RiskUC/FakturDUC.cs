@@ -8375,7 +8375,7 @@ public partial class FakturExtDUC : FakturDUC
                    hamp_pdvGeokind, hamp_pdvZPkind,
                    hamp_eRproc, hampCbxM_eRproc,
                    hamp_PTG_KUG_DUC,
-                   hampCbxM_F2_documID_sentTS  , hamp_F2_documID_sendTS ,
+                   hampCbxM_F2_ElectronicID_SentTS  , hamp_F2_ElectronicID_SendTS ,
                    hampCbxM_F2_sendTS   , hamp_F2_sendTS  ,
                    hampCbxM_F2_statusCD , hamp_F2_statusCD,
                    hampCbxM_F2_isFisk   , hamp_F2_isFisk  ,
@@ -8438,7 +8438,7 @@ public partial class FakturExtDUC : FakturDUC
                      tbx_Skiz_ukRbt1,
                      tbx_prjArtOP, tbx_prjArtOpJM,
                      tbx_eRproc, tbx_eRprocOpis,
-                     tbx_F2_DocumID, tbx_F2_SentTS, tbx_F2_StatusCD
+                     tbx_F2_ElectronicID, tbx_F2_SentTS, tbx_F2_StatusCD
                      ;
 
    private VvTextBox tbx_S_ukOsnR25m_EU, tbx_S_ukOsn25m_BS, tbx_S_ukOsn25m_TP, tbx_S_ukPdvR25m_EU, tbx_S_ukPdv25m_BS, tbx_s_ukOsn12,
@@ -8711,10 +8711,10 @@ public partial class FakturExtDUC : FakturDUC
       InitializeHamper_eRproc(out hamp_eRproc);
       hampCbxM_eRproc = CreateCbxhamper4Migrators(hamp_eRproc, 0, 0, 2, false);
 
-      InitializeHamper_F2_DocumID_SentTS(out hamp_F2_documID_sendTS);
-      hampCbxM_F2_documID_sentTS = CreateCbxhamper4Migrators(hamp_F2_documID_sendTS, 0, 0, 2, false);
+      InitializeHamper_F2_ElectronicID_SentTS(out hamp_F2_ElectronicID_SendTS);
+      hampCbxM_F2_ElectronicID_SentTS = CreateCbxhamper4Migrators(hamp_F2_ElectronicID_SendTS, 0, 0, 2, false);
 
-      InitializeHamper_F2_Status(out hamp_F2_statusCD);
+      InitializeHamper_F2_StatusCD(out hamp_F2_statusCD);
       hampCbxM_F2_statusCD = CreateCbxhamper4Migrators(hamp_F2_statusCD, 0, 0, 2, false);
 
       
@@ -10534,7 +10534,7 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Visible = false;
    }
 
- private void InitializeHamper_F2_DocumID_SentTS(out VvHamper hamper)
+ private void InitializeHamper_F2_ElectronicID_SentTS(out VvHamper hamper)
  {
       hamper = new VvHamper(4, 1, "", null, false);
 
@@ -10546,19 +10546,19 @@ public partial class FakturExtDUC : FakturDUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun8};
       hamper.VvBottomMargin = ZXC.Qun4;
       
-                       hamper.CreateVvLabel   (0, 0, "eR ID:", ContentAlignment.MiddleRight);
-      tbx_F2_DocumID = hamper.CreateVvTextBox (1, 0, "tbx_F2_DocumID", "ID eRacuna" /*,GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
-                       hamper.CreateVvLabel   (2, 0, "Poslano:", ContentAlignment.MiddleRight);
-      tbx_F2_SentTS  = hamper.CreateVvTextBox (3, 0, "tbx_F2_SentTS", "Datum slanja eRacuna"/*,GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
-      tbx_F2_DocumID.Text = "121782692";
-      tbx_F2_SentTS .Text = "09.08.2026.";
+                            hamper.CreateVvLabel   (0, 0, "eR ID:", ContentAlignment.MiddleRight);
+      tbx_F2_ElectronicID = hamper.CreateVvTextBox (1, 0, "tbx_F2_DocumID", "ID eRacuna" /*,GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
+                            hamper.CreateVvLabel   (2, 0, "Poslano:", ContentAlignment.MiddleRight);
+      tbx_F2_SentTS  =      hamper.CreateVvTextBox (3, 0, "tbx_F2_SentTS", "Datum slanja eRacuna"/*,GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
+    //tbx_F2_ElectronicID.Text = "121782692";
+    //tbx_F2_SentTS .Text = "09.08.2026.";
 
-      tbx_F2_DocumID.ReadOnly = true;
-      tbx_F2_SentTS .ReadOnly = true;
+      tbx_F2_ElectronicID.ReadOnly = true;
+      tbx_F2_SentTS      .ReadOnly = true;
 
       hamper.Name = "AeR_ID:";
    }
-   private void InitializeHamper_F2_Status(out VvHamper hamper)
+   private void InitializeHamper_F2_StatusCD(out VvHamper hamper)
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
@@ -12494,18 +12494,18 @@ public partial class FakturExtDUC : FakturDUC
       //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_fiskOibOp.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
       //hampCbxM_fiskPrgBr.Location            = new Point(hamp_fiskOibOp.Right + 0      , /*hamp_externLink1*/hamp_eRproc.Bottom);
 
-         hamp_F2_documID_sendTS.Location                = new Point(ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hamp_F2_documID_sendTS.VvInitialHamperLocation = new Point(ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hampCbxM_F2_documID_sentTS.Location            = new Point(      0, hamp_fiskOibOp.Bottom);
+         hamp_F2_ElectronicID_SendTS.Location                = new Point(ZXC.QUN, hamp_fiskOibOp.Bottom);
+         hamp_F2_ElectronicID_SendTS.VvInitialHamperLocation = new Point(ZXC.QUN, hamp_fiskOibOp.Bottom);
+         hampCbxM_F2_ElectronicID_SentTS.Location            = new Point(      0, hamp_fiskOibOp.Bottom);
 
-         hamp_F2_statusCD.Location                = new Point(hamp_F2_documID_sendTS.Right + ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hamp_F2_statusCD.VvInitialHamperLocation = new Point(hamp_F2_documID_sendTS.Right + ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hampCbxM_F2_statusCD.Location            = new Point(hamp_F2_documID_sendTS.Right +       0, hamp_fiskOibOp.Bottom);
+         hamp_F2_statusCD.Location                = new Point(hamp_F2_ElectronicID_SendTS.Right + ZXC.QUN, hamp_fiskOibOp.Bottom);
+         hamp_F2_statusCD.VvInitialHamperLocation = new Point(hamp_F2_ElectronicID_SendTS.Right + ZXC.QUN, hamp_fiskOibOp.Bottom);
+         hampCbxM_F2_statusCD.Location            = new Point(hamp_F2_ElectronicID_SendTS.Right +       0, hamp_fiskOibOp.Bottom);
 
        // 17.10.2025. svi ce biti i f1 i f2 uglavnom osim th
        //if(ZXC.CURR_prjkt_rec.IsFiskalOnline == true) panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_fiskMsgID.Bottom);
        //else                                          panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, /*hamp_externLink2*/hamp_F2_documID_sendTS.Bottom);
-         panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_F2_documID_sendTS.Bottom);
+         panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_F2_ElectronicID_SendTS.Bottom);
 
          //if(this is IRMDUC_2)
          //{
@@ -19400,7 +19400,7 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                      hamper.CreateVvLabel        (0, 0, "DeafaultKPD:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel        (0, 0, "DeafaultKPD:", ContentAlignment.MiddleRight);
       tbx_DefaultKPD = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefaultKPD", "Default KPD");
       tbx_DefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
    }
@@ -19441,8 +19441,9 @@ public class F2_Rules_UC : VvOtherUC
 
                       hamper.CreateVvLabel  (0, 0, "Broj prikazanih dokumenata:", ContentAlignment.MiddleRight);
       tbx_numOfRows = hamper.CreateVvTextBox(1, 0, "tbx_numOfRows", "tbx_numOfRows");
-   }
+      tbx_numOfRows.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
+   }
 
    #endregion Hampers 
 
