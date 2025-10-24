@@ -6362,7 +6362,7 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
       bool getStatusOK = true;
       try
       {
-         vvMER_Json_StatusList_Data = Vv_Http_Web_request_QAI.VvMER_WebService_QueryOutbox_List(RptFilter.DatumOd, RptFilter.DatumDo);
+         vvMER_Json_StatusList_Data = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(RptFilter.DatumOd, RptFilter.DatumDo);
       }
       catch(Exception ex)
       {

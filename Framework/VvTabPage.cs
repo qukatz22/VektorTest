@@ -857,7 +857,10 @@ be_fast:
       {
          TheVvUC = new F2_Izlaz_UC(panelZaUC, vvSubModul);
 
-         Vv_Http_Web_request_QAI.F2_Load_IRn_FakturList_And_PutDgvFields((F2_Izlaz_UC)TheVvUC);
+         Vv_eRacun_HTTP.Load_IRn_FakturList   ((F2_Izlaz_UC)TheVvUC       );
+         Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, false);
+         Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, true );
+
       }
 
       // ULAZNI RACUNI 
@@ -865,7 +868,9 @@ be_fast:
       {
          TheVvUC = new F2_Ulaz_UC(panelZaUC, vvSubModul);
 
-         Vv_Http_Web_request_QAI.F2_Load_URn_FakturList_And_PutDgvFields((F2_Ulaz_UC)TheVvUC);
+         Vv_eRacun_HTTP.Load_URn_FakturList((F2_Ulaz_UC)TheVvUC);
+       //Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
+         Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
       }
 
    }

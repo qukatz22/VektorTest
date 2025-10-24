@@ -9433,7 +9433,7 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP        );
       TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.F2_ElectronicID );
       TheG.PutCell(ci.iT_dateSlanja , rowIdx, isF1 ? "" : "");
-      TheG.PutCell(ci.iT_status     , rowIdx, isF1 ? "" : Vv_Http_Web_request_QAI.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
+      TheG.PutCell(ci.iT_status     , rowIdx, isF1 ? "" : faktur_rec.F2_ElectronicID.IsZero() ? "" : Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
       TheG.PutCell(ci.iT_stFisk     , rowIdx, isF1 ? "" : "");
       TheG.PutCell(ci.iT_uplata     , rowIdx, isF1 ? "" : "");
       TheG.PutCell(ci.iT_markPaid   , rowIdx, isF1 ? "" : "");
