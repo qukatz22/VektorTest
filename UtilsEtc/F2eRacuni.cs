@@ -1173,4 +1173,15 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       return -1;
    }
+
+   private void F2_RefreshOutbox2(object sender, EventArgs e) 
+   {
+   
+   }
+
+   private void F2_RefreshRacune(object sender, EventArgs e) 
+   {
+   
+   }
+
 }
