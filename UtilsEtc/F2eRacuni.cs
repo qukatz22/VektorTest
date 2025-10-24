@@ -481,9 +481,9 @@ public static class Vv_eRacun_HTTP
       return responseData_AllActions;
    }
 
-   //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single DPS status ##############################################################################
+   //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - one single DPS status #########################################################
 
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_DPS_Single(int electronicID)
+   public static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_DPS_Single(int electronicID)
    {
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
@@ -505,6 +505,19 @@ public static class Vv_eRacun_HTTP
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
       List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox, jsonRequestString);
+
+      return responseData_AllActions_List;
+   }
+
+   //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - DPS Status List ###############################################################
+
+   public static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryOutbox_DPS_List(DateTime dateOD, DateTime dateDO)
+   {
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(VvMER_webAddressPOST_QueryOutbox_DPS, jsonRequestString);
 
       return responseData_AllActions_List;
    }
@@ -701,7 +714,7 @@ public static class Vv_eRacun_HTTP
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
    }
 
-   internal static void QueryOutbox_TRN_Or_DPS(F2_Izlaz_UC theUC, bool isDPS)
+   internal static void QueryOutbox_TRN_Or_DPS_V1(F2_Izlaz_UC theUC, bool isDPS)
    {
       Faktur F2_IRn_faktur_rec;
 
@@ -714,10 +727,7 @@ public static class Vv_eRacun_HTTP
       {
          F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
 
-         if(F2_IRn_faktur_rec.IsF2 == false) continue;
-
-         if( isDPS && F2_IRn_faktur_rec.F2_Outbox_IsNoSense_Refresh_DPS_Status) continue; // DPS 
-         if(!isDPS && F2_IRn_faktur_rec.F2_Outbox_IsNoSense_Refresh_TRN_Status) continue; // TRN 
+         if(ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS)) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
          int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID, isDPS);
 
@@ -759,6 +769,95 @@ public static class Vv_eRacun_HTTP
       }
    }
 
+   internal static void QueryOutbox_TRN_Or_DPS(F2_Izlaz_UC theUC, bool isDPS)
+   {
+      Faktur F2_IRn_faktur_rec;
+
+      List<string> updatedStatusInfoList = new List<string>();
+           string  updatedStatusInfo                         ;
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      /*List<Faktur>*/var goodCandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, isDPS));
+
+      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
+      // za sada, idemo cijela projektna godina                                                                         
+    //DateTime minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
+    //DateTime maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
+      DateTime minDokDate = ZXC.projectYearFirstDay;
+      DateTime maxDokDate = ZXC.projectYearLastDay ;
+
+      List<VvMER_Response_Data_AllActions> vvMER_responseDataList = isDPS ? Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate) : 
+                                                                            Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
+
+      // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
+
+      //var theList = from respData in vvMER_responseDataList
+      //              join fak in goodCandidatesFakturList
+      //              on respData.ElectronicId equals fak./*F2_ElectronicId*/MER_ElectronicID
+      //              select new { rowIdx = theUC.TheFakturList.IndexOf(fak), lastStatusCD = respData.StatusId, faktur = fak };
+      var theList = vvMER_responseDataList
+          .Join(
+              goodCandidatesFakturList,
+              respData => respData.ElectronicId ?? 0L,
+              fak => (long)fak.MER_ElectronicID,
+              (respData, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 lastStatusCD = respData.StatusId,
+                 faktur = fak
+              }
+          )
+          .Where(item => item.lastStatusCD.HasValue && item.lastStatusCD.Value != item.faktur.F2_StatusCD);
+
+      foreach(var item in theList)
+      {
+         F2_IRn_faktur_rec = item.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_StatusCD = item.lastStatusCD.Value;
+
+         bool rwtOK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(item.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
+                                          Vv_eRacun_HTTP.MER_TransportStatuses[item.lastStatusCD.Value],
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+         } // if(rwtOK)
+      }
+
+      Cursor.Current = Cursors.Default;
+
+      if(updatedStatusInfoList.NotEmpty())
+      {
+         ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
+      }
+   }
+
+   private static bool ShouldCheckRefreshed_TRN_Or_DPS_Status(Faktur F2_IRn_faktur_rec, bool isDPS)
+   {
+      return !ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS);
+   }
+   private static bool ShouldSkipRefreshing_TRN_Or_DPS_Status(Faktur F2_IRn_faktur_rec, bool isDPS)
+   {
+      if(F2_IRn_faktur_rec.IsF2 == false) return true;
+
+      if( isDPS && F2_IRn_faktur_rec.F2_Outbox_IsNoSense_Refresh_DPS_Status) return true; // DPS 
+      if(!isDPS && F2_IRn_faktur_rec.F2_Outbox_IsNoSense_Refresh_TRN_Status) return true; // TRN 
+
+      return false; // Placeholder
+   }
    internal static void QueryInbox_DPS(F2_Ulaz_UC theUC)
    {
 #if false
