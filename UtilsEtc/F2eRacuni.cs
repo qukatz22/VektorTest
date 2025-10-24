@@ -1274,4 +1274,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, false); }
    private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, true ); }
 
+   private void F2_ArhivaPdf (object sender, EventArgs e) {}
+
 }
