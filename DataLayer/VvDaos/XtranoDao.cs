@@ -128,7 +128,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
       /* 08 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_opis_128,     TheSchemaTable.Rows[CI.t_opis_128]);
       /* 09 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_konto   ,     TheSchemaTable.Rows[CI.t_konto   ]);
       /* 10 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_devName ,     TheSchemaTable.Rows[CI.t_devName ]);
-      /* 11 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_XmpZip  ,     TheSchemaTable.Rows[CI.t_XmlZip  ]);
+      /* 11 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_XmlZip  ,     TheSchemaTable.Rows[CI.t_XmlZip  ]);
 
       }
 

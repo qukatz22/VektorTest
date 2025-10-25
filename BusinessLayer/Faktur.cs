@@ -243,6 +243,12 @@ public struct FaktExStruct
    /*195 */ /*internal*/ public decimal _s_ukKCRP_NP2  ;
    /*196 */ /*internal*/ public string  _nacPlac2      ;
    /*197 */ /*internal*/ public bool    _isNpCash2     ; 
+
+   /*198 */ /*internal*/ public int     _f2_electron_ID;
+   /*199 */ /*internal*/ public int     _f2_status_CD  ;
+   /*200 */ /*internal*/ public uint    _f2_ArhRecID   ;
+   /*201 */ /*internal*/ public bool    _f2_isFisk     ;
+   /*202 *//*internal*/ public DateTime _f2_sentTS     ;
                                     
 }
 
@@ -2146,12 +2152,17 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    // pazi, u data layeru si krenuo u krivom smjeru pa se ovaj property tam zove 's_ukKCRP_NP2' 
    [VvIsDevizaConvertibile(ZXC.JeliJeTakav.JE_TAKAV)] /*195 */ public decimal S_ukKCRP_NP1      { get { return this.TheEx.currentData._s_ukKCRP_NP2  ; } set { this.TheEx.currentData._s_ukKCRP_NP2   = value; } }
                                                       /*196 */ public string  NacPlac2          { get { return this.TheEx.currentData._nacPlac2      ; } set { this.TheEx.currentData._nacPlac2       = value; } }
+   /* 197 */ public bool IsNpCash2 { get { return this.TheEx.currentData._isNpCash2; } set { this.TheEx.currentData._isNpCash2 = value; } }
 
-   /* 197 */ public bool  IsNpCash2
-   {
-      get { return                  this.TheEx.currentData._isNpCash2; }
-      set {                         this.TheEx.currentData._isNpCash2 =         value; }
-   }
+
+
+   /* 198 */ public  int     F2_ElectronicID { get { return ZXC.IsF2_2026_rules ? 
+                                                            this.TheEx.currentData._f2_electron_ID :                                                              /* DATA LAYER names */
+                                                            MER_ElectronicID                      ; } set { this.TheEx.currentData._f2_electron_ID = value; } }   /* _f2_electron_ID  */
+   /* 199 */ public  int     F2_StatusCD     { get { return this.TheEx.currentData._f2_status_CD  ; } set { this.TheEx.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
+   /* 190 */ public  uint    F2_ArhRecID     { get { return this.TheEx.currentData._f2_ArhRecID   ; } set { this.TheEx.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
+   /* 201 */ public  bool    F2_IsFisk       { get { return this.TheEx.currentData._f2_isFisk     ; } set { this.TheEx.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
+   /* 202 */ public DateTime F2_SentTS       { get { return this.TheEx.currentData._f2_sentTS     ; } set { this.TheEx.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
    #endregion Data Layer Columns
 
@@ -2160,7 +2171,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    /* ============================================================== */
 
    #region 2013 EU PDV NEWS
-                                   
+
    public decimal TrnSum_OsnR25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_OsnR25n    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25n && rtr.T_isIrmUsluga == false).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
    public decimal TrnSum_OsnU25m    { get { return this.TrnNonDel.Where(rtr => rtr.R_isPdv_25m && rtr.T_isIrmUsluga == true ).Sum(rtrn => ((rtrn.TtInfo.IsMalopTT || rtrn.Is_VelepByMPC_4Umj) ? rtrn.R_PdvOsn : rtrn.R_KCR)); } }
@@ -4971,9 +4982,6 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
         (nacPlac2.NotEmpty() && IsOkRegardingPrjktIsFiskCashTTonly(nacPlac2, theTT))
       );
    }
-
-   public int F2_ElectronicID { get { return MER_ElectronicID; } set { } } // TODO: !!!!! 
-   public int F2_StatusCD     { get; set; } // TODO: !!!!! 
    public bool F2_Outbox_IsNoSense_Refresh_TRN_Status 
    { 
       get 
@@ -5774,6 +5782,12 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*195 */    this.currentData._s_ukKCRP_NP2   = decimal.Zero;
       /*196 */    this.currentData._nacPlac2       = ""          ;
       /*197 */    this.currentData._isNpCash2      = false       ;
+      /*198 */    this.currentData._f2_electron_ID = 0;
+      /*199 */    this.currentData._f2_status_CD   = 0;
+      /*200 */    this.currentData._f2_ArhRecID    = 0;
+      /*201 */    this.currentData._f2_isFisk      = false;
+      /*202 */    this.currentData._f2_sentTS      = DateTime.MinValue;
+
    }
 
    #endregion Constructors
@@ -6677,6 +6691,11 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       get { return                  this.currentData._isNpCash2; }
       set {                         this.currentData._isNpCash2 =         value; }
    }
+   /* 198 */ public  int     F2_ElectronicID { get { return this.currentData._f2_electron_ID; } set { this.currentData._f2_electron_ID = value; } }  /* _f2_electron_ID  */
+   /* 199 */ public  int     F2_StatusCD     { get { return this.currentData._f2_status_CD  ; } set { this.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
+   /* 190 */ public  uint    F2_ArhRecID     { get { return this.currentData._f2_ArhRecID   ; } set { this.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
+   /* 201 */ public  bool    F2_IsFisk       { get { return this.currentData._f2_isFisk     ; } set { this.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
+   /* 202 */ public DateTime F2_SentTS       { get { return this.currentData._f2_sentTS     ; } set { this.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
    #endregion Data Layer Columns
 

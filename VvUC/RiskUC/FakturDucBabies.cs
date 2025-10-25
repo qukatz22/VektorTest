@@ -8913,7 +8913,12 @@ public class F2_Izlaz_UC : VvUserControl
 
       SetColumnIndexes();
 
-      PutDgvFields();
+      Vv_eRacun_HTTP.Load_IRn_FakturList   (/*(F2_Izlaz_UC)TheVvUC*/ this       );
+      ZXC.ClearStatusText(); // kad se ovo stavi onda je lijepo, bez ovoga je ono blesavo ???!!!
+      Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS(/*(F2_Izlaz_UC)TheVvUC*/ this, false);
+      Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS(/*(F2_Izlaz_UC)TheVvUC*/ this, true );
+
+      //PutDgvFields();
 
       TheG.TabStop = false;
       TheG.ClearSelection();
@@ -9509,7 +9514,11 @@ public class F2_Ulaz_UC : VvUserControl
 
       SetColumnIndexes();
 
-      PutDgvFields();
+      Vv_eRacun_HTTP.Load_URn_FakturList(/*(F2_Ulaz_UC)TheVvUC*/ this);
+    //Vv_eRacun_HTTP.QueryInbox_DPS     (/*(F2_Ulaz_UC)TheVvUC*/ this);
+      Vv_eRacun_HTTP.QueryInbox_DPS     (/*(F2_Ulaz_UC)TheVvUC*/ this);
+
+      //PutDgvFields();
 
       TheG.TabStop = false;
       TheG.ClearSelection();

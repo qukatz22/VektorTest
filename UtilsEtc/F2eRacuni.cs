@@ -1238,25 +1238,51 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
    public static Xtrano F2_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec = null)
    {
+      if(F2_TT == Mixer.TT_AIR && faktur_rec == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: faktur record is null!");
+
       byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
 
-      //string JSON4xtrano = ZXC.LenLimitedStr(zipped_xmlString, ZXC.XtranoDao.GetSchemaColumnSize(ZXC.XtoCI.t_opis_128));
+      Xtrano xmlXtrano_rec = null;
 
-      Xtrano xmlXtrano_rec = new Xtrano()
+      if(F2_TT == Mixer.TT_AUR) // ULAZNI racun 
       {
-         //T_opis_128 = JSON4xtrano        ,
-         T_XmpZip = zipped_xmlString,
+         xmlXtrano_rec = new Xtrano()
+         {
+            T_XmlZip   = zipped_xmlString   ,
+                                            
+            T_TT       = F2_TT              ,
 
-         T_TT = F2_TT,
-         //T_parentID = faktur_rec.RecID   , // NE! Nemas jos faktur_rec.RecID u ovom trenutku 
-         //T_dokDate  = faktur_rec.DokDate ,
-         //T_ttNum    = faktur_rec.TtNum   ,
-         //T_dokNum   = faktur_rec.DokNum  ,
-         //T_serial   = 1                  ,
-         //T_moneyA   = faktur_rec.S_ukKCRP,
-         //T_konto    = ""                 , // fuse 
-         //T_devName  = faktur_rec.DevName  
-      };
+          //T_konto    = faktur_rec.TT      ,
+          //T_parentID = faktur_rec.RecID   ,
+          //T_dokDate  = faktur_rec.DokDate ,
+          //T_ttNum    = faktur_rec.TtNum   ,
+          //T_dokNum   = faktur_rec.DokNum  ,
+            T_serial   = 1                  ,
+          //T_moneyA   = faktur_rec.S_ukKCRP,
+            T_opis_128 = ""                 , // fuse 
+          //T_devName  = faktur_rec.DevName  
+         };
+      }
+
+      if(F2_TT == Mixer.TT_AIR) // IZLAZNI racun 
+      {
+         xmlXtrano_rec = new Xtrano()
+         {
+            T_XmlZip   = zipped_xmlString   ,
+                                            
+            T_TT       = F2_TT              ,
+
+            T_konto    = faktur_rec.TT      ,
+            T_parentID = faktur_rec.RecID   , 
+            T_dokDate  = faktur_rec.DokDate ,
+            T_ttNum    = faktur_rec.TtNum   ,
+            T_dokNum   = faktur_rec.DokNum  ,
+            T_serial   = 1                  ,
+            T_moneyA   = faktur_rec.S_ukKCRP,
+            T_opis_128 = ""                 , // fuse 
+            T_devName  = faktur_rec.DevName  
+         };
+      }
 
       return xmlXtrano_rec;
    }
@@ -1353,7 +1379,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
             Xtrano check_rec = new Xtrano();
             F2arhivaXtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, check_rec, 1, false);
-            string decompXml = VvStringCompressor.DecompressXml(check_rec.T_XmpZip);
+            string decompXml = VvStringCompressor.DecompressXml(check_rec.T_XmlZip);
          }
       }
    }

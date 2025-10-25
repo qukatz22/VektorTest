@@ -857,9 +857,10 @@ be_fast:
       {
          TheVvUC = new F2_Izlaz_UC(panelZaUC, vvSubModul);
 
-         Vv_eRacun_HTTP.Load_IRn_FakturList   ((F2_Izlaz_UC)TheVvUC       );
-         Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, false);
-         Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, true );
+         // preselio u constructor UC-a 
+       //Vv_eRacun_HTTP.Load_IRn_FakturList   ((F2_Izlaz_UC)TheVvUC       );
+       //Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, false);
+       //Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, true );
 
       }
 
@@ -868,9 +869,10 @@ be_fast:
       {
          TheVvUC = new F2_Ulaz_UC(panelZaUC, vvSubModul);
 
-         Vv_eRacun_HTTP.Load_URn_FakturList((F2_Ulaz_UC)TheVvUC);
-       //Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
-         Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
+         // preselio u constructor UC-a 
+       //  Vv_eRacun_HTTP.Load_URn_FakturList((F2_Ulaz_UC)TheVvUC);
+       ////Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
+       //  Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
       }
 
    }

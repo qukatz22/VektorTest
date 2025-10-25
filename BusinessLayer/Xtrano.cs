@@ -241,7 +241,7 @@ public class Xtrano : VvTransRecord
    /* */
 
    // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
-   public byte[] T_XmpZip
+   public byte[] T_XmlZip
    {
       get { return this.currentData._t_XmlZip; }
       set {        this.currentData._t_XmlZip = value; }
