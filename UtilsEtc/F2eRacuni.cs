@@ -714,6 +714,7 @@ public static class Vv_eRacun_HTTP
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
    }
 
+   // DELLMELATTER: 
    internal static void QueryOutbox_TRN_Or_DPS_V1(F2_Izlaz_UC theUC, bool isDPS)
    {
       Faktur F2_IRn_faktur_rec;
@@ -1399,6 +1400,50 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, false); }
    private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS((F2_Izlaz_UC)TheVvUC, true ); }
 
-   private void F2_ArhivaPdf (object sender, EventArgs e) {}
+   private void F2_ArhivaPdf (object sender, EventArgs e) 
+   {
+      FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
+     
+      Faktur faktur_rec   = theDUC.faktur_rec;
+
+      Xtrano xtrano_rec = new Xtrano();
+      xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, 5 /*faktur_rec.F2_ArhRecID*/, false); // TODO!!! 
+
+      //List<byte[]> pdfBytesList = xtrano_rec.F2_Get_PDF_Bytes_List();
+      //List<string> pdfFileNameList = xtrano_rec.F2_GetPdfFilenamesFrom_eRacun();
+      //
+      //byte[] pdfBytes = pdfBytesList[0]; // your PDF byte array
+      //
+      //string filename = pdfFileNameList[0];
+      //string dirame   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+      //string fullName = Path.Combine(dirame, filename);
+      //File.WriteAllBytes(fullName, pdfBytes);
+      //System.Diagnostics.Process.Start(fullName);
+
+      List<(string Filename, byte[] PdfBytes)> pdfFiles = xtrano_rec.F2_GetPdfFilesWithNames();
+
+      if(pdfFiles.Count.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop       , "Nema spremljenih PDF-ova za ovaj eRačun."                         );   return;   }
+      if(pdfFiles.Count > 1)      { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning    , "Ima više od jednog PDF-a. Prikazujem prvi od {0}.", pdfFiles.Count); /*return;*/ }
+
+      (string filename, byte[] pdfBytes) thePDF = pdfFiles[0];
+
+      string dirame   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+      string fullName = Path.Combine(dirame, thePDF.filename);
+
+      File.WriteAllBytes(fullName, thePDF.pdfBytes);
+
+      System.Diagnostics.Process.Start(fullName);
+
+      // OVO je za PDFiumViewer testiranje ... ali si odustao od toga JER CEMO SA SYNCFUSION-om! 
+      //using(var stream = new MemoryStream(pdfBytes))
+      //{
+      //   var pdfDocument = PdfiumViewer.PdfDocument.Load(stream);
+      //   var pdfViewer = new PdfiumViewer.PdfViewer();
+      //   pdfViewer.Document = pdfDocument;
+      //   pdfViewer.Dock = DockStyle.Fill;
+      //   this.Controls.Add(pdfViewer); // 'this' is your Form or UserControl
+      //}
+
+   }
 
 }

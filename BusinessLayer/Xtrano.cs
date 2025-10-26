@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #region struct XtranoStruct
 
@@ -331,5 +333,118 @@ public class Xtrano : VvTransRecord
 
    #endregion VvDataRecordFactory
 
+   #region PDF Viewer
+
+   // the_eRacun moze imati vise pdf dokumenata u sebi, pa vrati listu byte[]-ova
+   public List<byte[]> F2_Get_PDF_Bytes_List()
+   {
+      if(this.T_TT != Mixer.TT_AUR && this.T_TT != Mixer.TT_AIR) return null;
+      
+      if(this.T_XmlZip is null || this.T_XmlZip.Length.IsZero()) return null;
+
+      string xmlString = VvStringCompressor.DecompressXml(this.T_XmlZip);
+
+      EN16931.UBL.InvoiceType the_eRacun = EN16931.UBL.InvoiceType.Deserialize(xmlString);
+
+      //// Get the PDF bytes from the_eRacun
+      //byte[] pdfBytes = null;
+      //
+      //if(the_eRacun.AdditionalDocumentReference != null && the_eRacun.AdditionalDocumentReference.Length > 0)
+      //{
+      //   var docRef = the_eRacun.AdditionalDocumentReference[0];
+      //   if(docRef.Attachment != null && docRef.Attachment.EmbeddedDocumentBinaryObject != null)
+      //   {
+      //      pdfBytes = docRef.Attachment.EmbeddedDocumentBinaryObject.Value;
+      //   }
+      //}
+
+      // Example: extract all PDFs from the_eRacun
+      var pdfDocs = the_eRacun.AdditionalDocumentReference?
+          .Where(docRef =>
+              docRef?.Attachment?.EmbeddedDocumentBinaryObject != null &&
+              docRef.Attachment.EmbeddedDocumentBinaryObject.mimeCode == "application/pdf")
+          .ToList();
+
+      List<byte[]> pdfBytesList = new List<byte[]>();
+
+      foreach(var docRef in pdfDocs)
+      {
+         var pdfBytes = docRef.Attachment.EmbeddedDocumentBinaryObject.Value;
+
+         pdfBytesList.Add(pdfBytes);
+         //var filename = docRef.Attachment.EmbeddedDocumentBinaryObject.filename ?? "output.pdf";
+         //File.WriteAllBytes($@"C:\Path\To\{filename}", pdfBytes);
+      }
+
+      return pdfBytesList;
+   }
+
+   public List<string> F2_GetPdfFilenamesFrom_eRacun()
+   {
+      if(this.T_TT != Mixer.TT_AUR && this.T_TT != Mixer.TT_AIR) return null;
+
+      if(this.T_XmlZip is null || this.T_XmlZip.Length.IsZero()) return null;
+
+      string xmlString = VvStringCompressor.DecompressXml(this.T_XmlZip);
+
+      EN16931.UBL.InvoiceType the_eRacun = EN16931.UBL.InvoiceType.Deserialize(xmlString);
+
+      var pdfDocs = the_eRacun.AdditionalDocumentReference?
+          .Where(docRef =>
+              docRef?.Attachment?.EmbeddedDocumentBinaryObject != null &&
+              docRef.Attachment.EmbeddedDocumentBinaryObject.mimeCode == "application/pdf")
+          .ToList();
+
+      List<string> filenames = new List<string>();
+
+      if(pdfDocs != null)
+      {
+         foreach(var docRef in pdfDocs)
+         {
+            var filename = docRef.Attachment.EmbeddedDocumentBinaryObject.filename;
+            if(!string.IsNullOrEmpty(filename))
+               filenames.Add(filename);
+            else
+               filenames.Add("output.pdf"); // fallback if filename is missing
+         }
+      }
+
+      return filenames;
+   }
+
+   public List<(string Filename, byte[] PdfBytes)> F2_GetPdfFilesWithNames()
+   {
+      List<(string Filename, byte[] PdfBytes)> result = new List<(string Filename, byte[] PdfBytes)>();
+
+      if(this.T_TT != Mixer.TT_AUR && this.T_TT != Mixer.TT_AIR) return result;
+
+      if(this.T_XmlZip is null || this.T_XmlZip.Length.IsZero()) return result;
+
+      string xmlString = VvStringCompressor.DecompressXml(this.T_XmlZip);
+
+      EN16931.UBL.InvoiceType the_eRacun = EN16931.UBL.InvoiceType.Deserialize(xmlString);
+
+      var pdfDocs = the_eRacun.AdditionalDocumentReference?
+          .Where(docRef =>
+              docRef?.Attachment?.EmbeddedDocumentBinaryObject != null &&
+              docRef.Attachment.EmbeddedDocumentBinaryObject.mimeCode == "application/pdf")
+          .ToList();
+
+      if(pdfDocs != null)
+      {
+         foreach(var docRef in pdfDocs)
+         {
+            var filename = docRef.Attachment.EmbeddedDocumentBinaryObject.filename;
+            if(string.IsNullOrEmpty(filename))
+               filename = "output.pdf";
+            var pdfBytes = docRef.Attachment.EmbeddedDocumentBinaryObject.Value;
+            result.Add((filename, pdfBytes));
+         }
+      }
+
+      return result;
+   }
+
+   #endregion PDF Viewer
 }
 

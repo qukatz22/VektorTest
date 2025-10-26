@@ -244,7 +244,7 @@ public struct FaktExStruct
    /*196 */ /*internal*/ public string  _nacPlac2      ;
    /*197 */ /*internal*/ public bool    _isNpCash2     ; 
 
-   /*198 */ /*internal*/ public int     _f2_electron_ID;
+   /*198 */ /*internal*/ public uint    _f2_electron_ID;
    /*199 */ /*internal*/ public int     _f2_status_CD  ;
    /*200 */ /*internal*/ public uint    _f2_ArhRecID   ;
    /*201 */ /*internal*/ public bool    _f2_isFisk     ;
@@ -2156,9 +2156,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
 
 
-   /* 198 */ public  int     F2_ElectronicID { get { return ZXC.IsF2_2026_rules ? 
+   /* 198 */ public  uint    F2_ElectronicID { get { return ZXC.IsF2_2026_rules ? 
                                                             this.TheEx.currentData._f2_electron_ID :                                                              /* DATA LAYER names */
-                                                            MER_ElectronicID                      ; } set { this.TheEx.currentData._f2_electron_ID = value; } }   /* _f2_electron_ID  */
+                                                            (uint)MER_ElectronicID                ; } set { this.TheEx.currentData._f2_electron_ID = value; } }   /* _f2_electron_ID  */
    /* 199 */ public  int     F2_StatusCD     { get { return this.TheEx.currentData._f2_status_CD  ; } set { this.TheEx.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
    /* 190 */ public  uint    F2_ArhRecID     { get { return this.TheEx.currentData._f2_ArhRecID   ; } set { this.TheEx.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
    /* 201 */ public  bool    F2_IsFisk       { get { return this.TheEx.currentData._f2_isFisk     ; } set { this.TheEx.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
@@ -6691,7 +6691,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       get { return                  this.currentData._isNpCash2; }
       set {                         this.currentData._isNpCash2 =         value; }
    }
-   /* 198 */ public  int     F2_ElectronicID { get { return this.currentData._f2_electron_ID; } set { this.currentData._f2_electron_ID = value; } }  /* _f2_electron_ID  */
+   /* 198 */ public  uint    F2_ElectronicID { get { return this.currentData._f2_electron_ID; } set { this.currentData._f2_electron_ID = value; } }  /* _f2_electron_ID  */
    /* 199 */ public  int     F2_StatusCD     { get { return this.currentData._f2_status_CD  ; } set { this.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
    /* 190 */ public  uint    F2_ArhRecID     { get { return this.currentData._f2_ArhRecID   ; } set { this.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
    /* 201 */ public  bool    F2_IsFisk       { get { return this.currentData._f2_isFisk     ; } set { this.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */

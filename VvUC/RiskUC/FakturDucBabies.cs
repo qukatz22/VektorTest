@@ -8915,8 +8915,8 @@ public class F2_Izlaz_UC : VvUserControl
 
       Vv_eRacun_HTTP.Load_IRn_FakturList   (/*(F2_Izlaz_UC)TheVvUC*/ this       );
       ZXC.ClearStatusText(); // kad se ovo stavi onda je lijepo, bez ovoga je ono blesavo ???!!!
-      Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS(/*(F2_Izlaz_UC)TheVvUC*/ this, false);
-      Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS(/*(F2_Izlaz_UC)TheVvUC*/ this, true );
+      Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS(/*(F2_Izlaz_UC)TheVvUC*/ this, false); // TRN 
+      Vv_eRacun_HTTP.QueryOutbox_TRN_Or_DPS(/*(F2_Izlaz_UC)TheVvUC*/ this, true ); // DPS 
 
       //PutDgvFields();
 
