@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -8873,6 +8874,7 @@ public class F2_Izlaz_UC : VvUserControl
                      vvtb_dateSlanja,
                      vvtb_status,
                      vvtb_stFisk,
+                     vvtb_reject,
 
                      vvtb_uplata,
                      //vvtb_dateUpl,
@@ -8886,9 +8888,9 @@ public class F2_Izlaz_UC : VvUserControl
    private DataGridViewTextBoxColumn colScrol, colRazmak;
 
    Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
-   Image img_red, img_yellow, img_green;
+   Image img_red, img_yellow, img_green, img_empty;
 
-   DataGridViewImageColumn ams, fis, arh;
+   DataGridViewImageColumn ams, fisk, arh, reject;
 
    internal List<Faktur> TheFakturList { get; set; }
 
@@ -8957,7 +8959,7 @@ public class F2_Izlaz_UC : VvUserControl
       
     //vvtb_ams         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_ams"      , null, -12, "AMS"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ams       , null, "R_ams"      , "AMS"           , ZXC.Q2un - ZXC.Qun4); vvtb_ams      .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
 
-      ams = new DataGridViewImageColumn();
+      ams            = new DataGridViewImageColumn();
       ams.Name       = "ams";
       ams.HeaderText = "AMS";
       ams.Width      = ZXC.Q2un;
@@ -8977,15 +8979,21 @@ public class F2_Izlaz_UC : VvUserControl
       vvtb_electrID.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       //vvtb_stFisk      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stFisk"     , null, -12, "Status Fiskalizacije"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stFisk    , null, "R_stFisk"     , "Status Fisk"  , ZXC.Q3un - ZXC.Qun2); vvtb_stFisk    .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
 
-      fis            = new DataGridViewImageColumn();
-      fis.Name       = "fis";
-      fis.HeaderText = "FISK";
-      fis.Width      = ZXC.Q2un;
-      fis.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
-      fis.DefaultCellStyle.BackColor = clr_eRacun_Back;
-      theGrid.Columns.Add(fis);
+      fisk            = new DataGridViewImageColumn();
+      fisk.Name       = "fis";
+      fisk.HeaderText = "FISK";
+      fisk.Width      = ZXC.Q2un;
+      fisk.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
+      fisk.DefaultCellStyle.BackColor = clr_eRacun_Back;
+      theGrid.Columns.Add(fisk);
 
-    //vvtb_arhiv       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_arhiv"      , null, -12, "Arhivirano"            ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_arhiv     , null, "R_arhiv"      , "Arhiv"        , ZXC.Q3un - ZXC.Qun2); vvtb_arhiv     .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      reject            = new DataGridViewImageColumn();
+      reject.Name       = "reject";
+      reject.HeaderText = "ODB.";
+      reject.Width      = ZXC.Q2un;
+      reject.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
+      reject.DefaultCellStyle.BackColor = clr_eRacun_Back;
+      theGrid.Columns.Add(reject);
 
       arh            = new DataGridViewImageColumn();
       arh.Name       = "arh";
@@ -9020,6 +9028,7 @@ public class F2_Izlaz_UC : VvUserControl
       clr_Mp_Back     = Color.Linen;//LavenderBlush
       //clr_arhiva_Back = Color.LightYellow;
 
+      img_empty  = VvIco.EmptyIcon     .ToBitmap();
       img_red    = VvIco.MarkAsSENDed  .ToBitmap();
       img_yellow = VvIco.CheckPrNabCij .ToBitmap();
       img_green  = VvIco.MarkAsRECEIVEd.ToBitmap();
@@ -9438,11 +9447,48 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.F2_ElectronicID );
       TheG.PutCell(ci.iT_dateSlanja , rowIdx, isF1 ? "" : "");
       TheG.PutCell(ci.iT_status     , rowIdx, isF1 ? "" : faktur_rec.F2_ElectronicID.IsZero() ? "" : Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
-      TheG.PutCell(ci.iT_stFisk     , rowIdx, isF1 ? "" : "");
+    //TheG.PutCell(ci.iT_stFisk     , rowIdx, isF1 ? "" : "");
       TheG.PutCell(ci.iT_uplata     , rowIdx, isF1 ? "" : "");
       TheG.PutCell(ci.iT_markPaid   , rowIdx, isF1 ? "" : "");
 
-      if(isF1) TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
+
+      if(faktur_rec.F2_IsFisk)
+      {
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
+      }
+      else
+      {
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_red;
+      }
+
+      if(faktur_rec.F2_IsRejected)
+      {
+         TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_red;
+      }
+      else 
+      {
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
+      }
+
+      if(faktur_rec.F2_ArhRecID.NotZero())
+      {
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_green;
+      }
+      else
+      {
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
+      }
+
+      if(isF1)
+      {
+         
+         TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"   ]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["ams"   ]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"   ]).Value = img_empty;
+      }
 
       if(faktur_rec.F2_ElectronicID.IsZero()) TheG.Rows[rowIdx].Cells[ci.iT_electrID].Value = "";
    }
@@ -9488,9 +9534,13 @@ public class F2_Ulaz_UC : VvUserControl
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
 
-   Color colHeaderBack, colHeaderFore, rowHeaderBack, rowHeaderFore;
+   Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
 
    internal List<Faktur> TheFakturList { get; set; }
+
+   DataGridViewImageColumn ams, fisk, arh, reject;
+   
+   Image img_red, img_yellow, img_green, img_empty;
 
    #endregion Fieldz
 
@@ -9503,7 +9553,7 @@ public class F2_Ulaz_UC : VvUserControl
       this.Parent = _parent;
       this.Dock   = DockStyle.Fill;
 
-    //SetColors(); eventalno, vidi sincuc
+      SetColors(); 
 
       CreateTheGrid();
 
@@ -9544,20 +9594,38 @@ public class F2_Ulaz_UC : VvUserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
+      vvtb_tt        = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_tt"      , null, -12, "Tip"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt      , null, "R_tt"       , "Tip"          , ZXC.Q2un           ); vvtb_tt       .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_oth_bc;  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
+      vvtb_ttNum     = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_ttNum"   , null, -12, "Broj"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ttNum   , null, "R_ttNum"    , "Broj računa"  , ZXC.Q3un           ); vvtb_ttNum    .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_oth_bc;  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_partner   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_partner" , null, -12, "Partner "); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner , null, "R_partner"  , "Partner"      , ZXC.Q10un          ); vvtb_partner  .JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; //colVvText.DefaultCellStyle.BackColor = clr_lan_bc;  colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
       vvtb_oib       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_oib"     , null, -12, "Oib"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_oib     , null, "R_oib"      , "Oib"          , ZXC.Q6un           ); vvtb_oib      .JAM_ReadOnly = true;                                                               //colVvText.DefaultCellStyle.BackColor = clr_lan_bc;  colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
       vvtb_origBrRn  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_origBrRn", null, -12, "OrigBrRn"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_origBrRn, null, "R_origBrRn" , "OrigBroj"     , ZXC.Q6un           ); vvtb_origBrRn .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_lan_bc;  colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
       vvtb_date      = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_date"    , null, -12, "Datum"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_date    , null, "R_date"     , "Datum"        , ZXC.Q3un + ZXC.Qun2); vvtb_date     .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_oth_bc;  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_elID      = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_elID"    , null, -12, "elID"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_elID    , null, "R_elID"     , "elID    "     , ZXC.Q4un           ); vvtb_elID     .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_sky_bc;  colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
       vvtb_iznos     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (    2, "vvtb_iznos"   , null, -12, "Izno"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznos   , null, "R_iznos"    , "Iznos"        , ZXC.Q4un           ); vvtb_iznos    .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_lan_bc;  colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      
       vvtb_fisk      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_fisk"    , null, -12, "Fisk"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fisk    , null, "R_fisk"     , "Fiskaliziran" , ZXC.Q4un           ); vvtb_fisk     .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_sky_bc;  colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
       vvtb_odbijen   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_odbijen" , null, -12, "Odbijen" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_odbijen , null, "R_odbijen"  , "Odbijen"      , ZXC.Q4un           ); vvtb_odbijen  .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_sky_bc;  colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_tt        = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_tt"      , null, -12, "Tip"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt      , null, "R_tt"       , "Tip"          , ZXC.Q2un           ); vvtb_tt       .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_oth_bc;  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_ttNum     = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_ttNum"   , null, -12, "Broj"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ttNum   , null, "R_ttNum"    , "Broj računa"  , ZXC.Q3un           ); vvtb_ttNum    .JAM_ReadOnly = true;  //colVvText.DefaultCellStyle.BackColor = clr_oth_bc;  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
 
       
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
       colScrol.DefaultCellStyle.BackColor = TheG.ColumnHeadersDefaultCellStyle.BackColor;
+   }
+
+   private void SetColors()
+   {
+      clr_colHeader_Back = Color.LightBlue    ;// Color.FromArgb(123, 170, 238);
+      clr_colHeader_Fore = Color.DarkSlateGray;
+      clr_rowHeader_Back = Color.LightBlue    ; //Color.FromArgb(123, 170, 238); //Color.PowderBlue;
+      clr_rowHeader_Fore = Color.DarkSlateGray;
+
+      clr_colIfa_Back = Color.LightCyan;
+      clr_eRacun_Back = Color.Honeydew;
+      clr_Mp_Back     = Color.Linen;//LavenderBlush
+
+      img_empty  = VvIco.EmptyIcon     .ToBitmap();
+      img_red    = VvIco.MarkAsSENDed  .ToBitmap();
+      img_yellow = VvIco.CheckPrNabCij .ToBitmap();
+      img_green  = VvIco.MarkAsRECEIVEd.ToBitmap();
    }
 
    #endregion TheGridColumn
