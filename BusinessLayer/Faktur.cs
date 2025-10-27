@@ -5053,17 +5053,18 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          return false;
       } 
    }
-   public bool F2_Yes_HasSense_TryTo_RECEIVE_document4arhiva { get { return !F2_HasNoSense_TryTo_RECEIVE_document4arhiva; } }
-   public bool F2_HasNoSense_TryTo_RECEIVE_document4arhiva
+   public bool F2_Yes_HasSense_RECEIVE_document2arhiva { get { return !F2_HasNoSense_RECEIVE_document2arhiva; } }
+   public bool F2_HasNoSense_RECEIVE_document2arhiva
    { 
       get 
       {
-         if(F2_ArhRecID.NotZero()   ) return true; // već je arhiviran   - nema smisla pokušavati RECEIVE 4 arhiva
+         if(F2_IsARHIVED            ) return true; // već je arhiviran   - nema smisla pokušavati RECEIVE 4 arhiva
          if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan - nema smisla pokušavati RECEIVE 4 arhiva
    
          return false;
       } 
    }
+   public bool F2_IsARHIVED { get { return F2_ArhRecID.NotZero(); } }
    public bool IsFX { get { return !IsF1 && !IsF2; } }
    public bool IsF2 { get { return !IsF1 /*&& F2_IsAMS*/; } } // TODO: !!!!! 
    public bool IsF1 { get { return IsFiskalDutyFaktur_ONLINE; } }

@@ -9471,7 +9471,7 @@ public class F2_Izlaz_UC : VvUserControl
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
       }
 
-      if(faktur_rec.F2_ArhRecID.NotZero())
+      if(faktur_rec.F2_IsARHIVED)
       {
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_green;
       }

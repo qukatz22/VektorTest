@@ -12,6 +12,17 @@ using System.Linq;
 using System.Web;
 using System.Reflection;
 using System.Net.Http.Headers;
+
+#if MICROSOFT
+using                  System.Data.SqlClient;
+using XSqlConnection = System.Data.SqlClient.SqlConnection;
+using XSqlCommand    = System.Data.SqlClient.SqlCommand;
+#else
+using MySql.Data.MySqlClient;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
+using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
+#endif
+
 public static class Vv_eRacun_HTTP
 {
 
@@ -142,7 +153,7 @@ public static class Vv_eRacun_HTTP
             //ZXC.aim_emsg(MessageBoxIcon.Error, "{0}\n\r\n\r{1}", resp.StatusDescription, body.Replace("{", "").Replace("}", ""));
 
             ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
-                "HTTP {0} {1}\r\nBody: {2}",
+                "Resp. StatusCode: {0}\n\rResp. StatusDescription: {1}\n\rResponseStream Body: {2}",
                 (int)resp.StatusCode,
                 resp.StatusDescription,
                 body);
@@ -473,7 +484,7 @@ public static class Vv_eRacun_HTTP
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
 
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_TRN_Single(int electronicID)
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_TRN_Single(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox;
 
@@ -490,7 +501,7 @@ public static class Vv_eRacun_HTTP
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - one single DPS status #########################################################
 
-   public static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_DPS_Single(int electronicID)
+   public static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_DPS_Single(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox_DPS;
 
@@ -552,7 +563,7 @@ public static class Vv_eRacun_HTTP
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
 
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_Get_FISK_Status(int electronicID, string messageType)
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_Get_FISK_Status(uint electronicID, string messageType)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_FiskStatus;
 
@@ -562,14 +573,14 @@ public static class Vv_eRacun_HTTP
 
       List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.FirstOrDefault();
+      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.NotEmpty() ? responseData_AllActions_List.FirstOrDefault() : null;
 
       return responseData_AllActions;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ##############################################################################
 
-   public static VvMER_Response_Data_AllActions VvMER_WebService_Receive_XML(int electronicID)
+   public static VvMER_Response_Data_AllActions VvMER_WebService_Receive_XML(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_Receive;
 
@@ -679,7 +690,6 @@ public static class Vv_eRacun_HTTP
    #endregion Concrete API / EndPoint methods implementations - 'ZEBRA'
 
    #region F2IR / F2UR Load List and SubmodulActions
-
    internal static void Load_IRn_FakturList(F2_Izlaz_UC theUC)
    {
       theUC.TheFakturList = new List<Faktur>();
@@ -700,7 +710,6 @@ public static class Vv_eRacun_HTTP
 
       //kuracMethod();
    }
-
    internal static void Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
    {
       F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
@@ -751,7 +760,7 @@ public static class Vv_eRacun_HTTP
    }
 
    // DELLMELATTER: 
-   internal static void QueryOutbox_TRN_Or_DPS_V1(F2_Izlaz_UC theUC, bool isDPS)
+   internal static void QueryOutbox_TRN_Or_DPS_VerzijaSaForPetljom(F2_Izlaz_UC theUC, bool isDPS)
    {
       Faktur F2_IRn_faktur_rec;
 
@@ -766,7 +775,7 @@ public static class Vv_eRacun_HTTP
 
          if(ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS)) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID, isDPS);
+         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, isDPS);
 
          if(justRefreshedStatusCD.IsPositive() && justRefreshedStatusCD != F2_IRn_faktur_rec.F2_StatusCD)
          {
@@ -805,15 +814,18 @@ public static class Vv_eRacun_HTTP
          ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
    }
-
-   internal static void Refresh_ALL_F2IR_Statuses(F2_Izlaz_UC theUC, bool isDPS)
+   internal static void Refresh_ALL_F2IR_Statuses(F2_Izlaz_UC theUC, bool isDPS) // VOILA! 
    {
+      #region Init
+
       Faktur F2_IRn_faktur_rec;
 
       List<string> updatedStatusInfoList = new List<string>();
            string  updatedStatusInfo                         ;
 
       Cursor.Current = Cursors.WaitCursor;
+
+      #endregion Init
 
       #region Refresh TRN or DPS status
 
@@ -833,13 +845,13 @@ public static class Vv_eRacun_HTTP
 
       //var theList = from respData in vvMER_responseDataList
       //              join fak in goodCandidatesFakturList
-      //              on respData.ElectronicId equals fak./*F2_ElectronicId*/MER_ElectronicID
+      //              on respData.ElectronicId equals fak.F2_ElectronicID/*MER_ElectronicID*/
       //              select new { rowIdx = theUC.TheFakturList.IndexOf(fak), lastStatusCD = respData.StatusId, faktur = fak };
       var theNewsList = vvMER_responseDataList
           .Join(
               QueryOutbox_CandidatesFakturList,
               respData => respData.ElectronicId ?? 0L,
-              fak => (long)fak.MER_ElectronicID,
+              fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
               (respData, fak) => new
               {
                  rowIdx = theUC.TheFakturList.IndexOf(fak),
@@ -859,16 +871,16 @@ public static class Vv_eRacun_HTTP
 
          F2_IRn_faktur_rec.F2_StatusCD = item.lastStatusCD.Value;
 
-         bool rwtOK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
          if(rwtOK)
          {
             theUC.PutDgvLineFields(item.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
-            updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
+            updatedStatusInfo = string.Format("{0} ({1}) Novi DOKUMENT status:      {2}      {3} {4}",
                                           F2_IRn_faktur_rec.TipBr,
-                                          F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
+                                          F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
                                           Vv_eRacun_HTTP.MER_TransportStatuses[item.lastStatusCD.Value],
                                           F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
 
@@ -882,86 +894,173 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh FISK status
 
-      List<Faktur> Get_FISK_status_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Yes_HasSense_Refresh_FISK_Status).ToList();
-
-      foreach(var item in Get_FISK_status_CandidatesFakturList)
+      for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
 
-      }
+         if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_FISK_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
-      {
-         //F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
-         //
-         //if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_FISK_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-         //
-         //bool isTrue = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID, isDPS);
-         //
-         //if(justRefreshedStatusCD.IsPositive() && justRefreshedStatusCD != F2_IRn_faktur_rec.F2_StatusCD)
-         //{
-         //   // update Vv dataLayer 
-         //
-         //   theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
-         //   
-         //   F2_IRn_faktur_rec.F2_StatusCD = justRefreshedStatusCD;
-         //
-         //   bool rwtOK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
-         //
-         //   theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
-         //
-         //   if(rwtOK)
-         //   { 
-         //      theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
-         //
-         //      updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
-         //                                    F2_IRn_faktur_rec.TipBr,
-         //                                    F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
-         //                                    Vv_eRacun_HTTP.MER_TransportStatuses[justRefreshedStatusCD],
-         //                                    F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
-         //
-         //      updatedStatusInfoList.Add(updatedStatusInfo);
-         //
-         //   } // if(rwtOK)
-         //
-         //}
+         bool isTrue = Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "0"); // "0" = Zahtjev za statusom fiskalizacije AS SENDER 
+
+         if(isTrue == true && F2_IRn_faktur_rec.F2_IsFisk == false)
+         {
+            // update Vv dataLayer 
+
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+            
+            F2_IRn_faktur_rec.F2_IsFisk = isTrue;
+
+            bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+            if(rwtOK)
+            { 
+               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+
+               updatedStatusInfo = string.Format("{0} ({1}) Novi isFISK status:      {2}      {3} {4}",
+                                             F2_IRn_faktur_rec.TipBr,
+                                             F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                             "FISKALIZIRAN",
+                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+            } // if(rwtOK)
+
+         }
 
       } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
-
 
       #endregion Refresh FISK status
 
       #region Refresh REJECTion status
 
-      List<Faktur> Get_REJECTion_status_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Yes_HasSense_Refresh_REJECTion_Status).ToList();
-
-      foreach(var item in Get_REJECTion_status_CandidatesFakturList)
+      for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
 
-      }
+         if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_REJECTion_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         bool isTrue = Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "2"); // "2" = Zahtjev za statusom REJECTed AS SENDER 
+
+         if(isTrue == true && F2_IRn_faktur_rec.F2_IsRejected == false)
+         {
+            // update Vv dataLayer 
+
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+            
+            F2_IRn_faktur_rec.F2_IsRejected = isTrue;
+
+            bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+            if(rwtOK)
+            { 
+               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+
+               updatedStatusInfo = string.Format("{0} ({1}) Novi isREJECTED status:      {2}      {3} {4}",
+                                             F2_IRn_faktur_rec.TipBr,
+                                             F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                             "ODBIJENO",
+                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+            } // if(rwtOK)
+
+         }
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
 
       #endregion Refresh REJECTion status
 
       #region Refresh MarkAsPaid status
 
-      List<Faktur> Get_MarkAsPaid_status_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Yes_HasSense_Refresh_MarkAsPaid_Status).ToList();
-
-      foreach(var item in Get_MarkAsPaid_status_CandidatesFakturList)
+      for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
 
-      }
+         if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_MarkAsPaid_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         bool isTrue = Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "3"); // "3" = Zahtjev za statusom MARKAsPAID AS SENDER 
+
+         if(isTrue == true && F2_IRn_faktur_rec.F2_IsMarkAsPaid == false)
+         {
+            // update Vv dataLayer 
+
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+            
+            F2_IRn_faktur_rec.F2_IsMarkAsPaid = isTrue;
+
+            bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+            if(rwtOK)
+            { 
+               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+
+               updatedStatusInfo = string.Format("{0} ({1}) Novi isMARKasPAID status:      {2}      {3} {4}",
+                                             F2_IRn_faktur_rec.TipBr,
+                                             F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                             "PLAĆENO",
+                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+            } // if(rwtOK)
+
+         }
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
 
       #endregion Refresh MarkAsPaid status
 
       #region RECEIVE eRacun for Arhiva 
 
-      List<Faktur> Get_RECEIVE_forArhiva_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Yes_HasSense_TryTo_RECEIVE_document4arhiva).ToList();
-
-      foreach(var item in Get_RECEIVE_forArhiva_CandidatesFakturList)
+      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
       {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
 
-      }
+         if(F2_IRn_faktur_rec.F2_HasNoSense_RECEIVE_document2arhiva) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         uint arhivaXtrano_recID = Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(theUC, F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, F2_IRn_faktur_rec);
+
+         if(arhivaXtrano_recID.NotZero() && F2_IRn_faktur_rec.F2_ArhRecID.IsZero())
+         {
+            // update Vv dataLayer 
+
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+            
+            F2_IRn_faktur_rec.F2_ArhRecID = arhivaXtrano_recID;
+
+            bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+            if(rwtOK)
+            { 
+               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+
+               updatedStatusInfo = string.Format("{0} ({1}) Novi eRačun u arhivi:      {2}      {3} {4}",
+                                             F2_IRn_faktur_rec.TipBr,
+                                             F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                             "ARHIVIRANO",
+                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+            } // if(rwtOK)
+
+         }
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
 
       #endregion RECEIVE eRacun for Arhiva 
+
+      #region Finish
 
       Cursor.Current = Cursors.Default;
 
@@ -969,8 +1068,9 @@ public static class Vv_eRacun_HTTP
       {
          ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
-   }
 
+      #endregion Finish
+   }
    private static bool ShouldCheckRefreshed_TRN_Or_DPS_Status(Faktur F2_IRn_faktur_rec, bool isDPS)
    {
       return !ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS);
@@ -1003,7 +1103,7 @@ public static class Vv_eRacun_HTTP
          if( isDPS && F2_URn_faktur_rec.F2_Outbox_IsNoSense_Refresh_DPS_Status) continue; // DPS 
          if(!isDPS && F2_URn_faktur_rec.F2_Outbox_IsNoSense_Refresh_TRN_Status) continue; // TRN 
 
-         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_URn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID, isDPS);
+         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_URn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, isDPS);
 
          if(justRefreshedStatusCD.IsPositive() && justRefreshedStatusCD != F2_URn_faktur_rec.F2_StatusCD)
          {
@@ -1023,7 +1123,7 @@ public static class Vv_eRacun_HTTP
 
                updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
                                              F2_URn_faktur_rec.TipBr,
-                                             F2_URn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
+                                             F2_URn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
                                              Vv_eRacun_HTTP.MER_TransportStatuses[justRefreshedStatusCD],
                                              F2_URn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_URn_faktur_rec.KupdobName);
 
@@ -1043,7 +1143,7 @@ public static class Vv_eRacun_HTTP
       }
 #endif
    }
-   private static int Get_QueryOutboxStatus_ForElectronicID(int electronicID, bool isDPS)
+   private static int Get_QueryOutboxStatus_ForElectronicID(uint electronicID, bool isDPS)
    {
       VvMER_Response_Data_AllActions responseData = null;
       bool getStatusOK = true;
@@ -1086,7 +1186,7 @@ public static class Vv_eRacun_HTTP
    // 1 – As RECIPIENT get the status of the fiscalization message
    // 2 – Get the rejection status                                
    // 3 – Get the payment status                                  
-   private static bool Get_FISK_Status_ForElectronicID(int electronicID, string messageType)
+   private static bool Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(uint electronicID, string messageType)
    {
       VvMER_Response_Data_AllActions responseData = null;
       bool getStatusOK = true;
@@ -1098,6 +1198,8 @@ public static class Vv_eRacun_HTTP
             try
             {
                responseData = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status(electronicID, messageType);
+
+               if(responseData == null) getStatusOK = false;
             }
             catch(Exception ex)
             {
@@ -1112,7 +1214,8 @@ public static class Vv_eRacun_HTTP
             {
                return false;
             }
-         }
+
+         } // case ZXC.F2_Provider_enum.MER:
 
          case ZXC.F2_Provider_enum.PND:
          {
@@ -1121,6 +1224,68 @@ public static class Vv_eRacun_HTTP
       }
 
       return false;
+   }
+   private static uint Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
+   {
+      VvMER_Response_Data_AllActions responseData = null;
+      
+      bool receiveOK = true;
+
+      uint arhivaXtrano_recID = 0;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+         {
+            try
+            {
+               responseData = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+               receiveOK = false;
+            }
+
+            if(receiveOK)
+            {
+               Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
+
+               if(F2arhivaXtrano_rec != null)
+               {
+                  byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
+
+                  bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2arhivaXtrano_rec, /*false*/true, false, false, false);
+
+                  if(OK)
+                  {
+                        theUC.TheVvTabPage.TheVvForm.BeginEdit(F2arhivaXtrano_rec);
+
+                        F2arhivaXtrano_rec.T_XmlZip = T_XmlZip;
+
+                        VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2arhivaXtrano_rec, "t_XmlZip", F2arhivaXtrano_rec.T_XmlZip);
+
+                        theUC.TheVvTabPage.TheVvForm.EndEdit(F2arhivaXtrano_rec);
+                  }
+
+                  if(OK) 
+                  { 
+                     arhivaXtrano_recID = F2arhivaXtrano_rec.T_recID; 
+                  }
+               }
+            }
+
+            return arhivaXtrano_recID;
+
+         } // case ZXC.F2_Provider_enum.MER: 
+
+         case ZXC.F2_Provider_enum.PND:
+         {
+            throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+         }
+      }
+
+      return 0;
    }
 
    #endregion F2IR / F2UR Load List and SubmodulActions
@@ -1189,7 +1354,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       }
    }
 
-   public VvMER_Request_Data_AllActions(int electronicId) // za jedan racun 
+   public VvMER_Request_Data_AllActions(uint electronicId) // za jedan racun 
    {
       switch(ZXC.F2_TheProvider)
       {
@@ -1420,19 +1585,19 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
       {
          xmlXtrano_rec = new Xtrano()
          {
-            T_XmlZip   = zipped_xmlString   ,
-                                            
-            T_TT       = F2_TT              ,
-
-          //T_konto    = faktur_rec.TT      ,
-          //T_parentID = faktur_rec.RecID   ,
-          //T_dokDate  = faktur_rec.DokDate ,
-          //T_ttNum    = faktur_rec.TtNum   ,
-          //T_dokNum   = faktur_rec.DokNum  ,
-            T_serial   = 1                  ,
-          //T_moneyA   = faktur_rec.S_ukKCRP,
-            T_opis_128 = ""                 , // fuse 
-          //T_devName  = faktur_rec.DevName  
+            T_XmlZip   = zipped_xmlString          ,
+                                                   
+            T_TT       = F2_TT                     ,
+                                                   
+          //T_konto    = faktur_rec.TT             ,
+          //T_parentID = faktur_rec.RecID          ,
+          //T_dokDate  = faktur_rec.DokDate        ,
+          //T_ttNum    = faktur_rec.TtNum          ,
+            T_dokNum   = faktur_rec.F2_ElectronicID,
+            T_serial   = 1                         ,
+          //T_moneyA   = faktur_rec.S_ukKCRP       ,
+            T_opis_128 = ""                        , // fuse 
+          //T_devName  = faktur_rec.DevName         
          };
       }
 
@@ -1440,18 +1605,18 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
       {
          xmlXtrano_rec = new Xtrano()
          {
-            T_XmlZip   = zipped_xmlString   ,
-                                            
-            T_TT       = F2_TT              ,
-
-            T_konto    = faktur_rec.TT      ,
-            T_parentID = faktur_rec.RecID   , 
-            T_dokDate  = faktur_rec.DokDate ,
-            T_ttNum    = faktur_rec.TtNum   ,
-            T_dokNum   = faktur_rec.DokNum  ,
-            T_serial   = 1                  ,
-            T_moneyA   = faktur_rec.S_ukKCRP,
-            T_opis_128 = ""                 , // fuse 
+            T_XmlZip   = zipped_xmlString          ,
+                                                   
+            T_TT       = F2_TT                     ,
+                                                   
+            T_konto    = faktur_rec.TT             ,
+            T_parentID = faktur_rec.RecID          , 
+            T_dokDate  = faktur_rec.DokDate        ,
+            T_ttNum    = faktur_rec.TtNum          ,
+            T_dokNum   = faktur_rec.F2_ElectronicID,
+            T_serial   = 1                         ,
+            T_moneyA   = faktur_rec.S_ukKCRP       ,
+            T_opis_128 = ""                        , // fuse 
             T_devName  = faktur_rec.DevName  
          };
       }
@@ -1577,8 +1742,10 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
      
       Faktur faktur_rec   = theDUC.faktur_rec;
 
+      if(faktur_rec.F2_ArhRecID.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun."); return; }
+
       Xtrano xtrano_rec = new Xtrano();
-      xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, 5 /*faktur_rec.F2_ArhRecID*/, false); // TODO!!! 
+      xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
 
       //List<byte[]> pdfBytesList = xtrano_rec.F2_Get_PDF_Bytes_List();
       //List<string> pdfFileNameList = xtrano_rec.F2_GetPdfFilenamesFrom_eRacun();
