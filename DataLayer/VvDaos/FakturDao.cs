@@ -5520,7 +5520,7 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
 
    #region CreateTableFaktEx
 
-   public static   uint TableVersionStatic { get { return 21; } }
+   public static   uint TableVersionStatic { get { return 22; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -5735,6 +5735,8 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
          /*200 */ "f2_ArhRecID    int(10)     unsigned NOT NULL default '0'         ,\n" +
          /*201 */ "f2_isFisk      tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
          /*202 */ "f2_sentTS      datetime             NOT NULL default '0001-01-01 00:00:00' ,\n" +
+         /*203 */ "f2_isRejected  tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
+         /*204 */ "f2_isMrkAsPaid tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
 
                                               "PRIMARY KEY      (recID     ) ,\n" +
           (isArhiva ? "" : /*"UNIQUE "*/"") + "KEY BY_FakRecID  (fakturRecID),\n" +
@@ -5904,6 +5906,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
                          "ADD    COLUMN f2_ArhRecID    int(10)     unsigned NOT NULL default '0'                   AFTER f2_status_CD  ,  " +
                          "ADD    COLUMN f2_isFisk      tinyint(1)  unsigned NOT NULL default '0'                   AFTER f2_ArhRecID   ,  " +
                          "ADD    COLUMN f2_sentTS      datetime             NOT NULL default '0001-01-01 00:00:00' AFTER f2_isFisk     ;  ");
+
+        case 22: return ("ADD    COLUMN f2_isRejected  tinyint(1)  unsigned NOT NULL default '0'                   AFTER f2_sentTS     ,  " +
+                         "ADD    COLUMN f2_isMrkAsPaid tinyint(1)  unsigned NOT NULL default '0'                   AFTER f2_isRejected ;  ");
 
         default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -6142,6 +6147,8 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*200 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_ArhRecID   , TheSchemaTable.Rows[CI.f2_ArhRecID   ]);
       /*201 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_IsFisk     , TheSchemaTable.Rows[CI.f2_isFisk     ]);
       /*202 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_SentTS     , TheSchemaTable.Rows[CI.f2_sentTS     ]);
+      /*203 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_IsRejected , TheSchemaTable.Rows[CI.f2_isRejected ]);
+      /*204 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_IsMarkAsPaid,TheSchemaTable.Rows[CI.f2_isMrkAsPaid]);
       }
 
    }
@@ -6368,6 +6375,8 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*200 */ rdrData._f2_ArhRecID    = reader.GetUInt32   (CI.f2_ArhRecID    + ciOffset);
       /*201 */ rdrData._f2_isFisk      = reader.GetBoolean  (CI.f2_isFisk      + ciOffset);
       /*202 */ rdrData._f2_sentTS      = reader.GetDateTime (CI.f2_sentTS      + ciOffset);
+      /*203 */ rdrData._f2_isRejected  = reader.GetBoolean  (CI.f2_isRejected  + ciOffset);
+      /*204 */ rdrData._f2_isMrkAsPaid = reader.GetBoolean  (CI.f2_isMrkAsPaid + ciOffset);
 
       int nextReaderIndex = lastFaktExCI + 1 + ciOffset;
 
@@ -6643,6 +6652,8 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*200 */ internal int f2_ArhRecID   ;
       /*201 */ internal int f2_isFisk     ;
       /*202 */ internal int f2_sentTS     ;
+      /*203 */ internal int f2_isRejected ;
+      /*204 */ internal int f2_isMrkAsPaid;
    }
 
    /// <summary>
@@ -6863,8 +6874,10 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*200 */ CI.f2_ArhRecID    = GetSchemaColumnIndex("f2_ArhRecID");
       /*201 */ CI.f2_isFisk      = GetSchemaColumnIndex("f2_isFisk");
       /*202 */ CI.f2_sentTS      = GetSchemaColumnIndex("f2_sentTS");
+      /*203 */ CI.f2_isRejected  = GetSchemaColumnIndex("f2_isRejected");
+      /*204 */ CI.f2_isMrkAsPaid = GetSchemaColumnIndex("f2_isMrkAsPaid");
 
-lastFaktExCI = CI.f2_sentTS; // !!!!!! 
+lastFaktExCI = CI.f2_isMrkAsPaid; // !!!!!! 
 
    }
 

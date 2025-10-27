@@ -249,6 +249,8 @@ public struct FaktExStruct
    /*200 */ /*internal*/ public uint    _f2_ArhRecID   ;
    /*201 */ /*internal*/ public bool    _f2_isFisk     ;
    /*202 *//*internal*/ public DateTime _f2_sentTS     ;
+   /*203 */ /*internal*/ public bool    _f2_isRejected ;
+   /*204 */ /*internal*/ public bool    _f2_isMrkAsPaid;
                                     
 }
 
@@ -2163,6 +2165,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    /* 190 */ public  uint    F2_ArhRecID     { get { return this.TheEx.currentData._f2_ArhRecID   ; } set { this.TheEx.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
    /* 201 */ public  bool    F2_IsFisk       { get { return this.TheEx.currentData._f2_isFisk     ; } set { this.TheEx.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
    /* 202 */ public DateTime F2_SentTS       { get { return this.TheEx.currentData._f2_sentTS     ; } set { this.TheEx.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
+
+   /* 203 */ public  bool    F2_IsRejected   { get { return this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
+   /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
 
    #endregion Data Layer Columns
 
@@ -4982,7 +4987,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
         (nacPlac2.NotEmpty() && IsOkRegardingPrjktIsFiskCashTTonly(nacPlac2, theTT))
       );
    }
-   public bool F2_Outbox_IsNoSense_Refresh_TRN_Status 
+   public bool F2_Outbox_HasNoSense_Refresh_TRN_Status 
    { 
       get 
       {
@@ -4993,13 +4998,69 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          return false;
       } 
    }
-   public bool F2_Outbox_IsNoSense_Refresh_DPS_Status 
+   public bool F2_Outbox_HasNoSense_Refresh_DPS_Status
    { 
       get 
       {
          if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan         - nema smisla osvjezavati DPS - poslovni status 
          if(F2_StatusCD == 45)        return true; // Canceled  - konacan status - nema smisla osvjezavati DPS - poslovni status 
 
+         return false;
+      } 
+   }
+   public bool F2_Yes_HasSense_Refresh_FISK_Status { get { return !F2_HasNoSense_Refresh_FISK_Status; } } 
+   public bool F2_HasNoSense_Refresh_FISK_Status 
+   { 
+      get 
+      {
+         if(F2_IsFisk               ) return true; // već je fiskaliziran - nema smisla osvjezavati FISK status 
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati FISK status 
+   
+         return false;
+      } 
+   }
+   public bool F2_Yes_HasSense_Refresh_REJECTion_Status { get { return !F2_HasNoSense_Refresh_REJECTion_Status; } }
+   public bool F2_HasNoSense_Refresh_REJECTion_Status 
+   { 
+      get 
+      {
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati FISK status 
+
+         if(F2_StatusCD == 0 || //  0, "Prihvaćen"   
+            F2_StatusCD == 1 || //  1, "Odbijen"     
+            F2_StatusCD == 2 || //  2, "Plaćeno SVE" 
+            F2_StatusCD == 3  ) //  3, "Plaćen DIO"  
+            
+            return true; 
+   
+         return false;
+      } 
+   }
+   public bool F2_Yes_HasSense_Refresh_MarkAsPaid_Status { get { return !F2_HasNoSense_Refresh_MarkAsPaid_Status; } }
+   public bool F2_HasNoSense_Refresh_MarkAsPaid_Status
+   { 
+      get 
+      {
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati MarkAsPaid status 
+
+         if(F2_StatusCD == 1 || //  1, "Odbijen"     
+          //F2_StatusCD == 3 || //  3, "Plaćen DIO"  // TODO: !!! ??? ne znamo da li kad je plaćen dio API vraca true ili false 
+            F2_StatusCD == 2  ) //  2, "Plaćeno SVE" 
+
+
+            return true; 
+   
+         return false;
+      } 
+   }
+   public bool F2_Yes_HasSense_TryTo_RECEIVE_document4arhiva { get { return !F2_HasNoSense_TryTo_RECEIVE_document4arhiva; } }
+   public bool F2_HasNoSense_TryTo_RECEIVE_document4arhiva
+   { 
+      get 
+      {
+         if(F2_ArhRecID.NotZero()   ) return true; // već je arhiviran   - nema smisla pokušavati RECEIVE 4 arhiva
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan - nema smisla pokušavati RECEIVE 4 arhiva
+   
          return false;
       } 
    }
@@ -5787,6 +5848,8 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*200 */    this.currentData._f2_ArhRecID    = 0;
       /*201 */    this.currentData._f2_isFisk      = false;
       /*202 */    this.currentData._f2_sentTS      = DateTime.MinValue;
+      /*203 */    this.currentData._f2_isRejected  = false;
+      /*204 */    this.currentData._f2_isMrkAsPaid = false;
 
    }
 
@@ -6697,6 +6760,8 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
    /* 201 */ public  bool    F2_IsFisk       { get { return this.currentData._f2_isFisk     ; } set { this.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
    /* 202 */ public DateTime F2_SentTS       { get { return this.currentData._f2_sentTS     ; } set { this.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
+   /* 203 */ public  bool    F2_IsRejected   { get { return this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
+   /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
    #endregion Data Layer Columns
 
    public decimal R2_uplata  { get; set; }
