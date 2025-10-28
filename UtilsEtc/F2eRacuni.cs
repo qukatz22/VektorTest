@@ -26,7 +26,7 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 public static class Vv_eRacun_HTTP
 {
 
-   private const bool DEMO = /*true*/false;
+   private const bool DEMO = false;
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -662,7 +662,7 @@ public static class Vv_eRacun_HTTP
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions() 
       { 
          IdentifierValue = _Identifiervalue,
-         IdentifierType  = 0,
+         IdentifierType  = /*0*/"0",
       };
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
@@ -722,6 +722,8 @@ public static class Vv_eRacun_HTTP
       try
       {
          vvMER_Json_StatusList_Data = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(DateTime.MinValue, DateTime.MaxValue);
+
+         if(vvMER_Json_StatusList_Data.IsEmpty()) return;
       }
       catch(Exception ex)
       {
@@ -818,6 +820,8 @@ public static class Vv_eRacun_HTTP
    {
       #region Init
 
+      if(theUC.TheFakturList.IsEmpty()) return;
+
       Faktur F2_IRn_faktur_rec;
 
       List<string> updatedStatusInfoList = new List<string>();
@@ -840,6 +844,8 @@ public static class Vv_eRacun_HTTP
 
       List<VvMER_Response_Data_AllActions> vvMER_responseDataList = isDPS ? Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate) : 
                                                                             Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
+
+      if(vvMER_responseDataList == null) return;
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
 
@@ -1329,7 +1335,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    private void InitPND_Credentials()
    {
-      //this.softwareId = Vv_Http_Web_request_QAI.VvPND_SoftwareId;
+      //this.softwareId = Vv_eRacun_HTTP.VvPND_SoftwareId;
         this.SoftwareId = Vv_eRacun_HTTP.VvPND_SoftwareId;
    }
 
@@ -1435,7 +1441,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    public string CompanyNumber { get; set; }
 
    [JsonPropertyName("IdentifierType")]
-   public int? IdentifierType { get; set; }
+   public /*int?*/string IdentifierType { get; set; }
 
    [JsonPropertyName("IdentifierValue")]
    public string IdentifierValue { get; set; }
