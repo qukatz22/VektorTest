@@ -1790,4 +1790,11 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
    }
 
+   private void F2_OdaberiRed(object sender, EventArgs e)
+   {
+      F2_Izlaz_UC theDuc = (F2_Izlaz_UC)TheVvUC;
+      if(theDuc.TheG.Columns["cbx"].Visible) theDuc.TheG.Columns["cbx"].Visible = false;
+      else                                   theDuc.TheG.Columns["cbx"].Visible = true ;
+   }
+
 }
