@@ -208,6 +208,8 @@ public class Mixer : VvPolyDocumRecord
    public const string TT_AUR     = "AUR"; // F2 - Arhiva ulaznih  racuna 
    public const string TT_AIR     = "AIR"; // F2 - Arhiva izlaznih racuna 
 
+   public const string TT_MAP     = "MAP"; // F2 - Mark As Paid transakcija 
+
 
    private MixerStruct currentData;
    private MixerStruct backupData;

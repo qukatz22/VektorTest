@@ -1255,7 +1255,7 @@ public static class Vv_eRacun_HTTP
 
             if(receiveOK)
             {
-               Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
+               Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
 
                if(F2arhivaXtrano_rec != null)
                {
@@ -1579,7 +1579,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    [JsonPropertyName("insertedOn")]
    public DateTime? InsertedOn { get; set; }
 
-   public static Xtrano F2_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec = null)
+   public static Xtrano F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec = null)
    {
       if(F2_TT == Mixer.TT_AIR && faktur_rec == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: faktur record is null!");
 
@@ -1603,7 +1603,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
             T_serial   = 1                         ,
           //T_moneyA   = faktur_rec.S_ukKCRP       ,
             T_opis_128 = ""                        , // fuse 
-          //T_devName  = faktur_rec.DevName         
+          //T_devName  = ""                        , // fuse 
          };
       }
 
@@ -1623,11 +1623,41 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
             T_serial   = 1                         ,
             T_moneyA   = faktur_rec.S_ukKCRP       ,
             T_opis_128 = ""                        , // fuse 
-            T_devName  = faktur_rec.DevName  
+            T_devName  = ""                        , // fuse 
          };
       }
 
       return xmlXtrano_rec;
+   }
+
+   /// <summary>
+   /// MAP Xtrano - evidencija prijave MAP na poreznu upravu
+   /// </summary>
+   /// <param name="ftrans_rec"></param>
+   /// <param name="faktur_rec"></param>
+   /// <returns></returns>
+   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans ftrans_rec, Faktur faktur_rec)
+   {
+      Xtrano MAPxtrano_rec = null;
+
+      MAPxtrano_rec = new Xtrano()
+      {
+       //T_XmlZip   = zipped_xmlString                       ,
+                                                             
+         T_TT       = Mixer.TT_MAP                           ,
+                                                             
+         T_konto    = faktur_rec.TT                          ,
+         T_parentID = faktur_rec.RecID                       , // Faktur LINK: t_parentID je faktur recID 
+         T_dokDate  = /*faktur_rec.DokDate*/ DateTime.Today  ,
+         T_ttNum    = /*faktur_rec.TtNum*/ftrans_rec.T_recID , // Ftrans LINK: t_ttNum    je ftrans recID 
+         T_dokNum   = faktur_rec.F2_ElectronicID             ,                                            
+         T_serial   = 1                                      ,                                            
+         T_moneyA   = /*faktur_rec.S_ukKCRP*/ftrans_rec.T_pot, // Ftrans: t_moneyA je iznos UPLATE        
+         T_opis_128 = ""                                     , // fuse                                    
+         T_devName  = ""                                     , // fuse                                    
+      };
+
+      return MAPxtrano_rec;
    }
 
 }
@@ -1710,7 +1740,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       if(receiveOK)
       {
-         Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AUR);
+         Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AUR);
 
          if(F2arhivaXtrano_rec != null)
          {
