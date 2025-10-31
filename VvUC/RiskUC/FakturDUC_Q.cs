@@ -10804,6 +10804,8 @@ public class RiskRulesDsc : VvLookupAsDsc
    public int Dsc_F2_NumOfRows                 { get; set; }
    public string Dsc_F2_TT                     { get; set; }
    public bool Dsc_F2_IsAsc                    { get; set; }
+   public bool Dsc_F2_IsAutoSend               { get; set; }
+   public bool Dsc_F2_IsAutoMAP                { get; set; }
 
    #endregion DataLayer Propertiz
 
@@ -10900,6 +10902,8 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_F2_TT                    = "";
       Dsc_F2_NumOfRows             = 100;
       Dsc_F2_IsAsc                = false;
+      Dsc_F2_IsAutoSend           = false;
+      Dsc_F2_IsAutoMAP            = false;
 
       #endregion defautValue
    }

@@ -19300,10 +19300,11 @@ public class F2_Rules_UC : VvOtherUC
 {
    #region Fieldz
 
-   private VvHamper  hamp_eRproces, hamp_kpd, hamp_ascDesc, hamp_TT, hamp_numOfRows;
+   private VvHamper  hamp_eRproces, hamp_kpd, hamp_ascDesc, hamp_TT, hamp_numOfRows, hamp_auto;
    private VvTextBox tbx_DefaultKPD, tbx_Default_eRposProc, tbx_F2_TT, tbx_numOfRows;
    private RadioButton rbt_Ascending, rbt_Descending, 
                        rbt_F2_IFA, rbt_F2_IRA, rbt_F2_IRM, rbt_F2_none;
+   private CheckBox cbx_isAutoSend, cbx_isAutoMAP;
 
    public /*protected*/ VvSQL.OrderDirectEnum asc_or_desc = VvSQL.OrderDirectEnum.ASC;
 
@@ -19317,9 +19318,9 @@ public class F2_Rules_UC : VvOtherUC
 
       CreateHampers();
 
-      this.Size = new Size(hamp_TT.Right + 2*ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QunMrgn);
+      this.Size = new Size(hamp_TT.Right + 2*ZXC.QunMrgn, hamp_auto.Bottom + ZXC.QunMrgn);
 
-
+      // ?????????? kako cemo ovo 
       if(ZXC.CURR_userName == ZXC.vvDB_systemSuperUserName || ZXC.CURR_userName == ZXC.vvDB_programSuperUserName || ZXC.CURR_user_rec.IsSuper)
                VvHamper.Open_Close_Fields_ForWriting(this, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
       else
@@ -19341,6 +19342,7 @@ public class F2_Rules_UC : VvOtherUC
       InitializeHamper_KPD      (out hamp_kpd      );
       InitializeHamper_AscDesc  (out hamp_ascDesc  );
       InitializeHamper_NumOfRows(out hamp_numOfRows);
+      InitializeHamper_Auto     (out hamp_auto     );
    }
    private void InitializeHamper_TT(out VvHamper hamper)
    { 
@@ -19405,7 +19407,6 @@ public class F2_Rules_UC : VvOtherUC
       tbx_DefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
    }
 
-
    protected void InitializeHamper_AscDesc(out VvHamper hamper)
    {
       hamper = new VvHamper(3, 1, "", this, true, ZXC.QunMrgn, hamp_kpd.Bottom + ZXC.Qun2, 0);
@@ -19445,13 +19446,33 @@ public class F2_Rules_UC : VvOtherUC
 
    }
 
+   private void InitializeHamper_Auto(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.Qun2, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      cbx_isAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune"      , RightToLeft.No);
+      cbx_isAutoMAP  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplatu računa", RightToLeft.No);
+
+   }
+
    #endregion Hampers 
 
    #region Fld_
 
    public string Fld_DefaultKPD        { get { return tbx_DefaultKPD.Text; } set { tbx_DefaultKPD.Text = value; } }
    public string Fld_Default_eRposProc { get { return tbx_Default_eRposProc.Text; } set { tbx_Default_eRposProc.Text = value; } }
-   public int    Fld_F2_NumOfRows      {  get { return tbx_numOfRows.GetIntField(); } set { tbx_numOfRows.PutIntField(value); } }
+   public int    Fld_F2_NumOfRows      { get { return tbx_numOfRows.GetIntField(); } set { tbx_numOfRows.PutIntField(value); } }
    public bool   Fld_F2_IsAsc          
     { 
       get 
@@ -19489,6 +19510,9 @@ public class F2_Rules_UC : VvOtherUC
       }
    }
 
+   public bool Fld_F2_IsAutoSend { get { return cbx_isAutoSend.Checked; } set { cbx_isAutoSend.Checked = value; } }
+   public bool Fld_F2_IsAutoMAP  { get { return cbx_isAutoMAP .Checked; } set { cbx_isAutoMAP .Checked = value; } }
+   
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -19500,6 +19524,8 @@ public class F2_Rules_UC : VvOtherUC
       Fld_F2_NumOfRows      = RRD.Dsc_F2_NumOfRows     ;
       Fld_F2_IsAsc          = RRD.Dsc_F2_IsAsc         ;
       Fld_F2_TT             = RRD.Dsc_F2_TT            ;
+      Fld_F2_IsAutoSend     = RRD.Dsc_F2_IsAutoSend    ;
+      Fld_F2_IsAutoMAP      = RRD.Dsc_F2_IsAutoMAP     ;
    }
 
    public void GetDscFields()
@@ -19509,6 +19535,8 @@ public class F2_Rules_UC : VvOtherUC
       ZXC.RRD.Dsc_F2_NumOfRows      = Fld_F2_NumOfRows     ;
       ZXC.RRD.Dsc_F2_IsAsc          = Fld_F2_IsAsc         ;
       ZXC.RRD.Dsc_F2_TT             = Fld_F2_TT            ;
+      ZXC.RRD.Dsc_F2_IsAutoSend     = Fld_F2_IsAutoSend    ;
+      ZXC.RRD.Dsc_F2_IsAutoMAP      = Fld_F2_IsAutoMAP     ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
    }
