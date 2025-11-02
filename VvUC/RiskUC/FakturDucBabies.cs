@@ -8919,9 +8919,17 @@ public class F2_Izlaz_UC : VvUserControl
 
       SetColumnIndexes();
 
-      Vv_eRacun_HTTP.Load_IRn_FakturList      (/*(F2_Izlaz_UC)TheVvUC*/ this       );
-      Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses(/*(F2_Izlaz_UC)TheVvUC*/ this, false); // TRN 
-      Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses(/*(F2_Izlaz_UC)TheVvUC*/ this, true ); // DPS 
+      /* AAA */Vv_eRacun_HTTP.Load_IRn_FakturList                            (this);
+
+      if(ZXC.RRD.Dsc_F2_IsAutoSend)
+      /* BBB */Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_SEND_eRacune(this);
+
+      /* CCC */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj                      (this/*, false*/); // TRN + DPS + Fisk + Arhiva
+
+    ///* DDD */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj                      (this, true ); // DPS 
+
+      if(ZXC.RRD.Dsc_F2_IsAutoMAP)
+      /* EEE */Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this);
 
       //PutDgvFields();
 

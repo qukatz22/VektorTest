@@ -3409,6 +3409,20 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       return uganFakturList;
    }
 
+   internal static List<Faktur> Get_DOD_FakturList(XSqlConnection conn, uint f2_electronicID)
+   {
+      List<Faktur> F2_SENDcandidates_FakturList = new List<Faktur>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(2);
+    
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt            ], "theTT"  , ZXC.RRD.Dsc_F2_TT, " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FaktExSchemaRows[ZXC.FexCI.f2_electron_ID], "theElID",                 0, " = "));
+
+      VvDaoBase.LoadGenericVvDataRecordList<Faktur>(conn, F2_SENDcandidates_FakturList, filterMembers, "", "dokDate, ttSort, ttNum", true);
+
+      return F2_SENDcandidates_FakturList;
+   }
+
    #endregion Some PTG stuff
 
    #region Some util Rtrans list

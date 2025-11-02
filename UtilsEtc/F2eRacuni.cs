@@ -25,7 +25,6 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 
 public static class Vv_eRacun_HTTP
 {
-
    private const bool DEMO = false;
 
    #region MER Web Service URLs - API endpoints web addresses
@@ -816,7 +815,7 @@ public static class Vv_eRacun_HTTP
          ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
    }
-   internal static void Refresh_ALL_F2IR_Statuses(F2_Izlaz_UC theUC, bool isDPS) // VOILA! 
+   internal static void Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
    {
       #region Init
 
@@ -831,9 +830,9 @@ public static class Vv_eRacun_HTTP
 
       #endregion Init
 
-      #region Refresh TRN or DPS status
+      #region Refresh TRN status
 
-      List<Faktur> QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, isDPS)).ToList();
+      List<Faktur> QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, false)).ToList();
 
       // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
       // za sada, idemo cijela projektna godina                                                                         
@@ -842,8 +841,7 @@ public static class Vv_eRacun_HTTP
       DateTime minDokDate = ZXC.projectYearFirstDay;
       DateTime maxDokDate = ZXC.projectYearLastDay ;
 
-      List<VvMER_Response_Data_AllActions> vvMER_responseDataList = isDPS ? Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate) : 
-                                                                            Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
+      List<VvMER_Response_Data_AllActions> vvMER_responseDataList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
 
       if(vvMER_responseDataList == null) return;
 
@@ -853,7 +851,7 @@ public static class Vv_eRacun_HTTP
       //              join fak in goodCandidatesFakturList
       //              on respData.ElectronicId equals fak.F2_ElectronicID/*MER_ElectronicID*/
       //              select new { rowIdx = theUC.TheFakturList.IndexOf(fak), lastStatusCD = respData.StatusId, faktur = fak };
-      var theNewsList = vvMER_responseDataList
+      var theTRN_NewsList = vvMER_responseDataList
           .Join(
               QueryOutbox_CandidatesFakturList,
               respData => respData.ElectronicId ?? 0L,
@@ -867,7 +865,7 @@ public static class Vv_eRacun_HTTP
           )
           .Where(item => item.lastStatusCD.HasValue && item.lastStatusCD.Value != item.faktur.F2_StatusCD);
 
-      foreach(var item in theNewsList)
+      foreach(var item in theTRN_NewsList)
       {
          F2_IRn_faktur_rec = item.faktur;
 
@@ -884,7 +882,73 @@ public static class Vv_eRacun_HTTP
          if(rwtOK)
          {
             theUC.PutDgvLineFields(item.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
-            updatedStatusInfo = string.Format("{0} ({1}) Novi DOKUMENT status:      {2}      {3} {4}",
+            updatedStatusInfo = string.Format("{0} ({1}) Novi TRANSPORTNI status:      {2}      {3} {4}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                          Vv_eRacun_HTTP.MER_TransportStatuses[item.lastStatusCD.Value],
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theNewsList) 
+
+      #endregion Refresh TRN status
+
+      #region Refresh DPS status
+
+      QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, true)).ToList();
+
+      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
+      // za sada, idemo cijela projektna godina                                                                         
+    //minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
+    //maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
+      minDokDate = ZXC.projectYearFirstDay;
+      maxDokDate = ZXC.projectYearLastDay ;
+
+      vvMER_responseDataList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate);
+
+      if(vvMER_responseDataList == null) return;
+
+      // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
+
+      //var theList = from respData in vvMER_responseDataList
+      //              join fak in goodCandidatesFakturList
+      //              on respData.ElectronicId equals fak.F2_ElectronicID/*MER_ElectronicID*/
+      //              select new { rowIdx = theUC.TheFakturList.IndexOf(fak), lastStatusCD = respData.StatusId, faktur = fak };
+      var theDPS_NewsList = vvMER_responseDataList
+          .Join(
+              QueryOutbox_CandidatesFakturList,
+              respData => respData.ElectronicId ?? 0L,
+              fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
+              (respData, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 lastStatusCD = respData.StatusId,
+                 faktur = fak
+              }
+          )
+          .Where(item => item.lastStatusCD.HasValue && item.lastStatusCD.Value != item.faktur.F2_StatusCD);
+
+      foreach(var item in theDPS_NewsList)
+      {
+         F2_IRn_faktur_rec = item.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_StatusCD = item.lastStatusCD.Value;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(item.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("{0} ({1}) Novi POSLOVNI status:      {2}      {3} {4}",
                                           F2_IRn_faktur_rec.TipBr,
                                           F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
                                           Vv_eRacun_HTTP.MER_TransportStatuses[item.lastStatusCD.Value],
@@ -1292,6 +1356,44 @@ public static class Vv_eRacun_HTTP
       }
 
       return 0;
+   }
+   internal static void Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC)
+   {
+      if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
+
+      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_ElectronicID.IsZero()).ToList();
+
+      if(sendCandidatesFakturList.IsEmpty()) return;
+
+      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
+
+      foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList)
+      {
+         messageList.Add(new VvReportSourceUtil()
+         {
+            TheCD      = sendCandidateFaktur_rec.TipBr,
+            DevName    = sendCandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+            KupdobName = sendCandidateFaktur_rec.KupdobName,
+            TheMoney   = sendCandidateFaktur_rec.S_ukKCRP
+         });
+      }
+
+      VvMessageBoxDLG  sendCandidatesFakturList_InfoForm = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_SEND_candidates);
+    //VvMessageBoxForm sendCandidatesFakturList_InfoForm = new VvMessageBoxForm(false, ZXC.VvmBoxKind.F2_SEND_candidates);
+      sendCandidatesFakturList_InfoForm.Text = "Kandidati za slanje kao eRačun:";
+
+      sendCandidatesFakturList_InfoForm.TheUC.PutDgvFields_RobnaKartica(messageList);
+      sendCandidatesFakturList_InfoForm.ShowDialog();
+      sendCandidatesFakturList_InfoForm.Dispose();
+
+      // TODO ... 
+   }
+
+   internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC)
+   {
+      if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
+
+      // TODO ... 
    }
 
    #endregion F2IR / F2UR Load List and SubmodulActions
@@ -1721,6 +1823,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
 #endregion Bussiness Classes for JSON Request/Response
 
+// VvForm Submodul Actions about F2 fiscalization 
 public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagicForm
 {
    private void F2_ReceiveSingle(object sender, EventArgs e)
@@ -1757,7 +1860,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       }
    }
 
-   private void RISK_F2_Rules(object sender, EventArgs e)
+   private void F2_RISK_Rules(object sender, EventArgs e)
    {
       F2_Rules_Dlg dlg = new F2_Rules_Dlg();
 
@@ -1768,9 +1871,9 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       dlg.Dispose();
    }
 
-   private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList   ((F2_Izlaz_UC)TheVvUC       ); }
-   private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses((F2_Izlaz_UC)TheVvUC, false); }
-   private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses((F2_Izlaz_UC)TheVvUC, true ); }
+   /* AAA */private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList      ((F2_Izlaz_UC)TheVvUC       ); }
+   /* CCC */private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, false*/); }
+   /* DDD */private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, true */); }
 
    private void F2_ArhivaPdf (object sender, EventArgs e) 
    {
