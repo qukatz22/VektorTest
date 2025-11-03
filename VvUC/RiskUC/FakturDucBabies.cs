@@ -8924,9 +8924,9 @@ public class F2_Izlaz_UC : VvUserControl
       if(ZXC.RRD.Dsc_F2_IsAutoSend)
       /* BBB */Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_SEND_eRacune(this);
 
-      /* CCC */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj                      (this/*, false*/); // TRN + DPS + Fisk + Arhiva
+      /* CCC */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj         (this/*, false*/); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
 
-    ///* DDD */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj                      (this, true ); // DPS 
+      ///* DDD */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj                      (this, true ); // DPS 
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP)
       /* EEE */Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this);

@@ -142,7 +142,7 @@ public abstract partial class VvRiskReport : VvReport
 
    public override DataSet VirtualUntypedDataSet { get { return null; } }
 
-   protected ReportDocument reportDocument;
+   /*protected*/internal ReportDocument reportDocument;
 
    public override ReportDocument VirtualReportDocument { get { return reportDocument; } }
 

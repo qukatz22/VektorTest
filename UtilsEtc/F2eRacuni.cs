@@ -12,6 +12,8 @@ using System.Linq;
 using System.Web;
 using System.Reflection;
 using System.Net.Http.Headers;
+using CrystalDecisions.Shared;
+
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1359,6 +1361,8 @@ public static class Vv_eRacun_HTTP
    }
    internal static void Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC)
    {
+      #region Init & Get Dialog Fields
+
       if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
 
       List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_ElectronicID.IsZero()).ToList();
@@ -1378,15 +1382,59 @@ public static class Vv_eRacun_HTTP
          });
       }
 
-      VvMessageBoxDLG  sendCandidatesFakturList_InfoForm = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_SEND_candidates);
-    //VvMessageBoxForm sendCandidatesFakturList_InfoForm = new VvMessageBoxForm(false, ZXC.VvmBoxKind.F2_SEND_candidates);
-      sendCandidatesFakturList_InfoForm.Text = "Kandidati za slanje kao eRačun:";
+      VvMessageBoxDLG  sendCandidatesFakturList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_SEND_candidates);
+    //VvMessageBoxForm sendCandidatesFakturList_InfoDLG = new VvMessageBoxForm(false, ZXC.VvmBoxKind.F2_SEND_candidates);
+      sendCandidatesFakturList_InfoDLG.Text = "Kandidati za slanje kao eRačun:";
 
-      sendCandidatesFakturList_InfoForm.TheUC.PutDgvFields_RobnaKartica(messageList);
-      sendCandidatesFakturList_InfoForm.ShowDialog();
-      sendCandidatesFakturList_InfoForm.Dispose();
+      sendCandidatesFakturList_InfoDLG.TheUC.PutDgvFields_RobnaKartica(messageList);
 
-      // TODO ... 
+      DialogResult dlgResult = sendCandidatesFakturList_InfoDLG.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         sendCandidatesFakturList_InfoDLG.Dispose();
+         return;
+      }
+
+      //ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.Fld_StopAutoSend;
+      //int numOfFirstLinesOnly = sendCandidatesFakturList_InfoDLG.Fld_numOfFirstLinesOnly;
+
+      sendCandidatesFakturList_InfoDLG.Dispose();
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      int sendCount = 0; bool sendOK;
+
+      Outgoing_eRacun_parameters oeRp;
+
+      ZXC.FakturList_To_PDF_InProgress = true;
+
+      #endregion Init & Get Dialog Fields
+
+      foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList)
+      {
+         ZXC.FakturRec = sendCandidateFaktur_rec;
+
+         oeRp = ZXC.TheVvForm.Set_Outgoing_eRacun_parameters(sendCandidateFaktur_rec, theUC, false, false);
+         
+         sendOK = ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp); 
+         
+         if(sendOK) sendCount++;
+
+      } // foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList) 
+
+      #region Finish
+
+      ZXC.FakturList_To_PDF_InProgress = false;
+
+      ZXC.FakturRec = null;
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} eRačuna.", sendCount);
+
+      #endregion Finish
+
    }
 
    internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC)
@@ -1871,7 +1919,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       dlg.Dispose();
    }
 
-   /* AAA */private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList      ((F2_Izlaz_UC)TheVvUC       ); }
+   /* AAA */private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList                   ((F2_Izlaz_UC)TheVvUC           ); }
    /* CCC */private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, false*/); }
    /* DDD */private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, true */); }
 
@@ -1928,6 +1976,81 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       F2_Izlaz_UC theDuc = (F2_Izlaz_UC)TheVvUC;
       if(theDuc.TheG.Columns["cbx"].Visible) theDuc.TheG.Columns["cbx"].Visible = false;
       else                                   theDuc.TheG.Columns["cbx"].Visible = true ;
+   }
+   private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
+   {
+      Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters((TheVvDocumentRecordUC as FakturDUC).faktur_rec, TheVvUC, true, true);
+
+      bool sendOK = RISK_Outgoing_eRacun_JOB(oeRp);
+   }
+   internal Outgoing_eRacun_parameters Set_Outgoing_eRacun_parameters(Faktur faktur_rec, VvUserControl theVvUC, bool isQuickSend, bool _isOneOnlyFromFakturDUC)
+   {
+      Outgoing_eRacun_parameters oeRp = new Outgoing_eRacun_parameters(_isOneOnlyFromFakturDUC);
+
+      Kupdob kupdob_rec   = theVvUC.Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD  );
+      Kupdob primPlat_rec = theVvUC.Get_Kupdob_FromVvUcSifrar(faktur_rec.PrimPlatCD);
+
+      string theTT = faktur_rec.TT;
+
+    //ZXC.FakturList_To_PDF_subDsc     = subDsc;
+      PrnFakDsc thePFD = new PrnFakDsc(FakturDUC.GetDscLuiListForThisTT(theTT, /*subDsc*/ 0 /*?!*/)); // TODO: !!! ili ne? 
+
+      #region Create PDF files to hard disk - OR - Print To Printer
+
+      RptR_IRA                   theRptR_IRA   ;
+
+      ExportOptions              CrExportOptions;
+      DiskFileDestinationOptions CrDiskFileDestinationOptions = new DiskFileDestinationOptions();
+      PdfRtfWordFormatOptions    CrFormatTypeOptions          = new PdfRtfWordFormatOptions();
+
+      string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+      string todayDir                 = theTT + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+      string fileNameOnly ;
+      string PDFfileFullPathName ;
+
+      VvForm.CreateDirectoryInMyDocuments(Path.Combine(deaultVvPDFdirectoryName, todayDir));
+
+
+      // 1. GetReportDocument
+      theRptR_IRA = VvRiskReport.GetRptR_IRA(faktur_rec, thePFD, theTT);
+
+      // 2. get fileName 
+      fileNameOnly = faktur_rec.TT_And_TtNum + " [" + faktur_rec.KupdobName + "]" + ".pdf";
+
+      PDFfileFullPathName = Path.Combine(deaultVvPDFdirectoryName, todayDir, fileNameOnly);
+
+      // 3. set reportDocument.ExportOptions
+      try
+      {
+         CrDiskFileDestinationOptions.DiskFileName = PDFfileFullPathName;
+         CrExportOptions                           = theRptR_IRA.reportDocument.ExportOptions;
+
+         CrExportOptions.ExportDestinationType = ExportDestinationType.DiskFile;
+         CrExportOptions.ExportFormatType      = ExportFormatType.PortableDocFormat;
+         CrExportOptions.DestinationOptions    = CrDiskFileDestinationOptions;
+         CrExportOptions.FormatOptions         = CrFormatTypeOptions;
+
+         theRptR_IRA.reportDocument.Export();
+      }
+      catch(System.Exception ex)
+      {
+         MessageBox.Show(ex.ToString());
+      }
+
+      #endregion Create PDF files to hard disk - OR - Print To Printer
+
+
+      /* oeRp_1. */ oeRp.faktur_rec              = faktur_rec                                      ;
+      /* oeRp_2. */ oeRp.kupdob_rec              = kupdob_rec                                      ;
+      /* oeRp_3. */ oeRp.primPlat_rec            = primPlat_rec                                    ;
+      /* oeRp_4. */ oeRp.thePFD                  = thePFD                                          ;
+      /* oeRp_5. */ oeRp.PDF_as_base64_byteArray = System.IO.File.ReadAllBytes(PDFfileFullPathName);
+      /* oeRp_6. */ oeRp.pdfFileNameOnly         = PDFfileFullPathName                             ;
+      /* oeRp_7. */ oeRp.fullPath_XML_FileName   = oeRp.suggestedXmlFileName + ".xml"              ;
+
+      ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp); 
+
+      return oeRp;
    }
 
 }
