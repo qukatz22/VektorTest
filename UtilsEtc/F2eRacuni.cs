@@ -1386,7 +1386,7 @@ public static class Vv_eRacun_HTTP
     //VvMessageBoxForm sendCandidatesFakturList_InfoDLG = new VvMessageBoxForm(false, ZXC.VvmBoxKind.F2_SEND_candidates);
       sendCandidatesFakturList_InfoDLG.Text = "Kandidati za slanje kao eRačun:";
 
-      sendCandidatesFakturList_InfoDLG.TheUC.PutDgvFields_RobnaKartica(messageList);
+      sendCandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_SEND_candidates(messageList);
 
       DialogResult dlgResult = sendCandidatesFakturList_InfoDLG.ShowDialog();
 
@@ -1396,8 +1396,8 @@ public static class Vv_eRacun_HTTP
          return;
       }
 
-      //ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.Fld_StopAutoSend;
-      //int numOfFirstLinesOnly = sendCandidatesFakturList_InfoDLG.Fld_numOfFirstLinesOnly;
+      ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
+      int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly;
 
       sendCandidatesFakturList_InfoDLG.Dispose();
 
@@ -1971,12 +1971,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
    }
 
-   private void F2_OdaberiRed(object sender, EventArgs e)
-   {
-      F2_Izlaz_UC theDuc = (F2_Izlaz_UC)TheVvUC;
-      if(theDuc.TheG.Columns["cbx"].Visible) theDuc.TheG.Columns["cbx"].Visible = false;
-      else                                   theDuc.TheG.Columns["cbx"].Visible = true ;
-   }
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
       Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters((TheVvDocumentRecordUC as FakturDUC).faktur_rec, TheVvUC, true, true);

@@ -8892,9 +8892,9 @@ public class F2_Izlaz_UC : VvUserControl
 
    DataGridViewImageColumn ams, fisk, arh, reject;
   
-   private VvCheckBoxColumn colfakStop;
-   private CheckBox cbx_selection;
-   private DataGridViewCheckBoxColumn colCbox;
+   //private VvCheckBoxColumn colfakStop;
+   //private CheckBox cbx_selection;
+   //private DataGridViewCheckBoxColumn colCbox;
 
    internal List<Faktur> TheFakturList { get; set; }
 
@@ -8964,16 +8964,16 @@ public class F2_Izlaz_UC : VvUserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      cbx_selection        = new CheckBox();
-      colCbox            = new DataGridViewCheckBoxColumn();
-      colCbox.Tag        = cbx_selection;
-      colCbox.Name       = "cbx";
-      colCbox.HeaderText = ""   ;
-      colCbox.ValueType  = typeof(bool);
-      colCbox.Width      = ZXC.QUN;
-      colCbox.Visible    = false;
-      colCbox.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-      theGrid.Columns.Add(colCbox);
+      //cbx_selection        = new CheckBox();
+      //colCbox            = new DataGridViewCheckBoxColumn();
+      //colCbox.Tag        = cbx_selection;
+      //colCbox.Name       = "cbx";
+      //colCbox.HeaderText = ""   ;
+      //colCbox.ValueType  = typeof(bool);
+      //colCbox.Width      = ZXC.QUN;
+      //colCbox.Visible    = false;
+      //colCbox.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+      //theGrid.Columns.Add(colCbox);
 
       vvtb_tt        = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_tt"       , null, -12, "Tip"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"       , "Tip"           , ZXC.Q2un           ); vvtb_tt       .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_ttNum     = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_ttNum"    , null, -12, "Interni broj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ttNum     , null, "R_ttNum"    , "Interni Broj"  , ZXC.Q3un           ); vvtb_ttNum    .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;

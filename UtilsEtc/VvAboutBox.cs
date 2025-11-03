@@ -623,7 +623,7 @@ public class VvAboutBox : DotNetMagicForm
 public class VvMessageBoxDLG :  VvDialog
 {
    public  VvMessageBox_UC TheUC { get; set; }
-   public Button okButton;
+   public Button okButton, cancelButton;
    private int dlgWidth, dlgHeight;
 
    public VvMessageBoxDLG(bool _smallFont, ZXC.VvmBoxKind vvmBoxKind)
@@ -651,12 +651,18 @@ public class VvMessageBoxDLG :  VvDialog
 
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
-      AddOkButton(out okButton, dlgWidth, dlgHeight);
-      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
+      {
+         AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+         okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+      }
+      else
+      { 
+         AddOkButton(out okButton, dlgWidth, dlgHeight);
+         okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+      }
 
       this.AcceptButton = okButton;
-
-      okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
       TheUC.Anchor         =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
       TheUC.TheGrid.Anchor =  AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -684,14 +690,16 @@ public class VvMessageBox_UC : UserControl
 
    private VvTextBox vvtb_message,
                      vvtb_barkod, vvtb_kol, vvtb_artiklCd, vvtb_artiklName, vvtb_tserial, vvtb_status,
-                     vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje, vvtb_tmpMinus;
-
+                     vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje, vvtb_tmpMinus,
+                     vvtb_iznos, tbx_numOfFirstLinesOnly;
+   private CheckBox  cbx_StopAutoSend;
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
    int colWidth = 0;
    private bool smallFont;
    private bool isMultiColumn;
    private ZXC.VvmBoxKind vvmBoxKind;
+   private VvHamper hamper_F2_SEND_candidates;
 
    #endregion Fieldz
 
@@ -707,6 +715,8 @@ public class VvMessageBox_UC : UserControl
       this.vvmBoxKind    = _vvmBoxKind   ;
 
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
+
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates) CreateHamper_F2_SEND_candidates(out hamper_F2_SEND_candidates);
 
       CreateTheGrid();
       CalcLocationAndSize(vvmBoxKind);
@@ -727,9 +737,41 @@ public class VvMessageBox_UC : UserControl
       else                                               this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 3);
 
       TheGrid.Height = this.Size.Height - ZXC.Q2un;
+
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
+      { 
+         this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
+         hamper_F2_SEND_candidates.Location = new Point(ZXC.QunMrgn, TheGrid.Bottom + ZXC.QunMrgn);
+      }
    }
 
    #endregion CalcLocationAndSize
+
+   #region Hampers
+
+   private void CreateHamper_F2_SEND_candidates(out VvHamper hamper)
+   {
+      hamper = new VvHamper(2, 2, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q4un, ZXC.Q2un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN   };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                                hamper.CreateVvLabel  (0, 0, "Pošalji samo prvih toliko računa:", ContentAlignment.MiddleRight);
+      tbx_numOfFirstLinesOnly = hamper.CreateVvTextBox(1, 0, "tbx_numOfFirstLinesOnly", "NumOfFirstLinesOnly");
+      tbx_numOfFirstLinesOnly.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+
+      cbx_StopAutoSend        = hamper.CreateVvCheckBox_OLD(0, 1, null, 1, 0, "Stopiraj automatsko slanje za ubuduće", RightToLeft.Yes);
+
+      VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+   }
+
+   #endregion Hampers
 
    #region TheGrid
    private void CreateTheGrid()
@@ -785,10 +827,16 @@ public class VvMessageBox_UC : UserControl
          TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Q7un - ZXC.Qun2 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
+      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
+      {
+         CreateMultiColumn_F2_SEND_candidates(TheGrid);
+         TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Qun4 + TheGrid.RowHeadersWidth;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
+      }
       else
       {
          CreateColumn(TheGrid);
-         TheGrid.Width  = colWidth + TheGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
+         TheGrid.Width = colWidth + TheGrid.RowHeadersWidth + ZXC.QUN + ZXC.Qun4;
          TheGrid.Height = this.Size.Height - ZXC.QUN;
       }
 
@@ -837,6 +885,16 @@ public class VvMessageBox_UC : UserControl
       CreateColumn_ulaz    (theGrid, "Ulaz"             , ZXC.Q4un            );
       CreateColumn_izlaz   (theGrid, "Izlaz"            , ZXC.Q4un            );
       CreateColumn_stanje  (theGrid, "Stanje"           , ZXC.Q4un            );
+      
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+   }
+
+   private void CreateMultiColumn_F2_SEND_candidates(VvDataGridView theGrid)
+   {
+      CreateColumn_tipBr  (theGrid, "TipBr"   , ZXC.Q5un            );
+      CreateColumn_datum  (theGrid, "Datum"   , ZXC.Q5un            );
+      CreateColumn_partner(theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
+      CreateColumn_iznos  (theGrid, "Iznos"   , ZXC.Q4un            );
       
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -941,6 +999,18 @@ public class VvMessageBox_UC : UserControl
 
    #endregion minus Columns
 
+   #region F2_SEND_candidates Columns & hamper
+
+   private void CreateColumn_iznos(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_iznos = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_iznos", null, -12, header);
+      colVvText  = theGrid.CreateVvTextBoxColumn(vvtb_iznos, null, "R_iznos", header, colWidth);
+      colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_iznos.JAM_NumberOfDecimalPlaces, false, false); // da prikaze 0.00
+      vvtb_iznos.JAM_ReadOnly = true;
+   }
+
+   #endregion F2_SEND_candidates Columns  & hamper
+
    #endregion TheGridColumn
 
    #region SetColumnIndexes()
@@ -963,6 +1033,8 @@ public class VvMessageBox_UC : UserControl
       internal int iT_ulaz      ;
       internal int iT_izlaz     ;
       internal int iT_stanje    ;
+      
+      internal int iT_iznos    ;
    }
 
    private void SetColumnIndexes()
@@ -983,9 +1055,13 @@ public class VvMessageBox_UC : UserControl
       ci.iT_ulaz     = TheGrid.IdxForColumn("R_ulaz")   ;
       ci.iT_stanje   = TheGrid.IdxForColumn("R_stanje") ;
       ci.iT_izlaz    = TheGrid.IdxForColumn("R_izlaz")  ;
+      
+      ci.iT_iznos    = TheGrid.IdxForColumn("R_iznos")  ;
    }
 
    #endregion SetColumnIndexes()
+
+   #region PutDgvFields
 
    public void PutDgvFields(List<string> messageList)
    {
@@ -1065,6 +1141,26 @@ public class VvMessageBox_UC : UserControl
       TheGrid.ClearSelection();
    }
 
+   public void PutDgvFields_F2_SEND_candidates(List<VvReportSourceUtil> messageList)
+   {
+      int rowIdx;
+
+      TheGrid.Rows.Clear();
+
+      for(rowIdx = 0; rowIdx < messageList.Count; ++rowIdx)
+      {
+         TheGrid.Rows.Add();
+
+         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].DevName   );
+         TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].TheCD     );
+         TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName);
+         TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
+
+         TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+      }
+
+      TheGrid.ClearSelection();
+   }
 
    //private void PutDgvLineFields(int rowIdx)
    //{
@@ -1079,6 +1175,16 @@ public class VvMessageBox_UC : UserControl
    //  if(rowIdx == 8)TheGrid.PutCell(ci.iT_message , rowIdx, "" );
    //  if(rowIdx == 9)TheGrid.PutCell(ci.iT_message , rowIdx, "" );
    //}
+
+   #endregion PutDgvFields
+
+   #region Fld
+   
+   public bool Fld_StopAutoSend       { get { return cbx_StopAutoSend.Checked; } set { cbx_StopAutoSend.Checked = value; } }
+   
+   public int Fld_NumOfFirstLinesOnly { get { return ZXC.ValOrZero_Int(tbx_numOfFirstLinesOnly.Text); } set { tbx_numOfFirstLinesOnly.Text = value.ToString(); } }
+
+   #endregion Fld
 }
 
 public class VvMessageBoxForm : VvMessageBoxDLG
