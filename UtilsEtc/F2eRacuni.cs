@@ -691,7 +691,10 @@ public static class Vv_eRacun_HTTP
    #endregion Concrete API / EndPoint methods implementations - 'ZEBRA'
 
    #region F2IR / F2UR Load List and SubmodulActions
-   internal static void Load_IRn_FakturList(F2_Izlaz_UC theUC)
+
+
+
+   /* AAA */internal static void Load_IRn_FakturList(F2_Izlaz_UC theUC)
    {
       theUC.TheFakturList = new List<Faktur>();
 
@@ -711,113 +714,136 @@ public static class Vv_eRacun_HTTP
 
       //kuracMethod();
    }
-   internal static void Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
+   /* BBB */internal static void Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn)
    {
-      F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
+      #region Init & Get Dialog Fields
 
-      theUC.TheFakturList = new List<Faktur>();
+      if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
 
-      List<VvMER_Response_Data_AllActions> vvMER_Json_StatusList_Data = null;
+      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).ToList();
 
-      bool getStatusOK = true;
-      try
+      if(sendCandidatesFakturList.IsEmpty()) return;
+
+      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
+
+      foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList)
       {
-         vvMER_Json_StatusList_Data = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(DateTime.MinValue, DateTime.MaxValue);
-
-         if(vvMER_Json_StatusList_Data.IsEmpty()) return;
-      }
-      catch(Exception ex)
-      {
-         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-         getStatusOK = false;
-      }
-
-      if(getStatusOK)
-      {
-         int counter = 0;
-         Faktur F2UR_faktur_rec;
-
-         foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
+         messageList.Add(new VvReportSourceUtil()
          {
-            if(counter++ > ZXC.RRD.Dsc_F2_NumOfRows) break;
-
-            F2UR_faktur_rec = new Faktur()
-            {
-               TT                = "F2UR"                         ,
-               KupdobName        = responseData.SenderBusinessName,
-               VezniDok          = responseData.DocumentNr        ,
-               FiskPrgBr         = responseData.ElectronicId.ToString(),
-               //F2_ElectronicId = responseData.ElectronicId      ,
-               //F2_SentTS       = responseData.Sent              ,
-               //F2_StatusCD     = responseData.StatusId          ,
-               TtNum = (uint)(responseData.StatusId)
-            };
-
-            theUC.TheFakturList.Add(F2UR_faktur_rec);
-
-         } // foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
-
+            TheCD      = sendCandidateFaktur_rec.TipBr,
+            DevName    = sendCandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+            KupdobName = sendCandidateFaktur_rec.KupdobName,
+            TheMoney   = sendCandidateFaktur_rec.S_ukKCRP
+         });
       }
 
-      if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
-   }
+      VvMessageBoxDLG  sendCandidatesFakturList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_SEND_candidates);
+    //VvMessageBoxForm sendCandidatesFakturList_InfoDLG = new VvMessageBoxForm(false, ZXC.VvmBoxKind.F2_SEND_candidates);
+      sendCandidatesFakturList_InfoDLG.Text = "Kandidati za slanje kao eRačun:";
 
-   // DELLMELATTER: 
-   internal static void QueryOutbox_TRN_Or_DPS_VerzijaSaForPetljom(F2_Izlaz_UC theUC, bool isDPS)
-   {
-      Faktur F2_IRn_faktur_rec;
+      sendCandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_SEND_candidates(messageList);
 
-      List<string> updatedStatusInfoList = new List<string>();
-           string  updatedStatusInfo                         ;
+      DialogResult dlgResult = sendCandidatesFakturList_InfoDLG.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         sendCandidatesFakturList_InfoDLG.Dispose();
+         return;
+      }
+
+      ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
+      int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly;
+
+      sendCandidatesFakturList_InfoDLG.Dispose();
 
       Cursor.Current = Cursors.WaitCursor;
 
-      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+      int sendCount = 0; bool sendOK;
+
+      Outgoing_eRacun_parameters oeRp;
+
+      ZXC.FakturList_To_PDF_InProgress = true;
+
+      System.Diagnostics.Stopwatch dispatchStopWatch = System.Diagnostics.Stopwatch.StartNew();
+
+      uint soFarCount      = 0;
+       int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : sendCandidatesFakturList.Count;
+      long elapsedTicks    = 0, remainTicks;
+      decimal soFarKoef       ;
+      TimeSpan elapsedTime = new TimeSpan(0);
+      TimeSpan remainTime     ;
+      string statusText       ;
+
+      #endregion Init & Get Dialog Fields
+
+      #region The Send Loop - foreach Faktur
+
+      foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList)
       {
-         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
+         Cursor.Current = Cursors.WaitCursor;
 
-         if(ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS)) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+         sendCandidateFaktur_rec.VvDao.LoadTranses(conn, sendCandidateFaktur_rec, false);
 
-         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, isDPS);
+         ZXC.FakturRec = (Faktur)sendCandidateFaktur_rec.CreateNewRecordAndCloneItComplete();
 
-         if(justRefreshedStatusCD.IsPositive() && justRefreshedStatusCD != F2_IRn_faktur_rec.F2_StatusCD)
-         {
-            // update Vv dataLayer 
+         oeRp = ZXC.TheVvForm.Set_Outgoing_eRacun_parameters(sendCandidateFaktur_rec, theUC, false, false);
+         
+         sendOK = ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp, false); // VOILA! 
+         
+         if(sendOK) sendCount++;
 
-            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
-            
-            F2_IRn_faktur_rec.F2_StatusCD = justRefreshedStatusCD;
+         #region set status text
 
-            bool rwtOK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
+         soFarCount++;
 
-            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+         #region soFar vs remaining calc
 
-            if(rwtOK)
-            { 
-               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+         soFarKoef     = ZXC.DivSafe(soFarCount, ofTotalCount);
+         elapsedTicks += dispatchStopWatch.Elapsed.Ticks          ;
+         elapsedTime  += dispatchStopWatch.Elapsed                ;
+         remainTicks   = (long)(ZXC.DivSafe((decimal)elapsedTicks, soFarKoef) - elapsedTicks);
+         remainTime    = new TimeSpan(remainTicks);
 
-               updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
-                                             F2_IRn_faktur_rec.TipBr,
-                                             F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
-                                             Vv_eRacun_HTTP.MER_TransportStatuses[justRefreshedStatusCD],
-                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+         #endregion soFar vs remaining calc
 
-               updatedStatusInfoList.Add(updatedStatusInfo);
+         statusText =
+            dispatchStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
+            "(" + (elapsedTime.TotalSeconds / (double)soFarCount).ToString1Vv() + "s avg) done " +
+             (/*++*/soFarCount).ToString() +
+             " of " + ofTotalCount +
+             " (" + (soFarKoef * 100M).ToString0Vv() + "%)" +
+            //" <"   + remainTime + "> "                              +
+             string.Format(" remain <{0:00}:{1:00}:{2:00}> ", remainTime.Hours, remainTime.Minutes, remainTime.Seconds) +
+             " " + sendCandidateFaktur_rec.ToString();
 
-            } // if(rwtOK)
+         dispatchStopWatch.Restart();
 
-         }
+         ZXC.SetStatusText(statusText); Cursor.Current = Cursors.WaitCursor;
 
-      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+         #endregion set status text
+
+         if(numOfFirstLinesOnly.NotZero() && /*sendCount*/soFarCount == numOfFirstLinesOnly) break;
+
+      } // foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList) 
+
+      #endregion The Send Loop - foreach Faktur
+
+      #region Finish
+
+      ZXC.FakturList_To_PDF_InProgress = false;
+
+      ZXC.FakturRec = null;
+
+      ZXC.SetStatusText("");
 
       Cursor.Current = Cursors.Default;
 
-      if(updatedStatusInfoList.NotEmpty())
-      {
-         ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
-      }
+      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} eRačuna.", sendCount);
+
+      #endregion Finish
+
    }
-   internal static void Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
+   /* CCC */internal static void Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
    {
       #region Init
 
@@ -1143,6 +1169,121 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
+   /* DDD */internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC)
+   {
+      if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
+
+      // TODO ... 
+   }
+
+
+
+   internal static void Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
+   {
+      F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
+
+      theUC.TheFakturList = new List<Faktur>();
+
+      List<VvMER_Response_Data_AllActions> vvMER_Json_StatusList_Data = null;
+
+      bool getStatusOK = true;
+      try
+      {
+         vvMER_Json_StatusList_Data = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(DateTime.MinValue, DateTime.MaxValue);
+
+         if(vvMER_Json_StatusList_Data.IsEmpty()) return;
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+         getStatusOK = false;
+      }
+
+      if(getStatusOK)
+      {
+         int counter = 0;
+         Faktur F2UR_faktur_rec;
+
+         foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
+         {
+            if(counter++ > ZXC.RRD.Dsc_F2_NumOfRows) break;
+
+            F2UR_faktur_rec = new Faktur()
+            {
+               TT                = "F2UR"                         ,
+               KupdobName        = responseData.SenderBusinessName,
+               VezniDok          = responseData.DocumentNr        ,
+               FiskPrgBr         = responseData.ElectronicId.ToString(),
+               //F2_ElectronicId = responseData.ElectronicId      ,
+               //F2_SentTS       = responseData.Sent              ,
+               //F2_StatusCD     = responseData.StatusId          ,
+               TtNum = (uint)(responseData.StatusId)
+            };
+
+            theUC.TheFakturList.Add(F2UR_faktur_rec);
+
+         } // foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
+
+      }
+
+      if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
+   }
+
+   // DELLMELATTER: 
+   internal static void QueryOutbox_TRN_Or_DPS_VerzijaSaForPetljom(F2_Izlaz_UC theUC, bool isDPS)
+   {
+      Faktur F2_IRn_faktur_rec;
+
+      List<string> updatedStatusInfoList = new List<string>();
+           string  updatedStatusInfo                         ;
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+      {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
+
+         if(ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS)) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, isDPS);
+
+         if(justRefreshedStatusCD.IsPositive() && justRefreshedStatusCD != F2_IRn_faktur_rec.F2_StatusCD)
+         {
+            // update Vv dataLayer 
+
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+            
+            F2_IRn_faktur_rec.F2_StatusCD = justRefreshedStatusCD;
+
+            bool rwtOK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
+
+            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+            if(rwtOK)
+            { 
+               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+
+               updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
+                                             F2_IRn_faktur_rec.TipBr,
+                                             F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
+                                             Vv_eRacun_HTTP.MER_TransportStatuses[justRefreshedStatusCD],
+                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+            } // if(rwtOK)
+
+         }
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+
+      Cursor.Current = Cursors.Default;
+
+      if(updatedStatusInfoList.NotEmpty())
+      {
+         ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
+      }
+   }
    private static bool ShouldCheckRefreshed_TRN_Or_DPS_Status(Faktur F2_IRn_faktur_rec, bool isDPS)
    {
       return !ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS);
@@ -1358,90 +1499,6 @@ public static class Vv_eRacun_HTTP
       }
 
       return 0;
-   }
-   internal static void Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC)
-   {
-      #region Init & Get Dialog Fields
-
-      if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
-
-      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_ElectronicID.IsZero()).ToList();
-
-      if(sendCandidatesFakturList.IsEmpty()) return;
-
-      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
-
-      foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList)
-      {
-         messageList.Add(new VvReportSourceUtil()
-         {
-            TheCD      = sendCandidateFaktur_rec.TipBr,
-            DevName    = sendCandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
-            KupdobName = sendCandidateFaktur_rec.KupdobName,
-            TheMoney   = sendCandidateFaktur_rec.S_ukKCRP
-         });
-      }
-
-      VvMessageBoxDLG  sendCandidatesFakturList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_SEND_candidates);
-    //VvMessageBoxForm sendCandidatesFakturList_InfoDLG = new VvMessageBoxForm(false, ZXC.VvmBoxKind.F2_SEND_candidates);
-      sendCandidatesFakturList_InfoDLG.Text = "Kandidati za slanje kao eRačun:";
-
-      sendCandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_SEND_candidates(messageList);
-
-      DialogResult dlgResult = sendCandidatesFakturList_InfoDLG.ShowDialog();
-
-      if(dlgResult != DialogResult.OK)
-      {
-         sendCandidatesFakturList_InfoDLG.Dispose();
-         return;
-      }
-
-      ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
-      int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly;
-
-      sendCandidatesFakturList_InfoDLG.Dispose();
-
-      Cursor.Current = Cursors.WaitCursor;
-
-      int sendCount = 0; bool sendOK;
-
-      Outgoing_eRacun_parameters oeRp;
-
-      ZXC.FakturList_To_PDF_InProgress = true;
-
-      #endregion Init & Get Dialog Fields
-
-      foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList)
-      {
-         ZXC.FakturRec = sendCandidateFaktur_rec;
-
-         oeRp = ZXC.TheVvForm.Set_Outgoing_eRacun_parameters(sendCandidateFaktur_rec, theUC, false, false);
-         
-         sendOK = ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp); 
-         
-         if(sendOK) sendCount++;
-
-      } // foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList) 
-
-      #region Finish
-
-      ZXC.FakturList_To_PDF_InProgress = false;
-
-      ZXC.FakturRec = null;
-
-      Cursor.Current = Cursors.Default;
-
-      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} eRačuna.", sendCount);
-
-      #endregion Finish
-
-   }
-
-   internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC)
-   {
-      if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
-
-      // TODO ... 
    }
 
    #endregion F2IR / F2UR Load List and SubmodulActions
@@ -1907,7 +1964,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
          }
       }
    }
-
    private void F2_RISK_Rules(object sender, EventArgs e)
    {
       F2_Rules_Dlg dlg = new F2_Rules_Dlg();
@@ -1918,11 +1974,9 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       dlg.Dispose();
    }
-
-   /* AAA */private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList                   ((F2_Izlaz_UC)TheVvUC           ); }
-   /* CCC */private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, false*/); }
-   /* DDD */private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, true */); }
-
+   private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList                   ((F2_Izlaz_UC)TheVvUC           ); }
+   private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, false*/); }
+   private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, true */); }
    private void F2_ArhivaPdf (object sender, EventArgs e) 
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
@@ -1970,12 +2024,15 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       //}
 
    }
-
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
+      Cursor.Current = Cursors.WaitCursor;
+
       Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters((TheVvDocumentRecordUC as FakturDUC).faktur_rec, TheVvUC, true, true);
 
-      bool sendOK = RISK_Outgoing_eRacun_JOB(oeRp);
+      bool sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
+
+      Cursor.Current = Cursors.Default;
    }
    internal Outgoing_eRacun_parameters Set_Outgoing_eRacun_parameters(Faktur faktur_rec, VvUserControl theVvUC, bool isQuickSend, bool _isOneOnlyFromFakturDUC)
    {
@@ -2030,9 +2087,17 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       {
          MessageBox.Show(ex.ToString());
       }
+      finally
+      {
+         if(theRptR_IRA != null)
+         {
+            theRptR_IRA.reportDocument.Close();
+            theRptR_IRA.reportDocument.Dispose();
+            theRptR_IRA.Dispose();
+         }
+      }
 
       #endregion Create PDF files to hard disk - OR - Print To Printer
-
 
       /* oeRp_1. */ oeRp.faktur_rec              = faktur_rec                                      ;
       /* oeRp_2. */ oeRp.kupdob_rec              = kupdob_rec                                      ;
@@ -2041,8 +2106,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       /* oeRp_5. */ oeRp.PDF_as_base64_byteArray = System.IO.File.ReadAllBytes(PDFfileFullPathName);
       /* oeRp_6. */ oeRp.pdfFileNameOnly         = PDFfileFullPathName                             ;
       /* oeRp_7. */ oeRp.fullPath_XML_FileName   = oeRp.suggestedXmlFileName + ".xml"              ;
-
-      ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp); 
 
       return oeRp;
    }

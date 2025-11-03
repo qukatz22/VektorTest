@@ -457,7 +457,7 @@ public abstract partial class VvRiskReport : VvReport
       string statusText;
       string sendingResult;
 
-      System.Diagnostics.Stopwatch syncStopWatch = System.Diagnostics.Stopwatch.StartNew();
+      System.Diagnostics.Stopwatch dispatchStopWatch = System.Diagnostics.Stopwatch.StartNew();
 
       uint soFarCount      = 0;
        int ofTotalCount    = theFakturList.Count;
@@ -476,7 +476,7 @@ public abstract partial class VvRiskReport : VvReport
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         ZXC.FakturRec = faktur_rec;
+         ZXC.FakturRec = (Faktur)faktur_rec.CreateNewRecordAndCloneItComplete();
 
          #region Create PDF files to hard disk - OR - Print To Printer
 
@@ -583,7 +583,7 @@ public abstract partial class VvRiskReport : VvReport
             /* oeRp_6. */ oeRp.pdfFileNameOnly         = PDFfileFullPathName                             ;
             /* oeRp_7. */ oeRp.fullPath_XML_FileName   = oeRp.suggestedXmlFileName                       ;
 
-            ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp); // ovaj sam već sredi Rwtrec Feedback u faktur_rec.FiskPrgBr 
+            ZXC.TheVvForm.RISK_Outgoing_eRacun_JOB(oeRp, false); // ovaj sam već sredi Rwtrec Feedback u faktur_rec.FiskPrgBr 
          }
 
          #endregion createAndSend_eRacun_WithPDFasAttachment
@@ -597,15 +597,15 @@ public abstract partial class VvRiskReport : VvReport
          #region soFar vs remaining calc
 
          soFarKoef     = ZXC.DivSafe(soFarCount, ofTotalCount);
-         elapsedTicks += syncStopWatch.Elapsed.Ticks          ;
-         elapsedTime  += syncStopWatch.Elapsed                ;
+         elapsedTicks += dispatchStopWatch.Elapsed.Ticks          ;
+         elapsedTime  += dispatchStopWatch.Elapsed                ;
          remainTicks   = (long)(ZXC.DivSafe((decimal)elapsedTicks, soFarKoef) - elapsedTicks);
          remainTime    = new TimeSpan(remainTicks);
 
          #endregion soFar vs remaining calc
 
          statusText =
-            syncStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
+            dispatchStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
             "(" + (elapsedTime.TotalSeconds / (double)soFarCount).ToString1Vv() + "s avg) done " +
              (/*++*/soFarCount).ToString() +
              " of " + ofTotalCount +
@@ -615,7 +615,7 @@ public abstract partial class VvRiskReport : VvReport
              " " + faktur_rec.ToString();
 
 
-         syncStopWatch.Restart();
+         dispatchStopWatch.Restart();
 
          ZXC.SetStatusText(statusText); Cursor.Current = Cursors.WaitCursor;
 
@@ -629,7 +629,7 @@ public abstract partial class VvRiskReport : VvReport
 
       #region Finish
 
-      syncStopWatch.Stop();
+      dispatchStopWatch.Stop();
 
       ZXC.FakturRec = null;
 
