@@ -841,7 +841,6 @@ public static class Vv_eRacun_HTTP
       ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} eRačuna.", sendCount);
 
       #endregion Finish
-
    }
    /* CCC */internal static void Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
    {
@@ -1171,13 +1170,143 @@ public static class Vv_eRacun_HTTP
    }
    /* DDD */internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC)
    {
+      #region Init & Get Dialog Fields
+
       if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
 
-      // TODO ... 
+      List<Faktur> MAP_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_IsMarkAsPaid == false).ToList();
+
+      if(MAP_CandidatesFakturList.IsEmpty()) return;
+
+      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
+
+      List<Ftrans> paymentftransList;
+
+      List<VvMER_Request_Data_AllActions> MAP_requestDataList = new List<VvMER_Request_Data_AllActions>();
+
+      foreach(Faktur MAP_CandidateFaktur_rec in MAP_CandidatesFakturList)
+      {
+         paymentftransList = new List<Ftrans>();
+
+         // nabaviti sada Ftrans listu 'sve uplate ftrans po ovom fakturRecID koje namaju JOIN na MAP Xtrano'
+         // Faktur <---> Ftrans <---> Xtrano is null svi joinovi po FakturRecID                              
+
+         if(paymentftransList.IsEmpty()) continue;
+
+         foreach(Ftrans paymentftrans_rec in paymentftransList)
+         {
+            VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
+            {
+               ElectronicId = MAP_CandidateFaktur_rec.F2_ElectronicID,
+               // todo
+            };
+
+            MAP_requestDataList.Add(MAP_requestData);
+
+            messageList.Add(new VvReportSourceUtil()
+            {
+               TheCD      = MAP_CandidateFaktur_rec.TipBr,
+               DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+               KupdobName = MAP_CandidateFaktur_rec.KupdobName,
+               TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP
+
+               // todo paymentftrans_rec data
+            });
+         }
+      }
+
+      VvMessageBoxDLG  MAP_CandidatesFakturList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_MAP_candidates);
+      MAP_CandidatesFakturList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
+
+      MAP_CandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_SEND_candidates(messageList);
+
+      DialogResult dlgResult = MAP_CandidatesFakturList_InfoDLG.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         MAP_CandidatesFakturList_InfoDLG.Dispose();
+         return;
+      }
+
+      ZXC.RRD.Dsc_F2_IsAutoMAP  = !MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
+      int numOfFirstLinesOnly   =  MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly;
+
+      MAP_CandidatesFakturList_InfoDLG.Dispose();
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      int mapCount = 0; bool MAP_OK;
+
+      System.Diagnostics.Stopwatch dispatchStopWatch = System.Diagnostics.Stopwatch.StartNew();
+
+      uint soFarCount      = 0;
+       int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : MAP_CandidatesFakturList.Count;
+      long elapsedTicks    = 0, remainTicks;
+      decimal soFarKoef       ;
+      TimeSpan elapsedTime = new TimeSpan(0);
+      TimeSpan remainTime     ;
+      string statusText       ;
+
+      #endregion Init & Get Dialog Fields
+
+      #region The MAP API Loop - foreach MAP_requestData
+
+      foreach(VvMER_Request_Data_AllActions MAP_requestData in MAP_requestDataList)
+      {
+         Cursor.Current = Cursors.WaitCursor;
+
+         MAP_OK = true; /* TODO MAP API */; // VOILA! 
+         
+         if(MAP_OK) mapCount++;
+
+         #region set status text
+
+         soFarCount++;
+
+         #region soFar vs remaining calc
+
+         soFarKoef     = ZXC.DivSafe(soFarCount, ofTotalCount);
+         elapsedTicks += dispatchStopWatch.Elapsed.Ticks          ;
+         elapsedTime  += dispatchStopWatch.Elapsed                ;
+         remainTicks   = (long)(ZXC.DivSafe((decimal)elapsedTicks, soFarKoef) - elapsedTicks);
+         remainTime    = new TimeSpan(remainTicks);
+
+         #endregion soFar vs remaining calc
+
+         statusText =
+            dispatchStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
+            "(" + (elapsedTime.TotalSeconds / (double)soFarCount).ToString1Vv() + "s avg) done " +
+             (/*++*/soFarCount).ToString() +
+             " of " + ofTotalCount +
+             " (" + (soFarKoef * 100M).ToString0Vv() + "%)" +
+            //" <"   + remainTime + "> "                              +
+             string.Format(" remain <{0:00}:{1:00}:{2:00}> ", remainTime.Hours, remainTime.Minutes, remainTime.Seconds) +
+             " " + MAP_requestData.ToString();
+
+         dispatchStopWatch.Restart();
+
+         ZXC.SetStatusText(statusText); Cursor.Current = Cursors.WaitCursor;
+
+         #endregion set status text
+
+         if(numOfFirstLinesOnly.NotZero() && /*sendCount*/soFarCount == numOfFirstLinesOnly) break;
+
+      } // foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList) 
+
+      #endregion The MAP API Loop - foreach MAP_requestData
+
+      #region Finish
+
+      ZXC.FakturRec = null;
+
+      ZXC.SetStatusText("");
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} prijava plaćanja.", mapCount);
+
+      #endregion Finish
    }
-
-
-
    internal static void Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
    {
       F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
