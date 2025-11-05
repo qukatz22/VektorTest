@@ -651,7 +651,7 @@ public class VvMessageBoxDLG :  VvDialog
 
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       {
          AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
          okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -691,7 +691,9 @@ public class VvMessageBox_UC : UserControl
    private VvTextBox vvtb_message,
                      vvtb_barkod, vvtb_kol, vvtb_artiklCd, vvtb_artiklName, vvtb_tserial, vvtb_status,
                      vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje, vvtb_tmpMinus,
-                     vvtb_iznos, tbx_numOfFirstLinesOnly;
+                     vvtb_iznos, tbx_numOfFirstLinesOnly,
+                     vvtb_datumUpl, vvtb_iznosUpl, vvtb_tipUpl;
+
    private CheckBox  cbx_StopAutoSend;
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
@@ -716,7 +718,10 @@ public class VvMessageBox_UC : UserControl
 
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
 
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates) CreateHamper_F2_SEND_candidates(out hamper_F2_SEND_candidates);
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      {
+         CreateHamper_F2_SEND_candidates(out hamper_F2_SEND_candidates);
+      }
 
       CreateTheGrid();
       CalcLocationAndSize(vvmBoxKind);
@@ -738,7 +743,7 @@ public class VvMessageBox_UC : UserControl
 
       TheGrid.Height = this.Size.Height - ZXC.Q2un;
 
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       { 
          this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
          TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
@@ -774,6 +779,7 @@ public class VvMessageBox_UC : UserControl
    #endregion Hampers
 
    #region TheGrid
+
    private void CreateTheGrid()
    {
       TheGrid          = new VvDataGridView();
@@ -831,6 +837,12 @@ public class VvMessageBox_UC : UserControl
       {
          CreateMultiColumn_F2_SEND_candidates(TheGrid);
          TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Qun4 + TheGrid.RowHeadersWidth;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
+      }
+      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      {
+         CreateMultiColumn_F2_MAP_candidates(TheGrid);
+         TheGrid.Width  = ZXC.Q10un * 4 + ZXC.Q2un + ZXC.Qun4 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
       }
       else
@@ -899,7 +911,21 @@ public class VvMessageBox_UC : UserControl
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
+   private void CreateMultiColumn_F2_MAP_candidates(VvDataGridView theGrid)
+   {
+      CreateColumn_tipBr   (theGrid, "TipBr"   , ZXC.Q5un            );
+      CreateColumn_datum   (theGrid, "DatumRn" , ZXC.Q5un            );
+      CreateColumn_partner (theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
+      CreateColumn_iznos   (theGrid, "IznosRn" , ZXC.Q4un            );
+      CreateColumn_datumUpl(theGrid, "DatumUpl", ZXC.Q4un            );
+      CreateColumn_iznosUpl(theGrid, "IznosUpl", ZXC.Q4un            );
+      CreateColumn_tipUpl  (theGrid, "TipUpl"  , ZXC.Q4un            );
+      
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+   }
+
    #region barkodColumns
+
    private void CreateColumn_barkod(VvDataGridView theGrid, string header, int colWidth)
    {
       vvtb_barkod = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_barkod", null, -12, header);
@@ -999,7 +1025,7 @@ public class VvMessageBox_UC : UserControl
 
    #endregion minus Columns
 
-   #region F2_SEND_candidates Columns & hamper
+   #region F2_SEND_candidates Columns
 
    private void CreateColumn_iznos(VvDataGridView theGrid, string header, int colWidth)
    {
@@ -1009,7 +1035,33 @@ public class VvMessageBox_UC : UserControl
       vvtb_iznos.JAM_ReadOnly = true;
    }
 
-   #endregion F2_SEND_candidates Columns  & hamper
+   #endregion F2_SEND_candidates Columns
+
+   #region F2_MAP_candidates Columns
+
+   private void CreateColumn_datumUpl(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_datumUpl = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_datumUpl", null, -12, header);
+      colVvText     = theGrid.CreateVvTextBoxColumn(vvtb_datumUpl, null, "R_datumUpl", header, colWidth);
+      vvtb_datumUpl.JAM_ReadOnly = true;
+   }
+
+   private void CreateColumn_iznosUpl(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_iznosUpl = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_iznosUpl", null, -12, header);
+      colVvText     = theGrid.CreateVvTextBoxColumn(vvtb_iznosUpl, null, "R_iznosUpl", header, colWidth);
+      colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_iznosUpl.JAM_NumberOfDecimalPlaces, false, false); // da prikaze 0.00
+      vvtb_iznosUpl.JAM_ReadOnly = true;
+   }
+
+   private void CreateColumn_tipUpl(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_tipUpl = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_tipUpl", null, -12, header);
+      colVvText   = theGrid.CreateVvTextBoxColumn(vvtb_tipUpl, null, "R_tipUpl", header, colWidth);
+      vvtb_tipUpl.JAM_ReadOnly = true;
+   }
+
+   #endregion F2_MAP_candidates Columns
 
    #endregion TheGridColumn
 
@@ -1034,7 +1086,10 @@ public class VvMessageBox_UC : UserControl
       internal int iT_izlaz     ;
       internal int iT_stanje    ;
       
-      internal int iT_iznos    ;
+      internal int iT_iznos     ;
+      internal int iT_iznosUpl  ;
+      internal int iT_datumUpl  ;
+      internal int iT_tipBrUpl  ;
    }
 
    private void SetColumnIndexes()
@@ -1057,6 +1112,10 @@ public class VvMessageBox_UC : UserControl
       ci.iT_izlaz    = TheGrid.IdxForColumn("R_izlaz")  ;
       
       ci.iT_iznos    = TheGrid.IdxForColumn("R_iznos")  ;
+
+      ci.iT_iznosUpl = TheGrid.IdxForColumn("R_iznosUpl");
+      ci.iT_datumUpl = TheGrid.IdxForColumn("R_datumUpl");
+      ci.iT_tipBrUpl = TheGrid.IdxForColumn("R_tipBrUpl");
    }
 
    #endregion SetColumnIndexes()
@@ -1161,6 +1220,31 @@ public class VvMessageBox_UC : UserControl
 
       TheGrid.ClearSelection();
    }
+
+   public void PutDgvFields_F2_MAP_candidates(List<VvReportSourceUtil> messageList)
+   {
+      int rowIdx;
+
+      TheGrid.Rows.Clear();
+
+      for(rowIdx = 0; rowIdx < messageList.Count; ++rowIdx)
+      {
+         TheGrid.Rows.Add();
+
+         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].DevName   );
+         TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].TheCD     );
+         TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName);
+         TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
+         TheGrid.PutCell(ci.iT_datumUpl, rowIdx, messageList[rowIdx].String1   );
+         TheGrid.PutCell(ci.iT_iznosUpl, rowIdx, messageList[rowIdx].TheMoney2 );
+         TheGrid.PutCell(ci.iT_tipBrUpl, rowIdx, messageList[rowIdx].String2   );
+
+         TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+      }
+
+      TheGrid.ClearSelection();
+   }
+
 
    //private void PutDgvLineFields(int rowIdx)
    //{

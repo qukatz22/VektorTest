@@ -1225,7 +1225,7 @@ public static class Vv_eRacun_HTTP
       VvMessageBoxDLG  MAP_CandidatesFakturList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_MAP_candidates);
       MAP_CandidatesFakturList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
 
-      MAP_CandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_SEND_candidates(messageList);
+      MAP_CandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_MAP_candidates(messageList);
 
       DialogResult dlgResult = MAP_CandidatesFakturList_InfoDLG.ShowDialog();
 
