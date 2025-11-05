@@ -1168,7 +1168,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* DDD */internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC)
+   /* DDD */internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC, XSqlConnection conn)
    {
       #region Init & Get Dialog Fields
 
@@ -1184,12 +1184,15 @@ public static class Vv_eRacun_HTTP
 
       List<VvMER_Request_Data_AllActions> MAP_requestDataList = new List<VvMER_Request_Data_AllActions>();
 
+      string thePaymentMethod = "T"; // TODO ??? !!!              
+                                     // 5.1 PaymentMethod         
+                                     // ”T” – Transakcijski racun 
+                                     // ”O” – Obracunsko placanje 
+                                     // ”Z” – Ostalo              
+
       foreach(Faktur MAP_CandidateFaktur_rec in MAP_CandidatesFakturList)
       {
-         paymentftransList = new List<Ftrans>();
-
-         // nabaviti sada Ftrans listu 'sve uplate ftrans po ovom fakturRecID koje namaju JOIN na MAP Xtrano'
-         // Faktur <---> Ftrans <---> Xtrano is null svi joinovi po FakturRecID                              
+         paymentftransList = FtransDao.Get_TodoMAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
 
          if(paymentftransList.IsEmpty()) continue;
 
@@ -1197,8 +1200,10 @@ public static class Vv_eRacun_HTTP
          {
             VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
             {
-               ElectronicId = MAP_CandidateFaktur_rec.F2_ElectronicID,
-               // todo
+               ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
+               PaymentDate   = paymentftrans_rec.T_dokDate            ,
+               PaymentAmount = paymentftrans_rec.T_pot                ,
+               PaymentMethod = thePaymentMethod                                 
             };
 
             MAP_requestDataList.Add(MAP_requestData);
@@ -1208,9 +1213,11 @@ public static class Vv_eRacun_HTTP
                TheCD      = MAP_CandidateFaktur_rec.TipBr,
                DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
                KupdobName = MAP_CandidateFaktur_rec.KupdobName,
-               TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP
+               TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP,
 
-               // todo paymentftrans_rec data
+               String1    = paymentftrans_rec.T_dokDate.ToString(ZXC.VvDateFormat),
+               TheMoney2  = paymentftrans_rec.T_pot,
+               String2    = thePaymentMethod
             });
          }
       }
@@ -1307,6 +1314,9 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
+   
+   
+   
    internal static void Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
    {
       F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
@@ -1794,6 +1804,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 }
 public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
 {
+   #region Propertiz 
+
    // Document identification
    [JsonPropertyName("ElectronicId")]
    public long? ElectronicId { get; set; }
@@ -1915,6 +1927,8 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    [JsonPropertyName("insertedOn")]
    public DateTime? InsertedOn { get; set; }
 
+   #endregion Propertiz 
+
    public static Xtrano F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec = null)
    {
       if(F2_TT == Mixer.TT_AIR && faktur_rec == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: faktur record is null!");
@@ -1978,19 +1992,19 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
       MAPxtrano_rec = new Xtrano()
       {
-       //T_XmlZip   = zipped_xmlString                       ,
-                                                             
-         T_TT       = Mixer.TT_MAP                           ,
-                                                             
-         T_konto    = faktur_rec.TT                          ,
-         T_parentID = faktur_rec.RecID                       , // Faktur LINK: t_parentID je faktur recID 
-         T_dokDate  = /*faktur_rec.DokDate*/ DateTime.Today  ,
-         T_ttNum    = /*faktur_rec.TtNum*/ftrans_rec.T_recID , // Ftrans LINK: t_ttNum    je ftrans recID 
-         T_dokNum   = faktur_rec.F2_ElectronicID             ,                                            
-         T_serial   = 1                                      ,                                            
-         T_moneyA   = /*faktur_rec.S_ukKCRP*/ftrans_rec.T_pot, // Ftrans: t_moneyA je iznos UPLATE        
-         T_opis_128 = ""                                     , // fuse                                    
-         T_devName  = ""                                     , // fuse                                    
+       //T_XmlZip   = zipped_xmlString          ,
+                                                
+         T_TT       = Mixer.TT_MAP              ,
+                                                
+         T_dokDate  = DateTime.Today            ,
+         T_konto    = faktur_rec.TT             ,
+         T_parentID = ftrans_rec.T_recID        , // Ftrans LINK: t_parentID je ftrans recID --- > JOIN!     
+         T_ttNum    = faktur_rec.RecID          , // Faktur LINK: t_ttNum    je faktur recID ---> nije join! 
+         T_dokNum   = faktur_rec.F2_ElectronicID,                                            
+         T_serial   = 1                         ,                                            
+         T_moneyA   = ftrans_rec.T_pot          , // Ftrans: t_moneyA je iznos UPLATE        
+         T_opis_128 = ftrans_rec.T_tipBr        , //                                         
+         T_devName  = ""                        , // fuse                                    
       };
 
       return MAPxtrano_rec;
