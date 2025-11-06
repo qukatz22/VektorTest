@@ -8925,10 +8925,10 @@ public class F2_Izlaz_UC : VvUserControl
 
       if(ZXC.RRD.Dsc_F2_IsAutoSend)
       { 
-      /* BBB */Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection);
+      /* BBB */Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection);
       }
 
-      /* CCC */Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj         (this); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
+      /* CCC */Vv_eRacun_HTTP.WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj         (this); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP)
       { 
@@ -9251,8 +9251,8 @@ public class F2_Ulaz_UC : VvUserControl
 
       SetColumnIndexes();
 
-      Vv_eRacun_HTTP.Load_URn_FakturList(/*(F2_Ulaz_UC)TheVvUC*/ this);
-      Vv_eRacun_HTTP.QueryInbox_DPS     (/*(F2_Ulaz_UC)TheVvUC*/ this);
+      Vv_eRacun_HTTP.WS_Load_URn_FakturList(/*(F2_Ulaz_UC)TheVvUC*/ this);
+      Vv_eRacun_HTTP.WS_QueryInbox_DPS     (/*(F2_Ulaz_UC)TheVvUC*/ this);
 
       //PutDgvFields();
 

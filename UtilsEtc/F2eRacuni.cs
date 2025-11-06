@@ -34,14 +34,16 @@ public static class Vv_eRacun_HTTP
    public const string VvMER_baseAddress_production = @"https://www.moj-eracun.hr"     ; 
    public const string VvMER_baseAddress_demo       = @"https://www-demo.moj-eracun.hr"; 
 
-   public const string VvMER_webAddressPOST_Send            = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/send"                            ; // POST 
-   public const string VvMER_webAddressPOST_Receive         = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/receive"                         ; // POST 
-   public const string VvMER_webAddressPOST_QueryOutbox     = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryOutbox"                     ; // POST 
-   public const string VvMER_webAddressPOST_QueryOutbox_DPS = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryDocumentProcessStatusOutbox"; // POST 
-   public const string VvMER_webAddressPOST_QueryInbox      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryInbox"                      ; // POST 
-   public const string VvMER_webAddressGET_Ping             = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/Ping"                            ; // GET! 
-   public const string VvMER_webAddressPOST_Check           = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/mps/check"                           ; // POST 
-   public const string VvMER_webAddressPOST_FiskStatus      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/status"                ; // POST 
+   public const string VvMER_webAddressPOST_Send            = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/send"                                 ; // POST 
+   public const string VvMER_webAddressPOST_Receive         = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/receive"                              ; // POST 
+   public const string VvMER_webAddressPOST_QueryOutbox     = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryOutbox"                          ; // POST 
+   public const string VvMER_webAddressPOST_QueryOutbox_DPS = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryDocumentProcessStatusOutbox"     ; // POST 
+   public const string VvMER_webAddressPOST_QueryInbox      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryInbox"                           ; // POST 
+   public const string VvMER_webAddressGET_Ping             = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/Ping"                                 ; // GET! 
+   public const string VvMER_webAddressPOST_Check           = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/mps/check"                                ; // POST 
+   public const string VvMER_webAddressPOST_FiskStatus      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/status"                     ; // POST 
+   public const string VvMER_webAddressPOST_MAP             = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/markPaid"                   ; // POST 
+   public const string VvMER_webAddressPOST_MAP_WO_eID      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/markPaidWithoutElectronicID"; // POST 
 
    public const string VvPND_baseAddress_production = @"https://eracun.eposlovanje.hr"; 
    public const string VvPND_baseAddress_demo       = @"https://test.eposlovanje.hr"; 
@@ -151,13 +153,9 @@ public static class Vv_eRacun_HTTP
                // Swallow logging read errors
             }
 
-            //ZXC.aim_emsg(MessageBoxIcon.Error, "{0}\n\r\n\r{1}", resp.StatusDescription, body.Replace("{", "").Replace("}", ""));
+            string[] responseBodyLines = ZXC.PrettyPrintResponse(body).Split(new string[] { "\n", "\r", "\n\r", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
-                "Resp. StatusCode: {0}\n\rResp. StatusDescription: {1}\n\rResponseStream Body: {2}",
-                (int)resp.StatusCode,
-                resp.StatusDescription,
-                body);
+            ZXC.aim_emsg_List("Web Exception (status code:" + (int)resp.StatusCode + ") Description: " + resp.StatusDescription, responseBodyLines.ToList());
 
             return resp; // If callers need the stream, avoid reading it here.
          }
@@ -230,11 +228,9 @@ public static class Vv_eRacun_HTTP
                // Swallow logging read errors
             }
 
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
-                "HTTP {0} {1}\r\nBody: {2}",
-                (int)resp.StatusCode,
-                resp.StatusDescription,
-                body);
+            string[] responseBodyLines = ZXC.PrettyPrintResponse(body).Split(new string[] { "\n", "\r", "\n\r", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            ZXC.aim_emsg_List("Web Exception (status code:" + (int)resp.StatusCode + ") Description: " + resp.StatusDescription, responseBodyLines.ToList());
 
             return resp; // If callers need the stream, avoid reading it here.
          }
@@ -422,7 +418,6 @@ public static class Vv_eRacun_HTTP
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
 
    //######################## https://www.moj-eracun.hr/apis/v2/send #########################################################################################################
-
    public static VvMER_Response_Data_AllActions VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
@@ -460,7 +455,6 @@ public static class Vv_eRacun_HTTP
 
       return responseData_AllActions;
    }
-
    public  static VvMER_Response_Data_AllActions VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       string webServiceEndPointAddress = VvPND_webAddressPOST_Send;
@@ -484,7 +478,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
-
    public  static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_TRN_Single(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox;
@@ -501,7 +494,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - one single DPS status #########################################################
-
    public static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_DPS_Single(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox_DPS;
@@ -518,7 +510,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - TRN Status List ####################################################################################
-
    public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryOutbox_TRN_List(DateTime dateOD, DateTime dateDO)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox;
@@ -533,7 +524,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - DPS Status List ###############################################################
-
    public static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryOutbox_DPS_List(DateTime dateOD, DateTime dateDO)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox_DPS;
@@ -548,7 +538,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryInbox - Status List ####################################################################################
-
    public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryInbox_List(DateTime dateOD, DateTime dateDO)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryInbox;
@@ -562,8 +551,7 @@ public static class Vv_eRacun_HTTP
       return responseData_AllActions_List;
    }
 
-   //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
-
+   //######################## https://www.moj-eracun.hr/api/fiscalization/status - Get 3 kind FISK status ##############################################################################
    public  static VvMER_Response_Data_AllActions VvMER_WebService_Get_FISK_Status(uint electronicID, string messageType)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_FiskStatus;
@@ -580,7 +568,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ##############################################################################
-
    public static VvMER_Response_Data_AllActions VvMER_WebService_Receive_XML(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_Receive;
@@ -621,7 +608,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ##############################################################################
-
    public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
    {
       string webServiceEndPointAddress = VvMER_webAddressGET_Ping;
@@ -632,7 +618,6 @@ public static class Vv_eRacun_HTTP
    
       return responseData_AllActions;
    }
-
    public static VvMER_Response_Data_AllActions VvPND_WebService_Ping()
    {
       string webServiceEndPointAddress = VvPND_webAddressGET_Ping;
@@ -655,7 +640,6 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/api/mps/check - Check Identifier ##############################################################################
-
    public static VvMER_Response_Data_AllActions VvMER_WebService_CheckAMS(string _Identifiervalue)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_Check;
@@ -670,6 +654,22 @@ public static class Vv_eRacun_HTTP
 
       VvMER_Response_Data_AllActions responseData_AllActions = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString);
    
+      return responseData_AllActions;
+   }
+
+   //######################## https://www.moj-eracun.hr/api/fiscalization/markPaid - Mark Paid action ##############################################################################
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_MAP(VvMER_Request_Data_AllActions request_Data_AllActions)
+   {
+      string webServiceEndPointAddress = VvMER_webAddressPOST_MAP;
+
+    //VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID) { MessageType = messageType }; 
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+
+      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.NotEmpty() ? responseData_AllActions_List.FirstOrDefault() : null;
+
       return responseData_AllActions;
    }
 
@@ -712,9 +712,8 @@ public static class Vv_eRacun_HTTP
 
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
 
-      //kuracMethod();
    }
-   /* BBB */internal static void Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn)
+   /* BBB */internal static void WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn)
    {
       #region Init & Get Dialog Fields
 
@@ -842,7 +841,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* CCC */internal static void Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
+   /* CCC */internal static void WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
    {
       #region Init
 
@@ -997,7 +996,7 @@ public static class Vv_eRacun_HTTP
 
          if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_FISK_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-         bool isTrue = Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "0"); // "0" = Zahtjev za statusom fiskalizacije AS SENDER 
+         bool isTrue = WS_Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "0"); // "0" = Zahtjev za statusom fiskalizacije AS SENDER 
 
          if(isTrue == true && F2_IRn_faktur_rec.F2_IsFisk == false)
          {
@@ -1039,7 +1038,7 @@ public static class Vv_eRacun_HTTP
 
          if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_REJECTion_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-         bool isTrue = Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "2"); // "2" = Zahtjev za statusom REJECTed AS SENDER 
+         bool isTrue = WS_Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "2"); // "2" = Zahtjev za statusom REJECTed AS SENDER 
 
          if(isTrue == true && F2_IRn_faktur_rec.F2_IsRejected == false)
          {
@@ -1081,7 +1080,7 @@ public static class Vv_eRacun_HTTP
 
          if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_MarkAsPaid_Status) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-         bool isTrue = Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "3"); // "3" = Zahtjev za statusom MARKAsPAID AS SENDER 
+         bool isTrue = WS_Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, "3"); // "3" = Zahtjev za statusom MARKAsPAID AS SENDER 
 
          if(isTrue == true && F2_IRn_faktur_rec.F2_IsMarkAsPaid == false)
          {
@@ -1123,11 +1122,11 @@ public static class Vv_eRacun_HTTP
 
          if(F2_IRn_faktur_rec.F2_HasNoSense_RECEIVE_document2arhiva) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-         uint arhivaXtrano_recID = Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(theUC, F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, F2_IRn_faktur_rec);
+         uint arhivaXtrano_recID = WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(theUC, F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, F2_IRn_faktur_rec);
 
          if(arhivaXtrano_recID.NotZero() && F2_IRn_faktur_rec.F2_ArhRecID.IsZero())
          {
-            // update Vv dataLayer 
+            // update Faktur dataLayer 
 
             theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
             
@@ -1170,7 +1169,7 @@ public static class Vv_eRacun_HTTP
    }
    /* DDD */internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC, XSqlConnection conn)
    {
-      #region Init & Get Dialog Fields
+      #region Init & Get Dialog Fields AND Create MAP_requestDataList in 2 (nested) foreach loops
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
 
@@ -1200,6 +1199,9 @@ public static class Vv_eRacun_HTTP
          {
             VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
             {
+               Faktur        = MAP_CandidateFaktur_rec                ,
+               Ftrans        = paymentftrans_rec                      ,
+
                ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
                PaymentDate   = paymentftrans_rec.T_dokDate            ,
                PaymentAmount = paymentftrans_rec.T_pot                ,
@@ -1254,7 +1256,11 @@ public static class Vv_eRacun_HTTP
       TimeSpan remainTime     ;
       string statusText       ;
 
-      #endregion Init & Get Dialog Fields
+      VvMER_Response_Data_AllActions responseData;
+
+      Xtrano F2_MAP_Xtrano_rec;
+
+      #endregion Init & Get Dialog Fields AND Create MAP_requestDataList in 2 (nested) foreach loops
 
       #region The MAP API Loop - foreach MAP_requestData
 
@@ -1262,9 +1268,37 @@ public static class Vv_eRacun_HTTP
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         MAP_OK = true; /* TODO MAP API */; // VOILA! 
-         
-         if(MAP_OK) mapCount++;
+         #region call the MAP API
+
+         responseData = WS_Mark_Paid_WithElectronicID(MAP_requestData);
+         MAP_OK       = (responseData != null);
+
+         if(MAP_OK)
+         {
+            mapCount++;
+
+            F2_MAP_Xtrano_rec = VvMER_Response_Data_AllActions.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_requestData, responseData);
+
+            if(F2_MAP_Xtrano_rec != null)
+            {
+               byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
+
+               bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2_MAP_Xtrano_rec, /*false*/true, false, false, false);
+
+               if(OK)
+               {
+                  theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_MAP_Xtrano_rec);
+
+                  F2_MAP_Xtrano_rec.T_XmlZip = T_XmlZip;
+
+                  VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2_MAP_Xtrano_rec, "t_XmlZip", F2_MAP_Xtrano_rec.T_XmlZip);
+
+                  theUC.TheVvTabPage.TheVvForm.EndEdit(F2_MAP_Xtrano_rec);
+               }
+            }
+         }
+
+         #endregion call the MAP API
 
          #region set status text
 
@@ -1317,7 +1351,7 @@ public static class Vv_eRacun_HTTP
    
    
    
-   internal static void Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
+   internal static void WS_Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
    {
       F2_Ulaz_UC theUC = _theVvUC as F2_Ulaz_UC;
 
@@ -1368,61 +1402,6 @@ public static class Vv_eRacun_HTTP
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
    }
 
-   // DELLMELATTER: 
-   internal static void QueryOutbox_TRN_Or_DPS_VerzijaSaForPetljom(F2_Izlaz_UC theUC, bool isDPS)
-   {
-      Faktur F2_IRn_faktur_rec;
-
-      List<string> updatedStatusInfoList = new List<string>();
-           string  updatedStatusInfo                         ;
-
-      Cursor.Current = Cursors.WaitCursor;
-
-      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
-      {
-         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
-
-         if(ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS)) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-         int justRefreshedStatusCD = Get_QueryOutboxStatus_ForElectronicID(F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, isDPS);
-
-         if(justRefreshedStatusCD.IsPositive() && justRefreshedStatusCD != F2_IRn_faktur_rec.F2_StatusCD)
-         {
-            // update Vv dataLayer 
-
-            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
-            
-            F2_IRn_faktur_rec.F2_StatusCD = justRefreshedStatusCD;
-
-            bool rwtOK = true; // ZXC.FakturRec.VvDao.RWTREC(TheDbConnection, F2_IRn_faktur_rec, false, true, false); upali ovo 
-
-            theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
-
-            if(rwtOK)
-            { 
-               theUC.PutDgvLineFields(rIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
-
-               updatedStatusInfo = string.Format("{0} ({1}) Novi status:      {2}      {3} {4}",
-                                             F2_IRn_faktur_rec.TipBr,
-                                             F2_IRn_faktur_rec./*F2_ElectronicId*/MER_ElectronicID,
-                                             Vv_eRacun_HTTP.MER_TransportStatuses[justRefreshedStatusCD],
-                                             F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
-
-               updatedStatusInfoList.Add(updatedStatusInfo);
-
-            } // if(rwtOK)
-
-         }
-
-      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
-
-      Cursor.Current = Cursors.Default;
-
-      if(updatedStatusInfoList.NotEmpty())
-      {
-         ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
-      }
-   }
    private static bool ShouldCheckRefreshed_TRN_Or_DPS_Status(Faktur F2_IRn_faktur_rec, bool isDPS)
    {
       return !ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS);
@@ -1436,7 +1415,7 @@ public static class Vv_eRacun_HTTP
 
       return false; // Placeholder
    }
-   internal static void QueryInbox_DPS(F2_Ulaz_UC theUC)
+   internal static void WS_QueryInbox_DPS(F2_Ulaz_UC theUC)
    {
 #if false
       Faktur F2_URn_faktur_rec;
@@ -1495,50 +1474,13 @@ public static class Vv_eRacun_HTTP
       }
 #endif
    }
-   private static int Get_QueryOutboxStatus_ForElectronicID(uint electronicID, bool isDPS)
-   {
-      VvMER_Response_Data_AllActions responseData = null;
-      bool getStatusOK = true;
 
-      switch(ZXC.F2_TheProvider)
-      {
-         case ZXC.F2_Provider_enum.MER:
-         {
-            try
-            {
-               responseData = isDPS? Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_Single(electronicID) : 
-                                     Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_Single(electronicID);
-            }
-            catch(Exception ex)
-            {
-               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-               getStatusOK = false;
-            }
-            if(getStatusOK)
-            {
-               return responseData.StatusId.HasValue ? responseData.StatusId.Value : -1;
-            }
-            else
-            {
-               return -1;
-            }
-         }
-
-         case ZXC.F2_Provider_enum.PND:
-         {
-            throw new NotImplementedException("Get_RefreshedTransportStatusCD: F2 Provider PND not implemented yet.");
-         }
-      }
-
-      return -1;
-   }
-   
    // 5.5 MessageType                                             
    // 0 – As SENDER get the status of the fiscalization message   
    // 1 – As RECIPIENT get the status of the fiscalization message
    // 2 – Get the rejection status                                
    // 3 – Get the payment status                                  
-   private static bool Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(uint electronicID, string messageType)
+   private static bool WS_Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(uint electronicID, string messageType)
    {
       VvMER_Response_Data_AllActions responseData = null;
       bool getStatusOK = true;
@@ -1577,7 +1519,7 @@ public static class Vv_eRacun_HTTP
 
       return false;
    }
-   private static uint Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
+   private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
    {
       VvMER_Response_Data_AllActions responseData = null;
       
@@ -1638,6 +1580,48 @@ public static class Vv_eRacun_HTTP
       }
 
       return 0;
+   }
+   private static VvMER_Response_Data_AllActions WS_Mark_Paid_WithElectronicID(VvMER_Request_Data_AllActions MAP_requestData)
+   {
+      VvMER_Response_Data_AllActions responseData = null;
+      bool MAP_OK = true;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+         {
+            try
+            {
+               responseData = Vv_eRacun_HTTP.VvMER_WebService_MAP(MAP_requestData);
+
+               if(responseData == null) MAP_OK = false;
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+               MAP_OK = false;
+            }
+            if(MAP_OK)
+            {
+               return       responseData          ;
+             //return (bool)responseData.IsSuccess;
+            }
+            else
+            {
+             //return false;
+               return null ;
+            }
+
+         } // case ZXC.F2_Provider_enum.MER:
+
+         case ZXC.F2_Provider_enum.PND:
+         {
+            throw new NotImplementedException("WS_Mark_Paid_WithElectronicID: F2 Provider PND not implemented yet.");
+         }
+      }
+
+    //return false;
+      return null ;
    }
 
    #endregion F2IR / F2UR Load List and SubmodulActions
@@ -1800,7 +1784,8 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    [JsonPropertyName("document")]
    public string document { get; set; }
 
-
+   public Faktur Faktur { get; set; }
+   public Ftrans Ftrans { get; set; }
 }
 public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
 {
@@ -1986,25 +1971,27 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    /// <param name="ftrans_rec"></param>
    /// <param name="faktur_rec"></param>
    /// <returns></returns>
-   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans ftrans_rec, Faktur faktur_rec)
+   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(VvMER_Request_Data_AllActions requestData, VvMER_Response_Data_AllActions responseData)
    {
       Xtrano MAPxtrano_rec = null;
 
+      byte[] zipped_xmlString = VvStringCompressor.CompressXml(responseData.EncodedXml);
+
       MAPxtrano_rec = new Xtrano()
       {
-       //T_XmlZip   = zipped_xmlString          ,
+         T_XmlZip   = zipped_xmlString                             ,
+         T_dokDate  = (DateTime)responseData.FiscalizationTimestamp,
                                                 
-         T_TT       = Mixer.TT_MAP              ,
-                                                
-         T_dokDate  = DateTime.Today            ,
-         T_konto    = faktur_rec.TT             ,
-         T_parentID = ftrans_rec.T_recID        , // Ftrans LINK: t_parentID je ftrans recID --- > JOIN!     
-         T_ttNum    = faktur_rec.RecID          , // Faktur LINK: t_ttNum    je faktur recID ---> nije join! 
-         T_dokNum   = faktur_rec.F2_ElectronicID,                                            
-         T_serial   = 1                         ,                                            
-         T_moneyA   = ftrans_rec.T_pot          , // Ftrans: t_moneyA je iznos UPLATE        
-         T_opis_128 = ftrans_rec.T_tipBr        , //                                         
-         T_devName  = ""                        , // fuse                                    
+         T_TT       = Mixer.TT_MAP                                 ,
+                                                                   
+         T_konto    = requestData.Faktur.TT                        ,
+         T_parentID = requestData.Ftrans.T_recID                   , // Ftrans LINK: t_parentID je ftrans recID --- > JOIN!     
+         T_ttNum    = requestData.Faktur.RecID                     , // Faktur LINK: t_ttNum    je faktur recID ---> nije join! 
+         T_dokNum   = requestData.Faktur.F2_ElectronicID           ,                                            
+         T_serial   = 1                                            ,                                            
+         T_moneyA   = requestData.Ftrans.T_pot                     , // Ftrans: t_moneyA je iznos UPLATE        
+         T_opis_128 = requestData.Ftrans.T_tipBr                   , //                                         
+         T_devName  = ""                                           , // fuse                                    
       };
 
       return MAPxtrano_rec;
@@ -2118,8 +2105,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       dlg.Dispose();
    }
    private void F2_Load_IRn_FakturList(object sender, EventArgs e) { Vv_eRacun_HTTP.Load_IRn_FakturList                   ((F2_Izlaz_UC)TheVvUC           ); }
-   private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, false*/); }
-   private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, true */); }
+   private void F2_QueryOutbox_TRN    (object sender, EventArgs e) { Vv_eRacun_HTTP.WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, false*/); }
+   private void F2_QueryOutbox_DPS    (object sender, EventArgs e) { Vv_eRacun_HTTP.WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC/*, true */); }
    private void F2_ArhivaPdf (object sender, EventArgs e) 
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
