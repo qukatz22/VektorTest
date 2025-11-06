@@ -751,7 +751,7 @@ public static class Vv_eRacun_HTTP
       }
 
       ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
-      int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly;
+      int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_Send;
 
       sendCandidatesFakturList_InfoDLG.Dispose();
 
@@ -1219,7 +1219,9 @@ public static class Vv_eRacun_HTTP
 
                String1    = paymentftrans_rec.T_dokDate.ToString(ZXC.VvDateFormat),
                TheMoney2  = paymentftrans_rec.T_pot,
-               String2    = thePaymentMethod
+               String2    = thePaymentMethod,
+               String3    = paymentftrans_rec.T_dokNum.ToString(),
+               String4    = paymentftrans_rec.T_opis,
             });
          }
       }
@@ -1237,8 +1239,8 @@ public static class Vv_eRacun_HTTP
          return;
       }
 
-      ZXC.RRD.Dsc_F2_IsAutoMAP  = !MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
-      int numOfFirstLinesOnly   =  MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly;
+      ZXC.RRD.Dsc_F2_IsAutoMAP  = !MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoMAP;
+      int numOfFirstLinesOnly   =  MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
 
       MAP_CandidatesFakturList_InfoDLG.Dispose();
 

@@ -691,21 +691,22 @@ public class VvMessageBox_UC : UserControl
    private VvTextBox vvtb_message,
                      vvtb_barkod, vvtb_kol, vvtb_artiklCd, vvtb_artiklName, vvtb_tserial, vvtb_status,
                      vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje, vvtb_tmpMinus,
-                     vvtb_iznos, tbx_numOfFirstLinesOnly,
-                     vvtb_datumUpl, vvtb_iznosUpl, vvtb_tipUpl;
+                     vvtb_iznos, tbx_numOfFirstLinesOnly_Send, tbx_numOfFirstLinesOnly_MAP,
+                     vvtb_datumUpl, vvtb_iznosUpl, vvtb_tipUpl, vvtb_opis, vvtb_nalRed;
 
-   private CheckBox  cbx_StopAutoSend;
+   private CheckBox  cbx_StopAutoSend, cbx_StopAutoMAP;
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
    int colWidth = 0;
    private bool smallFont;
    private bool isMultiColumn;
    private ZXC.VvmBoxKind vvmBoxKind;
-   private VvHamper hamper_F2_SEND_candidates;
+   private VvHamper hamper_F2_SEND_candidates, hamper_F2_MAP_candidates, hamper_F2_SEND_stop, hamper_F2_MAP_stop;
 
    #endregion Fieldz
 
    #region Constructor
+
    public VvMessageBox_UC(Control _parent, bool _smallFont, bool _isMultiColumn, ZXC.VvmBoxKind _vvmBoxKind)
    {
       this.SuspendLayout();
@@ -718,9 +719,15 @@ public class VvMessageBox_UC : UserControl
 
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
 
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
       {
          CreateHamper_F2_SEND_candidates(out hamper_F2_SEND_candidates);
+         CreateHamper_F2_SEND_stop      (out hamper_F2_SEND_stop);
+      }
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      {
+         CreateHamper_F2_MAP_candidates(out hamper_F2_MAP_candidates);
+         CreateHamper_F2_MAP_stop      (out hamper_F2_MAP_stop      );
       }
 
       CreateTheGrid();
@@ -735,6 +742,7 @@ public class VvMessageBox_UC : UserControl
    #endregion Constructor
 
    #region CalcLocationAndSize
+
    private void CalcLocationAndSize(ZXC.VvmBoxKind vvmBoxKind)
    {
            if(vvmBoxKind == ZXC.VvmBoxKind.BarCodeInfo ) this.Size = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 2);
@@ -743,12 +751,21 @@ public class VvMessageBox_UC : UserControl
 
       TheGrid.Height = this.Size.Height - ZXC.Q2un;
 
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
       { 
          this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
          TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
-         hamper_F2_SEND_candidates.Location = new Point(ZXC.QunMrgn, TheGrid.Bottom + ZXC.QunMrgn);
+         hamper_F2_SEND_candidates.Location = new Point(ZXC.Q10un + ZXC.Q5un, TheGrid.Bottom);
+         hamper_F2_SEND_stop      .Location = new Point(ZXC.QunMrgn, this.Size.Height - ZXC.QUN);
       }
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      { 
+         this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_candidates.Height;
+         hamper_F2_MAP_candidates.Location = new Point(ZXC.Q10un*2 + ZXC.Q2un, TheGrid.Bottom);
+         hamper_F2_MAP_stop      .Location = new Point(ZXC.QunMrgn, this.Size.Height - ZXC.QUN);
+      }
+
    }
 
    #endregion CalcLocationAndSize
@@ -757,21 +774,74 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateHamper_F2_SEND_candidates(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 2, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+      hamper = new VvHamper(3, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q4un, ZXC.Q2un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q2un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN   };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                                hamper.CreateVvLabel  (0, 0, "Pošalji samo prvih toliko računa:", ContentAlignment.MiddleRight);
-      tbx_numOfFirstLinesOnly = hamper.CreateVvTextBox(1, 0, "tbx_numOfFirstLinesOnly", "NumOfFirstLinesOnly");
-      tbx_numOfFirstLinesOnly.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+                                     hamper.CreateVvLabel  (0, 0, "Pošalji samo prvih:", ContentAlignment.MiddleRight);
+      tbx_numOfFirstLinesOnly_Send = hamper.CreateVvTextBox(1, 0, "tbx_numOfFirstLinesOnly", "NumOfFirstLinesOnly");
+      tbx_numOfFirstLinesOnly_Send.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+                                     hamper.CreateVvLabel  (2, 0, " računa", ContentAlignment.MiddleLeft);
 
-      cbx_StopAutoSend        = hamper.CreateVvCheckBox_OLD(0, 1, null, 1, 0, "Stopiraj automatsko slanje za ubuduće", RightToLeft.Yes);
+      VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+   }
+      
+   private void CreateHamper_F2_SEND_stop(out VvHamper hamper)
+   {
+      hamper = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { 0 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      cbx_StopAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj automatsko slanje računa", RightToLeft.No);
+
+      VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+   }
+
+   private void CreateHamper_F2_MAP_candidates(out VvHamper hamper)
+   {
+      hamper = new VvHamper(3, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q2un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+                                    hamper.CreateVvLabel  (0, 0, "Pošalji samo prvih:", ContentAlignment.MiddleRight);
+      tbx_numOfFirstLinesOnly_MAP = hamper.CreateVvTextBox(1, 0, "tbx_numOfFirstLinesOnly_MAP", "NumOfFirstLinesOnly");
+      tbx_numOfFirstLinesOnly_MAP.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
+                                    hamper.CreateVvLabel  (2, 0, " uplata", ContentAlignment.MiddleLeft);
+
+      VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+   }
+      
+   private void CreateHamper_F2_MAP_stop(out VvHamper hamper)
+   {
+      hamper = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { 0 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      cbx_StopAutoMAP = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj automatsko slanje uplata", RightToLeft.No);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }
@@ -842,8 +912,8 @@ public class VvMessageBox_UC : UserControl
       else if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       {
          CreateMultiColumn_F2_MAP_candidates(TheGrid);
-         TheGrid.Width  = ZXC.Q10un * 4 + ZXC.Q2un + ZXC.Qun4 + TheGrid.RowHeadersWidth;
-         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
+         TheGrid.Width  = ZXC.Q10un * 5 + ZXC.Q4un + ZXC.Qun4 + TheGrid.RowHeadersWidth;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_candidates.Height;
       }
       else
       {
@@ -913,14 +983,16 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_MAP_candidates(VvDataGridView theGrid)
    {
-      CreateColumn_tipBr   (theGrid, "TipBr"   , ZXC.Q5un            );
-      CreateColumn_datum   (theGrid, "DatumRn" , ZXC.Q5un            );
-      CreateColumn_partner (theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
-      CreateColumn_iznos   (theGrid, "IznosRn" , ZXC.Q4un            );
-      CreateColumn_datumUpl(theGrid, "DatumUpl", ZXC.Q4un            );
-      CreateColumn_iznosUpl(theGrid, "IznosUpl", ZXC.Q4un            );
-      CreateColumn_tipUpl  (theGrid, "TipUpl"  , ZXC.Q4un            );
-      
+      CreateColumn_tipBr   (theGrid, "TipBr"      , ZXC.Q5un            );
+      CreateColumn_datum   (theGrid, "DatumRn"    , ZXC.Q5un            );
+      CreateColumn_partner (theGrid, "Partner"    , ZXC.Q10un + ZXC.Q5un);
+      CreateColumn_iznos   (theGrid, "IznosRn"    , ZXC.Q4un            );
+      CreateColumn_datumUpl(theGrid, "DatumUpl"   , ZXC.Q4un            );
+      CreateColumn_iznosUpl(theGrid, "IznosUpl"   , ZXC.Q4un            );
+      CreateColumn_opis    (theGrid, "Opis uplate", ZXC.Q7un            );
+      CreateColumn_nalRed  (theGrid, "Nalog/Red"  , ZXC.Q5un            );
+      CreateColumn_tipUpl  (theGrid, "TipUpl"     , ZXC.Q4un            );
+
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
@@ -1061,6 +1133,20 @@ public class VvMessageBox_UC : UserControl
       vvtb_tipUpl.JAM_ReadOnly = true;
    }
 
+   private void CreateColumn_opis(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_opis = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_opis", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis, null, "R_opis", header, colWidth);
+      vvtb_opis.JAM_ReadOnly = true;
+   }
+   
+   private void CreateColumn_nalRed(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_nalRed = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_nalRed", null, -12, header);
+      colVvText   = theGrid.CreateVvTextBoxColumn(vvtb_nalRed, null, "R_nalRed", header, colWidth);
+      vvtb_nalRed.JAM_ReadOnly = true;
+   }
+
    #endregion F2_MAP_candidates Columns
 
    #endregion TheGridColumn
@@ -1090,6 +1176,8 @@ public class VvMessageBox_UC : UserControl
       internal int iT_iznosUpl  ;
       internal int iT_datumUpl  ;
       internal int iT_tipBrUpl  ;
+      internal int iT_opis      ;
+      internal int iT_nalRed    ;
    }
 
    private void SetColumnIndexes()
@@ -1116,6 +1204,8 @@ public class VvMessageBox_UC : UserControl
       ci.iT_iznosUpl = TheGrid.IdxForColumn("R_iznosUpl");
       ci.iT_datumUpl = TheGrid.IdxForColumn("R_datumUpl");
       ci.iT_tipBrUpl = TheGrid.IdxForColumn("R_tipBrUpl");
+      ci.iT_opis     = TheGrid.IdxForColumn("R_opis"    );
+      ci.iT_nalRed   = TheGrid.IdxForColumn("R_nalRed"  );
    }
 
    #endregion SetColumnIndexes()
@@ -1238,6 +1328,8 @@ public class VvMessageBox_UC : UserControl
          TheGrid.PutCell(ci.iT_datumUpl, rowIdx, messageList[rowIdx].String1   );
          TheGrid.PutCell(ci.iT_iznosUpl, rowIdx, messageList[rowIdx].TheMoney2 );
          TheGrid.PutCell(ci.iT_tipBrUpl, rowIdx, messageList[rowIdx].String2   );
+         TheGrid.PutCell(ci.iT_opis    , rowIdx, messageList[rowIdx].String4   );
+         TheGrid.PutCell(ci.iT_nalRed  , rowIdx, messageList[rowIdx].String3   );
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
@@ -1264,9 +1356,13 @@ public class VvMessageBox_UC : UserControl
 
    #region Fld
    
-   public bool Fld_StopAutoSend       { get { return cbx_StopAutoSend.Checked; } set { cbx_StopAutoSend.Checked = value; } }
+   public bool Fld_StopAutoSend             { get { return cbx_StopAutoSend.Checked; } set { cbx_StopAutoSend.Checked = value; } }
    
-   public int Fld_NumOfFirstLinesOnly { get { return ZXC.ValOrZero_Int(tbx_numOfFirstLinesOnly.Text); } set { tbx_numOfFirstLinesOnly.Text = value.ToString(); } }
+   public int  Fld_NumOfFirstLinesOnly_Send { get { return ZXC.ValOrZero_Int(tbx_numOfFirstLinesOnly_Send.Text); } set { tbx_numOfFirstLinesOnly_Send.Text = value.ToString(); } }
+      
+   public bool Fld_StopAutoMAP              { get { return cbx_StopAutoMAP.Checked; } set { cbx_StopAutoMAP.Checked = value; } }
+   
+   public int  Fld_NumOfFirstLinesOnly_MAP  { get { return ZXC.ValOrZero_Int(tbx_numOfFirstLinesOnly_MAP.Text); } set { tbx_numOfFirstLinesOnly_MAP.Text = value.ToString(); } }
 
    #endregion Fld
 }
