@@ -771,4 +771,43 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
 
       return todoMAP_FtransList;
    }
+
+   public static List<Ftrans> Get_TodoMAP_FtransList(XSqlConnection conn)
+   {
+      bool success = true;
+      Ftrans todoMAP_ftrans_rec = new Ftrans();
+      List<Ftrans> todoMAP_FtransList = new List<Ftrans>();
+
+      ZXC.sqlErrNo = 0;
+
+      using(XSqlCommand cmd = (VvSQL.Get_TodoMAP_FtransList_Command(conn)))
+      {
+         try
+         {
+            using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult))
+            {
+               success = reader.HasRows;
+
+               while(success && reader.Read())
+               {
+                  todoMAP_ftrans_rec = new Ftrans();
+
+                  ZXC.FtransDao.FillFromDataReader(todoMAP_ftrans_rec, reader, false);
+
+                  todoMAP_FtransList.Add(todoMAP_ftrans_rec);
+               }
+               reader.Close();
+            }
+         }
+         catch(XSqlException ex)
+         {
+            success = false;
+            VvSQL.ReportSqlError("Get_TodoMAP_FtransList_For_FakRecID", ex, System.Windows.Forms.MessageBoxButtons.OK);
+
+            ZXC.sqlErrNo = ex.Number;
+         }
+      } // using 
+
+      return todoMAP_FtransList;
+   }
 }

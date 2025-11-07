@@ -7083,6 +7083,26 @@ public static class VvSQL
       return (cmd);
    }
 
+   internal static XSqlCommand Get_TodoMAP_FtransList_Command(XSqlConnection conn)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+    //CreateCommandNamedParameter(cmd, "", "t_fakRecID", fakRecID, ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID]);
+
+      cmd.CommandText = 
+
+            "SELECT ftr.* FROM ftrans ftr "                                       + "\n\n" +
+            "LEFT JOIN         xtrano Xtr "                                       + "\n\n" +
+
+            "ON ftr.recID = xtr.t_parentID AND xtr.t_tt = '" + Mixer.TT_MAP + "'" + "\n\n" +
+
+            "WHERE ftr.t_otsKind = 2 AND SUBSTRING(ftr.t_konto, 1, 2) = '12'"     + "\n\n" +
+            
+            "AND xtr.recID IS NULL   "                                            + "\n\n" ;
+
+      return (cmd);
+   }
+
 
    #endregion MIXER specials
 

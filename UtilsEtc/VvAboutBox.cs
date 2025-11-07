@@ -804,7 +804,7 @@ public class VvMessageBox_UC : UserControl
       hamper.VvSpcBefRow    = new int[] { 0 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_StopAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj automatsko slanje računa", RightToLeft.No);
+      cbx_StopAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj ubuduće automatsko slanje računa", RightToLeft.No);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }
@@ -841,7 +841,7 @@ public class VvMessageBox_UC : UserControl
       hamper.VvSpcBefRow    = new int[] { 0 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_StopAutoMAP = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj automatsko slanje uplata", RightToLeft.No);
+      cbx_StopAutoMAP = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj ubuduće automatsko slanje uplata", RightToLeft.No);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }

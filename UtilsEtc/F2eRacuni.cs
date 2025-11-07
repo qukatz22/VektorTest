@@ -750,7 +750,7 @@ public static class Vv_eRacun_HTTP
          return;
       }
 
-      ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend;
+      ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend; ZXC.RRD.SaveDscToLookUpItemList();
       int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_Send;
 
       sendCandidatesFakturList_InfoDLG.Dispose();
@@ -1173,15 +1173,13 @@ public static class Vv_eRacun_HTTP
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
 
-      List<Faktur> MAP_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_IsMarkAsPaid == false).ToList();
+      List<(VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur)> MAP_ActionsList = new List<(VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur)>();
 
-      if(MAP_CandidatesFakturList.IsEmpty()) return;
+      Faktur MAP_CandidateFaktur_rec;
 
       List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
 
       List<Ftrans> paymentftransList;
-
-      List<VvMER_Request_Data_AllActions> MAP_requestDataList = new List<VvMER_Request_Data_AllActions>();
 
       string thePaymentMethod = "T"; // TODO ??? !!!              
                                      // 5.1 PaymentMethod         
@@ -1189,60 +1187,59 @@ public static class Vv_eRacun_HTTP
                                      // ”O” – Obracunsko placanje 
                                      // ”Z” – Ostalo              
 
-      foreach(Faktur MAP_CandidateFaktur_rec in MAP_CandidatesFakturList)
+    //paymentftransList = FtransDao.Get_TodoMAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
+      paymentftransList = FtransDao.Get_TodoMAP_FtransList             (conn                               );
+
+      foreach(Ftrans paymentftrans_rec in paymentftransList)
       {
-         paymentftransList = FtransDao.Get_TodoMAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
+         MAP_CandidateFaktur_rec = new Faktur();
+         MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
 
-         if(paymentftransList.IsEmpty()) continue;
-
-         foreach(Ftrans paymentftrans_rec in paymentftransList)
+         VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
          {
-            VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
-            {
-               Faktur        = MAP_CandidateFaktur_rec                ,
-               Ftrans        = paymentftrans_rec                      ,
+          //Faktur        = MAP_CandidateFaktur_rec                ,
+          //Ftrans        = paymentftrans_rec                      ,
 
-               ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
-               PaymentDate   = paymentftrans_rec.T_dokDate            ,
-               PaymentAmount = paymentftrans_rec.T_pot                ,
-               PaymentMethod = thePaymentMethod                                 
-            };
+            ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
+            PaymentDate   = paymentftrans_rec.T_dokDate            ,
+            PaymentAmount = paymentftrans_rec.T_pot                ,
+            PaymentMethod = thePaymentMethod                                 
+         };
 
-            MAP_requestDataList.Add(MAP_requestData);
+         MAP_ActionsList.Add((MAP_requestData, paymentftrans_rec, MAP_CandidateFaktur_rec));
 
-            messageList.Add(new VvReportSourceUtil()
-            {
-               TheCD      = MAP_CandidateFaktur_rec.TipBr,
-               DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
-               KupdobName = MAP_CandidateFaktur_rec.KupdobName,
-               TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP,
+         messageList.Add(new VvReportSourceUtil()
+         {
+            TheCD      = MAP_CandidateFaktur_rec.TipBr,
+            DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+            KupdobName = MAP_CandidateFaktur_rec.KupdobName,
+            TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP,
 
-               String1    = paymentftrans_rec.T_dokDate.ToString(ZXC.VvDateFormat),
-               TheMoney2  = paymentftrans_rec.T_pot,
-               String2    = thePaymentMethod,
-               String3    = paymentftrans_rec.T_dokNum.ToString(),
-               String4    = paymentftrans_rec.T_opis,
-            });
-         }
+            String1    = paymentftrans_rec.T_dokDate.ToString(ZXC.VvDateFormat),
+            TheMoney2  = paymentftrans_rec.T_pot,
+            String2    = thePaymentMethod,
+            String3    = paymentftrans_rec.T_dokNum.ToString(),
+            String4    = paymentftrans_rec.T_opis,
+         });
       }
 
-      VvMessageBoxDLG  MAP_CandidatesFakturList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_MAP_candidates);
-      MAP_CandidatesFakturList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
+      VvMessageBoxDLG  MAP_CandidatesFtransList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_MAP_candidates);
+      MAP_CandidatesFtransList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
 
-      MAP_CandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_MAP_candidates(messageList);
+      MAP_CandidatesFtransList_InfoDLG.TheUC.PutDgvFields_F2_MAP_candidates(messageList);
 
-      DialogResult dlgResult = MAP_CandidatesFakturList_InfoDLG.ShowDialog();
+      DialogResult dlgResult = MAP_CandidatesFtransList_InfoDLG.ShowDialog();
 
       if(dlgResult != DialogResult.OK)
       {
-         MAP_CandidatesFakturList_InfoDLG.Dispose();
+         MAP_CandidatesFtransList_InfoDLG.Dispose();
          return;
       }
 
-      ZXC.RRD.Dsc_F2_IsAutoMAP  = !MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoMAP;
-      int numOfFirstLinesOnly   =  MAP_CandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
+      ZXC.RRD.Dsc_F2_IsAutoMAP  = !MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_StopAutoMAP; ZXC.RRD.SaveDscToLookUpItemList();
+      int numOfFirstLinesOnly   =  MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
 
-      MAP_CandidatesFakturList_InfoDLG.Dispose();
+      MAP_CandidatesFtransList_InfoDLG.Dispose();
 
       Cursor.Current = Cursors.WaitCursor;
 
@@ -1251,7 +1248,7 @@ public static class Vv_eRacun_HTTP
       System.Diagnostics.Stopwatch dispatchStopWatch = System.Diagnostics.Stopwatch.StartNew();
 
       uint soFarCount      = 0;
-       int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : MAP_CandidatesFakturList.Count;
+       int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : paymentftransList.Count;
       long elapsedTicks    = 0, remainTicks;
       decimal soFarKoef       ;
       TimeSpan elapsedTime = new TimeSpan(0);
@@ -1266,20 +1263,20 @@ public static class Vv_eRacun_HTTP
 
       #region The MAP API Loop - foreach MAP_requestData
 
-      foreach(VvMER_Request_Data_AllActions MAP_requestData in MAP_requestDataList)
+      foreach((VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur) MAP_Action in MAP_ActionsList)
       {
          Cursor.Current = Cursors.WaitCursor;
 
          #region call the MAP API
 
-         responseData = WS_Mark_Paid_WithElectronicID(MAP_requestData);
+         responseData = WS_Mark_Paid_WithElectronicID(MAP_Action.request);
          MAP_OK       = (responseData != null);
 
          if(MAP_OK)
          {
             mapCount++;
 
-            F2_MAP_Xtrano_rec = VvMER_Response_Data_AllActions.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_requestData, responseData);
+            F2_MAP_Xtrano_rec = VvMER_Response_Data_AllActions.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_Action.ftrans, MAP_Action.faktur, responseData);
 
             if(F2_MAP_Xtrano_rec != null)
             {
@@ -1324,7 +1321,7 @@ public static class Vv_eRacun_HTTP
              " (" + (soFarKoef * 100M).ToString0Vv() + "%)" +
             //" <"   + remainTime + "> "                              +
              string.Format(" remain <{0:00}:{1:00}:{2:00}> ", remainTime.Hours, remainTime.Minutes, remainTime.Seconds) +
-             " " + MAP_requestData.ToString();
+             " " + MAP_Action.request.ToString();
 
          dispatchStopWatch.Restart();
 
@@ -1340,7 +1337,7 @@ public static class Vv_eRacun_HTTP
 
       #region Finish
 
-      ZXC.FakturRec = null;
+    //ZXC.FakturRec = null;
 
       ZXC.SetStatusText("");
 
@@ -1786,8 +1783,13 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    [JsonPropertyName("document")]
    public string document { get; set; }
 
-   public Faktur Faktur { get; set; }
-   public Ftrans Ftrans { get; set; }
+   //[Newtonsoft.Json.JsonIgnore]
+   //[System.Xml.Serialization.XmlIgnore]
+   //public Faktur Faktur { get; set; }
+   //
+   //[Newtonsoft.Json.JsonIgnore]
+   //[System.Xml.Serialization.XmlIgnore]
+   //public Ftrans Ftrans { get; set; }
 }
 public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
 {
@@ -1973,7 +1975,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    /// <param name="ftrans_rec"></param>
    /// <param name="faktur_rec"></param>
    /// <returns></returns>
-   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(VvMER_Request_Data_AllActions requestData, VvMER_Response_Data_AllActions responseData)
+   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans MAPftrans_rec, Faktur MAPfaktur_rec, VvMER_Response_Data_AllActions responseData)
    {
       Xtrano MAPxtrano_rec = null;
 
@@ -1986,13 +1988,13 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
                                                 
          T_TT       = Mixer.TT_MAP                                 ,
                                                                    
-         T_konto    = requestData.Faktur.TT                        ,
-         T_parentID = requestData.Ftrans.T_recID                   , // Ftrans LINK: t_parentID je ftrans recID --- > JOIN!     
-         T_ttNum    = requestData.Faktur.RecID                     , // Faktur LINK: t_ttNum    je faktur recID ---> nije join! 
-         T_dokNum   = requestData.Faktur.F2_ElectronicID           ,                                            
+         T_konto    = MAPfaktur_rec.TT                             ,
+         T_parentID = MAPftrans_rec.T_recID                        , // Ftrans LINK: t_parentID je ftrans recID --- > JOIN!     
+         T_ttNum    = MAPfaktur_rec.RecID                          , // Faktur LINK: t_ttNum    je faktur recID ---> nije join! 
+         T_dokNum   = MAPfaktur_rec.F2_ElectronicID                ,                                            
          T_serial   = 1                                            ,                                            
-         T_moneyA   = requestData.Ftrans.T_pot                     , // Ftrans: t_moneyA je iznos UPLATE        
-         T_opis_128 = requestData.Ftrans.T_tipBr                   , //                                         
+         T_moneyA   = MAPftrans_rec.T_pot                          , // Ftrans: t_moneyA je iznos UPLATE        
+         T_opis_128 = MAPftrans_rec.T_tipBr                        , //                                         
          T_devName  = ""                                           , // fuse                                    
       };
 
