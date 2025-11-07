@@ -1218,7 +1218,7 @@ public static class Vv_eRacun_HTTP
             String1    = paymentftrans_rec.T_dokDate.ToString(ZXC.VvDateFormat),
             TheMoney2  = paymentftrans_rec.T_pot,
             String2    = thePaymentMethod,
-            String3    = paymentftrans_rec.T_dokNum.ToString(),
+            String3    = paymentftrans_rec.T_dokNum.ToString() + "/" + paymentftrans_rec.T_serial.ToString(),
             String4    = paymentftrans_rec.T_opis,
          });
       }

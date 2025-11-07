@@ -796,7 +796,7 @@ public class VvMessageBox_UC : UserControl
    {
       hamper = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -833,7 +833,7 @@ public class VvMessageBox_UC : UserControl
    {
       hamper = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] {  ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 

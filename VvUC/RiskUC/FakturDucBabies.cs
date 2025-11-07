@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
 
 public class UFADUC              : FakturExtDUC
@@ -8879,7 +8880,7 @@ public class F2_Izlaz_UC : VvUserControl
                      vvtb_uplata,
                      //vvtb_dateUpl,
                      vvtb_markPaid,
-
+                     vvtb_razlikaUpl,
                      vvtb_arhiv
 
                      ;
@@ -8890,7 +8891,7 @@ public class F2_Izlaz_UC : VvUserControl
    Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
    Image img_red, img_yellow, img_green, img_empty;
 
-   DataGridViewImageColumn ams, fisk, arh, reject;
+   DataGridViewImageColumn ams, fisk, arh, map, reject;
   
    //private VvCheckBoxColumn colfakStop;
    //private CheckBox cbx_selection;
@@ -9030,10 +9031,17 @@ public class F2_Izlaz_UC : VvUserControl
 
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
   
-      vvtb_uplata      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_uplata"   , null, -12, "Iznos Uplate"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata  , null, "R_uplata"  , "Naplaćeno"          , ZXC.Q4un           ); vvtb_uplata.JAM_ReadOnly   = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_markPaid    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2,  "vvtb_markPaid", null, -12, "Poslan izvj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid, null, "R_markPaid", "Prijavljena naplata", ZXC.Q4un           ); vvtb_markPaid.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-
-      colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
+      vvtb_uplata      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_uplata"    , null, -12, "Uplaćeno"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata    , null, "R_uplata"    , "Naplaćeno"  , ZXC.Q4un); vvtb_uplata    .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_markPaid    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_markPaid"  , null, -12, "Prijavljeno"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid  , null, "R_markPaid"  , "Prijavljeno", ZXC.Q4un); vvtb_markPaid  .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_razlikaUpl  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_razlikaUpl", null, -12, "Razlika"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_razlikaUpl, null, "R_razlikaUpl", "Razlika"    , ZXC.Q4un); vvtb_razlikaUpl.JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      
+      map            = new DataGridViewImageColumn();
+      map.Name       = "map";
+      map.HeaderText = "MAP";
+      map.Width      = ZXC.Q2un;
+      map.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
+      map.DefaultCellStyle.BackColor = clr_Mp_Back;
+      theGrid.Columns.Add(map);
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
 
@@ -9081,6 +9089,7 @@ public class F2_Izlaz_UC : VvUserControl
       internal int iT_stFisk    ;
       internal int iT_uplata    ;
       internal int iT_markPaid  ;
+      internal int iT_razlikaUpl;
       internal int iT_arhiv     ;
    }
 
@@ -9102,6 +9111,7 @@ public class F2_Izlaz_UC : VvUserControl
       ci.iT_stFisk     = TheG.IdxForColumn("R_stFisk"     );
       ci.iT_uplata     = TheG.IdxForColumn("R_uplata"     );
       ci.iT_markPaid   = TheG.IdxForColumn("R_markPaid"   );
+      ci.iT_razlikaUpl = TheG.IdxForColumn("R_razlikaUpl" );
       ci.iT_arhiv      = TheG.IdxForColumn("R_arhiv"      );
    }
 
@@ -9140,13 +9150,13 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName      );
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP        );
 
-    //TheG.PutCell(ci.iT_ams        , rowIdx, ""                         );
       TheG.PutCell(ci.iT_electrID   , rowIdx, isF1 ?  0 : faktur_rec.F2_ElectronicID);
       TheG.PutCell(ci.iT_dateSlanja , rowIdx, isF1 ? "" : faktur_rec.F2_SentTS == DateTime.MinValue ? "" : faktur_rec.F2_SentTS.ToString(ZXC.VvDateAndTimeFormat_NoSec));
       TheG.PutCell(ci.iT_status     , rowIdx, isF1 ? "" : faktur_rec.F2_ElectronicID.IsZero() ? "" : Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
-    //TheG.PutCell(ci.iT_stFisk     , rowIdx, isF1 ? "" : "");
+
       TheG.PutCell(ci.iT_uplata     , rowIdx, isF1 ? "" : "");
       TheG.PutCell(ci.iT_markPaid   , rowIdx, isF1 ? "" : "");
+      TheG.PutCell(ci.iT_razlikaUpl , rowIdx, isF1 ? "" : "");
 
 
       if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
@@ -9165,13 +9175,24 @@ public class F2_Izlaz_UC : VvUserControl
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
       }
 
+
+      if(faktur_rec.F2_IsMarkAsPaid)
+      { 
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_green;
+      } 
+      else
+      {
+         if((TheG.Rows[rowIdx].Cells[ci.iT_uplata]).Value.ToString() == "") ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_empty;
+         else  /*ako su uplata i prijava rzalicite onda je crveno*/         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_red;
+      }
+
       if(isF1)
       {
          TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"   ]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_empty;
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["ams"   ]).Value = img_empty;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"   ]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["ams"]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
       }
 
       if(faktur_rec.F2_ElectronicID.IsZero()) TheG.Rows[rowIdx].Cells[ci.iT_electrID].Value = "";
