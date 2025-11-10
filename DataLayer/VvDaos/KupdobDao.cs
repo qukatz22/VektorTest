@@ -39,7 +39,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
    #region CreateTableKupdob
 
-   public static   uint TableVersionStatic { get { return /*!!!*/ 37 /*!!!*/; } }
+   public static   uint TableVersionStatic { get { return /*!!!*/ 38 /*!!!*/; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -157,6 +157,14 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
          /* 95 */  "timeDo_6  time                  NOT NULL default '00:00:00',\n" +
          /* 95 */  "timeOd_7  time                  NOT NULL default '00:00:00',\n" +
          /* 95 */  "timeDo_7  time                  NOT NULL default '00:00:00',\n" +
+
+         /*109 */  "isAMS        tinyint(1) unsigned NOT NULL default 0,\n"            +
+         /*110 */  "idIsPolStmnt tinyint(1) unsigned NOT NULL default 0,\n"            +
+         /*111 */  "idBirthDate  date                NOT NULL default '0001-01-01',\n" +
+         /*112 */  "idExpDate    date                NOT NULL default '0001-01-01',\n" +
+         /*113 */  "idNumber     varchar(64)         NOT NULL default '',\n"           +
+         /*114 */  "idIssuer     varchar(64)         NOT NULL default '',\n"           +
+         /*115 */  "idCitizenshp varchar(64)         NOT NULL default '',\n"           +
 
          (needsPrjktExtensions ? PrjktDao.Create_table_PrjktExtensions_definition() : "") +
 
@@ -335,6 +343,14 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
          case 37: if(isPrjkt == false) return "";
                   return ("ADD f2_Provider tinyint(1) unsigned NOT NULL default 0  AFTER m2pModel;\n");
 
+         case 38: return ("ADD COLUMN isAMS         tinyint(1) unsigned NOT NULL default 0           AFTER timeDo_7    ,\n" +
+                          "ADD COLUMN idIsPolStmnt  tinyint(1) unsigned NOT NULL default 0           AFTER isAMS       ,\n" +
+                          "ADD COLUMN idBirthDate   date                NOT NULL default '0001-01-01'AFTER idIsPolStmnt,\n" +
+                          "ADD COLUMN idExpDate     date                NOT NULL default '0001-01-01'AFTER idBirthDate ,\n" +
+                          "ADD COLUMN idNumber      varchar(64)         NOT NULL default ''          AFTER idExpDate   ,\n" +
+                          "ADD COLUMN idIssuer      varchar(64)         NOT NULL default ''          AFTER idNumber    ,\n" +
+                          "ADD COLUMN idCitizenshp  varchar(64)         NOT NULL default ''          AFTER idIssuer    ;\n");
+
          default: throw new Exception("For table " + Kupdob.recordName + " version no. " + catchingVersion + " doesn't exists!");
       }
    }
@@ -477,6 +493,13 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeDo_6,  TheSchemaTable.Rows[CI.timeDo_6]);  
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeOd_7,  TheSchemaTable.Rows[CI.timeOd_7]);  
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeDo_7,  TheSchemaTable.Rows[CI.timeDo_7]);  
+      /*109 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IsAMS       , TheSchemaTable.Rows[CI.isAMS       ]);  
+      /*110 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdIsPolStmnt, TheSchemaTable.Rows[CI.idIsPolStmnt]);  
+      /*111 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdBirthDate , TheSchemaTable.Rows[CI.idBirthDate ]);  
+      /*112 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdExpDate   , TheSchemaTable.Rows[CI.idExpDate   ]);  
+      /*113 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdNumber    , TheSchemaTable.Rows[CI.idNumber    ]);  
+      /*114 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdIssuer    , TheSchemaTable.Rows[CI.idIssuer    ]);  
+      /*115 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdCitizenshp, TheSchemaTable.Rows[CI.idCitizenshp]);  
 
          if(isArhiva)
          {
@@ -702,7 +725,15 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 94 */      rdrData._timeDo_6 = reader.GetTimeSpan(CI.timeDo_6);
       /* 94 */      rdrData._timeOd_7 = reader.GetTimeSpan(CI.timeOd_7);
       /* 94 */      rdrData._timeDo_7 = reader.GetTimeSpan(CI.timeDo_7);
-      
+
+      /*109 */      rdrData._isAMS        = reader.GetBoolean (CI.isAMS)       ;
+      /*110 */      rdrData._idIsPolStmnt = reader.GetBoolean (CI.idIsPolStmnt);
+      /*111 */      rdrData._idBirthDate  = reader.GetDateTime(CI.idBirthDate) ;
+      /*112 */      rdrData._idExpDate    = reader.GetDateTime(CI.idExpDate)   ;
+      /*113 */      rdrData._idNumber     = reader.GetString  (CI.idNumber)    ;
+      /*114 */      rdrData._idIssuer     = reader.GetString  (CI.idIssuer)    ;
+      /*115 */      rdrData._idCitizenshp = reader.GetString  (CI.idCitizenshp);
+
       ((Kupdob)vvDataRecord).CurrentData = rdrData;
 
       if(isArhiva)
@@ -841,6 +872,14 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 95 */ internal int   timeOd_7;
       /* 95 */ internal int   timeDo_7;
 
+      /*109 */ internal int isAMS       ;
+      /*110 */ internal int idIsPolStmnt;
+      /*111 */ internal int idBirthDate ;
+      /*112 */ internal int idExpDate   ;
+      /*113 */ internal int idNumber    ;
+      /*114 */ internal int idIssuer    ;
+      /*115 */ internal int idCitizenshp;
+      
       internal int origRecID;
       internal int recVer;
       internal int arAction;
@@ -967,6 +1006,13 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       CI.timeDo_6  = GetSchemaColumnIndex("timeDo_6"  );
       CI.timeOd_7  = GetSchemaColumnIndex("timeOd_7"  );
       CI.timeDo_7  = GetSchemaColumnIndex("timeDo_7"  );
+      CI.isAMS        = GetSchemaColumnIndex("isAMS");
+      CI.idIsPolStmnt = GetSchemaColumnIndex("idIsPolStmnt");
+      CI.idBirthDate  = GetSchemaColumnIndex("idBirthDate");
+      CI.idExpDate    = GetSchemaColumnIndex("idExpDate");
+      CI.idNumber     = GetSchemaColumnIndex("idNumber");
+      CI.idIssuer     = GetSchemaColumnIndex("idIssuer");
+      CI.idCitizenshp = GetSchemaColumnIndex("idCitizenshp");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");
