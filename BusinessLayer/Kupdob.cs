@@ -124,6 +124,14 @@ public struct KupdobStruct
    /*106 */ internal TimeSpan _timeDo_6;
    /*107 */ internal TimeSpan _timeOd_7;
    /*108 */ internal TimeSpan _timeDo_7;
+
+   /*109 */ internal bool     _isAMS       ;
+   /*110 */ internal bool     _idIsPolStmnt;
+   /*111 */ internal DateTime _idBirthDate ;
+   /*112 */ internal DateTime _idExpDate   ;
+   /*113 */ internal string   _idNumber    ;
+   /*114 */ internal string   _idIssuer    ;
+   /*115 */ internal string   _idCitizenshp;
 }
 
 #endregion struct KupdobStruct
@@ -297,6 +305,14 @@ public class Kupdob : VvSifrarRecord
                this.currentData._timeDo_6  = TimeSpan./*MinValue*/Zero;
                this.currentData._timeOd_7  = TimeSpan./*MinValue*/Zero;
                this.currentData._timeDo_7  = TimeSpan./*MinValue*/Zero;
+
+      /*109 */ this.currentData._isAMS        = false;    
+      /*110 */ this.currentData._idIsPolStmnt = false;    
+      /*111 */ this.currentData._idBirthDate  = DateTime.MinValue;    
+      /*112 */ this.currentData._idExpDate    = DateTime.MinValue;    
+      /*113 */ this.currentData._idNumber     = "";    
+      /*114 */ this.currentData._idIssuer     = "";    
+      /*115 */ this.currentData._idCitizenshp = "";    
    }
 
    #endregion Constructors
@@ -1095,6 +1111,14 @@ public class Kupdob : VvSifrarRecord
    /* 95 */ public TimeSpan TimeDo_6 { get { return this.currentData._timeDo_6; } set { this.currentData._timeDo_6 = value; } }
    /* 95 */ public TimeSpan TimeOd_7 { get { return this.currentData._timeOd_7; } set { this.currentData._timeOd_7 = value; } }
    /* 95 */ public TimeSpan TimeDo_7 { get { return this.currentData._timeDo_7; } set { this.currentData._timeDo_7 = value; } }
+
+   /*109 */ public bool     IsAMS        { get { return this.currentData._isAMS       ; } set { this.currentData._isAMS        = value; } }
+   /*110 */ public bool     IdIsPolStmnt { get { return this.currentData._idIsPolStmnt; } set { this.currentData._idIsPolStmnt = value; } }
+   /*111 */ public DateTime IdBirthDate  { get { return this.currentData._idBirthDate ; } set { this.currentData._idBirthDate  = value; } }
+   /*112 */ public DateTime IdExpDate    { get { return this.currentData._idExpDate   ; } set { this.currentData._idExpDate    = value; } }
+   /*113 */ public string   IdNumber     { get { return this.currentData._idNumber    ; } set { this.currentData._idNumber     = value; } }
+   /*114 */ public string   IdIssuer     { get { return this.currentData._idIssuer    ; } set { this.currentData._idIssuer     = value; } }
+   /*115 */ public string   IdCitizenshp { get { return this.currentData._idCitizenshp; } set { this.currentData._idCitizenshp = value; } }
 
    //private bool ziroListLoaded = false;
    private List<ZXC.CdAndName_CommonStruct> ziroList;
