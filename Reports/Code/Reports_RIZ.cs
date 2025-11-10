@@ -6392,9 +6392,9 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
 
 }
 
-public class RptR_Rekap_WKupDob_Faktur : RptR_StandardRiskReport
+public class RptR_Rekap_SPN1_Faktur : RptR_StandardRiskReport
 {
-   public RptR_Rekap_WKupDob_Faktur(string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl)
+   public RptR_Rekap_SPN1_Faktur(string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl)
 
       : base(new Vektor.Reports.RIZ.CR_RekapFakturKupdob() as ReportDocument,
          _reportName         ,                                                    
@@ -6416,6 +6416,30 @@ public class RptR_Rekap_WKupDob_Faktur : RptR_StandardRiskReport
    public override int FillRiskReportLists()
    {
       base.FillRiskReportLists();
+
+      TheDeviznaSumaList = TheFakturList.Join(TheKupdobList, Fak => Fak.KupdobCD, Kpdb => Kpdb.KupdobCD, (Faktur, Kupdob) => new { F = Faktur, K = Kupdob }).Select(SPN1 => new VvReportSourceUtil()
+         {
+            TheDate      = SPN1.F.DokDate,
+            TheDate2     = SPN1.K.IdExpDate,
+            TheDate3     = SPN1.K.IdBirthDate,
+            String1      = SPN1.F.TtNum.ToString(),
+            String2      = SPN1.F.NacPlac + (SPN1.F.NacPlac2.IsEmpty() ? "" : " + " + SPN1.F.NacPlac2),
+            String3      = SPN1.K.Drzava,
+            String4      = SPN1.F.KdUlica,
+            String5      = SPN1.F.KdMjesto,
+            String6      = SPN1.F.KdZip,
+            KupdobName   = SPN1.F.KupdobName,
+            DevName      = SPN1.F.KdOib,
+            TheCD        = SPN1.K.IdCitizenshp,
+            ArtiklGrCD   = SPN1.K.IdNumber,
+            ArtiklGrName = SPN1.K.IdIssuer,
+            FakturGR     = SPN1.K.IdIsPolStmnt ? "DA" : "NE",
+            Dec01        = SPN1.F.R_ukKCRP_cash,
+            Dec02        = SPN1.F.R_ukKCRP_ziro,
+
+      })
+       //.OrderBy(qwe => qwe.ArtiklGrCD)
+         .ToList();
 
       return 0;
    }
