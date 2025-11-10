@@ -6392,6 +6392,37 @@ public class RptR_Rekap_MER_STATUS : RptR_RekapFaktur
 
 }
 
+public class RptR_Rekap_WKupDob_Faktur : RptR_StandardRiskReport
+{
+   public RptR_Rekap_WKupDob_Faktur(string _reportName, VvRpt_RiSk_Filter _rptFilter, ZXC.RIZ_FilterStyle _filterStyle, bool _rptNeeds_ArtWars, bool _rptNeeds_ArtStat, bool _rptNeeds_Faktur, bool _rptNeeds_Rtrans, bool _rptNeeds_Kupdob, bool _rptNeeds_Prjkt, bool _rptNeeds_Rtrans4ruc, bool _rptNeeds_Artikl)
+
+      : base(new Vektor.Reports.RIZ.CR_RekapFakturKupdob() as ReportDocument,
+         _reportName         ,                                                    
+         _rptFilter          , 
+         _filterStyle        ,
+         _rptNeeds_ArtWars   , // ArtiklWithArtstat 
+         _rptNeeds_ArtStat   , // ArtStat        
+         _rptNeeds_Faktur    , // Faktur         
+         _rptNeeds_Rtrans    , // Rtrans         
+         _rptNeeds_Kupdob    , // Kupdob         
+         _rptNeeds_Prjkt     , // Prjkt          
+         _rptNeeds_Rtrans4ruc, // Rtrans4ruc     
+         _rptNeeds_Artikl    ) // Artikl         
+
+   {
+
+   }
+
+   public override int FillRiskReportLists()
+   {
+      base.FillRiskReportLists();
+
+      return 0;
+   }
+
+}
+
+
 #endregion RptR_RekapFaktur
 
 #region RptR_Ira_Ruc
