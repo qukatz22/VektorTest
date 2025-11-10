@@ -13164,6 +13164,10 @@ public class RptR_Intrastat : RptR_StandardRiskReport
 
       TheArtiklList.RemoveAll(art => art.TS != "ROB");
 
+      if(RptFilter.DatumOd.Month != RptFilter.DatumDo.Month)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Zadali ste period koji se ne odnosi samo na jedan mjesec, a što je uobičajeno za službeni intrastat izvj.");
+      }
       if(ZXC.IsTETRAGRAM_ANY && TheArtiklList.Any(art => art.MasaNettoJM != "g"))
       {
          var errorsList = new List<string>();

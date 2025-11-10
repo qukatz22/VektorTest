@@ -3652,7 +3652,9 @@ public partial class RiskFilterUC : VvFilterUC
       }
 
       // 26.06.2025:
-      if(theVvRiskReport is RptR_PrometArtikla)
+    //if(theVvRiskReport is RptR_PrometArtikla)
+      // 10.11.2025:
+      if(theVvRiskReport is RptR_PrometArtikla || theVvRiskReport is RptR_Intrastat)
       {
          drSchema = FakExSch[FakExCI.skladDate];
       }
