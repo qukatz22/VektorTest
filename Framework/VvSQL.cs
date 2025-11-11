@@ -7089,6 +7089,12 @@ public static class VvSQL
 
     //CreateCommandNamedParameter(cmd, "", "t_fakRecID", fakRecID, ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID]);
 
+      string[] korjeniKupacKonta = Ftrans.WantedKupciKontaStringArray;
+
+
+      string prvi_KSD_korjen_str = korjeniKupacKonta.Length.IsPositive() ? korjeniKupacKonta[0] : "120";
+      int    prvi_KSD_korjen_len = prvi_KSD_korjen_str.Length;
+
       cmd.CommandText = 
 
             "SELECT ftr.* FROM ftrans ftr "                                       + "\n\n" +
@@ -7096,7 +7102,7 @@ public static class VvSQL
 
             "ON ftr.recID = xtr.t_parentID AND xtr.t_tt = '" + Mixer.TT_MAP + "'" + "\n\n" +
 
-            "WHERE ftr.t_otsKind = 2 AND SUBSTRING(ftr.t_konto, 1, 2) = '12'"     + "\n\n" +
+            "WHERE ftr.t_otsKind = 2 AND SUBSTRING(ftr.t_konto, 1, " + prvi_KSD_korjen_len.ToString() + ") = '" + prvi_KSD_korjen_str + "'"     + "\n\n" +
             
             "AND xtr.recID IS NULL   "                                            + "\n\n" ;
 

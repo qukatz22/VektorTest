@@ -1188,7 +1188,7 @@ public static class Vv_eRacun_HTTP
                                      // ”Z” – Ostalo              
 
     //paymentftransList = FtransDao.Get_TodoMAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
-      paymentftransList = FtransDao.Get_TodoMAP_FtransList             (conn                               );
+      paymentftransList = FtransDao.Get_TodoMAP_FtransList             (conn                               ); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
 
       foreach(Ftrans paymentftrans_rec in paymentftransList)
       {

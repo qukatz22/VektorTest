@@ -8208,6 +8208,7 @@ public class VvArtikl_ZAGRIA_Importer : VvDataRecordImporter
       internal decimal _vpc;
       internal ushort  _garancYears;
     //internal string  _bCode;
+      internal string  _kpd;
 
    }
 
@@ -8227,6 +8228,9 @@ public class VvArtikl_ZAGRIA_Importer : VvDataRecordImporter
       rawDatStruct._vpc         = GetDecimal( 3);
       rawDatStruct._garancYears = GetUint16 ( 5);
     //rawDatStruct._bCode       = GetString ( 6);
+
+      // 11.11.2025: 
+      rawDatStruct._kpd         = GetString ( 4);
 
       if(addrecGoesOnPostprocess == true) // ne bus jos nis ADDREC-al, samo spremi u listu za PostProcessLines(). 
       {
@@ -8308,6 +8312,9 @@ public class VvArtikl_ZAGRIA_Importer : VvDataRecordImporter
          artikl_rec.ArtiklName  = LimitedStr(rawDataStruct._artiklName  , ZXC.ArtCI.artiklName);
          artikl_rec.Garancija   =   (ushort)(rawDataStruct._garancYears * 12                  );
          artikl_rec.ImportCij   =           (rawDataStruct._vpc                               );
+
+         // 11.11.2025: 
+         artikl_rec.KPD = LimitedStr(rawDataStruct._kpd, ZXC.ArtCI.partNo);
 
          artikl_rec.SkladCD = "VPSK";
 
