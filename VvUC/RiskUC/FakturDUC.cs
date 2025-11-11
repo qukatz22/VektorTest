@@ -13450,26 +13450,26 @@ public partial class FakturExtDUC : FakturDUC
       }
    }
 
-   public ZXC.VvUBL_PolsProc Fld_eRproc
+   public ZXC.VvUBL_PolsProcEnum Fld_eRproc
    {
       get
       {
          switch(tbx_eRproc.Text)
          {
-            case  "1": return ZXC.VvUBL_PolsProc.P01;
-            case  "2": return ZXC.VvUBL_PolsProc.P02;
-            case  "3": return ZXC.VvUBL_PolsProc.P03;
-            case  "4": return ZXC.VvUBL_PolsProc.P04;
-            case  "5": return ZXC.VvUBL_PolsProc.P05;
-            case  "6": return ZXC.VvUBL_PolsProc.P06;
-            case  "7": return ZXC.VvUBL_PolsProc.P07;
-            case  "8": return ZXC.VvUBL_PolsProc.P08;
-            case  "9": return ZXC.VvUBL_PolsProc.P09;
-            case "10": return ZXC.VvUBL_PolsProc.P10;
-            case "11": return ZXC.VvUBL_PolsProc.P11;
-            case "12": return ZXC.VvUBL_PolsProc.P12;
+            case  "1": return ZXC.VvUBL_PolsProcEnum.P01;
+            case  "2": return ZXC.VvUBL_PolsProcEnum.P02;
+            case  "3": return ZXC.VvUBL_PolsProcEnum.P03;
+            case  "4": return ZXC.VvUBL_PolsProcEnum.P04;
+            case  "5": return ZXC.VvUBL_PolsProcEnum.P05;
+            case  "6": return ZXC.VvUBL_PolsProcEnum.P06;
+            case  "7": return ZXC.VvUBL_PolsProcEnum.P07;
+            case  "8": return ZXC.VvUBL_PolsProcEnum.P08;
+            case  "9": return ZXC.VvUBL_PolsProcEnum.P09;
+            case "10": return ZXC.VvUBL_PolsProcEnum.P10;
+            case "11": return ZXC.VvUBL_PolsProcEnum.P11;
+            case "12": return ZXC.VvUBL_PolsProcEnum.P12;
 
-            default: return ZXC.VvUBL_PolsProc.P00;
+            default: return ZXC.VvUBL_PolsProcEnum.P00;
          }
       }
       set
@@ -13477,18 +13477,18 @@ public partial class FakturExtDUC : FakturDUC
          switch(value)
          {
 
-            case ZXC.VvUBL_PolsProc.P01: tbx_eRproc.Text =  "1"; return;
-            case ZXC.VvUBL_PolsProc.P02: tbx_eRproc.Text =  "2"; return;
-            case ZXC.VvUBL_PolsProc.P03: tbx_eRproc.Text =  "3"; return;
-            case ZXC.VvUBL_PolsProc.P04: tbx_eRproc.Text =  "4"; return;
-            case ZXC.VvUBL_PolsProc.P05: tbx_eRproc.Text =  "5"; return;
-            case ZXC.VvUBL_PolsProc.P06: tbx_eRproc.Text =  "6"; return;
-            case ZXC.VvUBL_PolsProc.P07: tbx_eRproc.Text =  "7"; return;
-            case ZXC.VvUBL_PolsProc.P08: tbx_eRproc.Text =  "8"; return;
-            case ZXC.VvUBL_PolsProc.P09: tbx_eRproc.Text =  "9"; return;
-            case ZXC.VvUBL_PolsProc.P10: tbx_eRproc.Text = "10"; return;
-            case ZXC.VvUBL_PolsProc.P11: tbx_eRproc.Text = "11"; return;
-            case ZXC.VvUBL_PolsProc.P12: tbx_eRproc.Text = "12"; return;
+            case ZXC.VvUBL_PolsProcEnum.P01: tbx_eRproc.Text =  "1"; return;
+            case ZXC.VvUBL_PolsProcEnum.P02: tbx_eRproc.Text =  "2"; return;
+            case ZXC.VvUBL_PolsProcEnum.P03: tbx_eRproc.Text =  "3"; return;
+            case ZXC.VvUBL_PolsProcEnum.P04: tbx_eRproc.Text =  "4"; return;
+            case ZXC.VvUBL_PolsProcEnum.P05: tbx_eRproc.Text =  "5"; return;
+            case ZXC.VvUBL_PolsProcEnum.P06: tbx_eRproc.Text =  "6"; return;
+            case ZXC.VvUBL_PolsProcEnum.P07: tbx_eRproc.Text =  "7"; return;
+            case ZXC.VvUBL_PolsProcEnum.P08: tbx_eRproc.Text =  "8"; return;
+            case ZXC.VvUBL_PolsProcEnum.P09: tbx_eRproc.Text =  "9"; return;
+            case ZXC.VvUBL_PolsProcEnum.P10: tbx_eRproc.Text = "10"; return;
+            case ZXC.VvUBL_PolsProcEnum.P11: tbx_eRproc.Text = "11"; return;
+            case ZXC.VvUBL_PolsProcEnum.P12: tbx_eRproc.Text = "12"; return;
 
             default: tbx_eRproc.Text = ""; break;
          }
@@ -14126,9 +14126,8 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(rbt_ciljMPCknjigMPC)) Fld_IsViaRabat = ZXC.RRD.Dsc_IsViaRabat; // RRD - RsikRulesDsc 
 
       //22.11.2018. eRacun
-      if(CtrlOK(tbx_eRproc))     Fld_eRproc     = (ZXC.VvUBL_PolsProc)faktEx.PdvKolTip;
+      if(CtrlOK(tbx_eRproc))     Fld_eRproc     = (ZXC.VvUBL_PolsProcEnum)faktEx.PdvKolTip;
       if(CtrlOK(tbx_eRprocOpis)) Fld_eRprocOpis = ZXC.luiListaeRacPoslProc.GetNameForThisCd(tbx_eRproc.Text);
-
 
       //fransesLoaded = false; // ovdje treba nulirati sve postojece 'xyLoaded' varijable       // 28.05.2012. premjesteno
       //DecideIfShouldLoad_TransDGV(null, null, null);

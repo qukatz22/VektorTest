@@ -1598,9 +1598,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //   get { return (ZXC.PdvKolTipEnum)this.TheEx.currentData._pdvKolTip; }
  //   set {                           this.TheEx.currentData._pdvKolTip = (ushort)value; }
  //}
-   /* 43 */ public ZXC.VvUBL_PolsProc PdvKolTip
+   /* 43 */ public ZXC.VvUBL_PolsProcEnum PdvKolTip
    {
-      get { return (ZXC.VvUBL_PolsProc)this.TheEx.currentData._pdvKolTip; }
+      get { return (ZXC.VvUBL_PolsProcEnum)this.TheEx.currentData._pdvKolTip; }
       set {                            this.TheEx.currentData._pdvKolTip = (ushort)value; }
    }
    /*    */ public ushort PdvKolTip_u

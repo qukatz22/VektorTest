@@ -8565,8 +8565,9 @@ public partial class FakturExtDUC : FakturDUC
 
       if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode)== false && faktur_rec.TtInfo.IsIzlazniPdvTT)
       {
+
        //Fld_eRproc      = ZXC.RRD.Dsc_Default_eRposProc;
-         tbx_eRproc.Text = ZXC.RRD.Dsc_Default_eRposProc;
+       //  tbx_eRproc.Text = ZXC.RRD.Dsc_Default_eRposProc;
       }
 
       #endregion F2 eRacun Poslovni Proces
