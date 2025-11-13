@@ -1115,6 +1115,12 @@ public class Kupdob : VvSifrarRecord
 
    /*109 */ public /*bool*/ ushort IsAMS        { get { return this.currentData._isAMS       ; } set { this.currentData._isAMS        = value; } }
 
+   /*109 */ public ZXC.AMSstatus AMSstatus
+   {
+      get { return (ZXC.AMSstatus)this.currentData._isAMS; } set { this.currentData._isAMS = (ushort)value; } //tam ?????
+   }
+
+
    /*110 */ public bool     IdIsPolStmnt { get { return this.currentData._idIsPolStmnt; } set { this.currentData._idIsPolStmnt = value; } }
    /*111 */ public DateTime IdBirthDate  { get { return this.currentData._idBirthDate ; } set { this.currentData._idBirthDate  = value; } }
    /*112 */ public DateTime IdExpDate    { get { return this.currentData._idExpDate   ; } set { this.currentData._idExpDate    = value; } }

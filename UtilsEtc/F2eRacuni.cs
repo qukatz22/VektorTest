@@ -2151,13 +2151,17 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       dlg.Dispose();
    }
-   private void F2_RefreshFIR_FakturList(object sender, EventArgs e) { /*AAA*/Vv_eRacun_HTTP.Load_IRn_FakturList                               ((F2_Izlaz_UC)TheVvUC                 ); }
-   private void F2_Refresh_ALL_F2IR     (object sender, EventArgs e) { /*CCC*/Vv_eRacun_HTTP.WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj         ((F2_Izlaz_UC)TheVvUC                 ); }
-   private void F2_Send_eRacune         (object sender, EventArgs e) { /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
-   private void F2_MAPaj                (object sender, EventArgs e) { /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
+   private void F2_RefreshFIR_FakturListAndStatuses(object sender, EventArgs e) 
+   { 
+      /*AAA*/Vv_eRacun_HTTP.Load_IRn_FakturList                      ((F2_Izlaz_UC)TheVvUC); 
+      /*CCC*/Vv_eRacun_HTTP.WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC);
+   }
+   private void F2_Send_eRacune (object sender, EventArgs e) { /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
+   private void F2_MAPaj        (object sender, EventArgs e) { /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
    
-   
-   
+   private void F2_Send_eRacun_1(object sender, EventArgs e) {/*BBB Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
+   private void F2_MAPaj_1      (object sender, EventArgs e) {/*DDD Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
+      
    private void F2_ArhivaPdf (object sender, EventArgs e) 
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;

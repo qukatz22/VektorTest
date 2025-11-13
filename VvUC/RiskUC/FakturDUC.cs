@@ -19347,8 +19347,8 @@ public class F2_Rules_UC : VvOtherUC
    { 
       hamper = new VvHamper(5, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -19358,7 +19358,7 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
  
-                    hamper.CreateVvLabel      (0, 0, "F2 Tip dokumenta:", ContentAlignment.MiddleRight);
+                    hamper.CreateVvLabel      (0, 0, "F2 Tip izlaznog rRačuna:", ContentAlignment.MiddleRight);
       rbt_F2_none = hamper.CreateVvRadioButton(1, 0, null, "Nema", TextImageRelation.ImageAboveText);
       rbt_F2_IFA  = hamper.CreateVvRadioButton(2, 0, null, "IFA", TextImageRelation.ImageAboveText);
       rbt_F2_IRA  = hamper.CreateVvRadioButton(3, 0, null, "IRA", TextImageRelation.ImageAboveText);
@@ -19370,7 +19370,7 @@ public class F2_Rules_UC : VvOtherUC
    { 
       hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_TT.Bottom + ZXC.Qun2, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q2un };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q2un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -19381,7 +19381,7 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                             hamper.CreateVvLabel        (0, 0, "eR PoslProces:"      , ContentAlignment.MiddleRight);
+                             hamper.CreateVvLabel         (0, 0, "Uobičajeni tip poslovnog procesa:"      , ContentAlignment.MiddleRight);
       tbx_Default_eRposProc = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefault_eRposProc", "Default poslovni proces");
       tbx_Default_eRposProc.JAM_Set_LookUpTable(ZXC.luiListaeRacPoslProc, (int)ZXC.Kolona.prva);
    }
@@ -19390,7 +19390,7 @@ public class F2_Rules_UC : VvOtherUC
    { 
       hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_eRproces.Bottom + ZXC.Qun2, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q5un };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -19401,7 +19401,7 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                       hamper.CreateVvLabel        (0, 0, "DeafaultKPD:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel        (0, 0, "Uobičajena KPD šifra:", ContentAlignment.MiddleRight);
       tbx_DefaultKPD = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefaultKPD", "Default KPD");
       tbx_DefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
    }
@@ -19410,25 +19410,25 @@ public class F2_Rules_UC : VvOtherUC
    {
       hamper = new VvHamper(3, 1, "", this, true, ZXC.QunMrgn, hamp_kpd.Bottom + ZXC.Qun2, 0);
       
-      hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q4un + ZXC.Qun4, ZXC.Q4un + ZXC.Qun4 };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4,            ZXC.Qun4,            ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q8un, ZXC.Q6un, ZXC.Q6un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
       
       hamper.VvRowHgt       = new int[] { ZXC.QUN  };
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                      hamper.CreateVvLabel      (0, 0, "Poredak:", ContentAlignment.MiddleRight);
-      rbt_Ascending = hamper.CreateVvRadioButton(1, 0, new EventHandler(radioButtonAscending_Click), "Lista raste", TextImageRelation.ImageAboveText);
+                      hamper.CreateVvLabel      (0, 0, "Slijed ispisa računa:", ContentAlignment.MiddleRight);
+      rbt_Ascending = hamper.CreateVvRadioButton(1, 0, new EventHandler(radioButtonAscending_Click), "Raste od prvog", TextImageRelation.ImageAboveText);
       rbt_Ascending .Checked = true;
-      rbt_Descending = hamper.CreateVvRadioButton(2, 0, new EventHandler(radioButtonDescending_Click), "Lista pada", TextImageRelation.ImageAboveText);
+      rbt_Descending = hamper.CreateVvRadioButton(2, 0, new EventHandler(radioButtonDescending_Click), "Pada od zadnjeg", TextImageRelation.ImageAboveText);
    }
 
    private void InitializeHamper_NumOfRows(out VvHamper hamper)
    { 
-      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_ascDesc.Bottom + ZXC.Qun2, 0);
+      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_ascDesc.Bottom + ZXC.Qun4, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un };
+      hamper.VvColWdt      = new int[] { ZXC.Q8un, ZXC.Q3un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -19439,7 +19439,7 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                      hamper.CreateVvLabel  (0, 0, "Broj prikazanih dokumenata:", ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel  (0, 0, "Broj prikazanih redaka:", ContentAlignment.MiddleRight);
       tbx_numOfRows = hamper.CreateVvTextBox(1, 0, "tbx_numOfRows", "tbx_numOfRows");
       tbx_numOfRows.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
 
@@ -19447,10 +19447,10 @@ public class F2_Rules_UC : VvOtherUC
 
    private void InitializeHamper_Auto(out VvHamper hamper)
    { 
-      hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.Qun2, 0);
+      hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)

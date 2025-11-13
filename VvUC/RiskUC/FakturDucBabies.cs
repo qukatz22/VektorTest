@@ -8913,10 +8913,11 @@ public class F2_Izlaz_UC : VvUserControl
       SetColors(); 
 
       CreateTheGrid();
+      this.ResumeLayout();
 
       CreateColumn(TheG);
 
-      this.ResumeLayout();
+    //this.ResumeLayout();
 
       SetColumnIndexes();
 
@@ -9037,7 +9038,7 @@ public class F2_Izlaz_UC : VvUserControl
       
       map            = new DataGridViewImageColumn();
       map.Name       = "map";
-      map.HeaderText = "MAP";
+      map.HeaderText = "OKP";
       map.Width      = ZXC.Q2un;
       map.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
       map.DefaultCellStyle.BackColor = clr_Mp_Back;
