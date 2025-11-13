@@ -726,7 +726,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 94 */      rdrData._timeOd_7 = reader.GetTimeSpan(CI.timeOd_7);
       /* 94 */      rdrData._timeDo_7 = reader.GetTimeSpan(CI.timeDo_7);
 
-      /*109 */      rdrData._isAMS        = reader.GetBoolean (CI.isAMS)       ;
+      /*109 */      rdrData._isAMS        = reader.GetUInt16  (CI.isAMS)       ;
       /*110 */      rdrData._idIsPolStmnt = reader.GetBoolean (CI.idIsPolStmnt);
       /*111 */      rdrData._idBirthDate  = reader.GetDateTime(CI.idBirthDate) ;
       /*112 */      rdrData._idExpDate    = reader.GetDateTime(CI.idExpDate)   ;

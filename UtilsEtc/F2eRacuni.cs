@@ -48,9 +48,10 @@ public static class Vv_eRacun_HTTP
    public const string VvPND_baseAddress_production = @"https://eracun.eposlovanje.hr"; 
    public const string VvPND_baseAddress_demo       = @"https://test.eposlovanje.hr"; 
 
-   public const string VvPND_webAddressPOST_Send        = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/send"    ; // POST 
-   public const string VvPND_webAddressPOST_outgoing    = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/outgoing"; // GET! 
-   public const string VvPND_webAddressGET_Ping         = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ping"             ; // GET! 
+   public const string VvPND_webAddressPOST_Send            = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/send"    ; // POST 
+   public const string VvPND_webAddressPOST_outgoing        = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/outgoing"; // GET! 
+   public const string VvPND_webAddressGET_Ping             = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ping"             ; // GET! 
+   public const string VvPND_webAddressPOST_Check           = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ams/check"        ; // POST 
 
    // MER authorisation parameters: 
    public static string VvMER_UserName   = DEMO ? "8633"    : ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
@@ -264,6 +265,12 @@ public static class Vv_eRacun_HTTP
                try
                {
                   deserializedResponseData = JsonConvert.DeserializeObject<T>(responseJson);
+
+                  // Cuvamo originalni JSON odgovor unutar objekta odgovora 
+                  if(deserializedResponseData is VvMER_Response_Data_AllActions resp)
+                  {
+                     resp.ResponseJson = responseJson;
+                  }
 
                   // Optionally save to file if provided
                   //saveToFile?.Invoke(deserializedResponseData, fileName);
@@ -624,8 +631,6 @@ public static class Vv_eRacun_HTTP
 
       VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
 
-      string authToken = VvPND_API_Key;
-
       VvMER_Response_Data_AllActions responseData_AllActions =
           Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
           (
@@ -633,7 +638,7 @@ public static class Vv_eRacun_HTTP
               request_Data_AllActions,
               null,
               null,
-              authToken  // Using just the API key
+              VvPND_API_Key 
           );
 
       return responseData_AllActions;
@@ -654,6 +659,23 @@ public static class Vv_eRacun_HTTP
 
       VvMER_Response_Data_AllActions responseData_AllActions = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString);
    
+      return responseData_AllActions;
+   }
+
+   public static VvMER_Response_Data_AllActions VvPND_WebService_CheckAMS(string _identifier)
+   {
+      string webServiceEndPointAddress = VvPND_webAddressPOST_Check;
+
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions() 
+      { 
+         identifier = _identifier,
+         schema     = "9934",
+      };
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      VvMER_Response_Data_AllActions responseData_AllActions = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString, VvPND_API_Key);
+
       return responseData_AllActions;
    }
 
@@ -717,7 +739,7 @@ public static class Vv_eRacun_HTTP
    {
       #region Init & Get Dialog Fields
 
-      if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
+      //if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
 
       List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).ToList();
 
@@ -1171,7 +1193,7 @@ public static class Vv_eRacun_HTTP
    {
       #region Init & Get Dialog Fields AND Create MAP_requestDataList in 2 (nested) foreach loops
 
-      if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
+      //if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
 
       List<(VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur)> MAP_ActionsList = new List<(VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur)>();
 
@@ -1780,17 +1802,19 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    [JsonPropertyName("KPDCode")]
    public string KPDCode { get; set; }
 
-   // PND specific
+   #region PND specifics
+
    [JsonPropertyName("document")]
    public string document { get; set; }
 
-   //[Newtonsoft.Json.JsonIgnore]
-   //[System.Xml.Serialization.XmlIgnore]
-   //public Faktur Faktur { get; set; }
-   //
-   //[Newtonsoft.Json.JsonIgnore]
-   //[System.Xml.Serialization.XmlIgnore]
-   //public Ftrans Ftrans { get; set; }
+   [JsonPropertyName("identifier")]
+   public string identifier { get; set; }
+
+   [JsonPropertyName("schema")]
+   public string schema { get; set; }
+
+   #endregion PND specifics
+
 }
 public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
 {
@@ -1910,12 +1934,30 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    [JsonPropertyName("Message")]
    public string Message { get; set; }
 
-   // PND fields
+   #region PND specifics
+
    [JsonPropertyName("id")]
    public long Id { get; set; } // If the API returns a GUID/string, change to string.
 
    [JsonPropertyName("insertedOn")]
    public DateTime? InsertedOn { get; set; }
+
+   [JsonPropertyName("identifier")]
+   public string identifier { get; set; }
+
+   [JsonPropertyName("published​On​Ams")]
+   public bool? published​On​Ams { get; set; }
+
+   [JsonPropertyName("schema")]
+   public string schema { get; set; }
+
+   [JsonPropertyName("mps​Endpoint")]
+   public string mps​Endpoint { get; set; }
+
+   #endregion PND specifics
+
+   [Newtonsoft.Json.JsonIgnore] // da se ne serializira/deserializira automatski
+   public string ResponseJson { get; set; }
 
    #endregion Propertiz 
 

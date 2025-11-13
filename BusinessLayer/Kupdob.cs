@@ -125,7 +125,8 @@ public struct KupdobStruct
    /*107 */ internal TimeSpan _timeOd_7;
    /*108 */ internal TimeSpan _timeDo_7;
 
-   /*109 */ internal bool     _isAMS       ;
+   /*109 */ internal /*bool*/ ushort _isAMS;
+
    /*110 */ internal bool     _idIsPolStmnt;
    /*111 */ internal DateTime _idBirthDate ;
    /*112 */ internal DateTime _idExpDate   ;
@@ -306,7 +307,7 @@ public class Kupdob : VvSifrarRecord
                this.currentData._timeOd_7  = TimeSpan./*MinValue*/Zero;
                this.currentData._timeDo_7  = TimeSpan./*MinValue*/Zero;
 
-      /*109 */ this.currentData._isAMS        = false;    
+      /*109 */ this.currentData._isAMS        = /*false*/0;    
       /*110 */ this.currentData._idIsPolStmnt = false;    
       /*111 */ this.currentData._idBirthDate  = DateTime.MinValue;    
       /*112 */ this.currentData._idExpDate    = DateTime.MinValue;    
@@ -1112,7 +1113,8 @@ public class Kupdob : VvSifrarRecord
    /* 95 */ public TimeSpan TimeOd_7 { get { return this.currentData._timeOd_7; } set { this.currentData._timeOd_7 = value; } }
    /* 95 */ public TimeSpan TimeDo_7 { get { return this.currentData._timeDo_7; } set { this.currentData._timeDo_7 = value; } }
 
-   /*109 */ public bool     IsAMS        { get { return this.currentData._isAMS       ; } set { this.currentData._isAMS        = value; } }
+   /*109 */ public /*bool*/ ushort IsAMS        { get { return this.currentData._isAMS       ; } set { this.currentData._isAMS        = value; } }
+
    /*110 */ public bool     IdIsPolStmnt { get { return this.currentData._idIsPolStmnt; } set { this.currentData._idIsPolStmnt = value; } }
    /*111 */ public DateTime IdBirthDate  { get { return this.currentData._idBirthDate ; } set { this.currentData._idBirthDate  = value; } }
    /*112 */ public DateTime IdExpDate    { get { return this.currentData._idExpDate   ; } set { this.currentData._idExpDate    = value; } }
