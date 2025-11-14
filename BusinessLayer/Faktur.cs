@@ -2168,6 +2168,18 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    /* 203 */ public  bool    F2_IsRejected   { get { return this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
+   public ZXC.FiskalKind F2_FiskalKind_R 
+   { 
+      get 
+      { 
+         if(TtInfo.IsIzlazniPdvTT == false) return ZXC.FiskalKind.Fisk_NE_no_API;
+         if(this.IsF1                     ) return ZXC.FiskalKind.Fisk_F1_no_API;
+
+         if(this.PdvGEOkind != ZXC.PdvGEOkindEnum.HR) return ZXC.FiskalKind.Fisk_NE_no_API;
+
+         return ZXC.FiskalKind.Fisk_F2_send_OR_eIzv_API;
+      } 
+   }   
 
    #endregion Data Layer Columns
 
@@ -6763,6 +6775,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
 
    /* 203 */ public  bool    F2_IsRejected   { get { return this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
+
    #endregion Data Layer Columns
 
    public decimal R2_uplata  { get; set; }

@@ -13,6 +13,8 @@ using System.Web;
 using System.Reflection;
 using System.Net.Http.Headers;
 using CrystalDecisions.Shared;
+using System.Net.Security;
+
 
 
 #if MICROSOFT
@@ -128,7 +130,7 @@ public static class Vv_eRacun_HTTP
          }
 
          // Send request and get response
-         httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+         httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse(); // <--- Here we go! !!! 
          return httpWebResponse;
       }
       catch(WebException webEx)
@@ -156,7 +158,15 @@ public static class Vv_eRacun_HTTP
 
             string[] responseBodyLines = ZXC.PrettyPrintResponse(body).Split(new string[] { "\n", "\r", "\n\r", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            ZXC.aim_emsg_List("Web Exception (status code:" + (int)resp.StatusCode + ") Description: " + resp.StatusDescription, responseBodyLines.ToList());
+            if(webAddress == VvMER_webAddressPOST_Check)
+            {
+               // ne tretiraj statusCode koji nije 200 kao exception,                
+               // nego kao odgovor 'false' za MER-ov API 'VvMER_WebService_CheckAMS' 
+            }
+            else
+            {
+               ZXC.aim_emsg_List("Web Exception (status code:" + (int)resp.StatusCode + ") Description: " + resp.StatusDescription, responseBodyLines.ToList());
+            }
 
             return resp; // If callers need the stream, avoid reading it here.
          }
@@ -210,7 +220,7 @@ public static class Vv_eRacun_HTTP
       {
          if(webEx.Response != null)
          {
-            var resp = (HttpWebResponse)webEx.Response;
+            HttpWebResponse resp = (HttpWebResponse)webEx.Response;
             string body = string.Empty;
 
             try
@@ -247,7 +257,8 @@ public static class Vv_eRacun_HTTP
       }
    }
 
-   private static T Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, /*Action<T, string> saveToFile = null, string fileName = null,*/ string token = null)
+#if DELLMELATTERR
+   private static T OLD_QWE_Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, /*Action<T, string> saveToFile = null, string fileName = null,*/ string token = null)
       where T : class, new()
    {
       T deserializedResponseData = null;
@@ -311,7 +322,67 @@ public static class Vv_eRacun_HTTP
 
       return deserializedResponseData;
    }
+#endif
+   private static WebApiResult<T> Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, string token = null)
+       where T : class, new()
+   {
+      WebApiResult<T> webApiResult = new WebApiResult<T>();
 
+      try
+      {
+         HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString, token);
+
+         webApiResult.StatusCode = (int)httpResponse.StatusCode;
+         webApiResult.StatusDescription = httpResponse.StatusDescription;
+
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         {
+            string responseJson = streamReader.ReadToEnd();
+
+            if(!string.IsNullOrEmpty(responseJson))
+            {
+               try
+               {
+                  webApiResult.ResponseData = JsonConvert.DeserializeObject<T>(responseJson);
+               }
+               catch(Exception ex2)
+               {
+                  webApiResult.ResponseData = new T();
+                  webApiResult.ErrorBody = responseJson;
+                  webApiResult.ExceptionMessage = ex2.Message;
+               }
+            }
+            else
+            {
+               webApiResult.ErrorBody = "JSON response is empty!";
+            }
+         }
+      }
+      catch(WebException ex)
+      {
+         if(ex.Response is HttpWebResponse resp)
+         {
+            webApiResult.StatusCode = (int)resp.StatusCode;
+            webApiResult.StatusDescription = resp.StatusDescription;
+
+            try
+            {
+               using(var sr = new StreamReader(resp.GetResponseStream()))
+               {
+                  webApiResult.ErrorBody = sr.ReadToEnd();
+               }
+            }
+            catch { /* ignore */ }
+         }
+         webApiResult.ExceptionMessage = ex.Message;
+      }
+      catch(Exception ex)
+      {
+         webApiResult.ExceptionMessage = ex.Message;
+      }
+
+      return webApiResult;
+   }
    private static T Vv_GETmethod_ExecuteJson<T, TRequest>(string webAddress, TRequest request, Action<T, string> saveToFile = null, string fileName = null, string token = null)
        where T : class, new()
        where TRequest : class
@@ -450,7 +521,7 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = 
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = 
          
          Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
          (
@@ -460,7 +531,7 @@ public static class Vv_eRacun_HTTP
             //fullPath_XML_FileName.Replace(".xml", "_RES.xml")
          );
 
-      return responseData_AllActions;
+      return webApiResult.ResponseData;
    }
    public  static VvMER_Response_Data_AllActions VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
@@ -470,8 +541,8 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = 
-         
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult =
+
          Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
          (
             webServiceEndPointAddress,
@@ -481,7 +552,7 @@ public static class Vv_eRacun_HTTP
             VvPND_API_Key
          );
 
-      return responseData_AllActions;
+      return webApiResult.ResponseData;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
@@ -493,9 +564,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+         WebApiResult<List<WebApiResult<VvMER_Response_Data_AllActions>>> webApiResult = Vv_POSTmethod_ExecuteJson<List<WebApiResult<VvMER_Response_Data_AllActions>>>(webServiceEndPointAddress, jsonRequestString);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.FirstOrDefault();
+      VvMER_Response_Data_AllActions responseData_AllActions = webApiResult.ResponseData.FirstOrDefault()?.ResponseData;
 
       return responseData_AllActions;
    }
@@ -509,9 +580,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.FirstOrDefault();
+      VvMER_Response_Data_AllActions responseData_AllActions = webApiResult.ResponseData.FirstOrDefault();
 
       return responseData_AllActions;
    }
@@ -525,9 +596,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      return responseData_AllActions_List;
+      return webApiResult.ResponseData;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - DPS Status List ###############################################################
@@ -539,9 +610,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      return responseData_AllActions_List;
+      return webApiResult.ResponseData;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryInbox - Status List ####################################################################################
@@ -553,9 +624,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      return responseData_AllActions_List;
+      return webApiResult.ResponseData;
    }
 
    //######################## https://www.moj-eracun.hr/api/fiscalization/status - Get 3 kind FISK status ##############################################################################
@@ -567,9 +638,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.NotEmpty() ? responseData_AllActions_List.FirstOrDefault() : null;
+      VvMER_Response_Data_AllActions responseData_AllActions = webApiResult.ResponseData.NotEmpty() ? webApiResult.ResponseData.FirstOrDefault() : null;
 
       return responseData_AllActions;
    }
@@ -645,7 +716,7 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/api/mps/check - Check Identifier ##############################################################################
-   public static VvMER_Response_Data_AllActions VvMER_WebService_CheckAMS(string _Identifiervalue)
+   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_CheckAMS(string _Identifiervalue)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_Check;
 
@@ -657,9 +728,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString);
-   
-      return responseData_AllActions;
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString);
+
+      return webApiResult/*.ResponseData*/;
    }
 
    public static VvMER_Response_Data_AllActions VvPND_WebService_CheckAMS(string _identifier)
@@ -674,9 +745,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString, VvPND_API_Key);
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webServiceEndPointAddress, jsonRequestString, VvPND_API_Key);
 
-      return responseData_AllActions;
+      return webApiResult.ResponseData;
    }
 
    //######################## https://www.moj-eracun.hr/api/fiscalization/markPaid - Mark Paid action ##############################################################################
@@ -688,9 +759,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      List<VvMER_Response_Data_AllActions> responseData_AllActions_List = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
 
-      VvMER_Response_Data_AllActions responseData_AllActions = responseData_AllActions_List.NotEmpty() ? responseData_AllActions_List.FirstOrDefault() : null;
+      VvMER_Response_Data_AllActions responseData_AllActions = webApiResult.ResponseData.NotEmpty() ? webApiResult.ResponseData.FirstOrDefault() : null;
 
       return responseData_AllActions;
    }
@@ -1215,17 +1286,32 @@ public static class Vv_eRacun_HTTP
       foreach(Ftrans paymentftrans_rec in paymentftransList)
       {
          MAP_CandidateFaktur_rec = new Faktur();
-         MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+
+         if(paymentftrans_rec.T_fakRecID.NotZero())
+         {
+            MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+         }
+         else
+         {
+            MAP_CandidateFaktur_rec = null;
+            // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a 
+         }
+
+         if(MAP_CandidateFaktur_rec == null)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu pronaći fakturu za MAP!? Ftrans: {0}", paymentftrans_rec);
+            continue; 
+         }
 
          VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
          {
-          //Faktur        = MAP_CandidateFaktur_rec                ,
-          //Ftrans        = paymentftrans_rec                      ,
+            //Faktur        = MAP_CandidateFaktur_rec                ,
+            //Ftrans        = paymentftrans_rec                      ,
 
-            ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
-            PaymentDate   = paymentftrans_rec.T_dokDate            ,
-            PaymentAmount = paymentftrans_rec.T_pot                ,
-            PaymentMethod = thePaymentMethod                                 
+            ElectronicId = MAP_CandidateFaktur_rec.F2_ElectronicID,
+            PaymentDate = paymentftrans_rec.T_dokDate,
+            PaymentAmount = paymentftrans_rec.T_pot,
+            PaymentMethod = thePaymentMethod
          };
 
          MAP_ActionsList.Add((MAP_requestData, paymentftrans_rec, MAP_CandidateFaktur_rec));
@@ -2102,6 +2188,15 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 //   [JsonPropertyName("Imported")]
 //   public bool? Imported { get; set; }
 //}
+
+public class WebApiResult<T>
+{
+   public T ResponseData            { get; set; }
+   public int? StatusCode           { get; set; }
+   public string StatusDescription  { get; set; }
+   public string ErrorBody          { get; set; }
+   public string ExceptionMessage   { get; set; }
+}
 
 #endregion Bussiness Classes for JSON Request/Response
 

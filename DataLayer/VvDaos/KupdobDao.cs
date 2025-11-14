@@ -493,7 +493,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeDo_6,  TheSchemaTable.Rows[CI.timeDo_6]);  
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeOd_7,  TheSchemaTable.Rows[CI.timeOd_7]);  
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeDo_7,  TheSchemaTable.Rows[CI.timeDo_7]);  
-      /*109 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IsAMS       , TheSchemaTable.Rows[CI.isAMS       ]);  
+      /*109 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.AMSstatus   , TheSchemaTable.Rows[CI.AMSstatus   ]);  
       /*110 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdIsPolStmnt, TheSchemaTable.Rows[CI.idIsPolStmnt]);  
       /*111 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdBirthDate , TheSchemaTable.Rows[CI.idBirthDate ]);  
       /*112 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdExpDate   , TheSchemaTable.Rows[CI.idExpDate   ]);  
@@ -726,7 +726,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 94 */      rdrData._timeOd_7 = reader.GetTimeSpan(CI.timeOd_7);
       /* 94 */      rdrData._timeDo_7 = reader.GetTimeSpan(CI.timeDo_7);
 
-      /*109 */      rdrData._isAMS        = reader.GetUInt16  (CI.isAMS)       ;
+      /*109 */      rdrData._AMSstatus    = reader.GetUInt16  (CI.AMSstatus)   ;
       /*110 */      rdrData._idIsPolStmnt = reader.GetBoolean (CI.idIsPolStmnt);
       /*111 */      rdrData._idBirthDate  = reader.GetDateTime(CI.idBirthDate) ;
       /*112 */      rdrData._idExpDate    = reader.GetDateTime(CI.idExpDate)   ;
@@ -872,7 +872,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 95 */ internal int   timeOd_7;
       /* 95 */ internal int   timeDo_7;
 
-      /*109 */ internal int isAMS       ;
+      /*109 */ internal int AMSstatus   ;
       /*110 */ internal int idIsPolStmnt;
       /*111 */ internal int idBirthDate ;
       /*112 */ internal int idExpDate   ;
@@ -1006,7 +1006,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       CI.timeDo_6  = GetSchemaColumnIndex("timeDo_6"  );
       CI.timeOd_7  = GetSchemaColumnIndex("timeOd_7"  );
       CI.timeDo_7  = GetSchemaColumnIndex("timeDo_7"  );
-      CI.isAMS        = GetSchemaColumnIndex("isAMS");
+      CI.AMSstatus = GetSchemaColumnIndex("isAMS")     ; // !!! AMSstatus se u data layeru zove isAMS te je enum a ne bool!!! 
+
       CI.idIsPolStmnt = GetSchemaColumnIndex("idIsPolStmnt");
       CI.idBirthDate  = GetSchemaColumnIndex("idBirthDate");
       CI.idExpDate    = GetSchemaColumnIndex("idExpDate");
@@ -1047,6 +1048,94 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       filterMembers.Add(new VvSqlFilterMember(drSchema, "theKupdobCd", kupdob_cd, " = "));
 
       LoadGenericVvDataRecordList<Ftrans>(dbConnection, kupdob_rec.Ftranses, filterMembers, "t_dokDate DESC, t_dokNum DESC, t_serial DESC");
+   }
+
+   public static ZXC.AMSstatus RefreshKupdob_AMSstatus(XSqlConnection dbConnection, Kupdob kupdob_rec)
+   {
+      if(!ZXC.IsF2_2026_rules) return ZXC.AMSstatus.U_AMSu_JE;
+
+      // idemo u refresh AMSstatusa i za nepoznat i za NIJE_U_AMSu status 
+      // tj. samo ako je U_AMSu_JE, prestajemo refreshati ovog kupdob-a   
+      if(kupdob_rec.AMSstatus == ZXC.AMSstatus.U_AMSu_JE /*||
+         kupdob_rec.AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu*/) return kupdob_rec.AMSstatus;
+
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult; // za MER 
+
+      VvMER_Response_Data_AllActions response_Data_CheckAMS;     // za PND 
+
+      bool refreshStatusOK = true;
+
+      ZXC.AMSstatus refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+
+            try
+            {
+               webApiResult = Vv_eRacun_HTTP.VvMER_WebService_CheckAMS(kupdob_rec.Oib);
+
+               if(webApiResult == null || webApiResult.StatusCode == null)
+               {
+                  refreshStatusOK = false;
+               }
+               else 
+               {
+                  switch(webApiResult.StatusCode)
+                  {
+                     case (int)System.Net.HttpStatusCode.OK      : refreshedAMSstatus = ZXC.AMSstatus.U_AMSu_JE  ; break;
+                     case (int)System.Net.HttpStatusCode.NotFound: refreshedAMSstatus = ZXC.AMSstatus.NIJE_U_AMSu; break;
+                     default                                     : refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT   ; break;
+                  }
+               }
+            }
+            catch(Exception ex)
+            {
+               refreshStatusOK = false;
+            }
+            break;
+
+         case ZXC.F2_Provider_enum.PND:
+
+            try
+            {
+               response_Data_CheckAMS = Vv_eRacun_HTTP.VvPND_WebService_CheckAMS(kupdob_rec.Oib);
+
+               if(response_Data_CheckAMS == null)
+               {
+                  refreshStatusOK = false;
+               }
+               else
+               {
+                  refreshedAMSstatus = (bool)response_Data_CheckAMS.publishedOnAms ? ZXC.AMSstatus.U_AMSu_JE : ZXC.AMSstatus.NIJE_U_AMSu;
+               }
+            }
+            catch(Exception ex)
+            {
+               refreshStatusOK = false;
+            }
+            break;
+      }
+
+      #region RWTREC Kupdob with new AMSstatus
+
+      if(ZXC.IsF2_2026_rules && refreshStatusOK)
+      {
+         kupdob_rec.BeginEdit();
+
+         kupdob_rec.AMSstatus = refreshedAMSstatus;
+
+         kupdob_rec.VvDao.RWTREC(ZXC.TheVvForm.TheDbConnection, kupdob_rec, false, false);
+
+         kupdob_rec.EndEdit();
+
+         //SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+      }
+
+      #endregion RWTREC Kupdob with new AMSstatus
+
+      if(refreshStatusOK) return kupdob_rec.AMSstatus  ;
+      else                return ZXC.AMSstatus.NEPOZNAT; 
    }
 
    #endregion LoadFtranses
