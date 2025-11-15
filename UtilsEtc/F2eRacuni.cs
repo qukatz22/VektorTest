@@ -29,7 +29,7 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 
 public static class Vv_eRacun_HTTP
 {
-   private const bool DEMO = false;
+   private const bool DEMO = true;
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -323,8 +323,7 @@ public static class Vv_eRacun_HTTP
       return deserializedResponseData;
    }
 #endif
-   private static WebApiResult<T> Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, string token = null)
-       where T : class, new()
+   private static WebApiResult<T> Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, string token = null) where T : class, new()
    {
       WebApiResult<T> webApiResult = new WebApiResult<T>();
 
@@ -783,7 +782,7 @@ public static class Vv_eRacun_HTTP
 
    #endregion Concrete API / EndPoint methods implementations - 'ZEBRA'
 
-   #region F2IR / F2UR Load List and SubmodulActions
+   #region FIR / FUR Load List and SubmodulActions
 
 
 
@@ -934,7 +933,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* CCC */internal static void WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
+   /* CCC */internal static void WS_Refresh_ALL_FIR_Statuses_AndArhiviraj(F2_Izlaz_UC theUC/*, bool isDPS*/) // VOILA! 
    {
       #region Init
 
@@ -946,6 +945,13 @@ public static class Vv_eRacun_HTTP
            string  updatedStatusInfo                         ;
 
       Cursor.Current = Cursors.WaitCursor;
+
+      decimal MAP_Ftr_naplacenoMoney, MAP_Xtr_prijavljenoMoney;
+      int     MAP_Ftr_naplacenoCount, MAP_Xtr_prijavljenoCount;
+      string  MAP_Ftr_naplacenoStr  , MAP_Xtr_prijavljenoStr  ;
+
+      List<Ftrans> MAP_naplacenoFtransList;
+      List<Xtrano> MAP_prijavljenoXtranoList;
 
       #endregion Init
 
@@ -1206,6 +1212,34 @@ public static class Vv_eRacun_HTTP
       } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
 
       #endregion Refresh MarkAsPaid status
+
+      #region Refresh MarkAsPaid_InfoColumns
+
+      for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
+      {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
+
+         if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_MarkAsPaid_InfoColumns) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         MAP_naplacenoFtransList   = FtransDao.Get_Naplaceno_OR_TodoMAP_FtransList_For_FakRecID(theUC.TheDbConnection, F2_IRn_faktur_rec.RecID, false);
+         MAP_Ftr_naplacenoMoney    = MAP_naplacenoFtransList.Sum(ft => ft.T_pot);
+         MAP_Ftr_naplacenoCount    = MAP_naplacenoFtransList.Count;
+         MAP_prijavljenoXtranoList = XtranoDao.Get_Prijavljeno_MAP_XtranoList_For_FakRecID     (theUC.TheDbConnection, F2_IRn_faktur_rec.RecID       );
+         MAP_Xtr_prijavljenoMoney  = MAP_prijavljenoXtranoList.Sum(ft => ft.T_moneyA);
+         MAP_Xtr_prijavljenoCount  = MAP_prijavljenoXtranoList.Count;
+
+         MAP_Ftr_naplacenoStr      = MAP_Ftr_naplacenoCount   > 1 ? string.Format("({0}) {1}", MAP_Ftr_naplacenoCount  , MAP_Ftr_naplacenoMoney  .ToStringVv()) :
+                                                                                                                         MAP_Ftr_naplacenoMoney  .ToStringVv()  ; 
+         MAP_Xtr_prijavljenoStr    = MAP_Xtr_prijavljenoCount > 1 ? string.Format("({0}) {1}", MAP_Xtr_prijavljenoCount, MAP_Xtr_prijavljenoMoney.ToStringVv()) :
+                                                                                                                         MAP_Xtr_prijavljenoMoney.ToStringVv()  ;
+
+         theUC.TheG.PutCell(theUC.DgvCI.iT_uplata    , rIdx, MAP_Ftr_naplacenoStr  );
+         theUC.TheG.PutCell(theUC.DgvCI.iT_markPaid  , rIdx, MAP_Xtr_prijavljenoStr);
+         theUC.TheG.PutCell(theUC.DgvCI.iT_razlikaUpl, rIdx, MAP_Ftr_naplacenoMoney - MAP_Xtr_prijavljenoMoney);
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+
+      #endregion Refresh MarkAsPaid_InfoColumns
 
       #region RECEIVE eRacun for Arhiva 
 
@@ -1732,7 +1766,7 @@ public static class Vv_eRacun_HTTP
       return null ;
    }
 
-   #endregion F2IR / F2UR Load List and SubmodulActions
+   #endregion FIR / FUR Load List and SubmodulActions
 
 }
 
@@ -2248,8 +2282,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_RefreshFIR_FakturListAndStatuses(object sender, EventArgs e) 
    { 
-      /*AAA*/Vv_eRacun_HTTP.Load_IRn_FakturList                      ((F2_Izlaz_UC)TheVvUC); 
-      /*CCC*/Vv_eRacun_HTTP.WS_Refresh_ALL_F2IR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC);
+      /*AAA*/Vv_eRacun_HTTP.Load_IRn_FakturList                     ((F2_Izlaz_UC)TheVvUC); 
+      /*CCC*/Vv_eRacun_HTTP.WS_Refresh_ALL_FIR_Statuses_AndArhiviraj((F2_Izlaz_UC)TheVvUC);
    }
    private void F2_Send_eRacune (object sender, EventArgs e) { /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
    private void F2_MAPaj        (object sender, EventArgs e) { /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection); }

@@ -221,4 +221,45 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
 
    #endregion FtrCI struct & InitializeSchemaColumnIndexes()
 
+   public static List<Xtrano> Get_Prijavljeno_MAP_XtranoList_For_FakRecID(XSqlConnection conn, uint fakRecID)
+   {
+      bool success = true;
+      Xtrano MAP_xtrano_rec = new Xtrano();
+      List<Xtrano> MAP_XtranoList = new List<Xtrano>();
+
+      ZXC.sqlErrNo = 0;
+
+      if(fakRecID.IsZero()) return MAP_XtranoList;
+
+      using(XSqlCommand cmd = (VvSQL.Get_Prijavljeno_MAP_XtranoList_For_FakRecID_Command(conn, fakRecID)))
+      {
+         try
+         {
+            using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult))
+            {
+               success = reader.HasRows;
+
+               while(success && reader.Read())
+               {
+                  MAP_xtrano_rec = new Xtrano();
+
+                  ZXC.XtranoDao.FillFromDataReader(MAP_xtrano_rec, reader, false);
+
+                  MAP_XtranoList.Add(MAP_xtrano_rec);
+               }
+               reader.Close();
+            }
+         }
+         catch(XSqlException ex)
+         {
+            success = false;
+            VvSQL.ReportSqlError("Get_Prijavljeno_MAP_XtranoList_For_FakRecID", ex, System.Windows.Forms.MessageBoxButtons.OK);
+
+            ZXC.sqlErrNo = ex.Number;
+         }
+      } // using 
+
+      return MAP_XtranoList;
+   }
+
 }

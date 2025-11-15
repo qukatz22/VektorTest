@@ -5059,6 +5059,20 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
           //F2_StatusCD == 3 || //  3, "Plaćen DIO"  // TODO: !!! ??? ne znamo da li kad je plaćen dio API vraca true ili false 
             F2_StatusCD == 2  ) //  2, "Plaćeno SVE" 
 
+            return true; 
+   
+         return false;
+      } 
+   }
+   public bool F2_HasNoSense_Refresh_MarkAsPaid_InfoColumns
+   { 
+      get 
+      {
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati MarkAsPaid_InfoColumns 
+
+         if(F2_StatusCD == 1 //|| //  1, "Odbijen"     
+          //F2_StatusCD == 3 ||   //  3, "Plaćen DIO"  // TODO: !!! ??? ne znamo da li kad je plaćen dio API vraca true ili false 
+          /*F2_StatusCD == 2*/)   //  2, "Plaćeno SVE" // TODO: ako je sve placeno, zelimo li i dalje vidjeti info kolone?
 
             return true; 
    

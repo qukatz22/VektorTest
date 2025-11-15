@@ -731,7 +731,7 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
 
    #endregion RISK comparation
 
-   public static List<Ftrans> Get_TodoMAP_FtransList_For_FakRecID(XSqlConnection conn, uint fakRecID)
+   public static List<Ftrans> Get_Naplaceno_OR_TodoMAP_FtransList_For_FakRecID(XSqlConnection conn, uint fakRecID, bool isTODO)
    {
       bool success = true;
       Ftrans todoMAP_ftrans_rec = new Ftrans();
@@ -741,7 +741,7 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
 
       if(fakRecID.IsZero()) return todoMAP_FtransList;
 
-      using(XSqlCommand cmd = (VvSQL.Get_TodoMAP_FtransList_For_FakRecID_Command(conn, fakRecID)))
+      using(XSqlCommand cmd = (VvSQL.Get_Naplaceno_OR_TodoMAP_FtransList_For_FakRecID_Command(conn, fakRecID, isTODO)))
       {
          try
          {
@@ -810,4 +810,5 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
 
       return todoMAP_FtransList;
    }
+
 }

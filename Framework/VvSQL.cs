@@ -7061,7 +7061,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   internal static XSqlCommand Get_TodoMAP_FtransList_For_FakRecID_Command(XSqlConnection conn, uint fakRecID)
+   internal static XSqlCommand Get_Naplaceno_OR_TodoMAP_FtransList_For_FakRecID_Command(XSqlConnection conn, uint fakRecID, bool isTODO)
    {
       XSqlCommand cmd = InitCommand(conn);
 
@@ -7076,7 +7076,7 @@ public static class VvSQL
 
             "WHERE ftr.t_otsKind = 2"                                             + "\n\n" +
             
-            "AND xtr.recID IS NULL   "                                            + "\n\n" +
+            (isTODO ? "AND xtr.recID IS NULL " : " ")                             + "\n\n" +
 
             "AND ftr.t_FakRecID = ?t_fakRecID "                                   + "\n\n" ;
 
@@ -7109,6 +7109,24 @@ public static class VvSQL
       return (cmd);
    }
 
+   internal static XSqlCommand Get_Prijavljeno_MAP_XtranoList_For_FakRecID_Command(XSqlConnection conn, uint fakRecID)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      // T_ttNum = MAPfaktur_rec.RecID
+
+      CreateCommandNamedParameter(cmd, "", "t_ttNum", fakRecID, ZXC.XtranoSchemaRows[ZXC.XtrCI.t_ttNum]);
+
+      cmd.CommandText = 
+
+            "SELECT xtr.* FROM xtrano xtr "     +  "\n\n" +
+
+            "WHERE xtr.t_tt = '" + Mixer.TT_MAP + "'\n\n" +
+            
+            "AND  xtr.t_ttNum = ?t_ttNum "      +  "\n\n" ;
+
+      return (cmd);
+   }
 
    #endregion MIXER specials
 
