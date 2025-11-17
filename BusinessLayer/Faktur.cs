@@ -4993,9 +4993,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan         - nema smisla osvjezavati status transporta 
-         if(F2_StatusCD == 40)        return true; // Delivered - konacan status - nema smisla osvjezavati status transporta 
-         if(F2_StatusCD == 45)        return true; // Canceled  - konacan status - nema smisla osvjezavati status transporta 
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan send API-em - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 40)        return true; // Delivered - konacan status     - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 45)        return true; // Canceled  - konacan status     - nema smisla osvjezavati status transporta 
 
          return false;
       } 
@@ -5004,8 +5004,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan         - nema smisla osvjezavati DPS - poslovni status 
-         if(F2_StatusCD == 45)        return true; // Canceled  - konacan status - nema smisla osvjezavati DPS - poslovni status 
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan send API-em - nema smisla osvjezavati DPS - poslovni status 
+         if(F2_StatusCD == 45)        return true; // Canceled  - konacan status     - nema smisla osvjezavati DPS - poslovni status 
 
          return false;
       } 
@@ -5015,8 +5015,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_IsFisk               ) return true; // već je fiskaliziran - nema smisla osvjezavati FISK status 
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati FISK status 
+         if(F2_IsFisk               ) return true; // već je fiskaliziran                                    - nema smisla osvjezavati FISK status 
+       //if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan                                     - nema smisla osvjezavati FISK status  ... gasimo jer F2_eIzvj nema electronicID a svejedno treba biti fiskaliziran 
+         if(F2_SentTS.IsEmpty()     ) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati FISK status 
    
          return false;
       } 
@@ -5026,7 +5027,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati FISK status 
+         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati REJECTion_Status 
 
          if(F2_StatusCD == 0 || //  0, "Prihvaćen"   
             F2_StatusCD == 1 || //  1, "Odbijen"     
@@ -5043,7 +5044,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati MarkAsPaid status 
+         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati MarkAsPaid_Status 
 
          if(F2_StatusCD == 1 || //  1, "Odbijen"     
           //F2_StatusCD == 3 || //  3, "Plaćen DIO"  // TODO: !!! ??? ne znamo da li kad je plaćen dio API vraca true ili false 
@@ -5058,7 +5059,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan  - nema smisla osvjezavati MarkAsPaid_InfoColumns 
+         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati MarkAsPaid_InfoColumns 
 
          if(F2_StatusCD == 1 //|| //  1, "Odbijen"     
           //F2_StatusCD == 3 ||   //  3, "Plaćen DIO"  // TODO: !!! ??? ne znamo da li kad je plaćen dio API vraca true ili false 
@@ -5074,9 +5075,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_IsARHIVED            ) return true; // već je arhiviran   - nema smisla pokušavati RECEIVE 4 arhiva
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan - nema smisla pokušavati RECEIVE 4 arhiva
-   
+         if(F2_IsARHIVED       ) return true; // već je arhiviran                                       - nema smisla pokušavati RECEIVE 4 arhiva 
+         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla pokušavati RECEIVE 4 arhiva 
+
          return false;
       } 
    }

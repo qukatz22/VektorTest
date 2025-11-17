@@ -29,7 +29,7 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 
 public static class Vv_eRacun_HTTP
 {
-   private const bool DEMO = true;
+   private const bool DEMO = false;
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -37,6 +37,7 @@ public static class Vv_eRacun_HTTP
    public const string VvMER_baseAddress_demo       = @"https://www-demo.moj-eracun.hr"; 
 
    public const string VvMER_webAddressPOST_Send            = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/send"                                 ; // POST 
+   public const string VvMER_webAddressPOST_eIzvj           = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/eReporting"                 ; // POST 
    public const string VvMER_webAddressPOST_Receive         = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/receive"                              ; // POST 
    public const string VvMER_webAddressPOST_QueryOutbox     = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryOutbox"                          ; // POST 
    public const string VvMER_webAddressPOST_QueryOutbox_DPS = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/queryDocumentProcessStatusOutbox"     ; // POST 
@@ -50,10 +51,11 @@ public static class Vv_eRacun_HTTP
    public const string VvPND_baseAddress_production = @"https://eracun.eposlovanje.hr"; 
    public const string VvPND_baseAddress_demo       = @"https://test.eposlovanje.hr"; 
 
-   public const string VvPND_webAddressPOST_Send            = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/send"    ; // POST 
-   public const string VvPND_webAddressPOST_outgoing        = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/outgoing"; // GET! 
-   public const string VvPND_webAddressGET_Ping             = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ping"             ; // GET! 
-   public const string VvPND_webAddressPOST_Check           = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ams/check"        ; // POST 
+   public const string VvPND_webAddressPOST_Send            = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/send"            ; // POST 
+   public const string VvPND_webAddressPOST_eIzvj           = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ereporting/reportdocument"; // POST 
+   public const string VvPND_webAddressPOST_outgoing        = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/document/outgoing"        ; // GET! 
+   public const string VvPND_webAddressGET_Ping             = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ping"                     ; // GET! 
+   public const string VvPND_webAddressPOST_Check           = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ams/check"                ; // POST 
 
    // MER authorisation parameters: 
    public static string VvMER_UserName   = DEMO ? "8633"    : ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
@@ -494,7 +496,7 @@ public static class Vv_eRacun_HTTP
 
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
 
-   //######################## https://www.moj-eracun.hr/apis/v2/send #########################################################################################################
+   //######################## https://www.moj-eracun.hr/apis/v2/send #############################################################################################################
    public static VvMER_Response_Data_AllActions VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
@@ -554,8 +556,57 @@ public static class Vv_eRacun_HTTP
       return webApiResult.ResponseData;
    }
 
+   //######################## F2_eIzvj API #######################################################################################################################################
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_eIzvj(string xmlString, DateTime _DeliveryDate, bool _IsCopy, string _InvoiceType)
+   {
+      string webServiceEndPointAddress = VvMER_webAddressPOST_eIzvj;
+
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions()
+      {
+         xmlInvoice   = xmlString,
+         DeliveryDate = _DeliveryDate,
+         IsCopy       = _IsCopy,
+         InvoiceType  = _InvoiceType
+      };
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult =
+
+         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         (
+            webServiceEndPointAddress,
+            jsonRequestString
+         );
+
+      return webApiResult.ResponseData;
+   }
+   public  static VvMER_Response_Data_AllActions VvPND_WebService_eIzvj(string xmlString, string _InvoiceType)
+   {
+      string webServiceEndPointAddress = VvPND_webAddressPOST_eIzvj;
+
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions()
+      {
+         document   = xmlString,
+         type       = _InvoiceType
+      };
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult =
+
+         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         (
+            webServiceEndPointAddress,
+            jsonRequestString,
+            VvPND_API_Key
+         );
+
+      return webApiResult.ResponseData;
+   }
+
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_TRN_Single(uint electronicID)
+   public static VvMER_Response_Data_AllActions VvMER_WebService_QueryOutbox_TRN_Single(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryOutbox;
 
@@ -614,7 +665,7 @@ public static class Vv_eRacun_HTTP
       return webApiResult.ResponseData;
    }
 
-   //######################## https://www.moj-eracun.hr/apis/v2/queryInbox - Status List ####################################################################################
+   //######################## https://www.moj-eracun.hr/apis/v2/queryInbox - Status List #########################################################################################
    public  static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryInbox_List(DateTime dateOD, DateTime dateDO)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_QueryInbox;
@@ -628,7 +679,7 @@ public static class Vv_eRacun_HTTP
       return webApiResult.ResponseData;
    }
 
-   //######################## https://www.moj-eracun.hr/api/fiscalization/status - Get 3 kind FISK status ##############################################################################
+   //######################## https://www.moj-eracun.hr/api/fiscalization/status - Get 3 kind FISK status ########################################################################
    public  static VvMER_Response_Data_AllActions VvMER_WebService_Get_FISK_Status(uint electronicID, string messageType)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_FiskStatus;
@@ -644,7 +695,7 @@ public static class Vv_eRacun_HTTP
       return responseData_AllActions;
    }
 
-   //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ##############################################################################
+   //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ####################################################################################
    public static VvMER_Response_Data_AllActions VvMER_WebService_Receive_XML(uint electronicID)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_Receive;
@@ -684,7 +735,7 @@ public static class Vv_eRacun_HTTP
       return responseData;
    }
 
-   //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ##############################################################################
+   //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ###################################################################################
    public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
    {
       string webServiceEndPointAddress = VvMER_webAddressGET_Ping;
@@ -714,7 +765,7 @@ public static class Vv_eRacun_HTTP
       return responseData_AllActions;
    }
 
-   //######################## https://www.moj-eracun.hr/api/mps/check - Check Identifier ##############################################################################
+   //######################## https://www.moj-eracun.hr/api/mps/check - Check Identifier #########################################################################################
    public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_CheckAMS(string _Identifiervalue)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_Check;
@@ -749,7 +800,7 @@ public static class Vv_eRacun_HTTP
       return webApiResult.ResponseData;
    }
 
-   //######################## https://www.moj-eracun.hr/api/fiscalization/markPaid - Mark Paid action ##############################################################################
+   //######################## https://www.moj-eracun.hr/api/fiscalization/markPaid - Mark Paid action ############################################################################
    public  static VvMER_Response_Data_AllActions VvMER_WebService_MAP(VvMER_Request_Data_AllActions request_Data_AllActions)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_MAP;
@@ -1905,6 +1956,22 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    [JsonPropertyName("File")]
    public string File { get; set; }
 
+   // eIzvj request specific properties - start 
+
+   [JsonPropertyName("xmlInvoice")]
+   public string xmlInvoice { get; set; }
+
+   [JsonPropertyName("DeliveryDate")]
+   public DateTime? DeliveryDate { get; set; }
+
+   [JsonPropertyName("IsCopy")]
+   public bool IsCopy { get; set; }
+
+   [JsonPropertyName("InvoiceType")]
+   public string InvoiceType { get; set; }
+
+   // eIzvj request specific properties -  end   
+
    [JsonPropertyName("Filter")]
    public string Filter { get; set; }
 
@@ -1960,6 +2027,9 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    [JsonPropertyName("schema")]
    public string schema { get; set; }
+
+   [JsonPropertyName("type")]
+   public string type { get; set; }
 
    #endregion PND specifics
 
