@@ -251,6 +251,7 @@ public struct FaktExStruct
    /*202 *//*internal*/ public DateTime _f2_sentTS     ;
    /*203 */ /*internal*/ public bool    _f2_isRejected ;
    /*204 */ /*internal*/ public bool    _f2_isMrkAsPaid;
+   /*205 */ /*internal*/ public ushort  _f2_AMSstatus  ;
                                     
 }
 
@@ -2168,18 +2169,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    /* 203 */ public  bool    F2_IsRejected   { get { return this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
-   public ZXC.FiskalKind F2_FiskalKind_R 
-   { 
-      get 
-      { 
-         if(TtInfo.IsIzlazniPdvTT == false) return ZXC.FiskalKind.Fisk_NE_no_API;
-         if(this.IsF1                     ) return ZXC.FiskalKind.Fisk_F1_no_API;
-
-         if(this.PdvGEOkind != ZXC.PdvGEOkindEnum.HR) return ZXC.FiskalKind.Fisk_NE_no_API;
-
-         return ZXC.FiskalKind.Fisk_F2_send_OR_eIzv_API;
-      } 
-   }   
+   /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.TheEx.currentData._f2_AMSstatus; } set { this.TheEx.currentData._f2_AMSstatus = (ushort)value; } }
 
    #endregion Data Layer Columns
 
@@ -5091,9 +5081,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       } 
    }
    public bool F2_IsARHIVED { get { return F2_ArhRecID.NotZero(); } }
-   public bool IsFX { get { return !IsF1 && !IsF2; } }
-   public bool IsF2 { get { return !IsF1 /*&& F2_IsAMS*/; } } // TODO: !!!!! 
-   public bool IsF1 { get { return IsFiskalDutyFaktur_ONLINE; } }
+
+   // ========================================================================================================================================================================= 
+   public bool IsF1       { get { return IsFiskalDutyFaktur_ONLINE; } }
+   public bool IsF2       { get { return !IsF1 && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } }
+   public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
+   public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
+   public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
+   public bool IsNoFX     { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } }
+
+   // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE
    { 
       get 
@@ -5877,6 +5874,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*202 */    this.currentData._f2_sentTS      = DateTime.MinValue;
       /*203 */    this.currentData._f2_isRejected  = false;
       /*204 */    this.currentData._f2_isMrkAsPaid = false;
+      /*205 */    this.currentData._f2_AMSstatus   = /*false*/0;
 
    }
 
@@ -6789,6 +6787,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
 
    /* 203 */ public  bool    F2_IsRejected   { get { return this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
+   /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.currentData._f2_AMSstatus; } set { this.currentData._f2_AMSstatus = (ushort)value; } }
 
    #endregion Data Layer Columns
 

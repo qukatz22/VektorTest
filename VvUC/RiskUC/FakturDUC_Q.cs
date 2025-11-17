@@ -3405,13 +3405,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 #endif
       #endregion Authorize M2PAY credit or debit card
 
-      if(faktur_rec.F2_FiskalKind_R == ZXC.FiskalKind.Fisk_F2_send_OR_eIzv_API)
+      if(faktur_rec.IsF2)
       {
          kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
 
          if(kupdob_rec != null)
          {
-            /*ZXC.AMSstatus AMSstatus =*/ KupdobDao.RefreshKupdob_AMSstatus(TheDbConnection, kupdob_rec);
+            ZXC.AMSstatus AMSstatus = KupdobDao.RefreshKupdob_AMSstatus(TheDbConnection, kupdob_rec);
+
+            faktur_rec.F2_AMSstatus = AMSstatus;
          }
       }
 

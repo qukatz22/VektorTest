@@ -954,6 +954,34 @@ public static class Vv_eRacun_HTTP
       List<Xtrano> MAP_prijavljenoXtranoList;
 
       #endregion Init
+      #region Refresh MarkAsPaid_InfoColumns
+
+      for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
+      {
+         F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
+
+         if(F2_IRn_faktur_rec.F2_HasNoSense_Refresh_MarkAsPaid_InfoColumns) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         MAP_naplacenoFtransList   = FtransDao.Get_Naplaceno_OR_TodoMAP_FtransList_For_FakRecID(theUC.TheDbConnection, F2_IRn_faktur_rec.RecID, false);
+         MAP_Ftr_naplacenoMoney    = MAP_naplacenoFtransList.Sum(ft => ft.T_pot);
+         MAP_Ftr_naplacenoCount    = MAP_naplacenoFtransList.Count;
+         MAP_prijavljenoXtranoList = XtranoDao.Get_Prijavljeno_MAP_XtranoList_For_FakRecID     (theUC.TheDbConnection, F2_IRn_faktur_rec.RecID       );
+         MAP_Xtr_prijavljenoMoney  = MAP_prijavljenoXtranoList.Sum(ft => ft.T_moneyA);
+         MAP_Xtr_prijavljenoCount  = MAP_prijavljenoXtranoList.Count;
+
+         MAP_Ftr_naplacenoStr      = MAP_Ftr_naplacenoCount   > 1 ? string.Format("({0}) {1}", MAP_Ftr_naplacenoCount  , MAP_Ftr_naplacenoMoney  .ToStringVv()) :
+                                                                                                                         MAP_Ftr_naplacenoMoney  .ToStringVv()  ; 
+         MAP_Xtr_prijavljenoStr    = MAP_Xtr_prijavljenoCount > 1 ? string.Format("({0}) {1}", MAP_Xtr_prijavljenoCount, MAP_Xtr_prijavljenoMoney.ToStringVv()) :
+                                                                                                                         MAP_Xtr_prijavljenoMoney.ToStringVv()  ;
+
+         theUC.TheG.PutCell(theUC.DgvCI.iT_uplata    , rIdx, MAP_Ftr_naplacenoStr  );
+         theUC.TheG.PutCell(theUC.DgvCI.iT_markPaid  , rIdx, MAP_Xtr_prijavljenoStr);
+         theUC.TheG.PutCell(theUC.DgvCI.iT_razlikaUpl, rIdx, MAP_Ftr_naplacenoMoney - MAP_Xtr_prijavljenoMoney);
+
+      } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+
+      #endregion Refresh MarkAsPaid_InfoColumns
+
 
       #region Refresh TRN status
 
