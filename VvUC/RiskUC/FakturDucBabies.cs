@@ -9187,13 +9187,21 @@ public class F2_Izlaz_UC : VvUserControl
          else  /*ako su uplata i prijava rzalicite onda je crveno*/         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_red;
       }
 
-      if(isF1)
+      if(isF1 || faktur_rec.IsNoFX)
       {
          TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"   ]).Value = img_empty;
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["ams"]).Value = img_empty;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["ams"   ]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"   ]).Value = img_empty;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"   ]).Value = img_empty;
+
+         TheG.PutCell(ci.iT_electrID   , rowIdx, "");
+         TheG.PutCell(ci.iT_dateSlanja , rowIdx, "");
+         TheG.PutCell(ci.iT_status     , rowIdx, "");
+         TheG.PutCell(ci.iT_uplata     , rowIdx, "");
+         TheG.PutCell(ci.iT_markPaid   , rowIdx, "");
+         TheG.PutCell(ci.iT_razlikaUpl , rowIdx, "");
       }
 
       if(faktur_rec.F2_ElectronicID.IsZero()) TheG.Rows[rowIdx].Cells[ci.iT_electrID].Value = "";
