@@ -772,7 +772,7 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
       return todoMAP_FtransList;
    }
 
-   public static List<Ftrans> Get_TodoMAP_FtransList(XSqlConnection conn)
+   public static List<Ftrans> Get_MAP_FtransList(XSqlConnection conn)
    {
       bool success = true;
       Ftrans todoMAP_ftrans_rec = new Ftrans();
@@ -780,7 +780,7 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
 
       ZXC.sqlErrNo = 0;
 
-      using(XSqlCommand cmd = (VvSQL.Get_TodoMAP_FtransList_Command(conn)))
+      using(XSqlCommand cmd = (VvSQL.Get_MAP_FtransList_Command(conn)))
       {
          try
          {

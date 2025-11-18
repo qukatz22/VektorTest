@@ -5091,6 +5091,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
    public bool IsNoFX     { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } }
 
+   public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
+   public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
+
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE
    { 

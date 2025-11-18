@@ -815,7 +815,20 @@ public static class Vv_eRacun_HTTP
 
       return responseData_AllActions;
    }
+   public  static VvMER_Response_Data_AllActions VvMER_WebService_MAP_WO_eID(VvMER_Request_Data_AllActions request_Data_AllActions)
+   {
+      string webServiceEndPointAddress = VvMER_webAddressPOST_MAP_WO_eID;
 
+    //VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID) { MessageType = messageType }; 
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webServiceEndPointAddress, jsonRequestString);
+
+      VvMER_Response_Data_AllActions responseData_AllActions = webApiResult.ResponseData.NotEmpty() ? webApiResult.ResponseData.FirstOrDefault() : null;
+
+      return responseData_AllActions;
+   }
 
 
    // ########################################################################################################################################################################
@@ -1375,7 +1388,7 @@ public static class Vv_eRacun_HTTP
    }
    /* DDD */internal static void Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC, XSqlConnection conn)
    {
-      #region Init & Get Dialog Fields AND Create MAP_requestDataList in 2 (nested) foreach loops
+      #region Init & Get Dialog Fields AND Create MAP_requestDataList 
 
       //if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
 
@@ -1393,14 +1406,17 @@ public static class Vv_eRacun_HTTP
                                      // ”O” – Obracunsko placanje 
                                      // ”Z” – Ostalo              
 
-    //paymentftransList = FtransDao.Get_TodoMAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
-      paymentftransList = FtransDao.Get_TodoMAP_FtransList             (conn                               ); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+    //paymentftransList = FtransDao.Get_MAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
+      paymentftransList = FtransDao.Get_MAP_FtransList             (conn                               ); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      
+      VvMER_Request_Data_AllActions MAP_requestData;
 
       foreach(Ftrans paymentftrans_rec in paymentftransList)
       {
          MAP_CandidateFaktur_rec = new Faktur();
 
-         if(paymentftrans_rec.T_fakRecID.NotZero())
+         if(paymentftrans_rec.T_fakRecID.NotZero()) // TODO !!! tu treba implementirati ZXC public static (int year, uint recID) GetYearAndRecIDFrom_YYandRecID(uint YYandRecID) 
+                                                    // TODO je i prilagoditi Nalog_PS() da salje i T_fakRecID u tom formatu                                                      
          {
             MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
          }
@@ -1416,21 +1432,43 @@ public static class Vv_eRacun_HTTP
             continue; 
          }
 
-         VvMER_Request_Data_AllActions MAP_requestData = new VvMER_Request_Data_AllActions()
-         {
-            //Faktur        = MAP_CandidateFaktur_rec                ,
-            //Ftrans        = paymentftrans_rec                      ,
+         if(MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID) // imamo Electronic id ... bilo je F2send 
+         { 
+            MAP_requestData = new VvMER_Request_Data_AllActions()
+            {
+               ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
+               PaymentDate   = paymentftrans_rec.T_dokDate            ,
+               PaymentAmount = paymentftrans_rec.T_pot                ,
+               PaymentMethod = thePaymentMethod
+            };
+         }
+         else if(MAP_CandidateFaktur_rec.Is_MAP_without_ElectronicID) // NEMAMO Electronic id ...bilo je F2eIzvj 
+         { 
+            MAP_requestData = new VvMER_Request_Data_AllActions()
+            {
+               InternalMark             = MAP_CandidateFaktur_rec.TtNumFiskal,
+               IssueDate                = MAP_CandidateFaktur_rec.DokDate    ,
+               SenderIdentifierValue    = ZXC.CURR_prjkt_rec.Oib             ,
+               RecipientIdentifierValue = MAP_CandidateFaktur_rec.KdOib      ,
 
-            ElectronicId = MAP_CandidateFaktur_rec.F2_ElectronicID,
-            PaymentDate = paymentftrans_rec.T_dokDate,
-            PaymentAmount = paymentftrans_rec.T_pot,
-            PaymentMethod = thePaymentMethod
-         };
+               PaymentDate              = paymentftrans_rec.T_dokDate        ,
+               PaymentAmount            = paymentftrans_rec.T_pot            ,
+               PaymentMethod            = thePaymentMethod
+            };
+         }
+         else
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Faktura MAP kind je nedefiniran!?\n\r\n\rFtrans:\n\r\n\r{0}\n\r\n\rFaktur:\n\r\n\r{1}", 
+               paymentftrans_rec, MAP_CandidateFaktur_rec);
+            continue;
+         }
 
          MAP_ActionsList.Add((MAP_requestData, paymentftrans_rec, MAP_CandidateFaktur_rec));
 
          messageList.Add(new VvReportSourceUtil()
          {
+            IsNekakav  = MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID,
+
             TheCD      = MAP_CandidateFaktur_rec.TipBr,
             DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
             KupdobName = MAP_CandidateFaktur_rec.KupdobName,
@@ -1443,7 +1481,8 @@ public static class Vv_eRacun_HTTP
             String4    = paymentftrans_rec.T_opis,
             String5    = paymentftrans_rec.T_konto,
          });
-      }
+
+      } // foreach(Ftrans paymentftrans_rec in paymentftransList) 
 
       VvMessageBoxDLG  MAP_CandidatesFtransList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_MAP_candidates);
       MAP_CandidatesFtransList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
@@ -1481,7 +1520,7 @@ public static class Vv_eRacun_HTTP
 
       Xtrano F2_MAP_Xtrano_rec;
 
-      #endregion Init & Get Dialog Fields AND Create MAP_requestDataList in 2 (nested) foreach loops
+      #endregion Init & Get Dialog Fields AND Create MAP_requestDataList 
 
       #region The MAP API Loop - foreach MAP_requestData
 
@@ -1491,7 +1530,8 @@ public static class Vv_eRacun_HTTP
 
          #region call the MAP API
 
-         responseData = WS_Mark_Paid_WithElectronicID(MAP_Action.request);
+         responseData = WS_Mark_Paid_With_OR_Without_ElectronicID(MAP_Action.request, MAP_Action.faktur.Is_MAP_with_ElectronicID);
+
          MAP_OK       = (responseData != null);
 
          if(MAP_OK)
@@ -1802,7 +1842,7 @@ public static class Vv_eRacun_HTTP
 
       return 0;
    }
-   private static VvMER_Response_Data_AllActions WS_Mark_Paid_WithElectronicID(VvMER_Request_Data_AllActions MAP_requestData)
+   private static VvMER_Response_Data_AllActions WS_Mark_Paid_With_OR_Without_ElectronicID(VvMER_Request_Data_AllActions MAP_requestData, bool isWithElectronicID)
    {
       VvMER_Response_Data_AllActions responseData = null;
       bool MAP_OK = true;
@@ -1813,7 +1853,8 @@ public static class Vv_eRacun_HTTP
          {
             try
             {
-               responseData = Vv_eRacun_HTTP.VvMER_WebService_MAP(MAP_requestData);
+               if(isWithElectronicID) responseData = Vv_eRacun_HTTP.VvMER_WebService_MAP       (MAP_requestData);
+               else                   responseData = Vv_eRacun_HTTP.VvMER_WebService_MAP_WO_eID(MAP_requestData);
 
                if(responseData == null) MAP_OK = false;
             }
@@ -1995,6 +2036,19 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
 
    [JsonPropertyName("PaymentMethod")]
    public string PaymentMethod { get; set; }
+
+   [JsonPropertyName("IssueDate")]
+   public DateTime? IssueDate { get; set; }
+
+   [JsonPropertyName("InternalMark")]
+   public string InternalMark { get; set; }
+
+   [JsonPropertyName("SenderIdentifierValue")]
+   public string SenderIdentifierValue { get; set; }
+
+   [JsonPropertyName("RecipientIdentifierValue")]
+   public string RecipientIdentifierValue { get; set; }
+
 
    // Query date range
    [JsonPropertyName("From")]

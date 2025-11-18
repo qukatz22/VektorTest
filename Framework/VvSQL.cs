@@ -7083,7 +7083,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   internal static XSqlCommand Get_TodoMAP_FtransList_Command(XSqlConnection conn)
+   internal static XSqlCommand Get_MAP_FtransList_Command(XSqlConnection conn)
    {
       XSqlCommand cmd = InitCommand(conn);
 
