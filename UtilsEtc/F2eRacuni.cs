@@ -340,6 +340,8 @@ public static class Vv_eRacun_HTTP
          {
             string responseJson = streamReader.ReadToEnd();
 
+            webApiResult.ResponseJson = responseJson;
+
             if(!string.IsNullOrEmpty(responseJson))
             {
                try
@@ -497,7 +499,7 @@ public static class Vv_eRacun_HTTP
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
 
    //######################## https://www.moj-eracun.hr/apis/v2/send #############################################################################################################
-   public static VvMER_Response_Data_AllActions VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public static WebApiResult<VvMER_Response_Data_AllActions> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
       // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
@@ -532,7 +534,7 @@ public static class Vv_eRacun_HTTP
             //fullPath_XML_FileName.Replace(".xml", "_RES.xml")
          );
 
-      return webApiResult.ResponseData;
+      return webApiResult/*.ResponseData*/;
    }
    public  static VvMER_Response_Data_AllActions VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
@@ -557,7 +559,7 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## F2_eIzvj API #######################################################################################################################################
-   public  static VvMER_Response_Data_AllActions VvMER_WebService_eIzvj(string xmlString, DateTime _DeliveryDate, bool _IsCopy, string _InvoiceType)
+   public  static WebApiResult<VvMER_Response_Data_AllActions> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_eIzvj(string xmlString, DateTime _DeliveryDate, bool _IsCopy, string _InvoiceType)
    {
       string webServiceEndPointAddress = VvMER_webAddressPOST_eIzvj;
 
@@ -579,7 +581,7 @@ public static class Vv_eRacun_HTTP
             jsonRequestString
          );
 
-      return webApiResult.ResponseData;
+      return webApiResult/*.ResponseData*/;
    }
    public  static VvMER_Response_Data_AllActions VvPND_WebService_eIzvj(string xmlString, string _InvoiceType)
    {
@@ -2378,6 +2380,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 public class WebApiResult<T>
 {
    public T ResponseData            { get; set; }
+   public string ResponseJson       { get; set; }
    public int? StatusCode           { get; set; }
    public string StatusDescription  { get; set; }
    public string ErrorBody          { get; set; }
