@@ -65,7 +65,7 @@ public static class Vv_eRacun_HTTP
 
    // PND authorisation parameters: 
    public static string VvPND_API_Key    = "1042a7915a7f66a23a8e0e98d93cb44c6d968263638a8cec54e07cb5abc2ae2f";
-   public static string VvPND_CompanyId  = ZXC.CURR_prjkt_rec.Oib;
+   public static string VvPND_CompanyId  = ZXC.CURR_prjkt_rec.Oib/*"12345676543"*/;
    public const  string VvPND_SoftwareId = "Vektor-001"          ;
 
    public static readonly Dictionary</*string*/int, string> MER_TransportStatuses = new Dictionary</*string*/int, string>
@@ -534,9 +534,9 @@ public static class Vv_eRacun_HTTP
             //fullPath_XML_FileName.Replace(".xml", "_RES.xml")
          );
 
-      return webApiResult/*.ResponseData*/;
+      return webApiResult;
    }
-   public  static VvMER_Response_Data_AllActions VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public  static WebApiResult<VvMER_Response_Data_AllActions> VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       string webServiceEndPointAddress = VvPND_webAddressPOST_Send;
 
@@ -555,7 +555,7 @@ public static class Vv_eRacun_HTTP
             VvPND_API_Key
          );
 
-      return webApiResult.ResponseData;
+      return webApiResult;
    }
 
    //######################## F2_eIzvj API #######################################################################################################################################
@@ -581,9 +581,9 @@ public static class Vv_eRacun_HTTP
             jsonRequestString
          );
 
-      return webApiResult/*.ResponseData*/;
+      return webApiResult;
    }
-   public  static VvMER_Response_Data_AllActions VvPND_WebService_eIzvj(string xmlString, string _InvoiceType)
+   public  static WebApiResult<VvMER_Response_Data_AllActions> VvPND_WebService_eIzvj(string xmlString, string _InvoiceType)
    {
       string webServiceEndPointAddress = VvPND_webAddressPOST_eIzvj;
 
@@ -604,7 +604,7 @@ public static class Vv_eRacun_HTTP
             VvPND_API_Key
          );
 
-      return webApiResult.ResponseData;
+      return webApiResult;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
@@ -2385,6 +2385,55 @@ public class WebApiResult<T>
    public string StatusDescription  { get; set; }
    public string ErrorBody          { get; set; }
    public string ExceptionMessage   { get; set; }
+
+   public List<string> MessageList 
+   { 
+      get
+      {
+         List<string> messageList = new List<string>();
+         string messageLine;
+
+         if(ResponseJson.NotEmpty())
+         {
+            messageList.Add("Response Json:");
+            foreach(string line in ResponseJson.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+               messageLine = $"    {line}";
+               messageList.Add(messageLine);
+            }
+         }
+         if(StatusCode.HasValue)
+         {
+            messageLine = $"StatusCode: {StatusCode}";
+            messageList.Add(messageLine);
+         }
+         if(!string.IsNullOrEmpty(StatusDescription))
+         {
+            messageLine = $"StatusDescription: {StatusDescription}";
+            messageList.Add(messageLine);
+         }
+         if(ErrorBody.NotEmpty())
+         {
+            messageList.Add("ErrorBody:");
+            foreach(string line in ErrorBody.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+               messageLine = $"    {line}";
+               messageList.Add(messageLine);
+            }
+         }
+         if(ExceptionMessage.NotEmpty())
+         {
+            messageList.Add("ExceptionMessage:");
+            foreach(string line in ExceptionMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+               messageLine = $"    {line}";
+               messageList.Add(messageLine);
+            }
+         }
+
+         return messageList;
+      }
+   }
 }
 
 #endregion Bussiness Classes for JSON Request/Response

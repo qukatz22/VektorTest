@@ -1373,6 +1373,12 @@ public /*partial*/ class RptR_IRA : VvRiskReport
          ThePosJedList.Add(VvUserControl.KupdobSifrar.SingleOrDefault(kpdb => kpdb.KupdobCD == faktur_rec.PosJedCD));
       }
 
+      // 20.11.2025:|
+      if(VvUserControl.ArtiklSifrar == null || VvUserControl.ArtiklSifrar.Count.IsZero())
+      {
+         theDUC.SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.None);
+      }
+      
       TheArtiklList = VvUserControl.ArtiklSifrar.Join(TheRtransList, art => art.ArtiklCD, rtr => rtr.T_artiklCD, (art, rtr) => art).Distinct().ToList();
 
       if(RptFilter.PFD != null && (RptFilter.PFD.Dsc_R_mjMasaN || RptFilter.PFD.Dsc_OnlyArtiklLongOpis))
