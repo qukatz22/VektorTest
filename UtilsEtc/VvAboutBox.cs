@@ -623,7 +623,7 @@ public class VvAboutBox : DotNetMagicForm
 public class VvMessageBoxDLG :  VvDialog
 {
    public  VvMessageBox_UC TheUC { get; set; }
-   public Button okButton, cancelButton;
+   public Button okButton, cancelButton, sendTosupportButton;
    private int dlgWidth, dlgHeight;
 
    public VvMessageBoxDLG(bool _smallFont, ZXC.VvmBoxKind vvmBoxKind)
@@ -656,8 +656,14 @@ public class VvMessageBoxDLG :  VvDialog
          AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
          okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
+      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_webApiResults)
+      {
+         AddSendCancelButtons(out sendTosupportButton, out cancelButton, dlgWidth, dlgHeight);
+         sendTosupportButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+         sendTosupportButton.Click += new EventHandler(MailToSupport_Click);
+      }
       else
-      { 
+      {
          AddOkButton(out okButton, dlgWidth, dlgHeight);
          okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
@@ -680,6 +686,35 @@ public class VvMessageBoxDLG :  VvDialog
       ResumeLayout();
 
    }
+   
+   private void MailToSupport_Click(object sender, EventArgs e)
+   {
+   //   VvMailClient mailClient = new VvMailClient();
+   //   
+   // //mailClient.EmailFromPasswd      = ZXC.SkyLabEmailPassword;
+   // //mailClient.MailHost             = ZXC.ViperMailHost      ;
+   // //mailClient.EmailFromAddress     = 
+   // //mailClient.EmailFromUserName    = ZXC.SkyLabEmailAddress ;
+   // //mailClient.EmailFromDisplayName = ZXC.VvDeploymentSite + " VvException";
+   //
+   // //mailClient.PortNo               = Fld_Port               ;
+   // //mailClient.EnableSSL            = Fld_UseSSL             ;
+   // //mailClient.IsCcToMySelf         = Fld_PoslajiKopijuSebi  ;
+   //
+   //   mailClient.SetVvSupportMailData(" VvException");
+   //
+   //   mailClient.MessageSubject = Fld_exceptionMessage;
+   //
+   //   mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r", 
+   //      ZXC.TheVvForm.Text, 
+   //      ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
+   //      ZXC.TheVvForm.TheVvUC.ToString());
+   //
+   //   mailClient.MessageBody += TextForClipboard;
+   //
+   //   mailClient.SendMail_Normal(true, ZXC.VektorEmailAddress);
+   }
+
 }
 
 public class VvMessageBox_UC : UserControl

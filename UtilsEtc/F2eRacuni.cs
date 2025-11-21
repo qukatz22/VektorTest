@@ -14,6 +14,8 @@ using System.Reflection;
 using System.Net.Http.Headers;
 using CrystalDecisions.Shared;
 using System.Net.Security;
+using System.Drawing;
+
 
 
 
@@ -1319,6 +1321,8 @@ public static class Vv_eRacun_HTTP
          theUC.TheG.PutCell(theUC.DgvCI.iT_uplata    , rIdx, MAP_Ftr_naplacenoStr  );
          theUC.TheG.PutCell(theUC.DgvCI.iT_markPaid  , rIdx, MAP_Xtr_prijavljenoStr);
          theUC.TheG.PutCell(theUC.DgvCI.iT_razlikaUpl, rIdx, MAP_Ftr_naplacenoMoney - MAP_Xtr_prijavljenoMoney);
+
+         if((MAP_Ftr_naplacenoMoney - MAP_Xtr_prijavljenoMoney).NotZero()) (theUC.TheG.Rows[rIdx].Cells[theUC.DgvCI.iT_razlikaUpl]).Style.ForeColor = Color.Red;
 
       } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
 

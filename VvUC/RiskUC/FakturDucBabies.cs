@@ -9176,15 +9176,13 @@ public class F2_Izlaz_UC : VvUserControl
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
       }
 
-
       if(faktur_rec.F2_IsMarkAsPaid)
       { 
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_green;
       } 
       else
       {
-         if((TheG.Rows[rowIdx].Cells[ci.iT_uplata]).Value.ToString() == "") ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_empty;
-         else  /*ako su uplata i prijava rzalicite onda je crveno*/         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_red;
+         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["map"]).Value = img_red;
       }
 
       if(isF1 || faktur_rec.IsNoFX)
