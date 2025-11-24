@@ -1061,8 +1061,6 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
       WebApiResult<VvMER_Response_Data_AllActions> webApiResult; // za MER 
 
-      VvMER_Response_Data_AllActions response_Data_CheckAMS;     // za PND 
-
       bool refreshStatusOK = true;
 
       ZXC.AMSstatus refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT;
@@ -1099,15 +1097,15 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
             try
             {
-               response_Data_CheckAMS = Vv_eRacun_HTTP.VvPND_WebService_CheckAMS(kupdob_rec.Oib);
+               webApiResult = Vv_eRacun_HTTP.VvPND_WebService_CheckAMS(kupdob_rec.Oib);
 
-               if(response_Data_CheckAMS == null)
+               if(webApiResult == null || webApiResult.ResponseData == null)
                {
                   refreshStatusOK = false;
                }
                else
                {
-                  refreshedAMSstatus = (bool)response_Data_CheckAMS.publishedOnAms ? ZXC.AMSstatus.U_AMSu_JE : ZXC.AMSstatus.NIJE_U_AMSu;
+                  refreshedAMSstatus = (bool)webApiResult.ResponseData.publishedOnAms ? ZXC.AMSstatus.U_AMSu_JE : ZXC.AMSstatus.NIJE_U_AMSu;
                }
             }
             catch(Exception ex)

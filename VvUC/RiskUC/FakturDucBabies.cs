@@ -8906,36 +8906,24 @@ public class F2_Izlaz_UC : VvUserControl
    public F2_Izlaz_UC(Control _parent, VvForm.VvSubModul vvSubModul)
    {
       this.SuspendLayout();
-      
-      this.Parent = _parent;
-      this.Dock   = DockStyle.Fill;
 
-      SetColors(); 
+      this.Parent = _parent;
+      this.Dock = DockStyle.Fill;
+
+      SetColors();
 
       CreateTheGrid();
       this.ResumeLayout();
 
       CreateColumn(TheG);
 
-    //this.ResumeLayout();
+      //this.ResumeLayout();
 
       SetColumnIndexes();
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
-      /* AAA */Vv_eRacun_HTTP.Load_IRn_FakturList                               (this);
-
-      if(ZXC.RRD.Dsc_F2_IsAutoSend)
-      { 
-      /* BBB */Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection);
-      }
-
-      /* CCC */Vv_eRacun_HTTP.WS_Refresh_ALL_FIR_Statuses_AndArhiviraj          (this); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
-
-      if(ZXC.RRD.Dsc_F2_IsAutoMAP)
-      { 
-      /* DDD */Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   (this, TheDbConnection);
-      }
+      INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
 
       //PutDgvFields();
 
@@ -8943,6 +8931,32 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.ClearSelection();
 
       TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
+   }
+
+   internal void INIT_FIR()
+   {
+      Vv_eRacun_HTTP.InitProjectData();
+
+      int newsCount = 0;
+
+      /* AAA */ newsCount += Vv_eRacun_HTTP.Load_IRn_FakturList(this);
+
+      if(ZXC.RRD.Dsc_F2_IsAutoSend)
+      {
+      /* BBB */ newsCount += Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection);
+      }
+
+      /* CCC */ newsCount += Vv_eRacun_HTTP.WS_Refresh_ALL_FIR_Statuses_AndArhiviraj(this); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
+
+      if(ZXC.RRD.Dsc_F2_IsAutoMAP)
+      {
+      /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, TheDbConnection);
+      }
+
+      if(newsCount.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
+      }
    }
 
    #endregion Constructor
