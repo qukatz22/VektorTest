@@ -116,9 +116,13 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
          "m2pSerno         varchar(16)         NOT NULL default ''   ,\n" +
          "m2pModel         varchar(16)         NOT NULL default ''   ,\n" +
          "f2_Provider      tinyint(1) unsigned NOT NULL default '0'  ,\n" +
+         "f2_RolaKind      tinyint(1) unsigned NOT NULL default '0'  ,\n" +
 
          ""
       );
+
+      // !!! PAZI NA 'commaOrNot' u ALTER_TABLE_ForCatchUp_Command !!! 
+
    }
 
    #endregion CreateTablePrjkt
@@ -206,6 +210,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.M2Pmodel                , TheSchemaTable.Rows[CI.m2pModel]   );
 
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_Provider             , TheSchemaTable.Rows[CI.f2_Provider]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_RolaKind             , TheSchemaTable.Rows[CI.f2_RolaKind]);
 
    }
 
@@ -257,6 +262,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       rdrData._m2pModel  = reader.GetString(CI.m2pModel );
 
       rdrData._f2_Provider = reader.GetUInt16(CI.f2_Provider);
+      rdrData._f2_RolaKind = reader.GetUInt16(CI.f2_RolaKind);
 
       #region Tu budalasaš dok ne savladas tehniku ucitavanja slika...
 
@@ -449,6 +455,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       internal int m2pSerno        ;
       internal int m2pModel        ;
       internal int f2_Provider     ;
+      internal int f2_RolaKind     ;
 
       internal int origRecID;
       internal int recVer;
@@ -531,6 +538,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       CI.m2pSerno        = GetSchemaColumnIndex("m2pSerno" );
       CI.m2pModel        = GetSchemaColumnIndex("m2pModel" );
       CI.f2_Provider     = GetSchemaColumnIndex("f2_Provider");
+      CI.f2_RolaKind     = GetSchemaColumnIndex("f2_RolaKind");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");

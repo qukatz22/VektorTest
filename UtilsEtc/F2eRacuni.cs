@@ -1084,7 +1084,6 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
 
-    //if(webApiResultWithList == null) return;
       if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxTRNstatusList);
@@ -1152,7 +1151,11 @@ public static class Vv_eRacun_HTTP
 
       webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate);
 
-      if(webApiResultWithList == null) return 0;
+      if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      {
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxDPSstatusList);
+         return 0;
+      }
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
 

@@ -89,6 +89,7 @@ public struct PrjktExtensionStruct
    internal string _m2pModel ;
 
    internal ushort _f2_Provider;
+   internal ushort _f2_RolaKind;
 
 }
 
@@ -194,6 +195,7 @@ public class Prjkt : Kupdob
       this.currentExtData._m2pModel  = "";
 
       this.currentExtData._f2_Provider = 0;
+      this.currentExtData._f2_RolaKind = 0;
 
       sorterKCD = Kupdob.sorterKCD;
       sorterCity    = Kupdob.sorterCity;
@@ -606,6 +608,7 @@ public class Prjkt : Kupdob
    public string M2Pmodel  { get { return this.currentExtData._m2pModel ; } set { this.currentExtData._m2pModel  = value; } }
 
    public ZXC.F2_Provider_enum F2_Provider { get { return (ZXC.F2_Provider_enum)this.currentExtData._f2_Provider; } set { this.currentExtData._f2_Provider = (ushort)value; } }
+   public ZXC.F2_RolaKind_enum F2_RolaKind { get { return (ZXC.F2_RolaKind_enum)this.currentExtData._f2_RolaKind; } set { this.currentExtData._f2_RolaKind = (ushort)value; } }
 
 
    // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 

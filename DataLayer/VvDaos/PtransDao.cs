@@ -863,12 +863,11 @@ public sealed class PtransDao : VvDaoBase, IVvDao
       ptransSumRec_beta14.T_stPorez2    = thisPersonWholeYearPtransList.First().T_stPorez2 /*ptransSumRec_alfa13.T_stPorez2*/;
 
       //novost od obracuna za 2025. - mjenjale su se stope poreza i treba uzeti zadnju!!!! ako se tako želi a ako ne (Filip HZTK) - onda bi trebalo jednako kao na ptransu a ne fist ili last
-      if(ZXC.projectYearAsInt > 2024 /*&&  hoću/neću uzeti zadnju stopu!!!*/)
+      if(ZXC.projectYearAsInt >= 2025 /*&&  hoću/neću uzeti zadnju stopu!!!*/)
       { 
          ptransSumRec_beta14.T_stPorez1 = thisPersonWholeYearPtransList.Last().T_stPorez1 /*ptransSumRec_alfa13.T_stPorez1*/;
          ptransSumRec_beta14.T_stPorez2 = thisPersonWholeYearPtransList.Last().T_stPorez2 /*ptransSumRec_alfa13.T_stPorez2*/;
       }
-
 
       ptransSumRec_beta14.R_Odbitak     = ZakonomDozvoljenFondOdbitka(personRowOfCurrentTrans, thisPersonWholeYearPtransList, pR);
       

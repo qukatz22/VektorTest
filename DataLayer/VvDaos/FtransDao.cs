@@ -44,7 +44,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
 
    #region CreateTableFtrans
 
-   public static   uint TableVersionStatic { get { return 9; } }
+   public static   uint TableVersionStatic { get { return 10; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -76,6 +76,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
          /* 22 */  "t_fond      char(1)              NOT NULL default ''    ,\n" +
          /* 23 */  "t_pozicija  varchar(32)          NOT NULL default ''    ,\n" +
          /* 24 */  "t_progAktiv varchar(32)          NOT NULL default ''    ,\n" +
+         /* 25 */  "t_fakYear   int(4)      unsigned NOT NULL default '0'   ,\n" +
 
           "PRIMARY KEY                   (recID)                                                 ,\n" +
           /*"UNIQUE*/" KEY BY_LINKER     (t_parentID, t_serial)                                  ,\n" +
@@ -118,6 +119,8 @@ public sealed class FtransDao : VvDaoBase, IVvDao
          case 8: return ("ADD COLUMN t_progAktiv  varchar(32)          NOT NULL default ''  AFTER t_pozicija    ;\n");
 
          case 9: return ("MODIFY COLUMN t_konto     char(9)           NOT NULL default ''                       ;\n");
+
+        case 10: return ("ADD COLUMN t_fakYear   int(4)      unsigned NOT NULL default '0'   AFTER t_progAktiv  ;\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -174,7 +177,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
       /* 22 */ VvSQL.CreateCommandParameter(cmd, preffix, ftrans.T_fond     , TheSchemaTable.Rows[CI.t_fond     ]);
       /* 23 */ VvSQL.CreateCommandParameter(cmd, preffix, ftrans.T_pozicija , TheSchemaTable.Rows[CI.t_pozicija ]);
       /* 24 */ VvSQL.CreateCommandParameter(cmd, preffix, ftrans.T_progAktiv, TheSchemaTable.Rows[CI.t_progAktiv]);
-
+      /* 25 */ VvSQL.CreateCommandParameter(cmd, preffix, ftrans.T_fakYear  , TheSchemaTable.Rows[CI.t_fakYear]  );
       }
 
    }
@@ -219,6 +222,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
       /* 22 */      rdrData._t_fond       = reader.GetString  (CI.t_fond);
       /* 23 */      rdrData._t_pozicija   = reader.GetString  (CI.t_pozicija);
       /* 24 */      rdrData._t_progAktiv  = reader.GetString  (CI.t_progAktiv);
+      /* 25 */      rdrData._t_fakYear    = reader.GetUInt32  (CI.t_fakYear);
 
       ((Ftrans)vvDataRecord).CurrentData = rdrData;
 
@@ -257,6 +261,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
    /* 22 */   internal int  t_fond     ;
    /* 23 */   internal int  t_pozicija ;
    /* 24 */   internal int  t_progAktiv;
+   /* 25 */   internal int  t_fakYear  ;
    }
 
    /// <summary>
@@ -296,6 +301,7 @@ public sealed class FtransDao : VvDaoBase, IVvDao
       CI.t_fond      = GetSchemaColumnIndex("t_fond");
       CI.t_pozicija  = GetSchemaColumnIndex("t_pozicija");
       CI.t_progAktiv = GetSchemaColumnIndex("t_progAktiv");
+      CI.t_fakYear   = GetSchemaColumnIndex("t_fakYear");
    }
 
    #endregion FtrCI struct & InitializeSchemaColumnIndexes()

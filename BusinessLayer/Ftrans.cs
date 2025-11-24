@@ -32,6 +32,8 @@ public struct FtransStruct
    /* 22 */   internal string    _t_fond     ;
    /* 23 */   internal string    _t_pozicija ;
    /* 24 */   internal string    _t_progAktiv;
+   /* 25 */   internal uint      _t_fakYear  ;
+
 }
 
 #endregion struct FtransStruct
@@ -97,6 +99,7 @@ public class Ftrans : VvTransRecord
       /* 22 */      this.currentData._t_fond      = "";
       /* 23 */      this.currentData._t_pozicija  = "";
       /* 24 */      this.currentData._t_progAktiv = "";
+      /* 25 */      this.currentData._t_fakYear   = 0;
    }
 
    #endregion Constructors
@@ -411,6 +414,13 @@ public class Ftrans : VvTransRecord
    {
       get { return this.currentData._t_progAktiv; }
       set {        this.currentData._t_progAktiv = value; }
+   }
+
+   /* 25 */
+   public uint T_fakYear
+   {
+      get { return this.currentData._t_fakYear; }
+      set {        this.currentData._t_fakYear = value; }
    }
 
    // ====== NOT DataLayer Propertiz 

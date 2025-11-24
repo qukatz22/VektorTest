@@ -252,6 +252,7 @@ public struct FaktExStruct
    /*203 */ /*internal*/ public bool    _f2_isRejected ;
    /*204 */ /*internal*/ public bool    _f2_isMrkAsPaid;
    /*205 */ /*internal*/ public ushort  _f2_AMSstatus  ;
+   /*206 */ /*internal*/ public uint    _f2_prvFakRecID;
                                     
 }
 
@@ -2170,6 +2171,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    /* 203 */ public  bool    F2_IsRejected   { get { return this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
    /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.TheEx.currentData._f2_AMSstatus; } set { this.TheEx.currentData._f2_AMSstatus = (ushort)value; } }
+   /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
 
    #endregion Data Layer Columns
 
@@ -5879,6 +5881,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*203 */    this.currentData._f2_isRejected  = false;
       /*204 */    this.currentData._f2_isMrkAsPaid = false;
       /*205 */    this.currentData._f2_AMSstatus   = /*false*/0;
+      /*206 */    this.currentData._f2_prvFakRecID = 0;
 
    }
 
@@ -6792,6 +6795,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
    /* 203 */ public  bool    F2_IsRejected   { get { return this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
    /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.currentData._f2_AMSstatus; } set { this.currentData._f2_AMSstatus = (ushort)value; } }
+   /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.currentData._f2_prvFakRecID; } set { this.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
 
    #endregion Data Layer Columns
 
