@@ -260,73 +260,6 @@ public static class Vv_eRacun_HTTP
          throw;
       }
    }
-
-#if DELLMELATTERR
-   private static T OLD_QWE_Vv_POSTmethod_ExecuteJson<T>(string webAddress, string jsonRequestString, /*Action<T, string> saveToFile = null, string fileName = null,*/ string token = null)
-      where T : class, new()
-   {
-      T deserializedResponseData = null;
-
-      try
-      {
-         HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webAddress, jsonRequestString, token);
-
-         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-         {
-            string responseJson = streamReader.ReadToEnd();
-
-            if(responseJson.NotEmpty())
-            {
-               try
-               {
-                  deserializedResponseData = JsonConvert.DeserializeObject<T>(responseJson);
-
-                  // Cuvamo originalni JSON odgovor unutar objekta odgovora 
-                  if(deserializedResponseData is VvMER_Response_Data_AllActions resp)
-                  {
-                     resp.ResponseJson = responseJson;
-                  }
-
-                  // Optionally save to file if provided
-                  //saveToFile?.Invoke(deserializedResponseData, fileName);
-               }
-               catch(Exception ex2)
-               {
-                  // Fallback error handling for deserialization
-                  deserializedResponseData = new T();
-                  var jsonMsgList = new List<string>();
-
-                  JsonTextReader reader = new JsonTextReader(new StringReader(responseJson));
-                  while(reader.Read())
-                  {
-                     if(reader.Value != null)
-                     {
-                        jsonMsgList.Add(reader.Value.ToString());
-                     }
-                  }
-                //ZXC.aim_emsg_List("Response Messages from JsonTextReader", errorMsg);
-                  ZXC.aim_emsg_List("Exception: " + ex2.Message, jsonMsgList);
-               }
-            }
-            else
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "JSON response is empty!");
-               deserializedResponseData = new T();
-            }
-         }
-      }
-      catch(WebException ex)
-      {
-         ZXC.aim_emsg(ex.Message);
-      }
-      catch(Exception ex)
-      {
-         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška pri Vv_POSTmethod_ExecuteJson: {0}", ex.Message);
-      }
-
-      return deserializedResponseData;
-   }
-#endif
    private static WebApiResult<T> Vv_POSTmethod_ExecuteJson<T>(ZXC.F2_WebApi webApiKind, string webAddress, string jsonRequestString, string token = null) where T : class, new()
    {
       WebApiResult<T> webApiResult = new WebApiResult<T>();
@@ -757,6 +690,7 @@ public static class Vv_eRacun_HTTP
          using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
          {
             string responseXml = streamReader.ReadToEnd();
+
             if(responseXml.NotEmpty())
             {
                responseData.DocumentXml = responseXml;
@@ -1087,7 +1021,7 @@ public static class Vv_eRacun_HTTP
       if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxTRNstatusList);
-         return 0;
+         return -1;
       }
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
@@ -1154,7 +1088,7 @@ public static class Vv_eRacun_HTTP
       if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxDPSstatusList);
-         return 0;
+         return -1;
       }
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
@@ -2460,13 +2394,14 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
 public class WebApiResult<T>
 {
-   public ZXC.F2_WebApi WebApiKind  { get; set; }
-   public T ResponseData            { get; set; }
-   public string ResponseJson       { get; set; }
-   public int? StatusCode           { get; set; }
-   public string StatusDescription  { get; set; }
-   public string ErrorBody          { get; set; }
-   public string ExceptionMessage   { get; set; }
+   public ZXC.F2_WebApi WebApiKind   { get; set; }
+   public T             ResponseData { get; set; }
+   public string ResponseJson        { get; set; }
+   public int?   StatusCode          { get; set; }
+   public string StatusDescription   { get; set; }
+   public string ErrorBody           { get; set; }
+   public string ExceptionMessage    { get; set; }
+   public string Response_XML        { get; set; }
 
    public List<string> MessageList 
    { 
