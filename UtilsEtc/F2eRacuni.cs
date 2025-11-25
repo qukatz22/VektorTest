@@ -1518,6 +1518,7 @@ public static class Vv_eRacun_HTTP
       MAP_CandidatesFtransList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
 
       MAP_CandidatesFtransList_InfoDLG.TheUC.PutDgvFields_F2_MAP_candidates(messageList);
+      MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_IsAutoMAP = ZXC.RRD.Dsc_F2_IsAutoMAP;
 
       DialogResult dlgResult = MAP_CandidatesFtransList_InfoDLG.ShowDialog();
 
@@ -1527,7 +1528,12 @@ public static class Vv_eRacun_HTTP
          return 0;
       }
 
-      ZXC.RRD.Dsc_F2_IsAutoMAP  = !MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_StopAutoMAP; ZXC.RRD.SaveDscToLookUpItemList();
+      if(ZXC.RRD.Dsc_F2_IsAutoMAP != MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_IsAutoMAP)
+      {
+         ZXC.RRD.Dsc_F2_IsAutoMAP = MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_IsAutoMAP; 
+         ZXC.RRD.SaveDscToLookUpItemList();
+      }
+
       int numOfFirstLinesOnly   =  MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
 
       MAP_CandidatesFtransList_InfoDLG.Dispose();

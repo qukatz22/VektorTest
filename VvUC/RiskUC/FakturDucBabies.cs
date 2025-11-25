@@ -1285,7 +1285,6 @@ public class IFADUC              : FakturExtDUC
                                     hamp_VezniDok2, hamp_Fco, /*hamp_NacPlac,*/hamp_DatumX,  hamp_osobaA, hamp_OsobaB ,hamp_carinaKind,
                                     hamp_OpciA, hamp_OpciB, hamp_rokIspAndDate, hamp_tipOtpreme, hamp_osobaX,
                                     hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,hamp_eRproc,
-                                    //hamp_F2_documID_sendTS, hamp_F2_statusCD, vrati
                                     hamp_opis
                                   };
 
@@ -1293,7 +1292,6 @@ public class IFADUC              : FakturExtDUC
                                         hampCbxM_VezniDok2, hampCbxM_Fco, /*hampCbxM_NacPlac,*/hampCbxM_DatumX, hampCbxM_OsobaA, hampCbxM_osobaB, hampCbxM_carinaKind,
                                         hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme,  hampCbxM_osobaX,
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp,hampCbxM_eRproc, hampCbxM_fiskPrgBr,
-                                        //hampCbxM_F2_documID_sentTS, hampCbxM_F2_statusCD, vrati
                                         hampCbxM_opis                                   
                                       };
    }

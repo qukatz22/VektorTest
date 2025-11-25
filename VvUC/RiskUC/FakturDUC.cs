@@ -285,9 +285,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       #region TheG
 
-      TheG = CreateVvDataGridView(ThePolyGridTabControl.TabPages[0], "Rtrans Grid");
+      TheG              = CreateVvDataGridView(ThePolyGridTabControl.TabPages[0], "Rtrans Grid");
       TheColChooserGrid = CreateColChooserGrid_1(TheG, ThePolyGridTabControl.TabPages[0], "ColChooser Grid1");
-      TheSumGrid = CreateSumGrid(TheG, ThePolyGridTabControl.TabPages[0], "SUM Rtrans Grid");
+      TheSumGrid        = CreateSumGrid(TheG, ThePolyGridTabControl.TabPages[0], "SUM Rtrans Grid");
 
       InitializeDUC_Specific_Columns();
       InitializeChooserGrid_Columns_Faktur(TheG);
@@ -7907,6 +7907,8 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    
    // 22.04.2016. veze
    protected const string fakLink_TabPageName = "Veze";
+   
+   protected const string F2_Info_TabPageName = "F2 Info";
 
    public override void DecideIfShouldLoad_TransDGV(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
@@ -8375,11 +8377,8 @@ public partial class FakturExtDUC : FakturDUC
                    hamp_pdvGeokind, hamp_pdvZPkind,
                    hamp_eRproc, hampCbxM_eRproc,
                    hamp_PTG_KUG_DUC,
-                   hampCbxM_F2_ElectronicID_SentTS  , hamp_F2_ElectronicID_SendTS ,
-                   hampCbxM_F2_sendTS   , hamp_F2_sendTS  ,
-                   hampCbxM_F2_statusCD , hamp_F2_statusCD,
-                   hampCbxM_F2_isFisk   , hamp_F2_isFisk  ,
-                   hampCbxM_F2_isArhiv  , hamp_F2_isArhiv                    
+
+                   hamp_F2_info                
                    ;
 
    public VvHamper[] /*hamperLeft, */hamperMigr, hamperCbx4Migr;
@@ -8438,7 +8437,15 @@ public partial class FakturExtDUC : FakturDUC
                      tbx_Skiz_ukRbt1,
                      tbx_prjArtOP, tbx_prjArtOpJM,
                      tbx_eRproc, tbx_eRprocOpis,
-                     tbx_F2_ElectronicID, tbx_F2_SentTS, tbx_F2_StatusCD
+   /* uint    */ tbx_f2_electron_ID   ,
+   /* DateTime*/ tbx_f2_sentTS        ,
+   /* int     */ tbx_f2_status_CD     ,
+   /* uint    */ tbx_f2_ArhRecID      ,
+   /* bool    */ tbx_f2_isRejected    ,
+   /* bool    */ tbx_f2_isMrkAsPaid   ,
+   /* bool    */ tbx_f2_isFisk        ,
+   /* ushort  */ tbx_f2_AMSstatus     ,
+   /* uint    */ tbx_f2_prvFakRecID   
                      ;
 
    private VvTextBox tbx_S_ukOsnR25m_EU, tbx_S_ukOsn25m_BS, tbx_S_ukOsn25m_TP, tbx_S_ukPdvR25m_EU, tbx_S_ukPdv25m_BS, tbx_s_ukOsn12,
@@ -8512,6 +8519,10 @@ public partial class FakturExtDUC : FakturDUC
          this is IRMDUC       || this is IRMDUC_2    || this is URMDUC          || this is UFMDUC         ||
          this is BlgIsplatDUC || this is BlgUplatDUC || this is BlgIsplat_M_DUC || this is BlgUplat_M_DUC || this is WYRNDUC)
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(ftrans_TabPageName, ftrans_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+
+      if(this is IFADUC  || this is IRADUC  || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC ||
+         this is IRMDUC  || this is IRMDUC_2 )
+         TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
       // 22.04.2016. veze
       //07.02.2022. za UGAN i DOD dodan if
@@ -8711,13 +8722,6 @@ public partial class FakturExtDUC : FakturDUC
       InitializeHamper_eRproc(out hamp_eRproc);
       hampCbxM_eRproc = CreateCbxhamper4Migrators(hamp_eRproc, 0, 0, 2, false);
 
-      InitializeHamper_F2_ElectronicID_SentTS(out hamp_F2_ElectronicID_SendTS);
-      hampCbxM_F2_ElectronicID_SentTS = CreateCbxhamper4Migrators(hamp_F2_ElectronicID_SendTS, 0, 0, 2, false);
-
-      InitializeHamper_F2_StatusCD(out hamp_F2_statusCD);
-      hampCbxM_F2_statusCD = CreateCbxhamper4Migrators(hamp_F2_statusCD, 0, 0, 2, false);
-
-      
       InitializeHamper_S_uk(out hamp_S_uk);
       InitializeHamper_S_ukPdv(out hamp_S_ukPdv);
       InitializeHamper_S_ukMSK(out hamp_S_ukMSK);
@@ -8760,6 +8764,8 @@ public partial class FakturExtDUC : FakturDUC
       }
 
       InitializeHamper_IsIncognitoPrint(out hamp_incognitoPrint);
+
+      InitializeHamper_F2_Info(out hamp_F2_info);
 
    }
 
@@ -10534,51 +10540,6 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Visible = false;
    }
 
- private void InitializeHamper_F2_ElectronicID_SentTS(out VvHamper hamper)
- {
-      hamper = new VvHamper(4, 1, "", null, false);
-
-      hamper.VvColWdt      = new int[] { labelWidth   , ZXC.Q4un, ZXC.Q3un, ZXC.Q4un };
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol, faBefCol };
-      hamper.VvRightMargin = hamper.VvLeftMargin;
-
-      hamper.VvRowHgt       = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8};
-      hamper.VvBottomMargin = ZXC.Qun4;
-      
-                            hamper.CreateVvLabel   (0, 0, "eR ID:", ContentAlignment.MiddleRight);
-      tbx_F2_ElectronicID = hamper.CreateVvTextBox (1, 0, "tbx_F2_DocumID", "ID eRacuna" /*,GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
-                            hamper.CreateVvLabel   (2, 0, "Poslano:", ContentAlignment.MiddleRight);
-      tbx_F2_SentTS  =      hamper.CreateVvTextBox (3, 0, "tbx_F2_SentTS", "Datum slanja eRacuna"/*,GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
-    //tbx_F2_ElectronicID.Text = "121782692";
-    //tbx_F2_SentTS .Text = "09.08.2026.";
-
-      tbx_F2_ElectronicID.ReadOnly = true;
-      tbx_F2_SentTS      .ReadOnly = true;
-
-      hamper.Name = "AeR_ID:";
-   }
-   private void InitializeHamper_F2_StatusCD(out VvHamper hamper)
-   {
-      hamper = new VvHamper(2, 1, "", null, false);
-
-      hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol};
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
-
-      hamper.VvRightMargin = hamper.VvLeftMargin;
-
-      hamper.VvRowHgt       = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8 };
-      hamper.VvBottomMargin = hamper.VvTopMargin;
-
-                          hamper.CreateVvLabel          (0, 0, "F2 Status:", ContentAlignment.MiddleRight);
-      tbx_F2_StatusCD     = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_F2_StatusCD", "tbx_F2_StatusCD"/*, GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2)*/);
-      tbx_F2_StatusCD.JAM_ReadOnly = true;
-
-      hamper.Name = "AeRStatus:";
-   }
-
-
 #endregion Hampers
 
 #region SvDuh UGO hamper
@@ -12094,9 +12055,63 @@ public partial class FakturExtDUC : FakturDUC
       hamper.Visible = false;
    }
 
-#endregion Hamper Sume
+   #endregion Hamper Sume
 
-#region AllHampersLocations
+   #region F2_Info_hamper
+
+   private void InitializeHamper_F2_Info(out VvHamper hamper)
+   {
+      hamper = new VvHamper(2, 9, "", TheTabControl.TabPages[F2_Info_TabPageName], false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q9un, ZXC.Q7un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      hamper.CreateVvLabel(0, 0, "ElectronicID:"      , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 1, "Datum slanja:"      , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 2, "Status:"            , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 3, "Arhiviran:"         , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 4, "Fiskaliziran:"      , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 5, "Prijavljena uplata:", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 6, "Odbijen:"           , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 7, "AMS status kupca:"  , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 8, "RefRecID:"          , ContentAlignment.MiddleRight);
+
+      tbx_f2_electron_ID = hamper.CreateVvTextBox(1, 0, "tbx_f2_electron_ID", "Electronic ID" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_electron_ID));
+      tbx_f2_sentTS      = hamper.CreateVvTextBox(1, 1, "tbx_f2_sentTS     ", "F2_sentTS     ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_sentTS     ));
+      tbx_f2_status_CD   = hamper.CreateVvTextBox(1, 2, "tbx_f2_status_CD  ", "F2_status_CD  ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
+      tbx_f2_ArhRecID    = hamper.CreateVvTextBox(1, 3, "tbx_f2_ArhRecID   ", "F2_ArhRecID   ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_ArhRecID   ));
+      tbx_f2_isFisk      = hamper.CreateVvTextBox(1, 4, "tbx_f2_isFisk     ", "F2_isFisk     ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isFisk     ));
+      tbx_f2_isMrkAsPaid = hamper.CreateVvTextBox(1, 5, "tbx_f2_isMrkAsPaid", "F2_isMrkAsPaid", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isMrkAsPaid));
+      tbx_f2_isRejected  = hamper.CreateVvTextBox(1, 6, "tbx_f2_isRejected ", "F2_isRejected ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
+      tbx_f2_AMSstatus   = hamper.CreateVvTextBox(1, 7, "tbx_f2_AMSstatus  ", "F2_AMSstatus  ", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_AMSstatus  ));
+      tbx_f2_prvFakRecID = hamper.CreateVvTextBox(1, 8, "tbx_f2_prvFakRecID", "F2_prvFakRecID", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_prvFakRecID));
+
+      tbx_f2_electron_ID.JAM_ReadOnly = true;
+      tbx_f2_sentTS     .JAM_ReadOnly = true;
+      tbx_f2_status_CD  .JAM_ReadOnly = true;
+      tbx_f2_ArhRecID   .JAM_ReadOnly = true;
+      tbx_f2_isFisk     .JAM_ReadOnly = true;
+      tbx_f2_isMrkAsPaid.JAM_ReadOnly = true;
+      tbx_f2_isRejected .JAM_ReadOnly = true;
+      tbx_f2_AMSstatus  .JAM_ReadOnly = true;
+      tbx_f2_prvFakRecID.JAM_ReadOnly = true;
+
+      hamper.BackColor = Color.FromArgb(250, 116, 116);
+      
+    //hamper.Visible = false;
+   }
+
+   #endregion F2_Info_hamper
+
+   #region AllHampersLocations
 
    private void SetLocationToHamperOnAllDuc()
    {
@@ -12494,18 +12509,8 @@ public partial class FakturExtDUC : FakturDUC
       //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_fiskOibOp.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
       //hampCbxM_fiskPrgBr.Location            = new Point(hamp_fiskOibOp.Right + 0      , /*hamp_externLink1*/hamp_eRproc.Bottom);
 
-         hamp_F2_ElectronicID_SendTS.Location                = new Point(ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hamp_F2_ElectronicID_SendTS.VvInitialHamperLocation = new Point(ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hampCbxM_F2_ElectronicID_SentTS.Location            = new Point(      0, hamp_fiskOibOp.Bottom);
-
-         hamp_F2_statusCD.Location                = new Point(hamp_F2_ElectronicID_SendTS.Right + ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hamp_F2_statusCD.VvInitialHamperLocation = new Point(hamp_F2_ElectronicID_SendTS.Right + ZXC.QUN, hamp_fiskOibOp.Bottom);
-         hampCbxM_F2_statusCD.Location            = new Point(hamp_F2_ElectronicID_SendTS.Right +       0, hamp_fiskOibOp.Bottom);
-
-       // 17.10.2025. svi ce biti i f1 i f2 uglavnom osim th
-       //if(ZXC.CURR_prjkt_rec.IsFiskalOnline == true) panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_fiskMsgID.Bottom);
-       //else                                          panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, /*hamp_externLink2*/hamp_F2_documID_sendTS.Bottom);
-         panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_F2_ElectronicID_SendTS.Bottom);
+       if(ZXC.CURR_prjkt_rec.IsFiskalOnline == true) panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_fiskMsgID.Bottom);
+       else                                          panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_externLink2.Bottom);
 
          //if(this is IRMDUC_2)
          //{
@@ -13503,6 +13508,16 @@ public partial class FakturExtDUC : FakturDUC
    public bool Fld_IsIncognito_Print { get { return cbx_isIncognito_Print.Checked; } set { cbx_isIncognito_Print.Checked = value; } }
    public bool Fld_PrintIzjava       { get { return cbx_PrintIzjava      .Checked; } set { cbx_PrintIzjava      .Checked = value; } }
 
+   public string Fld_f2_electron_ID { set { tbx_f2_electron_ID.Text = value; } }
+   public string Fld_f2_sentTS      { set { tbx_f2_sentTS     .Text = value; } }
+   public string Fld_f2_status_CD   { set { tbx_f2_status_CD  .Text = value; } }
+   public string Fld_f2_ArhRecID    { set { tbx_f2_ArhRecID   .Text = value; } }
+   public string Fld_f2_isFisk      { set { tbx_f2_isFisk     .Text = value; } }
+   public string Fld_f2_isMrkAsPaid { set { tbx_f2_isMrkAsPaid.Text = value; } }
+   public string Fld_f2_isRejected  { set { tbx_f2_isRejected .Text = value; } }
+   public string Fld_f2_AMSstatus   { set { tbx_f2_AMSstatus  .Text = value; } }
+   public string Fld_f2_prvFakRecID { set { tbx_f2_prvFakRecID.Text = value; } }
+
    #endregion Fld_
 
    #region PutExtFields(), GetExtFields() PutTransSumToDocumentSumFields_Ext()
@@ -14136,24 +14151,35 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(cbx_isIncognito_Print)) Fld_IsIncognito_Print = false;
       if(CtrlOK(cbx_isIncognito_Print)) Fld_PrintIzjava       = false;
 
-//#if DEBUG
-//
-//      decimal a = Fld_S_ukKCR ;
-//      decimal b = Fld_S_ukPdv ;
-//      decimal c = Fld_S_ukKCRP;
-//      decimal pdvSt = 25.00M  ;
-//      decimal b1 = ZXC.VvGet_25_of_100(a, pdvSt).Ron2();
-//      
-//      if(/*b != b1*/false)
-//      {
-//         ZXC.aim_emsg(MessageBoxIcon.Warning, "25% od {0} nije {1} nego {2}", a, b, b1);
-//         //ZXC.Synchronise_A_and_B(ref a, ref b, pdvSt, c);
-//         //
-//         //Fld_S_ukKCR = a;
-//         //Fld_S_ukPdv = b;
-//      }
-//
-//#endif
+      if(CtrlOK(tbx_f2_electron_ID)) Fld_f2_electron_ID = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_ElectronicID.ToString();
+      if(CtrlOK(tbx_f2_sentTS     )) Fld_f2_sentTS      = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_SentTS      .ToString();
+      if(CtrlOK(tbx_f2_status_CD  )) Fld_f2_status_CD   = faktEx.F2_ElectronicID.IsZero() ? "" : Vv_eRacun_HTTP.MER_TransportStatuses[faktEx.F2_StatusCD];
+      if(CtrlOK(tbx_f2_ArhRecID   )) Fld_f2_ArhRecID    = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_ArhRecID.IsZero() ? "NE" : "DA - " + faktEx.F2_ArhRecID.ToString();
+      if(CtrlOK(tbx_f2_isFisk     )) Fld_f2_isFisk      = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_IsFisk       == true ? "DA" : "NE";
+      if(CtrlOK(tbx_f2_isMrkAsPaid)) Fld_f2_isMrkAsPaid = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_IsMarkAsPaid == true ? "DA" : "NE";
+      if(CtrlOK(tbx_f2_isRejected )) Fld_f2_isRejected  = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_IsRejected   == true ? "DA" : "NE";
+      if(CtrlOK(tbx_f2_AMSstatus  )) Fld_f2_AMSstatus   = faktEx.F2_AMSstatus   .ToString();
+      if(CtrlOK(tbx_f2_prvFakRecID)) Fld_f2_prvFakRecID = faktEx.F2_PrvFakRecID.IsZero()  ? "" : faktEx.F2_PrvFakRecID.ToString();
+
+
+      //#if DEBUG
+      //
+      //      decimal a = Fld_S_ukKCR ;
+      //      decimal b = Fld_S_ukPdv ;
+      //      decimal c = Fld_S_ukKCRP;
+      //      decimal pdvSt = 25.00M  ;
+      //      decimal b1 = ZXC.VvGet_25_of_100(a, pdvSt).Ron2();
+      //      
+      //      if(/*b != b1*/false)
+      //      {
+      //         ZXC.aim_emsg(MessageBoxIcon.Warning, "25% od {0} nije {1} nego {2}", a, b, b1);
+      //         //ZXC.Synchronise_A_and_B(ref a, ref b, pdvSt, c);
+      //         //
+      //         //Fld_S_ukKCR = a;
+      //         //Fld_S_ukPdv = b;
+      //      }
+      //
+      //#endif
    }
 
    internal void SetMODsemaforLabelColorAndText(Label semaforLabel, Color color, string labelText)
@@ -19449,7 +19475,7 @@ public class F2_Rules_UC : VvOtherUC
    { 
       hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un*3 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
@@ -19460,8 +19486,8 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune"      , RightToLeft.No);
-      cbx_isAutoMAP  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplatu računa", RightToLeft.No);
+      cbx_isAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)"      , RightToLeft.No);
+      cbx_isAutoMAP  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplate računa (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)", RightToLeft.No);
 
    }
 
