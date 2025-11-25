@@ -729,7 +729,7 @@ public class VvMessageBox_UC : UserControl
                      vvtb_iznos, tbx_numOfFirstLinesOnly_Send, tbx_numOfFirstLinesOnly_MAP,
                      vvtb_datumUpl, vvtb_iznosUpl, vvtb_tipUpl, vvtb_opis, vvtb_nalRed, vvtb_konto;
 
-   private CheckBox  cbx_StopAutoSend, cbx_StopAutoMAP;
+   private CheckBox  cbx_IsAutoSend, cbx_StopAutoMAP;
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
    int colWidth = 0;
@@ -839,7 +839,7 @@ public class VvMessageBox_UC : UserControl
       hamper.VvSpcBefRow    = new int[] { 0 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_StopAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Stopiraj ubuduće automatsko slanje računa", RightToLeft.No);
+      cbx_IsAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski pošalji eRačune (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)", RightToLeft.No);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }
@@ -1402,7 +1402,7 @@ public class VvMessageBox_UC : UserControl
 
    #region Fld
    
-   public bool Fld_StopAutoSend             { get { return cbx_StopAutoSend.Checked; } set { cbx_StopAutoSend.Checked = value; } }
+   public bool Fld_IsAutoSend             { get { return cbx_IsAutoSend.Checked; } set { cbx_IsAutoSend.Checked = value; } }
    
    public int  Fld_NumOfFirstLinesOnly_Send { get { return ZXC.ValOrZero_Int(tbx_numOfFirstLinesOnly_Send.Text); } set { tbx_numOfFirstLinesOnly_Send.Text = value.ToString(); } }
       

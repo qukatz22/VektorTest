@@ -187,23 +187,6 @@ public static class Vv_eRacun_HTTP
          throw;
       }
    }
-
-   //staro, dellmelatter
-   //private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams, string token = null)
-   //{
-   //   HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlWithParams);
-   //   httpWebRequest.ContentType    = "application/json; charset=utf-8";
-   //   httpWebRequest.Method         = "GET";
-   //
-   //   // Add Authorization header if provided
-   //   if(token.NotEmpty())
-   //   {
-   //      httpWebRequest.Headers["Authorization"] = token;
-   //   }
-   //
-   //   return (HttpWebResponse)httpWebRequest.GetResponse();
-   //}
-
    private static HttpWebResponse Vv_GETmethod_SendHttpWebRequest_GetHttpWebResponse(string urlWithParams, string token = null)
    {
       HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlWithParams);
@@ -277,7 +260,7 @@ public static class Vv_eRacun_HTTP
          {
             string responseJson = streamReader.ReadToEnd();
 
-            webApiResult.ResponseJson = responseJson;
+            webApiResult.ResponseString = responseJson;
 
             if(!string.IsNullOrEmpty(responseJson))
             {
@@ -670,14 +653,14 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ####################################################################################
-   public static /*WebApiResult<*/VvMER_Response_Data_AllActions/*>*/ VvMER_WebService_Receive_XML(uint electronicID)
+   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_Receive_XML(uint electronicID)
    {
-      string        webApiAddr = VvMER_webAddressPOST_Receive ;
+      string webApiAddr = VvMER_webAddressPOST_Receive;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.RECEIVEdocument;
 
-      VvMER_Response_Data_AllActions responseData = new VvMER_Response_Data_AllActions();
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = new WebApiResult<VvMER_Response_Data_AllActions>();
 
-      // !!! PAZI !!! Ovdje ne koristimo Vv_POSTmethod_ExecuteJson<T> jer zelimo dobiti raw XML odgovor, a ne JSON deserializirani objekt! 
+      webApiResult.WebApiKind = webApiKind;
 
       try
       {
@@ -687,32 +670,58 @@ public static class Vv_eRacun_HTTP
 
          HttpWebResponse httpResponse = Vv_POSTmethod_SendHttpWebRequest_GetHttpWebResponse(webApiAddr, jsonRequestString);
 
+         webApiResult.StatusCode = (int)httpResponse.StatusCode;
+         webApiResult.StatusDescription = httpResponse.StatusDescription;
+
          using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
          {
-            string responseXml = streamReader.ReadToEnd();
+            string responseString = streamReader.ReadToEnd();
 
-            if(responseXml.NotEmpty())
+            webApiResult.ResponseString = responseString;
+
+            // Check if the response is an error message (typically JSON) or valid XML
+            bool isXml  = responseString.TrimStart().StartsWith("<");
+            bool isJson = responseString.TrimStart().StartsWith("{") || responseString.TrimStart().StartsWith("[");
+
+            if(responseString.NotEmpty() && isXml)
             {
-               responseData.DocumentXml = responseXml;
+               webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
+               webApiResult.ResponseData.DocumentXml = responseString;
             }
             else
             {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "XML response is empty!");
+               webApiResult.ErrorBody = "XML response is empty or isn't XML!";
+               webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
             }
          }
       }
       catch(WebException ex)
       {
-         ZXC.aim_emsg(ex.Message);
+         if(ex.Response is HttpWebResponse resp)
+         {
+            webApiResult.StatusCode = (int)resp.StatusCode;
+            webApiResult.StatusDescription = resp.StatusDescription;
+
+            try
+            {
+               using(var sr = new StreamReader(resp.GetResponseStream()))
+               {
+                  webApiResult.ErrorBody = sr.ReadToEnd();
+               }
+            }
+            catch { /* ignore */ }
+         }
+         webApiResult.ExceptionMessage = ex.Message;
+         webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
       }
       catch(Exception ex)
       {
-         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška pri VvMER_WebService_Receive_XML: {0}", ex.Message);
+         webApiResult.ExceptionMessage = ex.Message;
+         webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
       }
 
-      return responseData;
+      return webApiResult;
    }
-
    //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ###################################################################################
    public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
    {
@@ -825,10 +834,10 @@ public static class Vv_eRacun_HTTP
 
    #region FIR / FUR Load List and SubmodulActions
 
-
-
    /* AAA */internal static int Load_IRn_FakturList(F2_Izlaz_UC theUC)
    {
+      ZXC.SetStatusText("Load_IRn_FakturList");
+
       theUC.TheFakturList = new List<Faktur>();
 
       int newsCount = 0;
@@ -853,11 +862,13 @@ public static class Vv_eRacun_HTTP
    {
       #region Init & Get Dialog Fields
 
+      ZXC.SetStatusText("WS_Discover_Candidates_And_Eventually_SEND_eRacune");
+
       int newsCount = 0;
 
       //if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
 
-      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).ToList();
+      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).OrderBy(fak => fak.TtNum).ToList();
 
       if(sendCandidatesFakturList.IsEmpty()) return 0;
 
@@ -879,6 +890,7 @@ public static class Vv_eRacun_HTTP
       sendCandidatesFakturList_InfoDLG.Text = "Kandidati za slanje kao eRačun:";
 
       sendCandidatesFakturList_InfoDLG.TheUC.PutDgvFields_F2_SEND_candidates(messageList);
+      sendCandidatesFakturList_InfoDLG.TheUC.Fld_IsAutoSend = ZXC.RRD.Dsc_F2_IsAutoSend;
 
       DialogResult dlgResult = sendCandidatesFakturList_InfoDLG.ShowDialog();
 
@@ -888,7 +900,12 @@ public static class Vv_eRacun_HTTP
          return 0;
       }
 
-      ZXC.RRD.Dsc_F2_IsAutoSend = !sendCandidatesFakturList_InfoDLG.TheUC.Fld_StopAutoSend; ZXC.RRD.SaveDscToLookUpItemList();
+      if(ZXC.RRD.Dsc_F2_IsAutoSend != sendCandidatesFakturList_InfoDLG.TheUC.Fld_IsAutoSend)
+      {
+         ZXC.RRD.Dsc_F2_IsAutoSend = sendCandidatesFakturList_InfoDLG.TheUC.Fld_IsAutoSend; 
+         ZXC.RRD.SaveDscToLookUpItemList();
+      }
+
       int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_Send;
 
       sendCandidatesFakturList_InfoDLG.Dispose();
@@ -1007,6 +1024,8 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh TRN status
 
+      ZXC.SetStatusText("Refresh TRN status");
+
       List<Faktur> QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, false)).ToList();
 
       // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
@@ -1018,8 +1037,19 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
 
-      if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
+         if(webApiResultWithList == null)
+         {
+            webApiResultWithList = new WebApiResult<List<VvMER_Response_Data_AllActions>>()
+            {
+               WebApiKind = ZXC.F2_WebApi.OutboxTRNstatusList,
+               StatusCode = -1,
+               StatusDescription = "No response data",
+               ErrorBody = "No response data"
+            };
+         }
+
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxTRNstatusList);
          return -1;
       }
@@ -1073,6 +1103,8 @@ public static class Vv_eRacun_HTTP
       #endregion Refresh TRN status
 
       #region Refresh DPS status
+
+      ZXC.SetStatusText("Refresh DPS status");
 
       QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, true)).ToList();
 
@@ -1146,6 +1178,8 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh FISK status
 
+      ZXC.SetStatusText("Refresh FISK status");
+
       for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
          F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
@@ -1189,6 +1223,8 @@ public static class Vv_eRacun_HTTP
       #endregion Refresh FISK status
 
       #region Refresh REJECTion status
+
+      ZXC.SetStatusText("Refresh REJECTion status");
 
       for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
@@ -1234,6 +1270,8 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh MarkAsPaid status
 
+      ZXC.SetStatusText("Refresh MarkAsPaid status");
+
       for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
          F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
@@ -1278,6 +1316,8 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh MarkAsPaid_InfoColumns
 
+      ZXC.SetStatusText("Refresh MarkAsPaid InfoColumns");
+
       for(int rIdx = 0; (ZXC.IsF2_2026_rules || Vv_eRacun_HTTP.DEMO) && rIdx < theUC.TheG.RowCount; ++rIdx)
       {
          F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
@@ -1308,7 +1348,19 @@ public static class Vv_eRacun_HTTP
 
       #region RECEIVE eRacun for Arhiva 
 
-      for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
+      ZXC.SetStatusText("RECEIVE eRacun for Arhiva");
+
+      int firstRowIdx = 0;
+      int lastRowIdx  = theUC.TheG.RowCount;
+      bool isNaopako  = ZXC.RRD.Dsc_F2_IsAsc == false;
+
+      if(isNaopako)
+      {
+         firstRowIdx = theUC.TheG.RowCount - 1;
+         lastRowIdx  = -1 ;
+      }
+
+      for(int rIdx = firstRowIdx; isNaopako ? (rIdx > lastRowIdx) : (rIdx < lastRowIdx); rIdx = (isNaopako ? rIdx - 1 : rIdx + 1))
       {
          F2_IRn_faktur_rec = theUC.TheFakturList[rIdx];
 
@@ -1385,8 +1437,7 @@ public static class Vv_eRacun_HTTP
                                      // ”O” – Obracunsko placanje 
                                      // ”Z” – Ostalo              
 
-    //paymentftransList = FtransDao.Get_MAP_FtransList_For_FakRecID(conn, MAP_CandidateFaktur_rec.RecID);
-      paymentftransList = FtransDao.Get_MAP_FtransList             (conn                               ); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      paymentftransList = FtransDao.Get_MAP_FtransList(conn).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
       
       VvMER_Request_Data_AllActions MAP_requestData;
 
@@ -1482,6 +1533,8 @@ public static class Vv_eRacun_HTTP
       MAP_CandidatesFtransList_InfoDLG.Dispose();
 
       Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.SetStatusText("Discover_Candidates_And_Eventually_MAPaj_uplate");
 
       int mapCount = 0; bool MAP_OK;
 
@@ -1645,7 +1698,6 @@ public static class Vv_eRacun_HTTP
 
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
    }
-
    private static bool ShouldCheckRefreshed_TRN_Or_DPS_Status(Faktur F2_IRn_faktur_rec, bool isDPS)
    {
       return !ShouldSkipRefreshing_TRN_Or_DPS_Status(F2_IRn_faktur_rec, isDPS);
@@ -1765,8 +1817,8 @@ public static class Vv_eRacun_HTTP
    }
    private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
    {
-      VvMER_Response_Data_AllActions responseData = null;
-      
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = null;
+
       bool receiveOK = true;
 
       uint arhivaXtrano_recID = 0;
@@ -1774,29 +1826,38 @@ public static class Vv_eRacun_HTTP
       switch(ZXC.F2_TheProvider)
       {
          case ZXC.F2_Provider_enum.MER:
-         {
-            try
             {
-               responseData = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
-            }
-            catch(Exception ex)
-            {
-               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-               receiveOK = false;
-            }
-
-            if(receiveOK)
-            {
-               Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
-
-               if(F2arhivaXtrano_rec != null)
+               try
                {
-                  byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
+                  webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
 
-                  bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2arhivaXtrano_rec, /*false*/true, false, false, false);
+                  // za provjeru: 
+                  EN16931.UBL.InvoiceType deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(webApiResult.ResponseData.DocumentXml, true);
 
-                  if(OK)
+                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_eRacun == null)
                   {
+                     Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.RECEIVEdocument);
+                     receiveOK = false;
+                  }
+               }
+               catch(Exception ex)
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+                  receiveOK = false;
+               }
+
+               if(receiveOK)
+               {
+                  Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(webApiResult.ResponseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
+
+                  if(F2arhivaXtrano_rec != null)
+                  {
+                     byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
+
+                     bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2arhivaXtrano_rec, /*false*/true, false, false, false);
+
+                     if(OK)
+                     {
                         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2arhivaXtrano_rec);
 
                         F2arhivaXtrano_rec.T_XmlZip = T_XmlZip;
@@ -1804,23 +1865,23 @@ public static class Vv_eRacun_HTTP
                         VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2arhivaXtrano_rec, "t_XmlZip", F2arhivaXtrano_rec.T_XmlZip);
 
                         theUC.TheVvTabPage.TheVvForm.EndEdit(F2arhivaXtrano_rec);
-                  }
+                     }
 
-                  if(OK) 
-                  { 
-                     arhivaXtrano_recID = F2arhivaXtrano_rec.T_recID; 
+                     if(OK)
+                     {
+                        arhivaXtrano_recID = F2arhivaXtrano_rec.T_recID;
+                     }
                   }
                }
-            }
 
-            return arhivaXtrano_recID;
+               return arhivaXtrano_recID;
 
-         } // case ZXC.F2_Provider_enum.MER: 
+            } // case ZXC.F2_Provider_enum.MER: 
 
          case ZXC.F2_Provider_enum.PND:
-         {
-            throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
-         }
+            {
+               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+            }
       }
 
       return 0;
@@ -1902,6 +1963,22 @@ public static class Vv_eRacun_HTTP
       Send_OR_eIzvj_ErrorMessageBox.Dispose();
    }
 
+   internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
+   {
+      EN16931.UBL.InvoiceType deserialized_eRacun = null;
+      System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(EN16931.UBL.InvoiceType));
+
+      try
+      {
+         deserialized_eRacun = (EN16931.UBL.InvoiceType)serializer.Deserialize(new StringReader(xmlString));
+      }
+      catch(Exception ex)
+      {
+         if(!beSilent) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom deserializacije eRačuna iz XML stringa: {0}", ex.Message);
+      }
+
+      return deserialized_eRacun;
+   }
 
    #endregion FIR / FUR Load List and SubmodulActions
 
@@ -2396,12 +2473,12 @@ public class WebApiResult<T>
 {
    public ZXC.F2_WebApi WebApiKind   { get; set; }
    public T             ResponseData { get; set; }
-   public string ResponseJson        { get; set; }
+   public string ResponseString      { get; set; }
    public int?   StatusCode          { get; set; }
    public string StatusDescription   { get; set; }
    public string ErrorBody           { get; set; }
    public string ExceptionMessage    { get; set; }
-   public string Response_XML        { get; set; }
+ //public string ResponseXml         { get; set; }
 
    public List<string> MessageList 
    { 
@@ -2410,10 +2487,10 @@ public class WebApiResult<T>
          List<string> messageList = new List<string>();
          string messageLine;
 
-         if(ResponseJson.NotEmpty())
+         if(ResponseString.NotEmpty())
          {
-            messageList.Add("Response Json:");
-            foreach(string line in ResponseJson.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            messageList.Add("Response String:");
+            foreach(string line in ResponseString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                messageLine = $"    {line}";
                messageList.Add(messageLine);
@@ -2460,7 +2537,7 @@ public class WebApiResult<T>
       {
          webApiResult.WebApiKind        = webApiResultWithList.WebApiKind;
          webApiResult.ResponseData      = webApiResultWithList.ResponseData?.FirstOrDefault();
-         webApiResult.ResponseJson      = webApiResultWithList.ResponseJson;
+         webApiResult.ResponseString      = webApiResultWithList.ResponseString;
          webApiResult.StatusCode        = webApiResultWithList.StatusCode;
          webApiResult.StatusDescription = webApiResultWithList.StatusDescription;
          webApiResult.ErrorBody         = webApiResultWithList.ErrorBody;
@@ -2478,36 +2555,36 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 {
    private void F2_ReceiveSingle(object sender, EventArgs e)
    {
-      VvMER_Response_Data_AllActions responseData = null;
-
-      bool receiveOK = true;
-      try
-      {
-         responseData = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(119499736);
-      }
-      catch(Exception ex)
-      {
-         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-         receiveOK = false;
-      }
-
-      if(receiveOK)
-      {
-         Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AUR);
-
-         if(F2arhivaXtrano_rec != null)
-         {
-            bool OK = ZXC.XtranoDao.ADDREC(TheDbConnection, F2arhivaXtrano_rec, false, false, false, false);
-
-
-
-
-
-            Xtrano check_rec = new Xtrano();
-            F2arhivaXtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, check_rec, 1, false);
-            string decompXml = VvStringCompressor.DecompressXml(check_rec.T_XmlZip);
-         }
-      }
+      //VvMER_Response_Data_AllActions responseData = null;
+      //
+      //bool receiveOK = true;
+      //try
+      //{
+      //   responseData = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(119499736);
+      //}
+      //catch(Exception ex)
+      //{
+      //   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+      //   receiveOK = false;
+      //}
+      //
+      //if(receiveOK)
+      //{
+      //   Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AUR);
+      //
+      //   if(F2arhivaXtrano_rec != null)
+      //   {
+      //      bool OK = ZXC.XtranoDao.ADDREC(TheDbConnection, F2arhivaXtrano_rec, false, false, false, false);
+      //
+      //
+      //
+      //
+      //
+      //      Xtrano check_rec = new Xtrano();
+      //      F2arhivaXtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, check_rec, 1, false);
+      //      string decompXml = VvStringCompressor.DecompressXml(check_rec.T_XmlZip);
+      //   }
+      //}
    }
    private void F2_RISK_Rules(object sender, EventArgs e)
    {

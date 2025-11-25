@@ -8953,6 +8953,8 @@ public class F2_Izlaz_UC : VvUserControl
       /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, TheDbConnection);
       }
 
+      ZXC.SetStatusText("");
+
       if(newsCount.IsZero())
       {
          ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
