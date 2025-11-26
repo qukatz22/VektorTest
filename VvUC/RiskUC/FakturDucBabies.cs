@@ -8879,7 +8879,8 @@ public class F2_Izlaz_UC : VvUserControl
                      //vvtb_dateUpl,
                      vvtb_markPaid,
                      vvtb_razlikaUpl,
-                     vvtb_arhiv
+                     vvtb_arhiv,
+                     vvtb_FIRtip
 
                      ;
 
@@ -8995,6 +8996,7 @@ public class F2_Izlaz_UC : VvUserControl
       //colCbox.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
       //theGrid.Columns.Add(colCbox);
 
+      vvtb_FIRtip    = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_FIRtip"   , null, -12, "FIR Tip"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_FIRtip    , null, "R_FIRtip"   , "FIR Tip"       , ZXC.Q3un           ); vvtb_FIRtip   .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_tt        = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_tt"       , null, -12, "Tip"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"       , "Tip"           , ZXC.Q2un           ); vvtb_tt       .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_ttNum     = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_ttNum"    , null, -12, "Interni broj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ttNum     , null, "R_ttNum"    , "Interni Broj"  , ZXC.Q3un           ); vvtb_ttNum    .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_fiskTtNum = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_fiskTtNum", null, -12, "Fiskalni broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fiskTtNum , null, "R_fiskTtNum", "Fiskalni IntBr", ZXC.Q4un           ); vvtb_fiskTtNum.JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
@@ -9106,6 +9108,7 @@ public class F2_Izlaz_UC : VvUserControl
       internal int iT_markPaid  ;
       internal int iT_razlikaUpl;
       internal int iT_arhiv     ;
+      internal int iT_FIRtip    ;
    }
 
    private void SetColumnIndexes()
@@ -9128,6 +9131,8 @@ public class F2_Izlaz_UC : VvUserControl
       ci.iT_markPaid   = TheG.IdxForColumn("R_markPaid"   );
       ci.iT_razlikaUpl = TheG.IdxForColumn("R_razlikaUpl" );
       ci.iT_arhiv      = TheG.IdxForColumn("R_arhiv"      );
+      ci.iT_FIRtip     = TheG.IdxForColumn("R_FIRtip"     );
+
    }
 
    #endregion SetColumnIndexes)
@@ -9157,13 +9162,14 @@ public class F2_Izlaz_UC : VvUserControl
    {
       bool isF1 = faktur_rec.IsF1;
 
-      TheG.PutCell(ci.iT_tt         , rowIdx, faktur_rec.TT              );
-      TheG.PutCell(ci.iT_ttNum      , rowIdx, faktur_rec.TtNum           );
-      TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.TtNumFiskal     );
-      TheG.PutCell(ci.iT_extBrRn    , rowIdx, faktur_rec.VezniDok        );
-      TheG.PutCell(ci.iT_date       , rowIdx, faktur_rec.DokDate         );
-      TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName      );
-      TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP        );
+      TheG.PutCell(ci.iT_FIRtip     , rowIdx, faktur_rec.FIRkind.ToString());
+      TheG.PutCell(ci.iT_tt         , rowIdx, faktur_rec.TT                );
+      TheG.PutCell(ci.iT_ttNum      , rowIdx, faktur_rec.TtNum             );
+      TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.TtNumFiskal       );
+      TheG.PutCell(ci.iT_extBrRn    , rowIdx, faktur_rec.VezniDok          );
+      TheG.PutCell(ci.iT_date       , rowIdx, faktur_rec.DokDate           );
+      TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName        );
+      TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP          );
 
       TheG.PutCell(ci.iT_electrID   , rowIdx, isF1 ?  0 : faktur_rec.F2_ElectronicID);
       TheG.PutCell(ci.iT_dateSlanja , rowIdx, isF1 ? "" : faktur_rec.F2_SentTS == DateTime.MinValue ? "" : faktur_rec.F2_SentTS.ToString(ZXC.VvDateAndTimeFormat_NoSec));
