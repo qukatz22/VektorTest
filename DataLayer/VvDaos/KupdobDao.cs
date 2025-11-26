@@ -1082,7 +1082,13 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
                {
                   refreshStatusOK = false;
                }
-               else 
+               else if(webApiResult.ExceptionMessage.NotEmpty() || webApiResult.StatusCode != (int)System.Net.HttpStatusCode.OK)
+               {
+                  Vv_eRacun_HTTP.Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.CheckAMS);
+                  refreshStatusOK = false;
+               }
+
+               if(refreshStatusOK)
                {
                   switch(webApiResult.StatusCode)
                   {

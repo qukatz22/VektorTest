@@ -5024,6 +5024,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          return false;
       } 
    }
+   public bool F2_Yes_HasSense_Refresh_AllFISK_Outbox_Status { get { return !F2_HasNoSense_Refresh_AllFISK_Outbox_Status; } } 
+   public bool F2_HasNoSense_Refresh_AllFISK_Outbox_Status 
+   { 
+      get 
+      {
+         // tu smo stali
+//         if(F2_IsFisk               ) return true; // već je fiskaliziran                                    - nema smisla osvjezavati FISK status 
+//       //if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan                                     - nema smisla osvjezavati FISK status  ... gasimo jer F2_eIzvj nema electronicID a svejedno treba biti fiskaliziran 
+//         if(F2_SentTS.IsEmpty()     ) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati FISK status 
+   
+         return false;
+      } 
+   }
    public bool F2_Yes_HasSense_Refresh_REJECTion_Status { get { return !F2_HasNoSense_Refresh_REJECTion_Status; } }
    public bool F2_HasNoSense_Refresh_REJECTion_Status 
    { 
@@ -5092,7 +5105,20 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
    public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
    public bool IsNoFX     { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } }
+   public ZXC.FIRkind FIRkind
+   {
+      get
+      {
+         if(false) ;
 
+         else if(IsF1     ) return ZXC.FIRkind.F1     ;
+         else if(IsF2send ) return ZXC.FIRkind.F2send ;
+         else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
+         else if(IsNoFX   ) return ZXC.FIRkind.NoFX   ;
+
+         return ZXC.FIRkind.F2nepoz;
+      }
+   }
    public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
    public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
 

@@ -31,7 +31,7 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 
 public static class Vv_eRacun_HTTP
 {
-   public const bool DEMO = false;
+   public const bool DEMO = true;
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -47,6 +47,7 @@ public static class Vv_eRacun_HTTP
    public const string VvMER_webAddressGET_Ping             = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/apis/v2/Ping"                                 ; // GET! 
    public const string VvMER_webAddressPOST_Check           = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/mps/check"                                ; // POST 
    public const string VvMER_webAddressPOST_FiskStatus      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/status"                     ; // POST 
+   public const string VvMER_webAddressPOST_FiskStatusOutbox= (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/StatusOutbox"               ; // POST 
    public const string VvMER_webAddressPOST_MAP             = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/markPaid"                   ; // POST 
    public const string VvMER_webAddressPOST_MAP_WO_eID      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/markPaidWithoutElectronicID"; // POST 
 
@@ -652,6 +653,24 @@ public static class Vv_eRacun_HTTP
       return webApiResult;
    }
 
+   public static WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> VvMER_WebService_Get_FISK_Status_Outbox(DateTime dateOD, DateTime dateDO)
+   {
+      string        webApiAddr = VvMER_webAddressPOST_FiskStatusOutbox;
+      ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.FISKstatusOutbox;
+
+      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu Fisk STATUSa racuna (dateOD, dateDO) 
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResult =
+         Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_FiscalizationStatus>>(
+            webApiKind,
+            webApiAddr,
+            jsonRequestString
+         );
+      return webApiResult;
+   }
+
    //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ####################################################################################
    public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_Receive_XML(uint electronicID)
    {
@@ -1166,6 +1185,75 @@ public static class Vv_eRacun_HTTP
                                           F2_IRn_faktur_rec.TipBr,
                                           F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
                                           Vv_eRacun_HTTP.MER_TransportStatuses[theDPS_News.lastStatusCD.Value],
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theNewsList) 
+
+      #endregion Refresh TRN or DPS status
+
+      #region Refresh AllFISK_Outbox status
+
+      ZXC.SetStatusText("Refresh AllFISK_Outbox status");
+
+      QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Yes_HasSense_Refresh_AllFISK_Outbox_Status).ToList();
+
+      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
+      // za sada, idemo cijela projektna godina                                                                         
+    //minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
+    //maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
+      minDokDate = ZXC.projectYearFirstDay;
+      maxDokDate = ZXC.projectYearLastDay ;
+
+      // tu smo stali
+      webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate);
+
+      if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      {
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxDPSstatusList);
+         return -1;
+      }
+
+      var theAllFISK_Outbox_NewsList = webApiResultWithList.ResponseData
+          .Join(
+              QueryOutbox_CandidatesFakturList,
+              respData => respData.ElectronicId ?? 0L,
+              fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
+              (respData, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 lastStatusCD = respData.StatusId,
+                 faktur = fak
+              }
+          )
+          .Where(item => item.lastStatusCD.HasValue && item.lastStatusCD.Value != item.faktur.F2_StatusCD);
+
+      foreach(var theAllFISK_Outbox_News in theAllFISK_Outbox_NewsList)
+      {
+         newsCount++;
+
+         F2_IRn_faktur_rec = theAllFISK_Outbox_News.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_StatusCD = theAllFISK_Outbox_News.lastStatusCD.Value;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theAllFISK_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("{0} ({1}) Novi POSLOVNI status:      {2}      {3} {4}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                          Vv_eRacun_HTTP.MER_TransportStatuses[theAllFISK_Outbox_News.lastStatusCD.Value],
                                           F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
 
             updatedStatusInfoList.Add(updatedStatusInfo);
@@ -1794,6 +1882,7 @@ public static class Vv_eRacun_HTTP
             try
             {
                webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status(electronicID, messageType);
+               // TODO: Vv_eRacun_HTTP.Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.xyz);
 
                if(webApiResult == null) getStatusOK = false;
             }
@@ -1905,6 +1994,8 @@ public static class Vv_eRacun_HTTP
             {
                if(isWithElectronicID) webApiResult = Vv_eRacun_HTTP.VvMER_WebService_MAP       (MAP_requestData);
                else                   webApiResult = Vv_eRacun_HTTP.VvMER_WebService_MAP_WO_eID(MAP_requestData);
+
+               // TODO: Vv_eRacun_HTTP.Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.xyz);
 
                if(webApiResult == null) MAP_OK = false;
             }
@@ -2298,6 +2389,9 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    //[JsonPropertyName("Documents")]
    //public List<DocumentInfo_Data> Documents { get; set; }
 
+   //[JsonPropertyName("messages")]
+   //public List<VvMER_Response_Data_AllActions> messages { get; set; }
+
    // State indicators
    [JsonPropertyName("Imported")]
    public bool? Imported { get; set; }
@@ -2475,6 +2569,71 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 //   public bool? Imported { get; set; }
 //}
 
+#region Bussiness Classes for JSON Response - FiscalizationStatus
+
+/// <summary>
+/// Represents a fiscalization message within a fiscalization status response
+/// </summary>
+public class VvMER_FiscalizationMessage
+{
+   [JsonPropertyName("fiscalizationRequestId")]
+   public string FiscalizationRequestId { get; set; }
+
+   [JsonPropertyName("dateOfFiscalization")]
+   public DateTime? DateOfFiscalization { get; set; }
+
+   [JsonPropertyName("isSuccess")]
+   public bool? IsSuccess { get; set; }
+
+   [JsonPropertyName("message")]
+   public string Message { get; set; }
+
+   [JsonPropertyName("encodedXml")]
+   public string EncodedXml { get; set; }
+
+   [JsonPropertyName("errorCode")]
+   public string ErrorCode { get; set; }
+
+   [JsonPropertyName("errorCodeDescription")]
+   public string ErrorCodeDescription { get; set; }
+
+   [JsonPropertyName("messageType")]
+   public int? MessageType { get; set; }
+
+   [JsonPropertyName("messageTypeDescription")]
+   public string MessageTypeDescription { get; set; }
+}
+
+/// <summary>
+/// Represents a fiscalization status response with messages
+/// </summary>
+public class VvMER_Response_Data_FiscalizationStatus
+{
+   [JsonPropertyName("electronicId")]
+   public long? ElectronicId { get; set; }
+
+   [JsonPropertyName("RecipientIdentifierValue")]
+   public string RecipientIdentifierValue { get; set; }
+
+   [JsonPropertyName("RecipientName")]
+   public string RecipientName { get; set; }
+
+   [JsonPropertyName("channelType")]
+   public int? ChannelType { get; set; }
+
+   [JsonPropertyName("channelTypeDescription")]
+   public string ChannelTypeDescription { get; set; }
+
+   [JsonPropertyName("messages")]
+   public List<VvMER_FiscalizationMessage> Messages { get; set; }
+
+   public VvMER_Response_Data_FiscalizationStatus()
+   {
+      Messages = new List<VvMER_FiscalizationMessage>();
+   }
+}
+
+#endregion Bussiness Classes for JSON Response - FiscalizationStatus
 public class WebApiResult<T>
 {
    public ZXC.F2_WebApi WebApiKind   { get; set; }
