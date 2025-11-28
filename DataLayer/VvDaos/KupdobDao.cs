@@ -39,7 +39,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
    #region CreateTableKupdob
 
-   public static   uint TableVersionStatic { get { return /*!!!*/ 39 /*!!!*/; } }
+   public static   uint TableVersionStatic { get { return /*!!!*/ 40 /*!!!*/; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -158,7 +158,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
          /* 95 */  "timeOd_7  time                  NOT NULL default '00:00:00',\n" +
          /* 95 */  "timeDo_7  time                  NOT NULL default '00:00:00',\n" +
 
-         /*109 */  "isAMS        tinyint(1) unsigned NOT NULL default 0,\n"            +
+         /*109 */  "r1Kind       tinyint(1) unsigned NOT NULL default 0,\n" +
          /*110 */  "idIsPolStmnt tinyint(1) unsigned NOT NULL default 0,\n"            +
          /*111 */  "idBirthDate  date                NOT NULL default '0001-01-01',\n" +
          /*112 */  "idExpDate    date                NOT NULL default '0001-01-01',\n" +
@@ -354,6 +354,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
          case 39: if(isPrjkt == false) return "";
                   return ("ADD f2_RolaKind tinyint(1) unsigned NOT NULL default 0  AFTER f2_Provider;\n");
 
+         case 40: return ("CHANGE COLUMN isAMS r1Kind tinyint(1) unsigned NOT NULL default 0;\n");
+
          // !!! PAZI NA 'commaOrNot' u ALTER_TABLE_ForCatchUp_Command !!! 
 
          default: throw new Exception("For table " + Kupdob.recordName + " version no. " + catchingVersion + " doesn't exists!");
@@ -498,7 +500,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeDo_6,  TheSchemaTable.Rows[CI.timeDo_6]);  
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeOd_7,  TheSchemaTable.Rows[CI.timeOd_7]);  
       /* 95 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.TimeDo_7,  TheSchemaTable.Rows[CI.timeDo_7]);  
-      /*109 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.AMSstatus   , TheSchemaTable.Rows[CI.AMSstatus   ]);  
+      /*109 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.R1kind  ,  TheSchemaTable.Rows[CI.R1kind  ]);  
       /*110 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdIsPolStmnt, TheSchemaTable.Rows[CI.idIsPolStmnt]);  
       /*111 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdBirthDate , TheSchemaTable.Rows[CI.idBirthDate ]);  
       /*112 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdExpDate   , TheSchemaTable.Rows[CI.idExpDate   ]);  
@@ -731,7 +733,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 94 */      rdrData._timeOd_7 = reader.GetTimeSpan(CI.timeOd_7);
       /* 94 */      rdrData._timeDo_7 = reader.GetTimeSpan(CI.timeDo_7);
 
-      /*109 */      rdrData._AMSstatus    = reader.GetUInt16  (CI.AMSstatus)   ;
+      /*109 */      rdrData._R1kind       = reader.GetUInt16  (CI.R1kind)      ;
       /*110 */      rdrData._idIsPolStmnt = reader.GetBoolean (CI.idIsPolStmnt);
       /*111 */      rdrData._idBirthDate  = reader.GetDateTime(CI.idBirthDate) ;
       /*112 */      rdrData._idExpDate    = reader.GetDateTime(CI.idExpDate)   ;
@@ -877,7 +879,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /* 95 */ internal int   timeOd_7;
       /* 95 */ internal int   timeDo_7;
 
-      /*109 */ internal int AMSstatus   ;
+      /*109 */ internal int R1kind      ;
       /*110 */ internal int idIsPolStmnt;
       /*111 */ internal int idBirthDate ;
       /*112 */ internal int idExpDate   ;
@@ -1011,7 +1013,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       CI.timeDo_6  = GetSchemaColumnIndex("timeDo_6"  );
       CI.timeOd_7  = GetSchemaColumnIndex("timeOd_7"  );
       CI.timeDo_7  = GetSchemaColumnIndex("timeDo_7"  );
-      CI.AMSstatus = GetSchemaColumnIndex("isAMS")     ; // !!! AMSstatus se u data layeru zove isAMS te je enum a ne bool!!! 
+      CI.R1kind    = GetSchemaColumnIndex("r1Kind"    );
 
       CI.idIsPolStmnt = GetSchemaColumnIndex("idIsPolStmnt");
       CI.idBirthDate  = GetSchemaColumnIndex("idBirthDate");
@@ -1054,6 +1056,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
       LoadGenericVvDataRecordList<Ftrans>(dbConnection, kupdob_rec.Ftranses, filterMembers, "t_dokDate DESC, t_dokNum DESC, t_serial DESC");
    }
+
+#if BiloJednom
 
    public static ZXC.AMSstatus RefreshKupdob_AMSstatus(XSqlConnection dbConnection, Kupdob kupdob_rec)
    {
@@ -1147,6 +1151,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       else                return ZXC.AMSstatus.NEPOZNAT; 
    }
 
+#endif
    #endregion LoadFtranses
 
    #region IsThisRecordInSomeRelation

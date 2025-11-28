@@ -3405,15 +3405,32 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 #endif
       #endregion Authorize M2PAY credit or debit card
 
-      if(faktur_rec.IsF2)
+      //if(faktur_rec.IsF2)
+      //{
+      //   kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
+      //
+      //   if(kupdob_rec != null)
+      //   {
+      //      ZXC.AMSstatus AMSstatus = KupdobDao.RefreshKupdob_AMSstatus(TheDbConnection, kupdob_rec);
+      //
+      //      faktur_rec.F2_AMSstatus = AMSstatus;
+      //   }
+      //}
+
+      if(faktur_rec.Is_F2_R1kind_Mandatory)
       {
          kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
-
+      
          if(kupdob_rec != null)
          {
-            ZXC.AMSstatus AMSstatus = KupdobDao.RefreshKupdob_AMSstatus(TheDbConnection, kupdob_rec);
-
-            faktur_rec.F2_AMSstatus = AMSstatus;
+            ZXC.F2_R1enum R1kind = kupdob_rec.R1kind;
+      
+            faktur_rec.F2_R1kind = R1kind;
+         }
+         else
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Ne postoji kupac [{0}] za F2 dokument koji zahtijeva F2_R1kind definiciju!", faktur_rec.KupdobCD);
+            e.Cancel = true;
          }
       }
 

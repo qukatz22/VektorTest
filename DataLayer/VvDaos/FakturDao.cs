@@ -5520,7 +5520,7 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
 
    #region CreateTableFaktEx
 
-   public static   uint TableVersionStatic { get { return 24; } }
+   public static   uint TableVersionStatic { get { return 25; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -5737,8 +5737,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
          /*202 */ "f2_sentTS      datetime             NOT NULL default '0001-01-01 00:00:00' ,\n" +
          /*203 */ "f2_isRejected  tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
          /*204 */ "f2_isMrkAsPaid tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
-         /*205 */ "f2_AMSstatus   tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
+         /*205 */ "f2_R1kind      tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
          /*206 */ "f2_prvFakRecID int(10)     unsigned NOT NULL default '0'         ,\n" +
+         /*207 */ "f2_isEizvj     tinyint(1)  unsigned NOT NULL default '0'         ,\n" +
 
                                               "PRIMARY KEY      (recID     ) ,\n" +
           (isArhiva ? "" : /*"UNIQUE "*/"") + "KEY BY_FakRecID  (fakturRecID),\n" +
@@ -5915,6 +5916,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
         case 23: return ("ADD    COLUMN f2_AMSstatus   tinyint(1)  unsigned NOT NULL default '0' AFTER f2_isMrkAsPaid    ;\n");
 
         case 24: return ("ADD    COLUMN f2_prvFakRecID int(10)     unsigned NOT NULL default '0' AFTER f2_AMSstatus      ;\n");
+
+        case 25: return ("ADD    COLUMN f2_isEizvj  tinyint(1)  unsigned NOT NULL default '0' AFTER f2_prvFakRecID, " +
+                         "CHANGE COLUMN f2_AMSstatus f2_R1kind TINYINT(1) UNSIGNED NOT NULL DEFAULT '0';  ");
 
         default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -6155,8 +6159,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*202 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_SentTS     , TheSchemaTable.Rows[CI.f2_sentTS     ]);
       /*203 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_IsRejected , TheSchemaTable.Rows[CI.f2_isRejected ]);
       /*204 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_IsMarkAsPaid,TheSchemaTable.Rows[CI.f2_isMrkAsPaid]);
-      /*205 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_AMSstatus   ,TheSchemaTable.Rows[CI.f2_AMSstatus  ]);
+      /*205 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_R1kind      ,TheSchemaTable.Rows[CI.f2_R1kind     ]);
       /*206 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_PrvFakRecID ,TheSchemaTable.Rows[CI.f2_prvFakRecID]);
+      /*207 */ VvSQL.CreateCommandParameter(cmd, preffix, faktEx.F2_IsEizvj     ,TheSchemaTable.Rows[CI.f2_isEizvj    ]);
       }
 
    }
@@ -6385,8 +6390,9 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*202 */ rdrData._f2_sentTS      = reader.GetDateTime (CI.f2_sentTS      + ciOffset);
       /*203 */ rdrData._f2_isRejected  = reader.GetBoolean  (CI.f2_isRejected  + ciOffset);
       /*204 */ rdrData._f2_isMrkAsPaid = reader.GetBoolean  (CI.f2_isMrkAsPaid + ciOffset);
-      /*205 */ rdrData._f2_AMSstatus   = reader.GetUInt16   (CI.f2_AMSstatus   + ciOffset);
+      /*205 */ rdrData._f2_R1kind      = reader.GetUInt16   (CI.f2_R1kind      + ciOffset);
       /*206 */ rdrData._f2_prvFakRecID = reader.GetUInt32   (CI.f2_prvFakRecID + ciOffset);
+      /*207 */ rdrData._f2_isEizvj     = reader.GetBoolean  (CI.f2_isEizvj     + ciOffset);
 
       int nextReaderIndex = lastFaktExCI + 1 + ciOffset;
 
@@ -6664,8 +6670,10 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*202 */ internal int f2_sentTS     ;
       /*203 */ internal int f2_isRejected ;
       /*204 */ internal int f2_isMrkAsPaid;
-      /*205 */ internal int f2_AMSstatus  ;
+      /*205 */ internal int f2_R1kind     ;
       /*206 */ internal int f2_prvFakRecID;
+      /*207 */ internal int f2_isEizvj    ;
+
    }
 
    /// <summary>
@@ -6888,10 +6896,11 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*202 */ CI.f2_sentTS      = GetSchemaColumnIndex("f2_sentTS");
       /*203 */ CI.f2_isRejected  = GetSchemaColumnIndex("f2_isRejected");
       /*204 */ CI.f2_isMrkAsPaid = GetSchemaColumnIndex("f2_isMrkAsPaid");
-      /*205 */ CI.f2_AMSstatus   = GetSchemaColumnIndex("f2_AMSstatus");
+      /*205 */ CI.f2_R1kind      = GetSchemaColumnIndex("f2_R1kind");
       /*206 */ CI.f2_prvFakRecID = GetSchemaColumnIndex("f2_prvFakRecID");
+      /*207 */ CI.f2_isEizvj     = GetSchemaColumnIndex("f2_isEizvj");
 
-lastFaktExCI = CI.f2_prvFakRecID; // !!!!!! 
+lastFaktExCI = CI.f2_isEizvj; // !!!!!! 
 
    }
 

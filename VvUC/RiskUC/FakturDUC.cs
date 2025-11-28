@@ -8444,7 +8444,7 @@ public partial class FakturExtDUC : FakturDUC
                      tbx_f2_isRejected    ,
                      tbx_f2_isMrkAsPaid   ,
                      tbx_f2_isFisk        ,
-                     tbx_f2_AMSstatus     ,
+                     tbx_f2_R1kind     ,
                      tbx_f2_prvFakRecID   ,
                      tbx_f2_isEizvj
                      ;
@@ -12094,7 +12094,7 @@ public partial class FakturExtDUC : FakturDUC
       tbx_f2_isEizvj     = hamper.CreateVvTextBox(1, 5, "tbx_f2_isEizvj    ", "F2_isEizvj"    ,5 /*GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    )*/);
       tbx_f2_isMrkAsPaid = hamper.CreateVvTextBox(1, 6, "tbx_f2_isMrkAsPaid", "F2_isMrkAsPaid", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isMrkAsPaid));
       tbx_f2_isRejected  = hamper.CreateVvTextBox(1, 7, "tbx_f2_isRejected ", "F2_isRejected" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
-      tbx_f2_AMSstatus   = hamper.CreateVvTextBox(1, 8, "tbx_f2_AMSstatus  ", "F2_AMSstatus"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_AMSstatus  ));
+      tbx_f2_R1kind   = hamper.CreateVvTextBox(1, 8, "tbx_f2_AMSstatus  ", "F2_AMSstatus"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind  ));
       tbx_f2_prvFakRecID = hamper.CreateVvTextBox(1, 9, "tbx_f2_prvFakRecID", "F2_prvFakRecID", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_prvFakRecID));
 
       tbx_f2_electron_ID.JAM_ReadOnly = true;
@@ -12105,7 +12105,7 @@ public partial class FakturExtDUC : FakturDUC
       tbx_f2_isEizvj    .JAM_ReadOnly = true;
       tbx_f2_isMrkAsPaid.JAM_ReadOnly = true;
       tbx_f2_isRejected .JAM_ReadOnly = true;
-      tbx_f2_AMSstatus  .JAM_ReadOnly = true;
+      tbx_f2_R1kind  .JAM_ReadOnly = true;
       tbx_f2_prvFakRecID.JAM_ReadOnly = true;
 
       hamper.BackColor = Color.FromArgb(250, 116, 116);
@@ -13520,7 +13520,7 @@ public partial class FakturExtDUC : FakturDUC
    public string Fld_f2_isEizvj     { set { tbx_f2_isEizvj    .Text = value; } }
    public string Fld_f2_isMrkAsPaid { set { tbx_f2_isMrkAsPaid.Text = value; } }
    public string Fld_f2_isRejected  { set { tbx_f2_isRejected .Text = value; } }
-   public string Fld_f2_AMSstatus   { set { tbx_f2_AMSstatus  .Text = value; } }
+   public string Fld_f2_R1kind   { set { tbx_f2_R1kind  .Text = value; } }
    public string Fld_f2_prvFakRecID { set { tbx_f2_prvFakRecID.Text = value; } }
 
    #endregion Fld_
@@ -14164,7 +14164,8 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_f2_isEizvj    )) Fld_f2_isEizvj     = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_IsEizvj      == true ? "DA" :   "";
       if(CtrlOK(tbx_f2_isMrkAsPaid)) Fld_f2_isMrkAsPaid = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_IsMarkAsPaid == true ? "DA" : "NE";
       if(CtrlOK(tbx_f2_isRejected )) Fld_f2_isRejected  = faktEx.F2_ElectronicID.IsZero() ? "" : faktEx.F2_IsRejected   == true ? "DA" : "NE";
-      if(CtrlOK(tbx_f2_AMSstatus  )) Fld_f2_AMSstatus   = faktEx.F2_AMSstatus   .ToString();
+    //if(CtrlOK(tbx_f2_AMSstatus  )) Fld_f2_AMSstatus   = faktEx.F2_AMSstatus   .ToString();
+      if(CtrlOK(tbx_f2_R1kind     )) Fld_f2_R1kind      = faktEx.F2_R1kind      .ToString();
       if(CtrlOK(tbx_f2_prvFakRecID)) Fld_f2_prvFakRecID = faktEx.F2_PrvFakRecID.IsZero()  ? "" : faktEx.F2_PrvFakRecID.ToString();
 
 

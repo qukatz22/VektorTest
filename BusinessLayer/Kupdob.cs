@@ -125,7 +125,7 @@ public struct KupdobStruct
    /*107 */ internal TimeSpan _timeOd_7;
    /*108 */ internal TimeSpan _timeDo_7;
 
-   /*109 */ internal /*bool*/ ushort _AMSstatus;
+   /*109 */ internal /*bool*/ ushort _R1kind;
 
    /*110 */ internal bool     _idIsPolStmnt;
    /*111 */ internal DateTime _idBirthDate ;
@@ -307,7 +307,7 @@ public class Kupdob : VvSifrarRecord
                this.currentData._timeOd_7  = TimeSpan./*MinValue*/Zero;
                this.currentData._timeDo_7  = TimeSpan./*MinValue*/Zero;
 
-      /*109 */ this.currentData._AMSstatus        = /*false*/0;    
+      /*109 */ this.currentData._R1kind        = /*false*/0;    
       /*110 */ this.currentData._idIsPolStmnt = false;    
       /*111 */ this.currentData._idBirthDate  = DateTime.MinValue;    
       /*112 */ this.currentData._idExpDate    = DateTime.MinValue;    
@@ -1113,11 +1113,9 @@ public class Kupdob : VvSifrarRecord
    /* 95 */ public TimeSpan TimeOd_7 { get { return this.currentData._timeOd_7; } set { this.currentData._timeOd_7 = value; } }
    /* 95 */ public TimeSpan TimeDo_7 { get { return this.currentData._timeDo_7; } set { this.currentData._timeDo_7 = value; } }
 
-
-   // PAZI! u data layeru se zove 'isAMS' jer smo prvotno zamislili kao bool, ali to je sada ENUM koji se u bussinessu zobe AMSstatus
-   /*109 */ public ZXC.AMSstatus AMSstatus
+   /*109 */ public ZXC.F2_R1enum R1kind
    {
-      get { return (ZXC.AMSstatus)this.currentData._AMSstatus; } set { this.currentData._AMSstatus = (ushort)value; } 
+      get { return (ZXC.F2_R1enum)this.currentData._R1kind; } set { this.currentData._R1kind = (ushort)value; } 
    }
 
 

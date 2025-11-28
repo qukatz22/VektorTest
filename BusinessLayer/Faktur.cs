@@ -251,7 +251,7 @@ public struct FaktExStruct
    /*202 *//*internal*/ public DateTime _f2_sentTS     ;
    /*203 */ /*internal*/ public bool    _f2_isRejected ;
    /*204 */ /*internal*/ public bool    _f2_isMrkAsPaid;
-   /*205 */ /*internal*/ public ushort  _f2_AMSstatus  ;
+   /*205 */ /*internal*/ public ushort  _f2_R1kind     ;
    /*206 */ /*internal*/ public uint    _f2_prvFakRecID;
    /*207 */ /*internal*/ public bool    _f2_isEizvj    ;
                                     
@@ -2171,7 +2171,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    /* 203 */ public  bool    F2_IsRejected   { get { return this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
-   /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.TheEx.currentData._f2_AMSstatus; } set { this.TheEx.currentData._f2_AMSstatus = (ushort)value; } }
+   /* 205*/public ZXC.F2_R1enum F2_R1kind { get { return (ZXC.F2_R1enum)this.TheEx.currentData._f2_R1kind; } set { this.TheEx.currentData._f2_R1kind = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
    /* 207 */ public  bool    F2_IsEizvj      { get { return this.TheEx.currentData._f2_isEizvj    ; } set { this.TheEx.currentData._f2_isEizvj     = value; } }   /* _f2_IsEizvj      */
 
@@ -5102,11 +5102,27 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool F2_IsARHIVED { get { return F2_ArhRecID.NotZero(); } }
 
    // ========================================================================================================================================================================= 
-   public bool IsF1       { get { return IsFiskalDutyFaktur_ONLINE; } }
+
+ //public bool IsF1       { get { return IsFiskalDutyFaktur_ONLINE; } }
+   public bool IsF1       
+   { 
+      get 
+      {
+         if(F2_R1kind == ZXC.F2_R1enum.B2C) return true;
+
+         if(F2_R1kind == ZXC.F2_R1enum.B2B)
+         {
+            if(IsNacPlacVirman(this.NacPlac, this.TT) || IsNacPlacVirman(this.NacPlac2, this.TT)) return false; // Firma plaća virmanom          -> nije F1 nego F2 
+            else                                                                                  return true ; // Firma plaća karticom, cash-om -> jest F1 nije F2 
+         }
+
+         return false; 
+      } 
+   }
    public bool IsF2       { get { return !IsF1 && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } }
-   public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
-   public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
-   public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
+ //public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
+ //public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
+ //public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
    public bool IsNoFX     { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } }
    public ZXC.FIRkind FIRkind
    {
@@ -5115,15 +5131,18 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          if(false) ;
 
          else if(IsF1     ) return ZXC.FIRkind.F1     ;
-         else if(IsF2send ) return ZXC.FIRkind.F2send ;
-         else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
+         else if(IsF2     ) return ZXC.FIRkind.F2     ;
+       //else if(IsF2send ) return ZXC.FIRkind.F2send ;
+       //else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
          else if(IsNoFX   ) return ZXC.FIRkind.NoFX   ;
 
-         return ZXC.FIRkind.F2nepoz;
+         return ZXC.FIRkind.Nepoznato;
       }
    }
-   public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
-   public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
+ //public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
+ //public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
+
+   public bool Is_F2_R1kind_Mandatory      { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } } 
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE
@@ -5909,9 +5928,10 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*202 */    this.currentData._f2_sentTS      = DateTime.MinValue;
       /*203 */    this.currentData._f2_isRejected  = false;
       /*204 */    this.currentData._f2_isMrkAsPaid = false;
-      /*205 */    this.currentData._f2_AMSstatus   = /*false*/0;
+      /*205 */    this.currentData._f2_R1kind   = /*false*/0;
       /*206 */    this.currentData._f2_prvFakRecID = 0;
       /*207 */    this.currentData._f2_isEizvj     = false;
+      /*208 */    this.currentData._f2_R1kind      = 0;
 
    }
 
@@ -6824,9 +6844,10 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
 
    /* 203 */ public  bool    F2_IsRejected   { get { return this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
-   /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.currentData._f2_AMSstatus; } set { this.currentData._f2_AMSstatus = (ushort)value; } }
+   /* 205 */ public ZXC.F2_R1enum F2_R1kind { get { return (ZXC.F2_R1enum)this.currentData._f2_R1kind; } set { this.currentData._f2_R1kind = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.currentData._f2_prvFakRecID; } set { this.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
    /* 207 */ public  bool    F2_IsEizvj      { get { return this.currentData._f2_isEizvj    ; } set { this.currentData._f2_isEizvj     = value; } }   /* _f2_IsEizvj      */
+
 
    #endregion Data Layer Columns
 

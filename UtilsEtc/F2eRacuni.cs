@@ -1764,8 +1764,8 @@ public static class Vv_eRacun_HTTP
             continue; 
          }
 
-         if(MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID) // imamo Electronic id ... bilo je F2send 
-         { 
+       //if(MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID) // imamo Electronic id ... bilo je F2send 
+       //{ 
             MAP_requestData = new VvMER_Request_Data_AllActions()
             {
                ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
@@ -1773,33 +1773,33 @@ public static class Vv_eRacun_HTTP
                PaymentAmount = paymentftrans_rec.T_pot                ,
                PaymentMethod = thePaymentMethod
             };
-         }
-         else if(MAP_CandidateFaktur_rec.Is_MAP_without_ElectronicID) // NEMAMO Electronic id ...bilo je F2eIzvj 
-         { 
-            MAP_requestData = new VvMER_Request_Data_AllActions()
-            {
-               InternalMark             = MAP_CandidateFaktur_rec.TtNumFiskal,
-               IssueDate                = MAP_CandidateFaktur_rec.DokDate    ,
-               SenderIdentifierValue    = ZXC.CURR_prjkt_rec.Oib             ,
-               RecipientIdentifierValue = MAP_CandidateFaktur_rec.KdOib      ,
-
-               PaymentDate              = paymentftrans_rec.T_dokDate        ,
-               PaymentAmount            = paymentftrans_rec.T_pot            ,
-               PaymentMethod            = thePaymentMethod
-            };
-         }
-         else
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Faktura MAP kind je nedefiniran!?\n\r\n\rFtrans:\n\r\n\r{0}\n\r\n\rFaktur:\n\r\n\r{1}", 
-               paymentftrans_rec, MAP_CandidateFaktur_rec);
-            continue;
-         }
+       //}
+       //else if(MAP_CandidateFaktur_rec.Is_MAP_without_ElectronicID) // NEMAMO Electronic id ...bilo je F2eIzvj 
+       //{ 
+       //   MAP_requestData = new VvMER_Request_Data_AllActions()
+       //   {
+       //      InternalMark             = MAP_CandidateFaktur_rec.TtNumFiskal,
+       //      IssueDate                = MAP_CandidateFaktur_rec.DokDate    ,
+       //      SenderIdentifierValue    = ZXC.CURR_prjkt_rec.Oib             ,
+       //      RecipientIdentifierValue = MAP_CandidateFaktur_rec.KdOib      ,
+       //
+       //      PaymentDate              = paymentftrans_rec.T_dokDate        ,
+       //      PaymentAmount            = paymentftrans_rec.T_pot            ,
+       //      PaymentMethod            = thePaymentMethod
+       //   };
+       //}
+       //else
+       //{
+       //   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Faktura MAP kind je nedefiniran!?\n\r\n\rFtrans:\n\r\n\r{0}\n\r\n\rFaktur:\n\r\n\r{1}", 
+       //      paymentftrans_rec, MAP_CandidateFaktur_rec);
+       //   continue;
+       //}
 
          MAP_ActionsList.Add((MAP_requestData, paymentftrans_rec, MAP_CandidateFaktur_rec));
 
          messageList.Add(new VvReportSourceUtil()
          {
-            IsNekakav  = MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID,
+          //IsNekakav  = MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID,
 
             TheCD      = MAP_CandidateFaktur_rec.TipBr,
             DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
@@ -1870,7 +1870,7 @@ public static class Vv_eRacun_HTTP
 
          #region call the MAP API
 
-         webApiResult = WS_Mark_Paid_With_OR_Without_ElectronicID(MAP_Action.request, MAP_Action.faktur.Is_MAP_with_ElectronicID);
+         webApiResult = WS_Mark_Paid_With_OR_Without_ElectronicID(MAP_Action.request, true /*MAP_Action.faktur.Is_MAP_with_ElectronicID*/);
 
          MAP_OK       = (webApiResult.ResponseData != null);
 
