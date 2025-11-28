@@ -78,6 +78,7 @@ public static class Vv_eRacun_HTTP
       { /*"40"*/ 40, "Preuzet"            }, // TRN 
       { /*"45"*/ 45, "Otkazano"           }, // TRN 
       { /*"50"*/ 50, "Neuspjelo"          }, // TRN 
+      { /*"70"*/ 70, "Poslan kao eIZVJ"   }, // TRN 
 
       {           0, "Prihvaćen"          }, // DPS 
       { /*"20"*/  1, "Odbijen"            }, // DPS 
@@ -1197,72 +1198,7 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh AllFISK_Outbox status
 
-      ZXC.SetStatusText("Refresh AllFISK_Outbox status");
-
-      QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Yes_HasSense_Refresh_AllFISK_Outbox_Status).ToList();
-
-      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
-      // za sada, idemo cijela projektna godina                                                                         
-    //minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
-    //maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
-      minDokDate = ZXC.projectYearFirstDay;
-      maxDokDate = ZXC.projectYearLastDay ;
-
-      // tu smo stali
-      webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_DPS_List(minDokDate, maxDokDate);
-
-      if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
-      {
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxDPSstatusList);
-         return -1;
-      }
-
-      var theAllFISK_Outbox_NewsList = webApiResultWithList.ResponseData
-          .Join(
-              QueryOutbox_CandidatesFakturList,
-              respData => respData.ElectronicId ?? 0L,
-              fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
-              (respData, fak) => new
-              {
-                 rowIdx = theUC.TheFakturList.IndexOf(fak),
-                 lastStatusCD = respData.StatusId,
-                 faktur = fak
-              }
-          )
-          .Where(item => item.lastStatusCD.HasValue && item.lastStatusCD.Value != item.faktur.F2_StatusCD);
-
-      foreach(var theAllFISK_Outbox_News in theAllFISK_Outbox_NewsList)
-      {
-         newsCount++;
-
-         F2_IRn_faktur_rec = theAllFISK_Outbox_News.faktur;
-
-         // update Vv dataLayer 
-
-         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
-
-         F2_IRn_faktur_rec.F2_StatusCD = theAllFISK_Outbox_News.lastStatusCD.Value;
-
-         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
-
-         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
-
-         if(rwtOK)
-         {
-            theUC.PutDgvLineFields(theAllFISK_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
-            updatedStatusInfo = string.Format("{0} ({1}) Novi POSLOVNI status:      {2}      {3} {4}",
-                                          F2_IRn_faktur_rec.TipBr,
-                                          F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
-                                          Vv_eRacun_HTTP.MER_TransportStatuses[theAllFISK_Outbox_News.lastStatusCD.Value],
-                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
-
-            updatedStatusInfoList.Add(updatedStatusInfo);
-
-         } // if(rwtOK)
-
-      } // foreach(var item in theNewsList) 
-
-      #endregion Refresh TRN or DPS status
+#if BILONEKADBRISIKASNIJE
 
       #region Refresh FISK status
 
@@ -1401,6 +1337,284 @@ public static class Vv_eRacun_HTTP
       } // for(int rIdx = 0; rIdx < theUC.TheG.RowCount; ++rIdx)
 
       #endregion Refresh MarkAsPaid status
+
+#endif
+
+      ZXC.SetStatusText("Refresh AllFISK_Outbox status");
+
+      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
+      // za sada, idemo cijela projektna godina                                                                         
+      //minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
+      //maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
+      minDokDate = ZXC.projectYearFirstDay;
+      maxDokDate = ZXC.projectYearLastDay ;
+
+      WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Outbox(minDokDate, maxDokDate);
+
+      if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
+      {
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2, ZXC.F2_WebApi.OutboxDPSstatusList);
+         return -1;
+      }
+
+      #region 1. FISK Status - Outgoing eRacun
+
+      int wantedMessageType = 0; // 0 – Kao POŠILJATELJ dohvati status fiskalizacije 
+
+      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk == false); // Lista Faktura koje nisu fiskalizirane 
+
+      List<VvMER_FiscalizationMessage> theFISKstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
+      VvMER_FiscalizationMessage lastFISKMessage;
+
+      foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
+      {
+         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+
+         if(lastFISKMessage == null) continue;
+
+         lastFISKMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+
+         theFISKstatus_MessagesList.Add(lastFISKMessage);
+      }
+
+      var theFISKstatus_Outbox_NewsList = theFISKstatus_MessagesList
+          .Join(
+              theFakturList_not_FISK_yet,
+              message => message.TheElectronicId,
+              fak => (long)fak.F2_ElectronicID,
+              (message, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 faktur = fak
+              }
+          );
+
+      foreach(var theFISKstatus_Outbox_News in theFISKstatus_Outbox_NewsList)
+      {
+         newsCount++;
+
+         F2_IRn_faktur_rec = theFISKstatus_Outbox_News.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_IsFisk = true;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theFISKstatus_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Nova FISKALIZACIJA računa: {0} ({1}) {2} {3}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID,
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                                          F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theFISKstatus_Outbox_NewsList) 
+
+      #endregion 1. FISK Status - Outgoing eRacun
+
+      #region 2. REJECT Status - Outgoing eRacun
+
+      wantedMessageType = 2; // 2 – Dohvati status odbijanja 
+
+      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected == false); // Lista Faktura koje nisu odbijene 
+
+      List<VvMER_FiscalizationMessage> theREJECTstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
+      VvMER_FiscalizationMessage lastREJECTMessage;
+
+      foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
+      {
+         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+         
+         if(lastREJECTMessage == null) continue;
+
+         lastREJECTMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+         theREJECTstatus_MessagesList.Add(lastREJECTMessage);
+      }
+
+      var theREJECTstatus_Outbox_NewsList = theREJECTstatus_MessagesList
+          .Join(
+              theFakturList_not_REJECT_yet,
+              message => message.TheElectronicId,
+              fak => (long)fak.F2_ElectronicID,
+              (message, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 faktur = fak
+              }
+          );
+
+      foreach(var theREJECTstatus_Outbox_News in theREJECTstatus_Outbox_NewsList)
+      {
+         newsCount++;
+
+         F2_IRn_faktur_rec = theREJECTstatus_Outbox_News.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_IsRejected = true;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theREJECTstatus_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Novo !!! ODBIJANJE / REJECT!!! računa: {0} ({1}) {2} {3}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID,
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                                          F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theFISKstatus_Outbox_NewsList) 
+
+      #endregion 2. REJECT Status - Outgoing eRacun
+
+      #region 3. MAP Status - Outgoing eRacun
+
+      wantedMessageType = 3; // 3 – Dohvati status plaćanja 
+
+      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid == false); // Lista Faktura koje nisu označene kao plaćene 
+
+      List<VvMER_FiscalizationMessage> theMAPstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
+      VvMER_FiscalizationMessage lastMAPMessage;
+
+      foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
+      {
+         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+
+         if(lastMAPMessage == null) continue;
+
+         lastMAPMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+         theMAPstatus_MessagesList.Add(lastMAPMessage);
+      }
+
+      var theMAPstatus_Outbox_NewsList = theMAPstatus_MessagesList
+          .Join(
+              theFakturList_not_MAP_yet,
+              message => message.TheElectronicId,
+              fak => (long)fak.F2_ElectronicID,
+              (message, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 faktur = fak
+              }
+          );
+
+      foreach(var theMAPstatus_Outbox_News in theMAPstatus_Outbox_NewsList)
+      {
+         newsCount++;
+
+         F2_IRn_faktur_rec = theMAPstatus_Outbox_News.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_IsMarkAsPaid = true;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theMAPstatus_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Novi Označen Kao Plaćen račun: {0} ({1}) {2} {3}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID,
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                                          F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theFISKstatus_Outbox_NewsList) 
+
+      #endregion 3. MAP Status - Outgoing eRacun
+
+      #region 4. eIZVJ Status - Outgoing eRacun
+
+      wantedMessageType = 4; // 4 – Dohvati status eIzvještavanja 
+
+      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj == false); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
+
+      List<VvMER_FiscalizationMessage> theeIZVJstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
+      VvMER_FiscalizationMessage lasteIZVJMessage;
+
+      foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
+      {
+         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+
+         if(lasteIZVJMessage == null) continue;
+
+         lasteIZVJMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+         theeIZVJstatus_MessagesList.Add(lasteIZVJMessage);
+      }
+
+      var theeIZVJstatus_Outbox_NewsList = theeIZVJstatus_MessagesList
+          .Join(
+              theFakturList_not_eIZVJ_yet,
+              message => message.TheElectronicId,
+              fak => (long)fak.F2_ElectronicID,
+              (message, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 faktur = fak
+              }
+          );
+
+      foreach(var theeIZVJstatus_Outbox_News in theeIZVJstatus_Outbox_NewsList)
+      {
+         newsCount++;
+
+         F2_IRn_faktur_rec = theeIZVJstatus_Outbox_News.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_IsEizvj = true;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theeIZVJstatus_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Novi račun prihvaćen ne eIzvještavanje: {0} ({1}) {2} {3}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID,
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+                                          F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theFISKstatus_Outbox_NewsList) 
+
+      #endregion 4. eIZVJ Status - Outgoing eRacun
+
+      #endregion Refresh AllFISK_Outbox status
 
       #region Refresh MarkAsPaid_InfoColumns
 
@@ -2026,16 +2240,17 @@ public static class Vv_eRacun_HTTP
     //return false;
       return null ;
    }
-   internal static void Show_WebApiResult_ErrorMessageBox(WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList, ZXC.F2_WebApi webApiKind)
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<List<T>> webApiResultWithList, ZXC.F2_WebApi webApiKind) where T : class
    {
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = WebApiResult<VvMER_Response_Data_AllActions>.GetWebApiResult_From_WebApiResultWithList(webApiResultWithList);
-
+      WebApiResult<T> webApiResult = WebApiResult<T>.GetWebApiResult_From_WebApiResultWithList(webApiResultWithList);
+   
       Show_WebApiResult_ErrorMessageBox(webApiResult, webApiKind);
    }
-   internal static void Show_WebApiResult_ErrorMessageBox(WebApiResult<VvMER_Response_Data_AllActions> webApiResult, ZXC.F2_WebApi webApiKind)
+   
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult, ZXC.F2_WebApi webApiKind) where T : class
    {
       VvMessageBoxDLG Send_OR_eIzvj_ErrorMessageBox = new VvMessageBoxDLG(false, ZXC.VvmBoxKind.F2_webApiResults);
-
+   
       switch(webApiKind)
       {
          case ZXC.F2_WebApi.SEND               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom 'SEND' slanja eRačuna:"                        ; break;
@@ -2046,6 +2261,7 @@ public static class Vv_eRacun_HTTP
          case ZXC.F2_WebApi.OutboxDPSstatusList: Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata liste procesnih statusa eRačuna:"      ; break;
          case ZXC.F2_WebApi.InboxDPSstatusList : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa ULAZNIH eRačuna:"              ; break;
          case ZXC.F2_WebApi.FISKstatus         : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa FISKALIZACIJE eRačuna:"        ; break;
+         case ZXC.F2_WebApi.FISKstatusOutbox   : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata liste statusa FISKALIZACIJE eRačuna:"  ; break;
          case ZXC.F2_WebApi.REJECTstatus       : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa ODBIJANJA eRačuna:"            ; break;
          case ZXC.F2_WebApi.MAPstatus          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa NAPLATE eRačuna:"              ; break;
          case ZXC.F2_WebApi.MAPaction          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom akcije izvještavanja NAPLATE eRačuna:"         ; break;
@@ -2054,12 +2270,11 @@ public static class Vv_eRacun_HTTP
          case ZXC.F2_WebApi.PING               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom spajanja na servis:"                           ; break;
          case ZXC.F2_WebApi.CheckAMS           : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata info o AMS statusu partnera:"          ; break;
       }                                        
-
+   
       Send_OR_eIzvj_ErrorMessageBox.TheUC.PutDgvFields(webApiResult.MessageList);
       DialogResult dlgResult = Send_OR_eIzvj_ErrorMessageBox.ShowDialog();
       Send_OR_eIzvj_ErrorMessageBox.Dispose();
-   }
-
+   }   
    internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
    {
       EN16931.UBL.InvoiceType deserialized_eRacun = null;
@@ -2570,10 +2785,6 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 //}
 
 #region Bussiness Classes for JSON Response - FiscalizationStatus
-
-/// <summary>
-/// Represents a fiscalization message within a fiscalization status response
-/// </summary>
 public class VvMER_FiscalizationMessage
 {
    [JsonPropertyName("fiscalizationRequestId")]
@@ -2602,11 +2813,12 @@ public class VvMER_FiscalizationMessage
 
    [JsonPropertyName("messageTypeDescription")]
    public string MessageTypeDescription { get; set; }
+
+   // za JOIN sa Faktur iz TheFakturList 
+   public long? TheElectronicId { get; set; }
+
 }
 
-/// <summary>
-/// Represents a fiscalization status response with messages
-/// </summary>
 public class VvMER_Response_Data_FiscalizationStatus
 {
    [JsonPropertyName("electronicId")]
@@ -2694,21 +2906,21 @@ public class WebApiResult<T>
       }
    }
 
-   public static WebApiResult<VvMER_Response_Data_AllActions> GetWebApiResult_From_WebApiResultWithList(WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList)
+   public static WebApiResult<T> GetWebApiResult_From_WebApiResultWithList<T>(WebApiResult<List<T>> webApiResultWithList) where T : class
    {
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = new WebApiResult<VvMER_Response_Data_AllActions>();
+      WebApiResult<T> webApiResult = new WebApiResult<T>();
       
       if(webApiResultWithList != null)
       {
          webApiResult.WebApiKind        = webApiResultWithList.WebApiKind;
          webApiResult.ResponseData      = webApiResultWithList.ResponseData?.FirstOrDefault();
-         webApiResult.ResponseString      = webApiResultWithList.ResponseString;
+         webApiResult.ResponseString    = webApiResultWithList.ResponseString;
          webApiResult.StatusCode        = webApiResultWithList.StatusCode;
          webApiResult.StatusDescription = webApiResultWithList.StatusDescription;
          webApiResult.ErrorBody         = webApiResultWithList.ErrorBody;
          webApiResult.ExceptionMessage  = webApiResultWithList.ExceptionMessage;
       }
-
+   
       return webApiResult;
    }
 }

@@ -253,6 +253,7 @@ public struct FaktExStruct
    /*204 */ /*internal*/ public bool    _f2_isMrkAsPaid;
    /*205 */ /*internal*/ public ushort  _f2_AMSstatus  ;
    /*206 */ /*internal*/ public uint    _f2_prvFakRecID;
+   /*207 */ /*internal*/ public bool    _f2_isEizvj    ;
                                     
 }
 
@@ -2172,6 +2173,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
    /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.TheEx.currentData._f2_AMSstatus; } set { this.TheEx.currentData._f2_AMSstatus = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
+   /* 207 */ public  bool    F2_IsEizvj      { get { return this.TheEx.currentData._f2_isEizvj    ; } set { this.TheEx.currentData._f2_isEizvj     = value; } }   /* _f2_IsEizvj      */
 
    #endregion Data Layer Columns
 
@@ -4995,9 +4997,10 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan send API-em - nema smisla osvjezavati status transporta 
-         if(F2_StatusCD == 40)        return true; // Delivered - konacan status     - nema smisla osvjezavati status transporta 
-         if(F2_StatusCD == 45)        return true; // Canceled  - konacan status     - nema smisla osvjezavati status transporta 
+         if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan send API-em         - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 40)        return true; // Delivered         - konacan status     - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 45)        return true; // Canceled          - konacan status     - nema smisla osvjezavati status transporta 
+         if(F2_StatusCD == 70)        return true; // Delivered (eIZVJ) - konacan status     - nema smisla osvjezavati status transporta 
 
          return false;
       } 
@@ -5908,6 +5911,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*204 */    this.currentData._f2_isMrkAsPaid = false;
       /*205 */    this.currentData._f2_AMSstatus   = /*false*/0;
       /*206 */    this.currentData._f2_prvFakRecID = 0;
+      /*207 */    this.currentData._f2_isEizvj     = false;
 
    }
 
@@ -6822,6 +6826,7 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
    /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
    /* 205 */ public ZXC.AMSstatus F2_AMSstatus { get { return (ZXC.AMSstatus)this.currentData._f2_AMSstatus; } set { this.currentData._f2_AMSstatus = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.currentData._f2_prvFakRecID; } set { this.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
+   /* 207 */ public  bool    F2_IsEizvj      { get { return this.currentData._f2_isEizvj    ; } set { this.currentData._f2_isEizvj     = value; } }   /* _f2_IsEizvj      */
 
    #endregion Data Layer Columns
 
