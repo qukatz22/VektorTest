@@ -31,7 +31,7 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 
 public static class Vv_eRacun_HTTP
 {
-   public const bool DEMO = true;
+   public const bool DEMO = false;
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -164,6 +164,9 @@ public static class Vv_eRacun_HTTP
 
             string[] responseBodyLines = ZXC.PrettyPrintResponse(body).Split(new string[] { "\n", "\r", "\n\r", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
+            string[] webAddressParts   = webAddress.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+            string theAPI              = webAddressParts.LastOrDefault();
+
             if(webAddress == VvMER_webAddressPOST_Check)
             {
                // ne tretiraj statusCode koji nije 200 kao exception,                
@@ -171,7 +174,7 @@ public static class Vv_eRacun_HTTP
             }
             else
             {
-               ZXC.aim_emsg_List("[" + webAddress + "] Web Exception (status code:" + (int)resp.StatusCode + ") Description: " + resp.StatusDescription, responseBodyLines.ToList());
+               ZXC.aim_emsg_List(theAPI + " [" + webAddress + "] Web Exception (status code:" + (int)resp.StatusCode + ") Description: " + resp.StatusDescription, responseBodyLines.ToList());
             }
 
             return resp; // If callers need the stream, avoid reading it here.
@@ -1353,7 +1356,7 @@ public static class Vv_eRacun_HTTP
 
       if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
       {
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2, ZXC.F2_WebApi.OutboxDPSstatusList);
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2, ZXC.F2_WebApi.FISKstatusOutbox);
          return -1;
       }
 
