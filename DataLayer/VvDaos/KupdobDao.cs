@@ -1057,101 +1057,6 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       LoadGenericVvDataRecordList<Ftrans>(dbConnection, kupdob_rec.Ftranses, filterMembers, "t_dokDate DESC, t_dokNum DESC, t_serial DESC");
    }
 
-#if BiloJednom
-
-   public static ZXC.AMSstatus RefreshKupdob_AMSstatus(XSqlConnection dbConnection, Kupdob kupdob_rec)
-   {
-      if(!ZXC.IsF2_2026_rules) return ZXC.AMSstatus.U_AMSu_JE;
-
-      // idemo u refresh AMSstatusa i za nepoznat i za NIJE_U_AMSu status 
-      // tj. samo ako je U_AMSu_JE, prestajemo refreshati ovog kupdob-a   
-      if(kupdob_rec.AMSstatus == ZXC.AMSstatus.U_AMSu_JE /*||
-         kupdob_rec.AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu*/) return kupdob_rec.AMSstatus;
-
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult; // za MER 
-
-      bool refreshStatusOK = true;
-
-      ZXC.AMSstatus refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT;
-
-      switch(ZXC.F2_TheProvider)
-      {
-         case ZXC.F2_Provider_enum.MER:
-
-            try
-            {
-               webApiResult = Vv_eRacun_HTTP.VvMER_WebService_CheckAMS(kupdob_rec.Oib);
-
-               if(webApiResult == null || webApiResult.StatusCode == null)
-               {
-                  refreshStatusOK = false;
-               }
-               else if(webApiResult.ExceptionMessage.NotEmpty() || webApiResult.StatusCode != (int)System.Net.HttpStatusCode.OK)
-               {
-                  Vv_eRacun_HTTP.Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.CheckAMS);
-                  refreshStatusOK = false;
-               }
-
-               if(refreshStatusOK)
-               {
-                  switch(webApiResult.StatusCode)
-                  {
-                     case (int)System.Net.HttpStatusCode.OK      : refreshedAMSstatus = ZXC.AMSstatus.U_AMSu_JE  ; break;
-                     case (int)System.Net.HttpStatusCode.NotFound: refreshedAMSstatus = ZXC.AMSstatus.NIJE_U_AMSu; break;
-                     default                                     : refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT   ; break;
-                  }
-               }
-            }
-            catch(Exception ex)
-            {
-               refreshStatusOK = false;
-            }
-            break;
-
-         case ZXC.F2_Provider_enum.PND:
-
-            try
-            {
-               webApiResult = Vv_eRacun_HTTP.VvPND_WebService_CheckAMS(kupdob_rec.Oib);
-
-               if(webApiResult == null || webApiResult.ResponseData == null)
-               {
-                  refreshStatusOK = false;
-               }
-               else
-               {
-                  refreshedAMSstatus = (bool)webApiResult.ResponseData.publishedOnAms ? ZXC.AMSstatus.U_AMSu_JE : ZXC.AMSstatus.NIJE_U_AMSu;
-               }
-            }
-            catch(Exception ex)
-            {
-               refreshStatusOK = false;
-            }
-            break;
-      }
-
-      #region RWTREC Kupdob with new AMSstatus
-
-      if(ZXC.IsF2_2026_rules && refreshStatusOK)
-      {
-         kupdob_rec.BeginEdit();
-
-         kupdob_rec.AMSstatus = refreshedAMSstatus;
-
-         kupdob_rec.VvDao.RWTREC(ZXC.TheVvForm.TheDbConnection, kupdob_rec, false, false);
-
-         kupdob_rec.EndEdit();
-
-         //SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
-      }
-
-      #endregion RWTREC Kupdob with new AMSstatus
-
-      if(refreshStatusOK) return kupdob_rec.AMSstatus  ;
-      else                return ZXC.AMSstatus.NEPOZNAT; 
-   }
-
-#endif
    #endregion LoadFtranses
 
    #region IsThisRecordInSomeRelation
@@ -1517,6 +1422,134 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
       return tickerExists;
    }
+
+#if BiloJednom
+
+   public static ZXC.AMSstatus RefreshKupdob_AMSstatus(XSqlConnection dbConnection, Kupdob kupdob_rec)
+   {
+      if(!ZXC.IsF2_2026_rules) return ZXC.AMSstatus.U_AMSu_JE;
+
+      // idemo u refresh AMSstatusa i za nepoznat i za NIJE_U_AMSu status 
+      // tj. samo ako je U_AMSu_JE, prestajemo refreshati ovog kupdob-a   
+      if(kupdob_rec.AMSstatus == ZXC.AMSstatus.U_AMSu_JE /*||
+         kupdob_rec.AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu*/) return kupdob_rec.AMSstatus;
+
+      WebApiResult<VvMER_Response_Data_AllActions> webApiResult; // za MER 
+
+      bool refreshStatusOK = true;
+
+      ZXC.AMSstatus refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+
+            try
+            {
+               webApiResult = Vv_eRacun_HTTP.VvMER_WebService_CheckAMS(kupdob_rec.Oib);
+
+               if(webApiResult == null || webApiResult.StatusCode == null)
+               {
+                  refreshStatusOK = false;
+               }
+               else if(webApiResult.ExceptionMessage.NotEmpty() || webApiResult.StatusCode != (int)System.Net.HttpStatusCode.OK)
+               {
+                  Vv_eRacun_HTTP.Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.CheckAMS);
+                  refreshStatusOK = false;
+               }
+
+               if(refreshStatusOK)
+               {
+                  switch(webApiResult.StatusCode)
+                  {
+                     case (int)System.Net.HttpStatusCode.OK      : refreshedAMSstatus = ZXC.AMSstatus.U_AMSu_JE  ; break;
+                     case (int)System.Net.HttpStatusCode.NotFound: refreshedAMSstatus = ZXC.AMSstatus.NIJE_U_AMSu; break;
+                     default                                     : refreshedAMSstatus = ZXC.AMSstatus.NEPOZNAT   ; break;
+                  }
+               }
+            }
+            catch(Exception ex)
+            {
+               refreshStatusOK = false;
+            }
+            break;
+
+         case ZXC.F2_Provider_enum.PND:
+
+            try
+            {
+               webApiResult = Vv_eRacun_HTTP.VvPND_WebService_CheckAMS(kupdob_rec.Oib);
+
+               if(webApiResult == null || webApiResult.ResponseData == null)
+               {
+                  refreshStatusOK = false;
+               }
+               else
+               {
+                  refreshedAMSstatus = (bool)webApiResult.ResponseData.publishedOnAms ? ZXC.AMSstatus.U_AMSu_JE : ZXC.AMSstatus.NIJE_U_AMSu;
+               }
+            }
+            catch(Exception ex)
+            {
+               refreshStatusOK = false;
+            }
+            break;
+      }
+
+      #region RWTREC Kupdob with new AMSstatus
+
+      if(ZXC.IsF2_2026_rules && refreshStatusOK)
+      {
+         kupdob_rec.BeginEdit();
+
+         kupdob_rec.AMSstatus = refreshedAMSstatus;
+
+         kupdob_rec.VvDao.RWTREC(ZXC.TheVvForm.TheDbConnection, kupdob_rec, false, false);
+
+         kupdob_rec.EndEdit();
+
+         //SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+      }
+
+      #endregion RWTREC Kupdob with new AMSstatus
+
+      if(refreshStatusOK) return kupdob_rec.AMSstatus  ;
+      else                return ZXC.AMSstatus.NEPOZNAT; 
+   }
+
+#endif
+
+   public static ZXC.F2_R1enum GetMandatory_Kupdob_R1enum_FromDialog(XSqlConnection dbConnection, Kupdob kupdob_rec)
+   {
+      if(!ZXC.IsF2_2026_rules) return ZXC.F2_R1enum.B2B;
+
+      bool refreshR1StatusOK = true;
+      ZXC.F2_R1enum refreshedR1status = ZXC.F2_R1enum.Nepoznato;
+
+      // Dialog ovo ono ... 
+      // refreshedR1status = dlg.Fld_R1kind;
+
+      #region RWTREC Kupdob with new R1status
+
+      if(ZXC.IsF2_2026_rules && refreshR1StatusOK)
+      {
+         kupdob_rec.BeginEdit();
+
+         kupdob_rec.R1kind = refreshedR1status;
+
+         kupdob_rec.VvDao.RWTREC(ZXC.TheVvForm.TheDbConnection, kupdob_rec, false, false);
+
+         kupdob_rec.EndEdit();
+
+         //SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+      }
+
+      #endregion RWTREC Kupdob with new R1status
+
+      if(refreshR1StatusOK) return kupdob_rec.R1kind      ;
+      else                  return ZXC.F2_R1enum.Nepoznato; 
+   }
+
 
    #endregion Utils
 

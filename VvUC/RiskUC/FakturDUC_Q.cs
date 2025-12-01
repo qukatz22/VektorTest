@@ -3419,18 +3419,30 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       if(faktur_rec.Is_F2_R1kind_Mandatory)
       {
-         kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
-      
-         if(kupdob_rec != null)
+         faktur_rec.F2_R1kind = ZXC.F2_R1enum.Nepoznato;
+
+         if(ZXC.CURR_prjkt_rec.IsFiskalOnline == false) // nema mogucnosti pojave B2C racuna 
          {
-            ZXC.F2_R1enum R1kind = kupdob_rec.R1kind;
-      
-            faktur_rec.F2_R1kind = R1kind;
+            faktur_rec.F2_R1kind = ZXC.F2_R1enum.B2B;
          }
-         else
+         else // TETRAGRAM, PANIGALE, FRAG, METAFLEX, PPUK, PLODINE mogu imati i B2C i B2B racune 
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Ne postoji kupac [{0}] za F2 dokument koji zahtijeva F2_R1kind definiciju!", faktur_rec.KupdobCD);
-            e.Cancel = true;
+            kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
+
+            if(kupdob_rec != null)
+            {
+               if(kupdob_rec.R1kind != ZXC.F2_R1enum.Nepoznato) faktur_rec.F2_R1kind = kupdob_rec.R1kind;
+               else
+               {
+                  faktur_rec.F2_R1kind = KupdobDao.GetMandatory_Kupdob_R1enum_FromDialog(TheDbConnection, kupdob_rec);
+               }
+            }
+            
+            if(faktur_rec.F2_R1kind == ZXC.F2_R1enum.Nepoznato)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu saznati OBAVEZAN podatak da li je kupac B2B ili B2C!");
+               e.Cancel = true;
+            }
          }
       }
 

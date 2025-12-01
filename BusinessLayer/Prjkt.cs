@@ -608,8 +608,10 @@ public class Prjkt : Kupdob
    public string M2Pmodel  { get { return this.currentExtData._m2pModel ; } set { this.currentExtData._m2pModel  = value; } }
 
    public ZXC.F2_Provider_enum F2_Provider { get { return (ZXC.F2_Provider_enum)this.currentExtData._f2_Provider; } set { this.currentExtData._f2_Provider = (ushort)value; } }
-   public ZXC.F2_RolaKind_enum F2_RolaKind { get { return (ZXC.F2_RolaKind_enum)this.currentExtData._f2_RolaKind; } set { this.currentExtData._f2_RolaKind = (ushort)value; } }
+   public ZXC.F2_RolaKind F2_RolaKind { get { return (ZXC.F2_RolaKind)this.currentExtData._f2_RolaKind; } set { this.currentExtData._f2_RolaKind = (ushort)value; } }
 
+   public bool F2_IsServis { get { return (this.F2_RolaKind != ZXC.F2_RolaKind.Nepoznato && this.F2_RolaKind != ZXC.F2_RolaKind.VlastitoKnjigovodstvo); } }
+   public bool F2_IsSebi   { get { return (                                            this.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo); } }
 
    // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
    public byte[] TheLogo
