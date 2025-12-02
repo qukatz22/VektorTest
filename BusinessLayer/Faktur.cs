@@ -5028,7 +5028,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       } 
    }
    public bool F2_Yes_HasSense_Refresh_AllFISK_Outbox_Status { get { return !F2_HasNoSense_Refresh_AllFISK_Outbox_Status; } } 
-   public bool F2_HasNoSense_Refresh_AllFISK_Outbox_Status 
+   public bool F2_HasNoSense_Refresh_AllFISK_Outbox_Status
    { 
       get 
       {

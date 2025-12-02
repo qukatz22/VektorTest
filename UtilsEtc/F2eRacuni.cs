@@ -253,6 +253,7 @@ public static class Vv_eRacun_HTTP
       WebApiResult<T> webApiResult = new WebApiResult<T>();
 
       webApiResult.WebApiKind = webApiKind;
+      webApiResult.WebApiAddr = webAddress;
 
       try
       {
@@ -684,6 +685,7 @@ public static class Vv_eRacun_HTTP
       WebApiResult<VvMER_Response_Data_AllActions> webApiResult = new WebApiResult<VvMER_Response_Data_AllActions>();
 
       webApiResult.WebApiKind = webApiKind;
+      webApiResult.WebApiAddr = webApiAddr;
 
       try
       {
@@ -1049,7 +1051,8 @@ public static class Vv_eRacun_HTTP
 
       ZXC.SetStatusText("Refresh TRN status");
 
-      List<Faktur> QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, false)).ToList();
+    //List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, false)).ToList();
+      List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Outbox_HasNoSense_Refresh_TRN_Status       ).ToList();
 
       // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
       // za sada, idemo cijela projektna godina                                                                         
@@ -1067,20 +1070,21 @@ public static class Vv_eRacun_HTTP
             webApiResultWithList = new WebApiResult<List<VvMER_Response_Data_AllActions>>()
             {
                WebApiKind = ZXC.F2_WebApi.OutboxTRNstatusList,
+               WebApiAddr = webApiResultWithList.WebApiAddr,
                StatusCode = -1,
                StatusDescription = "No response data",
                ErrorBody = "No response data"
             };
          }
 
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxTRNstatusList);
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
          return -1;
       }
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
       var theTRN_NewsList = /*vvMER_responseDataList*/webApiResultWithList.ResponseData
           .Join(
-              QueryOutbox_CandidatesFakturList,
+              queryOutbox_CandidatesFakturList,
               respData => respData.ElectronicId ?? 0L,
               fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
               (respData, fak) => new
@@ -1129,7 +1133,7 @@ public static class Vv_eRacun_HTTP
 
       ZXC.SetStatusText("Refresh DPS status");
 
-      QueryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, true)).ToList();
+      queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, true)).ToList();
 
       // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
       // za sada, idemo cijela projektna godina                                                                         
@@ -1142,7 +1146,7 @@ public static class Vv_eRacun_HTTP
 
       if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList, ZXC.F2_WebApi.OutboxDPSstatusList);
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
          return -1;
       }
 
@@ -1154,7 +1158,7 @@ public static class Vv_eRacun_HTTP
       //              select new { rowIdx = theUC.TheFakturList.IndexOf(fak), lastStatusCD = respData.StatusId, faktur = fak };
       var theDPS_NewsList = webApiResultWithList.ResponseData
           .Join(
-              QueryOutbox_CandidatesFakturList,
+              queryOutbox_CandidatesFakturList,
               respData => respData.ElectronicId ?? 0L,
               fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
               (respData, fak) => new
@@ -1356,7 +1360,7 @@ public static class Vv_eRacun_HTTP
 
       if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
       {
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2, ZXC.F2_WebApi.FISKstatusOutbox);
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
          return -1;
       }
 
@@ -2148,7 +2152,7 @@ public static class Vv_eRacun_HTTP
 
                   if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_eRacun == null)
                   {
-                     Show_WebApiResult_ErrorMessageBox(webApiResult, ZXC.F2_WebApi.RECEIVEdocument);
+                     Show_WebApiResult_ErrorMessageBox(webApiResult);
                      receiveOK = false;
                   }
                }
@@ -2243,35 +2247,35 @@ public static class Vv_eRacun_HTTP
     //return false;
       return null ;
    }
-   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<List<T>> webApiResultWithList, ZXC.F2_WebApi webApiKind) where T : class
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<List<T>> webApiResultWithList) where T : class
    {
       WebApiResult<T> webApiResult = WebApiResult<T>.GetWebApiResult_From_WebApiResultWithList(webApiResultWithList);
    
-      Show_WebApiResult_ErrorMessageBox(webApiResult, webApiKind);
+      Show_WebApiResult_ErrorMessageBox(webApiResult);
    }
    
-   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult, ZXC.F2_WebApi webApiKind) where T : class
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult) where T : class
    {
       VvMessageBoxDLG Send_OR_eIzvj_ErrorMessageBox = new VvMessageBoxDLG(false, ZXC.VvmBoxKind.F2_webApiResults);
    
-      switch(webApiKind)
+      switch(webApiResult.WebApiKind)
       {
-         case ZXC.F2_WebApi.SEND               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom 'SEND' slanja eRačuna:"                        ; break;
-         case ZXC.F2_WebApi.eIzvj              : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom 'eIzvještavanje' slanja eRačuna:"              ; break;
-         case ZXC.F2_WebApi.OutboxTRNstatus    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata transportnog statusa eRačuna:"         ; break;
-         case ZXC.F2_WebApi.OutboxDPSstatus    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata procesnog statusa eRačuna:"            ; break;
-         case ZXC.F2_WebApi.OutboxTRNstatusList: Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata liste transportnih statusa eRačuna:"   ; break;
-         case ZXC.F2_WebApi.OutboxDPSstatusList: Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata liste procesnih statusa eRačuna:"      ; break;
-         case ZXC.F2_WebApi.InboxDPSstatusList : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa ULAZNIH eRačuna:"              ; break;
-         case ZXC.F2_WebApi.FISKstatus         : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa FISKALIZACIJE eRačuna:"        ; break;
-         case ZXC.F2_WebApi.FISKstatusOutbox   : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata liste statusa FISKALIZACIJE eRačuna:"  ; break;
-         case ZXC.F2_WebApi.REJECTstatus       : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa ODBIJANJA eRačuna:"            ; break;
-         case ZXC.F2_WebApi.MAPstatus          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata statusa NAPLATE eRačuna:"              ; break;
-         case ZXC.F2_WebApi.MAPaction          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom akcije izvještavanja NAPLATE eRačuna:"         ; break;
-         case ZXC.F2_WebApi.MAPaction_WO_eID   : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom akcije izvještavanja NAPLATE eRačuna bez ID-a:"; break;
-         case ZXC.F2_WebApi.RECEIVEdocument    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom preuzimanja eRačuna:"                          ; break;
-         case ZXC.F2_WebApi.PING               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom spajanja na servis:"                           ; break;
-         case ZXC.F2_WebApi.CheckAMS           : Send_OR_eIzvj_ErrorMessageBox.Text = webApiKind.ToString() + " - Greška prilikom dohvata info o AMS statusu partnera:"          ; break;
+         case ZXC.F2_WebApi.SEND               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom 'SEND' slanja eRačuna:"                        ; break;
+         case ZXC.F2_WebApi.eIzvj              : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom 'eIzvještavanje' slanja eRačuna:"              ; break;
+         case ZXC.F2_WebApi.OutboxTRNstatus    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata transportnog statusa eRačuna:"         ; break;
+         case ZXC.F2_WebApi.OutboxDPSstatus    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata procesnog statusa eRačuna:"            ; break;
+         case ZXC.F2_WebApi.OutboxTRNstatusList: Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata liste transportnih statusa eRačuna:"   ; break;
+         case ZXC.F2_WebApi.OutboxDPSstatusList: Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata liste procesnih statusa eRačuna:"      ; break;
+         case ZXC.F2_WebApi.InboxDPSstatusList : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa ULAZNIH eRačuna:"              ; break;
+         case ZXC.F2_WebApi.FISKstatus         : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa FISKALIZACIJE eRačuna:"        ; break;
+         case ZXC.F2_WebApi.FISKstatusOutbox   : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata liste statusa FISKALIZACIJE eRačuna:"  ; break;
+         case ZXC.F2_WebApi.REJECTstatus       : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa ODBIJANJA eRačuna:"            ; break;
+         case ZXC.F2_WebApi.MAPstatus          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa NAPLATE eRačuna:"              ; break;
+         case ZXC.F2_WebApi.MAPaction          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom akcije izvještavanja NAPLATE eRačuna:"         ; break;
+         case ZXC.F2_WebApi.MAPaction_WO_eID   : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom akcije izvještavanja NAPLATE eRačuna bez ID-a:"; break;
+         case ZXC.F2_WebApi.RECEIVEdocument    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom preuzimanja eRačuna:"                          ; break;
+         case ZXC.F2_WebApi.PING               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom spajanja na servis:"                           ; break;
+         case ZXC.F2_WebApi.CheckAMS           : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata info o AMS statusu partnera:"          ; break;
       }                                        
    
       Send_OR_eIzvj_ErrorMessageBox.TheUC.PutDgvFields(webApiResult.MessageList);
@@ -2852,6 +2856,7 @@ public class VvMER_Response_Data_FiscalizationStatus
 public class WebApiResult<T>
 {
    public ZXC.F2_WebApi WebApiKind   { get; set; }
+   public string        WebApiAddr   { get; set; }
    public T             ResponseData { get; set; }
    public string ResponseString      { get; set; }
    public int?   StatusCode          { get; set; }
@@ -2916,6 +2921,7 @@ public class WebApiResult<T>
       if(webApiResultWithList != null)
       {
          webApiResult.WebApiKind        = webApiResultWithList.WebApiKind;
+         webApiResult.WebApiAddr        = webApiResultWithList.WebApiAddr;
          webApiResult.ResponseData      = webApiResultWithList.ResponseData?.FirstOrDefault();
          webApiResult.ResponseString    = webApiResultWithList.ResponseString;
          webApiResult.StatusCode        = webApiResultWithList.StatusCode;
