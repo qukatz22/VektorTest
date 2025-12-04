@@ -1375,7 +1375,8 @@ public static class Vv_eRacun_HTTP
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+       //lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
 
          if(lastFISKMessage == null) continue;
 
@@ -1440,7 +1441,7 @@ public static class Vv_eRacun_HTTP
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
          
          if(lastREJECTMessage == null) continue;
 
@@ -1504,7 +1505,7 @@ public static class Vv_eRacun_HTTP
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
 
          if(lastMAPMessage == null) continue;
 
@@ -1568,7 +1569,7 @@ public static class Vv_eRacun_HTTP
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
 
          if(lasteIZVJMessage == null) continue;
 
@@ -2800,8 +2801,23 @@ public class VvMER_FiscalizationMessage
    [JsonPropertyName("dateOfFiscalization")]
    public DateTime? DateOfFiscalization { get; set; }
 
-   [JsonPropertyName("isSuccess")]
-   public bool? IsSuccess { get; set; }
+   //[JsonPropertyName("isSuccess")]
+   //public bool? IsSuccess { get; set; }
+   [JsonPropertyName("status")]
+   public int Status { get; set; }
+
+   // 5.6. Status
+   // Value – Description
+   // 0 – Uspjeh
+   // 1 – Neuspjeh
+   // 2 – Na čekanju
+   public ZXC.F2_Status_For_statusOutbox_API StatusOfStatusOutboxEnum 
+   {
+      get
+      {
+         return (ZXC.F2_Status_For_statusOutbox_API)Status;
+      }
+   }
 
    [JsonPropertyName("message")]
    public string Message { get; set; }

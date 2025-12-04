@@ -1526,12 +1526,20 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       bool refreshR1StatusOK = true;
       ZXC.F2_R1enum refreshedR1status = ZXC.F2_R1enum.Nepoznato;
 
-      // Dialog ovo ono ... 
-      // refreshedR1status = dlg.Fld_R1kind;
+      VvGetMandatory_Kupdob_R1enum_Dlg dlg = new VvGetMandatory_Kupdob_R1enum_Dlg();
+
+      if(dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+      {
+         refreshR1StatusOK = false;
+      }
+      else
+      {
+         refreshedR1status = dlg.Fld_R1Kind;
+      }
 
       #region RWTREC Kupdob with new R1status
 
-      if(ZXC.IsF2_2026_rules && refreshR1StatusOK)
+      if(refreshR1StatusOK)
       {
          kupdob_rec.BeginEdit();
 

@@ -13697,6 +13697,8 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
+      //if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_f2_R1kind = ZXC.F2_R1enum.B2B;
+      //if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_f2_R1kind = ZXC.F2_R1enum.B2C;
    }
 
    protected override void PutExtFields(Faktur faktur/*FaktEx faktEx*/, bool isCopyingToAnotherDUC)

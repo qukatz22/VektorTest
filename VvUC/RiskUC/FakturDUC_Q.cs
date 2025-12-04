@@ -3405,6 +3405,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 #endif
       #endregion Authorize M2PAY credit or debit card
 
+      #region 2026 F2 validations & setting mandatory fields
+
       //if(faktur_rec.IsF2)
       //{
       //   kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
@@ -3445,6 +3447,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             }
          }
       }
+
+      if(faktur_rec.Is_F2_TtNumFisk_InVezniDok)
+      {
+         faktur_rec.VezniDok = faktur_rec.TtNumFiskal; // cuvat cemo u data layeru rezultat result propertya 'TtNumFiskal' 
+      }
+
+      #endregion 2026 F2 validations & setting mandatory fields
 
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
 
