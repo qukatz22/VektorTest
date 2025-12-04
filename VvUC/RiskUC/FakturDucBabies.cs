@@ -1230,6 +1230,8 @@ public class IFADUC              : FakturExtDUC
 
       if(ZXC.IsPCTOGO) TheG.CellMouseDoubleClick += TheG_CellMouseDoubleClick_ShowFakturDUC_For_TipBr;
 
+      if(faktur_rec.Is_F2_TtNumFisk_InVezniDok) tbx_VezniDok.JAM_ReadOnly = true;
+
    }
 
    private void TheG_CellMouseDoubleClick_ShowFakturDUC_For_TipBr(object sender, DataGridViewCellMouseEventArgs e)

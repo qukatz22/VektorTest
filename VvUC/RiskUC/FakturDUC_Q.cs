@@ -3451,6 +3451,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       if(faktur_rec.Is_F2_TtNumFisk_InVezniDok)
       {
          faktur_rec.VezniDok = faktur_rec.TtNumFiskal; // cuvat cemo u data layeru rezultat result propertya 'TtNumFiskal' 
+         Fld_VezniDok        = faktur_rec.VezniDok;
       }
 
       #endregion 2026 F2 validations & setting mandatory fields

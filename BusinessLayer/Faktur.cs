@@ -5143,7 +5143,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
 
    public bool Is_F2_R1kind_Mandatory      { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } } 
-   public bool Is_F2_TtNumFisk_InVezniDok  { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo; } } 
+   public bool Is_F2_TtNumFisk_InVezniDok  { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && /*PdvGEOkind == ZXC.PdvGEOkindEnum.HR &&*/ ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo; } } 
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE

@@ -34,13 +34,13 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    private VvTextBox tbx_DokNum,
                      /*tbx_SkladCd,*/
-                     tbx_VezniDok, tbx_RNM_vrstaOpis,
+                     /*tbx_VezniDok,*/ tbx_RNM_vrstaOpis,
                      /*tbx_Sklad2Cd,*/
                      tbx_ProjektName,
-                       tbx_v2_ttOpis,
+                     tbx_v2_ttOpis,
                      tbx_prjIdent/*, tbx_decimal02*/,
                      tbx_RNZ_radMjOpis, tbx_RNZ_radMjBroj;
-   public VvTextBox tbx_v1_ttOpis, tbx_S_ukCount, tbx_TtOpis, tbx_v1_tt, tbx_v1_ttNum, tbx_v2_tt, tbx_decimal01, tbx_osobaX,
+   public VvTextBox tbx_VezniDok, tbx_v1_ttOpis, tbx_S_ukCount, tbx_TtOpis, tbx_v1_tt, tbx_v1_ttNum, tbx_v2_tt, tbx_decimal01, tbx_osobaX,
                     tbx_PTG_DodNum, /*tbx_PTG_KopNum,*/ tbx_PTG_KugPartner, tbx_R_napFromPartner_PTG;
    protected VvTextBox tbx_SkladOpis, tbx_SkladBR, tbx_Sklad2Opis, tbx_SkladRbr2;
    public VvDateTimePicker dtp_DokDate, dtp_DokDate2;
@@ -678,6 +678,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          SetSifrarAndAutocomplete<Kplan>(null, VvSQL.SorterType.None);
          FakturDao.Fak2Nal_CheckAndPrebaciIfNeeded(TheDbConnection);
       }
+
    }
 
    internal void Set_SvDUH_ZAHonlyKupdob_rec(FakturDUC theDUC)
@@ -1100,7 +1101,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          ) tbx_VezniDok.JAM_IsSupressTab = false;
       else tbx_VezniDok.JAM_IsSupressTab = true;
-
    }
    private void InitializeHamper_napomena(out VvHamper hamper)
    {
@@ -12083,18 +12083,18 @@ public partial class FakturExtDUC : FakturDUC
       hamper.CreateVvLabel(0, 5, "Prijavljen na eIzvj:", ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(0, 6, "Prijavljena uplata:" , ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(0, 7, "Odbijen:"            , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 8, "AMS status kupca:"   , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 8, "Status kupca:"       , ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(0, 9, "RefRecID:"           , ContentAlignment.MiddleRight);
 
       tbx_f2_electron_ID = hamper.CreateVvTextBox(1, 0, "tbx_f2_electron_ID", "Electronic ID" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_electron_ID));
-      tbx_f2_sentTS      = hamper.CreateVvTextBox(1, 1, "tbx_f2_sentTS     ", "F2_sentTS"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_sentTS     ));
-      tbx_f2_status_CD   = hamper.CreateVvTextBox(1, 2, "tbx_f2_status_CD  ", "F2_status_CD"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
-      tbx_f2_ArhRecID    = hamper.CreateVvTextBox(1, 3, "tbx_f2_ArhRecID   ", "F2_ArhRecID"   , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_ArhRecID   ));
-      tbx_f2_isFisk      = hamper.CreateVvTextBox(1, 4, "tbx_f2_isFisk     ", "F2_isFisk"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isFisk     ));
-      tbx_f2_isEizvj     = hamper.CreateVvTextBox(1, 5, "tbx_f2_isEizvj    ", "F2_isEizvj"    ,5 /*GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    )*/);
+      tbx_f2_sentTS      = hamper.CreateVvTextBox(1, 1, "tbx_f2_sentTS"     , "F2_sentTS"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_sentTS     ));
+      tbx_f2_status_CD   = hamper.CreateVvTextBox(1, 2, "tbx_f2_status_CD"  , "F2_status_CD"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
+      tbx_f2_ArhRecID    = hamper.CreateVvTextBox(1, 3, "tbx_f2_ArhRecID"   , "F2_ArhRecID"   , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_ArhRecID   ));
+      tbx_f2_isFisk      = hamper.CreateVvTextBox(1, 4, "tbx_f2_isFisk"     , "F2_isFisk"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isFisk     ));
+      tbx_f2_isEizvj     = hamper.CreateVvTextBox(1, 5, "tbx_f2_isEizvj"    , "F2_isEizvj"    ,5 /*GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    )*/);
       tbx_f2_isMrkAsPaid = hamper.CreateVvTextBox(1, 6, "tbx_f2_isMrkAsPaid", "F2_isMrkAsPaid", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isMrkAsPaid));
-      tbx_f2_isRejected  = hamper.CreateVvTextBox(1, 7, "tbx_f2_isRejected ", "F2_isRejected" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
-      tbx_f2_R1kind   = hamper.CreateVvTextBox(1, 8, "tbx_f2_AMSstatus  ", "F2_AMSstatus"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind  ));
+      tbx_f2_isRejected  = hamper.CreateVvTextBox(1, 7, "tbx_f2_isRejected" , "F2_isRejected" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
+      tbx_f2_R1kind      = hamper.CreateVvTextBox(1, 8, "tbx_f2_R1kind"     , "F2_statusKupca", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind  ));
       tbx_f2_prvFakRecID = hamper.CreateVvTextBox(1, 9, "tbx_f2_prvFakRecID", "F2_prvFakRecID", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_prvFakRecID));
 
       tbx_f2_electron_ID.JAM_ReadOnly = true;
@@ -12105,10 +12105,10 @@ public partial class FakturExtDUC : FakturDUC
       tbx_f2_isEizvj    .JAM_ReadOnly = true;
       tbx_f2_isMrkAsPaid.JAM_ReadOnly = true;
       tbx_f2_isRejected .JAM_ReadOnly = true;
-      tbx_f2_R1kind  .JAM_ReadOnly = true;
+      tbx_f2_R1kind     .JAM_ReadOnly = true;
       tbx_f2_prvFakRecID.JAM_ReadOnly = true;
 
-      hamper.BackColor = Color.FromArgb(250, 116, 116);
+      //hamper.BackColor = Color.FromArgb(250, 116, 116);
       
     //hamper.Visible = false;
    }
@@ -13520,7 +13520,7 @@ public partial class FakturExtDUC : FakturDUC
    public string Fld_f2_isEizvj     { set { tbx_f2_isEizvj    .Text = value; } }
    public string Fld_f2_isMrkAsPaid { set { tbx_f2_isMrkAsPaid.Text = value; } }
    public string Fld_f2_isRejected  { set { tbx_f2_isRejected .Text = value; } }
-   public string Fld_f2_R1kind   { set { tbx_f2_R1kind  .Text = value; } }
+   public string Fld_f2_R1kind      { set { tbx_f2_R1kind     .Text = value; } }
    public string Fld_f2_prvFakRecID { set { tbx_f2_prvFakRecID.Text = value; } }
 
    #endregion Fld_
@@ -13697,8 +13697,11 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      //if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_f2_R1kind = ZXC.F2_R1enum.B2B;
-      //if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_f2_R1kind = ZXC.F2_R1enum.B2C;
+      if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_f2_R1kind = ZXC.F2_R1enum.B2B.ToString();
+      if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_f2_R1kind = ZXC.F2_R1enum.B2C.ToString();
+
+      if(faktur_rec.Is_F2_TtNumFisk_InVezniDok) tbx_VezniDok.JAM_ReadOnly = true;
+
    }
 
    protected override void PutExtFields(Faktur faktur/*FaktEx faktEx*/, bool isCopyingToAnotherDUC)

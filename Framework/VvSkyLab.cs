@@ -1553,7 +1553,9 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2025, 01, 27), TH_Cjenik_Kind._5WShop_5WCjenik_ },
       { new DateTime(2025, 05, 12), TH_Cjenik_Kind._5WShop_6WCjenik_ },
       { new DateTime(2025, 06, 23), TH_Cjenik_Kind._5WShop_5WCjenik_ },
-
+      { new DateTime(2026, 06, 08), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      { new DateTime(2026, 07, 20), TH_Cjenik_Kind._5WShop_6WCjenik_ },
+      { new DateTime(2026, 08, 31), TH_Cjenik_Kind._5WShop_5WCjenik_ },
    };
 
    private static Dictionary<DateTime, TH_Cjenik_Kind> TH_Cjenik_Kind_BreakDates_3Week_SRI = new Dictionary<DateTime, TH_Cjenik_Kind>
@@ -1573,6 +1575,9 @@ public class TH_PriceRuleForCycleMoment
       { new DateTime(2025, 01, 08), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
       { new DateTime(2025, 11, 19), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
       { new DateTime(2025, 12, 17), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
+      { new DateTime(2026, 07, 15), TH_Cjenik_Kind._3WShop_SRI_4WCjenik_ },
+      { new DateTime(2025, 08, 12), TH_Cjenik_Kind._3WShop_SRI_3WCjenik_ },
+
    };
 
 #if _puse_
@@ -2032,51 +2037,6 @@ public class TH_PriceRuleForCycleMoment
 
       #region TH_PriceRuleList_W5_C5
 
-      // ZXC.TH_PriceRuleList_W5_C5 = new List<TH_PriceRuleForCycleMoment>()
-      // {
-      //                                 // CK Tjed Dan  Max  Rbt HHprc  Letak  ExclsvKind   
-      //    new TH_PriceRuleForCycleMoment(5,    1,  1,   0,   0,    0,  true,     0, "W5/5 Tjedan 1 Dan 1"                     ),
-      //    new TH_PriceRuleForCycleMoment(5,    1,  2,   0,   0,    0,  true,     0, "W5/5 Tjedan 1 Dan 2"                     ),
-      //    new TH_PriceRuleForCycleMoment(5,    1,  3,   0,   0,    0,  true,     0, "W5/5 Tjedan 1 Dan 3"                     ),
-      //    new TH_PriceRuleForCycleMoment(5,    1,  4,   0,   0,    0,  true,     0, "W5/5 Tjedan 1 Dan 4"                     ),
-      //    new TH_PriceRuleForCycleMoment(5,    1,  5,   0,   0,    0,  true,     0, "W5/5 Tjedan 1 Dan 5"                     ),
-      //    new TH_PriceRuleForCycleMoment(5,    1,  6,   0, 10M,    0,  true,     0, "W5/5 Tjedan 1 Dan 6 10 posto"            ),
-      //    new TH_PriceRuleForCycleMoment(5,    1,  7,   0, 10M,    0,  true,     0, "W5/5 Tjedan 1 Dan 7 10 posto"            ),
-
-      //    new TH_PriceRuleForCycleMoment(5,    2,  1,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 1 happy hour 20 posto"),
-      //    new TH_PriceRuleForCycleMoment(5,    2,  2,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 2 happy hour 20 posto"),
-      //    new TH_PriceRuleForCycleMoment(5,    2,  3,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 3 happy hour 20 posto"),
-      //    new TH_PriceRuleForCycleMoment(5,    2,  4,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 4 happy hour 20 posto"),
-      //    new TH_PriceRuleForCycleMoment(5,    2,  5,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 5 happy hour 20 posto"),
-      //    new TH_PriceRuleForCycleMoment(5,    2,  6,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 6 happy hour 20 posto"),
-      //    new TH_PriceRuleForCycleMoment(5,    2,  7,   0,   0,  20M, false,      0, "W5/5 Tjedan 2 Dan 7 happy hour 20 posto"),
-
-      //    new TH_PriceRuleForCycleMoment(5,    3,  1,   0,   0,  30M, false,      0, "W5/5 Tjedan 3 Dan 1 happy hour 30 posto"      ),
-      //    new TH_PriceRuleForCycleMoment(5,    3,  2,   0,   0,  50M, false,      0, "W5/5 Tjedan 3 Dan 2 happy hour 50 posto"      ),
-      //    new TH_PriceRuleForCycleMoment(5,    3,  3,   0, 30M,    0, false,      0, "W5/5 Tjedan 3 Dan 3 30 posto"                 ),
-      //    new TH_PriceRuleForCycleMoment(5,    3,  4,   0, 30M,    0, false,      0, "W5/5 Tjedan 3 Dan 4 30 posto"                 ),
-      //    new TH_PriceRuleForCycleMoment(5,    3,  5,   0, 50M,    0, false,      0, "W5/5 Tjedan 3 Dan 5 50 posto"                 ),
-      //    new TH_PriceRuleForCycleMoment(5,    3,  6,   0, 50M,    0, false,      0, "W5/5 Tjedan 3 Dan 6 50 posto"                 ),
-      //    new TH_PriceRuleForCycleMoment(5,    3,  7,   0, 50M,    0, false,      0, "W5/5 Tjedan 3 Dan 7 50 posto"                 ),
-
-      //    new TH_PriceRuleForCycleMoment(5,    4,  1, 30M,   0,    0, false, /*1*/0, "W5/5 Tjedan 4 Dan 1 do 30kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    4,  2, 30M,   0,    0, false, /*2*/0, "W5/5 Tjedan 4 Dan 2 do 30kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    4,  3, 25M,   0,    0, false, /*2*/0, "W5/5 Tjedan 4 Dan 3 do 25kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    4,  4, 25M,   0,    0, false, /*2*/0, "W5/5 Tjedan 4 Dan 4 do 25kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    4,  5, 20M,   0,    0, false, /*2*/0, "W5/5 Tjedan 4 Dan 5 do 20kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    4,  6, 20M,   0,    0, false, /*2*/0, "W5/5 Tjedan 4 Dan 6 do 20kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    4,  7, 20M,   0,    0, false, /*2*/0, "W5/5 Tjedan 4 Dan 7 do 20kn"/*excl 50 posto"*/),
-
-      //    new TH_PriceRuleForCycleMoment(5,    5,  1, 15M,   0,    0, false, /*2*/0, "W5/5 Tjedan 5 Dan 1 do 15kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    5,  2, 15M,   0,    0, false, /*2*/0, "W5/5 Tjedan 5 Dan 2 do 15kn"/*excl 50 posto"*/), 
-      //    new TH_PriceRuleForCycleMoment(5,    5,  3, 10M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 3 do 10kn"                  ),
-      //    new TH_PriceRuleForCycleMoment(5,    5,  4, 10M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 4 do 10kn"                  ), 
-      //    new TH_PriceRuleForCycleMoment(5,    5,  5,  7M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 5 do  7kn"                  ), 
-      //    new TH_PriceRuleForCycleMoment(5,    5,  6,  7M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 6 do  7kn"                  ), 
-      //    new TH_PriceRuleForCycleMoment(5,    5,  7,  7M,   0,    0, false,      0, "W5/5 Tjedan 5 Dan 7 do  7kn"                  ),
-      //};
-
-      //23.12.2022.new 2023 EUR TH_PriceRuleList_W5_C5
       ZXC.TH_PriceRuleList_W5_C5 = new List<TH_PriceRuleForCycleMoment>()
       {
                                       // CK Tjed Dan   Max  Rbt HHprc  Letak  ExclsvKind   
@@ -2349,34 +2309,6 @@ public class TH_PriceRuleForCycleMoment
 
       #region TH_PriceRuleList_W3_SRI_C3
 
-
-      //ZXC.TH_PriceRuleList_W3_SRI_C3 = new List<TH_PriceRuleForCycleMoment>()
-      //{
-      //                               // CK Tjed Dan  Max Rbt  HHprc  Letak  ExclsvKind   
-      //   new TH_PriceRuleForCycleMoment(3,    1,  1,   0,  0,     0, false, 0, "W3/3 Tjedan 1 Dan 1 (SRI) regular" ),
-      //   new TH_PriceRuleForCycleMoment(3,    1,  2,   0,  0,     0, false, 0, "W3/3 Tjedan 1 Dan 2 (ČET) regular" ),
-      //   new TH_PriceRuleForCycleMoment(3,    1,  3,   0,10M,     0, false, 0, "W3/3 Tjedan 1 Dan 3 (PET) 10 posto"),
-      //   new TH_PriceRuleForCycleMoment(3,    1,  4,   0,10M,     0, false, 0, "W3/3 Tjedan 1 Dan 4 (SUB) 10 posto"),
-      //   new TH_PriceRuleForCycleMoment(3,    1,  5,   0,10M,     0, false, 0, "W3/3 Tjedan 1 Dan 5 (NED) 10 posto"),
-      //   new TH_PriceRuleForCycleMoment(3,    1,  6, 30M,  0,     0, false, 0, "W3/3 Tjedan 1 Dan 6 (PON) do 30kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    1,  7, 25M,  0,     0, false, 0, "W3/3 Tjedan 1 Dan 7 (UTO) do 25kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  1, 20M,  0,     0, false, 0, "W3/3 Tjedan 2 Dan 1 (SRI) do 20kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  2, 20M,  0,     0, false, 0, "W3/3 Tjedan 2 Dan 2 (ČET) do 20kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  3, 15M,  0,     0, false, 0, "W3/3 Tjedan 2 Dan 3 (PET) do 15kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  4, 15M,  0,     0, false, 0, "W3/3 Tjedan 2 Dan 4 (SUB) do 15kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  5, 15M,  0,     0, false, 0, "W3/3 Tjedan 2 Dan 5 (NED) do 15kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  6, 15M,  0,33.33M, false, 0, "W3/3 Tjedan 2 Dan 6 (PON) do 15kn happy hour 33,33 posto" ),
-      //   new TH_PriceRuleForCycleMoment(3,    2,  7, 10M,  0,     0, false, 0, "W3/3 Tjedan 2 Dan 7 (UTO) do 10kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  1, 10M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 1 (SRI) do 10kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  2,  7M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 2 (ČET) do  7kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  3,  7M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 3 (PET) do  7kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  4,  7M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 4 (SUB) do  7kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  5,  7M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 5 (NED) do  7kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  6,  5M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 6 (PON) do  5kn" ),
-      //   new TH_PriceRuleForCycleMoment(3,    3,  7,  3M,  0,     0, false, 0, "W3/3 Tjedan 3 Dan 7 (UTO) do  3kn" ),
-      //};
-
-      // 23.12.2022. new 2023 EUR TH_PriceRuleList_W3_SRI_C3
       ZXC.TH_PriceRuleList_W3_SRI_C3 = new List<TH_PriceRuleForCycleMoment>()
       {
                                      // CK Tjed Dan  Max Rbt  HHprc  Letak  ExclsvKind   
