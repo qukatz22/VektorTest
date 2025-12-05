@@ -3852,7 +3852,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
             break;
 
          case Placa.TT_IDD_KOLONA_4: t_rsOO = "21";
-           t_stjecatCD = "4001"; t_primDohCD = "xxxx"; t_pocKrajCD = "0"; t_sati = 0;
+           t_stjecatCD = "4001"; t_primDohCD = "4013"; t_pocKrajCD = "0"; t_sati = 0;
            break;
 
          case Placa.TT_AUTORHONOR  : t_rsOO = "21";

@@ -3573,7 +3573,7 @@ public class Ptrans : VvTransRecord
       if(placaTT == Placa.TT_UGOVORODJELU ||
          placaTT == Placa.TT_NADZORODBOR  ||
          placaTT == Placa.TT_TURSITVIJECE ||  
-         placaTT == Placa.TT_IDD_KOLONA_4 ||
+       //placaTT == Placa.TT_IDD_KOLONA_4 || preseljeno 12.2025. hztk sportski suci
          placaTT == Placa.TT_BIVSIRADNIK  || //23.12.2019.
          placaTT == Placa.TT_SEZZAPPOLJOP
          )
@@ -3603,6 +3603,7 @@ public class Ptrans : VvTransRecord
       }
       else if(placaTT == Placa.TT_POREZNADOBIT || 
               placaTT == Placa.TT_DDBEZDOPRINO || //12.2018.
+              placaTT == Placa.TT_IDD_KOLONA_4 || //12.2025. hztk sportski suci
               placaTT == Placa.TT_NR1_PX1NEDOP || //12.2018.
               placaTT == Placa.TT_NR2_P01NEDOP    //12.2018.
               )
@@ -3983,10 +3984,11 @@ public class Ptrans : VvTransRecord
          #region oni koji ne placaju doprinose
          // ne placaju se doprinosi                     
          if(placaTT == Placa.TT_POREZNADOBIT || 
-           placaTT == Placa.TT_AHSAMOSTUMJ  ||  //neki autori se izborili da ni oni ne placaju doprinose
-           placaTT == Placa.TT_DDBEZDOPRINO ||  //12.2018. drugi dohodak bez obveze doprinosa
-           placaTT == Placa.TT_NR1_PX1NEDOP ||  //12.2018. nerezidenti bez obveze doprinosa
-           placaTT == Placa.TT_NR2_P01NEDOP     //12.2018. nerezidenti bez obveze doprinosa
+            placaTT == Placa.TT_AHSAMOSTUMJ  ||  //neki autori se izborili da ni oni ne placaju doprinose
+            placaTT == Placa.TT_DDBEZDOPRINO ||  //12.2018. drugi dohodak bez obveze doprinosa
+            placaTT == Placa.TT_IDD_KOLONA_4 ||  //12.2025. hztk sportski suci
+            placaTT == Placa.TT_NR1_PX1NEDOP ||  //12.2018. nerezidenti bez obveze doprinosa
+            placaTT == Placa.TT_NR2_P01NEDOP     //12.2018. nerezidenti bez obveze doprinosa
            ) 
          {                                       
             /* 22 */ pR._stMio1stup = 0.00M;

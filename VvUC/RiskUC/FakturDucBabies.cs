@@ -1230,7 +1230,7 @@ public class IFADUC              : FakturExtDUC
 
       if(ZXC.IsPCTOGO) TheG.CellMouseDoubleClick += TheG_CellMouseDoubleClick_ShowFakturDUC_For_TipBr;
 
-      if(faktur_rec.Is_F2_TtNumFisk_InVezniDok) tbx_VezniDok.JAM_ReadOnly = true;
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
 
    }
 
@@ -1311,7 +1311,7 @@ public class IFADUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.IsPCTOGO ? ZXC.Q2un : ZXC.Q4un, isVisible, "Šifra"         , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                    isVisible, "Naziv"         , "Naziv artikla ili proizvoljan opis");
-      //T_KPD_CreateColumn           (ZXC.Q3un   ,                        isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"         , "KPD sifra");
       T_serlot_CreateColumn        (ZXC.IsPCTOGO ? ZXC.Q6un : ZXC.Q4un, isSerlotVisible, serlotCol , serlotOpis);
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                 isVisible, "Usl"           , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un   ,                        isVisible, "Konto"         , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
@@ -1346,8 +1346,8 @@ public class IFADUC              : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
-         if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
       } 
@@ -1408,6 +1408,8 @@ public class IRADUC              : FakturExtDUC
       //isThisVelepDUC = !isThisMalopDUC;
 
       //bool isLastUsedSkladCd_MAL = ZXC.luiListaSkladista.GetFlagForThisCd(ZXC.TheVvForm.VvPref.findArtikl.LastUsedSkladCD);
+
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
    }
 
    #endregion Constructor
@@ -1460,7 +1462,7 @@ public class IRADUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,                                                      isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                                                         isVisible, "Naziv"      , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un          ,isvisible                                    , "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un          ,ZXC.IsF2_2026_rules                                    , "KPD"         , "KPD");
       T_serlot_CreateColumn        (ZXC.Q4un          , ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible, "Šarža/LOT"  , "Broj Šarže/Lota");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                                                      isVisible, "Usl"        , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un          ,                                                      isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
@@ -1513,6 +1515,18 @@ public class IRADUC              : FakturExtDUC
          return true;
       }
    }
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
+
 }
 
 public class IRADUC_2              : FakturExtDUC
@@ -1527,6 +1541,7 @@ public class IRADUC_2              : FakturExtDUC
             Faktur.TT_IRA
          });
 
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
    }
 
    #endregion Constructor
@@ -1638,6 +1653,18 @@ public class IRADUC_2              : FakturExtDUC
          return true;
       }
    }
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
+
 }
 
 public class IzdatnicaDUC        : FakturExtDUC
@@ -1762,6 +1789,8 @@ public class IRMDUC              : FakturExtDUC
       {
          TheVvTabPage.TheVvForm.M2PAY_DirectConnect(false);
       }
+
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
    }
 
    #endregion Constructor
@@ -2014,6 +2043,18 @@ public class IRMDUC              : FakturExtDUC
    }
 
    public override bool IsM2PAY_DUC { get { return (true); } }
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
+
 }
 
 public class IRMDUC_2            : FakturExtDUC
@@ -2033,6 +2074,7 @@ public class IRMDUC_2            : FakturExtDUC
          TheVvTabPage.TheVvForm.M2PAY_DirectConnect(false);
       }
 
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
    }
 
    #endregion Constructor
@@ -2150,6 +2192,17 @@ public class IRMDUC_2            : FakturExtDUC
       SetUpColor(clr_Izlaz, clr_malop, clr_Izlaz);
    }
    public override bool IsM2PAY_DUC { get { return (true); } }
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
 
 }
 
@@ -6384,6 +6437,8 @@ public class IRPDUC              : FakturPDUC
          { 
             Faktur.TT_IRA
          });
+
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
    }
 
    #endregion Constructor
@@ -6529,6 +6584,18 @@ public class IRPDUC              : FakturPDUC
    //      return true;
    //   }
    //}
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
+
 }
 
 public class PIZpDUC             : FakturPDUC
@@ -8361,6 +8428,8 @@ public class IRA_MPC_DUC              : FakturExtDUC
          { 
             Faktur.TT_IRA
          });
+
+      tbx_VezniDok.JAM_ReadOnly = VezniDokIsReadOnly;
    }
 
    #endregion Constructor
@@ -8487,6 +8556,18 @@ public class IRA_MPC_DUC              : FakturExtDUC
    //      return true;
    //   }
    //}
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
+
 }
 
 public class IZD_MPC_DUC        : FakturExtDUC
