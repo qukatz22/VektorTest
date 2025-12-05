@@ -1341,6 +1341,17 @@ public class IFADUC              : FakturExtDUC
    {
       SetUpColor(clr_Izlaz, Color.Empty, clr_Izlaz);
    }
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
 }
 
 public class IFAdevDUC           : IFADUC

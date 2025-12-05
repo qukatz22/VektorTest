@@ -8338,6 +8338,7 @@ if(isRNM)RealizacGrid[ colIdx++, rowIdx].Value = rtrans_rec.T_serlot    ;
 
    #endregion Put Ftrans & RNM DGV Fileds
    
+   protected virtual bool VezniDokIsReadOnly { get { return false; } }
 }
 
 public partial class FakturExtDUC : FakturDUC
