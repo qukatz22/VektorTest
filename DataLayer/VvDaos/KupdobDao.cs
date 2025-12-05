@@ -39,7 +39,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
    #region CreateTableKupdob
 
-   public static   uint TableVersionStatic { get { return /*!!!*/ 40 /*!!!*/; } }
+   public static   uint TableVersionStatic { get { return /*!!!*/ 41 /*!!!*/; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -356,7 +356,11 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
          case 40: return ("CHANGE COLUMN isAMS r1Kind tinyint(1) unsigned NOT NULL default 0;\n");
 
-         // !!! PAZI NA 'commaOrNot' u ALTER_TABLE_ForCatchUp_Command !!! 
+         case 41: if(isPrjkt == false) return ""; // !!! PAZI NA 'commaOrNot' u ALTER_TABLE_ForCatchUp_Command !!! 
+            return ("ADD COLUMN f2_UserName      varchar(64)         NOT NULL default '' AFTER f2_RolaKind, " +
+                    "ADD COLUMN f2_Password      varchar(64)         NOT NULL default '' AFTER f2_UserName  ; \n");
+
+
 
          default: throw new Exception("For table " + Kupdob.recordName + " version no. " + catchingVersion + " doesn't exists!");
       }

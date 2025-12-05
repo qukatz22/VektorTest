@@ -2514,7 +2514,8 @@ public static class VvSQL
           catchingVersion == 35 ||
           catchingVersion == 36 ||
           catchingVersion == 37 ||
-          catchingVersion == 39
+          catchingVersion == 39 ||
+          catchingVersion == 41
           )) commaOrNot = ""; // ova verzija alter-a samo Prjkt pa zarez smeta 
 
       if(skip_me == true) commaOrNot = ""; // ova verzija alter-a samo table_ar pa zarez smeta 

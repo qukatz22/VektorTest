@@ -881,6 +881,8 @@ public static class Vv_eRacun_HTTP
 
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
 
+      ZXC.SetStatusText("");
+
       return newsCount;
    }
    /* XXX */internal static int WS_Ufati_Veleform_Ritam(F2_Izlaz_UC theUC, XSqlConnection conn)
@@ -893,9 +895,10 @@ public static class Vv_eRacun_HTTP
 
       int newsCount = 0;
 
-      DateTime queryOutbox_DateOD = theUC.TheFakturList.Max(fak => fak.DokDate) - ZXC.OneWeekSpan; // look back  one week from last synchronized Faktur date ... zihereaski 
-      DateTime queryOutbox_DateDO = DateTime.Now                                + ZXC.OneWeekSpan; // look ahead one week from today                         ... zihereaski 
-
+      DateTime queryOutbox_DateOD = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearFirstDay - ZXC.OneWeekSpan : // na pocetku godine, servis nema nijednu klijentovu fakturu             
+                                    theUC.TheFakturList.Max(fak => fak.DokDate)             - ZXC.OneWeekSpan ; // look back  one week from last synchronized Faktur date ... zihereaski 
+      DateTime queryOutbox_DateDO = DateTime.Now                                            + ZXC.OneWeekSpan ; // look ahead one week from today                         ... zihereaski 
+      
       bool isNewFaktur, addrecOK;
 
       string theXmlString;
@@ -919,19 +922,29 @@ public static class Vv_eRacun_HTTP
          {
             webApiResultWithList = new WebApiResult<List<VvMER_Response_Data_AllActions>>()
             {
-               WebApiKind        = ZXC.F2_WebApi.OutboxTRNstatusList,
+               WebApiKind        = ZXC.F2_WebApi.OutboxTRNstatusListAsKnjigServis,
                WebApiAddr        = webApiResultWithList.WebApiAddr,
                StatusCode        = -1,
                StatusDescription = "No response data",
                ErrorBody         = "No response data"
             };
          }
+         else
+         {
+            if(webApiResultWithList.ResponseData != null && webApiResultWithList.ResponseData.IsEmpty())
+            {
+               webApiResultWithList.ErrorBody = "Lista je prazna";
+            }
+         }
 
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+
          return 0;
       }
 
-      foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData)
+      var loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
+      
+      foreach(VvMER_Response_Data_AllActions responseData in loopList)
       {
          existingFaktur = theUC.TheFakturList.FirstOrDefault(f => f.F2_ElectronicID == responseData.ElectronicId);
 
@@ -1019,14 +1032,16 @@ public static class Vv_eRacun_HTTP
 
          } // if(receiveOK) 
 
-      } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData) 
+      } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
 
       #endregion Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
 
       #region Finish
 
       Cursor.Current = Cursors.Default;
-      
+
+      ZXC.SetStatusText("");
+
       if(updatedStatusInfoList.NotEmpty())
       {
          Load_IRn_FakturList(theUC);
@@ -1871,6 +1886,8 @@ public static class Vv_eRacun_HTTP
 
       Cursor.Current = Cursors.Default;
 
+      ZXC.SetStatusText("");
+
       if(updatedStatusInfoList.NotEmpty())
       {
          ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
@@ -2116,8 +2133,6 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-
-
 
    internal static void WS_Load_URn_FakturList(F2_Ulaz_UC _theVvUC)
    {
@@ -2870,7 +2885,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
       MAPxtrano_rec = new Xtrano()
       {
-         T_XmlZip   = zipped_xmlString                             ,
+         T_XmlZip   = zipped_xmlString                             , // !!! Observacija od 05.12.2025: treba li nam ovo?! tako i onako ga imas u AIR Xtrano-u a potencijalno napuhava database !!! 
          T_dokDate  = (DateTime)responseData.FiscalizationTimestamp,
                                                 
          T_TT       = Mixer.TT_MAP                                 ,

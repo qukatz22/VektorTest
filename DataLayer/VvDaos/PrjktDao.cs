@@ -117,7 +117,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
          "m2pModel         varchar(16)         NOT NULL default ''   ,\n" +
          "f2_Provider      tinyint(1) unsigned NOT NULL default '0'  ,\n" +
          "f2_RolaKind      tinyint(1) unsigned NOT NULL default '0'  ,\n" +
-
+         "f2_UserName      varchar(64)         NOT NULL default ''   ,\n" +
+         "f2_Password      varchar(64)         NOT NULL default ''   ,\n" +
          ""
       );
 
@@ -211,6 +212,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
 
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_Provider             , TheSchemaTable.Rows[CI.f2_Provider]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_RolaKind             , TheSchemaTable.Rows[CI.f2_RolaKind]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_UserName             , TheSchemaTable.Rows[CI.f2_UserName]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_Password             , TheSchemaTable.Rows[CI.f2_Password]);
 
    }
 
@@ -263,6 +266,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
 
       rdrData._f2_Provider = reader.GetUInt16(CI.f2_Provider);
       rdrData._f2_RolaKind = reader.GetUInt16(CI.f2_RolaKind);
+      rdrData._f2_UserName = reader.GetString(CI.f2_UserName);
+      rdrData._f2_Password = reader.GetString(CI.f2_Password);
 
       #region Tu budalasaš dok ne savladas tehniku ucitavanja slika...
 
@@ -456,6 +461,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       internal int m2pModel        ;
       internal int f2_Provider     ;
       internal int f2_RolaKind     ;
+      internal int f2_UserName     ;
+      internal int f2_Password     ;
 
       internal int origRecID;
       internal int recVer;
@@ -539,6 +546,8 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       CI.m2pModel        = GetSchemaColumnIndex("m2pModel" );
       CI.f2_Provider     = GetSchemaColumnIndex("f2_Provider");
       CI.f2_RolaKind     = GetSchemaColumnIndex("f2_RolaKind");
+      CI.f2_UserName     = GetSchemaColumnIndex("f2_UserName");
+      CI.f2_Password     = GetSchemaColumnIndex("f2_Password");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");

@@ -91,6 +91,9 @@ public struct PrjktExtensionStruct
    internal ushort _f2_Provider;
    internal ushort _f2_RolaKind;
 
+   internal string _f2_UserName;
+   internal string _f2_Password;
+
 }
 
 #endregion struct PrjktStruct
@@ -196,6 +199,8 @@ public class Prjkt : Kupdob
 
       this.currentExtData._f2_Provider = 0;
       this.currentExtData._f2_RolaKind = 0;
+      this.currentExtData._f2_UserName = "";
+      this.currentExtData._f2_Password = "";
 
       sorterKCD = Kupdob.sorterKCD;
       sorterCity    = Kupdob.sorterCity;
@@ -610,6 +615,8 @@ public class Prjkt : Kupdob
    #region F2 - FIR / FUR ovo ono
    public ZXC.F2_Provider_enum F2_Provider { get { return (ZXC.F2_Provider_enum)this.currentExtData._f2_Provider; } set { this.currentExtData._f2_Provider = (ushort)value; } }
    public ZXC.F2_RolaKind      F2_RolaKind { get { return (ZXC.F2_RolaKind     )this.currentExtData._f2_RolaKind; } set { this.currentExtData._f2_RolaKind = (ushort)value; } }
+   public string F2_UserName   { get { return this.currentExtData._f2_UserName; } set { this.currentExtData._f2_UserName = value; } }
+   public string F2_Password   { get { return this.currentExtData._f2_Password; } set { this.currentExtData._f2_Password = value; } }
    public bool F2_IsServis                 { get { return (F2_RolaKind != ZXC.F2_RolaKind.Nepoznato && F2_RolaKind != ZXC.F2_RolaKind.VlastitoKnjigovodstvo); } } // Veleform (MER), Ljekarna Mamiæ (PND), ... 
    public bool F2_IsSebi                   { get { return (                                            F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo); } } // Frigoterm, Metaflex, Panigale,        ... 
    public bool F2_ImaB2C                   { get { return (IsFiskalOnline                                                                                  ); } } // Textho,    Metaflex, Panigale,        ... 
