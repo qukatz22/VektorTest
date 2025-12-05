@@ -8940,6 +8940,11 @@ public class F2_Izlaz_UC : VvUserControl
 
       /* AAA */ newsCount += Vv_eRacun_HTTP.Load_IRn_FakturList(this);
 
+      if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
+      {
+      /* XXX */ newsCount += Vv_eRacun_HTTP.WS_Ufati_Veleform_Ritam(this, TheDbConnection);
+      }
+
       if(ZXC.RRD.Dsc_F2_IsAutoSend)
       {
       /* BBB */ newsCount += Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection);

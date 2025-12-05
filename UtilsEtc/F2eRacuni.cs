@@ -883,6 +883,161 @@ public static class Vv_eRacun_HTTP
 
       return newsCount;
    }
+   /* XXX */internal static int WS_Ufati_Veleform_Ritam(F2_Izlaz_UC theUC, XSqlConnection conn)
+   {
+      #region Init
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.SetStatusText("Sinhroniziram klijentove izlazne račune");
+
+      int newsCount = 0;
+
+      DateTime queryOutbox_DateOD = theUC.TheFakturList.Max(fak => fak.DokDate) - ZXC.OneWeekSpan; // look back  one week from last synchronized Faktur date ... zihereaski 
+      DateTime queryOutbox_DateDO = DateTime.Now                                + ZXC.OneWeekSpan; // look ahead one week from today                         ... zihereaski 
+
+      bool isNewFaktur, addrecOK;
+
+      string theXmlString;
+
+      Faktur existingFaktur, newIFA_Faktur_rec;
+
+      EN16931.UBL.InvoiceType deserialized_eRacun = null;
+
+      List<string> updatedStatusInfoList = new List<string>();
+           string  updatedStatusInfo                         ;
+
+      #endregion Init
+
+      #region Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+
+      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(queryOutbox_DateOD, queryOutbox_DateDO);
+
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      {
+         if(webApiResultWithList == null)
+         {
+            webApiResultWithList = new WebApiResult<List<VvMER_Response_Data_AllActions>>()
+            {
+               WebApiKind        = ZXC.F2_WebApi.OutboxTRNstatusList,
+               WebApiAddr        = webApiResultWithList.WebApiAddr,
+               StatusCode        = -1,
+               StatusDescription = "No response data",
+               ErrorBody         = "No response data"
+            };
+         }
+
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+         return 0;
+      }
+
+      foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData)
+      {
+         existingFaktur = theUC.TheFakturList.FirstOrDefault(f => f.F2_ElectronicID == responseData.ElectronicId);
+
+         isNewFaktur = existingFaktur == null;
+
+         if(isNewFaktur == false) continue;
+
+         // here we go 
+
+         #region 1. Call RECEIVE to get full XML document
+
+         WebApiResult<VvMER_Response_Data_AllActions> webApiResult = null;
+
+         bool receiveOK = true;
+
+         switch(ZXC.F2_TheProvider)
+         {
+            case ZXC.F2_Provider_enum.MER:
+            {
+               try
+               {
+                  webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML((uint)responseData.ElectronicId);
+
+                  theXmlString = webApiResult.ResponseData.DocumentXml;
+
+                  // za provjeru: 
+                  deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
+
+                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_eRacun == null)
+                  {
+                     Show_WebApiResult_ErrorMessageBox(webApiResult);
+                     receiveOK = false;
+                  }
+               }
+               catch(Exception ex)
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+                  receiveOK = false;
+               }
+               break;
+
+            } // case ZXC.F2_Provider_enum.MER: 
+
+            case ZXC.F2_Provider_enum.PND:
+            {
+               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+               receiveOK = false;
+               break;
+            }
+         }
+
+         #endregion 1. Call RECEIVE to get full XML document
+
+         if(receiveOK && deserialized_eRacun != null)
+         {
+            // 2. Create new Faktur bussiness object record from XML document 
+
+            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(VvUserControl.KupdobSifrar, VvUserControl.ArtiklSifrar);
+
+            // 3. Add new Faktur record in DataLayer 
+
+            if(newIFA_Faktur_rec != null)
+            {
+               addrecOK = newIFA_Faktur_rec.VvDao.ADDREC(theUC.TheDbConnection, newIFA_Faktur_rec);
+
+               if(addrecOK)
+               {
+                  //theUC.TheFakturList.Add(newIFA_Faktur_rec); ... jer ćemo na kraju refreshati cijelu listu iz baze 
+
+                  newsCount++;
+
+                  updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
+                                                newIFA_Faktur_rec.TipBr,
+                                                newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
+                                                "DODANA u lokalnu bazu",
+                                                newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+
+                  updatedStatusInfoList.Add(updatedStatusInfo);
+               }
+               else
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom dodavanja novog računa eRačun s eID={0} u bazu podataka.", responseData.ElectronicId);
+               }  
+            }
+
+         } // if(receiveOK) 
+
+      } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData) 
+
+      #endregion Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+
+      #region Finish
+
+      Cursor.Current = Cursors.Default;
+      
+      if(updatedStatusInfoList.NotEmpty())
+      {
+         Load_IRn_FakturList(theUC);
+
+         ZXC.aim_emsg_List(string.Format("DODANO je {0} novih klijentovih računa u Vektorovu bazu podataka.", updatedStatusInfoList.Count), updatedStatusInfoList);
+      }
+      
+      return newsCount;
+
+      #endregion Finish
+   }
    /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn)
    {
       #region Init & Get Dialog Fields
@@ -1078,7 +1233,7 @@ public static class Vv_eRacun_HTTP
          }
 
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
-         return -1;
+         return 0;
       }
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
@@ -1147,7 +1302,7 @@ public static class Vv_eRacun_HTTP
       if(webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
-         return -1;
+         return 0;
       }
 
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
@@ -1361,7 +1516,7 @@ public static class Vv_eRacun_HTTP
       if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
-         return -1;
+         return 0;
       }
 
       #region 1. FISK Status - Outgoing eRacun
@@ -1676,7 +1831,7 @@ public static class Vv_eRacun_HTTP
 
          if(F2_IRn_faktur_rec.F2_HasNoSense_RECEIVE_document2arhiva) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-         uint arhivaXtrano_recID = WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(theUC, F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/, F2_IRn_faktur_rec);
+         uint arhivaXtrano_recID = WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(theUC, F2_IRn_faktur_rec.F2_ElectronicID, F2_IRn_faktur_rec);
 
          if(arhivaXtrano_recID.NotZero() && F2_IRn_faktur_rec.F2_ArhRecID.IsZero())
          {
@@ -1698,7 +1853,7 @@ public static class Vv_eRacun_HTTP
 
                updatedStatusInfo = string.Format("{0} ({1}) Novi eRačun u arhivi:      {2}      {3} {4}",
                                              F2_IRn_faktur_rec.TipBr,
-                                             F2_IRn_faktur_rec.F2_ElectronicID/*MER_ElectronicID*/,
+                                             F2_IRn_faktur_rec.F2_ElectronicID,
                                              "ARHIVIRANO",
                                              F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), F2_IRn_faktur_rec.KupdobName);
 
@@ -2650,7 +2805,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
 
    #endregion Propertiz 
 
-   public static Xtrano F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec = null)
+   public static Xtrano F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec /*= null*/)
    {
       if(F2_TT == Mixer.TT_AIR && faktur_rec == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: faktur record is null!");
 
