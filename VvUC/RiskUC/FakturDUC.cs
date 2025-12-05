@@ -13518,10 +13518,10 @@ public partial class FakturExtDUC : FakturDUC
    public bool Fld_IsIncognito_Print { get { return cbx_isIncognito_Print.Checked; } set { cbx_isIncognito_Print.Checked = value; } }
    public bool Fld_PrintIzjava       { get { return cbx_PrintIzjava      .Checked; } set { cbx_PrintIzjava      .Checked = value; } }
 
-   public uint Fld_F2_Electronic_ID { get { return tbx_f2_electron_ID.GetUintField(); } set { tbx_f2_electron_ID.PutUintField(value);    } }
-   public int  Fld_F2_Status_CD     { get { return tbx_f2_status_CD.GetIntField();    } set { tbx_f2_status_CD.PutIntField(value);       } }
-   public uint Fld_F2_ArhRecID      { get { return tbx_f2_ArhRecID.GetUintField();    } set { tbx_f2_ArhRecID.PutUintField(value);       } }
-   public uint Fld_F2_PrvFakRecID   { get { return tbx_f2_prvFakRecID.GetUintField(); } set { tbx_f2_prvFakRecID.PutUintField(value);    } }
+   public uint Fld_F2_Electronic_ID { get { return tbx_f2_electron_ID.GetUintField(); } set { tbx_f2_electron_ID.PutUintField(value); } }
+   public int  Fld_F2_Status_CD     { get { return tbx_f2_status_CD  .GetIntField();  } set { tbx_f2_status_CD  .PutIntField(value);  } }
+   public uint Fld_F2_ArhRecID      { get { return tbx_f2_ArhRecID   .GetUintField(); } set { tbx_f2_ArhRecID   .PutUintField(value); } }
+   public uint Fld_F2_PrvFakRecID   { get { return tbx_f2_prvFakRecID.GetUintField(); } set { tbx_f2_prvFakRecID.PutUintField(value); } }
 
    public DateTime Fld_F2_SentTS
    {
@@ -13541,17 +13541,17 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_R1kind.Text)
          {
-            case  "B2B,":       return ZXC.F2_R1enum.B2B      ;
-            case  "B2C":        return ZXC.F2_R1enum.B2C      ;
-            default:            return ZXC.F2_R1enum.Nepoznato;
+            case  "B2B": return ZXC.F2_R1enum.B2B      ;
+            case  "B2C": return ZXC.F2_R1enum.B2C      ;
+            default:     return ZXC.F2_R1enum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case ZXC.F2_R1enum.B2B      : tbx_f2_R1kind.Text = "B2B      "; return;
-            case ZXC.F2_R1enum.B2C      : tbx_f2_R1kind.Text = "B2C      "; return;
+            case ZXC.F2_R1enum.B2B      : tbx_f2_R1kind.Text = "B2B"      ; return;
+            case ZXC.F2_R1enum.B2C      : tbx_f2_R1kind.Text = "B2C"      ; return;
             case ZXC.F2_R1enum.Nepoznato: tbx_f2_R1kind.Text = "Nepoznato"; return;
             default:                      tbx_f2_R1kind.Text = ""         ; break;
          }
