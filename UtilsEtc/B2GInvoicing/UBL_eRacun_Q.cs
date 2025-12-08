@@ -1617,7 +1617,7 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_eRacun(List<Kupdob> kupdobSifrar, List<Artikl> artiklSifrar)
+      public Faktur Create_Faktur_From_eRacun(Kupdob kupdob_rec)
       {
          #region init
 
@@ -1629,27 +1629,15 @@ namespace EN16931.UBL
 
          #region ZAGLAVLJE računa
 
-         #region Kupdob
-
-         string cleanOIB = Get_CleanOIB_From_SupplierID(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value);
-
-         Kupdob kupdob_rec = Get_Kupdob_From_eRacun(cleanOIB, kupdobSifrar);
-
-         if(kupdob_rec == null)
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Dobavljač sa OIB-om [{0}]\n\r\n\rne postoji u Vektorovom adresaru.\n\r\n\rDodati ću ga automatski.", cleanOIB);
-         }
-
-         #endregion Kupdob
+         // qweqwe 
 
          #endregion ZAGLAVLJE računa
-
 
          #endregion Set Faktur Values From eRacun
 
          #region STAVKE računa
 
-         //
+         // qweqwe 
 
          #endregion STAVKE računa
 
@@ -1663,24 +1651,71 @@ namespace EN16931.UBL
 
       #region eR2Fak & Utils 
 
-      private string Get_CleanOIB_From_SupplierID(string supplierID) // !!! SupplierID !!! ... ili ti ga 9934:OIB 
-      {                                                              // <cbc:ID>9934:60042587515</cbc:ID>         
+      [System.Xml.Serialization.XmlIgnore]
+      internal string VvSupplierOIB
+      {
+         get
+         {
+            try
+            {
+               if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
+                   this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
+                   this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
+               {
+                  return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
+               }
+
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvSupplierOIB: Supplier OIB not found in eRacun XML.");
+               return string.Empty;
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg($"Error getting VvSupplierOIB: {ex.Message}");
+               return string.Empty;
+            }
+         }
+      }
+      [System.Xml.Serialization.XmlIgnore]
+      internal string VvCustomerOIB
+      {
+         get
+         {
+            try
+            {
+               if(this.AccountingCustomerParty?.Party?.PartyIdentification != null &&
+                   this.AccountingCustomerParty.Party.PartyIdentification.Length > 0 &&
+                   this.AccountingCustomerParty.Party.PartyIdentification[0]?.ID?.Value != null)
+               {
+                  return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.PartyIdentification[0].ID.Value); // !!! CustomerID !!! ... ili ti ga 9934:OIB
+               }
+
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvCustomerOIB: Customer OIB not found in eRacun XML.");
+               return string.Empty;
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg($"Error getting VvCustomerOIB: {ex.Message}");
+               return string.Empty;
+            }
+         }
+      }
+      internal static string Get_CleanOIB_From_DirtyOIB(string dirtyOIB) // !!! SupplierID !!! ... ili ti ga 9934:OIB 
+      {                                                                                               // <cbc:ID>9934:60042587515</cbc:ID>         
          string cleanOIB = "";
 
-         if(supplierID.Contains(":") == false) return supplierID;
+         if(dirtyOIB.Contains(":") == false) return dirtyOIB;
 
-         string[] strArray = supplierID.Replace(" ", "").Split(":".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+         string[] strArray = dirtyOIB.Replace(" ", "").Split(":".ToArray(), StringSplitOptions.RemoveEmptyEntries);
 
          if(strArray.Length >= 1) return strArray[1];
 
          return cleanOIB;
       }
 
-      private Kupdob Get_Kupdob_From_eRacun(string cleanOIB, List<Kupdob> kupdobSifrar) 
-      {                                                      
-         Kupdob kupdob_rec = kupdobSifrar.SingleOrDefault(k => k.Oib == cleanOIB);
-
-         return kupdob_rec;
+      internal static Kupdob Create_Kupdob_from_eRacun(InvoiceType deserialized_eRacun, bool isKupac)
+      {
+         // tu si stao 
+         throw new NotImplementedException();
       }
 
       #endregion eR2Fak & Utils 
@@ -1688,4 +1723,5 @@ namespace EN16931.UBL
       #endregion Create Faktur object From eRacun (InvoiceType)
 
    }
+
 }

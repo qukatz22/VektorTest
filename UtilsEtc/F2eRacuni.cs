@@ -33,6 +33,13 @@ public static class Vv_eRacun_HTTP
 {
    public const bool DEMO = false;
 
+#if !DEBUG
+   public static bool IsF2_2026_rules { get { return ZXC.projectYearAsInt > 2025; } }
+#else
+   public static bool IsF2_2026_rules { get { return false; } }
+#endif
+
+
    #region MER Web Service URLs - API endpoints web addresses
 
    public const string VvMER_baseAddress_production = @"https://www.moj-eracun.hr"     ; 
@@ -895,20 +902,25 @@ public static class Vv_eRacun_HTTP
 
       int newsCount = 0;
 
-      DateTime queryOutbox_DateOD = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearFirstDay - ZXC.OneWeekSpan : // na pocetku godine, servis nema nijednu klijentovu fakturu             
-                                    theUC.TheFakturList.Max(fak => fak.DokDate)             - ZXC.OneWeekSpan ; // look back  one week from last synchronized Faktur date ... zihereaski 
-      DateTime queryOutbox_DateDO = DateTime.Now                                            + ZXC.OneWeekSpan ; // look ahead one week from today                         ... zihereaski 
+      DateTime queryOutbox_DateOD = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearFirstDay       : // na pocetku godine, servis nema nijednu klijentovu fakturu             
+                                    theUC.TheFakturList.Max(fak => fak.DokDate) - ZXC.OneWeekSpan ; // look back  one week from last synchronized Faktur date ... zihereaski 
+      DateTime queryOutbox_DateDO = DateTime.Now                                + ZXC.OneWeekSpan ; // look ahead one week from today                         ... zihereaski 
       
-      bool isNewFaktur, addrecOK;
+      bool isNewFaktur, addrecOK, kupdobOK;
 
-      string theXmlString;
+      string theXmlString, theOIB;
 
       Faktur existingFaktur, newIFA_Faktur_rec;
 
       EN16931.UBL.InvoiceType deserialized_eRacun = null;
 
+      Kupdob kupdob_rec;
+
       List<string> updatedStatusInfoList = new List<string>();
            string  updatedStatusInfo                         ;
+
+      List<string> newKupdobInfoList = new List<string>();
+           string  newKupdobInfo                         ;
 
       #endregion Init
 
@@ -942,7 +954,7 @@ public static class Vv_eRacun_HTTP
          return 0;
       }
 
-      var loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
+      List<VvMER_Response_Data_AllActions> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
       
       foreach(VvMER_Response_Data_AllActions responseData in loopList)
       {
@@ -1000,9 +1012,40 @@ public static class Vv_eRacun_HTTP
 
          if(receiveOK && deserialized_eRacun != null)
          {
-            // 2. Create new Faktur bussiness object record from XML document 
+            #region Get Kupdob
 
-            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(VvUserControl.KupdobSifrar, VvUserControl.ArtiklSifrar);
+            theOIB = deserialized_eRacun.VvSupplierOIB; // todo: ma ovdje ide kupac oib ... razmisli jos 
+
+            kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar(theOIB);
+
+            if(kupdob_rec != null) kupdobOK = true ;
+            else                   kupdobOK = false;
+
+            if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+            {
+               kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(deserialized_eRacun, true);
+
+               if(kupdob_rec != null) // NEW Kupdob created ok 
+               {
+                  newKupdobInfo = string.Format("Novi kupac [{0}],  OIB: [{1}], Ulica: {2}, Mjesto: {3}", kupdob_rec.Naziv, kupdob_rec.Oib, kupdob_rec.Ulica1, kupdob_rec.ZipAndMjesto);
+
+                  newKupdobInfoList.Add(newKupdobInfo);
+
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+
+                  kupdobOK = true;
+               }
+               else
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom kreiranja novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
+               }  
+            }
+
+            #endregion Get Kupdob
+
+            // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
+
+            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(kupdob_rec);
 
             // 3. Add new Faktur record in DataLayer 
 
@@ -1048,7 +1091,12 @@ public static class Vv_eRacun_HTTP
 
          ZXC.aim_emsg_List(string.Format("DODANO je {0} novih klijentovih računa u Vektorovu bazu podataka.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
-      
+
+      if(newKupdobInfoList.NotEmpty())
+      {
+         ZXC.aim_emsg_List(string.Format("DODANO je {0} novih partnera (kupaca) u Vektorovu bazu podataka.", newKupdobInfoList.Count), newKupdobInfoList);
+      }
+
       return newsCount;
 
       #endregion Finish
@@ -1222,14 +1270,18 @@ public static class Vv_eRacun_HTTP
       ZXC.SetStatusText("Refresh TRN status");
 
     //List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, false)).ToList();
-      List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_Outbox_HasNoSense_Refresh_TRN_Status       ).ToList();
+    //List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_QueryOutbox_Yes_HasSense_Refresh_TRN_Status).ToList();
 
       // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
       // za sada, idemo cijela projektna godina                                                                         
     //DateTime minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
     //DateTime maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
-      DateTime minDokDate = ZXC.projectYearFirstDay;
-      DateTime maxDokDate = ZXC.projectYearLastDay ;
+    DateTime minDokDate = ZXC.projectYearFirstDay;
+    DateTime maxDokDate = ZXC.projectYearLastDay ;
+      // Ipak, ovo dole NE nego cijela godina ... MER se sam brine granicom od minus 60 dana i 10.000 limitom da se ne pretjera
+    //DateTime minDokDate = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearFirstDay - ZXC.OneWeekSpan : // na pocetku godine, nemamo nijednu fakturu ... a TODO je za razmisliti kako ce iygledati prelaz iz 2026 u 2027 
+    //                      theUC.TheFakturList.Min(fak => fak.DokDate)             - ZXC.OneWeekSpan ; // look back  one week from last Faktur DokDate ... zihereaski 
+    //DateTime maxDokDate = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearLastDay : theUC.TheFakturList.Max(fak => fak.DokDate) + ZXC.OneWeekSpan ; 
 
       WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
 
@@ -1254,9 +1306,9 @@ public static class Vv_eRacun_HTTP
       // join na ElektronicId da dobijemo samo one responseData koji su relevantni za naše fakture u goodCandidatesFakturList 
       var theTRN_NewsList = /*vvMER_responseDataList*/webApiResultWithList.ResponseData
           .Join(
-              queryOutbox_CandidatesFakturList,
+              /*queryOutbox_CandidatesFakturList*/theUC.TheFakturList,
               respData => respData.ElectronicId ?? 0L,
-              fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
+              fak => (long)fak.F2_ElectronicID,
               (respData, fak) => new
               {
                  rowIdx            = theUC.TheFakturList.IndexOf(fak),
@@ -1301,9 +1353,11 @@ public static class Vv_eRacun_HTTP
 
       #region Refresh DPS status
 
+#if MaNemaViseDPSstatusa
+
       ZXC.SetStatusText("Refresh DPS status");
 
-      queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, true)).ToList();
+      //queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, true)).ToList();
 
       // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
       // za sada, idemo cijela projektna godina                                                                         
@@ -1328,7 +1382,7 @@ public static class Vv_eRacun_HTTP
       //              select new { rowIdx = theUC.TheFakturList.IndexOf(fak), lastStatusCD = respData.StatusId, faktur = fak };
       var theDPS_NewsList = webApiResultWithList.ResponseData
           .Join(
-              queryOutbox_CandidatesFakturList,
+              /*queryOutbox_CandidatesFakturList*/theUC.TheFakturList,
               respData => respData.ElectronicId ?? 0L,
               fak => (long)fak.F2_ElectronicID/*MER_ElectronicID*/,
               (respData, fak) => new
@@ -1371,7 +1425,11 @@ public static class Vv_eRacun_HTTP
 
       } // foreach(var item in theNewsList) 
 
+#endif
+
       #endregion Refresh TRN or DPS status
+
+      if(!ZXC.IsF2_2026_rules) goto RECEIVE_AND_FINISH_LABEL;
 
       #region Refresh AllFISK_Outbox status
 
@@ -1826,6 +1884,8 @@ public static class Vv_eRacun_HTTP
 
       #endregion Refresh MarkAsPaid_InfoColumns
 
+      RECEIVE_AND_FINISH_LABEL:
+
       #region RECEIVE eRacun for Arhiva 
 
       ZXC.SetStatusText("RECEIVE eRacun for Arhiva");
@@ -1890,7 +1950,7 @@ public static class Vv_eRacun_HTTP
 
       if(updatedStatusInfoList.NotEmpty())
       {
-         ZXC.aim_emsg_List(string.Format("Dohvatio {0} novih statusa.", updatedStatusInfoList.Count), updatedStatusInfoList);
+         ZXC.aim_emsg_List(string.Format("Ima {0} novosti.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
 
       return newsCount;
@@ -2192,8 +2252,8 @@ public static class Vv_eRacun_HTTP
    {
       if(F2_IRn_faktur_rec.IsF2 == false) return true;
 
-      if( isDPS && F2_IRn_faktur_rec.F2_Outbox_HasNoSense_Refresh_DPS_Status) return true; // DPS 
-      if(!isDPS && F2_IRn_faktur_rec.F2_Outbox_HasNoSense_Refresh_TRN_Status) return true; // TRN 
+      if( isDPS && F2_IRn_faktur_rec.F2_QueryOutbox_HasNoSense_Refresh_DPS_Status) return true; // DPS 
+      if(!isDPS && F2_IRn_faktur_rec.F2_QueryOutbox_HasNoSense_Refresh_TRN_Status) return true; // TRN 
 
       return false; // Placeholder
    }

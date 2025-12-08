@@ -4993,7 +4993,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
         (nacPlac2.NotEmpty() && IsOkRegardingPrjktIsFiskCashTTonly(nacPlac2, theTT))
       );
    }
-   public bool F2_Outbox_HasNoSense_Refresh_TRN_Status 
+   public bool F2_QueryOutbox_Yes_HasSense_Refresh_TRN_Status { get { return !F2_QueryOutbox_HasNoSense_Refresh_TRN_Status; } }
+   public bool F2_QueryOutbox_HasNoSense_Refresh_TRN_Status 
    { 
       get 
       {
@@ -5005,7 +5006,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          return false;
       } 
    }
-   public bool F2_Outbox_HasNoSense_Refresh_DPS_Status
+   public bool F2_QueryOutbox_HasNoSense_Refresh_DPS_Status
    { 
       get 
       {
