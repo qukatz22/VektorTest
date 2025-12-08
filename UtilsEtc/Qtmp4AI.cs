@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Windows.Forms;
+using EN16931.UBL;
 
 namespace MojEracun.Api
 {
@@ -714,6 +716,181 @@ namespace MojEracun.Api
       public string Message { get; set; }
    }
 
+   public class Pero
+   {
+      #region Helper Methods for Safe XML Navigation
+
+      /// <summary>
+      /// Safely extracts a string value from a nested Party structure
+      /// </summary>
+      private static string GetPartyValue(
+         PartyType party,
+         Func<PartyType, string> valueExtractor,
+         string fieldName = null)
+      {
+         try
+         {
+            if(party == null)
+            {
+               if(fieldName != null)
+                  ZXC.aim_emsg(MessageBoxIcon.Warning, "{0} not found: Party is null.", fieldName);
+               return string.Empty;
+            }
+
+            string result = valueExtractor(party);
+
+            if(result == null)
+            {
+               if(fieldName != null)
+                  ZXC.aim_emsg(MessageBoxIcon.Warning, "{0} not found in eRacun XML.", fieldName);
+               return string.Empty;
+            }
+
+            return result;
+         }
+         catch(Exception ex)
+         {
+            if(fieldName != null)
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Error extracting {0}: {1}", fieldName, ex.Message);
+            return string.Empty;
+         }
+      }
+
+      /// <summary>
+      /// Safely extracts PartyName from PartyNameType array
+      /// </summary>
+      private static string GetPartyName(PartyType party)
+      {
+         if(party?.PartyName != null &&
+            party.PartyName.Length > 0 &&
+            party.PartyName[0]?.Name?.Value != null)
+         {
+            return party.PartyName[0].Name.Value;
+         }
+
+         // Fallback to PartyLegalEntity/RegistrationName
+         if(party?.PartyLegalEntity != null &&
+            party.PartyLegalEntity.Length > 0 &&
+            party.PartyLegalEntity[0]?.RegistrationName?.Value != null)
+         {
+            return party.PartyLegalEntity[0].RegistrationName.Value;
+         }
+
+         return null;
+      }
+
+      /// <summary>
+      /// Safely extracts CompanyID (OIB) from PartyLegalEntity array
+      /// </summary>
+      private static string GetPartyCompanyID(PartyType party)
+      {
+         if(party?.PartyLegalEntity != null &&
+            party.PartyLegalEntity.Length > 0 &&
+            party.PartyLegalEntity[0]?.CompanyID?.Value != null)
+         {
+            return party.PartyLegalEntity[0].CompanyID.Value;
+         }
+
+         return null;
+      }
+
+      /// <summary>
+      /// Safely extracts street name from PostalAddress
+      /// </summary>
+      private static string GetPartyStreetName(PartyType party)
+      {
+         if(party?.PostalAddress?.StreetName?.Value != null)
+         {
+            return party.PostalAddress.StreetName.Value;
+         }
+
+         return null;
+      }
+
+      /// <summary>
+      /// Safely extracts city name from PostalAddress
+      /// </summary>
+      private static string GetPartyCityName(PartyType party)
+      {
+         if(party?.PostalAddress?.CityName?.Value != null)
+         {
+            return party.PostalAddress.CityName.Value;
+         }
+
+         return null;
+      }
+
+      /// <summary>
+      /// Safely extracts postal zone from PostalAddress
+      /// </summary>
+      private static string GetPartyPostalZone(PartyType party)
+      {
+         if(party?.PostalAddress?.PostalZone?.Value != null)
+         {
+            return party.PostalAddress.PostalZone.Value;
+         }
+
+         return null;
+      }
+
+      /// <summary>
+      /// Safely extracts email from Contact
+      /// </summary>
+      private static string GetPartyEmail(PartyType party)
+      {
+         if(party?.Contact?.ElectronicMail?.Value != null)
+         {
+            return party.Contact.ElectronicMail.Value;
+         }
+
+         return null;
+      }
+
+      /// <summary>
+      /// Safely extracts VAT number from PartyTaxScheme array
+      /// </summary>
+      private static string GetPartyVATnumber(PartyType party)
+      {
+         if(party?.PartyTaxScheme != null &&
+            party.PartyTaxScheme.Length > 0 &&
+            party.PartyTaxScheme[0]?.CompanyID?.Value != null)
+         {
+            return party.PartyTaxScheme[0].CompanyID.Value;
+         }
+
+         return null;
+      }
+
+      #endregion Helper Methods for Safe XML Navigation   }
+
+      internal static Kupdob Create_Kupdob_from_eRacun(InvoiceType invoiceType, bool isKupac)
+      {
+         Kupdob kupdob_rec = new Kupdob();
+
+         PartyType party = isKupac
+            ? invoiceType.AccountingCustomerParty?.Party
+            : invoiceType.AccountingSupplierParty?.Party;
+
+         string partyType = isKupac ? "Customer" : "Supplier";
+
+         // Extract all properties using helper methods
+         kupdob_rec.Naziv = GetPartyValue(party, GetPartyName, partyType + " name");
+         kupdob_rec.Oib = GetPartyValue(party, GetPartyCompanyID, partyType + " OIB");
+         kupdob_rec.Ulica1 = GetPartyValue(party, GetPartyStreetName, partyType + " street");
+         kupdob_rec.Grad = GetPartyValue(party, GetPartyCityName, partyType + " city");
+         kupdob_rec.PostaBr = GetPartyValue(party, GetPartyPostalZone, partyType + " postal code");
+         kupdob_rec.Email = GetPartyValue(party, GetPartyEmail, partyType + " email");
+
+         // VAT number with country code prefix removal if needed
+         string vatNumber = GetPartyValue(party, GetPartyVATnumber, partyType + " VAT number");
+         if(vatNumber.NotEmpty())
+         {
+            //kupdob_rec.VATnumber = vatNumber.StartsWith("HR") ? vatNumber.Substring(2) : vatNumber;
+         }
+
+         return kupdob_rec;
+      }
+   }
 }
 
 namespace EPoslovanje.Api

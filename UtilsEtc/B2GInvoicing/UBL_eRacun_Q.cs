@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using MySql.Data.MySqlClient;
 
 namespace EN16931.UBL
 {
@@ -1659,8 +1660,8 @@ namespace EN16931.UBL
             try
             {
                if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
-                   this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
-                   this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
+                  this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
+                  this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
                }
@@ -1712,10 +1713,35 @@ namespace EN16931.UBL
          return cleanOIB;
       }
 
-      internal static Kupdob Create_Kupdob_from_eRacun(InvoiceType deserialized_eRacun, bool isKupac)
+      internal static Kupdob Create_Kupdob_from_eRacun(MySqlConnection conn, InvoiceType invoiceType, bool isKupac)
       {
-         // tu si stao 
-         throw new NotImplementedException();
+         bool isDobav = !isKupac;
+
+         Kupdob kupdob_rec = new Kupdob();
+
+         PartyType theParty = isKupac ? invoiceType.AccountingCustomerParty?.Party : 
+                                        invoiceType.AccountingSupplierParty?.Party ;
+
+         kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
+
+         uint newSifra = kupdob_rec.VvDao.GetNextSifra_Uint(conn, kupdob_rec.VirtualRecordName, "kupdobCD", kupdob_rec.UintSifraRootNum, kupdob_rec.UintSifraBaseFactor);
+
+         kupdob_rec.KupdobCD = newSifra;
+         kupdob_rec.Ticker   = newSifra.ToString();
+
+         kupdob_rec.Oib          = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
+         kupdob_rec.Naziv        = theParty.PartyName[0] .Name                      .Value;
+         kupdob_rec.Ulica1       = theParty.PostalAddress.StreetName                .Value;
+         kupdob_rec.Grad         = theParty.PostalAddress.CityName                  .Value;
+         kupdob_rec.PostaBr      = theParty.PostalAddress.PostalZone                .Value;
+         kupdob_rec.VatCntryCode = theParty.PostalAddress.Country.IdentificationCode.Value;
+
+         if(isDobav)
+         {
+            kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
+         }
+
+         return kupdob_rec;
       }
 
       #endregion eR2Fak & Utils 

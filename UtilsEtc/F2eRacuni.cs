@@ -906,7 +906,7 @@ public static class Vv_eRacun_HTTP
                                     theUC.TheFakturList.Max(fak => fak.DokDate) - ZXC.OneWeekSpan ; // look back  one week from last synchronized Faktur date ... zihereaski 
       DateTime queryOutbox_DateDO = DateTime.Now                                + ZXC.OneWeekSpan ; // look ahead one week from today                         ... zihereaski 
       
-      bool isNewFaktur, addrecOK, kupdobOK;
+      bool isNewFaktur, addrecOK, kupdobOK, xmlValidationOK;
 
       string theXmlString, theOIB;
 
@@ -982,8 +982,65 @@ public static class Vv_eRacun_HTTP
 
                   theXmlString = webApiResult.ResponseData.DocumentXml;
 
-                  // za provjeru: 
+                  //// Validate XML against XSD schema before deserialization
+                  //string xsdResourceName = "Vektor.XSD.eRacun.UBL-Invoice-2.1.xsd";
+                  //using(Stream xsdStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(xsdResourceName))
+                  //{
+                  //   if(xsdStream == null)
+                  //   {
+                  //      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
+                  //         "XSD schema file '{0}' not found as embedded resource.", xsdResourceName);
+                  //   }
+                  //   else
+                  //   {
+                  //      bool isValid = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(
+                  //         theXmlString,
+                  //         xsdStream,
+                  //         out List<string> validationErrors);
+                  //
+                  //      if(!isValid)
+                  //      {
+                  //         ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
+                  //         receiveOK = false;
+                  //         break; // or continue, depending on your error handling strategy
+                  //      }
+                  //   }
+                  //}
+                  //
+
+                  // get InvoiceType bussiness: 
                   deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
+
+                  // Validate XML against XSD schema before deserialization
+                  string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
+
+                  if(!File.Exists(xsdFilePath))
+                  {
+                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
+                        "XSD schema file not found at: {0}", xsdFilePath);
+                  }
+                  else
+                  {
+                     using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
+                     {
+                        bool isValid = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(
+                           theXmlString,
+                           xsdStream,
+                           out List<string> validationErrors);
+
+                        if(!isValid)
+                        {
+                           ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
+                           xmlValidationOK = false;
+                           // nez jos sta cu ako ne validira dobro ... zasad idem dalje
+                           //break; // or continue, depending on your error handling strategy
+                        }
+                        else
+                        {
+                            xmlValidationOK = true;
+                        }
+                     }
+                  }
 
                   if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_eRacun == null)
                   {
@@ -1014,7 +1071,7 @@ public static class Vv_eRacun_HTTP
          {
             #region Get Kupdob
 
-            theOIB = deserialized_eRacun.VvSupplierOIB; // todo: ma ovdje ide kupac oib ... razmisli jos 
+            theOIB = deserialized_eRacun.VvCustomerOIB;
 
             kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar(theOIB);
 
@@ -1023,7 +1080,7 @@ public static class Vv_eRacun_HTTP
 
             if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
             {
-               kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(deserialized_eRacun, true);
+               kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(theUC.TheDbConnection, deserialized_eRacun, true);
 
                if(kupdob_rec != null) // NEW Kupdob created ok 
                {
@@ -1049,29 +1106,29 @@ public static class Vv_eRacun_HTTP
 
             // 3. Add new Faktur record in DataLayer 
 
-            if(newIFA_Faktur_rec != null)
-            {
-               addrecOK = newIFA_Faktur_rec.VvDao.ADDREC(theUC.TheDbConnection, newIFA_Faktur_rec);
-
-               if(addrecOK)
-               {
-                  //theUC.TheFakturList.Add(newIFA_Faktur_rec); ... jer ćemo na kraju refreshati cijelu listu iz baze 
-
-                  newsCount++;
-
-                  updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
-                                                newIFA_Faktur_rec.TipBr,
-                                                newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
-                                                "DODANA u lokalnu bazu",
-                                                newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
-
-                  updatedStatusInfoList.Add(updatedStatusInfo);
-               }
-               else
-               {
-                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom dodavanja novog računa eRačun s eID={0} u bazu podataka.", responseData.ElectronicId);
-               }  
-            }
+            //if(newIFA_Faktur_rec != null)
+            //{
+            //   addrecOK = newIFA_Faktur_rec.VvDao.ADDREC(theUC.TheDbConnection, newIFA_Faktur_rec);
+            //
+            //   if(addrecOK)
+            //   {
+            //      //theUC.TheFakturList.Add(newIFA_Faktur_rec); ... jer ćemo na kraju refreshati cijelu listu iz baze 
+            //
+            //      newsCount++;
+            //
+            //      updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
+            //                                    newIFA_Faktur_rec.TipBr,
+            //                                    newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
+            //                                    "DODANA u lokalnu bazu",
+            //                                    newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+            //
+            //      updatedStatusInfoList.Add(updatedStatusInfo);
+            //   }
+            //   else
+            //   {
+            //      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom dodavanja novog računa eRačun s eID={0} u bazu podataka.", responseData.ElectronicId);
+            //   }  
+            //}
 
          } // if(receiveOK) 
 

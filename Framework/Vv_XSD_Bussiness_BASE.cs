@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Xml;
+using System.Xml.Schema;
 
 public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
 {
@@ -198,5 +201,91 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
          file?.Dispose();
          sr?.Dispose();
       }
+   }
+
+   // 2025: made by Copilot
+   internal static bool ValidateXmlAgainstXsd(string xmlString, Stream xsdStream, out List<string> validationErrors)
+   {
+      var errors = new List<string>();
+      bool isValid = true;
+
+      try
+      {
+         XmlSchemaSet schemas = new XmlSchemaSet();
+         schemas.XmlResolver = new XmlUrlResolver(); // Enable resolution of imported/included schemas
+
+         // Get the directory containing the main XSD file
+         string xsdDirectory = null;
+         if(xsdStream is FileStream fileStream)
+         {
+            xsdDirectory = Path.GetDirectoryName(fileStream.Name);
+         }
+
+         // Load the main XSD schema
+         using(XmlReader xsdReader = XmlReader.Create(xsdStream))
+         {
+            schemas.Add(null, xsdReader);
+         }
+
+         // Load all dependent XSD files from the same directory
+         if(!string.IsNullOrEmpty(xsdDirectory) && Directory.Exists(xsdDirectory))
+         {
+            string mainXsdFileName = Path.GetFileName(((FileStream)xsdStream).Name);
+            string[] xsdFiles = Directory.GetFiles(xsdDirectory, "*.xsd");
+            foreach(string xsdFile in xsdFiles)
+            {
+               // Skip the main XSD file to avoid duplicate declaration
+               if(Path.GetFileName(xsdFile).Equals(mainXsdFileName, StringComparison.OrdinalIgnoreCase))
+                  continue;
+            
+               try
+               {
+                  using(FileStream fs = new FileStream(xsdFile, FileMode.Open, FileAccess.Read))
+                  using(XmlReader xsdReader = XmlReader.Create(fs))
+                  {
+                     schemas.Add(null, xsdReader);
+                  }
+               }
+               catch(Exception ex)
+               {
+                  // Log but continue - some XSD files might be duplicates or invalid
+                  errors.Add($"Warning: Could not load schema file {Path.GetFileName(xsdFile)}: {ex.Message}");
+               }
+            }
+         }
+
+         // Compile the schema set to resolve all references
+         schemas.Compile();
+
+         XmlReaderSettings settings = new XmlReaderSettings();
+         settings.ValidationType = ValidationType.Schema;
+         settings.Schemas = schemas;
+         settings.ValidationFlags = XmlSchemaValidationFlags.ProcessInlineSchema;
+         //settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+         settings.XmlResolver = new XmlUrlResolver(); // Enable resolution during validation
+
+         settings.ValidationEventHandler += (sender, e) =>
+         {
+            errors.Add($"{e.Severity}: {e.Message}");
+            if(e.Severity == XmlSeverityType.Error)
+            {
+               isValid = false;
+            }
+         };
+
+         using(StringReader stringReader = new StringReader(xmlString))
+         using(XmlReader xmlReader = XmlReader.Create(stringReader, settings))
+         {
+            while(xmlReader.Read()) { }
+         }
+      }
+      catch(Exception ex)
+      {
+         errors.Add("EXCEPTION: " + ex.Message);
+         isValid = false;
+      }
+
+      validationErrors = errors;
+      return isValid;
    }
 }
