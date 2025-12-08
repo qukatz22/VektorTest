@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
+using static ZXC;
 
 public class UFADUC              : FakturExtDUC
 {
@@ -9024,6 +9025,9 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.ClearSelection();
 
       TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
+
+      //ZXC.TheVvForm.TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(RefreshFIR);
+
    }
 
    internal void INIT_FIR()
@@ -9058,6 +9062,15 @@ public class F2_Izlaz_UC : VvUserControl
          ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
       }
    }
+
+   //private void RefreshFIR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   //{
+   // if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
+   // 
+   // Point xy = ZXC.TheVvForm.GetSubModulXY(ZXC.VvSubModulEnum.R_F2I);
+   // 
+   // if((Point)newPage.Tag == xy) INIT_FIR();
+   //}
 
    #endregion Constructor
 

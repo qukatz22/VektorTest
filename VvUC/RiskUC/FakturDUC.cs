@@ -13563,6 +13563,103 @@ public partial class FakturExtDUC : FakturDUC
    public bool Fld_F2_IsMrkAsPaid   { get { return true  /*Convert.ToBoolean(tbx_f2_isMrkAsPaid.Text)*/;} set { true .ToString();/*tbx_f2_isMrkAsPaid.Text = value.ToString();*/} }
    public bool Fld_F2_IsRejected    { get { return false /*Convert.ToBoolean(tbx_f2_isRejected .Text)*/;} set { false.ToString();/*tbx_f2_isRejected .Text = value.ToString();*/} }
 
+       
+   //public F2_Status_For_statusOutbox_API Fld_F2_IsFisk     
+   //{ 
+   //   get
+   //   {
+   //      switch(tbx_f2_isFisk.Text)
+   //      {
+   //         case "Uspjeh"     : return F2_Status_For_statusOutbox_API.Uspjeh    ;
+   //         case "Nuspjeh"    : return F2_Status_For_statusOutbox_API.Neuspjeh  ;
+   //         case "Na_cekanju" : return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //         default:            return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //      }
+   //   }
+   //   set
+   //   {
+   //      switch(value)
+   //      {
+   //         case F2_Status_For_statusOutbox_API.Uspjeh    : tbx_f2_isFisk.Text = F2_Status_For_statusOutbox_API.Uspjeh    .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Neuspjeh  : tbx_f2_isFisk.Text = F2_Status_For_statusOutbox_API.Neuspjeh  .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Na_cekanju: tbx_f2_isFisk.Text = F2_Status_For_statusOutbox_API.Na_cekanju.ToString(); return;
+   //         default:                                        tbx_f2_isFisk.Text = ""; break;
+   //      }
+   //   }
+   //}
+   
+   //public F2_Status_For_statusOutbox_API Fld_F2_IsEizvj    
+   //{ 
+   //   get
+   //   {
+   //      switch(tbx_f2_isEizvj.Text)
+   //      {
+   //         case "Uspjeh"     : return F2_Status_For_statusOutbox_API.Uspjeh    ;
+   //         case "Nuspjeh"    : return F2_Status_For_statusOutbox_API.Neuspjeh  ;
+   //         case "Na_cekanju" : return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //         default:            return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //      }
+   //   }
+   //   set
+   //   {
+   //      switch(value)
+   //      {
+   //         case F2_Status_For_statusOutbox_API.Uspjeh    : tbx_f2_isEizvj.Text = F2_Status_For_statusOutbox_API.Uspjeh    .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Neuspjeh  : tbx_f2_isEizvj.Text = F2_Status_For_statusOutbox_API.Neuspjeh  .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Na_cekanju: tbx_f2_isEizvj.Text = F2_Status_For_statusOutbox_API.Na_cekanju.ToString(); return;
+   //         default:                                        tbx_f2_isEizvj.Text = ""                                                  ; break;
+   //      }
+   //   }
+   //}
+
+   //public F2_Status_For_statusOutbox_API Fld_F2_IsMrkAsPaid
+   //{ 
+   //   get
+   //   {
+   //      switch(tbx_f2_isMrkAsPaid.Text)
+   //      {
+   //         case "Uspjeh"     : return F2_Status_For_statusOutbox_API.Uspjeh    ;
+   //         case "Nuspjeh"    : return F2_Status_For_statusOutbox_API.Neuspjeh  ;
+   //         case "Na_cekanju" : return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //         default:            return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //      }
+   //   }
+   //   set
+   //   {
+   //      switch(value)
+   //      {
+   //         case F2_Status_For_statusOutbox_API.Uspjeh    : tbx_f2_isMrkAsPaid.Text = F2_Status_For_statusOutbox_API.Uspjeh    .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Neuspjeh  : tbx_f2_isMrkAsPaid.Text = F2_Status_For_statusOutbox_API.Neuspjeh  .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Na_cekanju: tbx_f2_isMrkAsPaid.Text = F2_Status_For_statusOutbox_API.Na_cekanju.ToString(); return;
+   //         default:                                        tbx_f2_isMrkAsPaid.Text = ""         ; break;
+   //      }
+   //   }
+   //}
+ 
+   //public F2_Status_For_statusOutbox_API Fld_F2_IsRejected 
+   //{ 
+   //   get
+   //   {
+   //      switch(tbx_f2_isRejected.Text)
+   //      {
+   //         case "Uspjeh"     : return F2_Status_For_statusOutbox_API.Uspjeh    ;
+   //         case "Nuspjeh"    : return F2_Status_For_statusOutbox_API.Neuspjeh  ;
+   //         case "Na_cekanju" : return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //         default:            return F2_Status_For_statusOutbox_API.Na_cekanju;
+   //      }
+   //   }
+   //   set
+   //   {
+   //      switch(value)
+   //      {
+   //         case F2_Status_For_statusOutbox_API.Uspjeh    : tbx_f2_isRejected.Text = F2_Status_For_statusOutbox_API.Uspjeh    .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Neuspjeh  : tbx_f2_isRejected.Text = F2_Status_For_statusOutbox_API.Neuspjeh  .ToString(); return;
+   //         case F2_Status_For_statusOutbox_API.Na_cekanju: tbx_f2_isRejected.Text = F2_Status_For_statusOutbox_API.Na_cekanju.ToString(); return;
+   //         default:                                        tbx_f2_isRejected.Text = ""; break;
+   //      }
+   //   }
+   //}
+
    #endregion Fld_
 
    #region PutExtFields(), GetExtFields() PutTransSumToDocumentSumFields_Ext()
