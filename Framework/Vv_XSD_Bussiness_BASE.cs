@@ -203,16 +203,36 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
       }
    }
 
-   // 2025: made by Copilot
-   internal static bool ValidateXmlAgainstXsd(string xmlString, Stream xsdStream, out List<string> validationErrors)
+   #region 2025: XML Validation etc by copilot + byQ
+   private static string RemoveXmlSignature(string xmlString)
    {
+      XmlDocument doc = new XmlDocument();
+      doc.LoadXml(xmlString);
+
+      XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
+      nsmgr.AddNamespace("ds", "http://www.w3.org/2000/09/xmldsig#");
+
+      XmlNode signatureNode = doc.SelectSingleNode("//ds:Signature", nsmgr);
+      if(signatureNode != null)
+      {
+         signatureNode.ParentNode.RemoveChild(signatureNode);
+      }
+
+      return doc.OuterXml;
+   }
+
+   // 2025: made by Copilot
+   internal static bool ValidateXmlAgainstXsd(string _xmlString, Stream xsdStream, out List<string> validationErrors)
+   {
+      string xmlString = RemoveXmlSignature(_xmlString);
+
       var errors = new List<string>();
       bool isValid = true;
 
       try
       {
          XmlSchemaSet schemas = new XmlSchemaSet();
-         schemas.XmlResolver = new XmlUrlResolver(); // Enable resolution of imported/included schemas
+         schemas.XmlResolver = new XmlUrlResolver();
 
          // Get the directory containing the main XSD file
          string xsdDirectory = null;
@@ -237,7 +257,7 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
                // Skip the main XSD file to avoid duplicate declaration
                if(Path.GetFileName(xsdFile).Equals(mainXsdFileName, StringComparison.OrdinalIgnoreCase))
                   continue;
-            
+
                try
                {
                   using(FileStream fs = new FileStream(xsdFile, FileMode.Open, FileAccess.Read))
@@ -260,12 +280,20 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
          XmlReaderSettings settings = new XmlReaderSettings();
          settings.ValidationType = ValidationType.Schema;
          settings.Schemas = schemas;
-         settings.ValidationFlags = XmlSchemaValidationFlags.ProcessInlineSchema;
-         //settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
-         settings.XmlResolver = new XmlUrlResolver(); // Enable resolution during validation
+         settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
+         settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+         settings.XmlResolver = new XmlUrlResolver();
 
          settings.ValidationEventHandler += (sender, e) =>
          {
+            // Skip validation errors in the signature namespace
+            if(e.Message.Contains("http://www.w3.org/2000/09/xmldsig#") ||
+               e.Message.Contains("X509SerialNumber"))
+            {
+               errors.Add($"Warning (Signature - ignored): {e.Message}");
+               return; // Don't mark as invalid
+            }
+
             errors.Add($"{e.Severity}: {e.Message}");
             if(e.Severity == XmlSeverityType.Error)
             {
@@ -288,4 +316,22 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
       validationErrors = errors;
       return isValid;
    }
+   // 2025: byQ:
+   internal static bool ValidateXmlAgainstXsd(string xmlString/*, out List<string> validationErrors*/)
+   {
+      string theXmlString = RemoveXmlSignature(xmlString);
+
+      XmlDocument xmlDocument = ZXC.RemoveEmptyNodes(theXmlString);
+      theXmlString = xmlDocument.OuterXml;
+      MemoryStream memoryStream = new MemoryStream();
+      xmlDocument.LoadXml(theXmlString);
+      xmlDocument.Save(memoryStream);
+      bool validateOK = false;
+      try { validateOK = EN16931.UBL.InvoiceType.ValidateThis_XML_eRacun(memoryStream); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
+
+      return validateOK;
+   }
+
+   #endregion 2025: XML Validation etc by copilot + byQ
+
 }

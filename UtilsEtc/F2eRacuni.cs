@@ -982,32 +982,6 @@ public static class Vv_eRacun_HTTP
 
                   theXmlString = webApiResult.ResponseData.DocumentXml;
 
-                  //// Validate XML against XSD schema before deserialization
-                  //string xsdResourceName = "Vektor.XSD.eRacun.UBL-Invoice-2.1.xsd";
-                  //using(Stream xsdStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(xsdResourceName))
-                  //{
-                  //   if(xsdStream == null)
-                  //   {
-                  //      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
-                  //         "XSD schema file '{0}' not found as embedded resource.", xsdResourceName);
-                  //   }
-                  //   else
-                  //   {
-                  //      bool isValid = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(
-                  //         theXmlString,
-                  //         xsdStream,
-                  //         out List<string> validationErrors);
-                  //
-                  //      if(!isValid)
-                  //      {
-                  //         ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
-                  //         receiveOK = false;
-                  //         break; // or continue, depending on your error handling strategy
-                  //      }
-                  //   }
-                  //}
-                  //
-
                   // get InvoiceType bussiness: 
                   deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
 
@@ -1023,10 +997,9 @@ public static class Vv_eRacun_HTTP
                   {
                      using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
                      {
-                        bool isValid = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(
-                           theXmlString,
-                           xsdStream,
-                           out List<string> validationErrors);
+                        //bool validateOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString);
+
+                        bool isValid = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream,out List<string> validationErrors);
 
                         if(!isValid)
                         {
