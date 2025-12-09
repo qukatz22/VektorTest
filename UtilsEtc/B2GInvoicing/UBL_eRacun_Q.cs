@@ -1630,7 +1630,9 @@ namespace EN16931.UBL
 
          #region ZAGLAVLJE računa
 
-         // qweqwe 
+         // qweqwe tu si stao 
+       //faktur_rec.KupdobName = this.AccountingCustomerParty.Party.PartyName[0].Name.Value;
+         faktur_rec.KupdobName = kupdob_rec.Naziv;
 
          #endregion ZAGLAVLJE računa
 

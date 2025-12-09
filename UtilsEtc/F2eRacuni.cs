@@ -958,6 +958,8 @@ public static class Vv_eRacun_HTTP
       
       foreach(VvMER_Response_Data_AllActions responseData in loopList)
       {
+         Cursor.Current = Cursors.WaitCursor;
+
          existingFaktur = theUC.TheFakturList.FirstOrDefault(f => f.F2_ElectronicID == responseData.ElectronicId);
 
          isNewFaktur = existingFaktur == null;
@@ -993,7 +995,7 @@ public static class Vv_eRacun_HTTP
                      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
                         "XSD schema file not found at: {0}", xsdFilePath);
                   }
-                  else
+                  else if(deserialized_eRacun != null)
                   {
                      using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
                      {
@@ -1046,7 +1048,7 @@ public static class Vv_eRacun_HTTP
 
             theOIB = deserialized_eRacun.VvCustomerOIB;
 
-            kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar(theOIB);
+            kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
 
             if(kupdob_rec != null) kupdobOK = true ;
             else                   kupdobOK = false;
@@ -1057,13 +1059,23 @@ public static class Vv_eRacun_HTTP
 
                if(kupdob_rec != null) // NEW Kupdob created ok 
                {
-                  newKupdobInfo = string.Format("Novi kupac [{0}],  OIB: [{1}], Ulica: {2}, Mjesto: {3}", kupdob_rec.Naziv, kupdob_rec.Oib, kupdob_rec.Ulica1, kupdob_rec.ZipAndMjesto);
+                  addrecOK = kupdob_rec.VvDao.ADDREC(theUC.TheDbConnection, kupdob_rec);
 
-                  newKupdobInfoList.Add(newKupdobInfo);
+                  if(addrecOK)
+                  {
+                     newKupdobInfo = string.Format("Novi kupac [{0}],  OIB: [{1}], Ulica: {2}, Mjesto: {3}", kupdob_rec.Naziv, kupdob_rec.Oib, kupdob_rec.Ulica1, kupdob_rec.ZipAndMjesto);
 
-                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+                     newKupdobInfoList.Add(newKupdobInfo);
 
-                  kupdobOK = true;
+                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+
+                     kupdobOK = true;
+                  }
+                  else
+                  {
+                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom ADDREC novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
+                     kupdobOK = false;
+                  }
                }
                else
                {
