@@ -877,7 +877,8 @@ public static class Vv_eRacun_HTTP
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>();
 
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt], "theTT", ZXC.RRD.Dsc_F2_TT, " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt]       , "theTT" , ZXC.RRD.Dsc_F2_TT, " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FaktExSchemaRows[ZXC.FexCI.f2_R1kind], "R1Kind", ZXC.F2_R1enum.B2B, " = "));
 
       string asdDscStr;
       string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
@@ -886,6 +887,8 @@ public static class Vv_eRacun_HTTP
       else                              asdDscStr = " ASC " ;
 
       VvDaoBase.LoadGenericVvDataRecordList<Faktur>(theUC.TheDbConnection, theUC.TheFakturList, filterMembers, "", "ttNum " + asdDscStr + limitStr, true);
+
+      theUC.TheFakturList.RemoveAll(fak => fak.IsF2 == false);
 
       if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
 
@@ -2608,7 +2611,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       this.Username   = Vv_eRacun_HTTP.VvMER_UserName  ;
       this.Password   = Vv_eRacun_HTTP.VvMER_Password  ;
       this.CompanyId  = Vv_eRacun_HTTP.VvMER_CompanyId ;
-      this.CompanyBu  = ""                                      ;
+      this.CompanyBu  = ""                             ;
       this.SoftwareId = Vv_eRacun_HTTP.VvMER_SoftwareId;
    }
 

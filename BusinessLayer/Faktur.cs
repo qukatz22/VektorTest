@@ -5125,22 +5125,24 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
  //public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
  //public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
-   public bool IsNoFX     { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } }
-   public ZXC.FIRkind FIRkind
+   public bool IsF3       { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } } // NoFX 
+
+   public ZXC.F123kind F123kind
    {
       get
       {
          if(false) ;
-
-         else if(IsF1     ) return ZXC.FIRkind.F1     ;
-         else if(IsF2     ) return ZXC.FIRkind.F2     ;
+   
+         else if(IsF1     ) return ZXC.F123kind.F1    ;
+         else if(IsF2     ) return ZXC.F123kind.F2    ;
        //else if(IsF2send ) return ZXC.FIRkind.F2send ;
        //else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
-         else if(IsNoFX   ) return ZXC.FIRkind.NoFX   ;
-
-         return ZXC.FIRkind.Nepoznato;
+         else if(IsF3     ) return ZXC.F123kind.F3    ; // NoFX 
+   
+         return ZXC.F123kind.Nepoznato;
       }
    }
+
  //public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
  //public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
 

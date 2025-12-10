@@ -9028,6 +9028,8 @@ public class F2_Izlaz_UC : VvUserControl
 
       //ZXC.TheVvForm.TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(RefreshFIR);
 
+      TheVvTabPage.TheVvForm.TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(Refresh_FIR);
+
    }
 
    internal void INIT_FIR()
@@ -9287,7 +9289,7 @@ public class F2_Izlaz_UC : VvUserControl
    {
       bool isF1 = faktur_rec.IsF1;
 
-      TheG.PutCell(ci.iT_FIRtip     , rowIdx, faktur_rec.FIRkind.ToString());
+    //TheG.PutCell(ci.iT_FIRtip     , rowIdx, faktur_rec.FIRkind.ToString());
       TheG.PutCell(ci.iT_tt         , rowIdx, faktur_rec.TT                );
       TheG.PutCell(ci.iT_ttNum      , rowIdx, faktur_rec.TtNum             );
       TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.TtNumFiskal       );
@@ -9326,7 +9328,7 @@ public class F2_Izlaz_UC : VvUserControl
       else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.Neuspjeh  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
       else                                                               ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
       
-      if(isF1 || faktur_rec.IsNoFX)
+      if(isF1 || faktur_rec.IsF3)
       {
          TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Gray;
          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk  ]).Value = img_empty;
@@ -9368,6 +9370,13 @@ public class F2_Izlaz_UC : VvUserControl
       string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false) + "-" + theG.GetStringCell(ci.iT_ttNum, rowIdx, false);
       
       ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+   }
+
+   public /*override*/ void Refresh_FIR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      if(newPage is VvTabPage == false) return;
+
+      if((newPage as VvTabPage).TheVvUC is F2_Izlaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Izlaz_UC).INIT_FIR();
    }
 }
 
