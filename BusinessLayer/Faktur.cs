@@ -247,13 +247,13 @@ public struct FaktExStruct
    /*198 */ /*internal*/ public uint    _f2_electron_ID;
    /*199 */ /*internal*/ public int     _f2_status_CD  ;
    /*200 */ /*internal*/ public uint    _f2_ArhRecID   ;
-   /*201 */ /*internal*/ public bool    _f2_isFisk     ;
+   /*201 */ /*internal*/ public ushort  _f2_isFisk     ;
    /*202 *//*internal*/ public DateTime _f2_sentTS     ;
-   /*203 */ /*internal*/ public bool    _f2_isRejected ;
-   /*204 */ /*internal*/ public bool    _f2_isMrkAsPaid;
+   /*203 */ /*internal*/ public ushort  _f2_isRejected ;
+   /*204 */ /*internal*/ public ushort  _f2_isMrkAsPaid;
    /*205 */ /*internal*/ public ushort  _f2_R1kind     ;
    /*206 */ /*internal*/ public uint    _f2_prvFakRecID;
-   /*207 */ /*internal*/ public bool    _f2_isEizvj    ;
+   /*207 */ /*internal*/ public ushort  _f2_isEizvj    ;
                                     
 }
 
@@ -2166,14 +2166,15 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
                                                             (uint)MER_ElectronicID                ; } set { this.TheEx.currentData._f2_electron_ID = value; } }   /* _f2_electron_ID  */
    /* 199 */ public  int     F2_StatusCD     { get { return this.TheEx.currentData._f2_status_CD  ; } set { this.TheEx.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
    /* 190 */ public  uint    F2_ArhRecID     { get { return this.TheEx.currentData._f2_ArhRecID   ; } set { this.TheEx.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
-   /* 201 */ public  bool    F2_IsFisk       { get { return this.TheEx.currentData._f2_isFisk     ; } set { this.TheEx.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
-   /* 202 */ public DateTime F2_SentTS       { get { return this.TheEx.currentData._f2_sentTS     ; } set { this.TheEx.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
-   /* 203 */ public  bool    F2_IsRejected   { get { return this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
-   /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
+   /* 201 */ public ZXC.F2_StatusOutboxEnum F2_IsFisk       { get { return (ZXC.F2_StatusOutboxEnum)this.TheEx.currentData._f2_isFisk     ; } set { this.TheEx.currentData._f2_isFisk      = (ushort)value; } }   /* _f2_isFisk       */
+   /* 203 */ public ZXC.F2_StatusOutboxEnum F2_IsRejected   { get { return (ZXC.F2_StatusOutboxEnum)this.TheEx.currentData._f2_isRejected ; } set { this.TheEx.currentData._f2_isRejected  = (ushort)value; } }   /* _f2_isRejected   */
+   /* 204 */ public ZXC.F2_StatusOutboxEnum F2_IsMarkAsPaid { get { return (ZXC.F2_StatusOutboxEnum)this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = (ushort)value; } }   /* _f2_isMrkAsPaid  */
+   /* 207 */ public ZXC.F2_StatusOutboxEnum F2_IsEizvj      { get { return (ZXC.F2_StatusOutboxEnum)this.TheEx.currentData._f2_isEizvj    ; } set { this.TheEx.currentData._f2_isEizvj     = (ushort)value; } }   /* _f2_IsEizvj      */
+
    /* 205*/public ZXC.F2_R1enum F2_R1kind { get { return (ZXC.F2_R1enum)this.TheEx.currentData._f2_R1kind; } set { this.TheEx.currentData._f2_R1kind = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
-   /* 207 */ public  bool    F2_IsEizvj      { get { return this.TheEx.currentData._f2_isEizvj    ; } set { this.TheEx.currentData._f2_isEizvj     = value; } }   /* _f2_IsEizvj      */
+   /* 202 */ public DateTime F2_SentTS       { get { return this.TheEx.currentData._f2_sentTS     ; } set { this.TheEx.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
    #endregion Data Layer Columns
 
@@ -5021,7 +5022,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_IsFisk               ) return true; // već je fiskaliziran                                    - nema smisla osvjezavati FISK status 
+         if(F2_IsFisk == ZXC.F2_StatusOutboxEnum.Uspjeh) return true; // već je fiskaliziran                                    - nema smisla osvjezavati FISK status 
        //if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan                                     - nema smisla osvjezavati FISK status  ... gasimo jer F2_eIzvj nema electronicID a svejedno treba biti fiskaliziran 
          if(F2_SentTS.IsEmpty()     ) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati FISK status 
    
@@ -5926,13 +5927,13 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*198 */    this.currentData._f2_electron_ID = 0;
       /*199 */    this.currentData._f2_status_CD   = 0;
       /*200 */    this.currentData._f2_ArhRecID    = 0;
-      /*201 */    this.currentData._f2_isFisk      = false;
+      /*201 */    this.currentData._f2_isFisk      = 0;
       /*202 */    this.currentData._f2_sentTS      = DateTime.MinValue;
-      /*203 */    this.currentData._f2_isRejected  = false;
-      /*204 */    this.currentData._f2_isMrkAsPaid = false;
+      /*203 */    this.currentData._f2_isRejected  = 0;
+      /*204 */    this.currentData._f2_isMrkAsPaid = 0;
       /*205 */    this.currentData._f2_R1kind   = /*false*/0;
       /*206 */    this.currentData._f2_prvFakRecID = 0;
-      /*207 */    this.currentData._f2_isEizvj     = false;
+      /*207 */    this.currentData._f2_isEizvj     = 0;
       /*208 */    this.currentData._f2_R1kind      = 0;
 
    }
@@ -6841,14 +6842,15 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
    /* 198 */ public  uint    F2_ElectronicID { get { return this.currentData._f2_electron_ID; } set { this.currentData._f2_electron_ID = value; } }  /* _f2_electron_ID  */
    /* 199 */ public  int     F2_StatusCD     { get { return this.currentData._f2_status_CD  ; } set { this.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
    /* 190 */ public  uint    F2_ArhRecID     { get { return this.currentData._f2_ArhRecID   ; } set { this.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
-   /* 201 */ public  bool    F2_IsFisk       { get { return this.currentData._f2_isFisk     ; } set { this.currentData._f2_isFisk      = value; } }   /* _f2_isFisk       */
-   /* 202 */ public DateTime F2_SentTS       { get { return this.currentData._f2_sentTS     ; } set { this.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
-   /* 203 */ public  bool    F2_IsRejected   { get { return this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = value; } }   /* _f2_isRejected   */
-   /* 204 */ public  bool    F2_IsMarkAsPaid { get { return this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = value; } }   /* _f2_isMrkAsPaid  */
+   /* 201 */ public  ZXC.F2_StatusOutboxEnum F2_IsFisk       { get { return (ZXC.F2_StatusOutboxEnum)this.currentData._f2_isFisk     ; } set { this.currentData._f2_isFisk      = (ushort)value; } }   /* _f2_isFisk       */
+   /* 207 */ public  ZXC.F2_StatusOutboxEnum F2_IsEizvj      { get { return (ZXC.F2_StatusOutboxEnum)this.currentData._f2_isEizvj    ; } set { this.currentData._f2_isEizvj     = (ushort)value; } }   /* _f2_IsEizvj      */
+   /* 203 */ public  ZXC.F2_StatusOutboxEnum F2_IsRejected   { get { return (ZXC.F2_StatusOutboxEnum)this.currentData._f2_isRejected ; } set { this.currentData._f2_isRejected  = (ushort)value; } }   /* _f2_isRejected   */
+   /* 204 */ public  ZXC.F2_StatusOutboxEnum F2_IsMarkAsPaid { get { return (ZXC.F2_StatusOutboxEnum)this.currentData._f2_isMrkAsPaid; } set { this.currentData._f2_isMrkAsPaid = (ushort)value; } }   /* _f2_isMrkAsPaid  */
+
    /* 205 */ public ZXC.F2_R1enum F2_R1kind { get { return (ZXC.F2_R1enum)this.currentData._f2_R1kind; } set { this.currentData._f2_R1kind = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.currentData._f2_prvFakRecID; } set { this.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
-   /* 207 */ public  bool    F2_IsEizvj      { get { return this.currentData._f2_isEizvj    ; } set { this.currentData._f2_isEizvj     = value; } }   /* _f2_IsEizvj      */
+   /* 202 */ public DateTime F2_SentTS       { get { return this.currentData._f2_sentTS     ; } set { this.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
 
    #endregion Data Layer Columns

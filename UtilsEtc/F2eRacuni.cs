@@ -69,8 +69,9 @@ public static class Vv_eRacun_HTTP
    public const string VvPND_webAddressPOST_Check           = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ams/check"                ; // POST 
 
    // MER authorisation parameters: 
-   public static string VvMER_UserName   = DEMO ? "8633"    : ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
-   public static string VvMER_Password   = DEMO ? "T22zsEY" : ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
+   public static string VvMER_UserName   = DEMO ? "8633"    : ZXC.CURR_prjkt_rec.F2_UserName.NotEmpty()          ? ZXC.CURR_prjkt_rec.F2_UserName          : ZXC.CURR_prjkt_rec.SkyVvDomena         ;
+   public static string VvMER_Password   = DEMO ? "T22zsEY" : ZXC.CURR_prjkt_rec.F2_PasswordDecrypted.NotEmpty() ? ZXC.CURR_prjkt_rec.F2_PasswordDecrypted : ZXC.CURR_prjkt_rec.SkyPasswordDecrypted;
+
    public static string VvMER_CompanyId  =                    ZXC.CURR_prjkt_rec.Oib                                      ;
    public const  string VvMER_SoftwareId =                    "Vektor-001"                                                ;
 
@@ -427,9 +428,9 @@ public static class Vv_eRacun_HTTP
    }
    public static void InitProjectData()
    {
-      VvMER_UserName  = ZXC.ValOrZero_Int(ZXC.CURR_prjkt_rec.SkyVvDomena).ToString();
-      VvMER_Password  = ZXC.CURR_prjkt_rec.SkyPasswordDecrypted                     ;
-      VvMER_CompanyId = ZXC.CURR_prjkt_rec.Oib                                      ;
+      VvMER_UserName  = DEMO ? "8633"    : ZXC.CURR_prjkt_rec.F2_UserName.NotEmpty()          ? ZXC.CURR_prjkt_rec.F2_UserName          : ZXC.CURR_prjkt_rec.SkyVvDomena         ;
+      VvMER_Password  = DEMO ? "T22zsEY" : ZXC.CURR_prjkt_rec.F2_PasswordDecrypted.NotEmpty() ? ZXC.CURR_prjkt_rec.F2_PasswordDecrypted : ZXC.CURR_prjkt_rec.SkyPasswordDecrypted;
+      VvMER_CompanyId = ZXC.CURR_prjkt_rec.Oib                                                                                                                                   ;
    }
 
    #endregion Utils
@@ -1087,7 +1088,7 @@ public static class Vv_eRacun_HTTP
 
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(kupdob_rec);
+            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(kupdob_rec, true);
 
             // 3. Add new Faktur record in DataLayer 
 
@@ -1638,7 +1639,7 @@ public static class Vv_eRacun_HTTP
 
       int wantedMessageType = 0; // 0 – Kao POŠILJATELJ dohvati status fiskalizacije 
 
-      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk == false); // Lista Faktura koje nisu fiskalizirane 
+      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu fiskalizirane 
 
       List<VvMER_FiscalizationMessage> theFISKstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastFISKMessage;
@@ -1646,7 +1647,7 @@ public static class Vv_eRacun_HTTP
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
        //lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
-         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
+         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
 
          if(lastFISKMessage == null) continue;
 
@@ -1677,7 +1678,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsFisk = true;
+         F2_IRn_faktur_rec.F2_IsFisk = ZXC.F2_StatusOutboxEnum.Uspjeh;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1704,14 +1705,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 2; // 2 – Dohvati status odbijanja 
 
-      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected == false); // Lista Faktura koje nisu odbijene 
+      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu odbijene 
 
       List<VvMER_FiscalizationMessage> theREJECTstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastREJECTMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
+         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
          
          if(lastREJECTMessage == null) continue;
 
@@ -1741,7 +1742,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsRejected = true;
+         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusOutboxEnum.Uspjeh;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1768,14 +1769,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 3; // 3 – Dohvati status plaćanja 
 
-      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid == false); // Lista Faktura koje nisu označene kao plaćene 
+      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu označene kao plaćene 
 
       List<VvMER_FiscalizationMessage> theMAPstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastMAPMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
+         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
 
          if(lastMAPMessage == null) continue;
 
@@ -1805,7 +1806,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsMarkAsPaid = true;
+         F2_IRn_faktur_rec.F2_IsMarkAsPaid = ZXC.F2_StatusOutboxEnum.Uspjeh;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1832,14 +1833,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 4; // 4 – Dohvati status eIzvještavanja 
 
-      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj == false); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
+      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
 
       List<VvMER_FiscalizationMessage> theeIZVJstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lasteIZVJMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOfStatusOutboxEnum == ZXC.F2_Status_For_statusOutbox_API.Uspjeh);
+         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
 
          if(lasteIZVJMessage == null) continue;
 
@@ -1869,7 +1870,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsEizvj = true;
+         F2_IRn_faktur_rec.F2_IsEizvj = ZXC.F2_StatusOutboxEnum.Uspjeh;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -3083,11 +3084,11 @@ public class VvMER_FiscalizationMessage
    // 0 – Uspjeh
    // 1 – Neuspjeh
    // 2 – Na čekanju
-   public ZXC.F2_Status_For_statusOutbox_API StatusOfStatusOutboxEnum 
+   public ZXC.F2_StatusOutboxEnum StatusOutboxKind 
    {
       get
       {
-         return (ZXC.F2_Status_For_statusOutbox_API)Status;
+         return (ZXC.F2_StatusOutboxEnum)Status;
       }
    }
 

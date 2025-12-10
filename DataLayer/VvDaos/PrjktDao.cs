@@ -213,7 +213,7 @@ public sealed class PrjktDao : VvDaoBase, IVvDao
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_Provider             , TheSchemaTable.Rows[CI.f2_Provider]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_RolaKind             , TheSchemaTable.Rows[CI.f2_RolaKind]);
       VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_UserName             , TheSchemaTable.Rows[CI.f2_UserName]);
-      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_Password             , TheSchemaTable.Rows[CI.f2_Password]);
+      VvSQL.CreateCommandParameter(cmd, preffix, prjkt.F2_PasswordEncodedAsInFile, TheSchemaTable.Rows[CI.f2_Password]);
 
    }
 

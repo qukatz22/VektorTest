@@ -1618,11 +1618,11 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_eRacun(Kupdob kupdob_rec)
+      public Faktur Create_Faktur_From_eRacun(Kupdob kupdob_rec, bool isIFA)
       {
          #region init
 
-         Faktur faktur_rec = new Faktur();
+         Faktur faktur_rec = Create_COMMON_Faktur_For_eRacun(isIFA);
 
          #endregion init
 
@@ -1631,7 +1631,7 @@ namespace EN16931.UBL
          #region ZAGLAVLJE računa
 
          // qweqwe tu si stao 
-       //faktur_rec.KupdobName = this.AccountingCustomerParty.Party.PartyName[0].Name.Value;
+         //faktur_rec.KupdobName = this.AccountingCustomerParty.Party.PartyName[0].Name.Value;
          faktur_rec.KupdobName = kupdob_rec.Naziv   ;
          faktur_rec.KupdobCD   = kupdob_rec.KupdobCD;
          faktur_rec.KupdobTK   = kupdob_rec.Ticker  ;
@@ -1690,6 +1690,17 @@ namespace EN16931.UBL
       }
 
       #region eR2Fak & Utils 
+
+      private Faktur Create_COMMON_Faktur_For_eRacun(bool isIFA)
+      {
+         Faktur faktur_rec = new Faktur();
+
+         // qweqwe tu si stao 
+         faktur_rec.TT = isIFA ? Faktur.TT_IFA : Faktur.TT_UFA; // todo za FUR 
+
+         return faktur_rec;
+      }
+
 
       [System.Xml.Serialization.XmlIgnore]
       internal string VvSupplierOIB

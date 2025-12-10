@@ -6386,13 +6386,13 @@ public sealed class FaktExDao : VvDaoBase, IVvDao
       /*198 */ rdrData._f2_electron_ID = reader.GetUInt32   (CI.f2_electron_ID + ciOffset);
       /*199 */ rdrData._f2_status_CD   = reader.GetInt16    (CI.f2_status_CD   + ciOffset);
       /*200 */ rdrData._f2_ArhRecID    = reader.GetUInt32   (CI.f2_ArhRecID    + ciOffset);
-      /*201 */ rdrData._f2_isFisk      = reader.GetBoolean  (CI.f2_isFisk      + ciOffset);
+      /*201 */ rdrData._f2_isFisk      = reader.GetUInt16   (CI.f2_isFisk      + ciOffset);
       /*202 */ rdrData._f2_sentTS      = reader.GetDateTime (CI.f2_sentTS      + ciOffset);
-      /*203 */ rdrData._f2_isRejected  = reader.GetBoolean  (CI.f2_isRejected  + ciOffset);
-      /*204 */ rdrData._f2_isMrkAsPaid = reader.GetBoolean  (CI.f2_isMrkAsPaid + ciOffset);
+      /*203 */ rdrData._f2_isRejected  = reader.GetUInt16   (CI.f2_isRejected  + ciOffset);
+      /*204 */ rdrData._f2_isMrkAsPaid = reader.GetUInt16   (CI.f2_isMrkAsPaid + ciOffset);
       /*205 */ rdrData._f2_R1kind      = reader.GetUInt16   (CI.f2_R1kind      + ciOffset);
       /*206 */ rdrData._f2_prvFakRecID = reader.GetUInt32   (CI.f2_prvFakRecID + ciOffset);
-      /*207 */ rdrData._f2_isEizvj     = reader.GetBoolean  (CI.f2_isEizvj     + ciOffset);
+      /*207 */ rdrData._f2_isEizvj     = reader.GetUInt16   (CI.f2_isEizvj     + ciOffset);
 
       int nextReaderIndex = lastFaktExCI + 1 + ciOffset;
 
