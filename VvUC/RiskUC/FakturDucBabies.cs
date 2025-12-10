@@ -1312,7 +1312,7 @@ public class IFADUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.IsPCTOGO ? ZXC.Q2un : ZXC.Q4un, isVisible, "Šifra"         , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                    isVisible, "Naziv"         , "Naziv artikla ili proizvoljan opis");
-      T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"         , "KPD sifra");
+    //T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"         , "KPD sifra");
       T_serlot_CreateColumn        (ZXC.IsPCTOGO ? ZXC.Q6un : ZXC.Q4un, isSerlotVisible, serlotCol , serlotOpis);
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                 isVisible, "Usl"           , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un   ,                        isVisible, "Konto"         , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
@@ -9305,27 +9305,26 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_razlikaUpl , rowIdx, isF1 ? "" : "");
 
 
-      if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
-      else                     ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+           if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.Uspjeh    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
+      else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
+      else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.Neuspjeh  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+      else                                                           ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
 
       if(faktur_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
       else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_empty;
 
-      if(faktur_rec.F2_IsRejected)
-      {
-         TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_red;
-      }
-      else 
-      {
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
-      }
+           if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.Uspjeh    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
+      else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
+      else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.Neuspjeh  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+      else                                                               ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
 
     //if(faktur_rec.F2_IsEizvj) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_green;
     //else                      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_empty;
 
-      if(faktur_rec.F2_IsMarkAsPaid)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_green; 
-      else                          ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_red;
+           if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.Uspjeh    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
+      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
+      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.Neuspjeh  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+      else                                                               ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
       
       if(isF1 || faktur_rec.IsNoFX)
       {
@@ -9599,21 +9598,21 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.PutCell(ci.iT_kupDob  , rowIdx, ""/*faktur_rec.KupdobName*/ );
       TheG.PutCell(ci.iT_vezDok  , rowIdx, ""/*faktur_rec.VezniDok*/   );
 
-      if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
-      else                     ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_red;
+    //if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
+    //else                     ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_red;
 
       if(faktur_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_green;
       else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
 
-      if(faktur_rec.F2_IsRejected)
-      {
-         TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_red;
-      }
-      else 
-      {
-         ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
-      }
+    //if(faktur_rec.F2_IsRejected)
+    //{
+    //   TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
+    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_red;
+    //}
+    //else 
+    //{
+    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
+    //}
 
    }
 
