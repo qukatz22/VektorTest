@@ -1632,7 +1632,26 @@ namespace EN16931.UBL
 
          // qweqwe tu si stao 
        //faktur_rec.KupdobName = this.AccountingCustomerParty.Party.PartyName[0].Name.Value;
-         faktur_rec.KupdobName = kupdob_rec.Naziv;
+         faktur_rec.KupdobName = kupdob_rec.Naziv   ;
+         faktur_rec.KupdobCD   = kupdob_rec.KupdobCD;
+         faktur_rec.KupdobTK   = kupdob_rec.Ticker  ;
+         faktur_rec.KdOib      = kupdob_rec.Oib     ;
+
+         faktur_rec.TT         = Faktur.TT_IFA      ;
+         //faktur_rec.TtNum    = getnextTtNum;
+         faktur_rec.PdvKnjiga  = ZXC.PdvKnjigaEnum.REDOVNA;
+         faktur_rec.PdvR12     = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
+         faktur_rec.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
+
+         faktur_rec.DokDate   = this.IssueDate.Value; // ima i IssueTime
+         faktur_rec.DospDate  = this.DueDate.Value  ;
+         faktur_rec.PdvDate   = this.TaxPointDate.Value.IsEmpty() ? this.IssueDate.Value : this.TaxPointDate.Value;
+         faktur_rec.VezniDok  = this.ID.Value       ;
+         faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
+         faktur_rec.DevName   = this.DocumentCurrencyCode.Value == "EUR" ? "EUR" : this.DocumentCurrencyCode.Value;
+
+         //faktur_rec.PdvKolTip =  this.ProfileID.Value;
+         //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne
 
          #endregion ZAGLAVLJE računa
 
@@ -1641,6 +1660,24 @@ namespace EN16931.UBL
          #region STAVKE računa
 
          // qweqwe 
+
+         //t_tt            = ;
+         //t_ttNum         = ;
+         //t_skladCD       = ;
+         //t_artiklCD      = ;
+         string t_artiklName = this.InvoiceLine[0].Item.Name.Value;
+         //t_jedMj         = ;
+         decimal t_kol       = this.InvoiceLine[0].InvoicedQuantity.Value;
+         decimal t_cij       = this.InvoiceLine[0].Price.PriceAmount.Value; // R_CIJ_KCR se uzima kao jedinicna cijena; BT-146 -Neto cijena artikla Cijena artikla bez PDV-a, nakon oduzimanja popusta na cijenu artikla-  
+         decimal t_pdvSt     = this.InvoiceLine[0].Item.ClassifiedTaxCategory[0].Percent.Value;
+         //t_rbt1St        = ;
+         //t_wanted        = ;
+         //t_pdvKolTip     = ;
+         //t_isIrmUslug    = ;
+         //t_ppmvOsn       = ;
+         //t_ppmvSt1i2     = ;
+         //t_pnpSt         = ;
+
 
          #endregion STAVKE računa
 
