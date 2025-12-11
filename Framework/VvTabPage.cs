@@ -949,7 +949,9 @@ be_fast:
          //02.02.2022. da kad se vratimo na faktur koji ima zoom taj zoom ostane zoom a ne da se smanji
          if(TheVvUC is FakturExtDUC) ((FakturExtDUC)TheVvUC).TheTabControl_SelectionChanged_Zoom(null, null, ((FakturExtDUC)TheVvUC).TheTabControl.SelectedTab); ;
 
-
+         
+         if(TheVvUC is F2_Izlaz_UC) ((F2_Izlaz_UC)TheVvUC).Refresh_FIR(null, null, ((F2_Izlaz_UC)TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
+         
          return;
       }
 
@@ -1192,6 +1194,16 @@ be_fast:
                case ZXC.VvSubModulEnum.R_IRP:
                case ZXC.VvSubModulEnum.R_IFA:
                case ZXC.VvSubModulEnum.R_IFAdev:
+               case ZXC.VvSubModulEnum.R_IRM:
+               case ZXC.VvSubModulEnum.R_IRM_2:
+                  col1 = ZXC.Q4un;
+                  col2 = ZXC.Q4un;
+                  col3 = ZXC.Q10un;
+                  col4 = ZXC.Q2un - ZXC.Qun2;
+                  col5 = ZXC.Q3un + ZXC.Qun2;
+                  col6 = ZXC.Q4un;
+                  col7 = 0;
+                  break;
                case ZXC.VvSubModulEnum.R_UFA:
                case ZXC.VvSubModulEnum.R_UPA:
                case ZXC.VvSubModulEnum.R_UFM:
@@ -1212,8 +1224,6 @@ be_fast:
                case ZXC.VvSubModulEnum.R_POI:
                case ZXC.VvSubModulEnum.R_CJ:
                case ZXC.VvSubModulEnum.R_CJK:
-               case ZXC.VvSubModulEnum.R_IRM:
-               case ZXC.VvSubModulEnum.R_IRM_2:
                case ZXC.VvSubModulEnum.R_IZM:
                case ZXC.VvSubModulEnum.R_IZM_2:
                case ZXC.VvSubModulEnum.R_MSI:
@@ -1351,7 +1361,10 @@ be_fast:
       tbx_col7.JAM_ReadOnly = true;
 
       //tamtam***** nekak drukcije s tim tagom nekaj zmislii
-      tbx_col1.Tag = tbx_col2.Tag = tbx_col3.Tag = tbx_col4.Tag = tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = ZXC.vvColors.tamponHeaderLeftTbx_BackColor;
+      tbx_col1.Tag = tbx_col2.Tag = tbx_col3.Tag = tbx_col4.Tag /*= tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag*/ = ZXC.vvColors.tamponHeaderLeftTbx_BackColor;
+      tbx_col4.JAM_ForeColor = Color.Red;
+      tbx_col4.Font = ZXC.vvFont.BaseBoldFont;
+      tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = Color.LavenderBlush;
 
       VvHamper.Open_Close_Fields_ForWriting(hampModul, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.TamponPanel_HeaderLeft);
    }

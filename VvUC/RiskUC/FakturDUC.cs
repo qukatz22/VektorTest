@@ -4281,6 +4281,24 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(/*"000000"*/), fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), "", "");
 
+         if(ZXC.TtInfo(fakturLocal_rec.TT).IsIzlazniPdvTT)
+         {
+            PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+                              fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                              "",
+                              fakturLocal_rec.F123kind.ToString());
+         }
+         if(ZXC.TtInfo(fakturLocal_rec.TT).IsIzlazniPdvTT && fakturLocal_rec.F123kind == F123kind.F2)
+         { 
+            PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+                                   fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                                   "",
+                                   fakturLocal_rec.F123kind.ToString(), 
+                                   fakturLocal_rec.F2_ElectronicID.ToString(), 
+                                   Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
+                                   "");
+         }
+
          // 17.12.2012: dodao if() 
          if(ZXC.RISK_ToggleKnDeviza_InProgress == false) VvHamper.SetChkBoxRadBttnAutoCheck(this, true);
 
