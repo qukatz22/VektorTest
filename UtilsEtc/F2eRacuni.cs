@@ -1091,33 +1091,20 @@ public static class Vv_eRacun_HTTP
 
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(kupdob_rec, true);
+            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(conn, responseData, kupdob_rec, true);
 
-            // 3. Add new Faktur record in DataLayer 
-
-            //if(newIFA_Faktur_rec != null)
-            //{
-            //   addrecOK = newIFA_Faktur_rec.VvDao.ADDREC(theUC.TheDbConnection, newIFA_Faktur_rec);
-            //
-            //   if(addrecOK)
-            //   {
-            //      //theUC.TheFakturList.Add(newIFA_Faktur_rec); ... jer ćemo na kraju refreshati cijelu listu iz baze 
-            //
-            //      newsCount++;
-            //
-            //      updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
-            //                                    newIFA_Faktur_rec.TipBr,
-            //                                    newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
-            //                                    "DODANA u lokalnu bazu",
-            //                                    newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
-            //
-            //      updatedStatusInfoList.Add(updatedStatusInfo);
-            //   }
-            //   else
-            //   {
-            //      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom dodavanja novog računa eRačun s eID={0} u bazu podataka.", responseData.ElectronicId);
-            //   }  
-            //}
+            if(newIFA_Faktur_rec != null)
+            {
+               newsCount++;
+            
+               updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
+                                             newIFA_Faktur_rec.TipBr,
+                                             newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
+                                             "DODANA u lokalnu bazu",
+                                             newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+            
+               updatedStatusInfoList.Add(updatedStatusInfo);
+            }
 
          } // if(receiveOK) 
 

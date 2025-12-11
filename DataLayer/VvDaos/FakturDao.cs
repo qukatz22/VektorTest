@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.IO;
 using static ArtiklDao;
+using Mysqlx;
+
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1194,12 +1196,15 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
    #region AutoAddFaktur
 
 
-   private static void AutoAddFaktur(XSqlConnection conn, ref ushort line, Faktur faktur_rec, Rtrans rtrans_rec)
+   private static bool /*(bool, Faktur, Rtrans)*/ AutoAddFaktur(XSqlConnection conn, ref ushort line, Faktur faktur_rec, Rtrans rtrans_rec)
    {
       IVvDao fakturDao = faktur_rec.VvDao;
       IVvDao rtransDao = rtrans_rec.VvDao;
 
       ushort linesPerDocumentLIMIT = ushort.MaxValue;
+
+      bool fakOK = true;
+      bool rtrOK = true;
 
       if(line < linesPerDocumentLIMIT) line++;
       else                             line=1;
@@ -1229,7 +1234,7 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
 
          faktur_rec.TtSort = ZXC.TtInfo(faktur_rec.TT).TtSort;
 
-         /* $$$ */ fakturDao.ADDREC(conn, faktur_rec);
+         /* $$$ */ fakOK = fakturDao.ADDREC(conn, faktur_rec);
 
          // save new Faktur data for further transes 
          ZXC.FakturRec = faktur_rec.MakeDeepCopy();
@@ -1251,16 +1256,19 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
       rtrans_rec.T_ttSort  = ZXC.FakturRec.TtSort;
       rtrans_rec.T_skladCD = ZXC.FakturRec.SkladCD;
 
-      rtransDao.ADDREC(conn, rtrans_rec, false, false, false, false);
+      rtrOK = rtransDao.ADDREC(conn, rtrans_rec, false, false, false, false);
 
+      return (fakOK && rtrOK/*, faktur_rec, rtrans_rec*/);
    }
 
-   public static void AutoSetFaktur(XSqlConnection conn, ref ushort line, Faktur faktur_rec, Rtrans rtrans_rec)
+   public static bool AutoSetFaktur(XSqlConnection conn, ref ushort line, Faktur faktur_rec, Rtrans rtrans_rec)
    {
-      AutoAddFaktur(conn, ref line, faktur_rec, rtrans_rec);
+      bool OK = AutoAddFaktur(conn, ref line, faktur_rec, rtrans_rec);
+
+      return OK;
    }
 
-   public static /*void*/Rtrans AutoSetFaktur(
+   public static void AutoSetFaktur(
       
       XSqlConnection conn, 
       ref ushort     line, 
@@ -1387,7 +1395,7 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
       AutoAddFaktur(conn, ref line, faktur_rec, rtrans_rec);
 
       // 5.7.2011:
-      return rtrans_rec;
+      //return rtrans_rec;
    }
 
    #endregion AutoAddFaktur

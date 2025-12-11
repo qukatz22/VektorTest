@@ -8,7 +8,17 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using System.Diagnostics.Eventing.Reader;
+
+#if MICROSOFT
+using                  System.Data.SqlClient;
+using XSqlConnection = System.Data.SqlClient.SqlConnection;
+using XSqlCommand    = System.Data.SqlClient.SqlCommand;
+#else
 using MySql.Data.MySqlClient;
+using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
+using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
+#endif
 
 namespace EN16931.UBL
 {
@@ -1618,11 +1628,23 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_eRacun(Kupdob kupdob_rec, bool isIFA)
+      public Faktur Create_Faktur_From_eRacun(XSqlConnection conn, VvMER_Response_Data_AllActions responseData, Kupdob kupdob_rec, bool isIFA)
       {
          #region init
 
+         bool isUFA = !isIFA;
+
          Faktur faktur_rec = Create_COMMON_Faktur_For_eRacun(isIFA);
+
+         Rtrans rtrans_rec;
+
+         ushort line       = 0;
+
+         List<Rtrans> rtransList = new List<Rtrans>(this.InvoiceLine.Length);
+
+         bool   OK = true;
+         //Faktur fak;
+         //Rtrans rtr;
 
          #endregion init
 
@@ -1630,18 +1652,21 @@ namespace EN16931.UBL
 
          #region ZAGLAVLJE računa
 
-         // qweqwe tu si stao 
-         //faktur_rec.KupdobName = this.AccountingCustomerParty.Party.PartyName[0].Name.Value;
-         faktur_rec.KupdobName = kupdob_rec.Naziv   ;
-         faktur_rec.KupdobCD   = kupdob_rec.KupdobCD;
-         faktur_rec.KupdobTK   = kupdob_rec.Ticker  ;
-         faktur_rec.KdOib      = kupdob_rec.Oib     ;
+         // From Kupdob 
 
-         faktur_rec.TT         = Faktur.TT_IFA      ;
-         //faktur_rec.TtNum    = getnextTtNum;
-         faktur_rec.PdvKnjiga  = ZXC.PdvKnjigaEnum.REDOVNA;
-         faktur_rec.PdvR12     = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
-         faktur_rec.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
+         faktur_rec.KupdobName   = kupdob_rec.Naziv       ;
+         faktur_rec.KupdobCD     = kupdob_rec.KupdobCD    ;
+         faktur_rec.KupdobTK     = kupdob_rec.Ticker      ;
+         faktur_rec.KdOib        = kupdob_rec.Oib         ;
+         faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
+         faktur_rec.KdUlica      = kupdob_rec.Ulica2      ;
+         faktur_rec.KdZip        = kupdob_rec.PostaBr     ;
+         faktur_rec.KdMjesto     = kupdob_rec.Grad        ;
+
+         if(isUFA)
+         faktur_rec.ZiroRn       = kupdob_rec.Ziro1       ;
+
+         // From InvoiceType 
 
          faktur_rec.DokDate   = this.IssueDate.Value; // ima i IssueTime
          faktur_rec.DospDate  = this.DueDate.Value  ;
@@ -1653,37 +1678,58 @@ namespace EN16931.UBL
          //faktur_rec.PdvKolTip =  this.ProfileID.Value;
          //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne
 
+         // From VvMER_Response_Data_AllActions 
+         faktur_rec.F2_ElectronicID = (uint)responseData.ElectronicId;
+
          #endregion ZAGLAVLJE računa
 
          #endregion Set Faktur Values From eRacun
 
          #region STAVKE računa
 
-         // qweqwe 
+         foreach(InvoiceLineType invoiceLine in this.InvoiceLine)
+         {
+            rtrans_rec = new Rtrans();
 
-         //t_tt            = ;
-         //t_ttNum         = ;
-         //t_skladCD       = ;
-         //t_artiklCD      = ;
-         string t_artiklName = this.InvoiceLine[0].Item.Name.Value;
-         //t_jedMj         = ;
-         decimal t_kol       = this.InvoiceLine[0].InvoicedQuantity.Value;
-         decimal t_cij       = this.InvoiceLine[0].Price.PriceAmount.Value; // R_CIJ_KCR se uzima kao jedinicna cijena; BT-146 -Neto cijena artikla Cijena artikla bez PDV-a, nakon oduzimanja popusta na cijenu artikla-  
-         decimal t_pdvSt     = this.InvoiceLine[0].Item.ClassifiedTaxCategory[0].Percent.Value;
-         //t_rbt1St        = ;
-         //t_wanted        = ;
-         //t_pdvKolTip     = ;
-         //t_isIrmUslug    = ;
-         //t_ppmvOsn       = ;
-         //t_ppmvSt1i2     = ;
-         //t_pnpSt         = ;
+          //rtrans_rec.T_artiklCD    = ;
+            rtrans_rec.T_artiklName  = invoiceLine.Item.Name.Value;
+          //rtrans_rec.T_jedMj       = ; 
+            rtrans_rec.T_kol         = invoiceLine.InvoicedQuantity.Value;
+            rtrans_rec.T_cij         = invoiceLine.Price.PriceAmount.Value; // R_CIJ_KCR se uzima kao jedinicna cijena; BT-146 -Neto cijena artikla Cijena artikla bez PDV-a, nakon oduzimanja popusta na cijenu artikla-  
+            rtrans_rec.T_pdvSt       = invoiceLine.Item.ClassifiedTaxCategory[0].Percent.Value;
+          //rtrans_rec.T_rbt1St      = ;
+          //rtrans_rec.T_wanted      = ;
+          //rtrans_rec.T_pdvColTip   = ;
+          //rtrans_rec.T_isIrmUsluga = ;
+          //rtrans_rec.T_ppmvOsn     = ;
+          //rtrans_rec.T_ppmvSt1i2   = ;
+          //rtrans_rec.T_pnpSt       = ;
 
+            rtrans_rec.CalcTransResults(null);
+
+            rtransList.Add(rtrans_rec);
+
+         } // foreach(InvoiceLineType invoiceLine in this.InvoiceLine) 
 
          #endregion STAVKE računa
 
+         #region TakeTransesSumToDokumentSum
+
+         faktur_rec.Transes = rtransList;
+         faktur_rec.TakeTransesSumToDokumentSum(true);
+         faktur_rec.Transes = null;
+
+         #endregion TakeTransesSumToDokumentSum
+
+         foreach(Rtrans rtrans in rtransList)
+         {
+            OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
+         }
+
          #region Return
 
-         return faktur_rec;
+         if(OK) return faktur_rec;
+         else   return null      ;
 
          #endregion Return
 
@@ -1695,8 +1741,12 @@ namespace EN16931.UBL
       {
          Faktur faktur_rec = new Faktur();
 
-         // qweqwe tu si stao 
-         faktur_rec.TT = isIFA ? Faktur.TT_IFA : Faktur.TT_UFA; // todo za FUR 
+         faktur_rec.TT         = isIFA ? Faktur.TT_IFA : 
+                                         Faktur.TT_UFA; // todo za FUR 
+
+         faktur_rec.PdvKnjiga  = ZXC.PdvKnjigaEnum.REDOVNA;
+         faktur_rec.PdvR12     = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
+         faktur_rec.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
 
          return faktur_rec;
       }
