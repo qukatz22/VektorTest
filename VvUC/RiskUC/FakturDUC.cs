@@ -13590,8 +13590,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isFisk.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.Uspjeh    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.Neuspjeh  ;
+            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
+            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
             case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
             default:            return F2_StatusOutboxEnum.Na_cekanju;
          }
@@ -13600,8 +13600,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.Uspjeh    : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.Uspjeh    .ToString(); return;
-            case F2_StatusOutboxEnum.Neuspjeh  : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.Neuspjeh  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isFisk.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
             default:                                        tbx_f2_isFisk.Text = ""; break;
          }
@@ -13614,8 +13614,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isEizvj.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.Uspjeh    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.Neuspjeh  ;
+            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
+            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
             case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
             default:            return F2_StatusOutboxEnum.Na_cekanju;
          }
@@ -13624,8 +13624,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.Uspjeh    : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.Uspjeh    .ToString(); return;
-            case F2_StatusOutboxEnum.Neuspjeh  : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.Neuspjeh  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
             default:                                        tbx_f2_isEizvj.Text = ""                                                  ; break;
          }
@@ -13638,8 +13638,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isMrkAsPaid.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.Uspjeh    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.Neuspjeh  ;
+            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
+            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
             case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
             default:            return F2_StatusOutboxEnum.Na_cekanju;
          }
@@ -13648,8 +13648,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.Uspjeh    : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.Uspjeh    .ToString(); return;
-            case F2_StatusOutboxEnum.Neuspjeh  : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.Neuspjeh  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
             default:                                        tbx_f2_isMrkAsPaid.Text = ""         ; break;
          }
@@ -13662,8 +13662,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isRejected.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.Uspjeh    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.Neuspjeh  ;
+            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
+            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
             case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
             default:            return F2_StatusOutboxEnum.Na_cekanju;
          }
@@ -13672,8 +13672,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.Uspjeh    : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.Uspjeh    .ToString(); return;
-            case F2_StatusOutboxEnum.Neuspjeh  : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.Neuspjeh  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isRejected.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
             default:                                        tbx_f2_isRejected.Text = ""; break;
          }

@@ -422,7 +422,7 @@ public static class Vv_eRacun_HTTP
    {
       return new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore };
    }
-   private static string VvMER_Json_SerializeObjectForRequestString_AllActions(VvMER_Request_Data_AllActions json_AllActions_Request_Data)
+   private static string VvMER_Json_SerializeObjectForRequestString_AllActions(VvMER_RequestData json_AllActions_Request_Data)
    {
       return JsonConvert.SerializeObject(json_AllActions_Request_Data, Newtonsoft.Json.Formatting.Indented, VvMER_JsonSerializerSettings_Default());
    }
@@ -438,7 +438,7 @@ public static class Vv_eRacun_HTTP
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
 
    //######################## https://www.moj-eracun.hr/apis/v2/send #############################################################################################################
-   public static WebApiResult<VvMER_Response_Data_AllActions> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public static WebApiResult<VvMER_ResponseData> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
       // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
@@ -460,13 +460,13 @@ public static class Vv_eRacun_HTTP
       string        webApiAddr = VvMER_webAddressPOST_Send;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.SEND       ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(xmlString);
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(xmlString);
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = 
+      WebApiResult<VvMER_ResponseData> webApiResult = 
          
-         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>
          (
             webApiKind,
             webApiAddr,
@@ -477,18 +477,18 @@ public static class Vv_eRacun_HTTP
 
       return webApiResult;
    }
-   public  static WebApiResult<VvMER_Response_Data_AllActions> VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public  static WebApiResult<VvMER_ResponseData> VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
    {
       string        webApiAddr = VvPND_webAddressPOST_Send;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.SEND       ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(xmlString);
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(xmlString);
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult =
+      WebApiResult<VvMER_ResponseData> webApiResult =
 
-         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>
          (
             webApiKind,
             webApiAddr,
@@ -502,12 +502,12 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## F2_eIzvj API #######################################################################################################################################
-   public  static WebApiResult<VvMER_Response_Data_AllActions> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_eIzvj(string xmlString, DateTime _DeliveryDate, bool _IsCopy, string _InvoiceType)
+   public  static WebApiResult<VvMER_ResponseData> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_eIzvj(string xmlString, DateTime _DeliveryDate, bool _IsCopy, string _InvoiceType)
    {
       string        webApiAddr = VvMER_webAddressPOST_eIzvj;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.eIzvj       ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions()
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData()
       {
          xmlInvoice   = xmlString,
          DeliveryDate = _DeliveryDate,
@@ -517,9 +517,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult =
+      WebApiResult<VvMER_ResponseData> webApiResult =
 
-         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>
          (
             webApiKind,
             webApiAddr,
@@ -528,12 +528,12 @@ public static class Vv_eRacun_HTTP
 
       return webApiResult;
    }
-   public  static WebApiResult<VvMER_Response_Data_AllActions> VvPND_WebService_eIzvj(string xmlString, string _InvoiceType)
+   public  static WebApiResult<VvMER_ResponseData> VvPND_WebService_eIzvj(string xmlString, string _InvoiceType)
    {
       string        webApiAddr = VvPND_webAddressPOST_eIzvj;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.eIzvj;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions()
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData()
       {
          document   = xmlString,
          type       = _InvoiceType
@@ -541,9 +541,9 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult =
+      WebApiResult<VvMER_ResponseData> webApiResult =
 
-         Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>
+         Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>
          (
             webApiKind,
             webApiAddr,
@@ -555,30 +555,30 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - one single TRN status ##############################################################################
-   public static WebApiResult<List<VvMER_Response_Data_AllActions>> VvMER_WebService_QueryOutbox_TRN_Single(uint electronicID)
+   public static WebApiResult<List<VvMER_ResponseData>> VvMER_WebService_QueryOutbox_TRN_Single(uint electronicID)
    {
       string        webApiAddr = VvMER_webAddressPOST_QueryOutbox;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.OutboxTRNstatus   ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<List<VvMER_ResponseData>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_ResponseData>>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
-   public static VvMER_Response_Data_AllActions VvPND_WebService_QueryOutbox_TRNandDPS_Single(uint electronicID)
+   public static VvMER_ResponseData VvPND_WebService_QueryOutbox_TRNandDPS_Single(uint electronicID)
    {
       string        webApiAddr = VvPND_webAddressGET_QueryOutbox;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.OutboxTRNstatus  ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      VvMER_Response_Data_AllActions responseData_AllActions =
-          Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
+      VvMER_ResponseData responseData_AllActions =
+          Vv_GETmethod_ExecuteJson<VvMER_ResponseData, VvMER_RequestData>
           (
               //webApiKind,
               webApiAddr,
@@ -592,76 +592,76 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - one single DPS status #########################################################
-   public static WebApiResult<List<WebApiResult<VvMER_Response_Data_AllActions>>> VvMER_WebService_QueryOutbox_DPS_Single(uint electronicID)
+   public static WebApiResult<List<WebApiResult<VvMER_ResponseData>>> VvMER_WebService_QueryOutbox_DPS_Single(uint electronicID)
    {
       string        webApiAddr = VvMER_webAddressPOST_QueryOutbox_DPS;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.OutboxDPSstatus       ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(electronicID); // constructor za STATUS jednog racuna (electronicID-a) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<List<WebApiResult<VvMER_Response_Data_AllActions>>> webApiResult = Vv_POSTmethod_ExecuteJson<List<WebApiResult<VvMER_Response_Data_AllActions>>>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<List<WebApiResult<VvMER_ResponseData>>> webApiResult = Vv_POSTmethod_ExecuteJson<List<WebApiResult<VvMER_ResponseData>>>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryOutbox - TRN Status List ####################################################################################
-   public static WebApiResult<List<VvMER_Response_Data_AllActions>> VvMER_WebService_QueryOutbox_TRN_List(DateTime dateOD, DateTime dateDO)
+   public static WebApiResult<List<VvMER_ResponseData>> VvMER_WebService_QueryOutbox_TRN_List(DateTime dateOD, DateTime dateDO)
    {
       string        webApiAddr = VvMER_webAddressPOST_QueryOutbox ;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.OutboxTRNstatusList;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<List<VvMER_ResponseData>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_ResponseData>>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - DPS Status List ###############################################################
-   public static WebApiResult<List<VvMER_Response_Data_AllActions>> VvMER_WebService_QueryOutbox_DPS_List(DateTime dateOD, DateTime dateDO)
+   public static WebApiResult<List<VvMER_ResponseData>> VvMER_WebService_QueryOutbox_DPS_List(DateTime dateOD, DateTime dateDO)
    {
       string        webApiAddr = VvMER_webAddressPOST_QueryOutbox_DPS;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.OutboxDPSstatusList   ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<List<VvMER_ResponseData>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_ResponseData>>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryInbox - Status List #########################################################################################
-   public static List<VvMER_Response_Data_AllActions> VvMER_WebService_QueryInbox_List(DateTime dateOD, DateTime dateDO)
+   public static List<VvMER_ResponseData> VvMER_WebService_QueryInbox_List(DateTime dateOD, DateTime dateDO)
    {
       string        webApiAddr = VvMER_webAddressPOST_QueryInbox;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.InboxDPSstatusList;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(dateOD, dateDO); // constructor za Listu STATUSa racuna (dateOD, dateDO) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_AllActions>>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<List<VvMER_ResponseData>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_ResponseData>>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult.ResponseData;
    }
 
    //######################## https://www.moj-eracun.hr/api/fiscalization/status - Get 3 kind FISK status ########################################################################
-   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_Get_FISK_Status(uint electronicID, string messageType)
+   public static WebApiResult<VvMER_ResponseData> VvMER_WebService_Get_FISK_Status(uint electronicID, string messageType)
    {
       string        webApiAddr = VvMER_webAddressPOST_FiskStatus;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.FISKstatus       ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID) { MessageType = messageType }; 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(electronicID) { MessageType = messageType }; 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<VvMER_ResponseData> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
@@ -671,7 +671,7 @@ public static class Vv_eRacun_HTTP
       string        webApiAddr = VvMER_webAddressPOST_FiskStatusOutbox;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.FISKstatusOutbox;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(dateOD, dateDO); // constructor za Listu Fisk STATUSa racuna (dateOD, dateDO) 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(dateOD, dateDO); // constructor za Listu Fisk STATUSa racuna (dateOD, dateDO) 
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
@@ -685,19 +685,19 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/receive - one single document ####################################################################################
-   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_Receive_XML(uint electronicID)
+   public static WebApiResult<VvMER_ResponseData> VvMER_WebService_Receive_XML(uint electronicID)
    {
       string webApiAddr = VvMER_webAddressPOST_Receive;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.RECEIVEdocument;
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = new WebApiResult<VvMER_Response_Data_AllActions>();
+      WebApiResult<VvMER_ResponseData> webApiResult = new WebApiResult<VvMER_ResponseData>();
 
       webApiResult.WebApiKind = webApiKind;
       webApiResult.WebApiAddr = webApiAddr;
 
       try
       {
-         VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions(electronicID); // constructor za RECEIVE jednog racuna (electronicID-a) 
+         VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(electronicID); // constructor za RECEIVE jednog racuna (electronicID-a) 
 
          string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
@@ -718,13 +718,13 @@ public static class Vv_eRacun_HTTP
 
             if(responseString.NotEmpty() && isXml)
             {
-               webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
+               webApiResult.ResponseData = new VvMER_ResponseData();
                webApiResult.ResponseData.DocumentXml = responseString;
             }
             else
             {
                webApiResult.ErrorBody = "XML response is empty or isn't XML!";
-               webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
+               webApiResult.ResponseData = new VvMER_ResponseData();
             }
          }
       }
@@ -745,37 +745,37 @@ public static class Vv_eRacun_HTTP
             catch { /* ignore */ }
          }
          webApiResult.ExceptionMessage = ex.Message;
-         webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
+         webApiResult.ResponseData = new VvMER_ResponseData();
       }
       catch(Exception ex)
       {
          webApiResult.ExceptionMessage = ex.Message;
-         webApiResult.ResponseData = new VvMER_Response_Data_AllActions();
+         webApiResult.ResponseData = new VvMER_ResponseData();
       }
 
       return webApiResult;
    }
    //######################## https://www.moj-eracun.hr/apis/v2/Ping - Checks if service is up ###################################################################################
-   public static VvMER_Response_Data_AllActions VvMER_WebService_Ping()
+   public static VvMER_ResponseData VvMER_WebService_Ping()
    {
       string        webApiAddr = VvMER_webAddressGET_Ping;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.PING      ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData();
    
-      VvMER_Response_Data_AllActions responseData_AllActions = Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>(/*webApiKind,*/ webApiAddr, request_Data_AllActions);
+      VvMER_ResponseData responseData_AllActions = Vv_GETmethod_ExecuteJson<VvMER_ResponseData, VvMER_RequestData>(/*webApiKind,*/ webApiAddr, request_Data_AllActions);
    
       return responseData_AllActions;
    }
-   public static VvMER_Response_Data_AllActions VvPND_WebService_Ping()
+   public static VvMER_ResponseData VvPND_WebService_Ping()
    {
       string        webApiAddr = VvPND_webAddressGET_Ping;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.PING      ; // FUSE 
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions();
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData();
 
-      VvMER_Response_Data_AllActions responseData_AllActions =
-          Vv_GETmethod_ExecuteJson<VvMER_Response_Data_AllActions, VvMER_Request_Data_AllActions>
+      VvMER_ResponseData responseData_AllActions =
+          Vv_GETmethod_ExecuteJson<VvMER_ResponseData, VvMER_RequestData>
           (
             //webApiKind,
               webApiAddr,
@@ -789,13 +789,13 @@ public static class Vv_eRacun_HTTP
    }
 
    //######################## https://www.moj-eracun.hr/api/mps/check - Check Identifier #########################################################################################
-   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_CheckAMS(string _Identifiervalue)
+   public static WebApiResult<VvMER_ResponseData> VvMER_WebService_CheckAMS(string _Identifiervalue)
    {
       string        webApiAddr = VvMER_webAddressPOST_Check;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.CheckAMS    ;
 
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions() 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData() 
       { 
          IdentifierValue = _Identifiervalue,
          IdentifierType  = /*0*/"0",
@@ -803,16 +803,16 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<VvMER_ResponseData> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
-   public static WebApiResult<VvMER_Response_Data_AllActions> VvPND_WebService_CheckAMS(string _identifier)
+   public static WebApiResult<VvMER_ResponseData> VvPND_WebService_CheckAMS(string _identifier)
    {
       string        webApiAddr = VvPND_webAddressPOST_Check;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.CheckAMS    ;
 
-      VvMER_Request_Data_AllActions request_Data_AllActions = new VvMER_Request_Data_AllActions() 
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData() 
       { 
          identifier = _identifier,
          schema     = "9934",
@@ -820,31 +820,31 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webApiKind, webApiAddr, jsonRequestString, VvPND_API_Key);
+      WebApiResult<VvMER_ResponseData> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>(webApiKind, webApiAddr, jsonRequestString, VvPND_API_Key);
 
       return webApiResult;
    }
 
    //######################## https://www.moj-eracun.hr/api/fiscalization/markPaid - Mark Paid action ############################################################################
-   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_MAP(VvMER_Request_Data_AllActions request_Data_AllActions)
+   public static WebApiResult<VvMER_ResponseData> VvMER_WebService_MAP(VvMER_RequestData request_Data_AllActions)
    {
       string        webApiAddr = VvMER_webAddressPOST_MAP;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.MAPaction;
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<VvMER_ResponseData> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
-   public static WebApiResult<VvMER_Response_Data_AllActions> VvMER_WebService_MAP_WO_eID(VvMER_Request_Data_AllActions request_Data_AllActions)
+   public static WebApiResult<VvMER_ResponseData> VvMER_WebService_MAP_WO_eID(VvMER_RequestData request_Data_AllActions)
    {
       string        webApiAddr = VvMER_webAddressPOST_MAP_WO_eID;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.MAPaction_WO_eID;
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_Response_Data_AllActions>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<VvMER_ResponseData> webApiResult = Vv_POSTmethod_ExecuteJson<VvMER_ResponseData>(webApiKind, webApiAddr, jsonRequestString);
 
       return webApiResult;
    }
@@ -930,13 +930,13 @@ public static class Vv_eRacun_HTTP
 
       #region Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
 
-      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(queryOutbox_DateOD, queryOutbox_DateDO);
+      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(queryOutbox_DateOD, queryOutbox_DateDO);
 
       if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
          if(webApiResultWithList == null)
          {
-            webApiResultWithList = new WebApiResult<List<VvMER_Response_Data_AllActions>>()
+            webApiResultWithList = new WebApiResult<List<VvMER_ResponseData>>()
             {
                WebApiKind        = ZXC.F2_WebApi.OutboxTRNstatusListAsKnjigServis,
                WebApiAddr        = webApiResultWithList.WebApiAddr,
@@ -958,9 +958,9 @@ public static class Vv_eRacun_HTTP
          return 0;
       }
 
-      List<VvMER_Response_Data_AllActions> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
+      List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
       
-      foreach(VvMER_Response_Data_AllActions responseData in loopList)
+      foreach(VvMER_ResponseData responseData in loopList)
       {
          Cursor.Current = Cursors.WaitCursor;
 
@@ -974,7 +974,7 @@ public static class Vv_eRacun_HTTP
 
          #region 1. Call RECEIVE to get full XML document
 
-         WebApiResult<VvMER_Response_Data_AllActions> webApiResult = null;
+         WebApiResult<VvMER_ResponseData> webApiResult = null;
 
          bool receiveOK = true;
 
@@ -1095,6 +1095,8 @@ public static class Vv_eRacun_HTTP
 
             if(newIFA_Faktur_rec != null)
             {
+               theUC.TheFakturList.Add(newIFA_Faktur_rec);
+
                newsCount++;
             
                updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
@@ -1104,6 +1106,8 @@ public static class Vv_eRacun_HTTP
                                              newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
             
                updatedStatusInfoList.Add(updatedStatusInfo);
+
+               ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
             }
 
          } // if(receiveOK) 
@@ -1111,6 +1115,15 @@ public static class Vv_eRacun_HTTP
       } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
 
       #endregion Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+
+      #region TheFakturList ... OrderBy And PutDgvFields
+
+      //if(ZXC.RRD.Dsc_F2_IsAsc == false) theUC.TheFakturList = theUC.TheFakturList.OrderByDescending(f => f.TtNum).ToList();
+      //else                              theUC.TheFakturList = theUC.TheFakturList.OrderBy          (f => f.TtNum).ToList();
+      //
+      //if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
+
+      #endregion TheFakturList ... OrderBy And PutDgvFields
 
       #region Finish
 
@@ -1316,13 +1329,13 @@ public static class Vv_eRacun_HTTP
     //                      theUC.TheFakturList.Min(fak => fak.DokDate)             - ZXC.OneWeekSpan ; // look back  one week from last Faktur DokDate ... zihereaski 
     //DateTime maxDokDate = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearLastDay : theUC.TheFakturList.Max(fak => fak.DokDate) + ZXC.OneWeekSpan ; 
 
-      WebApiResult<List<VvMER_Response_Data_AllActions>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
+      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
 
       if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
          if(webApiResultWithList == null)
          {
-            webApiResultWithList = new WebApiResult<List<VvMER_Response_Data_AllActions>>()
+            webApiResultWithList = new WebApiResult<List<VvMER_ResponseData>>()
             {
                WebApiKind = ZXC.F2_WebApi.OutboxTRNstatusList,
                WebApiAddr = webApiResultWithList.WebApiAddr,
@@ -1629,7 +1642,7 @@ public static class Vv_eRacun_HTTP
 
       int wantedMessageType = 0; // 0 – Kao POŠILJATELJ dohvati status fiskalizacije 
 
-      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu fiskalizirane 
+      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu fiskalizirane 
 
       List<VvMER_FiscalizationMessage> theFISKstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastFISKMessage;
@@ -1637,7 +1650,7 @@ public static class Vv_eRacun_HTTP
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
        //lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
-         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
+         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
 
          if(lastFISKMessage == null) continue;
 
@@ -1668,7 +1681,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsFisk = ZXC.F2_StatusOutboxEnum.Uspjeh;
+         F2_IRn_faktur_rec.F2_IsFisk = ZXC.F2_StatusOutboxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1695,14 +1708,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 2; // 2 – Dohvati status odbijanja 
 
-      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu odbijene 
+      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu odbijene 
 
       List<VvMER_FiscalizationMessage> theREJECTstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastREJECTMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
+         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
          
          if(lastREJECTMessage == null) continue;
 
@@ -1732,7 +1745,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusOutboxEnum.Uspjeh;
+         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusOutboxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1759,14 +1772,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 3; // 3 – Dohvati status plaćanja 
 
-      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu označene kao plaćene 
+      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu označene kao plaćene 
 
       List<VvMER_FiscalizationMessage> theMAPstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastMAPMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
+         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
 
          if(lastMAPMessage == null) continue;
 
@@ -1796,7 +1809,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsMarkAsPaid = ZXC.F2_StatusOutboxEnum.Uspjeh;
+         F2_IRn_faktur_rec.F2_IsMarkAsPaid = ZXC.F2_StatusOutboxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1823,14 +1836,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 4; // 4 – Dohvati status eIzvještavanja 
 
-      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj != ZXC.F2_StatusOutboxEnum.Uspjeh); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
+      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
 
       List<VvMER_FiscalizationMessage> theeIZVJstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lasteIZVJMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.Uspjeh);
+         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
 
          if(lasteIZVJMessage == null) continue;
 
@@ -1860,7 +1873,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsEizvj = ZXC.F2_StatusOutboxEnum.Uspjeh;
+         F2_IRn_faktur_rec.F2_IsEizvj = ZXC.F2_StatusOutboxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1998,7 +2011,7 @@ public static class Vv_eRacun_HTTP
 
       //if(ZXC.RRD.Dsc_F2_IsAutoMAP == false) return;
 
-      List<(VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur)> MAP_ActionsList = new List<(VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur)>();
+      List<(VvMER_RequestData request, Ftrans ftrans, Faktur faktur)> MAP_ActionsList = new List<(VvMER_RequestData request, Ftrans ftrans, Faktur faktur)>();
 
       Faktur MAP_CandidateFaktur_rec;
 
@@ -2014,7 +2027,7 @@ public static class Vv_eRacun_HTTP
 
       paymentftransList = FtransDao.Get_MAP_FtransList(conn).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
       
-      VvMER_Request_Data_AllActions MAP_requestData;
+      VvMER_RequestData MAP_requestData;
 
       foreach(Ftrans paymentftrans_rec in paymentftransList)
       {
@@ -2039,7 +2052,7 @@ public static class Vv_eRacun_HTTP
 
        //if(MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID) // imamo Electronic id ... bilo je F2send 
        //{ 
-            MAP_requestData = new VvMER_Request_Data_AllActions()
+            MAP_requestData = new VvMER_RequestData()
             {
                ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
                PaymentDate   = paymentftrans_rec.T_dokDate            ,
@@ -2129,7 +2142,7 @@ public static class Vv_eRacun_HTTP
       TimeSpan remainTime     ;
       string statusText       ;
 
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult;
+      WebApiResult<VvMER_ResponseData> webApiResult;
 
       Xtrano F2_MAP_Xtrano_rec;
 
@@ -2137,7 +2150,7 @@ public static class Vv_eRacun_HTTP
 
       #region The MAP API Loop - foreach MAP_requestData
 
-      foreach((VvMER_Request_Data_AllActions request, Ftrans ftrans, Faktur faktur) MAP_Action in MAP_ActionsList)
+      foreach((VvMER_RequestData request, Ftrans ftrans, Faktur faktur) MAP_Action in MAP_ActionsList)
       {
          Cursor.Current = Cursors.WaitCursor;
 
@@ -2151,7 +2164,7 @@ public static class Vv_eRacun_HTTP
          {
             mapCount++;
 
-            F2_MAP_Xtrano_rec = VvMER_Response_Data_AllActions.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_Action.ftrans, MAP_Action.faktur, webApiResult.ResponseData);
+            F2_MAP_Xtrano_rec = VvMER_ResponseData.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_Action.ftrans, MAP_Action.faktur, webApiResult.ResponseData);
 
             if(F2_MAP_Xtrano_rec != null)
             {
@@ -2233,7 +2246,7 @@ public static class Vv_eRacun_HTTP
 
       theUC.TheFakturList = new List<Faktur>();
 
-      List<VvMER_Response_Data_AllActions> vvMER_Json_StatusList_Data = null;
+      List<VvMER_ResponseData> vvMER_Json_StatusList_Data = null;
 
       bool getStatusOK = true;
       try
@@ -2253,7 +2266,7 @@ public static class Vv_eRacun_HTTP
          int counter = 0;
          Faktur F2UR_faktur_rec;
 
-         foreach(VvMER_Response_Data_AllActions responseData in vvMER_Json_StatusList_Data)
+         foreach(VvMER_ResponseData responseData in vvMER_Json_StatusList_Data)
          {
             if(counter++ > ZXC.RRD.Dsc_F2_NumOfRows) break;
 
@@ -2357,7 +2370,7 @@ public static class Vv_eRacun_HTTP
    // 3 – Get the payment status                                  
    private static bool WS_Get_FISK_or_REJECTED_or_MARKAsP_Status_ForElectronicID(uint electronicID, string messageType)
    {
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = null;
+      WebApiResult<VvMER_ResponseData> webApiResult = null;
       bool getStatusOK = true;
 
       switch(ZXC.F2_TheProvider)
@@ -2397,7 +2410,7 @@ public static class Vv_eRacun_HTTP
    }
    private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
    {
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = null;
+      WebApiResult<VvMER_ResponseData> webApiResult = null;
 
       bool receiveOK = true;
 
@@ -2428,7 +2441,7 @@ public static class Vv_eRacun_HTTP
 
                if(receiveOK)
                {
-                  Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(webApiResult.ResponseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
+                  Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(webApiResult.ResponseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
 
                   if(F2arhivaXtrano_rec != null)
                   {
@@ -2466,9 +2479,9 @@ public static class Vv_eRacun_HTTP
 
       return 0;
    }
-   private static WebApiResult<VvMER_Response_Data_AllActions> WS_Mark_Paid_With_OR_Without_ElectronicID(VvMER_Request_Data_AllActions MAP_requestData, bool isWithElectronicID)
+   private static WebApiResult<VvMER_ResponseData> WS_Mark_Paid_With_OR_Without_ElectronicID(VvMER_RequestData MAP_requestData, bool isWithElectronicID)
    {
-      WebApiResult<VvMER_Response_Data_AllActions> webApiResult = null;
+      WebApiResult<VvMER_ResponseData> webApiResult = null;
       bool MAP_OK = true;
 
       switch(ZXC.F2_TheProvider)
@@ -2568,7 +2581,7 @@ public static class Vv_eRacun_HTTP
 }
 
 #region Bussiness Classes for JSON Request/Response
-public class MER_Credentials_Data
+public class MER_CredentialsData
 {
    [JsonPropertyName("Username")]
    public string Username { get; set; }
@@ -2590,7 +2603,7 @@ public class MER_Credentials_Data
    //[JsonPropertyName("softwareId")]
    //public string softwareId { get; set; }
 }
-public class VvMER_Request_Data_AllActions : MER_Credentials_Data
+public class VvMER_RequestData : MER_CredentialsData
 {
    #region Constructors and Init
    private void InitMER_Credentials()
@@ -2609,7 +2622,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    }
 
    // za testiranje, pa sa test parametrima 
-   public VvMER_Request_Data_AllActions(/*int username,*/ string password, string companyId, string companyBu, string softwareId, string xmlString)
+   public VvMER_RequestData(/*int username,*/ string password, string companyId, string companyBu, string softwareId, string xmlString)
    {
     //this.Username   = username  ;
       this.Username   = Vv_eRacun_HTTP.VvMER_UserName;
@@ -2620,7 +2633,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       this.File       =  xmlString;
    }
 
-   public VvMER_Request_Data_AllActions(string xmlString) // za slanje jednog eRacuna 
+   public VvMER_RequestData(string xmlString) // za slanje jednog eRacuna 
    {
       switch(ZXC.F2_TheProvider)
       {
@@ -2629,7 +2642,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       }
    }
 
-   public VvMER_Request_Data_AllActions(uint electronicId) // za jedan racun 
+   public VvMER_RequestData(uint electronicId) // za jedan racun 
    {
       switch(ZXC.F2_TheProvider)
       {
@@ -2640,7 +2653,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       this.ElectronicId = electronicId;
    }
 
-   public VvMER_Request_Data_AllActions(DateTime dateOD, DateTime dateDO) // za report 
+   public VvMER_RequestData(DateTime dateOD, DateTime dateDO) // za report 
    {
       switch(ZXC.F2_TheProvider)
       {
@@ -2652,7 +2665,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
       if(dateDO != DateTime.MaxValue) this.To   = dateDO;
    }
 
-   public VvMER_Request_Data_AllActions()  
+   public VvMER_RequestData()  
    {
       switch(ZXC.F2_TheProvider)
       {
@@ -2765,7 +2778,7 @@ public class VvMER_Request_Data_AllActions : MER_Credentials_Data
    #endregion PND specifics
 
 }
-public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Response_Data_AllActions>
+public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 {
    #region Propertiz 
 
@@ -2970,7 +2983,7 @@ public class VvMER_Response_Data_AllActions : Vv_XSD_Bussiness_BASE<VvMER_Respon
    /// <param name="ftrans_rec"></param>
    /// <param name="faktur_rec"></param>
    /// <returns></returns>
-   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans MAPftrans_rec, Faktur MAPfaktur_rec, VvMER_Response_Data_AllActions responseData)
+   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans MAPftrans_rec, Faktur MAPfaktur_rec, VvMER_ResponseData responseData)
    {
       Xtrano MAPxtrano_rec = null;
 
@@ -3078,7 +3091,19 @@ public class VvMER_FiscalizationMessage
    {
       get
       {
-         return (ZXC.F2_StatusOutboxEnum)Status;
+         switch(this.Status)
+         {
+            case 0:
+               return ZXC.F2_StatusOutboxEnum.DA_JE;     // TOČKA - Zelena 
+            case 1:
+               return ZXC.F2_StatusOutboxEnum.NE_NIJE;   // TOČKA - Crvena 
+            case 2:
+               return ZXC.F2_StatusOutboxEnum.Na_cekanju;// TOČKA - Žuta   
+            default:
+               return ZXC.F2_StatusOutboxEnum.Nepoznato; // TOČKA - PRAZNA 
+         }
+
+         //return (ZXC.F2_StatusOutboxEnum)Status;
       }
    }
 

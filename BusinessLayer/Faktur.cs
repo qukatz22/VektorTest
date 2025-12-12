@@ -5022,7 +5022,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_IsFisk == ZXC.F2_StatusOutboxEnum.Uspjeh) return true; // već je fiskaliziran                                    - nema smisla osvjezavati FISK status 
+         if(F2_IsFisk == ZXC.F2_StatusOutboxEnum.DA_JE) return true; // već je fiskaliziran                                    - nema smisla osvjezavati FISK status 
        //if(F2_ElectronicID.IsZero()) return true; // nije jos ni poslan                                     - nema smisla osvjezavati FISK status  ... gasimo jer F2_eIzvj nema electronicID a svejedno treba biti fiskaliziran 
          if(F2_SentTS.IsEmpty()     ) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla osvjezavati FISK status 
    
