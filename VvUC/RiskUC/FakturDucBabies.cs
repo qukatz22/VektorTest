@@ -9033,6 +9033,8 @@ public class F2_Izlaz_UC : VvUserControl
 
    internal void INIT_FIR()
    {
+      TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
+
       Vv_eRacun_HTTP.InitProjectData();
 
       int newsCount = 0;
@@ -9104,7 +9106,8 @@ public class F2_Izlaz_UC : VvUserControl
       vvtb_tt        = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_tt"       , null, -12, "Tip"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"       , "Tip"           , ZXC.Q2un           ); vvtb_tt       .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_ttNum     = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_ttNum"    , null, -12, "Interni broj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ttNum     , null, "R_ttNum"    , "Interni Broj"  , ZXC.Q3un           ); vvtb_ttNum    .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       vvtb_fiskTtNum = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_fiskTtNum", null, -12, "Fiskalni broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fiskTtNum , null, "R_fiskTtNum", "Fiskalni IntBr", ZXC.Q4un           ); vvtb_fiskTtNum.JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_extBrRn   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_origBrRn" , null, -12, "Externi broj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_extBrRn   , null, "R_extBrRn"  , "Externi Broj"  , ZXC.Q4un           ); vvtb_extBrRn  .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      // u vvtb_fiskTtNum imamao fiskalni broj koji je zaparvo u vezniDok po novome
+    //vvtb_extBrRn   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_origBrRn" , null, -12, "Externi broj" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_extBrRn   , null, "R_extBrRn"  , "Externi Broj"  , ZXC.Q4un           ); vvtb_extBrRn  .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
       vvtb_date      = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_date"     , null, -12, "Datum"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_date      , null, "R_date"     , "Datum"         , ZXC.Q4un + ZXC.Qun4); vvtb_date     .JAM_ReadOnly = true; colVvText.ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
       
     //vvtb_ams         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_ams"      , null, -12, "AMS"          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ams       , null, "R_ams"      , "AMS"           , ZXC.Q2un - ZXC.Qun4); vvtb_ams      .JAM_ReadOnly = true;  colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
@@ -9206,7 +9209,7 @@ public class F2_Izlaz_UC : VvUserControl
       internal int iT_tt        ;
       internal int iT_ttNum     ;
       internal int iT_fiskTtNum ;
-      internal int iT_extBrRn   ;
+    //internal int iT_extBrRn   ;
       internal int iT_date      ;
       internal int iT_partner   ;
     //internal int iT_isAms     ;
@@ -9232,7 +9235,7 @@ public class F2_Izlaz_UC : VvUserControl
       ci.iT_tt         = TheG.IdxForColumn("R_tt"         );
       ci.iT_ttNum      = TheG.IdxForColumn("R_ttNum"      );
       ci.iT_fiskTtNum  = TheG.IdxForColumn("R_fiskTtNum"  );
-      ci.iT_extBrRn    = TheG.IdxForColumn("R_extBrRn"    );
+    //ci.iT_extBrRn    = TheG.IdxForColumn("R_extBrRn"    );
       ci.iT_date       = TheG.IdxForColumn("R_date"       );
       ci.iT_partner    = TheG.IdxForColumn("R_partner"    );
     //ci.iT_isAms      = TheG.IdxForColumn("R_isAms"      );
@@ -9281,8 +9284,8 @@ public class F2_Izlaz_UC : VvUserControl
     //TheG.PutCell(ci.iT_FIRtip     , rowIdx, faktur_rec.FIRkind.ToString());
       TheG.PutCell(ci.iT_tt         , rowIdx, faktur_rec.TT                );
       TheG.PutCell(ci.iT_ttNum      , rowIdx, faktur_rec.TtNum             );
-      TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.TtNumFiskal       );
-      TheG.PutCell(ci.iT_extBrRn    , rowIdx, faktur_rec.VezniDok          );
+      TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.VezniDok          );
+    //TheG.PutCell(ci.iT_extBrRn    , rowIdx, faktur_rec.VezniDok          );
       TheG.PutCell(ci.iT_date       , rowIdx, faktur_rec.DokDate           );
       TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName        );
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP          );
@@ -9299,24 +9302,24 @@ public class F2_Izlaz_UC : VvUserControl
       if(faktur_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
       else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_empty;
 
-           if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.DA_JE    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
+           if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
       else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
-      else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.NE_NIJE  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+      else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
       else                                                           ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
 
-           if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.DA_JE    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
+           if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
       else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_yellow;
-      else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.NE_NIJE  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_red;
+      else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_red;
       else                                                               ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
 
-           if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.DA_JE    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_green;
+           if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_green;
       else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_yellow;
-      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.NE_NIJE  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_red;
+      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_red;
       else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_empty;
     
-           if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.DA_JE    )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_green;
+           if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_green;
       else if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_yellow;
-      else if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.NE_NIJE  )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_red;
+      else if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_red;
       else                                                            ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_empty;
 
 

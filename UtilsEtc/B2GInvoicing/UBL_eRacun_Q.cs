@@ -1659,9 +1659,10 @@ namespace EN16931.UBL
          faktur_rec.KupdobTK     = kupdob_rec.Ticker      ;
          faktur_rec.KdOib        = kupdob_rec.Oib         ;
          faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
-         faktur_rec.KdUlica      = kupdob_rec.Ulica2      ;
+         faktur_rec.KdUlica      = kupdob_rec.Ulica1      ;
          faktur_rec.KdZip        = kupdob_rec.PostaBr     ;
          faktur_rec.KdMjesto     = kupdob_rec.Grad        ;
+       //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
 
          faktur_rec.F2_R1kind    = kupdob_rec.R1kind      ;
 
@@ -1836,6 +1837,7 @@ namespace EN16931.UBL
          kupdob_rec.Oib          = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
          kupdob_rec.Naziv        = theParty.PartyName[0] .Name                      .Value;
          kupdob_rec.Ulica1       = theParty.PostalAddress.StreetName                .Value;
+         kupdob_rec.Ulica2       = theParty.PostalAddress.StreetName                .Value;
          kupdob_rec.Grad         = theParty.PostalAddress.CityName                  .Value;
          kupdob_rec.PostaBr      = theParty.PostalAddress.PostalZone                .Value;
          kupdob_rec.VatCntryCode = theParty.PostalAddress.Country.IdentificationCode.Value;

@@ -9777,6 +9777,7 @@ public partial class FakturExtDUC : FakturDUC
       if(isTetragram)
       {
          tbx_NacPlacRbt.Visible = false;
+         tbx_NacPlac.JAM_DataRequired = true; //od 12.12.2025.
       }
       else
       {
