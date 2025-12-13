@@ -1671,8 +1671,10 @@ namespace EN16931.UBL
 
          // From InvoiceType 
 
-         faktur_rec.DokDate   = this.IssueDate.Value; // ima i IssueTime
-         faktur_rec.DospDate  = this.DueDate.Value  ;
+         faktur_rec.DokDate = (this.IssueTime != null && this.IssueTime.Value != DateTime.MinValue)
+            ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
+            : this.IssueDate.Value; faktur_rec.DospDate  = this.DueDate.Value  ;
+
          faktur_rec.PdvDate   = this.TaxPointDate.Value.IsEmpty() ? this.IssueDate.Value : this.TaxPointDate.Value;
          faktur_rec.VezniDok  = this.ID.Value       ;
          faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
@@ -1752,6 +1754,21 @@ namespace EN16931.UBL
          faktur_rec.PdvKnjiga  = ZXC.PdvKnjigaEnum.REDOVNA;
          faktur_rec.PdvR12     = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
          faktur_rec.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
+
+         VvLookUpItem theLui = ZXC.luiListaSkladista.OrderBy(lui => lui.Integer).FirstOrDefault(); // probaj naci lui sa najmanjim (integer nam je kao intera sifra skladista) 
+
+         if(isIFA)
+         {
+            if(theLui != null)
+            {
+               faktur_rec.SkladCD = theLui.Cd;
+            }
+            else
+            {
+               faktur_rec.SkladCD = "VPSK";
+               ZXC.aim_emsg(MessageBoxIcon.Error, "LookupLista SKLADIŠTA je NEDEFINIRANA! Račun će dobiti 'VPSK' kao oznaku skladišta.");
+            }
+         }
 
          return faktur_rec;
       }

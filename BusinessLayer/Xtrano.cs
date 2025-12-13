@@ -437,6 +437,9 @@ public class Xtrano : VvTransRecord
             var filename = docRef.Attachment.EmbeddedDocumentBinaryObject.filename;
             if(string.IsNullOrEmpty(filename))
                filename = "output.pdf";
+            else
+               filename = System.IO.Path.GetFileName(filename); // Extract filename only from full path
+
             var pdfBytes = docRef.Attachment.EmbeddedDocumentBinaryObject.Value;
             result.Add((filename, pdfBytes));
          }
