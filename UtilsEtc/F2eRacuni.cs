@@ -2553,8 +2553,15 @@ public static class Vv_eRacun_HTTP
          case ZXC.F2_WebApi.RECEIVEdocument    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom preuzimanja eRačuna:"                          ; break;
          case ZXC.F2_WebApi.PING               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom spajanja na servis:"                           ; break;
          case ZXC.F2_WebApi.CheckAMS           : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata info o AMS statusu partnera:"          ; break;
-      }                                        
-   
+      }
+
+      Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailFromAddition = webApiResult.WebApiKind.ToString();
+
+      for(int i = 0; i < webApiResult.MessageList.Count; ++i)
+      {
+         Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailBody += webApiResult.MessageList[i] + Environment.NewLine;
+      }
+
       Send_OR_eIzvj_ErrorMessageBox.TheUC.PutDgvFields(webApiResult.MessageList);
       DialogResult dlgResult = Send_OR_eIzvj_ErrorMessageBox.ShowDialog();
       Send_OR_eIzvj_ErrorMessageBox.Dispose();

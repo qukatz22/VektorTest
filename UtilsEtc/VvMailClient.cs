@@ -191,7 +191,7 @@ public sealed class VvMailClient
       this.EmailFromAddress     = 
       this.EmailFromUserName    = ZXC.SkyLabEmailAddress ;
 
-      this.EmailFromDisplayName = ZXC.VvDeploymentSite + emailFromDisplayName_addition;
+      this.EmailFromDisplayName = "[" + ZXC.vvDB_VvDomena + "] - " + ZXC.VvDeploymentSite + emailFromDisplayName_addition;
    }
 
    #region MS Outlook 2010 

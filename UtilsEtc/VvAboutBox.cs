@@ -625,6 +625,8 @@ public class VvMessageBoxDLG :  VvDialog
    public  VvMessageBox_UC TheUC { get; set; }
    public Button okButton, cancelButton, sendTosupportButton;
    private int dlgWidth, dlgHeight;
+   internal string TextForSupportMailFromAddition { get; set; }
+   internal string TextForSupportMailBody { get; set; }
 
    public VvMessageBoxDLG(bool _smallFont, ZXC.VvmBoxKind vvmBoxKind)
    {
@@ -689,30 +691,30 @@ public class VvMessageBoxDLG :  VvDialog
    
    private void MailToSupport_Click(object sender, EventArgs e)
    {
-   //   VvMailClient mailClient = new VvMailClient();
-   //   
-   // //mailClient.EmailFromPasswd      = ZXC.SkyLabEmailPassword;
-   // //mailClient.MailHost             = ZXC.ViperMailHost      ;
-   // //mailClient.EmailFromAddress     = 
-   // //mailClient.EmailFromUserName    = ZXC.SkyLabEmailAddress ;
-   // //mailClient.EmailFromDisplayName = ZXC.VvDeploymentSite + " VvException";
-   //
-   // //mailClient.PortNo               = Fld_Port               ;
-   // //mailClient.EnableSSL            = Fld_UseSSL             ;
-   // //mailClient.IsCcToMySelf         = Fld_PoslajiKopijuSebi  ;
-   //
-   //   mailClient.SetVvSupportMailData(" VvException");
-   //
-   //   mailClient.MessageSubject = Fld_exceptionMessage;
-   //
-   //   mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r", 
-   //      ZXC.TheVvForm.Text, 
-   //      ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
-   //      ZXC.TheVvForm.TheVvUC.ToString());
-   //
-   //   mailClient.MessageBody += TextForClipboard;
-   //
-   //   mailClient.SendMail_Normal(true, ZXC.VektorEmailAddress);
+     VvMailClient mailClient = new VvMailClient();
+     
+   //mailClient.EmailFromPasswd      = ZXC.SkyLabEmailPassword;
+   //mailClient.MailHost             = ZXC.ViperMailHost      ;
+   //mailClient.EmailFromAddress     = 
+   //mailClient.EmailFromUserName    = ZXC.SkyLabEmailAddress ;
+   //mailClient.EmailFromDisplayName = ZXC.VvDeploymentSite + " VvException";
+   
+   //mailClient.PortNo               = Fld_Port               ;
+   //mailClient.EnableSSL            = Fld_UseSSL             ;
+   //mailClient.IsCcToMySelf         = Fld_PoslajiKopijuSebi  ;
+   
+     mailClient.SetVvSupportMailData((TextForSupportMailFromAddition.IsEmpty() ? " VvException" : TextForSupportMailFromAddition));
+   
+     mailClient.MessageSubject = this.Text;
+   
+     mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r", 
+        ZXC.TheVvForm.Text, 
+        ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
+        ZXC.TheVvForm.TheVvUC.ToString());
+   
+     mailClient.MessageBody += TextForSupportMailBody;
+   
+     mailClient.SendMail_Normal(true, ZXC.VektorEmailAddress);
    }
 
 }
