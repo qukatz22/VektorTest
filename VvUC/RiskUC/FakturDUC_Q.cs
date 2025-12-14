@@ -3454,6 +3454,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          Fld_VezniDok        = faktur_rec.VezniDok;
       }
 
+      if(faktur_rec.IsF2 && faktur_rec.Napomena.Contains(ZXC.F2_Unprocessed))
+      {
+         faktur_rec.Napomena = faktur_rec.Napomena.Replace(ZXC.F2_Unprocessed, "");
+         Fld_Napomena        = faktur_rec.Napomena;
+         ZXC.aim_emsg(MessageBoxIcon.Information, $"Uklonjena '{ZXC.F2_Unprocessed}' oznaka.");
+      }
+
       #endregion 2026 F2 validations & setting mandatory fields
 
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)

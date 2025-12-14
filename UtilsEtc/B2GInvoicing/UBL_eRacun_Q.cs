@@ -1677,8 +1677,14 @@ namespace EN16931.UBL
 
          faktur_rec.PdvDate   = this.TaxPointDate.Value.IsEmpty() ? this.IssueDate.Value : this.TaxPointDate.Value;
          faktur_rec.VezniDok  = this.ID.Value       ;
-         faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
-         faktur_rec.DevName   = this.DocumentCurrencyCode.Value == "EUR" ? "EUR" : this.DocumentCurrencyCode.Value;
+       //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
+         faktur_rec.Napomena  = ZXC.F2_Unprocessed  ;
+         for(int i = 0; i < this.Note.Length; i++)
+         {
+            faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
+         }
+
+         faktur_rec.DevName = this.DocumentCurrencyCode.Value == "EUR" ? "EUR" : this.DocumentCurrencyCode.Value;  // Tamara, koji je ovo kurac?
 
          //faktur_rec.PdvKolTip =  this.ProfileID.Value;
          //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne
