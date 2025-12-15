@@ -1654,14 +1654,14 @@ namespace EN16931.UBL
 
          // From Kupdob 
 
-         faktur_rec.KupdobName   = kupdob_rec.Naziv       ;
-         faktur_rec.KupdobCD     = kupdob_rec.KupdobCD    ;
-         faktur_rec.KupdobTK     = kupdob_rec.Ticker      ;
-         faktur_rec.KdOib        = kupdob_rec.Oib         ;
-         faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
-         faktur_rec.KdUlica      = kupdob_rec.Ulica1      ;
-         faktur_rec.KdZip        = kupdob_rec.PostaBr     ;
-         faktur_rec.KdMjesto     = kupdob_rec.Grad        ;
+         faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv       ;
+         faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD    ;
+         faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker      ;
+         faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1      ;
+         faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr     ;
+         faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad        ;
+         faktur_rec.KdOib        =                           kupdob_rec.Oib         ;
+         faktur_rec.VatCntryCode =                           kupdob_rec.VatCntryCode;
        //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
 
          faktur_rec.F2_R1kind    = kupdob_rec.R1kind      ;

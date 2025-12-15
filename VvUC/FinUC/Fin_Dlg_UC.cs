@@ -1399,6 +1399,12 @@ public class LoadIzvodUC : VvOtherUC
       col.Tag     = VvDocumentRecordUC.AlwaysInvinsibleStr;
       TheGrid.Columns.Add(col);
 
+      col         = new DataGridViewTextBoxColumn();
+      col.Name    = "t_fakYear";
+      col.Visible = false;
+      col.Tag     = VvDocumentRecordUC.AlwaysInvinsibleStr;
+      TheGrid.Columns.Add(col);
+
    }
    public void OnExitKonto_ClearPreffix(object sender, EventArgs e)
    {
@@ -1960,6 +1966,11 @@ public class LoadIzvodUC : VvOtherUC
       get { return TheGrid.GetUint32Cell(GetColName(DB_Tci.t_fakRecID), 0, false); }
       set {        TheGrid.PutCell      (GetColName(DB_Tci.t_fakRecID), 0, value); }
    }
+   public uint   Fld_DGV_FakYear
+   {
+      get { return TheGrid.GetUint32Cell(GetColName(DB_Tci.t_fakYear), 0, false); }
+      set {        TheGrid.PutCell      (GetColName(DB_Tci.t_fakYear), 0, value); }
+   }
 
    public string Fld_DGV_TipBr
    {
@@ -2195,6 +2206,7 @@ public class LoadIzvodUC : VvOtherUC
       //public decimal  money;
       
       public uint fakRecID;
+      public uint fakYear ;
 
       public uint   mtrosCD;
       public string mtrosTK;
@@ -2212,6 +2224,7 @@ public class LoadIzvodUC : VvOtherUC
    /* string   */ Fld_DGV_MtrosTK   = "";
    /* uint     */ Fld_DGV_MtrosCd   = 0 ;
    /* uint     */ Fld_DGV_FakRecID  = 0 ; // !!! zbog ovoga smo ovo i radili jer u nekim sl. nespojena stavka izvoda preuzme fakRecID od prethodne 
+   /* uint     */ Fld_DGV_FakYear   = 0 ; 
    /* string   */ Fld_DGV_TipBr     = "";
    /* string   */ Fld_DGV_ProjektCD = "";
    /* DateTime */ Fld_DGV_Valuta    = DateTime.MinValue;
@@ -2261,6 +2274,7 @@ public class LoadIzvodUC : VvOtherUC
          }
 
          Fld_DGV_FakRecID = Racun.fakRecID;
+         Fld_DGV_FakYear  = Racun.fakYear ;
          Fld_DGV_TipBr    = Racun.tipBr;
          Fld_DGV_ProjektCD= Racun.projektCD;
          Fld_DGV_MtrosCd  = Racun.mtrosCD;
@@ -2280,6 +2294,7 @@ public class LoadIzvodUC : VvOtherUC
 
          // 06.04.2017: !!! 
          Fld_DGV_FakRecID  = 0;
+         Fld_DGV_FakYear   = 0;
       }
 
       Fld_DGV_Dug       = trans_rec.t_dug;
@@ -2488,7 +2503,7 @@ public class LoadIzvodUC : VvOtherUC
       return;
    }
 
-   private void DumpIzvodDataOnNewDucDgvRow(string _konto, string _opis, string _ticker, uint _kupdob_cd, uint _fakRecID, string _tipBr, string _projektCD, DateTime _valuta, decimal _dug, decimal _pot, string _mtrosTk, uint _mtrosCd, string _pozicija, string _fond)
+   private void DumpIzvodDataOnNewDucDgvRow(string _konto, string _opis, string _ticker, uint _kupdob_cd, uint _fakRecID, uint _fakYear, string _tipBr, string _projektCD, DateTime _valuta, decimal _dug, decimal _pot, string _mtrosTk, uint _mtrosCd, string _pozicija, string _fond)
    {
       int rowIdx, idxCorrector;
 
@@ -2508,6 +2523,7 @@ public class LoadIzvodUC : VvOtherUC
       grid.PutCell(TheDUC.DgvCI.iT_tipBr    , rowIdx, _tipBr    );
       grid.PutCell(TheDUC.DgvCI.iT_projektCD, rowIdx, _projektCD);
       grid.PutCell(TheDUC.DgvCI.iT_fakRecID , rowIdx, _fakRecID );
+      grid.PutCell(TheDUC.DgvCI.iT_fakYear  , rowIdx, _fakYear  );
       grid.PutCell(TheDUC.DgvCI.iT_valuta   , rowIdx, _valuta   );
       grid.PutCell(TheDUC.DgvCI.iT_dug      , rowIdx, _dug      );
       grid.PutCell(TheDUC.DgvCI.iT_pot      , rowIdx, _pot      );
@@ -2539,12 +2555,12 @@ public class LoadIzvodUC : VvOtherUC
                pot = 0.00M;
             }
 
-            DumpIzvodDataOnNewDucDgvRow(Fld_DGV_Konto, Fld_DGV_Opis, Fld_DGV_Ticker, Fld_DGV_KupdobCd, otsInfo.FakRecID, otsInfo.TipBr, otsInfo.ProjektCD, otsInfo.OpenDokumentValuta, dug, pot, Fld_DGV_MtrosTK, Fld_DGV_MtrosCd, Fld_DGV_Pozicija, Fld_DGV_Fond);
+            DumpIzvodDataOnNewDucDgvRow(Fld_DGV_Konto, Fld_DGV_Opis, Fld_DGV_Ticker, Fld_DGV_KupdobCd, otsInfo.FakRecID, otsInfo.FakYear, otsInfo.TipBr, otsInfo.ProjektCD, otsInfo.OpenDokumentValuta, dug, pot, Fld_DGV_MtrosTK, Fld_DGV_MtrosCd, Fld_DGV_Pozicija, Fld_DGV_Fond);
          }
       }
       else
       {
-         DumpIzvodDataOnNewDucDgvRow(Fld_DGV_Konto, Fld_DGV_Opis, Fld_DGV_Ticker, Fld_DGV_KupdobCd, Fld_DGV_FakRecID, Fld_DGV_TipBr, Fld_DGV_ProjektCD, Fld_DGV_Valuta, Fld_DGV_Dug, Fld_DGV_Pot, Fld_DGV_MtrosTK, Fld_DGV_MtrosCd, Fld_DGV_Pozicija, Fld_DGV_Fond);
+         DumpIzvodDataOnNewDucDgvRow(Fld_DGV_Konto, Fld_DGV_Opis, Fld_DGV_Ticker, Fld_DGV_KupdobCd, Fld_DGV_FakRecID, Fld_DGV_FakYear, Fld_DGV_TipBr, Fld_DGV_ProjektCD, Fld_DGV_Valuta, Fld_DGV_Dug, Fld_DGV_Pot, Fld_DGV_MtrosTK, Fld_DGV_MtrosCd, Fld_DGV_Pozicija, Fld_DGV_Fond);
       }
    }
 
@@ -2552,18 +2568,18 @@ public class LoadIzvodUC : VvOtherUC
    {
       if(Fld_A_IsPrmUJedRed == true)
       {
-         DumpIzvodDataOnNewDucDgvRow(Fld_A_KontoZiro, "I-" + TheIzvod.HeadRecord.iz_br.ToString("000") + "/PROMET", "", 0, 0, "", "", DateTime.MinValue, TheIzvod.HeadRecord.iz_uk_pot, TheIzvod.HeadRecord.iz_uk_dug, "", 0, "", "");
+         DumpIzvodDataOnNewDucDgvRow(Fld_A_KontoZiro, "I-" + TheIzvod.HeadRecord.iz_br.ToString("000") + "/PROMET", "", 0, 0, 0, "", "", DateTime.MinValue, TheIzvod.HeadRecord.iz_uk_pot, TheIzvod.HeadRecord.iz_uk_dug, "", 0, "", "");
       }
       else
       {
          if(TheIzvod.HeadRecord.iz_uk_dug.NotZero())
          {
-            DumpIzvodDataOnNewDucDgvRow(Fld_A_KontoZiro, "I-" + TheIzvod.HeadRecord.iz_br.ToString("000") + "/PROMET", "", 0, 0, "", "", DateTime.MinValue, 0.00M, TheIzvod.HeadRecord.iz_uk_dug, "", 0, "", "");
+            DumpIzvodDataOnNewDucDgvRow(Fld_A_KontoZiro, "I-" + TheIzvod.HeadRecord.iz_br.ToString("000") + "/PROMET", "", 0, 0, 0, "", "", DateTime.MinValue, 0.00M, TheIzvod.HeadRecord.iz_uk_dug, "", 0, "", "");
          }
 
          if(TheIzvod.HeadRecord.iz_uk_pot.NotZero())
          {
-            DumpIzvodDataOnNewDucDgvRow(Fld_A_KontoZiro, "I-" + TheIzvod.HeadRecord.iz_br.ToString("000") + "/PROMET", "", 0, 0, "", "", DateTime.MinValue, TheIzvod.HeadRecord.iz_uk_pot, 0.00M, "", 0, "", "");
+            DumpIzvodDataOnNewDucDgvRow(Fld_A_KontoZiro, "I-" + TheIzvod.HeadRecord.iz_br.ToString("000") + "/PROMET", "", 0, 0, 0, "", "", DateTime.MinValue, TheIzvod.HeadRecord.iz_uk_pot, 0.00M, "", 0, "", "");
          }
       }
    }
@@ -2583,6 +2599,7 @@ public class LoadIzvodUC : VvOtherUC
       OtsTipBrGroupInfo firstOts = moneyMatchList.ElementAtOrDefault(0);
 
       rd.fakRecID = firstOts.FakRecID ; 
+      rd.fakYear  = firstOts.FakYear  ; 
       rd.tipBr    = firstOts.TipBr    ; 
       rd.projektCD= firstOts.ProjektCD; 
       rd.mtrosCD  = firstOts.MtrosCD  ; 
@@ -3120,6 +3137,7 @@ public class SelectOTSUC : VvOtherUC
       AddDGVColum_Decimal_4GridReadOnly (TheGrid, "Zatvoreno", ZXC.Q5un,      2,   "UkClosed");
       AddDGVColum_Decimal_4GridReadOnly (TheGrid, "Saldo"    , ZXC.Q5un,      2,   "UkSaldo");
       AddDGVColum_RecID_4GridReadOnly   (TheGrid, "FID"      , ZXC.Qun12, false, 6, "FakRecID");
+      AddDGVColum_RecID_4GridReadOnly   (TheGrid, "FY"       , ZXC.Qun12, false, 6, "FakYear");
 
       int sumoOfColumns = 0;
       foreach(DataGridViewColumn dc in TheGrid.Columns)

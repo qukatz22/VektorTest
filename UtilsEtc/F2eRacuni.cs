@@ -433,6 +433,20 @@ public static class Vv_eRacun_HTTP
       VvMER_CompanyId = ZXC.CURR_prjkt_rec.Oib                                                                                                                                   ;
    }
 
+   /// <summary>
+   /// Gets the date range for querying F2 documents with one week buffer on both ends.
+   /// This ensures we capture all relevant documents within the project year plus buffer period.
+   /// MER service automatically applies its own limits (60 days back, 10,000 document limit).
+   /// </summary>
+   /// <returns>Tuple containing (dateFrom, dateTo) with one week buffer on each side of project year</returns>
+   private static (DateTime dateOD, DateTime dateDO) GetF2QueryDateRange()
+   {
+      DateTime dateOD = ZXC.projectYearFirstDay - ZXC.OneWeekSpan;
+      DateTime dateDO = ZXC.projectYearLastDay  + ZXC.OneWeekSpan;
+
+      return (dateOD, dateDO);
+   }
+
    #endregion Utils
 
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
@@ -616,9 +630,26 @@ public static class Vv_eRacun_HTTP
 
       string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
 
-      WebApiResult<List<VvMER_ResponseData>> webApiResult = Vv_POSTmethod_ExecuteJson<List<VvMER_ResponseData>>(webApiKind, webApiAddr, jsonRequestString);
+      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_POSTmethod_ExecuteJson<List<VvMER_ResponseData>>(webApiKind, webApiAddr, jsonRequestString);
 
-      return webApiResult;
+      // Filter out response data where Issued year doesn't match project year                                        
+      // !!! TODO !!! provjeriti empirijski kakvi su zaista podaci iz MER-a kroz prijelazne periode godina            
+      // tj. koji datumi konkretno dolaze u:                                                                          
+      // “Created“  : “2016 - 04 - 18T08: 13:03.177”,                                                                 
+      // “Updated“  : “2016 - 04 - 18T08: 13:03.177”,                                                                 
+      // “Sent“     : “2016 - 04 - 18T08: 13:03.177”,                                                                 
+      // “Delivered“: null                                                                                            
+      // “Issued“   : “2016 - 04 - 18T00: 00:00”,                                                                     
+      // Za sada se oslanjamo na “Issued“ datum jer je to datum samog računa.                                         
+      // Ono što želimo postići je da u response'u ostavimo samo one račune kojima je DokDate.Year == ZXC.projectYear 
+      if(webApiResultWithList != null && webApiResultWithList.ResponseData != null)
+      {
+         webApiResultWithList.ResponseData = webApiResultWithList.ResponseData
+            .Where(rd => rd.Issued.HasValue && rd.Issued.Value.Year == ZXC.projectYearAsInt)
+            .ToList();
+      }
+
+      return webApiResultWithList;
    }
 
    //######################## https://www.moj-eracun.hr/apis/v2/queryDocumentProcessStatusOutbox - DPS Status List ###############################################################
@@ -877,8 +908,10 @@ public static class Vv_eRacun_HTTP
 
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>();
 
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt]       , "theTT" , ZXC.RRD.Dsc_F2_TT, " = "));
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FaktExSchemaRows[ZXC.FexCI.f2_R1kind], "R1Kind", ZXC.F2_R1enum.B2B, " = "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.tt]       , "theTT" , ZXC.RRD.Dsc_F2_TT      , " = " ));
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.dokDate]  , "dateOD", ZXC.projectYearFirstDay, " >= "));
+    //filterMembers.Add(new VvSqlFilterMember(ZXC.FakturSchemaRows[ZXC.FakCI.dokDate]  , "dateDO", ZXC.projectYearLastDay , " <= "));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FaktExSchemaRows[ZXC.FexCI.f2_R1kind], "R1Kind", ZXC.F2_R1enum.B2B      , " = " ));
 
       string asdDscStr;
       string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
@@ -906,10 +939,8 @@ public static class Vv_eRacun_HTTP
 
       int newsCount = 0;
 
-      DateTime queryOutbox_DateOD = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearFirstDay       : // na pocetku godine, servis nema nijednu klijentovu fakturu             
-                                    theUC.TheFakturList.Max(fak => fak.DokDate) - ZXC.OneWeekSpan ; // look back  one week from last synchronized Faktur date ... zihereaski 
-      DateTime queryOutbox_DateDO = DateTime.Now                                + ZXC.OneWeekSpan ; // look ahead one week from today                         ... zihereaski 
-      
+      (DateTime queryOutbox_DateOD, DateTime queryOutbox_DateDO) = GetF2QueryDateRange();
+
       bool isNewFaktur, addrecOK, kupdobOK, xmlValidationOK;
 
       string theXmlString, theOIB;
@@ -1319,21 +1350,9 @@ public static class Vv_eRacun_HTTP
 
       ZXC.SetStatusText("Refresh TRN status");
 
-    //List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => ShouldCheckRefreshed_TRN_Or_DPS_Status(fak, false)).ToList();
-    //List<Faktur> queryOutbox_CandidatesFakturList = theUC.TheFakturList.Where(fak => fak.F2_QueryOutbox_Yes_HasSense_Refresh_TRN_Status).ToList();
+      (DateTime queryOutbox_DateOD, DateTime queryOutbox_DateDO) = GetF2QueryDateRange();
 
-      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
-      // za sada, idemo cijela projektna godina                                                                         
-    //DateTime minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
-    //DateTime maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
-    DateTime minDokDate = ZXC.projectYearFirstDay;
-    DateTime maxDokDate = ZXC.projectYearLastDay ;
-      // Ipak, ovo dole NE nego cijela godina ... MER se sam brine granicom od minus 60 dana i 10.000 limitom da se ne pretjera
-    //DateTime minDokDate = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearFirstDay - ZXC.OneWeekSpan : // na pocetku godine, nemamo nijednu fakturu ... a TODO je za razmisliti kako ce iygledati prelaz iz 2026 u 2027 
-    //                      theUC.TheFakturList.Min(fak => fak.DokDate)             - ZXC.OneWeekSpan ; // look back  one week from last Faktur DokDate ... zihereaski 
-    //DateTime maxDokDate = theUC.TheFakturList.IsEmpty() ? ZXC.projectYearLastDay : theUC.TheFakturList.Max(fak => fak.DokDate) + ZXC.OneWeekSpan ; 
-
-      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(minDokDate, maxDokDate);
+      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(queryOutbox_DateOD, queryOutbox_DateDO);
 
       if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
       {
@@ -1631,10 +1650,10 @@ public static class Vv_eRacun_HTTP
       // za sada, idemo cijela projektna godina                                                                         
       //minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
       //maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
-      minDokDate = ZXC.projectYearFirstDay;
-      maxDokDate = ZXC.projectYearLastDay ;
+      queryOutbox_DateOD = ZXC.projectYearFirstDay;
+      queryOutbox_DateDO = ZXC.projectYearLastDay ;
 
-      WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Outbox(minDokDate, maxDokDate);
+      WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Outbox(queryOutbox_DateOD, queryOutbox_DateDO);
 
       if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
       {

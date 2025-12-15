@@ -122,9 +122,12 @@ public abstract class NalogDUC : VvDocumentRecordUC
          e.ColumnIndex != ci.iT_valuta) return;
 
       uint   fakturRecID = TheG.GetUint32Cell(ci.iT_fakRecID, rowIdx, false);
+      uint   fakturYear  = TheG.GetUint32Cell(ci.iT_fakYear , rowIdx, false);
       string tipBr       = TheG.GetStringCell(ci.iT_tipBr   , rowIdx, false);
 
       if(fakturRecID.IsZero()) return;
+
+      if(fakturYear != ZXC.projectYearAsInt) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Racun nije iz ove godine"); return; }
 
       Faktur faktur_rec = new Faktur();
       bool fakturOK = ZXC.FakturDao.SetMe_Record_byRecID(TheDbConnection, faktur_rec, fakturRecID, false);
@@ -1011,6 +1014,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
          if(found && vvtb_editingControl.Text != "")
          {
             TheG.PutCell(ci.iT_fakRecID, currRow, faktur_rec.RecID);
+            TheG.PutCell(ci.iT_fakYear , currRow, faktur_rec.DokDate.Year);
          }
          else
          {
@@ -1024,6 +1028,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
             // 12.01.2017:  end  
 
             TheG.PutCell(ci.iT_fakRecID, currRow, 0);
+            TheG.PutCell(ci.iT_fakYear , currRow, 0);
          }
       }
 
@@ -1116,6 +1121,11 @@ public abstract class NalogDUC : VvDocumentRecordUC
    protected void T_fakRecID_CreateColumn(VvDataGridView _theGrid)
    {
       CreateAllwaysInvisibleDataGridViewColumn(_theGrid, "t_fakRecID");
+   }
+
+   protected void T_fakYear_CreateColumn(VvDataGridView _theGrid)
+   {
+      CreateAllwaysInvisibleDataGridViewColumn(_theGrid, "t_fakYear");
    }
 
    protected void T_otsKind_CreateColumn(VvDataGridView _theGrid)
@@ -1784,13 +1794,14 @@ public abstract class NalogDUC : VvDocumentRecordUC
       return dgvFtrans_rec;
    }
 
-   public void PutDGVRowManually(int rowIdx, string konto, string opis, string ticker, uint kupdob_cd, uint fakRecID, string tipBr, string projektCD, uint mtrosCD, DateTime valuta, decimal dug, decimal pot)
+   public void PutDGVRowManually(int rowIdx, string konto, string opis, string ticker, uint kupdob_cd, uint fakRecID, uint fakYear, string tipBr, string projektCD, uint mtrosCD, DateTime valuta, decimal dug, decimal pot)
    {
       TheG.PutCell(ci.iT_konto,     rowIdx, konto);
       TheG.PutCell(ci.iT_opis,      rowIdx, opis);
       TheG.PutCell(ci.iT_ticker,    rowIdx, ticker);
       TheG.PutCell(ci.iT_kupdob_cd, rowIdx, kupdob_cd/*.ToString("000000")*/);
       TheG.PutCell(ci.iT_fakRecID,  rowIdx, fakRecID);
+      TheG.PutCell(ci.iT_fakYear ,  rowIdx, fakYear );
       TheG.PutCell(ci.iT_tipBr,     rowIdx, tipBr);
       TheG.PutCell(ci.iT_projektCD, rowIdx, projektCD);
       TheG.PutCell(ci.iT_mtros_cd , rowIdx, mtrosCD);
@@ -1831,7 +1842,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
             pot = 0.00M;
          }
 
-         PutDGVRowManually(currentRowIdx, otsInfo.Konto, otsInfo.OpenDokumentOpis, currTicker, otsInfo.KupdobCd, otsInfo.FakRecID, otsInfo.TipBr, otsInfo.ProjektCD, otsInfo.MtrosCD, otsInfo.OpenDokumentValuta, dug, pot);
+         PutDGVRowManually(currentRowIdx, otsInfo.Konto, otsInfo.OpenDokumentOpis, currTicker, otsInfo.KupdobCd, otsInfo.FakRecID, otsInfo.FakYear, otsInfo.TipBr, otsInfo.ProjektCD, otsInfo.MtrosCD, otsInfo.OpenDokumentValuta, dug, pot);
 
          currentRowIdx++;
       }
@@ -1966,6 +1977,7 @@ public class NalogFirmaDUC : NalogDUC
       T_pot_CreateColumn(ZXC.Q5un/*+ZXC.Qun2*/, 2);
 
       T_fakRecID_CreateColumn(this.TheG);
+      T_fakYear_CreateColumn (this.TheG);
       T_otsKind_CreateColumn (this.TheG);
       
       ColumnForScroll_CreateColumn(ZXC.QUN);
@@ -2011,6 +2023,7 @@ public class NalogObrtDUC  : NalogDUC
       T_pot_CreateColumn(ZXC.Q5un, 2);
 
       T_fakRecID_CreateColumn(this.TheG);
+      T_fakYear_CreateColumn (this.TheG);
       T_otsKind_CreateColumn (this.TheG);
       ColumnForScroll_CreateColumn(ZXC.QUN);
    }
@@ -2052,8 +2065,9 @@ public class NalogMtrDUC   : NalogDUC
       T_pot_CreateColumn(ZXC.Q5un, 2);
    
       T_fakRecID_CreateColumn(this.TheG);
+      T_fakYear_CreateColumn(this.TheG);
 
-      T_otsKind_CreateColumn (this.TheG);
+      T_otsKind_CreateColumn(this.TheG);
   
       ColumnForScroll_CreateColumn(ZXC.QUN);
    }
@@ -2093,6 +2107,7 @@ public class NalogProjektDUC : NalogDUC
       T_pot_CreateColumn(ZXC.Q5un, 2);
 
       T_fakRecID_CreateColumn(this.TheG);
+      T_fakYear_CreateColumn(this.TheG);
 
       T_otsKind_CreateColumn(this.TheG);
 

@@ -1029,6 +1029,8 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       uint   currKCD = 0;
       uint   currMCD = 0; // 25.05.2021. 
       string currMTK = "";// 25.05.2021. 
+      uint   currFakRecID = 0; 
+      uint   currFakYear  = 0; 
 
       DateTime currDokDate, currValuta, ngT_valuta;
                currDokDate= currValuta = DateTime.MinValue;
@@ -1049,7 +1051,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
       #endregion Init stuff
 
-      using(XSqlConnection tempConnection = VvSQL.CREATE_TEMP_XSqlConnection(PG_dbName))
+      using(XSqlConnection PG_tempConnection = VvSQL.CREATE_TEMP_XSqlConnection(PG_dbName))
       {
          #region ADDREC ftrans in NY 
 
@@ -1059,7 +1061,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
        //using(XSqlCommand cmd = VvSQL.Get_SELECTzvjezdicaFROM_Command(tempConnection, Ftrans.recordName, "", null, "t_konto, t_kupdob_cd, t_tipBr ,                         t_dokDate, t_dokNum, t_serial", "", ""))
          // 25.05.2021:                                                                                                                                                      
        //using(XSqlCommand cmd = VvSQL.Get_SELECTzvjezdicaFROM_Command(tempConnection, Ftrans.recordName, "", null, "t_konto, t_kupdob_cd, t_tipBr, t_projektCD,             t_dokDate, t_dokNum, t_serial", "", ""))
-         using(XSqlCommand cmd = VvSQL.Get_SELECTzvjezdicaFROM_Command(tempConnection, Ftrans.recordName, "", null, "t_konto, t_kupdob_cd, t_tipBr, t_projektCD, t_mtros_cd, t_dokDate, t_dokNum, t_serial", "", ""))
+         using(XSqlCommand cmd = VvSQL.Get_SELECTzvjezdicaFROM_Command(PG_tempConnection, Ftrans.recordName, "", null, "t_konto, t_kupdob_cd, t_tipBr, t_projektCD, t_mtros_cd, t_dokDate, t_dokNum, t_serial", "", ""))
          {
             try
             {
@@ -1083,14 +1085,14 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                            // 29.12.2015: 
                            if(!isSaldaKontiKTO) // obican konto 
                            {
-                              SendToPsNalog(tabPagesConnection, currKTO, currKCD, currTCK, currMCD, currMTK, currTBR, currPrjktCD, currDokDate, currValuta, ref line, currDug, currPot, currOpis, false);
+                              SendToPsNalog(tabPagesConnection, currKTO, currKCD, currTCK, currMCD, currMTK, currTBR, currFakRecID, currFakYear, currPrjktCD, currDokDate, currValuta, ref line, currDug, currPot, currOpis, false);
                               ncount++;
                            }
                            else // YES, this IS SaldaKontiKTO ... prebaci ga analiticki (otvaranje i sva eventualna djelomicna zatvaranja) 
                            {
                               foreach(Ftrans ftrans in currGroupFtransList.OrderBy(f => f.T_otsKind)) // silimo da otvaranje dode na vrh ukoliko je zmesano 
                               {
-                                 addedSaldaKontiFtrans = SendToPsNalog(tabPagesConnection, ftrans.T_konto, ftrans.T_kupdob_cd, ftrans.T_ticker, ftrans.T_mtros_cd, ftrans.T_mtros_tk, ftrans.R_forcedTipBr, ftrans.T_projektCD, ftrans.T_dokDate, ftrans.T_valuta, ref line, ftrans.T_dug, ftrans.T_pot, ftrans.T_opis, true);
+                                 addedSaldaKontiFtrans = SendToPsNalog(tabPagesConnection, ftrans.T_konto, ftrans.T_kupdob_cd, ftrans.T_ticker, ftrans.T_mtros_cd, ftrans.T_mtros_tk, ftrans.R_forcedTipBr, ftrans.T_fakRecID, ftrans.T_fakYear, ftrans.T_projektCD, ftrans.T_dokDate, ftrans.T_valuta, ref line, ftrans.T_dug, ftrans.T_pot, ftrans.T_opis, true);
                                  ncount++;
                                //addedSaldaKontiFtrans.T_tipBr = ftrans.T_tipBr; // jer ga SendToPsNalog reformira sa onim '5p' na pocetku 
                                  if(IsSaldaKontiKTO(ftrans.T_konto)) addedSaldaKontiFtransList.Add(addedSaldaKontiFtrans);
@@ -1107,6 +1109,8 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                         currMTK     = ftrans_rec.T_mtros_tk ;
                         currTBR     = ftrans_rec.T_tipBr    ; 
                       //currTBR     = ftrans_rec.R_forcedTipBr; // !!! novo u 2016. Ako je T_tipBr prazan onda : ["XY:" + T_dokDate.Year + "-" + T_recID] 
+                        currFakRecID= ftrans_rec.T_fakRecID ; 
+                        currFakYear = ftrans_rec.T_fakYear  ; 
                         currPrjktCD = ftrans_rec.T_projektCD; 
 
                         // 29.12.2015: 
@@ -1141,14 +1145,14 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                      // 29.12.2015: 
                      if(!isSaldaKontiKTO) // obican konto 
                      { 
-                        SendToPsNalog(tabPagesConnection, currKTO, currKCD, currTCK, currMCD, currMTK, currTBR, currPrjktCD, currDokDate, currValuta, ref line, currDug, currPot, currOpis, false);
+                        SendToPsNalog(tabPagesConnection, currKTO, currKCD, currTCK, currMCD, currMTK, currTBR, currFakRecID, currFakYear, currPrjktCD, currDokDate, currValuta, ref line, currDug, currPot, currOpis, false);
                         ncount++;
                      }
                      else // YES, this IS SaldaKontiKTO ... prebaci ga analiticki (otvaranje i sva eventualna djelomicna zatvaranja) 
                      {
                         foreach(Ftrans ftrans in currGroupFtransList.OrderBy(f => f.T_otsKind)) // silimo da otvaranje dode na vrh ukoliko je zmesano 
                         {
-                           addedSaldaKontiFtrans = SendToPsNalog(tabPagesConnection, ftrans.T_konto, ftrans.T_kupdob_cd, ftrans.T_ticker, ftrans.T_mtros_cd, ftrans.T_mtros_tk, ftrans.R_forcedTipBr, ftrans.T_projektCD, ftrans.T_dokDate, ftrans.T_valuta, ref line, ftrans.T_dug, ftrans.T_pot, ftrans.T_opis, true);
+                           addedSaldaKontiFtrans = SendToPsNalog(tabPagesConnection, ftrans.T_konto, ftrans.T_kupdob_cd, ftrans.T_ticker, ftrans.T_mtros_cd, ftrans.T_mtros_tk, ftrans.R_forcedTipBr, ftrans.T_fakRecID, ftrans.T_fakYear, ftrans.T_projektCD, ftrans.T_dokDate, ftrans.T_valuta, ref line, ftrans.T_dug, ftrans.T_pot, ftrans.T_opis, true);
                            ncount++;
                          //addedSaldaKontiFtrans.T_tipBr = ftrans.T_tipBr; // jer ga SendToPsNalog reformira sa onim '5p' na pocetku 
                            if(IsSaldaKontiKTO(ftrans.T_konto)) addedSaldaKontiFtransList.Add(addedSaldaKontiFtrans);
@@ -1181,7 +1185,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
             if(ngT_tipBr == "NO_NG") // NEMA WYRN faktur_rec-a u ovoj godini 
             {
                // ADD it to RISK: try first PG variant 
-               ngT_tipBr = AutoADD_PG_WYRN_faktur(tabPagesConnection, tempConnection, ftrGR.First().R_forcedTipBr, ftrGR.First().OrigPgTipBr, out fakRecID, out fakYear, ref ngT_valuta);
+               ngT_tipBr = AutoADD_PG_WYRN_faktur(tabPagesConnection, PG_tempConnection, ftrGR.First().R_forcedTipBr, ftrGR.First().OrigPgTipBr, out fakRecID, out fakYear, ref ngT_valuta);
 
                // ADD it to RISK: there is NO_PG faktur, go with PgPg variant 
                if(ngT_tipBr == "NO_PG") // NEMA orig faktur_rec-a u prosloj godini 
@@ -1740,7 +1744,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       return newTBR;
    }
 
-   private static /*void*/Ftrans SendToPsNalog(XSqlConnection conn, string _currKTO, uint _currKCD, string _currTCK, uint _currMCD, string _currMTK, string _currTBR, string _currPrjktCD, DateTime _dokDate, DateTime _valuta, ref ushort _line, decimal dug, decimal pot, string currOpis, bool isSaldaKontiKTO)
+   private static /*void*/Ftrans SendToPsNalog(XSqlConnection conn, string _currKTO, uint _currKCD, string _currTCK, uint _currMCD, string _currMTK, string _currTBR, uint _currFakRecID, uint _currFakYear, string _currPrjktCD, DateTime _dokDate, DateTime _valuta, ref ushort _line, decimal dug, decimal pot, string currOpis, bool isSaldaKontiKTO)
    {
       ZXC.VvDataBaseInfo dbInfo = ZXC.TheVvForm.TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
@@ -1825,8 +1829,8 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       /* */ /*string   t_037        */ "",
       /* */ /* string   t_projektCD */ _currPrjktCD, // !!! tek od 23.03.2017 
       /* */ /* ushort   t_pdvKnjiga */ ZXC.PdvKnjigaEnum.NIJEDNA,
-      /* */ /* uint     t_fakRecID  */ 0,
-      /* */ /* uint     t_fakYear   */ 0,
+      /* */ /* uint     t_fakRecID  */ _currFakRecID,
+      /* */ /* uint     t_fakYear   */ _currFakYear ,
       /* */ /* OtsKindEnum t_otsKind*/ ZXC.OtsKindEnum.NIJEDNO,
       /* */ /* string   t_fond      */ "",
       /* */ /* string   t_pozicija  */ "",
