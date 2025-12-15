@@ -69,11 +69,11 @@ public static class Vv_eRacun_HTTP
    public const string VvPND_webAddressPOST_Check           = (DEMO ? VvPND_baseAddress_demo : VvPND_baseAddress_production) + "/api/v2/ams/check"                ; // POST 
 
    // MER authorisation parameters: 
-   public static string VvMER_UserName   = DEMO ? "8633"    : ZXC.CURR_prjkt_rec.F2_UserName.NotEmpty()          ? ZXC.CURR_prjkt_rec.F2_UserName          : ZXC.CURR_prjkt_rec.SkyVvDomena         ;
-   public static string VvMER_Password   = DEMO ? "T22zsEY" : ZXC.CURR_prjkt_rec.F2_PasswordDecrypted.NotEmpty() ? ZXC.CURR_prjkt_rec.F2_PasswordDecrypted : ZXC.CURR_prjkt_rec.SkyPasswordDecrypted;
+   public static string VvMER_UserName   /*= DEMO ? "8633"    : ZXC.CURR_prjkt_rec.F2_UserName.NotEmpty()          ? ZXC.CURR_prjkt_rec.F2_UserName          : ZXC.CURR_prjkt_rec.SkyVvDomena         */;
+   public static string VvMER_Password   /*= DEMO ? "T22zsEY" : ZXC.CURR_prjkt_rec.F2_PasswordDecrypted.NotEmpty() ? ZXC.CURR_prjkt_rec.F2_PasswordDecrypted : ZXC.CURR_prjkt_rec.SkyPasswordDecrypted*/;
 
-   public static string VvMER_CompanyId  =                    ZXC.CURR_prjkt_rec.Oib                                      ;
-   public const  string VvMER_SoftwareId =                    "Vektor-001"                                                ;
+   public static string VvMER_CompanyId  /* =                  ZXC.CURR_prjkt_rec.Oib*/                                    ;
+   public const  string VvMER_SoftwareId    =                    "Vektor-001"                                              ;
 
    // PND authorisation parameters: 
    public static string VvPND_API_Key    = "1042a7915a7f66a23a8e0e98d93cb44c6d968263638a8cec54e07cb5abc2ae2f";
@@ -1147,7 +1147,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn)
+   /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn, bool isManual)
    {
       #region Init & Get Dialog Fields
 
@@ -1159,7 +1159,11 @@ public static class Vv_eRacun_HTTP
 
       List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).OrderBy(fak => fak.TtNum).ToList();
 
-      if(sendCandidatesFakturList.IsEmpty()) return 0;
+      if(sendCandidatesFakturList.IsEmpty())
+      {
+         if(isManual) ZXC.aim_emsg(MessageBoxIcon.Information, "Nema ništa za slanje.");
+         return 0; 
+      }
 
       List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
 
@@ -2003,7 +2007,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    } 
-   /* DDD */internal static int Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC, XSqlConnection conn)
+   /* DDD */internal static int Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC, XSqlConnection conn, bool isManual)
    {
       #region Init & Get Dialog Fields AND Create MAP_requestDataList 
 
@@ -2033,15 +2037,27 @@ public static class Vv_eRacun_HTTP
       {
          MAP_CandidateFaktur_rec = new Faktur();
 
-         if(paymentftrans_rec.T_fakRecID.NotZero()) // TODO !!! tu treba implementirati ZXC public static (int year, uint recID) GetYearAndRecIDFrom_YYandRecID(uint YYandRecID) 
-                                                    // TODO je i prilagoditi Nalog_PS() da salje i T_fakRecID u tom formatu                                                      
+         if(paymentftrans_rec.T_fakRecID.NotZero()) // TODO je prilagoditi Nalog_PS() da salje i T_fakRecID u tom formatu 
          {
-            MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+            if(paymentftrans_rec.T_fakYear.IsZero())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakYear IsZero!!!");
+               continue;
+            }
+
+            if(paymentftrans_rec.T_fakYear == ZXC.projectYearAsInt) // uplata se odnosi na Faktur iz ove godine 
+            {
+               MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+            }
+            else // uplata se odnosi na Faktur iz neke PROŠLE godine 
+            {
+               MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/ZXC.TheSecondDbConn_SameDB_OtherYear((int)paymentftrans_rec.T_fakYear), paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+            }
          }
          else
          {
             MAP_CandidateFaktur_rec = null;
-            // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a 
+            // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a ... ili kojiK ... npr ako je R1/R2 'po naplati' 
          }
 
          if(MAP_CandidateFaktur_rec == null)
@@ -2615,6 +2631,8 @@ public class VvMER_RequestData : MER_CredentialsData
    #region Constructors and Init
    private void InitMER_Credentials()
    {
+      Vv_eRacun_HTTP.InitProjectData();
+
       this.Username   = Vv_eRacun_HTTP.VvMER_UserName  ;
       this.Password   = Vv_eRacun_HTTP.VvMER_Password  ;
       this.CompanyId  = Vv_eRacun_HTTP.VvMER_CompanyId ;
@@ -3297,8 +3315,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    {
       ((F2_Izlaz_UC)TheVvUC).INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
-   private void F2_Send_eRacune (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
-   private void F2_MAPaj        (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection); }
+   private void F2_Send_eRacune (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection, true); }
+   private void F2_MAPaj        (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection, true); }
    private void F2_Send_eRacun_1(object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
    private void F2_MAPaj_1      (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*DDD Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
    private void F2_ArhivaPdf (object sender, EventArgs e) 

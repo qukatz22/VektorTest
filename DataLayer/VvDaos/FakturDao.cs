@@ -2995,6 +2995,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
          // 27.01.2016: 
          theRules.FtransFakRecID = nacPlacPackage.TheUint2;
+         theRules.FtransFakYear  = (uint)ZXC.projectYearAsInt;
 
        //theRules.FtransMtrosCD = Kupdob.GetKupdobFromSkladCD(nacPlacPackage.TheStr5).KupdobCD;
        //theRules.FtransMtrosTK = Kupdob.GetKupdobFromSkladCD(nacPlacPackage.TheStr5).Ticker  ;
@@ -3277,6 +3278,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       /* */ /*string   t_projektCD  */ theRules.FtransProjektCD,
       /* */ /*ushort   t_pdvKnjiga  */ theRules.FtransPdvKnjiga,
       /* */ /*uint     t_fakRecID   */ isKupdobLine ? theRules.FtransFakRecID   :                       0, // ! 
+      /* */ /*uint     t_fakYear    */ isKupdobLine ? theRules.FtransFakYear    :                       0, // ! 
       /* */ /*OtsKindEnum t_otsKind */ isKupdobLine ? ZXC.OtsKindEnum.OTVARANJE : ZXC.OtsKindEnum.NIJEDNO, // ! 
       /* */ /* string  t_fond       */ fond    ,
       /* */ /* string  t_pozicija   */ pozicija,
@@ -4424,6 +4426,7 @@ public class Faktur2NalogRulesAndData
    public string   FtransOpis       { get; set; }
    public DateTime FtransValuta     { get; set; }
    public uint     FtransFakRecID   { get; set; }
+   public uint     FtransFakYear    { get; set; }
    public uint     FtransKupdobCD   { get; set; }
    public uint     FtransMtrosCD    { get; set; }
    public string   FtransKupdobTK   { get; set; }
@@ -4472,6 +4475,7 @@ public class Faktur2NalogRulesAndData
 
       NalogDokDate     = faktur_rec.DokDate.Date;
       FtransFakRecID   = faktur_rec.RecID;
+      FtransFakYear    = (uint)faktur_rec.DokDate.Year;
       FtransTipBr      = faktur_rec.TipBr;
       FtransFakTT      = faktur_rec.TT;
       FtransValuta     = faktur_rec.DospDate.Date;

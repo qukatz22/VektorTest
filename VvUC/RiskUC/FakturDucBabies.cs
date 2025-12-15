@@ -9048,14 +9048,14 @@ public class F2_Izlaz_UC : VvUserControl
 
       if(ZXC.RRD.Dsc_F2_IsAutoSend)
       {
-      /* BBB */ newsCount += Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection);
+      /* BBB */ newsCount += Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection, false);
       }
 
       /* CCC */ newsCount += Vv_eRacun_HTTP.WS_Refresh_ALL_FIR_Statuses_AndArhiviraj(this); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP)
       {
-      /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, TheDbConnection);
+      /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, TheDbConnection, false);
       }
 
       ZXC.SetStatusText("");

@@ -1471,6 +1471,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       internal int iT_fond;
       internal int iT_fondName;
       internal int iT_progAktiv;
+      internal int iT_fakYear;
    }
 
    private void SetNalogColumnIndexes()
@@ -1495,6 +1496,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       ci.iT_037          = TheG.IdxForColumn("T_037");
       ci.iT_pdvKnjiga    = TheG.IdxForColumn("T_pdvKnjiga");
       ci.iT_fakRecID     = TheG.IdxForColumn("T_fakRecID");
+      ci.iT_fakYear      = TheG.IdxForColumn("T_fakYear");
       ci.iT_otsKind      = TheG.IdxForColumn("T_otsKind");
       ci.iT_projektCD    = TheG.IdxForColumn("T_projektCD");
       ci.iT_pozicija     = TheG.IdxForColumn("T_pozicija");
@@ -1564,6 +1566,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       TheG.PutCell(ci.iT_mtros_tk,     rowIdx, ftrans_rec.T_mtros_tk);
       TheG.PutCell(ci.iT_pdvKnjiga,    rowIdx, GetOneLetter4PdvKnjiga(ftrans_rec.T_pdvKnjiga));
       TheG.PutCell(ci.iT_fakRecID ,    rowIdx, ftrans_rec.T_fakRecID);
+      TheG.PutCell(ci.iT_fakYear  ,    rowIdx, ftrans_rec.T_fakYear);
       TheG.PutCell(ci.iT_otsKind  ,    rowIdx, ftrans_rec.T_otsKind);
       TheG.PutCell(ci.iT_projektCD,    rowIdx, ftrans_rec.T_projektCD);
       TheG.PutCell(ci.iT_pozicija ,    rowIdx, ftrans_rec.T_pozicija);
@@ -1653,6 +1656,9 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
                                      dgvFtrans_rec.T_fakRecID = TheG.GetUint32Cell(ci.iT_fakRecID, rIdx, dirtyFlagging);
       if(DB_RWT) db_rec.T_fakRecID = dgvFtrans_rec.T_fakRecID;
+
+                                     dgvFtrans_rec.T_fakYear = TheG.GetUint32Cell(ci.iT_fakYear, rIdx, dirtyFlagging);
+      if(DB_RWT) db_rec.T_fakYear  = dgvFtrans_rec.T_fakYear;
 
                                    dgvFtrans_rec.T_serial = (ushort)(rIdx + 1);
       if(DB_RWT) db_rec.T_serial = dgvFtrans_rec.T_serial;

@@ -913,6 +913,7 @@ public struct OtsTipBrGroupInfo
    public  uint    KupdobCd            { get; set; }
    public  string  TipBr               { get; set; }
    public  uint    FakRecID            { get; set; }
+   public  uint    FakYear             { get; set; }
    public  string  ProjektCD           { get; set; }
    public  uint    MtrosCD             { get; set; }
    public  string  MtrosTK             { get; set; }

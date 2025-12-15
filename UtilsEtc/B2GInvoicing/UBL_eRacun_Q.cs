@@ -1673,7 +1673,9 @@ namespace EN16931.UBL
 
          faktur_rec.DokDate = (this.IssueTime != null && this.IssueTime.Value != DateTime.MinValue)
             ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
-            : this.IssueDate.Value; faktur_rec.DospDate  = this.DueDate.Value  ;
+            : this.IssueDate.Value; 
+         
+         faktur_rec.DospDate  = this.DueDate.Value  ;
 
          faktur_rec.PdvDate   = this.TaxPointDate.Value.IsEmpty() ? this.IssueDate.Value : this.TaxPointDate.Value;
          faktur_rec.VezniDok  = this.ID.Value       ;
@@ -1684,7 +1686,7 @@ namespace EN16931.UBL
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
          }
 
-         faktur_rec.DevName = this.DocumentCurrencyCode.Value == "EUR" ? "EUR" : this.DocumentCurrencyCode.Value;  // Tamara, koji je ovo kurac?
+         faktur_rec.DevName = this.DocumentCurrencyCode.Value;
 
          //faktur_rec.PdvKolTip =  this.ProfileID.Value;
          //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne

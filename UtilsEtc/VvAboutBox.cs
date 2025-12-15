@@ -658,7 +658,7 @@ public class VvMessageBoxDLG :  VvDialog
          AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
          okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
-      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_webApiResults)
+      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_webApiResults || vvmBoxKind == ZXC.VvmBoxKind.aim_emsg_List)
       {
          AddSendCancelButtons(out sendTosupportButton, out cancelButton, dlgWidth, dlgHeight);
          sendTosupportButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;

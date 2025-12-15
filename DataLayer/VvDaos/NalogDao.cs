@@ -404,6 +404,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       string   t_projektCD,
       ZXC.PdvKnjigaEnum t_pdvKnjiga,
       uint     t_fakRecID ,
+      uint     t_fakYear,
       ZXC.OtsKindEnum t_otsKind  ,
       string   t_fond,
       string   t_pozicija,
@@ -431,6 +432,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       ftrans_rec.T_projektCD  = t_projektCD;
       ftrans_rec.T_pdvKnjiga  = t_pdvKnjiga;
       ftrans_rec.T_fakRecID   = t_fakRecID ;
+      ftrans_rec.T_fakYear    = t_fakYear  ;
       ftrans_rec.T_otsKind    = t_otsKind  ;
       ftrans_rec.T_fond       = t_fond     ;
       ftrans_rec.T_pozicija   = t_pozicija ;
@@ -1165,7 +1167,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
          #region AutoADD Pg ILI PgPg _WYRN_faktur OR just get ngTipBr if EQLREC is OK (ponavljamo prenos) ... then RWTREC ftrans in NY
 
          // new in 2015/2016: 
-         string ngT_tipBr; uint fakRecID; string origTipBr;
+         string ngT_tipBr; uint fakRecID; uint fakYear; string origTipBr;
        //if(skipWYRN == false) foreach(var ftrGR in addedSaldaKontiFtransList.GroupBy(ftr =>                                 ftr.R_forcedTipBr))
          if(skipWYRN == false) foreach(var ftrGR in addedSaldaKontiFtransList.GroupBy(ftr => ftr.T_konto + ftr.T_kupdob_cd + ftr.R_forcedTipBr))
          {
@@ -1174,12 +1176,12 @@ public sealed class NalogDao : VvDaoBase, IVvDao
             ngT_valuta = ftrGR.First().T_valuta;
 
             // first check nije li ponavljanje prenosa 
-            ngT_tipBr = FindWYRNfakturInNG(tabPagesConnection, ftrGR.First().T_kupdob_cd, ftrGR.First().R_forcedTipBr, out fakRecID, ref ngT_valuta);
+            ngT_tipBr = FindWYRNfakturInNG(tabPagesConnection, ftrGR.First().T_kupdob_cd, ftrGR.First().R_forcedTipBr, out fakRecID, out fakYear, ref ngT_valuta);
 
             if(ngT_tipBr == "NO_NG") // NEMA WYRN faktur_rec-a u ovoj godini 
             {
                // ADD it to RISK: try first PG variant 
-               ngT_tipBr = AutoADD_PG_WYRN_faktur(tabPagesConnection, tempConnection, ftrGR.First().R_forcedTipBr, ftrGR.First().OrigPgTipBr, out fakRecID, ref ngT_valuta);
+               ngT_tipBr = AutoADD_PG_WYRN_faktur(tabPagesConnection, tempConnection, ftrGR.First().R_forcedTipBr, ftrGR.First().OrigPgTipBr, out fakRecID, out fakYear, ref ngT_valuta);
 
                // ADD it to RISK: there is NO_PG faktur, go with PgPg variant 
                if(ngT_tipBr == "NO_PG") // NEMA orig faktur_rec-a u prosloj godini 
@@ -1214,7 +1216,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                   #endregion Get PgPg WYRN Data dialog
 
                 //ngT_tipBr = AutoADD_PgPg_WYRN_faktur(tabPagesConnection, ftrGR.First(), out fakRecID, dokDate, 1400M, 250M, 400, ZXC.PdvKolTipEnum.PROLAZ); // ovdje ces upasti u probleme ako otvaranje NIJE prvi ftrans (npr avans pa tek onda otvaranje) 
-                  ngT_tipBr = NalogDao.AutoADD_PgPg_WYRN_faktur(tabPagesConnection, ftrGR.First(), out fakRecID, // ovdje ces upasti u probleme ako otvaranje NIJE prvi ftrans (npr avans pa tek onda otvaranje) 
+                  ngT_tipBr = NalogDao.AutoADD_PgPg_WYRN_faktur(tabPagesConnection, ftrGR.First(), out fakRecID, out fakYear, // ovdje ces upasti u probleme ako otvaranje NIJE prvi ftrans (npr avans pa tek onda otvaranje) 
                                                                       dlgTipBr    ,
                                                                       dlgDokDate  , 
                                                                       dlgDospDate ,
@@ -1238,6 +1240,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
                origTipBr         = ftrans.R_forcedTipBr;
                ftrans.T_tipBr    = ngT_tipBr           ;
                ftrans.T_fakRecID = fakRecID            ;
+               ftrans.T_fakYear  = fakYear             ;
                                                        
                ftrans.T_valuta   = ngT_valuta          ; // !!! 
 
@@ -1261,25 +1264,26 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       return true; // localOK 
    }
 
-   private static string FindWYRNfakturInNG(XSqlConnection ngConn, uint kupdobCD, string ngT_tipBr, out uint fakRecID, ref DateTime ngT_valuta)
+   private static string FindWYRNfakturInNG(XSqlConnection ngConn, uint kupdobCD, string ngT_tipBr, out uint fakRecID, out uint fakYear, ref DateTime ngT_valuta)
    {
-      if(ngT_tipBr.IsEmpty()) { fakRecID = 0; return "NO_NG"; } // !!! 
+      if(ngT_tipBr.IsEmpty()) { fakRecID = 0; fakYear = 0; return "NO_NG"; } // !!! 
 
       Faktur ngWYRNfaktur_rec = new Faktur();
 
     //bool OK = FakturDao.SetMeFaktur_ByVezniDok2           (ngConn, ngWYRNfaktur_rec,           ngT_tipBr);
       bool OK = FakturDao.SetMeFaktur_ByKupdobCdAndVezniDok2(ngConn, ngWYRNfaktur_rec, kupdobCD, ngT_tipBr);
 
-      if(!OK) { fakRecID = 0; return "NO_NG"; } // !!! 
+      if(!OK) { fakRecID = 0; fakYear = 0; return "NO_NG"; } // !!! 
 
       fakRecID   = ngWYRNfaktur_rec.RecID   ;
+      fakYear    = (uint)ngWYRNfaktur_rec.DokDate.Year; // ? ovo je mozda krivo ? 
       ngT_valuta = ngWYRNfaktur_rec.DospDate;
 
       return ngWYRNfaktur_rec.TT_And_TtNum;
    }
 
    // faktur je stariji od 1 godine i NEMA ga u pgFaktur data layeru ... CreateDefault WYRN faktur_rec sa defaultnim PDV podacima 
-   public static string AutoADD_PgPg_WYRN_faktur(XSqlConnection conn, Ftrans pgpgFtrans_rec, out uint fakRecID, 
+   public static string AutoADD_PgPg_WYRN_faktur(XSqlConnection conn, Ftrans pgpgFtrans_rec, out uint fakRecID, out uint fakYear,
       string            dlgTipBr    ,
       DateTime          dlgDokDate  , 
       DateTime          dlgDospDate ,
@@ -1423,6 +1427,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       }
 
       fakRecID = faktur_rec.RecID;
+      fakYear  = (uint)faktur_rec.DokDate.Year;
 
       bool OK = fakRecID.NotZero();
 
@@ -1432,7 +1437,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
    }
 
    // faktur NIJE stariji od 1 godine i IMA ga u pgFaktur data layeru ... 'CopyOUT' 
-   private static string AutoADD_PG_WYRN_faktur(XSqlConnection conn, XSqlConnection pgConn, string pgT_tipBr /*5pIRA-100007*/, string origPgT_tipBr /*IRA-100007*/, out uint fakRecID, ref DateTime ngT_valuta)
+   private static string AutoADD_PG_WYRN_faktur(XSqlConnection conn, XSqlConnection pgConn, string pgT_tipBr /*5pIRA-100007*/, string origPgT_tipBr /*IRA-100007*/, out uint fakRecID, out uint fakYear, ref DateTime ngT_valuta)
    {
       string origTT;
       uint   ttNum ;
@@ -1444,7 +1449,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
 
       bool OK = FakturDao.SetMeFaktur(pgConn, pgFaktur_rec, origTT, ttNum, /*false*/true);
 
-      if(!OK) { fakRecID = 0; return "NO_PG"; } // !!! 
+      if(!OK) { fakRecID = 0; fakYear = 0; return "NO_PG"; } // !!! 
 
       string newWyrnTT     = Ftrans.Get_WYRNtt(origTT/*, pgFaktur_rec.DokDate.Year*/);
       short  newWyrnTtSort = ZXC.TtInfo(newWyrnTT).TtSort;
@@ -1494,6 +1499,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       OK = pgFaktur_rec.VvDao.ADDREC(conn, pgFaktur_rec);
 
       fakRecID = pgFaktur_rec.RecID;
+      fakYear  = (uint)pgFaktur_rec.DokDate.Year;
 
       ngT_valuta = pgFaktur_rec.DospDate;
 
@@ -1820,6 +1826,7 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       /* */ /* string   t_projektCD */ _currPrjktCD, // !!! tek od 23.03.2017 
       /* */ /* ushort   t_pdvKnjiga */ ZXC.PdvKnjigaEnum.NIJEDNA,
       /* */ /* uint     t_fakRecID  */ 0,
+      /* */ /* uint     t_fakYear   */ 0,
       /* */ /* OtsKindEnum t_otsKind*/ ZXC.OtsKindEnum.NIJEDNO,
       /* */ /* string   t_fond      */ "",
       /* */ /* string   t_pozicija  */ "",

@@ -2622,6 +2622,7 @@ public class LoadIzvodUC : VvOtherUC
          otsInfo.Konto    = outer_ftrans_rec.T_konto;
          otsInfo.KupdobCd = outer_ftrans_rec.T_kupdob_cd;
          otsInfo.FakRecID = outer_ftrans_rec.T_fakRecID;
+         otsInfo.FakYear  = outer_ftrans_rec.T_fakYear;
          otsInfo.TipBr    = outer_ftrans_rec.T_tipBr;
          otsInfo.ProjektCD= outer_ftrans_rec.T_projektCD;
          otsInfo.MtrosCD  = outer_ftrans_rec.T_mtros_cd;
