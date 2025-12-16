@@ -7105,8 +7105,10 @@ public static class VvSQL
             "ON ftr.recID = xtr.t_parentID AND xtr.t_tt = '" + Mixer.TT_MAP + "'" + "\n\n" +
 
             "WHERE ftr.t_tipBr != '' AND ftr.t_otsKind = 2 AND SUBSTRING(ftr.t_konto, 1, " + prvi_KSD_korjen_len.ToString() + ") = '" + prvi_KSD_korjen_str + "'"     + "\n\n" +
-            
-            "AND xtr.recID IS NULL   "                                            + "\n\n" ;
+
+            "AND ftr.t_tt IN" + TtInfo.GetSql_IN_Clause(Ftrans.WantedMAP_TTsStringArray) + " \n" +
+
+            "AND xtr.recID IS NULL   " + "\n\n" ;
 
       return (cmd);
    }

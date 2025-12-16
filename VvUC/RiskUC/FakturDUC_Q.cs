@@ -10478,6 +10478,7 @@ public class KtoShemaDsc : VvLookupAsDsc
    public bool Dsc_NePrikazujKDC        { get; set; }
    public bool Dsc_IsKPI24              { get; set; }
    public bool Dsc_IsPsOrigBr           { get; set; }
+   public string Dsc_MAP_TTs            { get; set; } // IZ, KMP
 
    #endregion KontoSchema
 
@@ -10723,6 +10724,8 @@ public class KtoShemaDsc : VvLookupAsDsc
 
       Dsc_KupacKontaIOS     = "120, 121, 122";
       Dsc_DobavKontaIOS     = "220, 221, 222";
+
+      Dsc_MAP_TTs           = "IZ, KP";
 
       Dsc_KtoRnmPprUSL      = "4000";
 

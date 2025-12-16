@@ -2056,7 +2056,7 @@ public static class Vv_eRacun_HTTP
       {
          MAP_CandidateFaktur_rec = new Faktur();
 
-         if(paymentftrans_rec.T_fakRecID.NotZero()) // TODO je prilagoditi Nalog_PS() da salje i T_fakRecID u tom formatu 
+         if(paymentftrans_rec.T_fakRecID.NotZero()) 
          {
             if(paymentftrans_rec.T_fakYear.IsZero())
             {
@@ -2075,6 +2075,8 @@ public static class Vv_eRacun_HTTP
          }
          else
          {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakRecID IsZero!!!");
+
             MAP_CandidateFaktur_rec = null;
             // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a ... ili kojiK ... npr ako je R1/R2 'po naplati' 
          }

@@ -756,6 +756,7 @@ public class Ftrans : VvTransRecord
 
    public static string[] WantedKupciKontaStringArray { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_KupacKontaIOS); } }
    public static string[] WantedDobavKontaStringArray { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_DobavKontaIOS); } }
+   public static string[] WantedMAP_TTsStringArray    { get { return ZXC.GetStringArrayFromCommaSeparatedTokens(ZXC.KSD.Dsc_MAP_TTs      ); } }
 
    //public DateTime DokDateFromOpis 
    //{ 
