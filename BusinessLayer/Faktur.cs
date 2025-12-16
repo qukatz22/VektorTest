@@ -5110,6 +5110,8 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
+         if(this.TheEx == null)             return false;
+
          if(F2_R1kind == ZXC.F2_R1enum.B2C) return true;
 
          if(F2_R1kind == ZXC.F2_R1enum.B2B)
