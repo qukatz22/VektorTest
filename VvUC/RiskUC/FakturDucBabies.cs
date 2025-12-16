@@ -9290,13 +9290,13 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName        );
       TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP          );
 
-      TheG.PutCell(ci.iT_electrID   , rowIdx, isF1 ?  0 : faktur_rec.F2_ElectronicID);
-      TheG.PutCell(ci.iT_dateSlanja , rowIdx, isF1 ? "" : faktur_rec.F2_SentTS == DateTime.MinValue ? "" : faktur_rec.F2_SentTS.ToString(ZXC.VvDateAndTimeFormat_NoSec));
-      TheG.PutCell(ci.iT_status     , rowIdx, isF1 ? "" : faktur_rec.F2_ElectronicID.IsZero() ? "" : Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
+      TheG.PutCell(ci.iT_electrID   , rowIdx, faktur_rec.F2_ElectronicID);
+      TheG.PutCell(ci.iT_dateSlanja , rowIdx, faktur_rec.F2_SentTS.IsEmpty() ? "" : faktur_rec.F2_SentTS.ToString(ZXC.VvDateAndTimeFormat_NoSec));
+      TheG.PutCell(ci.iT_status     , rowIdx, faktur_rec.F2_ElectronicID.IsZero() ? "" : Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]); // TODO !!! provider dependent 
 
-      TheG.PutCell(ci.iT_uplata     , rowIdx, isF1 ? "" : "");
-      TheG.PutCell(ci.iT_markPaid   , rowIdx, isF1 ? "" : "");
-      TheG.PutCell(ci.iT_razlikaUpl , rowIdx, isF1 ? "" : "");
+      TheG.PutCell(ci.iT_uplata     , rowIdx, "");
+      TheG.PutCell(ci.iT_markPaid   , rowIdx, "");
+      TheG.PutCell(ci.iT_razlikaUpl , rowIdx, "");
 
 
       if(faktur_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;

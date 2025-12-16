@@ -2042,11 +2042,13 @@ public static class Vv_eRacun_HTTP
 
       List<Ftrans> paymentftransList;
 
-      string thePaymentMethod = "T"; // TODO ??? !!!              
-                                     // 5.1 PaymentMethod         
-                                     // ”T” – Transakcijski racun 
-                                     // ”O” – Obracunsko placanje 
-                                     // ”Z” – Ostalo              
+      string thePaymentMethod = "T"; // TODO ??? !!!                                      
+                                     // 5.1 PaymentMethod                                 
+                                     // ”T” – Transakcijski racun                       IZ
+                                     // ”O” – Obracunsko placanje, kompenzacija, cesija KP
+                                     // ”Z” – Ostalo                                   ?TM
+
+
 
       paymentftransList = FtransDao.Get_MAP_FtransList(conn).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
       
@@ -2072,6 +2074,8 @@ public static class Vv_eRacun_HTTP
             {
                MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/ZXC.TheSecondDbConn_SameDB_OtherYear((int)paymentftrans_rec.T_fakYear), paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
             }
+
+            thePaymentMethod = paymentftrans_rec.T_TT == Nalog.IZ_TT ? "T" : paymentftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
          }
          else
          {

@@ -989,6 +989,7 @@ public class VvMessageBox_UC : UserControl
       colVvText.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+      colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
    }
 
    private void CreateMultiColumn_Barkod(VvDataGridView theGrid)
@@ -1037,7 +1038,7 @@ public class VvMessageBox_UC : UserControl
       CreateColumn_konto   (theGrid, "Konto"      , ZXC.Q3un            );
       CreateColumn_opis    (theGrid, "Opis uplate", ZXC.Q7un            );
       CreateColumn_iznosUpl(theGrid, "IznosUpl"   , ZXC.Q4un            );
-      CreateColumn_tipUpl  (theGrid, "TipUpl"     , ZXC.Q4un            );
+      CreateColumn_tipUpl  (theGrid, "TipUpl"     , ZXC.Q3un            );
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -1118,6 +1119,7 @@ public class VvMessageBox_UC : UserControl
       vvtb_partner = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_partner", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner, null, "R_partner", header, colWidth);
       vvtb_partner.JAM_ReadOnly = true;
+      colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
    }
 
    private void CreateColumn_ulaz(VvDataGridView theGrid, string header, int colWidth)
@@ -1184,8 +1186,10 @@ public class VvMessageBox_UC : UserControl
       vvtb_opis = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_opis", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis, null, "R_opis", header, colWidth);
       vvtb_opis.JAM_ReadOnly = true;
+      colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
    }
-   
+
    private void CreateColumn_nalRed(VvDataGridView theGrid, string header, int colWidth)
    {
       vvtb_nalRed = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_nalRed", null, -12, header);
@@ -1228,10 +1232,10 @@ public class VvMessageBox_UC : UserControl
       internal int iT_iznos     ;
       internal int iT_iznosUpl  ;
       internal int iT_datumUpl  ;
-      internal int iT_tipBrUpl  ;
       internal int iT_opis      ;
       internal int iT_nalRed    ;
       internal int iT_konto     ;
+      internal int iT_tipUpl;
    }
 
    private void SetColumnIndexes()
@@ -1257,10 +1261,11 @@ public class VvMessageBox_UC : UserControl
 
       ci.iT_iznosUpl = TheGrid.IdxForColumn("R_iznosUpl");
       ci.iT_datumUpl = TheGrid.IdxForColumn("R_datumUpl");
-      ci.iT_tipBrUpl = TheGrid.IdxForColumn("R_tipBrUpl");
       ci.iT_opis     = TheGrid.IdxForColumn("R_opis"    );
       ci.iT_nalRed   = TheGrid.IdxForColumn("R_nalRed"  );
       ci.iT_konto    = TheGrid.IdxForColumn("R_konto"   );
+      ci.iT_tipUpl   = TheGrid.IdxForColumn("R_tipUpl");
+
    }
 
    #endregion SetColumnIndexes()
@@ -1382,7 +1387,7 @@ public class VvMessageBox_UC : UserControl
          TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
          TheGrid.PutCell(ci.iT_datumUpl, rowIdx, messageList[rowIdx].String1   );
          TheGrid.PutCell(ci.iT_iznosUpl, rowIdx, messageList[rowIdx].TheMoney2 );
-         TheGrid.PutCell(ci.iT_tipBrUpl, rowIdx, messageList[rowIdx].String2   );
+         TheGrid.PutCell(ci.iT_tipUpl  , rowIdx, messageList[rowIdx].String2   );
          TheGrid.PutCell(ci.iT_konto   , rowIdx, messageList[rowIdx].String5   );
          TheGrid.PutCell(ci.iT_opis    , rowIdx, messageList[rowIdx].String4   );
          TheGrid.PutCell(ci.iT_nalRed  , rowIdx, messageList[rowIdx].String3   );

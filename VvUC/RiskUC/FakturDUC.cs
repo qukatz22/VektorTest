@@ -12115,13 +12115,13 @@ public partial class FakturExtDUC : FakturDUC
       dtp_f2_sentTS      = hamper.CreateVvDateTimePicker(1, 1, "", tbx_f2_sentTS);
       dtp_f2_sentTS.Name = "dtp_f2_sentTS";
 
-      tbx_f2_status_CD = hamper.CreateVvTextBox(1, 2, "tbx_f2_status_CD"  , "F2_status_CD"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
+      tbx_f2_status_CD   = hamper.CreateVvTextBox(1, 2, "tbx_f2_status_CD"  , "F2_status_CD"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
       tbx_f2_ArhRecID    = hamper.CreateVvTextBox(1, 3, "tbx_f2_ArhRecID"   , "F2_ArhRecID"   , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_ArhRecID   ));
       tbx_f2_isFisk      = hamper.CreateVvTextBox(1, 4, "tbx_f2_isFisk"     , "F2_isFisk"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isFisk     ));
-      tbx_f2_isEizvj     = hamper.CreateVvTextBox(1, 5, "tbx_f2_isEizvj"    , "F2_isEizvj"    ,5 /*GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    )*/);
+      tbx_f2_isEizvj     = hamper.CreateVvTextBox(1, 5, "tbx_f2_isEizvj"    , "F2_isEizvj"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    ));
       tbx_f2_isMrkAsPaid = hamper.CreateVvTextBox(1, 6, "tbx_f2_isMrkAsPaid", "F2_isMrkAsPaid", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isMrkAsPaid));
       tbx_f2_isRejected  = hamper.CreateVvTextBox(1, 7, "tbx_f2_isRejected" , "F2_isRejected" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
-      tbx_f2_R1kind      = hamper.CreateVvTextBox(1, 8, "tbx_f2_R1kind"     , "F2_statusKupca", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind  ));
+      tbx_f2_R1kind      = hamper.CreateVvTextBox(1, 8, "tbx_f2_R1kind"     , "F2_statusKupca", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind     ));
       tbx_f2_prvFakRecID = hamper.CreateVvTextBox(1, 9, "tbx_f2_prvFakRecID", "F2_prvFakRecID", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_prvFakRecID));
 
       tbx_f2_electron_ID.JAM_ReadOnly = true;
@@ -13591,20 +13591,20 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isFisk.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
-            case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
-            default:            return F2_StatusOutboxEnum.Na_cekanju;
+            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
+            default:           return F2_StatusOutboxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isFisk.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
-            default:                                        tbx_f2_isFisk.Text = ""; break;
+            default:                             tbx_f2_isFisk.Text = ""; break;
          }
       }
    }
@@ -13615,20 +13615,20 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isEizvj.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
-            case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
-            default:            return F2_StatusOutboxEnum.Na_cekanju;
+            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
+            default:           return F2_StatusOutboxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
-            default:                                        tbx_f2_isEizvj.Text = ""                                                  ; break;
+            default:                             tbx_f2_isEizvj.Text = ""; break;
          }
       }
    }
@@ -13639,20 +13639,20 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isMrkAsPaid.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
-            case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
-            default:            return F2_StatusOutboxEnum.Na_cekanju;
+            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
+            default:           return F2_StatusOutboxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
-            default:                                        tbx_f2_isMrkAsPaid.Text = ""         ; break;
+            default:                             tbx_f2_isMrkAsPaid.Text = ""  ; break;
          }
       }
    }
@@ -13663,20 +13663,20 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(tbx_f2_isRejected.Text)
          {
-            case "Uspjeh"     : return F2_StatusOutboxEnum.DA_JE    ;
-            case "Nuspjeh"    : return F2_StatusOutboxEnum.NE_NIJE  ;
-            case "Na_cekanju" : return F2_StatusOutboxEnum.Na_cekanju;
-            default:            return F2_StatusOutboxEnum.Na_cekanju;
+            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
+            default:           return F2_StatusOutboxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE    : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE  : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
+            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
             case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isRejected.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
-            default:                                        tbx_f2_isRejected.Text = ""; break;
+            default:                             tbx_f2_isRejected.Text = ""; break;
          }
       }
    }
@@ -16928,7 +16928,7 @@ public class Fak2NalogRulesUC : VvOtherUC
                      tbx_S_ukPdvU10n_EU , tbx_S_ukPdvR05m_EU , tbx_S_ukPdvR05n_EU , tbx_S_ukPdvU05m_EU , tbx_S_ukPdvU05n_EU , tbx_S_ukPdv25m_BS  , tbx_S_ukPdv25n_BS  ,
                      tbx_S_ukPdv10m_BS  , tbx_S_ukPdv10n_BS  , tbx_S_ukPdv25m_TP  , tbx_S_ukPdv25n_TP  ,
                      tbx_ukIznPNP       , tbx_Msk_PNP        , tbx_ktoIZD         , tbx_ktoIZM         ,  tbx_ktoRnmPprUSL     , 
-                     tbx_KupacKontaIOS  , tbx_DobavKontaIOS;
+                     tbx_KupacKontaIOS  , tbx_DobavKontaIOS, tbx_MAP_TTs;
 
    private RadioButton rbt_odmahU, rbt_zaSatU, rbt_sutraU, rbt_nikadU, 
                        rbt_odmahI, rbt_zaSatI, rbt_sutraI, rbt_nikadI, 
@@ -17505,7 +17505,7 @@ public class Fak2NalogRulesUC : VvOtherUC
 
    private void InitializeHamper_IOS(out VvHamper hamper)
    {
-      hamper = new VvHamper(6, 1, "", this, false);
+      hamper = new VvHamper(6, 2, "", this, false);
      
       hamper.Location      = new Point(ZXC.QunMrgn, hamp_ShemaIRA.Bottom + ZXC.Qun2);
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q3un - ZXC.Qun2, ZXC.Q5un, ZXC.Q3un, ZXC.Q5un, ZXC.Q10un + ZXC.Q5un };
@@ -17529,6 +17529,11 @@ public class Fak2NalogRulesUC : VvOtherUC
       tbx_DobavKontaIOS = hamper.CreateVvTextBox(4, 0, "tbx_DobavKontaIOS", "DobavKontaIOS");
       
       hamper.CreateVvLabel(5, 0, "(korijeni konta ili konto obavezno odvojeni zarezom)", ContentAlignment.MiddleLeft);
+
+      Label lbl2 = hamper.CreateVvLabel(0, 1, "Tipovi Vrste Knjizenja za PRIJAVU UPLATE:", 3, 0, ContentAlignment.MiddleLeft);
+      lbl2.Font = ZXC.vvFont.SmallBoldFont;
+      tbx_MAP_TTs = hamper.CreateVvTextBox(4, 1, "tbx_MAP_TTs", "MAP_TTs");
+      hamper.CreateVvLabel(5, 1, "(tipovi knjizenja obavezno odvojeni zarezom)", ContentAlignment.MiddleLeft);
 
    }
 
@@ -18370,11 +18375,13 @@ public class Fak2NalogRulesUC : VvOtherUC
    public bool   Fld_Is_OTSviaMtrosCD     { get { return cbx_Is_OTSviaMtrosCD     .Checked; } set { cbx_Is_OTSviaMtrosCD    .Checked = value; } }
    public bool   Fld_NePrikazujKDC        { get { return cbx_NePrikazujKDC        .Checked; } set { cbx_NePrikazujKDC       .Checked = value; } }
    public bool   Fld_IsKPI24              { get { return cbx_KPI24                .Checked; } set { cbx_KPI24               .Checked = value; } }
-   public bool   Fld_IsPsOrigBr           { get { return cbx_PsOrigBr             .Checked; } set { cbx_PsOrigBr             .Checked = value; } }
+   public bool   Fld_IsPsOrigBr           { get { return cbx_PsOrigBr             .Checked; } set { cbx_PsOrigBr            .Checked = value; } }
 
-#endregion Fld_
+   public string Fld_MAP_TTs              { get { return tbx_MAP_TTs.Text;                  } set { tbx_MAP_TTs.Text = value; } }
 
-#region PutShemaKontoFields(), GetShemaKontoFields()
+   #endregion Fld_
+
+   #region PutShemaKontoFields(), GetShemaKontoFields()
 
    private void PutKtoShemaDscFields(KtoShemaDsc KSD)
    {
@@ -18574,6 +18581,8 @@ public class Fak2NalogRulesUC : VvOtherUC
       Fld_NePrikazujKDC        = KSD.Dsc_NePrikazujKDC       ;
       Fld_IsKPI24              = KSD.Dsc_IsKPI24             ;
       Fld_IsPsOrigBr           = KSD.Dsc_IsPsOrigBr          ;
+
+      Fld_MAP_TTs              = KSD.Dsc_MAP_TTs             ;
    }
 
    public void GetKtoShemaDscFields()
@@ -18776,6 +18785,8 @@ public class Fak2NalogRulesUC : VvOtherUC
       KSD.Dsc_NePrikazujKDC        = Fld_NePrikazujKDC       ;
       KSD.Dsc_IsKPI24              = Fld_IsKPI24             ;
       KSD.Dsc_IsPsOrigBr           = Fld_IsPsOrigBr          ;
+      
+      KSD.Dsc_MAP_TTs              = Fld_MAP_TTs             ;
 
       KSD.SaveDscToLookUpItemList();
    }

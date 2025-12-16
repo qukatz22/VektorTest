@@ -565,7 +565,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
    {
       zaglavljeHamper = new VvHamper(11, 2, "", TheTabControl.TabPages[0], false, nextX, nextY, razmakHamp);
       //                                               0              1                   2                  3                4              5                6              7             8               9             10     
-      zaglavljeHamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un - ZXC.Qun4, ZXC.Q3un -ZXC.Qun2, ZXC.Q4un + ZXC.Qun4, ZXC.Q4un, ZXC.Q2un + ZXC.Qun4, ZXC.Q6un, ZXC.Q2un + ZXC.Qun4, ZXC.Q3un, ZXC.Q3un - ZXC.Qun4, ZXC.QUN  };
+      zaglavljeHamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un - ZXC.Qun4, ZXC.Q3un -ZXC.Qun2, ZXC.Q4un + ZXC.Qun4, ZXC.Q5un, ZXC.Q2un + ZXC.Qun4, ZXC.Q6un, ZXC.Q2un + ZXC.Qun4, ZXC.Q3un, ZXC.Q3un - ZXC.Qun4, ZXC.QUN  };
       zaglavljeHamper.VvSpcBefCol   = new int[] { ZXC.Qun4,            ZXC.Qun4,           ZXC.Qun4,            ZXC.Qun4, ZXC.Qun4,            ZXC.Qun4, ZXC.Qun4,            ZXC.Qun4, ZXC.Qun4,            ZXC.Qun4, ZXC.Qun4 };
       zaglavljeHamper.VvRightMargin = zaglavljeHamper.VvLeftMargin;
 
