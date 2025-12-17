@@ -1598,11 +1598,11 @@ public abstract class NalogDUC : VvDocumentRecordUC
       {
          if(ftrans_rec.R_IsMAP_Ftr)
          {
-            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightCoral;
+            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179); 
 
             if(FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
             {
-               TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightGreen;
+               TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
             }
          }
       } 
