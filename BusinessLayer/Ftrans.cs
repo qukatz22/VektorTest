@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 
@@ -522,6 +523,21 @@ public class Ftrans : VvTransRecord
    //      return T_kupdob_cd.ToString() + "_" + T_tipBr;
    //   }
    //}
+
+   public bool R_IsMAP_Ftr 
+   { 
+      get
+      {
+         string prvi_KSD_korjen_str = Ftrans.WantedKupciKontaStringArray.Length.IsPositive() ? Ftrans.WantedKupciKontaStringArray[0] : "120";
+
+         if(this.T_tipBr.IsEmpty()                      )                 return false; // nema tipBr          -> NIJE MAP ftr 
+         if(this.T_otsKind != ZXC.OtsKindEnum.ZATVARANJE)                 return false; // nije OTS zatvaranje -> NIJE MAP ftr 
+         if(this.T_konto.StartsWith(prvi_KSD_korjen_str) == false)        return false; // nije kupac          -> NIJE MAP ftr 
+         if(Ftrans.WantedMAP_TTsStringArray.Contains(this.T_TT) == false) return false; // nije TT naplate     -> NIJE MAP ftr 
+
+         return true; // sve uvjete zadovoljava -> JE MAP je ftr 
+      }
+   } 
 
    #endregion propertiz
 

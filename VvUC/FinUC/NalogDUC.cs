@@ -1593,6 +1593,19 @@ public abstract class NalogDUC : VvDocumentRecordUC
       //ptrano_rec.CalcTransResults();
 
       //PutDgvLineResultsFields(rowIdx, ftrans_rec);
+
+      if(ZXC.RRD.Dsc_F2_TT.NotEmpty())
+      {
+         if(ftrans_rec.R_IsMAP_Ftr)
+         {
+            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightCoral;
+
+            if(FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
+            {
+               TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightGreen;
+            }
+         }
+      } 
    }
 
    public override void PutDgvTransSumFields()
