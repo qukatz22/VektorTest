@@ -3340,8 +3340,18 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    {
       ((F2_Izlaz_UC)TheVvUC).INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
-   private void F2_Send_eRacune (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection, true); }
-   private void F2_MAPaj        (object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection, true); }
+   private void F2_Send_eRacune (object sender, EventArgs e) 
+   { 
+      Vv_eRacun_HTTP.InitProjectData(); /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection, true);
+
+      F2_RefreshFIR_FakturListAndStatuses(sender, e);
+   }
+   private void F2_MAPaj(object sender, EventArgs e) 
+   { 
+      Vv_eRacun_HTTP.InitProjectData(); /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection, true);
+
+      F2_RefreshFIR_FakturListAndStatuses(sender, e);
+   }
    private void F2_Send_eRacun_1(object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
    private void F2_MAPaj_1      (object sender, EventArgs e) {  }
    private void F2_ArhivaPdf (object sender, EventArgs e) 
@@ -3393,6 +3403,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
+      DialogResult result = MessageBox.Show("Potvrđujete slanje ovog eRačuna?", "Potvrdite eRačun", MessageBoxButtons.YesNo, MessageBoxIcon.Question); if(result != DialogResult.Yes) return;
+
       Cursor.Current = Cursors.WaitCursor;
 
       Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters((TheVvDocumentRecordUC as FakturDUC).faktur_rec, TheVvUC, true, true);

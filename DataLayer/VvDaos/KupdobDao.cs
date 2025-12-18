@@ -1525,7 +1525,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
    public static ZXC.F2_R1enum GetMandatory_Kupdob_R1enum_FromDialog(XSqlConnection dbConnection, Kupdob kupdob_rec)
    {
-      if(!ZXC.IsF2_2026_rules) return ZXC.F2_R1enum.B2B;
+      //if(!ZXC.IsF2_2026_rules) return ZXC.F2_R1enum.B2B;
 
       bool refreshR1StatusOK = true;
       ZXC.F2_R1enum refreshedR1status = ZXC.F2_R1enum.Nepoznato;
