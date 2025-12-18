@@ -1530,7 +1530,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       bool refreshR1StatusOK = true;
       ZXC.F2_R1enum refreshedR1status = ZXC.F2_R1enum.Nepoznato;
 
-      VvGetMandatory_Kupdob_R1enum_Dlg dlg = new VvGetMandatory_Kupdob_R1enum_Dlg();
+      VvGetMandatory_Kupdob_R1enum_Dlg dlg = new VvGetMandatory_Kupdob_R1enum_Dlg(kupdob_rec);
 
       if(dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
       {

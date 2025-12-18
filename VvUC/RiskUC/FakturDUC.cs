@@ -9352,23 +9352,42 @@ public partial class FakturExtDUC : FakturDUC
       else if(this is RNMDUC                         ) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4            };
       else                                             hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2 - ZXC.Qun8 };
 
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun4 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
 
-                   hamper.CreateVvLabel(0, 0, "Status:", ContentAlignment.MiddleRight);
-      tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", "Status", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
-      tbx_Status.JAM_CharacterCasing = CharacterCasing.Upper;
-      tbx_Status.JAM_Set_LookUpTable(ZXC.luiListaRiskStatus, (int)ZXC.Kolona.prva);
+      //18.12.2025.
+      //             hamper.CreateVvLabel        (0, 0, "Status:", ContentAlignment.MiddleRight);
+      //tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", "Status", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
+      //tbx_Status.JAM_CharacterCasing = CharacterCasing.Upper;
+      //tbx_Status.JAM_Set_LookUpTable(ZXC.luiListaRiskStatus, (int)ZXC.Kolona.prva);
+      //
+      //if(IsRadNalog) tbx_Status.JAM_lookUp_NOTobligatory = false;
+      //else           tbx_Status.JAM_lookUp_NOTobligatory = true;
+      // tbx_Status.JAM_lookUp_MultiSelection = true;
+      
+      string label = IsRadNalog ? "Status:" : "eRac:";   
+      string opis  = IsRadNalog ? "Status"  : "Kod tipa eRacuna";
+      VvLookUpLista vvLookUpLista = IsRadNalog ? ZXC.luiListaRiskStatus : ZXC.luiListaKodTipaEracuna;
 
-      if(IsRadNalog) tbx_Status.JAM_lookUp_NOTobligatory = false;
-      else tbx_Status.JAM_lookUp_NOTobligatory = true;
+                   hamper.CreateVvLabel        (0, 0, label, ContentAlignment.MiddleRight);
+      tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", opis, GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
+      tbx_Status.JAM_Set_LookUpTable(vvLookUpLista, (int)ZXC.Kolona.prva);
 
-      tbx_Status.JAM_lookUp_MultiSelection = true;
+      if(IsRadNalog) 
+      {
+         tbx_Status.JAM_CharacterCasing = CharacterCasing.Upper;
+         tbx_Status.JAM_lookUp_NOTobligatory = false;
+         tbx_Status.JAM_lookUp_MultiSelection = true;
+      }
+      else
+      {
+         if(ZXC.IsF2_2026_rules) tbx_Status.JAM_DataRequired = true;
+      }
 
       tbx_Status.JAM_IsSupressTab = true;
    }
@@ -19516,11 +19535,11 @@ public class F2_Rules_UC : VvOtherUC
 {
    #region Fieldz
 
-   private VvHamper  hamp_eRproces, hamp_kpd, hamp_ascDesc, hamp_TT, hamp_numOfRows, hamp_auto;
+   private VvHamper  hamp_eRproces, hamp_kpd, hamp_ascDesc, hamp_TT, hamp_numOfRows, hamp_auto, hamp_nirNur;
    private VvTextBox tbx_DefaultKPD, tbx_Default_eRposProc, tbx_F2_TT, tbx_numOfRows;
    private RadioButton rbt_Ascending, rbt_Descending, 
                        rbt_F2_IFA, rbt_F2_IRA, rbt_F2_IRM, rbt_F2_none;
-   private CheckBox cbx_isAutoSend, cbx_isAutoMAP;
+   private CheckBox cbx_isAutoSend, cbx_isAutoMAP, cbx_isNIR, cbx_isNUR;
 
    public /*protected*/ VvSQL.OrderDirectEnum asc_or_desc = VvSQL.OrderDirectEnum.ASC;
 
@@ -19534,7 +19553,7 @@ public class F2_Rules_UC : VvOtherUC
 
       CreateHampers();
 
-      this.Size = new Size(hamp_TT.Right + 2*ZXC.QunMrgn, hamp_auto.Bottom + ZXC.QunMrgn);
+      this.Size = new Size(hamp_nirNur.Right + 2*ZXC.QunMrgn, hamp_auto.Bottom + ZXC.QunMrgn);
 
       // ?????????? kako cemo ovo 
       if(ZXC.CURR_userName == ZXC.vvDB_systemSuperUserName || ZXC.CURR_userName == ZXC.vvDB_programSuperUserName || ZXC.CURR_user_rec.IsSuper)
@@ -19558,6 +19577,7 @@ public class F2_Rules_UC : VvOtherUC
       InitializeHamper_KPD      (out hamp_kpd      );
       InitializeHamper_AscDesc  (out hamp_ascDesc  );
       InitializeHamper_NumOfRows(out hamp_numOfRows);
+      InitializeHamper_NirNur   (out hamp_nirNur   );
       InitializeHamper_Auto     (out hamp_auto     );
    }
    private void InitializeHamper_TT(out VvHamper hamper)
@@ -19662,9 +19682,28 @@ public class F2_Rules_UC : VvOtherUC
 
    }
 
-   private void InitializeHamper_Auto(out VvHamper hamper)
+   private void InitializeHamper_NirNur(out VvHamper hamper)
    { 
       hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q10un*3 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      cbx_isNIR = hamper.CreateVvCheckBox_OLD(0, 0, null, "Učitaj izlazne eRačune u NIR - neutralan tip izlaznog računa umjesto u odabran F2 Tip izlaznog eRačuna", RightToLeft.No);
+      cbx_isNUR = hamper.CreateVvCheckBox_OLD(0, 1, null, "Učitaj ulazne eRačune u NUR - neutralan tip ulaznog računa umjesto u tip računa UFA"                  , RightToLeft.No);
+   }
+
+   private void InitializeHamper_Auto(out VvHamper hamper)
+   { 
+      hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_nirNur.Bottom + ZXC.QUN, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un*3 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun2 };
@@ -19729,6 +19768,9 @@ public class F2_Rules_UC : VvOtherUC
    public bool Fld_F2_IsAutoSend { get { return cbx_isAutoSend.Checked; } set { cbx_isAutoSend.Checked = value; } }
    public bool Fld_F2_IsAutoMAP  { get { return cbx_isAutoMAP .Checked; } set { cbx_isAutoMAP .Checked = value; } }
    
+   public bool Fld_F2_IsNIR { get { return cbx_isNIR.Checked; } set { cbx_isNIR.Checked = value; } }
+   public bool Fld_F2_IsNUR { get { return cbx_isNUR.Checked; } set { cbx_isNUR.Checked = value; } }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -19742,6 +19784,8 @@ public class F2_Rules_UC : VvOtherUC
       Fld_F2_TT             = RRD.Dsc_F2_TT            ;
       Fld_F2_IsAutoSend     = RRD.Dsc_F2_IsAutoSend    ;
       Fld_F2_IsAutoMAP      = RRD.Dsc_F2_IsAutoMAP     ;
+      Fld_F2_IsNIR          = RRD.Dsc_F2_IsNIR         ;
+      Fld_F2_IsNUR          = RRD.Dsc_F2_IsNUR         ;
    }
 
    public void GetDscFields()
@@ -19753,6 +19797,8 @@ public class F2_Rules_UC : VvOtherUC
       ZXC.RRD.Dsc_F2_TT             = Fld_F2_TT            ;
       ZXC.RRD.Dsc_F2_IsAutoSend     = Fld_F2_IsAutoSend    ;
       ZXC.RRD.Dsc_F2_IsAutoMAP      = Fld_F2_IsAutoMAP     ;
+      ZXC.RRD.Dsc_F2_IsNIR          = Fld_F2_IsNIR         ;
+      ZXC.RRD.Dsc_F2_IsNUR          = Fld_F2_IsNUR         ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
    }

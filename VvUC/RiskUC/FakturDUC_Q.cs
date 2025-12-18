@@ -8717,6 +8717,15 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PON_MPC_DUC, OPN_MPC_DUC, IZD_MPC_DUC
 
+      #region R1kind && kod tipa racuna
+
+      if(faktur_rec.TtInfo.IsIzlazniPdvTT) //18.12.2025.
+      {
+         Fld_F2_R1kind = _kupdob_rec.R1kind;
+      }
+
+      #endregion R1kind && kod tipa racuna
+
       #region KOMISIJA
 
       if((this is KIZDUC || this is PIKDUC || this is IRADUC || this is IRADUC_2) && _kupdob_rec.KupdobCD.IsPositive()) // ako nije positive znaci da smo pozvani od ClearKupdobFields 
@@ -10868,6 +10877,11 @@ public class RiskRulesDsc : VvLookupAsDsc
    public bool Dsc_F2_IsAsc                    { get; set; }
    public bool Dsc_F2_IsAutoSend               { get; set; }
    public bool Dsc_F2_IsAutoMAP                { get; set; }
+   public bool Dsc_F2_IsNIR                    { get; set; }
+   public bool Dsc_F2_IsNUR                    { get; set; }
+
+
+
 
    #endregion DataLayer Propertiz
 
@@ -10966,6 +10980,8 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_F2_IsAsc                = false;
       Dsc_F2_IsAutoSend           = false;
       Dsc_F2_IsAutoMAP            = false;
+      Dsc_F2_IsNIR                = false;
+      Dsc_F2_IsNUR                = false;
 
       #endregion defautValue
    }
