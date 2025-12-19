@@ -731,9 +731,10 @@ public class VvMessageBox_UC : UserControl
                      vvtb_iznos, tbx_numOfFirstLinesOnly_Send, tbx_numOfFirstLinesOnly_MAP,
                      vvtb_datumUpl, vvtb_iznosUpl, vvtb_tipUpl, vvtb_opis, vvtb_nalRed, vvtb_konto;
 
-   private CheckBox  cbx_IsAutoSend, cbx_isAutoMAP;
+   private CheckBox  cbx_IsAutoSend, cbx_isAutoMAP,cbx_skip ;
    private VvTextBoxColumn colVvText;
    private DataGridViewTextBoxColumn colScrol;
+   private DataGridViewCheckBoxColumn colCbxClassic;
    int colWidth = 0;
    private bool smallFont;
    private bool isMultiColumn;
@@ -1029,6 +1030,8 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_MAP_candidates(VvDataGridView theGrid)
    {
+      CreateColumn_skip   (theGrid, "Preskoci"    , ZXC.Q3un            );
+
       CreateColumn_tipBr   (theGrid, "TipBr"      , ZXC.Q5un            );
       CreateColumn_datum   (theGrid, "DatumRn"    , ZXC.Q5un            );
       CreateColumn_partner (theGrid, "Partner"    , ZXC.Q10un + ZXC.Q5un);
@@ -1101,6 +1104,9 @@ public class VvMessageBox_UC : UserControl
 
    #region minus Columns
 
+
+
+
    private void CreateColumn_datum(VvDataGridView theGrid, string header, int colWidth)
    {
       vvtb_datum = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_datum", null, -12, header);
@@ -1158,6 +1164,14 @@ public class VvMessageBox_UC : UserControl
    #endregion F2_SEND_candidates Columns
 
    #region F2_MAP_candidates Columns
+
+   private void CreateColumn_skip(VvDataGridView theGrid, string _colHeader, int _width)
+   {
+      cbx_skip      = new CheckBox();
+      colCbxClassic = theGrid.CreateClassicCheckBoxColumn(cbx_skip, null, 333, _colHeader, _width);
+
+      VvHamper.Open_Close_Fields_ForWriting(cbx_skip, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+   }
 
    private void CreateColumn_datumUpl(VvDataGridView theGrid, string header, int colWidth)
    {

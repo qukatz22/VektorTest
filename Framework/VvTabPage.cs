@@ -1196,6 +1196,8 @@ be_fast:
                case ZXC.VvSubModulEnum.R_IFAdev:
                case ZXC.VvSubModulEnum.R_IRM:
                case ZXC.VvSubModulEnum.R_IRM_2:
+               case ZXC.VvSubModulEnum.R_NUR:
+               case ZXC.VvSubModulEnum.R_NIR:
                   col1 = ZXC.Q4un;
                   col2 = ZXC.Q4un;
                   col3 = ZXC.Q10un;

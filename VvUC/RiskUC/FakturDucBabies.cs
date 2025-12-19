@@ -1348,7 +1348,7 @@ public class IFADUC              : FakturExtDUC
       get 
       {
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB         ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
       } 
@@ -1522,7 +1522,7 @@ public class IRADUC              : FakturExtDUC
       get 
       {
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB         ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
       } 
@@ -1660,7 +1660,7 @@ public class IRADUC_2              : FakturExtDUC
       get 
       {
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB         ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
       } 
@@ -2199,7 +2199,7 @@ public class IRMDUC_2            : FakturExtDUC
       get 
       {
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB         ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
       } 
@@ -9610,6 +9610,220 @@ public class F2_Ulaz_UC : VvUserControl
 
    #endregion PutDgvFields1
 
+}
+
+public class NUR_DUC : FakturExtDUC
+{
+   #region Constructor
+
+   public NUR_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_NUR
+         });
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      
+      CreateArrOfHampers();
+
+      SetParentOfhampers();
+
+      SetLocationMigrators();
+
+      SetSumeHampers(true, true, true, false);
+ 
+   }
+
+   private void CreateArrOfHampers()
+   {
+      hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PDV, hamp_pdvGeokind, hamp_napomena, 
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT
+                                  };
+
+      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
+                                    hamp_VezniDok2, hamp_Fco, hamp_NacPlac,  hamp_osobaA, hamp_OsobaB ,
+                                    hamp_OpciA, hamp_OpciB, hamp_osobaX, hamp_carinaKind,/* hamp_rokIsporuke, hamp_rokIspDate, hamp_tipOtpreme,*/
+                                    hamp_externLink1, hamp_externLink2, hamp_prjIdent, 
+                                    hamp_opis
+                                  };
+
+      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
+                                        hampCbxM_VezniDok2, hampCbxM_Fco, hampCbxM_NacPlac, hampCbxM_OsobaA, hampCbxM_osobaB,
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_osobaX, hampCbxM_carinaKind,/* hampCbxM_rokIsporuke, hampCbxM_rokIspDate	, hampCbxM_tipOtpreme,*/
+                                        hampCbxM_externLink1, hampCbxM_externLink2, hampCbxM_prjIdent,
+                                        hampCbxM_opis                                   
+                                      };
+   }
+ 
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible = true;
+
+    //T_artiklCD_CreateColumn      (ZXC.Q4un            , isVisible, "Šifra"           , "Šifra artikla"                                    );
+      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"           , "Naziv artikla ili proizvoljan opis"               );
+      T_artiklTS_CreateColumn      (ZXC.Q2un            , isVisible, "TS"              , "Tip artikla"                                      );
+      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"             , "Usluga"                                           );
+      T_konto_CreateColumn         (ZXC.Q3un            , isVisible, "Konto"           , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      T_mtros_cd_CreateColumn      (ZXC.Q3un            , ZXC.RRD.Dsc_IsMtrosColVisible, "MtrosCD"    , "Šifra Mjesta troška"               );
+      R_mtros_tk_CreateColumn      (ZXC.Q3un            , ZXC.RRD.Dsc_IsMtrosColVisible, "MjTroška"   , "Tiker Mjesta troška"               );
+      T_kol_CreateColumn           (ZXC.Q3un,          2, isVisible, "Kol"             , "Količina"                                         );
+      T_jedMj_CreateColumn         (ZXC.Q2un            , isVisible, "JM"              , "Jedinica mjere"                                   );
+      T_cij_CreateColumn           (ZXC.Q4un,          4, isVisible, "Cijena"          , "Jedinična cijena"                                 );
+      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"             , "Stopa rabata 1"                                   );
+      R_KCR_CreateColumn           (ZXC.Q4un,          2, isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a"                           );
+      T_pdvSt_CreateColumn         (ZXC.Q2un,          0, isVisible, "PdvSt"           , "Stopa PDV-a"                                      );
+      T_pdvKolTip_CreateColumn     (ZXC.QUN             , isVisible                                                                         );
+      R_KCRP_CreateColumn          (ZXC.Q4un + ZXC.Qun2 ,  2, isVisible        , "Uk s PDV-om", "Ukupno s PDV-om"                   );
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturURaDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(clr_NUR, Color.Empty, clr_NUR);
+   }
+}
+
+public class NIR_DUC : FakturExtDUC
+{
+   #region Constructor
+
+   public NIR_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   {
+      dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
+         (Faktur.tt_colName, new string[] 
+         { 
+            Faktur.TT_NIR
+         });
+   }
+
+   #endregion Constructor
+
+   #region HamperLocation
+
+   protected override void SetLocationAndParentOfHampersOnBaby()
+   {
+      CreateArrOfHampers();
+
+      SetParentOfhampers();
+
+      SetLocationMigrators();
+   
+      SetSumeHampers(true, true, true, false);
+   
+   }
+
+   private void CreateArrOfHampers()
+   {
+      if(ZXC.IsFikalEra)
+      {
+         hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    /*hamp_kupdobOther,*/ hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, hamp_Status  ,
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
+                                    hamp_skladCd    ,hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
+                                    hamp_NacPlac, hamp_fiskJIR
+                                  };
+      }
+      else
+      {
+         hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
+                                    /*hamp_kupdobOther,*/ hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
+                                    hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PDV,  hamp_PonudDate, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac
+                                  };
+      }
+      hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
+                                    hamp_VezniDok2, hamp_Fco, /*hamp_NacPlac,*/hamp_DatumX,  hamp_osobaA, hamp_OsobaB ,hamp_carinaKind,
+                                    hamp_OpciA, hamp_OpciB, hamp_rokIspAndDate, hamp_tipOtpreme, hamp_osobaX,
+                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,hamp_eRproc,
+                                    hamp_opis
+                                  };
+
+      hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
+                                        hampCbxM_VezniDok2, hampCbxM_Fco, /*hampCbxM_NacPlac,*/hampCbxM_DatumX, hampCbxM_OsobaA, hampCbxM_osobaB, hampCbxM_carinaKind,
+                                        hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme,  hampCbxM_osobaX,
+                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp,hampCbxM_eRproc, hampCbxM_fiskPrgBr,
+                                        hampCbxM_opis                                   
+                                      };
+   }
+
+   #endregion HamperLocation
+
+   #region TheG_Specific_Columns
+
+   protected override void InitializeDUC_Specific_Columns()
+   {
+      bool isVisible = true;
+      bool isSerlotVisible = ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible || ZXC.IsPCTOGO;
+      string serlotCol  = ZXC.IsPCTOGO ? "UGAN Rata" : "Šarža/LOT";
+      string serlotOpis = ZXC.IsPCTOGO ? "Broj ugovora i rate" : "Broj Šarže/Lota";
+
+      T_artiklCD_CreateColumn      (ZXC.IsPCTOGO ? ZXC.Q2un : ZXC.Q4un, isVisible, "Šifra"         , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                                    isVisible, "Naziv"         , "Naziv artikla ili proizvoljan opis");
+      T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"           , "KPD sifra");
+      T_serlot_CreateColumn        (ZXC.IsPCTOGO ? ZXC.Q6un : ZXC.Q4un, isSerlotVisible, serlotCol , serlotOpis);
+      T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                 isVisible, "Usl"           , "Usluga");
+      T_konto_CreateColumn         (ZXC.Q3un   ,                        isVisible, "Konto"         , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
+      T_jedMj_CreateColumn         (ZXC.Q2un   ,                        isVisible, "JM"            , "Jedinica mjere");
+      T_kol_CreateColumn           (ZXC.Q3un, 2,                        isVisible, "Kol"           , "Količina"      );
+      T_cij_CreateColumn           (ZXC.Q4un, 4,                        isVisible, "Cijena"        , "Jedinična cijena");
+      T_rbt1St_CreateColumn        (ZXC.Q3un-ZXC.Qun4, 2,               isVisible, "Rb1"           , "Stopa rabata 1");
+      R_KCR_CreateColumn           (ZXC.Q4un, 2,                        isVisible, "Uk bez Pdv"    , "Ukupan iznos bez PDV-a");
+      T_pdvSt_CreateColumn         (ZXC.Q2un, 0,                        isVisible, "PdvSt"         , "Stopa PDV-a"           );
+      T_pdvKolTip_CreateColumn     (ZXC.QUN    ,                        isVisible);                
+      R_KCRP_CreateColumn          (ZXC.Q4un + ZXC.Qun2 , 2,            isVisible, "Uk s PDV-om"   , "Ukupno s PDV-om");
+   
+   }
+
+   #endregion TheG_Specific_Columns
+
+   #region overrideMigratorList
+
+   internal /*protected*/ override List<VvMigrator> MigratorList
+   {
+      get { return ZXC.TheVvForm.VvPref.fakturIRaDUC.MigratorStates; }
+   }
+
+   #endregion overrideMigratorList
+
+   protected override void AddColorsToBaby()
+   {
+      SetUpColor(clr_NIR, Color.Empty, clr_NIR);
+   }
+
+   protected override bool VezniDokIsReadOnly 
+   { 
+      get 
+      {
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
+
+         return false; 
+      } 
+   }
 }
 
 #endregion Fiskalizacija F2

@@ -732,6 +732,7 @@ public class VvDataGridView : DataGridView
 
            if(dbColIdx == 111) colCbox.Name = "T_isProductLine";
       else if(dbColIdx == 222) colCbox.Name = "T_selection";
+      else if(dbColIdx == 333) colCbox.Name = "T_skip";
       else                     colCbox.Name = vvDao.GetSchemaColumnName(dbColIdx);
 
       colCbox.HeaderText = headerText;
