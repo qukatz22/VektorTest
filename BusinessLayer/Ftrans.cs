@@ -524,10 +524,14 @@ public class Ftrans : VvTransRecord
    //   }
    //}
 
-   public bool R_IsMAP_Ftr 
+   public bool R_IsMAPcandidate_Ftr 
    { 
       get
       {
+         if(ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL &&
+            ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA          &&
+            ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipB           ) return false; // NEMA MAPa 
+
          string prvi_KSD_korjen_str = Ftrans.WantedKupciKontaStringArray.Length.IsPositive() ? Ftrans.WantedKupciKontaStringArray[0] : "120";
 
          if(this.T_tipBr.IsEmpty()                      )                 return false; // nema tipBr          -> NIJE MAP ftr 

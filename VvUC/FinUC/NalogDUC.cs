@@ -267,6 +267,34 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
       #endregion Check DokDate, SkladDate
 
+      #region 2026 News
+
+      //for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
+      //{
+      //   if
+      //}
+
+      foreach(Ftrans ftrans_rec in nalog_rec.Transes)
+      {
+         // Nema EDIT-a zelenih ftrans redaka 
+         if(ftrans_rec.SaveTransesWriteMode == ZXC.WriteMode.Edit && ftrans_rec.R_IsMAPcandidate_Ftr && FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ne smije se mijenjati 'Oznaèen Kao Plaæen' redak naplate. Raèun: {ftrans_rec.T_tipBr}!{Environment.NewLine}{Environment.NewLine}Preostaje opcija storna.");
+
+            e.Cancel = true;
+         }
+
+         // Nema DELETE-a zelenih ftrans redaka 
+         if(ftrans_rec.SaveTransesWriteMode == ZXC.WriteMode.Delete && ftrans_rec.R_IsMAPcandidate_Ftr && FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ne smije se brisati 'Oznaèen Kao Plaæen' redak naplate. Raèun: {ftrans_rec.T_tipBr}!{Environment.NewLine}{Environment.NewLine}Preostaje opcija storna.");
+
+            e.Cancel = true;
+         }
+      }
+
+      #endregion 2026 News
+
    }
 
    public static string ZatvaranjeKlaseOpis = "ZATVARANJE KL.";
@@ -1596,13 +1624,15 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
       if(ZXC.RRD.Dsc_F2_TT.NotEmpty())
       {
-         if(ftrans_rec.R_IsMAP_Ftr)
+         if(ftrans_rec.R_IsMAPcandidate_Ftr)
          {
-            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179); 
-
-            if(FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
+            if(FtransDao.IsMAPdone(TheDbConnection, ftrans_rec)) // MAPali smo 
             {
                TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
+            }
+            else // nismo još MAPali 
+            {
+               TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
             }
          }
       } 

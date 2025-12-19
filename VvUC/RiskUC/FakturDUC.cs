@@ -19595,7 +19595,7 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
  
-                    hamper.CreateVvLabel      (0, 0, "F2 Tip izlaznog rRačuna:", ContentAlignment.MiddleRight);
+                    hamper.CreateVvLabel      (0, 0, "F2 Tip izlaznog eRačuna:", ContentAlignment.MiddleRight);
       rbt_F2_none = hamper.CreateVvRadioButton(1, 0, null, "Nema", TextImageRelation.ImageAboveText);
       rbt_F2_IFA  = hamper.CreateVvRadioButton(2, 0, null, "IFA", TextImageRelation.ImageAboveText);
       rbt_F2_IRA  = hamper.CreateVvRadioButton(3, 0, null, "IRA", TextImageRelation.ImageAboveText);
@@ -19697,8 +19697,8 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isNIR = hamper.CreateVvCheckBox_OLD(0, 0, null, "Učitaj izlazne eRačune u NIR - neutralan tip izlaznog računa umjesto u odabran F2 Tip izlaznog eRačuna", RightToLeft.No);
-      cbx_isNUR = hamper.CreateVvCheckBox_OLD(0, 1, null, "Učitaj ulazne eRačune u NUR - neutralan tip ulaznog računa umjesto u tip računa UFA"                  , RightToLeft.No);
+      cbx_isNUR = hamper.CreateVvCheckBox_OLD(0, 0, null, "Učitaj ulazne eRačune odmah kao UFA, umjesto u NUR" , RightToLeft.No);
+      cbx_isNIR = hamper.CreateVvCheckBox_OLD(0, 1, null, "Učitaj izlazne eRačune odmah kao IFA, umjesto u NIR", RightToLeft.No);
    }
 
    private void InitializeHamper_Auto(out VvHamper hamper)
@@ -19716,8 +19716,8 @@ public class F2_Rules_UC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)"      , RightToLeft.No);
-      cbx_isAutoMAP  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplate računa (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)", RightToLeft.No);
+      cbx_isAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune prilikom otvaranja FIR-a (uz dodatnu potvrdu)"       , RightToLeft.No);
+      cbx_isAutoMAP  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplate eRačuna prilikom otvaranja FIR-a (uz dodatnu potvrdu)", RightToLeft.No);
 
    }
 

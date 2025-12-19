@@ -1347,7 +1347,7 @@ public class IFADUC              : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -1521,7 +1521,7 @@ public class IRADUC              : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -1659,7 +1659,7 @@ public class IRADUC_2              : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -2049,7 +2049,7 @@ public class IRMDUC              : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -2198,7 +2198,7 @@ public class IRMDUC_2            : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -6590,7 +6590,7 @@ public class IRPDUC              : FakturPDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -8562,7 +8562,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
    { 
       get 
       {
-         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
+         if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL) return true; // Tamara, Mirjana, ... VezniDok nastaje automatski pri sejvanju 
          if(ZXC.IsF2_2026_rules && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  ) return true; // IMA  importa Izlaznih racuna ... Tetragram .
 
          return false; 
@@ -9043,19 +9043,19 @@ public class F2_Izlaz_UC : VvUserControl
 
       if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
       {
-      /* XXX */ newsCount += Vv_eRacun_HTTP.WS_Ufati_Veleform_Ritam(this, TheDbConnection);
+      /* XXX */ newsCount += Vv_eRacun_HTTP.WS_Ufati_Veleform_Ritam(this);
       }
 
       if(ZXC.RRD.Dsc_F2_IsAutoSend)
       {
-      /* BBB */ newsCount += Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, TheDbConnection, false);
+      /* BBB */ newsCount += Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune(this, false);
       }
 
       /* CCC */ newsCount += Vv_eRacun_HTTP.WS_Refresh_ALL_FIR_Statuses_AndArhiviraj(this); // TRN + DPS + Fisk_Fisk + Fisk_Reject + Fisk_MAP + Arhiva 
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP)
       {
-      /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, TheDbConnection, false);
+      /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, false, false);
       }
 
       ZXC.SetStatusText("");

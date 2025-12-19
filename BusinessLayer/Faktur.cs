@@ -294,6 +294,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_PST = "PST"; // Pocetno Stanje 
 
    public const string TT_UFA = "UFA"; // Ulazni Racun NE Sklad 
+   public const string TT_NUR = "NUR"; // Ulazni Racun NE Sklad - F2 'NEOBRAĐENI' 
    public const string TT_UFM = "UFM"; // Ulazni Racun NE Sklad - mALOP 
 
    public const string TT_URA = "URA"; // Ulazni Racun u VELEP + Primka 
@@ -323,6 +324,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_RVU = "RVU"; // Revers Povrat - Fisycal ONLY ulaz 
 
    public const string TT_IFA = "IFA"; // Izlazni Racun NE Sklad 
+   public const string TT_NIR = "NIR"; // Izlazni Racun NE Sklad - F2 'NEOBRAĐENI' 
 
    public const string TT_IRA = "IRA"; // Izlazni Racun + Izdatnica 
    public const string TT_IZD = "IZD"; // Izdatnica iz Veleprodaje NE Pdv - ProdCij
@@ -5149,7 +5151,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
 
    public bool Is_F2_R1kind_Mandatory      { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } } 
-   public bool Is_F2_TtNumFisk_InVezniDok  { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && /*PdvGEOkind == ZXC.PdvGEOkindEnum.HR &&*/ ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo; } } 
+   public bool Is_F2_TtNumFisk_InVezniDok  { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && /*PdvGEOkind == ZXC.PdvGEOkindEnum.HR &&*/ ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL; } } 
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE

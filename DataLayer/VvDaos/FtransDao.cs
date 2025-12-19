@@ -828,6 +828,7 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
 
    public static bool IsMAPdone(XSqlConnection conn, Ftrans ftrans_rec)
    {
+      return true; ; // privremeno dok se ne implementira MAP u potpunosti
       return Get_MAP_Xtrano(conn, ftrans_rec.T_recID) != null;
    }
 

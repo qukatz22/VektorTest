@@ -929,7 +929,7 @@ public static class Vv_eRacun_HTTP
 
       return newsCount;
    }
-   /* XXX */internal static int WS_Ufati_Veleform_Ritam(F2_Izlaz_UC theUC, XSqlConnection conn)
+   /* XXX */internal static int WS_Ufati_Veleform_Ritam(F2_Izlaz_UC theUC)
    {
       #region Init
 
@@ -1122,7 +1122,7 @@ public static class Vv_eRacun_HTTP
 
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(conn, responseData, kupdob_rec, true);
+            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(theUC.TheDbConnection, responseData, kupdob_rec, true);
 
             if(newIFA_Faktur_rec != null)
             {
@@ -1178,7 +1178,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, XSqlConnection conn, bool isManual)
+   /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, bool isManual)
    {
       #region Init & Get Dialog Fields
 
@@ -1221,7 +1221,7 @@ public static class Vv_eRacun_HTTP
       if(dlgResult != DialogResult.OK)
       {
          sendCandidatesFakturList_InfoDLG.Dispose();
-         return 0;
+         return -1;
       }
 
       if(ZXC.RRD.Dsc_F2_IsAutoSend != sendCandidatesFakturList_InfoDLG.TheUC.Fld_IsAutoSend)
@@ -1260,7 +1260,7 @@ public static class Vv_eRacun_HTTP
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         sendCandidateFaktur_rec.VvDao.LoadTranses(conn, sendCandidateFaktur_rec, false);
+         sendCandidateFaktur_rec.VvDao.LoadTranses(theUC.TheDbConnection, sendCandidateFaktur_rec, false);
 
          ZXC.FakturRec = (Faktur)sendCandidateFaktur_rec.CreateNewRecordAndCloneItComplete();
 
@@ -2026,7 +2026,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    } 
-   /* DDD */internal static int Discover_Candidates_And_Eventually_MAPaj_uplate(F2_Izlaz_UC theUC, XSqlConnection conn, bool isManual)
+   /* DDD */internal static int Discover_Candidates_And_Eventually_MAPaj_uplate(VvUserControl theUC, bool isManual, bool isFromNalog)
    {
       #region Init & Get Dialog Fields AND Create MAP_requestDataList 
 
@@ -2042,16 +2042,32 @@ public static class Vv_eRacun_HTTP
 
       List<Ftrans> paymentftransList;
 
-      string thePaymentMethod = "T"; // TODO ??? !!!                                      
-                                     // 5.1 PaymentMethod                                 
-                                     // ”T” – Transakcijski racun                       IZ
-                                     // ”O” – Obracunsko placanje, kompenzacija, cesija KP
-                                     // ”Z” – Ostalo                                   ?TM
+      string thePaymentMethod = "T"; // T je default a dole se jos postavlja prema TT-u 
 
+      if(isFromNalog)
+      {
+         NalogDUC nalogDUC = theUC as NalogDUC;
 
+         List<Ftrans> MAPftransList = nalogDUC.nalog_rec.Transes.Where(ftr => ftr.R_IsMAPcandidate_Ftr).ToList();
 
-      paymentftransList = FtransDao.Get_MAP_FtransList(conn).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
-      
+         paymentftransList = new List<Ftrans>();
+
+         foreach(Ftrans MAPftrans_rec in MAPftransList)
+         {
+            if(!FtransDao.IsMAPdone(theUC.TheDbConnection, MAPftrans_rec)) paymentftransList.Add(MAPftrans_rec); // dodaj ako nije još MAPano 
+         }
+      }
+      else // IsFromFIR 
+      {
+         paymentftransList = FtransDao.Get_MAP_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      }
+
+      if(paymentftransList.IsEmpty())
+      {
+         if(isManual) ZXC.aim_emsg(MessageBoxIcon.Information, "Nema ništa za slanje.");
+         return 0;
+      }
+
       VvMER_RequestData MAP_requestData;
 
       foreach(Ftrans paymentftrans_rec in paymentftransList)
@@ -2068,7 +2084,7 @@ public static class Vv_eRacun_HTTP
 
             if(paymentftrans_rec.T_fakYear == ZXC.projectYearAsInt) // uplata se odnosi na Faktur iz ove godine 
             {
-               MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+               MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(theUC.TheDbConnection, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
             }
             else // uplata se odnosi na Faktur iz neke PROŠLE godine 
             {
@@ -2154,7 +2170,7 @@ public static class Vv_eRacun_HTTP
       if(dlgResult != DialogResult.OK)
       {
          MAP_CandidatesFtransList_InfoDLG.Dispose();
-         return 0;
+         return -1;
       }
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP != MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_IsAutoMAP)
@@ -3342,18 +3358,21 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Send_eRacune (object sender, EventArgs e) 
    { 
-      Vv_eRacun_HTTP.InitProjectData(); /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection, true);
+      Vv_eRacun_HTTP.InitProjectData(); int newsCount = /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, true);
 
-      F2_RefreshFIR_FakturListAndStatuses(sender, e);
+      if(newsCount.IsZeroOrPositive()) F2_RefreshFIR_FakturListAndStatuses(sender, e); // -1 means 'cancel' button clicked 
    }
-   private void F2_MAPaj(object sender, EventArgs e) 
+   private void F2_MAPaj_From_FIR(object sender, EventArgs e) 
    { 
-      Vv_eRacun_HTTP.InitProjectData(); /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate   ((F2_Izlaz_UC)TheVvUC, TheDbConnection, true);
+      Vv_eRacun_HTTP.InitProjectData(); int newsCount = /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, false);
 
-      F2_RefreshFIR_FakturListAndStatuses(sender, e);
+      if(newsCount.IsZeroOrPositive()) F2_RefreshFIR_FakturListAndStatuses(sender, e); // -1 means 'cancel' button clicked 
    }
    private void F2_Send_eRacun_1(object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
-   private void F2_MAPaj_1      (object sender, EventArgs e) {  }
+   private void F2_MAPaj_From_NalogDUC      (object sender, EventArgs e) 
+   {
+      Vv_eRacun_HTTP.InitProjectData(); int newsCount =        Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
+   }
    private void F2_ArhivaPdf (object sender, EventArgs e) 
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
