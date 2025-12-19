@@ -901,7 +901,8 @@ public class VvMessageBox_UC : UserControl
       TheGrid          = new VvDataGridView();
       TheGrid.Parent   = this;
       TheGrid.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
-      TheGrid.ReadOnly = true;
+    //TheGrid.ReadOnly = true;
+      TheGrid.ReadOnly = (vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates) ? false : true;
 
       TheGrid.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
       TheGrid.AutoGenerateColumns                  = false;
@@ -1020,6 +1021,8 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_SEND_candidates(VvDataGridView theGrid)
    {
+      CreateColumn_skip   (theGrid, "Preskoči"    , ZXC.Q3un            );
+
       CreateColumn_tipBr  (theGrid, "TipBr"   , ZXC.Q5un            );
       CreateColumn_datum  (theGrid, "Datum"   , ZXC.Q5un            );
       CreateColumn_partner(theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
@@ -1030,7 +1033,7 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_MAP_candidates(VvDataGridView theGrid)
    {
-      CreateColumn_skip   (theGrid, "Preskoci"    , ZXC.Q3un            );
+      CreateColumn_skip   (theGrid, "Preskoči"    , ZXC.Q3un            );
 
       CreateColumn_tipBr   (theGrid, "TipBr"      , ZXC.Q5un            );
       CreateColumn_datum   (theGrid, "DatumRn"    , ZXC.Q5un            );
@@ -1104,14 +1107,13 @@ public class VvMessageBox_UC : UserControl
 
    #region minus Columns
 
-
-
-
    private void CreateColumn_datum(VvDataGridView theGrid, string header, int colWidth)
    {
       vvtb_datum = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_datum", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_datum, null, "R_datum", header, colWidth);
       vvtb_datum.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
+
    }
 
    private void CreateColumn_tipBr(VvDataGridView theGrid, string header, int colWidth)
@@ -1119,6 +1121,7 @@ public class VvMessageBox_UC : UserControl
       vvtb_tipBr = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_tipBr", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tipBr, null, "R_tipBr", header, colWidth);
       vvtb_tipBr.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
    }
    private void CreateColumn_partner(VvDataGridView theGrid, string header, int colWidth)
    {
@@ -1126,6 +1129,7 @@ public class VvMessageBox_UC : UserControl
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner, null, "R_partner", header, colWidth);
       vvtb_partner.JAM_ReadOnly = true;
       colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      colVvText.ReadOnly = true;
    }
 
    private void CreateColumn_ulaz(VvDataGridView theGrid, string header, int colWidth)
@@ -1133,6 +1137,7 @@ public class VvMessageBox_UC : UserControl
       vvtb_ulaz = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_ulaz", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ulaz, null, "R_ulaz", header, colWidth);
       vvtb_ulaz.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
    }
 
    private void CreateColumn_izlaz(VvDataGridView theGrid, string header, int colWidth)
@@ -1140,6 +1145,7 @@ public class VvMessageBox_UC : UserControl
       vvtb_izlaz = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb_izlaz", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_izlaz, null, "R_izlaz", header, colWidth);
       vvtb_izlaz.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
    }
    private void CreateColumn_stanje(VvDataGridView theGrid, string header, int colWidth)
    {
@@ -1147,6 +1153,7 @@ public class VvMessageBox_UC : UserControl
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_stanje, null, "R_stanje", header, colWidth);
       colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_stanje.JAM_NumberOfDecimalPlaces, false, false); // da prikaze 0.00
       vvtb_stanje.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
    }
 
    #endregion minus Columns
@@ -1159,6 +1166,7 @@ public class VvMessageBox_UC : UserControl
       colVvText  = theGrid.CreateVvTextBoxColumn(vvtb_iznos, null, "R_iznos", header, colWidth);
       colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_iznos.JAM_NumberOfDecimalPlaces, false, false); // da prikaze 0.00
       vvtb_iznos.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
    }
 
    #endregion F2_SEND_candidates Columns
@@ -1169,8 +1177,6 @@ public class VvMessageBox_UC : UserControl
    {
       cbx_skip      = new CheckBox();
       colCbxClassic = theGrid.CreateClassicCheckBoxColumn(cbx_skip, null, 333, _colHeader, _width);
-
-      VvHamper.Open_Close_Fields_ForWriting(cbx_skip, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }
 
    private void CreateColumn_datumUpl(VvDataGridView theGrid, string header, int colWidth)
@@ -1178,6 +1184,7 @@ public class VvMessageBox_UC : UserControl
       vvtb_datumUpl = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_datumUpl", null, -12, header);
       colVvText     = theGrid.CreateVvTextBoxColumn(vvtb_datumUpl, null, "R_datumUpl", header, colWidth);
       vvtb_datumUpl.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
    }
 
    private void CreateColumn_iznosUpl(VvDataGridView theGrid, string header, int colWidth)
@@ -1186,6 +1193,8 @@ public class VvMessageBox_UC : UserControl
       colVvText     = theGrid.CreateVvTextBoxColumn(vvtb_iznosUpl, null, "R_iznosUpl", header, colWidth);
       colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_iznosUpl.JAM_NumberOfDecimalPlaces, false, false); // da prikaze 0.00
       vvtb_iznosUpl.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
+
    }
 
    private void CreateColumn_tipUpl(VvDataGridView theGrid, string header, int colWidth)
@@ -1193,6 +1202,8 @@ public class VvMessageBox_UC : UserControl
       vvtb_tipUpl = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_tipUpl", null, -12, header);
       colVvText   = theGrid.CreateVvTextBoxColumn(vvtb_tipUpl, null, "R_tipUpl", header, colWidth);
       vvtb_tipUpl.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
+      colVvText.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
    }
 
    private void CreateColumn_opis(VvDataGridView theGrid, string header, int colWidth)
@@ -1201,6 +1212,7 @@ public class VvMessageBox_UC : UserControl
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis, null, "R_opis", header, colWidth);
       vvtb_opis.JAM_ReadOnly = true;
       colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      colVvText.ReadOnly = true;
 
    }
 
@@ -1209,6 +1221,8 @@ public class VvMessageBox_UC : UserControl
       vvtb_nalRed = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_nalRed", null, -12, header);
       colVvText   = theGrid.CreateVvTextBoxColumn(vvtb_nalRed, null, "R_nalRed", header, colWidth);
       vvtb_nalRed.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
+
    }
 
    private void CreateColumn_konto(VvDataGridView theGrid, string header, int colWidth)
@@ -1216,6 +1230,8 @@ public class VvMessageBox_UC : UserControl
       vvtb_konto = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb_konto", null, -12, header);
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_konto, null, "R_konto", header, colWidth);
       vvtb_konto.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
+
    }
 
    #endregion F2_MAP_candidates Columns

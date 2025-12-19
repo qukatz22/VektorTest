@@ -6799,7 +6799,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       clr_KOPLine_PTG = Color.FromArgb(255, 164, 164);
       clr_PVR_PTG     = Color.FromArgb(197, 219, 162);
       clr_NIR         = Color.LightBlue;
-      clr_NUR        = Color.MediumAquamarine;
+      clr_NUR         = Color.MediumAquamarine;
 
    }
    public void SetUpColor(Color clrTampHeader, Color lblCrta, Color tabPagePoly)
