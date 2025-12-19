@@ -2155,6 +2155,9 @@ public static class Vv_eRacun_HTTP
             String3    = paymentftrans_rec.T_dokNum.ToString() + "/" + paymentftrans_rec.T_serial.ToString(),
             String4    = paymentftrans_rec.T_opis,
             String5    = paymentftrans_rec.T_konto,
+
+            UtilUint   = paymentftrans_rec.T_recID
+
          });
 
       } // foreach(Ftrans paymentftrans_rec in paymentftransList) 
@@ -2180,6 +2183,32 @@ public static class Vv_eRacun_HTTP
       }
 
       int numOfFirstLinesOnly   =  MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
+
+      #region Izbaci 'preskočene'
+
+      // tu si stao
+      // sad treba gore u PutDgvFields_F2_MAP_candidates dodati i nevidljivu kolonu 'ftransRecID' koja dolazi iz 'UtilUint' 
+      // ovdje pak treba prije Dispose-a
+
+      bool shouldSkip;
+      uint ftrRecIDtoSkip;
+      int foundCount;
+
+      for(int rIdx = 0; rIdx < MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.RowCount - 1; ++rIdx)
+      {
+         shouldSkip = VvCheckBox.GetBool4String(MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.GetStringCell(MAP_CandidatesFtransList_InfoDLG.TheUC.DgvCI.iT_ftrRecID, rIdx, false));
+
+         if(shouldSkip)
+         {
+            ftrRecIDtoSkip = MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.GetUint32Cell(MAP_CandidatesFtransList_InfoDLG.TheUC.DgvCI.iT_ftrRecID, rIdx, false);
+            
+            foundCount = MAP_ActionsList.RemoveAll(MAPal => MAPal.ftrans.T_recID == ftrRecIDtoSkip);
+
+            if(foundCount.IsZero()) ZXC.aim_emsg(MessageBoxIcon.Error, "shouldSkip MAP_action NOT FOUND!");
+         }
+      }
+
+      #endregion Izbaci 'preskočene'
 
       MAP_CandidatesFtransList_InfoDLG.Dispose();
 

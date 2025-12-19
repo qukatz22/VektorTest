@@ -1934,16 +1934,36 @@ public abstract class NalogDUC : VvDocumentRecordUC
       switch(writeMode)
       {
          case ZXC.WriteMode.Add:
-         //case ZXC.WriteMode.Edit:
-         //case ZXC.WriteMode.Delete:
-         if(IsShowingConvertedMoney)
-         {
-            //ZXC.aim_emsg(MessageBoxIcon.Stop, "Prvo se, molim, vratite 'u Kune'.");
-            //return false;
-            TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
-            return true;
-         }
-         else return true;
+
+            //case ZXC.WriteMode.Edit:
+            //case ZXC.WriteMode.Delete:
+            if(IsShowingConvertedMoney)
+            {
+               //ZXC.aim_emsg(MessageBoxIcon.Stop, "Prvo se, molim, vratite 'u Kune'.");
+               //return false;
+               TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(null, EventArgs.Empty);
+               return true;
+            }
+            else return true;
+
+         case ZXC.WriteMode.Delete:
+
+            if(!ZXC.IsF2_2026_rules) return true;
+            else // da, provjeri 
+            {
+               List<Ftrans> ftransList = nalog_rec.Transes;
+
+               if(ftransList.Any(ftr => ftr.R_IsMAPcandidate_Ftr) == false) return true; // nema MAP candidates 
+
+               if(ftransList.Any(ftr => FtransDao.IsMAPdone(TheDbConnection, ftr)) == true)
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne smije se brisati nalog koji sadrži stavke 'Oznaèeno Kao Plaæeno'.");
+
+                  return false; // ima MAPane redke, odbij DELETE 
+               }
+
+               return true;
+            }
 
          default: return true;
       }

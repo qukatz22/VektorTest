@@ -262,4 +262,20 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
       return MAP_XtranoList;
    }
 
+   public static /*bool*/Xtrano SetMe_MAP_XtranoForThis_FtransRecID(XSqlConnection conn, uint ftransRecID)
+   {
+      bool success = true;
+
+      Xtrano MAPxtrano_rec = new Xtrano();
+
+      using(XSqlCommand cmd = VvSQL.SetMe_MAP_XtranoForThis_FtransRecID_Command(conn, ftransRecID))
+      {
+         success = ZXC.RtranoDao.ExecuteSingleFillFromDataReader(MAPxtrano_rec, false, cmd, false);
+      } 
+
+
+      if(!success) return null;
+      else         return MAPxtrano_rec;
+   }
+
 }

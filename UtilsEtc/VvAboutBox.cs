@@ -1265,7 +1265,9 @@ public class VvMessageBox_UC : UserControl
       internal int iT_opis      ;
       internal int iT_nalRed    ;
       internal int iT_konto     ;
-      internal int iT_tipUpl;
+      internal int iT_tipUpl    ;
+      internal int iT_shouldS   ;
+      internal int iT_ftrRecID  ;
    }
 
    private void SetColumnIndexes()
@@ -1294,7 +1296,9 @@ public class VvMessageBox_UC : UserControl
       ci.iT_opis     = TheGrid.IdxForColumn("R_opis"    );
       ci.iT_nalRed   = TheGrid.IdxForColumn("R_nalRed"  );
       ci.iT_konto    = TheGrid.IdxForColumn("R_konto"   );
-      ci.iT_tipUpl   = TheGrid.IdxForColumn("R_tipUpl");
+      ci.iT_tipUpl   = TheGrid.IdxForColumn("R_tipUpl"  );
+      ci.iT_shouldS  = TheGrid.IdxForColumn("R_shouldS");
+      ci.iT_ftrRecID = TheGrid.IdxForColumn("R_ftrRedID"); // TAMARA TODO dodati kolonu 
 
    }
 

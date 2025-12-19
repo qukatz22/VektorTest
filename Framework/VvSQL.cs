@@ -7132,6 +7132,21 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand SetMe_MAP_XtranoForThis_FtransRecID_Command(XSqlConnection conn, uint ftransRecID)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "parentID", ftransRecID, ZXC.XtranoSchemaRows[ZXC.XtoCI.t_parentID]); 
+
+      cmd.CommandText = "SELECT * FROM " + Xtrano.recordName + "\n" +
+
+                        $" WHERE t_tt = '{Mixer.TT_MAP}' AND " + "\n" +
+
+                        " t_parentID = ?parentID ";
+      return (cmd);
+   }
+
+
    #endregion MIXER specials
 
    #region COPY_TABLE_Command

@@ -817,19 +817,10 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
       return todoMAP_FtransList;
    }
 
-   public static Xtrano Get_MAP_Xtrano(XSqlConnection conn, uint ftrans_recID)
-   {
-      Xtrano map_xtrano_rec = new Xtrano();
-
-      bool OK = map_xtrano_rec.VvDao.SetMe_Record_bySomeUniqueColumn(conn, map_xtrano_rec, ftrans_recID, ZXC.XtranoSchemaRows[ZXC.XtoCI.t_parentID], false, true);
-
-      return OK ? map_xtrano_rec : null;
-   }
-
    public static bool IsMAPdone(XSqlConnection conn, Ftrans ftrans_rec)
    {
-      return true; ; // privremeno dok se ne implementira MAP u potpunosti
-      return Get_MAP_Xtrano(conn, ftrans_rec.T_recID) != null;
+    //return Get_MAP_Xtrano                               (conn, ftrans_rec.T_recID) != null;
+      return XtranoDao.SetMe_MAP_XtranoForThis_FtransRecID(conn, ftrans_rec.T_recID) != null;
    }
 
 }
