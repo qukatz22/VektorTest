@@ -2194,9 +2194,9 @@ public static class Vv_eRacun_HTTP
       uint ftrRecIDtoSkip;
       int foundCount;
 
-      for(int rIdx = 0; rIdx < MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.RowCount - 1; ++rIdx)
+      for(int rIdx = 0; rIdx < MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.RowCount /*- 1*/; ++rIdx)
       {
-         shouldSkip = VvCheckBox.GetBool4String(MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.GetStringCell(MAP_CandidatesFtransList_InfoDLG.TheUC.DgvCI.iT_ftrRecID, rIdx, false));
+         shouldSkip = MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.GetBoolCell(MAP_CandidatesFtransList_InfoDLG.TheUC.DgvCI.iT_shouldS, rIdx, false);
 
          if(shouldSkip)
          {

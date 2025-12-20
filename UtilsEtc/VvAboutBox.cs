@@ -729,7 +729,7 @@ public class VvMessageBox_UC : UserControl
                      vvtb_barkod, vvtb_kol, vvtb_artiklCd, vvtb_artiklName, vvtb_tserial, vvtb_status,
                      vvtb_datum, vvtb_tipBr, vvtb_partner, vvtb_ulaz, vvtb_izlaz, vvtb_stanje, vvtb_tmpMinus,
                      vvtb_iznos, tbx_numOfFirstLinesOnly_Send, tbx_numOfFirstLinesOnly_MAP,
-                     vvtb_datumUpl, vvtb_iznosUpl, vvtb_tipUpl, vvtb_opis, vvtb_nalRed, vvtb_konto;
+                     vvtb_datumUpl, vvtb_ftrRecID, vvtb_iznosUpl, vvtb_tipUpl, vvtb_opis, vvtb_nalRed, vvtb_konto;
 
    private CheckBox  cbx_IsAutoSend, cbx_isAutoMAP,cbx_skip ;
    private VvTextBoxColumn colVvText;
@@ -1033,7 +1033,8 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_MAP_candidates(VvDataGridView theGrid)
    {
-      CreateColumn_skip   (theGrid, "Preskoči"    , ZXC.Q3un            );
+      CreateColumn_ftrRecID (theGrid, "FtrRecID"   , ZXC.Q5un           );
+      CreateColumn_skip     (theGrid, "Preskoči"   , ZXC.Q3un           );
 
       CreateColumn_tipBr   (theGrid, "TipBr"      , ZXC.Q5un            );
       CreateColumn_datum   (theGrid, "DatumRn"    , ZXC.Q5un            );
@@ -1176,7 +1177,7 @@ public class VvMessageBox_UC : UserControl
    private void CreateColumn_skip(VvDataGridView theGrid, string _colHeader, int _width)
    {
       cbx_skip      = new CheckBox();
-      colCbxClassic = theGrid.CreateClassicCheckBoxColumn(cbx_skip, null, 333, _colHeader, _width);
+      colCbxClassic = theGrid.CreateClassicCheckBoxColumn(cbx_skip, null, 333/*ci.iT_shouldS*/, _colHeader, _width);
    }
 
    private void CreateColumn_datumUpl(VvDataGridView theGrid, string header, int colWidth)
@@ -1186,6 +1187,16 @@ public class VvMessageBox_UC : UserControl
       vvtb_datumUpl.JAM_ReadOnly = true;
       colVvText.ReadOnly = true;
    }
+
+
+   private void CreateColumn_ftrRecID(VvDataGridView theGrid, string header, int colWidth)
+   {
+      vvtb_ftrRecID = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(false, "vvtb_ftrRecID", null, -12, header);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ftrRecID, null, "R_ftrRedID", header, colWidth);
+      vvtb_ftrRecID.JAM_ReadOnly = true;
+      colVvText.ReadOnly = true;
+   }
+
 
    private void CreateColumn_iznosUpl(VvDataGridView theGrid, string header, int colWidth)
    {
@@ -1297,7 +1308,7 @@ public class VvMessageBox_UC : UserControl
       ci.iT_nalRed   = TheGrid.IdxForColumn("R_nalRed"  );
       ci.iT_konto    = TheGrid.IdxForColumn("R_konto"   );
       ci.iT_tipUpl   = TheGrid.IdxForColumn("R_tipUpl"  );
-      ci.iT_shouldS  = TheGrid.IdxForColumn("R_shouldS");
+      ci.iT_shouldS  = TheGrid.IdxForColumn("T_skip"    );
       ci.iT_ftrRecID = TheGrid.IdxForColumn("R_ftrRedID"); // TAMARA TODO dodati kolonu 
 
    }
@@ -1425,6 +1436,7 @@ public class VvMessageBox_UC : UserControl
          TheGrid.PutCell(ci.iT_konto   , rowIdx, messageList[rowIdx].String5   );
          TheGrid.PutCell(ci.iT_opis    , rowIdx, messageList[rowIdx].String4   );
          TheGrid.PutCell(ci.iT_nalRed  , rowIdx, messageList[rowIdx].String3   );
+         TheGrid.PutCell(ci.iT_ftrRecID, rowIdx, messageList[rowIdx].UtilUint  );
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
