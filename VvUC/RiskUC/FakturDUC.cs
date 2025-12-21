@@ -4281,22 +4281,21 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(/*"000000"*/), fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), "", "");
 
-         if(fakturLocal_rec.TtInfo.IsIzlazniPdvTT)
-         {
-            PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
-                              fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
-                              "",
-                              fakturLocal_rec.F012kind.ToString());
-         }
-         if(fakturLocal_rec.TtInfo.IsIzlazniPdvTT && fakturLocal_rec.F012kind == F123kind.F2)
+       //if(fakturLocal_rec.TtInfo.IsIzlazniPdvTT)
+       //{
+       //   PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+       //                     fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
+       //                     "",
+       //                     fakturLocal_rec.F012kind.ToString());
+       //}
+         if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT && fakturLocal_rec.F012kind == F123kind.F2)
          { 
-            PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+            PutIdentityFields_5Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
                                    fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
                                    "",
-                                   fakturLocal_rec.F012kind.ToString(), 
-                                   fakturLocal_rec.F2_ElectronicID.ToString(), 
-                                   Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
-                                   "");
+                                   fakturLocal_rec.F012kind.ToString() + " = " + fakturLocal_rec.F2_R1kind + " + " + ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans" ), 
+                                   Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]
+                                   );
          }
 
          // 17.12.2012: dodao if() 
@@ -19551,7 +19550,7 @@ public class F2_Rules_UC : VvOtherUC
    #region Fieldz
 
    private VvHamper  hamp_eRproces, hamp_kpd, hamp_ascDesc, hamp_TT, hamp_numOfRows, hamp_auto, hamp_nirNur;
-   private VvTextBox tbx_DefaultKPD, tbx_Default_eRposProc, tbx_F2_TT, tbx_numOfRows;
+   private VvTextBox tbx_DefaultKPD, tbx_Default_eRposProc, tbx_DefaultKPDOpis, tbx_Default_eRposProcOpis, tbx_F2_TT, tbx_numOfRows;
    private RadioButton rbt_Ascending, rbt_Descending, 
                        rbt_F2_IFA, rbt_F2_IRA, rbt_F2_IRM, rbt_F2_none;
    private CheckBox cbx_isAutoSend, cbx_isAutoMAP, cbx_isNIR, cbx_isNUR;
@@ -19620,10 +19619,10 @@ public class F2_Rules_UC : VvOtherUC
 
    private void InitializeHamper_eRproc(out VvHamper hamper)
    { 
-      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_TT.Bottom + ZXC.Qun2, 0);
+      hamper = new VvHamper(3, 1, "", this, false, ZXC.QunMrgn, hamp_TT.Bottom + ZXC.Qun2, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q2un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q2un, ZXC.Q10un + ZXC.Q3un};
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8 , ZXC.Qun8, ZXC.Qun8  };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -19636,14 +19635,17 @@ public class F2_Rules_UC : VvOtherUC
                              hamper.CreateVvLabel         (0, 0, "Uobičajeni tip poslovnog procesa:"      , ContentAlignment.MiddleRight);
       tbx_Default_eRposProc = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefault_eRposProc", "Default poslovni proces");
       tbx_Default_eRposProc.JAM_Set_LookUpTable(ZXC.luiListaeRacPoslProc, (int)ZXC.Kolona.prva);
+      tbx_Default_eRposProcOpis = hamper.CreateVvTextBox  (2, 0, "tbxDefault_eRposProcOpis", "Opis poslovnog procesa");
+      tbx_Default_eRposProc.JAM_lui_NameTaker_JAM_Name = tbx_Default_eRposProcOpis.JAM_Name;
+      tbx_Default_eRposProcOpis.JAM_ReadOnly = true;
    }
 
    private void InitializeHamper_KPD(out VvHamper hamper)
    { 
-      hamper = new VvHamper(2, 1, "", this, false, ZXC.QunMrgn, hamp_eRproces.Bottom + ZXC.Qun2, 0);
+      hamper = new VvHamper(3, 1, "", this, false, ZXC.QunMrgn, hamp_eRproces.Bottom + ZXC.Qun2, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q5un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
+      hamper.VvColWdt      = new int[] { ZXC.Q10un, ZXC.Q5un, ZXC.Q10un};
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8 , ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -19656,6 +19658,9 @@ public class F2_Rules_UC : VvOtherUC
                        hamper.CreateVvLabel        (0, 0, "Uobičajena KPD šifra:", ContentAlignment.MiddleRight);
       tbx_DefaultKPD = hamper.CreateVvTextBoxLookUp(1, 0, "tbxDefaultKPD", "Default KPD");
       tbx_DefaultKPD.JAM_Set_LookUpTable(ZXC.luiListaKPD2025, (int)ZXC.Kolona.prva);
+      tbx_DefaultKPDOpis = hamper.CreateVvTextBox  (2, 0, "tbxDefaultKPDOpis", "Opis KPD šifre");
+      tbx_DefaultKPD.JAM_lui_NameTaker_JAM_Name = tbx_DefaultKPDOpis.JAM_Name;
+      tbx_DefaultKPDOpis.JAM_ReadOnly = true;
    }
 
    protected void InitializeHamper_AscDesc(out VvHamper hamper)
@@ -19786,6 +19791,9 @@ public class F2_Rules_UC : VvOtherUC
    public bool Fld_F2_IsNIR { get { return cbx_isNIR.Checked; } set { cbx_isNIR.Checked = value; } }
    public bool Fld_F2_IsNUR { get { return cbx_isNUR.Checked; } set { cbx_isNUR.Checked = value; } }
 
+   public string Fld_DefaultKPDOpis        {  set { tbx_DefaultKPDOpis.Text = value; } }
+   public string Fld_Default_eRposProcOpis {  set { tbx_Default_eRposProcOpis.Text = value; } }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -19801,6 +19809,13 @@ public class F2_Rules_UC : VvOtherUC
       Fld_F2_IsAutoMAP      = RRD.Dsc_F2_IsAutoMAP     ;
       Fld_F2_IsNIR          = RRD.Dsc_F2_IsNIR         ;
       Fld_F2_IsNUR          = RRD.Dsc_F2_IsNUR         ;
+
+      VvLookUpItem theLui = ZXC.luiListaeRacPoslProc.SingleOrDefault(lui => lui.Cd == Fld_Default_eRposProc);
+      if(theLui != null) Fld_Default_eRposProcOpis = theLui.Name;
+
+      theLui = ZXC.luiListaKPD2025.SingleOrDefault(lui => lui.Cd == Fld_DefaultKPD);
+      if(theLui != null) Fld_DefaultKPDOpis = theLui.Name;
+
    }
 
    public void GetDscFields()

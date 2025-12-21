@@ -1179,6 +1179,27 @@ public class VvMessageBox_UC : UserControl
    {
       cbx_skip      = new CheckBox();
       colCbxClassic = theGrid.CreateClassicCheckBoxColumn(cbx_skip, null, 333/*ci.iT_shouldS*/, _colHeader, _width);
+
+      theGrid.CellLeave  += (s, e) =>
+      {
+         if(e.ColumnIndex == colCbxClassic.Index)
+         {
+          //if(theGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && theGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value is true)
+          //{
+          //   foreach(DataGridViewTextBoxCell tbxCell in theGrid.Rows[e.RowIndex].Cells)
+          //   {
+          //      tbxCell.Style.ForeColor = Color.PaleGreen;
+          //   }
+          //}
+          //else
+          //{
+          //   foreach(DataGridViewTextBoxCell tbxCell in theGrid.Rows[e.RowIndex].Cells)
+          //   {
+          //      tbxCell.Style.ForeColor = Color.Black;
+          //   }
+          //}
+         }
+      };
    }
 
    private void CreateColumn_datumUpl(VvDataGridView theGrid, string header, int colWidth)
@@ -1196,6 +1217,7 @@ public class VvMessageBox_UC : UserControl
       colVvText = theGrid.CreateVvTextBoxColumn(vvtb_ftrRecID, null, "R_ftrRedID", header, colWidth);
       vvtb_ftrRecID.JAM_ReadOnly = true;
       colVvText.ReadOnly = true;
+      colVvText.Visible = false;
    }
 
 

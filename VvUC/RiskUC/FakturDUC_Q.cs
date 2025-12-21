@@ -8631,18 +8631,6 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion EU VAT Code Action
 
-      #region F2 eRacun Poslovni Proces
-
-      if(ZXC.EU_VatCodes_woHR.Contains(_kupdob_rec.VatCntryCode)== false && faktur_rec.TtInfo.IsIzlazniPdvTT)
-      {
-
-       //Fld_eRproc      = ZXC.RRD.Dsc_Default_eRposProc;
-       //  tbx_eRproc.Text = ZXC.RRD.Dsc_Default_eRposProc;
-      }
-
-      #endregion F2 eRacun Poslovni Proces
-
-
       #region RNZ - radni nalog zastitara (ugovor i nacin sticenja)
 
       if(this is RNZDUC) // ugovor + nacin zastite 
@@ -8729,14 +8717,14 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PON_MPC_DUC, OPN_MPC_DUC, IZD_MPC_DUC
 
-      #region R1kind && kod tipa racuna
+      #region R1kind
 
       if(faktur_rec.TtInfo.IsIzlazniPdvTT) //18.12.2025.
       {
          Fld_F2_R1kind = _kupdob_rec.R1kind;
       }
 
-      #endregion R1kind && kod tipa racuna
+      #endregion R1kind
 
       #region KOMISIJA
 
