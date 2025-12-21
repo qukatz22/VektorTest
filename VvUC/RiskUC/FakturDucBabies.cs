@@ -9033,6 +9033,8 @@ public class F2_Izlaz_UC : VvUserControl
 
    internal void INIT_FIR()
    {
+      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
+
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
       Vv_eRacun_HTTP.InitProjectData();

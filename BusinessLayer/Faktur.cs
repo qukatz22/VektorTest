@@ -5129,9 +5129,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
  //public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
  //public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
-   public bool IsF3       { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } } // NoFX 
+   public bool IsF0       { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } } // NoFX 
 
-   public ZXC.F123kind F123kind
+   public ZXC.F123kind F012kind
    {
       get
       {
@@ -5141,7 +5141,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          else if(IsF2     ) return ZXC.F123kind.F2    ;
        //else if(IsF2send ) return ZXC.FIRkind.F2send ;
        //else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
-         else if(IsF3     ) return ZXC.F123kind.F3    ; // NoFX 
+         else if(IsF0     ) return ZXC.F123kind.F0    ; // NoFX 
    
          return ZXC.F123kind.Nepoznato;
       }
@@ -5150,7 +5150,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
  //public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
 
-   public bool Is_F2_R1kind_Mandatory      { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } } 
+   public bool Is_F2_eRacun_Fields_Mandatory { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } } 
    public bool Is_F2_TtNumFisk_InVezniDok  { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL; } } 
 
    // ========================================================================================================================================================================= 

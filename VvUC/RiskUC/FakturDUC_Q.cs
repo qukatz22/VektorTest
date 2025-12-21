@@ -1398,6 +1398,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
    /// <param name="e"></param>
    void FakturDUC_Validating(object sender, CancelEventArgs e)
    {
+      // 12.2025: IMAJ NA UMU DA OVDJE NE MOZES RACUNATI NA TOCAN BUSSINESS, JER SE GETFIELDS JOS NIJE MOZDA DOGODIO! 
+      // ISPRAVNO BI BILO FLD_ ove KONFRONTIRATI VALIDACIJI A NE BUSSINESSE                                           
+
       #region Should validate enivej?
 
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None ||
@@ -3419,7 +3422,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       //   }
       //}
 
-      if(faktur_rec.Is_F2_R1kind_Mandatory)
+      if(faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 &&
+         (ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA || 
+          ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipB 
+          ))
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne smije se dodavati F2 B2B račun kada je uloga projekta {ZXC.CURR_prjkt_rec.F2_RolaKind}!");
+         e.Cancel = true;
+      }
+
+      if(faktur_rec.Is_F2_eRacun_Fields_Mandatory)
       {
          faktur_rec.F2_R1kind = ZXC.F2_R1enum.Nepoznato;
 

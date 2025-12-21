@@ -4281,23 +4281,23 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
          PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(/*"000000"*/), fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), "", "");
 
-       //if(ZXC.TtInfo(fakturLocal_rec.TT).IsIzlazniPdvTT)
-       //{
-       //   PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
-       //                     fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
-       //                     "",
-       //                     fakturLocal_rec.F123kind.ToString());
-       //}
-       //if(ZXC.TtInfo(fakturLocal_rec.TT).IsIzlazniPdvTT && fakturLocal_rec.F123kind == F123kind.F2)
-       //{ 
-       //   PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
-       //                          fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
-       //                          "",
-       //                          fakturLocal_rec.F123kind.ToString(), 
-       //                          fakturLocal_rec.F2_ElectronicID.ToString(), 
-       //                          Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
-       //                          "");
-       //}
+         if(fakturLocal_rec.TtInfo.IsIzlazniPdvTT)
+         {
+            PutIdentityFields(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+                              fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                              "",
+                              fakturLocal_rec.F012kind.ToString());
+         }
+         if(fakturLocal_rec.TtInfo.IsIzlazniPdvTT && fakturLocal_rec.F012kind == F123kind.F2)
+         { 
+            PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+                                   fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                                   "",
+                                   fakturLocal_rec.F012kind.ToString(), 
+                                   fakturLocal_rec.F2_ElectronicID.ToString(), 
+                                   Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
+                                   "");
+         }
 
          // 17.12.2012: dodao if() 
          if(ZXC.RISK_ToggleKnDeviza_InProgress == false) VvHamper.SetChkBoxRadBttnAutoCheck(this, true);
@@ -13877,8 +13877,20 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
-      if(faktur_rec.Is_F2_R1kind_Mandatory && ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+      if(ZXC.IsF2_2026_rules && faktur_rec.Is_F2_eRacun_Fields_Mandatory)
+      {
+         if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+         if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+
+         Fld_eRproc = (ZXC.VvUBL_PolsProcEnum)Enum.Parse(typeof(ZXC.VvUBL_PolsProcEnum), ZXC.RRD.Dsc_Default_eRposProc);
+         VvLookUpItem lui = ZXC.luiListaeRacPoslProc.GetLuiForThisCd(ZXC.RRD.Dsc_Default_eRposProc);
+         if(lui != null) Fld_eRprocOpis = lui.Name;
+
+         lui = ZXC.luiListaKodTipaEracuna.GetLuiForThisCd("380");
+         Fld_StatusCD   = lui != null ? lui.Cd   : "";
+
+         if(CtrlOK(tbx_StatusOpis)) Fld_StatusOpis = lui != null ? lui.Name : "";
+      }
    }
 
    protected override void PutExtFields(Faktur faktur/*FaktEx faktEx*/, bool isCopyingToAnotherDUC)

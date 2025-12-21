@@ -1021,12 +1021,13 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_SEND_candidates(VvDataGridView theGrid)
    {
-      CreateColumn_skip   (theGrid, "Preskoči"    , ZXC.Q3un            );
+      CreateColumn_ftrRecID(theGrid, "FtrRecID"    , ZXC.Q5un        ); // u ovom slucaju  tu ide Faktur RecID, sam smo ostavili naziv Ftrans 
+      CreateColumn_skip    (theGrid, "Preskoči"    , ZXC.Q3un        );
 
-      CreateColumn_tipBr  (theGrid, "TipBr"   , ZXC.Q5un            );
-      CreateColumn_datum  (theGrid, "Datum"   , ZXC.Q5un            );
-      CreateColumn_partner(theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
-      CreateColumn_iznos  (theGrid, "Iznos"   , ZXC.Q4un            );
+      CreateColumn_tipBr   (theGrid, "TipBr"   , ZXC.Q5un            );
+      CreateColumn_datum   (theGrid, "Datum"   , ZXC.Q5un            );
+      CreateColumn_partner (theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
+      CreateColumn_iznos   (theGrid, "Iznos"   , ZXC.Q4un            );
       
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -1409,6 +1410,7 @@ public class VvMessageBox_UC : UserControl
          TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].TheCD     );
          TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName);
          TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
+         TheGrid.PutCell(ci.iT_ftrRecID, rowIdx, messageList[rowIdx].UtilUint  );
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }

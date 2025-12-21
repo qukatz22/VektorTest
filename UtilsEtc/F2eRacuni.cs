@@ -34,9 +34,9 @@ public static class Vv_eRacun_HTTP
    public const bool DEMO = false;
 
 #if !DEBUG
-   public static bool IsF2_2026_rules { get { return ZXC.projectYearAsInt > 2025; } }
+   public static bool IsF2_2026_rules { get { return ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 && ZXC.projectYearAsInt > 2025; } }
 #else
-   public static bool IsF2_2026_rules { get { return false; } }
+   public static bool IsF2_2026_rules { get { return true; } }
 #endif
 
 
@@ -88,12 +88,17 @@ public static class Vv_eRacun_HTTP
       { /*"50"*/ 50, "Neuspjelo"          }, // TRN 
       { /*"70"*/ 70, "Poslan kao eIZVJ"   }, // TRN 
 
-      {           0, "Prihvaćen"          }, // DPS 
-      { /*"20"*/  1, "Odbijen"            }, // DPS 
-      { /*"30"*/  2, "Plaćeno SVE"        }, // DPS 
-      { /*"40"*/  3, "Plaćen DIO"         }, // DPS 
-      { /*"45"*/  4, "Potvrda zaprimanja" }, // DPS 
-      { /*"50"*/ 99, "Zaprimljen"         }  // DPS 
+      // kako MER navodi da su DPS statusi deprecated/obsolete, prestali smo API-jem ic po njih   
+      // ako ikada vratimo da idemo po njih, tada vrati ovo ... al vidi kako ces tretirati 'zero' 
+      // jer u tom kontekstu oin znaci 'prihvacen' ... IDIJOTI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+    //{           0, "Prihvaćen"          }, // DPS 
+    //{ /*"20"*/  1, "Odbijen"            }, // DPS 
+    //{ /*"30"*/  2, "Plaćeno SVE"        }, // DPS 
+    //{ /*"40"*/  3, "Plaćen DIO"         }, // DPS 
+    //{ /*"45"*/  4, "Potvrda zaprimanja" }, // DPS 
+    //{ /*"50"*/ 99, "Zaprimljen"         }  // DPS 
+      {           0, ""                   }, // NOT DPS! nego zero value ... 'nepoznato' 
+
    };
 
    #endregion MER Web Service URLs - API endpoints web addresses
@@ -445,6 +450,56 @@ public static class Vv_eRacun_HTTP
       DateTime dateDO = ZXC.projectYearLastDay  + ZXC.OneWeekSpan;
 
       return (dateOD, dateDO);
+   }
+
+   public static bool Is_FIR_ON()
+   {
+      //get
+      {
+         if(!ZXC.IsF2_2026_rules)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ova funkcionalnost je dostupna samo u F2 2026 projektima.");
+            return false;
+         }
+
+         if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_FUR_Only)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ova funkcionalnost je nedostupna ulozi projekta 'VlastitoKnjigovodstvo_F2_FUR_Only'.");
+            return false;
+         }
+
+         return true;
+      }
+   }
+
+   public static bool Is_FIR_SEND_ON()
+   {
+      //get
+      {
+         if(Is_FIR_ON() == false) return false;
+
+         if(ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ova funkcionalnost je dostupna samo ulozi projekta 'VlastitoKnjigovodstvo_F2_ALL'.");
+            return false;
+         }
+
+         return true;
+      }
+   }
+
+   public static bool Is_FUR_ON()
+   {
+      //get
+      {
+         if(!ZXC.IsF2_2026_rules)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Ova funkcionalnost je dostupna samo u F2 2026 projektima.");
+            return false;
+         }
+
+         return true;
+      }
    }
 
    #endregion Utils
@@ -1205,7 +1260,9 @@ public static class Vv_eRacun_HTTP
             TheCD      = sendCandidateFaktur_rec.TipBr,
             DevName    = sendCandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
             KupdobName = sendCandidateFaktur_rec.KupdobName,
-            TheMoney   = sendCandidateFaktur_rec.S_ukKCRP
+            TheMoney   = sendCandidateFaktur_rec.S_ukKCRP,
+
+            UtilUint   = sendCandidateFaktur_rec.RecID
          });
       }
 
@@ -1231,6 +1288,28 @@ public static class Vv_eRacun_HTTP
       }
 
       int numOfFirstLinesOnly   =  sendCandidatesFakturList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_Send;
+
+      #region Izbaci 'preskočene'
+
+      bool shouldSkip;
+      uint fakRecIDtoSkip;
+      int foundCount;
+
+      for(int rIdx = 0; rIdx < sendCandidatesFakturList_InfoDLG.TheUC.TheGrid.RowCount /*- 1*/; ++rIdx)
+      {
+         shouldSkip = sendCandidatesFakturList_InfoDLG.TheUC.TheGrid.GetBoolCell(sendCandidatesFakturList_InfoDLG.TheUC.DgvCI.iT_shouldS, rIdx, false);
+
+         if(shouldSkip)
+         {
+            fakRecIDtoSkip = sendCandidatesFakturList_InfoDLG.TheUC.TheGrid.GetUint32Cell(sendCandidatesFakturList_InfoDLG.TheUC.DgvCI.iT_ftrRecID, rIdx, false);
+            
+            foundCount = sendCandidatesFakturList.RemoveAll(scfl => scfl.RecID == fakRecIDtoSkip);
+
+            if(foundCount.IsZero()) ZXC.aim_emsg(MessageBoxIcon.Error, "shouldSkip MAP_action NOT FOUND!");
+         }
+      }
+
+      #endregion Izbaci 'preskočene'
 
       sendCandidatesFakturList_InfoDLG.Dispose();
 
@@ -2185,10 +2264,6 @@ public static class Vv_eRacun_HTTP
       int numOfFirstLinesOnly   =  MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
 
       #region Izbaci 'preskočene'
-
-      // tu si stao
-      // sad treba gore u PutDgvFields_F2_MAP_candidates dodati i nevidljivu kolonu 'ftransRecID' koja dolazi iz 'UtilUint' 
-      // ovdje pak treba prije Dispose-a
 
       bool shouldSkip;
       uint ftrRecIDtoSkip;
@@ -3385,24 +3460,35 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    {
       ((F2_Izlaz_UC)TheVvUC).INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
-   private void F2_Send_eRacune (object sender, EventArgs e) 
+   private void F2_Send_eRacune(object sender, EventArgs e) 
    { 
-      Vv_eRacun_HTTP.InitProjectData(); int newsCount = /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, true);
+      Vv_eRacun_HTTP.InitProjectData();
+
+      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
+
+      int newsCount = /*BBB*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, true);
 
       if(newsCount.IsZeroOrPositive()) F2_RefreshFIR_FakturListAndStatuses(sender, e); // -1 means 'cancel' button clicked 
    }
    private void F2_MAPaj_From_FIR(object sender, EventArgs e) 
    { 
-      Vv_eRacun_HTTP.InitProjectData(); int newsCount = /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, false);
+      Vv_eRacun_HTTP.InitProjectData();
+
+      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
+
+      int newsCount = /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, false);
 
       if(newsCount.IsZeroOrPositive()) F2_RefreshFIR_FakturListAndStatuses(sender, e); // -1 means 'cancel' button clicked 
    }
-   private void F2_Send_eRacun_1(object sender, EventArgs e) { Vv_eRacun_HTTP.InitProjectData(); /*BBB Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_SEND_eRacune((F2_Izlaz_UC)TheVvUC, TheDbConnection);*/ }
-   private void F2_MAPaj_From_NalogDUC      (object sender, EventArgs e) 
+   private void F2_MAPaj_From_NalogDUC(object sender, EventArgs e) 
    {
-      Vv_eRacun_HTTP.InitProjectData(); int newsCount =        Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
+      Vv_eRacun_HTTP.InitProjectData();
+
+      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
+
+      int newsCount = /*DDD*/Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
    }
-   private void F2_ArhivaPdf (object sender, EventArgs e) 
+   private void F2_ShowArhivaPdf (object sender, EventArgs e) 
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
      
@@ -3451,6 +3537,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
+      if(Vv_eRacun_HTTP.Is_FIR_SEND_ON() == false) return;
+
       DialogResult result = MessageBox.Show("Potvrđujete slanje ovog eRačuna?", "Potvrdite eRačun", MessageBoxButtons.YesNo, MessageBoxIcon.Question); if(result != DialogResult.Yes) return;
 
       Cursor.Current = Cursors.WaitCursor;

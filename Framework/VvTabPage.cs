@@ -1201,10 +1201,10 @@ be_fast:
                   col1 = ZXC.Q4un;
                   col2 = ZXC.Q4un;
                   col3 = ZXC.Q10un;
-                //col4 = ZXC.Q2un - ZXC.Qun2;
-                //col5 = ZXC.Q3un + ZXC.Qun2;
-                //col6 = ZXC.Q4un;
-                //col7 = 0;
+                  col4 = ZXC.Q2un - ZXC.Qun2;
+                  col5 = ZXC.Q3un + ZXC.Qun2;
+                  col6 = ZXC.Q4un;
+                  col7 = 0;
                   break;
                case ZXC.VvSubModulEnum.R_UFA:
                case ZXC.VvSubModulEnum.R_UPA:
