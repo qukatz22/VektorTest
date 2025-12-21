@@ -2433,13 +2433,13 @@ public static class Vv_eRacun_HTTP
 
             F2UR_faktur_rec = new Faktur()
             {
-               TT                = "F2UR"                         ,
+               TT                = Mixer.TT_AUR                   ,
                KupdobName        = responseData.SenderBusinessName,
                VezniDok          = responseData.DocumentNr        ,
-               FiskPrgBr         = responseData.ElectronicId.ToString(),
-               //F2_ElectronicId = responseData.ElectronicId      ,
-               //F2_SentTS       = responseData.Sent              ,
-               //F2_StatusCD     = responseData.StatusId          ,
+             //FiskPrgBr         = responseData.ElectronicId.ToString(),
+               F2_ElectronicID   = (uint)responseData.ElectronicId,
+               F2_SentTS         = (DateTime)responseData.Sent,
+             //F2_StatusCD       = (int)responseData.StatusId,
                TtNum = (uint)(responseData.StatusId)
             };
 

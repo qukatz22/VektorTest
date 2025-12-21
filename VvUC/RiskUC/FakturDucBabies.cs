@@ -9026,9 +9026,6 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
 
-      // zovemo sa VvTabPage --  VvTabPage_VisibleChanged
-    //TheVvTabPage.TheVvForm.TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(Refresh_FIR);
-
    }
 
    internal void INIT_FIR()
@@ -9392,7 +9389,7 @@ public class F2_Ulaz_UC : VvUserControl
 
    #region Constructor
 
-   public F2_Ulaz_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   public void F2_Ulaz_UC_DELME(Control _parent, VvForm.VvSubModul vvSubModul)
    {
       this.SuspendLayout();
       
@@ -9418,6 +9415,63 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.ClearSelection();
    }
 
+   public F2_Ulaz_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   {
+      this.SuspendLayout();
+
+      this.Parent = _parent;
+      this.Dock = DockStyle.Fill;
+
+      SetColors();
+
+      CreateTheGrid();
+      this.ResumeLayout();
+
+      CreateColumn(TheG);
+
+      //this.ResumeLayout();
+
+      SetColumnIndexes();
+
+      TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
+
+      INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+
+      //PutDgvFields();
+
+      TheG.TabStop = false;
+      TheG.ClearSelection();
+
+        // TODO: 
+      //TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
+
+   }
+
+   internal void INIT_FUR()
+   {
+      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
+
+      TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
+
+      Vv_eRacun_HTTP.InitProjectData();
+
+      int newsCount = 0;
+
+      ///* 111 */              Vv_eRacun_HTTP.WS_DownLoad_QuerryInbox_List_And_PutDgv_111_Fields(this);
+      //
+      ///* 222 */ newsCount += Vv_eRacun_HTTP.WS_ReceiveToArhiva_And_PutDgv_222_Fields(this);
+      //
+      ///* 333 */ newsCount += Vv_eRacun_HTTP.WS_StatusInbox_And_PutDgv_333_Fields(this);
+      //
+      ///* 444 */              Vv_eRacun_HTTP.PutDgv_444_Fields(this);
+
+      ZXC.SetStatusText("");
+
+      if(newsCount.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
+      }
+   }
    #endregion Constructor
 
    #region TheGrid and columns
