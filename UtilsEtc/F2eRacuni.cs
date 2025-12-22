@@ -3314,7 +3314,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          F2_ElectronicID = (uint)responseData.ElectronicId  ,
          T_dokDate       = (DateTime)responseData.Sent      , 
          T_opis_128      = responseData.SenderBusinessName	,
-       //T_theString     = responseData.DocumentNr          , TODO !!! 
+         T_theString     = responseData.DocumentNr          ,
          T_konto	       = responseData.SenderBusinessNumber,
          T_devName       = responseData.StatusId.ToString() ,
                          
