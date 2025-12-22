@@ -12107,45 +12107,45 @@ public partial class FakturExtDUC : FakturDUC
 
    private void InitializeHamper_F2_Info(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 10, "", TheTabControl.TabPages[F2_Info_TabPageName], false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+      hamper = new VvHamper(8, 4, "", TheTabControl.TabPages[F2_Info_TabPageName], false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
 
-      hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q5un, ZXC.Q7un };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvColWdt      = new int[] { ZXC.Q7un, ZXC.Q4un, ZXC.Q7un, ZXC.Q4un, ZXC.Q7un, ZXC.Q4un, ZXC.Q5un, ZXC.Q4un };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
       {
          hamper.VvRowHgt[i]    = ZXC.QUN;
-         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+         hamper.VvSpcBefRow[i] = ZXC.Qun4;
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "ElectronicID:"                                 , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 1, "Datum slanja računa:"                          , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 2, "Status slanja računa:"                         , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 3, "Arhiva ID:"                                    , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 4, "Status fiskalizacije:"                         , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 5, "Status eIzvještavanja:"                        , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 6, "Status prijave uplate:"                        , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 7, "Odbijen:"                                      , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 8, "Kupac je pravna (B2B) ili fizička (B2C) osoba:", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 9, "Referenca RecID:"                              , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 0, "ElectronicID:"                                       , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(2, 0, "Datum slanja računa:"                                , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(4, 0, "Status slanja računa:"                               , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(6, 0, "Arhiva ID:"                                          , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 1, "Status fiskalizacije:"                               , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(2, 1, "Status eIzvještavanja:"                              , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(4, 1, "Status prijave uplate:"                              , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(6, 1, "Odbijen:"                                            , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 2, "Referenca RecID:"                                    , ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(4, 2, "Kupac je pravna (B2B) ili fizička (B2C) osoba:", 2, 0, ContentAlignment.MiddleRight);
 
       tbx_f2_electron_ID = hamper.CreateVvTextBox(1, 0, "tbx_f2_electron_ID", "Electronic ID" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_electron_ID));
       
-      tbx_f2_sentTS      = hamper.CreateVvTextBox(1, 1, "tbx_f2_sentTS"     , "F2_sentTS"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_sentTS     ));
+      tbx_f2_sentTS      = hamper.CreateVvTextBox(3, 0, "tbx_f2_sentTS"     , "F2_sentTS"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_sentTS     ));
       tbx_f2_sentTS.JAM_IsForDateTimePicker = true;
-      dtp_f2_sentTS      = hamper.CreateVvDateTimePicker(1, 1, "", tbx_f2_sentTS);
+      dtp_f2_sentTS      = hamper.CreateVvDateTimePicker(3, 0, "", tbx_f2_sentTS);
       dtp_f2_sentTS.Name = "dtp_f2_sentTS";
 
-      tbx_f2_status_CD   = hamper.CreateVvTextBox(1, 2, "tbx_f2_status_CD"  , "F2_status_CD"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
-      tbx_f2_ArhRecID    = hamper.CreateVvTextBox(1, 3, "tbx_f2_ArhRecID"   , "F2_ArhRecID"   , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_ArhRecID   ));
-      tbx_f2_isFisk      = hamper.CreateVvTextBox(1, 4, "tbx_f2_isFisk"     , "F2_isFisk"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isFisk     ));
-      tbx_f2_isEizvj     = hamper.CreateVvTextBox(1, 5, "tbx_f2_isEizvj"    , "F2_isEizvj"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    ));
-      tbx_f2_isMrkAsPaid = hamper.CreateVvTextBox(1, 6, "tbx_f2_isMrkAsPaid", "F2_isMrkAsPaid", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isMrkAsPaid));
-      tbx_f2_isRejected  = hamper.CreateVvTextBox(1, 7, "tbx_f2_isRejected" , "F2_isRejected" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
-      tbx_f2_R1kind      = hamper.CreateVvTextBox(1, 8, "tbx_f2_R1kind"     , "F2_statusKupca", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind     ));
-      tbx_f2_prvFakRecID = hamper.CreateVvTextBox(1, 9, "tbx_f2_prvFakRecID", "F2_prvFakRecID", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_prvFakRecID));
+      tbx_f2_status_CD   = hamper.CreateVvTextBox(5, 0, "tbx_f2_status_CD"  , "F2_status_CD"  , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_status_CD  ));
+      tbx_f2_ArhRecID    = hamper.CreateVvTextBox(7, 0, "tbx_f2_ArhRecID"   , "F2_ArhRecID"   , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_ArhRecID   ));
+      tbx_f2_isFisk      = hamper.CreateVvTextBox(1, 1, "tbx_f2_isFisk"     , "F2_isFisk"     , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isFisk     ));
+      tbx_f2_isEizvj     = hamper.CreateVvTextBox(3, 1, "tbx_f2_isEizvj"    , "F2_isEizvj"    , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isEizvj    ));
+      tbx_f2_isMrkAsPaid = hamper.CreateVvTextBox(5, 1, "tbx_f2_isMrkAsPaid", "F2_isMrkAsPaid", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isMrkAsPaid));
+      tbx_f2_isRejected  = hamper.CreateVvTextBox(7, 1, "tbx_f2_isRejected" , "F2_isRejected" , GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_isRejected ));
+      tbx_f2_prvFakRecID = hamper.CreateVvTextBox(1, 2, "tbx_f2_prvFakRecID", "F2_prvFakRecID", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_prvFakRecID));
+      tbx_f2_R1kind      = hamper.CreateVvTextBox(7, 2, "tbx_f2_R1kind"     , "F2_statusKupca", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.f2_R1kind     ));
 
       tbx_f2_electron_ID.JAM_ReadOnly = true;
       tbx_f2_sentTS     .JAM_ReadOnly = true;
