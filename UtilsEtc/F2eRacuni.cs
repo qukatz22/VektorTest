@@ -2567,7 +2567,7 @@ public static class Vv_eRacun_HTTP
          {
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_XmlDocument(theXmlString, Mixer.TT_AUR, webApiResult.ResponseData);
+            newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(webApiResult.ResponseData);
 
             if(newAUR_Xtrano_rec != null)
             {
@@ -2773,7 +2773,7 @@ public static class Vv_eRacun_HTTP
 
                if(receiveOK)
                {
-                  Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument(webApiResult.ResponseData.DocumentXml, Mixer.TT_AIR, F2_IRn_faktur_rec);
+                  Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(webApiResult.ResponseData.DocumentXml, F2_IRn_faktur_rec);
 
                   if(F2arhivaXtrano_rec != null)
                   {
@@ -3271,7 +3271,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 
    #endregion Propertiz 
 
-   public static Xtrano F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument(string xmlString, string F2_TT, Faktur faktur_rec)
+   public static Xtrano F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(string xmlString, Faktur faktur_rec)
    {
       if(faktur_rec == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: faktur record is null!");
 
@@ -3279,62 +3279,47 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 
       Xtrano xmlXtrano_rec = null;
 
-      if(F2_TT == Mixer.TT_AIR) // IZLAZNI racun 
+      xmlXtrano_rec = new Xtrano()
       {
-         xmlXtrano_rec = new Xtrano()
-         {
-            T_XmlZip        = zipped_xmlString          ,
-                                                        
-            T_TT            = F2_TT                     ,
-                                                        
-            T_konto         = faktur_rec.TT             ,
-            T_parentID      = faktur_rec.RecID          , 
-            T_dokDate       = faktur_rec.DokDate        ,
-            T_ttNum         = faktur_rec.TtNum          ,
-            F2_ElectronicID = faktur_rec.F2_ElectronicID,
-            T_serial        = 1                         ,
-            T_moneyA        = faktur_rec.S_ukKCRP       ,
-            T_opis_128      = ""                        , // fuse 
-            T_devName       = ""                        , // fuse 
-         };
-      }
+         T_XmlZip        = zipped_xmlString          ,
+                                                     
+         T_TT            = Mixer.TT_AIR              ,
+                                                     
+         T_konto         = faktur_rec.TT             ,
+         T_parentID      = faktur_rec.RecID          , 
+         T_dokDate       = faktur_rec.DokDate        ,
+         T_ttNum         = faktur_rec.TtNum          ,
+         F2_ElectronicID = faktur_rec.F2_ElectronicID,
+         T_serial        = 1                         ,
+         T_moneyA        = faktur_rec.S_ukKCRP       ,
+         T_opis_128      = ""                        , // fuse 
+         T_devName       = ""                        , // fuse 
+      };
 
       return xmlXtrano_rec;
    }
 
-   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_XmlDocument(string xmlString, string F2_TT, VvMER_ResponseData response)
+   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(VvMER_ResponseData responseData) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
    {
-      if(response == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
+      if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
 
-      byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
+      byte[] zipped_xmlString = VvStringCompressor.CompressXml(responseData.DocumentXml);
 
       Xtrano xmlXtrano_rec = null;
 
-      // TT   konstanta 
-      // TtNum - fuse iz Faktur rec
-      // IntBr - responsa DocumentNr
-      // Datum - fuse iz Faktur rec
+      xmlXtrano_rec   = new Xtrano()
+      {               
+         T_XmlZip        = zipped_xmlString                 ,
 
-      if(F2_TT == Mixer.TT_AUR) // ULAZNI racun 
-      {
-         xmlXtrano_rec      = new Xtrano()
-         {                  
-            T_XmlZip        = zipped_xmlString           ,
-                                                         
-            T_TT            = F2_TT                      ,
-//                                                         
-//            T_konto         = faktur_rec.TT              ,
-//            T_parentID      = faktur_rec.RecID           ,
-//            T_dokDate       = faktur_rec.DokDate         ,
-//            T_ttNum         = faktur_rec.TtNum           ,
-//            F2_ElectronicID = (uint)response.ElectronicId,
-//          //T_serial        = 1                          , tu ce ici FiskStatus 
-//          //T_moneyA        = response.xxx               ,
-//            T_opis_128      = ""                         , // fuse 
-//            T_devName       = ""                         , // fuse 
-
-         };
-      }
+         F2_ElectronicID = (uint)responseData.ElectronicId  ,
+         T_dokDate       = (DateTime)responseData.Sent      , 
+         T_opis_128      = responseData.SenderBusinessName	,
+       //T_theString     = responseData.DocumentNr          , TODO !!! 
+         T_konto	       = responseData.SenderBusinessNumber,
+         T_devName       = responseData.StatusId.ToString() ,
+                         
+         T_TT            = Mixer.TT_AUR                     ,
+      };
 
       return xmlXtrano_rec;
    }
