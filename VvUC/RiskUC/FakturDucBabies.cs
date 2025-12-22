@@ -9301,24 +9301,24 @@ public class F2_Izlaz_UC : VvUserControl
       if(faktur_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
       else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_empty;
 
-           if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
-      else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
-      else if(faktur_rec.F2_IsFisk == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+           if(faktur_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
+      else if(faktur_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
+      else if(faktur_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
       else                                                           ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
 
-           if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
-      else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_yellow;
-      else if(faktur_rec.F2_IsRejected == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_red;
+           if(faktur_rec.F2_IsRejected == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
+      else if(faktur_rec.F2_IsRejected == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_yellow;
+      else if(faktur_rec.F2_IsRejected == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_red;
       else                                                               ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
 
-           if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_green;
-      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_yellow;
-      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_red;
+           if(faktur_rec.F2_IsMarkAsPaid == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_green;
+      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_yellow;
+      else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_red;
       else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_empty;
     
-           if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_green;
-      else if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_yellow;
-      else if(faktur_rec.F2_IsEizvj == F2_StatusOutboxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_red;
+           if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_green;
+      else if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_yellow;
+      else if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_red;
       else                                                            ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_empty;
 
 
@@ -9431,9 +9431,9 @@ public class F2_Ulaz_UC : VvUserControl
 
       int newsCount = 0;
 
-      /* 111 */ Vv_eRacun_HTTP.Load_AUR_XtranoList(this);
+      /* 111 */              Vv_eRacun_HTTP.Load_AUR_XtranoList(this);
 
-      /* YYY */ Vv_eRacun_HTTP.WS_QueryInbox_Receive_StatusInbox(this);
+      /* YYY */ newsCount += Vv_eRacun_HTTP.WS_QueryInbox_Receive_StatusInbox(this);
 
       ZXC.SetStatusText("");
 

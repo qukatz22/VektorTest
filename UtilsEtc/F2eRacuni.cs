@@ -57,6 +57,7 @@ public static class Vv_eRacun_HTTP
    public const string VvMER_webAddressPOST_Check           = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/mps/check"                                ; // POST 
    public const string VvMER_webAddressPOST_FiskStatus      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/status"                     ; // POST 
    public const string VvMER_webAddressPOST_FiskStatusOutbox= (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/StatusOutbox"               ; // POST 
+   public const string VvMER_webAddressPOST_FiskStatusInbox = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/statusInbox"                ; // POST 
    public const string VvMER_webAddressPOST_MAP             = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/markPaid"                   ; // POST 
    public const string VvMER_webAddressPOST_MAP_WO_eID      = (DEMO ? VvMER_baseAddress_demo : VvMER_baseAddress_production) + "/api/fiscalization/markPaidWithoutElectronicID"; // POST 
 
@@ -775,6 +776,24 @@ public static class Vv_eRacun_HTTP
    {
       string        webApiAddr = VvMER_webAddressPOST_FiskStatusOutbox;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.FISKstatusOutbox;
+
+      VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(dateOD, dateDO); // constructor za Listu Fisk STATUSa racuna (dateOD, dateDO) 
+
+      string jsonRequestString = VvMER_Json_SerializeObjectForRequestString_AllActions(request_Data_AllActions);
+
+      WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResult =
+         Vv_POSTmethod_ExecuteJson<List<VvMER_Response_Data_FiscalizationStatus>>(
+            webApiKind,
+            webApiAddr,
+            jsonRequestString
+         );
+      return webApiResult;
+   }
+
+   public static WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> VvMER_WebService_Get_FISK_Status_Inbox(DateTime dateOD, DateTime dateDO)
+   {
+      string        webApiAddr = VvMER_webAddressPOST_FiskStatusInbox;
+      ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.FISKstatusInbox;
 
       VvMER_RequestData request_Data_AllActions = new VvMER_RequestData(dateOD, dateDO); // constructor za Listu Fisk STATUSa racuna (dateOD, dateDO) 
 
@@ -1746,13 +1765,6 @@ public static class Vv_eRacun_HTTP
 
       ZXC.SetStatusText("Refresh AllFISK_Outbox status");
 
-      // ovdje bi ako se ide na smislenu kronolosku granicu trebalo filtrirati po fak.F2_SentTS a ne po fak.DokDate !!! 
-      // za sada, idemo cijela projektna godina                                                                         
-      //minDokDate = goodCandidatesFakturList.Min(fak => fak.DokDate.Date      );
-      //maxDokDate = goodCandidatesFakturList.Max(fak => fak.DokDate.EndOfDay());
-      queryOutbox_DateOD = ZXC.projectYearFirstDay;
-      queryOutbox_DateDO = ZXC.projectYearLastDay ;
-
       WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Outbox(queryOutbox_DateOD, queryOutbox_DateDO);
 
       if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
@@ -1765,7 +1777,7 @@ public static class Vv_eRacun_HTTP
 
       int wantedMessageType = 0; // 0 – Kao POŠILJATELJ dohvati status fiskalizacije 
 
-      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu fiskalizirane 
+      var theFakturList_not_FISK_yet = theUC.TheFakturList.Where(fak => fak.F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Faktura koje nisu fiskalizirane 
 
       List<VvMER_FiscalizationMessage> theFISKstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastFISKMessage;
@@ -1773,7 +1785,7 @@ public static class Vv_eRacun_HTTP
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
        //lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
-         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
+         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
 
          if(lastFISKMessage == null) continue;
 
@@ -1804,7 +1816,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsFisk = ZXC.F2_StatusOutboxEnum.DA_JE;
+         F2_IRn_faktur_rec.F2_IsFisk = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1831,14 +1843,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 2; // 2 – Dohvati status odbijanja 
 
-      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu odbijene 
+      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Faktura koje nisu odbijene 
 
       List<VvMER_FiscalizationMessage> theREJECTstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastREJECTMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
+         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
          
          if(lastREJECTMessage == null) continue;
 
@@ -1868,7 +1880,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusOutboxEnum.DA_JE;
+         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1895,14 +1907,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 3; // 3 – Dohvati status plaćanja 
 
-      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu označene kao plaćene 
+      var theFakturList_not_MAP_yet = theUC.TheFakturList.Where(fak => fak.F2_IsMarkAsPaid != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Faktura koje nisu označene kao plaćene 
 
       List<VvMER_FiscalizationMessage> theMAPstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastMAPMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
+         lastMAPMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
 
          if(lastMAPMessage == null) continue;
 
@@ -1932,7 +1944,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsMarkAsPaid = ZXC.F2_StatusOutboxEnum.DA_JE;
+         F2_IRn_faktur_rec.F2_IsMarkAsPaid = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -1959,14 +1971,14 @@ public static class Vv_eRacun_HTTP
 
       wantedMessageType = 4; // 4 – Dohvati status eIzvještavanja 
 
-      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj != ZXC.F2_StatusOutboxEnum.DA_JE); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
+      var theFakturList_not_eIZVJ_yet = theUC.TheFakturList.Where(fak => fak.F2_IsEizvj != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Faktura koje nisu prijavljene kao/na eIZVJ 
 
       List<VvMER_FiscalizationMessage> theeIZVJstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lasteIZVJMessage;
 
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
-         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusOutboxEnum.DA_JE);
+         lasteIZVJMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
 
          if(lasteIZVJMessage == null) continue;
 
@@ -1996,7 +2008,7 @@ public static class Vv_eRacun_HTTP
 
          theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
 
-         F2_IRn_faktur_rec.F2_IsEizvj = ZXC.F2_StatusOutboxEnum.DA_JE;
+         F2_IRn_faktur_rec.F2_IsEizvj = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
@@ -2583,13 +2595,14 @@ public static class Vv_eRacun_HTTP
 
                newsCount++;
 
-               // tu smo stali
-               updatedStatusInfo = "qwe";//string.Format("{0} (OrigBrDok: {1}) Novi ulazni račun u Inboxu i Arhivi {2} {3} {4}",
-                                   //          newIFA_Faktur_rec.TipBr,
-                                   //          newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
-                                   //          "DODANA u lokalnu bazu",
-                                   //          newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
-            
+               updatedStatusInfo = $"Novi ulazni račun u Inboxu i Arhivi. Poslano: {newAUR_Xtrano_rec.T_dokDate.ToString(ZXC.VvDateFormat)} Pošiljatelj: {newAUR_Xtrano_rec.T_opis_128}";
+
+               //string.Format("{0} (OrigBrDok: {1}) Novi ulazni račun u Inboxu i Arhivi {2} {3} {4}",
+               //                           newIFA_Faktur_rec.TipBr,
+               //                           newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
+               //                           "DODANA u lokalnu bazu",
+               //                           newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+
                updatedStatusInfoList.Add(updatedStatusInfo);
 
                ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
@@ -2600,6 +2613,151 @@ public static class Vv_eRacun_HTTP
       } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
 
       #endregion Synchronise Xtrano DataLayer (FUR Inbox i Arhiva) with provider via news from QueryInbox
+
+      #region Get Fiscalization Status Inbox News
+
+      ZXC.SetStatusText("Refresh AllFISK_Inbox status");
+
+      WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Inbox(queryInbox_DateOD, queryInbox_DateDO);
+
+      if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
+      {
+         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
+         return 0;
+      }
+
+      #region 1. FISK Status - Incoming eRacun
+
+      int wantedMessageType = 1; // 1 – Kao PRIMATELJ dohvati status fiskalizacije 
+
+      var theXtranoList_not_FISK_yet = theUC.TheXtranoList.Where(xto => xto.F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Xtrano koje nisu fiskalizirane 
+
+      List<VvMER_FiscalizationMessage> theFISKstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
+      VvMER_FiscalizationMessage lastFISKMessage;
+
+      foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
+      {
+       //lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && (bool)msg.IsSuccess);
+         lastFISKMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
+
+         if(lastFISKMessage == null) continue;
+
+         lastFISKMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+
+         theFISKstatus_MessagesList.Add(lastFISKMessage);
+      }
+
+      var theFISKstatus_Inbox_NewsList = theFISKstatus_MessagesList
+          .Join(
+              theXtranoList_not_FISK_yet,
+              message => message.TheElectronicId,
+              xto => (long)xto.F2_ElectronicID,
+              (message, xto) => new
+              {
+                 rowIdx = theUC.TheXtranoList.IndexOf(xto),
+                 xtrano = xto
+              }
+          );
+
+      foreach(var theFISKstatus_Inbox_News in theFISKstatus_Inbox_NewsList)
+      {
+         newsCount++;
+
+         newAUR_Xtrano_rec = theFISKstatus_Inbox_News.xtrano;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(newAUR_Xtrano_rec);
+
+         newAUR_Xtrano_rec.F2_IsFisk = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
+
+         bool rwtOK = true; newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(newAUR_Xtrano_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theFISKstatus_Inbox_News.rowIdx, newAUR_Xtrano_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Nova FISKALIZACIJA računa: {0} ({1}) {2} {3}",
+                                          newAUR_Xtrano_rec.T_theString,
+                                          newAUR_Xtrano_rec.F2_ElectronicID,
+                                          newAUR_Xtrano_rec.T_dokDate.ToString(ZXC.VvDateFormat), 
+                                          newAUR_Xtrano_rec.T_opis_128);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theFISKstatus_Outbox_NewsList) 
+
+      #endregion 1. FISK Status - Outgoing eRacun
+
+      #region 2. REJECT Status - Outgoing eRacun
+
+      wantedMessageType = 2; // 2 – Dohvati status odbijanja 
+
+      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Faktura koje nisu odbijene 
+
+      List<VvMER_FiscalizationMessage> theREJECTstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
+      VvMER_FiscalizationMessage lastREJECTMessage;
+
+      foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
+      {
+         lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
+         
+         if(lastREJECTMessage == null) continue;
+
+         lastREJECTMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+         theREJECTstatus_MessagesList.Add(lastREJECTMessage);
+      }
+
+      var theREJECTstatus_Outbox_NewsList = theREJECTstatus_MessagesList
+          .Join(
+              theFakturList_not_REJECT_yet,
+              message => message.TheElectronicId,
+              fak => (long)fak.F2_ElectronicID,
+              (message, fak) => new
+              {
+                 rowIdx = theUC.TheFakturList.IndexOf(fak),
+                 faktur = fak
+              }
+          );
+
+      foreach(var theREJECTstatus_Outbox_News in theREJECTstatus_Outbox_NewsList)
+      {
+         newsCount++;
+
+         F2_IRn_faktur_rec = theREJECTstatus_Outbox_News.faktur;
+
+         // update Vv dataLayer 
+
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+
+         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
+
+         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+
+         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+
+         if(rwtOK)
+         {
+            theUC.PutDgvLineFields(theREJECTstatus_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Novo !!! ODBIJANJE / REJECT!!! računa: {0} ({1}) {2} {3}",
+                                          F2_IRn_faktur_rec.TipBr,
+                                          F2_IRn_faktur_rec.F2_ElectronicID,
+                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
+                                          F2_IRn_faktur_rec.KupdobName);
+
+            updatedStatusInfoList.Add(updatedStatusInfo);
+
+         } // if(rwtOK)
+
+      } // foreach(var item in theFISKstatus_Outbox_NewsList) 
+
+      #endregion 2. REJECT Status - Outgoing eRacun
+
+
+      #endregion Get Fiscalization Status Inbox News
 
       #region Finish
 
@@ -2879,6 +3037,7 @@ public static class Vv_eRacun_HTTP
          case ZXC.F2_WebApi.InboxTRNstatusList : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata TRN statusa ULAZNIH eRačuna:"          ; break;
          case ZXC.F2_WebApi.FISK_singleStatus  : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa FISKALIZACIJE eRačuna:"        ; break;
          case ZXC.F2_WebApi.FISKstatusOutbox   : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata liste statusa FISKALIZACIJE eRačuna:"  ; break;
+         case ZXC.F2_WebApi.FISKstatusInbox    : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata liste statusa FISKALIZACIJE eRačuna:"  ; break;
          case ZXC.F2_WebApi.REJECTstatus       : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa ODBIJANJA eRačuna:"            ; break;
          case ZXC.F2_WebApi.MAPstatus          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata statusa NAPLATE eRačuna:"              ; break;
          case ZXC.F2_WebApi.MAPaction          : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom akcije izvještavanja NAPLATE eRačuna:"         ; break;
@@ -3434,20 +3593,20 @@ public class VvMER_FiscalizationMessage
    // 0 – Uspjeh
    // 1 – Neuspjeh
    // 2 – Na čekanju
-   public ZXC.F2_StatusOutboxEnum StatusOutboxKind 
+   public ZXC.F2_StatusInAndOutBoxEnum StatusOutboxKind 
    {
       get
       {
          switch(this.Status)
          {
             case 0:
-               return ZXC.F2_StatusOutboxEnum.DA_JE;     // TOČKA - Zelena 
+               return ZXC.F2_StatusInAndOutBoxEnum.DA_JE;     // TOČKA - Zelena 
             case 1:
-               return ZXC.F2_StatusOutboxEnum.NE_NIJE;   // TOČKA - Crvena 
+               return ZXC.F2_StatusInAndOutBoxEnum.NE_NIJE;   // TOČKA - Crvena 
             case 2:
-               return ZXC.F2_StatusOutboxEnum.Na_cekanju;// TOČKA - Žuta   
+               return ZXC.F2_StatusInAndOutBoxEnum.Na_cekanju;// TOČKA - Žuta   
             default:
-               return ZXC.F2_StatusOutboxEnum.Nepoznato; // TOČKA - PRAZNA 
+               return ZXC.F2_StatusInAndOutBoxEnum.Nepoznato; // TOČKA - PRAZNA 
          }
 
          //return (ZXC.F2_StatusOutboxEnum)Status;

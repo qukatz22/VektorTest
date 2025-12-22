@@ -213,6 +213,14 @@ public class Xtrano : VvTransRecord
       get { return this.currentData._t_serial; }
       set {        this.currentData._t_serial = value; }
    }
+
+   public ZXC.F2_StatusInAndOutBoxEnum F2_IsFisk       
+   { 
+      get 
+      { 
+         return (ZXC.F2_StatusInAndOutBoxEnum)this.T_serial; } set { this.T_serial = (ushort)value; 
+      } 
+   }   
    /* 04 */ public DateTime T_dokDate
    {
       get { return this.currentData._t_dokDate; }

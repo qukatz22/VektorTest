@@ -13608,97 +13608,97 @@ public partial class FakturExtDUC : FakturDUC
    //public bool Fld_F2_IsRejected    { get { return false /*Convert.ToBoolean(tbx_f2_isRejected .Text)*/;} set { false.ToString();/*tbx_f2_isRejected .Text = value.ToString();*/} }
 
        
-   public F2_StatusOutboxEnum Fld_F2_IsFisk     
+   public F2_StatusInAndOutBoxEnum Fld_F2_IsFisk     
    { 
       get
       {
          switch(tbx_f2_isFisk.Text)
          {
-            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
-            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
-            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
-            default:           return F2_StatusOutboxEnum.Nepoznato;
+            case "DA_JE"     : return F2_StatusInAndOutBoxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusInAndOutBoxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusInAndOutBoxEnum.Na_cekanju;
+            default:           return F2_StatusInAndOutBoxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isFisk.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
-            case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isFisk.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
+            case F2_StatusInAndOutBoxEnum.DA_JE     : tbx_f2_isFisk.Text = F2_StatusInAndOutBoxEnum.DA_JE    .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.NE_NIJE   : tbx_f2_isFisk.Text = F2_StatusInAndOutBoxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.Na_cekanju: tbx_f2_isFisk.Text = F2_StatusInAndOutBoxEnum.Na_cekanju.ToString(); return;
             default:                             tbx_f2_isFisk.Text = ""; break;
          }
       }
    }
    
-   public F2_StatusOutboxEnum Fld_F2_IsEizvj    
+   public F2_StatusInAndOutBoxEnum Fld_F2_IsEizvj    
    { 
       get
       {
          switch(tbx_f2_isEizvj.Text)
          {
-            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
-            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
-            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
-            default:           return F2_StatusOutboxEnum.Nepoznato;
+            case "DA_JE"     : return F2_StatusInAndOutBoxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusInAndOutBoxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusInAndOutBoxEnum.Na_cekanju;
+            default:           return F2_StatusInAndOutBoxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
-            case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isEizvj.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
+            case F2_StatusInAndOutBoxEnum.DA_JE     : tbx_f2_isEizvj.Text = F2_StatusInAndOutBoxEnum.DA_JE    .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.NE_NIJE   : tbx_f2_isEizvj.Text = F2_StatusInAndOutBoxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.Na_cekanju: tbx_f2_isEizvj.Text = F2_StatusInAndOutBoxEnum.Na_cekanju.ToString(); return;
             default:                             tbx_f2_isEizvj.Text = ""; break;
          }
       }
    }
 
-   public F2_StatusOutboxEnum Fld_F2_IsMrkAsPaid
+   public F2_StatusInAndOutBoxEnum Fld_F2_IsMrkAsPaid
    { 
       get
       {
          switch(tbx_f2_isMrkAsPaid.Text)
          {
-            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
-            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
-            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
-            default:           return F2_StatusOutboxEnum.Nepoznato;
+            case "DA_JE"     : return F2_StatusInAndOutBoxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusInAndOutBoxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusInAndOutBoxEnum.Na_cekanju;
+            default:           return F2_StatusInAndOutBoxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
-            case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isMrkAsPaid.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
+            case F2_StatusInAndOutBoxEnum.DA_JE     : tbx_f2_isMrkAsPaid.Text = F2_StatusInAndOutBoxEnum.DA_JE    .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.NE_NIJE   : tbx_f2_isMrkAsPaid.Text = F2_StatusInAndOutBoxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.Na_cekanju: tbx_f2_isMrkAsPaid.Text = F2_StatusInAndOutBoxEnum.Na_cekanju.ToString(); return;
             default:                             tbx_f2_isMrkAsPaid.Text = ""  ; break;
          }
       }
    }
  
-   public F2_StatusOutboxEnum Fld_F2_IsRejected 
+   public F2_StatusInAndOutBoxEnum Fld_F2_IsRejected 
    { 
       get
       {
          switch(tbx_f2_isRejected.Text)
          {
-            case "DA_JE"     : return F2_StatusOutboxEnum.DA_JE     ;
-            case "NE_NIJE"   : return F2_StatusOutboxEnum.NE_NIJE   ;
-            case "Na_cekanju": return F2_StatusOutboxEnum.Na_cekanju;
-            default:           return F2_StatusOutboxEnum.Nepoznato;
+            case "DA_JE"     : return F2_StatusInAndOutBoxEnum.DA_JE     ;
+            case "NE_NIJE"   : return F2_StatusInAndOutBoxEnum.NE_NIJE   ;
+            case "Na_cekanju": return F2_StatusInAndOutBoxEnum.Na_cekanju;
+            default:           return F2_StatusInAndOutBoxEnum.Nepoznato;
          }
       }
       set
       {
          switch(value)
          {
-            case F2_StatusOutboxEnum.DA_JE     : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.DA_JE    .ToString(); return;
-            case F2_StatusOutboxEnum.NE_NIJE   : tbx_f2_isRejected.Text = F2_StatusOutboxEnum.NE_NIJE  .ToString(); return;
-            case F2_StatusOutboxEnum.Na_cekanju: tbx_f2_isRejected.Text = F2_StatusOutboxEnum.Na_cekanju.ToString(); return;
+            case F2_StatusInAndOutBoxEnum.DA_JE     : tbx_f2_isRejected.Text = F2_StatusInAndOutBoxEnum.DA_JE    .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.NE_NIJE   : tbx_f2_isRejected.Text = F2_StatusInAndOutBoxEnum.NE_NIJE  .ToString(); return;
+            case F2_StatusInAndOutBoxEnum.Na_cekanju: tbx_f2_isRejected.Text = F2_StatusInAndOutBoxEnum.Na_cekanju.ToString(); return;
             default:                             tbx_f2_isRejected.Text = ""; break;
          }
       }
