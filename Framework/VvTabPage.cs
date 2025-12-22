@@ -1201,10 +1201,10 @@ be_fast:
                   col1 = ZXC.Q4un;
                   col2 = ZXC.Q4un;
                   col3 = ZXC.Q10un;
-                  col4 = ZXC.Q7un;
-                  col5 = ZXC.Q4un;
-                //col6 = 0;
-                //col7 = 0;
+                  col4 = ZXC.Q2un;
+                  col5 = ZXC.Q2un;
+                  col6 = ZXC.Q3un;
+                  col7 = ZXC.Q3un;
                   break;
                case ZXC.VvSubModulEnum.R_UFA:
                case ZXC.VvSubModulEnum.R_UPA:
@@ -1364,8 +1364,10 @@ be_fast:
 
       //tamtam***** nekak drukcije s tim tagom nekaj zmislii
       tbx_col1.Tag = tbx_col2.Tag = tbx_col3.Tag = tbx_col4.Tag = tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = ZXC.vvColors.tamponHeaderLeftTbx_BackColor;
-    //tbx_col4.JAM_ForeColor = Color.Red;
-    //tbx_col4.Font = ZXC.vvFont.BaseBoldFont;
+      tbx_col4.JAM_ForeColor = Color.Red;
+      tbx_col4.Font = ZXC.vvFont.BaseBoldFont;
+      tbx_col4.TextAlign = HorizontalAlignment.Center;
+      tbx_col5.TextAlign = HorizontalAlignment.Center;
     //tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = Color.LavenderBlush;
 
       VvHamper.Open_Close_Fields_ForWriting(hampModul, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.TamponPanel_HeaderLeft);

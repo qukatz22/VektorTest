@@ -4288,12 +4288,14 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
        //                     "",
        //                     fakturLocal_rec.F012kind.ToString());
        //}
-         if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT && fakturLocal_rec.F012kind == F123kind.F2)
+         if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT/* && fakturLocal_rec.F012kind == F123kind.F2*/)
          { 
-            PutIdentityFields_5Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
+            PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
                                    fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
                                    "",
-                                   fakturLocal_rec.F012kind.ToString() + " = " + fakturLocal_rec.F2_R1kind + " + " + ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans" ), 
+                                   fakturLocal_rec.F012kind.ToString(),
+                                   fakturLocal_rec.F2_R1kind.ToString(),
+                                   ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans" ), 
                                    Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]
                                    );
          }
