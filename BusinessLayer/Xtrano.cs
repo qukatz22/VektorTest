@@ -236,6 +236,11 @@ public class Xtrano : VvTransRecord
       get { return this.currentData._t_ttNum; }
       set {        this.currentData._t_ttNum = value; }
    }
+   public bool F2_IsReject
+   {
+      get { return this.currentData._t_ttNum.NotZero(); }
+      set {        this.currentData._t_ttNum = (value == true ? 1u : 0u); }
+   }
    /* 07 */ public decimal T_moneyA
    {
       get { return this.currentData._t_moneyA; }

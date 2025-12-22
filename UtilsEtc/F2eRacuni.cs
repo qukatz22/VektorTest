@@ -740,17 +740,15 @@ public static class Vv_eRacun_HTTP
       // Filter out response data where Issued year doesn't match project year                                        
       // !!! TODO !!! provjeriti empirijski kakvi su zaista podaci iz MER-a kroz prijelazne periode godina            
       // tj. koji datumi konkretno dolaze u:                                                                          
-      // “Created“  : “2016 - 04 - 18T08: 13:03.177”,                                                                 
-      // “Updated“  : “2016 - 04 - 18T08: 13:03.177”,                                                                 
-      // “Sent“     : “2016 - 04 - 18T08: 13:03.177”,                                                                 
-      // “Delivered“: null                                                                                            
-      // “Issued“   : “2016 - 04 - 18T00: 00:00”,                                                                     
-      // Za sada se oslanjamo na “Issued“ datum jer je to datum samog računa.                                         
+      //“Updated“  : “2016 - 04 - 18T08: 17:22.937”,
+      //“Sent“     : “2016 - 04 - 18T08: 17:22.937”,
+      //“Delivered“: “2016 - 04 - 19T08: 17:00”,      // Za sada se u Outboxu-u oslanjamo na “Issued“ datum jer je to datum samog računa.                                         
+      // ALI buduci da Inbox ga nema, moramo se osloniti na “Sent“ datum.
       // Ono što želimo postići je da u response'u ostavimo samo one račune kojima je DokDate.Year == ZXC.projectYear 
       if(webApiResultWithList != null && webApiResultWithList.ResponseData != null)
       {
          webApiResultWithList.ResponseData = webApiResultWithList.ResponseData
-            .Where(rd => rd.Issued.HasValue && rd.Issued.Value.Year == ZXC.projectYearAsInt)
+            .Where(rd => rd./*Issued*/Sent.HasValue && rd./*Issued*/Sent.Value.Year == ZXC.projectYearAsInt)
             .ToList();
       }
 
@@ -2456,7 +2454,7 @@ public static class Vv_eRacun_HTTP
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
 
-      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(theUC.TheDbConnection, theUC.TheXtranoList, filterMembers, "", "ttNum " + asdDscStr + limitStr, true);
+      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(theUC.TheDbConnection, theUC.TheXtranoList, filterMembers, "", "t_ttNum " + asdDscStr + limitStr, false);
 
       if(theUC.TheXtranoList.NotEmpty()) theUC.PutDgvFields();
 
@@ -2579,7 +2577,7 @@ public static class Vv_eRacun_HTTP
          {
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(webApiResult.ResponseData);
+            newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(theXmlString, responseData);
 
             if(newAUR_Xtrano_rec != null)
             {
@@ -2620,7 +2618,7 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Inbox(queryInbox_DateOD, queryInbox_DateDO);
 
-      if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
+      if(webApiResultWithList_2.ResponseData == null /*|| webApiResultWithList_2.ResponseData.IsEmpty()*/) // !!! tu lutamo i ne znamo kada proglasiti error a kada ne 
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
          return 0;
@@ -2678,7 +2676,7 @@ public static class Vv_eRacun_HTTP
          if(rwtOK)
          {
             theUC.PutDgvLineFields(theFISKstatus_Inbox_News.rowIdx, newAUR_Xtrano_rec); // osvjezi prikaz 
-            updatedStatusInfo = string.Format("Nova FISKALIZACIJA računa: {0} ({1}) {2} {3}",
+            updatedStatusInfo = string.Format("Nova FISKALIZACIJA ulaznog računa: {0} ({1}) {2} {3}",
                                           newAUR_Xtrano_rec.T_theString,
                                           newAUR_Xtrano_rec.F2_ElectronicID,
                                           newAUR_Xtrano_rec.T_dokDate.ToString(ZXC.VvDateFormat), 
@@ -2692,11 +2690,11 @@ public static class Vv_eRacun_HTTP
 
       #endregion 1. FISK Status - Outgoing eRacun
 
-      #region 2. REJECT Status - Outgoing eRacun
+      #region 2. REJECT Status - Incoming eRacun
 
       wantedMessageType = 2; // 2 – Dohvati status odbijanja 
 
-      var theFakturList_not_REJECT_yet = theUC.TheFakturList.Where(fak => fak.F2_IsRejected != ZXC.F2_StatusInAndOutBoxEnum.DA_JE); // Lista Faktura koje nisu odbijene 
+      var theXtranoList_not_REJECT_yet = theUC.TheXtranoList.Where(xto => xto.F2_IsReject == false); // Lista Xtrano koje nisu rejectani 
 
       List<VvMER_FiscalizationMessage> theREJECTstatus_MessagesList = new List<VvMER_FiscalizationMessage>();
       VvMER_FiscalizationMessage lastREJECTMessage;
@@ -2704,49 +2702,50 @@ public static class Vv_eRacun_HTTP
       foreach(VvMER_Response_Data_FiscalizationStatus respData in webApiResultWithList_2.ResponseData)
       {
          lastREJECTMessage = respData.Messages.LastOrDefault(msg => msg.MessageType == wantedMessageType && msg.StatusOutboxKind == ZXC.F2_StatusInAndOutBoxEnum.DA_JE);
-         
+
          if(lastREJECTMessage == null) continue;
 
          lastREJECTMessage.TheElectronicId = respData.ElectronicId ?? 0L;
+
          theREJECTstatus_MessagesList.Add(lastREJECTMessage);
       }
 
-      var theREJECTstatus_Outbox_NewsList = theREJECTstatus_MessagesList
+      var theREJECTstatus_Inbox_NewsList = theREJECTstatus_MessagesList
           .Join(
-              theFakturList_not_REJECT_yet,
+              theXtranoList_not_REJECT_yet,
               message => message.TheElectronicId,
-              fak => (long)fak.F2_ElectronicID,
-              (message, fak) => new
+              xto => (long)xto.F2_ElectronicID,
+              (message, xto) => new
               {
-                 rowIdx = theUC.TheFakturList.IndexOf(fak),
-                 faktur = fak
+                 rowIdx = theUC.TheXtranoList.IndexOf(xto),
+                 xtrano = xto
               }
           );
 
-      foreach(var theREJECTstatus_Outbox_News in theREJECTstatus_Outbox_NewsList)
+      foreach(var theREJECTstatus_Inbox_News in theREJECTstatus_Inbox_NewsList)
       {
          newsCount++;
 
-         F2_IRn_faktur_rec = theREJECTstatus_Outbox_News.faktur;
+         newAUR_Xtrano_rec = theREJECTstatus_Inbox_News.xtrano;
 
          // update Vv dataLayer 
 
-         theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_IRn_faktur_rec);
+         theUC.TheVvTabPage.TheVvForm.BeginEdit(newAUR_Xtrano_rec);
 
-         F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
+         newAUR_Xtrano_rec.F2_IsReject = true;
 
-         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+         bool rwtOK = true; newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
 
-         theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
+         theUC.TheVvTabPage.TheVvForm.EndEdit(newAUR_Xtrano_rec);
 
          if(rwtOK)
          {
-            theUC.PutDgvLineFields(theREJECTstatus_Outbox_News.rowIdx, F2_IRn_faktur_rec); // osvjezi prikaz 
-            updatedStatusInfo = string.Format("Novo !!! ODBIJANJE / REJECT!!! računa: {0} ({1}) {2} {3}",
-                                          F2_IRn_faktur_rec.TipBr,
-                                          F2_IRn_faktur_rec.F2_ElectronicID,
-                                          F2_IRn_faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
-                                          F2_IRn_faktur_rec.KupdobName);
+            theUC.PutDgvLineFields(theREJECTstatus_Inbox_News.rowIdx, newAUR_Xtrano_rec); // osvjezi prikaz 
+            updatedStatusInfo = string.Format("Novo ! ODBIJANJE ! ulaznog računa: {0} ({1}) {2} {3}",
+                                          newAUR_Xtrano_rec.T_theString,
+                                          newAUR_Xtrano_rec.F2_ElectronicID,
+                                          newAUR_Xtrano_rec.T_dokDate.ToString(ZXC.VvDateFormat), 
+                                          newAUR_Xtrano_rec.T_opis_128);
 
             updatedStatusInfoList.Add(updatedStatusInfo);
 
@@ -2754,8 +2753,7 @@ public static class Vv_eRacun_HTTP
 
       } // foreach(var item in theFISKstatus_Outbox_NewsList) 
 
-      #endregion 2. REJECT Status - Outgoing eRacun
-
+      #endregion 2. REJECT Status - Incoming eRacun
 
       #endregion Get Fiscalization Status Inbox News
 
@@ -3458,11 +3456,11 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
       return xmlXtrano_rec;
    }
 
-   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(VvMER_ResponseData responseData) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
+   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(string xmlString, VvMER_ResponseData responseData) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
    {
       if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
 
-      byte[] zipped_xmlString = VvStringCompressor.CompressXml(responseData.DocumentXml);
+      byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
 
       Xtrano xmlXtrano_rec = null;
 
@@ -3471,7 +3469,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_XmlZip        = zipped_xmlString                 ,
 
          F2_ElectronicID = (uint)responseData.ElectronicId  ,
-         T_dokDate       = (DateTime)responseData.Sent      , 
+         T_dokDate       = (DateTime)responseData.Sent      ,
          T_opis_128      = responseData.SenderBusinessName	,
          T_theString     = responseData.DocumentNr          ,
          T_konto	       = responseData.SenderBusinessNumber,
