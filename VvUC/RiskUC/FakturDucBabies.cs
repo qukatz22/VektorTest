@@ -9054,7 +9054,7 @@ public class F2_Izlaz_UC : VvUserControl
 
       if(ZXC.RRD.Dsc_F2_IsAutoMAP)
       {
-      /* DDD */ newsCount +=  Vv_eRacun_HTTP.Discover_Candidates_And_Eventually_MAPaj_uplate(this, false, false);
+      /* DDD */ newsCount +=  Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_MAPaj_uplate(this, false, false);
       }
 
       ZXC.SetStatusText("");
@@ -9381,39 +9381,13 @@ public class F2_Ulaz_UC : VvUserControl
 
    Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
 
-   internal List<Faktur> TheFakturList { get; set; }
+   internal List<Xtrano> TheXtranoList { get; set; }
    
    Image img_red, img_yellow, img_green, img_empty;
 
    #endregion Fieldz
 
    #region Constructor
-
-   public void F2_Ulaz_UC_DELME(Control _parent, VvForm.VvSubModul vvSubModul)
-   {
-      this.SuspendLayout();
-      
-      this.Parent = _parent;
-      this.Dock   = DockStyle.Fill;
-
-      SetColors(); 
-
-      CreateTheGrid();
-
-      CreateColumn(TheG);
-
-      this.ResumeLayout();
-
-      SetColumnIndexes();
-
-      Vv_eRacun_HTTP.WS_Load_URn_FakturList(/*(F2_Ulaz_UC)TheVvUC*/ this);
-      Vv_eRacun_HTTP.WS_QueryInbox_DPS     (/*(F2_Ulaz_UC)TheVvUC*/ this);
-
-      //PutDgvFields();
-
-      TheG.TabStop = false;
-      TheG.ClearSelection();
-   }
 
    public F2_Ulaz_UC(Control _parent, VvForm.VvSubModul vvSubModul)
    {
@@ -9457,13 +9431,9 @@ public class F2_Ulaz_UC : VvUserControl
 
       int newsCount = 0;
 
-      ///* 111 */              Vv_eRacun_HTTP.WS_DownLoad_QuerryInbox_List_And_PutDgv_111_Fields(this);
-      //
-      ///* 222 */ newsCount += Vv_eRacun_HTTP.WS_ReceiveToArhiva_And_PutDgv_222_Fields(this);
-      //
-      ///* 333 */ newsCount += Vv_eRacun_HTTP.WS_StatusInbox_And_PutDgv_333_Fields(this);
-      //
-      ///* 444 */              Vv_eRacun_HTTP.PutDgv_444_Fields(this);
+      /* 111 */ Vv_eRacun_HTTP.Load_AUR_XtranoList(this);
+
+      /* YYY */ Vv_eRacun_HTTP.WS_QueryInbox_Receive_StatusInbox(this);
 
       ZXC.SetStatusText("");
 
@@ -9472,6 +9442,7 @@ public class F2_Ulaz_UC : VvUserControl
          ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
       }
    }
+
    #endregion Constructor
 
    #region TheGrid and columns
@@ -9599,13 +9570,13 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheG.Rows.Clear();
 
-      if(TheFakturList.IsEmpty()) return;
+      if(TheXtranoList.IsEmpty()) return;
 
-      for(rowIdx = 0; rowIdx < TheFakturList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+      for(rowIdx = 0; rowIdx < TheXtranoList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
       {
          TheG.Rows.Add();
 
-         PutDgvLineFields(rowIdx, TheFakturList[rowIdx]);
+         PutDgvLineFields(rowIdx, TheXtranoList[rowIdx]);
 
          TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
@@ -9629,34 +9600,34 @@ public class F2_Ulaz_UC : VvUserControl
       //}
    }
 
-   private void PutDgvLineFields(int rowIdx, Faktur faktur_rec)
+   private void PutDgvLineFields(int rowIdx, Xtrano xtrano_rec)
    {
-      TheG.PutCell(ci.iT_tt      , rowIdx, faktur_rec.TT               );
-      TheG.PutCell(ci.iT_ttNum   , rowIdx, faktur_rec.TtNum            );
-      TheG.PutCell(ci.iT_date    , rowIdx, faktur_rec.DokDate          );
-      TheG.PutCell(ci.iT_partner , rowIdx, faktur_rec.KupdobName       );
-      TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP         );
-      TheG.PutCell(ci.iT_origBrRn, rowIdx, faktur_rec.VezniDok         );
-      TheG.PutCell(ci.iT_elID    , rowIdx, faktur_rec.FiskPrgBr/*F2_ElectronicID*/);
-      TheG.PutCell(ci.iT_kupDob  , rowIdx, ""/*faktur_rec.KupdobName*/ );
-      TheG.PutCell(ci.iT_vezDok  , rowIdx, ""/*faktur_rec.VezniDok*/   );
-
-    //if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
-    //else                     ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_red;
-
-      if(faktur_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_green;
-      else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
-
-    //if(faktur_rec.F2_IsRejected)
-    //{
-    //   TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
-    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_red;
-    //}
-    //else 
-    //{
-    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
-    //}
-
+//      TheG.PutCell(ci.iT_tt      , rowIdx, xtrano_rec.TT               );
+//      TheG.PutCell(ci.iT_ttNum   , rowIdx, xtrano_rec.TtNum            );
+//      TheG.PutCell(ci.iT_date    , rowIdx, xtrano_rec.DokDate          );
+//      TheG.PutCell(ci.iT_partner , rowIdx, xtrano_rec.KupdobName       );
+//      TheG.PutCell(ci.iT_iznos   , rowIdx, xtrano_rec.S_ukKCRP         );
+//      TheG.PutCell(ci.iT_origBrRn, rowIdx, xtrano_rec.VezniDok         );
+//      TheG.PutCell(ci.iT_elID    , rowIdx, xtrano_rec.FiskPrgBr/*F2_ElectronicID*/);
+//      TheG.PutCell(ci.iT_kupDob  , rowIdx, ""/*faktur_rec.KupdobName*/ );
+//      TheG.PutCell(ci.iT_vezDok  , rowIdx, ""/*faktur_rec.VezniDok*/   );
+//
+//    //if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
+//    //else                     ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_red;
+//
+//      if(xtrano_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_green;
+//      else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
+//
+//    //if(faktur_rec.F2_IsRejected)
+//    //{
+//    //   TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
+//    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_red;
+//    //}
+//    //else 
+//    //{
+//    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
+//    //}
+//
    }
 
    public override void GetFields(bool fuse)

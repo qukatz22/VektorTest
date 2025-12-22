@@ -200,6 +200,11 @@ public class Xtrano : VvTransRecord
       get { return this.currentData._t_dokNum; }
       set {        this.currentData._t_dokNum = value; }
    }
+   public uint F2_ElectronicID
+   {
+      get { return this.T_dokNum;         }
+      set {        this.T_dokNum = value; }
+   }
    /* 03 */ public ushort T_serial
    {
       get { return this.currentData._t_serial; }
