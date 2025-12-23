@@ -116,7 +116,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected string specificFakturReportName;
 
    public Color clr_Izlaz, clr_Ulaz, clr_None, clr_Sklad, clr_komis, clr_PDV, clr_PdvSklad, clr_RUC, clr_RN, clr_malop, clr_klkPri, clr_UPA,
-                clr_UGAN_PTG, clr_DOD_PTG, clr_PVR_PTG, clr_KOP_PTG, clr_OPL_PTG, clr_KOPLine_PTG, clr_NIR, clr_NUR;
+                clr_UGAN_PTG, clr_DOD_PTG, clr_PVR_PTG, clr_KOP_PTG, clr_OPL_PTG, clr_KOPLine_PTG;
    public bool IsRadNalog = false;
    public bool IsSklCD2 = false;
 
@@ -6799,9 +6799,6 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       clr_KOP_PTG     = Color.FromArgb(252, 98, 98);
       clr_KOPLine_PTG = Color.FromArgb(255, 164, 164);
       clr_PVR_PTG     = Color.FromArgb(197, 219, 162);
-      clr_NIR         = Color.LightBlue;
-      clr_NUR         = Color.MediumAquamarine;
-
    }
    public void SetUpColor(Color clrTampHeader, Color lblCrta, Color tabPagePoly)
    {
@@ -11144,19 +11141,21 @@ public partial class FakturExtDUC : FakturDUC
    {
       hamper = new VvHamper(2, 1, "", null, false);
 
-      hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
-      hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol };
+      hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol };
+      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
-      hamper.VvRowHgt = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow = new int[] { ZXC.Qun8 };
+      hamper.VvRowHgt       = new int[] { ZXC.QUN };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun8 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                      hamper.CreateVvLabel  (0, 0, "eRstatus:", ContentAlignment.MiddleRight);
+                      hamper.CreateVvLabel  (0, 0, ZXC.IsF2_2026_rules ? "FiskPrgBr:" : "eRstatus:", ContentAlignment.MiddleRight);
       tbx_fiskPrgBr = hamper.CreateVvTextBox(1, 0, "tbx_fiskPrgBr", "", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.fiskPrgBr));
 
     // 05.12.2018. koristi se za eRacun      
     //hamper.Visible = ZXC.CURR_prjkt_rec.IsFiskalOnline;
+    // od 01.01.2026. opet se koristi za fiskParagonBroj
+      hamper.Visible = ZXC.CURR_prjkt_rec.IsFiskalOnline && ZXC.projectYearAsInt > 2025;
 
       hamper.Name = "AFiskPrgBr:";
    }
@@ -12523,22 +12522,42 @@ public partial class FakturExtDUC : FakturDUC
       hamp_externLink2.Location                = new Point(hamp_externLink1.Right + ZXC.QUN, hamp_dostava.Bottom);
       hamp_externLink2.VvInitialHamperLocation = new Point(hamp_externLink1.Right + ZXC.QUN, hamp_dostava.Bottom);
       hampCbxM_externLink2.Location            = new Point(hamp_externLink1.Right + 0      , hamp_dostava.Bottom);
-      
-      
-      hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
-      hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
-      hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
 
-      hamp_fiskPrgBr.Location                = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
-      hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
-      hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
-      
+      // 23.12.2025. ovako je bilo do 2026 a od 2026  za F2 ide drugacije
+      //hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+      //hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+      //hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
+      //
+      //hamp_fiskPrgBr.Location                = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
+      //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
+      //hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
+
+      if(!ZXC.IsF2_2026_rules) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
+      {
+         hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+         hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+         hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
+         
+         hamp_fiskPrgBr.Location                = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
+         hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
+         hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
+      }
+      else
+      {
+         //23.12.2025. novo za F2 od 2026
+         hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+         hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+         hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
+
+      }
+
+
       if((this is RNMDUC) == false && (this is RNZDUC == false))
       {
 
-         hamp_prjIdent.Location                = new Point(hamp_OsobaB.Right + ZXC.QUN, hamp_dostava.Bottom);
+         hamp_prjIdent.Location = new Point(hamp_OsobaB.Right + ZXC.QUN, hamp_dostava.Bottom);
          hamp_prjIdent.VvInitialHamperLocation = new Point(hamp_OsobaB.Right + ZXC.QUN, hamp_dostava.Bottom);
-         hampCbxM_prjIdent.Location            = new Point(hamp_OsobaB.Right + 0      , hamp_dostava.Bottom);
+         hampCbxM_prjIdent.Location = new Point(hamp_OsobaB.Right + 0, hamp_dostava.Bottom);
       }
 
       if(this is PonMalDUC == true)
@@ -12558,10 +12577,18 @@ public partial class FakturExtDUC : FakturDUC
          hamp_fiskOibOp.VvInitialHamperLocation = new Point(hamp_fiskMsgID.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
          hampCbxM_fiskOibOp.Location            = new Point(hamp_fiskMsgID.Right + 0      , /*hamp_externLink1*/hamp_eRproc.Bottom);
 
-         // 05.12.2018. penamjenjeno za eRacun potvrdu slanja
+      // 05.12.2018. penamjenjeno za eRacun potvrdu slanja
       //hamp_fiskPrgBr.Location                = new Point(hamp_fiskOibOp.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
       //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_fiskOibOp.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
       //hampCbxM_fiskPrgBr.Location            = new Point(hamp_fiskOibOp.Right + 0      , /*hamp_externLink1*/hamp_eRproc.Bottom);
+      //23.12.2025. vracam kako je bilo prije jer on vise nije elektronicID
+      if(ZXC.IsF2_2026_rules)
+      { 
+         hamp_fiskPrgBr.Location                = new Point(hamp_fiskOibOp.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
+         hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_fiskOibOp.Right + ZXC.QUN, /*hamp_externLink1*/hamp_eRproc.Bottom);
+         hampCbxM_fiskPrgBr.Location            = new Point(hamp_fiskOibOp.Right + 0      , /*hamp_externLink1*/hamp_eRproc.Bottom);
+      }
+
 
        if(ZXC.CURR_prjkt_rec.IsFiskalOnline == true) panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_fiskMsgID.Bottom);
        else                                          panel_MigratorsRightA.Size = new Size(hamp_tipOtpreme.Right, hamp_externLink2.Bottom);
