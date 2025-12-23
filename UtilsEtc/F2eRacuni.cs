@@ -3782,7 +3782,9 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_RISK_Rules(object sender, EventArgs e)
    {
-      F2_Rules_Dlg dlg = new F2_Rules_Dlg();
+      bool isFIR = (sender as ToolStripButton).Name.StartsWith("FIR");
+
+      F2_Rules_Dlg dlg = new F2_Rules_Dlg(isFIR);
 
       if(dlg.ShowDialog() != DialogResult.OK) { dlg.Dispose(); return; }
 
@@ -3959,4 +3961,10 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       return oeRp;
    }
 
+   private void F2_RefreshFUR_QueryInboxAndFakturListAndStatuses(object sender, EventArgs e) 
+   {
+      ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+   }
+
+   
 }

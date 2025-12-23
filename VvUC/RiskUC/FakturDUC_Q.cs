@@ -10877,6 +10877,7 @@ public class RiskRulesDsc : VvLookupAsDsc
    public bool Dsc_F2_IsAsc                    { get; set; }
    public bool Dsc_F2_IsAutoSend               { get; set; }
    public bool Dsc_F2_IsAutoMAP                { get; set; }
+   public bool Dsc_F2_IsAutoImport             { get; set; }
    public bool Dsc_F2_IsNIR                    { get; set; }
    public bool Dsc_F2_IsNUR                    { get; set; }
 
@@ -10979,6 +10980,7 @@ public class RiskRulesDsc : VvLookupAsDsc
       Dsc_F2_NumOfRows             = 100;
       Dsc_F2_IsAsc                = false;
       Dsc_F2_IsAutoSend           = false;
+      Dsc_F2_IsAutoImport         = false;
       Dsc_F2_IsAutoMAP            = false;
       Dsc_F2_IsNIR                = false;
       Dsc_F2_IsNUR                = false;

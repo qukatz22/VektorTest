@@ -951,6 +951,7 @@ be_fast:
 
          
          if(TheVvUC is F2_Izlaz_UC) ((F2_Izlaz_UC)TheVvUC).Refresh_FIR(null, null, ((F2_Izlaz_UC)TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
+         if(TheVvUC is F2_Ulaz_UC ) ((F2_Ulaz_UC )TheVvUC).Refresh_FUR(null, null, ((F2_Ulaz_UC )TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
          
          return;
       }

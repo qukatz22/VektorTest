@@ -854,8 +854,8 @@ public class VvMessageBox_UC : UserControl
       hamper.VvSpcBefRow    = new int[] { 0      , 0       };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_IsAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski pošalji eRačune", RightToLeft.No);
-                       hamper.CreateVvLabel(0,1, "     (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)", ContentAlignment.MiddleLeft);
+      cbx_IsAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski pošalji eRačune"           , RightToLeft.No);
+                       hamper.CreateVvLabel       (0, 1, "     (Prilikom otvaranja FIR-a, a uz dodatnu potvrdu)", ContentAlignment.MiddleLeft);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }
@@ -930,8 +930,8 @@ public class VvMessageBox_UC : UserControl
       hamper.VvSpcBefRow    = new int[] { 0      , 0       };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isAutoImport = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski pruzmi ulazne eRačune", RightToLeft.No);
-                         hamper.CreateVvLabel(0,1, "     (Prilikom otvaranja FUR-a, a uz dodatnu potvrdu)", ContentAlignment.MiddleLeft);
+      cbx_isAutoImport = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski pruzmi ulazne eRačune"      , RightToLeft.No);
+                         hamper.CreateVvLabel       (0, 1, "     (Prilikom otvaranja FUR-a, a uz dodatnu potvrdu)", ContentAlignment.MiddleLeft);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
    }
@@ -1086,13 +1086,11 @@ public class VvMessageBox_UC : UserControl
 
    private void CreateMultiColumn_F2_IMPORT_candidates(VvDataGridView theGrid)
    {
-      CreateColumn_ftrRecID(theGrid, "FtrRecID"    , ZXC.Q5un        ); // u ovom slucaju  tu ide Faktur RecID, sam smo ostavili naziv Ftrans 
+      CreateColumn_ftrRecID(theGrid, "FtrRecID"    , ZXC.Q5un        ); // u ovom slucaju  tu ide Xtrano? RecID, sam smo ostavili naziv Ftrans 
       CreateColumn_skip    (theGrid, "Preskoči"    , ZXC.Q3un        );
 
-      CreateColumn_datum   (theGrid, "Datum"   , ZXC.Q5un            );
-      CreateColumn_partner (theGrid, "Partner" , ZXC.Q10un + ZXC.Q5un);
-      CreateColumn_iznos   (theGrid, "Iznos"   , ZXC.Q4un            );
-      CreateColumn_tipBr   (theGrid, "TipBr"   , ZXC.Q5un            );
+      CreateColumn_datum   (theGrid, "Datum slanja", ZXC.Q5un            );
+      CreateColumn_partner (theGrid, "Dobavljač"   , ZXC.Q10un + ZXC.Q5un);
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }

@@ -9424,7 +9424,7 @@ public class F2_Ulaz_UC : VvUserControl
 
    internal void INIT_FUR()
    {
-      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
+      if(Vv_eRacun_HTTP.Is_FUR_ON() == false) return;
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
@@ -9546,9 +9546,9 @@ public class F2_Ulaz_UC : VvUserControl
       internal int iT_statusID  ; 
 
       
-      internal int iT_fisk     ;
-      internal int iT_reject   ;
-      internal int iT_arhiv    ;
+      internal int iT_isFisk     ;
+      internal int iT_isReject   ;
+      internal int iT_isArhiv    ;
 
       internal int iT_tt       ; 
       internal int iT_ttNum    ; 
@@ -9565,15 +9565,14 @@ public class F2_Ulaz_UC : VvUserControl
 
       ci.iT_elID      = TheG.IdxForColumn("R_elID"      );
       ci.iT_sentDate  = TheG.IdxForColumn("R_sentDate"  );
-      ci.iT_sender   = TheG.IdxForColumn("R_partner"   );
-      ci.iT_senderOIB= TheG.IdxForColumn("R_partnerOIB");
-      ci.iT_documNr  = TheG.IdxForColumn("R_origBrRn"  );
+      ci.iT_sender    = TheG.IdxForColumn("R_partner"   );
+      ci.iT_senderOIB = TheG.IdxForColumn("R_partnerOIB");
+      ci.iT_documNr   = TheG.IdxForColumn("R_origBrRn"  );
       ci.iT_statusID  = TheG.IdxForColumn("R_statusID"  );
 
-      ci.iT_fisk   = TheG.IdxForColumn("fis");
-      ci.iT_arhiv  = TheG.IdxForColumn("arh");
-      ci.iT_reject = TheG.IdxForColumn("reject");
-
+      ci.iT_isFisk    = TheG.IdxForColumn("fis");
+      ci.iT_isArhiv   = TheG.IdxForColumn("arh");
+      ci.iT_isReject  = TheG.IdxForColumn("reject");
 
       ci.iT_tt        = TheG.IdxForColumn("R_tt"      );
       ci.iT_ttNum     = TheG.IdxForColumn("R_ttNum"   );
@@ -9603,57 +9602,32 @@ public class F2_Ulaz_UC : VvUserControl
 
          TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
-
-      //else // ovo je samo dok isprobavam kako izgleda
-      //{
-      //   TheG.Rows.Add();
-
-      //   TheG.PutCell(ci.iT_tt      , 0, ""                      );
-      //   TheG.PutCell(ci.iT_ttNum   , 0, ""                  );
-      //   TheG.PutCell(ci.iT_date    , 0, DateTime.Now.Date          );
-      //   TheG.PutCell(ci.iT_partner , 0, "PERO I DJURO d.o.o."      );
-      //   TheG.PutCell(ci.iT_oib     , 0, "12345678998"              );
-      //   TheG.PutCell(ci.iT_iznos   , 0, 1234.55M                   );
-      //   TheG.PutCell(ci.iT_origBrRn, 0, "123-45-76"                );
-      //   TheG.PutCell(ci.iT_elID    , 0, 12345679                   );
-      //   TheG.PutCell(ci.iT_fisk    , 0, "da"                       );
-      //   TheG.PutCell(ci.iT_odbijen , 0, ""                         );
-
-      //   TheG.Rows[0].HeaderCell.Value = (0 + 1).ToString();
-      //}
    }
 
    internal void PutDgvLineFields(int rowIdx, Xtrano xtrano_rec)
    {
-    
       TheG.PutCell(ci.iT_elID     , rowIdx, xtrano_rec.F2_ElectronicID);
       TheG.PutCell(ci.iT_sentDate , rowIdx, xtrano_rec.T_dokDate      );
       TheG.PutCell(ci.iT_sender   , rowIdx, xtrano_rec.T_opis_128     );
       TheG.PutCell(ci.iT_documNr  , rowIdx, xtrano_rec.T_theString    );
       TheG.PutCell(ci.iT_senderOIB, rowIdx, xtrano_rec.T_konto        );
       
-    //TheG.PutCell(ci.iT_tt      , rowIdx, xtrano_rec.TT               );
-    //TheG.PutCell(ci.iT_ttNum   , rowIdx, xtrano_rec.TtNum            );
-    //TheG.PutCell(ci.iT_dokDate , rowIdx, xtrano_rec.T_dokDate      );
-    //TheG.PutCell(ci.iT_kupDob  , rowIdx, ""/*faktur_rec.KupdobName*/ );
-    //TheG.PutCell(ci.iT_vezDok  , rowIdx, ""/*faktur_rec.VezniDok*/   );
-    //TheG.PutCell(ci.iT_iznos   , rowIdx, xtrano_rec.S_ukKCRP         );
+           if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
+      else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
+      else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
+      else                                                                ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
 
-    //if(faktur_rec.F2_IsFisk) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_green;
-    //else                     ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["fis"]).Value = img_red;
+      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
+ 
+      if(xtrano_rec.F2_IsReject)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
+      else                      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
 
-    //if(xtrano_rec.F2_IsARHIVED) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_green;
-    //else                        ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["arh"]).Value = img_empty;
-
-    //if(faktur_rec.F2_IsRejected)
-    //{
-    //   TheG.Rows[rowIdx].DefaultCellStyle.ForeColor = Color.Red;
-    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_red;
-    //}
-    //else 
-    //{
-    //   ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells["reject"]).Value = img_empty;
-    //}
+      //TheG.PutCell(ci.iT_tt      , rowIdx, faktur_rec.TT        );
+      //TheG.PutCell(ci.iT_ttNum   , rowIdx, faktur_rec.TtNum     );
+      //TheG.PutCell(ci.iT_dokDate , rowIdx, faktur_rec.T_dokDate );
+      //TheG.PutCell(ci.iT_kupDob  , rowIdx, faktur_rec.KupdobName);
+      //TheG.PutCell(ci.iT_vezDok  , rowIdx, faktur_rec.VezniDok  );
+      //TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
 
    }
 
@@ -9663,6 +9637,14 @@ public class F2_Ulaz_UC : VvUserControl
    }
 
    #endregion PutDgvFields1
+
+   public /*override*/ void Refresh_FUR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   {
+      if(newPage is VvTabPage == false) return;
+
+      if((newPage as VvTabPage).TheVvUC is F2_Ulaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Ulaz_UC).INIT_FUR();
+   }
+
 
 }
 
