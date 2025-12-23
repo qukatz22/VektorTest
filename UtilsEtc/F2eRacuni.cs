@@ -2581,9 +2581,22 @@ public static class Vv_eRacun_HTTP
 
             if(newAUR_Xtrano_rec != null)
             {
+               byte[] T_XmlZip = newAUR_Xtrano_rec.T_XmlZip;
+
                addrecOK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, newAUR_Xtrano_rec, /*false*/true, false, false, false);
 
-               if(!addrecOK)
+               if(addrecOK)
+               {
+                  theUC.TheVvTabPage.TheVvForm.BeginEdit(newAUR_Xtrano_rec);
+
+                  newAUR_Xtrano_rec.T_XmlZip = T_XmlZip;
+
+                  VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, newAUR_Xtrano_rec, "t_XmlZip", newAUR_Xtrano_rec.T_XmlZip);
+
+                  theUC.TheVvTabPage.TheVvForm.EndEdit(newAUR_Xtrano_rec);
+               }
+
+               else //if(!addrecOK)
                {
                   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu dodati novi Xtrano zapis u bazu podataka za prispjeli ulazni račun (inbox). Elektronski ID: {0}", newAUR_Xtrano_rec.F2_ElectronicID);
                   continue;
@@ -3747,38 +3760,8 @@ public class WebApiResult<T>
 // VvForm Submodul Actions about F2 fiscalization 
 public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagicForm
 {
-   private void F2_ReceiveSingle(object sender, EventArgs e)
+   private void F2_UserManual_OnClick(object sender, EventArgs e)
    {
-      //VvMER_Response_Data_AllActions responseData = null;
-      //
-      //bool receiveOK = true;
-      //try
-      //{
-      //   responseData = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(119499736);
-      //}
-      //catch(Exception ex)
-      //{
-      //   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-      //   receiveOK = false;
-      //}
-      //
-      //if(receiveOK)
-      //{
-      //   Xtrano F2arhivaXtrano_rec = VvMER_Response_Data_AllActions.F2_eRacun_Arhiva_SetXtranoFrom_XmlDocument(responseData.DocumentXml, Mixer.TT_AUR);
-      //
-      //   if(F2arhivaXtrano_rec != null)
-      //   {
-      //      bool OK = ZXC.XtranoDao.ADDREC(TheDbConnection, F2arhivaXtrano_rec, false, false, false, false);
-      //
-      //
-      //
-      //
-      //
-      //      Xtrano check_rec = new Xtrano();
-      //      F2arhivaXtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, check_rec, 1, false);
-      //      string decompXml = VvStringCompressor.DecompressXml(check_rec.T_XmlZip);
-      //   }
-      //}
    }
    private void F2_RISK_Rules(object sender, EventArgs e)
    {
@@ -3824,11 +3807,11 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       int newsCount = /*DDD*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
    }
-   private void F2_ShowArhivaPdf (object sender, EventArgs e) 
+   private void F2_ShowArhivaPdf_OLD (object sender, EventArgs e)
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
-     
-      Faktur faktur_rec   = theDUC.faktur_rec;
+
+      Faktur faktur_rec = theDUC.faktur_rec;
 
       if(faktur_rec.F2_ArhRecID.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun."); return; }
 
@@ -3846,19 +3829,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       //File.WriteAllBytes(fullName, pdfBytes);
       //System.Diagnostics.Process.Start(fullName);
 
-      List<(string Filename, byte[] PdfBytes)> pdfFiles = xtrano_rec.F2_GetPdfFilesWithNames();
-
-      if(pdfFiles.Count.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop       , "Nema spremljenih PDF-ova za ovaj eRačun."                         );   return;   }
-      if(pdfFiles.Count > 1)      { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning    , "Ima više od jednog PDF-a. Prikazujem prvi od {0}.", pdfFiles.Count); /*return;*/ }
-
-      (string filename, byte[] pdfBytes) thePDF = pdfFiles[0];
-
-      string dirame   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
-      string fullName = Path.Combine(dirame, thePDF.filename);
-
-      File.WriteAllBytes(fullName, thePDF.pdfBytes);
-
-      System.Diagnostics.Process.Start(fullName);
+      ShowPDF_FromXtranoArhiva(xtrano_rec);
+      
 
       // OVO je za PDFiumViewer testiranje ... ali si odustao od toga JER CEMO SA SYNCFUSION-om! 
       //using(var stream = new MemoryStream(pdfBytes))
@@ -3871,6 +3843,113 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       //}
 
    }
+
+   private void F2_ShowArhivaPdf(object sender, EventArgs e)
+   {
+      // Determine which UC type we're working with and get the selected row index
+      int rowIdx = -1;
+      Xtrano xtrano_rec = null;
+
+      if(TheVvUC is FakturExtDUC)
+      {
+         // Called from FakturDUC - get faktur directly
+         FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
+         Faktur faktur_rec = theDUC.faktur_rec;
+
+         if(faktur_rec.F2_ArhRecID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun.");
+            return;
+         }
+
+         xtrano_rec = new Xtrano();
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+      }
+      else if(TheVvUC is F2_Izlaz_UC)
+      {
+         // Called from F2_Izlaz_UC grid - get selected row
+         F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
+
+         if(theUC.TheG.SelectedCells.Count == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+            return;
+         }
+
+         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+         if(rowIdx < 0 || rowIdx >= theUC.TheFakturList.Count)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+            return;
+         }
+
+         Faktur faktur_rec = theUC.TheFakturList[rowIdx];
+
+         if(faktur_rec.F2_ArhRecID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun.");
+            return;
+         }
+
+         xtrano_rec = new Xtrano();
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+      }
+      else if(TheVvUC is F2_Ulaz_UC)
+      {
+         // Called from F2_Ulaz_UC grid - get selected Xtrano directly
+         F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
+
+         if(theUC.TheG.SelectedCells.Count == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+            return;
+         }
+
+         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+         if(rowIdx < 0 || rowIdx >= theUC.TheXtranoList.Count)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+            return;
+         }
+
+         xtrano_rec = theUC.TheXtranoList[rowIdx];
+
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, xtrano_rec.T_recID, false);
+      }
+
+      if(xtrano_rec == null)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu pronaći arhivu za prikaz PDF-a.");
+         return;
+      }
+
+      ShowPDF_FromXtranoArhiva(xtrano_rec);
+   }
+   private bool ShowPDF_FromXtranoArhiva(Xtrano xtrano_rec)
+   {
+      List<(string Filename, byte[] PdfBytes)> pdfFiles = xtrano_rec.F2_GetPdfFilesWithNames();
+
+      if(pdfFiles.Count.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop   , "Nema spremljenih PDF-ova za ovaj eRačun."); return false; }
+
+      for(int pdfIdx = 0; pdfIdx < pdfFiles.Count; ++pdfIdx)
+      {
+         if(pdfFiles.Count > 1) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, $"Ima više od jednog PDF-a. Prikazujem {pdfIdx+1}. od {pdfFiles.Count}."); /*return;*/ }
+
+         (string filename, byte[] pdfBytes) thePDF = pdfFiles[pdfIdx];
+
+         string dirame   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+         string fullName = Path.Combine(dirame, thePDF.filename);
+
+         File.WriteAllBytes(fullName, thePDF.pdfBytes);
+
+         System.Diagnostics.Process.Start(fullName);
+      }
+
+      return true;
+   }
+
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
       if(Vv_eRacun_HTTP.Is_FIR_SEND_ON() == false) return;
