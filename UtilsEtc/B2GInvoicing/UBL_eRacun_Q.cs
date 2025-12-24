@@ -27,7 +27,14 @@ namespace EN16931.UBL
 
       #region Create eRacun object (InvoiceType) From Faktur
 
-      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(Faktur ORIG_faktur_rec, PrnFakDsc thePFD, Kupdob kupdob_rec, Kupdob primPlat_rec, List<Artikl> artiklSifrar, /*string PDF_as_base64_string, */byte[] PDF_as_base64_bytes, string pdf_fileName)
+      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(
+         Faktur ORIG_faktur_rec,
+         PrnFakDsc thePFD,
+         Kupdob kupdob_rec,
+         Kupdob primPlat_rec,
+         List<Artikl> artiklSifrar,
+         byte[] PDF_as_base64_bytes,
+         string pdf_fileName)
       {
          #region Init
 
@@ -1246,12 +1253,7 @@ namespace EN16931.UBL
 
          #endregion Set eRacun Values From Faktur
 
-         #region Return
-
          return the_eRacun;
-
-         #endregion Return
-
       }
 
       #region Fak2eR & VvUBL Utils 

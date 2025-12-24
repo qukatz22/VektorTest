@@ -3423,8 +3423,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       //}
 
       if(faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 &&
-         (ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA || 
-          ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipB 
+         (ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipA || 
+          ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB 
           ))
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne smije se dodavati F2 B2B račun kada je uloga projekta {ZXC.CURR_prjkt_rec.F2_RolaKind}!");

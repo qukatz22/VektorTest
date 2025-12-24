@@ -399,6 +399,105 @@ namespace EN16931.UBL
 
       #region XSD Validating
 
+      #region XSD Validating - Unified with Embedded Resources
+
+      private static XmlSchemaSet GetXmlSchemaSet(bool useCIUS2025 = false)
+      {
+         List<ZXC.VvXmlValidationData> valDataList;
+      
+         if (useCIUS2025 && ZXC.IsF2_2026_rules)
+         {
+            // NOVE CIUS-2025 embedded sheme (od 1.1.2026)
+            valDataList = new List<ZXC.VvXmlValidationData>
+            {
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"                     , @"XSD\eRacun_2025\maindoc\UBL-Invoice-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"                  , @"XSD\eRacun_2025\maindoc\UBL-CreditNote-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"   , @"XSD\eRacun_2025\common\CCTS_CCT_SchemaModule-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   , @"XSD\eRacun_2025\common\UBL-CommonAggregateComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       , @"XSD\eRacun_2025\common\UBL-CommonBasicComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun_2025\common\UBL-CommonExtensionComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   , @"XSD\eRacun_2025\common\UBL-CommonSignatureComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:documentation:2"                                      , @"XSD\eRacun_2025\common\UBL-CoreComponentParameters-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun_2025\common\UBL-ExtensionContentDataType-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2"          , @"XSD\eRacun_2025\common\UBL-QualifiedDataTypes-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2", @"XSD\eRacun_2025\common\UBL-SignatureAggregateComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    , @"XSD\eRacun_2025\common\UBL-SignatureBasicComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"        , @"XSD\eRacun_2025\common\UBL-UnqualifiedDataTypes-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.3.2#"                                          , @"XSD\eRacun_2025\common\UBL-XAdESv132-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.4.1#"                                          , @"XSD\eRacun_2025\common\UBL-XAdESv141-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://www.w3.org/2000/09/xmldsig#"                                         , @"XSD\eRacun_2025\common\UBL-xmldsig-core-schema-2.1.xsd")
+            };
+         }
+         else
+         {
+            // STARE EN 16931 embedded sheme (do 31.12.2025)
+            valDataList = new List<ZXC.VvXmlValidationData>
+            {
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"                     , @"XSD\eRacun\UBL-Invoice-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"                  , @"XSD\eRacun\UBL-CreditNote-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"   , @"XSD\eRacun\CCTS_CCT_SchemaModule-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   , @"XSD\eRacun\UBL-CommonAggregateComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       , @"XSD\eRacun\UBL-CommonBasicComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun\UBL-CommonExtensionComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   , @"XSD\eRacun\UBL-CommonSignatureComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:documentation:2"                                      , @"XSD\eRacun\UBL-CoreComponentParameters-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun\UBL-ExtensionContentDataType-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2"          , @"XSD\eRacun\UBL-QualifiedDataTypes-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2", @"XSD\eRacun\UBL-SignatureAggregateComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    , @"XSD\eRacun\UBL-SignatureBasicComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"        , @"XSD\eRacun\UBL-UnqualifiedDataTypes-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.3.2#"                                          , @"XSD\eRacun\UBL-XAdESv132-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.4.1#"                                          , @"XSD\eRacun\UBL-XAdESv141-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://www.w3.org/2000/09/xmldsig#"                                         , @"XSD\eRacun\UBL-xmldsig-core-schema-2.1.xsd")
+            };
+         }
+      
+         XmlSchemaSet xmlSchemaSet = new XmlSchemaSet();
+      
+         foreach (ZXC.VvXmlValidationData valData in valDataList)
+         {
+            if (System.IO.File.Exists(valData.schemaUri))
+            {
+               xmlSchemaSet.Add(valData.targetNamespace, valData.schemaUri);
+            }
+            else
+            {
+               // Fallback: pokušaj učitati kao embedded resource
+               string embeddedResourceName = "Vektor." + valData.schemaUri.Replace("\\", ".");
+               
+               try
+               {
+                  using (var stream = System.Reflection.Assembly.GetExecutingAssembly()
+                     .GetManifestResourceStream(embeddedResourceName))
+                  {
+                     if (stream != null)
+                     {
+                        using (var reader = XmlReader.Create(stream))
+                        {
+                           xmlSchemaSet.Add(valData.targetNamespace, reader);
+                        }
+                     }
+                     else
+                     {
+                        ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
+                           "XSD shema nije pronađena: {0}", valData.schemaUri);
+                        return null;
+                     }
+                  }
+               }
+               catch (Exception ex)
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
+                     "Greška učitavanja XSD sheme: {0}\n\n{1}", valData.schemaUri, ex.Message);
+                  return null;
+               }
+            }
+         }
+      
+         return xmlSchemaSet;
+      }
+      
+      #endregion XSD Validating - Unified with Embedded Resources
       private static XmlSchemaSet GetXmlSchemaSet()
       {
          List<ZXC.VvXmlValidationData> valDataList = new List<ZXC.VvXmlValidationData>
@@ -431,110 +530,75 @@ namespace EN16931.UBL
          return xmlSchemaSet;
       }
 
-      public static bool ValidateThis_XML_eRacun(MemoryStream stream)
+      public static bool ValidateThis_XML_eRacun(MemoryStream stream, bool useCIUS2025 = false)
       {
-         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet();
+         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet(useCIUS2025);
+
+         if(xmlSchemaSet == null)
+         {
+            return false;
+         }
 
          ZXC.ErrorsList = new List<string>();
-
-         xsdOK = true; // xsdOK je NOT local. It's global field. 
-
-         #region From MSDN help
+         xsdOK = true;
 
          XmlReaderSettings settings = new XmlReaderSettings();
-
-       //settings.ProhibitDtd             = false                ; // eRacun additions! 
-         settings.DtdProcessing           = DtdProcessing.Parse  ; // eRacun additions! 
-         settings.ValidationType          = ValidationType.Schema;
+         settings.DtdProcessing = DtdProcessing.Parse;
+         settings.ValidationType = ValidationType.Schema;
          settings.ValidationEventHandler += new ValidationEventHandler(settings_ValidationEventHandler);
-
          settings.Schemas = xmlSchemaSet;
 
-         stream.Position = 0; // !!! 
+         stream.Position = 0;
 
          using(XmlReader reader = XmlReader.Create(stream, settings))
          {
-            while(reader.Read()); // ovo, zapravo, performs validation 
+            while(reader.Read()) ;
          }
 
-         #endregion From MSDN help
-
-         if(xsdOK == true)
+         if(xsdOK == false)
          {
-            //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Datoteka: [{0}]\n\nUSPJESNO VALIDIRANA.", fileName);
-
-            //#region VvSendMail
-
-            //string message = string.Format("Da li zelite exportiranu datoteku: [{0}]\n\nposlati kao privitak mail poruke?", fileName);
-            //System.Windows.Forms.DialogResult resultSendMail = System.Windows.Forms.MessageBox.Show(message, "POSLATI MAILOM?!", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
-            //if(resultSendMail == System.Windows.Forms.DialogResult.Yes)
-            //{
-            //   //ZXC.TheVvForm.VvSendFileAsMailAttachment(fileName);
-            //   ZXC.TheVvForm.ExporVvtReportToFile_Manager(true, ZXC.RptExportKind.XML/*, false, false*/);
-            //}
-
-            //#endregion VvSendMail
-
-         }
-         else // Validation Error(s) Occured 
-         {
-            ZXC.aim_emsg_List("Greške XML Validacije", ZXC.ErrorsList, true);
+            string title = useCIUS2025
+               ? "Greške CIUS-2025 XML Validacije"
+               : "Greške EN 16931 XML Validacije";
+            ZXC.aim_emsg_List(title, ZXC.ErrorsList, true);
          }
 
          return xsdOK;
       }
 
-      public static bool ValidateThis_XML_eRacun(string fileName)
+      public static bool ValidateThis_XML_eRacun(string fileName, bool useCIUS2025 = false)
       {
-         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet();
+         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet(useCIUS2025);
+
+         if(xmlSchemaSet == null)
+         {
+            return false;
+         }
 
          ZXC.ErrorsList = new List<string>();
-
-         xsdOK = true; // xsdOK je NOT local. It's global field. 
-
-         #region From MSDN help
+         xsdOK = true;
 
          XmlReaderSettings settings = new XmlReaderSettings();
-
-       //settings.ProhibitDtd             = false                ; // eRacun additions! 
-         settings.DtdProcessing           = DtdProcessing.Parse  ; // eRacun additions! 
-         settings.ValidationType          = ValidationType.Schema;
+         settings.DtdProcessing = DtdProcessing.Parse;
+         settings.ValidationType = ValidationType.Schema;
          settings.ValidationEventHandler += new ValidationEventHandler(settings_ValidationEventHandler);
-
          settings.Schemas = xmlSchemaSet;
 
          using(XmlReader reader = XmlReader.Create(fileName, settings))
          {
-            while(reader.Read()); // ovo, zapravo, performs validation 
+            while(reader.Read()) ;
          }
 
-         #endregion From MSDN help
-
-         if(xsdOK == true)
+         if(xsdOK == false)
          {
-            //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Datoteka: [{0}]\n\nUSPJESNO VALIDIRANA.", fileName);
-
-            //#region VvSendMail
-
-            //string message = string.Format("Da li zelite exportiranu datoteku: [{0}]\n\nposlati kao privitak mail poruke?", fileName);
-            //System.Windows.Forms.DialogResult resultSendMail = System.Windows.Forms.MessageBox.Show(message, "POSLATI MAILOM?!", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
-            //if(resultSendMail == System.Windows.Forms.DialogResult.Yes)
-            //{
-            //   //ZXC.TheVvForm.VvSendFileAsMailAttachment(fileName);
-            //   ZXC.TheVvForm.ExporVvtReportToFile_Manager(true, ZXC.RptExportKind.XML/*, false, false*/);
-            //}
-
-            //#endregion VvSendMail
-
-         }
-         else // Validation Error(s) Occured 
-         {
-            ZXC.aim_emsg_List("Greške Validacije XML-a [" + fileName + "]", ZXC.ErrorsList, true);
+            string title = useCIUS2025
+               ? "Greške CIUS-2025 XML Validacije [" + fileName + "]"
+               : "Greške EN 16931 XML Validacije [" + fileName + "]";
+            ZXC.aim_emsg_List(title, ZXC.ErrorsList, true);
          }
 
          return xsdOK;
       }
-
       private static void settings_ValidationEventHandler(object sender, ValidationEventArgs e)
       {
          xsdOK = false;
