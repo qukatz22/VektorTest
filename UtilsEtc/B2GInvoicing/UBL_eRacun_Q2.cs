@@ -399,8 +399,6 @@ namespace EN16931.UBL
 
       #region XSD Validating
 
-      #region XSD Validating - Unified with Embedded Resources
-
       private static XmlSchemaSet GetXmlSchemaSet(bool useCIUS2025 = false)
       {
          List<ZXC.VvXmlValidationData> valDataList;
@@ -496,76 +494,8 @@ namespace EN16931.UBL
       
          return xmlSchemaSet;
       }
-      
-      #endregion XSD Validating - Unified with Embedded Resources
-      private static XmlSchemaSet GetXmlSchemaSet()
-      {
-         List<ZXC.VvXmlValidationData> valDataList = new List<ZXC.VvXmlValidationData>
-         {
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"                     , @"XSD\eRacun\UBL-Invoice-2.1.xsd"                     ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"                  , @"XSD\eRacun\UBL-CreditNote-2.1.xsd"                  ),
-            new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"   , @"XSD\eRacun\CCTS_CCT_SchemaModule-2.1.xsd"           ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   , @"XSD\eRacun\UBL-CommonAggregateComponents-2.1.xsd"   ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       , @"XSD\eRacun\UBL-CommonBasicComponents-2.1.xsd"       ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun\UBL-CommonExtensionComponents-2.1.xsd"   ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   , @"XSD\eRacun\UBL-CommonSignatureComponents-2.1.xsd"   ),
-            new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:documentation:2"                                      , @"XSD\eRacun\UBL-CoreComponentParameters-2.1.xsd"     ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun\UBL-ExtensionContentDataType-2.1.xsd"    ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2"          , @"XSD\eRacun\UBL-QualifiedDataTypes-2.1.xsd"          ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2", @"XSD\eRacun\UBL-SignatureAggregateComponents-2.1.xsd"),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    , @"XSD\eRacun\UBL-SignatureBasicComponents-2.1.xsd"    ),
-            new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"        , @"XSD\eRacun\UBL-UnqualifiedDataTypes-2.1.xsd"        ),
-            new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.3.2#"                                          , @"XSD\eRacun\UBL-XAdESv132-2.1.xsd"                   ),
-            new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.4.1#"                                          , @"XSD\eRacun\UBL-XAdESv141-2.1.xsd"                   ),
-            new ZXC.VvXmlValidationData(@"http://www.w3.org/2000/09/xmldsig#"                                         , @"XSD\eRacun\UBL-xmldsig-core-schema-2.1.xsd"         )
-         };
 
-         XmlSchemaSet xmlSchemaSet = new XmlSchemaSet();
-
-         foreach(ZXC.VvXmlValidationData valData in valDataList)
-         {
-            xmlSchemaSet.Add(valData.targetNamespace, valData.schemaUri);
-         }
-
-         return xmlSchemaSet;
-      }
-
-      public static bool ValidateThis_XML_eRacun(MemoryStream stream, bool useCIUS2025 = false)
-      {
-         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet(useCIUS2025);
-
-         if(xmlSchemaSet == null)
-         {
-            return false;
-         }
-
-         ZXC.ErrorsList = new List<string>();
-         xsdOK = true;
-
-         XmlReaderSettings settings = new XmlReaderSettings();
-         settings.DtdProcessing = DtdProcessing.Parse;
-         settings.ValidationType = ValidationType.Schema;
-         settings.ValidationEventHandler += new ValidationEventHandler(settings_ValidationEventHandler);
-         settings.Schemas = xmlSchemaSet;
-
-         stream.Position = 0;
-
-         using(XmlReader reader = XmlReader.Create(stream, settings))
-         {
-            while(reader.Read()) ;
-         }
-
-         if(xsdOK == false)
-         {
-            string title = useCIUS2025
-               ? "Greške CIUS-2025 XML Validacije"
-               : "Greške EN 16931 XML Validacije";
-            ZXC.aim_emsg_List(title, ZXC.ErrorsList, true);
-         }
-
-         return xsdOK;
-      }
-
+#if mozdaKasnijeIzFajla
       public static bool ValidateThis_XML_eRacun(string fileName, bool useCIUS2025 = false)
       {
          XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet(useCIUS2025);
@@ -599,38 +529,291 @@ namespace EN16931.UBL
 
          return xsdOK;
       }
+#endif
+
+      #region XSD Validating - Enhanced Error Handling
+
+      private static bool xsdOK;
+      private static string currentValidatingXmlContent; // Za XML context extraction
+
+      public static bool ValidateThis_XML_eRacun(MemoryStream stream, bool useCIUS2025 = false, string fileName = null)
+      {
+         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet(useCIUS2025);
+
+         if(xmlSchemaSet == null)
+         {
+            return false;
+         }
+
+         ZXC.ErrorsList = new List<string>();
+         xsdOK = true;
+
+         // Zapamti XML sadržaj za detaljnu dijagnostiku
+         stream.Position = 0;
+         using(StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen: true))
+         {
+            currentValidatingXmlContent = reader.ReadToEnd();
+         }
+
+         // Reset stream position za validaciju
+         stream.Position = 0;
+
+         XmlReaderSettings settings = new XmlReaderSettings();
+         settings.DtdProcessing = DtdProcessing.Parse;
+         settings.ValidationType = ValidationType.Schema;
+         settings.ValidationEventHandler += new ValidationEventHandler(settings_ValidationEventHandler);
+         settings.Schemas = xmlSchemaSet;
+
+         using(XmlReader xmlReader = XmlReader.Create(stream, settings))
+         {
+            try
+            {
+               while(xmlReader.Read()) ;
+            }
+            catch(Exception ex)
+            {
+               // Uhvati parse greške koje se mogu dogoditi prije schema validacije
+               xsdOK = false;
+               ZXC.ErrorsList.Add($"❌ XML PARSE ERROR: {ex.Message}");
+
+               if(ex is XmlException xmlEx && xmlEx.LineNumber > 0)
+               {
+                  ZXC.ErrorsList.Add($"   Location: Line {xmlEx.LineNumber}, Position {xmlEx.LinePosition}");
+
+                  // Dodaj XML context
+                  string context = ExtractXmlContext(currentValidatingXmlContent, xmlEx.LineNumber, 3);
+                  if(!string.IsNullOrEmpty(context))
+                  {
+                     ZXC.ErrorsList.Add(context);
+                  }
+               }
+            }
+         }
+
+         // Spremi XML content za attachment prije reseta
+         string xmlForAttachment = currentValidatingXmlContent;
+
+         // Reset za cleanup
+         currentValidatingXmlContent = null;
+         stream.Position = 0; // Vrati stream na početak za eventualno daljnje korištenje
+
+         if(xsdOK == false)
+         {
+            string title = useCIUS2025
+               ? "Greške CIUS-2025 XML Validacije"
+               : "Greške EN 16931 XML Validacije";
+
+            // 25.12.2025: Proslijedi XML string kao attachment za "Send to Support"
+            ZXC.aim_emsg_List(title, ZXC.ErrorsList, true, xmlForAttachment, fileName);
+         }
+
+         return xsdOK;
+      }
       private static void settings_ValidationEventHandler(object sender, ValidationEventArgs e)
       {
          xsdOK = false;
-         //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "e-Račun datoteka: [{1}]\n\nGreška validacije: [{0}]", e.Message, FileNameGlobal);
-         ZXC.ErrorsList.Add(e.Message);
+
+         // Kreiraj detaljnu poruku greške
+         StringBuilder errorDetails = new StringBuilder();
+
+         // 1. SEVERITY (Error vs Warning)
+         string severityIcon = e.Severity == XmlSeverityType.Error ? "❌" : "⚠️";
+         errorDetails.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+         errorDetails.AppendLine($"{severityIcon} {e.Severity.ToString().ToUpper()}");
+         errorDetails.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+         // 2. OSNOVNA PORUKA
+         errorDetails.AppendLine($"▸ MESSAGE: {e.Message}");
+
+         // 3. EXCEPTION DETAILS (ako postoji)
+         if(e.Exception != null)
+         {
+            errorDetails.AppendLine($"▸ EXCEPTION TYPE: {e.Exception.GetType().Name}");
+
+            if(e.Exception is XmlSchemaException schemaEx)
+            {
+               // 4. LOKACIJA GREŠKE U XML-u
+               if(schemaEx.LineNumber > 0)
+               {
+                  errorDetails.AppendLine($"▸ LINE: {schemaEx.LineNumber}");
+               }
+
+               if(schemaEx.LinePosition > 0)
+               {
+                  errorDetails.AppendLine($"▸ POSITION: {schemaEx.LinePosition}");
+               }
+
+               // 5. SOURCE URI (koja XSD shema)
+               if(!string.IsNullOrEmpty(schemaEx.SourceUri))
+               {
+                  string schemaName = System.IO.Path.GetFileName(schemaEx.SourceUri);
+                  errorDetails.AppendLine($"▸ SCHEMA: {schemaName}");
+               }
+
+               // 6. SOURCE SCHEMA OBJECT
+               if(schemaEx.SourceSchemaObject != null)
+               {
+                  string schemaObjectType = schemaEx.SourceSchemaObject.GetType().Name;
+                  errorDetails.AppendLine($"▸ SCHEMA ELEMENT TYPE: {schemaObjectType}");
+
+                  if(schemaEx.SourceSchemaObject is XmlSchemaElement element)
+                  {
+                     if(element.QualifiedName != null && !string.IsNullOrEmpty(element.QualifiedName.ToString()))
+                     {
+                        errorDetails.AppendLine($"▸ ELEMENT: {element.QualifiedName}");
+                     }
+
+                     if(element.SchemaTypeName != null && !string.IsNullOrEmpty(element.SchemaTypeName.ToString()))
+                     {
+                        errorDetails.AppendLine($"▸ EXPECTED TYPE: {element.SchemaTypeName}");
+                     }
+                  }
+                  else if(schemaEx.SourceSchemaObject is XmlSchemaAttribute attribute)
+                  {
+                     if(attribute.QualifiedName != null)
+                     {
+                        errorDetails.AppendLine($"▸ ATTRIBUTE: {attribute.QualifiedName}");
+                     }
+                  }
+               }
+
+               // 7. XML CONTEXT (3 linije prije i poslije greške)
+               if(schemaEx.LineNumber > 0 && !string.IsNullOrEmpty(currentValidatingXmlContent))
+               {
+                  string context = ExtractXmlContext(currentValidatingXmlContent, schemaEx.LineNumber, 3);
+                  if(!string.IsNullOrEmpty(context))
+                  {
+                     errorDetails.AppendLine();
+                     errorDetails.AppendLine(context);
+                  }
+               }
+            }
+
+            // 8. INNER EXCEPTION
+            if(e.Exception.InnerException != null)
+            {
+               errorDetails.AppendLine($"▸ INNER ERROR: {e.Exception.InnerException.Message}");
+            }
+         }
+
+         // 9. SENDER (XmlReader) CONTEXT
+         if(sender is XmlReader reader)
+         {
+            try
+            {
+               if(reader.NodeType != XmlNodeType.None)
+               {
+                  errorDetails.AppendLine($"▸ CURRENT NODE: {reader.Name} ({reader.NodeType})");
+
+                  if(reader.HasValue && !string.IsNullOrEmpty(reader.Value))
+                  {
+                     string value = reader.Value;
+                     if(value.Length > 80)
+                     {
+                        value = value.Substring(0, 80) + "...";
+                     }
+                     errorDetails.AppendLine($"▸ NODE VALUE: {value}");
+                  }
+
+                  // Namespace information
+                  if(!string.IsNullOrEmpty(reader.NamespaceURI))
+                  {
+                     errorDetails.AppendLine($"▸ NAMESPACE: {reader.NamespaceURI}");
+                  }
+               }
+            }
+            catch
+            {
+               // XmlReader može biti u nestabilnom stanju
+            }
+         }
+
+         errorDetails.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+         // Dodaj u listu
+         ZXC.ErrorsList.Add(errorDetails.ToString());
+
+         // Opciono: Log u datoteku
+         LogValidationErrorToFile(errorDetails.ToString());
       }
 
-      //private static List<ZXC.VvXmlValidationData> Create_VvXmlValidationData_List()
-      //{
-      //   return new List<ZXC.VvXmlValidationData>
-      //   {
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"                     , @"XSD\eRacun\UBL-Invoice-2.1.xsd"                     ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"                  , @"XSD\eRacun\UBL-CreditNote-2.1.xsd"                  ),
-      //      new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"   , @"XSD\eRacun\CCTS_CCT_SchemaModule-2.1.xsd"           ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   , @"XSD\eRacun\UBL-CommonAggregateComponents-2.1.xsd"   ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       , @"XSD\eRacun\UBL-CommonBasicComponents-2.1.xsd"       ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun\UBL-CommonExtensionComponents-2.1.xsd"   ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   , @"XSD\eRacun\UBL-CommonSignatureComponents-2.1.xsd"   ),
-      //      new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:documentation:2"                                      , @"XSD\eRacun\UBL-CoreComponentParameters-2.1.xsd"     ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun\UBL-ExtensionContentDataType-2.1.xsd"    ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2"          , @"XSD\eRacun\UBL-QualifiedDataTypes-2.1.xsd"          ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2", @"XSD\eRacun\UBL-SignatureAggregateComponents-2.1.xsd"),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    , @"XSD\eRacun\UBL-SignatureBasicComponents-2.1.xsd"    ),
-      //      new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"        , @"XSD\eRacun\UBL-UnqualifiedDataTypes-2.1.xsd"        ),
-      //      new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.3.2#"                                          , @"XSD\eRacun\UBL-XAdESv132-2.1.xsd"                   ),
-      //      new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.4.1#"                                          , @"XSD\eRacun\UBL-XAdESv141-2.1.xsd"                   ),
-      //      new ZXC.VvXmlValidationData(@"http://www.w3.org/2000/09/xmldsig#"                                         , @"XSD\eRacun\UBL-xmldsig-core-schema-2.1.xsd"         )
-      //   };
-      //}
+      /// <summary>
+      /// Ekstraktuje XML kontekst oko greške (N linija prije i poslije)
+      /// </summary>
+      private static string ExtractXmlContext(string xmlContent, int lineNumber, int contextLines = 3)
+      {
+         if(string.IsNullOrEmpty(xmlContent) || lineNumber <= 0)
+            return string.Empty;
 
-      private static bool xsdOK;
+         string[] lines = xmlContent.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
+         if(lineNumber > lines.Length)
+            return string.Empty;
+
+         int startLine = Math.Max(0, lineNumber - contextLines - 1);
+         int endLine = Math.Min(lines.Length - 1, lineNumber + contextLines - 1);
+
+         StringBuilder context = new StringBuilder();
+         context.AppendLine("▸ XML CONTEXT:");
+         context.AppendLine("─────────────────────────────────────────");
+
+         for(int i = startLine; i <= endLine; i++)
+         {
+            string line = lines[i];
+
+            // Trim linije preko 100 karaktera
+            if(line.Length > 100)
+            {
+               line = line.Substring(0, 100) + "...";
+            }
+
+            // Označi liniju s greškom
+            string prefix = (i == lineNumber - 1) ? ">>> " : "    ";
+            context.AppendLine($"{prefix}{i + 1,4}: {line}");
+         }
+
+         context.AppendLine("─────────────────────────────────────────");
+
+         return context.ToString();
+      }
+
+      /// <summary>
+      /// Logira detaljne validation greške u datoteku
+      /// </summary>
+      private static void LogValidationErrorToFile(string errorDetails)
+      {
+         try
+         {
+            string logDir = CurrentLocalDirectory; 
+               //System.IO.Path.Combine(
+               //ZXC.TheAppVektorPath,
+               //"Logs",
+               //"ValidationErrors"
+               //);
+
+            if(!System.IO.Directory.Exists(logDir))
+            {
+               System.IO.Directory.CreateDirectory(logDir);
+            }
+
+            string logFileName = System.IO.Path.Combine(
+               logDir,
+               $"Validation_{DateTime.Now:yyyy-MM-dd}.log"
+            );
+
+            string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+            string logEntry = $"\n[{timestamp}]\n{errorDetails}\n";
+
+            System.IO.File.AppendAllText(logFileName, logEntry, Encoding.UTF8);
+         }
+         catch
+         {
+            // Ne želimo da logging greška poremeti validaciju
+         }
+      }
+
+      #endregion XSD Validating - Enhanced Error Handling
+      
       #endregion XSD Validating
 
       #region Get_eRacun_Application_Certificate

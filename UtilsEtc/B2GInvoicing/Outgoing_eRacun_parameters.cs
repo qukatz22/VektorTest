@@ -14,6 +14,14 @@ public class Outgoing_eRacun_parameters
    /* oeRp_6. */ public string     pdfFileNameOnly         { get; set; }
    /* oeRp_7. */ public string     fullPath_XML_FileName   { get; set; }
 
+   // 'qwe' je za F2 2026 set varijabli 
+   /*         */ public string     qweTheDirectoryName     { get; set; }
+   /*         */ public string     qweFileNameBaseOnly     { get; set; }
+   /*         */ public string     qwePDFfileNameOnly      { get { return qweFileNameBaseOnly + ".pdf"; } }
+   /*         */ public string     qweXMLfileNameOnly      { get { return qweFileNameBaseOnly + ".xml"; } }
+   /*         */ public string     qwePDFfullPathAndName   { get { return System.IO.Path.Combine(qweTheDirectoryName, qwePDFfileNameOnly); } }
+   /*         */ public string     qweXMLfullPathAndName   { get { return System.IO.Path.Combine(qweTheDirectoryName, qweXMLfileNameOnly); } }
+
    public string suggestedXmlFileName
    {
       get

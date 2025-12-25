@@ -627,7 +627,7 @@ public class VvMessageBoxDLG :  VvDialog
    private int dlgWidth, dlgHeight;
    internal string TextForSupportMailFromAddition { get; set; }
    internal string TextForSupportMailBody { get; set; }
-
+   internal string AttachmentFilePath { get; set; }
    public VvMessageBoxDLG(bool _smallFont, ZXC.VvmBoxKind vvmBoxKind)
    {
       ZXC.CurrentForm = this;
@@ -688,35 +688,30 @@ public class VvMessageBoxDLG :  VvDialog
       ResumeLayout();
 
    }
-   
+
    private void MailToSupport_Click(object sender, EventArgs e)
    {
-     VvMailClient mailClient = new VvMailClient();
-     
-   //mailClient.EmailFromPasswd      = ZXC.SkyLabEmailPassword;
-   //mailClient.MailHost             = ZXC.ViperMailHost      ;
-   //mailClient.EmailFromAddress     = 
-   //mailClient.EmailFromUserName    = ZXC.SkyLabEmailAddress ;
-   //mailClient.EmailFromDisplayName = ZXC.VvDeploymentSite + " VvException";
-   
-   //mailClient.PortNo               = Fld_Port               ;
-   //mailClient.EnableSSL            = Fld_UseSSL             ;
-   //mailClient.IsCcToMySelf         = Fld_PoslajiKopijuSebi  ;
-   
-     mailClient.SetVvSupportMailData((TextForSupportMailFromAddition.IsEmpty() ? " VvException" : TextForSupportMailFromAddition));
-   
-     mailClient.MessageSubject = this.Text;
-   
-     mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r", 
-        ZXC.TheVvForm.Text, 
-        ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
-        ZXC.TheVvForm.TheVvUC.ToString());
-   
-     mailClient.MessageBody += TextForSupportMailBody;
-   
-     mailClient.SendMail_Normal(true, ZXC.VektorEmailAddress);
-   }
+      VvMailClient mailClient = new VvMailClient();
 
+      mailClient.SetVvSupportMailData((TextForSupportMailFromAddition.IsEmpty() ? " VvException" : TextForSupportMailFromAddition));
+
+      mailClient.MessageSubject = this.Text;
+
+      mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r",
+         ZXC.TheVvForm.Text,
+         ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
+         ZXC.TheVvForm.TheVvUC.ToString());
+
+      mailClient.MessageBody += TextForSupportMailBody;
+
+      // Dodaj attachment ako postoji
+      if(AttachmentFilePath.NotEmpty() && System.IO.File.Exists(AttachmentFilePath))
+      {
+         mailClient.MailAttachmentFileNameList = new string[] { AttachmentFilePath };
+      }
+
+      mailClient.SendMail_Normal(true, ZXC.VektorEmailAddress);
+   }
 }
 
 public class VvMessageBox_UC : UserControl

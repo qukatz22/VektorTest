@@ -27,18 +27,49 @@ namespace EN16931.UBL
 
       #region Create eRacun object (InvoiceType) From Faktur
 
-      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(
-         Faktur ORIG_faktur_rec,
-         PrnFakDsc thePFD,
-         Kupdob kupdob_rec,
-         Kupdob primPlat_rec,
-         List<Artikl> artiklSifrar,
-         byte[] PDF_as_base64_bytes,
-         string pdf_fileName)
+      private static string currentLocalDirectory;
+      public static string CurrentLocalDirectory
+      {
+
+         get 
+         { 
+            if(currentLocalDirectory.IsEmpty())
+            {
+               string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+               string todayDir                 = "XYZ" + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+
+               currentLocalDirectory = Path.Combine(deaultVvPDFdirectoryName, todayDir);
+            }
+
+            return currentLocalDirectory; 
+         }
+         set { currentLocalDirectory = value; }
+      }
+
+      [System.Xml.Serialization.XmlIgnore]
+      public Outgoing_eRacun_parameters The_OERP { get; set; }
+      //public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(
+      //   Faktur ORIG_faktur_rec,
+      //   PrnFakDsc thePFD,
+      //   Kupdob kupdob_rec,
+      //   Kupdob primPlat_rec,
+      //   List<Artikl> artiklSifrar,
+      //   byte[] PDF_as_base64_bytes,
+      //   string pdf_fileName)
+      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(Outgoing_eRacun_parameters oeRp, List<Artikl> artiklSifrar)
       {
          #region Init
 
+         Faktur    ORIG_faktur_rec     = oeRp.faktur_rec             ;
+         PrnFakDsc thePFD              = oeRp.thePFD                 ;
+         Kupdob    kupdob_rec          = oeRp.kupdob_rec             ;
+         Kupdob    primPlat_rec        = oeRp.primPlat_rec           ;
+         byte[]    PDF_as_base64_bytes = oeRp.PDF_as_base64_byteArray;
+         string    pdf_fileName        = oeRp.pdfFileNameOnly        ;
+
          EN16931.UBL.InvoiceType the_eRacun = new EN16931.UBL.InvoiceType();
+
+         the_eRacun.The_OERP = oeRp;
 
          // 24.06.2019.
          bool isMojeRacunNotFina = true; // todo kao parametar 

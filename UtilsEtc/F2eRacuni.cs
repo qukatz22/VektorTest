@@ -16,6 +16,8 @@ using CrystalDecisions.Shared;
 using System.Net.Security;
 using System.Drawing;
 using System.Diagnostics.SymbolStore;
+using EN16931.UBL;
+
 
 
 
@@ -510,7 +512,7 @@ public static class Vv_eRacun_HTTP
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
 
    //######################## https://www.moj-eracun.hr/apis/v2/send #############################################################################################################
-   public static WebApiResult<VvMER_ResponseData> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public static WebApiResult<VvMER_ResponseData> /*VvMER_Response_Data_AllActions*/ VvMER_WebService_SEND(string xmlString)
    {
       // Web adresa Vam je ispravna za demo okruženje: https://demo.moj-eracun.hr/apis/v2/send
       // Produkcijska adresa je : https://www.moj-eracun.hr/apis/v2/send
@@ -549,7 +551,7 @@ public static class Vv_eRacun_HTTP
 
       return webApiResult;
    }
-   public  static WebApiResult<VvMER_ResponseData> VvPND_WebService_SEND(string xmlString, string fullPath_XML_FileName)
+   public  static WebApiResult<VvMER_ResponseData> VvPND_WebService_SEND(string xmlString)
    {
       string        webApiAddr = VvPND_webAddressPOST_Send;
       ZXC.F2_WebApi webApiKind = ZXC.F2_WebApi.SEND       ;
@@ -3986,30 +3988,44 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
       string todayDir                 = theTT + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
-      string fileNameOnly ;
+      string pdfFileNameOnly     ;
       string PDFfileFullPathName ;
 
-      VvForm.CreateDirectoryInMyDocuments(Path.Combine(deaultVvPDFdirectoryName, todayDir));
+      string currentLocalDirectory = Path.Combine(deaultVvPDFdirectoryName, todayDir);
 
+      VvForm.CreateDirectoryInMyDocuments(currentLocalDirectory);
+
+      InvoiceType.CurrentLocalDirectory = currentLocalDirectory;
 
       // 1. GetReportDocument
       theRptR_IRA = VvRiskReport.GetRptR_IRA(faktur_rec, thePFD, theTT);
 
       // 2. get fileName 
-      fileNameOnly = faktur_rec.TT_And_TtNum + " [" + faktur_rec.KupdobName + "]" + ".pdf";
 
-      PDFfileFullPathName = Path.Combine(deaultVvPDFdirectoryName, todayDir, fileNameOnly);
+      #region 2026 totalno sam popizdio s starim varijablama pa radim nove
+
+      string PDF_And_XML_fileBaseName  = faktur_rec.TT_And_TtNum + " [" + faktur_rec.KupdobName + "]";
+
+      string PDF_And_XML_directoryName = currentLocalDirectory;
+
+      oeRp.qweFileNameBaseOnly = PDF_And_XML_fileBaseName ;
+      oeRp.qweTheDirectoryName = PDF_And_XML_directoryName;
+
+      #endregion 2026 totalno sam popizdio s starim varijablama pa radim nove
+
+      pdfFileNameOnly = PDF_And_XML_fileBaseName + ".pdf";
+
+      PDFfileFullPathName = Path.Combine(currentLocalDirectory, pdfFileNameOnly);
 
       // 3. set reportDocument.ExportOptions
       try
       {
          CrDiskFileDestinationOptions.DiskFileName = PDFfileFullPathName;
          CrExportOptions                           = theRptR_IRA.reportDocument.ExportOptions;
-
-         CrExportOptions.ExportDestinationType = ExportDestinationType.DiskFile;
-         CrExportOptions.ExportFormatType      = ExportFormatType.PortableDocFormat;
-         CrExportOptions.DestinationOptions    = CrDiskFileDestinationOptions;
-         CrExportOptions.FormatOptions         = CrFormatTypeOptions;
+         CrExportOptions.ExportDestinationType     = ExportDestinationType.DiskFile;
+         CrExportOptions.ExportFormatType          = ExportFormatType.PortableDocFormat;
+         CrExportOptions.DestinationOptions        = CrDiskFileDestinationOptions;
+         CrExportOptions.FormatOptions             = CrFormatTypeOptions;
 
          theRptR_IRA.reportDocument.Export();
       }
@@ -4036,6 +4052,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       /* oeRp_5. */ oeRp.PDF_as_base64_byteArray = System.IO.File.ReadAllBytes(PDFfileFullPathName);
       /* oeRp_6. */ oeRp.pdfFileNameOnly         = PDFfileFullPathName                             ;
       /* oeRp_7. */ oeRp.fullPath_XML_FileName   = oeRp.suggestedXmlFileName + ".xml"              ;
+      // NOTA BENE! imas malo povise #region 2026 totalno sam popizdio s starim varijablama pa radim nove 
 
       return oeRp;
    }
