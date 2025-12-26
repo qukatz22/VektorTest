@@ -5040,6 +5040,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       Artikl artikl_rec = ArtiklSifrar.SingleOrDefault(artikl => artikl.ArtiklCD == rtrans_rec.T_artiklCD);
       if(artikl_rec != null) TheG.PutCell(ci.iT_artiklTS, rowIdx, artikl_rec.TS);
       if(artikl_rec != null) TheG.PutCell(ci.iT_barCode1, rowIdx, artikl_rec.BarCode1);
+      if(artikl_rec != null) TheG.PutCell(ci.iT_KPD     , rowIdx, artikl_rec.KPD);
 
       TheG.PutCell(ci.iT_artiklCD  , rowIdx,            rtrans_rec.T_artiklCD);
       TheG.PutCell(ci.iT_artiklName, rowIdx,            rtrans_rec.T_artiklName);

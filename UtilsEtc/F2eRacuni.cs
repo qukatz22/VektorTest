@@ -1058,7 +1058,7 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(queryOutbox_DateOD, queryOutbox_DateDO);
 
-      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
       {
          if(webApiResultWithList == null)
          {
@@ -1473,7 +1473,7 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(queryOutbox_DateOD, queryOutbox_DateDO);
 
-      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
       {
          if(webApiResultWithList == null)
          {
@@ -1767,7 +1767,7 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Outbox(queryOutbox_DateOD, queryOutbox_DateDO);
 
-      if(webApiResultWithList_2.ResponseData == null || webApiResultWithList_2.ResponseData.IsEmpty())
+      if(webApiResultWithList_2 == null || webApiResultWithList_2.ResponseData == null /*|| webApiResultWithList_2.ResponseData.IsEmpty()*/)
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
          return 0;
@@ -2494,7 +2494,7 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(queryInbox_DateOD, queryInbox_DateDO);
 
-      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null || webApiResultWithList.ResponseData.IsEmpty())
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
       {
          if(webApiResultWithList == null)
          {
@@ -2633,7 +2633,7 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_Response_Data_FiscalizationStatus>> webApiResultWithList_2 = Vv_eRacun_HTTP.VvMER_WebService_Get_FISK_Status_Inbox(queryInbox_DateOD, queryInbox_DateDO);
 
-      if(webApiResultWithList_2.ResponseData == null /*|| webApiResultWithList_2.ResponseData.IsEmpty()*/) // !!! tu lutamo i ne znamo kada proglasiti error a kada ne 
+      if(webApiResultWithList_2 == null || webApiResultWithList_2.ResponseData == null /*|| webApiResultWithList_2.ResponseData.IsEmpty()*/) // !!! tu lutamo i ne znamo kada proglasiti error a kada ne 
       {
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
          return 0;

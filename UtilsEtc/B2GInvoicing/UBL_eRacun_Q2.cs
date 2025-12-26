@@ -408,22 +408,25 @@ namespace EN16931.UBL
             // NOVE CIUS-2025 embedded sheme (od 1.1.2026)
             valDataList = new List<ZXC.VvXmlValidationData>
             {
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"                     , @"XSD\eRacun_2025\maindoc\UBL-Invoice-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"                  , @"XSD\eRacun_2025\maindoc\UBL-CreditNote-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"   , @"XSD\eRacun_2025\common\CCTS_CCT_SchemaModule-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   , @"XSD\eRacun_2025\common\UBL-CommonAggregateComponents-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       , @"XSD\eRacun_2025\common\UBL-CommonBasicComponents-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun_2025\common\UBL-CommonExtensionComponents-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   , @"XSD\eRacun_2025\common\UBL-CommonSignatureComponents-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:documentation:2"                                      , @"XSD\eRacun_2025\common\UBL-CoreComponentParameters-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   , @"XSD\eRacun_2025\common\UBL-ExtensionContentDataType-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2"          , @"XSD\eRacun_2025\common\UBL-QualifiedDataTypes-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2", @"XSD\eRacun_2025\common\UBL-SignatureAggregateComponents-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    , @"XSD\eRacun_2025\common\UBL-SignatureBasicComponents-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"        , @"XSD\eRacun_2025\common\UBL-UnqualifiedDataTypes-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.3.2#"                                          , @"XSD\eRacun_2025\common\UBL-XAdESv132-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.4.1#"                                          , @"XSD\eRacun_2025\common\UBL-XAdESv141-2.1.xsd"),
-               new ZXC.VvXmlValidationData(@"http://www.w3.org/2000/09/xmldsig#"                                         , @"XSD\eRacun_2025\common\UBL-xmldsig-core-schema-2.1.xsd")
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"                       , @"XSD\eRacun_2025\maindoc\UBL-Invoice-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"                    , @"XSD\eRacun_2025\maindoc\UBL-CreditNote-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"     , @"XSD\eRacun_2025\common\CCTS_CCT_SchemaModule-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"     , @"XSD\eRacun_2025\common\UBL-CommonAggregateComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"         , @"XSD\eRacun_2025\common\UBL-CommonBasicComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"     , @"XSD\eRacun_2025\common\UBL-CommonExtensionComponents-2.1.xsd"),
+
+               new ZXC.VvXmlValidationData(@"urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1"                  , @"XSD\eRacun_2025\common\HRExtensionAggregateComponents-1.xsd"),
+
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"     , @"XSD\eRacun_2025\common\UBL-CommonSignatureComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:un:unece:uncefact:documentation:2"                                        , @"XSD\eRacun_2025\common\UBL-CoreComponentParameters-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"     , @"XSD\eRacun_2025\common\UBL-ExtensionContentDataType-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2"            , @"XSD\eRacun_2025\common\UBL-QualifiedDataTypes-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2"  , @"XSD\eRacun_2025\common\UBL-SignatureAggregateComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"      , @"XSD\eRacun_2025\common\UBL-SignatureBasicComponents-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"          , @"XSD\eRacun_2025\common\UBL-UnqualifiedDataTypes-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.3.2#"                                            , @"XSD\eRacun_2025\common\UBL-XAdESv132-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://uri.etsi.org/01903/v1.4.1#"                                            , @"XSD\eRacun_2025\common\UBL-XAdESv141-2.1.xsd"),
+               new ZXC.VvXmlValidationData(@"http://www.w3.org/2000/09/xmldsig#"                                           , @"XSD\eRacun_2025\common\UBL-xmldsig-core-schema-2.1.xsd")
             };
          }
          else

@@ -3473,6 +3473,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          ZXC.aim_emsg(MessageBoxIcon.Information, $"Uklonjena '{ZXC.F2_Unprocessed}' oznaka.");
       }
 
+      if(faktur_rec.IsF2 && faktur_rec.Transes.Count.IsPositive() && faktur_rec.Transes[0].T_artiklCD.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, $"Prvi red na F2 računu ne smije biti 'opisni' redak (redak bez šifre artikla){Environment.NewLine}{Environment.NewLine}{faktur_rec.Transes[0].T_artiklName}!");
+         e.Cancel = true;
+      }
+
       #endregion 2026 F2 validations & setting mandatory fields
 
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
@@ -5861,6 +5867,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          }
 
          #endregion Tetragram pdvKolTip - oslobođeno od PDVa
+
+         #region KPD 2026
+
+         if(ci.iT_KPD.IsPositive())
+         {
+            theGrid.PutCell(ci.iT_KPD, currRowIdx, artikl_rec.KPD);
+         }
+
+         #endregion KPD 2026
 
       } // if(artikl_rec != null) 
 
