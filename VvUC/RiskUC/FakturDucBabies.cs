@@ -1272,7 +1272,7 @@ public class IFADUC              : FakturExtDUC
          hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     /*hamp_kupdobOther,*/ hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, hamp_Status  ,
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
-                                    hamp_skladCd    ,hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
+                                    hamp_skladCd    ,hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_eRproc,
                                     hamp_NacPlac, hamp_fiskJIR
                                   };
       }
@@ -1287,7 +1287,7 @@ public class IFADUC              : FakturExtDUC
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
                                     hamp_VezniDok2, hamp_Fco, /*hamp_NacPlac,*/hamp_DatumX,  hamp_osobaA, hamp_OsobaB ,hamp_carinaKind,
                                     hamp_OpciA, hamp_OpciB, hamp_rokIspAndDate, hamp_tipOtpreme, hamp_osobaX,
-                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,hamp_eRproc,
+                                    hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,/*hamp_eRproc,*/
                                     hamp_opis
                                   };
 
@@ -1433,7 +1433,7 @@ public class IRADUC              : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     /*hamp_kupdobOther,*/ hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
-                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
@@ -1441,7 +1441,7 @@ public class IRADUC              : FakturExtDUC
                                     hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, hamp_tipOtpreme,  hamp_osobaX,hamp_carinaKind,
                                     hamp_dostava, hamp_PonudDate,
                                     hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,
-                                    hamp_eRproc, hamp_fiskPrgBr, hamp_opis
+                                    /*hamp_eRproc,*/ hamp_fiskPrgBr, hamp_opis
                                   };
 
       hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
@@ -1449,7 +1449,7 @@ public class IRADUC              : FakturExtDUC
                                         hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme, hampCbxM_osobaX, hampCbxM_carinaKind,
                                         hampCbxM_dostava, hampCbxM_PonudDate,
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp, hampCbxM_fiskPrgBr,
-                                        hampCbxM_eRproc, hampCbxM_fiskPrgBr, hampCbxM_opis
+                                        /*hampCbxM_eRproc,*/ hampCbxM_fiskPrgBr, hampCbxM_opis
                                       };
    }
  
@@ -2109,7 +2109,7 @@ public class IRMDUC_2            : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     /*hamp_kupdobOther,*/ hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, /*hamp_PonudDate,*/ hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
-                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR, hamp_prjArtName
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR, hamp_prjArtName, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
