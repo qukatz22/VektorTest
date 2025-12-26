@@ -1401,6 +1401,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // 12.2025: IMAJ NA UMU DA OVDJE NE MOZES RACUNATI NA TOCAN BUSSINESS, JER SE GETFIELDS JOS NIJE MOZDA DOGODIO! 
       // ISPRAVNO BI BILO FLD_ ove KONFRONTIRATI VALIDACIJI A NE BUSSINESSE                                           
 
+      FakturExtDUC theExtDUC = this is FakturExtDUC ? this as FakturExtDUC : null;
+
       #region Should validate enivej?
 
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None ||
@@ -3477,6 +3479,17 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, $"Prvi red na F2 računu ne smije biti 'opisni' redak (redak bez šifre artikla){Environment.NewLine}{Environment.NewLine}{faktur_rec.Transes[0].T_artiklName}!");
          e.Cancel = true;
+      }
+
+      if(ZXC.TtInfo(Fld_TT).IsIzlazniPdvTT && theExtDUC != null && Faktur.IsF2_PdvGEOkind(theExtDUC.Fld_PdvGEOkind))
+      {
+         bool badOIB = ZXC.IsBadOib(theExtDUC.Fld_KdOib, false);
+
+         if(badOIB)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"Neispravan OIB kupca!{Environment.NewLine}{Environment.NewLine}{theExtDUC.Fld_KdOib}");
+            e.Cancel = true;
+         }
       }
 
       #endregion 2026 F2 validations & setting mandatory fields
@@ -9091,7 +9104,7 @@ public partial class FakturExtDUC : FakturDUC
       }
    }
 
-   private void OnExitOIB_SaveToKupdob(object sender, EventArgs e)
+   private void OnExitOIB_SaveToKupdob(object sender, CancelEventArgs e)
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
@@ -9107,10 +9120,17 @@ public partial class FakturExtDUC : FakturDUC
     //if(kupdob_rec != null && tb.Text.NotEmpty() && tb.Text != kupdob_rec.Oib)
       if(kupdob_rec != null && hasChanges                                     )
       {
-         DialogResult result = MessageBox.Show("Da li zelite usnimiti VATc / OIB na ovoga partnera?",
-            "Potvrdite novi VATc / OIB?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-         if(result != DialogResult.Yes) return;
+         if(ZXC.IsBadOib(Fld_KdOib, false))
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Neispravan OIB: [{0}]!", Fld_KdOib);
+            e.Cancel = true;
+            return;
+         }
+         // za 2026 nema vise ocu necu. odma spremi! 
+         //DialogResult result = MessageBox.Show("Da li zelite usnimiti VATc / OIB na ovoga partnera?",
+         //   "Potvrdite novi VATc / OIB?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+         //
+         //if(result != DialogResult.Yes) return;
 
          // here we go 
          RwtrecKupdob_SaveOIB(kupdob_rec, /*tb.Text*/Fld_KdOib, Fld_VatCntryCode);

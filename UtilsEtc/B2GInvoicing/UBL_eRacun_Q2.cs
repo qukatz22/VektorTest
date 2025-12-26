@@ -114,6 +114,9 @@ namespace EN16931.UBL
             xmlSerializerNamespaces.Add("sac", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2"); // byJura lejter 
             xmlSerializerNamespaces.Add("ext", "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   ); // byJura lejter 
 
+            // 2026: 
+            xmlSerializerNamespaces.Add("hr", "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1");
+
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings()
             { 
                Encoding    = encoding,

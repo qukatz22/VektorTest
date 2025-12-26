@@ -8884,8 +8884,8 @@ public partial class FakturExtDUC : FakturDUC
       tbx_vatCntryCode.JAM_CharEdits = ZXC.JAM_CharEdits.LettersOnly;
       tbx_vatCntryCode.JAM_CharacterCasing = CharacterCasing.Upper;
 
-      tbx_KdOib       .JAM_FieldExitMethod += new EventHandler(OnExitOIB_SaveToKupdob);
-      tbx_vatCntryCode.JAM_FieldExitMethod += new EventHandler(OnExitOIB_SaveToKupdob);
+      tbx_KdOib       .JAM_FieldExitWithValidationMethod += new CancelEventHandler(OnExitOIB_SaveToKupdob);
+      tbx_vatCntryCode.JAM_FieldExitWithValidationMethod += new CancelEventHandler(OnExitOIB_SaveToKupdob);
 
       tbx_KdOib.JAM_IsSupressTab = true;
       tbx_vatCntryCode.JAM_IsSupressTab = true;

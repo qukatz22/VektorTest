@@ -45525,4 +45525,243 @@ namespace EN16931.UBL {
             }
         }
     }
+
+   //====================================================================================================================== 
+   //====================================================================================================================== 
+   //====================================================================================================================== 
+   //====================================================================================================================== 
+   //====================================================================================================================== 
+   //====================================================================================================================== 
+   //====================================================================================================================== 
+
+   // ===== HR Extension Types for CIUS-2025 =====
+   // Add these classes to support the new HRExtensionAggregateComponents-1.xsd schema
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   [System.Xml.Serialization.XmlRootAttribute("HRFISK20Data", Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1", IsNullable = false)]
+   public partial class HRFISK20DataType
+   {
+      private HRObracunPDVPoNaplatiType hrObracunPDVPoNaplatiField;
+      private HRTaxTotalType hrTaxTotalField;
+      private HRMonetaryTotalType hrLegalMonetaryTotalField;
+
+      /// <remarks/>
+      public HRObracunPDVPoNaplatiType HRObracunPDVPoNaplati
+      {
+         get { return this.hrObracunPDVPoNaplatiField; }
+         set { this.hrObracunPDVPoNaplatiField = value; }
+      }
+
+      /// <remarks/>
+      public HRTaxTotalType HRTaxTotal
+      {
+         get { return this.hrTaxTotalField; }
+         set { this.hrTaxTotalField = value; }
+      }
+
+      /// <remarks/>
+      public HRMonetaryTotalType HRLegalMonetaryTotal
+      {
+         get { return this.hrLegalMonetaryTotalField; }
+         set { this.hrLegalMonetaryTotalField = value; }
+      }
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class HRMonetaryTotalType
+   {
+      private TaxExclusiveAmountType taxExclusiveAmountField;
+      private OutOfScopeOfVATAmountType outOfScopeOfVATAmountField;
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public TaxExclusiveAmountType TaxExclusiveAmount
+      {
+         get { return this.taxExclusiveAmountField; }
+         set { this.taxExclusiveAmountField = value; }
+      }
+
+      /// <remarks/>
+      public OutOfScopeOfVATAmountType OutOfScopeOfVATAmount
+      {
+         get { return this.outOfScopeOfVATAmountField; }
+         set { this.outOfScopeOfVATAmountField = value; }
+      }
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class HRTaxTotalType
+   {
+      private TaxAmountType taxAmountField;
+      private HRTaxSubtotalType[] hrTaxSubtotalField;
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public TaxAmountType TaxAmount
+      {
+         get { return this.taxAmountField; }
+         set { this.taxAmountField = value; }
+      }
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute("HRTaxSubtotal")]
+      public HRTaxSubtotalType[] HRTaxSubtotal
+      {
+         get { return this.hrTaxSubtotalField; }
+         set { this.hrTaxSubtotalField = value; }
+      }
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class HRTaxSubtotalType
+   {
+      private TaxableAmountType taxableAmountField;
+      private TaxAmountType taxAmountField;
+      private HRTaxCategoryType hrTaxCategoryField;
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public TaxableAmountType TaxableAmount
+      {
+         get { return this.taxableAmountField; }
+         set { this.taxableAmountField = value; }
+      }
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public TaxAmountType TaxAmount
+      {
+         get { return this.taxAmountField; }
+         set { this.taxAmountField = value; }
+      }
+
+      /// <remarks/>
+      public HRTaxCategoryType HRTaxCategory
+      {
+         get { return this.hrTaxCategoryField; }
+         set { this.hrTaxCategoryField = value; }
+      }
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class HRTaxCategoryType
+   {
+      private IDType idField;
+      private NameType1 nameField;
+      private PercentType percentField;
+      private TaxExemptionReasonCodeType taxExemptionReasonCodeField;
+      private TaxExemptionReasonType[] taxExemptionReasonField;
+      private HRTaxSchemeType hrTaxSchemeField;
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public IDType ID
+      {
+         get { return this.idField; }
+         set { this.idField = value; }
+      }
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public NameType1 Name
+      {
+         get { return this.nameField; }
+         set { this.nameField = value; }
+      }
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public PercentType Percent
+      {
+         get { return this.percentField; }
+         set { this.percentField = value; }
+      }
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public TaxExemptionReasonCodeType TaxExemptionReasonCode
+      {
+         get { return this.taxExemptionReasonCodeField; }
+         set { this.taxExemptionReasonCodeField = value; }
+      }
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute("TaxExemptionReason", Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public TaxExemptionReasonType[] TaxExemptionReason
+      {
+         get { return this.taxExemptionReasonField; }
+         set { this.taxExemptionReasonField = value; }
+      }
+
+      /// <remarks/>
+      public HRTaxSchemeType HRTaxScheme
+      {
+         get { return this.hrTaxSchemeField; }
+         set { this.hrTaxSchemeField = value; }
+      }
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class HRTaxSchemeType
+   {
+      private IDType idField;
+
+      /// <remarks/>
+      [System.Xml.Serialization.XmlElementAttribute(Namespace = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")]
+      public IDType ID
+      {
+         get { return this.idField; }
+         set { this.idField = value; }
+      }
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class OutOfScopeOfVATAmountType : AmountType1
+   {
+   }
+
+   /// <remarks/>
+   [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+   [System.SerializableAttribute()]
+   [System.Diagnostics.DebuggerStepThroughAttribute()]
+   [System.ComponentModel.DesignerCategoryAttribute("code")]
+   [System.Xml.Serialization.XmlTypeAttribute(Namespace = "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1")]
+   public partial class HRObracunPDVPoNaplatiType : TextType1
+   {
+   }
 }

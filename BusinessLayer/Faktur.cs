@@ -5125,7 +5125,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          return false; 
       } 
    }
-   public bool IsF2       { get { return !IsF1 && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } }
+
+   public static bool IsF2_PdvGEOkind(ZXC.PdvGEOkindEnum pdvGEOkind)
+   {
+      if(pdvGEOkind == ZXC.PdvGEOkindEnum.HR) return true;
+      if(pdvGEOkind == ZXC.PdvGEOkindEnum.TP) return true;
+
+      return false;
+   }
+   public bool IsF2       { get { return !IsF1 && TtInfo.IsIzlazniPdvTT && IsF2_PdvGEOkind(this.PdvGEOkind); } }
+
  //public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
  //public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
  //public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
