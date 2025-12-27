@@ -106,16 +106,62 @@ namespace EN16931.UBL
 
          try
          {
-            XmlSerializerNamespaces xmlSerializerNamespaces = new XmlSerializerNamespaces();                                   // byJura 
-            xmlSerializerNamespaces.Add("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   ); // byJura 
-            xmlSerializerNamespaces.Add("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       ); // byJura 
-            xmlSerializerNamespaces.Add("sig", "urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   ); // byJura lejter 
-            xmlSerializerNamespaces.Add("sbc", "urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    ); // byJura lejter 
-            xmlSerializerNamespaces.Add("sac", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2"); // byJura lejter 
-            xmlSerializerNamespaces.Add("ext", "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   ); // byJura lejter 
+            #region Before 2026: XmlSerializerNamespaces
 
-            // 2026: 
+            //XmlSerializerNamespaces xmlSerializerNamespaces = new XmlSerializerNamespaces();                                   // byJura 
+            //
+            //xmlSerializerNamespaces.Add("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"   ); // byJura 
+            //xmlSerializerNamespaces.Add("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"       ); // byJura 
+            //xmlSerializerNamespaces.Add("sig", "urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2"   ); // byJura lejter 
+            //xmlSerializerNamespaces.Add("sbc", "urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2"    ); // byJura lejter 
+            //xmlSerializerNamespaces.Add("sac", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2"); // byJura lejter 
+            //xmlSerializerNamespaces.Add("ext", "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"   ); // byJura lejter 
+            //
+            //// dodano 2026: 
+            //xmlSerializerNamespaces.Add("hr", "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1");
+
+            #endregion Before 2026: XmlSerializerNamespaces
+
+            #region Since 2026: XmlSerializerNamespaces
+
+            XmlSerializerNamespaces xmlSerializerNamespaces = new XmlSerializerNamespaces();
+
+            // 1. DOCUMENT ROOT (Invoice namespace)
+            xmlSerializerNamespaces.Add("", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
+
+            // 2. BASIC COMPONENTS
+            xmlSerializerNamespaces.Add("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+
+            // 3. AGGREGATE COMPONENTS
+            xmlSerializerNamespaces.Add("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+
+            // 4. EXTENSIONS
+            xmlSerializerNamespaces.Add("ext", "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2");
+
+            // 5. HR EXTENSION (CIUS-2025 - Croatian extension)
             xmlSerializerNamespaces.Add("hr", "urn:mfin.gov.hr:schema:xsd:HRExtensionAggregateComponents-1");
+
+            // 6. SIGNATURE COMPONENTS (ako koristite digitalni potpis)
+            xmlSerializerNamespaces.Add("sig", "urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2");
+            xmlSerializerNamespaces.Add("sbc", "urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2");
+            xmlSerializerNamespaces.Add("sac", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2");
+
+            // 7. XML DIGITAL SIGNATURE (W3C)
+            xmlSerializerNamespaces.Add("ds", "http://www.w3.org/2000/09/xmldsig#");
+
+            // 8. XAdES (Advanced Electronic Signatures)
+            xmlSerializerNamespaces.Add("xades", "http://uri.etsi.org/01903/v1.3.2#");
+            xmlSerializerNamespaces.Add("xades141", "http://uri.etsi.org/01903/v1.4.1#");
+
+            // 9. CORE COMPONENT DATA TYPES (optional, ali preporučeno)
+            xmlSerializerNamespaces.Add("ccts", "urn:un:unece:uncefact:documentation:2");
+            xmlSerializerNamespaces.Add("ccts-cct", "urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2");
+
+            // 10. QUALIFIED DATA TYPES (optional)
+            xmlSerializerNamespaces.Add("qdt", "urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2");
+            xmlSerializerNamespaces.Add("udt", "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2");
+
+            #endregion Since 2026: XmlSerializerNamespaces
 
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings()
             { 

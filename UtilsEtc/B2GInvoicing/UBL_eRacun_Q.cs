@@ -96,6 +96,22 @@ namespace EN16931.UBL
 
          #region Set eRacun Values From Faktur
 
+         #region HRExtensions 2026
+
+         if(ZXC.IsF2_2026_rules)
+         {
+            //the_eRacun.UBLExtensions = new UBLExtensionsType[]
+            //{
+            //   new UBLExtensionsType
+            //   {
+            //      
+            //      
+            //   }
+            //};
+         }
+
+         #endregion HRExtensions 2026
+
          #region ZAGLAVLJE računa
 
          the_eRacun.ID              = new IDType              { Value = Fak2eR__String("BT001", faktur_rec, null) }; //BT-1 Broj računa 	 Identifikator 1..1 
