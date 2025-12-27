@@ -26,7 +26,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    public  VvHamper  hampAdd,hampArhiva;
    public  VvTextBox tbx_addMetaData, tbx_modMetaData, tbx_col1, tbx_col2, tbx_col3, tbx_col4, tbx_col5, tbx_col6, tbx_col7, tbx_NazivPrjkt,
                      tbx_arVer, tbx_arTS, tbx_arUID, tbx_arAction;
-   public  Label     labTamPanCrta, labArhiva, labDeviza;
+   public  Label     labTamPanCrta, labArhiva, labDeviza, labSent;
    private int       col1, col2, col3, col4, col5, col6, col7;
 
    private Point xy;
@@ -270,7 +270,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    public string Fld_Col5 { set { tbx_col5.Text = value; } }
    public string Fld_Col6 { set { tbx_col6.Text = value; } }
    public string Fld_Col7 { set { tbx_col7.Text = value; } }
-
+   public bool   Fld_isSent { set { labSent.Visible = value; } }
    public string Fld_PrjktNaziv
    {
       set { tbx_NazivPrjkt.Text = value; }
@@ -1335,10 +1335,10 @@ be_fast:
 
    private void CreateHamperModul()
    { 
-      hampModul = new VvHamper(7, 1, "", tamponPanel_Header, false, ZXC.Qun10, ZXC.Qun10, ZXC.Qun10);
+      hampModul = new VvHamper(8, 1, "", tamponPanel_Header, false, ZXC.Qun10, ZXC.Qun10, ZXC.Qun10);
 
-      hampModul.VvColWdt      = new int[] {     col1,    col2,      col3,      col4,     col5,      col6,     col7 };
-      hampModul.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 , ZXC.Qun4, ZXC.Qun4 , ZXC.Qun4 };
+      hampModul.VvColWdt      = new int[] {     col1,    col2,      col3,      col4,     col5,      col6,     col7, ZXC.QUN };
+      hampModul.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 , ZXC.Qun4, ZXC.Qun4 , ZXC.Qun4, ZXC.Qun4 };
       hampModul.VvRightMargin = hampModul.VvLeftMargin;
 
       hampModul.VvRowHgt       = new int[] { ZXC.QUN };
@@ -1367,7 +1367,13 @@ be_fast:
       tbx_col4.Font = ZXC.vvFont.BaseBoldFont;
       tbx_col4.TextAlign = HorizontalAlignment.Center;
       tbx_col5.TextAlign = HorizontalAlignment.Center;
-    //tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = Color.LavenderBlush;
+      //tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = Color.LavenderBlush;
+
+      labSent = hampModul.CreateVvLabel(7, 0, "", ContentAlignment.TopCenter);
+    //labSent.Image = VvIco.SkySendAdd.ToBitmap();
+
+      labSent.Image = new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.skySendAdd.ico"), new Size(16, 16)).ToBitmap();
+      labSent.Visible = false;
 
       VvHamper.Open_Close_Fields_ForWriting(hampModul, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.TamponPanel_HeaderLeft);
    }

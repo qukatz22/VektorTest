@@ -661,28 +661,30 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       //TheVvTabPage.Fld_PrjktNaziv = prjkt;
 
    }
-   protected void PutIdentityFields_7Col(string col1, string col2, string col3, string col4, string col5, string col6, string col7)
+   protected void PutIdentityFields_7Col(string col1, string col2, string col3, string col4, string col5, string col6, string col7, bool isSend)
    {
       ClearIdentityFields_7Col();
 
-      TheVvTabPage.Fld_Col1 = col1;
-      TheVvTabPage.Fld_Col2 = col2;
-      TheVvTabPage.Fld_Col3 = col3;
-      TheVvTabPage.Fld_Col4 = col4;
-      TheVvTabPage.Fld_Col5 = col5;
-      TheVvTabPage.Fld_Col6 = col6;
-      TheVvTabPage.Fld_Col7 = col7;
+      TheVvTabPage.Fld_Col1   = col1;
+      TheVvTabPage.Fld_Col2   = col2;
+      TheVvTabPage.Fld_Col3   = col3;
+      TheVvTabPage.Fld_Col4   = col4;
+      TheVvTabPage.Fld_Col5   = col5;
+      TheVvTabPage.Fld_Col6   = col6;
+      TheVvTabPage.Fld_Col7   = col7;
+      TheVvTabPage.Fld_isSent = isSend;
    }
 
    protected void ClearIdentityFields_7Col()
    {
-      TheVvTabPage.Fld_Col1 =
-      TheVvTabPage.Fld_Col2 =
-      TheVvTabPage.Fld_Col3 =
-      TheVvTabPage.Fld_Col4 =
-      TheVvTabPage.Fld_Col5 =
-      TheVvTabPage.Fld_Col6 =
-      TheVvTabPage.Fld_Col7 = "";
+      TheVvTabPage.Fld_Col1   =
+      TheVvTabPage.Fld_Col2   =
+      TheVvTabPage.Fld_Col3   =
+      TheVvTabPage.Fld_Col4   =
+      TheVvTabPage.Fld_Col5   =
+      TheVvTabPage.Fld_Col6   =
+      TheVvTabPage.Fld_Col7   = "";
+      TheVvTabPage.Fld_isSent = false;
    }
 
    #endregion PutMetaFileds_FormatMetaFields_PutIdentityFields

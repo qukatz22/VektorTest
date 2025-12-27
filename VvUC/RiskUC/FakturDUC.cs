@@ -4296,7 +4296,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                                    fakturLocal_rec.F012kind.ToString(),
                                    fakturLocal_rec.F2_R1kind.ToString(),
                                    ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans" ), 
-                                   Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD]
+                                   Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
+                                   faktur_rec.Is_F2_AlreadySent
                                    );
          }
 

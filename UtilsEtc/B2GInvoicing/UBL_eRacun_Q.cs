@@ -100,6 +100,125 @@ namespace EN16931.UBL
 
          if(ZXC.IsF2_2026_rules)
          {
+            // Build HRTaxSubtotal entries explicitly to match the sample XML (exempt case shown)
+            var hrTaxSubtotals = new List<HRTaxSubtotalType>();
+
+            // Example: add PdvOP / exempt subtotal when there is any exempt base
+            decimal oslobPdvxxx =
+               faktur_rec.S_ukOsn07 +
+               faktur_rec.S_ukOsn08 +
+               faktur_rec.S_ukOsn09 +
+               faktur_rec.S_ukOsn10 +
+               faktur_rec.S_ukOsn11 +
+               faktur_rec.S_ukOsn12 +
+               faktur_rec.S_ukOsn13 +
+               faktur_rec.S_ukOsn14 +
+               faktur_rec.S_ukOsn15 +
+               faktur_rec.S_ukOsn16;
+
+            if(oslobPdvxxx.NotZero())
+            {
+               hrTaxSubtotals.Add(new HRTaxSubtotalType
+               {
+                  TaxableAmount = new TaxableAmountType
+                  {
+                     Value      = Fak2eR_Decimal("PdvOP osn", faktur_rec, null),
+                     currencyID = faktur_rec.CurrencyID
+                  },
+                  TaxAmount = new TaxAmountType
+                  {
+                     Value     = Fak2eR_Decimal("PdvOP izn", faktur_rec, null),
+                     currencyID = faktur_rec.CurrencyID
+                  },
+                  HRTaxCategory = new HRTaxCategoryType
+                  {
+                     ID      = new IDType    { Value = "E"    },
+                     Name    = new NameType1 { Value = "HR:E" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("PdvOP stp", faktur_rec, null) },
+                     TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = GetTekstNoPdvFromThePFD(thePFD) } },
+                     HRTaxScheme        = new HRTaxSchemeType
+                     {
+                        ID = new IDType { Value = "VAT" }
+                     }
+                  }
+               });
+            }
+
+            // (Optionally add other bands similarly: Pdv25, Pdv13, Pdv05, Pdv00)
+            if(faktur_rec.S_ukPdv25m.NotZero() || faktur_rec.R_ukPdv_25m_SUM_AVANS.NotZero())
+            {
+               hrTaxSubtotals.Add(new HRTaxSubtotalType
+               {
+                  TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv25 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  HRTaxCategory = new HRTaxCategoryType
+                  {
+                     ID = new IDType { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
+                     Name = new NameType1 { Value = "HR:S" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
+                     HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
+                  }
+               });
+            }
+
+            if(faktur_rec.S_ukPdv10m.NotZero() || faktur_rec.R_ukPdv_10m_SUM_AVANS.NotZero())
+            {
+               hrTaxSubtotals.Add(new HRTaxSubtotalType
+               {
+                  TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv13 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  HRTaxCategory = new HRTaxCategoryType
+                  {
+                     ID = new IDType { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
+                     Name = new NameType1 { Value = "HR:S" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
+                     HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
+                  }
+               });
+            }
+
+            if(faktur_rec.S_ukPdv05m.NotZero() || faktur_rec.R_ukPdv_05m_SUM_AVANS.NotZero())
+            {
+               hrTaxSubtotals.Add(new HRTaxSubtotalType
+               {
+                  TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv05 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  HRTaxCategory = new HRTaxCategoryType
+                  {
+                     ID = new IDType { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
+                     Name = new NameType1 { Value = "HR:S" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
+                     HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
+                  }
+               });
+            }
+
+
+
+
+            the_eRacun.UBLExtensions = new UBLExtensionType[]
+            {
+               new UBLExtensionType
+               {
+                   ExtensionContent = new ExtensionContentType()
+                   {
+                       Item = new HRFISK20DataType
+                       {
+                          HRTaxTotal = new HRTaxTotalType
+                          {
+                             TaxAmount = new TaxAmountType { Value = 0.00M/*Fak2eR_Decimal("BG023", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+                             HRTaxSubtotal = hrTaxSubtotals.ToArray()
+                          },
+                          HRLegalMonetaryTotal = new HRMonetaryTotalType
+                          {
+                             TaxExclusiveAmount    = new TaxExclusiveAmountType    { Value = 0.00M/*Fak2eR_Decimal("BT109", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+                             OutOfScopeOfVATAmount = new OutOfScopeOfVATAmountType { Value = 0.00M, currencyID = faktur_rec.CurrencyID }
+                          }
+                       }
+                   }
+                }
+            };
+           
             //the_eRacun.UBLExtensions = new UBLExtensionsType[]
             //{
             //   new UBLExtensionsType
