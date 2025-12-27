@@ -3441,7 +3441,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          {
             faktur_rec.F2_R1kind = ZXC.F2_R1enum.B2B;
          }
-         else // TETRAGRAM, PANIGALE, FRAG, METAFLEX, PPUK, PLODINE mogu imati i B2C i B2B racune 
+         else if(ZXC.CURR_prjkt_rec.F2_ImaB2C_i_B2B)// TETRAGRAM, PANIGALE, FRAG, METAFLEX, PPUK, PLODINE mogu imati i B2C i B2B racune 
          {
             kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
 
@@ -3481,7 +3481,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          e.Cancel = true;
       }
 
-      if(ZXC.TtInfo(Fld_TT).IsIzlazniPdvTT && theExtDUC != null && Faktur.IsF2_PdvGEOkind(theExtDUC.Fld_PdvGEOkind))
+      if(ZXC.TtInfo(Fld_TT).IsIzlazniPdvTT && theExtDUC != null && Faktur.IsF2_PdvGEOkind(theExtDUC.Fld_PdvGEOkind) && theExtDUC.Fld_KupdobCd != ZXC.RRD.Dsc_MalopKCD)
       {
          bool badOIB = ZXC.IsBadOib(theExtDUC.Fld_KdOib, false);
 
@@ -7811,7 +7811,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          case ZXC.WriteMode.Edit: ///////////////////////////////////////////////////////////////////////////////////////////////// 
 
-          //if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O")
+            if(faktur_rec.Is_F2_AlreadySent)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljen ispravak.\n\nDokument je već poslan kao eRačun.");
+               return false;
+            }
+
+            //if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O")
             if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O" && faktur_rec.StatusCD != "P")
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljena akcija.\n\nZahtjevnica je već poslana u apoteku.\n\n.");
@@ -7856,6 +7862,12 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             else {                                  return true ; }
 
          case ZXC.WriteMode.Delete: ///////////////////////////////////////////////////////////////////////////////////////////////// 
+
+            if(faktur_rec.Is_F2_AlreadySent)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljeno brisanje.\n\nDokument je već poslan kao eRačun.");
+               return false;
+            }
 
             if(FakturOpeningExistsInFtrans(faktur_rec.TT, faktur_rec.TipBr) == true) 
             { 

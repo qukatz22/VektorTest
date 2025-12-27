@@ -686,6 +686,9 @@ namespace Raverus.FiskalizacijaDEV.Schema
         [EditorBrowsable(EditorBrowsableState.Never)]
         private string _specNamj;
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        private string _oibPrimateljaRacuna;
+
         /// <summary>
         /// RacunType class constructor
         /// </summary>
@@ -998,6 +1001,18 @@ namespace Raverus.FiskalizacijaDEV.Schema
             set
             {
                 this._specNamj = value;
+            }
+        }
+
+        public string OibPrimateljaRacuna
+        {
+            get
+            {
+                return this._oibPrimateljaRacuna;
+            }
+            set
+            {
+                this._oibPrimateljaRacuna = value;
             }
         }
     }
