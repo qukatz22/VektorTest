@@ -100,6 +100,7 @@ namespace EN16931.UBL
 
          if(ZXC.IsF2_2026_rules)
          {
+
             // Build HRTaxSubtotal entries explicitly to match the sample XML (exempt case shown)
             var hrTaxSubtotals = new List<HRTaxSubtotalType>();
 
@@ -150,12 +151,12 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv25 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID = new IDType { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
-                     Name = new NameType1 { Value = "HR:S" },
-                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
+                     ID          = new IDType          { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
+                     Name        = new NameType1       { Value = "HR:PDV25" },
+                     Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
@@ -166,12 +167,12 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv13 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID = new IDType { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
-                     Name = new NameType1 { Value = "HR:S" },
-                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
+                     ID          = new IDType { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
+                     Name        = new NameType1 { Value = "HR:S" },
+                     Percent     = new PercentType1 { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
@@ -182,20 +183,35 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv05 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID = new IDType { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
-                     Name = new NameType1 { Value = "HR:S" },
-                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
+                     ID          = new IDType          { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
+                     Name        = new NameType1       { Value = "HR:S" },
+                     Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
             }
 
-
-
-
+            if(faktur_rec.R_ukPpmvIzn.NotZero())
+            {
+               hrTaxSubtotals.Add(new HRTaxSubtotalType
+               {
+                  TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("PPMVosn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount     = new TaxAmountType     { Value = 0.00M /*Fak2eR_Decimal("PPMVizn", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+                  HRTaxCategory = new HRTaxCategoryType
+                  {
+                      ID        = new IDType        { Value = "O"                                          },
+                      Name      = new NameType1     { Value = "HR:PPMV"                                    },
+                      Percent   = new PercentType1  { Value = 0M /*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
+                      //TaxExemptionReason = new TaxExemptionReasonType[] 
+                      //                   { new TaxExemptionReasonType { Value = "#HR:PPMV#Posebni porez na motorna vozila" } },
+                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "CAR" } }
+                  }
+               });
+            }
+            
             the_eRacun.UBLExtensions = new UBLExtensionType[]
             {
                new UBLExtensionType
@@ -206,27 +222,28 @@ namespace EN16931.UBL
                        {
                           HRTaxTotal = new HRTaxTotalType
                           {
-                             TaxAmount = new TaxAmountType { Value = 0.00M/*Fak2eR_Decimal("BG023", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+                             TaxAmount     = new TaxAmountType { Value = Fak2eR_Decimal("BG023", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                              HRTaxSubtotal = hrTaxSubtotals.ToArray()
                           },
                           HRLegalMonetaryTotal = new HRMonetaryTotalType
                           {
-                             TaxExclusiveAmount    = new TaxExclusiveAmountType    { Value = 0.00M/*Fak2eR_Decimal("BT109", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
-                             OutOfScopeOfVATAmount = new OutOfScopeOfVATAmountType { Value = 0.00M, currencyID = faktur_rec.CurrencyID }
+                             TaxExclusiveAmount    = new TaxExclusiveAmountType    { Value = Fak2eR_Decimal("BT109old", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// 2 mjesta razliciti iznosi!!!!!!!!!!
+                             OutOfScopeOfVATAmount = new OutOfScopeOfVATAmountType { /*Value = 0.00M*/Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID } //ovo je ppmv i sl...
                           }
                        }
                    }
+                },
+                new UBLExtensionType
+                {
+                   ExtensionContent = new ExtensionContentType()
+                   {
+                      Item = new UBLDocumentSignaturesType()
+                      {
+                         SignatureInformation = new XmlElement[] { /* empty placeholder - serialized as <sig:SignatureInformation>... */ },
+                      }
+                   }
                 }
             };
-           
-            //the_eRacun.UBLExtensions = new UBLExtensionsType[]
-            //{
-            //   new UBLExtensionsType
-            //   {
-            //      
-            //      
-            //   }
-            //};
          }
 
          #endregion HRExtensions 2026
@@ -736,11 +753,31 @@ namespace EN16931.UBL
 
          #endregion placanje
 
+         #region ppmv
+         //< cac:AllowanceCharge >
+         //   < cbc:ChargeIndicator > true </ cbc:ChargeIndicator >
+         //   < cbc:AllowanceChargeReason >#HR:PPMV#Posebni porez na motorna vozila</cbc:AllowanceChargeReason>
+         //   < cbc:Amount currencyID = "EUR" > 2000.00 </ cbc:Amount >
+         //   < cac:TaxCategory >
+         //      < cbc:ID > E </ cbc:ID >
+         //      < cbc:Name > HR:PPMV </ cbc:Name >
+         //      < cbc:Percent > 0.00 </ cbc:Percent >
+         //      < cbc:TaxExemptionReason > Posebni porez na motorna vozila</ cbc:TaxExemptionReason >
+         //      < cac:TaxScheme >
+         //         < cbc:ID > VAT </ cbc:ID >
+         //      </ cac:TaxScheme >
+         //   </ cac:TaxCategory >
+         //</ cac:AllowanceCharge >
+
+
+         #endregion ppmv
+
          #region RBT & ZTR by PdvSt
 
-         //List<AllowanceChargeType> rbtAllowanceChargeList = new List<AllowanceChargeType>();
-         //List<AllowanceChargeType> ztrAllowanceChargeList = new List<AllowanceChargeType>();
-         List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList = new List<AllowanceChargeType>();
+       //List<AllowanceChargeType> rbtAllowanceChargeList               = new List<AllowanceChargeType>();
+       //List<AllowanceChargeType> ztrAllowanceChargeList               = new List<AllowanceChargeType>();
+       //List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList        = new List<AllowanceChargeType>();
+         List<AllowanceChargeType> rbtAndZtrAndPpmv_AllowanceChargeList = new List<AllowanceChargeType>(); //2026 + ppmv
 
          //BT- 92 Iznos popusta na razini dokumenta	                    Iznos 1..1
          //BT- 95 Šifra kategorije PDV popusta na razini dokumenta 	     Kod   1..1
@@ -749,7 +786,7 @@ namespace EN16931.UBL
 
          if(faktur_rec.TrnSum_Rbt25.NotZero())
          {
-            rbtAndZtr_AllowanceChargeList.Add(new AllowanceChargeType
+            rbtAndZtrAndPpmv_AllowanceChargeList.Add(new AllowanceChargeType
             {
                ChargeIndicator = new ChargeIndicatorType { Value = false },
                Amount = new AmountType2 { Value = Fak2eR_Decimal("Rbt25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
@@ -769,7 +806,7 @@ namespace EN16931.UBL
 
          if(faktur_rec.TrnSum_Rbt10.NotZero())
          {
-            rbtAndZtr_AllowanceChargeList.Add(new AllowanceChargeType
+            rbtAndZtrAndPpmv_AllowanceChargeList.Add(new AllowanceChargeType
             {
                ChargeIndicator = new ChargeIndicatorType { Value = false },
                Amount = new AmountType2 { Value = Fak2eR_Decimal("Rbt10 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
@@ -789,7 +826,7 @@ namespace EN16931.UBL
 
          if(faktur_rec.TrnSum_Rbt05.NotZero())
          {
-            rbtAndZtr_AllowanceChargeList.Add(new AllowanceChargeType
+            rbtAndZtrAndPpmv_AllowanceChargeList.Add(new AllowanceChargeType
             {
                ChargeIndicator = new ChargeIndicatorType { Value = false },
                Amount = new AmountType2 { Value = Fak2eR_Decimal("Rbt05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
@@ -809,7 +846,7 @@ namespace EN16931.UBL
 
          if(faktur_rec.TrnSum_Rbt00.NotZero())
          {
-            rbtAndZtr_AllowanceChargeList.Add(new AllowanceChargeType
+            rbtAndZtrAndPpmv_AllowanceChargeList.Add(new AllowanceChargeType
             {
                ChargeIndicator = new ChargeIndicatorType { Value = false },
                Amount = new AmountType2 { Value = Fak2eR_Decimal("Rbt00 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
@@ -878,7 +915,34 @@ namespace EN16931.UBL
          }
 
 #endif
-         the_eRacun.AllowanceCharge = rbtAndZtr_AllowanceChargeList.ToArray();
+         if(faktur_rec.R_ukPpmvIzn.NotZero())
+         {
+
+            rbtAndZtrAndPpmv_AllowanceChargeList.Add(new AllowanceChargeType
+            {
+
+               ChargeIndicator       = new ChargeIndicatorType { Value = true },
+               AllowanceChargeReason = new AllowanceChargeReasonType[]
+               {
+                                       new AllowanceChargeReasonType { Value = ">#HR:PPMV#Posebni porez na motorna vozila"/* Fak2eR__String("PPMV reason", faktur_rec, null)*/ }
+               },
+               Amount      = new AmountType2 { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               TaxCategory = new TaxCategoryType[]
+               {
+                  new TaxCategoryType
+                  {
+                     ID                 = new IDType        { Value = "E"                                          },
+                     Name               = new NameType1     { Value = "HR:PPMV"                                    },
+                     Percent            = new PercentType1  { Value = 0.00M/*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
+                     TaxExemptionReason = new TaxExemptionReasonType[]
+                                        { new TaxExemptionReasonType { Value = "Posebni porez na motorna vozila" } },
+                     TaxScheme          = new TaxSchemeType { ID = new IDType { Value = "VAT" } } }
+               }
+              });
+         }
+
+
+         the_eRacun.AllowanceCharge = rbtAndZtrAndPpmv_AllowanceChargeList.ToArray();
 
          #endregion RBT & ZTR by PdvSt
 
@@ -892,12 +956,13 @@ namespace EN16931.UBL
 
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
-            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            PrepaidAmount        = new PrepaidAmountType        { Value = Fak2eR_Decimal("BT113", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            PayableAmount        = new PayableAmountType        { Value = Fak2eR_Decimal("BT115", faktur_rec, null), currencyID = faktur_rec.CurrencyID }
+            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            ChargeTotalAmount    = new  ChargeTotalAmountType   { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            PrepaidAmount        = new PrepaidAmountType        { Value = Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            PayableAmount        = new PayableAmountType        { Value = Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID }
          };
 
          #endregion Total Sums
@@ -1044,6 +1109,28 @@ namespace EN16931.UBL
 
 
          #endregion Vv Get Tax In Use List
+
+         #region taxSubtotal za ppmv 2026
+
+         if(faktur_rec.R_ukPpmvIzn.NotZero())
+         {
+            pdvSubtotalList.Add(new TaxSubtotalType
+            {
+               TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("PPMVosn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               TaxAmount     = new TaxAmountType     { Value = 0.00M/*Fak2eR_Decimal("PPMVizn", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+               TaxCategory   = new TaxCategoryType
+               {
+                  ID        = new IDType        { Value = "E"                                          },
+                  Name      = new NameType1     { Value = "HR:PPMV"                                    },
+                  Percent   = new PercentType1  { Value = 0.00M/*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
+                  TaxExemptionReason = new TaxExemptionReasonType[] 
+                                     { new TaxExemptionReasonType { Value = "#HR:PPMV#Posebni porez na motorna vozila" } },
+                  TaxScheme = new TaxSchemeType { ID = new IDType { Value = "VAT" } }
+               }
+            });
+         }
+         #endregion taxSubtotal za ppmv 2026
+
 
          //BG-023  Da li ukupan pdv po svim osnovama ??????
          //BT-116 Iznos osnovice kategorije PDV-a 	                                       Iznos 1..1
@@ -1235,8 +1322,11 @@ namespace EN16931.UBL
                   new TaxCategoryType
                   {
                      ID        = new IDType       {                   Value = "E"   },
+                     Name      = new NameType1    {                   Value = "HR:E"}, // oznaka za oslobodjeno pdv a
                      Percent   = new PercentType1 {                   Value = 0     },
-                     TaxScheme = new TaxSchemeType{ ID = new IDType { Value = "VAT" }                                          }
+                     TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = GetTekstNoPdvFromThePFD(thePFD) } },//2026 ujednaciti tetragram i zptica
+                     TaxScheme = new TaxSchemeType{ ID = new IDType { Value = "VAT" } 
+                     }
                   }
                };
 
@@ -1514,15 +1604,21 @@ namespace EN16931.UBL
          {
             //ZAGLAVLJE:
 
-            case "BT106": theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC  ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
-            case "BT109": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
-            case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP; break; //BT-112 Ukupni iznos računa s PDV-om		                           
-            case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
+            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+          //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
+            case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
+            case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn ; break; //BT-109 Ukupni iznos računa bez PDV-a 	 2026                          
+           
+          //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                         ; break; //BT-112 Ukupni iznos računa s PDV-om		                           
+            case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                       ; break; //BT-112 Ukupni iznos računa s PDV-om   2026                           
+            
+            case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv                          ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
 
             case "BT092": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
             case "BT107": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
 
-            case "BT115": theDecimal = faktur_rec.S_ukKCRP; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
+          //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
+            case "BT115": theDecimal = faktur_rec.Skn_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
 
             //STAVKE:
             case "BT129": theDecimal = rtrans_rec.T_kol    ; break; //BT-129 Obračunata količina Količina artikala
@@ -1569,6 +1665,10 @@ namespace EN16931.UBL
             case "Rbt00 izn": theDecimal = faktur_rec.TrnSum_Rbt00; break; //BT-Iznos Rbt00 
 
             case "BT113": theDecimal = /*-1.00M **/ faktur_rec.R_ukKCRP_AVANS_STORNO; break; //BT-84 Identifikator računa plaćanja IBAN	      
+
+               case "PPMVosn": theDecimal = faktur_rec.S_ukPpmvOsn; break; //PPMV osnovica 2026
+               case "PPMVizn": theDecimal = faktur_rec.R_ukPpmvIzn; break; //PPMV iznos    2026
+
 
             default: theDecimal = 0.00M; break;
          }
