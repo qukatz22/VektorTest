@@ -686,7 +686,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
            "",
            faktur_rec.F012kind.ToString(),
            F2_R1kind.ToString(),
-           ((faktur_rec.NacPlac.IsEmpty() || faktur_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans"), 
+           ((faktur_rec.NacPlac.IsEmpty() || faktur_rec.NacPlac.StartsWith("VIRMAN")) ? "Virman" : "Got/Kart"), 
            Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
            faktur_rec.Is_F2_AlreadySent
        );
