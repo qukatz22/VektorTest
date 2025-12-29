@@ -1398,6 +1398,11 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
    /// <param name="e"></param>
    void FakturDUC_Validating(object sender, CancelEventArgs e)
    {
+      // HUGE NEWS FROM 2026:                     
+      // DON'T VALIDATE BEFORE USER CLICKS 'SAVE' 
+
+      if(!ZXC.RISK_SaveVvDataRecord_inProgress) return;
+
       // 12.2025: IMAJ NA UMU DA OVDJE NE MOZES RACUNATI NA TOCAN BUSSINESS, JER SE GETFIELDS JOS NIJE MOZDA DOGODIO! 
       // ISPRAVNO BI BILO FLD_ ove KONFRONTIRATI VALIDACIJI A NE BUSSINESSE                                           
 
@@ -1750,7 +1755,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region KPD sifra
 
-         if(artiklCD.NotEmpty() && faktur_rec.Is_F2_eRacun_Fields_Mandatory)
+         if(artiklCD.NotEmpty() && faktur_rec.IsF2)
          {
             string kpdSifra = TheG.GetStringCell(ci.iT_KPD, rowIdx, false);
 
@@ -2241,19 +2246,20 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region IsNpCash but NOT fiskalize
 
-#if !DEBUG
+//#if !DEBUG
 
       if(faktur_rec.IsFiskalDutyFaktur        == true  && // IRM, IRA, IFA, IOD, IPV                                      
+
          faktur_rec.IsFiskalDutyFaktur_ONLINE == false && // PREMA Prjkt pravilima ovaj TT NE IDE na OnLine Fiskalizaciju 
-       //faktur_rec.IsNpCash                  == true)    // ...a zadao je NP 'Novcanice'                                 
-         faktur_rec.R_IsNpCashAny             == true)    // ...a zadao je NP 'Novcanice'                                 
+       //faktur_rec.R_IsNpCashAny             == true)    // ...a zadao je NP 'Novcanice'                                 
+         faktur_rec.Is_NacPlac1i2_Cash_Or_Card == true)    // ...a zadao je NP 'Novcanice'                                 
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "Prema pravilima u Projektu, ovaj dokument NE MOŽE imati GOTOVINSKI način plaćanja ('Novčanice')!");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Prema pravilima u Projektu, ovaj dokument NE MOŽE imati ne virmanski način plaćanja (gotovina, kartice, ...)!");
 
          e.Cancel = true;
       }
 
-#endif
+//#endif
 
       // 30.12.2016: 
       if((ZXC.IsTEXTHOshop || ZXC.CURR_prjkt_rec.IsFiskalOnline) &&
@@ -3435,7 +3441,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          e.Cancel = true;
       }
 
-      if(faktur_rec.Is_F2_eRacun_Fields_Mandatory)
+      if(faktur_rec.IsF2)
       {
          #region F2_R1kind 
          
@@ -3507,7 +3513,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region Mora biti bar jedan red i prvi red mora imati ArtiklCD, 
 
-         if(faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero())
+         if(ZXC.RISK_SaveVvDataRecord_inProgress && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero())
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "F2 račun mora sadržavati bar jednu stavku!");
             e.Cancel = true;
@@ -3523,7 +3529,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region KdUlica, KdMjesto, KdZip
 
-         if(faktur_rec.KdAdresa.IsEmpty())
+         if(faktur_rec.KupdobCD != ZXC.RRD.Dsc_MalopKCD && faktur_rec.KdAdresa.IsEmpty())
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Poštanska adresa kupca je prazna! eRačun mora imati bar 'Mjesto'");
             e.Cancel = true;
@@ -3532,10 +3538,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          #endregion KdUlica, KdMjesto, KdZip
 
 
-         } // if(faktur_rec.Is_F2_eRacun_Fields_Mandatory) 
+      } // if(faktur_rec.Is_F2_eRacun_Fields_Mandatory) 
 
-         // Spremanje trenutnog TtNumFiskal kao VezniDok za DataLayer 
-         if(faktur_rec.Is_F2_TtNumFisk_InVezniDok)
+      // Spremanje trenutnog TtNumFiskal kao VezniDok za DataLayer 
+      if(faktur_rec.Is_F2_TtNumFisk_InVezniDok)
       {
          faktur_rec.VezniDok = faktur_rec.TtNumFiskal; // cuvat cemo u data layeru rezultat result propertya 'TtNumFiskal' 
          Fld_VezniDok        = faktur_rec.VezniDok;
@@ -8830,8 +8836,12 @@ public partial class FakturExtDUC : FakturDUC
 
       if(ZXC.IsF2_2026_rules && faktur_rec.TtInfo.IsIzlazniPdvTT) //18.12.2025.
       {
-         Fld_F2_R1kind = _kupdob_rec.R1kind;
-         PutIdentityFields_7Col(faktur_rec, _kupdob_rec.R1kind);
+         faktur_rec.F2_R1kind = Fld_F2_R1kind = _kupdob_rec.R1kind;
+
+         TheVvTabPage.Fld_Col4 = faktur_rec.F012kind.ToString();
+         TheVvTabPage.Fld_Col5 = _kupdob_rec.R1kind .ToString();
+
+         //PutIdentityFields_7Col(faktur_rec, _kupdob_rec.R1kind);
       }
 
       #endregion R1kind

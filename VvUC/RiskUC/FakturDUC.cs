@@ -4296,7 +4296,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             //                       "",
             //                       fakturLocal_rec.F012kind.ToString(),
             //                       fakturLocal_rec.F2_R1kind.ToString(),
-            //                       ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans" ), 
+            //                       ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.ToLower().StartsWith("virman")) ? "Trans" : "NE Trans" ), 
             //                       Vv_eRacun_HTTP.MER_TransportStatuses[fakturLocal_rec.F2_StatusCD],
             //                       fakturLocal_rec.Is_F2_AlreadySent
             //                       );
@@ -10525,6 +10525,11 @@ public partial class FakturExtDUC : FakturDUC
 
          AnyPrimPlatTextBoxLeave(tbx_PrimPlatCD, e);
       }
+
+      // 2026: update NacPlac IdentityField 
+      TheVvTabPage.Fld_Col4 = faktur_rec.F012kind.ToString();
+      TheVvTabPage.Fld_Col6 = (Fld_NacPlac.IsEmpty() || Fld_NacPlac.ToLower().StartsWith("virman")) ? "Virman" : "Got/Kart";
+
    }
 
    private void InitializeHamper_DatumX(out VvHamper hamper)
@@ -13947,7 +13952,7 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      if(ZXC.IsF2_2026_rules && faktur_rec.Is_F2_eRacun_Fields_Mandatory)
+      if(ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
       {
          if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;

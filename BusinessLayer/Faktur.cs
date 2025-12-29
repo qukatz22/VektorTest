@@ -5108,19 +5108,21 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    // ========================================================================================================================================================================= 
 
  //public bool IsF1       { get { return IsFiskalDutyFaktur_ONLINE; } }
-   public bool IsF1       
+   public bool IsF1
    { 
       get 
       {
+         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "prereno me pitas");  /*throw new Exception("haha");*/ }
+
          if(this.TheEx == null)             return false;
+         
+         if(TtInfo.IsIzlazniPdvTT == false) return false;
 
-         if(F2_R1kind == ZXC.F2_R1enum.B2C) return true;
+         if(F2_R1kind == ZXC.F2_R1enum.B2C) return true ;
 
-         if(F2_R1kind == ZXC.F2_R1enum.B2B)
-         {
-            if(IsNacPlacVirman(this.NacPlac, this.TT) || IsNacPlacVirman(this.NacPlac2, this.TT)) return false; // Firma plaća virmanom          -> nije F1 nego F2 
-            else                                                                                  return true ; // Firma plaća karticom, cash-om -> jest F1 nije F2 
-         }
+         if(Is_NacPlac1i2_Cash_Or_Card)     return true ;
+
+         if(F2_R1kind == ZXC.F2_R1enum.B2B && Is_NacPlac1i2_Virman_Transakc) return false;
 
          return false; 
       } 
@@ -5133,12 +5135,29 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       return false;
    }
-   public bool IsF2       { get { return !IsF1 && TtInfo.IsIzlazniPdvTT && IsF2_PdvGEOkind(this.PdvGEOkind); } }
+   public bool IsF2       
+   { 
+      get 
+      {
+         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "prereno me pitas"); /*throw new Exception("haha");*/ }
+
+         return TtInfo.IsIzlazniPdvTT && F2_R1kind == ZXC.F2_R1enum.B2B && IsF2_PdvGEOkind(this.PdvGEOkind) == true && Is_NacPlac1i2_Virman_Transakc; 
+      } 
+   }
 
  //public bool IsF2send   { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.U_AMSu_JE  ; } }
  //public bool IsF2eIzvj  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NIJE_U_AMSu; } }
  //public bool IsF2nepoz  { get { return IsF2 && F2_AMSstatus == ZXC.AMSstatus.NEPOZNAT   ; } }
-   public bool IsF0       { get { return TtInfo.IsIzlazniPdvTT && PdvGEOkind != ZXC.PdvGEOkindEnum.HR && !IsF1 && !IsF2; } } // NoFX 
+   public bool IsF0       
+   { 
+      get 
+      {
+         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "prereno me pitas"); /*throw new Exception("haha");*/ }
+
+         return TtInfo.IsIzlazniPdvTT && F2_R1kind == ZXC.F2_R1enum.B2B && IsF2_PdvGEOkind(this.PdvGEOkind) == false; 
+      } 
+
+   } // TVRTKE! iz Njemačke, Bosne, Brazila, ... 
 
    public ZXC.F123kind F012kind
    {
@@ -5150,7 +5169,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          else if(IsF2     ) return ZXC.F123kind.F2    ;
        //else if(IsF2send ) return ZXC.FIRkind.F2send ;
        //else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
-         else if(IsF0     ) return ZXC.F123kind.F0    ; // NoFX 
+         else if(IsF0     ) return ZXC.F123kind.F0    ; // TVRTKE! iz Njemačke, Bosne, Brazila, ... 
    
          return ZXC.F123kind.Nepoznato;
       }
@@ -5159,9 +5178,18 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //public bool Is_MAP_with_ElectronicID    { get { return IsF2send  && F2_ElectronicID.NotZero(); } }
  //public bool Is_MAP_without_ElectronicID { get { return IsF2eIzvj && F2_ElectronicID.IsZero (); } }
 
-   public bool Is_F2_eRacun_Fields_Mandatory { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && PdvGEOkind == ZXC.PdvGEOkindEnum.HR; } } 
-   public bool Is_F2_TtNumFisk_InVezniDok    { get { return ZXC.IsF2_2026_rules && TtInfo.IsIzlazniPdvTT && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL; } } 
-   public bool Is_F2_AlreadySent             { get { return this.F2_ElectronicID.NotZero(); } } 
+ //public bool Is_F2_eRacun_Fields_Mandatory { get { return IsF2 && TtInfo.IsIzlazniPdvTT && IsF2_PdvGEOkind(this.PdvGEOkind); } } 
+   public bool Is_F2_TtNumFisk_InVezniDok    { get { return IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL; } } 
+   public bool Is_F2_AlreadySent             { get { return IsF2 && this.F2_ElectronicID.NotZero(); } }
+
+   public bool Is_NacPlac1_Virman_Transakc   { get { return IsNacPlacVirman(this.NacPlac , this.TT); } }
+   public bool Is_NacPlac2_Virman_Transakc   { get { return IsNacPlacVirman(this.NacPlac2, this.TT); } }
+   public bool Is_NacPlac1i2_Virman_Transakc { get { return Is_NacPlac1_Virman_Transakc && Is_NacPlac2_Virman_Transakc; } } // I NP1 I NP21 su vrimanski 
+
+   public bool Is_NacPlac1_Cash_Or_Card      { get { return Is_NacPlac1_Virman_Transakc == false; } } 
+   public bool Is_NacPlac2_Cash_Or_Card      { get { return Is_NacPlac2_Virman_Transakc == false; } }
+   public bool Is_NacPlac1i2_Cash_Or_Card    { get { return Is_NacPlac1_Cash_Or_Card || Is_NacPlac2_Cash_Or_Card; } } // ILI je NP1 ILI je NP2 Cash_Or_Card 
+
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE
