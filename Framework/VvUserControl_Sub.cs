@@ -675,6 +675,23 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       TheVvTabPage.Fld_isSent = isSend;
    }
 
+   protected void PutIdentityFields_7Col(Faktur faktur_rec, ZXC.F2_R1enum F2_R1kind)
+   {
+       if (faktur_rec == null)
+           return;
+   
+       PutIdentityFields_7Col(
+           faktur_rec.TT + "-" + faktur_rec.TtNum.ToString(), 
+           faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
+           "",
+           faktur_rec.F012kind.ToString(),
+           F2_R1kind.ToString(),
+           ((faktur_rec.NacPlac.IsEmpty() || faktur_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans"), 
+           Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
+           faktur_rec.Is_F2_AlreadySent
+       );
+   }
+
    protected void ClearIdentityFields_7Col()
    {
       TheVvTabPage.Fld_Col1   =

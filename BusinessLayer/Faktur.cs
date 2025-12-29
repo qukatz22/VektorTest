@@ -5947,10 +5947,9 @@ public class FaktEx : VvDataRecord, IVvExtenderDataRecord
       /*202 */    this.currentData._f2_sentTS      = DateTime.MinValue;
       /*203 */    this.currentData._f2_isRejected  = 0;
       /*204 */    this.currentData._f2_isMrkAsPaid = 0;
-      /*205 */    this.currentData._f2_R1kind   = /*false*/0;
+      /*205 */    this.currentData._f2_R1kind      = 0;
       /*206 */    this.currentData._f2_prvFakRecID = 0;
       /*207 */    this.currentData._f2_isEizvj     = 0;
-      /*208 */    this.currentData._f2_R1kind      = 0;
 
    }
 
