@@ -170,9 +170,9 @@ namespace EN16931.UBL
                   TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID          = new IDType { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
-                     Name        = new NameType1 { Value = "HR:S" },
-                     Percent     = new PercentType1 { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
+                     ID          = new IDType          { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
+                     Name        = new NameType1       { Value = "HR:PDV13" },
+                     Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
@@ -187,7 +187,7 @@ namespace EN16931.UBL
                   HRTaxCategory = new HRTaxCategoryType
                   {
                      ID          = new IDType          { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
-                     Name        = new NameType1       { Value = "HR:S" },
+                     Name        = new NameType1       { Value = "HR:PDV5" },
                      Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
