@@ -3145,7 +3145,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    protected void T_KPD_CreateColumn(int _width, bool isVisible, string _colHeader, string _statusText) 
    {
       vvtbT_KPD = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtbR_KPD", TheVvDaoTrans, -24, _statusText);
-      
+      vvtbT_KPD.JAM_ReadOnly = true;
+
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_KPD, TheVvDaoTrans, "T_KPD", _colHeader, ZXC.Q4un);
       colVvText.Visible = isVisible;
    }
@@ -4295,7 +4296,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                                    "",
                                    fakturLocal_rec.F012kind.ToString(),
                                    fakturLocal_rec.F2_R1kind.ToString(),
-                                   ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Trans" : "NE Trans" ), 
+                                   ((fakturLocal_rec.NacPlac.IsEmpty() || fakturLocal_rec.NacPlac.StartsWith("VIRMAN")) ? "Virman" : "Got/Kart" ), 
                                    Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
                                    faktur_rec.Is_F2_AlreadySent
                                    );
@@ -9349,47 +9350,63 @@ public partial class FakturExtDUC : FakturDUC
    }
    private void InitializeHamper_Status(out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 1, "", null, false);
-
-           if(IsRadNalog && (this is RNMDUC == false)) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q5un                       };
-      else if(this is RNMDUC                         ) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4            };
-      else                                             hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2 - ZXC.Qun8 };
-
-      hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
-      hamper.VvRightMargin = hamper.VvLeftMargin;
-
-      hamper.VvRowHgt       = new int[] { ZXC.QUN };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
-      hamper.VvBottomMargin = hamper.VvTopMargin;
+      VvLookUpLista vvLookUpLista ;
+      string label; 
+      string opis;  
 
 
-      //18.12.2025.
-      //             hamper.CreateVvLabel        (0, 0, "Status:", ContentAlignment.MiddleRight);
-      //tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", "Status", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
-      //tbx_Status.JAM_CharacterCasing = CharacterCasing.Upper;
-      //tbx_Status.JAM_Set_LookUpTable(ZXC.luiListaRiskStatus, (int)ZXC.Kolona.prva);
-      //
-      //if(IsRadNalog) tbx_Status.JAM_lookUp_NOTobligatory = false;
-      //else           tbx_Status.JAM_lookUp_NOTobligatory = true;
-      // tbx_Status.JAM_lookUp_MultiSelection = true;
-      
-      string label = IsRadNalog ? "Status:" : "eRac:";   
-      string opis  = IsRadNalog ? "Status"  : "Kod tipa eRacuna";
-      VvLookUpLista vvLookUpLista = IsRadNalog ? ZXC.luiListaRiskStatus : ZXC.luiListaKodTipaEracuna;
+      if(IsRadNalog)
+      { 
+         hamper = new VvHamper(2, 1, "", null, false);
 
-                   hamper.CreateVvLabel        (0, 0, label, ContentAlignment.MiddleRight);
-      tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", opis, GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
-      tbx_Status.JAM_Set_LookUpTable(vvLookUpLista, (int)ZXC.Kolona.prva);
+              if(IsRadNalog && (this is RNMDUC == false)) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q5un                       };
+         else if(this is RNMDUC                         ) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q4un + ZXC.Qun4            };
+         else                                             hamper.VvColWdt = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2 - ZXC.Qun8 };
 
-      if(IsRadNalog) 
-      {
+         hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
+
+         hamper.VvRowHgt       = new int[] { ZXC.QUN };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+
+         label = "Status:";   
+         opis  = "Status" ;
+         vvLookUpLista = ZXC.luiListaRiskStatus;
+
+                      hamper.CreateVvLabel        (0, 0, label, ContentAlignment.MiddleRight);
+         tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", opis, GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
+         tbx_Status.JAM_Set_LookUpTable(vvLookUpLista, (int)ZXC.Kolona.prva);
+
          tbx_Status.JAM_CharacterCasing = CharacterCasing.Upper;
          tbx_Status.JAM_lookUp_NOTobligatory = false;
          tbx_Status.JAM_lookUp_MultiSelection = true;
       }
-      else
-      {
-         if(ZXC.IsF2_2026_rules) tbx_Status.JAM_DataRequired = true;
+      else //(ZXC.IsF2_2026_rules
+      { 
+         hamper = new VvHamper(3, 1, "", null, false);
+
+         hamper.VvColWdt      = new int[] { labelWidth, ZXC.Q3un - ZXC.Qun2, ZXC.Q6un + ZXC.Q3un - ZXC.Qun4 + faBefCol };
+         hamper.VvSpcBefCol   = new int[] { faBefFirstCol, faBefCol, faBefCol };
+         hamper.VvRightMargin = hamper.VvLeftMargin;
+
+         hamper.VvRowHgt       = new int[] { ZXC.QUN };
+         hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+         hamper.VvBottomMargin = hamper.VvTopMargin;
+
+         label ="Kod rač:";   
+         opis  ="Kod tipa eRačunana";
+         
+         vvLookUpLista = ZXC.luiListaKodTipaEracuna;
+
+                      hamper.CreateVvLabel        (0, 0, label, ContentAlignment.MiddleRight);
+         tbx_Status = hamper.CreateVvTextBoxLookUp(1, 0, "tbx_Status", opis, GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.statusCD));
+         tbx_Status.JAM_Set_LookUpTable(vvLookUpLista, (int)ZXC.Kolona.prva);
+         tbx_StatusOpis = hamper.CreateVvTextBox  (2, 0, "tbx_StatusOpis", "Opis koda tipa eRačunana");
+         tbx_Status.JAM_lui_NameTaker_JAM_Name = tbx_StatusOpis.JAM_Name;
+         tbx_StatusOpis.JAM_ReadOnly = true;
+
+         tbx_Status.JAM_DataRequired = true;
       }
 
       tbx_Status.JAM_IsSupressTab = true;
@@ -12244,7 +12261,17 @@ public partial class FakturExtDUC : FakturDUC
          hamp_NacPlac.Location = new Point(0, hamp_napomena.Bottom - ZXC.Qun4);
          hamp_fiskJIR.Location = new Point(hamp_NacPlac.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
 
-         nextY = hamp_NacPlac.Bottom;
+         if(ZXC.IsF2_2026_rules)
+         { 
+            hamp_eRproc.Location  = new Point(                           0, hamp_NacPlac.Bottom - ZXC.Qun4);
+            hamp_Status .Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_NacPlac.Bottom - ZXC.Qun4);
+
+            nextY = hamp_eRproc.Bottom;
+         }
+         else
+         {
+            nextY = hamp_NacPlac.Bottom;
+         }
       }
       else
       {
@@ -12254,9 +12281,20 @@ public partial class FakturExtDUC : FakturDUC
       if(this is IRMDUC_2 || this is IRADUC_2 )
       {
          hamp_prjArtName.Location = new Point(0, hamp_NacPlac.Bottom - ZXC.Qun4);
-         nextY = hamp_prjArtName.Bottom;
-      }
+         
+         if(ZXC.IsF2_2026_rules)
+         { 
+            hamp_eRproc.Location  = new Point(                           0, hamp_prjArtName.Bottom - ZXC.Qun4);
+            hamp_Status .Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_prjArtName.Bottom - ZXC.Qun4);
 
+            nextY = hamp_eRproc.Bottom;
+         }
+         else
+         {
+            nextY = hamp_prjArtName.Bottom;
+         }
+      }
+      
       panel_MigratorsLeftA.Parent = TheTabControl.TabPages[0];
       panel_MigratorsLeftA.Location = new Point(0, nextY - ZXC.Qun8);
       //panel_MigratorsLeftA.Size = new Size(hamp_v1TT.Right, 0); 21.02.2013. zato kaj nije svima hamp_v1TT skroz desno 
@@ -12547,9 +12585,9 @@ public partial class FakturExtDUC : FakturDUC
       else
       {
          //23.12.2025. novo za F2 od 2026
-         hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
-         hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
-         hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
+       //hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+       //hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
+       //hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
 
       }
 
@@ -14083,7 +14121,8 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_someMoney  )) Fld_someMoney   = VvCurrency(faktEx.SomeMoney  );
       if(CtrlOK(tbx_somePercent)) Fld_somePercent =           (faktEx.SomePercent);
 
-      if(CtrlOK(tbx_StatusOpis)) Fld_StatusOpis = ZXC.luiListaRiskStatus.GetNameForThisCd(faktEx.StatusCD); ;
+    //if(CtrlOK(tbx_StatusOpis)) Fld_StatusOpis = ZXC.luiListaRiskStatus.GetNameForThisCd(faktEx.StatusCD); ;
+      if(CtrlOK(tbx_StatusOpis)) Fld_StatusOpis = ZXC.luiListaKodTipaEracuna.GetNameForThisCd(faktEx.StatusCD); ;
 
       //if(ZXC.IsSvDUH && this is UGODUC)
       //{

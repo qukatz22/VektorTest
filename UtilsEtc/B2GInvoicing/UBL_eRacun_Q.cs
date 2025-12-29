@@ -211,7 +211,10 @@ namespace EN16931.UBL
                   }
                });
             }
-            
+
+            var doc = new XmlDocument();
+            XmlElement emptySignatureInfo = doc.CreateElement("sac", "SignatureInformation", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2");
+
             the_eRacun.UBLExtensions = new UBLExtensionType[]
             {
                new UBLExtensionType
@@ -239,7 +242,8 @@ namespace EN16931.UBL
                    {
                       Item = new UBLDocumentSignaturesType()
                       {
-                         SignatureInformation = new XmlElement[] { /* empty placeholder - serialized as <sig:SignatureInformation>... */ },
+                       //SignatureInformation = new XmlElement[] { /* empty placeholder - serialized as <sig:SignatureInformation>... */ },
+                         SignatureInformation = new XmlElement[] { emptySignatureInfo                                                    },
                       }
                    }
                 }

@@ -1367,12 +1367,13 @@ be_fast:
       tbx_col4.Font = ZXC.vvFont.BaseBoldFont;
       tbx_col4.TextAlign = HorizontalAlignment.Center;
       tbx_col5.TextAlign = HorizontalAlignment.Center;
+      tbx_col6.TextAlign = HorizontalAlignment.Center;
+      tbx_col7.TextAlign = HorizontalAlignment.Center;
       //tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = Color.LavenderBlush;
 
       labSent = hampModul.CreateVvLabel(7, 0, "", ContentAlignment.TopCenter);
-    //labSent.Image = VvIco.SkySendAdd.ToBitmap();
-
-      labSent.Image = new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.skySendAdd.ico"), new Size(16, 16)).ToBitmap();
+      labSent.BackColor = Color.LightBlue;
+      //labSent.Image = new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.skySendAdd.ico"), new Size(16, 16)).ToBitmap();
       labSent.Visible = false;
 
       VvHamper.Open_Close_Fields_ForWriting(hampModul, ZXC.ZaUpis.Zatvoreno, ZXC.ParentControlKind.TamponPanel_HeaderLeft);

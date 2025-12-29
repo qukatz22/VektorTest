@@ -1294,7 +1294,7 @@ public class IFADUC              : FakturExtDUC
       hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
                                         hampCbxM_VezniDok2, hampCbxM_Fco, /*hampCbxM_NacPlac,*/hampCbxM_DatumX, hampCbxM_OsobaA, hampCbxM_osobaB, hampCbxM_carinaKind,
                                         hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, hampCbxM_tipOtpreme,  hampCbxM_osobaX,
-                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp,hampCbxM_eRproc, hampCbxM_fiskPrgBr,
+                                        hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp,/*hampCbxM_eRproc,*/ hampCbxM_fiskPrgBr,
                                         hampCbxM_opis                                   
                                       };
    }
@@ -1922,7 +1922,7 @@ public class IRMDUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible,      "Šifra"      , "Šifra artikla");
       T_artiklName_CreateColumnFill(                      isVisible,      "Naziv"      , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un,isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"           , "KPD sifra");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible,      "Usl"        , "Usluga");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible,      "Kol"        , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible,      "JM"         , "Jedinica mjere");
@@ -2143,7 +2143,7 @@ public class IRMDUC_2            : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,             isVisible,      "Šifra"       , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible,      "Naziv"       , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un,isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"           , "KPD sifra");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible,      "Usl"         , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un   ,          isKontoVisible, "Konto"       , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible,      "Kol"         , "Količina"      );
@@ -6462,7 +6462,7 @@ public class IRPDUC              : FakturPDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , 
                                     /*hamp_kupdobOther,*/ hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
-                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR
+                                    hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR, hamp_eRproc, 
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
@@ -6492,7 +6492,7 @@ public class IRPDUC              : FakturPDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,                  isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                           isVisible, "Naziv"      , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un,isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un   ,              ZXC.IsF2_2026_rules, "KPD"           , "KPD sifra");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,        isVisible, "Usl"         , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un   ,               isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
      
@@ -8476,7 +8476,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
                                     hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_pdvZPkind, hamp_pdvGeokind, hamp_kupdobOther, hamp_Cjenik, hamp_napomena, 
                                     hamp_skladCd    , hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_NacPlac, hamp_fiskJIR,
-                                    hamp_DatumX, hamp_VezniDok2, hamp_napomena2, hamp_Fco, hamp_tipOtpreme, hamp_opis
+                                    hamp_DatumX, hamp_VezniDok2, hamp_napomena2, hamp_Fco, hamp_tipOtpreme, hamp_opis, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat,/* hamp_napomena2,*/
@@ -8484,7 +8484,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
                                     hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, /*hamp_tipOtpreme,*/  hamp_osobaX,hamp_carinaKind,
                                     hamp_dostava, hamp_PonudDate,
                                     hamp_externLink1, hamp_externLink2,hamp_prjIdent,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr,
-                                    hamp_eRproc, hamp_fiskPrgBr//, hamp_opis
+                                    /*hamp_eRproc,*/ hamp_fiskPrgBr//, hamp_opis
                                   };
 
       hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, /*hampCbxM_napomena2,*/
@@ -8492,7 +8492,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
                                         hampCbxM_OpciA, hampCbxM_OpciB,  hampCbxM_rokIspAndDate	, /*hampCbxM_tipOtpreme,*/ hampCbxM_osobaX, hampCbxM_carinaKind,
                                         hampCbxM_dostava, hampCbxM_PonudDate,
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_prjIdent,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp, hampCbxM_fiskPrgBr,
-                                        hampCbxM_eRproc, hampCbxM_fiskPrgBr//, hampCbxM_opis
+                                        /*hampCbxM_eRproc,*/ hampCbxM_fiskPrgBr//, hampCbxM_opis
                                       };
    }
  
@@ -8506,7 +8506,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,   isVisible, "Šifra"           , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                      isVisible, "Naziv"           , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un,isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un  , ZXC.IsF2_2026_rules, "KPD"           , "KPD sifra");
     //T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"             , "Usluga");
     //T_konto_CreateColumn         (ZXC.Q3un          ,   isVisible, "Konto"           , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
       T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"             , "Količina"      );
