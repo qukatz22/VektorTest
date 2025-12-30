@@ -9419,7 +9419,7 @@ public partial class FakturExtDUC : FakturDUC
          tbx_Status.JAM_lui_NameTaker_JAM_Name = tbx_StatusOpis.JAM_Name;
          tbx_StatusOpis.JAM_ReadOnly = true;
 
-         tbx_Status.JAM_DataRequired = true;
+         tbx_Status.JAM_DataRequired = IsFiskalDutyDUC;
       }
 
       tbx_Status.JAM_IsSupressTab = true;
@@ -10594,7 +10594,8 @@ public partial class FakturExtDUC : FakturDUC
       tbx_eRprocOpis.JAM_ReadOnly = true;
 
       tbx_eRproc.JAM_IsSupressTab = true;
-      tbx_eRproc.JAM_DataRequired = true;
+
+      tbx_eRproc.JAM_DataRequired = IsFiskalDutyDUC;
 
       hamper.Name = "AeRproc:";
 
@@ -12591,7 +12592,7 @@ public partial class FakturExtDUC : FakturDUC
       //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
       //hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
 
-      if(!ZXC.IsF2_2026_rules) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
+      if(!IsFiskalDutyDUC) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
       {
          hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
          hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
@@ -12601,16 +12602,7 @@ public partial class FakturExtDUC : FakturDUC
          hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
          hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
       }
-      else
-      {
-         //23.12.2025. novo za F2 od 2026
-       //hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
-       //hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
-       //hampCbxM_eRproc.Location               = new Point(      0, hamp_externLink1.Bottom);
-
-      }
-
-
+      
       if((this is RNMDUC) == false && (this is RNZDUC == false))
       {
 
@@ -12693,7 +12685,8 @@ public partial class FakturExtDUC : FakturDUC
 
      // 22.11.2018. dodano zbog eRacuna
     //panel_MigratorsRightB.Size     = new Size(hamp_opis.Width + ZXC.QUN, hamp_opis.Height);
-      panel_MigratorsRightB.Size     = new Size(hamp_opis.Width + ZXC.QUN, hamp_opis.Height + hamp_eRproc.Height + ZXC.QUN);
+    //panel_MigratorsRightB.Size     = new Size(hamp_opis.Width + ZXC.QUN, hamp_opis.Height + hamp_eRproc.Height + ZXC.QUN);
+      panel_MigratorsRightB.Size     = new Size(hamp_opis.Width + ZXC.QUN, hamp_opis.Height + ZXC.QUN + ZXC.QUN);
       panel_MigratorsRightB.Location = new Point(panel_MigratorsRightA.Right, 0);
 
       if(panel_NoMigratorsRight != null)
