@@ -13960,11 +13960,11 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      if(IsFiskalDutyDUC && ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
+      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && IsFiskalDutyDUC && ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
       {
-         if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+         if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F2_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
-         if(ZXC.CURR_prjkt_rec.F2_ImaB2C_i_B2B)
+         if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F2_B2B)
          {
             if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
             if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
@@ -13979,7 +13979,7 @@ public partial class FakturExtDUC : FakturDUC
             if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
             if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          }
-         if(ZXC.CURR_prjkt_rec.F2_NEmaB2C_ni_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B; // ? 
+         if(ZXC.CURR_prjkt_rec.F2_NEma_ni_B2C_ni_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B; // ? 
 
 
 

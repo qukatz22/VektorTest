@@ -212,8 +212,8 @@ namespace EN16931.UBL
                });
             }
 
-            var doc = new XmlDocument();
-            XmlElement emptySignatureInfo = doc.CreateElement("sac", "SignatureInformation", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2");
+            //var doc = new XmlDocument();
+            //XmlElement emptySignatureInfo = doc.CreateElement("sac", "SignatureInformation", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2");
 
             the_eRacun.UBLExtensions = new UBLExtensionType[]
             {
@@ -243,7 +243,7 @@ namespace EN16931.UBL
                       Item = new UBLDocumentSignaturesType()
                       {
                        //SignatureInformation = new XmlElement[] { /* empty placeholder - serialized as <sig:SignatureInformation>... */ },
-                         SignatureInformation = new XmlElement[] { emptySignatureInfo                                                    },
+                      //   SignatureInformation = new XmlElement[] { emptySignatureInfo                                                    },
                       }
                    }
                 }
@@ -473,15 +473,19 @@ namespace EN16931.UBL
             ElectronicMail = new ElectronicMailType { Value = Prj2eR__String("BT043") },
          };
 
-       //14.10.2025. 
-       if(ZXC.IsF2_2026_rules)
-       { 
-         the_eRacun.AccountingSupplierParty.SellerContact = new ContactType
+         //14.10.2025. 
+         if(ZXC.IsF2_2026_rules)
          {
-            ID   = new IDType    { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) },
-            Name = new NameType1 { Value = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) }
-         };
-       }
+            the_eRacun.AccountingSupplierParty.SellerContact = new ContactType();
+            /*{
+               ID = new IDType { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) },
+               Name = new NameType1 { Value = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) }
+            } ;*/
+            
+            the_eRacun.AccountingSupplierParty.SellerContact.ID   = new IDType    { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) };
+            the_eRacun.AccountingSupplierParty.SellerContact.Name = new NameType1 { Value = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) };
+
+         }
 
          #endregion BG-4 BG-5 Prodavatelj (Prjkt)
 
