@@ -2033,7 +2033,8 @@ public static class VvSQL
          else
          {
 #if(DEBUG)
-            ZXC.aim_emsg(MessageBoxIcon.Information, "ALTER TABLE [{0}] na verziju [{1}] uspjesno obavljeno.", tableName, catchingVersion);
+            // 2026: dodan if 
+            if(dbName.ToUpper().Contains("VIPER")) ZXC.aim_emsg(MessageBoxIcon.Information, "ALTER TABLE [{0}] na verziju [{1}] uspjesno obavljeno.", tableName, catchingVersion);
 #endif
 
             // 12.12.2011: VvRECREATE CACHE 

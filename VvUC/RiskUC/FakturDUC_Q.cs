@@ -8838,8 +8838,8 @@ public partial class FakturExtDUC : FakturDUC
       {
          faktur_rec.F2_R1kind = Fld_F2_R1kind = _kupdob_rec.R1kind;
 
-         TheVvTabPage.Fld_Col4 = faktur_rec.F012kind.ToString();
-         TheVvTabPage.Fld_Col5 = _kupdob_rec.R1kind .ToString();
+         TheVvTabPage.Fld_Col4 = faktur_rec.F012kind.ToString(); 
+       //TheVvTabPage.Fld_Col5 = _kupdob_rec.R1kind .ToString(); obavlja se u SET od Fld_F2_R1kind
 
          //PutIdentityFields_7Col(faktur_rec, _kupdob_rec.R1kind);
       }

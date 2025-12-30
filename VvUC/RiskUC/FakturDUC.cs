@@ -697,12 +697,23 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       CalcLocationSizeAnchor_ThePolyGridTabControl(TheTabControl.TabPages[0], nextX, CalcRazmakZaPolyGridTabControl());
    }
 
-   public bool IsFiskalDutyDUC
+   public bool IsFiskalDutyDUC_Malop
    {
       get
       {
-         return this is IRMDUC || this is IRMDUC_2 || this is IRADUC || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC || this is IFADUC || this is IFAdevDUC;
+         return this is IRMDUC || this is IRMDUC_2 || this is IRA_MPC_DUC;
       }
+   }
+
+   public bool IsFiskalDutyDUC_Velep
+   {
+      get
+      {
+         return this is IRADUC || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRPDUC || this is IFADUC || this is IFAdevDUC;
+      }
+   }
+
+   public bool IsFiskalDutyDUC { get { return IsFiskalDutyDUC_Malop || IsFiskalDutyDUC_Velep; }
    }
 
    #endregion Constructor
@@ -13669,11 +13680,14 @@ public partial class FakturExtDUC : FakturDUC
       {
          switch(value)
          {
-            case ZXC.F2_R1enum.B2B      : tbx_f2_R1kind.Text = "B2B"      ; return;
-            case ZXC.F2_R1enum.B2C      : tbx_f2_R1kind.Text = "B2C"      ; return;
-            case ZXC.F2_R1enum.Nepoznato: tbx_f2_R1kind.Text = "Nepoznato"; return;
+            case ZXC.F2_R1enum.B2B      : tbx_f2_R1kind.Text = "B2B"      ; break;
+            case ZXC.F2_R1enum.B2C      : tbx_f2_R1kind.Text = "B2C"      ; break;
+            case ZXC.F2_R1enum.Nepoznato: tbx_f2_R1kind.Text = "Nepoznato"; break;
+
             default:                      tbx_f2_R1kind.Text = ""         ; break;
          }
+
+         TheVvTabPage.Fld_Col5 = tbx_f2_R1kind.Text;
       }
    }
 
@@ -13953,10 +13967,28 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      if(ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
+      if(IsFiskalDutyDUC && ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
       {
          if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+         if(ZXC.CURR_prjkt_rec.F2_ImaB2C_i_B2B)
+         {
+            if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+            if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+         }
+         if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
+         {
+            if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+            if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+         }
+         if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNE_NaMERu)
+         {
+            if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+            if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+         }
+         if(ZXC.CURR_prjkt_rec.F2_NEmaB2C_ni_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B; // ? 
+
+
 
          Fld_eRproc = (ZXC.VvUBL_PolsProcEnum)Enum.Parse(typeof(ZXC.VvUBL_PolsProcEnum), ZXC.RRD.Dsc_Default_eRposProc);
          VvLookUpItem lui = ZXC.luiListaeRacPoslProc.GetLuiForThisCd(ZXC.RRD.Dsc_Default_eRposProc);

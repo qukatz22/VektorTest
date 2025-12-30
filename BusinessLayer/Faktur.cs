@@ -5112,7 +5112,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "prereno me pitas");  /*throw new Exception("haha");*/ }
+         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "IsF1 prerano me pitas");  /*throw new Exception("haha");*/ }
 
          if(this.TheEx == null)             return false;
          
@@ -5139,7 +5139,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "prereno me pitas"); /*throw new Exception("haha");*/ }
+         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "IsF2 prerano me pitas"); /*throw new Exception("haha");*/ }
 
          return TtInfo.IsIzlazniPdvTT && F2_R1kind == ZXC.F2_R1enum.B2B && IsF2_PdvGEOkind(this.PdvGEOkind) == true && Is_NacPlac1i2_Virman_Transakc; 
       } 
@@ -5152,7 +5152,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "prereno me pitas"); /*throw new Exception("haha");*/ }
+         if(this.KupdobCD.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Exclamation, "IsF0 prerano me pitas"); /*throw new Exception("haha");*/ }
 
          return TtInfo.IsIzlazniPdvTT && F2_R1kind == ZXC.F2_R1enum.B2B && IsF2_PdvGEOkind(this.PdvGEOkind) == false; 
       } 
