@@ -270,7 +270,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    public string Fld_Col5 { set { tbx_col5.Text = value; } }
    public string Fld_Col6 { set { tbx_col6.Text = value; } }
    public string Fld_Col7 { set { tbx_col7.Text = value; } }
-   public bool   Fld_isSent { set { labSent.Visible = value; } }
+   public bool   Fld_Col8 { set { labSent.Visible = value; } }
    public string Fld_PrjktNaziv
    {
       set { tbx_NazivPrjkt.Text = value; }

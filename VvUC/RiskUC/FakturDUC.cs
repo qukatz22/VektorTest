@@ -10583,6 +10583,7 @@ public partial class FakturExtDUC : FakturDUC
       tbx_eRprocOpis.JAM_ReadOnly = true;
 
       tbx_eRproc.JAM_IsSupressTab = true;
+      tbx_eRproc.JAM_DataRequired = true;
 
       hamper.Name = "AeRproc:";
 

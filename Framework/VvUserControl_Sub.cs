@@ -661,7 +661,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       //TheVvTabPage.Fld_PrjktNaziv = prjkt;
 
    }
-   protected void PutIdentityFields_7Col(string col1, string col2, string col3, string col4, string col5, string col6, string col7, bool isSend)
+   protected void PutIdentityFields_7Col(string col1, string col2, string col3, string col4, string col5, string col6, string col7, bool col8)
    {
       ClearIdentityFields_7Col();
 
@@ -672,7 +672,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       TheVvTabPage.Fld_Col5   = col5;
       TheVvTabPage.Fld_Col6   = col6;
       TheVvTabPage.Fld_Col7   = col7;
-      TheVvTabPage.Fld_isSent = isSend;
+      TheVvTabPage.Fld_Col8   = col8;
    }
 
    protected void PutIdentityFields_7Col(Faktur faktur_rec, ZXC.F2_R1enum F2_R1kind)
@@ -690,6 +690,18 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
            Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
            faktur_rec.Is_F2_AlreadySent
        );
+
+      Color colf012 = Color.Black;
+
+      switch(faktur_rec.F012kind)
+      {
+         case ZXC.F123kind.F0:        colf012 = Color.FromArgb(102, 102, 51); break;
+         case ZXC.F123kind.F1:        colf012 = Color.FromArgb(38, 115, 38); break;
+         case ZXC.F123kind.F2:        colf012 = Color.FromArgb(0, 0, 153);  break;
+         case ZXC.F123kind.Nepoznato: colf012 = Color.Black    ;  break;
+      }
+      
+      TheVvTabPage.tbx_col4.JAM_ForeColor = colf012;
    }
 
    protected void ClearIdentityFields_7Col()
@@ -701,7 +713,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       TheVvTabPage.Fld_Col5   =
       TheVvTabPage.Fld_Col6   =
       TheVvTabPage.Fld_Col7   = "";
-      TheVvTabPage.Fld_isSent = false;
+      TheVvTabPage.Fld_Col8 = false;
    }
 
    #endregion PutMetaFileds_FormatMetaFields_PutIdentityFields
