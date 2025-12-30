@@ -3441,7 +3441,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          e.Cancel = true;
       }
 
-      if(faktur_rec.IsF2)
+      if(IsFiskalDutyDUC && faktur_rec.IsF2)
       {
          #region F2_R1kind 
          
