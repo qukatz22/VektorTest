@@ -8266,6 +8266,7 @@ public class VvArtikl_ZAGRIA_Importer : VvDataRecordImporter
 
          #region Gr1 & Gr2 Manager
 
+#if UBIO_U_2026
          if(rawDataStruct._artiklCD.IsEmpty()) 
          {
             if(NextCdIsEmpty(rawDataStruct)) // Gr2 Manager - Proizvodjaci 
@@ -8307,6 +8308,7 @@ public class VvArtikl_ZAGRIA_Importer : VvDataRecordImporter
 
             continue;
          }
+#endif
 
          #endregion Gr1 & Gr2 Manager
 
@@ -8337,9 +8339,11 @@ public class VvArtikl_ZAGRIA_Importer : VvDataRecordImporter
             //artRecToBeRwtreced.ArtiklName = artikl_rec.ArtiklName;
             artRecToBeRwtreced.Garancija  = artikl_rec.Garancija;
             artRecToBeRwtreced.ImportCij  = artikl_rec.ImportCij;
-            artRecToBeRwtreced.SkladCD    = artikl_rec.SkladCD;
-            artRecToBeRwtreced.Grupa1CD   = artikl_rec.Grupa1CD;
-            artRecToBeRwtreced.Grupa2CD   = artikl_rec.Grupa2CD;
+            artRecToBeRwtreced.SkladCD    = artikl_rec.SkladCD  ;
+            artRecToBeRwtreced.Grupa1CD   = artikl_rec.Grupa1CD ;
+            artRecToBeRwtreced.Grupa2CD   = artikl_rec.Grupa2CD ;
+                                                                
+            artRecToBeRwtreced.KPD        = artikl_rec.KPD      ;
 
             if(artRecToBeRwtreced.EditedHasChanges())
             {
