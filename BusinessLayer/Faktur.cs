@@ -4919,11 +4919,11 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
  //private static bool IsOkRegardingPrjktIsFiskCashTTonly(bool _isNpCash)
    private static bool IsOkRegardingPrjktIsFiskCashTTonly(string _nacPlac, string theTT)
    {
-      if(ZXC.CURR_prjkt_rec.IsFiskCashOnly == false) return true;
+      if(ZXC.CURR_prjkt_rec.IsFiskCashOnly2026 == false) return true;
 
     //if(ZXC.CURR_prjkt_rec.IsFiskCashOnly == true &&  _isNpCash                       == true ) return true;
     //if(ZXC.CURR_prjkt_rec.IsFiskCashOnly == true && IsNacPlacVirman(_nacPlac)        == false) return true;
-      if(ZXC.CURR_prjkt_rec.IsFiskCashOnly == true && IsNacPlacVirman(_nacPlac, theTT) == false) return true;
+      if(ZXC.CURR_prjkt_rec.IsFiskCashOnly2026 == true && IsNacPlacVirman(_nacPlac, theTT) == false) return true;
 
       return false;
    }

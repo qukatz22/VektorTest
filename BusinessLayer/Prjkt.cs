@@ -899,12 +899,12 @@ public class Prjkt : Kupdob
       set { this.currentExtData._isNoTtNumChk = value; }
    }
 
+   public bool IsFiskCashOnly2026 { get { return false; } } //od 2026. B2C svi idu u F1 pa i transakcijski NP 
+
    public bool IsFiskCashOnly
    {
       get 
       {
-         if(ZXC.projectYearAsInt > 2025) return false; //od 2026. B2C svi idu u F1 pa i transakcijski NP 
-
          return this.currentExtData._isFiskCashOnly; 
       }
       set { this.currentExtData._isFiskCashOnly = value; }
