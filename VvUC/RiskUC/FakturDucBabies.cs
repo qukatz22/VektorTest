@@ -1865,7 +1865,7 @@ public class IRMDUC              : FakturExtDUC
          //26.02.2020.
          tbx_vatCntryCode.JAM_ReadOnly = tbx_KdOib.JAM_ReadOnly = true;
 
-       //hamp_eRproc.Visible = hamp_Status.Visible = false;
+         hamp_eRproc.Visible = hamp_Status.Visible = false;
       } // if(ZXC.IsTEXTHOany) 
 
       tbx_twinS_ukKCRP.JAM_BackColor = Color.Aquamarine;
