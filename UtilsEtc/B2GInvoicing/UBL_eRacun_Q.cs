@@ -419,7 +419,7 @@ namespace EN16931.UBL
             }
          };
 
-         if(isMojeRacunNotFina == true)
+         if(/*isMojeRacunNotFina == true*/kupdob_rec.Email.NotEmpty())
          {
             the_eRacun.AccountingCustomerParty.AccountingContact                = new ContactType();
             the_eRacun.AccountingCustomerParty.AccountingContact.ElectronicMail = new ElectronicMailType { Value = KiD2eR__String("BT049", kupdob_rec) };
@@ -885,7 +885,7 @@ namespace EN16931.UBL
 
                   TaxExemptionReason = new TaxExemptionReasonType[]
                   {
-                     new TaxExemptionReasonType { Value = GetTekstNoPdvFromThePFD(thePFD) } // razlog 
+                     new TaxExemptionReasonType { Value = ZXC.IsTETRAGRAM_ANY ? GetTekstNoPdvFromThePFD(faktur_rec) : GetTekstNoPdvFromThePFD(thePFD) } // razlog 
                   }
                }
             });
@@ -939,7 +939,7 @@ namespace EN16931.UBL
 
                   TaxExemptionReason = new TaxExemptionReasonType[]
                   {
-                     new TaxExemptionReasonType { Value = GetTekstNoPdvFromThePFD(thePFD) } // razlog 
+                     new TaxExemptionReasonType { Value = ZXC.IsTETRAGRAM_ANY ? GetTekstNoPdvFromThePFD(faktur_rec) : GetTekstNoPdvFromThePFD(thePFD) } // razlog 
                   },
 
                   TaxScheme = new TaxSchemeType
@@ -1020,9 +1020,10 @@ namespace EN16931.UBL
 
          List<string> additionalOpises = new List<string>();
 
+         int invLineIdx = 0;
          // 18.09.2025: 
        //for(int i = 0; i < the_eRacun.InvoiceLine.Length               ; ++i)
-         for(int i = 0, invLineIdx = 0; i < faktur_rec.TrnNonDel_WO_AVANS_STORNO.Count(); ++i)
+         for(int i = 0/*, invLineIdx = 0*/; i < faktur_rec.TrnNonDel_WO_AVANS_STORNO.Count(); ++i)
          {
           //rtrans_rec  = faktur_rec.Transes                  [i];        
             rtrans_rec  = faktur_rec.TrnNonDel_WO_AVANS_STORNO[i]; // !!! 
@@ -1176,7 +1177,7 @@ namespace EN16931.UBL
                      ID        = new IDType       {                   Value = "E"   },
                      Name      = new NameType1    {                   Value = "HR:E"}, // oznaka za oslobodjeno pdv a
                      Percent   = new PercentType1 {                   Value = 0     },
-                     TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = GetTekstNoPdvFromThePFD(thePFD) } },//2026 ujednaciti tetragram i zptica
+                     TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = ZXC.IsTETRAGRAM_ANY ? GetTekstNoPdvFromThePFD(faktur_rec) : GetTekstNoPdvFromThePFD(thePFD) } },
                      TaxScheme = new TaxSchemeType{ ID = new IDType { Value = "VAT" } 
                      }
                   }
@@ -1357,6 +1358,22 @@ namespace EN16931.UBL
 
          } // foreach(Rtrans rtrans_rec in faktur_rec.Transes)
 
+         // 'Za zadnjega' 
+         if(additionalOpises.NotEmpty())
+         {
+            string prevValue = "";
+
+            if(the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description != null && the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description.Length.NotZero())
+            {
+               prevValue = the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description[0].Value;
+            }
+
+            the_eRacun.InvoiceLine[invLineIdx - 1].Item.Description = new DescriptionType[] { new DescriptionType { Value = prevValue + string.Join("\n", additionalOpises) } };
+
+            //additionalOpises.Clear();
+         }
+
+
          #endregion STAVKE računa
 
          #region HRExtensions 2026
@@ -1399,7 +1416,7 @@ namespace EN16931.UBL
                      ID      = new IDType    { Value = "E"    },
                      Name    = new NameType1 { Value = "HR:E" },
                      Percent = new PercentType1 { Value = Fak2eR_Decimal("PdvOP stp", faktur_rec, null) },
-                     TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = GetTekstNoPdvFromThePFD(thePFD) } },
+                     TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = ZXC.IsTETRAGRAM_ANY ? GetTekstNoPdvFromThePFD(faktur_rec) : GetTekstNoPdvFromThePFD(thePFD) } },
                      HRTaxScheme        = new HRTaxSchemeType
                      {
                         ID = new IDType { Value = "VAT" }
@@ -1893,9 +1910,22 @@ namespace EN16931.UBL
       //   return pnb;
       //}
 
+      private static string GetTekstNoPdvFromThePFD(Faktur _faktur_rec)
+      {
+         string textOslob;
+
+         if(_faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "OBRKAMZA") ||
+            _faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "ZLCER")    ||
+            _faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "SRCERMAT"  )) textOslob = "Isporuka oslobođena PDV-a sukladno članku 40. Zakona o PDV-u";
+
+         else /*if(faktExDuc.Fld_PdvGEOkind == ZXC.PdvGEOkindEnum.HR)*/     textOslob = "Isporuka investicijskog zlata oslobođena PDV-a sukladno članku 114. Zakona o PDV-u";
+
+         return textOslob;
+      }
+
       private static string GetTekstNoPdvFromThePFD(PrnFakDsc thePFD)
       {
-         return thePFD.Dsc_TekstOslobodenPDV; 
+         return thePFD.Dsc_TekstOslobodenPDV;
       }
 
       #endregion Fak2eR & VvUBL Utils 

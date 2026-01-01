@@ -13963,7 +13963,7 @@ public partial class FakturExtDUC : FakturDUC
       if(ZXC.RISK_CopyToOtherDUC_inProgress == false && IsFiskalDutyDUC && ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
       {
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F2_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
-         if(ZXC.CURR_prjkt_rec.F2_ImaSamoB2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+         if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F1_B2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
          if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F2_B2B)
          {
             if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
