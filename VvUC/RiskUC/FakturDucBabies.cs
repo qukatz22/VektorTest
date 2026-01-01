@@ -1865,6 +1865,7 @@ public class IRMDUC              : FakturExtDUC
          //26.02.2020.
          tbx_vatCntryCode.JAM_ReadOnly = tbx_KdOib.JAM_ReadOnly = true;
 
+       //hamp_eRproc.Visible = hamp_Status.Visible = false;
       } // if(ZXC.IsTEXTHOany) 
 
       tbx_twinS_ukKCRP.JAM_BackColor = Color.Aquamarine;
@@ -1880,7 +1881,7 @@ public class IRMDUC              : FakturExtDUC
                                     //hamp_kupdobOther,  
                                     hamp_dokDate    , hamp_dokNum, 
                                     hamp_kupdobOther, hamp_Cjenik,  hamp_napomena, 
-                                    hamp_skladCd    , hamp_v1TT, hamp_NacPlac, hamp_fiskJIR    
+                                    hamp_skladCd    , hamp_v1TT, hamp_NacPlac, hamp_fiskJIR , hamp_Status, hamp_eRproc
                                   };
 
       if(ZXC.IsTEXTHOany != true)
@@ -1889,7 +1890,7 @@ public class IRMDUC              : FakturExtDUC
                                     hamp_VezniDok2, hamp_Fco, /*hamp_NacPlac,*/hamp_DatumX,  hamp_osobaA, hamp_OsobaB ,
                                     hamp_OpciA, hamp_OpciB,  hamp_rokIspAndDate, hamp_tipOtpreme,  hampCbxM_osobaX, hamp_carinaKind,
                                     hamp_externLink1, hamp_externLink2,hamp_fiskMsgID    , hamp_fiskOibOp,     hamp_fiskPrgBr
-                                    ,                      hamp_opis
+                                    ,hamp_opis
                                   };
 
          hamperCbx4Migr = new VvHamper[] { hampCbxM_posJedCd, hampCbxM_Mtros, hampCbxM_PrimPlat, hampCbxM_napomena2,
@@ -1898,7 +1899,7 @@ public class IRMDUC              : FakturExtDUC
                                         hampCbxM_externLink1, hampCbxM_externLink2,hampCbxM_fiskMsgID, hampCbxM_fiskOibOp, hampCbxM_fiskPrgBr,
                                         hampCbxM_opis                                   
                                       };
-         hamperNoMigLeftRight = new VvHamper[] { hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
+         hamperNoMigLeftRight = new VvHamper[] { hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb,/* hamp_Status  ,*/ hamp_vezniDok, hamp_projekt, 
                                          hamp_RokPlac,hamp_DospDate, hamp_SkladDate, hamp_PDV, hamp_PonudDate, 
                                          hamp_v2TT   , hamp_v3TT  , hamp_v4TT
                                        };
@@ -8452,11 +8453,15 @@ public class IRA_MPC_DUC              : FakturExtDUC
       hamp_Fco        .Location = new Point(hamp_VezniDok2.Right, hamp_fiskJIR  .Bottom);
       hamp_napomena2  .Location = new Point(hamp_fiskJIR  .Left , hamp_VezniDok2.Bottom);
       hamp_tipOtpreme .Location = new Point(hamp_napomena2.Right, hamp_VezniDok2.Bottom);
+      hamp_eRproc     .Location = new Point(                           0, hamp_DatumX.Bottom - ZXC.Qun4);
+      hamp_Status     .Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_DatumX.Bottom - ZXC.Qun4);
+
     //hamp_opis       .Location = new Point(hamp_tt       .Right, hamp_tt       .Top);
       hamp_opis       .Location = new Point(hamp_v1TT.Right     , hamp_tt.Top);
       hamp_opis.BringToFront();
 
-      nextY = hamp_DatumX.Bottom;
+    //nextY = hamp_DatumX.Bottom;
+      nextY = hamp_eRproc.Bottom;
 
       if(ZXC.RRD.Dsc_IsIntrastat == false)
       {

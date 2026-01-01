@@ -1372,7 +1372,7 @@ be_fast:
       //tbx_col5.Tag = tbx_col6.Tag = tbx_col7.Tag = Color.LavenderBlush;
 
       labSent = hampModul.CreateVvLabel(7, 0, "", ContentAlignment.TopCenter);
-      labSent.BackColor = Color.LightBlue;
+      //labSent.BackColor = Color.LightBlue;
       //labSent.Image = new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.skySendAdd.ico"), new Size(16, 16)).ToBitmap();
       labSent.Visible = false;
 

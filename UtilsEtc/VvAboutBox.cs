@@ -757,7 +757,7 @@ public class VvMessageBox_UC : UserControl
          CreateHamper_F2_SEND_stop      (out hamper_F2_SEND_stop);
          CreateHamper_F2_SEND_candidates(out hamper_F2_SEND_candidates);
       }
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
       {
          CreateHamper_F2_IMPORT_stop      (out hamper_F2_IMPORT_stop);
          CreateHamper_F2_IMPORT_candidates(out hamper_F2_IMPORT_candidates);
@@ -925,7 +925,7 @@ public class VvMessageBox_UC : UserControl
       hamper.VvSpcBefRow    = new int[] { 0      , 0       };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isAutoImport = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski pruzmi ulazne eRačune"      , RightToLeft.No);
+      cbx_isAutoImport = hamper.CreateVvCheckBox_OLD(0, 0, null, "Ubuduće, Automatski preuzmi ulazne eRačune"      , RightToLeft.No);
                          hamper.CreateVvLabel       (0, 1, "     (Prilikom otvaranja FUR-a, a uz dodatnu potvrdu)", ContentAlignment.MiddleLeft);
 
       VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);

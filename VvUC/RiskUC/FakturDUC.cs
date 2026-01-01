@@ -8559,9 +8559,11 @@ public partial class FakturExtDUC : FakturDUC
          this is BlgIsplatDUC || this is BlgUplatDUC || this is BlgIsplat_M_DUC || this is BlgUplat_M_DUC || this is WYRNDUC)
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(ftrans_TabPageName, ftrans_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
-      if(this is IFADUC  || this is IRADUC  || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC ||
-         this is IRMDUC  || this is IRMDUC_2 )
+    //if(this is IFADUC  || this is IRADUC  || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC ||  this is IRMDUC  || this is IRMDUC_2 )
+    //   TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      if(IsFiskalDutyDUC && CURR_prjkt_rec.F2_Ima_F2_B2B )
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+
 
       // 22.04.2016. veze
       //07.02.2022. za UGAN i DOD dodan if
@@ -9419,7 +9421,8 @@ public partial class FakturExtDUC : FakturDUC
          tbx_Status.JAM_lui_NameTaker_JAM_Name = tbx_StatusOpis.JAM_Name;
          tbx_StatusOpis.JAM_ReadOnly = true;
 
-         tbx_Status.JAM_DataRequired = IsFiskalDutyDUC;
+         tbx_Status.JAM_DataRequired = IsFiskalDutyDUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
+
       }
 
       tbx_Status.JAM_IsSupressTab = true;
@@ -10595,7 +10598,7 @@ public partial class FakturExtDUC : FakturDUC
 
       tbx_eRproc.JAM_IsSupressTab = true;
 
-      tbx_eRproc.JAM_DataRequired = IsFiskalDutyDUC;
+      tbx_eRproc.JAM_DataRequired = IsFiskalDutyDUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
 
       hamper.Name = "AeRproc:";
 
@@ -12281,10 +12284,10 @@ public partial class FakturExtDUC : FakturDUC
          hamp_NacPlac.Location = new Point(0, hamp_napomena.Bottom - ZXC.Qun4);
          hamp_fiskJIR.Location = new Point(hamp_NacPlac.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
 
-         if(ZXC.IsF2_2026_rules)
+         if(CURR_prjkt_rec.F2_Ima_F2_B2B)
          { 
             hamp_eRproc.Location  = new Point(                           0, hamp_NacPlac.Bottom - ZXC.Qun4);
-            hamp_Status .Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_NacPlac.Bottom - ZXC.Qun4);
+            hamp_Status.Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_NacPlac.Bottom - ZXC.Qun4);
 
             nextY = hamp_eRproc.Bottom;
          }
@@ -12305,7 +12308,7 @@ public partial class FakturExtDUC : FakturDUC
          if(ZXC.IsF2_2026_rules)
          { 
             hamp_eRproc.Location  = new Point(                           0, hamp_prjArtName.Bottom - ZXC.Qun4);
-            hamp_Status .Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_prjArtName.Bottom - ZXC.Qun4);
+            hamp_Status.Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_prjArtName.Bottom - ZXC.Qun4);
 
             nextY = hamp_eRproc.Bottom;
          }
