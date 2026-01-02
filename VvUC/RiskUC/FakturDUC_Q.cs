@@ -1758,7 +1758,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region KPD sifra
 
-         if(artiklCD.NotEmpty() && IsFiskalDutyDUC && faktur_rec.IsF2)
+         if(artiklCD.NotEmpty() && IsF012DUC && faktur_rec.IsF2)
          {
             string kpdSifra = TheG.GetStringCell(ci.iT_KPD, rowIdx, false);
 
@@ -3436,7 +3436,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region 2026 F2 validations & setting mandatory fields
 
-      if(IsFiskalDutyDUC && faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 &&
+      if(IsF012DUC && faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 &&
          (ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipA || 
           ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB ))
       {
@@ -3444,11 +3444,29 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          e.Cancel = true;
       }
 
-    //if( IsFiskalDutyDUC                 && /*faktur_rec.IsF2*/ ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
-      if((IsFiskalDutyDUC || IsPonudaDUC) && /*faktur_rec.IsF2*/ ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
+      // Check some F2 eRacun mandatory fields 
+      if(Is_F012_OR_Ponuda_DUC && ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
       {
+         #region Is FIR Settings & projekt_rec OK
+
+         if(!ZXC.IsTEXTHOany && !ZXC.CURR_prjkt_rec.IsNeprofit)
+         {
+            if(ZXC.RRD.Dsc_F2_TT.IsEmpty())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Nije podešena vrsta TT-a za izlazne račune (F2) u FIR postavkama programa.\n\n" + "Ako niste sigurni, kontaktirajte podršku.");
+               e.Cancel = true;
+            }
+            if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.NEMA_F2)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Nije podešena 'Uloga Projekta' na 'Fiskal' TAB-u ekrana 'Projekt'.\n\n" + "Ako niste sigurni, kontaktirajte podršku.");
+               e.Cancel = true;
+            }
+         }
+
+         #endregion Is FIR Settings & projekt_rec OK
+
          #region F2_R1kind 
-         
+
          if(ZXC.CURR_prjkt_rec.F2_Ima_F1_B2C == false) // nema mogucnosti pojave F1 B2C racuna 
          {
             faktur_rec.F2_R1kind = theExtDUC.Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
@@ -3459,10 +3477,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             if(kupdob_rec != null)
             {
-               if(kupdob_rec.R1kind != ZXC.F2_R1enum.Nepoznato) faktur_rec.F2_R1kind = kupdob_rec.R1kind;
+               if(kupdob_rec.R1kind != ZXC.F2_R1enum.Nepoznato) faktur_rec.F2_R1kind = theExtDUC.Fld_F2_R1kind = kupdob_rec.R1kind;
                else
                {
-                  faktur_rec.F2_R1kind = KupdobDao.GetMandatory_Kupdob_R1enum_FromDialog(TheDbConnection, kupdob_rec);
+                  faktur_rec.F2_R1kind = theExtDUC.Fld_F2_R1kind = KupdobDao.GetMandatory_Kupdob_R1enum_FromDialog(TheDbConnection, kupdob_rec);
                }
             }
             
@@ -3515,13 +3533,13 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region Mora biti bar jedan red i prvi red mora imati ArtiklCD, 
 
-         if(ZXC.RISK_SaveVvDataRecord_inProgress && IsFiskalDutyDUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero())
+         if(ZXC.RISK_SaveVvDataRecord_inProgress && IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero())
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "F2 račun mora sadržavati bar jednu stavku!");
             e.Cancel = true;
          }
 
-         if(IsFiskalDutyDUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsPositive() && faktur_rec.TrnNonDel.OrderBy(rtr => rtr.T_serial).First().T_artiklCD.IsEmpty())
+         if(IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsPositive() && faktur_rec.TrnNonDel.OrderBy(rtr => rtr.T_serial).First().T_artiklCD.IsEmpty())
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, $"Prvi red na F2 računu ne smije biti 'opisni' redak (redak bez šifre artikla){Environment.NewLine}{Environment.NewLine}{faktur_rec.Transes[0].T_artiklName}!");
             e.Cancel = true;
@@ -3539,8 +3557,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #endregion KdUlica, KdMjesto, KdZip
 
-
-      } // if(faktur_rec.Is_F2_eRacun_Fields_Mandatory) 
+      } // Check some F2 eRacun mandatory fields 
 
       // Spremanje trenutnog TtNumFiskal kao VezniDok za DataLayer 
       if(faktur_rec.Is_F2_TtNumFisk_InVezniDok)
@@ -3550,7 +3567,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       // Uklanjanja F2_Unprocessed iz Napomene 
-      if(IsFiskalDutyDUC && faktur_rec.IsF2 && faktur_rec.Napomena.Contains(ZXC.F2_Unprocessed))
+      if(IsF012DUC && faktur_rec.IsF2 && faktur_rec.Napomena.Contains(ZXC.F2_Unprocessed))
       {
          faktur_rec.Napomena = faktur_rec.Napomena.Replace(ZXC.F2_Unprocessed, "");
          Fld_Napomena        = faktur_rec.Napomena;

@@ -697,7 +697,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       CalcLocationSizeAnchor_ThePolyGridTabControl(TheTabControl.TabPages[0], nextX, CalcRazmakZaPolyGridTabControl());
    }
 
-   public bool IsFiskalDutyDUC_Malop
+   public bool IsF012DUC_Malop
    {
       get
       {
@@ -705,7 +705,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
    }
 
-   public bool IsFiskalDutyDUC_Velep
+   public bool IsF012DUC_Velep
    {
       get
       {
@@ -713,8 +713,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
    }
 
-   public bool IsFiskalDutyDUC { get { return IsFiskalDutyDUC_Malop || IsFiskalDutyDUC_Velep; }
-   }
+   public bool IsF012DUC { get { return IsF012DUC_Malop || IsF012DUC_Velep; } }
+   public bool Is_F012_OR_Ponuda_DUC { get { return IsF012DUC || IsPonudaDUC; } }
 
    public bool IsPonudaDUC
    {
@@ -1274,7 +1274,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       tbx_TtNum.Font = ZXC.vvFont.BaseBoldFont;
 
       //22.04.2024: 
-      if(this.IsFiskalDutyDUC && ZXC.CurrUserHasSuperPrivileges == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && ZXC.CURR_prjkt_rec.IsNoTtNumChk == false)
+      if(this.IsF012DUC && ZXC.CurrUserHasSuperPrivileges == false && ZXC.CURR_prjkt_rec.IsFiskalOnline && ZXC.CURR_prjkt_rec.IsNoTtNumChk == false)
       {
          tbx_TtNum.JAM_ReadOnly = true;
       }
@@ -4310,9 +4310,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
        //                     "",
        //                     fakturLocal_rec.F012kind.ToString());
        //}
-       //if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT/* && fakturLocal_rec.F012kind == F123kind.F2*/)
-         if(CURR_prjkt_rec.F2_Ima_F2_B2B && (fakturLocal_rec.TtInfo.IsIzlazniPdvTT || IsPonudaDUC))
-            {
+     //if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT/* && fakturLocal_rec.F012kind == F123kind.F2*/)
+     //if(CURR_prjkt_rec.F2_Ima_F2_B2B && (fakturLocal_rec.TtInfo.IsIzlazniPdvTT || IsPonudaDUC))
+       if(ZXC.IsF2_2026_rules && IsF012DUC)
+       {
             //PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
             //                       fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
             //                       "",
@@ -8576,7 +8577,7 @@ public partial class FakturExtDUC : FakturDUC
 
     //if(this is IFADUC  || this is IRADUC  || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC ||  this is IRMDUC  || this is IRMDUC_2 )
     //   TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
-      if(IsFiskalDutyDUC && CURR_prjkt_rec.F2_Ima_F2_B2B )
+      if(IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B )
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
 
@@ -9436,7 +9437,7 @@ public partial class FakturExtDUC : FakturDUC
          tbx_Status.JAM_lui_NameTaker_JAM_Name = tbx_StatusOpis.JAM_Name;
          tbx_StatusOpis.JAM_ReadOnly = true;
 
-         tbx_Status.JAM_DataRequired = IsFiskalDutyDUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
+         tbx_Status.JAM_DataRequired = IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
 
       }
 
@@ -10613,7 +10614,7 @@ public partial class FakturExtDUC : FakturDUC
 
       tbx_eRproc.JAM_IsSupressTab = true;
 
-      tbx_eRproc.JAM_DataRequired = IsFiskalDutyDUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
+      tbx_eRproc.JAM_DataRequired = IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
 
       hamper.Name = "AeRproc:";
 
@@ -12295,7 +12296,7 @@ public partial class FakturExtDUC : FakturDUC
       else                                      hamp_napomena.Location = new Point(0, hamp_v4TT.Bottom - ZXC.Qun4);
 
     //if(this is IFADUC || this is IRADUC || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC)
-      if(IsFiskalDutyDUC) // i na ponudama za kopiranje fiskalnih racuna
+      if(IsF012DUC) // i na ponudama za kopiranje fiskalnih racuna
       {
          hamp_NacPlac.Location = new Point(0, hamp_napomena.Bottom - ZXC.Qun4);
          hamp_fiskJIR.Location = new Point(hamp_NacPlac.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
@@ -12312,7 +12313,7 @@ public partial class FakturExtDUC : FakturDUC
             nextY = hamp_NacPlac.Bottom;
          }
       }
-      else if(CURR_prjkt_rec.F2_Ima_F2_B2B && IsPonudaDUC) // i na ponudama za kopiranje fiskalnih racuna
+      else if(ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B && IsPonudaDUC) // i na ponudama za kopiranje fiskalnih racuna
       { 
          hamp_eRproc.Location = new Point(                           0, hamp_napomena.Bottom - ZXC.Qun4);
          hamp_Status.Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
@@ -12618,7 +12619,7 @@ public partial class FakturExtDUC : FakturDUC
       //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
       //hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
 
-      if(!IsFiskalDutyDUC && this is PonudaDUC == false && this is PON_MPC_DUC == false && this is PonMalDUC == false && this is ObvezPonudaDUC == false && this is OPN_MPC_DUC == false) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
+      if(!IsF012DUC && this is PonudaDUC == false && this is PON_MPC_DUC == false && this is PonMalDUC == false && this is ObvezPonudaDUC == false && this is OPN_MPC_DUC == false) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
       {
          hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
          hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
@@ -13986,25 +13987,24 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-    //if(ZXC.RISK_CopyToOtherDUC_inProgress == false &&  IsFiskalDutyDUC &&                                                         ZXC.IsF2_2026_rules /*  && faktur_rec.IsF2*/)
-      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && (IsFiskalDutyDUC || IsPonudaDUC) && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)/* && ZXC.IsF2_2026_rules*/ /*&& faktur_rec.IsF2*/)
+      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && Is_F012_OR_Ponuda_DUC && ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
       {
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F2_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F1_B2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
          if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F2_B2B)
          {
-            if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
-            if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+            if(IsF012DUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+            if(IsF012DUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          }
          if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
          {
-            if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
-            if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+            if(IsF012DUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+            if(IsF012DUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          }
          if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNE_NaMERu)
          {
-            if(IsFiskalDutyDUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
-            if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
+            if(IsF012DUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
+            if(IsF012DUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          }
          if(ZXC.CURR_prjkt_rec.F2_NEma_ni_B2C_ni_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B; // ? 
 

@@ -2625,6 +2625,8 @@ public static class Vv_eRacun_HTTP
 
       } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
 
+      if(theUC.TheXtranoList.NotEmpty()) theUC.PutDgvFields();
+
       #endregion Synchronise Xtrano DataLayer (FUR Inbox i Arhiva) with provider via news from QueryInbox
 
       #region Get Fiscalization Status Inbox News
