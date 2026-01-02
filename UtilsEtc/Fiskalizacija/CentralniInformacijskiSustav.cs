@@ -595,11 +595,15 @@ namespace Raverus.FiskalizacijaDEV
                         request.ProtocolVersion = HttpVersion.Version11;
                         request.ContentLength = by.Length;
 
+#if(DEBUG)
+ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, " U DEBUG-u si! CIS URL: " + uri.ToString());
+#endif
 
-                        using (Stream requestStream = request.GetRequestStream())
+                  using(Stream requestStream = request.GetRequestStream())
                         {
                             requestStream.Write(by, 0, by.Length);
                         }
+
 
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
                         if (response != null)

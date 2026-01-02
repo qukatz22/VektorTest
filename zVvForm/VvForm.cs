@@ -409,6 +409,21 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
 
       Cursor.Current = Cursors.Default;
 
+      // 2026:
+      if(!ZXC.IsTEXTHOany && !ZXC.CURR_prjkt_rec.IsNeprofit)
+      {
+         if(ZXC.RRD.Dsc_F2_TT.IsEmpty())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Podsjetnik: Obavezno podesite Vrstu TT za izlazne raèune (F2) u FIR postavkama programa.\n\n" +
+                         "Ako niste sigurni, kontaktirajte podršku.");
+         }
+         if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.NEMA_F2)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Podsjetnik: Obavezno podesite 'Uloga Projekta' na 'Fiskal' TAB-u ekrana 'Projekt'.\n\n" +
+                         "Ako niste sigurni, kontaktirajte podršku.");
+         }
+      }
+
       return true;
    }
 

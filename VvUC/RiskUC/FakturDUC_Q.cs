@@ -9201,6 +9201,9 @@ public partial class FakturExtDUC : FakturDUC
    {
       if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
+      // 2026: 
+      if(!this.Visible) return;
+
     //TextBox tb = sender as TextBox;
       Kupdob  kupdob_rec;
 
