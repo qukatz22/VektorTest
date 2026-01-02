@@ -1309,6 +1309,7 @@ public class IFADUC              : FakturExtDUC
       bool isSerlotVisible = ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible || ZXC.IsPCTOGO;
       string serlotCol  = ZXC.IsPCTOGO ? "UGAN Rata" : "Šarža/LOT";
       string serlotOpis = ZXC.IsPCTOGO ? "Broj ugovora i rate" : "Broj Šarže/Lota";
+      bool isKpdVisible = ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B;
 
       T_artiklCD_CreateColumn      (ZXC.IsPCTOGO ? ZXC.Q2un : ZXC.Q4un, isVisible, "Šifra"         , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                    isVisible, "Naziv"         , "Naziv artikla ili proizvoljan opis");
@@ -1599,7 +1600,7 @@ public class IRADUC_2              : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un          ,                                                      isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                                                         isVisible, "Naziv"      , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un          ,isVisible                                    , "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un          ,isVisible                                    , "KPD"         , "KPD");
       T_serlot_CreateColumn        (ZXC.Q4un          , ZXC.RRD.Dsc_IsVisibleLotOnIzlaz || ZXC.RRD.Dsc_IsSerlotVisible, "Šarža/LOT"  , "Broj Šarže/Lota");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,                                                      isVisible, "Usl"        , "Usluga");
       T_konto_CreateColumn         (ZXC.Q3un          ,                                                      isVisible, "Konto"      , "Konto knjiženja retka (trošak/prihod/sklad/ ....)");
@@ -1872,7 +1873,8 @@ public class IRMDUC              : FakturExtDUC
       tbx_twinS_ukKCRP.Tag           = Color.Aquamarine;
       tbx_twinS_ukKCRP.Font          = ZXC.vvFont.LargeLargeFont;
       tbx_twinS_ukKCRP.TextAlign     = HorizontalAlignment.Center;
-            
+        
+      if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F1_B2C) hamp_eRproc.Visible = hamp_Status.Visible = false;
    }
 
    private void CreateArrOfHampers()
@@ -2789,7 +2791,7 @@ public class ObvezPonudaDUC      : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PonudDate, hamp_RokPonude,hamp_Cjenik, hamp_napomena, 
-                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
@@ -2817,7 +2819,7 @@ public class ObvezPonudaDUC      : FakturExtDUC
 
       T_artiklCD_CreateColumn  (ZXC.Q4un,                      isVisible, "Šifra"        , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                           isVisible, "Naziv"        , "Naziv artikla ili proizvoljan opis");
-      //T_KPD_CreateColumn       (ZXC.Q3un,    isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn       (ZXC.Q3un,                      isVisible, "KPD"         , "KPD");
       T_kol_CreateColumn       (ZXC.Q3un, 2,                   isVisible, "Kol"          , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,                   isVisible, "JM"           , "Jedinica mjere");
       T_cij_CreateColumn       (ZXC.Q4un, 4,                   isVisible, "Cijena"       , "Jedinična cijena");
@@ -2896,7 +2898,7 @@ public class PonudaDUC           : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
-                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
@@ -2925,7 +2927,7 @@ public class PonudaDUC           : FakturExtDUC
 
       T_artiklCD_CreateColumn  (ZXC.Q4un,                  isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                       isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      //T_KPD_CreateColumn       (ZXC.Q3un,isVisible "KPD"         , "KPD");
+      T_KPD_CreateColumn       (ZXC.Q3un,                  isVisible, "KPD"         , "KPD");
       T_kol_CreateColumn       (ZXC.Q3un, 2,               isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,               isVisible, "JM"         , "Jedinica mjere");
       T_cij_CreateColumn       (ZXC.Q4un, 4,               isVisible, "Cijena"     , "Jedinična cijena");
@@ -3011,7 +3013,7 @@ public class PonMalDUC           : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
-                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2, hamp_somePercent,
@@ -3040,7 +3042,7 @@ public class PonMalDUC           : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,                  isVisible, "Šifra"   , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                           isVisible, "Naziv"   , "Naziv artikla");
-      //T_KPD_CreateColumn           (ZXC.Q3un,isVisible, "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un,isVisible, "KPD"         , "KPD");
       T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,        isVisible, "Usl"     , "Usluga");
       T_kol_CreateColumn           (ZXC.Q3un, 2,               isVisible, "Kol"     , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,               isVisible, "JM"      , "Jedinica mjere");
@@ -8229,7 +8231,7 @@ public class PON_MPC_DUC           : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_pdvGeokind, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
-                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_opis
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_opis, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
@@ -8256,12 +8258,12 @@ public class PON_MPC_DUC           : FakturExtDUC
       bool isVisible       = true;
       bool isOrgPakVisible = ZXC.RRD.Dsc_IsOrgPakVisible;
 
-      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible     , "Šifra"      , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                  isVisible     , "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      //T_KPD_CreateColumn       (ZXC.Q3un,isVisible, "KPD"         , "KPD");
-      T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible     , "Kol"        , "Količina"      );
-      T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible     , "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2,isVisible     , "Cij bez PDV"     , "Jedinična cijena");
+      T_artiklCD_CreateColumn  (ZXC.Q4un,             isVisible, "Šifra"      , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
+      T_KPD_CreateColumn       (ZXC.Q3un,             isVisible, "KPD"         , "KPD");
+      T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
+      T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
+      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV"     , "Jedinična cijena");
 
     //T_rbt1St_CreateColumn    (ZXC.Q3un-ZXC.Qun4, 2, isVisible, "Rb1"        , "Stopa rabata 1");
       R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
@@ -8346,7 +8348,7 @@ public class OPN_MPC_DUC           : FakturExtDUC
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_tt , hamp_skladCd,
                                     hamp_kupdobOther, hamp_konto  , hamp_ZiroRn, hamp_ValName , hamp_Pnb, hamp_Status  , hamp_vezniDok, hamp_projekt, 
                                     hamp_dokDate    , hamp_RokPlac, hamp_dokNum, hamp_DospDate, hamp_pdvGeokind, hamp_PonudDate, hamp_RokPonude, hamp_Cjenik, hamp_napomena, 
-                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_opis
+                                    hamp_v1TT       , hamp_v2TT   , hamp_v3TT  , hamp_v4TT, hamp_opis, hamp_eRproc
                                   };
 
       hamperMigr = new VvHamper[] { hamp_posJedCd, hamp_Mtros, hamp_PrimPlat, hamp_napomena2,
@@ -8375,7 +8377,7 @@ public class OPN_MPC_DUC           : FakturExtDUC
 
       T_artiklCD_CreateColumn      (ZXC.Q4un,                                    isVisible, "Šifra"      , "Šifra artikla"                     );
       T_artiklName_CreateColumnFill(                                             isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
-      //T_KPD_CreateColumn           (ZXC.Q3un,isVisible                  , "KPD"         , "KPD");
+      T_KPD_CreateColumn           (ZXC.Q3un,                                    isVisible, "KPD"         , "KPD");
       T_kol_CreateColumn           (ZXC.Q3un, 2,                                 isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn         (ZXC.Q2un   ,                                 isVisible, "JM"         , "Jedinica mjere");
       T_cij_CreateColumn           (ZXC.Q4un+ ZXC.Qun4, 2                      , isVisible, "Cij bez PDV", "Jedinična cijena");

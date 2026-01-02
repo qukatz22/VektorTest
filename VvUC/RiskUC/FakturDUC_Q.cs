@@ -3444,7 +3444,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          e.Cancel = true;
       }
 
-      if(IsFiskalDutyDUC && /*faktur_rec.IsF2*/ ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
+    //if( IsFiskalDutyDUC                 && /*faktur_rec.IsF2*/ ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
+      if((IsFiskalDutyDUC || IsPonudaDUC) && /*faktur_rec.IsF2*/ ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
       {
          #region F2_R1kind 
          

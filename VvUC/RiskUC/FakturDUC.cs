@@ -716,6 +716,15 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
    public bool IsFiskalDutyDUC { get { return IsFiskalDutyDUC_Malop || IsFiskalDutyDUC_Velep; }
    }
 
+   public bool IsPonudaDUC
+   {
+      get
+      {
+         return this is PonudaDUC || this is PON_MPC_DUC || this is PonMalDUC || this is ObvezPonudaDUC || this is OPN_MPC_DUC;
+      }
+   }
+
+
    #endregion Constructor
 
    #region TabPages
@@ -3159,7 +3168,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbT_KPD.JAM_ReadOnly = true;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbT_KPD, TheVvDaoTrans, "T_KPD", _colHeader, ZXC.Q4un);
-      colVvText.Visible = isVisible;
+    //colVvText.Visible = isVisible;
+      colVvText.Visible = ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B;
    }
 
    #endregion R_Columns
@@ -4300,8 +4310,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
        //                     "",
        //                     fakturLocal_rec.F012kind.ToString());
        //}
-         if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT/* && fakturLocal_rec.F012kind == F123kind.F2*/)
-         {
+       //if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT/* && fakturLocal_rec.F012kind == F123kind.F2*/)
+         if(CURR_prjkt_rec.F2_Ima_F2_B2B && (fakturLocal_rec.TtInfo.IsIzlazniPdvTT || IsPonudaDUC))
+            {
             //PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
             //                       fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
             //                       "",
@@ -4314,6 +4325,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
             PutIdentityFields_7Col(fakturLocal_rec, fakturLocal_rec.F2_R1kind);
          }
+
+
+
+
 
          // 17.12.2012: dodao if() 
          if(ZXC.RISK_ToggleKnDeviza_InProgress == false) VvHamper.SetChkBoxRadBttnAutoCheck(this, true);
@@ -12279,14 +12294,15 @@ public partial class FakturExtDUC : FakturDUC
       else if(this is KIZDUC || this is PIKDUC) hamp_napomena.Location = new Point(0, hamp_v3TT.Bottom - ZXC.Qun4);
       else                                      hamp_napomena.Location = new Point(0, hamp_v4TT.Bottom - ZXC.Qun4);
 
-      if(this is IFADUC || this is IRADUC || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC)
+    //if(this is IFADUC || this is IRADUC || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC || this is IRMDUC_2 || this is OdobrKupcuDUC || this is PovratKupcaDUC || this is IRMDUC)
+      if(IsFiskalDutyDUC) // i na ponudama za kopiranje fiskalnih racuna
       {
          hamp_NacPlac.Location = new Point(0, hamp_napomena.Bottom - ZXC.Qun4);
          hamp_fiskJIR.Location = new Point(hamp_NacPlac.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
 
          if(CURR_prjkt_rec.F2_Ima_F2_B2B)
          { 
-            hamp_eRproc.Location  = new Point(                           0, hamp_NacPlac.Bottom - ZXC.Qun4);
+            hamp_eRproc.Location = new Point(                           0, hamp_NacPlac.Bottom - ZXC.Qun4);
             hamp_Status.Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_NacPlac.Bottom - ZXC.Qun4);
 
             nextY = hamp_eRproc.Bottom;
@@ -12295,6 +12311,13 @@ public partial class FakturExtDUC : FakturDUC
          {
             nextY = hamp_NacPlac.Bottom;
          }
+      }
+      else if(CURR_prjkt_rec.F2_Ima_F2_B2B && IsPonudaDUC) // i na ponudama za kopiranje fiskalnih racuna
+      { 
+         hamp_eRproc.Location = new Point(                           0, hamp_napomena.Bottom - ZXC.Qun4);
+         hamp_Status.Location = new Point(hamp_eRproc.Right - ZXC.Qun4, hamp_napomena.Bottom - ZXC.Qun4);
+
+         nextY = hamp_eRproc.Bottom;
       }
       else
       {
@@ -12595,7 +12618,7 @@ public partial class FakturExtDUC : FakturDUC
       //hamp_fiskPrgBr.VvInitialHamperLocation = new Point(hamp_eRproc.Right + ZXC.QUN, hamp_externLink1.Bottom);
       //hampCbxM_fiskPrgBr.Location            = new Point(hamp_eRproc.Right + 0      , hamp_externLink1.Bottom);
 
-      if(!IsFiskalDutyDUC) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
+      if(!IsFiskalDutyDUC && this is PonudaDUC == false && this is PON_MPC_DUC == false && this is PonMalDUC == false && this is ObvezPonudaDUC == false && this is OPN_MPC_DUC == false) //po starom a po novom od 2026 hamp_fiskPrgBr se vraca gdje je i bio a hamp_eRproc ide obavezno naprijed ako je F2
       {
          hamp_eRproc.Location                   = new Point(ZXC.QUN, hamp_externLink1.Bottom);
          hamp_eRproc.VvInitialHamperLocation    = new Point(ZXC.QUN, hamp_externLink1.Bottom);
@@ -13963,7 +13986,8 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && IsFiskalDutyDUC && ZXC.IsF2_2026_rules /*&& faktur_rec.IsF2*/)
+    //if(ZXC.RISK_CopyToOtherDUC_inProgress == false &&  IsFiskalDutyDUC &&                                                         ZXC.IsF2_2026_rules /*  && faktur_rec.IsF2*/)
+      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && (IsFiskalDutyDUC || IsPonudaDUC) && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)/* && ZXC.IsF2_2026_rules*/ /*&& faktur_rec.IsF2*/)
       {
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F2_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F1_B2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
@@ -13983,8 +14007,6 @@ public partial class FakturExtDUC : FakturDUC
             if(IsFiskalDutyDUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          }
          if(ZXC.CURR_prjkt_rec.F2_NEma_ni_B2C_ni_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B; // ? 
-
-
 
          Fld_eRproc = (ZXC.VvUBL_PolsProcEnum)Enum.Parse(typeof(ZXC.VvUBL_PolsProcEnum), ZXC.RRD.Dsc_Default_eRposProc);
          VvLookUpItem lui = ZXC.luiListaeRacPoslProc.GetLuiForThisCd(ZXC.RRD.Dsc_Default_eRposProc);
