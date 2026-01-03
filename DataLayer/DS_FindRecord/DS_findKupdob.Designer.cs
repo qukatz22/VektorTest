@@ -37,6 +37,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
             base.Tables.CollectionChanged += schemaChangedHandler;
             base.Relations.CollectionChanged += schemaChangedHandler;
             this.EndInit();
+            this.InitExpressions();
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -48,6 +49,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler1 = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
                 this.Tables.CollectionChanged += schemaChangedHandler1;
                 this.Relations.CollectionChanged += schemaChangedHandler1;
+                if ((this.DetermineSchemaSerializationMode(info, context) == global::System.Data.SchemaSerializationMode.ExcludeSchema)) {
+                    this.InitExpressions();
+                }
                 return;
             }
             string strSchema = ((string)(info.GetValue("XmlSchema", typeof(string))));
@@ -68,6 +72,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
             }
             else {
                 this.ReadXmlSchema(new global::System.Xml.XmlTextReader(new global::System.IO.StringReader(strSchema)));
+                this.InitExpressions();
             }
             this.GetSerializationData(info, context);
             global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
@@ -129,6 +134,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
         public override global::System.Data.DataSet Clone() {
             DS_findKupdob cln = ((DS_findKupdob)(base.Clone()));
             cln.InitVars();
+            cln.InitExpressions();
             cln.SchemaSerializationMode = this.SchemaSerializationMode;
             return cln;
         }
@@ -204,7 +210,7 @@ namespace Vektor.DataLayer.DS_FindRecord {
             this.Namespace = "http://tempuri.org/DS_findKupdob.xsd";
             this.EnforceConstraints = false;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
-            this.tablekupdob = new kupdobDataTable();
+            this.tablekupdob = new kupdobDataTable(false);
             base.Tables.Add(this.tablekupdob);
         }
         
@@ -269,6 +275,12 @@ namespace Vektor.DataLayer.DS_FindRecord {
             return type;
         }
         
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        private void InitExpressions() {
+            this.kupdob.r1KindStrColumn.Expression = "IIF(R1kind = 0, \'\', IIF(R1kind = 1, \'B2B\', \'B2C\'))";
+        }
+        
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         public delegate void kupdobRowChangeEventHandler(object sender, kupdobRowChangeEvent e);
         
@@ -321,12 +333,25 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             private global::System.Data.DataColumn columntel1;
             
+            private global::System.Data.DataColumn columnr1kind;
+            
+            private global::System.Data.DataColumn columnr1KindStr;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public kupdobDataTable() {
+            public kupdobDataTable() : 
+                    this(false) {
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public kupdobDataTable(bool initExpressions) {
                 this.TableName = "kupdob";
                 this.BeginInit();
                 this.InitClass();
+                if ((initExpressions == true)) {
+                    this.InitExpressions();
+                }
                 this.EndInit();
             }
             
@@ -524,6 +549,22 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn r1kindColumn {
+                get {
+                    return this.columnr1kind;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn r1KindStrColumn {
+                get {
+                    return this.columnr1KindStr;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -580,7 +621,9 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         System.DateTime arTS, 
                         string arUID, 
                         string oib, 
-                        string tel1) {
+                        string tel1, 
+                        ushort r1kind, 
+                        string r1KindStr) {
                 kupdobRow rowkupdobRow = ((kupdobRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         recID,
@@ -603,7 +646,64 @@ namespace Vektor.DataLayer.DS_FindRecord {
                         arTS,
                         arUID,
                         oib,
-                        tel1};
+                        tel1,
+                        r1kind,
+                        r1KindStr};
+                rowkupdobRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowkupdobRow);
+                return rowkupdobRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public kupdobRow AddkupdobRow(
+                        uint recID, 
+                        System.DateTime addTS, 
+                        System.DateTime modTS, 
+                        string addUID, 
+                        string modUID, 
+                        string naziv, 
+                        string ticker, 
+                        uint kupdobCD, 
+                        string matbr, 
+                        string tip, 
+                        string ulica1, 
+                        string grad, 
+                        string prezime, 
+                        string napom1, 
+                        uint origRecID, 
+                        ushort recVer, 
+                        string arAction, 
+                        System.DateTime arTS, 
+                        string arUID, 
+                        string oib, 
+                        string tel1, 
+                        ushort r1kind) {
+                kupdobRow rowkupdobRow = ((kupdobRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        recID,
+                        addTS,
+                        modTS,
+                        addUID,
+                        modUID,
+                        naziv,
+                        ticker,
+                        kupdobCD,
+                        matbr,
+                        tip,
+                        ulica1,
+                        grad,
+                        prezime,
+                        napom1,
+                        origRecID,
+                        recVer,
+                        arAction,
+                        arTS,
+                        arUID,
+                        oib,
+                        tel1,
+                        r1kind,
+                        null};
                 rowkupdobRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowkupdobRow);
                 return rowkupdobRow;
@@ -647,6 +747,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnarUID = base.Columns["arUID"];
                 this.columnoib = base.Columns["oib"];
                 this.columntel1 = base.Columns["tel1"];
+                this.columnr1kind = base.Columns["r1kind"];
+                this.columnr1KindStr = base.Columns["r1KindStr"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -694,6 +796,10 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 base.Columns.Add(this.columnoib);
                 this.columntel1 = new global::System.Data.DataColumn("tel1", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntel1);
+                this.columnr1kind = new global::System.Data.DataColumn("r1kind", typeof(ushort), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnr1kind);
+                this.columnr1KindStr = new global::System.Data.DataColumn("r1KindStr", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnr1KindStr);
                 this.columnaddUID.MaxLength = 16;
                 this.columnmodUID.MaxLength = 16;
                 this.columnnaziv.MaxLength = 32;
@@ -709,6 +815,8 @@ namespace Vektor.DataLayer.DS_FindRecord {
                 this.columnoib.MaxLength = 11;
                 this.columntel1.AllowDBNull = false;
                 this.columntel1.MaxLength = 16;
+                this.columnr1kind.ReadOnly = true;
+                this.columnr1KindStr.ReadOnly = true;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -727,6 +835,12 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             protected override global::System.Type GetRowType() {
                 return typeof(kupdobRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            private void InitExpressions() {
+                this.r1KindStrColumn.Expression = "IIF(R1kind = 0, \'\', IIF(R1kind = 1, \'B2B\', \'B2C\'))";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1182,6 +1296,38 @@ namespace Vektor.DataLayer.DS_FindRecord {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public ushort r1kind {
+                get {
+                    try {
+                        return ((ushort)(this[this.tablekupdob.r1kindColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'r1kind\' in table \'kupdob\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablekupdob.r1kindColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string r1KindStr {
+                get {
+                    try {
+                        return ((string)(this[this.tablekupdob.r1KindStrColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'r1KindStr\' in table \'kupdob\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablekupdob.r1KindStrColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsrecIDNull() {
                 return this.IsNull(this.tablekupdob.recIDColumn);
             }
@@ -1418,6 +1564,30 @@ namespace Vektor.DataLayer.DS_FindRecord {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetoibNull() {
                 this[this.tablekupdob.oibColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool Isr1kindNull() {
+                return this.IsNull(this.tablekupdob.r1kindColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void Setr1kindNull() {
+                this[this.tablekupdob.r1kindColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool Isr1KindStrNull() {
+                return this.IsNull(this.tablekupdob.r1KindStrColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void Setr1KindStrNull() {
+                this[this.tablekupdob.r1KindStrColumn] = global::System.Convert.DBNull;
             }
         }
         

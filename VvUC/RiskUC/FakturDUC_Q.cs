@@ -1803,7 +1803,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       // 08.04.2016: OIB 
       // 19.04.2016: OIB 
       //if(this is FakturExtDUC && faktur_rec.TtInfo.IsPdvTT)
-      if(this is FakturExtDUC && faktur_rec.TtInfo.IsPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV)
+      // 2026: ukidamo ovaj stari nacin provjere oiba za izlazne, qa za ulazne ostqvljamo 
+    //if(this is FakturExtDUC && faktur_rec.TtInfo.IsPdvTT       && ZXC.CURR_prjkt_rec.IS_IN_PDV)
+      if(this is FakturExtDUC && faktur_rec.TtInfo.IsUlazniPdvTT && ZXC.CURR_prjkt_rec.IS_IN_PDV)
       {
          if((this as FakturExtDUC).Fld_KdOib.IsEmpty())
          {
@@ -3549,7 +3551,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region KdUlica, KdMjesto, KdZip
 
-         if(faktur_rec.KupdobCD != ZXC.RRD.Dsc_MalopKCD && faktur_rec.KdAdresa.IsEmpty())
+         if(faktur_rec.IsF2 && faktur_rec.KupdobCD != ZXC.RRD.Dsc_MalopKCD && faktur_rec.KdAdresa.IsEmpty())
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Poštanska adresa kupca je prazna! eRačun mora imati bar 'Mjesto'");
             e.Cancel = true;
@@ -3574,8 +3576,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          ZXC.aim_emsg(MessageBoxIcon.Information, $"Uklonjena '{ZXC.F2_Unprocessed}' oznaka.");
       }
 
-      // OIB Kupca:
-      if(ZXC.TtInfo(Fld_TT).IsIzlazniPdvTT && theExtDUC != null && Faktur.IsF2_PdvGEOkind(theExtDUC.Fld_PdvGEOkind) && theExtDUC.Fld_KupdobCd != ZXC.RRD.Dsc_MalopKCD)
+      // OIB Kupca: namjerno je izvan if-a  Check some F2 eRacun mandatory fields, jer npr ..., Veridian kupuje u TH gaće ... ipak mora imati OIB 
+      if(faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B)
       {
          bool badOIB = ZXC.IsBadOib(theExtDUC.Fld_KdOib, false);
 

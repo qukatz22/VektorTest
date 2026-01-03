@@ -1117,7 +1117,7 @@ public class Kupdob : VvSifrarRecord
    {
       get { return (ZXC.F2_R1enum)this.currentData._R1kind; } set { this.currentData._R1kind = (ushort)value; } 
    }
-
+   public string R1kind_String { get { return this.R1kind.ToString(); } }
 
    /*110 */ public bool     IdIsPolStmnt { get { return this.currentData._idIsPolStmnt; } set { this.currentData._idIsPolStmnt = value; } }
    /*111 */ public DateTime IdBirthDate  { get { return this.currentData._idBirthDate ; } set { this.currentData._idBirthDate  = value; } }

@@ -2521,7 +2521,9 @@ public static class Vv_eRacun_HTTP
       }
 
       List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
-      
+
+      EN16931.UBL.InvoiceType deserialized_eRacun = null;
+
       foreach(VvMER_ResponseData responseData in loopList)
       {
          Cursor.Current = Cursors.WaitCursor;
@@ -2579,7 +2581,20 @@ public static class Vv_eRacun_HTTP
          {
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(theXmlString, responseData);
+            #region Deserialize XML As InvoiceType
+
+            try
+            {
+               deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom deserializacije XML-a: {0}", ex.Message);
+            }
+
+            #endregion Deserialize XML As InvoiceType
+
+            newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(theXmlString, responseData, deserialized_eRacun);
 
             if(newAUR_Xtrano_rec != null)
             {
@@ -3473,7 +3488,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
       return xmlXtrano_rec;
    }
 
-   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(string xmlString, VvMER_ResponseData responseData) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
+   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(string xmlString, VvMER_ResponseData responseData, EN16931.UBL.InvoiceType deserialized_eRacun) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
    {
       if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
 
@@ -3493,6 +3508,8 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_devName       = responseData.StatusId.ToString() ,
                          
          T_TT            = Mixer.TT_AUR                     ,
+
+         T_moneyA        = deserialized_eRacun.LegalMonetaryTotal.PayableAmount.Value,
       };
 
       return xmlXtrano_rec;
@@ -3847,7 +3864,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       //}
 
    }
-
    private void F2_ShowArhivaPdf(object sender, EventArgs e)
    {
       // Determine which UC type we're working with and get the selected row index
@@ -3953,7 +3969,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       return true;
    }
-
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
       if((TheVvDocumentRecordUC as FakturDUC).faktur_rec.IsF2 == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može se F1 račun slati kao F2 eRačun."); return; }
@@ -4060,11 +4075,16 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       return oeRp;
    }
-
    private void F2_RefreshFUR_QueryInboxAndFakturListAndStatuses(object sender, EventArgs e) 
    {
       ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
+   private void F2_Import_FUR_Fakturs(object sender, EventArgs e)
+   {
+      // da li da ili ne? 
+    //((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
 
-   
+
+   }
+
 }

@@ -276,7 +276,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
 
       using(XSqlCommand cmd = VvSQL.SetMe_MAP_XtranoForThis_FtransRecID_Command(conn, ftransRecID))
       {
-         success = ZXC.RtranoDao.ExecuteSingleFillFromDataReader(MAPxtrano_rec, false, cmd, false);
+         success = ZXC.XtranoDao.ExecuteSingleFillFromDataReader(MAPxtrano_rec, false, cmd, false);
       } 
 
 

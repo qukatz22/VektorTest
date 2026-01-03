@@ -9631,12 +9631,13 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.PutCell(ci.iT_sender   , rowIdx, xtrano_rec.T_opis_128     );
       TheG.PutCell(ci.iT_documNr  , rowIdx, xtrano_rec.T_theString    );
       TheG.PutCell(ci.iT_senderOIB, rowIdx, xtrano_rec.T_konto        );
+      TheG.PutCell(ci.iT_statusID , rowIdx, xtrano_rec.T_devName      );
       TheG.PutCell(ci.iT_iznosRn  , rowIdx, xtrano_rec.T_moneyA       );
 
-      if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
-      else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
-      else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
-      else                                                                ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
+           if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.DA_JE     ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green ;
+      else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.Na_cekanju) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
+      else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.NE_NIJE   ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red   ;
+      else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty ;
 
       ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
  
