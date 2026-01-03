@@ -605,25 +605,6 @@ namespace EN16931.UBL
 
          #endregion placanje
 
-         #region ppmv
-         //< cac:AllowanceCharge >
-         //   < cbc:ChargeIndicator > true </ cbc:ChargeIndicator >
-         //   < cbc:AllowanceChargeReason >#HR:PPMV#Posebni porez na motorna vozila</cbc:AllowanceChargeReason>
-         //   < cbc:Amount currencyID = "EUR" > 2000.00 </ cbc:Amount >
-         //   < cac:TaxCategory >
-         //      < cbc:ID > E </ cbc:ID >
-         //      < cbc:Name > HR:PPMV </ cbc:Name >
-         //      < cbc:Percent > 0.00 </ cbc:Percent >
-         //      < cbc:TaxExemptionReason > Posebni porez na motorna vozila</ cbc:TaxExemptionReason >
-         //      < cac:TaxScheme >
-         //         < cbc:ID > VAT </ cbc:ID >
-         //      </ cac:TaxScheme >
-         //   </ cac:TaxCategory >
-         //</ cac:AllowanceCharge >
-
-
-         #endregion ppmv
-
          #region RBT & ZTR by PdvSt
 
        //List<AllowanceChargeType> rbtAllowanceChargeList               = new List<AllowanceChargeType>();
@@ -1485,8 +1466,10 @@ namespace EN16931.UBL
                       ID        = new IDType        { Value = "O"                                          },
                       Name      = new NameType1     { Value = "HR:PPMV"                                    },
                       Percent   = new PercentType1  { Value = 0M /*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
-                      //TaxExemptionReason = new TaxExemptionReasonType[] 
-                      //                   { new TaxExemptionReasonType { Value = "#HR:PPMV#Posebni porez na motorna vozila" } },
+                      TaxExemptionReason = new TaxExemptionReasonType[] 
+                                         { 
+                                            new TaxExemptionReasonType { Value = "#HR:PPMV#Posebni porez na motorna vozila" } 
+                                         },
                       HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "CAR" } }
                   }
                });
