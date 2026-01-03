@@ -2219,36 +2219,13 @@ public static class Vv_eRacun_HTTP
             continue; 
          }
 
-       //if(MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID) // imamo Electronic id ... bilo je F2send 
-       //{ 
-            MAP_requestData = new VvMER_RequestData()
-            {
-               ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
-               PaymentDate   = paymentftrans_rec.T_dokDate            ,
-               PaymentAmount = paymentftrans_rec.T_pot                ,
-               PaymentMethod = thePaymentMethod
-            };
-       //}
-       //else if(MAP_CandidateFaktur_rec.Is_MAP_without_ElectronicID) // NEMAMO Electronic id ...bilo je F2eIzvj 
-       //{ 
-       //   MAP_requestData = new VvMER_Request_Data_AllActions()
-       //   {
-       //      InternalMark             = MAP_CandidateFaktur_rec.TtNumFiskal,
-       //      IssueDate                = MAP_CandidateFaktur_rec.DokDate    ,
-       //      SenderIdentifierValue    = ZXC.CURR_prjkt_rec.Oib             ,
-       //      RecipientIdentifierValue = MAP_CandidateFaktur_rec.KdOib      ,
-       //
-       //      PaymentDate              = paymentftrans_rec.T_dokDate        ,
-       //      PaymentAmount            = paymentftrans_rec.T_pot            ,
-       //      PaymentMethod            = thePaymentMethod
-       //   };
-       //}
-       //else
-       //{
-       //   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Faktura MAP kind je nedefiniran!?\n\r\n\rFtrans:\n\r\n\r{0}\n\r\n\rFaktur:\n\r\n\r{1}", 
-       //      paymentftrans_rec, MAP_CandidateFaktur_rec);
-       //   continue;
-       //}
+         MAP_requestData = new VvMER_RequestData()
+         {
+            ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
+            PaymentDate   = paymentftrans_rec.T_dokDate            ,
+            PaymentAmount = paymentftrans_rec.T_pot                ,
+            PaymentMethod = thePaymentMethod
+         };
 
          MAP_ActionsList.Add((MAP_requestData, paymentftrans_rec, MAP_CandidateFaktur_rec));
 
@@ -2801,6 +2778,131 @@ public static class Vv_eRacun_HTTP
 
          ZXC.aim_emsg_List(string.Format("DODANO je {0} novih ulaznih računa u Inbox i Arhivu.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
+
+      return newsCount;
+
+      #endregion Finish
+   }
+
+   /* ZZZ */ internal static int Import_FUR_Fakturs_JOB(F2_Ulaz_UC theUC)
+   {
+      #region Init & Get Dialog Fields AND Create newFaktur_List 
+
+      int newsCount = 0;
+
+      bool ADDREC_OK;
+
+      List<Xtrano> XtranosForImport_List = theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).ToList(); // TODO kako zakljuciti koji jos nije importiran 
+
+      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
+
+      if(XtranosForImport_List.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Nema ništa za import.");
+         return 0;
+      }
+
+      foreach(Xtrano xtranoForImport_rec in XtranosForImport_List)
+      {
+
+         messageList.Add(new VvReportSourceUtil()
+         {
+               // TODO: mapiraj xtrano podatke u kolone dijaloga
+            //TheCD      = MAP_CandidateFaktur_rec.TipBr,
+            //DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+            //KupdobName = MAP_CandidateFaktur_rec.KupdobName,
+            //TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP,
+            //
+            //String1    = xtranoForImport_rec.T_dokDate.ToString(ZXC.VvDateFormat),
+            //TheMoney2  = xtranoForImport_rec.T_pot,
+            //String2    = thePaymentMethod,
+            //String3    = xtranoForImport_rec.T_dokNum.ToString() + "/" + xtranoForImport_rec.T_serial.ToString(),
+            //String4    = xtranoForImport_rec.T_opis,
+            //String5    = xtranoForImport_rec.T_konto,
+            //
+            //UtilUint   = xtranoForImport_rec.T_recID
+
+         });
+
+      } // foreach(Ftrans paymentftrans_rec in paymentftransList) 
+
+      VvMessageBoxDLG  FUR_ImportCandidatesXtranoList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_IMPORT_candidates);
+      FUR_ImportCandidatesXtranoList_InfoDLG.Text = "Kandidati za IMPORT:";
+
+      FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.PutDgvFields_F2_MAP_candidates(messageList);
+      FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.Fld_IsAutoImport = ZXC.RRD.Dsc_F2_IsAutoImport;
+
+      DialogResult dlgResult = FUR_ImportCandidatesXtranoList_InfoDLG.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         FUR_ImportCandidatesXtranoList_InfoDLG.Dispose();
+         return -1;
+      }
+
+      if(ZXC.RRD.Dsc_F2_IsAutoImport != FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.Fld_IsAutoImport)
+      {
+         ZXC.RRD.Dsc_F2_IsAutoImport = FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.Fld_IsAutoImport; 
+         ZXC.RRD.SaveDscToLookUpItemList();
+      }
+
+      int numOfFirstLinesOnly   =  FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_Import;
+
+      #region Izbaci 'preskočene'
+
+      bool shouldSkip;
+      uint xtoRecIDtoSkip;
+      int foundCount;
+
+      for(int rIdx = 0; rIdx < FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.TheGrid.RowCount /*- 1*/; ++rIdx)
+      {
+         shouldSkip = FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.TheGrid.GetBoolCell(FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.DgvCI.iT_shouldS, rIdx, false);
+
+         if(shouldSkip)
+         {
+            xtoRecIDtoSkip = FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.TheGrid.GetUint32Cell(FUR_ImportCandidatesXtranoList_InfoDLG.TheUC.DgvCI.iT_ftrRecID, rIdx, false);
+            
+            foundCount = XtranosForImport_List.RemoveAll(xto => xto.T_recID == xtoRecIDtoSkip);
+
+            if(foundCount.IsZero()) ZXC.aim_emsg(MessageBoxIcon.Error, "shouldSkip FUR_Import line NOT FOUND!");
+         }
+      }
+
+      #endregion Izbaci 'preskočene'
+
+      FUR_ImportCandidatesXtranoList_InfoDLG.Dispose();
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.SetStatusText("Importiram ulazne račune u Vektorov Data Layer.");
+
+      #endregion Init & Get Dialog Fields AND Create MAP_requestDataList 
+
+      #region ADDREC Faktur Loop
+
+      foreach(Xtrano AURxtrano_rec in XtranosForImport_List)
+      {
+         ADDREC_OK = true; // tu stavi actual ADDREC(Faktur)
+
+         if(ADDREC_OK)
+         {
+            newsCount++;
+
+            // now RWTREC Xtrano for FEEDBACK 
+
+         } // if(ADDREC_OK)
+
+      } // foreach(Xtrano AURxtrano_rec in XtranosForImport_List)
+
+      #endregion ADDREC Faktur Loop
+
+      #region Finish
+
+      ZXC.SetStatusText("");
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završen import {0} ulaznihRacuna.", newsCount);
 
       return newsCount;
 
@@ -4081,10 +4183,13 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Import_FUR_Fakturs(object sender, EventArgs e)
    {
-      // da li da ili ne? 
-    //((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+      Vv_eRacun_HTTP.InitProjectData();
 
+      if(Vv_eRacun_HTTP.Is_FUR_ON() == false) return;
 
+      int newsCount = /*ZZZ*/Vv_eRacun_HTTP.Import_FUR_Fakturs_JOB((F2_Ulaz_UC)TheVvUC);
+
+      if(newsCount.IsZeroOrPositive()) ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
 
 }
