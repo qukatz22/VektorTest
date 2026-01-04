@@ -3447,7 +3447,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       // Check some F2 eRacun mandatory fields 
-      if(Is_F012_OR_Ponuda_DUC && ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
+    //if(                       Is_F012_OR_Ponuda_DUC &&  ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B                                     )
+    //if(                       Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B))
+      if(ZXC.IsF2_2026_rules && Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B))
       {
          #region Is FIR Settings & projekt_rec OK
 
@@ -3473,7 +3475,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          {
             faktur_rec.F2_R1kind = theExtDUC.Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          }
-         else if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F2_B2B)// TETRAGRAM, PANIGALE, FRAG, METAFLEX, PPUK, PLODINE mogu imati i B2C i B2B racune 
+         else if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F0ili2_B2B)// TETRAGRAM, PANIGALE, FRAG, METAFLEX, PPUK, PLODINE mogu imati i B2C i B2B racune 
          {
             kupdob_rec = Get_Kupdob_FromVvUcSifrar(faktur_rec.KupdobCD);
 
@@ -3535,13 +3537,15 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region Mora biti bar jedan red i prvi red mora imati ArtiklCD, 
 
-         if(ZXC.RISK_SaveVvDataRecord_inProgress && IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero())
+       //if(ZXC.RISK_SaveVvDataRecord_inProgress && IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero()                                     )
+         if(ZXC.RISK_SaveVvDataRecord_inProgress && IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsZero() && !ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "F2 račun mora sadržavati bar jednu stavku!");
             e.Cancel = true;
          }
 
-         if(IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsPositive() && faktur_rec.TrnNonDel.OrderBy(rtr => rtr.T_serial).First().T_artiklCD.IsEmpty())
+       //if(IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsPositive() && faktur_rec.TrnNonDel.OrderBy(rtr => rtr.T_serial).First().T_artiklCD.IsEmpty()                                    )
+         if(IsF012DUC && faktur_rec.IsF2 && faktur_rec.TrnNonDel.Count().IsPositive() && faktur_rec.TrnNonDel.OrderBy(rtr => rtr.T_serial).First().T_artiklCD.IsEmpty()&& !ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, $"Prvi red na F2 računu ne smije biti 'opisni' redak (redak bez šifre artikla){Environment.NewLine}{Environment.NewLine}{faktur_rec.Transes[0].T_artiklName}!");
             e.Cancel = true;
@@ -3551,7 +3555,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region KdUlica, KdMjesto, KdZip
 
-         if(faktur_rec.IsF2 && faktur_rec.KupdobCD != ZXC.RRD.Dsc_MalopKCD && faktur_rec.KdAdresa.IsEmpty())
+       //if(faktur_rec.IsF2 && faktur_rec.KupdobCD != ZXC.RRD.Dsc_MalopKCD && faktur_rec.KdAdresa.IsEmpty()                                     )
+         if(faktur_rec.IsF2 && faktur_rec.KupdobCD != ZXC.RRD.Dsc_MalopKCD && faktur_rec.KdAdresa.IsEmpty() && !ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B)
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "Poštanska adresa kupca je prazna! eRačun mora imati bar 'Mjesto'");
             e.Cancel = true;
@@ -3577,7 +3582,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       // OIB Kupca: namjerno je izvan if-a  Check some F2 eRacun mandatory fields, jer npr ..., Veridian kupuje u TH gaće ... ipak mora imati OIB 
-      if(faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B)
+      if(ZXC.IsF2_2026_rules && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B)
       {
          bool badOIB = ZXC.IsBadOib(theExtDUC.Fld_KdOib, false);
 

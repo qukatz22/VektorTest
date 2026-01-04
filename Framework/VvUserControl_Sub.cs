@@ -695,10 +695,10 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
       switch(faktur_rec.F012kind)
       {
-         case ZXC.F123kind.F0:        colf012 = Color.FromArgb(102, 102, 51); break;
-         case ZXC.F123kind.F1:        colf012 = Color.FromArgb(38, 115, 38); break;
-         case ZXC.F123kind.F2:        colf012 = Color.FromArgb(0, 0, 153);  break;
-         case ZXC.F123kind.Nepoznato: colf012 = Color.Black    ;  break;
+         case ZXC.F012kind.F0:        colf012 = Color.FromArgb(102, 102, 51); break;
+         case ZXC.F012kind.F1:        colf012 = Color.FromArgb(38, 115, 38); break;
+         case ZXC.F012kind.F2:        colf012 = Color.FromArgb(0, 0, 153);  break;
+         case ZXC.F012kind.Nepoznato: colf012 = Color.Black    ;  break;
       }
       
       TheVvTabPage.tbx_col4.JAM_ForeColor = colf012;

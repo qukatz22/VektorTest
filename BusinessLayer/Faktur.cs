@@ -5159,19 +5159,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    } // TVRTKE! iz Njemačke, Bosne, Brazila, ... 
 
-   public ZXC.F123kind F012kind
+   public ZXC.F012kind F012kind
    {
       get
       {
          if(false) ;
    
-         else if(IsF1     ) return ZXC.F123kind.F1    ;
-         else if(IsF2     ) return ZXC.F123kind.F2    ;
+         else if(IsF1     ) return ZXC.F012kind.F1    ;
+         else if(IsF2     ) return ZXC.F012kind.F2    ;
        //else if(IsF2send ) return ZXC.FIRkind.F2send ;
        //else if(IsF2eIzvj) return ZXC.FIRkind.F2eIzvj;
-         else if(IsF0     ) return ZXC.F123kind.F0    ; // TVRTKE! iz Njemačke, Bosne, Brazila, ... 
+         else if(IsF0     ) return ZXC.F012kind.F0    ; // TVRTKE! iz Njemačke, Bosne, Brazila, ... 
    
-         return ZXC.F123kind.Nepoznato;
+         return ZXC.F012kind.Nepoznato;
       }
    }
 

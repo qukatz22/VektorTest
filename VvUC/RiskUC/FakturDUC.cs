@@ -8577,7 +8577,7 @@ public partial class FakturExtDUC : FakturDUC
 
     //if(this is IFADUC  || this is IRADUC  || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC ||  this is IRMDUC  || this is IRMDUC_2 )
     //   TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
-      if(IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B )
+      if(IsF012DUC && (CURR_prjkt_rec.F2_Ima_F2_B2B || CURR_prjkt_rec.F2_Ima_F0_B2B))
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
 
@@ -9437,7 +9437,7 @@ public partial class FakturExtDUC : FakturDUC
          tbx_Status.JAM_lui_NameTaker_JAM_Name = tbx_StatusOpis.JAM_Name;
          tbx_StatusOpis.JAM_ReadOnly = true;
 
-         tbx_Status.JAM_DataRequired = IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
+         tbx_Status.JAM_DataRequired = ZXC.IsF2_2026_rules && IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
 
       }
 
@@ -10614,7 +10614,7 @@ public partial class FakturExtDUC : FakturDUC
 
       tbx_eRproc.JAM_IsSupressTab = true;
 
-      tbx_eRproc.JAM_DataRequired = IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
+      tbx_eRproc.JAM_DataRequired = ZXC.IsF2_2026_rules && IsF012DUC && CURR_prjkt_rec.F2_Ima_F2_B2B;
 
       hamper.Name = "AeRproc:";
 
@@ -13987,11 +13987,12 @@ public partial class FakturExtDUC : FakturDUC
 
       #endregion PTG ZIZ-ZUL / ZI2-ZU2
 
-      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && Is_F012_OR_Ponuda_DUC && ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B)
-      {
+    //if(ZXC.RISK_CopyToOtherDUC_inProgress == false && Is_F012_OR_Ponuda_DUC &&  ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B                                     )
+      if(ZXC.RISK_CopyToOtherDUC_inProgress == false && Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B))
+         {
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F2_B2B) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;
          if(ZXC.CURR_prjkt_rec.F2_ImaSamo_F1_B2C) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
-         if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F2_B2B)
+         if(ZXC.CURR_prjkt_rec.F2_ImaF1_B2C_i_F0ili2_B2B)
          {
             if(IsF012DUC_Malop) Fld_F2_R1kind = ZXC.F2_R1enum.B2C;
             if(IsF012DUC_Velep) Fld_F2_R1kind = ZXC.F2_R1enum.B2B;

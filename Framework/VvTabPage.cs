@@ -472,9 +472,10 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          // 01.02.2024: 
        //if(ZXC.RISK_NOTfisk_Checked == false && ZXC.CURR_prjkt_rec.IsFiskalOnline &&  this.TheVvUC is IRMDUC && ZXC.IsTEXTHOshop)
 
-         bool shouldCheck_forTH         = this.TheVvUC is IRMDUC      && ZXC.IsTEXTHOshop                          ; // TEXTHO
-       //bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRADUC      && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
-         bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRA_MPC_DUC && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
+         bool shouldCheck_forTH         = this.TheVvUC is IRMDUC           && ZXC.IsTEXTHOshop                          ; // TEXTHO
+       //bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRADUC           && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
+       //bool shouldCheck_forNoAutoFisk = this.TheVvUC is IRA_MPC_DUC      && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
+         bool shouldCheck_forNoAutoFisk = ZXC.CURR_prjkt_rec.F2_Ima_F1_B2C && ZXC.CURR_prjkt_rec.IsNoAutoFiskal == true ; // TETRAGRAM only! ... za sada 
 
          #region Check for TH
 

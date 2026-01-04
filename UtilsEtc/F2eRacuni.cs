@@ -36,13 +36,7 @@ using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 public static class Vv_eRacun_HTTP
 {
    public const bool DEMO = false;
-
-#if !DEBUG
    public static bool IsF2_2026_rules { get { return ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 && ZXC.projectYearAsInt > 2025; } }
-#else
-   public static bool IsF2_2026_rules { get { return true; } }
-#endif
-
 
    #region MER Web Service URLs - API endpoints web addresses
 
@@ -1174,7 +1168,7 @@ public static class Vv_eRacun_HTTP
 
          if(receiveOK && deserialized_eRacun != null)
          {
-            #region Get Kupdob
+            #region Get Kupdob / New Kupdob?
 
             theOIB = deserialized_eRacun.VvCustomerOIB;
 
@@ -1213,7 +1207,7 @@ public static class Vv_eRacun_HTTP
                }  
             }
 
-            #endregion Get Kupdob
+            #endregion Get Kupdob / New Kupdob?
 
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
@@ -2792,7 +2786,7 @@ public static class Vv_eRacun_HTTP
 
       bool ADDREC_OK;
 
-      List<Xtrano> XtranosForImport_List = theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).ToList(); // TODO kako zakljuciti koji jos nije importiran 
+      List<Xtrano> XtranosForImport_List = theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).ToList(); // tamo gdje je T_parentID 0, znaci da jos nije u Faktur DataLayer-u 
 
       List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
 
@@ -2882,6 +2876,12 @@ public static class Vv_eRacun_HTTP
 
       foreach(Xtrano AURxtrano_rec in XtranosForImport_List)
       {
+         #region Get Kupdob / New Kupdob?
+
+         // qweqwe 
+
+         #endregion Get Kupdob / New Kupdob?
+
          ADDREC_OK = true; // tu stavi actual ADDREC(Faktur)
 
          if(ADDREC_OK)
@@ -2889,6 +2889,8 @@ public static class Vv_eRacun_HTTP
             newsCount++;
 
             // now RWTREC Xtrano for FEEDBACK 
+            // T_parentID      = faktur_rec.RecID          , 
+            // T_ttNum         = faktur_rec.TtNum          , 
 
          } // if(ADDREC_OK)
 
@@ -2902,7 +2904,20 @@ public static class Vv_eRacun_HTTP
 
       Cursor.Current = Cursors.Default;
 
-      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završen import {0} ulaznihRacuna.", newsCount);
+      //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završen import {0} ulaznihRacuna.", newsCount);
+
+        // TODO! 
+      //if(updatedStatusInfoList.NotEmpty())
+      //{
+      //   Load_IRn_FakturList(theUC);
+      //
+      //   ZXC.aim_emsg_List(string.Format("DODANO je {0} novih klijentovih računa u Vektorovu bazu podataka.", updatedStatusInfoList.Count), updatedStatusInfoList);
+      //}
+      //
+      //if(newKupdobInfoList.NotEmpty())
+      //{
+      //   ZXC.aim_emsg_List(string.Format("DODANO je {0} novih partnera (kupaca) u Vektorovu bazu podataka.", newKupdobInfoList.Count), newKupdobInfoList);
+      //}
 
       return newsCount;
 
