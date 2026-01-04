@@ -1241,7 +1241,6 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
 
       } // new zaglavlje needed 
 
-
       rtrans_rec.T_serial   = line;
 
       rtrans_rec.T_parentID = ZXC.FakturRec.RecID;

@@ -9,6 +9,8 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using System.Diagnostics.Eventing.Reader;
+using System.Web.UI.WebControls;
+
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -1917,7 +1919,7 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_eRacun(XSqlConnection conn, VvMER_ResponseData responseData, Kupdob kupdob_rec, bool isIFA)
+      public Faktur Create_Faktur_From_eRacun(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA)
       {
          #region init
 
@@ -1980,10 +1982,10 @@ namespace EN16931.UBL
          //faktur_rec.PdvKolTip =  this.ProfileID.Value;
          //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne
 
-         // From VvMER_Response_Data_AllActions 
-         faktur_rec.F2_ElectronicID = (uint)responseData.ElectronicId;
-         if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + ((uint)responseData.ElectronicId).ToString() + "]";
-         faktur_rec.F2_SentTS = (DateTime)responseData.Sent;
+         // From some Response 
+         if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
+         faktur_rec.F2_ElectronicID = electronicID;
+         faktur_rec.F2_SentTS       = sentDate;
 
          #endregion ZAGLAVLJE računa
 

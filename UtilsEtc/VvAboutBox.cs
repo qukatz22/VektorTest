@@ -1387,7 +1387,7 @@ public class VvMessageBox_UC : UserControl
       ci.iT_konto    = TheGrid.IdxForColumn("R_konto"   );
       ci.iT_tipUpl   = TheGrid.IdxForColumn("R_tipUpl"  );
       ci.iT_shouldS  = TheGrid.IdxForColumn("T_skip"    );
-      ci.iT_ftrRecID = TheGrid.IdxForColumn("R_ftrRedID"); // TAMARA TODO dodati kolonu 
+      ci.iT_ftrRecID = TheGrid.IdxForColumn("R_ftrRedID"); 
 
    }
 
