@@ -809,6 +809,16 @@ public class VvMessageBox_UC : UserControl
          hamper_F2_MAP_stop      .Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
          hamper_F2_MAP_candidates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
+      { 
+         this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_IMPORT_candidates.Height;
+         hamper_F2_IMPORT_stop      .Location = new Point(ZXC.QunMrgn, this.Size.Height - ZXC.QUN);
+         hamper_F2_IMPORT_candidates.Location = new Point(ZXC.Q10un*3 + ZXC.Q2un, TheGrid.Bottom);
+
+         hamper_F2_IMPORT_stop      .Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+         hamper_F2_IMPORT_candidates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+      }
 
    }
 
@@ -997,17 +1007,17 @@ public class VvMessageBox_UC : UserControl
          TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Qun4 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_candidates.Height;
       }
-      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
-      {
-         CreateMultiColumn_F2_IMPORT_candidates(TheGrid);
-         TheGrid.Width  = ZXC.Q10un * 3 + ZXC.Qun4 + TheGrid.RowHeadersWidth;
-         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_IMPORT_candidates.Height;
-      }
       else if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       {
          CreateMultiColumn_F2_MAP_candidates(TheGrid);
          TheGrid.Width  = ZXC.Q10un * 5 + ZXC.Q7un + ZXC.Qun4 + TheGrid.RowHeadersWidth;
          TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_candidates.Height;
+      }
+      else if(vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
+      {
+         CreateMultiColumn_F2_IMPORT_candidates(TheGrid);
+         TheGrid.Width  = ZXC.Q10un * 5 + TheGrid.RowHeadersWidth;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_IMPORT_candidates.Height;
       }
       else
       {
@@ -1079,17 +1089,6 @@ public class VvMessageBox_UC : UserControl
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
 
-   private void CreateMultiColumn_F2_IMPORT_candidates(VvDataGridView theGrid)
-   {
-      CreateColumn_ftrRecID(theGrid, "FtrRecID"    , ZXC.Q5un        ); // u ovom slucaju  tu ide Xtrano? RecID, sam smo ostavili naziv Ftrans 
-      CreateColumn_skip    (theGrid, "Preskoči"    , ZXC.Q3un        );
-
-      CreateColumn_datum   (theGrid, "Datum slanja", ZXC.Q5un            );
-      CreateColumn_partner (theGrid, "Dobavljač"   , ZXC.Q10un + ZXC.Q5un);
-
-      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
-   }
-
    private void CreateMultiColumn_F2_MAP_candidates(VvDataGridView theGrid)
    {
       CreateColumn_ftrRecID (theGrid, "FtrRecID"   , ZXC.Q5un           );
@@ -1105,6 +1104,22 @@ public class VvMessageBox_UC : UserControl
       CreateColumn_opis    (theGrid, "Opis uplate", ZXC.Q7un            );
       CreateColumn_iznosUpl(theGrid, "IznosUpl"   , ZXC.Q4un            );
       CreateColumn_tipUpl  (theGrid, "TipUpl"     , ZXC.Q3un            );
+
+      colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
+   }
+
+   private void CreateMultiColumn_F2_IMPORT_candidates(VvDataGridView theGrid)
+   {
+      CreateColumn_ftrRecID(theGrid, "FtrRecID"    , ZXC.Q5un        ); // u ovom slucaju  tu ide Xtrano? RecID, sam smo ostavili naziv Ftrans 
+      CreateColumn_skip    (theGrid, "Preskoči"    , ZXC.Q3un        );
+
+    //CreateColumn_electronicId(theGrid, "ElectronicID", ZXC.Q7un);
+      CreateColumn_datum       (theGrid, "Datum slanja", ZXC.Q5un   );
+      CreateColumn_partner     (theGrid, "Dobavljač"   , ZXC.Q10un + ZXC.Q5un);
+    //CreateColumn_OIB         (theGrid, "OIB"         , ZXC.Q7un);
+      CreateColumn_tipBr       (theGrid, "Broj Racuna" , ZXC.Q5un);
+      CreateColumn_iznos       (theGrid, "IznosRn"     , ZXC.Q4un);
+      CreateColumn_status      (theGrid, "Status"      , ZXC.Q4un);
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -1324,6 +1339,8 @@ public class VvMessageBox_UC : UserControl
    }
 
    #endregion F2_MAP_candidates Columns
+
+
 
    #endregion TheGridColumn
 

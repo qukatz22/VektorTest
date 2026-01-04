@@ -77,6 +77,7 @@ namespace EN16931.UBL
          bool isMojeRacunNotFina = true; // todo kao parametar 
          bool isAVANS            = (ORIG_faktur_rec.IsAVANS_STORNO || ORIG_faktur_rec.Is_AfterAvans_PrihodTTa);
 
+
          #endregion Init
 
          #region podvali IRM kao IRA za Calc
@@ -162,8 +163,17 @@ namespace EN16931.UBL
          #endregion VvUBL_CustomizationID
 
          #region Referenca STORNO i stornoAVANSa racuna
+ 
          //BT-25 Referenca na prethodni račun	Referenca na dokument 1..1
          //STORNO i stornoAVANSa racuna 
+
+         //TODO!!!2026 Svaka referenca prethodnog računa (BG-3) mora imati datum izdavanja prethodnog računa 
+         //< cac:BillingReference >
+         //   < cac:InvoiceDocumentReference >
+         //      < cbc:ID > 15 - 1 - 1 </ cbc:ID >
+         //      < cbc:IssueDate > 2025 - 10 - 01 </ cbc:IssueDate >
+         //   </ cac:InvoiceDocumentReference >
+         //</ cac:BillingReference >
 
          if(isAVANS || faktur_rec.Is_STORNO)
          {
@@ -173,8 +183,11 @@ namespace EN16931.UBL
             {
                new BillingReferenceType
                {
-                  InvoiceDocumentReference = new DocumentReferenceType {
-                                        ID = new IDType                { Value = Fak2eR__String("BT025"  , faktur_rec, null) } }
+                  InvoiceDocumentReference = new DocumentReferenceType 
+                  {
+                                       ID        = new IDType                { Value = Fak2eR__String("BT025"  , faktur_rec, null) }
+                                     //IssueDate = new IssueDateType{Value =  TODO!!!2026 }
+                  }
                }
             };
          }
@@ -609,9 +622,10 @@ namespace EN16931.UBL
 
          #region RBT & ZTR by PdvSt
 
-       //List<AllowanceChargeType> rbtAllowanceChargeList               = new List<AllowanceChargeType>();
-       //List<AllowanceChargeType> ztrAllowanceChargeList               = new List<AllowanceChargeType>();
-       //List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList        = new List<AllowanceChargeType>();
+         string ppmvReasonTag  = "#HR:PPMV#Posebni porez na motorna vozila";
+         decimal ppmvItemsBase = Fak2eR_Decimal("PPMVosn", faktur_rec, null);
+
+         //List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList        = new List<AllowanceChargeType>();
          List<AllowanceChargeType> rbtAndZtrAndPpmv_AllowanceChargeList = new List<AllowanceChargeType>(); //2026 + ppmv
 
          //BT- 92 Iznos popusta na razini dokumenta	                    Iznos 1..1
@@ -759,7 +773,7 @@ namespace EN16931.UBL
                ChargeIndicator       = new ChargeIndicatorType { Value = true },
                AllowanceChargeReason = new AllowanceChargeReasonType[]
                {
-                                       new AllowanceChargeReasonType { Value = ">#HR:PPMV#Posebni porez na motorna vozila"/* Fak2eR__String("PPMV reason", faktur_rec, null)*/ }
+                                       new AllowanceChargeReasonType { Value = ppmvReasonTag }
                },
                Amount      = new AmountType2 { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                TaxCategory = new TaxCategoryType[]
@@ -770,7 +784,7 @@ namespace EN16931.UBL
                      Name               = new NameType1     { Value = "HR:PPMV"                                    },
                      Percent            = new PercentType1  { Value = 0.00M/*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
                      TaxExemptionReason = new TaxExemptionReasonType[]
-                                        { new TaxExemptionReasonType { Value = "Posebni porez na motorna vozila" } },
+                                        { new TaxExemptionReasonType { Value = ppmvReasonTag/*"Posebni porez na motorna vozila"*/ } },
                      TaxScheme          = new TaxSchemeType { ID = new IDType { Value = "VAT" } } }
                }
               });
@@ -1363,7 +1377,6 @@ namespace EN16931.UBL
 
          if(ZXC.IsF2_2026_rules)
          {
-
             // Build HRTaxSubtotal entries explicitly to match the sample XML (exempt case shown)
             var hrTaxSubtotals = new List<HRTaxSubtotalType>();
 
@@ -1470,7 +1483,7 @@ namespace EN16931.UBL
                       Percent   = new PercentType1  { Value = 0M /*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
                       TaxExemptionReason = new TaxExemptionReasonType[] 
                                          { 
-                                            new TaxExemptionReasonType { Value = "#HR:PPMV#Posebni porez na motorna vozila" } 
+                                            new TaxExemptionReasonType { Value = ppmvReasonTag } 
                                          },
                       HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "CAR" } }
                   }
@@ -1495,7 +1508,7 @@ namespace EN16931.UBL
                           },
                           HRLegalMonetaryTotal = new HRMonetaryTotalType
                           {
-                             TaxExclusiveAmount    = new TaxExclusiveAmountType    { Value = Fak2eR_Decimal("BT109old", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// 2 mjesta razliciti iznosi!!!!!!!!!!
+                             TaxExclusiveAmount    = new TaxExclusiveAmountType    { Value = Fak2eR_Decimal("BT109old", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ovdje ide cisti kcr bez ikakvog poreza !!!!2 mjesta razliciti iznosi!!!!!!!!!!
                              OutOfScopeOfVATAmount = new OutOfScopeOfVATAmountType { /*Value = 0.00M*/Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID } //ovo je ppmv i sl...
                           }
                        }
@@ -1615,12 +1628,14 @@ namespace EN16931.UBL
             //ZAGLAVLJE:
 
             case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+            case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
+
           //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
-            case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
-            case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn ; break; //BT-109 Ukupni iznos računa bez PDV-a 	 2026                          
-           
-          //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                         ; break; //BT-112 Ukupni iznos računa s PDV-om		                           
-            case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                       ; break; //BT-112 Ukupni iznos računa s PDV-om   2026                           
+            case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn ; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
+
+          //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                                                   ; break; //BT-112 Ukupni iznos računa s PDV-om		    
+          //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                                                 ; break; //BT-112 Ukupni iznos računa s PDV-om   2026 
+            case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.IsPPMV ? faktur_rec.Skn_ukKCRP : faktur_rec.S_ukKCRP; break; //BT-112 Ukupni iznos računa!!!!!                   
             
             case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv                          ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
 
@@ -1628,7 +1643,8 @@ namespace EN16931.UBL
             case "BT107": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
 
           //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
-            case "BT115": theDecimal = faktur_rec.Skn_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
+          //case "BT115": theDecimal = faktur_rec.Skn_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
+            case "BT115": theDecimal = faktur_rec.IsPPMV ? faktur_rec.Skn_ukKCRP : faktur_rec.S_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
 
             //STAVKE:
             case "BT129": theDecimal = rtrans_rec.T_kol    ; break; //BT-129 Obračunata količina Količina artikala
