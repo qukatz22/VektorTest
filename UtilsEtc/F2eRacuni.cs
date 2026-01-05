@@ -1277,7 +1277,8 @@ public static class Vv_eRacun_HTTP
 
       //if(ZXC.RRD.Dsc_F2_IsAutoSend == false) return;
 
-      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).OrderBy(fak => fak.TtNum).ToList();
+    //List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_ElectronicID.IsZero()).OrderBy(fak => fak.TtNum).ToList();
+      List<Faktur> sendCandidatesFakturList = theUC.TheFakturList.Where(fak => fak.IsF2 && fak.F2_IsOKToSend           ).OrderBy(fak => fak.TtNum).ToList();
 
       if(sendCandidatesFakturList.IsEmpty())
       {
@@ -3294,7 +3295,6 @@ public static class Vv_eRacun_HTTP
 
 }
 
-
 #region Bussiness Classes for JSON Request/Response
 public class MER_CredentialsData
 {
@@ -3732,63 +3732,6 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 
 }
 
-//public class DocumentInfo_Data
-//{
-//   [JsonPropertyName("ElectronicId")]
-//   public long ElectronicId { get; set; }
-//
-//   [JsonPropertyName("DocumentNr")]
-//   public string DocumentNr { get; set; }
-//
-//   [JsonPropertyName("DocumentTypeId")]
-//   public int DocumentTypeId { get; set; }
-//
-//   [JsonPropertyName("DocumentTypeName")]
-//   public string DocumentTypeName { get; set; }
-//
-//   [JsonPropertyName("StatusId")]
-//   public int StatusId { get; set; }
-//
-//   [JsonPropertyName("StatusName")]
-//   public string StatusName { get; set; }
-//
-//   [JsonPropertyName("SenderBusinessNumber")]
-//   public string SenderBusinessNumber { get; set; }
-//
-//   [JsonPropertyName("SenderBusinessUnit")]
-//   public string SenderBusinessUnit { get; set; }
-//
-//   [JsonPropertyName("SenderBusinessName")]
-//   public string SenderBusinessName { get; set; }
-//
-//   [JsonPropertyName("RecipientBusinessNumber")]
-//   public string RecipientBusinessNumber { get; set; }
-//
-//   [JsonPropertyName("RecipientBusinessUnit")]
-//   public string RecipientBusinessUnit { get; set; }
-//
-//   [JsonPropertyName("RecipientBusinessName")]
-//   public string RecipientBusinessName { get; set; }
-//
-//   [JsonPropertyName("Created")]
-//   public DateTime Created { get; set; }
-//
-//   [JsonPropertyName("Updated")]
-//   public DateTime? Updated { get; set; }
-//
-//   [JsonPropertyName("Sent")]
-//   public DateTime? Sent { get; set; }
-//
-//   [JsonPropertyName("Delivered")]
-//   public DateTime? Delivered { get; set; }
-//
-//   [JsonPropertyName("Issued")]
-//   public DateTime? Issued { get; set; }
-//
-//   [JsonPropertyName("Imported")]
-//   public bool? Imported { get; set; }
-//}
-
 #region Bussiness Classes for JSON Response - FiscalizationStatus
 public class VvMER_FiscalizationMessage
 {
@@ -3850,7 +3793,6 @@ public class VvMER_FiscalizationMessage
    public long? TheElectronicId { get; set; }
 
 }
-
 public class VvMER_Response_Data_FiscalizationStatus
 {
    [JsonPropertyName("electronicId")]

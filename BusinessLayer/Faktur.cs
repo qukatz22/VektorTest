@@ -5097,17 +5097,26 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(F2_IsARHIVED       ) return true; // već je arhiviran                                       - nema smisla pokušavati RECEIVE 4 arhiva 
-         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em - nema smisla pokušavati RECEIVE 4 arhiva 
+         if(F2_IsARHIVED       ) return true; // već je arhiviran                                                     - nema smisla pokušavati RECEIVE 4 arhiva 
+         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em               - nema smisla pokušavati RECEIVE 4 arhiva 
+         if(F2_StatusCD ==   20) return true; // ima ElectronicID, ima SentTS, ali je "20 – In Validation / U obradi" - nema jos mogucnosti za RECEIVE 4 arhiva (empirijski dokazano) 
 
          return false;
       } 
    }
    public bool F2_IsARHIVED { get { return F2_ArhRecID.NotZero(); } }
 
+
+
+   public bool F2_IsSentTry             { get { return F2_ElectronicID.NotZero(); } }
+   public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry && F2_StatusCD == 50 /* Unsuccessful */ && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
+   public bool F2_IsSentSuccessful      { get { return F2_IsSentTry && F2_IsSentButUnsuccessful == false; } }
+   public bool F2_IsOKToSend            { get { return F2_IsSentTry == false || F2_IsSentButUnsuccessful == true; } }
+
+
    // ========================================================================================================================================================================= 
 
- //public bool IsF1       { get { return IsFiskalDutyFaktur_ONLINE; } }
+   //public bool IsF1       { get { return IsFiskalDutyFaktur_ONLINE; } }
    public bool IsF1
    { 
       get 

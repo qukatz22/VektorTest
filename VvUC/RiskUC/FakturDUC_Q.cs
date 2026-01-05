@@ -8862,7 +8862,8 @@ public partial class FakturExtDUC : FakturDUC
 
       #region R1kind
 
-      if(ZXC.IsF2_2026_rules && faktur_rec.TtInfo.IsIzlazniPdvTT) //18.12.2025.
+    //if(ZXC.IsF2_2026_rules && faktur_rec.TtInfo.IsIzlazniPdvTT) 
+      if(ZXC.IsF2_2026_rules && Is_F012_OR_Ponuda_DUC           )
       {
          faktur_rec.F2_R1kind = Fld_F2_R1kind = _kupdob_rec.R1kind;
 
