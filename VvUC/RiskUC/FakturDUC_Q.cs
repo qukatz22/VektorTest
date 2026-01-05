@@ -3568,7 +3568,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       } // Check some F2 eRacun mandatory fields 
 
       // Spremanje trenutnog TtNumFiskal kao VezniDok za DataLayer 
-      if(faktur_rec.Is_F2_TtNumFisk_InVezniDok)
+      if(IsF012DUC && faktur_rec.Is_F2_TtNumFisk_InVezniDok)
       {
          faktur_rec.VezniDok = faktur_rec.TtNumFiskal; // cuvat cemo u data layeru rezultat result propertya 'TtNumFiskal' 
          Fld_VezniDok        = faktur_rec.VezniDok;
@@ -3583,8 +3583,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       // OIB Kupca: namjerno je izvan if-a  Check some F2 eRacun mandatory fields, jer npr ..., Veridian kupuje u TH gaće ... ipak mora imati OIB  - ALI ako je strana firma onda oni imaju drugacije oib-e
-    //if(ZXC.IsF2_2026_rules && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B                                                 )
-      if(ZXC.IsF2_2026_rules && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B && Faktur.IsF2_PdvGEOkind(faktur_rec.PdvGEOkind))
+    //if(ZXC.IsF2_2026_rules              && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B                                                 )
+      if(ZXC.IsF2_2026_rules && IsF012DUC && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B && Faktur.IsF2_PdvGEOkind(faktur_rec.PdvGEOkind))
       {
          bool badOIB = ZXC.IsBadOib(theExtDUC.Fld_KdOib, false);
 

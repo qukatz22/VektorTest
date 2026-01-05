@@ -2174,7 +2174,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    /* 204 */ public ZXC.F2_StatusInAndOutBoxEnum F2_IsMarkAsPaid { get { return (ZXC.F2_StatusInAndOutBoxEnum)this.TheEx.currentData._f2_isMrkAsPaid; } set { this.TheEx.currentData._f2_isMrkAsPaid = (ushort)value; } }   /* _f2_isMrkAsPaid  */
    /* 207 */ public ZXC.F2_StatusInAndOutBoxEnum F2_IsEizvj      { get { return (ZXC.F2_StatusInAndOutBoxEnum)this.TheEx.currentData._f2_isEizvj    ; } set { this.TheEx.currentData._f2_isEizvj     = (ushort)value; } }   /* _f2_IsEizvj      */
 
-   /* 205*/public ZXC.F2_R1enum F2_R1kind { get { return (ZXC.F2_R1enum)this.TheEx.currentData._f2_R1kind; } set { this.TheEx.currentData._f2_R1kind = (ushort)value; } }
+   /* 205*/public ZXC.F2_R1enum F2_R1kind    { get { return (ZXC.F2_R1enum)this.TheEx.currentData._f2_R1kind; } set { this.TheEx.currentData._f2_R1kind = (ushort)value; } }
    /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
    /* 202 */ public DateTime F2_SentTS       { get { return this.TheEx.currentData._f2_sentTS     ; } set { this.TheEx.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
@@ -5121,8 +5121,6 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(this.KupdobCD.IsZero()) { /*ZXC.aim_emsg(MessageBoxIcon.Exclamation, "IsF1 prerano me pitas");*/  /*throw new Exception("haha");*/ }
-
          if(this.TheEx == null)             return false;
          
          if(TtInfo.IsIzlazniPdvTT == false) return false;
@@ -5148,7 +5146,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(this.TheEx != null && this.KupdobCD.IsZero()) { /*ZXC.aim_emsg(MessageBoxIcon.Exclamation, "IsF2 prerano me pitas");*/ /*throw new Exception("haha");*/ }
+         if(this.TheEx == null) return false;
 
          return TtInfo.IsIzlazniPdvTT && F2_R1kind == ZXC.F2_R1enum.B2B && IsF2_PdvGEOkind(this.PdvGEOkind) == true && Is_NacPlac1i2_Virman_Transakc; 
       } 
@@ -5161,7 +5159,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    { 
       get 
       {
-         if(this.KupdobCD.IsZero()) { /*ZXC.aim_emsg(MessageBoxIcon.Exclamation, "IsF0 prerano me pitas");*/ /*throw new Exception("haha");*/ }
+         if(this.TheEx == null) return false;
 
          return TtInfo.IsIzlazniPdvTT && F2_R1kind == ZXC.F2_R1enum.B2B && IsF2_PdvGEOkind(this.PdvGEOkind) == false; 
       } 

@@ -9643,12 +9643,24 @@ public class F2_Ulaz_UC : VvUserControl
       if(xtrano_rec.F2_IsReject)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
       else                      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
 
-      //TheG.PutCell(ci.iT_tt      , rowIdx, faktur_rec.TT        );
-      //TheG.PutCell(ci.iT_ttNum   , rowIdx, faktur_rec.TtNum     );
-      //TheG.PutCell(ci.iT_dokDate , rowIdx, faktur_rec.T_dokDate );
-      //TheG.PutCell(ci.iT_kupDob  , rowIdx, faktur_rec.KupdobName);
-      //TheG.PutCell(ci.iT_vezDok  , rowIdx, faktur_rec.VezniDok  );
-      //TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
+      #region From Faktur DataLayer
+
+      if(xtrano_rec.T_parentID.NotZero())
+      { 
+         Faktur faktur_rec = new Faktur();
+
+         faktur_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, faktur_rec, xtrano_rec.T_parentID, false);
+         faktur_rec.VvDao.LoadExtender        (TheDbConnection, faktur_rec, false);
+
+         TheG.PutCell(ci.iT_tt      , rowIdx, faktur_rec.TT        );
+         TheG.PutCell(ci.iT_ttNum   , rowIdx, faktur_rec.TtNum     );
+         TheG.PutCell(ci.iT_dokDate , rowIdx, faktur_rec.DokDate   );
+         TheG.PutCell(ci.iT_kupDob  , rowIdx, faktur_rec.KupdobName);
+         TheG.PutCell(ci.iT_vezDok  , rowIdx, faktur_rec.VezniDok  );
+         TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
+      }
+
+      #endregion From Faktur DataLayer
 
    }
 
