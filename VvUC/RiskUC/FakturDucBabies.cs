@@ -8990,7 +8990,7 @@ public class F2_Izlaz_UC : VvUserControl
    private DataGridViewTextBoxColumn colScrol, colRazmak;
 
    Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
-   Image img_red, img_yellow, img_green, img_empty;
+   Image img_red, img_yellow, img_green, img_empty, img_blue, img_darkGreen;
 
    DataGridViewImageColumn ams, fisk, eIzvj, arh, map, reject, preuzet;
   
@@ -9134,21 +9134,13 @@ public class F2_Izlaz_UC : VvUserControl
       vvtb_dateSlanja  = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_dateSlanja" , null, -12, "Datum Slanja Dokumenta"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateSlanja, null, "R_dateSlanja" , "Datum Slanja" , ZXC.Q6un           ); vvtb_dateSlanja.JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor  = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
       vvtb_status      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_stDokumenta", null, -12, "Status Dokumenta"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_status    , null, "R_status"     , "Status"       , ZXC.Q6un           ); vvtb_status    .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
 
-      reject            = new DataGridViewImageColumn();
-      reject.Name       = "R_isReject";
-      reject.HeaderText = "ODB.";
-      reject.Width      = ZXC.Q2un;
-      reject.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
-      reject.DefaultCellStyle.BackColor = clr_eRacun_Back;
-      theGrid.Columns.Add(reject);
-
-      eIzvj            = new DataGridViewImageColumn();
-      eIzvj.Name       = "R_isEizvj";
-      eIzvj.HeaderText = "eIzvj";
-      eIzvj.Width      = ZXC.Q2un;
-      eIzvj.Image      = img_empty/*VvIco.MarkAsRECEIVEd.ToBitmap()*/;
-      eIzvj.DefaultCellStyle.BackColor = clr_eRacun_Back;
-      theGrid.Columns.Add(eIzvj);
+      preuzet            = new DataGridViewImageColumn();
+      preuzet.Name       = "R_isPreuzet";
+      preuzet.HeaderText = "";
+      preuzet.Width      = ZXC.Q2un + ZXC.Qun2;
+      preuzet.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
+      preuzet.DefaultCellStyle.BackColor = clr_eRacun_Back;
+      theGrid.Columns.Add(preuzet);
 
       fisk            = new DataGridViewImageColumn();
       fisk.Name       = "R_isFisk";
@@ -9166,13 +9158,21 @@ public class F2_Izlaz_UC : VvUserControl
       arh.DefaultCellStyle.BackColor = clr_eRacun_Back;
       theGrid.Columns.Add(arh);
 
-      preuzet            = new DataGridViewImageColumn();
-      preuzet.Name       = "R_isPreuzet";
-      preuzet.HeaderText = "Preuzet";
-      preuzet.Width      = ZXC.Q2un + ZXC.Qun2;
-      preuzet.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
-      preuzet.DefaultCellStyle.BackColor = clr_eRacun_Back;
-      theGrid.Columns.Add(preuzet);
+      eIzvj            = new DataGridViewImageColumn();
+      eIzvj.Name       = "R_isEizvj";
+      eIzvj.HeaderText = "eIzvj";
+      eIzvj.Width      = ZXC.Q2un;
+      eIzvj.Image      = img_empty/*VvIco.MarkAsRECEIVEd.ToBitmap()*/;
+      eIzvj.DefaultCellStyle.BackColor = clr_eRacun_Back;
+      theGrid.Columns.Add(eIzvj);
+
+      reject            = new DataGridViewImageColumn();
+      reject.Name       = "R_isReject";
+      reject.HeaderText = "ODB.";
+      reject.Width      = ZXC.Q2un;
+      reject.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
+      reject.DefaultCellStyle.BackColor = clr_eRacun_Back;
+      theGrid.Columns.Add(reject);
 
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
 
@@ -9209,10 +9209,13 @@ public class F2_Izlaz_UC : VvUserControl
       clr_Mp_Back     = Color.Linen;//LavenderBlush
       //clr_arhiva_Back = Color.LightYellow;
 
-      img_empty  = VvIco.EmptyIcon     .ToBitmap();
-      img_red    = VvIco.MarkAsSENDed  .ToBitmap();
-      img_yellow = VvIco.CheckPrNabCij .ToBitmap();
-      img_green  = VvIco.MarkAsRECEIVEd.ToBitmap();
+      img_empty     = VvIco.EmptyIcon      .ToBitmap();
+      img_red       = VvIco.MarkAsSENDed   .ToBitmap();
+      img_yellow    = VvIco.CheckPrNabCij  .ToBitmap();
+      img_green     = VvIco.MarkAsRECEIVEd .ToBitmap();
+      img_blue      = VvIco.LogLANADDaction.ToBitmap();
+      img_darkGreen = VvIco.UnMarkAsRECEIVEd.ToBitmap();
+
    }
 
    #endregion TheGridColumn
@@ -9316,25 +9319,28 @@ public class F2_Izlaz_UC : VvUserControl
            if(faktur_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green;
       else if(faktur_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
       else if(faktur_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red;
-      else                                                           ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
+      else                                                                ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty;
 
            if(faktur_rec.F2_IsRejected == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
       else if(faktur_rec.F2_IsRejected == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_yellow;
       else if(faktur_rec.F2_IsRejected == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_red;
-      else                                                               ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
+      else                                                                    ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
 
            if(faktur_rec.F2_IsMarkAsPaid == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_green;
       else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_yellow;
       else if(faktur_rec.F2_IsMarkAsPaid == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_red;
-      else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_empty;
+      else                                                                      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isMAP]).Value = img_empty;
     
            if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.DA_JE     )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_green;
       else if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.Na_cekanju)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_yellow;
       else if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_red;
-      else                                                            ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_empty;
+      else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_empty;
 
-      if(faktur_rec.F2_StatusCD == 40 || faktur_rec.F2_StatusCD == 70) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_green;
-      else                                                             ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_empty;
+           if(faktur_rec.F2_StatusCD == 40 || faktur_rec.F2_StatusCD == 70) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_green    ;
+      else if(faktur_rec.F2_StatusCD == 30                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_darkGreen;
+      else if(faktur_rec.F2_StatusCD == 50                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_red;
+      else if(faktur_rec.F2_StatusCD == 20                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_yellow;
+      else                                                                  ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_empty;
 
 
       if(faktur_rec.F2_ElectronicID.IsZero()) TheG.Rows[rowIdx].Cells[ci.iT_electrID].Value = "";
