@@ -1198,6 +1198,11 @@ be_fast:
                case ZXC.VvSubModulEnum.R_IFAdev:
                case ZXC.VvSubModulEnum.R_IRM:
                case ZXC.VvSubModulEnum.R_IRM_2:
+               case ZXC.VvSubModulEnum.R_PON:
+               case ZXC.VvSubModulEnum.R_PON_MPC:
+               case ZXC.VvSubModulEnum.R_OPN_MPC:
+               case ZXC.VvSubModulEnum.R_OPN:
+               case ZXC.VvSubModulEnum.R_PNM:
                   col1 = ZXC.Q4un;
                   col2 = ZXC.Q4un;
                   col3 = ZXC.Q10un;
@@ -1230,7 +1235,7 @@ be_fast:
                case ZXC.VvSubModulEnum.R_IZM_2:
                case ZXC.VvSubModulEnum.R_MSI:
                case ZXC.VvSubModulEnum.R_MSI_2:
-               case ZXC.VvSubModulEnum.R_OPN:
+             //case ZXC.VvSubModulEnum.R_OPN:
                case ZXC.VvSubModulEnum.R_PIZ:
                case ZXC.VvSubModulEnum.R_PIM:
                case ZXC.VvSubModulEnum.R_NOR:
@@ -1240,10 +1245,10 @@ be_fast:
                case ZXC.VvSubModulEnum.R_SKO:
                case ZXC.VvSubModulEnum.R_STU:
                case ZXC.VvSubModulEnum.R_STI:
-               case ZXC.VvSubModulEnum.R_PON:
-               case ZXC.VvSubModulEnum.R_PON_MPC:
-               case ZXC.VvSubModulEnum.R_OPN_MPC:
-               case ZXC.VvSubModulEnum.R_PNM:
+             //case ZXC.VvSubModulEnum.R_PON:
+             //case ZXC.VvSubModulEnum.R_PON_MPC:
+             //case ZXC.VvSubModulEnum.R_OPN_MPC:
+             //case ZXC.VvSubModulEnum.R_PNM:
                case ZXC.VvSubModulEnum.R_RVI:
                case ZXC.VvSubModulEnum.R_RVU:
                case ZXC.VvSubModulEnum.R_UOD:

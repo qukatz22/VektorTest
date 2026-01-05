@@ -3447,9 +3447,10 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       // Check some F2 eRacun mandatory fields 
-    //if(                       Is_F012_OR_Ponuda_DUC &&  ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B                                     )
-    //if(                       Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B))
-      if(ZXC.IsF2_2026_rules && Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B))
+    //if(                       Is_F012_OR_Ponuda_DUC &&  ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B                                                                                      )
+    //if(                       Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B)                                                 )
+    //if(ZXC.IsF2_2026_rules && Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B)                                                 )
+      if(ZXC.IsF2_2026_rules && Is_F012_OR_Ponuda_DUC && (ZXC.CURR_prjkt_rec.F2_Ima_F2_B2B || ZXC.CURR_prjkt_rec.F2_Ima_F0_B2B) && Faktur.IsF2_PdvGEOkind(faktur_rec.PdvGEOkind))
       {
          #region Is FIR Settings & projekt_rec OK
 
@@ -3581,8 +3582,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          ZXC.aim_emsg(MessageBoxIcon.Information, $"Uklonjena '{ZXC.F2_Unprocessed}' oznaka.");
       }
 
-      // OIB Kupca: namjerno je izvan if-a  Check some F2 eRacun mandatory fields, jer npr ..., Veridian kupuje u TH gaće ... ipak mora imati OIB 
-      if(ZXC.IsF2_2026_rules && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B)
+      // OIB Kupca: namjerno je izvan if-a  Check some F2 eRacun mandatory fields, jer npr ..., Veridian kupuje u TH gaće ... ipak mora imati OIB  - ALI ako je strana firma onda oni imaju drugacije oib-e
+    //if(ZXC.IsF2_2026_rules && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B                                                 )
+      if(ZXC.IsF2_2026_rules && faktur_rec.F2_R1kind == ZXC.F2_R1enum.B2B && Faktur.IsF2_PdvGEOkind(faktur_rec.PdvGEOkind))
       {
          bool badOIB = ZXC.IsBadOib(theExtDUC.Fld_KdOib, false);
 

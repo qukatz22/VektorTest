@@ -4312,8 +4312,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
        //}
      //if(ZXC.IsF2_2026_rules && fakturLocal_rec.TtInfo.IsIzlazniPdvTT/* && fakturLocal_rec.F012kind == F123kind.F2*/)
      //if(CURR_prjkt_rec.F2_Ima_F2_B2B && (fakturLocal_rec.TtInfo.IsIzlazniPdvTT || IsPonudaDUC))
-       if(ZXC.IsF2_2026_rules && IsF012DUC)
-       {
+     //if(ZXC.IsF2_2026_rules && IsF012DUC)
+       if(ZXC.IsF2_2026_rules && Is_F012_OR_Ponuda_DUC)
+            {
             //PutIdentityFields_7Col(fakturLocal_rec.TT + "-" + fakturLocal_rec.TtNum.ToString(), 
             //                       fakturLocal_rec.DokDate.ToString(ZXC.VvDateFormat), 
             //                       "",
