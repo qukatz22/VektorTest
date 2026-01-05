@@ -5106,10 +5106,15 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    }
    public bool F2_IsARHIVED { get { return F2_ArhRecID.NotZero(); } }
 
-
+   // 20 – In Validation / U obradi : Document uploaded, pending validation.
+   // 30 – Sent          / Poslan   : Document uploaded, signed, time-stamped; waiting for recipient to download.
+   // 40 – Delivered     / Preuzet  : Recipient accepted and downloaded document.
+   // 50 – Unsuccessful  / Neuspjelo: Error occurred during processing or delivery.
+   // 70 – eReporting: Invoice sent to eReporting; could not be delivered to recipient – sender must send PDF/physical copy separately to the recipient.
 
    public bool F2_IsSentTry             { get { return F2_ElectronicID.NotZero(); } }
-   public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry && F2_StatusCD == 50 /* Unsuccessful */ && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
+   public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry && (F2_StatusCD == 20 || F2_StatusCD == 50) && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
+ //public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry &&  F2_StatusCD == 50 /* Unsuccessful */    && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
    public bool F2_IsSentSuccessful      { get { return F2_IsSentTry && F2_IsSentButUnsuccessful == false; } }
    public bool F2_IsOKToSend            { get { return F2_IsSentTry == false || F2_IsSentButUnsuccessful == true; } }
 
