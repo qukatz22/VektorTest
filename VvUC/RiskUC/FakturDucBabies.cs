@@ -9336,8 +9336,8 @@ public class F2_Izlaz_UC : VvUserControl
       else if(faktur_rec.F2_IsEizvj == F2_StatusInAndOutBoxEnum.NE_NIJE   )((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_red;
       else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isEizvj]).Value = img_empty;
 
-           if(faktur_rec.F2_StatusCD == 40 || faktur_rec.F2_StatusCD == 70) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_green    ;
-      else if(faktur_rec.F2_StatusCD == 30                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_darkGreen;
+           if(faktur_rec.F2_StatusCD == 40                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_green    ;
+      else if(faktur_rec.F2_StatusCD == 30 || faktur_rec.F2_StatusCD == 70) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_darkGreen;
       else if(faktur_rec.F2_StatusCD == 50                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_red;
       else if(faktur_rec.F2_StatusCD == 20                                ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_yellow;
       else                                                                  ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isPreuzet]).Value = img_empty;
