@@ -8578,7 +8578,8 @@ public partial class FakturExtDUC : FakturDUC
 
     //if(this is IFADUC  || this is IRADUC  || this is IRA_PTG_DUC || this is IRADUC_2 || this is IRA_MPC_DUC || this is IRPDUC ||  this is IRMDUC  || this is IRMDUC_2 )
     //   TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
-      if(IsF012DUC && (CURR_prjkt_rec.F2_Ima_F2_B2B || CURR_prjkt_rec.F2_Ima_F0_B2B))
+    //if(IsF012DUC && (CURR_prjkt_rec.F2_Ima_F2_B2B || CURR_prjkt_rec.F2_Ima_F0_B2B))
+      if(Is_F012_OR_Ponuda_DUC && (CURR_prjkt_rec.F2_Ima_F2_B2B || CURR_prjkt_rec.F2_Ima_F0_B2B))
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(F2_Info_TabPageName, F2_Info_TabPageName, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
 
