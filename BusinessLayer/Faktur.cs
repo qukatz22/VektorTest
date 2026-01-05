@@ -4755,7 +4755,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
       }
 
-      IRAfaktur_rec.TakeTransesSumToDokumentSum(true);
+      IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
 
       return IRAfaktur_rec;
    }

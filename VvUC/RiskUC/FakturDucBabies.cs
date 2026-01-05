@@ -9137,7 +9137,7 @@ public class F2_Izlaz_UC : VvUserControl
       preuzet            = new DataGridViewImageColumn();
       preuzet.Name       = "R_isPreuzet";
       preuzet.HeaderText = "";
-      preuzet.Width      = ZXC.Q2un + ZXC.Qun2;
+      preuzet.Width      = ZXC.Q2un;
       preuzet.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
       preuzet.DefaultCellStyle.BackColor = clr_eRacun_Back;
       theGrid.Columns.Add(preuzet);
@@ -9176,6 +9176,13 @@ public class F2_Izlaz_UC : VvUserControl
 
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
 
+      vvtb_uplata     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_uplata"    , null, -12, "Uplaćeno"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata    , null, "R_uplata"    , "Naplaćeno"  , ZXC.Q4un); /*vvtb_uplata    .JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_markPaid   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_markPaid"  , null, -12, "Prijavljeno"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid  , null, "R_markPaid"  , "Prijavljeno", ZXC.Q4un); /*vvtb_markPaid  .JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_razlikaUpl = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_razlikaUpl", null, -12, "Razlika"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_razlikaUpl, null, "R_razlikaUpl", "Razlika"    , ZXC.Q4un); /*vvtb_razlikaUpl.JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+
+      //colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_uplata.JAM_NumberOfDecimalPlaces, true, false); // da ne prikaze 0.00
+      vvtb_uplata.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
+
       map = new DataGridViewImageColumn();
       map.Name       = "R_isMAP";
       map.HeaderText = "OKP";
@@ -9183,13 +9190,6 @@ public class F2_Izlaz_UC : VvUserControl
       map.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
       map.DefaultCellStyle.BackColor = clr_Mp_Back;
       theGrid.Columns.Add(map);
-
-      vvtb_uplata     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_uplata"    , null, -12, "Uplaćeno"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata    , null, "R_uplata"    , "Naplaćeno"  , ZXC.Q4un); /*vvtb_uplata    .JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_markPaid   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_markPaid"  , null, -12, "Prijavljeno"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid  , null, "R_markPaid"  , "Prijavljeno", ZXC.Q4un); /*vvtb_markPaid  .JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_razlikaUpl = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_razlikaUpl", null, -12, "Razlika"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_razlikaUpl, null, "R_razlikaUpl", "Razlika"    , ZXC.Q4un); /*vvtb_razlikaUpl.JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-
-      //colVvText.DefaultCellStyle.Format = VvUserControl.GetDgvCellStyleFormat_Number(vvtb_uplata.JAM_NumberOfDecimalPlaces, true, false); // da ne prikaze 0.00
-      vvtb_uplata.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
 

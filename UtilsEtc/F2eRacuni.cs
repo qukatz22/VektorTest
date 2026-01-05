@@ -4206,6 +4206,10 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Import_FUR_Fakturs(object sender, EventArgs e)
    {
+
+      return; // za deploy 
+
+
       Vv_eRacun_HTTP.InitProjectData();
 
       if(Vv_eRacun_HTTP.Is_FUR_ON() == false) return;

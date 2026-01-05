@@ -1988,7 +1988,7 @@ namespace EN16931.UBL
          faktur_rec.VezniDok  = this.ID.Value       ;
        //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
          faktur_rec.Napomena  = ZXC.F2_Unprocessed  ;
-         for(int i = 0; i < this.Note.Length; i++)
+         for(int i = 0; this.Note != null && i < this.Note.Length; i++)
          {
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
          }
@@ -2167,7 +2167,8 @@ namespace EN16931.UBL
          kupdob_rec.Ticker   = newSifra.ToString();
 
          kupdob_rec.Oib          = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
-         kupdob_rec.Naziv        = theParty.PartyName[0] .Name                      .Value;
+       //kupdob_rec.Naziv        = theParty.PartyName[0] .Name                      .Value;
+         kupdob_rec.Naziv        = theParty.PartyLegalEntity[0].RegistrationName    .Value;
          kupdob_rec.Ulica1       = theParty.PostalAddress.StreetName                .Value;
          kupdob_rec.Ulica2       = theParty.PostalAddress.StreetName                .Value;
          kupdob_rec.Grad         = theParty.PostalAddress.CityName                  .Value;
