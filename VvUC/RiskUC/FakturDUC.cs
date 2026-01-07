@@ -12312,6 +12312,12 @@ public partial class FakturExtDUC : FakturDUC
          }
          else
          {
+            hamp_eRproc.Visible = false;
+            hamp_Status.Visible = false;
+
+            hamp_eRproc.SendToBack();
+            hamp_Status.SendToBack();
+
             nextY = hamp_NacPlac.Bottom;
          }
       }
