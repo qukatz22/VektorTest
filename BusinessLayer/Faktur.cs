@@ -5093,13 +5093,21 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       } 
    }
    public bool F2_Yes_HasSense_RECEIVE_document2arhiva { get { return !F2_HasNoSense_RECEIVE_document2arhiva; } }
+
+   //  20, "U obradi"          
+   //  30, "Poslan"            
+   //  40, "Preuzet"           
+   //  45, "Otkazano"          
+   //  50, "Neuspjelo"         
+   //  70, "Poslan kao eIZVJ"  
    public bool F2_HasNoSense_RECEIVE_document2arhiva
    { 
       get 
       {
-         if(F2_IsARHIVED       ) return true; // već je arhiviran                                                     - nema smisla pokušavati RECEIVE 4 arhiva 
-         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em               - nema smisla pokušavati RECEIVE 4 arhiva 
-         if(F2_StatusCD ==   20) return true; // ima ElectronicID, ima SentTS, ali je "20 – In Validation / U obradi" - nema jos mogucnosti za RECEIVE 4 arhiva (empirijski dokazano) 
+         if(F2_IsARHIVED       ) return true; // već je arhiviran                                                            - nema smisla pokušavati RECEIVE 4 arhiva 
+         if(F2_SentTS.IsEmpty()) return true; // nije jos ni poslan niti send API-em, niti eIzvj API-em                      - nema smisla pokušavati RECEIVE 4 arhiva 
+         if(F2_StatusCD ==   20) return true; // ima ElectronicID, ima SentTS, ali je "20 – In Validation / U obradi"        - nema jos mogucnosti za RECEIVE 4 arhiva (empirijski dokazano) 
+         if(F2_StatusCD ==   70) return true; // eIzvjestavanje je TRUE ali NEMA status 30 ili 40 nego 70 "Poslan kao eIZVJ" - nema smisla pokušavati RECEIVE 4 arhiva 
 
          return false;
       } 

@@ -42,7 +42,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
 
    #region CreateTableXtrano
 
-   public static   uint TableVersionStatic { get { return 5; } }
+   public static   uint TableVersionStatic { get { return 6; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -63,7 +63,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
          /* 10 */  "t_devName    char(3)               NOT NULL default ''   ,\n"  +
          /* 11 */  "t_XmlZip     MEDIUMBLOB                                  ,\n"  +
          /* 12 */  "t_theString  varchar(64)           NOT NULL default ''   ,\n"  +
-
+         /* 13 */  "t_theBool    tinyint(1)  unsigned  NOT NULL default 0    ,\n"  +
           "PRIMARY KEY                   (recID)                                                   ,\n" +
           /*"UNIQUE*/" KEY BY_LINKER     (t_parentID, t_serial)                                     \n"
          );
@@ -90,6 +90,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
 
          case 5: return ("MODIFY COLUMN t_konto     varchar(64) NOT NULL default '', \n" +
                          "ADD    COLUMN t_theString varchar(64) NOT NULL default '' AFTER t_XmlZip;\n");
+         case 6: return ("ADD    COLUMN t_theBool    tinyint(1)  unsigned  NOT NULL default 0 AFTER t_theString;\n");
 
          default: throw new Exception("For table " + tableName + " version no. " + catchingVersion + " doesn't exists!");
       }
@@ -134,6 +135,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
       /* 10 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_devName ,     TheSchemaTable.Rows[CI.t_devName  ]);
       /* 11 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_XmlZip  ,     TheSchemaTable.Rows[CI.t_XmlZip   ]);
       /* 12 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_theString,    TheSchemaTable.Rows[CI.t_theString]);
+      /* 13 */ VvSQL.CreateCommandParameter(cmd, preffix, xtrano.T_theBool  ,    TheSchemaTable.Rows[CI.t_theBool  ]);
       }
 
    }
@@ -167,6 +169,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
 
       /* 11 */ rdrData._t_XmlZip     = reader.IsDBNull(CI.t_XmlZip) ? null : (byte[])reader.GetValue(CI.t_XmlZip);
       /* 12 */ rdrData._t_theString  = reader.GetString  (CI.t_theString);
+      /* 13 */ rdrData._t_theBool    = reader.GetBoolean (CI.t_theBool  );
 
       ((Xtrano)vvDataRecord).CurrentData = rdrData;
 
@@ -195,6 +198,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
       /* 10 */  internal int t_devName;
       /* 11 */  internal int t_XmlZip;
       /* 12 */  internal int t_theString;
+      /* 13 */  internal int t_theBool;
 
    }
 
@@ -223,6 +227,7 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
       /* 10 */ CI.t_devName      = GetSchemaColumnIndex("t_devName"  );
       /* 11 */ CI.t_XmlZip       = GetSchemaColumnIndex("t_XmlZip"   );
       /* 12 */ CI.t_theString    = GetSchemaColumnIndex("t_theString"); 
+      /* 13 */ CI.t_theBool      = GetSchemaColumnIndex("t_theBool"  ); 
    }
 
    #endregion FtrCI struct & InitializeSchemaColumnIndexes()

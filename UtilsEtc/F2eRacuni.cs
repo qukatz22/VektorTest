@@ -3643,6 +3643,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 
    #endregion Propertiz 
 
+   // FILIPIDIPI 
    public static Xtrano F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(string xmlString, Faktur faktur_rec)
    {
       if(faktur_rec == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: faktur record is null!");

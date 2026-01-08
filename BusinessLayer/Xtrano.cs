@@ -22,7 +22,8 @@ public struct XtranoStruct
 
    /* 11 */   internal byte[]    _t_XmlZip; // NE ZABORAVI u VvDaoBase.WHERE_or_SET_Clause_Specifics 'if(colName == "theLogo") continue;' za svaki BLOB / MEDIUM BLOB 
 
-   /* 13 */   internal string    _t_theString     ;  
+   /* 12 */   internal string    _t_theString     ;  
+   /* 13 */   internal bool      _t_theBool       ;  
 }
 
 #endregion struct XtranoStruct
@@ -75,6 +76,7 @@ public class Xtrano : VvTransRecord
       /* 10 */ this.currentData._t_devName          = ""; 
       /* 11 */ this.currentData._t_XmlZip           = null; 
       /* 12 */ this.currentData._t_theString        = ""; 
+      /* 13 */ this.currentData._t_theBool          = false; 
 
    }
 
@@ -236,11 +238,6 @@ public class Xtrano : VvTransRecord
       get { return this.currentData._t_ttNum; }
       set {        this.currentData._t_ttNum = value; }
    }
-   public bool F2_IsReject
-   {
-      get { return this.currentData._t_ttNum.NotZero(); }
-      set {        this.currentData._t_ttNum = (value == true ? 1u : 0u); }
-   }
    /* 07 */ public decimal T_moneyA
    {
       get { return this.currentData._t_moneyA; }
@@ -271,6 +268,15 @@ public class Xtrano : VvTransRecord
    {
       get { return this.currentData._t_theString; }
       set {        this.currentData._t_theString = value; }
+   }
+   /* 13 */ public bool T_theBool
+   {
+      get { return this.currentData._t_theBool; }
+      set {        this.currentData._t_theBool = value; }
+   }
+   public bool F2_IsReject
+   {
+      get { return this.T_theBool; } set { this.T_theBool = value; }
    }
 
    #endregion propertiz
