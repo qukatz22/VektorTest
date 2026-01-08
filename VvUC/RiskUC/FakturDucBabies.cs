@@ -9361,14 +9361,19 @@ public class F2_Izlaz_UC : VvUserControl
       int rowIdx = e.RowIndex;
 
       if(rowIdx.IsNegative()) return;
-      
-      if(e.ColumnIndex != ci.iT_tt     &&
-      e.ColumnIndex != ci.iT_ttNum     && 
-      e.ColumnIndex != ci.iT_fiskTtNum) return;
+    
+      if(e.ColumnIndex == ci.iT_tt || e.ColumnIndex == ci.iT_ttNum || e.ColumnIndex == ci.iT_fiskTtNum)
+      {
+         string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false) + "-" + theG.GetStringCell(ci.iT_ttNum, rowIdx, false);
 
-      string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false) + "-" + theG.GetStringCell(ci.iT_ttNum, rowIdx, false);
-      
-      ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+      }
+
+      if(e.ColumnIndex == ci.iT_uplata )
+      {
+         
+      }
+
    }
 
    public /*override*/ void Refresh_FIR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
@@ -9440,8 +9445,7 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.TabStop = false;
       TheG.ClearSelection();
 
-        // TODO: 
-      //TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
+      TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
 
    }
 
@@ -9685,7 +9689,21 @@ public class F2_Ulaz_UC : VvUserControl
       if((newPage as VvTabPage).TheVvUC is F2_Ulaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Ulaz_UC).INIT_FUR();
    }
 
+   private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
 
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+    
+      if(e.ColumnIndex == ci.iT_ttNum || e.ColumnIndex == ci.iT_tt)
+      {
+         string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false) + "-" + theG.GetStringCell(ci.iT_ttNum, rowIdx, false);
+
+         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+      }
+   }
 }
 
 #endregion Fiskalizacija F2

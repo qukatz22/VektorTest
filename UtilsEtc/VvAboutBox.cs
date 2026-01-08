@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
 using System.Configuration;
 using System.Deployment.Application;
-using Crownwood.DotNetMagic.Forms;
+using System.Drawing;
+using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Windows.Forms;
+using Crownwood.DotNetMagic.Forms;
+using static KupdobDao;
 
 public class VvAboutBox : DotNetMagicForm
 {
@@ -734,7 +735,11 @@ public class VvMessageBox_UC : UserControl
    private bool smallFont;
    private bool isMultiColumn;
    private ZXC.VvmBoxKind vvmBoxKind;
-   private VvHamper hamper_F2_SEND_candidates, hamper_F2_MAP_candidates, hamper_F2_SEND_stop, hamper_F2_MAP_stop, hamper_F2_IMPORT_candidates, hamper_F2_IMPORT_stop;
+   private VvHamper hamper_F2_SEND_candidates, hamper_F2_MAP_candidates, hamper_F2_SEND_stop, hamper_F2_MAP_stop, hamper_F2_IMPORT_candidates, hamper_F2_IMPORT_stop, hamper_Select;
+
+   private Button btn_Select_All, btn_Deselect_All, btn_Invert_Selection;
+
+   bool isF2dialog = false;
 
    #endregion Fieldz
 
@@ -752,18 +757,25 @@ public class VvMessageBox_UC : UserControl
 
       colWidth = ZXC.Q10un * 4 + ZXC.Q3un;
 
+      isF2dialog = _vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates ||
+                   _vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates  ||
+                   _vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates;
+
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
       {
+         CreateHamper_SELECT            (out hamper_Select);
          CreateHamper_F2_SEND_stop      (out hamper_F2_SEND_stop);
          CreateHamper_F2_SEND_candidates(out hamper_F2_SEND_candidates);
       }
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
       {
+         CreateHamper_SELECT              (out hamper_Select);
          CreateHamper_F2_IMPORT_stop      (out hamper_F2_IMPORT_stop);
          CreateHamper_F2_IMPORT_candidates(out hamper_F2_IMPORT_candidates);
       }
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       {
+         CreateHamper_SELECT           (out hamper_Select);
          CreateHamper_F2_MAP_stop      (out hamper_F2_MAP_stop      );
          CreateHamper_F2_MAP_candidates(out hamper_F2_MAP_candidates);
       }
@@ -792,30 +804,33 @@ public class VvMessageBox_UC : UserControl
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates)
       { 
          this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
-         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_stop.Height - ZXC.Qun4;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_SEND_stop.Height - ZXC.Qun4 - hamper_Select.Height;
          hamper_F2_SEND_stop      .Location = new Point(ZXC.QunMrgn, TheGrid.Bottom + ZXC.Qun2 );
          hamper_F2_SEND_candidates.Location = new Point(hamper_F2_SEND_stop.Right, TheGrid.Bottom);
 
+         hamper_Select            .Anchor = AnchorStyles.Top    | AnchorStyles.Left;
          hamper_F2_SEND_stop      .Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
          hamper_F2_SEND_candidates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       { 
          this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
-         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_candidates.Height;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_stop.Height - hamper_Select.Height;
          hamper_F2_MAP_stop      .Location = new Point(ZXC.QunMrgn, this.Size.Height - ZXC.QUN);
          hamper_F2_MAP_candidates.Location = new Point(ZXC.Q10un*3 + ZXC.Q2un, TheGrid.Bottom);
 
+         hamper_Select           .Anchor = AnchorStyles.Top    | AnchorStyles.Left;
          hamper_F2_MAP_stop      .Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
          hamper_F2_MAP_candidates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
       { 
          this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
-         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_IMPORT_candidates.Height;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_IMPORT_stop.Height - hamper_Select.Height;
          hamper_F2_IMPORT_stop      .Location = new Point(ZXC.QunMrgn, this.Size.Height - ZXC.QUN);
          hamper_F2_IMPORT_candidates.Location = new Point(ZXC.Q10un*3 + ZXC.Q2un, TheGrid.Bottom);
 
+         hamper_Select              .Anchor = AnchorStyles.Top    | AnchorStyles.Left;
          hamper_F2_IMPORT_stop      .Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
          hamper_F2_IMPORT_candidates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
       }
@@ -825,6 +840,64 @@ public class VvMessageBox_UC : UserControl
    #endregion CalcLocationAndSize
 
    #region Hampers
+
+   private void CreateHamper_SELECT(out VvHamper hamper)
+   {
+      hamper = new VvHamper(3, 1, "", this, false, ZXC.QunMrgn, ZXC.QunMrgn, 0);
+
+      hamper.VvColWdt      = new int[] {  ZXC.QunBtnW, ZXC.QunBtnW, ZXC.QunBtnW };
+      hamper.VvSpcBefCol   = new int[] {  ZXC.Qun2, ZXC.Qun2, ZXC.Qun2 };
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QunBtnH };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4    };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      btn_Select_All       = hamper.CreateVvButton(0, 0, new EventHandler(Select_All      ), "Označi sve");
+      btn_Deselect_All     = hamper.CreateVvButton(1, 0, new EventHandler(Deselect_All    ), "Odznači"   );
+      btn_Invert_Selection = hamper.CreateVvButton(2, 0, new EventHandler(Invert_Selection), "Invertiraj");
+
+      VvHamper.Open_Close_Fields_ForWriting(hamper, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvOtherUC);
+   }
+
+   private void Select_All       (object sender, EventArgs e) { SelectChboxColumns(VvForm.RISK_CB_Column_Actions.Select_All);      }
+   private void Deselect_All     (object sender, EventArgs e) { SelectChboxColumns(VvForm.RISK_CB_Column_Actions.Deselect_All);    }
+   private void Invert_Selection (object sender, EventArgs e) { SelectChboxColumns(VvForm.RISK_CB_Column_Actions.Invert_Selection);}
+
+   private void SelectChboxColumns(VvForm.RISK_CB_Column_Actions action)
+   {
+      int colIdx = DgvCI.iT_shouldS;
+
+      bool willBeChecked;
+      bool currChkState ;
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      for(int rowIdx = 0; rowIdx < TheGrid.RowCount; ++rowIdx)
+      {
+         currChkState = (TheGrid.GetBoolCell  (colIdx, rowIdx, false));
+
+         switch(action)
+         {
+            case VvForm.RISK_CB_Column_Actions.Select_All      : willBeChecked =         true ; break;
+            case VvForm.RISK_CB_Column_Actions.Deselect_All    : willBeChecked =         false; break;
+            case VvForm.RISK_CB_Column_Actions.Invert_Selection: willBeChecked = !currChkState; break;
+
+            default: willBeChecked = false; break;
+         }
+
+         TheGrid.PutCell(colIdx, rowIdx,(willBeChecked));
+
+         for(int i = 0; i < TheGrid.Rows[rowIdx].Cells.Count; ++i)
+         {
+            DataGridViewCell  cell = TheGrid.Rows[rowIdx].Cells[i];
+            if(willBeChecked) cell.Style.ForeColor = Color.FromArgb(255, 153, 153);// Color.LightGray;
+            else              cell.Style.ForeColor = Color.Black;
+         }
+      }
+
+      Cursor.Current = Cursors.Default;
+   }
 
    private void CreateHamper_F2_SEND_candidates(out VvHamper hamper)
    {
@@ -949,11 +1022,9 @@ public class VvMessageBox_UC : UserControl
    {
       TheGrid          = new VvDataGridView();
       TheGrid.Parent   = this;
-      TheGrid.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+      TheGrid.Location = isF2dialog ? new Point(ZXC.QunMrgn, hamper_Select.Bottom + ZXC.QunMrgn) : new Point(ZXC.QunMrgn, ZXC.QunMrgn);
     //TheGrid.ReadOnly = true;
-      TheGrid.ReadOnly = (vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates   || 
-                          vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates || 
-                          vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates     ) ? false : true;
+      TheGrid.ReadOnly = isF2dialog ? false : true;
 
       TheGrid.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
       TheGrid.AutoGenerateColumns                  = false;
@@ -1114,12 +1185,10 @@ public class VvMessageBox_UC : UserControl
       CreateColumn_skip    (theGrid, "Preskoči"    , ZXC.Q3un        );
 
     //CreateColumn_electronicId(theGrid, "ElectronicID", ZXC.Q7un);
-      CreateColumn_datum       (theGrid, "Datum slanja", ZXC.Q5un   );
-      CreateColumn_partner     (theGrid, "Dobavljač"   , ZXC.Q10un + ZXC.Q5un);
-    //CreateColumn_OIB         (theGrid, "OIB"         , ZXC.Q7un);
-      CreateColumn_tipBr       (theGrid, "Broj Racuna" , ZXC.Q5un);
+      CreateColumn_datum       (theGrid, "Datum slanja", ZXC.Q4un   );
+      CreateColumn_partner     (theGrid, "Dobavljač"   , ZXC.Q10un + ZXC.Q3un);
+      CreateColumn_tipBr       (theGrid, "Broj Racuna" , ZXC.Q9un);
       CreateColumn_iznos       (theGrid, "IznosRn"     , ZXC.Q4un);
-      CreateColumn_status      (theGrid, "Status"      , ZXC.Q4un);
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -1340,8 +1409,6 @@ public class VvMessageBox_UC : UserControl
 
    #endregion F2_MAP_candidates Columns
 
-
-
    #endregion TheGridColumn
 
    #region SetColumnIndexes()
@@ -1549,12 +1616,12 @@ public class VvMessageBox_UC : UserControl
       for(rowIdx = 0; rowIdx < messageList.Count; ++rowIdx)
       {
          TheGrid.Rows.Add();
-
-       //TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].DevName   );
-       //TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].TheCD     );
-       //TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName);
-       //TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
-       //TheGrid.PutCell(ci.iT_ftrRecID, rowIdx, messageList[rowIdx].UtilUint  );
+         
+         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobName);
+         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].TheDate   );
+         TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].String1);
+         TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
+         TheGrid.PutCell(ci.iT_ftrRecID, rowIdx, messageList[rowIdx].UtilUint  );
 
          TheGrid.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
       }
