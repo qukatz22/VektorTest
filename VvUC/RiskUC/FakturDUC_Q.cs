@@ -3595,6 +3595,38 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          }
       }
 
+      // Check AVANS birth 
+      if(IsF012DUC && faktur_rec.IsF2)
+      {
+         bool mejbiAvans = false;
+
+         #region vidi jel avans
+
+         string avansStr    = "AVANS"   ;
+         string predujamStr = "PREDUJAM";
+
+         if(faktur_rec.Napomena .ToUpper().Contains(avansStr   )) mejbiAvans = true;
+         if(faktur_rec.Napomena2.ToUpper().Contains(avansStr   )) mejbiAvans = true;
+         if(faktur_rec.Napomena .ToUpper().Contains(predujamStr)) mejbiAvans = true;
+         if(faktur_rec.Napomena2.ToUpper().Contains(predujamStr)) mejbiAvans = true;
+
+         if(faktur_rec.Transes.Any(rtr => rtr.T_artiklCD  .ToUpper().Contains(avansStr   ))) mejbiAvans = true;
+         if(faktur_rec.Transes.Any(rtr => rtr.T_artiklName.ToUpper().Contains(avansStr   ))) mejbiAvans = true;
+         if(faktur_rec.Transes.Any(rtr => rtr.T_artiklCD  .ToUpper().Contains(predujamStr))) mejbiAvans = true;
+         if(faktur_rec.Transes.Any(rtr => rtr.T_artiklName.ToUpper().Contains(predujamStr))) mejbiAvans = true;
+
+         if(faktur_rec.S_ukKCRP.IsNegative()) mejbiAvans = false; // STORNO avansa je u pitanju 
+
+         #endregion vidi jel avans
+
+         bool isFinalRn = faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11;
+
+         if(mejbiAvans && (faktur_rec.PdvKolTip != ZXC.VvUBL_PolsProcEnum.P04 || faktur_rec.StatusCD != "386") && !isFinalRn)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, $"Ovo je, čini se, AVANS (račun za predujam)!?{Environment.NewLine}{Environment.NewLine}A 'eRproc' i 'Kod rač' imaju, čini se, ne adekvatne vrijednosti!?");
+         }
+      }
+
       #endregion 2026 F2 validations & setting mandatory fields
 
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)

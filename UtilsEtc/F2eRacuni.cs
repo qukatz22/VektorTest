@@ -1513,6 +1513,12 @@ public static class Vv_eRacun_HTTP
 
          F2_IRn_faktur_rec.F2_StatusCD = theTRN_News.refreshedStatusId.Value;
 
+         // kada Faktur nastaje ne rucno, neg iz npr Rastera onda tad jos nema TtNumFisk_InVezniDok pa ovdje nadoknadjujemo 
+         if(F2_IRn_faktur_rec.Is_F2_TtNumFisk_InVezniDok && F2_IRn_faktur_rec.VezniDok.IsEmpty())
+         {
+            F2_IRn_faktur_rec.VezniDok = F2_IRn_faktur_rec.TtNumFiskal; // cuvat cemo u data layeru rezultat result propertya 'TtNumFiskal' 
+         }
+
          bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
@@ -4208,7 +4214,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    private void F2_Import_FUR_Fakturs(object sender, EventArgs e)
    {
 
-     // return; // za deploy 
+      return; // za deploy 
 
 
       Vv_eRacun_HTTP.InitProjectData();

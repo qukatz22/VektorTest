@@ -2190,8 +2190,9 @@ public class VvHamper: Panel
 
                if(theDUC != null && Faktur.IsFiskalDutyTT_ONLINE(theDUC.Fld_TT, theDUC.Fld_NacPlac, theDUC.Fld_NacPlac2))
                {
-                 if(((VvTextBox)thisControl).IsEmpty()) ((VvTextBox)thisControl).BackColor = Color.Red;
-                 else                                   ((VvTextBox)thisControl).BackColor = ZXC.vvColors.vvTBoxReadOnly_True_BackColor;
+               //if(((VvTextBox)thisControl).IsEmpty()                          ) ((VvTextBox)thisControl).BackColor = Color.Red;
+                 if(((VvTextBox)thisControl).IsEmpty() && theDUC.faktur_rec.IsF1) ((VvTextBox)thisControl).BackColor = Color.Red;
+                 else                                                             ((VvTextBox)thisControl).BackColor = ZXC.vvColors.vvTBoxReadOnly_True_BackColor;
                }
                else
                {
