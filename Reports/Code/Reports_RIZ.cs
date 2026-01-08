@@ -706,7 +706,7 @@ public abstract partial class VvRiskReport : VvReport
             theDUC = new IRADUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IRA));
             break;
          case Faktur.TT_IRM: // dodano zbog senda 01.01.2026.
-            theDUC = new IRADUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IRM));
+            theDUC = new IRMDUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IRM));
             break;
 
          default: theDUC = null; break;
