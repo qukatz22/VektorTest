@@ -702,6 +702,16 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       }
       
       TheVvTabPage.tbx_col4.JAM_ForeColor = colf012;
+
+      if(faktur_rec.F012kind == ZXC.F012kind.F2 && faktur_rec.F2_StatusCD == 0)
+      { 
+         TheVvTabPage.tbx_col7.Text = "Neposlan";
+         TheVvTabPage.tbx_col7.JAM_ForeColor = Color.Red;
+      }
+      else
+      {
+         TheVvTabPage.tbx_col7.JAM_ForeColor = Color.Black;
+      }
    }
 
    protected void ClearIdentityFields_7Col()

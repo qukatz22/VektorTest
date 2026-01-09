@@ -843,13 +843,13 @@ namespace EN16931.UBL
 
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
-            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
+            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
+            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
+            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
             ChargeTotalAmount    = new  ChargeTotalAmountType   { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            PrepaidAmount        = new PrepaidAmountType        { Value = Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-            PayableAmount        = new PayableAmountType        { Value = Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID }
+            PrepaidAmount        = new PrepaidAmountType        { Value = Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// avans - iznos plaćen unaprijed                                          
+            PayableAmount        = new PayableAmountType        { Value = Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
          };
 
          #endregion Total Sums
@@ -1732,8 +1732,8 @@ namespace EN16931.UBL
 
             case "BT113": theDecimal = /*-1.00M **/ faktur_rec.R_ukKCRP_AVANS_STORNO; break; //BT-84 Identifikator računa plaćanja IBAN	      
 
-               case "PPMVosn": theDecimal = faktur_rec.S_ukPpmvOsn; break; //PPMV osnovica 2026
-               case "PPMVizn": theDecimal = faktur_rec.R_ukPpmvIzn; break; //PPMV iznos    2026
+            case "PPMVosn": theDecimal = faktur_rec.S_ukPpmvOsn; break; //PPMV osnovica 2026
+            case "PPMVizn": theDecimal = faktur_rec.R_ukPpmvIzn; break; //PPMV iznos    2026
 
 
             default: theDecimal = 0.00M; break;
