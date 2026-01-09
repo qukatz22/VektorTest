@@ -79,6 +79,10 @@ namespace EN16931.UBL
 
          bool isClassicSTORNO = ORIG_faktur_rec.S_ukKCRP.IsNegative() && ORIG_faktur_rec.Napomena.ToUpper().Contains("STORNO");
 
+         bool isAvans        = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+                               ORIG_faktur_rec.StatusCD  == "386"                      &&
+                               ORIG_faktur_rec.S_ukKCRP.IsPositive()                    ;
+         
          bool isAvansSTORNO  = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
                                ORIG_faktur_rec.StatusCD  == "384"                      &&
                                ORIG_faktur_rec.S_ukKCRP.IsNegative();
@@ -87,7 +91,8 @@ namespace EN16931.UBL
                               ORIG_faktur_rec.StatusCD  == "380"                       ;
 
          // 2026: 
-         bool needsReferencaNaPrethodni = isClassicSTORNO || isAvansSTORNO || isFinalRn;
+         bool needsReferencaNaPrethodni          = isClassicSTORNO || isAvansSTORNO || isFinalRn;
+       //bool needsReferencaNaPrethodniPrethodni =                                     isFinalRn;
 
          if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakRecID.IsZero())
          {
@@ -180,7 +185,7 @@ namespace EN16931.UBL
          #endregion VvUBL_CustomizationID
 
          #region Referenca STORNO i stornoAVANSa racuna
- 
+
          //BT-25 Referenca na prethodni račun	Referenca na dokument 1..1
          //STORNO i stornoAVANSa racuna 
 
@@ -192,7 +197,7 @@ namespace EN16931.UBL
          //   </ cac:InvoiceDocumentReference >
          //</ cac:BillingReference >
 
-            // Ugaseno za 2026: 
+         // Ugaseno za 2026: 
          //if(isAVANS || faktur_rec.Is_STORNO)
          //{
          //   if(faktur_rec.VezniDok.IsEmpty()) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Dokument je STORNO a nema popunjen podatak 'OrigBrDok'!?");
@@ -211,9 +216,10 @@ namespace EN16931.UBL
          //}
 
          // 2026: 
+         Faktur prvFaktur_rec = null;
          if(needsReferencaNaPrethodni)
          {
-            Faktur prvFaktur_rec = new Faktur();
+            prvFaktur_rec = new Faktur();
 
             prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, faktur_rec.F2_PrvFakRecID, prvFaktur_rec);
 
@@ -840,6 +846,7 @@ namespace EN16931.UBL
          //BT-112 Ukupni iznos računa s PDV-om		                              Iznos 1..1
          //BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje	Iznos 1..1
 
+         decimal avansMoney = (isFinalRn && prvFaktur_rec != null) ? prvFaktur_rec.S_ukKCRP * -1.00M : 0M;
 
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
@@ -847,7 +854,7 @@ namespace EN16931.UBL
             AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
             TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
             TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
-            ChargeTotalAmount    = new  ChargeTotalAmountType   { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+            ChargeTotalAmount    = new ChargeTotalAmountType    { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
             PrepaidAmount        = new PrepaidAmountType        { Value = Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// avans - iznos plaćen unaprijed                                          
             PayableAmount        = new PayableAmountType        { Value = Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
          };

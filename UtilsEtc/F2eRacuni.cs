@@ -3895,7 +3895,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
-      if((TheVvDocumentRecordUC as FakturDUC).faktur_rec.IsF2 == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne može se F1 račun slati kao F2 eRačun."); return; }
+      if((TheVvDocumentRecordUC as FakturDUC).faktur_rec.IsF2 == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Račun nije F2! Ne može se slati kao F2 eRačun."); return; }
 
       if(Vv_eRacun_HTTP.Is_FIR_SEND_ON() == false) return;
 

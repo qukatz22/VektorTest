@@ -3502,7 +3502,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          if(ZXC.IsBadOib(ZXC.CURR_user_rec.Oib, false))
          { 
-           ZXC.aim_emsg(MessageBoxIcon.Error, $"Neispravan OIB operatera:[{ZXC.CURR_user_rec.Oib}] za usera {ZXC.CURR_user_rec.RecID} - {ZXC.CURR_user_rec.UserName}! Račun nije moguće usnimiti kao F2 eRačun.");
+           ZXC.aim_emsg(MessageBoxIcon.Error, $"Neispravan OIB operatera:[{ZXC.CURR_user_rec.Oib}] za usera {ZXC.CURR_user_rec.RecID} - {ZXC.CURR_user_rec.UserName}! Račun nije moguće usnimiti kao fiskalni Račun.");
             e.Cancel = true;
          }
 
