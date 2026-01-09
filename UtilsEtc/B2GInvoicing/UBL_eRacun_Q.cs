@@ -58,7 +58,7 @@ namespace EN16931.UBL
       //   List<Artikl> artiklSifrar,
       //   byte[] PDF_as_base64_bytes,
       //   string pdf_fileName)
-      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(Outgoing_eRacun_parameters oeRp, List<Artikl> artiklSifrar)
+      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(XSqlConnection conn, Outgoing_eRacun_parameters oeRp, List<Artikl> artiklSifrar)
       {
          #region Init
 
@@ -73,10 +73,27 @@ namespace EN16931.UBL
 
          the_eRacun.The_OERP = oeRp;
 
-         // 24.06.2019.
          bool isMojeRacunNotFina = true; // todo kao parametar 
-         bool isAVANS            = (ORIG_faktur_rec.IsAVANS_STORNO || ORIG_faktur_rec.Is_AfterAvans_PrihodTTa);
+         // 2026: gasimo 
+       //bool isAVANS            = (ORIG_faktur_rec.IsAVANS_STORNO || ORIG_faktur_rec.Is_AfterAvans_PrihodTTa);
 
+         bool isClassicSTORNO = ORIG_faktur_rec.S_ukKCRP.IsNegative() && ORIG_faktur_rec.Napomena.ToUpper().Contains("STORNO");
+
+         bool isAvansSTORNO  = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+                               ORIG_faktur_rec.StatusCD  == "384"                      &&
+                               ORIG_faktur_rec.S_ukKCRP.IsNegative();
+
+         bool isFinalRn     = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11 &&
+                              ORIG_faktur_rec.StatusCD  == "380"                       ;
+
+         // 2026: 
+         bool needsReferencaNaPrethodni = isClassicSTORNO || isAvansSTORNO || isFinalRn;
+
+         if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakRecID.IsZero())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"Ovaj račun treba referencu na prethodni dokument, a NEMA JE!?{Environment.NewLine}{Environment.NewLine}Ne mogu izraditi eRačun.");
+            return null;
+         }
 
          #endregion Init
 
@@ -175,18 +192,39 @@ namespace EN16931.UBL
          //   </ cac:InvoiceDocumentReference >
          //</ cac:BillingReference >
 
-         if(isAVANS || faktur_rec.Is_STORNO)
+            // Ugaseno za 2026: 
+         //if(isAVANS || faktur_rec.Is_STORNO)
+         //{
+         //   if(faktur_rec.VezniDok.IsEmpty()) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Dokument je STORNO a nema popunjen podatak 'OrigBrDok'!?");
+         //
+         //   the_eRacun.BillingReference = new BillingReferenceType[]
+         //   {
+         //      new BillingReferenceType
+         //      {
+         //         InvoiceDocumentReference = new DocumentReferenceType 
+         //         {
+         //                              ID        = new IDType                { Value = Fak2eR__String("BT025"  , faktur_rec, null) } 
+         //                            //IssueDate = new IssueDateType{Value =  TODO!!!2026 }                                          
+         //         }
+         //      }
+         //   };
+         //}
+
+         // 2026: 
+         if(needsReferencaNaPrethodni)
          {
-            if(faktur_rec.VezniDok.IsEmpty()) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Dokument je STORNO a nema popunjen podatak 'OrigBrDok'!?");
+            Faktur prvFaktur_rec = new Faktur();
+
+            prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, faktur_rec.F2_PrvFakRecID, prvFaktur_rec);
 
             the_eRacun.BillingReference = new BillingReferenceType[]
             {
                new BillingReferenceType
                {
-                  InvoiceDocumentReference = new DocumentReferenceType 
+                  InvoiceDocumentReference = new DocumentReferenceType
                   {
-                                       ID        = new IDType                { Value = Fak2eR__String("BT025"  , faktur_rec, null) }
-                                     //IssueDate = new IssueDateType{Value =  TODO!!!2026 }
+                     ID        = new IDType        { Value = prvFaktur_rec.VezniDok },
+                     IssueDate = new IssueDateType { Value = prvFaktur_rec.DokDate  }
                   }
                }
             };
@@ -1621,7 +1659,9 @@ namespace EN16931.UBL
       {
          decimal theDecimal;
 
-         bool needsAvansValues = faktur_rec.Is_AfterAvans_PrihodTTa;
+         // 2026: 
+       //bool needsAvansValues =                               faktur_rec.Is_AfterAvans_PrihodTTa; 
+         bool needsAvansValues = ZXC.IsF2_2026_rules ? false : faktur_rec.Is_AfterAvans_PrihodTTa;
 
          switch(BT_ID)
          {

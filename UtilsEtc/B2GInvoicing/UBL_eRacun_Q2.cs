@@ -353,7 +353,7 @@ namespace EN16931.UBL
          return xmlString;
       }
 
-      public bool VvSaveToFile(string xmlString, string fileName, System.Text.Encoding encoding)
+      public static bool VvSaveToFile(string xmlString, string fileName, System.Text.Encoding encoding)
       {
          System.IO.StreamWriter streamWriter = null;
 
