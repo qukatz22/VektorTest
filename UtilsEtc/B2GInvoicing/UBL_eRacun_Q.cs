@@ -67,7 +67,7 @@ namespace EN16931.UBL
          Kupdob    kupdob_rec          = oeRp.kupdob_rec             ;
          Kupdob    primPlat_rec        = oeRp.primPlat_rec           ;
          byte[]    PDF_as_base64_bytes = oeRp.PDF_as_base64_byteArray;
-         string    pdf_fileName        = oeRp.pdfFileNameOnly        ;
+         string    pdf_fileName        = oeRp./*pdfFileNameOnly*/qwePDFfileNameOnly;
 
          EN16931.UBL.InvoiceType the_eRacun = new EN16931.UBL.InvoiceType();
 
