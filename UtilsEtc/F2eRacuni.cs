@@ -1032,7 +1032,7 @@ public static class Vv_eRacun_HTTP
 
       bool isNewFaktur, addrecOK, kupdobOK, xmlValidationOK;
 
-      string theXmlString, theOIB;
+      string theXmlString = "", theOIB;
 
       Faktur existingFaktur, newIFA_Faktur_rec;
 
@@ -1102,57 +1102,25 @@ public static class Vv_eRacun_HTTP
          {
             case ZXC.F2_Provider_enum.MER:
             {
-               try
-               {
-                  webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML((uint)responseData.ElectronicId);
-
-                  theXmlString = webApiResult.ResponseData.DocumentXml;
-
-                  // get InvoiceType bussiness: 
-                  deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
-
-                  // Validate XML against XSD schema before deserialization
-                  string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
-
-                  if(!File.Exists(xsdFilePath))
+                  try
                   {
-                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
-                        "XSD schema file not found at: {0}", xsdFilePath);
-                  }
-                  else if(deserialized_eRacun != null)
-                  {
-                     using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
+                     webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML((uint)responseData.ElectronicId);
+
+                     theXmlString = webApiResult.ResponseData.DocumentXml;
+
+                     if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty())
                      {
-                        //bool validateOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString);
-
-                        bool isValid = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream,out List<string> validationErrors);
-
-                        if(!isValid)
-                        {
-                           ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
-                           xmlValidationOK = false;
-                           // nez jos sta cu ako ne validira dobro ... zasad idem dalje
-                           //break; // or continue, depending on your error handling strategy
-                        }
-                        else
-                        {
-                            xmlValidationOK = true;
-                        }
+                        Show_WebApiResult_ErrorMessageBox(webApiResult);
+                        receiveOK = false;
                      }
                   }
-
-                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_eRacun == null)
+                  catch(Exception ex)
                   {
-                     Show_WebApiResult_ErrorMessageBox(webApiResult);
+                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
                      receiveOK = false;
                   }
-               }
-               catch(Exception ex)
-               {
-                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-                  receiveOK = false;
-               }
-               break;
+
+                  break;
 
             } // case ZXC.F2_Provider_enum.MER: 
 
@@ -1166,7 +1134,37 @@ public static class Vv_eRacun_HTTP
 
          #endregion 1. Call RECEIVE to get full XML document
 
-         if(receiveOK && deserialized_eRacun != null)
+         #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
+
+         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, /*true*/ false) : null;
+
+         // Validate XML against XSD schema
+         string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
+         
+         xmlValidationOK = false;
+
+         if(!File.Exists(xsdFilePath))
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "XSD schema file not found at: {0}", xsdFilePath);
+         }
+         else if(deserialized_eRacun != null)
+         {
+            using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
+            {
+               xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
+
+               if(!xmlValidationOK)
+               {
+                  ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
+               }
+            }
+         }
+
+         #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
+
+         #region 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
+
+         if(receiveOK && deserialized_eRacun != null && xmlValidationOK)
          {
             #region Get Kupdob / New Kupdob?
 
@@ -1231,6 +1229,8 @@ public static class Vv_eRacun_HTTP
             }
 
          } // if(receiveOK) 
+
+         #endregion 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
 
       } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
 
@@ -2347,23 +2347,37 @@ public static class Vv_eRacun_HTTP
 
          #endregion 1. Call RECEIVE to get full XML document
 
-         if(receiveOK)
+         #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
+
+         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, true) : null;
+
+         string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
+
+         bool xmlValidationOK = false;
+
+         if(!File.Exists(xsdFilePath))
          {
-            // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
-
-            #region Deserialize XML As InvoiceType
-
-            try
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "XSD schema file not found at: {0}", xsdFilePath);
+         }
+         else if(deserialized_eRacun != null)
+         {
+            using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
             {
-               deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
-            }
-            catch(Exception ex)
-            {
-               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom deserializacije XML-a: {0}", ex.Message);
-            }
+               xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
 
-            #endregion Deserialize XML As InvoiceType
+               if(!xmlValidationOK)
+               {
+                  ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
+               }
+            }
+         }
 
+         #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
+
+         #region 3. Create AUR Xtrano as ARHIVA
+
+         if(receiveOK && deserialized_eRacun != null && xmlValidationOK)
+         {
             newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(theXmlString, responseData, deserialized_eRacun);
 
             if(newAUR_Xtrano_rec != null)
@@ -2387,7 +2401,7 @@ public static class Vv_eRacun_HTTP
                {
                   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu dodati novi Xtrano zapis u bazu podataka za prispjeli ulazni račun (inbox). Elektronski ID: {0}", newAUR_Xtrano_rec.F2_ElectronicID);
                   continue;
-               }  
+               }
 
                theUC.TheXtranoList.Add(newAUR_Xtrano_rec);
 
@@ -2405,8 +2419,9 @@ public static class Vv_eRacun_HTTP
 
                ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
             }
+         }
 
-         } // if(receiveOK) 
+         #endregion 3. Create AUR Xtrano as ARHIVA
 
       } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
 
@@ -3077,11 +3092,19 @@ public static class Vv_eRacun_HTTP
 
       try
       {
-         deserialized_eRacun = (EN16931.UBL.InvoiceType)serializer.Deserialize(new StringReader(xmlString));
+       //deserialized_eRacun = (EN16931.UBL.InvoiceType)serializer.Deserialize(new StringReader(xmlString));
+         deserialized_eRacun = EN16931.UBL.InvoiceType.Deserialize(xmlString);
+
       }
       catch(Exception ex)
       {
-         if(!beSilent) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom deserializacije eRačuna iz XML stringa: {0}", ex.Message);
+         if(!beSilent)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
+               "Greška prilikom deserializacije eRačuna iz XML stringa:\n\n{0}\n\nInner: {1}",
+               ex.Message,
+               ex.InnerException?.Message);
+         }
       }
 
       return deserialized_eRacun;
@@ -3476,6 +3499,21 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 
       byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
 
+      bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.PayableAmount?.Value == null;
+
+      decimal theMoney = deserialized_eRacun_Is_Unreadable ? 0.00M : deserialized_eRacun.LegalMonetaryTotal.PayableAmount.Value;
+
+      if(deserialized_eRacun_Is_Unreadable)
+      {
+
+         string debugPath = @"C:\temp\debug_invoice_" + responseData.ElectronicId.ToString() + "_" + responseData.SenderBusinessName + ".xml";
+         System.IO.Directory.CreateDirectory(@"C:\temp");
+         System.IO.File.WriteAllText(debugPath, xmlString, System.Text.Encoding.UTF8);
+         System.Diagnostics.Debug.WriteLine($"XML saved to: {debugPath}");
+
+         ZXC.aim_emsg(MessageBoxIcon.Exclamation, $"Deserialized eRacun Is Unreadable. Money will be zero!{Environment.NewLine}{Environment.NewLine}[{debugPath}]  file created.");
+      }
+
       Xtrano xmlXtrano_rec = null;
 
       xmlXtrano_rec   = new Xtrano()
@@ -3491,7 +3529,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
                          
          T_TT            = Mixer.TT_AUR                     ,
 
-         T_moneyA        = deserialized_eRacun.LegalMonetaryTotal.PayableAmount.Value,
+         T_moneyA        = theMoney,
       };
 
       return xmlXtrano_rec;
