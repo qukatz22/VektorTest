@@ -1787,7 +1787,9 @@ public class IRMDUC              : FakturExtDUC
             Faktur.TT_IRM
          });
 
-      if(ZXC.RRD.Dsc_IsM2PAY == true)
+      // 13.01.2026: zbog sendanja eRacuna 
+    //if(ZXC.RRD.Dsc_IsM2PAY == true)
+      if(ZXC.RRD.Dsc_IsM2PAY == true && TheVvTabPage != null)
       {
          TheVvTabPage.TheVvForm.M2PAY_DirectConnect(false);
       }
@@ -2073,7 +2075,9 @@ public class IRMDUC_2            : FakturExtDUC
             Faktur.TT_IRM
          });
 
-      if(ZXC.RRD.Dsc_IsM2PAY == true)
+      // 13.01.2026: zbog sendanja eRacuna 
+    //if(ZXC.RRD.Dsc_IsM2PAY == true)
+      if(ZXC.RRD.Dsc_IsM2PAY == true && TheVvTabPage != null)
       {
          TheVvTabPage.TheVvForm.M2PAY_DirectConnect(false);
       }

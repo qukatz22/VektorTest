@@ -425,6 +425,8 @@ public abstract partial class VvRiskReport : VvReport
 
    private static void Dispatch_FakturList(List<Faktur> theFakturList, ushort subDsc, bool isTo_Printer, bool isTo_eMail, bool isTo_eRacun)
    {
+      ZXC.aim_emsg("Ovo vise ne radi na ovaj nacin!"); return;
+
       #region Init
 
       if(theFakturList.IsEmpty())
@@ -482,7 +484,7 @@ public abstract partial class VvRiskReport : VvReport
 
          // 1. GetReportDocument
        //reportDocument = GetReportDocument(faktur_rec, thePFD, theTT);
-         theRptR_IRA    = GetRptR_IRA      (faktur_rec, thePFD, theTT);
+         theRptR_IRA    = GetRptR_IRA      (faktur_rec, thePFD, theTT); // null umj. faktur_rec 13.01.2026! todo? 
 
          // 2. get fileName 
          fileNameOnly = faktur_rec.TT_And_TtNum + " [" + faktur_rec.KupdobName + "]" + ".pdf";
@@ -708,7 +710,7 @@ public abstract partial class VvRiskReport : VvReport
          case Faktur.TT_IRM: // dodano zbog senda 01.01.2026.
             theDUC = new IRMDUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IRM));
             break;
-
+      
          default: theDUC = null; break;
       }
 

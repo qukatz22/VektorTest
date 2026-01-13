@@ -824,7 +824,7 @@ public static class Vv_eRacun_HTTP
          webApiResult.StatusCode = (int)httpResponse.StatusCode;
          webApiResult.StatusDescription = httpResponse.StatusDescription;
 
-         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream(), ZXC.VvUTF8Encoding_noBOM, true))
          {
             string responseString = streamReader.ReadToEnd();
 
@@ -2226,7 +2226,7 @@ public static class Vv_eRacun_HTTP
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
 
-      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(theUC.TheDbConnection, theUC.TheXtranoList, filterMembers, "", "t_ttNum " + asdDscStr + limitStr, false);
+      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(theUC.TheDbConnection, theUC.TheXtranoList, filterMembers, "", /*"t_ttNum "*/"t_dokDate" + asdDscStr + limitStr, false);
 
       if(theUC.TheXtranoList.NotEmpty()) theUC.PutDgvFields();
 
@@ -2290,7 +2290,7 @@ public static class Vv_eRacun_HTTP
          return 0;
       }
 
-      List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
+      List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd./*Created*/Sent).ToList();
 
       EN16931.UBL.InvoiceType deserialized_eRacun = null;
 
@@ -3486,7 +3486,7 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          F2_ElectronicID = faktur_rec.F2_ElectronicID,
          T_serial        = 1                         ,
          T_moneyA        = faktur_rec.S_ukKCRP       ,
-         T_opis_128      = ""                        , // fuse 
+         T_opis_128      = faktur_rec.KupdobName     , // fuse 
          T_devName       = ""                        , // fuse 
       };
 
@@ -3790,7 +3790,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       int newsCount = /*DDD*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
    }
-   private void F2_ShowArhivaPdf_OLD (object sender, EventArgs e)
+   private void F2_ShowArhivaPDF_OLD (object sender, EventArgs e)
    {
       FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
 
@@ -3826,7 +3826,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       //}
 
    }
-   private void F2_ShowArhivaPdf(object sender, EventArgs e)
+   private void F2_ShowArhivaPDF(object sender, EventArgs e)
    {
       // Determine which UC type we're working with and get the selected row index
       int rowIdx = -1;
@@ -4055,5 +4055,192 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       if(newsCount.IsZeroOrPositive()) ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
+   private void F2_ReRecieve_FUR_XtranoArhiva(object sender, EventArgs e)
+   {
+      F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
 
+      int rowIdx = -1;
+      Xtrano xtrano_rec = null;
+
+      if(theUC.TheG.SelectedCells.Count == 0)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+         return;
+      }
+
+      rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+      if(rowIdx < 0 || rowIdx >= theUC.TheXtranoList.Count)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+         return;
+      }
+
+      xtrano_rec = theUC.TheXtranoList[rowIdx];
+
+      #region 1. Call RECEIVE to get full XML document
+      
+      string theXmlString = "";
+
+      WebApiResult<VvMER_ResponseData> webApiResult = null;
+      
+      bool receiveOK = true;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+            {
+               try
+               {
+                  webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(/*(uint)responseData.ElectronicId*/xtrano_rec.F2_ElectronicID);
+
+                  theXmlString = webApiResult.ResponseData.DocumentXml;
+
+                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty())
+                  {
+                     Vv_eRacun_HTTP.Show_WebApiResult_ErrorMessageBox(webApiResult);
+                     receiveOK = false;
+                  }
+               }
+               catch(Exception ex)
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+                  receiveOK = false;
+               }
+               break;
+
+            } // case ZXC.F2_Provider_enum.MER: 
+
+         case ZXC.F2_Provider_enum.PND:
+            {
+               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+               receiveOK = false;
+               break;
+            }
+      }
+
+      #endregion 1. Call RECEIVE to get full XML document
+
+      if(receiveOK == false)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Neuspješno primanje XML dokumenta. Ne mogu RE_RECEIVE");
+
+         return;
+      }
+
+      #region DELREC AUR Xtrano
+
+      bool delOK = xtrano_rec.VvDao.DELREC(TheDbConnection, xtrano_rec, true, false);
+
+      if(delOK == false)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Neuspješno brisanje AUR Xtrano zapisa prije ponovnog unosa.");
+         return;
+      }
+      else
+      {
+         ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+      }
+
+      #endregion DELREC AUR Xtrano
+   }
+   private void F2_ShowArhivaXML(object sender, EventArgs e)
+   {
+      // Determine which UC type we're working with and get the selected row index
+      int rowIdx = -1;
+      Xtrano xtrano_rec = null;
+
+      if(TheVvUC is FakturExtDUC)
+      {
+         // Called from FakturDUC - get faktur directly
+         FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
+         Faktur faktur_rec = theDUC.faktur_rec;
+
+         if(faktur_rec.F2_ArhRecID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih XML-ova za ovaj eRačun.");
+            return;
+         }
+
+         xtrano_rec = new Xtrano();
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+      }
+      else if(TheVvUC is F2_Izlaz_UC)
+      {
+         // Called from F2_Izlaz_UC grid - get selected row
+         F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
+
+         if(theUC.TheG.SelectedCells.Count == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+            return;
+         }
+
+         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+         if(rowIdx < 0 || rowIdx >= theUC.TheFakturList.Count)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+            return;
+         }
+
+         Faktur faktur_rec = theUC.TheFakturList[rowIdx];
+
+         if(faktur_rec.F2_ArhRecID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih XML-ova za ovaj eRačun.");
+            return;
+         }
+
+         xtrano_rec = new Xtrano();
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+      }
+      else if(TheVvUC is F2_Ulaz_UC)
+      {
+         // Called from F2_Ulaz_UC grid - get selected Xtrano directly
+         F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
+
+         if(theUC.TheG.SelectedCells.Count == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+            return;
+         }
+
+         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+         if(rowIdx < 0 || rowIdx >= theUC.TheXtranoList.Count)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+            return;
+         }
+
+         xtrano_rec = theUC.TheXtranoList[rowIdx];
+
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, xtrano_rec.T_recID, false);
+      }
+
+      if(xtrano_rec == null)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu pronaći arhivu za prikaz XML-a.");
+         return;
+      }
+
+      ShowXML_FromXtranoArhiva(xtrano_rec);
+   }
+   private bool ShowXML_FromXtranoArhiva(Xtrano xtrano_rec)
+   {
+      string theXmlString = VvStringCompressor.DecompressXml(xtrano_rec.T_XmlZip);
+
+      string fileName = "eRacun_" + xtrano_rec.F2_ElectronicID.ToString() + "_" + xtrano_rec.T_opis_128 + ".xml";
+
+      string dirName   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+
+      string fullName = Path.Combine(dirName, fileName);
+
+      bool saveOK = EN16931.UBL.InvoiceType.VvSaveToFile(theXmlString, fullName, ZXC.VvUTF8Encoding_noBOM);
+
+      System.Diagnostics.Process.Start(fullName);
+
+      return true;
+   }
 }
