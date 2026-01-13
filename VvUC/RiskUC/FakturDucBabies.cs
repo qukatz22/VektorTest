@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Crypto.Prng;
 using static ZXC;
 
 public class UFADUC              : FakturExtDUC
@@ -9097,6 +9098,8 @@ public class F2_Izlaz_UC : VvUserControl
       TheG.ColumnHeadersHeight         = ZXC.Q2un;
 
       TheG.ReadOnly = true;
+
+      TheG.AllowUserToOrderColumns = false;
    }
 
    private void CreateColumn(VvDataGridView theGrid)
@@ -9198,6 +9201,12 @@ public class F2_Izlaz_UC : VvUserControl
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
 
       colScrol.DefaultCellStyle.BackColor = TheG.ColumnHeadersDefaultCellStyle.BackColor;
+
+
+      foreach(DataGridViewColumn column in TheG.Columns)
+      {
+         column.SortMode = DataGridViewColumnSortMode.NotSortable;
+      }
 
    }
 
@@ -9543,7 +9552,12 @@ public class F2_Ulaz_UC : VvUserControl
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
       colScrol.DefaultCellStyle.BackColor = TheG.ColumnHeadersDefaultCellStyle.BackColor;
-   }
+
+      foreach(DataGridViewColumn column in TheG.Columns)
+      {
+         column.SortMode = DataGridViewColumnSortMode.NotSortable;
+      }
+  }
 
    private void SetColors()
    {
