@@ -94,7 +94,7 @@ namespace EN16931.UBL
          bool needsReferencaNaPrethodni          = isClassicSTORNO || isAvansSTORNO || isFinalRn;
        //bool needsReferencaNaPrethodniPrethodni =                                     isFinalRn;
 
-         if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakRecID.IsZero())
+         if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakYYiRecID.IsZero())
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, $"Ovaj račun treba referencu na prethodni dokument, a NEMA JE!?{Environment.NewLine}{Environment.NewLine}Ne mogu izraditi eRačun.");
             return null;
@@ -221,7 +221,26 @@ namespace EN16931.UBL
          {
             prvFaktur_rec = new Faktur();
 
-            prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, faktur_rec.F2_PrvFakRecID, prvFaktur_rec);
+            (int prevFakYear, uint prevFakRecID) = ZXC.GetYearAndRecIDFrom_YYandRecID(faktur_rec.F2_PrvFakYYiRecID);
+
+            bool isYRN = faktur_rec.V1_tt == Faktur.TT_YRN && faktur_rec.V1_ttNum.NotZero();
+
+            if(isYRN)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovo je YRN!");
+
+               bool YRN_OK = FakturDao.SetMeFaktur(conn, prvFaktur_rec, faktur_rec.V1_tt, faktur_rec.V1_ttNum, false);
+            }
+            else if(prevFakYear == ZXC.projectYearAsInt) // prev fak je u ovoj godini 
+            {
+               prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
+            }
+            else // prev fak je u nekoj prethodnoj godini 
+            {
+               prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(ZXC.TheSecondDbConn_SameDB_OtherYear(prevFakYear), /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
+
+               if(ZXC.theSecondDbConnection != null) ZXC.theSecondDbConnection.Close(); // nemoj tu pozivaty propertyy nego koristi varijablu (malo slovo)
+            }
 
             the_eRacun.BillingReference = new BillingReferenceType[]
             {

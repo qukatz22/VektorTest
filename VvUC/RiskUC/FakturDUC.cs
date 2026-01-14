@@ -15049,19 +15049,17 @@ public partial class FakturExtDUC : FakturDUC
       //22.11.2018.
       if(CtrlOK(tbx_eRproc)) faktur_rec.PdvKolTip = Fld_eRproc;
 
-      if(CtrlOK(tbx_f2_electron_ID)) faktur_rec.F2_ElectronicID = Fld_F2_Electronic_ID;
-      if(CtrlOK(tbx_f2_sentTS     )) faktur_rec.F2_SentTS       = Fld_F2_SentTS       ;
-      if(CtrlOK(tbx_f2_status_CD  )) faktur_rec.F2_StatusCD     = Fld_F2_Status_CD    ;
-      if(CtrlOK(tbx_f2_ArhRecID   )) faktur_rec.F2_ArhRecID     = Fld_F2_ArhRecID     ;
-      if(CtrlOK(tbx_f2_isFisk     )) faktur_rec.F2_IsFisk       = Fld_F2_IsFisk       ;
-      if(CtrlOK(tbx_f2_isEizvj    )) faktur_rec.F2_IsEizvj      = Fld_F2_IsEizvj      ;
-      if(CtrlOK(tbx_f2_isMrkAsPaid)) faktur_rec.F2_IsMarkAsPaid = Fld_F2_IsMrkAsPaid  ;
-      if(CtrlOK(tbx_f2_isRejected )) faktur_rec.F2_IsRejected   = Fld_F2_IsRejected   ;
-      if(CtrlOK(tbx_f2_R1kind     )) faktur_rec.F2_R1kind       = Fld_F2_R1kind       ;
-      if(CtrlOK(tbx_f2_prvFakRecID)) faktur_rec.F2_PrvFakRecID  = Fld_F2_PrvFakRecID  ;
-
-
-
+      if(CtrlOK(tbx_f2_electron_ID)) faktur_rec.F2_ElectronicID   = Fld_F2_Electronic_ID;
+      if(CtrlOK(tbx_f2_sentTS     )) faktur_rec.F2_SentTS         = Fld_F2_SentTS       ;
+      if(CtrlOK(tbx_f2_status_CD  )) faktur_rec.F2_StatusCD       = Fld_F2_Status_CD    ;
+      if(CtrlOK(tbx_f2_ArhRecID   )) faktur_rec.F2_ArhRecID       = Fld_F2_ArhRecID     ;
+      if(CtrlOK(tbx_f2_isFisk     )) faktur_rec.F2_IsFisk         = Fld_F2_IsFisk       ;
+      if(CtrlOK(tbx_f2_isEizvj    )) faktur_rec.F2_IsEizvj        = Fld_F2_IsEizvj      ;
+      if(CtrlOK(tbx_f2_isMrkAsPaid)) faktur_rec.F2_IsMarkAsPaid   = Fld_F2_IsMrkAsPaid  ;
+      if(CtrlOK(tbx_f2_isRejected )) faktur_rec.F2_IsRejected     = Fld_F2_IsRejected   ;
+      if(CtrlOK(tbx_f2_R1kind     )) faktur_rec.F2_R1kind         = Fld_F2_R1kind       ;
+      if(CtrlOK(tbx_f2_prvFakRecID)) faktur_rec.F2_PrvFakYYiRecID = Fld_F2_PrvFakRecID  ;
+    //if(CtrlOK(tbx_f2_prvFakRecID)) faktur_rec.F2_PrvFakYYiRecID = ZXC.Get_YYandRecID(Fld_DokDate.Year, Fld_F2_PrvFakRecID);
 
       #region PTG Additions
 

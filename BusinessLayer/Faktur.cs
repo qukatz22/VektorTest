@@ -2175,7 +2175,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    /* 207 */ public ZXC.F2_StatusInAndOutBoxEnum F2_IsEizvj      { get { return (ZXC.F2_StatusInAndOutBoxEnum)this.TheEx.currentData._f2_isEizvj    ; } set { this.TheEx.currentData._f2_isEizvj     = (ushort)value; } }   /* _f2_IsEizvj      */
 
    /* 205*/public ZXC.F2_R1enum F2_R1kind    { get { return (ZXC.F2_R1enum)this.TheEx.currentData._f2_R1kind; } set { this.TheEx.currentData._f2_R1kind = (ushort)value; } }
-   /* 206 */ public  uint    F2_PrvFakRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
+   /* 206 */ public  uint F2_PrvFakYYiRecID  { get { return this.TheEx.currentData._f2_prvFakRecID; } set { this.TheEx.currentData._f2_prvFakRecID = value; } }   /* _f2_prvFakRecID  */
    /* 202 */ public DateTime F2_SentTS       { get { return this.TheEx.currentData._f2_sentTS     ; } set { this.TheEx.currentData._f2_sentTS      = value; } }   /* _f2_sentTS       */
 
    #endregion Data Layer Columns
@@ -5209,7 +5209,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool Is_NacPlac1_Cash_Or_Card      { get { return Is_NacPlac1_Virman_Transakc == false; } } 
    public bool Is_NacPlac2_Cash_Or_Card      { get { return Is_NacPlac2_Virman_Transakc == false; } }
    public bool Is_NacPlac1i2_Cash_Or_Card    { get { return Is_NacPlac1_Cash_Or_Card || Is_NacPlac2_Cash_Or_Card; } } // ILI je NP1 ILI je NP2 Cash_Or_Card 
-
+   uint GetFaktur_YYandRecID                 { get { return ZXC.Get_YYandRecID(this.DokDate.Year, this.RecID); } }
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE
