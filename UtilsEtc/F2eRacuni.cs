@@ -1149,15 +1149,18 @@ public static class Vv_eRacun_HTTP
          }
          else if(deserialized_eRacun != null)
          {
-            using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
-            {
-               xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
+            // kada bi koristili onaj MaybeOLD onda ide ovako:
+          //using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
+          //{
+          //   xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
+          //
+          //   if(!xmlValidationOK)
+          //   {
+          //      ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
+          //   }
+          //}
 
-               if(!xmlValidationOK)
-               {
-                  ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
-               }
-            }
+            try { bool validateOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
          }
 
          #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
@@ -1475,15 +1478,23 @@ public static class Vv_eRacun_HTTP
          {
             webApiResultWithList = new WebApiResult<List<VvMER_ResponseData>>()
             {
-               WebApiKind = ZXC.F2_WebApi.OutboxTRNstatusList,
+               WebApiKind = ZXC.F2_WebApi.InboxTRNstatusList,
                WebApiAddr = webApiResultWithList.WebApiAddr,
                StatusCode = -1,
                StatusDescription = "No response data",
                ErrorBody = "No response data"
             };
          }
+         else
+         {
+            if(webApiResultWithList.ResponseData != null && webApiResultWithList.ResponseData.IsEmpty())
+            {
+               webApiResultWithList.ErrorBody = "Lista je prazna";
+            }
+         }
 
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+
          //return 0;
       }
 
@@ -2264,7 +2275,8 @@ public static class Vv_eRacun_HTTP
 
       WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(queryInbox_DateOD, queryInbox_DateDO);
 
-      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
+    //if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null   || webApiResultWithList.ResponseData.IsEmpty()  )
       {
          if(webApiResultWithList == null)
          {
@@ -2287,7 +2299,7 @@ public static class Vv_eRacun_HTTP
 
          Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
 
-         return 0;
+         //return 0;
       }
 
       List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd./*Created*/Sent).ToList();
@@ -2361,22 +2373,25 @@ public static class Vv_eRacun_HTTP
          }
          else if(deserialized_eRacun != null)
          {
-            using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
-            {
-               xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
+            // kada bi koristili onaj MaybeOLD onda ide ovako:
+          //using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
+          //{
+          //   xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
+          //
+          //   if(!xmlValidationOK)
+          //   {
+          //      ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
+          //   }
+          //}
 
-               if(!xmlValidationOK)
-               {
-                  ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
-               }
-            }
+            try { xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
          }
 
          #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
          #region 3. Create AUR Xtrano as ARHIVA
 
-         if(receiveOK && deserialized_eRacun != null && xmlValidationOK)
+         if(receiveOK && deserialized_eRacun != null /*&& xmlValidationOK*/)
          {
             newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(theXmlString, responseData, deserialized_eRacun);
 

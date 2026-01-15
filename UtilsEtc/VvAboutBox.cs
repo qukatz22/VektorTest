@@ -698,10 +698,12 @@ public class VvMessageBoxDLG :  VvDialog
 
       mailClient.MessageSubject = this.Text;
 
-      mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r",
+      mailClient.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\rTheVvDataRecord: {3}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r",
          ZXC.TheVvForm.Text,
          ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
-         ZXC.TheVvForm.TheVvUC.ToString());
+         ZXC.TheVvForm.TheVvUC.ToString(),
+
+         ZXC.TheVvForm.TheVvTabPage != null && ZXC.TheVvForm.TheVvUC != null && ZXC.TheVvForm.TheVvUC is IVvRecordAssignableUC && ZXC.TheVvForm?.TheVvDataRecord != null ? ZXC.TheVvForm.TheVvDataRecord.ToString() : "");
 
       mailClient.MessageBody += TextForSupportMailBody;
 

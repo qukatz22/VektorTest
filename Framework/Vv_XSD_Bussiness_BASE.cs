@@ -222,7 +222,7 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
    }
 
    // 2025: made by Copilot
-   internal static bool ValidateXmlAgainstXsd(string _xmlString, Stream xsdStream, out List<string> validationErrors)
+   internal static bool ValidateXmlAgainstXsd_MaybeOLD(string _xmlString, Stream xsdStream, out List<string> validationErrors)
    {
       string xmlString = RemoveXmlSignature(_xmlString);
 
@@ -317,7 +317,7 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
       return isValid;
    }
    // 2025: byQ:
-   internal static bool ValidateXmlAgainstXsd(string xmlString/*, out List<string> validationErrors*/)
+   internal static bool ValidateXmlAgainstXsd(string xmlString)
    {
       string theXmlString = RemoveXmlSignature(xmlString);
 
@@ -327,7 +327,7 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
       xmlDocument.LoadXml(theXmlString);
       xmlDocument.Save(memoryStream);
       bool validateOK = false;
-      try { validateOK = EN16931.UBL.InvoiceType.ValidateThis_XML_eRacun(memoryStream); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
+      try { validateOK = EN16931.UBL.InvoiceType.ValidateThis_XML_eRacun(memoryStream, true); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
 
       return validateOK;
    }

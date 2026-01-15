@@ -3563,6 +3563,21 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             e.Cancel = true;
          }
 
+         // Provjeravamo CURR_prjkt_rec 
+         if(faktur_rec.IsF2 && 
+            (ZXC.CURR_prjkt_rec.Ziro1  .IsEmpty() || 
+             ZXC.CURR_prjkt_rec.Email  .IsEmpty() || 
+             ZXC.CURR_prjkt_rec.Ulica1 .IsEmpty() || 
+             ZXC.CURR_prjkt_rec.Grad   .IsEmpty() || 
+             ZXC.CURR_prjkt_rec.PostaBr.IsEmpty() || 
+             ZXC.CURR_prjkt_rec.Ime    .IsEmpty() || 
+             ZXC.CURR_prjkt_rec.Prezime.IsEmpty())
+           )
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Projekt ima nepotpune podatke (Ziro, Mail, Ulica, Grad, Post br., Ime, Prezime).");
+            e.Cancel = true;
+         }
+
          #endregion KdUlica, KdMjesto, KdZip
 
       } // Check some F2 eRacun mandatory fields 
@@ -9259,7 +9274,7 @@ public partial class FakturExtDUC : FakturDUC
 
    private void OnExitOIB_SaveToKupdob(object sender, CancelEventArgs e)
    {
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+      if(TheVvTabPage == null || TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
       // 2026: 
       if(!this.Visible) return;

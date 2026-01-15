@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if blablabla
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
@@ -1153,3 +1154,5 @@ namespace EPoslovanje.Api
       public Dictionary<string, object> ExtensionData { get; set; }
    }
 }
+
+#endif

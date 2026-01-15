@@ -173,11 +173,12 @@ public sealed class VvMailClient
 
       this.MessageSubject = messageSubject;
 
-      this.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r", 
+      this.MessageBody = String.Format("{0}\n\rProjekt/Year: {1}\n\r{2}\n\rTheVvDataRecord: {3}\n\r~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\r", 
          ZXC.TheVvForm.Text, 
          ZXC.CURR_prjkt_rec.ToString() + " - " + ZXC.projectYear,
 
-         (ZXC.TheVvForm.TheVvTabPage != null && ZXC.TheVvForm.TheVvUC != null) ? ZXC.TheVvForm.TheVvUC.ToString() : "");
+         (ZXC.TheVvForm.TheVvTabPage != null && ZXC.TheVvForm.TheVvUC != null) ? ZXC.TheVvForm.TheVvUC.ToString() : "",
+                  ZXC.TheVvForm.TheVvTabPage != null && ZXC.TheVvForm.TheVvUC != null && ZXC.TheVvForm?.TheVvDataRecord != null ? ZXC.TheVvForm.TheVvDataRecord.ToString() : "");
 
       this.MessageBody += messageBody;
 
