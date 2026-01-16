@@ -5120,11 +5120,14 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    // 50 – Unsuccessful  / Neuspjelo: Error occurred during processing or delivery.
    // 70 – eReporting: Invoice sent to eReporting; could not be delivered to recipient – sender must send PDF/physical copy separately to the recipient.
 
+   // odlucujemo dozvoliti RE SEND samo ako je status 'Neuspjelo' (50) 
+
    public bool F2_IsSentTry             { get { return F2_ElectronicID.NotZero(); } }
-   public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry && (F2_StatusCD == 20 || F2_StatusCD == 50) && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
- //public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry &&  F2_StatusCD == 50 /* Unsuccessful */    && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
+   public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry &&                       F2_StatusCD == 50  && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
+ //public bool F2_IsSentButUnsuccessful { get { return F2_IsSentTry && (F2_StatusCD == 20 || F2_StatusCD == 50) && F2_IsFisk != ZXC.F2_StatusInAndOutBoxEnum.DA_JE; } }
    public bool F2_IsSentSuccessful      { get { return F2_IsSentTry && F2_IsSentButUnsuccessful == false; } }
-   public bool F2_IsOKToSend            { get { return F2_IsSentTry == false || F2_IsSentButUnsuccessful == true; } }
+ //public bool F2_IsOKToSend            { get { return F2_IsSentTry == false || F2_IsSentButUnsuccessful == true; } }
+   public bool F2_IsOKToSend            { get { return F2_IsSentSuccessful == false; } }
 
 
    // ========================================================================================================================================================================= 
@@ -5209,7 +5212,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool Is_NacPlac1_Cash_Or_Card      { get { return Is_NacPlac1_Virman_Transakc == false; } } 
    public bool Is_NacPlac2_Cash_Or_Card      { get { return Is_NacPlac2_Virman_Transakc == false; } }
    public bool Is_NacPlac1i2_Cash_Or_Card    { get { return Is_NacPlac1_Cash_Or_Card || Is_NacPlac2_Cash_Or_Card; } } // ILI je NP1 ILI je NP2 Cash_Or_Card 
-   uint GetFaktur_YYandRecID                 { get { return ZXC.Get_YYandRecID(this.DokDate.Year, this.RecID); } }
+   internal uint GetFaktur_YYandRecID        { get { return ZXC.Get_YYandRecID(this.DokDate.Year, this.RecID); } }
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE

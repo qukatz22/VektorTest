@@ -1141,7 +1141,8 @@ public static class Vv_eRacun_HTTP
       filterMembers.Add(new VvSqlFilterMember(ZXC.FaktExSchemaRows[ZXC.FexCI.f2_R1kind], "R1Kind", ZXC.F2_R1enum.B2B      , " = " ));
 
       string asdDscStr;
-      string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
+    //string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
+      string limitStr = "LIMIT " +                                                                                "5000";
 
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
@@ -2370,7 +2371,8 @@ public static class Vv_eRacun_HTTP
       filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_tt], "theTT" , Mixer.TT_AUR, " = " ));
 
       string asdDscStr;
-      string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
+    //string limitStr = "LIMIT " + (ZXC.RRD.Dsc_F2_NumOfRows.IsPositive() ? ZXC.RRD.Dsc_F2_NumOfRows.ToString() : "100");
+      string limitStr = "LIMIT " +                                                                                "5000";
 
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
@@ -3967,15 +3969,24 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
    {
-      if((TheVvDocumentRecordUC as FakturDUC).faktur_rec.IsF2 == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Račun nije F2! Ne može se slati kao F2 eRačun."); return; }
+      Faktur faktur_rec = (TheVvDocumentRecordUC as FakturDUC).faktur_rec;
+
+      if(faktur_rec.IsF2 == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Račun nije F2! Ne može se slati kao F2 eRačun."); return; }
 
       if(Vv_eRacun_HTTP.Is_FIR_SEND_ON() == false) return;
+
+      // odlucujemo dozvoliti RE SEND samo ako je status 'Neuspjelo' (50) 
+      if(faktur_rec.F2_IsSentTry && faktur_rec.F2_StatusCD != 50) 
+      { 
+         ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ovaj eRačun je već poslan ili je u pokušaju slanja.{Environment.NewLine}{Environment.NewLine}Ponovni pokušaj slanja dozvoljen je samo pri transportnom statusu 'Neuspjelo'"); 
+         return; 
+      }
 
       DialogResult result = MessageBox.Show("Potvrđujete slanje ovog eRačuna?", "Potvrdite eRačun", MessageBoxButtons.YesNo, MessageBoxIcon.Question); if(result != DialogResult.Yes) return;
 
       Cursor.Current = Cursors.WaitCursor;
 
-      Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters((TheVvDocumentRecordUC as FakturDUC).faktur_rec, TheVvUC, true, true);
+      Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters(faktur_rec, TheVvUC, true, true);
 
       bool sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
 

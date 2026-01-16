@@ -12215,11 +12215,16 @@ public partial class FakturExtDUC : FakturDUC
       tbx_f2_isMrkAsPaid.JAM_ReadOnly = true;
       tbx_f2_isRejected .JAM_ReadOnly = true;
       tbx_f2_R1kind     .JAM_ReadOnly = true;
-      tbx_f2_prvFakRecID.JAM_ReadOnly = true;
+
+      // ipak, da mi mozemo intervenirati ... treba dobro formatirati 9 = 2 + 7 ---> YYnnnnnnn 
+      if(ZXC.CURR_userName != ZXC.vvDB_systemSuperUserName && ZXC.CURR_userName != ZXC.vvDB_programSuperUserName)
+      {
+         tbx_f2_prvFakRecID.JAM_ReadOnly = true;
+      }
 
       //hamper.BackColor = Color.FromArgb(250, 116, 116);
-      
-    //hamper.Visible = false;
+
+      //hamper.Visible = false;
    }
 
    #endregion F2_Info_hamper
