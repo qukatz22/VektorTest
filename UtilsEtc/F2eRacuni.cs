@@ -17,6 +17,8 @@ using System.Net.Security;
 using System.Drawing;
 using System.Diagnostics.SymbolStore;
 using EN16931.UBL;
+using System.Xml.Linq;
+
 
 
 
@@ -450,7 +452,6 @@ public static class Vv_eRacun_HTTP
 
       return (dateOD, dateDO);
    }
-
    public static bool Is_FIR_ON()
    {
       //get
@@ -470,7 +471,6 @@ public static class Vv_eRacun_HTTP
          return true;
       }
    }
-
    public static bool Is_FIR_SEND_ON()
    {
       //get
@@ -486,7 +486,6 @@ public static class Vv_eRacun_HTTP
          return true;
       }
    }
-
    public static bool Is_FUR_ON()
    {
       //get
@@ -500,7 +499,146 @@ public static class Vv_eRacun_HTTP
          return true;
       }
    }
+   public static string ExtractEmbeddedPdfsFromXmlFileOLD(string xmlFilePath)
+   {
+      string pdfFilePath = "";
 
+      try
+      {
+         // Validate input
+         if(string.IsNullOrEmpty(xmlFilePath) || !File.Exists(xmlFilePath))
+         {
+            throw new FileNotFoundException($"XML file not found: {xmlFilePath}");
+         }
+
+         // Load and deserialize the XML
+         string xmlString = File.ReadAllText(xmlFilePath);
+         EN16931.UBL.InvoiceType the_eRacun = EN16931.UBL.InvoiceType.Deserialize(xmlString);
+
+         // Discover PDF documents using the same pattern as your existing code
+         var pdfDocs = the_eRacun.AdditionalDocumentReference?
+             .Where(docRef =>
+                 docRef?.Attachment?.EmbeddedDocumentBinaryObject != null &&
+                 docRef.Attachment.EmbeddedDocumentBinaryObject.mimeCode == "application/pdf")
+             .ToList();
+
+         if(pdfDocs != null)
+         {
+            // Get XML file directory and base name for PDF files
+            string xmlDirectory = Path.GetDirectoryName(xmlFilePath);
+            string xmlFileNameWithoutExtension = Path.GetFileNameWithoutExtension(xmlFilePath);
+
+            foreach(var docRef in pdfDocs)
+            {
+               var filename = docRef.Attachment.EmbeddedDocumentBinaryObject.filename;
+               if(string.IsNullOrEmpty(filename))
+                  filename = "output.pdf";
+               else
+                  filename = System.IO.Path.GetFileName(filename); // Extract filename only from full path
+
+               var pdfBytes = docRef.Attachment.EmbeddedDocumentBinaryObject.Value;
+
+               // Create PDF file path (same directory as XML, using XML base name + PDF filename)
+               pdfFilePath = Path.Combine(xmlDirectory, $"{xmlFileNameWithoutExtension}_{filename}");
+
+               // Write PDF file
+               File.WriteAllBytes(pdfFilePath, pdfBytes);
+
+               Console.WriteLine($"PDF extracted successfully to: {pdfFilePath}");
+            }
+         }
+         else
+         {
+            Console.WriteLine("No embedded PDFs found in the XML file.");
+         }
+      }
+      catch(Exception ex)
+      {
+         //throw new Exception($"Error extracting PDFs from XML: {ex.Message}", ex);
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Xml datoteka ne izgleda kao eRačun.");
+         pdfFilePath = "";
+      }
+
+      return pdfFilePath;
+   }
+   public static string ExtractEmbeddedPdfsFromXmlFile(string xmlFilePath)
+   {
+      string pdfFilePath = "";
+
+      try
+      {
+         // Validate input
+         if(string.IsNullOrEmpty(xmlFilePath) || !File.Exists(xmlFilePath))
+         {
+            throw new FileNotFoundException($"XML file not found: {xmlFilePath}");
+         }
+
+         // Load XML using XDocument for better namespace handling
+         string xmlString = File.ReadAllText(xmlFilePath);
+         XDocument xmlDoc = XDocument.Parse(xmlString);
+
+         // Define namespaces used in UBL documents
+         XNamespace cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+         XNamespace cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
+
+         // Find all AdditionalDocumentReference elements with embedded PDFs
+         var pdfElements = xmlDoc.Descendants(cac + "AdditionalDocumentReference")
+            .Where(docRef =>
+            {
+               var attachment = docRef.Element(cac + "Attachment");
+               var embeddedObj = attachment?.Element(cbc + "EmbeddedDocumentBinaryObject");
+               return embeddedObj?.Attribute("mimeCode")?.Value == "application/pdf";
+            });
+
+         if(pdfElements.Any())
+         {
+            // Get XML file directory and base name for PDF files
+            string xmlDirectory = Path.GetDirectoryName(xmlFilePath);
+            string xmlFileNameWithoutExtension = Path.GetFileNameWithoutExtension(xmlFilePath);
+
+            foreach(var docRef in pdfElements)
+            {
+               var attachment = docRef.Element(cac + "Attachment");
+               var embeddedObj = attachment?.Element(cbc + "EmbeddedDocumentBinaryObject");
+
+               if(embeddedObj != null)
+               {
+                  string filename = embeddedObj.Attribute("filename")?.Value ?? "output.pdf";
+                  filename = System.IO.Path.GetFileName(filename); // Extract filename only from full path
+
+                  string base64Content = embeddedObj.Value?.Trim();
+                  if(!string.IsNullOrEmpty(base64Content))
+                  {
+                     byte[] pdfBytes = Convert.FromBase64String(base64Content);
+
+                     // Create PDF file path (same directory as XML, using XML base name + PDF filename)
+                     pdfFilePath = Path.Combine(xmlDirectory, $"{xmlFileNameWithoutExtension}_{filename}");
+
+                     // Write PDF file
+                     File.WriteAllBytes(pdfFilePath, pdfBytes);
+
+                     Console.WriteLine($"PDF extracted successfully to: {pdfFilePath}");
+
+                     // For now, return the first PDF found
+                     // If multiple PDFs exist, this could be enhanced to handle all of them
+                     break;
+                  }
+               }
+            }
+         }
+         else
+         {
+            Console.WriteLine("No embedded PDFs found in the XML file.");
+         }
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, "Xml datoteka ne izgleda kao eRačun.");
+         pdfFilePath = "";
+      }
+
+      return pdfFilePath;
+   }
    #endregion Utils
 
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
@@ -2384,7 +2522,7 @@ public static class Vv_eRacun_HTTP
           //   }
           //}
 
-            try { xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
+            //try { xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
          }
 
          #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
@@ -2599,7 +2737,7 @@ public static class Vv_eRacun_HTTP
       {
          Load_AUR_XtranoList(theUC);
 
-         ZXC.aim_emsg_List(string.Format("DODANO je {0} novih ulaznih računa u Inbox i Arhivu.", updatedStatusInfoList.Count), updatedStatusInfoList);
+         ZXC.aim_emsg_List(string.Format("Ima {0} novosti.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
 
       return newsCount;
@@ -3805,125 +3943,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       int newsCount = /*DDD*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
    }
-   private void F2_ShowArhivaPDF_OLD (object sender, EventArgs e)
-   {
-      FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
-
-      Faktur faktur_rec = theDUC.faktur_rec;
-
-      if(faktur_rec.F2_ArhRecID.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun."); return; }
-
-      Xtrano xtrano_rec = new Xtrano();
-      xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
-
-      //List<byte[]> pdfBytesList = xtrano_rec.F2_Get_PDF_Bytes_List();
-      //List<string> pdfFileNameList = xtrano_rec.F2_GetPdfFilenamesFrom_eRacun();
-      //
-      //byte[] pdfBytes = pdfBytesList[0]; // your PDF byte array
-      //
-      //string filename = pdfFileNameList[0];
-      //string dirame   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
-      //string fullName = Path.Combine(dirame, filename);
-      //File.WriteAllBytes(fullName, pdfBytes);
-      //System.Diagnostics.Process.Start(fullName);
-
-      ShowPDF_FromXtranoArhiva(xtrano_rec);
-      
-
-      // OVO je za PDFiumViewer testiranje ... ali si odustao od toga JER CEMO SA SYNCFUSION-om! 
-      //using(var stream = new MemoryStream(pdfBytes))
-      //{
-      //   var pdfDocument = PdfiumViewer.PdfDocument.Load(stream);
-      //   var pdfViewer = new PdfiumViewer.PdfViewer();
-      //   pdfViewer.Document = pdfDocument;
-      //   pdfViewer.Dock = DockStyle.Fill;
-      //   this.Controls.Add(pdfViewer); // 'this' is your Form or UserControl
-      //}
-
-   }
-   private void F2_ShowArhivaPDF(object sender, EventArgs e)
-   {
-      // Determine which UC type we're working with and get the selected row index
-      int rowIdx = -1;
-      Xtrano xtrano_rec = null;
-
-      if(TheVvUC is FakturExtDUC)
-      {
-         // Called from FakturDUC - get faktur directly
-         FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
-         Faktur faktur_rec = theDUC.faktur_rec;
-
-         if(faktur_rec.F2_ArhRecID.IsZero())
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun.");
-            return;
-         }
-
-         xtrano_rec = new Xtrano();
-         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
-      }
-      else if(TheVvUC is F2_Izlaz_UC)
-      {
-         // Called from F2_Izlaz_UC grid - get selected row
-         F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
-
-         if(theUC.TheG.SelectedCells.Count == 0)
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
-            return;
-         }
-
-         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
-
-         if(rowIdx < 0 || rowIdx >= theUC.TheFakturList.Count)
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
-            return;
-         }
-
-         Faktur faktur_rec = theUC.TheFakturList[rowIdx];
-
-         if(faktur_rec.F2_ArhRecID.IsZero())
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun.");
-            return;
-         }
-
-         xtrano_rec = new Xtrano();
-         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
-      }
-      else if(TheVvUC is F2_Ulaz_UC)
-      {
-         // Called from F2_Ulaz_UC grid - get selected Xtrano directly
-         F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
-
-         if(theUC.TheG.SelectedCells.Count == 0)
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
-            return;
-         }
-
-         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
-
-         if(rowIdx < 0 || rowIdx >= theUC.TheXtranoList.Count)
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
-            return;
-         }
-
-         xtrano_rec = theUC.TheXtranoList[rowIdx];
-
-         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, xtrano_rec.T_recID, false);
-      }
-
-      if(xtrano_rec == null)
-      {
-         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu pronaći arhivu za prikaz PDF-a.");
-         return;
-      }
-
-      ShowPDF_FromXtranoArhiva(xtrano_rec);
-   }
    private bool ShowPDF_FromXtranoArhiva(Xtrano xtrano_rec)
    {
       List<(string Filename, byte[] PdfBytes)> pdfFiles = xtrano_rec.F2_GetPdfFilesWithNames();
@@ -4159,6 +4178,125 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       #endregion DELREC AUR Xtrano
    }
+   private void F2_ShowArhivaPDF_OLD (object sender, EventArgs e)
+   {
+      FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
+
+      Faktur faktur_rec = theDUC.faktur_rec;
+
+      if(faktur_rec.F2_ArhRecID.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun."); return; }
+
+      Xtrano xtrano_rec = new Xtrano();
+      xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+
+      //List<byte[]> pdfBytesList = xtrano_rec.F2_Get_PDF_Bytes_List();
+      //List<string> pdfFileNameList = xtrano_rec.F2_GetPdfFilenamesFrom_eRacun();
+      //
+      //byte[] pdfBytes = pdfBytesList[0]; // your PDF byte array
+      //
+      //string filename = pdfFileNameList[0];
+      //string dirame   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+      //string fullName = Path.Combine(dirame, filename);
+      //File.WriteAllBytes(fullName, pdfBytes);
+      //System.Diagnostics.Process.Start(fullName);
+
+      ShowPDF_FromXtranoArhiva(xtrano_rec);
+      
+
+      // OVO je za PDFiumViewer testiranje ... ali si odustao od toga JER CEMO SA SYNCFUSION-om! 
+      //using(var stream = new MemoryStream(pdfBytes))
+      //{
+      //   var pdfDocument = PdfiumViewer.PdfDocument.Load(stream);
+      //   var pdfViewer = new PdfiumViewer.PdfViewer();
+      //   pdfViewer.Document = pdfDocument;
+      //   pdfViewer.Dock = DockStyle.Fill;
+      //   this.Controls.Add(pdfViewer); // 'this' is your Form or UserControl
+      //}
+
+   }
+   private void F2_ShowArhivaPDF(object sender, EventArgs e)
+   {
+      // Determine which UC type we're working with and get the selected row index
+      int rowIdx = -1;
+      Xtrano xtrano_rec = null;
+
+      if(TheVvUC is FakturExtDUC)
+      {
+         // Called from FakturDUC - get faktur directly
+         FakturExtDUC theDUC = TheVvDocumentRecordUC as FakturExtDUC;
+         Faktur faktur_rec = theDUC.faktur_rec;
+
+         if(faktur_rec.F2_ArhRecID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun.");
+            return;
+         }
+
+         xtrano_rec = new Xtrano();
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+      }
+      else if(TheVvUC is F2_Izlaz_UC)
+      {
+         // Called from F2_Izlaz_UC grid - get selected row
+         F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
+
+         if(theUC.TheG.SelectedCells.Count == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+            return;
+         }
+
+         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+         if(rowIdx < 0 || rowIdx >= theUC.TheFakturList.Count)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+            return;
+         }
+
+         Faktur faktur_rec = theUC.TheFakturList[rowIdx];
+
+         if(faktur_rec.F2_ArhRecID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun.");
+            return;
+         }
+
+         xtrano_rec = new Xtrano();
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, faktur_rec.F2_ArhRecID, false);
+      }
+      else if(TheVvUC is F2_Ulaz_UC)
+      {
+         // Called from F2_Ulaz_UC grid - get selected Xtrano directly
+         F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
+
+         if(theUC.TheG.SelectedCells.Count == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite red iz tablice.");
+            return;
+         }
+
+         rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
+
+         if(rowIdx < 0 || rowIdx >= theUC.TheXtranoList.Count)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Neispravan odabir reda.");
+            return;
+         }
+
+         xtrano_rec = theUC.TheXtranoList[rowIdx];
+
+         xtrano_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, xtrano_rec, xtrano_rec.T_recID, false);
+      }
+
+      if(xtrano_rec == null)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu pronaći arhivu za prikaz PDF-a.");
+         return;
+      }
+
+      ShowPDF_FromXtranoArhiva(xtrano_rec);
+   }
    private void F2_ShowArhivaXML(object sender, EventArgs e)
    {
       // Determine which UC type we're working with and get the selected row index
@@ -4258,4 +4396,55 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       return true;
    }
+   private void F2_ShowDiskPDFinXML(object sender, EventArgs e)
+   {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+
+      openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+
+      openFileDialog.Filter = "Xml datoteke (*.xml)|*.xml|Sve Datoteke (*.*)|*.*";
+      openFileDialog.FilterIndex = 1;
+      openFileDialog.RestoreDirectory = true;
+
+      if(openFileDialog.ShowDialog() == DialogResult.OK)
+      {
+         string full_XML_PathName = openFileDialog.FileName;
+
+         string full_PDF_PathName = Vv_eRacun_HTTP.ExtractEmbeddedPdfsFromXmlFile(full_XML_PathName);
+
+         if(full_PDF_PathName.NotEmpty())
+         {
+            System.Diagnostics.Process.Start(full_PDF_PathName);
+         }
+         else
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Exclamation, "Ne mogu isčitati ugrađene PDF-ove u odabranoj XML datoteci.");
+         }
+      }
+
+      openFileDialog.Dispose(); // !!! 
+   }
+   private void F2_ShowDiskXML(object sender, EventArgs e)
+   {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+
+      openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+
+      openFileDialog.Filter = "Xml datoteke (*.xml)|*.xml|Sve Datoteke (*.*)|*.*";
+      openFileDialog.FilterIndex = 1;
+      openFileDialog.RestoreDirectory = true;
+
+      if(openFileDialog.ShowDialog() == DialogResult.OK)
+      {
+         string full_XML_PathName = openFileDialog.FileName;
+
+         if(full_XML_PathName.NotEmpty())
+         {
+            System.Diagnostics.Process.Start(full_XML_PathName);
+         }
+      }
+
+      openFileDialog.Dispose(); // !!! 
+   }
+
 }

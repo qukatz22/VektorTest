@@ -9029,8 +9029,9 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
+#if !DEBUG
       INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
-
+#endif
       //PutDgvFields();
 
       TheG.TabStop = false;
@@ -9077,7 +9078,7 @@ public class F2_Izlaz_UC : VvUserControl
       }
    }
 
-   #endregion Constructor
+#endregion Constructor
 
    #region TheGrid and columns
 
@@ -9393,7 +9394,9 @@ public class F2_Izlaz_UC : VvUserControl
    {
       if(newPage is VvTabPage == false) return;
 
+#if !DEBUG
       if((newPage as VvTabPage).TheVvUC is F2_Izlaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Izlaz_UC).INIT_FIR();
+#endif
    }
 }
 
@@ -9451,7 +9454,9 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
+#if !DEBUG
       INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+#endif
 
       //PutDgvFields();
 
@@ -9484,7 +9489,7 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 
-   #endregion Constructor
+#endregion Constructor
 
    #region TheGrid and columns
 
@@ -9704,7 +9709,9 @@ public class F2_Ulaz_UC : VvUserControl
    {
       if(newPage is VvTabPage == false) return;
 
+#if !DEBUG
       if((newPage as VvTabPage).TheVvUC is F2_Ulaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Ulaz_UC).INIT_FUR();
+#endif
    }
 
    private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)

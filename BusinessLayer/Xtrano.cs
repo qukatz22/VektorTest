@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 #region struct XtranoStruct
 
@@ -442,7 +443,7 @@ public class Xtrano : VvTransRecord
       return filenames;
    }
 
-   public List<(string Filename, byte[] PdfBytes)> F2_GetPdfFilesWithNames()
+   public List<(string Filename, byte[] PdfBytes)> F2_GetPdfFilesWithNamesOLD()
    {
       List<(string Filename, byte[] PdfBytes)> result = new List<(string Filename, byte[] PdfBytes)>();
 
@@ -478,6 +479,59 @@ public class Xtrano : VvTransRecord
       return result;
    }
 
+   public List<(string Filename, byte[] PdfBytes)> F2_GetPdfFilesWithNames()
+   {
+      List<(string Filename, byte[] PdfBytes)> result = new List<(string Filename, byte[] PdfBytes)>();
+
+      if(this.T_TT != Mixer.TT_AUR && this.T_TT != Mixer.TT_AIR) return result;
+
+      if(this.T_XmlZip is null || this.T_XmlZip.Length.IsZero()) return result;
+
+      string xmlString = VvStringCompressor.DecompressXml(this.T_XmlZip);
+
+      try
+      {
+         XDocument xmlDoc = XDocument.Parse(xmlString);
+
+         // Define namespaces
+         XNamespace cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+         XNamespace cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
+
+         // Find all AdditionalDocumentReference elements with embedded PDFs
+         var pdfElements = xmlDoc.Descendants(cac + "AdditionalDocumentReference")
+             .Where(docRef =>
+             {
+                var attachment = docRef.Element(cac + "Attachment");
+                var embeddedObj = attachment?.Element(cbc + "EmbeddedDocumentBinaryObject");
+                return embeddedObj?.Attribute("mimeCode")?.Value == "application/pdf";
+             });
+
+         foreach(var docRef in pdfElements)
+         {
+            var attachment = docRef.Element(cac + "Attachment");
+            var embeddedObj = attachment?.Element(cbc + "EmbeddedDocumentBinaryObject");
+
+            if(embeddedObj != null)
+            {
+               string filename = embeddedObj.Attribute("filename")?.Value ?? "output.pdf";
+               filename = System.IO.Path.GetFileName(filename);
+
+               string base64Content = embeddedObj.Value?.Trim();
+               if(!string.IsNullOrEmpty(base64Content))
+               {
+                  byte[] pdfBytes = Convert.FromBase64String(base64Content);
+                  result.Add((filename, pdfBytes));
+               }
+            }
+         }
+      }
+      catch(Exception ex)
+      {
+         Console.WriteLine($"XML parsing error: {ex.Message}");
+      }
+
+      return result;
+   }
    #endregion PDF Viewer
 }
 

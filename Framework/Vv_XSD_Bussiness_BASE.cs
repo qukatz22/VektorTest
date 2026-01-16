@@ -327,6 +327,7 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
       xmlDocument.LoadXml(theXmlString);
       xmlDocument.Save(memoryStream);
       bool validateOK = false;
+
       try { validateOK = EN16931.UBL.InvoiceType.ValidateThis_XML_eRacun(memoryStream, true); } catch(Exception ex) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); }
 
       return validateOK;
