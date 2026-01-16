@@ -9530,14 +9530,6 @@ public class F2_Ulaz_UC : VvUserControl
       fisk.DefaultCellStyle.BackColor = clr_Mp_Back;
       theGrid.Columns.Add(fisk);
 
-      reject            = new DataGridViewImageColumn();
-      reject.Name       = "reject";
-      reject.HeaderText = "ODB.";
-      reject.Width      = ZXC.Q2un;
-      reject.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
-      reject.DefaultCellStyle.BackColor = clr_Mp_Back;
-      theGrid.Columns.Add(reject);
-
       arh            = new DataGridViewImageColumn();
       arh.Name       = "arh";
       arh.HeaderText = "ARH";
@@ -9546,6 +9538,14 @@ public class F2_Ulaz_UC : VvUserControl
       arh.DefaultCellStyle.BackColor = clr_Mp_Back;
       theGrid.Columns.Add(arh);
    
+      reject            = new DataGridViewImageColumn();
+      reject.Name       = "reject";
+      reject.HeaderText = "ODB.";
+      reject.Width      = ZXC.Q2un;
+      reject.Image      = VvIco.MarkAsRECEIVEd.ToBitmap();
+      reject.DefaultCellStyle.BackColor = clr_Mp_Back;
+      theGrid.Columns.Add(reject);
+
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
    
       vvtb_tt      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_tt"     , null, -12, "Tip"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt     , null, "R_tt"     , "Tip"               , ZXC.Q2un); vvtb_tt    .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; //colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
