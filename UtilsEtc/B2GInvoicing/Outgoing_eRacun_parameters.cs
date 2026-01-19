@@ -21,7 +21,7 @@ public class Outgoing_eRacun_parameters
    /*         */ public string     qweXMLfileNameOnly      { get { return qweFileNameBaseOnly + ".xml"; } }
    /*         */ public string     qwePDFfullPathAndName   { get { return System.IO.Path.Combine(qweTheDirectoryName, qwePDFfileNameOnly); } }
    /*         */ public string     qweXMLfullPathAndName   { get { return System.IO.Path.Combine(qweTheDirectoryName, qweXMLfileNameOnly); } }
-
+                 public bool       wantsKOPIJA             { get; set; }
    public string suggestedXmlFileName
    {
       get

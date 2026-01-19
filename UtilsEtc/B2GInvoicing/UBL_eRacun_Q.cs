@@ -129,6 +129,11 @@ namespace EN16931.UBL
          the_eRacun.IssueDate       = new IssueDateType       { Value = Fak2eR____Date("BT002", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
          the_eRacun.TaxPointDate    = new TaxPointDateType    { Value = Fak2eR____Date("BTqwe", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
 
+         if(oeRp.wantsKOPIJA)
+         {
+            the_eRacun.CopyIndicator = new CopyIndicatorType { Value = oeRp.wantsKOPIJA };
+         }
+
          // 24.06.2019. moj-eracun kaze da ovo ne postoji u EU normi    
          // 14.10.2025 - ipak postoji u EU normi ali cemo ga tek u 2026 
          //if(isMojeRacunNotFina == false)
@@ -907,7 +912,7 @@ namespace EN16931.UBL
 
          if(faktur_rec.R_ukPpmvIzn.NotZero())
          {
-            the_eRacun.LegalMonetaryTotal.ChargeTotalAmount = new ChargeTotalAmountType { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID };
+            the_eRacun.LegalMonetaryTotal. ChargeTotalAmount = new ChargeTotalAmountType { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID };
          }
 
          #endregion Total Sums

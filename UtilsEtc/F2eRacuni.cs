@@ -3982,6 +3982,27 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       if(Vv_eRacun_HTTP.Is_FIR_SEND_ON() == false) return;
 
+      DialogResult result;
+      bool sendOK;
+      Outgoing_eRacun_parameters oeRp;
+
+      // zelimo poslati KOPIJU racuna? 
+      if(faktur_rec.F2_IsSentTry && (faktur_rec.F2_StatusCD == 30 || faktur_rec.F2_StatusCD == 40)) // 30 - poslano, 40 - preuzeto 
+      {
+         result = MessageBox.Show("KOPIJA!!! Potvrđujete slanje KOPIJE ovog eRačuna?", "Potvrdite KOPIJU eRačuna", MessageBoxButtons.YesNo, MessageBoxIcon.Question); 
+         if(result != DialogResult.Yes) return;
+
+         Cursor.Current = Cursors.WaitCursor;
+
+         oeRp = Set_Outgoing_eRacun_parameters(faktur_rec, TheVvUC, true, true, true);
+
+         sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
+
+         Cursor.Current = Cursors.Default;
+
+         return;
+      }
+
       // odlucujemo dozvoliti RE SEND samo ako je status 'Neuspjelo' (50) 
       if(faktur_rec.F2_IsSentTry && faktur_rec.F2_StatusCD != 50) 
       { 
@@ -3989,17 +4010,18 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
          return; 
       }
 
-      DialogResult result = MessageBox.Show("Potvrđujete slanje ovog eRačuna?", "Potvrdite eRačun", MessageBoxButtons.YesNo, MessageBoxIcon.Question); if(result != DialogResult.Yes) return;
+      result = MessageBox.Show("Potvrđujete slanje ovog eRačuna?", "Potvrdite eRačun", MessageBoxButtons.YesNo, MessageBoxIcon.Question); 
+      if(result != DialogResult.Yes) return;
 
       Cursor.Current = Cursors.WaitCursor;
 
-      Outgoing_eRacun_parameters oeRp = Set_Outgoing_eRacun_parameters(faktur_rec, TheVvUC, true, true);
+      oeRp = Set_Outgoing_eRacun_parameters(faktur_rec, TheVvUC, true, true);
 
-      bool sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
+      sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
 
       Cursor.Current = Cursors.Default;
    }
-   internal Outgoing_eRacun_parameters Set_Outgoing_eRacun_parameters(Faktur faktur_rec, VvUserControl theVvUC, bool isQuickSend, bool _isOneOnlyFromFakturDUC)
+   internal Outgoing_eRacun_parameters Set_Outgoing_eRacun_parameters(Faktur faktur_rec, VvUserControl theVvUC, bool isQuickSend, bool _isOneOnlyFromFakturDUC, bool _wantsKOPIJA = false)
    {
       Outgoing_eRacun_parameters oeRp = new Outgoing_eRacun_parameters(_isOneOnlyFromFakturDUC);
 
@@ -4085,6 +4107,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       /* oeRp_5. */ oeRp.PDF_as_base64_byteArray = System.IO.File.ReadAllBytes(PDFfileFullPathName);
       /* oeRp_6. */ oeRp.pdfFileNameOnly         = PDFfileFullPathName                             ;
       /* oeRp_7. */ oeRp.fullPath_XML_FileName   = oeRp.suggestedXmlFileName + ".xml"              ;
+      /*         */ oeRp.wantsKOPIJA             = _wantsKOPIJA                                    ;
       // NOTA BENE! imas malo povise #region 2026 totalno sam popizdio s starim varijablama pa radim nove 
 
       return oeRp;

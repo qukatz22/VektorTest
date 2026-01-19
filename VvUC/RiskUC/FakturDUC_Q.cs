@@ -9285,6 +9285,13 @@ public partial class FakturExtDUC : FakturDUC
     //kupdob_rec = KupdobSifrar.Find(FoundInSifrar<Kupdob>);
       kupdob_rec = Get_Kupdob_FromVvUcSifrar(Fld_KupdobCd);
 
+      // 19.01.2026:
+      if(kupdob_rec == null)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne mogu pronaći partnera u adresaru!? OIB neće biti zapamćen.");
+         return;
+      }
+
     //bool notEmpty   = Fld_KdOib.NotEmpty()        || Fld_VatCntryCode.NotEmpty()                ;
       bool hasChanges = Fld_KdOib != kupdob_rec.Oib || Fld_VatCntryCode != kupdob_rec.VatCntryCode;
 
