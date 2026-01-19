@@ -4791,6 +4791,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       return URA_kontra_faktur_rec;
    }
 
+   internal decimal GetRabatByStavke_DIFF()
+   {
+      decimal rbtByStavke = 0.00M, theRbtDIFF;
+
+      this.Transes.ForEach(rtr => rbtByStavke += rtr.T_rbt1St.NotZero() ? (rtr.R_KC * rtr.T_rbt1St / 100.00M).Ron2() : 0.00M);
+
+      theRbtDIFF = this.S_ukRbt1.Ron2() - rbtByStavke.Ron2();
+
+      return theRbtDIFF;
+   }
 
    #endregion Custom Metodz
 

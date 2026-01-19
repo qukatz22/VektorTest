@@ -152,12 +152,11 @@ namespace EN16931.UBL
              {
                  ID = new IDType { Value = Fak2eR__String("BT013", faktur_rec, null) }
              };
-         }
 
-         //19.01.2026. za Frag - ako ima narudžbenicu da onda stavimo i otpremnicu broja istog kao račun, da li fiskal ili ttnum
-         //BT-16 Referenca otpremnice
-         if(faktur_rec.OpciAvalue.NotEmpty())
-         {
+            //BT-16 Referenca otpremnice 
+            //19.01.2026. za Frag - ako ima narudžbenicu da onda stavimo i otpremnicu broja istog kao račun, da li fiskal ili ttnum 
+            // tu cemo doc u probleme ako netko drugi ne koristi opciA za narudzbenicu                                              
+            // ili ako ovim automatizmom izmisljeni brij otpremnice smeta                                                           
             the_eRacun.DespatchDocumentReference = new DocumentReferenceType[]
             {
                new DocumentReferenceType
@@ -898,14 +897,21 @@ namespace EN16931.UBL
                                                                                           0.00M                 , currencyID = faktur_rec.CurrencyID  }     ,// iznos plaćen unaprijed - avans
                                                                         //Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// avans - iznos plaćen unaprijed                                          
 
-          //< cbc:PayableRoundingAmount currencyID = "EUR" > 0.01 </ cbc:PayableRoundingAmount >zaokruživanje - da li bi to pomoglo kod rabata za Francuza - kako izračunati razliku 19.01.2026.
-
-
-            PayableAmount = new PayableAmountType        { Value = isAvans       ? 0.00M      : 
+         PayableAmount = new PayableAmountType        { Value = isAvans       ? 0.00M      : 
                                                                           isAvansSTORNO ? 0.00M      : 
                                                                           isFinalRn     ? finalMoney :
                                                                           Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
          };
+
+         decimal theRbtDIFF = faktur_rec.GetRabatByStavke_DIFF();
+         if(theRbtDIFF.NotZero())
+         {
+            the_eRacun.LegalMonetaryTotal.PayableRoundingAmount = new PayableRoundingAmountType
+            {
+               Value = theRbtDIFF.Ron2(),
+               currencyID = faktur_rec.CurrencyID
+            };
+         }
 
          #endregion Total Sums
 

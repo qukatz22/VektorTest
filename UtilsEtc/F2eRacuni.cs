@@ -2162,6 +2162,13 @@ public static class Vv_eRacun_HTTP
             continue; 
          }
 
+         if(MAP_CandidateFaktur_rec.F2_ElectronicID.IsZero())
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, 
+               $"Ne mogu prijaviti uplatu za fakturu koja još nije ni poslana!? Ftrans: {paymentftrans_rec}{Environment.NewLine}{Environment.NewLine}Faktur: {MAP_CandidateFaktur_rec}");
+            continue;
+         }
+
          MAP_requestData = new VvMER_RequestData()
          {
             ElectronicId  = MAP_CandidateFaktur_rec.F2_ElectronicID,
