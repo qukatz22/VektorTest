@@ -94,11 +94,12 @@ namespace EN16931.UBL
          bool needsReferencaNaPrethodni          = isClassicSTORNO || isAvansSTORNO || isFinalRn;
        //bool needsReferencaNaPrethodniPrethodni =                                     isFinalRn;
 
-         if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakYYiRecID.IsZero())
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Error, $"Ovaj račun treba referencu na prethodni dokument, a NEMA JE!?{Environment.NewLine}{Environment.NewLine}Ne mogu izraditi eRačun.");
-            return null;
-         }
+       //19.01.2026. ali kad ima YRN tu isto izleti - bez ovoga dodje samo datum ali ne i ref rboj koji se nalazi u YRN u veznidok2
+       if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakYYiRecID.IsZero())
+       {
+          ZXC.aim_emsg(MessageBoxIcon.Error, $"Ovaj račun treba referencu na prethodni dokument, a NEMA JE!?{Environment.NewLine}{Environment.NewLine}Ne mogu izraditi eRačun.");
+          return null;
+       }
 
          #endregion Init
 
@@ -888,29 +889,25 @@ namespace EN16931.UBL
             AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
             TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
             TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
-            ChargeTotalAmount    = new ChargeTotalAmountType    { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-          //PrepaidAmount        = new PrepaidAmountType        { Value = Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// avans - iznos plaćen unaprijed                                          
-          //PayableAmount        = new PayableAmountType        { Value = Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
-            PrepaidAmount        = new PrepaidAmountType        { Value = isAvans       ? faktur_rec.S_ukKCRP.Ron2() : 
-                                                                          isAvansSTORNO ? faktur_rec.S_ukKCRP.Ron2() :
-                                                                          isFinalRn     ? avansMoney :
-                                                                                          0.00M                 , currencyID = faktur_rec.CurrencyID  }     ,// iznos plaćen unaprijed - avans
-                                                                        //Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// avans - iznos plaćen unaprijed                                          
+         
 
-         PayableAmount = new PayableAmountType        { Value = isAvans       ? 0.00M      : 
-                                                                          isAvansSTORNO ? 0.00M      : 
-                                                                          isFinalRn     ? finalMoney :
-                                                                          Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
+            PayableAmount = new PayableAmountType               { Value = isAvans ||isAvansSTORNO ? 0.00M      : 
+                                                                          isFinalRn               ? finalMoney :
+                                                                                                    Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
          };
 
-         decimal theRbtDIFF = faktur_rec.GetRabatByStavke_DIFF();
-         if(theRbtDIFF.NotZero())
+         if(isAvans || isAvansSTORNO || isFinalRn)
          {
-            the_eRacun.LegalMonetaryTotal.PayableRoundingAmount = new PayableRoundingAmountType
-            {
-               Value = theRbtDIFF.Ron2(),
-               currencyID = faktur_rec.CurrencyID
-            };
+            the_eRacun.LegalMonetaryTotal.PrepaidAmount = new PrepaidAmountType 
+            { 
+               Value = isAvans  || isAvansSTORNO ? faktur_rec.S_ukKCRP.Ron2() :
+                       isFinalRn                 ? avansMoney                 :
+                       0.00M                                                  , currencyID = faktur_rec.CurrencyID  };// iznos plaćen unaprijed - avans
+         }
+
+         if(faktur_rec.R_ukPpmvIzn.NotZero())
+         {
+            the_eRacun.LegalMonetaryTotal.ChargeTotalAmount = new ChargeTotalAmountType { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID };
          }
 
          #endregion Total Sums
@@ -1724,6 +1721,8 @@ namespace EN16931.UBL
        //bool needsAvansValues =                               faktur_rec.Is_AfterAvans_PrihodTTa; 
          bool needsAvansValues = ZXC.IsF2_2026_rules ? false : faktur_rec.Is_AfterAvans_PrihodTTa;
 
+         decimal theRbtDIFF = faktur_rec.GetRabatByStavke_DIFF();
+
          switch(BT_ID)
          {
             //ZAGLAVLJE:
@@ -1740,8 +1739,9 @@ namespace EN16931.UBL
             
             case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv                          ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
 
-            case "BT092": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
-            case "BT107": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
+            case "BT092": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.S_ukRbt1 - theRbtDIFF : faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
+            case "BT107": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.S_ukRbt1 - theRbtDIFF : faktur_rec.S_ukRbt1; break; //BT-107 Iznos popusta na razini dokumenta
+
 
           //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
           //case "BT115": theDecimal = faktur_rec.Skn_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
@@ -1786,7 +1786,10 @@ namespace EN16931.UBL
 
             #endregion PDV
 
-            case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
+          //19.01.2026. rabat DIFF
+          //case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25                                                              ; break; //BT-Iznos Rbt25 
+            case "Rbt25 izn": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.TrnSum_Rbt25 - theRbtDIFF : faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
+
             case "Rbt10 izn": theDecimal = faktur_rec.TrnSum_Rbt10; break; //BT-Iznos Rbt10 
             case "Rbt05 izn": theDecimal = faktur_rec.TrnSum_Rbt05; break; //BT-Iznos Rbt05 
             case "Rbt00 izn": theDecimal = faktur_rec.TrnSum_Rbt00; break; //BT-Iznos Rbt00 
