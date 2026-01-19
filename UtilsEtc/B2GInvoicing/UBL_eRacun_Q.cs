@@ -154,6 +154,21 @@ namespace EN16931.UBL
              };
          }
 
+         //19.01.2026. za Frag - ako ima narudžbenicu da onda stavimo i otpremnicu broja istog kao račun, da li fiskal ili ttnum
+         //BT-16 Referenca otpremnice
+         if(faktur_rec.OpciAvalue.NotEmpty())
+         {
+            the_eRacun.DespatchDocumentReference = new DocumentReferenceType[]
+            {
+               new DocumentReferenceType
+               {
+                  ID = new IDType { Value =  faktur_rec.TtNumFiskal      }
+                //ID = new IDType { Value =  faktur_rec.TtNum.ToString() }
+               }
+            };
+         }
+
+
          #region napomena
 
          //BT-22 Napomena na računu	Tekst 1..1
@@ -882,7 +897,11 @@ namespace EN16931.UBL
                                                                           isFinalRn     ? avansMoney :
                                                                                           0.00M                 , currencyID = faktur_rec.CurrencyID  }     ,// iznos plaćen unaprijed - avans
                                                                         //Fak2eR_Decimal("BT113"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// avans - iznos plaćen unaprijed                                          
-            PayableAmount        = new PayableAmountType        { Value = isAvans       ? 0.00M      : 
+
+          //< cbc:PayableRoundingAmount currencyID = "EUR" > 0.01 </ cbc:PayableRoundingAmount >zaokruživanje - da li bi to pomoglo kod rabata za Francuza - kako izračunati razliku 19.01.2026.
+
+
+            PayableAmount = new PayableAmountType        { Value = isAvans       ? 0.00M      : 
                                                                           isAvansSTORNO ? 0.00M      : 
                                                                           isFinalRn     ? finalMoney :
                                                                           Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
