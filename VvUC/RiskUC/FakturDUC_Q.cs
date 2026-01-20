@@ -1452,6 +1452,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          this.TheVvTabPage.TheVvForm.RISK_ToggleKnDeviza(this, EventArgs.Empty);
       }
 
+      bool isAvansArtiklFound = false;
+
       Artikl artikl_rec;
 
       for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx)
@@ -1762,11 +1764,19 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          {
             string kpdSifra = TheG.GetStringCell(ci.iT_KPD, rowIdx, false);
 
-            if(kpdSifra.IsEmpty())
+          //if(kpdSifra.IsEmpty())
+            if(kpdSifra.IsEmpty() && artikl_rec.TS != ZXC.AVA_TS)
             {
                ZXC.aim_emsg(MessageBoxIcon.Error, "KPD šifra je obavezna na eRačun dokumentima!\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
                e.Cancel = true;
             }
+         }
+
+         if(artikl_rec.TS == ZXC.AVA_TS)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Information, "Podsjetnik: račun za predujam mora imati eRproc: '4' i Kod rač: '386'");
+
+            isAvansArtiklFound = true;
          }
 
          #endregion KPD sifra
@@ -3629,6 +3639,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          if(faktur_rec.Transes.Any(rtr => rtr.T_artiklName.ToUpper().Contains(avansStr   ))) mejbiAvans = true;
          if(faktur_rec.Transes.Any(rtr => rtr.T_artiklCD  .ToUpper().Contains(predujamStr))) mejbiAvans = true;
          if(faktur_rec.Transes.Any(rtr => rtr.T_artiklName.ToUpper().Contains(predujamStr))) mejbiAvans = true;
+
+         if(isAvansArtiklFound) mejbiAvans = true;
 
          if(faktur_rec.S_ukKCRP.IsNegative()) mejbiAvans = false; // STORNO avansa je u pitanju 
 
