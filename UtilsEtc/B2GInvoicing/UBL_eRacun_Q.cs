@@ -94,12 +94,19 @@ namespace EN16931.UBL
          bool needsReferencaNaPrethodni          = isClassicSTORNO || isAvansSTORNO || isFinalRn;
        //bool needsReferencaNaPrethodniPrethodni =                                     isFinalRn;
 
-       //19.01.2026. ali kad ima YRN tu isto izleti - bez ovoga dodje samo datum ali ne i ref rboj koji se nalazi u YRN u veznidok2
-       if(needsReferencaNaPrethodni && ORIG_faktur_rec.F2_PrvFakYYiRecID.IsZero())
-       {
-          ZXC.aim_emsg(MessageBoxIcon.Error, $"Ovaj račun treba referencu na prethodni dokument, a NEMA JE!?{Environment.NewLine}{Environment.NewLine}Ne mogu izraditi eRačun.");
-          return null;
-       }
+         if(needsReferencaNaPrethodni)
+         {
+            bool isYRN = ORIG_faktur_rec.V1_tt == Faktur.TT_YRN && ORIG_faktur_rec.V1_ttNum.NotZero();
+            if(isYRN)
+            {
+               // do nothing, ne treba ti F2_PrvFakYYiRecID 
+            }
+            else if(ORIG_faktur_rec.F2_PrvFakYYiRecID.IsZero())// classic provjera 
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, $"Ovaj račun treba referencu na prethodni dokument, a NEMA JE!?{Environment.NewLine}{Environment.NewLine}Ne mogu izraditi eRačun.");
+               return null;
+            }
+         }
 
          #endregion Init
 
@@ -173,7 +180,6 @@ namespace EN16931.UBL
             };
          }
 
-
          #region napomena
 
          //BT-22 Napomena na računu	Tekst 1..1
@@ -206,61 +212,64 @@ namespace EN16931.UBL
 
          #region Referenca STORNO i stornoAVANSa racuna
 
-         //BT-25 Referenca na prethodni račun	Referenca na dokument 1..1
-         //STORNO i stornoAVANSa racuna 
-
-         //TODO!!!2026 Svaka referenca prethodnog računa (BG-3) mora imati datum izdavanja prethodnog računa 
-         //< cac:BillingReference >
-         //   < cac:InvoiceDocumentReference >
-         //      < cbc:ID > 15 - 1 - 1 </ cbc:ID >
-         //      < cbc:IssueDate > 2025 - 10 - 01 </ cbc:IssueDate >
-         //   </ cac:InvoiceDocumentReference >
-         //</ cac:BillingReference >
-
-         // Ugaseno za 2026: 
-         //if(isAVANS || faktur_rec.Is_STORNO)
-         //{
-         //   if(faktur_rec.VezniDok.IsEmpty()) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Dokument je STORNO a nema popunjen podatak 'OrigBrDok'!?");
-         //
-         //   the_eRacun.BillingReference = new BillingReferenceType[]
-         //   {
-         //      new BillingReferenceType
-         //      {
-         //         InvoiceDocumentReference = new DocumentReferenceType 
-         //         {
-         //                              ID        = new IDType                { Value = Fak2eR__String("BT025"  , faktur_rec, null) } 
-         //                            //IssueDate = new IssueDateType{Value =  TODO!!!2026 }                                          
-         //         }
-         //      }
-         //   };
-         //}
-
          // 2026: 
          Faktur prvFaktur_rec = null;
          if(needsReferencaNaPrethodni)
          {
             prvFaktur_rec = new Faktur();
 
-            (int prevFakYear, uint prevFakRecID) = ZXC.GetYearAndRecIDFrom_YYandRecID(faktur_rec.F2_PrvFakYYiRecID);
+            int  prevFakYear  ;
+            uint prevFakRecID ;
+
+            string   refFiskalBr;
+            DateTime refDokDate ;
 
             bool isYRN = faktur_rec.V1_tt == Faktur.TT_YRN && faktur_rec.V1_ttNum.NotZero();
+
+            if(!isYRN) // classic 
+            {
+               (prevFakYear, prevFakRecID) = ZXC.GetYearAndRecIDFrom_YYandRecID(faktur_rec.F2_PrvFakYYiRecID);
+            }
+            else
+            {
+               prevFakYear  = 0;
+               prevFakRecID = 0;
+            }
 
             if(isYRN)
             {
                ZXC.aim_emsg(MessageBoxIcon.Warning, "Ovo je YRN!");
 
                bool YRN_OK = FakturDao.SetMeFaktur(conn, prvFaktur_rec, faktur_rec.V1_tt, faktur_rec.V1_ttNum, false);
+
+               if(YRN_OK)
+               {
+                  string refFiskalBr_fromYRN_VezniDok2 = Get_refFiskalBr_fromYRN_VezniDok2(prvFaktur_rec.VezniDok2);
+
+                  refFiskalBr = refFiskalBr_fromYRN_VezniDok2;
+                  refDokDate  = prvFaktur_rec.DokDate;
+               }
+               else
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu naći YRN fakturu za referencu!");
+                  return null;
+               }
             }
             else if(prevFakYear == ZXC.projectYearAsInt) // prev fak je u ovoj godini 
             {
                prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
+
+               refFiskalBr = prvFaktur_rec.VezniDok;
+               refDokDate  = prvFaktur_rec.DokDate ;
             }
             else // prev fak je u nekoj prethodnoj godini 
             {
                prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(ZXC.TheSecondDbConn_SameDB_OtherYear(prevFakYear), /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
 
+               refFiskalBr = prvFaktur_rec.VezniDok;
+               refDokDate  = prvFaktur_rec.DokDate ;
+               }
                if(ZXC.theSecondDbConnection != null) ZXC.theSecondDbConnection.Close(); // nemoj tu pozivaty propertyy nego koristi varijablu (malo slovo)
-            }
 
             the_eRacun.BillingReference = new BillingReferenceType[]
             {
@@ -268,18 +277,20 @@ namespace EN16931.UBL
                {
                   InvoiceDocumentReference = new DocumentReferenceType
                   {
-                     ID        = new IDType        { Value = prvFaktur_rec.VezniDok },
-                     IssueDate = new IssueDateType { Value = prvFaktur_rec.DokDate  }
+                   //ID        = new IDType        { Value = prvFaktur_rec.VezniDok },
+                   //IssueDate = new IssueDateType { Value = prvFaktur_rec.DokDate  }
+                     ID        = new IDType        { Value = refFiskalBr },
+                     IssueDate = new IssueDateType { Value = refDokDate  }
                   }
                }
             };
          }
 
-         #endregion Referenca STORNO i stornoAVANSa racuna
+      #endregion Referenca STORNO i stornoAVANSa racuna
 
-         #region PDF
+      #region PDF
 
-         the_eRacun.AdditionalDocumentReference = new DocumentReferenceType[]
+      the_eRacun.AdditionalDocumentReference = new DocumentReferenceType[]
          {
             new DocumentReferenceType
             {
@@ -1634,6 +1645,11 @@ namespace EN16931.UBL
          #endregion Set eRacun Values From Faktur
 
          return the_eRacun;
+      }
+
+      private static string Get_refFiskalBr_fromYRN_VezniDok2(string vezniDok2)
+      {
+         throw new NotImplementedException();
       }
 
       #region Fak2eR & VvUBL Utils 
