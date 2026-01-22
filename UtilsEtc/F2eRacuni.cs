@@ -2483,7 +2483,7 @@ public static class Vv_eRacun_HTTP
 
                   if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty())
                   {
-                     Show_WebApiResult_ErrorMessageBox(webApiResult);
+                     Show_WebApiResult_ErrorMessageBox(webApiResult, responseData);
                      receiveOK = false;
                   }
                }
@@ -3210,7 +3210,7 @@ public static class Vv_eRacun_HTTP
       Show_WebApiResult_ErrorMessageBox(webApiResult);
    }
    
-   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult) where T : class
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult, VvMER_ResponseData responseData = null) where T : class
    {
       VvMessageBoxDLG Send_OR_eIzvj_ErrorMessageBox = new VvMessageBoxDLG(false, ZXC.VvmBoxKind.F2_webApiResults);
    
@@ -3238,15 +3238,45 @@ public static class Vv_eRacun_HTTP
 
       Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailFromAddition = webApiResult.WebApiKind.ToString();
 
-      for(int i = 0; i < webApiResult.MessageList.Count; ++i)
+      #region dodao naknadno ako ima i responseData jos podataka
+
+      // Get the existing message list
+      List<string> allMessages = new List<string>(webApiResult.MessageList);
+
+      if(responseData != null)
       {
-         Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailBody += webApiResult.MessageList[i] + Environment.NewLine;
+         allMessages.Add(Environment.NewLine + "---- Response Data ----" + Environment.NewLine);
+
+         if(responseData.ElectronicId.HasValue)
+         {
+            allMessages.Add(string.Format("ElectronicId: {0}{1}", responseData.ElectronicId.Value, Environment.NewLine));
+         }
+         if(responseData.SenderBusinessName.NotEmpty())
+         {
+            allMessages.Add(string.Format("SenderBusinessName: {0}{1}", responseData.SenderBusinessName, Environment.NewLine));
+         }
+         if(!string.IsNullOrEmpty(responseData.DocumentNr))
+         {
+            allMessages.Add(string.Format("DocumentNr: {0}{1}", responseData.DocumentNr, Environment.NewLine));
+         }
+         if(responseData.Sent.HasValue)
+         {
+            allMessages.Add(string.Format("Sent: {0}{1}", responseData.Sent, Environment.NewLine));
+         }
+         // dodati jos po potrebi 
       }
 
-      Send_OR_eIzvj_ErrorMessageBox.TheUC.PutDgvFields(webApiResult.MessageList);
+      #endregion dodao naknadno ako ima i responseData jos podataka
+
+      for(int i = 0; i < allMessages.Count; ++i)
+      {
+         Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailBody += allMessages[i] + Environment.NewLine;
+      }
+
+      Send_OR_eIzvj_ErrorMessageBox.TheUC.PutDgvFields(allMessages);
       DialogResult dlgResult = Send_OR_eIzvj_ErrorMessageBox.ShowDialog();
       Send_OR_eIzvj_ErrorMessageBox.Dispose();
-   }   
+   }
    internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
    {
       EN16931.UBL.InvoiceType deserialized_eRacun = null;

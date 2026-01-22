@@ -5223,6 +5223,16 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    public bool Is_NacPlac2_Cash_Or_Card      { get { return Is_NacPlac2_Virman_Transakc == false; } }
    public bool Is_NacPlac1i2_Cash_Or_Card    { get { return Is_NacPlac1_Cash_Or_Card || Is_NacPlac2_Cash_Or_Card; } } // ILI je NP1 ILI je NP2 Cash_Or_Card 
    internal uint GetFaktur_YYandRecID        { get { return ZXC.Get_YYandRecID(this.DokDate.Year, this.RecID); } }
+   public bool Is_F2_Avans                   { get { return IsF2 && this.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+                                                                    this.StatusCD  == "386"                      &&
+                                                                    this.S_ukKCRP.IsPositive()                    ; } }
+   public bool Is_F2_AvansSTORNO             { get { return IsF2 && this.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+                                                                    this.StatusCD  == "386"                      &&
+                                                                    this.S_ukKCRP.IsNegative()                    ; } } 
+   public bool Is_F2_FinalRn                 { get { return IsF2 && this.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11 &&
+                                                                    this.StatusCD  == "380"                       ; } }
+   public bool Is_F2_ClassicSTORNO           { get { return IsF2 && this.S_ukKCRP.IsNegative() && this.Napomena.ToUpper().Contains("STORNO"); } }
+
 
    // ========================================================================================================================================================================= 
    public bool IsFiskalDutyFaktur_ONLINE

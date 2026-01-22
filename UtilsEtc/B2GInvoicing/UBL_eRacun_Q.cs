@@ -77,18 +77,25 @@ namespace EN16931.UBL
          // 2026: gasimo 
        //bool isAVANS            = (ORIG_faktur_rec.IsAVANS_STORNO || ORIG_faktur_rec.Is_AfterAvans_PrihodTTa);
 
-         bool isClassicSTORNO = ORIG_faktur_rec.S_ukKCRP.IsNegative() && ORIG_faktur_rec.Napomena.ToUpper().Contains("STORNO");
 
-         bool isAvans        = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
-                               ORIG_faktur_rec.StatusCD  == "386"                      &&
-                               ORIG_faktur_rec.S_ukKCRP.IsPositive()                    ;
-         
-         bool isAvansSTORNO  = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
-                               ORIG_faktur_rec.StatusCD  == "384"                      &&
-                               ORIG_faktur_rec.S_ukKCRP.IsNegative();
 
-         bool isFinalRn     = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11 &&
-                              ORIG_faktur_rec.StatusCD  == "380"                       ;
+       //bool isClassicSTORNO = ORIG_faktur_rec.S_ukKCRP.IsNegative() && ORIG_faktur_rec.Napomena.ToUpper().Contains("STORNO");
+       //
+       //bool isAvans        = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+       //                      ORIG_faktur_rec.StatusCD  == "386"                      &&
+       //                      ORIG_faktur_rec.S_ukKCRP.IsPositive()                    ;
+       //
+       //bool isAvansSTORNO  = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+       //                      ORIG_faktur_rec.StatusCD  == "384"                      &&
+       //                      ORIG_faktur_rec.S_ukKCRP.IsNegative();
+       //
+       //bool isFinalRn      = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11 &&
+       //                      ORIG_faktur_rec.StatusCD  == "380"                       ;
+
+         bool isAvans         = ORIG_faktur_rec.Is_F2_Avans        ;
+         bool isAvansSTORNO   = ORIG_faktur_rec.Is_F2_AvansSTORNO  ;
+         bool isFinalRn       = ORIG_faktur_rec.Is_F2_FinalRn      ;
+         bool isClassicSTORNO = ORIG_faktur_rec.Is_F2_ClassicSTORNO;
 
          // 2026: 
          bool needsReferencaNaPrethodni          = isClassicSTORNO || isAvansSTORNO || isFinalRn;
@@ -244,7 +251,7 @@ namespace EN16931.UBL
 
                if(YRN_OK)
                {
-                  string refFiskalBr_fromYRN_VezniDok2 = Get_refFiskalBr_fromYRN_VezniDok2(prvFaktur_rec.VezniDok2);
+                  string refFiskalBr_fromYRN_VezniDok2 = Get_refFiskalBr_fromYRN_VezniDok2(prvFaktur_rec/*.VezniDok2*/);
 
                   refFiskalBr = refFiskalBr_fromYRN_VezniDok2;
                   refDokDate  = prvFaktur_rec.DokDate;
@@ -268,8 +275,15 @@ namespace EN16931.UBL
 
                refFiskalBr = prvFaktur_rec.VezniDok;
                refDokDate  = prvFaktur_rec.DokDate ;
-               }
-               if(ZXC.theSecondDbConnection != null) ZXC.theSecondDbConnection.Close(); // nemoj tu pozivaty propertyy nego koristi varijablu (malo slovo)
+            }
+            
+            if(ZXC.theSecondDbConnection != null) ZXC.theSecondDbConnection.Close(); // nemoj tu pozivaty propertyy nego koristi varijablu (malo slovo)
+
+            if(refFiskalBr.IsEmpty() || refDokDate.IsEmpty())
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "refFiskalBr.IsEmpty() || refDokDate.IsEmpty()!");
+               return null;
+            }
 
             the_eRacun.BillingReference = new BillingReferenceType[]
             {
@@ -1647,9 +1661,42 @@ namespace EN16931.UBL
          return the_eRacun;
       }
 
-      private static string Get_refFiskalBr_fromYRN_VezniDok2(string vezniDok2)
+      private static string Get_refFiskalBr_fromYRN_VezniDok2(Faktur YRNfaktur_rec)
       {
-         throw new NotImplementedException();
+         // npr za 5pIFA-103390 
+         // daj 3390-1-1        
+
+         string vezniDok = YRNfaktur_rec.VezniDok2;
+
+         string tt = "";
+         uint ttnum = 0;
+
+         if(vezniDok.Length != 12)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "vezniDok.Length != 12\n\r\n\rne mogu Get_refFiskalBr_fromYRN_VezniDok2()");
+            return "";
+         }
+
+         string[] splitters = vezniDok.SubstringSafe(2).Split("-".ToCharArray());
+
+         if(splitters.Length > 0) tt = splitters[0];
+         if(splitters.Length > 1) ttnum = ZXC.ValOrZero_UInt(splitters[1]);
+
+         if(tt.IsEmpty() || ttnum.IsZero())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Stop, "Neuspjeh parsiranja tt i ttnum!");
+            return "";
+         }
+
+         Faktur pgFaktur_rec = new Faktur()
+         {
+            SkladCD = YRNfaktur_rec.SkladCD,
+            DokDate = YRNfaktur_rec.DokDate,
+            TT      = tt,
+            TtNum   = ttnum
+         };
+
+         return pgFaktur_rec.TtNumFiskal;
       }
 
       #region Fak2eR & VvUBL Utils 

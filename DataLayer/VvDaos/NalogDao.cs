@@ -1468,8 +1468,10 @@ public sealed class NalogDao : VvDaoBase, IVvDao
       pgFaktur_rec.TT        = newWyrnTT;
       pgFaktur_rec.TtSort    = newWyrnTtSort;
       pgFaktur_rec.TtNum     = pgFaktur_rec.VvDao.GetNextTtNum(conn, newWyrnTT, "");
-      pgFaktur_rec.VezniDok2 = pgT_tipBr;    
-      
+      pgFaktur_rec.VezniDok2 = pgT_tipBr;
+      // 2026: 
+      pgFaktur_rec.F2_PrvFakYYiRecID = pgFaktur_rec.GetFaktur_YYandRecID; // referenca na prethodni dokument 
+
       foreach(Rtrans rtrans_rec in pgFaktur_rec.Transes)
       {
          if(rtrans_rec.TtInfo.IsStornoTT)
