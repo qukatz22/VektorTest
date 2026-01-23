@@ -1279,21 +1279,22 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
 
          #region    STORNO ULAZA - POVRAT kao zadnja stavka kartice (KolSaldo ide na nulu - FinSaldo ne ode inace na nulu)
 
+         bool isKolSt_ZERO_AfterPovrat = rtr.T_kol.IsNegative() && (StanjeKol + rtr.T_kol).IsZero();
 #if DEBUG
          // DEBUG ONLY !!! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-         bool isKolSt_ZERO_AfterPovrat = rtr.T_kol.IsNegative() && (StanjeKol + rtr.T_kol).IsZero();
          
          bool povratCijNotEqualPrNabCij = rtr.R_CIJ_KCR.Ron2() != PrNabCij.Ron2();
-
+         
          if(isKolSt_ZERO_AfterPovrat && povratCijNotEqualPrNabCij)
          {
             ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Exclamation, "KolSt je NULA nakon Ulaza sa negativnom količinom!\n\r\n\r{0}", this);
          }
          // DEBUG ONLY !!! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 #endif
-
-         //if(  isKolSt_ZERO_AfterPovrat        )
-         if(/*isKolSt_ZERO_AfterPovrat*/ false)
+         // 23.01.2026: zbog problema kod DUCATI vis / manj procedure otkrivamo da je ovo do danas bilo ugaseno
+         // pa ga ponovo palimo. zasto i kada je ugaseno nije jasno                                            
+         if(  isKolSt_ZERO_AfterPovrat        )
+       //if(/*isKolSt_ZERO_AfterPovrat*/ false)
          {
             RtrUlazCijNBC = this.PrNabCij;
          }

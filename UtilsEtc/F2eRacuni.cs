@@ -3685,15 +3685,15 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
       return xmlXtrano_rec;
    }
 
-   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(string xmlString, VvMER_ResponseData responseData, EN16931.UBL.InvoiceType deserialized_eRacun) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
+   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_ResponseOLD(string xmlString, VvMER_ResponseData responseData, EN16931.UBL.InvoiceType deserialized_eRacun) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
    {
       if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
 
       byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
 
-      bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.PayableAmount?.Value == null;
+      bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.TaxInclusiveAmount?.Value == null;
 
-      decimal theMoney = deserialized_eRacun_Is_Unreadable ? 0.00M : deserialized_eRacun.LegalMonetaryTotal.PayableAmount.Value;
+      decimal theMoney = deserialized_eRacun_Is_Unreadable ? 0.00M : deserialized_eRacun.LegalMonetaryTotal.TaxInclusiveAmount.Value;
 
       if(deserialized_eRacun_Is_Unreadable)
       {
@@ -3724,6 +3724,56 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_moneyA        = theMoney,
       };
 
+      return xmlXtrano_rec;
+   }
+   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response(string xmlString, VvMER_ResponseData responseData, EN16931.UBL.InvoiceType deserialized_eRacun)
+   {
+      if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
+   
+      byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
+   
+      bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.TaxInclusiveAmount?.Value == null;
+   
+      decimal theMoney;
+      
+      if (deserialized_eRacun_Is_Unreadable)
+      {
+         // Try to extract TaxInclusiveAmount directly from XML as fallback
+         theMoney = ExtractTaxInclusiveAmountFromXml(xmlString);
+
+         if(theMoney.IsZero())
+         {
+            string debugPath = @"C:\temp\debug_invoice_" + responseData.ElectronicId.ToString() + "_" + responseData.SenderBusinessName + ".xml";
+            System.IO.Directory.CreateDirectory(@"C:\temp");
+            System.IO.File.WriteAllText(debugPath, xmlString, System.Text.Encoding.UTF8);
+            System.Diagnostics.Debug.WriteLine($"XML saved to: {debugPath}");
+   
+            ZXC.aim_emsg(MessageBoxIcon.Exclamation, $"Deserialized eRacun Is Unreadable and TaxInclusiveAmount extraction failed. Money will be zero!{Environment.NewLine}{Environment.NewLine}[{debugPath}]  file created.");
+         }
+         else
+         {
+            // Successfully extracted from XML
+            ZXC.aim_emsg(MessageBoxIcon.Information, $"Deserialized eRacun failed but TaxInclusiveAmount extracted from XML: {theMoney:F2}");
+         }
+      }
+      else
+      {
+         theMoney = deserialized_eRacun.LegalMonetaryTotal.TaxInclusiveAmount.Value;
+      }
+   
+      Xtrano xmlXtrano_rec = new Xtrano()
+      {               
+         T_XmlZip        = zipped_xmlString                 ,
+         F2_ElectronicID = (uint)responseData.ElectronicId  ,
+         T_dokDate       = (DateTime)responseData.Sent      ,
+         T_opis_128      = responseData.SenderBusinessName	,
+         T_theString     = responseData.DocumentNr          ,
+         T_konto	       = responseData.SenderBusinessNumber,
+         T_devName       = responseData.StatusId.ToString() ,
+         T_TT            = Mixer.TT_AUR                     ,
+         T_moneyA        = theMoney,
+      };
+   
       return xmlXtrano_rec;
    }
 
@@ -3759,6 +3809,54 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
       return MAPxtrano_rec;
    }
 
+   #region Util Metodz
+   /// <summary>
+   /// Extracts LegalMonetaryTotal.TaxInclusiveAmount.Value directly from XML when UBL deserialization fails
+   /// </summary>
+   /// <param name="xmlString">The XML content containing the invoice</param>
+   /// <returns>The TaxInclusiveAmount value or 0.00M if not found</returns>
+   internal static decimal ExtractTaxInclusiveAmountFromXml(string xmlString)
+   {
+      try
+      {
+         if(string.IsNullOrEmpty(xmlString))
+            return 0.00M;
+
+         XDocument xmlDoc = XDocument.Parse(xmlString);
+
+         // Define namespaces used in UBL documents
+         XNamespace cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+         XNamespace cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
+
+         // Navigate to LegalMonetaryTotal/TaxInclusiveAmount/Value
+         XElement legalMonetaryTotal = xmlDoc.Descendants(cac + "LegalMonetaryTotal").FirstOrDefault();
+         if(legalMonetaryTotal != null)
+         {
+            XElement taxInclusiveAmount = legalMonetaryTotal.Element(cbc + "TaxInclusiveAmount");
+            if(taxInclusiveAmount != null)
+            {
+               string amountText = taxInclusiveAmount.Value?.Trim();
+               if(!string.IsNullOrEmpty(amountText))
+               {
+                  decimal amount;
+                  if(decimal.TryParse(amountText, System.Globalization.NumberStyles.Any,
+                      System.Globalization.CultureInfo.InvariantCulture, out amount))
+                  {
+                     return amount;
+                  }
+               }
+            }
+         }
+      }
+      catch(Exception ex)
+      {
+         // Log the exception but don't throw - return 0 as fallback
+         System.Diagnostics.Debug.WriteLine($"Error extracting TaxInclusiveAmount from XML: {ex.Message}");
+      }
+
+      return 0.00M;
+   }
+   #endregion Util Metodz
 }
 
 #region Bussiness Classes for JSON Response - FiscalizationStatus

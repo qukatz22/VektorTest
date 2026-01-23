@@ -1772,7 +1772,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             }
          }
 
-         if(artikl_rec.TS == ZXC.AVA_TS)
+         if(artikl_rec != null && artikl_rec.TS == ZXC.AVA_TS)
          {
             ZXC.aim_emsg(MessageBoxIcon.Information, "Podsjetnik: račun za predujam mora imati eRproc: '4' i Kod rač: '386'");
 
