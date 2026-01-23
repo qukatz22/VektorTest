@@ -1327,9 +1327,8 @@ namespace EN16931.UBL
             //BT-155 Identifikator artikla  ID = sifra Artikla
             invoiceLine.Item.Name = new NameType1 { Value = Fak2eR__String("BT153", faktur_rec, rtrans_rec) };
 
-            //14.10.2025. KPD
-            //< cbc:ItemClassificationCode listID = "CG" > 62.90.90 </ cbc:ItemClassificationCode >
-            if(ZXC.IsF2_2026_rules)
+          //if(ZXC.IsF2_2026_rules) ya avanse da to ne radi jer dode prazan element 23.01.2026.
+            if(ZXC.IsF2_2026_rules && artikl_rec.TS != ZXC.AVA_TS)
             { 
                invoiceLine.Item.CommodityClassification = new CommodityClassificationType[]
                {
@@ -1709,7 +1708,8 @@ namespace EN16931.UBL
          {
             //ZAGLAVLJE:
             case "BT001"         : theString = faktur_rec.TtNumFiskal                                                    ; break; //BT- 1 Broj računa                                           
-            case "BT003"         : theString = VvUBL_InvoiceTypeCode                                                     ; break; //BT- 3 Šifra vrste                                           
+          //case "BT003"         : theString = VvUBL_InvoiceTypeCode                                                     ; break; //BT- 3 Šifra vrste                                           
+            case "BT003"         : theString = faktur_rec.StatusCD                                                       ; break; //BT- 3 Šifra vrste  tek 23.01.2026.                                         
             case "BT005"         : theString = faktur_rec.CurrencyID                                                     ; break; //BT- 5 Šifra valute !!!Valuta u kojoj su navedeni svi iznosi računa izuzev ukupnog iznosa PDV-a u računovodstvenoj valuti.
             case "BT006"         : theString = faktur_rec.CurrencyID                                                     ; break; //BT- 6 TaxCurrencyCode Šifra valute PDV!!!
             case "BT013"         : theString = faktur_rec.OpciAvalue                                                     ; break; //BT-13 OrderReference - narudzbenica 
