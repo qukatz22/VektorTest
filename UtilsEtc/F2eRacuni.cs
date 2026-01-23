@@ -3279,14 +3279,16 @@ public static class Vv_eRacun_HTTP
    }
    internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
    {
-      EN16931.UBL.InvoiceType deserialized_eRacun = null;
+      EN16931.UBL.InvoiceType theInvoiceType = null;
       System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(EN16931.UBL.InvoiceType));
 
       try
       {
-       //deserialized_eRacun = (EN16931.UBL.InvoiceType)serializer.Deserialize(new StringReader(xmlString));
-         deserialized_eRacun = EN16931.UBL.InvoiceType.Deserialize(xmlString);
+         // Ukloni UBLExtensions elemente prije deserializacije
+         string cleanedXmlString = RemoveSignatureElements(xmlString);
 
+         //deserialized_eRacun = (EN16931.UBL.InvoiceType)serializer.Deserialize(new StringReader(xmlString));
+         theInvoiceType = EN16931.UBL.InvoiceType.Deserialize(/*xmlString*/cleanedXmlString);
       }
       catch(Exception ex)
       {
@@ -3299,9 +3301,40 @@ public static class Vv_eRacun_HTTP
          }
       }
 
-      return deserialized_eRacun;
+      return theInvoiceType;
    }
 
+   private static string RemoveSignatureElements(string xmlString)
+   {
+      try
+      {
+         XDocument doc = XDocument.Parse(xmlString);
+
+         // Define namespaces
+         XNamespace ext = "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2";
+         XNamespace sig = "urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2";
+         XNamespace ds = "http://www.w3.org/2000/09/xmldsig#";
+
+         // Ukloni UBLDocumentSignatures elemente
+         doc.Descendants(sig + "UBLDocumentSignatures").Remove();
+
+         // Ukloni sve ds:Signature elemente
+         doc.Descendants(ds + "Signature").Remove();
+
+         // Ukloni prazne UBLExtension elemente nakon uklanjanja potpisa
+         var emptyExtensions = doc.Descendants(ext + "UBLExtension")
+            .Where(x => !x.HasElements || x.Elements().All(e => string.IsNullOrWhiteSpace(e.Value)))
+            .ToList();
+         emptyExtensions.ForEach(x => x.Remove());
+
+         return doc.ToString();
+      }
+      catch(Exception ex)
+      {
+         System.Diagnostics.Debug.WriteLine($"Error removing signature elements: {ex.Message}");
+         return xmlString;
+      }
+   }
    #endregion Other
 
    #endregion FIR / FUR Load List and SubmodulActions
@@ -3734,13 +3767,14 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
    
       bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.TaxInclusiveAmount?.Value == null;
    
-      decimal theMoney;
+      decimal theMoney = 0M;
       
-      if (deserialized_eRacun_Is_Unreadable)
+      if(deserialized_eRacun_Is_Unreadable)
       {
+#if !DEBUG
          // Try to extract TaxInclusiveAmount directly from XML as fallback
          theMoney = ExtractTaxInclusiveAmountFromXml(xmlString);
-
+#endif
          if(theMoney.IsZero())
          {
             string debugPath = @"C:\temp\debug_invoice_" + responseData.ElectronicId.ToString() + "_" + responseData.SenderBusinessName + ".xml";
