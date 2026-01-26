@@ -8105,8 +8105,10 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(/*2*/);
    
       uint fakturRecID = faktur_rec.RecID;
+      uint fakturYear  = (uint)faktur_rec.DokDate.Year;
    
-      filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "", fakturRecID, "", "", " = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "fakturRecID", fakturRecID, "", "", " = ", ""));
+      filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakYear ], false, "fakturYear" , fakturYear , "", "", " = ", ""));
    
       KtoShemaDsc KSD = ZXC.KSD;
    
