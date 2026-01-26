@@ -1234,6 +1234,12 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
 
          faktur_rec.TtSort = ZXC.TtInfo(faktur_rec.TT).TtSort;
 
+         // 2026:
+         if(faktur_rec.IsF2)
+         {
+            faktur_rec.VezniDok = faktur_rec.TtNumFiskal;
+         }
+
          /* $$$ */ fakOK = fakturDao.ADDREC(conn, faktur_rec);
 
          // save new Faktur data for further transes 
