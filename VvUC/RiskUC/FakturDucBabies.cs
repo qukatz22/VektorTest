@@ -9683,15 +9683,31 @@ public class F2_Ulaz_UC : VvUserControl
       { 
          Faktur faktur_rec = new Faktur();
 
-         faktur_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, faktur_rec, xtrano_rec.T_parentID, false);
-         faktur_rec.VvDao.LoadExtender        (TheDbConnection, faktur_rec, false);
+         bool OK = faktur_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, faktur_rec, xtrano_rec.T_parentID, false);
+         if(OK)
+         { 
+            faktur_rec.VvDao.LoadExtender        (TheDbConnection, faktur_rec, false);
 
-         TheG.PutCell(ci.iT_tt      , rowIdx, faktur_rec.TT        );
-         TheG.PutCell(ci.iT_ttNum   , rowIdx, faktur_rec.TtNum     );
-         TheG.PutCell(ci.iT_dokDate , rowIdx, faktur_rec.DokDate   );
-         TheG.PutCell(ci.iT_kupDob  , rowIdx, faktur_rec.KupdobName);
-         TheG.PutCell(ci.iT_vezDok  , rowIdx, faktur_rec.VezniDok  );
-         TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
+            TheG.PutCell(ci.iT_tt      , rowIdx, faktur_rec.TT        );
+            TheG.PutCell(ci.iT_ttNum   , rowIdx, faktur_rec.TtNum     );
+            TheG.PutCell(ci.iT_dokDate , rowIdx, faktur_rec.DokDate   );
+            TheG.PutCell(ci.iT_kupDob  , rowIdx, faktur_rec.KupdobName);
+            TheG.PutCell(ci.iT_vezDok  , rowIdx, faktur_rec.VezniDok  );
+            TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
+         }
+         else
+         {
+            TheG.PutCell(ci.iT_tt      , rowIdx, "");
+            TheG.PutCell(ci.iT_ttNum   , rowIdx, "");
+            TheG.PutCell(ci.iT_dokDate , rowIdx, "");
+            TheG.PutCell(ci.iT_kupDob  , rowIdx, "");
+            TheG.PutCell(ci.iT_vezDok  , rowIdx, "");
+            TheG.PutCell(ci.iT_iznos   , rowIdx, "");
+         }
+      }
+      else // izgleda kaso a ovaj racun nije jos ucitan? provjerimo da nije rucno ucitan? 
+      {
+         // qweqwe 
       }
 
       #endregion From Faktur DataLayer

@@ -547,42 +547,6 @@ namespace EN16931.UBL
          return xmlSchemaSet;
       }
 
-#if mozdaKasnijeIzFajla
-      public static bool ValidateThis_XML_eRacun(string fileName, bool useCIUS2025 = false)
-      {
-         XmlSchemaSet xmlSchemaSet = GetXmlSchemaSet(useCIUS2025);
-
-         if(xmlSchemaSet == null)
-         {
-            return false;
-         }
-
-         ZXC.ErrorsList = new List<string>();
-         xsdOK = true;
-
-         XmlReaderSettings settings = new XmlReaderSettings();
-         settings.DtdProcessing = DtdProcessing.Parse;
-         settings.ValidationType = ValidationType.Schema;
-         settings.ValidationEventHandler += new ValidationEventHandler(settings_ValidationEventHandler);
-         settings.Schemas = xmlSchemaSet;
-
-         using(XmlReader reader = XmlReader.Create(fileName, settings))
-         {
-            while(reader.Read()) ;
-         }
-
-         if(xsdOK == false)
-         {
-            string title = useCIUS2025
-               ? "Greške CIUS-2025 XML Validacije [" + fileName + "]"
-               : "Greške EN 16931 XML Validacije [" + fileName + "]";
-            ZXC.aim_emsg_List(title, ZXC.ErrorsList, true);
-         }
-
-         return xsdOK;
-      }
-#endif
-
       #region XSD Validating - Enhanced Error Handling
 
       private static bool xsdOK;

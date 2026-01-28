@@ -2107,7 +2107,7 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_eRacun(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA)
+      public Faktur Create_Faktur_From_eRacun(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, uint xtranoRecID = 0)
       {
          #region init
 
@@ -2174,6 +2174,8 @@ namespace EN16931.UBL
          if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
          faktur_rec.F2_ElectronicID = electronicID;
          faktur_rec.F2_SentTS       = sentDate;
+         if(isUFA)
+         faktur_rec.F2_ArhRecID     = xtranoRecID;
 
          #endregion ZAGLAVLJE računa
 
