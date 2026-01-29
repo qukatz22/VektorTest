@@ -654,7 +654,7 @@ public class VvMessageBoxDLG :  VvDialog
 
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
-      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
+      if(vvmBoxKind == ZXC.VvmBoxKind.F2_SEND_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates || vvmBoxKind == ZXC.VvmBoxKind.F2_IMPORT_candidates)
       {
          AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
          okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -817,7 +817,7 @@ public class VvMessageBox_UC : UserControl
       if(vvmBoxKind == ZXC.VvmBoxKind.F2_MAP_candidates)
       { 
          this.Size      = new Size(TheGrid.Width + 2 * ZXC.QunMrgn, ZXC.Q10un * 4);
-         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_stop.Height - hamper_Select.Height;
+         TheGrid.Height = this.Size.Height - ZXC.QUN - hamper_F2_MAP_stop.Height - ZXC.QUN - hamper_Select.Height;
          hamper_F2_MAP_stop      .Location = new Point(ZXC.QunMrgn, this.Size.Height - ZXC.QUN);
          hamper_F2_MAP_candidates.Location = new Point(ZXC.Q10un*3 + ZXC.Q2un, TheGrid.Bottom);
 

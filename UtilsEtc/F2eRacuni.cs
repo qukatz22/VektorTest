@@ -4659,5 +4659,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       openFileDialog.Dispose(); // !!! 
    }
-
+   private void F2_AddNapomena2_UFA(object sender, EventArgs e)
+   { 
+   }
 }
