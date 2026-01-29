@@ -9696,14 +9696,40 @@ public class F2_Ulaz_UC : VvUserControl
 
       Faktur faktur_rec = new Faktur();
 
-      if(fakturRecID.NotZero())
+      if(fakturRecID.NotZero() && fakturRecID != UInt32.MaxValue)
       {
          fakturDataLayer_FOUNDv1 = faktur_rec.VvDao.SetMe_Record_byRecID(TheDbConnection, faktur_rec, fakturRecID, false);
+
+         if(!fakturDataLayer_FOUNDv1)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, $"U Inbox-u je za ulaz. rn. {Environment.NewLine}{Environment.NewLine}{xtrano_rec.T_opis_128 + " rn: " + xtrano_rec.T_theString}{Environment.NewLine}{Environment.NewLine}IZBRISAN prethodno AUTOMATSKI importiran račun.");
+
+            #region RWTREC Xtrano ... remove old T_parentID
+
+            TheVvTabPage.TheVvForm.BeginEdit(xtrano_rec);
+
+            xtrano_rec.T_parentID = 0;
+            xtrano_rec.T_ttNum    = 0;
+
+            xtrano_rec.VvDao.RWTREC(TheDbConnection, xtrano_rec, false, false, false);
+
+            TheVvTabPage.TheVvForm.EndEdit(xtrano_rec);
+
+            #endregion RWTREC Xtrano ... remove old T_parentID
+
+         }
       }
 
       if(!fakturDataLayer_FOUNDv1)
       {
          fakturDataLayer_FOUNDv2 = FakturDao.SetMeFaktur_ByKupdobOIBAndVezniDok(TheDbConnection, faktur_rec, fakturKdOIB, fakturVezniDok);
+      }
+
+      if(fakturDataLayer_FOUNDv2)
+      {
+         int idxOfTHisXtrano = TheXtranoList.IndexOf(xtrano_rec);
+
+         TheXtranoList[idxOfTHisXtrano].T_parentID = UInt32.MaxValue; // signaliziraj u TheXtranoList da je faktur nađen ByKupdobOIBAndVezniDok, nije import ali ga ipak ima  
       }
 
       if(fakturDataLayer_FOUNDv1 || fakturDataLayer_FOUNDv2)
@@ -9718,19 +9744,17 @@ public class F2_Ulaz_UC : VvUserControl
          TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
          TheG.PutCell(ci.iT_napomena, rowIdx, faktur_rec.Napomena2 );
 
-         if(fakturDataLayer_FOUNDv2)
+         DataGridViewCell cell;
+
+         for(int i = 0; i < TheG.Rows[rowIdx].Cells.Count; ++i)
          {
-            DataGridViewCell cell;
+            if(i == ci.iT_tt || i == ci.iT_ttNum || i == ci.iT_dokDate || i == ci.iT_kupDob || i == ci.iT_vezDok || i == ci.iT_iznos || i == ci.iT_napomena)
+            { 
+               cell = TheG.Rows[rowIdx].Cells[i];
 
-            for(int i = 0; i < TheG.Rows[rowIdx].Cells.Count; ++i)
-            {
-               if(i == ci.iT_tt || i == ci.iT_ttNum || i == ci.iT_dokDate || i == ci.iT_kupDob || i == ci.iT_vezDok || i == ci.iT_iznos || i == ci.iT_napomena)
-               { 
-                  cell = TheG.Rows[rowIdx].Cells[i];
-
-                  if(faktur_rec.S_ukKCRP != xtrano_rec.T_moneyA) cell.Style.ForeColor = Color.Red;
-                  else                                           cell.Style.ForeColor = Color.FromArgb(82, 122, 122); //Color.DarkGray;
-               }
+                    if(faktur_rec.S_ukKCRP   != xtrano_rec.T_moneyA  ) cell.Style.ForeColor = Color.Red ;
+               else if(faktur_rec.KupdobName != xtrano_rec.T_opis_128) cell.Style.ForeColor = Color.DarkCyan;
+               else if(fakturDataLayer_FOUNDv2)                        cell.Style.ForeColor = Color.FromArgb(82, 122, 122); //Color.DarkGray;
             }
          }
       }

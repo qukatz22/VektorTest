@@ -1622,8 +1622,8 @@ public class VvMessageBox_UC : UserControl
       {
          TheGrid.Rows.Add();
          
-         TheGrid.PutCell(ci.iT_partner, rowIdx, messageList[rowIdx].KupdobName);
-         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].TheDate   );
+         TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName);
+         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].TheDate.ToString(ZXC.VvDateFormat));
          TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].String1);
          TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
          TheGrid.PutCell(ci.iT_ftrRecID, rowIdx, messageList[rowIdx].UtilUint  );

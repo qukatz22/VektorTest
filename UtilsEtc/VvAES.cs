@@ -175,7 +175,7 @@ internal static class VvStringCompressor
    /// <summary>
    /// Decompresses a GZip-compressed byte array back to the original XML string.
    /// </summary>
-   public static string DecompressXml(byte[] compressedData)
+   public static string DecompressXmlOLD(byte[] compressedData)
    {
       if(compressedData == null || compressedData.Length == 0)
          return string.Empty;
@@ -186,6 +186,22 @@ internal static class VvStringCompressor
       {
          gZipStream.CopyTo(resultStream);
          return Encoding.UTF8.GetString(resultStream.ToArray());
+      }
+   }
+   public static string DecompressXml(byte[] compressedData)
+   {
+      if(compressedData == null || compressedData.Length == 0)
+         return string.Empty;
+
+      using(var compressedStream = new MemoryStream(compressedData))
+      using(var gzipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
+      using(var resultStream = new MemoryStream())
+      {
+         gzipStream.CopyTo(resultStream);
+         byte[] decompressedBytes = resultStream.ToArray();
+
+         // KLJUÈNO: Mora biti UTF-8!
+         return Encoding.UTF8.GetString(decompressedBytes);
       }
    }
 }

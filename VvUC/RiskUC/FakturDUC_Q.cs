@@ -3600,7 +3600,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
       }
 
       // Uklanjanja F2_Unprocessed iz Napomene 
-      if(IsF012DUC && faktur_rec.IsF2 && faktur_rec.Napomena.Contains(ZXC.F2_Unprocessed))
+      if(/*IsF012DUC && faktur_rec.IsF2 &&*/ faktur_rec.Napomena.Contains(ZXC.F2_Unprocessed))
       {
          faktur_rec.Napomena = faktur_rec.Napomena.Replace(ZXC.F2_Unprocessed, "");
          Fld_Napomena        = faktur_rec.Napomena;
@@ -7973,7 +7973,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          case ZXC.WriteMode.Edit: ///////////////////////////////////////////////////////////////////////////////////////////////// 
 
-            if(faktur_rec.Is_F2_AlreadySent)
+          //if(faktur_rec.Is_F2_AlreadySent                                )
+            if(faktur_rec.Is_F2_AlreadySent && faktur_rec.F2_StatusCD != 50)
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljen ispravak.\n\nDokument je već poslan kao eRačun.");
                return false;

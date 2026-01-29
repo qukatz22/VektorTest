@@ -962,7 +962,8 @@ public static class Vv_eRacun_HTTP
          webApiResult.StatusCode = (int)httpResponse.StatusCode;
          webApiResult.StatusDescription = httpResponse.StatusDescription;
 
-         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream(), ZXC.VvUTF8Encoding_noBOM, true))
+       //using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream(), ZXC.VvUTF8Encoding_noBOM, true))
+         using(StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream(), Encoding.UTF8, detectEncodingFromByteOrderMarks: false))
          {
             string responseString = streamReader.ReadToEnd();
 
@@ -2780,8 +2781,9 @@ public static class Vv_eRacun_HTTP
       List<string> updatedStatusInfoList = new List<string>();
            string  updatedStatusInfo                         ;
 
-      List<Xtrano> XtranosForImport_List = theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).ToList(); // tamo gdje je T_parentID 0, znaci da jos nije u Faktur DataLayer-u 
-
+      List<Xtrano> XtranosForImport_List = theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).ToList(); // tamo gdje je T_parentID  0, znaci da jos nije u Faktur DataLayer-u     
+                                                                                                               // T_parentID NotZero moze biti normalan ili UInt32.MaxValue!             
+                                                                                                               // poz - faktur nastao importom ... UInt32.MaxValue - faktur nastao ručno 
       List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
 
       if(XtranosForImport_List.IsEmpty())
@@ -2806,7 +2808,7 @@ public static class Vv_eRacun_HTTP
             UtilUint   = xtranoForImport_rec.T_recID,
          });
 
-      } // foreach(Ftrans paymentftrans_rec in paymentftransList) 
+      } 
 
       VvMessageBoxDLG  FUR_ImportCandidatesXtranoList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_IMPORT_candidates);
       FUR_ImportCandidatesXtranoList_InfoDLG.Text = "Kandidati za IMPORT:";
@@ -2922,7 +2924,7 @@ public static class Vv_eRacun_HTTP
             {
                newsCount++;
 
-               updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
+               updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova UFA je {2} {3} {4}",
                                              newUFA_Faktur_rec.TipBr,
                                              newUFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
                                              "DODANA u lokalnu bazu",
@@ -2965,6 +2967,8 @@ public static class Vv_eRacun_HTTP
       if(updatedStatusInfoList.NotEmpty())
       {
          ZXC.aim_emsg_List(string.Format("DODANO je {0} novih ulaznih računa u Vektorovu bazu podataka.", updatedStatusInfoList.Count), updatedStatusInfoList);
+         
+         theUC.PutDgvFields();
       }
       
       if(newKupdobInfoList.NotEmpty())
@@ -3291,14 +3295,12 @@ public static class Vv_eRacun_HTTP
    internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
    {
       EN16931.UBL.InvoiceType theInvoiceType = null;
-      System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(EN16931.UBL.InvoiceType));
 
       try
       {
          // Ukloni UBLExtensions elemente prije deserializacije
          string cleanedXmlString = RemoveSignatureElements(xmlString);
 
-         //deserialized_eRacun = (EN16931.UBL.InvoiceType)serializer.Deserialize(new StringReader(xmlString));
          theInvoiceType = EN16931.UBL.InvoiceType.Deserialize(/*xmlString*/cleanedXmlString);
       }
       catch(Exception ex)
@@ -3314,7 +3316,6 @@ public static class Vv_eRacun_HTTP
 
       return theInvoiceType;
    }
-
    public /*private*/ static string RemoveSignatureElements(string xmlString)
    {
       try

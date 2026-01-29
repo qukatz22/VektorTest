@@ -2156,7 +2156,7 @@ namespace EN16931.UBL
          
          faktur_rec.DospDate  = this.DueDate.Value  ;
 
-         faktur_rec.PdvDate   = this.TaxPointDate.Value.IsEmpty() ? this.IssueDate.Value : this.TaxPointDate.Value;
+         faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
          faktur_rec.VezniDok  = this.ID.Value       ;
        //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
          faktur_rec.Napomena  = ZXC.F2_Unprocessed  ;
@@ -2188,8 +2188,9 @@ namespace EN16931.UBL
             rtrans_rec = new Rtrans();
 
           //rtrans_rec.T_artiklCD    = ;
-            rtrans_rec.T_artiklName  = invoiceLine.Item.Name.Value;
-          //rtrans_rec.T_jedMj       = ; 
+            rtrans_rec.T_artiklName  = ZXC.LenLimitedStr(invoiceLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
+
+            //rtrans_rec.T_jedMj       = ; 
             rtrans_rec.T_kol         = invoiceLine.InvoicedQuantity.Value;
             rtrans_rec.T_cij         = invoiceLine.Price.PriceAmount.Value; // R_CIJ_KCR se uzima kao jedinicna cijena; BT-146 -Neto cijena artikla Cijena artikla bez PDV-a, nakon oduzimanja popusta na cijenu artikla-  
             rtrans_rec.T_pdvSt       = invoiceLine.Item.ClassifiedTaxCategory[0].Percent.Value;
