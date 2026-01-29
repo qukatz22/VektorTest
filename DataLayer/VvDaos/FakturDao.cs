@@ -1001,6 +1001,23 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
       return success;
    }
 
+   public static bool SetMeFaktur_ByKupdobOIBAndVezniDok(XSqlConnection conn, Faktur faktur_rec, string kdOIB, string vezniDok/*, bool _shouldBeSilent*/)
+   {
+      bool success = true;
+
+      using(XSqlCommand cmd = VvSQL.SetMeFaktur_ByKupdobOIBAndVezniDok_Command(conn, kdOIB, vezniDok))
+      {
+         success = ZXC.FakturDao.ExecuteSingleFillFromDataReader(faktur_rec, false, cmd, true);
+      } // using cmd 
+
+    //if(!success && !_shouldBeSilent)
+    //{
+    //   VvSQL.ReportGeneric_DB_Error("", "Podatak: [" + _tt + "-" + _ttNum.ToString(/*"000000"*/) + "] ne postoji u datoteci [" + Faktur.recordName + ".", System.Windows.Forms.MessageBoxButtons.OK);
+    //}
+
+      return success;
+   }
+
 
    public static bool SetMeLastRtransForArtiklAndTtNum(XSqlConnection conn, Rtrans rtrans_rec, string _tt, uint _ttNum, string artiklCD, bool _shouldBeSilent)
    {

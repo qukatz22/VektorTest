@@ -890,9 +890,12 @@ public class VvMessageBox_UC : UserControl
 
          TheGrid.PutCell(colIdx, rowIdx,(willBeChecked));
 
+         DataGridViewCell cell;
+
          for(int i = 0; i < TheGrid.Rows[rowIdx].Cells.Count; ++i)
          {
-            DataGridViewCell  cell = TheGrid.Rows[rowIdx].Cells[i];
+            cell = TheGrid.Rows[rowIdx].Cells[i];
+
             if(willBeChecked) cell.Style.ForeColor = Color.FromArgb(255, 153, 153);// Color.LightGray;
             else              cell.Style.ForeColor = Color.Black;
          }

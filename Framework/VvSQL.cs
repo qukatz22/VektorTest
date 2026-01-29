@@ -6708,6 +6708,20 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand SetMeFaktur_ByKupdobOIBAndVezniDok_Command(XSqlConnection conn, string kdOIB, string vezniDok)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "kdOIB"   , kdOIB   , ZXC.FaktExSchemaRows[ZXC.FexCI.kdOib   ]);
+      CreateCommandNamedParameter(cmd, "", "vezniDok", vezniDok, ZXC.FakturSchemaRows[ZXC.FakCI.vezniDok]);
+
+      cmd.CommandText = "SELECT * FROM "  + Faktur.recordName + " L " + "\n" +
+                        "LEFT     JOIN "  + FaktEx.recordName + " R " + "\n" +
+                        "ON L.RecID = R.fakturRecID"                  + "\n" +
+                        " WHERE " + "kdOib = ?kdOIB AND vezniDok = ?vezniDok";
+      return (cmd);
+   }
+
    public static XSqlCommand SetMeLastRtransForArtiklAndTtNum_Command(XSqlConnection conn, short ttSort, uint ttNum, string artiklCD, Rtrans rtrans_rec)
    {
       XSqlCommand cmd = InitCommand(conn);

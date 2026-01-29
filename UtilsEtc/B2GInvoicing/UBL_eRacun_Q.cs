@@ -2244,7 +2244,11 @@ namespace EN16931.UBL
          faktur_rec.PdvR12     = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
          faktur_rec.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
 
-         VvLookUpItem theLui = ZXC.luiListaSkladista.OrderBy(lui => lui.Integer).FirstOrDefault(); // probaj naci lui sa najmanjim (integer nam je kao intera sifra skladista) 
+         ZXC.luiListaSkladista.LazyLoad();
+
+         //VvLookUpItem theLui = ZXC.luiListaSkladista.OrderBy(lui => lui.Integer).FirstOrDefault(); // probaj naci lui sa najmanjim (integer nam je kao intera sifra skladista) 
+         VvLookUpItem theLui = ZXC.luiListaSkladista.Where(lui => lui.Integer.NotZero()).
+                                                     OrderBy(lui => lui.Integer).FirstOrDefault(); // probaj naci lui sa najmanjim (integer nam je kao intera sifra skladista) 
 
          if(isIFA)
          {

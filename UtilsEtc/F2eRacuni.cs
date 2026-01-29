@@ -1275,33 +1275,15 @@ public static class Vv_eRacun_HTTP
 
          #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
-         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, /*true*/ false) : null;
-
-         // Validate XML against XSD schema
-         string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
-         
          xmlValidationOK = false;
 
-         if(!File.Exists(xsdFilePath))
-         {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "XSD schema file not found at: {0}", xsdFilePath);
-         }
-         else if(deserialized_eRacun != null)
-         {
-            // kada bi koristili onaj MaybeOLD onda ide ovako:
-          //using(FileStream xsdStream = new FileStream(xsdFilePath, FileMode.Open, FileAccess.Read))
-          //{
-          //   xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString, xsdStream, out List<string> validationErrors);
-          //
-          //   if(!xmlValidationOK)
-          //   {
-          //      ZXC.aim_emsg_List("XML validation failed for eRačun:", validationErrors);
-          //   }
-          //}
+         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, /*true*/ false) : null;
 
+         if(deserialized_eRacun != null)
+         {
             try 
-            { 
-               bool validateOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); 
+            {
+               xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); 
             } 
             catch(Exception ex) 
             { 
@@ -1351,7 +1333,24 @@ public static class Vv_eRacun_HTTP
                else
                {
                   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom kreiranja novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
-               }  
+               }
+
+            } // if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+            
+            else // kupdobOK == true, provjeri ima li dobar R1_Kind ... i ak nema ...
+            {
+               if(kupdob_rec.R1kind != ZXC.F2_R1enum.B2B)
+               {
+                  theUC.TheVvTabPage.TheVvForm.BeginEdit(kupdob_rec);
+
+                  kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
+
+                  kupdob_rec.VvDao.RWTREC(theUC.TheDbConnection, kupdob_rec, false, true, false);
+
+                  theUC.TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
+
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); // REFRESH sifrar! 
+               }
             }
 
             #endregion Get Kupdob / New Kupdob?
@@ -2947,6 +2946,11 @@ public static class Vv_eRacun_HTTP
             theUC.TheVvTabPage.TheVvForm.EndEdit(AURxtrano_rec);
 
          } // if(kupdobOK || addrecKupdobOK) 
+         
+         else // Nema postojeceg kupdoba ili addrec novog kupdoba nije uspio 
+         { 
+            // ??? !!! 
+         }
 
       } // foreach(Xtrano AURxtrano_rec in XtranosForImport_List)
 
@@ -3311,7 +3315,7 @@ public static class Vv_eRacun_HTTP
       return theInvoiceType;
    }
 
-   private static string RemoveSignatureElements(string xmlString)
+   public /*private*/ static string RemoveSignatureElements(string xmlString)
    {
       try
       {
@@ -3342,6 +3346,7 @@ public static class Vv_eRacun_HTTP
          return xmlString;
       }
    }
+
    #endregion Other
 
    #endregion FIR / FUR Load List and SubmodulActions

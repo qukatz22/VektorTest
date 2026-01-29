@@ -204,127 +204,16 @@ public abstract class Vv_XSD_Bussiness_BASE<T> where T : class
    }
 
    #region 2025: XML Validation etc by copilot + byQ
-   private static string RemoveXmlSignature(string xmlString)
-   {
-      XmlDocument doc = new XmlDocument();
-      doc.LoadXml(xmlString);
-
-      XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
-      nsmgr.AddNamespace("ds", "http://www.w3.org/2000/09/xmldsig#");
-
-      XmlNode signatureNode = doc.SelectSingleNode("//ds:Signature", nsmgr);
-      if(signatureNode != null)
-      {
-         signatureNode.ParentNode.RemoveChild(signatureNode);
-      }
-
-      return doc.OuterXml;
-   }
-
-   // 2025: made by Copilot
-   internal static bool ValidateXmlAgainstXsd_MaybeOLD(string _xmlString, Stream xsdStream, out List<string> validationErrors)
-   {
-      string xmlString = RemoveXmlSignature(_xmlString);
-
-      var errors = new List<string>();
-      bool isValid = true;
-
-      try
-      {
-         XmlSchemaSet schemas = new XmlSchemaSet();
-         schemas.XmlResolver = new XmlUrlResolver();
-
-         // Get the directory containing the main XSD file
-         string xsdDirectory = null;
-         if(xsdStream is FileStream fileStream)
-         {
-            xsdDirectory = Path.GetDirectoryName(fileStream.Name);
-         }
-
-         // Load the main XSD schema
-         using(XmlReader xsdReader = XmlReader.Create(xsdStream))
-         {
-            schemas.Add(null, xsdReader);
-         }
-
-         // Load all dependent XSD files from the same directory
-         if(!string.IsNullOrEmpty(xsdDirectory) && Directory.Exists(xsdDirectory))
-         {
-            string mainXsdFileName = Path.GetFileName(((FileStream)xsdStream).Name);
-            string[] xsdFiles = Directory.GetFiles(xsdDirectory, "*.xsd");
-            foreach(string xsdFile in xsdFiles)
-            {
-               // Skip the main XSD file to avoid duplicate declaration
-               if(Path.GetFileName(xsdFile).Equals(mainXsdFileName, StringComparison.OrdinalIgnoreCase))
-                  continue;
-
-               try
-               {
-                  using(FileStream fs = new FileStream(xsdFile, FileMode.Open, FileAccess.Read))
-                  using(XmlReader xsdReader = XmlReader.Create(fs))
-                  {
-                     schemas.Add(null, xsdReader);
-                  }
-               }
-               catch(Exception ex)
-               {
-                  // Log but continue - some XSD files might be duplicates or invalid
-                  errors.Add($"Warning: Could not load schema file {Path.GetFileName(xsdFile)}: {ex.Message}");
-               }
-            }
-         }
-
-         // Compile the schema set to resolve all references
-         schemas.Compile();
-
-         XmlReaderSettings settings = new XmlReaderSettings();
-         settings.ValidationType = ValidationType.Schema;
-         settings.Schemas = schemas;
-         settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
-         settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
-         settings.XmlResolver = new XmlUrlResolver();
-
-         settings.ValidationEventHandler += (sender, e) =>
-         {
-            // Skip validation errors in the signature namespace
-            if(e.Message.Contains("http://www.w3.org/2000/09/xmldsig#") ||
-               e.Message.Contains("X509SerialNumber"))
-            {
-               errors.Add($"Warning (Signature - ignored): {e.Message}");
-               return; // Don't mark as invalid
-            }
-
-            errors.Add($"{e.Severity}: {e.Message}");
-            if(e.Severity == XmlSeverityType.Error)
-            {
-               isValid = false;
-            }
-         };
-
-         using(StringReader stringReader = new StringReader(xmlString))
-         using(XmlReader xmlReader = XmlReader.Create(stringReader, settings))
-         {
-            while(xmlReader.Read()) { }
-         }
-      }
-      catch(Exception ex)
-      {
-         errors.Add("EXCEPTION: " + ex.Message);
-         isValid = false;
-      }
-
-      validationErrors = errors;
-      return isValid;
-   }
    // 2025: byQ:
    internal static bool ValidateXmlAgainstXsd(string xmlString)
    {
-      string theXmlString = RemoveXmlSignature(xmlString);
+    //string cleanXmlString = RemoveXmlSignature(xmlString);
+      string cleanXmlString = Vv_eRacun_HTTP.RemoveSignatureElements(xmlString);
 
-      XmlDocument xmlDocument = ZXC.RemoveEmptyNodes(theXmlString);
-      theXmlString = xmlDocument.OuterXml;
+      XmlDocument xmlDocument = ZXC.RemoveEmptyNodes(cleanXmlString);
+      cleanXmlString = xmlDocument.OuterXml;
       MemoryStream memoryStream = new MemoryStream();
-      xmlDocument.LoadXml(theXmlString);
+      xmlDocument.LoadXml(cleanXmlString);
       xmlDocument.Save(memoryStream);
       bool validateOK = false;
 

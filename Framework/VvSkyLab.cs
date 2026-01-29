@@ -78,7 +78,7 @@ public static class VvSkyLab
       if(wantedOperation == ZXC.SkyOperation.SEND   )  startOfSyncTS = VvSQL.GetServer_DateTime_Now(/*connSKY*/connLAN); // da li bi mozda ove trebalo izvuci izvan foreach petlje? razmisli: sta ako za neki tt traje dugo... i hoce li server biti lockiran for write ili ne?!
       if(wantedOperation == ZXC.SkyOperation.RECEIVE)  startOfSyncTS = VvSQL.GetServer_DateTime_Now(/*connLAN*/connSKY); // da li bi mozda ove trebalo izvuci izvan foreach petlje? razmisli: sta ako za neki tt traje dugo... i hoce li server biti lockiran for write ili ne?!
 
-      ZXC.luiListaSkladista.LazyLoad();
+      ZXC.luiListaSkladista.LazyLoad();   
 
       ZXC.TheVvForm.TheVvUC.SetSifrarAndAutocomplete<Artikl>(null, VvSQL.SorterType.Name );
       ZXC.TheVvForm.TheVvUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name );
