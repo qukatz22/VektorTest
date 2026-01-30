@@ -1681,7 +1681,7 @@ public static class Vv_eRacun_HTTP
                F2_IRn_faktur_rec.VezniDok = F2_IRn_faktur_rec.TtNumFiskal; // cuvat cemo u data layeru rezultat result propertya 'TtNumFiskal' 
             }
 
-            bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+            bool rwtOK = F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
             theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
@@ -1767,7 +1767,7 @@ public static class Vv_eRacun_HTTP
 
          F2_IRn_faktur_rec.F2_IsFisk = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
-         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+         bool rwtOK = F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
@@ -1832,7 +1832,7 @@ public static class Vv_eRacun_HTTP
 
          F2_IRn_faktur_rec.F2_IsRejected = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
-         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+         bool rwtOK = F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
@@ -1897,7 +1897,7 @@ public static class Vv_eRacun_HTTP
 
          F2_IRn_faktur_rec.F2_IsMarkAsPaid = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
-         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+         bool rwtOK = F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
@@ -1962,7 +1962,7 @@ public static class Vv_eRacun_HTTP
 
          F2_IRn_faktur_rec.F2_IsEizvj = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
-         bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+         bool rwtOK = F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
@@ -2049,7 +2049,7 @@ public static class Vv_eRacun_HTTP
             
             F2_IRn_faktur_rec.F2_ArhRecID = arhivaXtrano_recID;
 
-            bool rwtOK = true; F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
+            bool rwtOK = F2_IRn_faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, F2_IRn_faktur_rec, false, true, false);
 
             theUC.TheVvTabPage.TheVvForm.EndEdit(F2_IRn_faktur_rec);
 
@@ -2657,7 +2657,7 @@ public static class Vv_eRacun_HTTP
 
          newAUR_Xtrano_rec.F2_IsFisk = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
-         bool rwtOK = true; newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
+         bool rwtOK = newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(newAUR_Xtrano_rec);
 
@@ -2722,7 +2722,7 @@ public static class Vv_eRacun_HTTP
 
          newAUR_Xtrano_rec.F2_IsReject = true;
 
-         bool rwtOK = true; newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
+         bool rwtOK = newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(newAUR_Xtrano_rec);
 
@@ -4664,21 +4664,47 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_AddNapomena_UFA(object sender, EventArgs e)
    {
-      if(((F2_Ulaz_UC)TheVvUC).TheG.SelectedCells.Count != 1)
+      F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
+
+      if(theUC.TheG.SelectedCells.Count == 0)
       {
          ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite jedan red iz tablice.");
          return;
       }
     
-      int rowIdx = ((F2_Ulaz_UC)TheVvUC).TheG.SelectedCells[0].RowIndex;
+      int rowIdx = theUC.TheG.SelectedCells[0].RowIndex;
 
+      string tt    = theUC.TheG.GetStringCell(theUC.DgvCI.iT_tt   , rowIdx, false);
+      uint   ttNum = theUC.TheG.GetUint32Cell(theUC.DgvCI.iT_ttNum, rowIdx, false);
+      
+      Faktur faktur_rec = new Faktur();
 
-      string tt  = ((F2_Ulaz_UC)this.TheVvUC).TheG.GetStringCell(12, rowIdx, false);
-      int ttNum  = ((F2_Ulaz_UC)this.TheVvUC).TheG.GetIntCell   (13, rowIdx, false);
+      FakturDao.SetMeFaktur(TheDbConnection, faktur_rec, tt, ttNum, false);
 
-      F2_FUR_addNpomenaUFA_Dlg dlg = new F2_FUR_addNpomenaUFA_Dlg();
-      dlg.ShowDialog();
+      F2_FUR_addNpomenaUFA_Dlg dlg = new F2_FUR_addNpomenaUFA_Dlg(faktur_rec);
+
+      DialogResult dlgResult = dlg.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         dlg.Dispose();
+         return;
+      }
+
+      string newNapomena = dlg.Fld_Napomena;
 
       dlg.Dispose();
+
+      BeginEdit(faktur_rec);
+
+      faktur_rec.Napomena = newNapomena;
+
+      bool rwtOK = faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, faktur_rec, false, true, false);
+
+      EndEdit(faktur_rec);
+
+      Xtrano xtrano_rec = theUC.TheXtranoList[rowIdx];
+
+      theUC.PutDgvLineFields(rowIdx, xtrano_rec);
    }
 }

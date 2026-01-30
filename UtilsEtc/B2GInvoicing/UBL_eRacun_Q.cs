@@ -1187,7 +1187,6 @@ namespace EN16931.UBL
             //BT-131 Neto iznos stavke računa "neto" bez PDV-a	Iznos 1..1
             invoiceLine.LineExtensionAmount = new LineExtensionAmountType { Value = Fak2eR_Decimal("BT131", faktur_rec, rtrans_rec), currencyID = faktur_rec.CurrencyID };
 
-
             #region RBT & ZTR stavke
 
             //BT-136 Iznos popusta stavke računa Iznos popusta bez PDV-a. 	Iznos 1..1 
@@ -1214,7 +1213,6 @@ namespace EN16931.UBL
          //}
 
          #endregion RBT & ZTR stavke
-
 
             //BT-146 Neto cijena artikla Cijena artikla bez PDVa	Jedinična cijena1..1
             //BT-150 Šifra jedinice mjere jedinične količine artikla
@@ -2190,17 +2188,34 @@ namespace EN16931.UBL
           //rtrans_rec.T_artiklCD    = ;
             rtrans_rec.T_artiklName  = ZXC.LenLimitedStr(invoiceLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
 
-            //rtrans_rec.T_jedMj       = ; 
+          //rtrans_rec.T_jedMj       = ; 
             rtrans_rec.T_kol         = invoiceLine.InvoicedQuantity.Value;
             rtrans_rec.T_cij         = invoiceLine.Price.PriceAmount.Value; // R_CIJ_KCR se uzima kao jedinicna cijena; BT-146 -Neto cijena artikla Cijena artikla bez PDV-a, nakon oduzimanja popusta na cijenu artikla-  
             rtrans_rec.T_pdvSt       = invoiceLine.Item.ClassifiedTaxCategory[0].Percent.Value;
-          //rtrans_rec.T_rbt1St      = ;
-          //rtrans_rec.T_wanted      = ;
-          //rtrans_rec.T_pdvColTip   = ;
-          //rtrans_rec.T_isIrmUsluga = ;
-          //rtrans_rec.T_ppmvOsn     = ;
-          //rtrans_rec.T_ppmvSt1i2   = ;
-          //rtrans_rec.T_pnpSt       = ;
+
+            decimal theRabat = 0.00M;
+            if(invoiceLine.AllowanceCharge != null &&
+               invoiceLine.AllowanceCharge.Length > 0 &&
+               invoiceLine.AllowanceCharge[0]?.Amount?.Value != null &&
+               invoiceLine.AllowanceCharge[0].Amount.Value.NotZero())
+            {
+               theRabat = invoiceLine.AllowanceCharge[0].Amount.Value;
+            }
+
+            if(theRabat.NotZero())
+            {
+               decimal theKCR = invoiceLine.LineExtensionAmount?.Value ?? 0.00M;
+
+             //rtrans_rec.T_rbt1St = (ZXC.DivSafe(theRabat, theKCR) * 100M).Ron2();
+               rtrans_rec.T_rbt1St = (ZXC.DivSafe(theRabat, theKCR + theRabat) * 100M).Ron2();
+            }
+
+            //rtrans_rec.T_wanted      = ;
+            //rtrans_rec.T_pdvColTip   = ;
+            //rtrans_rec.T_isIrmUsluga = ;
+            //rtrans_rec.T_ppmvOsn     = ;
+            //rtrans_rec.T_ppmvSt1i2   = ;
+            //rtrans_rec.T_pnpSt       = ;
 
             rtrans_rec.CalcTransResults(null);
 
@@ -2328,7 +2343,6 @@ namespace EN16931.UBL
 
          return cleanOIB;
       }
-
       internal static Kupdob Create_Kupdob_from_eRacun(MySqlConnection conn, InvoiceType invoiceType, bool isKupac)
       {
          bool isDobav = !isKupac;

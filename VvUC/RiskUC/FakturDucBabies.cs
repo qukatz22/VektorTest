@@ -9685,6 +9685,17 @@ public class F2_Ulaz_UC : VvUserControl
       if(xtrano_rec.F2_IsReject)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
       else                      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
 
+      #region Check For Duplicate Inbox entries
+
+      bool duplicateInbox_FOUND = TheXtranoList.Count(xtr => xtr.T_konto == xtrano_rec.T_konto && xtr.T_theString == xtrano_rec.T_theString) > 1;
+
+      if(duplicateInbox_FOUND)
+      {
+         TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightPink;
+      }
+
+      #endregion Check For Duplicate Inbox entries
+
       #region From Faktur DataLayer
 
       bool fakturDataLayer_FOUNDv1 = false;
@@ -9742,7 +9753,7 @@ public class F2_Ulaz_UC : VvUserControl
          TheG.PutCell(ci.iT_kupDob  , rowIdx, faktur_rec.KupdobName);
          TheG.PutCell(ci.iT_vezDok  , rowIdx, faktur_rec.VezniDok  );
          TheG.PutCell(ci.iT_iznos   , rowIdx, faktur_rec.S_ukKCRP  );
-         TheG.PutCell(ci.iT_napomena, rowIdx, faktur_rec.Napomena2 );
+         TheG.PutCell(ci.iT_napomena, rowIdx, faktur_rec.Napomena  );
 
          DataGridViewCell cell;
 
@@ -9753,7 +9764,7 @@ public class F2_Ulaz_UC : VvUserControl
                cell = TheG.Rows[rowIdx].Cells[i];
 
                     if(faktur_rec.S_ukKCRP             != xtrano_rec.T_moneyA)             cell.Style.ForeColor = Color.Red ;
-               else if(faktur_rec.KupdobName.ToUpper() != xtrano_rec.T_opis_128.ToUpper()) cell.Style.ForeColor = Color.DarkCyan;
+               else if(faktur_rec.KupdobName.ToUpper() != xtrano_rec.T_opis_128.ToUpper()) cell.Style.ForeColor = Color.DarkRed;
                else if(fakturDataLayer_FOUNDv2)                                            cell.Style.ForeColor = Color.FromArgb(82, 122, 122); //Color.DarkGray;
             }
          }
@@ -9822,7 +9833,7 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
 
    #region Constructor
 
-   public F2_FUR_addNpomenaUFA_Dlg()
+   public F2_FUR_addNpomenaUFA_Dlg(Faktur faktur_rec)
    {
       this.StartPosition = FormStartPosition.CenterScreen;
       this.Text          = "Dodaj napomenu na ulazni račun";
@@ -9838,7 +9849,7 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
 
       VvHamper.Open_Close_Fields_ForWriting(tbx_napomena , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
 
-      Fld_Napomena = "";
+      Fld_Napomena = faktur_rec.Napomena;
    }
 
    #endregion Constructor
