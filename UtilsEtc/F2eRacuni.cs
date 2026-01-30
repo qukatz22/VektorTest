@@ -18,6 +18,8 @@ using System.Drawing;
 using System.Diagnostics.SymbolStore;
 using EN16931.UBL;
 using System.Xml.Linq;
+using static F2_Ulaz_UC;
+
 
 
 
@@ -4660,7 +4662,23 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       openFileDialog.Dispose(); // !!! 
    }
-   private void F2_AddNapomena2_UFA(object sender, EventArgs e)
-   { 
+   private void F2_AddNapomena_UFA(object sender, EventArgs e)
+   {
+      if(((F2_Ulaz_UC)TheVvUC).TheG.SelectedCells.Count != 1)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, "Molimo odaberite jedan red iz tablice.");
+         return;
+      }
+    
+      int rowIdx = ((F2_Ulaz_UC)TheVvUC).TheG.SelectedCells[0].RowIndex;
+
+
+      string tt  = ((F2_Ulaz_UC)this.TheVvUC).TheG.GetStringCell(12, rowIdx, false);
+      int ttNum  = ((F2_Ulaz_UC)this.TheVvUC).TheG.GetIntCell   (13, rowIdx, false);
+
+      F2_FUR_addNpomenaUFA_Dlg dlg = new F2_FUR_addNpomenaUFA_Dlg();
+      dlg.ShowDialog();
+
+      dlg.Dispose();
    }
 }
