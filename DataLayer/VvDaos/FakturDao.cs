@@ -2306,7 +2306,8 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
        //needsRtranses = (theRules.Fak2nalSet == ZXC.Faktur2NalogSetEnum.VMI); // !!! dakle, rtrans trebamo samo za VMI  
          needsRtranses = (theRules.Fak2nalSet == ZXC.Faktur2NalogSetEnum.VMI || theRules.KtoShemaDsc.Dsc_KnjiziMSK_ulaz == false);
 
-         anotherJoinClause = "LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON F.RecID = Ft.t_fakRecID AND YEAR(F.DokDate) = Ft.t_fakYear \n"; // da bi vidjeli nije li vec prebaceno 
+         if(ZXC.projectYearAsInt > 2025) anotherJoinClause = "LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON F.RecID = Ft.t_fakRecID AND YEAR(F.DokDate) = Ft.t_fakYear \n"; // da bi vidjeli nije li vec prebaceno 
+         else /* old version */          anotherJoinClause = "LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON F.RecID = Ft.t_fakRecID                                    \n"; // da bi vidjeli nije li vec prebaceno 
 
          Load_Fak2Nal_URM_FakturList(conn, fakturList, filterMembers, anotherJoinClause);
 
@@ -2332,7 +2333,8 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
             orderBy = "dokDate, dokNum ";
          }
 
-         anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID AND YEAR(L.DokDate) = Ft.t_fakYear AND Ft.t_tt != 'IZ'" + "\n"; // da bi vidjeli nije li vec prebaceno 
+         if(ZXC.projectYearAsInt > 2025) anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID AND YEAR(L.DokDate) = Ft.t_fakYear AND Ft.t_tt != 'IZ'" + "\n"; // da bi vidjeli nije li vec prebaceno 
+         else /* old version */          anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID                                    AND Ft.t_tt != 'IZ'" + "\n"; // da bi vidjeli nije li vec prebaceno 
 
          VvDaoBase.LoadGenericVvDataRecordList(conn, fakturList, filterMembers, "", orderBy, true, selectWhat, anotherJoinClause);
       }
@@ -4294,7 +4296,7 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
 
    #endregion BarcodeFile
 
-   #region GetPrihodTT_Skladista_InUse
+ #region GetPrihodTT_Skladista_InUse
 
    internal static List<ZXC.VvUtilDataPackage> GetPrihodTT_Skladista_InUse(XSqlConnection conn)
    {
