@@ -2150,9 +2150,10 @@ namespace EN16931.UBL
 
          faktur_rec.DokDate = (this.IssueTime != null && this.IssueTime.Value != DateTime.MinValue)
             ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
-            : this.IssueDate.Value; 
-         
-         faktur_rec.DospDate  = this.DueDate.Value  ;
+            : this.IssueDate.Value;
+
+       //faktur_rec.DospDate  = this.DueDate.Value;
+         if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate  = this.DueDate.Value  ;
 
          faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
          faktur_rec.VezniDok  = this.ID.Value       ;
@@ -2454,7 +2455,13 @@ namespace EN16931.UBL
 
          if(isDobav)
          {
-            kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
+          //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
+          
+            string kupdobZiro = invoiceType.PaymentMeans?[0]?.PayeeFinancialAccount?.ID?.Value;
+            if (!string.IsNullOrWhiteSpace(kupdobZiro))
+            {
+               kupdob_rec.Ziro1 = kupdobZiro;
+            }
          }
 
          return kupdob_rec;
