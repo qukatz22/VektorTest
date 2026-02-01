@@ -9836,9 +9836,9 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
    public F2_FUR_addNpomenaUFA_Dlg(Faktur faktur_rec)
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = "Dodaj napomenu na ulazni račun";
+      this.Text          = "Dodaj napomenu na ulazni račun " + faktur_rec.TT + "-" + faktur_rec.TtNum.ToString();
 
-      CreateHamper();
+      CreateHamper(faktur_rec);
 
       dlgWidth  = hamper.Right + ZXC.QunMrgn;
       dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
@@ -9856,7 +9856,7 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
    
    #region hamper
 
-   private void CreateHamper()
+   private void CreateHamper(Faktur faktur_rec)
    {
       hamper          = new VvHamper(2, 2, "", this, false);
       hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
@@ -9869,9 +9869,9 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      string label = ""/* "Za račun " + faktur_rec.TT + "-" +  faktur_rec.TtNum.ToString() + " " + faktur_rec.KupdobName + " "*/;
+      string label = "Račun " + faktur_rec.TT + "-" +  faktur_rec.TtNum.ToString() + " " + faktur_rec.KupdobName + " ";
 
-      lbl_racun = hamper.CreateVvLabel(0, 0, label, 1, 0, ContentAlignment.MiddleRight);
+      lbl_racun = hamper.CreateVvLabel(0, 0, label, 1, 0, ContentAlignment.MiddleLeft);
       lbl_racun.Font = ZXC.vvFont.BaseBoldFont;
 
                      hamper.CreateVvLabel  (0, 1, "Napomena:", ContentAlignment.MiddleRight);
