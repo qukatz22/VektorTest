@@ -2181,6 +2181,18 @@ namespace EN16931.UBL
 
          #region STAVKE računa
 
+         int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
+       //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
+         bool isRbt_ByDocument   = numOfRbt_ByDocument.IsPositive();
+
+         bool isRbt_ByLine       ;
+         bool isThereAnyRbt      ;
+       //bool isRbtCOMPLICATED   ;
+         bool isRbtNOTCOMPLICATED;
+         int  numOfRbt_ByLine = 0;
+
+         decimal allowanceAmount = 0.00M;
+
          foreach(InvoiceLineType invoiceLine in this.InvoiceLine)
          {
             rtrans_rec = new Rtrans();
@@ -2190,25 +2202,97 @@ namespace EN16931.UBL
 
           //rtrans_rec.T_jedMj       = ; 
             rtrans_rec.T_kol         = invoiceLine.InvoicedQuantity.Value;
-            rtrans_rec.T_cij         = invoiceLine.Price.PriceAmount.Value; // R_CIJ_KCR se uzima kao jedinicna cijena; BT-146 -Neto cijena artikla Cijena artikla bez PDV-a, nakon oduzimanja popusta na cijenu artikla-  
+
+            #region The RABAT
+
+            numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
+
+            isRbt_ByLine = numOfRbt_ByLine.IsPositive();
+
+            isThereAnyRbt = isRbt_ByLine || isRbt_ByDocument;
+
+            isRbtNOTCOMPLICATED = !isRbt_ByDocument && numOfRbt_ByLine == 1;
+
+          //isRbtCOMPLICATED = (numOfRbt_ByDocument > 1 || numOfRbt_ByLine > 1) || (isRbt_ByLine && isRbt_ByDocument);
+
+            if(isThereAnyRbt)
+            { 
+               if(isRbtNOTCOMPLICATED)
+               {
+                  if(invoiceLine.AllowanceCharge != null                   &&
+                     invoiceLine.AllowanceCharge.Length > 0                &&
+                     invoiceLine.AllowanceCharge[0]?.Amount?.Value != null &&
+                     invoiceLine.AllowanceCharge[0] .Amount .Value.NotZero())
+                  {
+                     allowanceAmount = invoiceLine.AllowanceCharge[0].Amount.Value;
+                  }
+
+                  decimal rbtSt      = invoiceLine.AllowanceCharge?[0]?.MultiplierFactorNumeric?.Value ?? 0.00M;
+                  decimal baseAmount = invoiceLine.AllowanceCharge?[0]?.BaseAmount             ?.Value ?? 0.00M;
+                  decimal cij_KCR    = invoiceLine.Price?.PriceAmount                          ?.Value ?? 0.00M;
+
+                  if(allowanceAmount.NotZero())
+                  {
+
+                     if(rbtSt.NotZero())
+                     {
+                        rtrans_rec.T_rbt1St = rbtSt.Ron2();
+                     }
+                     else if(baseAmount.NotZero())
+                     {
+                        rtrans_rec.T_rbt1St = (ZXC.DivSafe(allowanceAmount, baseAmount) * 100M).Ron2();
+                     }
+                     else // znamo samo cij_KCR (kako smo i mi na pocetku punili xml) 
+                     {
+                        baseAmount = (cij_KCR * rtrans_rec.T_kol) + allowanceAmount;
+
+                        rtrans_rec.T_rbt1St = (ZXC.DivSafe(allowanceAmount, baseAmount) * 100M).Ron2();
+                     }
+
+                  } // if(allowanceAmount.NotZero())
+
+                  rtrans_rec.T_cij = ZXC.DivSafe(allowanceAmount * 100M, rtrans_rec.T_kol * rtrans_rec.T_rbt1St).Ron2();
+
+               } // if(isRbtNOTCOMPLICATED)
+
+               else // Rbt IS COMPLICATED ... uopce necemo racunati rtrans_rec.T_rbt1St. Zelimo samo doci do rtrans_rec.T_cij, kao da nema rabata 
+               {
+                  if((isRbt_ByLine))
+                  {
+                     rtrans_rec.T_cij = invoiceLine.Price.PriceAmount.Value; 
+                  }
+                  else // if((isRbt_ByDocument))
+                  {
+                     // Ovo dole je skroz neprovjereno. Umoran san i neda mi se proucavati.                         
+                     // Ili je ovo dobro, ili nikada necemo ni imati ovakav primjer, ili cemo to tek tada rjesavati 
+
+                     decimal LineExtensionAmount = invoiceLine.LineExtensionAmount.Value;
+                     decimal totalRbtAmount = 0.00M;
+                     for(int i = 0; i < numOfRbt_ByDocument; i++)
+                     {
+                        if(AllowanceCharge[i]?.Amount?.Value != null &&
+                           AllowanceCharge[i].Amount.Value.NotZero())
+                        {
+                           totalRbtAmount += AllowanceCharge[i].Amount.Value;
+                        }
+                     }
+                     decimal baseAmount = LineExtensionAmount + totalRbtAmount;
+                     rtrans_rec.T_cij = ZXC.DivSafe(baseAmount, rtrans_rec.T_kol).Ron2();
+
+                  } // else if((isRbt_ByDocument))
+
+               } // Rbt IS COMPLICATED 
+
+            } // if(isThereAnyRbt) 
+
+            else // no Rbt at all ... classic 
+            {
+               rtrans_rec.T_cij = invoiceLine.Price.PriceAmount.Value;
+            }
+
+            #endregion The RABAT
+
             rtrans_rec.T_pdvSt       = invoiceLine.Item.ClassifiedTaxCategory[0].Percent.Value;
-
-            decimal theRabat = 0.00M;
-            if(invoiceLine.AllowanceCharge != null &&
-               invoiceLine.AllowanceCharge.Length > 0 &&
-               invoiceLine.AllowanceCharge[0]?.Amount?.Value != null &&
-               invoiceLine.AllowanceCharge[0].Amount.Value.NotZero())
-            {
-               theRabat = invoiceLine.AllowanceCharge[0].Amount.Value;
-            }
-
-            if(theRabat.NotZero())
-            {
-               decimal theKCR = invoiceLine.LineExtensionAmount?.Value ?? 0.00M;
-
-             //rtrans_rec.T_rbt1St = (ZXC.DivSafe(theRabat, theKCR) * 100M).Ron2();
-               rtrans_rec.T_rbt1St = (ZXC.DivSafe(theRabat, theKCR + theRabat) * 100M).Ron2();
-            }
 
             //rtrans_rec.T_wanted      = ;
             //rtrans_rec.T_pdvColTip   = ;

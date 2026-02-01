@@ -9764,7 +9764,12 @@ public class F2_Ulaz_UC : VvUserControl
                cell = TheG.Rows[rowIdx].Cells[i];
 
                     if(faktur_rec.S_ukKCRP             != xtrano_rec.T_moneyA)             cell.Style.ForeColor = Color.Red ;
-               else if(faktur_rec.KupdobName.ToUpper() != xtrano_rec.T_opis_128.ToUpper()) cell.Style.ForeColor = Color.DarkRed;
+               else if(faktur_rec.KupdobName.ToUpper() != xtrano_rec.T_opis_128.ToUpper()) 
+               {
+                  cell.Style.ForeColor = Color.DarkRed; 
+                  //if(faktur_rec.KupdobName.ToUpper().StartsWith("ELECT"))
+                  //ZXC.aim_emsg($"[{faktur_rec.KupdobName.ToUpper()}] [{xtrano_rec.T_opis_128.ToUpper()}]");
+               }
                else if(fakturDataLayer_FOUNDv2)                                            cell.Style.ForeColor = Color.FromArgb(82, 122, 122); //Color.DarkGray;
             }
          }
