@@ -3328,7 +3328,7 @@ public class ArtiklUC : VvSifrarRecordUC
     //                 Fld_ArtiklCd = newSifra.ToString("000000");
       if(!ZXC.IsSvDUH) Fld_ArtiklCd = newSifra.ToString("000000");
 
-      Fld_KPD = ZXC.RRD.Dsc_DefaultKPD;
+      if(ZXC.DupCopyMenu_inProgress == false) Fld_KPD = ZXC.RRD.Dsc_DefaultKPD;
    }
 
    public override void PutNew_Sifra_Field(string newSifra)
@@ -3338,7 +3338,8 @@ public class ArtiklUC : VvSifrarRecordUC
 
    public override void CleanUniqueFieldsOnCopyFromOtherRecord()
    {
-      Fld_ArtiklCd2 = Fld_BarCode1 = Fld_BarCode2 = Fld_SerNo = Fld_PartNo = "";
+    //Fld_ArtiklCd2 = Fld_BarCode1 = Fld_BarCode2 = Fld_SerNo = Fld_PartNo = "";
+      Fld_ArtiklCd2 = Fld_BarCode1 = Fld_BarCode2 = Fld_SerNo =              "";
 
       if(ZXC.IsSvDUH) Fld_Placement = "";
 
