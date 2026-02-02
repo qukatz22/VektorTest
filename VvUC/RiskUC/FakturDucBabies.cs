@@ -9760,17 +9760,19 @@ public class F2_Ulaz_UC : VvUserControl
          for(int i = 0; i < TheG.Rows[rowIdx].Cells.Count; ++i)
          {
             if(i == ci.iT_tt || i == ci.iT_ttNum || i == ci.iT_dokDate || i == ci.iT_kupDob || i == ci.iT_vezDok || i == ci.iT_iznos || i == ci.iT_napomena)
-            { 
+            {
                cell = TheG.Rows[rowIdx].Cells[i];
 
-                    if(faktur_rec.S_ukKCRP             != xtrano_rec.T_moneyA)             cell.Style.ForeColor = Color.Red ;
-               else if(faktur_rec.KupdobName.ToUpper() != xtrano_rec.T_opis_128.ToUpper()) 
+               if(faktur_rec.S_ukKCRP != xtrano_rec.T_moneyA) cell.Style.ForeColor = Color.Red;
+
+               else if(faktur_rec.KupdobName.ToUpper() != xtrano_rec.T_opis_128.ToUpper())
                {
-                  cell.Style.ForeColor = Color.DarkRed; 
+                  // Ipak ne do daljnjega                                                  cell.Style.ForeColor = Color.DarkRed; 
                   //if(faktur_rec.KupdobName.ToUpper().StartsWith("ELECT"))
                   //ZXC.aim_emsg($"[{faktur_rec.KupdobName.ToUpper()}] [{xtrano_rec.T_opis_128.ToUpper()}]");
                }
-               else if(fakturDataLayer_FOUNDv2)                                            cell.Style.ForeColor = Color.FromArgb(82, 122, 122); //Color.DarkGray;
+
+               else if(fakturDataLayer_FOUNDv2) cell.Style.ForeColor = Color.FromArgb(82, 122, 122); //Color.DarkGray;
             }
          }
       }

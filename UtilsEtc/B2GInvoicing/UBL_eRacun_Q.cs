@@ -1787,8 +1787,6 @@ namespace EN16931.UBL
        //bool needsAvansValues =                               faktur_rec.Is_AfterAvans_PrihodTTa; 
          bool needsAvansValues = ZXC.IsF2_2026_rules ? false : faktur_rec.Is_AfterAvans_PrihodTTa;
 
-         decimal theRbtDIFF = faktur_rec.GetRabatByStavke_DIFF();
-
          switch(BT_ID)
          {
             //ZAGLAVLJE:
@@ -1805,8 +1803,8 @@ namespace EN16931.UBL
             
             case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv                          ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
 
-            case "BT092": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.S_ukRbt1 - theRbtDIFF : faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
-            case "BT107": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.S_ukRbt1 - theRbtDIFF : faktur_rec.S_ukRbt1; break; //BT-107 Iznos popusta na razini dokumenta
+            case "BT092": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
+            case "BT107": theDecimal = faktur_rec.S_ukRbt1; break; //BT-107 Iznos popusta na razini dokumenta
 
 
           //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
@@ -1852,9 +1850,7 @@ namespace EN16931.UBL
 
             #endregion PDV
 
-          //19.01.2026. rabat DIFF
-          //case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25                                                              ; break; //BT-Iznos Rbt25 
-            case "Rbt25 izn": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.TrnSum_Rbt25 - theRbtDIFF : faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
+            case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
 
             case "Rbt10 izn": theDecimal = faktur_rec.TrnSum_Rbt10; break; //BT-Iznos Rbt10 
             case "Rbt05 izn": theDecimal = faktur_rec.TrnSum_Rbt05; break; //BT-Iznos Rbt05 
