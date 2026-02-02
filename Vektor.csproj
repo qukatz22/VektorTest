@@ -2424,9 +2424,6 @@
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceOperation.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\InvoiceType2026.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\Outgoing_eRacun_parameters.cs" />
-    <Compile Include="UtilsEtc\B2GInvoicing\UBL_eRacun_Q.cs">
-      <SubType>code</SubType>
-    </Compile>
     <Compile Include="UtilsEtc\F2eRacuni.cs" />
     <Compile Include="UtilsEtc\instIr002a.cs" />
     <Compile Include="UtilsEtc\PTG_OtplatniPlan.cs" />
@@ -2449,6 +2446,7 @@
     <Compile Include="UtilsEtc\PDFsigner.cs" />
     <Compile Include="UtilsEtc\LinqJoinExtensions.cs" />
     <Compile Include="UtilsEtc\sepa.hr.pain.001.001.03_07052015.designer.cs" />
+    <Compile Include="UtilsEtc\B2GInvoicing\UBL_eRacun_Q.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\UBL_eRacun_Q2.cs" />
     <Compile Include="UtilsEtc\sObrazacURA.cs" />
     <Compile Include="UtilsEtc\VvAboutBox.cs">

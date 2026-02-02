@@ -4295,6 +4295,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_Import_FUR_Fakturs(object sender, EventArgs e)
    {
+#if DEBUG
       Vv_eRacun_HTTP.InitProjectData();
 
       if(Vv_eRacun_HTTP.Is_FUR_ON() == false) return;
@@ -4302,6 +4303,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       int newsCount = /*ZZZ*/Vv_eRacun_HTTP.Import_FUR_Fakturs_JOB((F2_Ulaz_UC)TheVvUC);
 
       if(newsCount.IsZeroOrPositive()) ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+#endif
    }
    private void F2_ReRecieve_FUR_XtranoArhiva(object sender, EventArgs e)
    {

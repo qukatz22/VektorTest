@@ -4755,12 +4755,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
       }
 
-      // 02.02.2026: gasimo jer zaokruzivanje stvara probleme (vidi npr Panigale IRM-400036) 
-      // a potrebno ćemo nabaviti pješke, ovdje nekak                                        
-
-      //IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda nismo sigurni sto od        
-                                                         // POTREBNIH varijabli nije dobro npr S_ukKC i S_ukRbt1 su krivi 
-                                                         // ali ih nitko ni ne treba u xml-u                              
+      IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
 
       return IRAfaktur_rec;
    }
