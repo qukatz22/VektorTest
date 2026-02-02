@@ -2193,9 +2193,7 @@ namespace EN16931.UBL
 
          #region STAVKE računa
 
-       //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
-         int numOfRbt_ByDocument = AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
-
+         int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
        //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
          bool isRbt_ByDocument   = numOfRbt_ByDocument.IsPositive();
 
@@ -2219,8 +2217,7 @@ namespace EN16931.UBL
 
             #region The RABAT
 
-          //numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
-            numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
+            numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
 
             isRbt_ByLine = numOfRbt_ByLine.IsPositive();
 
@@ -2239,13 +2236,7 @@ namespace EN16931.UBL
                      invoiceLine.AllowanceCharge[0]?.Amount?.Value != null &&
                      invoiceLine.AllowanceCharge[0] .Amount .Value.NotZero())
                   {
-                     // VAŽNO!!! 
-                     // budući da empirijski vidimo da neki debili od programera ovdje stavljaju      
-                     // NEGATIVNU vrijednost, koristiti cemo ABS. Sranje ce nastati kada netko zaista 
-                     // bude zadao NEGATIVAN rabat                                                    
-
                      allowanceAmount = invoiceLine.AllowanceCharge[0].Amount.Value;
-                     allowanceAmount = Math.Abs(allowanceAmount);
                   }
 
                   decimal rbtSt      = invoiceLine.AllowanceCharge?[0]?.MultiplierFactorNumeric?.Value ?? 0.00M;
@@ -2257,13 +2248,6 @@ namespace EN16931.UBL
 
                      if(rbtSt.NotZero())
                      {
-                        // VAŽNO!!! 
-                        // budući da empirijski vidimo da neki debili od programera ovdje stavljaju 
-                        // KOEFICIJENT umjesto stope, pravimo se pametni i mnozimo ga sa 100.       
-                        // Sranje ce nastati kada netko zaista bude zadao rabat manji od 1.00%      
-
-                        if(rbtSt < 1.00M) rbtSt *= 100M;
-
                         rtrans_rec.T_rbt1St = rbtSt.Ron2();
                      }
                      else if(baseAmount.NotZero())
@@ -2296,7 +2280,6 @@ namespace EN16931.UBL
 
                      decimal LineExtensionAmount = invoiceLine.LineExtensionAmount.Value;
                      decimal totalRbtAmount = 0.00M;
-
                      for(int i = 0; i < numOfRbt_ByDocument; i++)
                      {
                         if(AllowanceCharge[i]?.Amount?.Value != null &&
@@ -2305,7 +2288,6 @@ namespace EN16931.UBL
                            totalRbtAmount += AllowanceCharge[i].Amount.Value;
                         }
                      }
-
                      decimal baseAmount = LineExtensionAmount + totalRbtAmount;
                      rtrans_rec.T_cij = ZXC.DivSafe(baseAmount, rtrans_rec.T_kol).Ron2();
 
@@ -2317,11 +2299,6 @@ namespace EN16931.UBL
 
             else // no Rbt at all ... classic 
             {
-               // TODO: ugraditi kontrolu da ako je cijena 'idiotska'       
-               // npr 0, ili 10 puta kriva kao npr kod Francuzove UFA       
-               // primljene od MER-a negdje na pocetku godine ....          
-               // ... UTOLIKO cijenu treba iskalkulirati cij = iznos / kol! 
-
                rtrans_rec.T_cij = invoiceLine.Price.PriceAmount.Value;
             }
 
@@ -2479,14 +2456,14 @@ namespace EN16931.UBL
          kupdob_rec.Ticker   = newSifra.ToString();
 
          kupdob_rec.Oib          = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
+       //kupdob_rec.Naziv        = theParty.PartyName[0] .Name                      .Value;
+         kupdob_rec.Naziv        = theParty.PartyLegalEntity[0].RegistrationName    .Value;
+         kupdob_rec.Ulica1       = theParty.PostalAddress.StreetName                .Value;
+         kupdob_rec.Ulica2       = theParty.PostalAddress.StreetName                .Value;
+         kupdob_rec.Grad         = theParty.PostalAddress.CityName                  .Value;
+         kupdob_rec.PostaBr      = theParty.PostalAddress.PostalZone                .Value;
+         kupdob_rec.VatCntryCode = theParty.PostalAddress.Country.IdentificationCode.Value;
 
-         kupdob_rec.Naziv        = theParty.PartyLegalEntity?[0]?.RegistrationName    ?.Value ?? string.Empty;
-         kupdob_rec.Ulica1       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
-         kupdob_rec.Ulica2       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
-         kupdob_rec.Grad         = theParty.PostalAddress?.CityName                   ?.Value ?? string.Empty;
-         kupdob_rec.PostaBr      = theParty.PostalAddress?.PostalZone                 ?.Value ?? string.Empty;
-         kupdob_rec.VatCntryCode = theParty.PostalAddress?.Country?.IdentificationCode?.Value ?? string.Empty;
-         
          if(isDobav)
          {
           //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;

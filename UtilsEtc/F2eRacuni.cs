@@ -2393,7 +2393,7 @@ public static class Vv_eRacun_HTTP
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
 
-      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(theUC.TheDbConnection, theUC.TheXtranoList, filterMembers, "", "t_dokDate " + asdDscStr + limitStr, false);
+      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(theUC.TheDbConnection, theUC.TheXtranoList, filterMembers, "", /*"t_ttNum "*/"t_dokDate" + asdDscStr + limitStr, false);
 
       if(theUC.TheXtranoList.NotEmpty()) theUC.PutDgvFields();
 
@@ -2783,13 +2783,9 @@ public static class Vv_eRacun_HTTP
       List<string> updatedStatusInfoList = new List<string>();
            string  updatedStatusInfo                         ;
 
-      List<Xtrano> XtranosForImport_List = 
-
-         theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).OrderBy(xto => xto.T_dokDate) // TODO ... ovdje ce se ubuduce nalaziti i TIME komponenta pa bu OK 
-                                                                //.ThenBy(xto => xto.T_dokNum)
-                                                                  .ToList();                     // tamo gdje je T_parentID  0, znaci da jos nije u Faktur DataLayer-u         
-                                                                                                 // T_parentID NotZero moze biti normalan ili UInt32.MaxValue!                 
-                                                                                                 // notZero - faktur nastao importom ... UInt32.MaxValue - faktur nastao ručno 
+      List<Xtrano> XtranosForImport_List = theUC.TheXtranoList.Where(xto => xto.T_parentID.IsZero()).ToList(); // tamo gdje je T_parentID  0, znaci da jos nije u Faktur DataLayer-u     
+                                                                                                               // T_parentID NotZero moze biti normalan ili UInt32.MaxValue!             
+                                                                                                               // poz - faktur nastao importom ... UInt32.MaxValue - faktur nastao ručno 
       List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
 
       if(XtranosForImport_List.IsEmpty())
@@ -2876,14 +2872,6 @@ public static class Vv_eRacun_HTTP
 
          // get InvoiceType bussiness: 
          deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(theXmlString, /*true*/ false);
-
-         bool deserializationFailure = deserialized_eRacun == null;
-
-         if(deserializationFailure)
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, $"{AURxtrano_rec.To_AUR_String}\n\r\n\rNe mogu deserijalizirati xml iz Inbox-a.\n\r\n\rRačun nije moguće na ovaj način importirati u Vektor.\n\r\n\rDodajte ga ručno.");
-            continue;
-         }
 
          #region Get Kupdob / New Kupdob?
 

@@ -280,14 +280,6 @@ public class Xtrano : VvTransRecord
       get { return this.T_theBool; } set { this.T_theBool = value; }
    }
 
-   public string To_AUR_String
-   { 
-      get
-      {
-         return this.T_opis_128 + " Rn: " + this.T_theString + " poslan: " + this.T_dokDate. ToString(ZXC.VvDateFormat) + " " + this.T_moneyA.ToStringVv() + " EUR";
-      }
-   }
-
    #endregion propertiz
 
    #region ToString
