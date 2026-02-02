@@ -4742,7 +4742,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       return faktur_rec.Transes.Max(rtr => rtr.T_cij.CountOfSignificantDecimalPlaces());
    }
 
-   public Faktur Convert_IRM_Faktur_To_IRA_Faktur() // assuming; this is IRM 
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_NEW() // assuming; this is IRM 
    {
       Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
 
@@ -4761,6 +4761,24 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       //IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda nismo sigurni sto od        
                                                          // POTREBNIH varijabli nije dobro npr S_ukKC i S_ukRbt1 su krivi 
                                                          // ali ih nitko ni ne treba u xml-u                              
+
+      return IRAfaktur_rec;
+   }
+
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur() // assuming; this is IRM 
+   {
+      Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
+
+      IRAfaktur_rec.TT = Faktur.TT_IRA;
+
+      for(int i = 0; i < this.Transes.Count; ++i)
+      {
+         IRAfaktur_rec.Transes[i].T_TT  = IRAfaktur_rec.TT;
+         IRAfaktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(this.Transes[i].T_cij, this.Transes[i].T_pdvSt);
+         IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
+      }
+
+      IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
 
       return IRAfaktur_rec;
    }

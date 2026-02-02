@@ -733,7 +733,7 @@ namespace EN16931.UBL
          string ppmvReasonTag  = "#HR:PPMV#Posebni porez na motorna vozila";
          decimal ppmvItemsBase = Fak2eR_Decimal("PPMVosn", faktur_rec, null);
 
-       //List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList        = new List<AllowanceChargeType>();
+         //List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList        = new List<AllowanceChargeType>();
          List<AllowanceChargeType> rbtAndZtrAndPpmv_AllowanceChargeList = new List<AllowanceChargeType>(); //2026 + ppmv
 
          //BT- 92 Iznos popusta na razini dokumenta	                    Iznos 1..1
@@ -916,8 +916,7 @@ namespace EN16931.UBL
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
             LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
-            // 2026: mogao bi raditi probleme, a nije obavezan ... gasimo. 
-          //AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
+            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
             TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
             TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
          
@@ -1196,13 +1195,8 @@ namespace EN16931.UBL
                invoiceLine.AllowanceCharge = new AllowanceChargeType[] 
                { new AllowanceChargeType
                   {
-                     ChargeIndicator         = new ChargeIndicatorType         { Value = false},
-                     Amount                  = new AmountType2                 { Value = Fak2eR_Decimal("BT136", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID },
-
-                     // 2026: dodajemo i BaseAmount (iznos R_KC (a ne cijena)) i MultiplierFactorNumeric (stopa rabata)
-                     BaseAmount              = new BaseAmountType              { Value = Fak2eR_Decimal("BT137", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID },
-                     MultiplierFactorNumeric = new MultiplierFactorNumericType { Value = Fak2eR_Decimal("BT138", faktur_rec, rtrans_rec)                                      },
-
+                     ChargeIndicator = new ChargeIndicatorType{ Value = false},
+                     Amount          = new AmountType2        { Value = Fak2eR_Decimal("BT136", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID },
                      AllowanceChargeReason = new AllowanceChargeReasonType[]
                      {
                         new AllowanceChargeReasonType { Value = Fak2eR__String("RbtReason", faktur_rec, null) }
@@ -1793,14 +1787,13 @@ namespace EN16931.UBL
        //bool needsAvansValues =                               faktur_rec.Is_AfterAvans_PrihodTTa; 
          bool needsAvansValues = ZXC.IsF2_2026_rules ? false : faktur_rec.Is_AfterAvans_PrihodTTa;
 
+         decimal theRbtDIFF = faktur_rec.GetRabatByStavke_DIFF();
+
          switch(BT_ID)
          {
             //ZAGLAVLJE:
 
-            // 2026: 
-          //case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
-            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKCR                          ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
-
+            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
             case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
 
           //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
@@ -1812,8 +1805,8 @@ namespace EN16931.UBL
             
             case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv                          ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
 
-            case "BT092": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
-            case "BT107": theDecimal = faktur_rec.S_ukRbt1; break; //BT-107 Iznos popusta na razini dokumenta
+            case "BT092": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.S_ukRbt1 - theRbtDIFF : faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
+            case "BT107": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.S_ukRbt1 - theRbtDIFF : faktur_rec.S_ukRbt1; break; //BT-107 Iznos popusta na razini dokumenta
 
 
           //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
@@ -1822,14 +1815,8 @@ namespace EN16931.UBL
 
             //STAVKE:
             case "BT129": theDecimal = rtrans_rec.T_kol    ; break; //BT-129 Obračunata količina Količina artikala
-            
-            // 2026: 
-          //case "BT131": theDecimal = rtrans_rec.R_KC     ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
-            case "BT131": theDecimal = rtrans_rec.R_KCR    ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
+            case "BT131": theDecimal = rtrans_rec.R_KC     ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
             case "BT136": theDecimal = rtrans_rec.R_rbt1   ; break; //BT-136 Iznos popusta stavke računa Iznos popusta bez PDV-a.
-            case "BT137": theDecimal = rtrans_rec.R_KC     ; break; //BT-137 Osnovica Iznos popusta na stavci računa. 
-            case "BT138": theDecimal = rtrans_rec.T_rbt1St ; break; //BT-138 Postotak popusta na stavci računa.       
-
             case "BT146": theDecimal = rtrans_rec.R_CIJ_KCR; break; //BT-146 Neto cijena artikla Cijena artikla bez PDVa	Jedinična cijena
 
             //case "BT141": theDecimal = rtrans_rec.R_KCR   ; break; //BT-141 Iznos troška stavke računa  bez PDVa.               
@@ -1865,7 +1852,9 @@ namespace EN16931.UBL
 
             #endregion PDV
 
-            case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
+          //19.01.2026. rabat DIFF
+          //case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25                                                              ; break; //BT-Iznos Rbt25 
+            case "Rbt25 izn": theDecimal = theRbtDIFF.NotZero() ? faktur_rec.TrnSum_Rbt25 - theRbtDIFF : faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
 
             case "Rbt10 izn": theDecimal = faktur_rec.TrnSum_Rbt10; break; //BT-Iznos Rbt10 
             case "Rbt05 izn": theDecimal = faktur_rec.TrnSum_Rbt05; break; //BT-Iznos Rbt05 
@@ -2193,7 +2182,9 @@ namespace EN16931.UBL
 
          #region STAVKE računa
 
-         int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
+       //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
+         int numOfRbt_ByDocument = AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
+
        //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
          bool isRbt_ByDocument   = numOfRbt_ByDocument.IsPositive();
 
@@ -2217,7 +2208,8 @@ namespace EN16931.UBL
 
             #region The RABAT
 
-            numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
+          //numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
+            numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
 
             isRbt_ByLine = numOfRbt_ByLine.IsPositive();
 
@@ -2236,7 +2228,13 @@ namespace EN16931.UBL
                      invoiceLine.AllowanceCharge[0]?.Amount?.Value != null &&
                      invoiceLine.AllowanceCharge[0] .Amount .Value.NotZero())
                   {
+                     // VAŽNO!!! 
+                     // budući da empirijski vidimo da neki debili od programera ovdje stavljaju      
+                     // NEGATIVNU vrijednost, koristiti cemo ABS. Sranje ce nastati kada netko zaista 
+                     // bude zadao NEGATIVAN rabat                                                    
+
                      allowanceAmount = invoiceLine.AllowanceCharge[0].Amount.Value;
+                     allowanceAmount = Math.Abs(allowanceAmount);
                   }
 
                   decimal rbtSt      = invoiceLine.AllowanceCharge?[0]?.MultiplierFactorNumeric?.Value ?? 0.00M;
@@ -2248,6 +2246,13 @@ namespace EN16931.UBL
 
                      if(rbtSt.NotZero())
                      {
+                        // VAŽNO!!! 
+                        // budući da empirijski vidimo da neki debili od programera ovdje stavljaju 
+                        // KOEFICIJENT umjesto stope, pravimo se pametni i mnozimo ga sa 100.       
+                        // Sranje ce nastati kada netko zaista bude zadao rabat manji od 1.00%      
+
+                        if(rbtSt < 1.00M) rbtSt *= 100M;
+
                         rtrans_rec.T_rbt1St = rbtSt.Ron2();
                      }
                      else if(baseAmount.NotZero())
@@ -2280,6 +2285,7 @@ namespace EN16931.UBL
 
                      decimal LineExtensionAmount = invoiceLine.LineExtensionAmount.Value;
                      decimal totalRbtAmount = 0.00M;
+
                      for(int i = 0; i < numOfRbt_ByDocument; i++)
                      {
                         if(AllowanceCharge[i]?.Amount?.Value != null &&
@@ -2288,6 +2294,7 @@ namespace EN16931.UBL
                            totalRbtAmount += AllowanceCharge[i].Amount.Value;
                         }
                      }
+
                      decimal baseAmount = LineExtensionAmount + totalRbtAmount;
                      rtrans_rec.T_cij = ZXC.DivSafe(baseAmount, rtrans_rec.T_kol).Ron2();
 
@@ -2299,6 +2306,11 @@ namespace EN16931.UBL
 
             else // no Rbt at all ... classic 
             {
+               // TODO: ugraditi kontrolu da ako je cijena 'idiotska'       
+               // npr 0, ili 10 puta kriva kao npr kod Francuzove UFA       
+               // primljene od MER-a negdje na pocetku godine ....          
+               // ... UTOLIKO cijenu treba iskalkulirati cij = iznos / kol! 
+
                rtrans_rec.T_cij = invoiceLine.Price.PriceAmount.Value;
             }
 
@@ -2456,14 +2468,14 @@ namespace EN16931.UBL
          kupdob_rec.Ticker   = newSifra.ToString();
 
          kupdob_rec.Oib          = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
-       //kupdob_rec.Naziv        = theParty.PartyName[0] .Name                      .Value;
-         kupdob_rec.Naziv        = theParty.PartyLegalEntity[0].RegistrationName    .Value;
-         kupdob_rec.Ulica1       = theParty.PostalAddress.StreetName                .Value;
-         kupdob_rec.Ulica2       = theParty.PostalAddress.StreetName                .Value;
-         kupdob_rec.Grad         = theParty.PostalAddress.CityName                  .Value;
-         kupdob_rec.PostaBr      = theParty.PostalAddress.PostalZone                .Value;
-         kupdob_rec.VatCntryCode = theParty.PostalAddress.Country.IdentificationCode.Value;
 
+         kupdob_rec.Naziv        = theParty.PartyLegalEntity?[0]?.RegistrationName    ?.Value ?? string.Empty;
+         kupdob_rec.Ulica1       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
+         kupdob_rec.Ulica2       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
+         kupdob_rec.Grad         = theParty.PostalAddress?.CityName                   ?.Value ?? string.Empty;
+         kupdob_rec.PostaBr      = theParty.PostalAddress?.PostalZone                 ?.Value ?? string.Empty;
+         kupdob_rec.VatCntryCode = theParty.PostalAddress?.Country?.IdentificationCode?.Value ?? string.Empty;
+         
          if(isDobav)
          {
           //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
