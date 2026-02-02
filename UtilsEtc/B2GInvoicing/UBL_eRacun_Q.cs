@@ -916,7 +916,8 @@ namespace EN16931.UBL
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
             LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
-            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
+            // 2026: mogao bi raditi probleme, a nije obavezan ... gasimo. 
+          //AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
             TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
             TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
          
@@ -1195,8 +1196,13 @@ namespace EN16931.UBL
                invoiceLine.AllowanceCharge = new AllowanceChargeType[] 
                { new AllowanceChargeType
                   {
-                     ChargeIndicator = new ChargeIndicatorType{ Value = false},
-                     Amount          = new AmountType2        { Value = Fak2eR_Decimal("BT136", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID },
+                     ChargeIndicator         = new ChargeIndicatorType         { Value = false},
+                     Amount                  = new AmountType2                 { Value = Fak2eR_Decimal("BT136", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID },
+
+                     // 2026: dodajemo i BaseAmount (iznos R_KC (a ne cijena)) i MultiplierFactorNumeric (stopa rabata)
+                     BaseAmount              = new BaseAmountType              { Value = Fak2eR_Decimal("BT137", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID },
+                     MultiplierFactorNumeric = new MultiplierFactorNumericType { Value = Fak2eR_Decimal("BT138", faktur_rec, rtrans_rec)                                      },
+
                      AllowanceChargeReason = new AllowanceChargeReasonType[]
                      {
                         new AllowanceChargeReasonType { Value = Fak2eR__String("RbtReason", faktur_rec, null) }
@@ -1793,7 +1799,10 @@ namespace EN16931.UBL
          {
             //ZAGLAVLJE:
 
-            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+            // 2026: 
+          //case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKCR                          ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+
             case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
 
           //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
@@ -1815,8 +1824,14 @@ namespace EN16931.UBL
 
             //STAVKE:
             case "BT129": theDecimal = rtrans_rec.T_kol    ; break; //BT-129 Obračunata količina Količina artikala
-            case "BT131": theDecimal = rtrans_rec.R_KC     ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
+            
+            // 2026: 
+          //case "BT131": theDecimal = rtrans_rec.R_KC     ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
+            case "BT131": theDecimal = rtrans_rec.R_KCR    ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
             case "BT136": theDecimal = rtrans_rec.R_rbt1   ; break; //BT-136 Iznos popusta stavke računa Iznos popusta bez PDV-a.
+            case "BT137": theDecimal = rtrans_rec.R_KC     ; break; //BT-137 Osnovica Iznos popusta na stavci računa. 
+            case "BT138": theDecimal = rtrans_rec.T_rbt1St ; break; //BT-138 Postotak popusta na stavci računa.       
+
             case "BT146": theDecimal = rtrans_rec.R_CIJ_KCR; break; //BT-146 Neto cijena artikla Cijena artikla bez PDVa	Jedinična cijena
 
             //case "BT141": theDecimal = rtrans_rec.R_KCR   ; break; //BT-141 Iznos troška stavke računa  bez PDVa.               
