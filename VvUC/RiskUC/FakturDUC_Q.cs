@@ -158,6 +158,7 @@ public struct TtInfo
       Faktur.TT_PRI,
       Faktur.TT_POU,
       Faktur.TT_POT,
+      Faktur.TT_ZAR,
       Faktur.TT_PRP,
     //Faktur.TT_PIP,
       Faktur.TT_RVU,
@@ -8306,6 +8307,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          case Faktur.TT_KLK   : return ZXC.dscLuiLst_KLK;
          case Faktur.TT_KKM   : return ZXC.dscLuiLst_KKM;
          case Faktur.TT_POT   : return ZXC.dscLuiLst_URA; // zato jer treba pfd radi deviznog
+         case Faktur.TT_ZAR   : return ZXC.dscLuiLst_URA; //TamaraZAR ovo bas nisam sigurna!!!! zato jer treba pfd radi deviznog
 
          case Faktur.TT_IZD   : return ZXC.dscLuiLst_IZD;
          case Faktur.TT_POI   : return ZXC.dscLuiLst_IZD;
@@ -8909,6 +8911,17 @@ public partial class FakturExtDUC : FakturDUC
       }
 
       #endregion POT_DUC
+
+      #region ZAR_DUC
+
+    //if(this is ZAR_DUC)
+    //{
+    //   if(_kupdob_rec.Tel1  .NotEmpty()) faktur_rec.VezniDok2 = Fld_VezniDok2 = _kupdob_rec.Tel1  ;
+    //   if(_kupdob_rec.Email .NotEmpty()) faktur_rec.Fco       = Fld_Fco       = _kupdob_rec.Email ;
+    //}
+
+      #endregion ZAR_DUC
+
 
       #region PON_MPC_DUC, OPN_MPC_DUC, IZD_MPC_DUC
 

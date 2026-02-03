@@ -1227,6 +1227,7 @@ be_fast:
                case ZXC.VvSubModulEnum.R_PRI_P:
                case ZXC.VvSubModulEnum.R_PRIdev:
                case ZXC.VvSubModulEnum.R_PRI_POT:
+               case ZXC.VvSubModulEnum.R_ZAR:
                case ZXC.VvSubModulEnum.R_POU:
                case ZXC.VvSubModulEnum.R_POI:
                case ZXC.VvSubModulEnum.R_CJ:
