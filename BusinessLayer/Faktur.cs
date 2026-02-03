@@ -332,6 +332,7 @@ public class Faktur : VvPolyDocumRecord, IVvExtendableDataRecord, IComparable<Fa
    public const string TT_IZM = "IZM"; // Izdatnica iz Maloprodaje NE Pdv - ProdCij
  //public const string TT_STI = "STI"; // STORNO Izlaza (i sklad i pdv) 
    public const string TT_RVI = "RVI"; // Revers - Fisycal ONLY izlaz
+   public const string TT_ZAR = "ZAR"; // Tetragram Zastupnicki Racun (komisijska prodaja porez na 'umjetnina') 
 
    public const string TT_IMT = "IMT"; // Izdatnica na MjestoTroska VELEP NE Pdv - PrNabCij
  //public const string TT_IMM = "IMM"; // Izdatnica na MjestoTroska MALOP NE Pdv - PrNabCij FUSE? 
