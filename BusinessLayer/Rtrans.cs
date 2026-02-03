@@ -2084,14 +2084,24 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    {
       get
       {
-         return Is_VelepByMPC_4Umj ? (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2() : ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
+         //return Is_VelepByMPC_4Umj ? (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2() : ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
 
-         //decimal theCij;
-         //
-         //if(Is_VelepByMPC_4Umj) theCij = (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2();
-         //else                   theCij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt)/*.Ron2()*/;
-         //
-         //return theCij;
+         decimal theCij;
+
+         if(Is_VelepByMPC_4Umj)
+         {
+            theCij = (T_wanted + T_ppmvOsn * R_pdvKoef) / (1M + R_pdvKoef).Ron2();
+         }
+         else if(this.T_TT == Faktur.TT_IZD)
+         {
+            theCij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt)/*.Ron2()*/;
+         }
+         else // classic 
+         {
+            theCij = ZXC.VvGet_100_from_125(T_wanted, T_pdvSt).Ron2();
+         }
+
+         return theCij;
       }
    }
    private void CalcTrans_VELEP_Results_ByMPC(Faktur faktur_rec) //  za sada Tetragram ONLY 
@@ -2106,7 +2116,8 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
 
       #endregion izvedi T_cij iz T_wanted (mpc)
 
-      R_KC = (R_kol * T_cij     ).Ron2(); // !!! 
+      if(this.T_TT == Faktur.TT_IZD) R_KC = (R_kol * T_cij)       ; // !!! 
+      else /* classic */             R_KC = (R_kol * T_cij).Ron2(); // !!! 
 
       R_rbt1     = ((R_KC)          * T_rbt1St / 100.00M)/*.Ron2()*/;
       R_rbt2     = ((R_KC - R_rbt1) * T_rbt2St / 100.00M)/*.Ron2()*/;
@@ -2115,7 +2126,8 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
                  
     //R_mrz      = (R_KCR * T_wanted / 100.00M)/*.Ron2()*/;
                  
-      R_KCRM     = (R_KCR + R_mrz).Ron2();
+      if(this.T_TT == Faktur.TT_IZD) R_KCRM = (R_KCR + R_mrz)       ; // !!! 
+      else /* classic */             R_KCRM = (R_KCR + R_mrz).Ron2(); // !!! 
                  
     //decimal pdvOsn = Is_VelepByMPC_4Umj ? R_PdvOsn                 : R_KCRM; // !!! 
       decimal pdvOsn = Is_VelepByMPC_4Umj ? R_KC - T_ppmvOsn * R_kol : R_KCRM; // !!! 

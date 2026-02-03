@@ -8647,7 +8647,7 @@ public class IZD_MPC_DUC        : FakturExtDUC
       T_artiklName_CreateColumnFill(                  isVisible, "Naziv"      , "Naziv artikla ili proizvoljan opis");
       T_kol_CreateColumn       (ZXC.Q3un, 2,          isVisible, "Kol"        , "Količina"      );
       T_jedMj_CreateColumn     (ZXC.Q2un   ,          isVisible, "JM"         , "Jedinica mjere");
-      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, /*2*/4,isVisible, "Cij bez PDV"     , "Jedinična cijena");
+      T_cij_CreateColumn       (ZXC.Q4un+ ZXC.Qun4, /*2*/6,isVisible, "Cij bez PDV"     , "Jedinična cijena");
 
       R_KCR_CreateColumn       (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv" , "Ukupan iznos bez PDV-a");
   
@@ -8660,7 +8660,7 @@ public class IZD_MPC_DUC        : FakturExtDUC
       T_pdvSt_CreateColumn    (ZXC.Q2un, 0, isVisible, "PdvSt", "Stopa PDV-a");
       T_pdvKolTip_CreateColumn(ZXC.QUN, isVisible);
 
-      T_IRA_MPC_CreateColumn  (ZXC.Q4un+ ZXC.Qun4, /*2*/4, isVisible, "Cijena s PDV", "Jedinična cijena");
+      T_IRA_MPC_CreateColumn  (ZXC.Q4un+ ZXC.Qun4, /*2*/6, isVisible, "Cijena s PDV", "Jedinična cijena");
       
       R_KCRP_CreateColumn     (ZXC.Q4un + ZXC.Qun2, 2, isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
     //T_ppmvOsn_CreateColumn  (ZXC.Q5un, 2, false, "Osnovica", "Osnovica za obračun pdv-a na umjetninu", false);
