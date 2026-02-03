@@ -8914,11 +8914,11 @@ public partial class FakturExtDUC : FakturDUC
 
       #region ZAR_DUC
 
-    //if(this is ZAR_DUC)
-    //{
-    //   if(_kupdob_rec.Tel1  .NotEmpty()) faktur_rec.VezniDok2 = Fld_VezniDok2 = _kupdob_rec.Tel1  ;
-    //   if(_kupdob_rec.Email .NotEmpty()) faktur_rec.Fco       = Fld_Fco       = _kupdob_rec.Email ;
-    //}
+      if(this is ZAR_DUC)
+      {
+         if(_kupdob_rec.Tel1  .NotEmpty()) faktur_rec.VezniDok2 = Fld_VezniDok2 = _kupdob_rec.Tel1  ;
+         if(_kupdob_rec.Email .NotEmpty()) faktur_rec.Fco       = Fld_Fco       = _kupdob_rec.Email ;
+      }
 
       #endregion ZAR_DUC
 

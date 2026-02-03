@@ -6440,7 +6440,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          }
          else if(this is ZAR_DUC)// tamaraZAR napravi dva crYstala
          {
-            return new RptR_IRA(new Vektor.Reports.RIZ.CR_POT_DUC(), reportName, fakturFilter);
+            if(this.TheFakturDocFilterUC.IsPrn_ZAR)         return new RptR_IRA(new Vektor.Reports.RIZ.CR_POT_DUC()    , reportName, fakturFilter);
+            else /*(this.TheFakturDocFilterUC.IsPrn_UZP)*/  return new RptR_IRA(new Vektor.Reports.RIZ.CR_POU_POI_DUC(), reportName, fakturFilter);
          }
          else
          {
@@ -8868,8 +8869,8 @@ public partial class FakturExtDUC : FakturDUC
       tbx_KupdobName = hamper.CreateVvTextBox(3, 0, "tbx_kupdobName", "Naziv partnera", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.kupdobName));
 
       // 04.12.2015: 
-      tbx_KupdobCd.JAM_MustTabOutBeforeSubmit =
-      tbx_KupdobTk.JAM_MustTabOutBeforeSubmit =
+      tbx_KupdobCd  .JAM_MustTabOutBeforeSubmit =
+      tbx_KupdobTk  .JAM_MustTabOutBeforeSubmit =
       tbx_KupdobName.JAM_MustTabOutBeforeSubmit = true;
 
       tbx_KupdobCd.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
@@ -8887,13 +8888,13 @@ public partial class FakturExtDUC : FakturDUC
       }
       else
       {
-         tbx_KupdobCd.JAM_SetAutoCompleteData  (Kupdob.recordName, Kupdob.sorterKCD.SortType   , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra) , new EventHandler(AnyKupdobTextBoxLeave));
-         tbx_KupdobTk.JAM_SetAutoCompleteData  (Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyKupdobTextBoxLeave));
+         tbx_KupdobCd  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType   , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra) , new EventHandler(AnyKupdobTextBoxLeave));
+         tbx_KupdobTk  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyKupdobTextBoxLeave));
          tbx_KupdobName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyKupdobTextBoxLeave));
       }
 
-      tbx_KupdobCd.DoubleClick += new EventHandler(AnyKupdobTextBox_DoubleClick);
-      tbx_KupdobTk.DoubleClick += new EventHandler(AnyKupdobTextBox_DoubleClick);
+      tbx_KupdobCd  .DoubleClick += new EventHandler(AnyKupdobTextBox_DoubleClick);
+      tbx_KupdobTk  .DoubleClick += new EventHandler(AnyKupdobTextBox_DoubleClick);
       tbx_KupdobName.DoubleClick += new EventHandler(AnyKupdobTextBox_DoubleClick);
 
       //tbx_KupdobCd  .Font = ZXC.vvFont.LargeFont;
@@ -9563,11 +9564,13 @@ public partial class FakturExtDUC : FakturDUC
       tbx_PrimPlatCD.JAM_CharEdits = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_PrimPlatTK.JAM_CharacterCasing = CharacterCasing.Upper;
 
-      tbx_PrimPlatCD  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyPrimPlatTextBoxLeave));
+      tbx_PrimPlatCD  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType   , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra) , new EventHandler(AnyPrimPlatTextBoxLeave));
       tbx_PrimPlatTK  .JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyPrimPlatTextBoxLeave));
-      tbx_PrimPlatName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName), new EventHandler(AnyPrimPlatTextBoxLeave));
+      tbx_PrimPlatName.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterNaziv.SortType , new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterName)  , new EventHandler(AnyPrimPlatTextBoxLeave));
 
-      tbx_NacPlac.JAM_FieldExitMethod_2 = new EventHandler(OnExitSetPrimPlat);
+      if(this is ZAR_DUC == false) tbx_NacPlac.JAM_FieldExitMethod_2 = new EventHandler(OnExitSetPrimPlat);
+
+      if(this is ZAR_DUC) hamper.BackColor = Color.Beige;
 
       hamper.Name = "APrim/Plat:";
 
@@ -10206,6 +10209,12 @@ public partial class FakturExtDUC : FakturDUC
       tbx_DostName = hamper.CreateVvTextBox(1, 0, "tbx_dostName", "Naziv dostave", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.dostName));
                      hamper.CreateVvLabel  (2, 0, (this is ZAR_DUC) ? "OIB:" : "DostAdres:", ContentAlignment.MiddleRight);
       tbx_DostAddr = hamper.CreateVvTextBox(3, 0, "tbx_DostAddr", "Adresa dostave", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.dostAddr));
+
+      if(this is ZAR_DUC)
+      {
+         tbx_DostName.JAM_ReadOnly = tbx_DostAddr.JAM_ReadOnly = true;
+         hamper.BackColor = Color.Beige;
+      }
 
       hamper.Name = "ADostava:";
    }
@@ -15216,13 +15225,26 @@ public partial class FakturExtDUC : FakturDUC
 
          if(kupdob_rec != null && tb.Text != "")
          {
-            Fld_PrimPlatCD = kupdob_rec.KupdobCD/*RecID*/;
-            Fld_PrimPlatTK = kupdob_rec.Ticker;
+            Fld_PrimPlatCD  = kupdob_rec.KupdobCD/*RecID*/;
+            Fld_PrimPlatTK  = kupdob_rec.Ticker;
             Fld_PrimPlatName = kupdob_rec.Naziv;
+
+            if(this is ZAR_DUC)
+            { 
+               Fld_DostName = kupdob_rec.Ulica1 + ", " + kupdob_rec.ZipAndMjesto;
+               Fld_DostAddr = kupdob_rec.Oib;
+            }
          }
          else
          {
             Fld_PrimPlatCDAsTxt = Fld_PrimPlatTK = Fld_PrimPlatName = "";
+
+            if(this is ZAR_DUC)
+            {
+               Fld_DostAddr = "";
+               Fld_DostName = "";
+            }
+
          }
       }
    }

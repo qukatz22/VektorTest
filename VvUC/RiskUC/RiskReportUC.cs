@@ -5853,6 +5853,8 @@ public class FakturDocFilterUC    : VvFilterUC
    public bool IsPTG_UGAN       = false;
    public bool IsPTG_OPL        = false;
    public bool IsPTG_DOD        = false;
+   public bool IsPrn_ZAR        = false;
+   public bool IsPrn_UZP        = false;
 
    #endregion Fieldz
 
