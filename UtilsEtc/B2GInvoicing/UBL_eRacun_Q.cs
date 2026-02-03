@@ -2121,8 +2121,6 @@ namespace EN16931.UBL
 
          #endregion init
 
-         #region Set Faktur Values From eRacun
-
          #region ZAGLAVLJE računa
 
          // From Kupdob 
@@ -2165,6 +2163,9 @@ namespace EN16931.UBL
          //faktur_rec.PdvKolTip =  this.ProfileID.Value;
          //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne
 
+         faktur_rec.PnbM = GetPNB_FromInvoiceType(false);
+         faktur_rec.PnbV = GetPNB_FromInvoiceType(true );
+
          // From some Response 
          if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
          faktur_rec.F2_ElectronicID = electronicID;
@@ -2173,8 +2174,6 @@ namespace EN16931.UBL
          faktur_rec.F2_ArhRecID     = xtranoRecID;
 
          #endregion ZAGLAVLJE računa
-
-         #endregion Set Faktur Values From eRacun
 
          #region STAVKE računa
 
@@ -2349,6 +2348,25 @@ namespace EN16931.UBL
 
          #endregion Return
 
+      }
+
+      private string GetPNB_FromInvoiceType(bool isVeliki)
+      {
+         // HR00 12345 
+         string dirty = this.PaymentMeans?.FirstOrDefault()?.PaymentID?.FirstOrDefault()?.Value ?? string.Empty;
+
+         // 00 12345 
+         // 0012345 
+         string clean = dirty.Replace("HR", "").Replace(" ", "");
+
+         if(clean.IsEmpty()) return "";
+
+         if(clean.Length < 2) return "";
+
+         string mali   = ZXC.SubstringSafe(clean, 0, 2);
+         string veliki = ZXC.SubstringSafe(clean, 2   );
+
+         return isVeliki ? veliki : mali;
       }
 
       #region eR2Fak & Utils 
