@@ -2164,9 +2164,19 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
 
 
-   /* 198 */ public  uint    F2_ElectronicID { get { return ZXC.IsF2_2026_rules ? 
-                                                            this.TheEx.currentData._f2_electron_ID :                                                              /* DATA LAYER names */
-                                                            (uint)MER_ElectronicID                ; } set { this.TheEx.currentData._f2_electron_ID = value; } }   /* _f2_electron_ID  */
+   /* 198 */ public  uint    F2_ElectronicID 
+   { 
+      get 
+      {
+         if(this.TheEx == null) return 0;
+
+         return ZXC.IsF2_2026_rules ? this.TheEx.currentData._f2_electron_ID : (uint)MER_ElectronicID; 
+      } 
+      set 
+      { 
+         this.TheEx.currentData._f2_electron_ID = value; 
+      } 
+   }   /* _f2_electron_ID  */
    /* 199 */ public  int     F2_StatusCD     { get { return this.TheEx.currentData._f2_status_CD  ; } set { this.TheEx.currentData._f2_status_CD   = value; } }   /* _f2_status_CD    */
    /* 190 */ public  uint    F2_ArhRecID     { get { return this.TheEx.currentData._f2_ArhRecID   ; } set { this.TheEx.currentData._f2_ArhRecID    = value; } }   /* _f2_ArhRecID     */
 

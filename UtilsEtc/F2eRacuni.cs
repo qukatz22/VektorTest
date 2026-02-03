@@ -1127,8 +1127,7 @@ public static class Vv_eRacun_HTTP
    #region FIR / FUR Load List and SubmodulActions
 
    #region FIR
-
-   /* AAA */ internal static int Load_IRn_FakturList(F2_Izlaz_UC theUC)
+   /* AAA */internal static int Load_IRn_FakturList(F2_Izlaz_UC theUC)
    {
       ZXC.SetStatusText("Load_IRn_FakturList");
 
@@ -2173,8 +2172,9 @@ public static class Vv_eRacun_HTTP
 
          if(MAP_CandidateFaktur_rec.F2_ElectronicID.IsZero())
          {
-            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, 
-               $"Ne mogu prijaviti uplatu za fakturu koja još nije ni poslana!? Ftrans: {paymentftrans_rec}{Environment.NewLine}{Environment.NewLine}Faktur: {MAP_CandidateFaktur_rec}");
+            // odlucujemo ne javljati poruku neg samo odi dalje. ovo rjesava preskakamji YRN-ova i IRM-ova 
+          //ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, 
+          //   $"Ne mogu prijaviti uplatu za fakturu koja još nije ni poslana!? Ftrans: {paymentftrans_rec}{Environment.NewLine}{Environment.NewLine}Faktur: {MAP_CandidateFaktur_rec}");
             continue;
          }
 
