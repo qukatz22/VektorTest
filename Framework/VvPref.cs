@@ -543,7 +543,7 @@ public class VvPref
       private string directoryName;
       public string DirectoryName
       {
-         get { return directoryName.NotEmpty() ? directoryName : /*@".\"*/VvForm.GetLocalDirectoryForVvFile("_ eRacun IZLAZNI"); }
+         get { return directoryName.NotEmpty() ? directoryName : /*@".\"*/VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR); }
          set { directoryName = value; }
       }
 

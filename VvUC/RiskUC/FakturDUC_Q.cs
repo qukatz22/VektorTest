@@ -2406,8 +2406,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          //if(CtrlOK(theFakturExtDUC.tbx_KupdobCd) && faktur_rec.KupdobCD.IsZero() && (faktur_rec.KupdobName + faktur_rec.KupdobTK).IsEmpty())
          if(CtrlOK(theFakturExtDUC.tbx_KupdobCd) && (faktur_rec.KupdobCD.IsZero() || faktur_rec.KupdobName.IsEmpty() || faktur_rec.KupdobTK.IsEmpty()))
          {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nMolim, zadajte partnera prije usnimavanja.");
-            e.Cancel = true;
+            if(this is ZAR_DUC && (faktur_rec.PrimPlatCD.IsZero() || faktur_rec.PrimPlatName.IsEmpty() || faktur_rec.PrimPlatTK.IsEmpty()))
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nMolim, zadajte ili ZAR kupca ili ZAR dobavljača prije usnimavanja.");
+               e.Cancel = true;
+            }
+            else if(!(this is ZAR_DUC))// classic 
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nMolim, zadajte partnera prije usnimavanja.");
+               e.Cancel = true;
+            }
          }
       }
 
@@ -9322,6 +9330,7 @@ public partial class FakturExtDUC : FakturDUC
       // 19.01.2026:
       if(kupdob_rec == null)
       {
+         if(!(this is ZAR_DUC))
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne mogu pronaći partnera u adresaru!? OIB neće biti zapamćen.");
          return;
       }

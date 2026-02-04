@@ -4144,7 +4144,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       int newsCount = /*DDD*/Vv_eRacun_HTTP.WS_Discover_Candidates_And_Eventually_MAPaj_uplate(/*(F2_Izlaz_UC)*/TheVvUC, true, true );
    }
-   private bool ShowPDF_FromXtranoArhiva(Xtrano xtrano_rec)
+   private bool ShowPDF_FromXtranoArhivaOLD(Xtrano xtrano_rec)
    {
       List<(string Filename, byte[] PdfBytes)> pdfFiles = xtrano_rec.F2_GetPdfFilesWithNames();
 
@@ -4162,6 +4162,62 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
          File.WriteAllBytes(fullName, thePDF.pdfBytes);
 
          System.Diagnostics.Process.Start(fullName);
+      }
+
+      return true;
+   }
+   private bool ShowPDF_FromXtranoArhiva(Xtrano xtrano_rec)
+   {
+      List<(string Filename, byte[] PdfBytes)> pdfFiles = xtrano_rec.F2_GetPdfFilesWithNames();
+
+      if(pdfFiles.Count.IsZero()) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Nema spremljenih PDF-ova za ovaj eRačun."); return false; }
+
+      for(int pdfIdx = 0; pdfIdx < pdfFiles.Count; ++pdfIdx)
+      {
+         if(pdfFiles.Count > 1) { ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning, $"Ima više od jednog PDF-a. Prikazujem {pdfIdx + 1}. od {pdfFiles.Count}."); /*return;*/ }
+
+         (string filename, byte[] pdfBytes) thePDF = pdfFiles[pdfIdx];
+
+         if(pdfFiles.Count > 1)
+         {
+            string addition = "_" + (pdfIdx + 1).ToString();
+            thePDF.filename = thePDF.filename.Replace(".pdf", addition + ".pdf");
+         }
+
+         if(thePDF.pdfBytes == null || thePDF.pdfBytes.Length == 0)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "PDF sadržaj je prazan. Ne mogu spremiti PDF.");
+            return false;
+         }
+
+         string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
+         string todayDir = /*theTT*/xtrano_rec.T_TT + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+
+         // 04.02.2026: 
+         //string dirName  = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+         string dirName  = Path.Combine(deaultVvPDFdirectoryName, todayDir);
+         string fullName = Path.Combine(dirName, thePDF.filename);
+
+         try
+         {
+            if(dirName.NotEmpty()) Directory.CreateDirectory(dirName);
+
+            File.WriteAllBytes(fullName, thePDF.pdfBytes);
+
+            FileInfo fi = new FileInfo(fullName);
+            if(!fi.Exists || fi.Length != thePDF.pdfBytes.Length)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, "Neuspješno spremanje PDF-a (provjera datoteke nije prošla).");
+               return false;
+            }
+
+            System.Diagnostics.Process.Start(fullName);
+         }
+         catch(Exception ex)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, $"Ne mogu spremiti ili otvoriti PDF:\n\r\n\r{fullName}\n\r\n\r{ex.Message}");
+            return false;
+         }
       }
 
       return true;
@@ -4233,7 +4289,11 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       DiskFileDestinationOptions CrDiskFileDestinationOptions = new DiskFileDestinationOptions();
       PdfRtfWordFormatOptions    CrFormatTypeOptions          = new PdfRtfWordFormatOptions();
 
-      string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+      // 04.02.2026: 
+    //string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+      /* oeRp_1. */ oeRp.faktur_rec   = faktur_rec;
+      string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
+
       string todayDir                 = theTT + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
       string pdfFileNameOnly     ;
       string PDFfileFullPathName ;
@@ -4292,7 +4352,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       #endregion Create PDF files to hard disk - OR - Print To Printer
 
-      /* oeRp_1. */ oeRp.faktur_rec              = faktur_rec                                      ;
+    ///* oeRp_1. */ oeRp.faktur_rec              = faktur_rec                                      ; // preselio desetak redove ranije 
       /* oeRp_2. */ oeRp.kupdob_rec              = kupdob_rec                                      ;
       /* oeRp_3. */ oeRp.primPlat_rec            = primPlat_rec                                    ;
       /* oeRp_4. */ oeRp.thePFD                  = thePFD                                          ;
@@ -4617,7 +4677,12 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       string fileName = "eRacun_" + xtrano_rec.F2_ElectronicID.ToString() + "_" + xtrano_rec.T_opis_128 + ".xml";
 
-      string dirName   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+      //string dirName   = VvPref.eRacun_Izlaz_Prefs.DirectoryName;
+
+      string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
+      string todayDir = /*theTT*/xtrano_rec.T_TT + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+
+      string dirName = Path.Combine(deaultVvPDFdirectoryName, todayDir);
 
       string fullName = Path.Combine(dirName, fileName);
 
@@ -4631,7 +4696,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    {
       OpenFileDialog openFileDialog = new OpenFileDialog();
 
-      openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+    //openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+      openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
 
       openFileDialog.Filter = "Xml datoteke (*.xml)|*.xml|Sve Datoteke (*.*)|*.*";
       openFileDialog.FilterIndex = 1;
@@ -4659,7 +4725,8 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    {
       OpenFileDialog openFileDialog = new OpenFileDialog();
 
-      openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+    //openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
+      openFileDialog.InitialDirectory = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
 
       openFileDialog.Filter = "Xml datoteke (*.xml)|*.xml|Sve Datoteke (*.*)|*.*";
       openFileDialog.FilterIndex = 1;
