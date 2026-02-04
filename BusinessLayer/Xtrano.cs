@@ -288,6 +288,12 @@ public class Xtrano : VvTransRecord
       }
    }
 
+   public uint T_bak_parentID
+   {
+      get { return this.backupData._t_parentID; }
+      set {        this.backupData._t_parentID = value; }
+   }
+
    #endregion propertiz
 
    #region ToString

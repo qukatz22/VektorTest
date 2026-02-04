@@ -9040,7 +9040,9 @@ public class ZAR_DUC         : FakturExtDUC
       R_NC_CreateColumn            (ZXC.Q4un, 2          , false, "NabCij"   , "Nabavna cijena"             );
       R_NV_CreateColumn            (ZXC.Q4un, 2          , false, "NabVri"   , "Nabavna vrijednost"         );
       R_RUC_CreateColumn           (ZXC.Q4un, 2          , false, "RUC"      , "RUC - razlika u cijeni"     );
-      R_RUV_CreateColumn           (ZXC.Q4un, 2          , false, "RUV"      , "RUV - razlika u vrijednosti");
+
+      R_RUV_ZAR_CreateColumn       (ZXC.Q4un, 2          , true , "PdvOsn"   , "RUV - razlika u vrijednosti");
+
       R_utilString_CreateColumn    (ZXC.Q5un             , false, "UlazniDok", "Broj ulaznog dokumenta"     );
 
       T_pdvSt_CreateColumn         (ZXC.Q2un, 0          , isVisible, "PdvSt"      , "Stopa PDV-a");

@@ -7977,11 +7977,19 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
           //if(faktur_rec.Is_F2_AlreadySent                                )
             if(faktur_rec.Is_F2_AlreadySent && faktur_rec.F2_StatusCD != 50)
             {
-               ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljen ispravak.\n\nDokument je već poslan kao eRačun.");
-               return false;
+               if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipA ||
+                  ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  )
+               {
+                  //ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje.\n\nDokument je već poslan kao eRačun.");
+               }
+               else // vlastito knjig. 
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljen ispravak.\n\nDokument je već poslan kao eRačun.");
+                  return false;
+               }
             }
 
-            //if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O")
+          //if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O")
             if(ZXC.IsSvDUH_ZAHonly && faktur_rec.TT == Faktur.TT_ZAH && faktur_rec.StatusCD != "O" && faktur_rec.StatusCD != "P")
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljena akcija.\n\nZahtjevnica je već poslana u apoteku.\n\n.");

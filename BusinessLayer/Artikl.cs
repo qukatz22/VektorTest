@@ -1462,7 +1462,8 @@ public decimal  AS_HalmedBOP                 { get { return this.TheAsEx.HalmedB
 
    public bool IsUMJETNINA { get { return this.Grupa1CD == ZXC.UmjetninaGrCD; } } // je li ovo umjetnina,                     ... na koje PDV ide samo na RUC 
    public bool IsRabMotVoz { get { return this.Grupa1CD == ZXC.RabMotVozGrCD; } } // je li ovo               rabljeno vozilo, ... na koje PDV ide samo na RUC 
-   public bool IsPDVonRUC  { get { return IsUMJETNINA || IsRabMotVoz        ; } } // je li ovo umjetnina ili rabljeno vozilo, ... na koje PDV ide samo na RUC 
+   public bool IsZAR       { get { return this.TS       ==             "ZAR"; } } // je li ovo               rabljeno vozilo, ... na koje PDV ide samo na RUC 
+   public bool IsPDVonRUC  { get { return IsUMJETNINA || IsRabMotVoz || IsZAR; } } // je li ovo umjetnina ili rabljeno vozilo, ... na koje PDV ide samo na RUC 
 
 
    public bool IsKOMISROBA { get { return this.Grupa1CD == Artikl.KomisRobaGrCD; } } // je li ovo artikl kojega prodajemo iz komisije 

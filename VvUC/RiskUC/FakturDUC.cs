@@ -56,7 +56,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                        vvtbT_pdvSt, vvtbT_rbt1St, vvtbT_rbt2St, vvtbT_mrzSt, vvtbT_doCijMal,
                        vvtbT_noCijMal, vvtbT_pdvKolTip, vvtbT_kol2,
                        vvtbR_fak, vvtbR_rbt1, vvtbR_rbt2, vvtbR_kcr, vvtbR_ztr, vvtbR_mrz,
-                       vvtbR_pdv, vvtbR_vel, vvtbR_ukupno, vvtbR_cij_kcr,  /*vvtbR_cij_uk,*/ vvtbR_RUC, vvtbR_RUV, vvtbR_NV, vvtbR_NC,
+                       vvtbR_pdv, vvtbR_vel, vvtbR_ukupno, vvtbR_cij_kcr,  /*vvtbR_cij_uk,*/ vvtbR_RUC, vvtbR_RUV, vvtbR_NV, vvtbR_NC, vvtbR_RUV_ZAR,
                        vvtbR_mskPdv, vvtbR_MSK, vvtbT_isIrmUslug, vvtbR_utilKupdobName,
                        vvtbT_ppmvOsn, vvtbT_ppmvSt1i2, vvtbR_ppmvIzn, vvtbR_cijOP, vvtbR_kolOP, vvtbR_piprDiffKol,
                        vvtbT_pnpSt,
@@ -2920,14 +2920,27 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       vvtbR_RUV = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColR_RUV", null, -12, _statusText);
       vvtbR_RUV.JAM_ReadOnly = true;
 
-      if(!IsPTG_UgAnDod_DUC) vvtbR_RUV.JAM_BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC && this is ZAR_DUC == false) vvtbR_RUV.JAM_BackColor = Color.Aquamarine;
 
       colVvText = TheG.CreateVvTextBoxColumn(vvtbR_RUV, null, "R_RUV", _colHeader, _width);
 
       vvtbR_RUV.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = _width;
       colVvText.Visible = false;
-      if(!IsPTG_UgAnDod_DUC) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
+      if(!IsPTG_UgAnDod_DUC && this is ZAR_DUC == false) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
+      colVvText.Visible = isVisible;
+   }
+   protected void R_RUV_ZAR_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
+   {
+      vvtbR_RUV_ZAR = TheG.CreateVvTextBoxFor_Decimal_ColumnTemplate(numOfDecimalPlaces, "vvtb4ColR_RUV", null, -12, _statusText);
+      vvtbR_RUV_ZAR.JAM_ReadOnly = true;
+
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbR_RUV_ZAR, null, "R_RUV_ZAR", _colHeader, _width);
+
+      vvtbR_RUV_ZAR.JAM_ShouldSumGrid = true;
+      colVvText.MinimumWidth = _width;
+      colVvText.Visible = false;
+      if(!IsPTG_UgAnDod_DUC && this is ZAR_DUC == false) colVvText.DefaultCellStyle.BackColor = Color.Aquamarine;
       colVvText.Visible = isVisible;
    }
    protected void R_NV_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)//"NabVrij"
@@ -3379,6 +3392,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       internal int iT_skladCD2;
       internal int iT_OPN_neispKol;
       internal int iT_KPD;
+      internal int iT_ruv_ZAR;
    }
 
    private void SetRtransColumnIndexes()
@@ -3474,6 +3488,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       ci.iT_OPN_neispKol      = TheG.IdxForColumn("R_OPN_neispKol");
       ci.iT_KPD               = TheG.IdxForColumn("T_KPD");
 
+      ci.iT_ruv_ZAR           = TheG.IdxForColumn("R_RUV_ZAR");
    }
 
    #endregion SetRtransColumnIndexes()
@@ -5261,6 +5276,12 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             TheG.PutCell(ci.iT_skladCD2, rowIdx, PV2rtrans_rec.T_skladCD);
          }
       }
+
+      if(this is ZAR_DUC)
+      {
+         TheG.PutCell(ci.iT_ruv_ZAR, rowIdx, rtrans_rec.R_PdvOsn);
+      }
+
    }
 
    public static decimal GetDiffKol_PlanVsRealizacijaPIPR(string artiklCD, List<Rtrans> realizacijaRtransList, decimal planKol)

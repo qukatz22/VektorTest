@@ -2657,6 +2657,9 @@ public static class Vv_eRacun_HTTP
 
          newAUR_Xtrano_rec.F2_IsFisk = ZXC.F2_StatusInAndOutBoxEnum.DA_JE;
 
+         // abrakadabra anuliraj umjetno podvaljeni MaxValue kao parentID ... za WHERE clausulu 
+         if(newAUR_Xtrano_rec.T_parentID == UInt32.MaxValue) newAUR_Xtrano_rec.T_bak_parentID = 0;
+
          bool rwtOK = newAUR_Xtrano_rec.VvDao.RWTREC(theUC.TheDbConnection, newAUR_Xtrano_rec, false, false, false);
 
          theUC.TheVvTabPage.TheVvForm.EndEdit(newAUR_Xtrano_rec);
@@ -3745,7 +3748,6 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 
       return xmlXtrano_rec;
    }
-
    public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_ResponseOLD(string xmlString, VvMER_ResponseData responseData, EN16931.UBL.InvoiceType deserialized_eRacun) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
    {
       if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");

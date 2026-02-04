@@ -813,7 +813,17 @@ public class Rtrans : VvTransRecord, IComparable<Rtrans>, IVvExtendableDataRecor
       //get { return this._rtrResults._r_KCR   - this._rtrResults._r_pdv  ; }
       //get { return this._rtrResults._r_KCR/* - this._rtrResults._r_pdv*/; }
 
-      get { return this._rtrResults._r_KCR - (T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN ? this.T_ppmvOsn : 0.00M); }
+      get 
+      {
+         if(Is_VelepByMPC_4Umj)
+         {
+            return this._rtrResults._r_KC - this.T_ppmvOsn * R_kol;
+         }
+         else
+         {
+            return this._rtrResults._r_KCR - (T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN ? this.T_ppmvOsn : 0.00M);
+         }
+      }
    }
    public decimal R_KCRdivKOL
    {
@@ -1814,7 +1824,9 @@ public decimal  A_PrNBCBefThisUlaz          { get { return this.TheAsEx.PrNBCBef
    public bool Is_URA_wMinusKol                         { get { return this.T_TT == Faktur.TT_URA && this.R_kol.IsNegative(); } }
  //public bool Is_AfterURA_wMinusKol_StanjeKol_GoesZero { get { return Is_URA_wMinusKol && A_StanjeKol.IsZero(); } } // NUP_DILEMA! 2. od 2 dileme 
 
-   public bool Is_VelepByMPC                            { get { return ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON || this.T_TT == Faktur.TT_OPN || this.T_TT == Faktur.TT_IZD); } } // TODO: kasnije iz RRD rulsa 
+   public bool Is_VelepByMPC                            { get { return ZXC.IsTETRAGRAM_ANY && (this.T_TT == Faktur.TT_IRA || this.T_TT == Faktur.TT_PON || 
+                                                                                               this.T_TT == Faktur.TT_OPN || this.T_TT == Faktur.TT_IZD || 
+                                                                                               this.T_TT == Faktur.TT_ZAR); } } // TODO: kasnije iz RRD rulsa 
    public bool Is_VelepByMPC_4Umj                       { get { return Is_VelepByMPC && this.T_pdvColTip == ZXC.PdvKolTipEnum.UMJETN; } }
 
    internal static bool Does_thisArtiklTSNeeds_RtranoRow_ForSerno(string artiklTS) 
