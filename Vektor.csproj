@@ -2082,6 +2082,12 @@
       <DependentUpon>CR_VMI_DUC.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_ZAR_prnZAR.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_ZAR_prnZAR.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_ZPC.cs">
       <DependentUpon>CR_ZPC.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -3900,6 +3906,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_VMI_DUC.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_VMI_DUC.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_ZAR_prnZAR.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_ZAR_prnZAR.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_ZPC.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

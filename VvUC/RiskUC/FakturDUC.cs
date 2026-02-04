@@ -6440,7 +6440,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          }
          else if(this is ZAR_DUC)// tamaraZAR napravi dva crYstala
          {
-            if(this.TheFakturDocFilterUC.IsPrn_ZAR)         return new RptR_IRA(new Vektor.Reports.RIZ.CR_POT_DUC()    , reportName, fakturFilter);
+            if(this.TheFakturDocFilterUC.IsPrn_ZAR)         return new RptR_IRA(new Vektor.Reports.RIZ.CR_ZAR_prnZAR() , reportName, fakturFilter);
             else /*(this.TheFakturDocFilterUC.IsPrn_UZP)*/  return new RptR_IRA(new Vektor.Reports.RIZ.CR_POU_POI_DUC(), reportName, fakturFilter);
          }
          else
