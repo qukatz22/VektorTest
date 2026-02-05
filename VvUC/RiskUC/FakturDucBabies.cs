@@ -8987,8 +8987,10 @@ public class ZAR_DUC         : FakturExtDUC
 
       SetSumeHampers(false, true, true, false);
 
+      hamp_SkladDate .Location = new Point(hamp_dokDate.Left   , hamp_dokDate    .Bottom - ZXC.Qun4);
+      
       hamp_ValName   .Location = new Point(hamp_dokDate.Left   , hamp_dokDate    .Bottom - ZXC.Qun4);
-
+ 
       hamp_VezniDok2 .Location = new Point(hamp_kupdobOther.Left, hamp_kupdobOther.Bottom); //telefon
       hamp_Fco       .Location = new Point(hamp_kupdobOther.Left, hamp_VezniDok2  .Bottom); //e-mail
 
@@ -8997,23 +8999,28 @@ public class ZAR_DUC         : FakturExtDUC
       hamp_PrimPlat  .Location = new Point(hamp_kupdobOther.Left, hamp_Fco     .Bottom + ZXC.Qun4); // dobavljac             
       hamp_dostava   .Location = new Point(hamp_kupdobOther.Left, hamp_PrimPlat.Bottom + ZXC.Qun8); // adresa, OIB dobavljaca
       
-      hamp_napomena.Location = new Point(hamp_tt.Left, hamp_dostava .Top);
+      hamp_napomena .Location = new Point(hamp_kupdobOther.Left, hamp_dostava.Bottom);
+      hamp_DatumX   .Location = new Point(hamp_v1TT       .Left, hamp_v4TT   .Bottom + ZXC.Qun8);
+      hamp_napomena2.Location = new Point(hamp_v1TT       .Left, hamp_DatumX .Bottom + ZXC.Qun8);
 
       hamp_opis.Location    = new Point(hamp_v1TT.Right, hamp_tt.Top);
       hamp_opis.BringToFront();
       hamp_NacPlac.BringToFront();
-      hamp_ValName.BringToFront();
+      
+      nextY = hamp_napomena.Bottom;
+
+      //hamp_ValName.BringToFront();
    }
 
    private void CreateArrOfHampers()
    {
       hamperLeft = new VvHamper[] { hamp_kupdobNaziv, hamp_kupdobOther, 
                                     hamp_PrimPlat, hamp_dostava     ,                      
-                                    hamp_tt , 
-                                    hamp_VezniDok2, hamp_Fco,
+                                    hamp_tt , hamp_SkladDate,
+                                    hamp_VezniDok2, hamp_Fco, hamp_DatumX,
                                     hamp_dokDate    , hamp_ValName , hamp_dokNum, hamp_napomena, 
                                     hamp_skladCd    , hamp_v1TT   , hamp_v2TT   , hamp_v3TT  , hamp_v4TT,
-                                    hamp_NacPlac, hamp_opis
+                                    hamp_NacPlac, hamp_napomena2, hamp_opis
                                   };
    }
  

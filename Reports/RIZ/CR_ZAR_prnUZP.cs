@@ -16,14 +16,14 @@ namespace Vektor.Reports.RIZ {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class CR_ZAR_prnZAR : ReportClass {
+    public class CR_ZAR_prnUZP : ReportClass {
         
-        public CR_ZAR_prnZAR() {
+        public CR_ZAR_prnUZP() {
         }
         
         public override string ResourceName {
             get {
-                return "CR_ZAR_prnZAR.rpt";
+                return "CR_ZAR_prnUZP.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Vektor.Reports.RIZ {
         
         public override string FullResourceName {
             get {
-                return "Vektor.Reports.RIZ.CR_ZAR_prnZAR.rpt";
+                return "Vektor.Reports.RIZ.CR_ZAR_prnUZP.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section2 {
+        public CrystalDecisions.CrystalReports.Engine.Section ReportHeaderSection2 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -106,7 +106,7 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_NP1i2 {
+        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection1 {
             get {
                 return this.ReportDefinition.Sections[7];
             }
@@ -114,57 +114,17 @@ namespace Vektor.Reports.RIZ {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section RF_NPtekst {
-            get {
-                return this.ReportDefinition.Sections[8];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection2 {
-            get {
-                return this.ReportDefinition.Sections[9];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection3 {
-            get {
-                return this.ReportDefinition.Sections[10];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection4 {
-            get {
-                return this.ReportDefinition.Sections[11];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section ReportFooterSection1 {
-            get {
-                return this.ReportDefinition.Sections[12];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[13];
+                return this.ReportDefinition.Sections[8];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedCR_ZAR_prnZAR : Component, ICachedReport {
+    public class CachedCR_ZAR_prnUZP : Component, ICachedReport {
         
-        public CachedCR_ZAR_prnZAR() {
+        public CachedCR_ZAR_prnUZP() {
         }
         
         [Browsable(false)]
@@ -201,7 +161,7 @@ namespace Vektor.Reports.RIZ {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            CR_ZAR_prnZAR rpt = new CR_ZAR_prnZAR();
+            CR_ZAR_prnUZP rpt = new CR_ZAR_prnUZP();
             rpt.Site = this.Site;
             return rpt;
         }

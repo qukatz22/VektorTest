@@ -821,6 +821,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
                  this is IRPDUC        ||
                  this is IZMDUC        ||
                  this is OdobrKupcuDUC ||
+                 this is ZAR_DUC       ||
                  this is PovratKupcaDUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.QUN + ZXC.Qun2 };
          else if(this is IRMDUC)         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
          else if(this is RNZDUC)         hamper.VvColWdt = new int[] { labelWidth, ZXC.Q7un };
@@ -849,7 +850,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       else text = "Datum:";
 
 
-      Label lbl = hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
+      Label lbl   = hamper.CreateVvLabel(0, 0, text, ContentAlignment.MiddleRight);
       tbx_DokDate = hamper.CreateVvTextBox(1, 0, "tbx_dokDate", "Datum dokumenta");
       tbx_DokDate.JAM_IsForDateTimePicker = true;
       dtp_DokDate = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DokDate);
@@ -871,6 +872,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          this is IRA_PTG_DUC   ||
          this is IRADUC_2      ||
          this is IRA_MPC_DUC   ||
+         this is ZAR_DUC       ||
          this is IRPDUC        ||
          this is IRMDUC        ||
          this is IRMDUC_2      ||
@@ -1145,7 +1147,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is URMDUC && IsAutoKucaProjekt)          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un + ZXC.Q7un - ZXC.Qun2 - ZXC.Qun12 };
          else if(this is ZAH_SVD_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Q3un + ZXC.Qun12 };
          else if(this is MOD_PTG_DUC)                          hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 3 + ZXC.Q4un - ZXC.Qun8 };
-         else if(this is POT_DUC || this is ZAR_DUC)           hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun12};
+         else if(this is POT_DUC)                              hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun12};
+         else if(this is ZAR_DUC)                              hamper.VvColWdt = new int[] { ZXC.Q4un  , ZXC.Q10un * 2 + ZXC.Q6un + ZXC.Qun12};
          else                                                  hamper.VvColWdt = new int[] { labelWidth, hamp_tt.Width * 3 - labelWidth - faBefFirstCol - faBefCol - ZXC.Qun4 * 3 };
       }
       else if(this is MedjuSkladDUC || this is MedjuSklad2DUC) hamper.VvColWdt = new int[] { labelWidth, ZXC.Q10un * 2 + ZXC.Q7un + ZXC.Qun8 };
@@ -6483,8 +6486,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          }
          else if(this is ZAR_DUC)// tamaraZAR napravi dva crYstala
          {
-            if(this.TheFakturDocFilterUC.IsPrn_ZAR)         return new RptR_IRA(new Vektor.Reports.RIZ.CR_ZAR_prnZAR() , reportName, fakturFilter);
-            else /*(this.TheFakturDocFilterUC.IsPrn_UZP)*/  return new RptR_IRA(new Vektor.Reports.RIZ.CR_POU_POI_DUC(), reportName, fakturFilter);
+            if(this.TheFakturDocFilterUC.IsPrn_UZP) return new RptR_IRA(new Vektor.Reports.RIZ.CR_ZAR_prnUZP(), reportName, fakturFilter);
+            else                                    return new RptR_IRA(new Vektor.Reports.RIZ.CR_ZAR_prnZAR(), reportName, fakturFilter);
          }
          else
          {
@@ -9037,6 +9040,11 @@ public partial class FakturExtDUC : FakturDUC
          hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, faBefCol };
 
       }
+      else if(this is ZAR_DUC)
+      {
+         hamper.VvColWdt    = new int[] { labelWidth, ZXC.Q10un + ZXC.Q5un - ZXC.Qun2 - ZXC.Qun2 + 2 * faBefCol + ZXC.Q10un, 0 };
+         hamper.VvSpcBefCol = new int[] { faBefFirstCol, faBefCol, 0 };
+      }
       else
       { 
          hamper.VvColWdt    = new int[] { labelWidth, (this is RNZDUC) ? 3 * ZXC.Q10un - ZXC.Q4un + ZXC.Qun4 : ZXC.Q10un + ZXC.Q2un - ZXC.Qun2 - ZXC.Qun4 + 2 * faBefCol, 0 };
@@ -9063,8 +9071,9 @@ public partial class FakturExtDUC : FakturDUC
       else
       { 
 
-         if(this is IRPDUC) textN = "Vozač:";
-         if(this is RNZDUC) textN = "VrstaPosla:";
+         if(this is IRPDUC ) textN = "Vozač:";
+         if(this is RNZDUC ) textN = "VrstaPosla:";
+         if(this is ZAR_DUC) textN = "NačinPl:";
 
          hamper.CreateVvLabel(0, 0, textN /*"Napom2:"*/, ContentAlignment.MiddleRight);
          tbx_Napomena2 = hamper.CreateVvTextBox(1, 0, "tbx_napomena", "Napomena2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2), 1, 0);
@@ -9614,7 +9623,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(this is ZAR_DUC == false) tbx_NacPlac.JAM_FieldExitMethod_2 = new EventHandler(OnExitSetPrimPlat);
 
-      if(this is ZAR_DUC) hamper.BackColor = Color.Beige;
+      if(this is ZAR_DUC) tbx_PrimPlatCD.JAM_ForeColor = tbx_PrimPlatTK.JAM_ForeColor = tbx_PrimPlatName.JAM_ForeColor = Color.Blue;
 
       hamper.Name = "APrim/Plat:";
 
@@ -10258,7 +10267,8 @@ public partial class FakturExtDUC : FakturDUC
       if(this is ZAR_DUC)
       {
          tbx_DostName.JAM_ReadOnly = tbx_DostAddr.JAM_ReadOnly = true;
-         hamper.BackColor = Color.Beige;
+         //hamper.BackColor = Color.Beige;
+         tbx_DostName.JAM_ForeColor = tbx_DostAddr.JAM_ForeColor = Color.Blue;
       }
 
       hamper.Name = "ADostava:";
@@ -15058,7 +15068,7 @@ public partial class FakturExtDUC : FakturDUC
       // --- PPMV shit end   
 
   
-      if(CtrlOK(tbx_dateX        )) faktur_rec.DateX         = Fld_DateX;
+      if(CtrlOK(tbx_dateX        ))  faktur_rec.DateX        = Fld_DateX;
       if(CtrlOK(tbx_s_ukOsnPNP   ))  faktur_rec.S_ukOsnPNP   = Fld_S_ukOsnPNP     ;
       if(CtrlOK(tbx_s_ukIznPNP   ))  faktur_rec.S_ukIznPNP   = Fld_S_ukIznPNP     ;
       if(CtrlOK(tbx_S_ukMskPNP   ))  faktur_rec.S_ukMskPNP   = Fld_S_ukMskPNP     ;
