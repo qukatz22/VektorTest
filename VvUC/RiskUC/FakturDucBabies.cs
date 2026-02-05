@@ -9023,37 +9023,28 @@ public class ZAR_DUC         : FakturExtDUC
 
    protected override void InitializeDUC_Specific_Columns()
    {
-      bool isVisible = true;
-
-      T_artiklCD_CreateColumn      (ZXC.Q4un          ,   isVisible, "Šifra"           , "Šifra artikla"                     );
-      T_artiklName_CreateColumnFill(                      isVisible, "Naziv"           , "Naziv artikla");
-    //T_isIrmUsluga_CreateColumn   (ZXC.QUN + ZXC.Qun4,   isVisible, "Usl"             , "Usluga");
-      T_kol_CreateColumn           (ZXC.Q3un, 2,          isVisible, "Kol"             , "Količina"      );
-      T_jedMj_CreateColumn         (ZXC.Q2un   ,          isVisible, "JM"              , "Jedinica mjere");
+      T_artiklCD_CreateColumn      (ZXC.Q4un,    true, "Šifra"           , "Šifra artikla"                     );
+      T_artiklName_CreateColumnFill(             true, "Naziv"           , "Naziv artikla");
+      T_kol_CreateColumn           (ZXC.Q3un, 2, true, "Kol"             , "Količina"      );
+      T_jedMj_CreateColumn         (ZXC.Q2un   , true, "JM"              , "Jedinica mjere");
     
-      T_ppmvOsn_CreateColumn      (ZXC.Q5un, 2, isVisible, "NabavnaCij", "Osnovica za obračun pdv-a na umjetninu", false);
+      T_ppmvOsn_CreateColumn       (ZXC.Q5un,  2, true, "NabavnaCij", "Nabavna cijena", false);
+      R_NV_ZAR_CreateColumn        (ZXC.Q4un,  2, true, "NabavnaVri"   , "Nabavna vrijednost"         );
 
-      T_cij_CreateColumn(ZXC.Q4un+ ZXC.Qun4, 2,isVisible, "Cij bez PDV", "Jedinična cijena");
-      R_KCR_CreateColumn           (ZXC.Q4un, 2,          isVisible, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a");
+      T_cij_CreateColumn(ZXC.Q4un+ ZXC.Qun4 , 2, true, "Cij bez PDV", "Jedinična cijena");
+      R_KCR_CreateColumn           (ZXC.Q4un, 2, true, "Uk bez Pdv"      , "Ukupan iznos bez PDV-a");
 
-      R_cij_kcr_CreateColumn       (ZXC.Q4un, 2          , false, "VPC"      , "Veleprodajna cijena"        );
-      R_NC_CreateColumn            (ZXC.Q4un, 2          , false, "NabCij"   , "Nabavna cijena"             );
-      R_NV_CreateColumn            (ZXC.Q4un, 2          , false, "NabVri"   , "Nabavna vrijednost"         );
-      R_RUC_CreateColumn           (ZXC.Q4un, 2          , false, "RUC"      , "RUC - razlika u cijeni"     );
+      R_RUV_ZAR_CreateColumn       (ZXC.Q4un, 2, true , "PdvOsn"   , "RUV - razlika u vrijednosti");
 
-      R_RUV_ZAR_CreateColumn       (ZXC.Q4un, 2          , true , "PdvOsn"   , "RUV - razlika u vrijednosti");
+      T_pdvSt_CreateColumn         (ZXC.Q2un, 0, true, "PdvSt"      , "Stopa PDV-a");
+      T_pdvKolTip_CreateColumn     (ZXC.QUN    , true);
 
-      R_utilString_CreateColumn    (ZXC.Q5un             , false, "UlazniDok", "Broj ulaznog dokumenta"     );
+      T_IRA_MPC_CreateColumn      (ZXC.Q5un, 2, true, "Cijena s PDV"     , "Jedinična cijena");
+      R_KCRP_CreateColumn         (ZXC.Q5un, 2, true, "Uk s PDV-om", "Ukupno s PDV-om");
 
-      T_pdvSt_CreateColumn         (ZXC.Q2un, 0          , isVisible, "PdvSt"      , "Stopa PDV-a");
-      T_pdvKolTip_CreateColumn     (ZXC.QUN              , isVisible);
-
-      T_IRA_MPC_CreateColumn      (ZXC.Q4un+ ZXC.Qun4,  2,  isVisible, "Cijena s PDV"     , "Jedinična cijena");
-     
-      R_KCRP_CreateColumn         (ZXC.Q4un + ZXC.Qun2 , 2, isVisible, "Uk s PDV-om", "Ukupno s PDV-om");
-
-
-      vvtbT_cij.JAM_ReadOnly = true;
+      vvtbT_cij      .JAM_ReadOnly = true;
+      vvtbT_pdvKolTip.JAM_ReadOnly = true;
+      vvtbT_pdvSt    .JAM_ReadOnly = true;
    }
 
    #endregion TheG_Specific_Columns
