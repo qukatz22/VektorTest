@@ -4132,6 +4132,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
             {
                VvLookUpItem skladLUI = ZXC.GetTetragram_PreferredSkladCD_LookUpItem();
 
+               if(this is ZAR_DUC) skladLUI = ZXC.luiListaSkladista.FirstOrDefault(lui => lui.Name.ToUpper().Contains("ZASTUP")); 
+
                if(skladLUI != null)
                {
                   Fld_SkladCD    =       skladLUI.Cd     ;
@@ -5299,7 +5301,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       if(this is ZAR_DUC)
       {
          TheG.PutCell(ci.iT_ruv_ZAR, rowIdx, rtrans_rec.R_PdvOsn);
-         TheG.PutCell(ci.iT_nv_ZAR , rowIdx, rtrans_rec.T_ppmvOsn * rtrans_rec.T_kol);
+         TheG.PutCell(ci.iT_nv_ZAR , rowIdx, rtrans_rec.T_ppmvOsn * rtrans_rec.R_kol);
       }
 
    }
@@ -8158,6 +8160,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       uint fakturYear  = (uint)faktur_rec.DokDate.Year;
    
       filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakRecID], false, "fakturRecID", fakturRecID, "", "", " = ", ""));
+      if(ZXC.IsF2_2026_rules) // za prethodne godine nemoj ovaj fm 
       filterMembers.Add(new VvSqlFilterMember(ZXC.FtransSchemaRows[ZXC.FtrCI.t_fakYear ], false, "fakturYear" , fakturYear , "", "", " = ", ""));
    
       KtoShemaDsc KSD = ZXC.KSD;
@@ -9914,7 +9917,8 @@ public partial class FakturExtDUC : FakturDUC
       if(isTetragram)
       {
          tbx_NacPlacRbt.Visible = false;
-         tbx_NacPlac.JAM_DataRequired = true; //od 12.12.2025.
+
+         if(this is ZAR_DUC == false) tbx_NacPlac.JAM_DataRequired = true; //od 12.12.2025.
       }
       else
       {

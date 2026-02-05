@@ -4213,6 +4213,14 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
             System.Diagnostics.Process.Start(fullName);
          }
+         catch(IOException ex)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop,
+               "Ne mogu spremiti PDF. Datoteka je možda već otvorena u drugom programu ili je disk nedostupan.\n\r\n\rPutanja:\n\r{0}\n\r\n\rDetalj:\n\r{1}",
+               fullName,
+               ex.Message);
+            return false;
+         }
          catch(Exception ex)
          {
             ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Stop, $"Ne mogu spremiti ili otvoriti PDF:\n\r\n\r{fullName}\n\r\n\r{ex.Message}");

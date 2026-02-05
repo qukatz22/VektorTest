@@ -127,6 +127,8 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
       if(fakturRecID.IsZero()) return;
 
+      if(!ZXC.IsF2_2026_rules && fakturYear.IsZero()) fakturYear = (uint)ZXC.projectYearAsInt;
+
       if(fakturYear != ZXC.projectYearAsInt) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Racun nije iz ove godine"); return; }
 
       Faktur faktur_rec = new Faktur();

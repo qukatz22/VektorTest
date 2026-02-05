@@ -1782,6 +1782,24 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #endregion KPD sifra
 
+         #region Tetragram ZAR artikli
+
+         if(ZXC.IsTETRAGRAM_ANY)
+         {
+            if(this is ZAR_DUC && artikl_rec != null && artikl_rec.TS != "ZAR")
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl nije 'ZAR' artikl!\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
+               e.Cancel = true;
+            }
+            if(this is ZAR_DUC == false && this is PON_MPC_DUC == false && artikl_rec != null && artikl_rec.TS == "ZAR")
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl je 'ZAR' artikl!\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
+               e.Cancel = true;
+            }
+         }
+
+         #endregion Tetragram ZAR artikli
+
       } // for(int rowIdx = 0; rowIdx < TheG.RowCount - 1; ++rowIdx) 
 
       #endregion Check Column ArtiklCD, IsInMinus
@@ -3457,7 +3475,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region 2026 F2 validations & setting mandatory fields
 
-      if(IsF012DUC && faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 &&
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.Add &&
+         IsF012DUC && faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2 &&
          (ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipA || 
           ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB ))
       {
