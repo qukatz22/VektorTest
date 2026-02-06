@@ -815,6 +815,7 @@ public struct TtInfo
       Faktur.TT_POT,
       Faktur.TT_URA,
       Faktur.TT_IRA,
+      Faktur.TT_ZAR, // 06.02.2026.
    };
    public bool IsCash2BlagajnaTT { get { return arrayCash2BlagajnaTT.Contains(TheTT); } }
 
