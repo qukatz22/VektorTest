@@ -5365,8 +5365,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          TheG.PutCell(ci.iT_kolOP   , rowIdx,           (rtrans_rec.R_kolOP));
          TheG.PutCell(ci.iT_cijOP   , rowIdx, VvCurrency(rtrans_rec.R_cijOP));
       }
-      // 27.09.2013: 
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT)
+      // 06.02.2026: 
+    //if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT)
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT && !(this is ZAR_DUC))
       {
          if(ZXC.AlmostEqual(rtrans_rec.R_Ira_NC, rtrans_rec.T_ppmvOsn, 0.02M) == false)
          {
@@ -9073,7 +9074,7 @@ public partial class FakturExtDUC : FakturDUC
 
          if(this is IRPDUC ) textN = "Vozač:";
          if(this is RNZDUC ) textN = "VrstaPosla:";
-         if(this is ZAR_DUC) textN = "NačinPl:";
+         if(this is ZAR_DUC) textN = "OpisPl:";
 
          hamper.CreateVvLabel(0, 0, textN /*"Napom2:"*/, ContentAlignment.MiddleRight);
          tbx_Napomena2 = hamper.CreateVvTextBox(1, 0, "tbx_napomena", "Napomena2", GetDB_ColSize_namedDao(TheVvDaoExt, DB_ciex.napomena2), 1, 0);

@@ -766,6 +766,8 @@ public struct TtInfo
     //Faktur.TT_YRA,
     //Faktur.TT_YRM,
       Faktur.TT_YRN,
+
+      Faktur.TT_ZAR,
    };
 
    public bool IsIzlazniPdvTT { get { return arrayIzlazniPdvTT.Contains(TheTT); } }

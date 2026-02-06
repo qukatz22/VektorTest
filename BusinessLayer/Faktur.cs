@@ -4779,12 +4779,22 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       for(int i = 0; i < this.Transes.Count; ++i)
       {
-         IRAfaktur_rec.Transes[i].T_TT  = IRAfaktur_rec.TT;
-         IRAfaktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(this.Transes[i].T_cij, this.Transes[i].T_pdvSt);
-         IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
+         IRAfaktur_rec.Transes[i].T_TT   = IRAfaktur_rec.TT;
+         IRAfaktur_rec.Transes[i].T_cij  = ZXC.VvGet_100_from_125(this.Transes[i].T_cij, this.Transes[i].T_pdvSt);
+         IRAfaktur_rec.Transes[i].R_KC   = (IRAfaktur_rec.Transes[i].R_kol * IRAfaktur_rec.Transes[i].T_cij).Ron2();
+
+       //IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
+
+         IRAfaktur_rec.Transes[i].R_rbt1 = ZXC.VvGet_100_from_125(this.Transes[i].R_rbt1, this.Transes[i].T_pdvSt);
       }
 
-      IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
+      //IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
+
+      IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_Rbt25 + IRAfaktur_rec.TrnSum_Rbt10 + IRAfaktur_rec.TrnSum_Rbt05 + IRAfaktur_rec.TrnSum_Rbt00;
+    //IRAfaktur_rec.S_ukRbt1 = ZXC.VvGet_100_from_125(IRAfaktur_rec.S_ukRbt1, 25M);
+
+    //IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.S_ukKCRP - IRAfaktur_rec.R_ukPpmvIzn -IRAfaktur_rec.S_ukPdv + IRAfaktur_rec.S_ukRbt1;
+      IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.TrnSum_KC;
 
       return IRAfaktur_rec;
    }
