@@ -6484,7 +6484,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          {
             return new RptR_IRA(new Vektor.Reports.RIZ.CR_POU_POI_DUC(), reportName, fakturFilter);
          }
-         else if(this is ZAR_DUC)// tamaraZAR napravi dva crYstala
+         else if(this is ZAR_DUC)
          {
             if(this.TheFakturDocFilterUC.IsPrn_UZP) return new RptR_IRA(new Vektor.Reports.RIZ.CR_ZAR_prnUZP(), reportName, fakturFilter);
             else                                    return new RptR_IRA(new Vektor.Reports.RIZ.CR_ZAR_prnZAR(), reportName, fakturFilter);
