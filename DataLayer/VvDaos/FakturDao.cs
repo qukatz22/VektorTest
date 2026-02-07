@@ -1252,7 +1252,7 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
          faktur_rec.TtSort = ZXC.TtInfo(faktur_rec.TT).TtSort;
 
          // 2026:
-         if(faktur_rec.IsF2)
+         if(faktur_rec.IsF2 && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA) // jer ako je XXX onda ostavi u VezniDok ono kaj je InvoiceType.ID - om definirano 
          {
             faktur_rec.VezniDok = faktur_rec.TtNumFiskal;
          }

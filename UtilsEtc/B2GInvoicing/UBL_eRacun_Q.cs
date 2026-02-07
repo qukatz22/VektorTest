@@ -2263,7 +2263,16 @@ namespace EN16931.UBL
 
                   } // if(allowanceAmount.NotZero())
 
+                  // 07.02.2026: 
+                  // empirijski vidimo da neki debili od programera krivo pune 'allowanceAmount' InvoiceLine-a 
+                  // pa bi u tom slucaju pomogla varijanta B. No, buduci da smo do sada imali dosta uspjeha sa varijantom A,
+                  // ostavljamo varijantu B kao rezervnu opciju za slucaj da naletimo na takav primjer u buducnosti.
+
+                  // Varijanta A: 
                   rtrans_rec.T_cij = ZXC.DivSafe(allowanceAmount * 100M, rtrans_rec.T_kol * rtrans_rec.T_rbt1St).Ron2();
+
+                  // Varijanta B: 
+                //rtrans_rec.T_cij = ZXC.DivSafe(cij_KCR * 100M, 100M - rtrans_rec.T_rbt1St).Ron(4);
 
                } // if(isRbtNOTCOMPLICATED)
 
@@ -2489,7 +2498,12 @@ namespace EN16931.UBL
          kupdob_rec.Grad         = theParty.PostalAddress?.CityName                   ?.Value ?? string.Empty;
          kupdob_rec.PostaBr      = theParty.PostalAddress?.PostalZone                 ?.Value ?? string.Empty;
          kupdob_rec.VatCntryCode = theParty.PostalAddress?.Country?.IdentificationCode?.Value ?? string.Empty;
-         
+
+         kupdob_rec.Naziv        = ZXC.LenLimitedStr(kupdob_rec.Naziv , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.naziv ));
+         kupdob_rec.Ulica1       = ZXC.LenLimitedStr(kupdob_rec.Ulica1, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica1));
+         kupdob_rec.Ulica2       = ZXC.LenLimitedStr(kupdob_rec.Ulica2, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica2));
+         kupdob_rec.Grad         = ZXC.LenLimitedStr(kupdob_rec.Grad  , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.grad  ));
+
          if(isDobav)
          {
           //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;

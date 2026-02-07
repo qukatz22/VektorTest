@@ -8065,7 +8065,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          case ZXC.WriteMode.Delete: ///////////////////////////////////////////////////////////////////////////////////////////////// 
 
-            if(faktur_rec.Is_F2_AlreadySent)
+            if(faktur_rec.Is_F2_AlreadySent && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA)
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljeno brisanje.\n\nDokument je već poslan kao eRačun.");
                return false;
