@@ -1716,6 +1716,12 @@
       <DependentUpon>CR_RekapFaktur_TRI.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\RIZ\CR_RekapFaktur_ZAR.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CR_RekapFaktur_ZAR.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\RIZ\CR_RekapFaktur_ZPC.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3668,6 +3674,10 @@
     <EmbeddedResource Include="Reports\RIZ\CR_RekapFaktur_TRI.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CR_RekapFaktur_TRI.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\RIZ\CR_RekapFaktur_ZAR.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CR_RekapFaktur_ZAR.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\RIZ\CR_RekapFaktur_ZPC.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

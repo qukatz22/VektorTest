@@ -4715,6 +4715,7 @@ public class RptR_RekapFaktur       : RptR_StandardRiskReport
       (ZXC.TtInfo(_rptFilter.TT).IsMalopFin_UorVMIorTRI                                  ) ? new Vektor.Reports.RIZ.CR_RekapFaktur_Malop_U() as ReportDocument :
       (ZXC.TtInfo(_rptFilter.TT).IsMalopFin_I                                            ) ? new Vektor.Reports.RIZ.CR_RekapFaktur_Malop_I() as ReportDocument :
       (_rptFilter.TT == Faktur.TT_MSI                                                    ) ? new Vektor.Reports.RIZ.CR_RekapFaktur_MSI()     as ReportDocument : // 03.09.2015. MSI
+    //(_rptFilter.TT == Faktur.TT_ZAR                                                    ) ? new Vektor.Reports.RIZ.CR_RekapFaktur_ZAR()     as ReportDocument : // 09.02.2026. ZAR
                                                                                              new Vektor.Reports.RIZ.CR_RekapFaktur_Light()   as ReportDocument ,
       _reportName, 
       _rptFilter, 
