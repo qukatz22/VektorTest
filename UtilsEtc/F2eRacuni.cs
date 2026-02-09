@@ -1239,7 +1239,8 @@ public static class Vv_eRacun_HTTP
             }
          }
 
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+         //Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+         Show_WebApiResult_ErrorMessageBox<VvMER_ResponseData>(webApiResultWithList);
 
          return 0;
       }
@@ -1787,7 +1788,8 @@ public static class Vv_eRacun_HTTP
             }
          }
 
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+       //Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+         Show_WebApiResult_ErrorMessageBox<VvMER_ResponseData>(webApiResultWithList);
 
          //return 0;
       }
@@ -1863,7 +1865,9 @@ public static class Vv_eRacun_HTTP
 
       if(webApiResultWithList_2 == null || webApiResultWithList_2.ResponseData == null /*|| webApiResultWithList_2.ResponseData.IsEmpty()*/)
       {
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
+       //Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
+         Show_WebApiResult_ErrorMessageBox<VvMER_Response_Data_FiscalizationStatus>(webApiResultWithList_2);
+
          //return 0;
       }
 
@@ -2600,7 +2604,8 @@ public static class Vv_eRacun_HTTP
             }
          }
 
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+       //Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+         Show_WebApiResult_ErrorMessageBox<VvMER_ResponseData>(webApiResultWithList);
 
          //return 0;
       }
@@ -2755,7 +2760,8 @@ public static class Vv_eRacun_HTTP
 
       if(webApiResultWithList_2 == null || webApiResultWithList_2.ResponseData == null /*|| webApiResultWithList_2.ResponseData.IsEmpty()*/) // !!! tu lutamo i ne znamo kada proglasiti error a kada ne 
       {
-         Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
+       //Show_WebApiResult_ErrorMessageBox(webApiResultWithList_2);
+         Show_WebApiResult_ErrorMessageBox<VvMER_Response_Data_FiscalizationStatus>(webApiResultWithList_2);
          return 0;
       }
 
@@ -3383,14 +3389,14 @@ public static class Vv_eRacun_HTTP
     //return false;
       return null ;
    }
-   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<List<T>> webApiResultWithList) where T : class
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<List<T>> webApiResultWithList, string xmlFilePath = null) where T : class
    {
       WebApiResult<T> webApiResult = WebApiResult<T>.GetWebApiResult_From_WebApiResultWithList(webApiResultWithList);
    
-      Show_WebApiResult_ErrorMessageBox(webApiResult);
+      Show_WebApiResult_ErrorMessageBox(webApiResult, null, xmlFilePath);
    }
    
-   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult, VvMER_ResponseData responseData = null) where T : class
+   internal static void Show_WebApiResult_ErrorMessageBox<T>(WebApiResult<T> webApiResult, VvMER_ResponseData responseData = null, string xmlFilePath = null) where T : class
    {
       VvMessageBoxDLG Send_OR_eIzvj_ErrorMessageBox = new VvMessageBoxDLG(false, ZXC.VvmBoxKind.F2_webApiResults);
    
@@ -3415,18 +3421,24 @@ public static class Vv_eRacun_HTTP
          case ZXC.F2_WebApi.PING               : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom spajanja na servis:"                           ; break;
          case ZXC.F2_WebApi.CheckAMS           : Send_OR_eIzvj_ErrorMessageBox.Text = webApiResult.WebApiKind.ToString() + " [" + webApiResult.WebApiAddr + "] " + " - Greška prilikom dohvata info o AMS statusu partnera:"          ; break;
       }
-
+   
       Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailFromAddition = webApiResult.WebApiKind.ToString();
-
+   
+      // Set the XML file attachment path if provided
+      if (xmlFilePath.NotEmpty() && System.IO.File.Exists(xmlFilePath))
+      {
+         Send_OR_eIzvj_ErrorMessageBox.AttachmentFilePath = xmlFilePath;
+      }
+   
       #region dodao naknadno ako ima i responseData jos podataka
-
+   
       // Get the existing message list
       List<string> allMessages = new List<string>(webApiResult.MessageList);
-
+   
       if(responseData != null)
       {
          allMessages.Add(Environment.NewLine + "---- Response Data ----" + Environment.NewLine);
-
+   
          if(responseData.ElectronicId.HasValue)
          {
             allMessages.Add(string.Format("ElectronicId: {0}{1}", responseData.ElectronicId.Value, Environment.NewLine));
@@ -3445,18 +3457,18 @@ public static class Vv_eRacun_HTTP
          }
          // dodati jos po potrebi 
       }
-
+   
       #endregion dodao naknadno ako ima i responseData jos podataka
-
+   
       for(int i = 0; i < allMessages.Count; ++i)
       {
          Send_OR_eIzvj_ErrorMessageBox.TextForSupportMailBody += allMessages[i] + Environment.NewLine;
       }
-
+   
       Send_OR_eIzvj_ErrorMessageBox.TheUC.PutDgvFields(allMessages);
       DialogResult dlgResult = Send_OR_eIzvj_ErrorMessageBox.ShowDialog();
       Send_OR_eIzvj_ErrorMessageBox.Dispose();
-   }
+   }   
    internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
    {
       EN16931.UBL.InvoiceType theInvoiceType = null;
