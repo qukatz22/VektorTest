@@ -677,9 +677,10 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
    protected void PutIdentityFields_7Col(Faktur faktur_rec, ZXC.F2_R1enum F2_R1kind)
    {
-       if (faktur_rec == null)
-           return;
-   
+       if(faktur_rec == null) return;
+
+       string trnStatus = Vv_eRacun_HTTP.Get_MER_TransportStatus_Safe(faktur_rec.F2_StatusCD);
+
        PutIdentityFields_7Col(
            faktur_rec.TT + "-" + faktur_rec.TtNum.ToString(), 
            faktur_rec.DokDate.ToString(ZXC.VvDateFormat), 
@@ -687,7 +688,8 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
            faktur_rec.F012kind.ToString(),
            F2_R1kind.ToString(),
            ((faktur_rec.NacPlac.IsEmpty() || faktur_rec.NacPlac.ToLower().StartsWith("virman")) ? "Virman" : "Got/Kart"), 
-           Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
+         //Vv_eRacun_HTTP.MER_TransportStatuses[faktur_rec.F2_StatusCD],
+           trnStatus,
            faktur_rec.Is_F2_AlreadySent
        );
 

@@ -273,7 +273,7 @@ namespace EN16931.UBL
             {
                prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(ZXC.TheSecondDbConn_SameDB_OtherYear(prevFakYear), /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
 
-               refFiskalBr = prvFaktur_rec.VezniDok;
+               refFiskalBr = prvFaktur_rec./*VezniDok*/TtNumFiskal;
                refDokDate  = prvFaktur_rec.DokDate ;
             }
             
@@ -281,7 +281,7 @@ namespace EN16931.UBL
 
             if(refFiskalBr.IsEmpty() || refDokDate.IsEmpty())
             {
-               ZXC.aim_emsg(MessageBoxIcon.Error, "refFiskalBr.IsEmpty() || refDokDate.IsEmpty()!");
+               ZXC.aim_emsg(MessageBoxIcon.Error, $"refFiskalBr.IsEmpty() [{refFiskalBr}] || refDokDate.IsEmpty() [{refDokDate}]");
                return null;
             }
 
@@ -2101,7 +2101,7 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_eRacun(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, uint xtranoRecID = 0)
+      public Faktur Create_Faktur_From_InvoiceType(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, uint xtranoRecID = 0)
       {
          #region init
 
@@ -2380,7 +2380,7 @@ namespace EN16931.UBL
 
       #region eR2Fak & Utils 
 
-      private Faktur Create_COMMON_Faktur_For_eRacun(bool isIFA)
+      internal static Faktur Create_COMMON_Faktur_For_eRacun(bool isIFA)
       {
          Faktur faktur_rec = new Faktur();
 
@@ -2521,6 +2521,388 @@ namespace EN16931.UBL
       #endregion eR2Fak & Utils 
 
       #endregion Create Faktur object From eRacun (InvoiceType)
+
+   }
+
+   public partial class CreditNoteType
+   {
+      private static System.Xml.Serialization.XmlSerializer serializer;
+      private static System.Xml.Serialization.XmlSerializer Serializer
+      {
+         get
+         {
+            if((serializer == null))
+            {
+               serializer = new System.Xml.Serialization.XmlSerializer(typeof(CreditNoteType));
+            }
+            return serializer;
+         }
+      }
+      public static CreditNoteType Deserialize(string xml)
+      {
+         System.IO.StringReader stringReader = null;
+         try
+         {
+            stringReader = new System.IO.StringReader(xml);
+            return ((CreditNoteType)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+         }
+         finally
+         {
+            if((stringReader != null))
+            {
+               stringReader.Dispose();
+            }
+         }
+      }
+
+      [System.Xml.Serialization.XmlIgnore]
+      internal string VvSupplierOIB
+      {
+         get
+         {
+            try
+            {
+               if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
+                  this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
+                  this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
+               {
+                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
+               }
+
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvSupplierOIB: Supplier OIB not found in eRacun XML.");
+               return string.Empty;
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg($"Error getting VvSupplierOIB: {ex.Message}");
+               return string.Empty;
+            }
+         }
+      }
+
+      [System.Xml.Serialization.XmlIgnore]
+      internal string VvCustomerOIB
+      {
+         get
+         {
+            try
+            {
+               if(this.AccountingCustomerParty?.Party?.PartyIdentification != null &&
+                   this.AccountingCustomerParty.Party.PartyIdentification.Length > 0 &&
+                   this.AccountingCustomerParty.Party.PartyIdentification[0]?.ID?.Value != null)
+               {
+                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.PartyIdentification[0].ID.Value); // !!! CustomerID !!! ... ili ti ga 9934:OIB
+               }
+
+               ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvCustomerOIB: Customer OIB not found in eRacun XML.");
+               return string.Empty;
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg($"Error getting VvCustomerOIB: {ex.Message}");
+               return string.Empty;
+            }
+         }
+      }
+      private string GetPNB_FromCreditNoteType(bool isVeliki)
+      {
+         // HR00 12345 
+         string dirty = this.PaymentMeans?.FirstOrDefault()?.PaymentID?.FirstOrDefault()?.Value ?? string.Empty;
+
+         // 00 12345 
+         // 0012345 
+         string clean = dirty.Replace("HR", "").Replace(" ", "");
+
+         if(clean.IsEmpty()) return "";
+
+         if(clean.Length < 2) return "";
+
+         string mali   = ZXC.SubstringSafe(clean, 0, 2);
+         string veliki = ZXC.SubstringSafe(clean, 2   );
+
+         return isVeliki ? veliki : mali;
+      }
+
+      internal static Kupdob Create_Kupdob_from_CreditNote(MySqlConnection conn, CreditNoteType creditNoteType, bool isKupac)
+      {
+         bool isDobav = !isKupac;
+
+         Kupdob kupdob_rec = new Kupdob();
+
+         PartyType theParty = isKupac ? creditNoteType.AccountingCustomerParty?.Party : 
+                                        creditNoteType.AccountingSupplierParty?.Party ;
+
+         kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
+
+         uint newSifra = kupdob_rec.VvDao.GetNextSifra_Uint(conn, kupdob_rec.VirtualRecordName, "kupdobCD", kupdob_rec.UintSifraRootNum, kupdob_rec.UintSifraBaseFactor);
+
+         kupdob_rec.KupdobCD = newSifra;
+         kupdob_rec.Ticker   = newSifra.ToString();
+
+         kupdob_rec.Oib          = isKupac ? creditNoteType.VvCustomerOIB : creditNoteType.VvSupplierOIB;
+
+         kupdob_rec.Naziv        = theParty.PartyLegalEntity?[0]?.RegistrationName    ?.Value ?? string.Empty;
+         kupdob_rec.Ulica1       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
+         kupdob_rec.Ulica2       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
+         kupdob_rec.Grad         = theParty.PostalAddress?.CityName                   ?.Value ?? string.Empty;
+         kupdob_rec.PostaBr      = theParty.PostalAddress?.PostalZone                 ?.Value ?? string.Empty;
+         kupdob_rec.VatCntryCode = theParty.PostalAddress?.Country?.IdentificationCode?.Value ?? string.Empty;
+
+         kupdob_rec.Naziv        = ZXC.LenLimitedStr(kupdob_rec.Naziv , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.naziv ));
+         kupdob_rec.Ulica1       = ZXC.LenLimitedStr(kupdob_rec.Ulica1, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica1));
+         kupdob_rec.Ulica2       = ZXC.LenLimitedStr(kupdob_rec.Ulica2, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica2));
+         kupdob_rec.Grad         = ZXC.LenLimitedStr(kupdob_rec.Grad  , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.grad  ));
+
+         if(isDobav)
+         {
+          //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
+          
+            string kupdobZiro = creditNoteType.PaymentMeans?[0]?.PayeeFinancialAccount?.ID?.Value;
+            if (!string.IsNullOrWhiteSpace(kupdobZiro))
+            {
+               kupdob_rec.Ziro1 = kupdobZiro;
+            }
+         }
+
+         return kupdob_rec;
+      }
+      internal Faktur Create_Faktur_From_CreditNoteDELLMELATTER(XSqlConnection conn, EN16931.UBL.CreditNoteType creditNote, uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA)
+      {
+         try
+         {
+            bool isUFA = !isIFA;
+
+            // Kreiraj bazni Faktur za CreditNote (YRN - odobrenje) 
+            Faktur faktur_rec = new Faktur();
+
+            // Postavi zajednicke F2 atribute 
+            faktur_rec.F2_R1kind = ZXC.F2_R1enum.B2B;
+
+            #region ZAGLAVLJE računa
+
+            // From Kupdob 
+
+            faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv       ;
+            faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD    ;
+            faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker      ;
+            faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1      ;
+            faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr     ;
+            faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad        ;
+            faktur_rec.KdOib        =                           kupdob_rec.Oib         ;
+            faktur_rec.VatCntryCode =                           kupdob_rec.VatCntryCode;
+
+            faktur_rec.F2_R1kind    = kupdob_rec.R1kind;
+
+            if(isUFA)
+            faktur_rec.ZiroRn       = kupdob_rec.Ziro1;
+
+            // From CreditNoteType 
+
+            faktur_rec.DokDate = (creditNote.IssueTime != null && creditNote.IssueTime.Value != DateTime.MinValue)
+               ? creditNote.IssueDate.Value.Date.Add(creditNote.IssueTime.Value.TimeOfDay)
+               : creditNote.IssueDate.Value;
+
+            faktur_rec.PdvDate  = creditNote.TaxPointDate?.Value == null ? creditNote.IssueDate.Value : creditNote.TaxPointDate.Value;
+            faktur_rec.VezniDok = creditNote.ID.Value;
+            faktur_rec.Napomena = ZXC.F2_Unprocessed;
+
+            for(int i = 0; creditNote.Note != null && i < creditNote.Note.Length; i++)
+            {
+               faktur_rec.Opis += creditNote.Note[i].Value + Environment.NewLine;
+            }
+
+            faktur_rec.DevName = creditNote.DocumentCurrencyCode.Value;
+
+            // From some Response 
+            if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
+            faktur_rec.F2_ElectronicID = electronicID;
+            faktur_rec.F2_SentTS       = sentDate;
+
+            #endregion ZAGLAVLJE računa
+
+            #region STAVKE računa
+
+            if(creditNote.CreditNoteLine != null && creditNote.CreditNoteLine.Length > 0)
+            {
+               ushort line = 0;
+               List<Rtrans> rtransList = new List<Rtrans>(creditNote.CreditNoteLine.Length);
+               bool OK = true;
+
+               foreach(EN16931.UBL.CreditNoteLineType creditNoteLine in creditNote.CreditNoteLine)
+               {
+                  Rtrans rtrans_rec = new Rtrans();
+
+                  rtrans_rec.T_artiklName = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
+                  rtrans_rec.T_kol        = creditNoteLine.CreditedQuantity.Value;
+                  rtrans_rec.T_cij        = creditNoteLine.Price.PriceAmount.Value;
+                  rtrans_rec.T_pdvSt      = creditNoteLine.Item.ClassifiedTaxCategory[0].Percent.Value;
+
+                  rtrans_rec.CalcTransResults(null);
+
+                  rtransList.Add(rtrans_rec);
+
+               } // foreach(EN16931.UBL.CreditNoteLineType creditNoteLine in creditNote.CreditNoteLine)
+
+               faktur_rec.Transes = rtransList;
+               faktur_rec.TakeTransesSumToDokumentSum(true);
+               faktur_rec.Transes = null;
+
+               foreach(Rtrans rtrans in rtransList)
+               {
+                  OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
+               }
+
+               if(!OK) return null;
+            }
+
+            #endregion STAVKE računa
+
+            return faktur_rec;
+         }
+         catch(Exception ex)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Greška prilikom kreiranja Faktur iz CreditNote: {0}", ex.Message);
+            return null;
+         }
+      }
+      public Faktur Create_Faktur_From_CreditNoteType(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, uint xtranoRecID = 0)
+      {
+         #region init
+
+         bool isUFA = !isIFA;
+
+         Faktur faktur_rec = InvoiceType.Create_COMMON_Faktur_For_eRacun(isIFA);
+
+         Rtrans rtrans_rec;
+
+         ushort line       = 0;
+
+         List<Rtrans> rtransList = new List<Rtrans>(this.CreditNoteLine.Length);
+
+         bool   OK = true;
+         //Faktur fak;
+         //Rtrans rtr;
+
+         #endregion init
+
+         #region ZAGLAVLJE računa
+
+         // From Kupdob 
+
+         faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv       ;
+         faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD    ;
+         faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker      ;
+         faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1      ;
+         faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr     ;
+         faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad        ;
+         faktur_rec.KdOib        =                           kupdob_rec.Oib         ;
+         faktur_rec.VatCntryCode =                           kupdob_rec.VatCntryCode;
+       //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
+
+         faktur_rec.F2_R1kind    = kupdob_rec.R1kind      ;
+
+         if(isUFA)
+         faktur_rec.ZiroRn       = kupdob_rec.Ziro1       ;
+
+         // From CreditNoteType 
+
+         faktur_rec.DokDate = (this.IssueTime != null && this.IssueTime.Value != DateTime.MinValue)
+            ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
+            : this.IssueDate.Value;
+
+       //faktur_rec.DospDate  = this.DueDate.Value;
+         //if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate  = this.DueDate.Value  ;
+
+         faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         faktur_rec.VezniDok  = this.ID.Value       ;
+       //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
+         faktur_rec.Napomena  = ZXC.F2_Unprocessed  ;
+         for(int i = 0; this.Note != null && i < this.Note.Length; i++)
+         {
+            faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
+         }
+
+         faktur_rec.DevName = this.DocumentCurrencyCode.Value;
+
+         //faktur_rec.PdvKolTip =  this.ProfileID.Value;
+         //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (CreditNoteTypeCode) da se zna dali je račun za avans ili ne
+
+         //faktur_rec.PnbM = GetPNB_FromCreditNoteType(false);
+         //faktur_rec.PnbV = GetPNB_FromCreditNoteType(true );
+
+         // From some Response 
+         if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
+         faktur_rec.F2_ElectronicID = electronicID;
+         faktur_rec.F2_SentTS       = sentDate;
+         if(isUFA)
+         faktur_rec.F2_ArhRecID     = xtranoRecID;
+
+         #endregion ZAGLAVLJE računa
+
+         #region STAVKE računa
+
+       //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
+         int numOfRbt_ByDocument = AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
+
+       //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
+         bool isRbt_ByDocument   = numOfRbt_ByDocument.IsPositive();
+
+         bool isRbt_ByLine       ;
+         bool isThereAnyRbt      ;
+       //bool isRbtCOMPLICATED   ;
+         bool isRbtNOTCOMPLICATED;
+         int  numOfRbt_ByLine = 0;
+
+         decimal allowanceAmount = 0.00M;
+
+         foreach(CreditNoteLineType creditNoteLine in this.CreditNoteLine)
+         {
+            rtrans_rec = new Rtrans();
+
+          //rtrans_rec.T_artiklCD    = ;
+            rtrans_rec.T_artiklName  = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
+
+          //rtrans_rec.T_jedMj       = ; 
+            rtrans_rec.T_kol         = /*creditNoteLine.InvoicedQuantity.Value;*/ 1M;
+
+            rtrans_rec.T_pdvSt       = creditNoteLine.Item.ClassifiedTaxCategory[0].Percent.Value;
+
+            //rtrans_rec.T_wanted      = ;
+            //rtrans_rec.T_pdvColTip   = ;
+            //rtrans_rec.T_isIrmUsluga = ;
+            //rtrans_rec.T_ppmvOsn     = ;
+            //rtrans_rec.T_ppmvSt1i2   = ;
+            //rtrans_rec.T_pnpSt       = ;
+
+            rtrans_rec.CalcTransResults(null);
+
+            rtransList.Add(rtrans_rec);
+
+         } // foreach(InvoiceLineType invoiceLine in this.InvoiceLine) 
+
+         #endregion STAVKE računa
+
+         #region TakeTransesSumToDokumentSum
+
+         faktur_rec.Transes = rtransList;
+         faktur_rec.TakeTransesSumToDokumentSum(true);
+         faktur_rec.Transes = null;
+
+         #endregion TakeTransesSumToDokumentSum
+
+         foreach(Rtrans rtrans in rtransList)
+         {
+            OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
+         }
+
+         #region Return
+
+         if(OK) return faktur_rec;
+         else   return null      ;
+
+         #endregion Return
+
+      }
 
    }
 

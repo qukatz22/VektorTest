@@ -641,6 +641,30 @@ public static class Vv_eRacun_HTTP
 
       return pdfFilePath;
    }
+   internal static string Get_MER_TransportStatus_Safe(int f2_StatusCD)
+   {
+      try
+      {
+         if(Vv_eRacun_HTTP.MER_TransportStatuses == null) return "";
+
+         if(Vv_eRacun_HTTP.MER_TransportStatuses.TryGetValue(f2_StatusCD, out string statusText))
+         {
+            return statusText ?? "";
+         }
+
+         return "";
+      }
+      catch(KeyNotFoundException ex)
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Warning,
+            "Nepoznat F2 transportni status (StatusCD={0}).\n\r\n\rDetalj: {1}",
+            f2_StatusCD,
+            ex.Message);
+
+         return "";
+      }
+   }
+
    #endregion Utils
 
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
@@ -1177,7 +1201,8 @@ public static class Vv_eRacun_HTTP
 
       Faktur existingFaktur, newIFA_Faktur_rec;
 
-      EN16931.UBL.InvoiceType deserialized_eRacun = null;
+      EN16931.UBL.InvoiceType    deserialized_InvoiceType    = null;
+      EN16931.UBL.CreditNoteType deserialized_CreditNoteType = null;
 
       Kupdob kupdob_rec;
 
@@ -1279,29 +1304,46 @@ public static class Vv_eRacun_HTTP
 
          xmlValidationOK = false;
 
-         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, /*true*/ false) : null;
+         bool isCreditNote = receiveOK && theXmlString.TrimStart().Contains("<CreditNote ");
 
-         if(deserialized_eRacun != null)
+         if(isCreditNote)
          {
-            try 
+            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false) : null;
+            deserialized_InvoiceType = null;
+         }
+         else // InvoiceType 
+         {
+            deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false) : null;
+            deserialized_CreditNoteType = null;
+         }
+
+         bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
+
+         if(hasDeserializedDocument)
+         {
+            try
             {
-               xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString); 
-            } 
-            catch(Exception ex) 
-            { 
-               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message); 
+               if(!isCreditNote)
+                  xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString);
+               else
+                  xmlValidationOK = true; // TODO: dodati XSD validaciju za CreditNote ako bude potrebno 
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message);
             }
          }
 
          #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
-         #region 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
+#if DELLMELATTER
+         #region OLD 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer OLD
 
-         if(receiveOK && deserialized_eRacun != null && xmlValidationOK)
+         if(receiveOK && deserialized_InvoiceType != null && xmlValidationOK)
          {
             #region Get Kupdob / New Kupdob?
 
-            theOIB = deserialized_eRacun.VvCustomerOIB;
+            theOIB = deserialized_InvoiceType.VvCustomerOIB;
 
             kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
 
@@ -1310,7 +1352,7 @@ public static class Vv_eRacun_HTTP
 
             if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
             {
-               kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(theUC.TheDbConnection, deserialized_eRacun, true);
+               kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(theUC.TheDbConnection, deserialized_InvoiceType, true);
 
                if(kupdob_rec != null) // NEW Kupdob created ok 
                {
@@ -1359,7 +1401,112 @@ public static class Vv_eRacun_HTTP
 
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newIFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+            newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_eRacun(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+
+            if(newIFA_Faktur_rec != null)
+            {
+               theUC.TheFakturList.Add(newIFA_Faktur_rec);
+
+               newsCount++;
+            
+               updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
+                                             newIFA_Faktur_rec.TipBr,
+                                             newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
+                                             "DODANA u lokalnu bazu",
+                                             newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+            
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+               ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
+            }
+
+         } // if(receiveOK) 
+
+         #endregion 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
+#endif
+
+         #region 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
+
+         if(receiveOK && hasDeserializedDocument && xmlValidationOK)
+         {
+            #region Get Kupdob / New Kupdob?
+
+            if(!isCreditNote)
+               theOIB = deserialized_InvoiceType.VvCustomerOIB;
+            else
+               theOIB = deserialized_CreditNoteType.VvCustomerOIB;
+
+            kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
+
+            if(kupdob_rec != null) kupdobOK = true ;
+            else                   kupdobOK = false;
+
+            if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+            {
+               if(!isCreditNote)
+               {
+                  kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(theUC.TheDbConnection, deserialized_InvoiceType, true);
+               }
+               else
+               {
+                  kupdob_rec = EN16931.UBL.CreditNoteType.Create_Kupdob_from_CreditNote(theUC.TheDbConnection, deserialized_CreditNoteType, true);
+               }
+
+               if(kupdob_rec != null) // NEW Kupdob created ok 
+               {
+                  addrecOK = kupdob_rec.VvDao.ADDREC(theUC.TheDbConnection, kupdob_rec);
+
+                  if(addrecOK)
+                  {
+                     newKupdobInfo = string.Format("Novi kupac [{0}],  OIB: [{1}], Ulica: {2}, Mjesto: {3}", kupdob_rec.Naziv, kupdob_rec.Oib, kupdob_rec.Ulica1, kupdob_rec.ZipAndMjesto);
+
+                     newKupdobInfoList.Add(newKupdobInfo);
+
+                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+
+                     kupdobOK = true;
+                  }
+                  else
+                  {
+                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom ADDREC novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
+                     kupdobOK = false;
+                  }
+               }
+               else
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom kreiranja novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
+               }
+
+            } // if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+            
+            else // kupdobOK == true, provjeri ima li dobar R1_Kind ... i ak nema ...
+            {
+               if(kupdob_rec.R1kind != ZXC.F2_R1enum.B2B)
+               {
+                  theUC.TheVvTabPage.TheVvForm.BeginEdit(kupdob_rec);
+
+                  kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
+
+                  kupdob_rec.VvDao.RWTREC(theUC.TheDbConnection, kupdob_rec, false, true, false);
+
+                  theUC.TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
+
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); // REFRESH sifrar! 
+               }
+            }
+
+            #endregion Get Kupdob / New Kupdob?
+
+            // 2. Create new Faktur bussiness object record from 'InvoiceType' OR 'CreditNoteType' in XML document 
+
+            if(!isCreditNote)
+            {
+               newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+            }
+            else
+            {
+               newIFA_Faktur_rec = deserialized_CreditNoteType.Create_Faktur_From_CreditNoteType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+            }
 
             if(newIFA_Faktur_rec != null)
             {
@@ -2936,7 +3083,7 @@ public static class Vv_eRacun_HTTP
          {
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
-            newUFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_eRacun(theUC.TheDbConnection, AURxtrano_rec.F2_ElectronicID, AURxtrano_rec.T_dokDate, kupdob_rec, false, AURxtrano_rec.T_recID);
+            newUFA_Faktur_rec = deserialized_eRacun.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, AURxtrano_rec.F2_ElectronicID, AURxtrano_rec.T_dokDate, kupdob_rec, false, AURxtrano_rec.T_recID);
 
             if(newUFA_Faktur_rec != null)
             {
@@ -3326,7 +3473,7 @@ public static class Vv_eRacun_HTTP
          if(!beSilent)
          {
             ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
-               "Greška prilikom deserializacije eRačuna iz XML stringa:\n\n{0}\n\nInner: {1}",
+               "Greška prilikom deserializacije InvoiceType iz XML stringa:\n\n{0}\n\nInner: {1}",
                ex.Message,
                ex.InnerException?.Message);
          }
@@ -3334,6 +3481,38 @@ public static class Vv_eRacun_HTTP
 
       return theInvoiceType;
    }
+   internal static EN16931.UBL.CreditNoteType GetCreditNoteTypeByDeserializing_xmlString(string xmlString, bool beSilent)
+   {
+      EN16931.UBL.CreditNoteType theCreditNoteType = null;
+
+      try
+      {
+         // Ukloni UBLExtensions elemente prije deserializacije
+         string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+         //System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(EN16931.UBL.CreditNoteType));
+         //using(StringReader sr = new StringReader(cleanedXmlString))
+         //{
+         //   theCreditNoteType = (EN16931.UBL.CreditNoteType)serializer.Deserialize(System.Xml.XmlReader.Create(sr));
+         //}
+
+         theCreditNoteType = EN16931.UBL.CreditNoteType.Deserialize(/*xmlString*/cleanedXmlString);
+
+      }
+      catch(Exception ex)
+      {
+         if(!beSilent)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
+               "Greška prilikom deserializacije CreditNote iz XML stringa:\n\n{0}\n\nInner: {1}",
+               ex.Message,
+               ex.InnerException?.Message);
+         }
+      }
+
+      return theCreditNoteType;
+   }
+
    public /*private*/ static string RemoveSignatureElements(string xmlString)
    {
       try
