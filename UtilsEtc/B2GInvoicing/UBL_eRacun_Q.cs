@@ -2156,6 +2156,8 @@ namespace EN16931.UBL
          for(int i = 0; this.Note != null && i < this.Note.Length; i++)
          {
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
+
+            faktur_rec.Opis = ZXC.LenLimitedStr(faktur_rec.Opis, ZXC.FakturDao.GetSchemaColumnSize(ZXC.FakCI.opis));
          }
 
          faktur_rec.DevName = this.DocumentCurrencyCode.Value;
@@ -2165,6 +2167,9 @@ namespace EN16931.UBL
 
          faktur_rec.PnbM = GetPNB_FromInvoiceType(false);
          faktur_rec.PnbV = GetPNB_FromInvoiceType(true );
+
+         faktur_rec.PnbM = ZXC.LenLimitedStr(faktur_rec.PnbM, ZXC.FaktExDao.GetSchemaColumnSize(ZXC.FexCI.pnbM));
+         faktur_rec.PnbV = ZXC.LenLimitedStr(faktur_rec.PnbV, ZXC.FaktExDao.GetSchemaColumnSize(ZXC.FexCI.pnbV));
 
          // From some Response 
          if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
@@ -2421,11 +2426,18 @@ namespace EN16931.UBL
          {
             try
             {
+               // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:60042587515</cbc:ID>)
                if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
                   this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
                   this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
+               }
+
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
+               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
+               {
+                  return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvSupplierOIB: Supplier OIB not found in eRacun XML.");
@@ -2438,6 +2450,7 @@ namespace EN16931.UBL
             }
          }
       }
+
       [System.Xml.Serialization.XmlIgnore]
       internal string VvCustomerOIB
       {
@@ -2445,11 +2458,18 @@ namespace EN16931.UBL
          {
             try
             {
+               // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:85821130368</cbc:ID>)
                if(this.AccountingCustomerParty?.Party?.PartyIdentification != null &&
                    this.AccountingCustomerParty.Party.PartyIdentification.Length > 0 &&
                    this.AccountingCustomerParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.PartyIdentification[0].ID.Value); // !!! CustomerID !!! ... ili ti ga 9934:OIB
+               }
+
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
+               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
+               {
+                  return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvCustomerOIB: Customer OIB not found in eRacun XML.");
@@ -2562,11 +2582,18 @@ namespace EN16931.UBL
          {
             try
             {
+               // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:60042587515</cbc:ID>)
                if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
                   this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
                   this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
+               }
+
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
+               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
+               {
+                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvSupplierOIB: Supplier OIB not found in eRacun XML.");
@@ -2587,11 +2614,18 @@ namespace EN16931.UBL
          {
             try
             {
+               // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:85821130368</cbc:ID>)
                if(this.AccountingCustomerParty?.Party?.PartyIdentification != null &&
                    this.AccountingCustomerParty.Party.PartyIdentification.Length > 0 &&
                    this.AccountingCustomerParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.PartyIdentification[0].ID.Value); // !!! CustomerID !!! ... ili ti ga 9934:OIB
+               }
+
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
+               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
+               {
+                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvCustomerOIB: Customer OIB not found in eRacun XML.");

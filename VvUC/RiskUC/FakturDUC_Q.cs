@@ -3687,6 +3687,52 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion 2026 F2 validations & setting mandatory fields
 
+      #region Tetragram
+
+      if(ZXC.IsTETRAGRAM_ANY && TheVvTabPage.WriteMode != ZXC.WriteMode.None && theExtDUC != null)
+      {
+         bool isZAR_SkladCD       = theExtDUC.Fld_SkladCD.StartsWith("Z-ZA-");
+         bool isFORBIDDEN_SkladCD = theExtDUC.Fld_SkladCD.StartsWith("Z-ZA-1");
+
+         if(ZXC.vvDB_VvDomena == "vvT3" && isFORBIDDEN_SkladCD)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"ZABRANJENO skladište!{Environment.NewLine}{Environment.NewLine}Trenutno skladište: {theExtDUC.Fld_SkladCD}");
+            e.Cancel = true;
+         }
+
+         if(theExtDUC is ZAR_DUC && isZAR_SkladCD == false)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"Za Tetragram ZAR, skladište mora počinjati sa 'Z-ZA-'!{Environment.NewLine}{Environment.NewLine}Trenutno skladište: {theExtDUC.Fld_SkladCD}");
+            e.Cancel = true;
+         }
+
+         if(!(theExtDUC is ZAR_DUC) && !(theExtDUC is PON_MPC_DUC) && isZAR_SkladCD == true)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"Zabranjeno skladište ZAR-a. Dokument nije ZAR!{Environment.NewLine}{Environment.NewLine}Trenutno skladište: {theExtDUC.Fld_SkladCD}");
+            e.Cancel = true;
+         }
+
+         if(isZAR_SkladCD == false)
+         {
+            if(faktur_rec.Transes.Any(rtr => rtr.T_artiklCD.StartsWith("ZAR")))
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, $"Nedozvoljena kombinacija ZAR artikla sa NE ZAR skladištem!{Environment.NewLine}{Environment.NewLine}Trenutno skladište: {theExtDUC.Fld_SkladCD}");
+               e.Cancel = true;
+            }
+         }
+         if(isZAR_SkladCD == true)
+         {
+            if(faktur_rec.Transes.Any(rtr => rtr.T_artiklCD.StartsWith("ZAR")) == false)
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Error, $"Nedozvoljena kombinacija NE ZAR artikla sa ZAR skladištem!{Environment.NewLine}{Environment.NewLine}Trenutno skladište: {theExtDUC.Fld_SkladCD}");
+               e.Cancel = true;
+            }
+         }
+
+      }
+
+      #endregion Tetragram
+
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
 
    #region M2PAY Hapi

@@ -14762,6 +14762,11 @@ public partial class FakturExtDUC : FakturDUC
       }
       // --- PPMV shit end   
 
+      if(this is ZAR_DUC)
+      {
+         if(CtrlOK(tbx_S_ukPpmvOsn)) Fld_S_ukPpmvOsn = VvCurrency(faktur_rec.TrnSum_ppmvOsn).Ron2();
+      }
+
 #region 2013 EU PDV NEWS
 
       if(CtrlOK(tbx_S_ukOsnR25m_EU)) Fld_S_ukOsnR25m_EU = VvCurrency(faktur_rec.TrnSum_OsnR25m_EU).Ron2();

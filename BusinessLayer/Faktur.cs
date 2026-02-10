@@ -2465,6 +2465,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
    public uint    TrnSum_Count { get { return (uint)this.TrnNonDel.Count()            ; } }
 
+   public decimal TrnSum_ppmvOsn { get { return this.TrnNonDel.Sum(rtrn => rtrn.T_ppmvOsn); } }
    public decimal TrnSum_K     { get { return this.TrnNonDel .Sum(rtrn  => rtrn .T_kol)  ; } }
    public decimal TrnSum_K2    { get { return this.TrnNonDel .Sum(rtrn  => rtrn .T_kol2) ; } }
    public decimal TrnSum2_K    { get { return this.TrnNonDel2.Sum(rtrno => rtrno.T_kol)  ; } }
@@ -3183,6 +3184,9 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       /*139 */ S_ukPpmvOsn   = FirstTrn_PpmvOsn     .Ron2(); 
       /*140 */ S_ukPpmvSt1i2 = FirstTrn_PpmvSt1i2   .Ron2(); 
+
+      // 02.2026: 
+      if(this.TT == Faktur.TT_ZAR) /*139 */ S_ukPpmvOsn = TrnSum_ppmvOsn.Ron2(); 
 
       /*104 */ S_ukOsnR25m_EU= TrnSum_OsnR25m_EU.Ron2(); 
       /*104 */ S_ukOsnR25n_EU= TrnSum_OsnR25n_EU.Ron2(); 
@@ -4794,7 +4798,7 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
     //IRAfaktur_rec.S_ukRbt1 = ZXC.VvGet_100_from_125(IRAfaktur_rec.S_ukRbt1, 25M);
 
     //IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.S_ukKCRP - IRAfaktur_rec.R_ukPpmvIzn -IRAfaktur_rec.S_ukPdv + IRAfaktur_rec.S_ukRbt1;
-      IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.TrnSum_KC;
+      IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.TrnSum_KC.Ron2();
 
       return IRAfaktur_rec;
    }
