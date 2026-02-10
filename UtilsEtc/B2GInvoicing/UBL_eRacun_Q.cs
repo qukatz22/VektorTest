@@ -302,9 +302,9 @@ namespace EN16931.UBL
 
       #endregion Referenca STORNO i stornoAVANSa racuna
 
-      #region PDF
+         #region PDF
 
-      the_eRacun.AdditionalDocumentReference = new DocumentReferenceType[]
+         the_eRacun.AdditionalDocumentReference = new DocumentReferenceType[]
          {
             new DocumentReferenceType
             {
