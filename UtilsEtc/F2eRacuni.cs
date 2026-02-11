@@ -4421,7 +4421,9 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       return true;
    }
-   private void F2_Outgoing_eRacun_QuickSend(object sender, EventArgs e)
+   private void F2_Outgoing_eRacun_QuickSend  (object sender, EventArgs e) { F2_Outgoing_eRacun_QuickSend_JOB(false); }
+   private void F2_Outgoing_eRacun_QuickSend_B(object sender, EventArgs e) { F2_Outgoing_eRacun_QuickSend_JOB(true ); }
+   private void F2_Outgoing_eRacun_QuickSend_JOB(bool isIRMcalcB)
    {
       Faktur faktur_rec = (TheVvDocumentRecordUC as FakturDUC).faktur_rec;
 
@@ -4443,7 +4445,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
          oeRp = Set_Outgoing_eRacun_parameters(faktur_rec, TheVvUC, true, true, true);
 
-         sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
+         sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true, isIRMcalcB);
 
          Cursor.Current = Cursors.Default;
 
@@ -4464,7 +4466,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       oeRp = Set_Outgoing_eRacun_parameters(faktur_rec, TheVvUC, true, true);
 
-      sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true);
+      sendOK = RISK_Outgoing_eRacun_JOB(oeRp, true, isIRMcalcB);
 
       Cursor.Current = Cursors.Default;
    }

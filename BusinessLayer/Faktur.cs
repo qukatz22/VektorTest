@@ -4757,7 +4757,13 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       return faktur_rec.Transes.Max(rtr => rtr.T_cij.CountOfSignificantDecimalPlaces());
    }
 
-   public Faktur Convert_IRM_Faktur_To_IRA_Faktur() // assuming; this is IRM 
+   //                                                                  
+   // (BT-109)            = Σ(BT-131)           - (BT-107)             
+   // TaxExclusiveAmount  = LineExtensionAmount - AllowanceTotalAmount 
+   // faktur_rec.S_ukKCR    rtrans_rec.R_KC     - faktur_rec.S_ukRbt1  
+   //                                                                  
+
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_A() // dobar za Metaflex 
    {
       Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
 
@@ -4773,10 +4779,18 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
       IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2();
 
+
+      // !!! !!! !!! 
+      if(IRAfaktur_rec.S_ukKCR != (IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukRbt1))
+      {
+         IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukKCR;
+      }
+
+
       return IRAfaktur_rec;
    }
 
-   public Faktur Convert_IRM_Faktur_To_IRA_FakturORIG() // assuming; this is IRM 
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_B() // dobar za DUCATI 
    {
       Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
 

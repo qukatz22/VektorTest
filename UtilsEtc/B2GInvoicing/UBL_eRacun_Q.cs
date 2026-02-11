@@ -58,7 +58,7 @@ namespace EN16931.UBL
       //   List<Artikl> artiklSifrar,
       //   byte[] PDF_as_base64_bytes,
       //   string pdf_fileName)
-      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(XSqlConnection conn, Outgoing_eRacun_parameters oeRp, List<Artikl> artiklSifrar)
+      public static EN16931.UBL.InvoiceType Create_eRacun_fromFaktur(XSqlConnection conn, Outgoing_eRacun_parameters oeRp, List<Artikl> artiklSifrar, bool isIRMcalcB)
       {
          #region Init
 
@@ -125,7 +125,8 @@ namespace EN16931.UBL
 
          if(isIRM)
          {
-            faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur();
+            if(isIRMcalcB) faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_B();
+            else           faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
          }
          else // classic 
          {
@@ -1850,7 +1851,9 @@ namespace EN16931.UBL
 
             #endregion PDV
 
-            case "Rbt25 izn": theDecimal = faktur_rec.TrnSum_Rbt25; break; //BT-Iznos Rbt25 
+            case "Rbt25 izn": if((faktur_rec.TrnSum_Rbt10 + faktur_rec.TrnSum_Rbt05 + faktur_rec.TrnSum_Rbt00).IsZero()) theDecimal = faktur_rec.S_ukRbt1    ;
+                              else                                                                                       theDecimal = faktur_rec.TrnSum_Rbt25; 
+                              break; //BT-Iznos Rbt25 
 
             case "Rbt10 izn": theDecimal = faktur_rec.TrnSum_Rbt10; break; //BT-Iznos Rbt10 
             case "Rbt05 izn": theDecimal = faktur_rec.TrnSum_Rbt05; break; //BT-Iznos Rbt05 
