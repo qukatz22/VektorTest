@@ -5127,7 +5127,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       TheG.PutCell(ci.iT_pdvSt     , rowIdx,            rtrans_rec.T_pdvSt);
       TheG.PutCell(ci.iT_rbt1St    , rowIdx,            rtrans_rec.T_rbt1St);
       TheG.PutCell(ci.iT_rbt2St    , rowIdx,            rtrans_rec.T_rbt2St);
-      //TheG.PutCell(ci.iT_mrzSt   , rowIdx,            rtrans_rec.T_wanted);
+    //TheG.PutCell(ci.iT_mrzSt     , rowIdx,            rtrans_rec.T_wanted);
       TheG.PutCell(ci.iT_doCijMal  , rowIdx, VvCurrency(rtrans_rec.T_doCijMal));
       TheG.PutCell(ci.iT_noCijMal  , rowIdx, VvCurrency(rtrans_rec.T_noCijMal));
       TheG.PutCell(ci.iT_pdvKolTip , rowIdx, GetOneLetter4PdvKolTip(rtrans_rec.T_pdvColTip));
@@ -5405,7 +5405,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       TheG.PutCell(ci.iT_kiz_KCR , rowIdx, VvCurrency(rtrans_rec.Rkiz_KCR));
       TheG.PutCell(ci.iT_kiz_rbt1, rowIdx, VvCurrency(rtrans_rec.Rkiz_rbt1));
 
-      TheG.PutCell(ci.iT_IRA_MPC , rowIdx, VvCurrency(rtrans_rec.R_CIJ_KCRP));
+      // 12.02.2026: 
+    //TheG.PutCell(ci.iT_IRA_MPC , rowIdx, VvCurrency(rtrans_rec.R_CIJ_KCRP));
+      TheG.PutCell(ci.iT_IRA_MPC , rowIdx, VvCurrency(rtrans_rec.T_wanted  ));
 
       if((this is IRA_MPC_DUC || this is PON_MPC_DUC || this is OPN_MPC_DUC || this is IZD_MPC_DUC || this is ZAR_DUC) && TheVvTabPage.WriteMode != ZXC.WriteMode.None)
       {
@@ -14742,7 +14744,7 @@ public partial class FakturExtDUC : FakturDUC
       if(CtrlOK(tbx_r_puxK_iskor)) Fld_R_puxK_Iskor =           (faktur_rec.R_PIXPUX_ISKORISTIVOST      ).Ron2();
 
       if(CtrlOK(tbx_twin_pixK      )) Fld_TwinS_pixK       = Fld_S_pixK;
-               if(CtrlOK(tbx_twin_puxK_P    )) Fld_TwinS_puxK_P     = Fld_S_puxK_P;
+      if(CtrlOK(tbx_twin_puxK_P    )) Fld_TwinS_puxK_P     = Fld_S_puxK_P;
       if(CtrlOK(tbx_twin_pixK_O    )) Fld_TwinS_pixK_O     = Fld_R_puxK_O;
       if(CtrlOK(tbx_twin_puxK_All  )) Fld_TwinS_puxK_All   = Fld_S_puxK_All;
       if(CtrlOK(tbx_twin_puxK_Diff )) Fld_TwinS_puxK_Diff  = Fld_R_puxK_Diff;
@@ -14762,10 +14764,11 @@ public partial class FakturExtDUC : FakturDUC
       }
       // --- PPMV shit end   
 
-      if(this is ZAR_DUC)
-      {
-         if(CtrlOK(tbx_S_ukPpmvOsn)) Fld_S_ukPpmvOsn = VvCurrency(faktur_rec.TrnSum_ppmvOsn).Ron2();
-      }
+         // gasimo i pojma nemamo zakj smo to stavili 
+      //if(this is ZAR_DUC)
+      //{
+      //   if(CtrlOK(tbx_S_ukPpmvOsn)) Fld_S_ukPpmvOsn = VvCurrency(faktur_rec.TrnSum_ppmvOsn).Ron2();
+      //}
 
 #region 2013 EU PDV NEWS
 
