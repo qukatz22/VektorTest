@@ -9160,43 +9160,43 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      // 09.02.2026: Ipak ugasili jer usporava i 'trese' grid 
+      #region Check Tables 
 
-      //#region Check Tables 
+      string tableName, dbName;
 
-      //string tableName, dbName;
+      tableName = Xtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Xtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Faktur.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Faktur.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = FaktEx.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = FaktEx.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Rtrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Rtrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Rtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false); 
 
-      //tableName = Rtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Kupdob.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Kupdob.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Nalog.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Nalog.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Ftrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Ftrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
-
-      //#endregion Check Tables 
+      #endregion Check Tables 
 
       Vv_eRacun_HTTP.InitProjectData();
 
       int newsCount = 0;
 
       /* AAA */ newsCount += Vv_eRacun_HTTP.Load_IRn_FakturList(this);
+
+      if(newsCount.IsNegative()) return; // neinicijalizirani projekt - nema jos table-ova 
 
       if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
       {
@@ -9622,31 +9622,29 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      // 09.02.2026: Ipak ugasili jer usporava i 'trese' grid 
+      #region Check Tables 
 
-      //#region Check Tables 
+      string tableName, dbName;
 
-      //string tableName, dbName;
+      tableName = Xtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Xtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Faktur.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Faktur.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = FaktEx.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = FaktEx.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Rtrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Rtrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Rtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Rtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
+      tableName = Kupdob.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
 
-      //tableName = Kupdob.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
-      //if(!VvSQL.CheckTableVersion_AndCatchUpIfNeeded(TheDbConnection, dbName, tableName)) { ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu inicijalizirati {tableName} table!?"); return; }
-
-      //#endregion Check Tables 
+      #endregion Check Tables 
 
       Vv_eRacun_HTTP.InitProjectData();
 

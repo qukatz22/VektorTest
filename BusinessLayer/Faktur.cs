@@ -3185,9 +3185,6 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       /*139 */ S_ukPpmvOsn   = FirstTrn_PpmvOsn     .Ron2(); 
       /*140 */ S_ukPpmvSt1i2 = FirstTrn_PpmvSt1i2   .Ron2(); 
 
-      // 02.2026: 
-      if(this.TT == Faktur.TT_ZAR) /*139 */ S_ukPpmvOsn = TrnSum_ppmvOsn.Ron2(); 
-
       /*104 */ S_ukOsnR25m_EU= TrnSum_OsnR25m_EU.Ron2(); 
       /*104 */ S_ukOsnR25n_EU= TrnSum_OsnR25n_EU.Ron2(); 
       /*104 */ S_ukOsnU25m_EU= TrnSum_OsnU25m_EU.Ron2(); 

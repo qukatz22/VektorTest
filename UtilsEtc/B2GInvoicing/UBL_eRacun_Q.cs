@@ -2328,7 +2328,7 @@ namespace EN16931.UBL
 
             #endregion The RABAT
 
-            rtrans_rec.T_pdvSt       = invoiceLine.Item.ClassifiedTaxCategory[0].Percent.Value;
+            rtrans_rec.T_pdvSt       = invoiceLine.Item?.ClassifiedTaxCategory?[0]?.Percent?.Value ?? 0M;
 
             //rtrans_rec.T_wanted      = ;
             //rtrans_rec.T_pdvColTip   = ;
@@ -2534,7 +2534,7 @@ namespace EN16931.UBL
             string kupdobZiro = invoiceType.PaymentMeans?[0]?.PayeeFinancialAccount?.ID?.Value;
             if (!string.IsNullOrWhiteSpace(kupdobZiro))
             {
-               kupdob_rec.Ziro1 = kupdobZiro;
+               kupdob_rec.Ziro1 = ZXC.LenLimitedStr(kupdobZiro, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ziro1));
             }
          }
 
@@ -2878,38 +2878,18 @@ namespace EN16931.UBL
 
          #region STAVKE računa
 
-       //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
-         int numOfRbt_ByDocument = AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
-
-       //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
-         bool isRbt_ByDocument   = numOfRbt_ByDocument.IsPositive();
-
-         bool isRbt_ByLine       ;
-         bool isThereAnyRbt      ;
-       //bool isRbtCOMPLICATED   ;
-         bool isRbtNOTCOMPLICATED;
-         int  numOfRbt_ByLine = 0;
-
-         decimal allowanceAmount = 0.00M;
-
          foreach(CreditNoteLineType creditNoteLine in this.CreditNoteLine)
          {
             rtrans_rec = new Rtrans();
 
-          //rtrans_rec.T_artiklCD    = ;
             rtrans_rec.T_artiklName  = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
 
-          //rtrans_rec.T_jedMj       = ; 
             rtrans_rec.T_kol         = /*creditNoteLine.InvoicedQuantity.Value;*/ 1M;
 
-            rtrans_rec.T_pdvSt       = creditNoteLine.Item.ClassifiedTaxCategory[0].Percent.Value;
+            rtrans_rec.T_pdvSt       = creditNoteLine.Item?.ClassifiedTaxCategory?[0]?.Percent?.Value ?? 0M;
 
-            //rtrans_rec.T_wanted      = ;
-            //rtrans_rec.T_pdvColTip   = ;
-            //rtrans_rec.T_isIrmUsluga = ;
-            //rtrans_rec.T_ppmvOsn     = ;
-            //rtrans_rec.T_ppmvSt1i2   = ;
-            //rtrans_rec.T_pnpSt       = ;
+          //rtrans_rec.T_cij         =           creditNoteLine.Price.PriceAmount.Value ;
+            rtrans_rec.T_cij         = -Math.Abs(creditNoteLine.Price.PriceAmount.Value);
 
             rtrans_rec.CalcTransResults(null);
 

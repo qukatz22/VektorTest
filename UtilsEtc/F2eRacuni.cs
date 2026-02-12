@@ -1173,7 +1173,13 @@ public static class Vv_eRacun_HTTP
       if(ZXC.RRD.Dsc_F2_IsAsc == false) asdDscStr = " DESC ";
       else                              asdDscStr = " ASC " ;
 
-      VvDaoBase.LoadGenericVvDataRecordList<Faktur>(theUC.TheDbConnection, theUC.TheFakturList, filterMembers, "", "ttNum " + asdDscStr + limitStr, true);
+      bool dbOK = VvDaoBase.LoadGenericVvDataRecordList<Faktur>(theUC.TheDbConnection, theUC.TheFakturList, filterMembers, "", "ttNum " + asdDscStr + limitStr, true);
+
+      //if(dbOK == false)
+      //{
+      //   ZXC.aim_emsg(MessageBoxIcon.Stop, "Inicijalizirajte tablicu tako da otvorite ekran IFA.");
+      //   return -1;
+      //}
 
       theUC.TheFakturList.RemoveAll(fak => fak.IsF2 == false);
 
@@ -1199,7 +1205,7 @@ public static class Vv_eRacun_HTTP
 
       string theXmlString = "", theOIB;
 
-      Faktur existingFaktur, newIFA_Faktur_rec;
+      Faktur existingFaktur_byElectronicID, existingFaktur_byTtNumFiskal, newIFA_Faktur_rec;
 
       EN16931.UBL.InvoiceType    deserialized_InvoiceType    = null;
       EN16931.UBL.CreditNoteType deserialized_CreditNoteType = null;
@@ -1251,9 +1257,11 @@ public static class Vv_eRacun_HTTP
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         existingFaktur = theUC.TheFakturList.SingleOrDefault(f => f.F2_ElectronicID == responseData.ElectronicId);
+         existingFaktur_byElectronicID = theUC.TheFakturList./*Single*/FirstOrDefault(f => f.F2_ElectronicID == responseData.ElectronicId);
+         existingFaktur_byTtNumFiskal  = theUC.TheFakturList./*Single*/FirstOrDefault(f => f.TtNumFiskal     == responseData.DocumentNr  );
 
-         isNewFaktur = existingFaktur == null;
+       //isNewFaktur = existingFaktur_byElectronicID == null                                        ; 
+         isNewFaktur = existingFaktur_byElectronicID == null && existingFaktur_byTtNumFiskal == null;
 
          if(isNewFaktur == false) continue;
 
@@ -1336,95 +1344,6 @@ public static class Vv_eRacun_HTTP
          }
 
          #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
-
-#if DELLMELATTER
-         #region OLD 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer OLD
-
-         if(receiveOK && deserialized_InvoiceType != null && xmlValidationOK)
-         {
-            #region Get Kupdob / New Kupdob?
-
-            theOIB = deserialized_InvoiceType.VvCustomerOIB;
-
-            kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
-
-            if(kupdob_rec != null) kupdobOK = true ;
-            else                   kupdobOK = false;
-
-            if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
-            {
-               kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(theUC.TheDbConnection, deserialized_InvoiceType, true);
-
-               if(kupdob_rec != null) // NEW Kupdob created ok 
-               {
-                  addrecOK = kupdob_rec.VvDao.ADDREC(theUC.TheDbConnection, kupdob_rec);
-
-                  if(addrecOK)
-                  {
-                     newKupdobInfo = string.Format("Novi kupac [{0}],  OIB: [{1}], Ulica: {2}, Mjesto: {3}", kupdob_rec.Naziv, kupdob_rec.Oib, kupdob_rec.Ulica1, kupdob_rec.ZipAndMjesto);
-
-                     newKupdobInfoList.Add(newKupdobInfo);
-
-                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
-
-                     kupdobOK = true;
-                  }
-                  else
-                  {
-                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom ADDREC novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
-                     kupdobOK = false;
-                  }
-               }
-               else
-               {
-                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom kreiranja novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
-               }
-
-            } // if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
-            
-            else // kupdobOK == true, provjeri ima li dobar R1_Kind ... i ak nema ...
-            {
-               if(kupdob_rec.R1kind != ZXC.F2_R1enum.B2B)
-               {
-                  theUC.TheVvTabPage.TheVvForm.BeginEdit(kupdob_rec);
-
-                  kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
-
-                  kupdob_rec.VvDao.RWTREC(theUC.TheDbConnection, kupdob_rec, false, true, false);
-
-                  theUC.TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
-
-                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); // REFRESH sifrar! 
-               }
-            }
-
-            #endregion Get Kupdob / New Kupdob?
-
-            // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
-
-            newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_eRacun(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
-
-            if(newIFA_Faktur_rec != null)
-            {
-               theUC.TheFakturList.Add(newIFA_Faktur_rec);
-
-               newsCount++;
-            
-               updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
-                                             newIFA_Faktur_rec.TipBr,
-                                             newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
-                                             "DODANA u lokalnu bazu",
-                                             newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
-            
-               updatedStatusInfoList.Add(updatedStatusInfo);
-
-               ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
-            }
-
-         } // if(receiveOK) 
-
-         #endregion 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
-#endif
 
          #region 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
 
@@ -3273,7 +3192,7 @@ public static class Vv_eRacun_HTTP
 
       return false;
    }
-   private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
+   private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID_OLD(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
    {
       WebApiResult<VvMER_ResponseData> webApiResult = null;
 
@@ -3290,9 +3209,9 @@ public static class Vv_eRacun_HTTP
                   webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
 
                   // za provjeru: 
-                  EN16931.UBL.InvoiceType deserialized_eRacun = GetInvoiceTypeByDeserializing_xmlString(webApiResult.ResponseData.DocumentXml, true);
+                  EN16931.UBL.InvoiceType deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(webApiResult.ResponseData.DocumentXml, true);
 
-                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_eRacun == null)
+                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_InvoiceType == null)
                   {
                      Show_WebApiResult_ErrorMessageBox(webApiResult);
                      receiveOK = false;
@@ -3340,6 +3259,92 @@ public static class Vv_eRacun_HTTP
             {
                throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
             }
+      }
+
+      return 0;
+   }
+   private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
+   {
+      WebApiResult<VvMER_ResponseData> webApiResult = null;
+
+      bool receiveOK = true;
+
+      uint arhivaXtrano_recID = 0;
+
+      switch(ZXC.F2_TheProvider)
+      {
+         case ZXC.F2_Provider_enum.MER:
+         {
+            try
+            {
+               webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
+
+               // za provjeru: pokušaj deserijalizirati kao InvoiceType ili CreditNoteType 
+               string docXml = webApiResult.ResponseData?.DocumentXml;
+
+               bool isCreditNote = docXml.NotEmpty() && docXml.TrimStart().Contains("<CreditNote ");
+
+               bool deserializationOK;
+
+               if(!isCreditNote)
+               {
+                  EN16931.UBL.InvoiceType deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(docXml, true);
+                  deserializationOK = deserialized_InvoiceType != null;
+               }
+               else
+               {
+                  EN16931.UBL.CreditNoteType deserialized_CreditNoteType = GetCreditNoteTypeByDeserializing_xmlString(docXml, true);
+                  deserializationOK = deserialized_CreditNoteType != null;
+               }
+
+               if(webApiResult.ResponseData == null || docXml.IsEmpty() || !deserializationOK)
+               {
+                  Show_WebApiResult_ErrorMessageBox(webApiResult);
+                  receiveOK = false;
+               }
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+               receiveOK = false;
+            }
+
+            if(receiveOK)
+            {
+               Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(webApiResult.ResponseData.DocumentXml, F2_IRn_faktur_rec);
+
+               if(F2arhivaXtrano_rec != null)
+               {
+                  byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
+
+                  bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2arhivaXtrano_rec, /*false*/true, false, false, false);
+
+                  if(OK)
+                  {
+                     theUC.TheVvTabPage.TheVvForm.BeginEdit(F2arhivaXtrano_rec);
+
+                     F2arhivaXtrano_rec.T_XmlZip = T_XmlZip;
+
+                     VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2arhivaXtrano_rec, "t_XmlZip", F2arhivaXtrano_rec.T_XmlZip);
+
+                     theUC.TheVvTabPage.TheVvForm.EndEdit(F2arhivaXtrano_rec);
+                  }
+
+                  if(OK)
+                  {
+                     arhivaXtrano_recID = F2arhivaXtrano_rec.T_recID;
+                  }
+               }
+            }
+
+            return arhivaXtrano_recID;
+
+         } // case ZXC.F2_Provider_enum.MER: 
+
+         case ZXC.F2_Provider_enum.PND:
+         {
+            throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+         }
       }
 
       return 0;
