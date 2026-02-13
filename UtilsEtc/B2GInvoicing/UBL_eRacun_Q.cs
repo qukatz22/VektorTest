@@ -33,17 +33,17 @@ namespace EN16931.UBL
       public static string CurrentLocalDirectory
       {
 
-         get 
-         { 
+         get
+         {
             if(currentLocalDirectory.IsEmpty())
             {
                string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(VvPref.VvMailData.DeaultVvPDFdirectoryName);
-               string todayDir                 = "XYZ" + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+               string todayDir = "XYZ" + "_PDF_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
 
                currentLocalDirectory = Path.Combine(deaultVvPDFdirectoryName, todayDir);
             }
 
-            return currentLocalDirectory; 
+            return currentLocalDirectory;
          }
          set { currentLocalDirectory = value; }
       }
@@ -62,44 +62,44 @@ namespace EN16931.UBL
       {
          #region Init
 
-         Faktur    ORIG_faktur_rec     = oeRp.faktur_rec             ;
-         PrnFakDsc thePFD              = oeRp.thePFD                 ;
-         Kupdob    kupdob_rec          = oeRp.kupdob_rec             ;
-         Kupdob    primPlat_rec        = oeRp.primPlat_rec           ;
-         byte[]    PDF_as_base64_bytes = oeRp.PDF_as_base64_byteArray;
-         string    pdf_fileName        = oeRp./*pdfFileNameOnly*/qwePDFfileNameOnly;
+         Faktur ORIG_faktur_rec = oeRp.faktur_rec;
+         PrnFakDsc thePFD = oeRp.thePFD;
+         Kupdob kupdob_rec = oeRp.kupdob_rec;
+         Kupdob primPlat_rec = oeRp.primPlat_rec;
+         byte[] PDF_as_base64_bytes = oeRp.PDF_as_base64_byteArray;
+         string pdf_fileName = oeRp./*pdfFileNameOnly*/qwePDFfileNameOnly;
 
          EN16931.UBL.InvoiceType the_eRacun = new EN16931.UBL.InvoiceType();
 
          the_eRacun.The_OERP = oeRp;
 
          bool isMojeRacunNotFina = true; // todo kao parametar 
-         // 2026: gasimo 
-       //bool isAVANS            = (ORIG_faktur_rec.IsAVANS_STORNO || ORIG_faktur_rec.Is_AfterAvans_PrihodTTa);
+                                         // 2026: gasimo 
+                                         //bool isAVANS            = (ORIG_faktur_rec.IsAVANS_STORNO || ORIG_faktur_rec.Is_AfterAvans_PrihodTTa);
 
 
 
-       //bool isClassicSTORNO = ORIG_faktur_rec.S_ukKCRP.IsNegative() && ORIG_faktur_rec.Napomena.ToUpper().Contains("STORNO");
-       //
-       //bool isAvans        = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
-       //                      ORIG_faktur_rec.StatusCD  == "386"                      &&
-       //                      ORIG_faktur_rec.S_ukKCRP.IsPositive()                    ;
-       //
-       //bool isAvansSTORNO  = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
-       //                      ORIG_faktur_rec.StatusCD  == "384"                      &&
-       //                      ORIG_faktur_rec.S_ukKCRP.IsNegative();
-       //
-       //bool isFinalRn      = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11 &&
-       //                      ORIG_faktur_rec.StatusCD  == "380"                       ;
+         //bool isClassicSTORNO = ORIG_faktur_rec.S_ukKCRP.IsNegative() && ORIG_faktur_rec.Napomena.ToUpper().Contains("STORNO");
+         //
+         //bool isAvans        = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+         //                      ORIG_faktur_rec.StatusCD  == "386"                      &&
+         //                      ORIG_faktur_rec.S_ukKCRP.IsPositive()                    ;
+         //
+         //bool isAvansSTORNO  = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P04 &&
+         //                      ORIG_faktur_rec.StatusCD  == "384"                      &&
+         //                      ORIG_faktur_rec.S_ukKCRP.IsNegative();
+         //
+         //bool isFinalRn      = ORIG_faktur_rec.PdvKolTip == ZXC.VvUBL_PolsProcEnum.P11 &&
+         //                      ORIG_faktur_rec.StatusCD  == "380"                       ;
 
-         bool isAvans         = ORIG_faktur_rec.Is_F2_Avans        ;
-         bool isAvansSTORNO   = ORIG_faktur_rec.Is_F2_AvansSTORNO  ;
-         bool isFinalRn       = ORIG_faktur_rec.Is_F2_FinalRn      ;
+         bool isAvans = ORIG_faktur_rec.Is_F2_Avans;
+         bool isAvansSTORNO = ORIG_faktur_rec.Is_F2_AvansSTORNO;
+         bool isFinalRn = ORIG_faktur_rec.Is_F2_FinalRn;
          bool isClassicSTORNO = ORIG_faktur_rec.Is_F2_ClassicSTORNO;
 
          // 2026: 
-         bool needsReferencaNaPrethodni          = isClassicSTORNO || isAvansSTORNO || isFinalRn;
-       //bool needsReferencaNaPrethodniPrethodni =                                     isFinalRn;
+         bool needsReferencaNaPrethodni = isClassicSTORNO || isAvansSTORNO || isFinalRn;
+         //bool needsReferencaNaPrethodniPrethodni =                                     isFinalRn;
 
          if(needsReferencaNaPrethodni)
          {
@@ -126,7 +126,7 @@ namespace EN16931.UBL
          if(isIRM)
          {
             if(isIRMcalcB) faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_B();
-            else           faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
+            else faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
          }
          else // classic 
          {
@@ -139,10 +139,10 @@ namespace EN16931.UBL
 
          #region ZAGLAVLJE računa
 
-         the_eRacun.ID              = new IDType              { Value = Fak2eR__String("BT001", faktur_rec, null) }; //BT-1 Broj računa 	 Identifikator 1..1 
+         the_eRacun.ID = new IDType { Value = Fak2eR__String("BT001", faktur_rec, null) }; //BT-1 Broj računa 	 Identifikator 1..1 
          the_eRacun.InvoiceTypeCode = new InvoiceTypeCodeType { Value = Fak2eR__String("BT003", faktur_rec, null) }; //BT-3 Šifra vrste 	 Šifra         1..1 
-         the_eRacun.IssueDate       = new IssueDateType       { Value = Fak2eR____Date("BT002", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
-         the_eRacun.TaxPointDate    = new TaxPointDateType    { Value = Fak2eR____Date("BTqwe", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
+         the_eRacun.IssueDate = new IssueDateType { Value = Fak2eR____Date("BT002", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
+         the_eRacun.TaxPointDate = new TaxPointDateType { Value = Fak2eR____Date("BTqwe", faktur_rec, null) }; //BT-2 Datum izdavanja Datum        1..1 
 
          if(oeRp.wantsKOPIJA)
          {
@@ -153,13 +153,13 @@ namespace EN16931.UBL
          // 14.10.2025 - ipak postoji u EU normi ali cemo ga tek u 2026 
          //if(isMojeRacunNotFina == false)
          if(ZXC.IsF2_2026_rules)
-         the_eRacun.IssueTime            = new IssueTimeType            { Value          = Fak2eR____Date("BT002 Time", faktur_rec, null)     }; //BT-2 Vrijeme izdavanja Time   1..1 
+            the_eRacun.IssueTime = new IssueTimeType { Value = Fak2eR____Date("BT002 Time", faktur_rec, null) }; //BT-2 Vrijeme izdavanja Time   1..1 
          /* byQ timeAbrakakobredabra: */
-       //the_eRacun.IssueTime            = new IssueTimeType            { ValueFormatted = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) }; //BT-2 Vrijeme izdavanja Time   1..1 
+         //the_eRacun.IssueTime            = new IssueTimeType            { ValueFormatted = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) }; //BT-2 Vrijeme izdavanja Time   1..1 
 
-         the_eRacun.DueDate              = new DueDateType              { Value = Fak2eR____Date("BT002 Dosp", faktur_rec, null) }; //BT-2 Dospjece placanja Datum  1..1 
-         the_eRacun.DocumentCurrencyCode = new DocumentCurrencyCodeType { Value = Fak2eR__String("BT005"     , faktur_rec, null) }; //BT-5 Šifra valute 	 Šifra     1..1 
-         the_eRacun.TaxCurrencyCode      = new TaxCurrencyCodeType      { Value = Fak2eR__String("BT006"     , faktur_rec, null) }; //????BT-6 Šifra valute obracunatog PDV-a valjda
+         the_eRacun.DueDate = new DueDateType { Value = Fak2eR____Date("BT002 Dosp", faktur_rec, null) }; //BT-2 Dospjece placanja Datum  1..1 
+         the_eRacun.DocumentCurrencyCode = new DocumentCurrencyCodeType { Value = Fak2eR__String("BT005", faktur_rec, null) }; //BT-5 Šifra valute 	 Šifra     1..1 
+         the_eRacun.TaxCurrencyCode = new TaxCurrencyCodeType { Value = Fak2eR__String("BT006", faktur_rec, null) }; //????BT-6 Šifra valute obracunatog PDV-a valjda
 
          if(faktur_rec.PdvKolTip_u.NotZero()) // u 'PdvKolTip_u' napucavamo P1, ... P12 - Poslovni Proces eRacuna 
          {
@@ -167,12 +167,12 @@ namespace EN16931.UBL
          }
 
          //BT-13 Referenca na narudžbenicu
-         if (faktur_rec.OpciAvalue.NotEmpty())
+         if(faktur_rec.OpciAvalue.NotEmpty())
          {
-             the_eRacun.OrderReference = new OrderReferenceType
-             {
-                 ID = new IDType { Value = Fak2eR__String("BT013", faktur_rec, null) }
-             };
+            the_eRacun.OrderReference = new OrderReferenceType
+            {
+               ID = new IDType { Value = Fak2eR__String("BT013", faktur_rec, null) }
+            };
 
             //BT-16 Referenca otpremnice 
             //19.01.2026. za Frag - ako ima narudžbenicu da onda stavimo i otpremnicu broja istog kao račun, da li fiskal ili ttnum 
@@ -197,7 +197,7 @@ namespace EN16931.UBL
          //noteList.Add(new NoteType { Value = Fak2eR__String("BT022 operater", faktur_rec, null) });
          //noteList.Add(new NoteType { Value = Fak2eR__String("BT022 vrijemeR", faktur_rec, null) });
          if(!ZXC.IsF2_2026_rules)
-         { 
+         {
             noteList.Add(new NoteType { Value = Fak2eR__String("BT022 operater", faktur_rec, null) });
             noteList.Add(new NoteType { Value = Fak2eR__String("BT022 vrijemeR", faktur_rec, null) });
          }
@@ -205,7 +205,7 @@ namespace EN16931.UBL
          noteList.Add(new NoteType { Value = Prj2eR__String("BT022 odgOsoba") });
 
          if(faktur_rec.Napomena.NotEmpty()) noteList.Add(new NoteType { Value = Fak2eR__String("BT022 napomena", faktur_rec, null) });
-         if(faktur_rec.Opis.NotEmpty())     noteList.Add(new NoteType { Value = Fak2eR__String("BT022 opis"    , faktur_rec, null) });
+         if(faktur_rec.Opis.NotEmpty()) noteList.Add(new NoteType { Value = Fak2eR__String("BT022 opis", faktur_rec, null) });
 
          the_eRacun.Note = noteList.ToArray();
 
@@ -226,11 +226,11 @@ namespace EN16931.UBL
          {
             prvFaktur_rec = new Faktur();
 
-            int  prevFakYear  ;
-            uint prevFakRecID ;
+            int prevFakYear;
+            uint prevFakRecID;
 
-            string   refFiskalBr;
-            DateTime refDokDate ;
+            string refFiskalBr;
+            DateTime refDokDate;
 
             bool isYRN = faktur_rec.V1_tt == Faktur.TT_YRN && faktur_rec.V1_ttNum.NotZero();
 
@@ -240,7 +240,7 @@ namespace EN16931.UBL
             }
             else
             {
-               prevFakYear  = 0;
+               prevFakYear = 0;
                prevFakRecID = 0;
             }
 
@@ -255,7 +255,7 @@ namespace EN16931.UBL
                   string refFiskalBr_fromYRN_VezniDok2 = Get_refFiskalBr_fromYRN_VezniDok2(prvFaktur_rec/*.VezniDok2*/);
 
                   refFiskalBr = refFiskalBr_fromYRN_VezniDok2;
-                  refDokDate  = prvFaktur_rec.DokDate;
+                  refDokDate = prvFaktur_rec.DokDate;
                }
                else
                {
@@ -268,16 +268,16 @@ namespace EN16931.UBL
                prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(conn, /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
 
                refFiskalBr = prvFaktur_rec.VezniDok;
-               refDokDate  = prvFaktur_rec.DokDate ;
+               refDokDate = prvFaktur_rec.DokDate;
             }
             else // prev fak je u nekoj prethodnoj godini 
             {
                prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(ZXC.TheSecondDbConn_SameDB_OtherYear(prevFakYear), /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
 
                refFiskalBr = prvFaktur_rec./*VezniDok*/TtNumFiskal;
-               refDokDate  = prvFaktur_rec.DokDate ;
+               refDokDate = prvFaktur_rec.DokDate;
             }
-            
+
             if(ZXC.theSecondDbConnection != null) ZXC.theSecondDbConnection.Close(); // nemoj tu pozivaty propertyy nego koristi varijablu (malo slovo)
 
             if(refFiskalBr.IsEmpty() || refDokDate.IsEmpty())
@@ -301,7 +301,7 @@ namespace EN16931.UBL
             };
          }
 
-      #endregion Referenca STORNO i stornoAVANSa racuna
+         #endregion Referenca STORNO i stornoAVANSa racuna
 
          #region PDF
 
@@ -423,9 +423,9 @@ namespace EN16931.UBL
          the_eRacun.AccountingSupplierParty.Party.PostalAddress = new AddressType
          {
             StreetName = new StreetNameType { Value = Prj2eR__String("BT035") },
-            CityName   = new CityNameType   { Value = Prj2eR__String("BT037") },
+            CityName = new CityNameType { Value = Prj2eR__String("BT037") },
             PostalZone = new PostalZoneType { Value = Prj2eR__String("BT038") },
-            Country    = new CountryType    { IdentificationCode = new IdentificationCodeType { Value = Prj2eR__String("BT040") }, },
+            Country = new CountryType { IdentificationCode = new IdentificationCodeType { Value = Prj2eR__String("BT040") }, },
 
             AddressLine = new AddressLineType[]
             {
@@ -449,8 +449,8 @@ namespace EN16931.UBL
                ID = new IDType { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) },
                Name = new NameType1 { Value = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) }
             } ;*/
-            
-            the_eRacun.AccountingSupplierParty.SellerContact.ID   = new IDType    { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) };
+
+            the_eRacun.AccountingSupplierParty.SellerContact.ID = new IDType { Value = ZXC.TheVvForm.GetFisk_Oib_Oper(faktur_rec.AddUID) };
             the_eRacun.AccountingSupplierParty.SellerContact.Name = new NameType1 { Value = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) };
 
          }
@@ -520,7 +520,8 @@ namespace EN16931.UBL
          {
             the_eRacun.AccountingCustomerParty.Party.EndpointID = new EndpointIDType { Value = KiD2eR__String("BT049", kupdob_rec) };
             the_eRacun.AccountingCustomerParty.Party.EndpointID.schemeID = "EMAIL";
-         };
+         }
+         ;
 
          //BG-8 POŠTANSKA ADRESA KUPCA	                                                      1..1
          //BT-50 Redak adrese Kupca 1 Glavno adresno polje. Obično naziv ulice i broj 	Tekst 0..1
@@ -530,9 +531,9 @@ namespace EN16931.UBL
          the_eRacun.AccountingCustomerParty.Party.PostalAddress = new AddressType
          {
             StreetName = new StreetNameType { Value = Fak2eR__String("BT050", faktur_rec, null) },
-            CityName   = new CityNameType   { Value = Fak2eR__String("BT052", faktur_rec, null) },
+            CityName = new CityNameType { Value = Fak2eR__String("BT052", faktur_rec, null) },
             PostalZone = new PostalZoneType { Value = Fak2eR__String("BT053", faktur_rec, null) },
-            Country    = new CountryType    { IdentificationCode = new IdentificationCodeType { Value = KiD2eR__String("BT055", kupdob_rec) } },
+            Country = new CountryType { IdentificationCode = new IdentificationCodeType { Value = KiD2eR__String("BT055", kupdob_rec) } },
 
             AddressLine = new AddressLineType[]
             {
@@ -545,7 +546,7 @@ namespace EN16931.UBL
 
          if(/*isMojeRacunNotFina == true*/kupdob_rec.Email.NotEmpty())
          {
-            the_eRacun.AccountingCustomerParty.AccountingContact                = new ContactType();
+            the_eRacun.AccountingCustomerParty.AccountingContact = new ContactType();
             the_eRacun.AccountingCustomerParty.AccountingContact.ElectronicMail = new ElectronicMailType { Value = KiD2eR__String("BT049", kupdob_rec) };
 
          }
@@ -731,7 +732,7 @@ namespace EN16931.UBL
 
          #region RBT & ZTR by PdvSt
 
-         string ppmvReasonTag  = "#HR:PPMV#Posebni porez na motorna vozila";
+         string ppmvReasonTag = "#HR:PPMV#Posebni porez na motorna vozila";
          decimal ppmvItemsBase = Fak2eR_Decimal("PPMVosn", faktur_rec, null);
 
          //List<AllowanceChargeType> rbtAndZtr_AllowanceChargeList        = new List<AllowanceChargeType>();
@@ -879,12 +880,12 @@ namespace EN16931.UBL
             rbtAndZtrAndPpmv_AllowanceChargeList.Add(new AllowanceChargeType
             {
 
-               ChargeIndicator       = new ChargeIndicatorType { Value = true },
+               ChargeIndicator = new ChargeIndicatorType { Value = true },
                AllowanceChargeReason = new AllowanceChargeReasonType[]
                {
                                        new AllowanceChargeReasonType { Value = ppmvReasonTag }
                },
-               Amount      = new AmountType2 { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               Amount = new AmountType2 { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                TaxCategory = new TaxCategoryType[]
                {
                   new TaxCategoryType
@@ -896,7 +897,7 @@ namespace EN16931.UBL
                                         { new TaxExemptionReasonType { Value = ppmvReasonTag/*"Posebni porez na motorna vozila"*/ } },
                      TaxScheme          = new TaxSchemeType { ID = new IDType { Value = "VAT" } } }
                }
-              });
+            });
          }
 
 
@@ -911,34 +912,40 @@ namespace EN16931.UBL
          //BT-112 Ukupni iznos računa s PDV-om		                              Iznos 1..1
          //BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje	Iznos 1..1
 
-         decimal avansMoney = ((isFinalRn && prvFaktur_rec != null) ? prvFaktur_rec.S_ukKCRP * -1.00M              : 0M).Ron2();
+         decimal avansMoney = ((isFinalRn && prvFaktur_rec != null) ? prvFaktur_rec.S_ukKCRP * -1.00M : 0M).Ron2();
          decimal finalMoney = ((isFinalRn && prvFaktur_rec != null) ? faktur_rec.S_ukKCRP + prvFaktur_rec.S_ukKCRP : 0M).Ron2();
 
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
-            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
-            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
-            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
-            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
-         
+            LineExtensionAmount = new LineExtensionAmountType { Value = Fak2eR_Decimal("BT106", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
+            AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
+            TaxExclusiveAmount = new TaxExclusiveAmountType { Value = Fak2eR_Decimal("BT109", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
+            TaxInclusiveAmount = new TaxInclusiveAmountType { Value = Fak2eR_Decimal("BT112", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
 
-            PayableAmount = new PayableAmountType               { Value = isAvans ||isAvansSTORNO ? 0.00M      : 
-                                                                          isFinalRn               ? finalMoney :
-                                                                                                    Fak2eR_Decimal("BT115"  , faktur_rec, null), currencyID = faktur_rec.CurrencyID } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
+
+            PayableAmount = new PayableAmountType
+            {
+               Value = isAvans || isAvansSTORNO ? 0.00M :
+                                                                          isFinalRn ? finalMoney :
+                                                                                                    Fak2eR_Decimal("BT115", faktur_rec, null),
+               currencyID = faktur_rec.CurrencyID
+            } // iznos koji dospijeva na plaćanje = BT-112 - BT-113 - BT-114(iznos zaokruživanja)
          };
 
          if(isAvans || isAvansSTORNO || isFinalRn)
          {
-            the_eRacun.LegalMonetaryTotal.PrepaidAmount = new PrepaidAmountType 
-            { 
-               Value = isAvans  || isAvansSTORNO ? faktur_rec.S_ukKCRP.Ron2() :
-                       isFinalRn                 ? avansMoney                 :
-                       0.00M                                                  , currencyID = faktur_rec.CurrencyID  };// iznos plaćen unaprijed - avans
+            the_eRacun.LegalMonetaryTotal.PrepaidAmount = new PrepaidAmountType
+            {
+               Value = isAvans || isAvansSTORNO ? faktur_rec.S_ukKCRP.Ron2() :
+                       isFinalRn ? avansMoney :
+                       0.00M,
+               currencyID = faktur_rec.CurrencyID
+            };// iznos plaćen unaprijed - avans
          }
 
          if(faktur_rec.R_ukPpmvIzn.NotZero())
          {
-            the_eRacun.LegalMonetaryTotal. ChargeTotalAmount = new ChargeTotalAmountType { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID };
+            the_eRacun.LegalMonetaryTotal.ChargeTotalAmount = new ChargeTotalAmountType { Value = Fak2eR_Decimal("PPMVizn", faktur_rec, null), currencyID = faktur_rec.CurrencyID };
          }
 
          #endregion Total Sums
@@ -949,18 +956,18 @@ namespace EN16931.UBL
 
          List<TaxSubtotalType> pdvSubtotalList = new List<TaxSubtotalType>();
 
-       //if(faktur_rec.S_ukPdv25m.NotZero()) 27.06.2019. ovdje ne ulazimo kada je pdv 0 ybog cijelo zatvorenog avansa
+         //if(faktur_rec.S_ukPdv25m.NotZero()) 27.06.2019. ovdje ne ulazimo kada je pdv 0 ybog cijelo zatvorenog avansa
          if(faktur_rec.S_ukPdv25m.NotZero() || faktur_rec.R_ukPdv_25m_SUM_AVANS.NotZero())
          {
             pdvSubtotalList.Add(new TaxSubtotalType
             {
                TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv25 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxCategory   = new TaxCategoryType
+               TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               TaxCategory = new TaxCategoryType
                {
-                  ID        = new IDType        { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
-                  Percent   = new PercentType1  { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
-                  TaxScheme = new TaxSchemeType { ID    = new IDType { Value = "VAT" } },
+                  ID = new IDType { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
+                  Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
+                  TaxScheme = new TaxSchemeType { ID = new IDType { Value = "VAT" } },
                }
             });
          }
@@ -970,11 +977,11 @@ namespace EN16931.UBL
             pdvSubtotalList.Add(new TaxSubtotalType
             {
                TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv13 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxCategory   = new TaxCategoryType
+               TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               TaxCategory = new TaxCategoryType
                {
-                  ID        = new IDType        { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
-                  Percent   = new PercentType1  { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
+                  ID = new IDType { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
+                  Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
                   TaxScheme = new TaxSchemeType { ID = new IDType { Value = "VAT" } },
                }
             });
@@ -985,11 +992,11 @@ namespace EN16931.UBL
             pdvSubtotalList.Add(new TaxSubtotalType
             {
                TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv05 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxCategory   = new TaxCategoryType
+               TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               TaxCategory = new TaxCategoryType
                {
-                  ID        = new IDType        { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
-                  Percent   = new PercentType1  { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
+                  ID = new IDType { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
+                  Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
                   TaxScheme = new TaxSchemeType { ID = new IDType { Value = "VAT" } },
                }
             });
@@ -1000,11 +1007,11 @@ namespace EN16931.UBL
             pdvSubtotalList.Add(new TaxSubtotalType
             {
                TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv00 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv00 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxCategory   = new TaxCategoryType
+               TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv00 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+               TaxCategory = new TaxCategoryType
                {
-                  ID        = new IDType        { Value = Fak2eR__String("Pdv00 kat", faktur_rec, null) },
-                  Percent   = new PercentType1  { Value = Fak2eR_Decimal("Pdv00 stp", faktur_rec, null) },
+                  ID = new IDType { Value = Fak2eR__String("Pdv00 kat", faktur_rec, null) },
+                  Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv00 stp", faktur_rec, null) },
                   TaxScheme = new TaxSchemeType { ID = new IDType { Value = "FRE" } },
 
                   TaxExemptionReason = new TaxExemptionReasonType[]
@@ -1026,15 +1033,15 @@ namespace EN16931.UBL
                             faktur_rec.S_ukOsn13 +
                             faktur_rec.S_ukOsn14 +
                             faktur_rec.S_ukOsn15 +
-                            faktur_rec.S_ukOsn16 ;
+                            faktur_rec.S_ukOsn16;
 
          if(oslobPdv.NotZero()) // OP oslobodeno PDV-a 
          {
             pdvSubtotalList.Add(new TaxSubtotalType
             {
                TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("PdvOP osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("PdvOP izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               
+               TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("PdvOP izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+
                // 15.11.2019. Zar ptica - ovo ne prolazi
                //TaxCategory   = new TaxCategoryType
                //{
@@ -1058,7 +1065,7 @@ namespace EN16931.UBL
                      Value = Fak2eR__String("PdvOP kat", faktur_rec, null),
                   },
 
-                 //Name    = new NameType1    { Value = "OSLOBOĐENO_POREZA" }, // 17.12.2019. kažu da nijepotrebno
+                  //Name    = new NameType1    { Value = "OSLOBOĐENO_POREZA" }, // 17.12.2019. kažu da nijepotrebno
                   Percent = new PercentType1 { Value = Fak2eR_Decimal("PdvOP stp", faktur_rec, null) },
 
                   TaxExemptionReason = new TaxExemptionReasonType[]
@@ -1068,10 +1075,10 @@ namespace EN16931.UBL
 
                   TaxScheme = new TaxSchemeType
                   {
-                   //17.12.2019.
-                   //Name        = new NameType1       { Value = "FRE"       },
-                   //TaxTypeCode = new TaxTypeCodeType { Value = "ZeroRated" } 
-                     ID          = new IDType          { Value = "VAT"       },
+                     //17.12.2019.
+                     //Name        = new NameType1       { Value = "FRE"       },
+                     //TaxTypeCode = new TaxTypeCodeType { Value = "ZeroRated" } 
+                     ID = new IDType { Value = "VAT" },
                   }
                }
 
@@ -1093,13 +1100,13 @@ namespace EN16931.UBL
             pdvSubtotalList.Add(new TaxSubtotalType
             {
                TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("PPMVosn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-               TaxAmount     = new TaxAmountType     { Value = 0.00M/*Fak2eR_Decimal("PPMVizn", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
-               TaxCategory   = new TaxCategoryType
+               TaxAmount = new TaxAmountType { Value = 0.00M/*Fak2eR_Decimal("PPMVizn", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+               TaxCategory = new TaxCategoryType
                {
-                  ID        = new IDType        { Value = "E"                                          },
-                  Name      = new NameType1     { Value = "HR:PPMV"                                    },
-                  Percent   = new PercentType1  { Value = 0.00M/*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
-                  TaxExemptionReason = new TaxExemptionReasonType[] 
+                  ID = new IDType { Value = "E" },
+                  Name = new NameType1 { Value = "HR:PPMV" },
+                  Percent = new PercentType1 { Value = 0.00M/*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
+                  TaxExemptionReason = new TaxExemptionReasonType[]
                                      { new TaxExemptionReasonType { Value = "#HR:PPMV#Posebni porez na motorna vozila" } },
                   TaxScheme = new TaxSchemeType { ID = new IDType { Value = "VAT" } }
                }
@@ -1133,12 +1140,12 @@ namespace EN16931.UBL
          Rtrans rtrans_rec;
          Artikl artikl_rec;
 
-       //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.Transes                  .Count ];        
-       //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length]; // !!! 
+         //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.Transes                  .Count ];        
+         //the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length]; // !!! 
          // Od 18.09.2025: 
 
          if(ZXC.IsF2_2026_rules) the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Where(rtr => rtr.T_artiklCD.NotEmpty()).Count()]; // NEW way 
-         else                    the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length];                                          // OLD way 
+         else the_eRacun.InvoiceLine = new InvoiceLineType[faktur_rec.TrnNonDel_WO_AVANS_STORNO.Length];                                          // OLD way 
 
          bool isStavkaForAdditionalOpis;
 
@@ -1146,13 +1153,13 @@ namespace EN16931.UBL
 
          int invLineIdx = 0;
          // 18.09.2025: 
-       //for(int i = 0; i < the_eRacun.InvoiceLine.Length               ; ++i)
+         //for(int i = 0; i < the_eRacun.InvoiceLine.Length               ; ++i)
          for(int i = 0/*, invLineIdx = 0*/; i < faktur_rec.TrnNonDel_WO_AVANS_STORNO.Count(); ++i)
          {
-          //rtrans_rec  = faktur_rec.Transes                  [i];        
-            rtrans_rec  = faktur_rec.TrnNonDel_WO_AVANS_STORNO[i]; // !!! 
+            //rtrans_rec  = faktur_rec.Transes                  [i];        
+            rtrans_rec = faktur_rec.TrnNonDel_WO_AVANS_STORNO[i]; // !!! 
 
-            artikl_rec  = artiklSifrar.SingleOrDefault(a => a.ArtiklCD.ToUpper() == rtrans_rec.T_artiklCD.ToUpper());
+            artikl_rec = artiklSifrar.SingleOrDefault(a => a.ArtiklCD.ToUpper() == rtrans_rec.T_artiklCD.ToUpper());
 
             isStavkaForAdditionalOpis = ZXC.IsF2_2026_rules && rtrans_rec.T_artiklCD.IsEmpty(); // novo za 2026 
 
@@ -1181,9 +1188,12 @@ namespace EN16931.UBL
 
             invoiceLine = the_eRacun.InvoiceLine[invLineIdx++] = new InvoiceLineType();
 
-            invoiceLine.ID               = new IDType               { Value = (invLineIdx /*+ 1*/).ToString()                 };//BT-126 Identifikator stavke računa 	  Identifikator 1..1
-            invoiceLine.InvoicedQuantity = new InvoicedQuantityType { Value = Fak2eR_Decimal("BT129", faktur_rec, rtrans_rec),  //BT-129 Obračunata količina Količina artikala Količina 1..1
-                                                                   unitCode = Fak2eR__String("BT130", faktur_rec, rtrans_rec) };//BT-130 Šifra jedinica mjere	   @unitCode     Kod     1..1
+            invoiceLine.ID = new IDType { Value = (invLineIdx /*+ 1*/).ToString() };//BT-126 Identifikator stavke računa 	  Identifikator 1..1
+            invoiceLine.InvoicedQuantity = new InvoicedQuantityType
+            {
+               Value = Fak2eR_Decimal("BT129", faktur_rec, rtrans_rec),  //BT-129 Obračunata količina Količina artikala Količina 1..1
+               unitCode = Fak2eR__String("BT130", faktur_rec, rtrans_rec)
+            };//BT-130 Šifra jedinica mjere	   @unitCode     Kod     1..1
 
             //BT-131 Neto iznos stavke računa "neto" bez PDV-a	Iznos 1..1
             invoiceLine.LineExtensionAmount = new LineExtensionAmountType { Value = Fak2eR_Decimal("BT131", faktur_rec, rtrans_rec), currencyID = faktur_rec.CurrencyID };
@@ -1193,7 +1203,7 @@ namespace EN16931.UBL
             //BT-136 Iznos popusta stavke računa Iznos popusta bez PDV-a. 	Iznos 1..1 
             if(rtrans_rec.T_rbt1St.NotZero())
             {
-               invoiceLine.AllowanceCharge = new AllowanceChargeType[] 
+               invoiceLine.AllowanceCharge = new AllowanceChargeType[]
                { new AllowanceChargeType
                   {
                      ChargeIndicator = new ChargeIndicatorType{ Value = false},
@@ -1205,35 +1215,35 @@ namespace EN16931.UBL
                   }
                };
             }
-         //BT-141 Iznos troška stavke računa  bez PDVa.                 Iznos 1..1 
-         //ZTR Value = true
-         //new AllowanceChargeType
-         //{
-         //   ChargeIndicator = new ChargeIndicatorType{ Value = true},
-         //   Amount          = new AmountType2        { Value = Fak2eR_Decimal("BT141", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID }
-         //}
+            //BT-141 Iznos troška stavke računa  bez PDVa.                 Iznos 1..1 
+            //ZTR Value = true
+            //new AllowanceChargeType
+            //{
+            //   ChargeIndicator = new ChargeIndicatorType{ Value = true},
+            //   Amount          = new AmountType2        { Value = Fak2eR_Decimal("BT141", faktur_rec, rtrans_rec), currencyID  = faktur_rec.CurrencyID }
+            //}
 
-         #endregion RBT & ZTR stavke
+            #endregion RBT & ZTR stavke
 
             //BT-146 Neto cijena artikla Cijena artikla bez PDVa	Jedinična cijena1..1
             //BT-150 Šifra jedinice mjere jedinične količine artikla
             invoiceLine.Price = new PriceType();
-            invoiceLine.Price.PriceAmount  = new PriceAmountType  { Value = Fak2eR_Decimal("BT146", faktur_rec, rtrans_rec), currencyID = faktur_rec.CurrencyID };
+            invoiceLine.Price.PriceAmount = new PriceAmountType { Value = Fak2eR_Decimal("BT146", faktur_rec, rtrans_rec), currencyID = faktur_rec.CurrencyID };
             invoiceLine.Price.BaseQuantity = new BaseQuantityType { Value = 1M, unitCode = Fak2eR__String("BT130", faktur_rec, rtrans_rec) };
 
             //BT-151 sifra kategorije pdv-a obracunske stavke UNTDID 5305 [6]:
             //BT-152 pdv stopa stavke
             invoiceLine.Item = new ItemType();
-         
-          //invoiceLine.Item.ClassifiedTaxCategory = new TaxCategoryType[]
-          //{
-          //   new TaxCategoryType
-          //   {
-          //      ID        = new IDType       {                   Value = Fak2eR__String("BT151 kod", faktur_rec, rtrans_rec) },
-          //      Percent   = new PercentType1 {                   Value = Fak2eR_Decimal("BT152 stp", faktur_rec, rtrans_rec) },
-          //      TaxScheme = new TaxSchemeType{ ID = new IDType { Value = Fak2eR__String("BT152 txs", faktur_rec, rtrans_rec) }                                          }
-          //   }
-          //};
+
+            //invoiceLine.Item.ClassifiedTaxCategory = new TaxCategoryType[]
+            //{
+            //   new TaxCategoryType
+            //   {
+            //      ID        = new IDType       {                   Value = Fak2eR__String("BT151 kod", faktur_rec, rtrans_rec) },
+            //      Percent   = new PercentType1 {                   Value = Fak2eR_Decimal("BT152 stp", faktur_rec, rtrans_rec) },
+            //      TaxScheme = new TaxSchemeType{ ID = new IDType { Value = Fak2eR__String("BT152 txs", faktur_rec, rtrans_rec) }                                          }
+            //   }
+            //};
 
 
 
@@ -1300,7 +1310,7 @@ namespace EN16931.UBL
                      Name      = new NameType1    {                   Value = "HR:E"}, // oznaka za oslobodjeno pdv a
                      Percent   = new PercentType1 {                   Value = 0     },
                      TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = ZXC.IsTETRAGRAM_ANY ? GetTekstNoPdvFromThePFD(faktur_rec) : GetTekstNoPdvFromThePFD(thePFD) } },
-                     TaxScheme = new TaxSchemeType{ ID = new IDType { Value = "VAT" } 
+                     TaxScheme = new TaxSchemeType{ ID = new IDType { Value = "VAT" }
                      }
                   }
                };
@@ -1317,7 +1327,7 @@ namespace EN16931.UBL
                      TaxScheme = new TaxSchemeType{ ID = new IDType { Value = Fak2eR__String("BT152 txs", faktur_rec, rtrans_rec) }                                          }
                   }
                };
-             }
+            }
 
             #region Artikl
 
@@ -1326,9 +1336,9 @@ namespace EN16931.UBL
             //BT-155 Identifikator artikla  ID = sifra Artikla
             invoiceLine.Item.Name = new NameType1 { Value = Fak2eR__String("BT153", faktur_rec, rtrans_rec) };
 
-          //if(ZXC.IsF2_2026_rules) ya avanse da to ne radi jer dode prazan element 23.01.2026.
+            //if(ZXC.IsF2_2026_rules) ya avanse da to ne radi jer dode prazan element 23.01.2026.
             if(ZXC.IsF2_2026_rules && artikl_rec.TS != ZXC.AVA_TS)
-            { 
+            {
                invoiceLine.Item.CommodityClassification = new CommodityClassificationType[]
                {
                   new CommodityClassificationType
@@ -1339,7 +1349,7 @@ namespace EN16931.UBL
                         Value  = artikl_rec.ER_KPD
                      }
                   }
-               }; 
+               };
             }
 
             if(rtrans_rec.T_artiklCD.NotEmpty())
@@ -1401,13 +1411,13 @@ namespace EN16931.UBL
             #region artiklAtributi_ItemPropertyList
 
             if(artikl_rec != null)
-            { 
+            {
                if(artikl_rec.Zapremina.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "Zapremina [" + artikl_rec.ZapreminaJM + "]"       },
-                     Value = new ValueType { Value =                 artikl_rec.Zapremina.ToString0Vv() }
+                     Name = new NameType1 { Value = "Zapremina [" + artikl_rec.ZapreminaJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.Zapremina.ToString0Vv() }
                   });
                }
 
@@ -1415,56 +1425,56 @@ namespace EN16931.UBL
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "MasaNetto [" + artikl_rec.MasaNettoJM + "]"       },
-                     Value = new ValueType { Value =                 artikl_rec.MasaNetto.ToString0Vv() }
+                     Name = new NameType1 { Value = "MasaNetto [" + artikl_rec.MasaNettoJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.MasaNetto.ToString0Vv() }
                   });
                }
                if(artikl_rec.MasaBruto.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "MasaBruto [" + artikl_rec.MasaBrutoJM + "]"       },
-                     Value = new ValueType { Value =                 artikl_rec.MasaBruto.ToString0Vv() }
+                     Name = new NameType1 { Value = "MasaBruto [" + artikl_rec.MasaBrutoJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.MasaBruto.ToString0Vv() }
                   });
                }
                if(artikl_rec.Duljina.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "Duljina [" + artikl_rec.DuljinaJM + "]"       },
-                     Value = new ValueType { Value =               artikl_rec.Duljina.ToString0Vv() }
+                     Name = new NameType1 { Value = "Duljina [" + artikl_rec.DuljinaJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.Duljina.ToString0Vv() }
                   });
                }
                if(artikl_rec.Sirina.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "Širina [" + artikl_rec.SirinaJM + "]"       },
-                     Value = new ValueType { Value =              artikl_rec.Sirina.ToString0Vv() }
+                     Name = new NameType1 { Value = "Širina [" + artikl_rec.SirinaJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.Sirina.ToString0Vv() }
                   });
                }
                if(artikl_rec.Visina.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "Visina [" + artikl_rec.VisinaJM + "]"       },
-                     Value = new ValueType { Value =              artikl_rec.Visina.ToString0Vv() }
+                     Name = new NameType1 { Value = "Visina [" + artikl_rec.VisinaJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.Visina.ToString0Vv() }
                   });
                }
                if(artikl_rec.Promjer.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "Promjer [" + artikl_rec.PromjerJM + "]"       },
-                     Value = new ValueType { Value =               artikl_rec.Promjer.ToString0Vv() }
+                     Name = new NameType1 { Value = "Promjer [" + artikl_rec.PromjerJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.Promjer.ToString0Vv() }
                   });
                }
                if(artikl_rec.Povrsina.NotZero())
                {
                   artiklAtributi_ItemPropertyList.Add(new ItemPropertyType
                   {
-                     Name  = new NameType1 { Value = "Površina [" + artikl_rec.PovrsinaJM + "]"       },
-                     Value = new ValueType { Value =                artikl_rec.Povrsina.ToString0Vv() }
+                     Name = new NameType1 { Value = "Površina [" + artikl_rec.PovrsinaJM + "]" },
+                     Value = new ValueType { Value = artikl_rec.Povrsina.ToString0Vv() }
                   });
                }
 
@@ -1523,21 +1533,21 @@ namespace EN16931.UBL
                {
                   TaxableAmount = new TaxableAmountType
                   {
-                     Value      = Fak2eR_Decimal("PdvOP osn", faktur_rec, null),
+                     Value = Fak2eR_Decimal("PdvOP osn", faktur_rec, null),
                      currencyID = faktur_rec.CurrencyID
                   },
                   TaxAmount = new TaxAmountType
                   {
-                     Value     = Fak2eR_Decimal("PdvOP izn", faktur_rec, null),
+                     Value = Fak2eR_Decimal("PdvOP izn", faktur_rec, null),
                      currencyID = faktur_rec.CurrencyID
                   },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID      = new IDType    { Value = "E"    },
-                     Name    = new NameType1 { Value = "HR:E" },
+                     ID = new IDType { Value = "E" },
+                     Name = new NameType1 { Value = "HR:E" },
                      Percent = new PercentType1 { Value = Fak2eR_Decimal("PdvOP stp", faktur_rec, null) },
                      TaxExemptionReason = new TaxExemptionReasonType[] { new TaxExemptionReasonType { Value = ZXC.IsTETRAGRAM_ANY ? GetTekstNoPdvFromThePFD(faktur_rec) : GetTekstNoPdvFromThePFD(thePFD) } },
-                     HRTaxScheme        = new HRTaxSchemeType
+                     HRTaxScheme = new HRTaxSchemeType
                      {
                         ID = new IDType { Value = "VAT" }
                      }
@@ -1551,12 +1561,12 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv25 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv25 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID          = new IDType          { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
-                     Name        = new NameType1       { Value = "HR:PDV25" },
-                     Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
+                     ID = new IDType { Value = Fak2eR__String("Pdv25 kat", faktur_rec, null) },
+                     Name = new NameType1 { Value = "HR:PDV25" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv25 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
@@ -1567,12 +1577,12 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv13 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv13 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID          = new IDType          { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
-                     Name        = new NameType1       { Value = "HR:PDV13" },
-                     Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
+                     ID = new IDType { Value = Fak2eR__String("Pdv13 kat", faktur_rec, null) },
+                     Name = new NameType1 { Value = "HR:PDV13" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv13 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
@@ -1583,12 +1593,12 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("Pdv05 osn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount     = new TaxAmountType     { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType { Value = Fak2eR_Decimal("Pdv05 izn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                     ID          = new IDType          { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
-                     Name        = new NameType1       { Value = "HR:PDV5" },
-                     Percent     = new PercentType1    { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
+                     ID = new IDType { Value = Fak2eR__String("Pdv05 kat", faktur_rec, null) },
+                     Name = new NameType1 { Value = "HR:PDV5" },
+                     Percent = new PercentType1 { Value = Fak2eR_Decimal("Pdv05 stp", faktur_rec, null) },
                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "VAT" } }
                   }
                });
@@ -1599,17 +1609,17 @@ namespace EN16931.UBL
                hrTaxSubtotals.Add(new HRTaxSubtotalType
                {
                   TaxableAmount = new TaxableAmountType { Value = Fak2eR_Decimal("PPMVosn", faktur_rec, null), currencyID = faktur_rec.CurrencyID },
-                  TaxAmount     = new TaxAmountType     { Value = 0.00M /*Fak2eR_Decimal("PPMVizn", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
+                  TaxAmount = new TaxAmountType { Value = 0.00M /*Fak2eR_Decimal("PPMVizn", faktur_rec, null)*/, currencyID = faktur_rec.CurrencyID },
                   HRTaxCategory = new HRTaxCategoryType
                   {
-                      ID        = new IDType        { Value = "O"                                          },
-                      Name      = new NameType1     { Value = "HR:PPMV"                                    },
-                      Percent   = new PercentType1  { Value = 0M /*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
-                      TaxExemptionReason = new TaxExemptionReasonType[] 
-                                         { 
-                                            new TaxExemptionReasonType { Value = ppmvReasonTag } 
+                     ID = new IDType { Value = "O" },
+                     Name = new NameType1 { Value = "HR:PPMV" },
+                     Percent = new PercentType1 { Value = 0M /*Fak2eR_Decimal("PPMV stp", faktur_rec, null)*/ },
+                     TaxExemptionReason = new TaxExemptionReasonType[]
+                                         {
+                                            new TaxExemptionReasonType { Value = ppmvReasonTag }
                                          },
-                      HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "CAR" } }
+                     HRTaxScheme = new HRTaxSchemeType { ID = new IDType { Value = "CAR" } }
                   }
                });
             }
@@ -1690,8 +1700,8 @@ namespace EN16931.UBL
          {
             SkladCD = YRNfaktur_rec.SkladCD,
             DokDate = YRNfaktur_rec.DokDate,
-            TT      = tt,
-            TtNum   = ttnum
+            TT = tt,
+            TtNum = ttnum
          };
 
          return pgFaktur_rec.TtNumFiskal;
@@ -1706,45 +1716,45 @@ namespace EN16931.UBL
          switch(BT_ID)
          {
             //ZAGLAVLJE:
-            case "BT001"         : theString = faktur_rec.TtNumFiskal                                                    ; break; //BT- 1 Broj računa                                           
-          //case "BT003"         : theString = VvUBL_InvoiceTypeCode                                                     ; break; //BT- 3 Šifra vrste                                           
-            case "BT003"         : theString = faktur_rec.StatusCD                                                       ; break; //BT- 3 Šifra vrste  tek 23.01.2026.                                         
-            case "BT005"         : theString = faktur_rec.CurrencyID                                                     ; break; //BT- 5 Šifra valute !!!Valuta u kojoj su navedeni svi iznosi računa izuzev ukupnog iznosa PDV-a u računovodstvenoj valuti.
-            case "BT006"         : theString = faktur_rec.CurrencyID                                                     ; break; //BT- 6 TaxCurrencyCode Šifra valute PDV!!!
-            case "BT013"         : theString = faktur_rec.OpciAvalue                                                     ; break; //BT-13 OrderReference - narudzbenica 
-            case "BT022 napomena": theString = faktur_rec.Napomena                                                       ; break; //BT-22 napomena                                   
-            case "BT022 operater": theString = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) + "#Oznaka operatera" ; break; //BT-22 operater                                   
+            case "BT001": theString = faktur_rec.TtNumFiskal; break; //BT- 1 Broj računa                                           
+                                                                     //case "BT003"         : theString = VvUBL_InvoiceTypeCode                                                     ; break; //BT- 3 Šifra vrste                                           
+            case "BT003": theString = faktur_rec.StatusCD; break; //BT- 3 Šifra vrste  tek 23.01.2026.                                         
+            case "BT005": theString = faktur_rec.CurrencyID; break; //BT- 5 Šifra valute !!!Valuta u kojoj su navedeni svi iznosi računa izuzev ukupnog iznosa PDV-a u računovodstvenoj valuti.
+            case "BT006": theString = faktur_rec.CurrencyID; break; //BT- 6 TaxCurrencyCode Šifra valute PDV!!!
+            case "BT013": theString = faktur_rec.OpciAvalue; break; //BT-13 OrderReference - narudzbenica 
+            case "BT022 napomena": theString = faktur_rec.Napomena; break; //BT-22 napomena                                   
+            case "BT022 operater": theString = ZXC.TheVvForm.GetFisk_RecID_Oper(faktur_rec.AddUID) + "#Oznaka operatera"; break; //BT-22 operater                                   
 
-          // 16.12.2022: MojEracun nam kaze da se TISAK buni kad ucitava dragicin eRacun jer je time hh:mm a oni ocekuju hh:mm:ss, pa ih evo uslisujemo ?! 
-          //case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat ) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
-            case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
+            // 16.12.2022: MojEracun nam kaze da se TISAK buni kad ucitava dragicin eRacun jer je time hh:mm a oni ocekuju hh:mm:ss, pa ih evo uslisujemo ?! 
+            //case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat ) + "#Vrijeme izdavanja"  ; break; //BT-22 vrijemeR                                   
+            case "BT022 vrijemeR": theString = faktur_rec.DokDate.ToString(ZXC.VvTimeOnlyFormat2) + "#Vrijeme izdavanja"; break; //BT-22 vrijemeR                                   
 
-            case "BT022 opis"    : theString = faktur_rec.Opis                                                           ; break;
-            case "BT023"         : theString = "P" + (faktur_rec.PdvKolTip_u.ToString())                                 ; break; //BT-23 Vrsta poslovnog procesa ProfileID
-            case "BT024"         : theString = ZXC.IsF2_2026_rules ? VvUBL_CustomizationID_2026 : VvUBL_CustomizationID       ; break; //BT-24 Identifikator specifikacije                          
-            case "BT044"         : theString = faktur_rec.KupdobName                                                     ; break; //BT-44 Ime Kupca                                            
-            case "BT050"         : theString = faktur_rec.KdUlica                                                        ; break; //BT-50 Adresa Kupca Obično naziv ulice i broj               
-            case "BT050x"        : theString = faktur_rec.KdUlica + ", " + faktur_rec.KdZip + " " + faktur_rec.KdMjesto  ; break; //BT-50 Adresa Kupca Obično naziv ulice i broj               
-            case "BT052"         : theString = faktur_rec.KdMjesto                                                       ; break; //BT-52 Grad Kupca Uobičajeno ime mjesta	                    
-            case "BT053"         : theString = faktur_rec.KdZip                                                          ; break; //BT-53 Poštanski broj Kupca	                                
-            case "BT059 PpName"  : theString = faktur_rec.PrimPlatName                                                   ; break; //BT-59 Ime primatelja plaćanja                              
-            case "BT080 DostAdr" : theString = faktur_rec.DostAddr                                                       ; break; //BT-80 Dostavna adresa DostAdres                             
-            case "BT080 PJ_Ulic" : theString = faktur_rec.PosJedUlica                                                    ; break; //BT-80 Dostavna adresa PoslJed                             
-            case "BT080 PJ_Grad" : theString = faktur_rec.PosJedMjesto                                                   ; break; //BT-80 Dostavna adresa PoslJed                             
-            case "BT080 PJ_PstB" : theString = faktur_rec.PosJedZip                                                      ; break; //BT-80 Dostavna adresa PoslJed                             
-            case "BT081"         : theString = "30" /* virman ?! todo */                                                 ; break; //BT-81 Šifra načina plaćanja	                              
-          //case "BT083"         : theString = GetPnbFromFaktur(faktur_rec)                                              ; break; //BT-83 Informacije o doznaci - broj racuna, poziv na br i sl    
-            case "BT083"         : theString = faktur_rec.VvPnb                                                          ; break; //BT-83 Informacije o doznaci - broj racuna, poziv na br i sl    
-          //case "BT084"         : theString = faktur_rec.ZiroRn                                                         ; break; //BT-84 Identifikator računa plaćanja IBAN	      
-            case "BT084"         : theString = faktur_rec.ZiroRn.IsEmpty() ? ZXC.CURR_prjkt_rec.Ziro1 : faktur_rec.ZiroRn; break; //BT-84 Identifikator računa plaćanja IBAN 05.04.2024. kada na faktur ne do]e IBAM onda uzmi iy projekta	      
+            case "BT022 opis": theString = faktur_rec.Opis; break;
+            case "BT023": theString = "P" + (faktur_rec.PdvKolTip_u.ToString()); break; //BT-23 Vrsta poslovnog procesa ProfileID
+            case "BT024": theString = ZXC.IsF2_2026_rules ? VvUBL_CustomizationID_2026 : VvUBL_CustomizationID; break; //BT-24 Identifikator specifikacije                          
+            case "BT044": theString = faktur_rec.KupdobName; break; //BT-44 Ime Kupca                                            
+            case "BT050": theString = faktur_rec.KdUlica; break; //BT-50 Adresa Kupca Obično naziv ulice i broj               
+            case "BT050x": theString = faktur_rec.KdUlica + ", " + faktur_rec.KdZip + " " + faktur_rec.KdMjesto; break; //BT-50 Adresa Kupca Obično naziv ulice i broj               
+            case "BT052": theString = faktur_rec.KdMjesto; break; //BT-52 Grad Kupca Uobičajeno ime mjesta	                    
+            case "BT053": theString = faktur_rec.KdZip; break; //BT-53 Poštanski broj Kupca	                                
+            case "BT059 PpName": theString = faktur_rec.PrimPlatName; break; //BT-59 Ime primatelja plaćanja                              
+            case "BT080 DostAdr": theString = faktur_rec.DostAddr; break; //BT-80 Dostavna adresa DostAdres                             
+            case "BT080 PJ_Ulic": theString = faktur_rec.PosJedUlica; break; //BT-80 Dostavna adresa PoslJed                             
+            case "BT080 PJ_Grad": theString = faktur_rec.PosJedMjesto; break; //BT-80 Dostavna adresa PoslJed                             
+            case "BT080 PJ_PstB": theString = faktur_rec.PosJedZip; break; //BT-80 Dostavna adresa PoslJed                             
+            case "BT081": theString = "30" /* virman ?! todo */                                                 ; break; //BT-81 Šifra načina plaćanja	                              
+                                                                                                                         //case "BT083"         : theString = GetPnbFromFaktur(faktur_rec)                                              ; break; //BT-83 Informacije o doznaci - broj racuna, poziv na br i sl    
+            case "BT083": theString = faktur_rec.VvPnb; break; //BT-83 Informacije o doznaci - broj racuna, poziv na br i sl    
+                                                               //case "BT084"         : theString = faktur_rec.ZiroRn                                                         ; break; //BT-84 Identifikator računa plaćanja IBAN	      
+            case "BT084": theString = faktur_rec.ZiroRn.IsEmpty() ? ZXC.CURR_prjkt_rec.Ziro1 : faktur_rec.ZiroRn; break; //BT-84 Identifikator računa plaćanja IBAN 05.04.2024. kada na faktur ne do]e IBAM onda uzmi iy projekta	      
 
-            case "BT025"         : theString = faktur_rec.VezniDok                    ; break; //BT-25 Referenca na prethodni račun                         
-          //case "BT082"         : theString = "za sada ovo necemo"                   ; break; //BT-82 Tekst za  načina plaćanja 
+            case "BT025": theString = faktur_rec.VezniDok; break; //BT-25 Referenca na prethodni račun                         
+                                                                  //case "BT082"         : theString = "za sada ovo necemo"                   ; break; //BT-82 Tekst za  načina plaćanja 
 
             //STAVKE:              
-            case "BT130"         : theString = VvUBL_UnitCode(rtrans_rec.T_jedMj); break; //BT-130 Šifra jedinica mjere	   @unitCode 
-            case "BT153"         : theString = rtrans_rec.T_artiklName           ; break; //BT-153 Naziv artikla
-            case "BT155 artCd"   : theString = rtrans_rec.T_artiklCD             ; break; //BT-155 Sifra artikla
+            case "BT130": theString = VvUBL_UnitCode(rtrans_rec.T_jedMj); break; //BT-130 Šifra jedinica mjere	   @unitCode 
+            case "BT153": theString = rtrans_rec.T_artiklName; break; //BT-153 Naziv artikla
+            case "BT155 artCd": theString = rtrans_rec.T_artiklCD; break; //BT-155 Sifra artikla
 
             // ovo je privremeno maknuto pa ako ce trebati stavit cemo
             //case "BT157 shemaID" : theString = rtrans_rec.T_artiklName           ; break; //BT-157 Standardni identifikator artikla @schemeID
@@ -1756,22 +1766,22 @@ namespace EN16931.UBL
 
             case "Pdv25 kat":
             case "Pdv13 kat":
-            case "Pdv05 kat": theString = "S"               ; break;
+            case "Pdv05 kat": theString = "S"; break;
             case "Pdv00 kat": theString = "Zero rated goods"; break;
-            case "PdvOP kat": theString = "E"               ; break;
+            case "PdvOP kat": theString = "E"; break;
 
             //case "Pdv00 rzg":
             //case "Pdv0P rzg": theString = faktur_rec.Napomena2; break; //????? obicno ovo ide na samom printu ali morat ce se to begdje drugdje smjestiti
 
             case "BT151 kod": theString = VvUBL_PdvKod(rtrans_rec.T_pdvSt, rtrans_rec.T_pdvColTip); break; //BT-151 Šifra kategorije PDV-a UNTDID5305 [6]
-            case "BT152 txs": theString = VvUBL_PdvTaxScheme(rtrans_rec.T_pdvSt)                  ; break; //BT-151 ID VAT or FRE
+            case "BT152 txs": theString = VvUBL_PdvTaxScheme(rtrans_rec.T_pdvSt); break; //BT-151 ID VAT or FRE
 
             #endregion PDV
 
             case "Rbt25 kat":
             case "Rbt10 kat":
-            case "Rbt05 kat": theString = "S";     break;
-            case "Rbt00 kat": theString = "E";     break;
+            case "Rbt05 kat": theString = "S"; break;
+            case "Rbt00 kat": theString = "E"; break;
             case "RbtReason": theString = "RABAT"; break;
 
             default: theString = "VvTODO " + BT_ID; break;
@@ -1785,37 +1795,37 @@ namespace EN16931.UBL
          decimal theDecimal;
 
          // 2026: 
-       //bool needsAvansValues =                               faktur_rec.Is_AfterAvans_PrihodTTa; 
+         //bool needsAvansValues =                               faktur_rec.Is_AfterAvans_PrihodTTa; 
          bool needsAvansValues = ZXC.IsF2_2026_rules ? false : faktur_rec.Is_AfterAvans_PrihodTTa;
 
          switch(BT_ID)
          {
             //ZAGLAVLJE:
 
-            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS   : faktur_rec.S_ukKC                           ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
-            case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
+            case "BT106": theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS : faktur_rec.S_ukKC; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+            case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
 
-          //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
-            case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn ; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
+            //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
+            case "BT109": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
 
-          //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                                                   ; break; //BT-112 Ukupni iznos računa s PDV-om		    
-          //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                                                 ; break; //BT-112 Ukupni iznos računa s PDV-om   2026 
+            //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                                                   ; break; //BT-112 Ukupni iznos računa s PDV-om		    
+            //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                                                 ; break; //BT-112 Ukupni iznos računa s PDV-om   2026 
             case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.IsPPMV ? faktur_rec.Skn_ukKCRP : faktur_rec.S_ukKCRP; break; //BT-112 Ukupni iznos računa!!!!!                   
-            
-            case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS  : faktur_rec.S_ukPdv                          ; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
+
+            case "BG023": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_SUM_AVANS : faktur_rec.S_ukPdv; break; //BG-023 Ukupni iznos PDV-a - nisam bas sigurna ali ima u primjernom xml-u
 
             case "BT092": theDecimal = faktur_rec.S_ukRbt1; break; //BT- 92 Iznos popusta na razini dokumenta
             case "BT107": theDecimal = faktur_rec.S_ukRbt1; break; //BT-107 Iznos popusta na razini dokumenta
 
 
-          //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
-          //case "BT115": theDecimal = faktur_rec.Skn_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
+            //case "BT115": theDecimal = faktur_rec.S_ukKCRP  ; break; //!!! recimo !!! BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje
+            //case "BT115": theDecimal = faktur_rec.Skn_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
             case "BT115": theDecimal = faktur_rec.IsPPMV ? faktur_rec.Skn_ukKCRP : faktur_rec.S_ukKCRP; break; // BT-115 Iznos koji dospijeva na plaćanje Preostali iznos za plaćanje 2026
 
             //STAVKE:
-            case "BT129": theDecimal = rtrans_rec.T_kol    ; break; //BT-129 Obračunata količina Količina artikala
-            case "BT131": theDecimal = rtrans_rec.R_KC     ; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
-            case "BT136": theDecimal = rtrans_rec.R_rbt1   ; break; //BT-136 Iznos popusta stavke računa Iznos popusta bez PDV-a.
+            case "BT129": theDecimal = rtrans_rec.T_kol; break; //BT-129 Obračunata količina Količina artikala
+            case "BT131": theDecimal = rtrans_rec.R_KC; break; //BT-131 Neto iznos stavke računa "neto" bez PDV-a	
+            case "BT136": theDecimal = rtrans_rec.R_rbt1; break; //BT-136 Iznos popusta stavke računa Iznos popusta bez PDV-a.
             case "BT146": theDecimal = rtrans_rec.R_CIJ_KCR; break; //BT-146 Neto cijena artikla Cijena artikla bez PDVa	Jedinična cijena
 
             //case "BT141": theDecimal = rtrans_rec.R_KCR   ; break; //BT-141 Iznos troška stavke računa  bez PDVa.               
@@ -1824,17 +1834,18 @@ namespace EN16931.UBL
 
             case "Pdv25 osn": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_25m_SUM_AVANS : faktur_rec.S_ukOsn25m; break;
             case "Pdv25 izn": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_25m_SUM_AVANS : faktur_rec.S_ukPdv25m; break;
-            case "Pdv25 stp": theDecimal = 25M                  ; break;
-            case "Pdv13 osn": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_10m_SUM_AVANS :faktur_rec.S_ukOsn10m; break;
-            case "Pdv13 izn": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_10m_SUM_AVANS :faktur_rec.S_ukPdv10m; break;
-            case "Pdv13 stp": theDecimal = 13M                  ; break;
-            case "Pdv05 osn": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_05m_SUM_AVANS :faktur_rec.S_ukOsn05m; break;
-            case "Pdv05 izn": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_05m_SUM_AVANS :faktur_rec.S_ukPdv05m; break;
-            case "Pdv05 stp": theDecimal = 5M                   ; break;
-            case "Pdv00 osn": theDecimal = faktur_rec.S_ukOsn0  ; break;
-            case "Pdv00 izn": theDecimal = 0M                   ; break;
-            case "Pdv00 stp": theDecimal = 0M                   ; break;
-            case "PdvOP osn": theDecimal = faktur_rec.S_ukOsn07 +
+            case "Pdv25 stp": theDecimal = 25M; break;
+            case "Pdv13 osn": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_10m_SUM_AVANS : faktur_rec.S_ukOsn10m; break;
+            case "Pdv13 izn": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_10m_SUM_AVANS : faktur_rec.S_ukPdv10m; break;
+            case "Pdv13 stp": theDecimal = 13M; break;
+            case "Pdv05 osn": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_05m_SUM_AVANS : faktur_rec.S_ukOsn05m; break;
+            case "Pdv05 izn": theDecimal = needsAvansValues ? faktur_rec.R_ukPdv_05m_SUM_AVANS : faktur_rec.S_ukPdv05m; break;
+            case "Pdv05 stp": theDecimal = 5M; break;
+            case "Pdv00 osn": theDecimal = faktur_rec.S_ukOsn0; break;
+            case "Pdv00 izn": theDecimal = 0M; break;
+            case "Pdv00 stp": theDecimal = 0M; break;
+            case "PdvOP osn":
+               theDecimal = faktur_rec.S_ukOsn07 +
                                            faktur_rec.S_ukOsn08 +
                                            faktur_rec.S_ukOsn09 +
                                            faktur_rec.S_ukOsn10 +
@@ -1843,7 +1854,7 @@ namespace EN16931.UBL
                                            faktur_rec.S_ukOsn13 +
                                            faktur_rec.S_ukOsn14 +
                                            faktur_rec.S_ukOsn15 +
-                                           faktur_rec.S_ukOsn16 ; break;
+                                           faktur_rec.S_ukOsn16; break;
             case "PdvOP izn": theDecimal = 0M; break;
             case "PdvOP stp": theDecimal = 0M; break;
 
@@ -1851,9 +1862,10 @@ namespace EN16931.UBL
 
             #endregion PDV
 
-            case "Rbt25 izn": if((faktur_rec.TrnSum_Rbt10 + faktur_rec.TrnSum_Rbt05 + faktur_rec.TrnSum_Rbt00).IsZero()) theDecimal = faktur_rec.S_ukRbt1    ;
-                              else                                                                                       theDecimal = faktur_rec.TrnSum_Rbt25; 
-                              break; //BT-Iznos Rbt25 
+            case "Rbt25 izn":
+               if((faktur_rec.TrnSum_Rbt10 + faktur_rec.TrnSum_Rbt05 + faktur_rec.TrnSum_Rbt00).IsZero()) theDecimal = faktur_rec.S_ukRbt1;
+               else theDecimal = faktur_rec.TrnSum_Rbt25;
+               break; //BT-Iznos Rbt25 
 
             case "Rbt10 izn": theDecimal = faktur_rec.TrnSum_Rbt10; break; //BT-Iznos Rbt10 
             case "Rbt05 izn": theDecimal = faktur_rec.TrnSum_Rbt05; break; //BT-Iznos Rbt05 
@@ -1877,22 +1889,23 @@ namespace EN16931.UBL
 
          switch(BT_ID)
          {
-            case "BT002"     : theDate = faktur_rec.DokDate ; break; //BT-2 Datum izdavanja
-          //case "BT002 Time": theDate = faktur_rec.DokDate ; break; //BT-2 Vrijeme izdavanja
-            case "BT002 Time": DateTime dateTime = faktur_rec.DokDate;
-                             //theDate = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second, DateTimeKind.Unspecified); break;
-                             //theDate = new DateTime(1, 1, 1, dateTime.Hour, dateTime.Minute, dateTime.Second, DateTimeKind.Unspecified); break;
+            case "BT002": theDate = faktur_rec.DokDate; break; //BT-2 Datum izdavanja
+                                                               //case "BT002 Time": theDate = faktur_rec.DokDate ; break; //BT-2 Vrijeme izdavanja
+            case "BT002 Time":
+               DateTime dateTime = faktur_rec.DokDate;
+               //theDate = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second, DateTimeKind.Unspecified); break;
+               //theDate = new DateTime(1, 1, 1, dateTime.Hour, dateTime.Minute, dateTime.Second, DateTimeKind.Unspecified); break;
                // Use TimeOfDay to strip milliseconds and create a clean time
                TimeSpan cleanTime = new TimeSpan(dateTime.Hour, dateTime.Minute, dateTime.Second);
                theDate = DateTime.Today.Add(cleanTime); break;
 
             case "BT002 Dosp": theDate = faktur_rec.DospDate; break; //BT-2 Dospjece placanja
-            case "BT072"     : theDate = faktur_rec.DokDate ; break; // 24.06.2019.ActualDeliveryDate
+            case "BT072": theDate = faktur_rec.DokDate; break; // 24.06.2019.ActualDeliveryDate
 
             // 12.01.2024:
-          //case "BTqwe"     : theDate = faktur_rec.PdvDate ; break; // 14.12.2020. prema uputama u mailu koji namposla moj-eRacun 14.12. 
-            case "BTqwe"     :
-               theDate = faktur_rec.PdvDate ; 
+            //case "BTqwe"     : theDate = faktur_rec.PdvDate ; break; // 14.12.2020. prema uputama u mailu koji namposla moj-eRacun 14.12. 
+            case "BTqwe":
+               theDate = faktur_rec.PdvDate;
 
                if(theDate.IsEmpty())
                {
@@ -1915,15 +1928,15 @@ namespace EN16931.UBL
 
          switch(BT_ID)
          {
-            case "BTxyz"       : theString = kupdob_rec.Napom1;                   break; //BT- 1 qweqwe 
-            case "BT048"       : theString = kupdob_rec.VATnumber;                break; //BT-48 Porezni identifikator Kupca 
-            case "BT048 kind"  : theString = "VAT";                               break; //BT-48 Porezni identifikator Kupca 
-            case "BT049"       : theString = kupdob_rec.Email;                    break; //BT-49 Elektronička adresa Kupca   
-            case "BT046"       : theString = GetKupdobIdentification(kupdob_rec); break; //BT-46 Identifikator Kupca         
-            case "BT055"       : theString = kupdob_rec.VatCntryCode_NonEmpty;    break; //BT-55 Šifra države Kupca               
-            case "BT080 ccod"  : theString = kupdob_rec.VatCntryCode_NonEmpty;    break; //BT-80 Šifra države dostave             
-            case "BT059 PpVatN": theString = kupdob_rec.VATnumber;                break; //BT-59 Porezni identifikator PrimPlat 
-            case "OIB kupca"   : theString = kupdob_rec.Oib;                      break; //OIB kupca 
+            case "BTxyz": theString = kupdob_rec.Napom1; break; //BT- 1 qweqwe 
+            case "BT048": theString = kupdob_rec.VATnumber; break; //BT-48 Porezni identifikator Kupca 
+            case "BT048 kind": theString = "VAT"; break; //BT-48 Porezni identifikator Kupca 
+            case "BT049": theString = kupdob_rec.Email; break; //BT-49 Elektronička adresa Kupca   
+            case "BT046": theString = GetKupdobIdentification(kupdob_rec); break; //BT-46 Identifikator Kupca         
+            case "BT055": theString = kupdob_rec.VatCntryCode_NonEmpty; break; //BT-55 Šifra države Kupca               
+            case "BT080 ccod": theString = kupdob_rec.VatCntryCode_NonEmpty; break; //BT-80 Šifra države dostave             
+            case "BT059 PpVatN": theString = kupdob_rec.VATnumber; break; //BT-59 Porezni identifikator PrimPlat 
+            case "OIB kupca": theString = kupdob_rec.Oib; break; //OIB kupca 
 
             default: theString = "VvTODO_KiD " + BT_ID; break;
          }
@@ -1937,24 +1950,25 @@ namespace EN16931.UBL
 
          switch(BT_ID)
          {
-            case "BTxyz"         : theString = ZXC.CURR_prjkt_rec.Napom1;                                                      break; // BT-  1 qweqwe               
+            case "BTxyz": theString = ZXC.CURR_prjkt_rec.Napom1; break; // BT-  1 qweqwe               
             case "BT022 odgOsoba": theString = ZXC.CURR_prjkt_rec.Ime + " " + ZXC.CURR_prjkt_rec.Prezime + "#Odgovorna osoba"; break; //BT-22 odgOsoba                                   
-            case "BT027"         : theString = ZXC.CURR_prjkt_rec.Naziv;                                                       break; //BT-27 Naziv Prodavatelja                                   
-            case "BT029"         : theString = GetProjektIdentification(ZXC.CURR_prjkt_rec);                                   break; //BT-29 Identifikator Prodavatelja                           
-            case "BT031"         : theString = ZXC.CURR_prjkt_rec.VATnumber;                                                   break; //BT-31 Porezni broj Prodavatelja sa oznakom drzave          
-          // 29.01.2020.       
-          //case "BT031 kind"    : theString = ZXC.CURR_prjkt_rec.NOT_IN_PDV ? "FRE" : "VAT";                                  break; //BT-31 "VAT" ili "FRE" je / nije u PDV-u                    
-            case "BT031 kind"    : theString =                                         "VAT";                                  break; //BT-31 "VAT" ili "FRE" je / nije u PDV-u                    
-            case "BT034"         : theString = ZXC.CURR_prjkt_rec.Email;                                                       break; //BT-34 Elektronička adresa Prodavatelja                     
-            case "OIB prjkt"     : theString = ZXC.CURR_prjkt_rec.Oib;                                                         break; //24.06.2019. moj-eracun zeli ovdje oib prodavatelja         
-            case "BT035"         : theString = ZXC.CURR_prjkt_rec.Ulica1;                                                      break; //BT-35 Redak adrese Prodavatelja 1 Obično naziv ulice i broj
-            case "BT035x"        : theString = ZXC.CURR_prjkt_rec.Ulica1  + ", " + 
-                                               ZXC.CURR_prjkt_rec.PostaBr + " "  + 
-                                               ZXC.CURR_prjkt_rec.Grad;                                                        break; //BT-35 Redak adrese Prodavatelja 1 Obično naziv ulice i broj
-            case "BT037"         : theString = ZXC.CURR_prjkt_rec.Grad;                                                        break; //BT-37 Grad Prodavatelja                                    
-            case "BT038"         : theString = ZXC.CURR_prjkt_rec.PostaBr;                                                     break; //BT-38 Poštanski broj	                                    
-            case "BT040"         : theString = ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty;                                       break; //BT-40 Šifra države Prodavatelja                            
-            case "BT043"         : theString = ZXC.CURR_prjkt_rec.Email;                                                       break; //BT-43 E-Pošta prodavatelja 
+            case "BT027": theString = ZXC.CURR_prjkt_rec.Naziv; break; //BT-27 Naziv Prodavatelja                                   
+            case "BT029": theString = GetProjektIdentification(ZXC.CURR_prjkt_rec); break; //BT-29 Identifikator Prodavatelja                           
+            case "BT031": theString = ZXC.CURR_prjkt_rec.VATnumber; break; //BT-31 Porezni broj Prodavatelja sa oznakom drzave          
+                                                                           // 29.01.2020.       
+                                                                           //case "BT031 kind"    : theString = ZXC.CURR_prjkt_rec.NOT_IN_PDV ? "FRE" : "VAT";                                  break; //BT-31 "VAT" ili "FRE" je / nije u PDV-u                    
+            case "BT031 kind": theString = "VAT"; break; //BT-31 "VAT" ili "FRE" je / nije u PDV-u                    
+            case "BT034": theString = ZXC.CURR_prjkt_rec.Email; break; //BT-34 Elektronička adresa Prodavatelja                     
+            case "OIB prjkt": theString = ZXC.CURR_prjkt_rec.Oib; break; //24.06.2019. moj-eracun zeli ovdje oib prodavatelja         
+            case "BT035": theString = ZXC.CURR_prjkt_rec.Ulica1; break; //BT-35 Redak adrese Prodavatelja 1 Obično naziv ulice i broj
+            case "BT035x":
+               theString = ZXC.CURR_prjkt_rec.Ulica1 + ", " +
+                                               ZXC.CURR_prjkt_rec.PostaBr + " " +
+                                               ZXC.CURR_prjkt_rec.Grad; break; //BT-35 Redak adrese Prodavatelja 1 Obično naziv ulice i broj
+            case "BT037": theString = ZXC.CURR_prjkt_rec.Grad; break; //BT-37 Grad Prodavatelja                                    
+            case "BT038": theString = ZXC.CURR_prjkt_rec.PostaBr; break; //BT-38 Poštanski broj	                                    
+            case "BT040": theString = ZXC.CURR_prjkt_rec.VatCntryCode_NonEmpty; break; //BT-40 Šifra države Prodavatelja                            
+            case "BT043": theString = ZXC.CURR_prjkt_rec.Email; break; //BT-43 E-Pošta prodavatelja 
 
             default: theString = "VvTODO_Prj " + BT_ID; break;
          }
@@ -1983,8 +1997,8 @@ namespace EN16931.UBL
 
          switch(BT_ID)
          {
-          //case "BTxyz": theDecimal = artikl_rec.Napomena; break; //BT- 1 qweqwe 
-          //case "BT152": theDecimal = artikl_rec.LongOpis; break; //BT-152 opis artikla 
+            //case "BTxyz": theDecimal = artikl_rec.Napomena; break; //BT- 1 qweqwe 
+            //case "BT152": theDecimal = artikl_rec.LongOpis; break; //BT-152 opis artikla 
 
             default: theDecimal = 0.00M; break;
          }
@@ -1995,14 +2009,14 @@ namespace EN16931.UBL
       private static string VvUBL_PdvTaxScheme(decimal t_pdvSt)
       {
          if(t_pdvSt.NotZero()) return "VAT";
-         else                  return "FRE";
+         else return "FRE";
       }
 
       private static string VvUBL_PdvKod(decimal t_pdvSt, ZXC.PdvKolTipEnum t_pdvColTip)
       {
-         if(t_pdvSt.NotZero())                          return "S";
+         if(t_pdvSt.NotZero()) return "S";
          else if(t_pdvColTip == ZXC.PdvKolTipEnum.NIJE) return "Zero rated goods";
-         else                                           return "E";
+         else return "E";
       }
 
       // http://www.unece.org/trade/untdid/d98a/uncl/uncl1001.htm   
@@ -2011,7 +2025,7 @@ namespace EN16931.UBL
       // supplied under conditions agreed between seller and buyer. 
       private static string VvUBL_InvoiceTypeCode { get { return "380"; } }
 
-    
+
       private static string VvUBL_CustomizationID { get { return "urn:cen.eu:en16931:2017"; } }
 
       //14.10.2025.
@@ -2026,24 +2040,24 @@ namespace EN16931.UBL
          switch(t_jm)
          {
             case "LIT":
-            case "L"  : quantityCode = QuantityCode.Litre;       break;
-            case "KG" : quantityCode = QuantityCode.Kilogram;    break;
-            case "KM" : quantityCode = QuantityCode.Kilometre;   break;
-            case "G"  : quantityCode = QuantityCode.Gram;        break;
-            case "M"  : quantityCode = QuantityCode.Metre;       break;
-            case "T"  : quantityCode = QuantityCode.Tonne;       break;
-            case "M2" : quantityCode = QuantityCode.SquareMetre; break;
-            case "M3" : quantityCode = QuantityCode.CubicMetre;  break;
-            case "MIN": quantityCode = QuantityCode.Minute;      break;
-            case "H"  :
-            case "SAT": quantityCode = QuantityCode.Hour;        break;
-            case "DAN":                                          
-            case "DAY": quantityCode = QuantityCode.Day;         break;
-            case "MJ" :                                          
-            case "MON": quantityCode = QuantityCode.Month;       break;
-            case "GOD":                                          
-            case "Y"  : quantityCode = QuantityCode.Month;       break;
-            case ""   :
+            case "L": quantityCode = QuantityCode.Litre; break;
+            case "KG": quantityCode = QuantityCode.Kilogram; break;
+            case "KM": quantityCode = QuantityCode.Kilometre; break;
+            case "G": quantityCode = QuantityCode.Gram; break;
+            case "M": quantityCode = QuantityCode.Metre; break;
+            case "T": quantityCode = QuantityCode.Tonne; break;
+            case "M2": quantityCode = QuantityCode.SquareMetre; break;
+            case "M3": quantityCode = QuantityCode.CubicMetre; break;
+            case "MIN": quantityCode = QuantityCode.Minute; break;
+            case "H":
+            case "SAT": quantityCode = QuantityCode.Hour; break;
+            case "DAN":
+            case "DAY": quantityCode = QuantityCode.Day; break;
+            case "MJ":
+            case "MON": quantityCode = QuantityCode.Month; break;
+            case "GOD":
+            case "Y": quantityCode = QuantityCode.Month; break;
+            case "":
             case "KOM":
 
             default: quantityCode = QuantityCode.Piece; break;
@@ -2056,12 +2070,12 @@ namespace EN16931.UBL
 
       private static string GetKupdobIdentification(Kupdob kupdob_rec)
       {
-        // "peppol identifiers" 
-        //return "9934:" + kupdob_rec.Oib;
-        //25.10.2022. ya sifru poslovne jedinice koja bi se trebala upisati negdje na kupdoba
-        //< cbc:ID > 9934:18683136487::HR99:11002 </ cbc:ID >
-        if(kupdob_rec.Regob.NotEmpty())  return "9934:" + kupdob_rec.Oib + "::HR99:" + kupdob_rec.Regob;
-        else                             return "9934:" + kupdob_rec.Oib;
+         // "peppol identifiers" 
+         //return "9934:" + kupdob_rec.Oib;
+         //25.10.2022. ya sifru poslovne jedinice koja bi se trebala upisati negdje na kupdoba
+         //< cbc:ID > 9934:18683136487::HR99:11002 </ cbc:ID >
+         if(kupdob_rec.Regob.NotEmpty()) return "9934:" + kupdob_rec.Oib + "::HR99:" + kupdob_rec.Regob;
+         else return "9934:" + kupdob_rec.Oib;
       }
 
       private static string GetProjektIdentification(Prjkt prjkt_rec)
@@ -2085,8 +2099,8 @@ namespace EN16931.UBL
          string textOslob;
 
          if(_faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "OBRKAMZA") ||
-            _faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "ZLCER")    ||
-            _faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "SRCERMAT"  )) textOslob = "Isporuka oslobođena PDV-a sukladno članku 40. Zakona o PDV-u";
+            _faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "ZLCER") ||
+            _faktur_rec.Transes.Any(rtr => rtr.T_artiklCD == "SRCERMAT")) textOslob = "Isporuka oslobođena PDV-a sukladno članku 40. Zakona o PDV-u";
 
          else /*if(faktExDuc.Fld_PdvGEOkind == ZXC.PdvGEOkindEnum.HR)*/     textOslob = "Isporuka investicijskog zlata oslobođena PDV-a sukladno članku 114. Zakona o PDV-u";
 
@@ -2114,11 +2128,11 @@ namespace EN16931.UBL
 
          Rtrans rtrans_rec;
 
-         ushort line       = 0;
+         ushort line = 0;
 
          List<Rtrans> rtransList = new List<Rtrans>(this.InvoiceLine.Length);
 
-         bool   OK = true;
+         bool OK = true;
          //Faktur fak;
          //Rtrans rtr;
 
@@ -2128,20 +2142,20 @@ namespace EN16931.UBL
 
          // From Kupdob 
 
-         faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv       ;
-         faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD    ;
-         faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker      ;
-         faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1      ;
-         faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr     ;
-         faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad        ;
-         faktur_rec.KdOib        =                           kupdob_rec.Oib         ;
-         faktur_rec.VatCntryCode =                           kupdob_rec.VatCntryCode;
-       //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
+         faktur_rec.KupdobName = faktur_rec.PosJedName = kupdob_rec.Naziv;
+         faktur_rec.KupdobCD = faktur_rec.PosJedCD = kupdob_rec.KupdobCD;
+         faktur_rec.KupdobTK = faktur_rec.PosJedTK = kupdob_rec.Ticker;
+         faktur_rec.KdUlica = faktur_rec.PosJedUlica = kupdob_rec.Ulica1;
+         faktur_rec.KdZip = faktur_rec.PosJedZip = kupdob_rec.PostaBr;
+         faktur_rec.KdMjesto = faktur_rec.PosJedMjesto = kupdob_rec.Grad;
+         faktur_rec.KdOib = kupdob_rec.Oib;
+         faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
+         //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
 
-         faktur_rec.F2_R1kind    = kupdob_rec.R1kind      ;
+         faktur_rec.F2_R1kind = kupdob_rec.R1kind;
 
          if(isUFA)
-         faktur_rec.ZiroRn       = kupdob_rec.Ziro1       ;
+            faktur_rec.ZiroRn = kupdob_rec.Ziro1;
 
          // From InvoiceType 
 
@@ -2149,13 +2163,13 @@ namespace EN16931.UBL
             ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
             : this.IssueDate.Value;
 
-       //faktur_rec.DospDate  = this.DueDate.Value;
-         if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate  = this.DueDate.Value  ;
+         //faktur_rec.DospDate  = this.DueDate.Value;
+         if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate = this.DueDate.Value;
 
-         faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
-         faktur_rec.VezniDok  = this.ID.Value       ;
-       //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
-         faktur_rec.Napomena  = ZXC.F2_Unprocessed  ;
+         faktur_rec.PdvDate = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         faktur_rec.VezniDok = this.ID.Value;
+         //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
+         faktur_rec.Napomena = ZXC.F2_Unprocessed;
          for(int i = 0; this.Note != null && i < this.Note.Length; i++)
          {
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
@@ -2169,7 +2183,7 @@ namespace EN16931.UBL
          //negdje bi mozda trebalo staviti i tip poslovnog procesa (ProfileID) i /ili kod tipa računa (InvoiceTypeCode) da se zna dali je račun za avans ili ne
 
          faktur_rec.PnbM = GetPNB_FromInvoiceType(false);
-         faktur_rec.PnbV = GetPNB_FromInvoiceType(true );
+         faktur_rec.PnbV = GetPNB_FromInvoiceType(true);
 
          faktur_rec.PnbM = ZXC.LenLimitedStr(faktur_rec.PnbM, ZXC.FaktExDao.GetSchemaColumnSize(ZXC.FexCI.pnbM));
          faktur_rec.PnbV = ZXC.LenLimitedStr(faktur_rec.PnbV, ZXC.FaktExDao.GetSchemaColumnSize(ZXC.FexCI.pnbV));
@@ -2177,25 +2191,25 @@ namespace EN16931.UBL
          // From some Response 
          if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
          faktur_rec.F2_ElectronicID = electronicID;
-         faktur_rec.F2_SentTS       = sentDate;
+         faktur_rec.F2_SentTS = sentDate;
          if(isUFA)
-         faktur_rec.F2_ArhRecID     = xtranoRecID;
+            faktur_rec.F2_ArhRecID = xtranoRecID;
 
          #endregion ZAGLAVLJE računa
 
          #region STAVKE računa
 
-       //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
+         //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
          int numOfRbt_ByDocument = AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
 
-       //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
-         bool isRbt_ByDocument   = numOfRbt_ByDocument.IsPositive();
+         //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
+         bool isRbt_ByDocument = numOfRbt_ByDocument.IsPositive();
 
-         bool isRbt_ByLine       ;
-         bool isThereAnyRbt      ;
-       //bool isRbtCOMPLICATED   ;
+         bool isRbt_ByLine;
+         bool isThereAnyRbt;
+         //bool isRbtCOMPLICATED   ;
          bool isRbtNOTCOMPLICATED;
-         int  numOfRbt_ByLine = 0;
+         int numOfRbt_ByLine = 0;
 
          decimal allowanceAmount = 0.00M;
 
@@ -2203,15 +2217,15 @@ namespace EN16931.UBL
          {
             rtrans_rec = new Rtrans();
 
-          //rtrans_rec.T_artiklCD    = ;
-            rtrans_rec.T_artiklName  = ZXC.LenLimitedStr(invoiceLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
+            //rtrans_rec.T_artiklCD    = ;
+            rtrans_rec.T_artiklName = ZXC.LenLimitedStr(invoiceLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
 
-          //rtrans_rec.T_jedMj       = ; 
-            rtrans_rec.T_kol         = invoiceLine.InvoicedQuantity.Value;
+            //rtrans_rec.T_jedMj       = ; 
+            rtrans_rec.T_kol = invoiceLine.InvoicedQuantity.Value;
 
             #region The RABAT
 
-          //numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
+            //numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Length ?? 0;
             numOfRbt_ByLine = invoiceLine.AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
 
             isRbt_ByLine = numOfRbt_ByLine.IsPositive();
@@ -2220,16 +2234,16 @@ namespace EN16931.UBL
 
             isRbtNOTCOMPLICATED = !isRbt_ByDocument && numOfRbt_ByLine == 1;
 
-          //isRbtCOMPLICATED = (numOfRbt_ByDocument > 1 || numOfRbt_ByLine > 1) || (isRbt_ByLine && isRbt_ByDocument);
+            //isRbtCOMPLICATED = (numOfRbt_ByDocument > 1 || numOfRbt_ByLine > 1) || (isRbt_ByLine && isRbt_ByDocument);
 
             if(isThereAnyRbt)
-            { 
+            {
                if(isRbtNOTCOMPLICATED)
                {
-                  if(invoiceLine.AllowanceCharge != null                   &&
-                     invoiceLine.AllowanceCharge.Length > 0                &&
+                  if(invoiceLine.AllowanceCharge != null &&
+                     invoiceLine.AllowanceCharge.Length > 0 &&
                      invoiceLine.AllowanceCharge[0]?.Amount?.Value != null &&
-                     invoiceLine.AllowanceCharge[0] .Amount .Value.NotZero())
+                     invoiceLine.AllowanceCharge[0].Amount.Value.NotZero())
                   {
                      // VAŽNO!!! 
                      // budući da empirijski vidimo da neki debili od programera ovdje stavljaju      
@@ -2240,9 +2254,9 @@ namespace EN16931.UBL
                      allowanceAmount = Math.Abs(allowanceAmount);
                   }
 
-                  decimal rbtSt      = invoiceLine.AllowanceCharge?[0]?.MultiplierFactorNumeric?.Value ?? 0.00M;
-                  decimal baseAmount = invoiceLine.AllowanceCharge?[0]?.BaseAmount             ?.Value ?? 0.00M;
-                  decimal cij_KCR    = invoiceLine.Price?.PriceAmount                          ?.Value ?? 0.00M;
+                  decimal rbtSt = invoiceLine.AllowanceCharge?[0]?.MultiplierFactorNumeric?.Value ?? 0.00M;
+                  decimal baseAmount = invoiceLine.AllowanceCharge?[0]?.BaseAmount?.Value ?? 0.00M;
+                  decimal cij_KCR = invoiceLine.Price?.PriceAmount?.Value ?? 0.00M;
 
                   if(allowanceAmount.NotZero())
                   {
@@ -2280,7 +2294,7 @@ namespace EN16931.UBL
                   rtrans_rec.T_cij = ZXC.DivSafe(allowanceAmount * 100M, rtrans_rec.T_kol * rtrans_rec.T_rbt1St).Ron2();
 
                   // Varijanta B: 
-                //rtrans_rec.T_cij = ZXC.DivSafe(cij_KCR * 100M, 100M - rtrans_rec.T_rbt1St).Ron(4);
+                  //rtrans_rec.T_cij = ZXC.DivSafe(cij_KCR * 100M, 100M - rtrans_rec.T_rbt1St).Ron(4);
 
                } // if(isRbtNOTCOMPLICATED)
 
@@ -2288,7 +2302,7 @@ namespace EN16931.UBL
                {
                   if((isRbt_ByLine))
                   {
-                     rtrans_rec.T_cij = invoiceLine.Price.PriceAmount.Value; 
+                     rtrans_rec.T_cij = invoiceLine.Price.PriceAmount.Value;
                   }
                   else // if((isRbt_ByDocument))
                   {
@@ -2328,7 +2342,7 @@ namespace EN16931.UBL
 
             #endregion The RABAT
 
-            rtrans_rec.T_pdvSt       = invoiceLine.Item?.ClassifiedTaxCategory?[0]?.Percent?.Value ?? 0M;
+            rtrans_rec.T_pdvSt = invoiceLine.Item?.ClassifiedTaxCategory?[0]?.Percent?.Value ?? 0M;
 
             //rtrans_rec.T_wanted      = ;
             //rtrans_rec.T_pdvColTip   = ;
@@ -2361,7 +2375,7 @@ namespace EN16931.UBL
          #region Return
 
          if(OK) return faktur_rec;
-         else   return null      ;
+         else return null;
 
          #endregion Return
 
@@ -2380,8 +2394,8 @@ namespace EN16931.UBL
 
          if(clean.Length < 2) return "";
 
-         string mali   = ZXC.SubstringSafe(clean, 0, 2);
-         string veliki = ZXC.SubstringSafe(clean, 2   );
+         string mali = ZXC.SubstringSafe(clean, 0, 2);
+         string veliki = ZXC.SubstringSafe(clean, 2);
 
          return isVeliki ? veliki : mali;
       }
@@ -2392,11 +2406,11 @@ namespace EN16931.UBL
       {
          Faktur faktur_rec = new Faktur();
 
-         faktur_rec.TT         = isIFA ? Faktur.TT_IFA : 
+         faktur_rec.TT = isIFA ? Faktur.TT_IFA :
                                          Faktur.TT_UFA; // todo za FUR 
 
-         faktur_rec.PdvKnjiga  = ZXC.PdvKnjigaEnum.REDOVNA;
-         faktur_rec.PdvR12     = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
+         faktur_rec.PdvKnjiga = ZXC.PdvKnjigaEnum.REDOVNA;
+         faktur_rec.PdvR12 = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? ZXC.PdvR12Enum.R2 : ZXC.PdvR12Enum.R1;
          faktur_rec.PdvGEOkind = ZXC.PdvGEOkindEnum.HR;
 
          ZXC.luiListaSkladista.LazyLoad();
@@ -2503,36 +2517,36 @@ namespace EN16931.UBL
 
          Kupdob kupdob_rec = new Kupdob();
 
-         PartyType theParty = isKupac ? invoiceType.AccountingCustomerParty?.Party : 
-                                        invoiceType.AccountingSupplierParty?.Party ;
+         PartyType theParty = isKupac ? invoiceType.AccountingCustomerParty?.Party :
+                                        invoiceType.AccountingSupplierParty?.Party;
 
          kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
 
          uint newSifra = kupdob_rec.VvDao.GetNextSifra_Uint(conn, kupdob_rec.VirtualRecordName, "kupdobCD", kupdob_rec.UintSifraRootNum, kupdob_rec.UintSifraBaseFactor);
 
          kupdob_rec.KupdobCD = newSifra;
-         kupdob_rec.Ticker   = newSifra.ToString();
+         kupdob_rec.Ticker = newSifra.ToString();
 
-         kupdob_rec.Oib          = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
+         kupdob_rec.Oib = isKupac ? invoiceType.VvCustomerOIB : invoiceType.VvSupplierOIB;
 
-         kupdob_rec.Naziv        = theParty.PartyLegalEntity?[0]?.RegistrationName    ?.Value ?? string.Empty;
-         kupdob_rec.Ulica1       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
-         kupdob_rec.Ulica2       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
-         kupdob_rec.Grad         = theParty.PostalAddress?.CityName                   ?.Value ?? string.Empty;
-         kupdob_rec.PostaBr      = theParty.PostalAddress?.PostalZone                 ?.Value ?? string.Empty;
+         kupdob_rec.Naziv = theParty.PartyLegalEntity?[0]?.RegistrationName?.Value ?? string.Empty;
+         kupdob_rec.Ulica1 = theParty.PostalAddress?.StreetName?.Value ?? string.Empty;
+         kupdob_rec.Ulica2 = theParty.PostalAddress?.StreetName?.Value ?? string.Empty;
+         kupdob_rec.Grad = theParty.PostalAddress?.CityName?.Value ?? string.Empty;
+         kupdob_rec.PostaBr = theParty.PostalAddress?.PostalZone?.Value ?? string.Empty;
          kupdob_rec.VatCntryCode = theParty.PostalAddress?.Country?.IdentificationCode?.Value ?? string.Empty;
 
-         kupdob_rec.Naziv        = ZXC.LenLimitedStr(kupdob_rec.Naziv , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.naziv ));
-         kupdob_rec.Ulica1       = ZXC.LenLimitedStr(kupdob_rec.Ulica1, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica1));
-         kupdob_rec.Ulica2       = ZXC.LenLimitedStr(kupdob_rec.Ulica2, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica2));
-         kupdob_rec.Grad         = ZXC.LenLimitedStr(kupdob_rec.Grad  , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.grad  ));
+         kupdob_rec.Naziv = ZXC.LenLimitedStr(kupdob_rec.Naziv, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.naziv));
+         kupdob_rec.Ulica1 = ZXC.LenLimitedStr(kupdob_rec.Ulica1, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica1));
+         kupdob_rec.Ulica2 = ZXC.LenLimitedStr(kupdob_rec.Ulica2, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica2));
+         kupdob_rec.Grad = ZXC.LenLimitedStr(kupdob_rec.Grad, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.grad));
 
          if(isDobav)
          {
-          //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
-          
+            //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
+
             string kupdobZiro = invoiceType.PaymentMeans?[0]?.PayeeFinancialAccount?.ID?.Value;
-            if (!string.IsNullOrWhiteSpace(kupdobZiro))
+            if(!string.IsNullOrWhiteSpace(kupdobZiro))
             {
                kupdob_rec.Ziro1 = ZXC.LenLimitedStr(kupdobZiro, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ziro1));
             }
@@ -2654,8 +2668,8 @@ namespace EN16931.UBL
 
          if(clean.Length < 2) return "";
 
-         string mali   = ZXC.SubstringSafe(clean, 0, 2);
-         string veliki = ZXC.SubstringSafe(clean, 2   );
+         string mali = ZXC.SubstringSafe(clean, 0, 2);
+         string veliki = ZXC.SubstringSafe(clean, 2);
 
          return isVeliki ? veliki : mali;
       }
@@ -2666,36 +2680,36 @@ namespace EN16931.UBL
 
          Kupdob kupdob_rec = new Kupdob();
 
-         PartyType theParty = isKupac ? creditNoteType.AccountingCustomerParty?.Party : 
-                                        creditNoteType.AccountingSupplierParty?.Party ;
+         PartyType theParty = isKupac ? creditNoteType.AccountingCustomerParty?.Party :
+                                        creditNoteType.AccountingSupplierParty?.Party;
 
          kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
 
          uint newSifra = kupdob_rec.VvDao.GetNextSifra_Uint(conn, kupdob_rec.VirtualRecordName, "kupdobCD", kupdob_rec.UintSifraRootNum, kupdob_rec.UintSifraBaseFactor);
 
          kupdob_rec.KupdobCD = newSifra;
-         kupdob_rec.Ticker   = newSifra.ToString();
+         kupdob_rec.Ticker = newSifra.ToString();
 
-         kupdob_rec.Oib          = isKupac ? creditNoteType.VvCustomerOIB : creditNoteType.VvSupplierOIB;
+         kupdob_rec.Oib = isKupac ? creditNoteType.VvCustomerOIB : creditNoteType.VvSupplierOIB;
 
-         kupdob_rec.Naziv        = theParty.PartyLegalEntity?[0]?.RegistrationName    ?.Value ?? string.Empty;
-         kupdob_rec.Ulica1       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
-         kupdob_rec.Ulica2       = theParty.PostalAddress?.StreetName                 ?.Value ?? string.Empty;
-         kupdob_rec.Grad         = theParty.PostalAddress?.CityName                   ?.Value ?? string.Empty;
-         kupdob_rec.PostaBr      = theParty.PostalAddress?.PostalZone                 ?.Value ?? string.Empty;
+         kupdob_rec.Naziv = theParty.PartyLegalEntity?[0]?.RegistrationName?.Value ?? string.Empty;
+         kupdob_rec.Ulica1 = theParty.PostalAddress?.StreetName?.Value ?? string.Empty;
+         kupdob_rec.Ulica2 = theParty.PostalAddress?.StreetName?.Value ?? string.Empty;
+         kupdob_rec.Grad = theParty.PostalAddress?.CityName?.Value ?? string.Empty;
+         kupdob_rec.PostaBr = theParty.PostalAddress?.PostalZone?.Value ?? string.Empty;
          kupdob_rec.VatCntryCode = theParty.PostalAddress?.Country?.IdentificationCode?.Value ?? string.Empty;
 
-         kupdob_rec.Naziv        = ZXC.LenLimitedStr(kupdob_rec.Naziv , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.naziv ));
-         kupdob_rec.Ulica1       = ZXC.LenLimitedStr(kupdob_rec.Ulica1, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica1));
-         kupdob_rec.Ulica2       = ZXC.LenLimitedStr(kupdob_rec.Ulica2, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica2));
-         kupdob_rec.Grad         = ZXC.LenLimitedStr(kupdob_rec.Grad  , ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.grad  ));
+         kupdob_rec.Naziv = ZXC.LenLimitedStr(kupdob_rec.Naziv, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.naziv));
+         kupdob_rec.Ulica1 = ZXC.LenLimitedStr(kupdob_rec.Ulica1, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica1));
+         kupdob_rec.Ulica2 = ZXC.LenLimitedStr(kupdob_rec.Ulica2, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.ulica2));
+         kupdob_rec.Grad = ZXC.LenLimitedStr(kupdob_rec.Grad, ZXC.KupdobDao.GetSchemaColumnSize(ZXC.KpdbCI.grad));
 
          if(isDobav)
          {
-          //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
-          
+            //kupdob_rec.Ziro1 = invoiceType.PaymentMeans[0].PayeeFinancialAccount.ID.Value;
+
             string kupdobZiro = creditNoteType.PaymentMeans?[0]?.PayeeFinancialAccount?.ID?.Value;
-            if (!string.IsNullOrWhiteSpace(kupdobZiro))
+            if(!string.IsNullOrWhiteSpace(kupdobZiro))
             {
                kupdob_rec.Ziro1 = kupdobZiro;
             }
@@ -2719,19 +2733,19 @@ namespace EN16931.UBL
 
             // From Kupdob 
 
-            faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv       ;
-            faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD    ;
-            faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker      ;
-            faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1      ;
-            faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr     ;
-            faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad        ;
-            faktur_rec.KdOib        =                           kupdob_rec.Oib         ;
-            faktur_rec.VatCntryCode =                           kupdob_rec.VatCntryCode;
+            faktur_rec.KupdobName = faktur_rec.PosJedName = kupdob_rec.Naziv;
+            faktur_rec.KupdobCD = faktur_rec.PosJedCD = kupdob_rec.KupdobCD;
+            faktur_rec.KupdobTK = faktur_rec.PosJedTK = kupdob_rec.Ticker;
+            faktur_rec.KdUlica = faktur_rec.PosJedUlica = kupdob_rec.Ulica1;
+            faktur_rec.KdZip = faktur_rec.PosJedZip = kupdob_rec.PostaBr;
+            faktur_rec.KdMjesto = faktur_rec.PosJedMjesto = kupdob_rec.Grad;
+            faktur_rec.KdOib = kupdob_rec.Oib;
+            faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
 
-            faktur_rec.F2_R1kind    = kupdob_rec.R1kind;
+            faktur_rec.F2_R1kind = kupdob_rec.R1kind;
 
             if(isUFA)
-            faktur_rec.ZiroRn       = kupdob_rec.Ziro1;
+               faktur_rec.ZiroRn = kupdob_rec.Ziro1;
 
             // From CreditNoteType 
 
@@ -2739,7 +2753,7 @@ namespace EN16931.UBL
                ? creditNote.IssueDate.Value.Date.Add(creditNote.IssueTime.Value.TimeOfDay)
                : creditNote.IssueDate.Value;
 
-            faktur_rec.PdvDate  = creditNote.TaxPointDate?.Value == null ? creditNote.IssueDate.Value : creditNote.TaxPointDate.Value;
+            faktur_rec.PdvDate = creditNote.TaxPointDate?.Value == null ? creditNote.IssueDate.Value : creditNote.TaxPointDate.Value;
             faktur_rec.VezniDok = creditNote.ID.Value;
             faktur_rec.Napomena = ZXC.F2_Unprocessed;
 
@@ -2753,7 +2767,7 @@ namespace EN16931.UBL
             // From some Response 
             if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
             faktur_rec.F2_ElectronicID = electronicID;
-            faktur_rec.F2_SentTS       = sentDate;
+            faktur_rec.F2_SentTS = sentDate;
 
             #endregion ZAGLAVLJE računa
 
@@ -2770,9 +2784,9 @@ namespace EN16931.UBL
                   Rtrans rtrans_rec = new Rtrans();
 
                   rtrans_rec.T_artiklName = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
-                  rtrans_rec.T_kol        = creditNoteLine.CreditedQuantity.Value;
-                  rtrans_rec.T_cij        = creditNoteLine.Price.PriceAmount.Value;
-                  rtrans_rec.T_pdvSt      = creditNoteLine.Item.ClassifiedTaxCategory[0].Percent.Value;
+                  rtrans_rec.T_kol = creditNoteLine.CreditedQuantity.Value;
+                  rtrans_rec.T_cij = creditNoteLine.Price.PriceAmount.Value;
+                  rtrans_rec.T_pdvSt = creditNoteLine.Item.ClassifiedTaxCategory[0].Percent.Value;
 
                   rtrans_rec.CalcTransResults(null);
 
@@ -2812,11 +2826,11 @@ namespace EN16931.UBL
 
          Rtrans rtrans_rec;
 
-         ushort line       = 0;
+         ushort line = 0;
 
          List<Rtrans> rtransList = new List<Rtrans>(this.CreditNoteLine.Length);
 
-         bool   OK = true;
+         bool OK = true;
          //Faktur fak;
          //Rtrans rtr;
 
@@ -2826,20 +2840,20 @@ namespace EN16931.UBL
 
          // From Kupdob 
 
-         faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv       ;
-         faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD    ;
-         faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker      ;
-         faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1      ;
-         faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr     ;
-         faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad        ;
-         faktur_rec.KdOib        =                           kupdob_rec.Oib         ;
-         faktur_rec.VatCntryCode =                           kupdob_rec.VatCntryCode;
-       //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
+         faktur_rec.KupdobName = faktur_rec.PosJedName = kupdob_rec.Naziv;
+         faktur_rec.KupdobCD = faktur_rec.PosJedCD = kupdob_rec.KupdobCD;
+         faktur_rec.KupdobTK = faktur_rec.PosJedTK = kupdob_rec.Ticker;
+         faktur_rec.KdUlica = faktur_rec.PosJedUlica = kupdob_rec.Ulica1;
+         faktur_rec.KdZip = faktur_rec.PosJedZip = kupdob_rec.PostaBr;
+         faktur_rec.KdMjesto = faktur_rec.PosJedMjesto = kupdob_rec.Grad;
+         faktur_rec.KdOib = kupdob_rec.Oib;
+         faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
+         //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
 
-         faktur_rec.F2_R1kind    = kupdob_rec.R1kind      ;
+         faktur_rec.F2_R1kind = kupdob_rec.R1kind;
 
          if(isUFA)
-         faktur_rec.ZiroRn       = kupdob_rec.Ziro1       ;
+            faktur_rec.ZiroRn = kupdob_rec.Ziro1;
 
          // From CreditNoteType 
 
@@ -2847,13 +2861,13 @@ namespace EN16931.UBL
             ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
             : this.IssueDate.Value;
 
-       //faktur_rec.DospDate  = this.DueDate.Value;
+         //faktur_rec.DospDate  = this.DueDate.Value;
          //if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate  = this.DueDate.Value  ;
 
-         faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
-         faktur_rec.VezniDok  = this.ID.Value       ;
-       //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
-         faktur_rec.Napomena  = ZXC.F2_Unprocessed  ;
+         faktur_rec.PdvDate = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         faktur_rec.VezniDok = this.ID.Value;
+         //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
+         faktur_rec.Napomena = ZXC.F2_Unprocessed;
          for(int i = 0; this.Note != null && i < this.Note.Length; i++)
          {
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
@@ -2870,9 +2884,9 @@ namespace EN16931.UBL
          // From some Response 
          if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
          faktur_rec.F2_ElectronicID = electronicID;
-         faktur_rec.F2_SentTS       = sentDate;
+         faktur_rec.F2_SentTS = sentDate;
          if(isUFA)
-         faktur_rec.F2_ArhRecID     = xtranoRecID;
+            faktur_rec.F2_ArhRecID = xtranoRecID;
 
          #endregion ZAGLAVLJE računa
 
@@ -2882,14 +2896,14 @@ namespace EN16931.UBL
          {
             rtrans_rec = new Rtrans();
 
-            rtrans_rec.T_artiklName  = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
+            rtrans_rec.T_artiklName = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
 
-            rtrans_rec.T_kol         = /*creditNoteLine.InvoicedQuantity.Value;*/ 1M;
+            rtrans_rec.T_kol = /*creditNoteLine.InvoicedQuantity.Value;*/ 1M;
 
-            rtrans_rec.T_pdvSt       = creditNoteLine.Item?.ClassifiedTaxCategory?[0]?.Percent?.Value ?? 0M;
+            rtrans_rec.T_pdvSt = creditNoteLine.Item?.ClassifiedTaxCategory?[0]?.Percent?.Value ?? 0M;
 
-          //rtrans_rec.T_cij         =           creditNoteLine.Price.PriceAmount.Value ;
-            rtrans_rec.T_cij         = -Math.Abs(creditNoteLine.Price.PriceAmount.Value);
+            //rtrans_rec.T_cij         =           creditNoteLine.Price.PriceAmount.Value ;
+            rtrans_rec.T_cij = -Math.Abs(creditNoteLine.Price.PriceAmount.Value);
 
             rtrans_rec.CalcTransResults(null);
 
@@ -2915,12 +2929,138 @@ namespace EN16931.UBL
          #region Return
 
          if(OK) return faktur_rec;
-         else   return null      ;
+         else return null;
 
          #endregion Return
 
       }
-
    }
+}
 
+namespace EN16931.UBL.QWE2
+{
+   namespace EN16931.UBL.QWE2
+   {
+      public partial class EvidentirajNaplatuZahtjev
+      {
+         private static System.Xml.Serialization.XmlSerializer serializer;
+         private static System.Xml.Serialization.XmlSerializer Serializer
+         {
+            get
+            {
+               if((serializer == null))
+               {
+                  serializer = new System.Xml.Serialization.XmlSerializer(typeof(EvidentirajNaplatuZahtjev));
+               }
+               return serializer;
+            }
+         }
+
+         public static EvidentirajNaplatuZahtjev Deserialize(string xml)
+         {
+            System.IO.StringReader stringReader = null;
+            try
+            {
+               stringReader = new System.IO.StringReader(xml);
+               return ((EvidentirajNaplatuZahtjev)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            }
+            finally
+            {
+               if((stringReader != null))
+               {
+                  stringReader.Dispose();
+               }
+            }
+         }
+
+         public virtual string Serialize(System.Text.Encoding encoding)
+         {
+            System.IO.StreamReader streamReader = null;
+            System.IO.MemoryStream memoryStream = null;
+            string xmlString = "";
+
+            try
+            {
+
+
+               System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings()
+               {
+                  Encoding = encoding,
+                  Indent = true, // byQ 
+                  IndentChars = "   ", // byQ 
+               };
+
+               memoryStream = new System.IO.MemoryStream();
+
+               System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+               //Serializer.Serialize(xmlWriter, this                         );           
+               Serializer.Serialize(xmlWriter, this); // byJura 
+               memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+               streamReader = new System.IO.StreamReader(memoryStream);
+               xmlString = streamReader.ReadToEnd();
+
+               return xmlString;
+            }
+            finally
+            {
+               if((streamReader != null))
+               {
+                  streamReader.Dispose();
+               }
+               if((memoryStream != null))
+               {
+                  memoryStream.Dispose();
+               }
+            }
+         }
+
+         public virtual string SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+         {
+            exception = null;
+            try
+            {
+               return SaveToFile(fileName, encoding);
+               //return true;
+            }
+            catch(System.Exception e)
+            {
+               exception = e;
+               return "";
+            }
+         }
+
+         public virtual string SaveToFile(string fileName, out System.Exception exception)
+         {
+            return SaveToFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM, out exception);
+         }
+
+         public virtual string SaveToFile(string fileName)
+         {
+            return SaveToFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
+         }
+
+         public virtual string SaveToFile(string fileName, System.Text.Encoding encoding)
+         {
+            string xmlString = "";
+
+            System.IO.StreamWriter streamWriter = null;
+            try
+            {
+               xmlString = Serialize(encoding);
+               streamWriter = new System.IO.StreamWriter(fileName, false, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
+               streamWriter.WriteLine(xmlString);
+               streamWriter.Close();
+            }
+            finally
+            {
+               if((streamWriter != null))
+               {
+                  streamWriter.Dispose();
+               }
+            }
+
+            return xmlString;
+         }
+      }
+   }
 }

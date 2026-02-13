@@ -249,56 +249,6 @@ namespace EN16931.UBL
          }
       }
 
-#if tumorou
-
-      public virtual string SaveToFile(string fileName, System.Text.Encoding encoding, System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, string certPassword)
-      {
-         string xmlString = "";
-
-         System.IO.StreamWriter streamWriter = null;
-         try
-         {
-            xmlString = Serialize(encoding);
-
-      #region UBLextension - UBLsigner (By FINA - Jura)
-
-            byte[] xmlSignedByteArray = null;
-
-            if(certificate != null)
-            {
-               hr.fina.eracun.signature.UBLSigner ublSigner = new hr.fina.eracun.signature.UBLSigner(certificate, certPassword, "Invoice");
-               //u memoryStream je xml prije potpisa 
-               xmlSignedByteArray = ublSigner.signUBLDocument(encoding.GetBytes(xmlString));
-            }
-
-      #endregion UBLextension - UBLsigner
-
-            streamWriter = new System.IO.StreamWriter(fileName, false, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
-
-            if(xmlSignedByteArray != null)
-            {
-               streamWriter.WriteLine(xmlSignedByteArray);
-            }
-            else
-            {
-               streamWriter.WriteLine(xmlString);
-            }
-
-            streamWriter.Close();
-         }
-         finally
-         {
-            if((streamWriter != null))
-            {
-               streamWriter.Dispose();
-            }
-         }
-
-         return xmlString;
-      }
-
-#endif
-
       /// <summary>
       /// Serializes current InvoiceType object into file
       /// </summary>

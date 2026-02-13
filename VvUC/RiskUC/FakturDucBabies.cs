@@ -9075,6 +9075,82 @@ public class ZAR_DUC         : FakturExtDUC
 
 #region Fiskalizacija F2
 
+public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
+{
+   #region Filedz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+   private VvTextBox tbx_napomena;
+   private Label     lbl_racun;
+
+   #endregion Filedz
+
+   #region Constructor
+
+   public F2_FUR_addNpomenaUFA_Dlg(Faktur faktur_rec)
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text          = "Dodaj napomenu na ulazni račun " + faktur_rec.TT + "-" + faktur_rec.TtNum.ToString();
+
+      CreateHamper(faktur_rec);
+
+      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_napomena , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+
+      Fld_Napomena = faktur_rec.Napomena;
+   }
+
+   #endregion Constructor
+   
+   #region hamper
+
+   private void CreateHamper(Faktur faktur_rec)
+   {
+      hamper          = new VvHamper(2, 2, "", this, false);
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q10un*2 };
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4    };
+      hamper.VvRightMargin = 0;
+
+      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
+      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      string label = "Račun " + faktur_rec.TT + "-" +  faktur_rec.TtNum.ToString() + " " + faktur_rec.KupdobName + " ";
+
+      lbl_racun = hamper.CreateVvLabel(0, 0, label, 1, 0, ContentAlignment.MiddleLeft);
+      lbl_racun.Font = ZXC.vvFont.BaseBoldFont;
+
+                     hamper.CreateVvLabel  (0, 1, "Napomena:", ContentAlignment.MiddleRight);
+      tbx_napomena = hamper.CreateVvTextBox(1, 1, "tbx_napomena", "Napomena");
+   }
+   
+   #endregion hamper
+   
+   #region Button_Click
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+   #endregion Button_Click
+
+   #region Fld_
+
+   public string Fld_Napomena { get { return tbx_napomena.Text; } set { tbx_napomena.Text = value; }   }
+
+   #endregion Fld_
+}
 public class F2_Izlaz_UC : VvUserControl
 {
    #region Fieldz
@@ -9547,7 +9623,6 @@ public class F2_Izlaz_UC : VvUserControl
 #endif
    }
 }
-
 public class F2_Ulaz_UC : VvUserControl
 {
    #region Fieldz
@@ -9996,7 +10071,6 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 }
-
 public class F2_NIR_UC : VvUserControl
 {
    #region Fieldz
@@ -10021,6 +10095,8 @@ public class F2_NIR_UC : VvUserControl
 
    Color clr_colHeader_Back, clr_colHeader_Fore, clr_rowHeader_Back, clr_rowHeader_Fore, clr_colIfa_Back, clr_eRacun_Back, clr_Mp_Back;
 
+   internal List<Ftrans> TheFtransList { get; set; }
+
    #endregion Fieldz
 
    #region Constructor
@@ -10041,13 +10117,67 @@ public class F2_NIR_UC : VvUserControl
 
       SetColumnIndexes();
 
+#if !DEBUG
+      INIT_NIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+#endif
+
       TheG.TabStop = false;
       TheG.ClearSelection();
 
     //TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
 
    }
+   internal void INIT_NIR()
+   {
+      if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
 
+      TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
+
+      #region Check Tables 
+
+      string tableName, dbName;
+
+      tableName = Xtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      tableName = Faktur.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      tableName = FaktEx.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      tableName = Rtrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      tableName = Rtrano.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false); 
+
+      tableName = Kupdob.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      tableName = Nalog.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      tableName = Ftrans.recordName; dbName = VvSQL.GetDbNameForThisTableName(tableName);
+      if(!VvSQL.CHECK_TABLE_EXISTS(TheDbConnection, dbName, tableName)) VvSQL.CREATE_TABLE(TheDbConnection, dbName, tableName, false);
+
+      #endregion Check Tables 
+
+      Vv_eRacun_HTTP.InitProjectData();
+
+      int newsCount = 0;
+
+      /* AAA */ newsCount += Vv_eRacun_HTTP.Load_MAP_FtransList(this);
+
+      if(newsCount.IsNegative()) return; // neinicijalizirani projekt - nema jos table-ova 
+
+      ZXC.SetStatusText("");
+
+      //if(newsCount.IsZero())
+      //{
+      //   ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
+      //}
+   }
    #endregion Constructor
 
    #region TheGrid and columns
@@ -10210,84 +10340,6 @@ public class F2_NIR_UC : VvUserControl
 
    #endregion PutDgvFields1
 
-}
-
-
-public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
-{
-   #region Filedz
-
-   private Button    okButton, cancelButton;
-   private VvHamper  hamper;
-   private int       dlgWidth, dlgHeight;
-   private VvTextBox tbx_napomena;
-   private Label     lbl_racun;
-
-   #endregion Filedz
-
-   #region Constructor
-
-   public F2_FUR_addNpomenaUFA_Dlg(Faktur faktur_rec)
-   {
-      this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = "Dodaj napomenu na ulazni račun " + faktur_rec.TT + "-" + faktur_rec.TtNum.ToString();
-
-      CreateHamper(faktur_rec);
-
-      dlgWidth  = hamper.Right + ZXC.QunMrgn;
-      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
-      this.ClientSize = new Size(dlgWidth, dlgHeight);
-
-      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
-      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-      VvHamper.Open_Close_Fields_ForWriting(tbx_napomena , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
-
-      Fld_Napomena = faktur_rec.Napomena;
-   }
-
-   #endregion Constructor
-   
-   #region hamper
-
-   private void CreateHamper(Faktur faktur_rec)
-   {
-      hamper          = new VvHamper(2, 2, "", this, false);
-      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QUN);
-
-      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q10un*2 };
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun4, ZXC.Qun4    };
-      hamper.VvRightMargin = 0;
-
-      hamper.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QUN  };
-      hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4 };
-      hamper.VvBottomMargin = hamper.VvTopMargin;
-
-      string label = "Račun " + faktur_rec.TT + "-" +  faktur_rec.TtNum.ToString() + " " + faktur_rec.KupdobName + " ";
-
-      lbl_racun = hamper.CreateVvLabel(0, 0, label, 1, 0, ContentAlignment.MiddleLeft);
-      lbl_racun.Font = ZXC.vvFont.BaseBoldFont;
-
-                     hamper.CreateVvLabel  (0, 1, "Napomena:", ContentAlignment.MiddleRight);
-      tbx_napomena = hamper.CreateVvTextBox(1, 1, "tbx_napomena", "Napomena");
-   }
-   
-   #endregion hamper
-   
-   #region Button_Click
-
-   void cancelButton_Click(object sender, EventArgs e)
-   {
-      this.Close();
-   }
-
-   #endregion Button_Click
-
-   #region Fld_
-
-   public string Fld_Napomena { get { return tbx_napomena.Text; } set { tbx_napomena.Text = value; }   }
-
-   #endregion Fld_
 }
 
 

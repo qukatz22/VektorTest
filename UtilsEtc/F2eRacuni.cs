@@ -1148,7 +1148,7 @@ public static class Vv_eRacun_HTTP
 
    #endregion Concrete API / EndPoint methods implementations - 'ZEBRA'
 
-   #region FIR / FUR Load List and SubmodulActions
+   #region FIR / FUR / NIR Load List and SubmodulActions
 
    #region FIR
    /* AAA */internal static int Load_IRn_FakturList(F2_Izlaz_UC theUC)
@@ -3564,7 +3564,33 @@ public static class Vv_eRacun_HTTP
 
    #endregion Other
 
-   #endregion FIR / FUR Load List and SubmodulActions
+   #region NIR
+
+   /* AAA */internal static int Load_MAP_FtransList(F2_NIR_UC theUC)
+   {
+      ZXC.SetStatusText("Load_MAP_FtransList");
+
+      Faktur MAP_CandidateFaktur_rec;
+
+      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
+
+      string thePaymentMethod = "T"; // T je default a dole se jos postavlja prema TT-u 
+
+    //theUC.TheFtransList = FtransDao.Get_MAP_FtransList       (theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      theUC.TheFtransList = FtransDao.Get_Zatvaranja_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans     zatvaranja / naplate od KUPACa                      
+
+      if(theUC.TheFtransList.NotEmpty()) theUC.PutDgvFields();
+
+      int newsCount = 0;
+
+      ZXC.SetStatusText("");
+
+      return newsCount;
+   }
+
+   #endregion NIR
+
+   #endregion FIR / FUR / NIR Load List and SubmodulActions
 
 }
 
@@ -4995,4 +5021,9 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       theUC.PutDgvLineFields(rowIdx, xtrano_rec);
    }
+   private void F2_RefreshNIR_FtransLis(object sender, EventArgs e)
+   {
+      ((F2_NIR_UC)TheVvUC).INIT_NIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+   }
+
 }

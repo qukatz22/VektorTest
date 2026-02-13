@@ -2440,6 +2440,7 @@
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\Reference.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceClient.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\B2GOutgoing_Send\SendInvoiceOperation.cs" />
+    <Compile Include="UtilsEtc\B2GInvoicing\eIzvjestavanjeSchema.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\InvoiceType2026.cs" />
     <Compile Include="UtilsEtc\B2GInvoicing\Outgoing_eRacun_parameters.cs" />
     <Compile Include="UtilsEtc\F2eRacuni.cs" />
