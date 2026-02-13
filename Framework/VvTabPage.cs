@@ -869,13 +869,13 @@ be_fast:
       if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2U) 
       {
          TheVvUC = new F2_Ulaz_UC(panelZaUC, vvSubModul);
-
-         // preselio u constructor UC-a 
-       //  Vv_eRacun_HTTP.Load_URn_FakturList((F2_Ulaz_UC)TheVvUC);
-       ////Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
-       //  Vv_eRacun_HTTP.QueryInbox_DPS     ((F2_Ulaz_UC)TheVvUC);
       }
 
+      //NAPLATA RACUNA
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_F2N) 
+      {
+         TheVvUC = new F2_NIR_UC(panelZaUC, vvSubModul);
+      }
    }
 
    #endregion Create_OtherUC

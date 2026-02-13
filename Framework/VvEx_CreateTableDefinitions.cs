@@ -250,7 +250,7 @@ public static class VvUcList_Ex
 
 public static class VvUcList_AddNew
 {
-   public static uint TableVersionStatic_VEKTOR { get { return 318; } }
+   public static uint TableVersionStatic_VEKTOR { get { return 319; } }
 
    public static string AddNewVvUserControl_CommandText_VEKTOR(uint catchingVersion)
    {
@@ -715,6 +715,8 @@ public static class VvUcList_AddNew
          case 317: return commandBeginning + GetCommandEnd(ZXC.VvReportEnum.RIZ_RekapFakturWKupdob.ToString(), "1", "5", "RIZ_RekapFakturWKupdob", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          case 318: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_ZAR.ToString(), "1", "2", "ZAR_DUC", ZXC.IsTEXTHOany2 ? "valentina" : "");
+
+         case 319: return commandBeginning + GetCommandEnd(ZXC.VvSubModulEnum.R_F2N.ToString(), "1", "7", "F2_NIR_UC", ZXC.IsTEXTHOany2 ? "valentina" : "");
 
          // SV DUH: rucno, kao i one prethodne, onemoguciti svaki novi UC koji njima ne treba! 
 
