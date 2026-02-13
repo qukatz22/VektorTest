@@ -257,6 +257,9 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
                   ZXC.XtranoDao.FillFromDataReader(MAP_xtrano_rec, reader, false);
 
                   MAP_XtranoList.Add(MAP_xtrano_rec);
+
+                  //string pero = VvStringCompressor.DecompressXml(MAP_xtrano_rec.T_XmlZip);
+
                }
                reader.Close();
             }

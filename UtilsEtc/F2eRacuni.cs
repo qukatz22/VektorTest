@@ -665,6 +665,49 @@ public static class Vv_eRacun_HTTP
       }
    }
 
+   /// <summary>
+   /// Gets the Faktur record associated with the payment Ftrans, handling both current and previous year records.
+   /// </summary>
+   /// <param name="paymentftrans_rec">The payment Ftrans record</param>
+   /// <param name="dbConnection">Database connection for current year</param>
+   /// <param name="paymentMethod">Output parameter for the payment method (T, O, or Z)</param>
+   /// <returns>The associated Faktur record, or null if not found or invalid</returns>
+   internal static Faktur GetFakturFromPaymentFtrans(Ftrans paymentftrans_rec, XSqlConnection dbConnection, out string paymentMethod)
+   {
+      paymentMethod = "T"; // Default payment method
+
+      Faktur MAP_CandidateFaktur_rec = new Faktur();
+
+      if(paymentftrans_rec.T_fakRecID.NotZero())
+      {
+         if(paymentftrans_rec.T_fakYear.IsZero())
+         {
+            //ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakYear IsZero!!!");
+            return null;
+         }
+
+         if(paymentftrans_rec.T_fakYear == ZXC.projectYearAsInt) // uplata se odnosi na Faktur iz ove godine 
+         {
+            MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(dbConnection, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+         }
+         else // uplata se odnosi na Faktur iz neke PROŠLE godine 
+         {
+            MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/ZXC.TheSecondDbConn_SameDB_OtherYear((int)paymentftrans_rec.T_fakYear), paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+         }
+
+         paymentMethod = paymentftrans_rec.T_TT == Nalog.IZ_TT ? "T" : paymentftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
+      }
+      else
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakRecID IsZero!!!");
+
+         MAP_CandidateFaktur_rec = null;
+         // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a ... ili kojiK ... npr ako je R1/R2 'po naplati' 
+      }
+
+      return MAP_CandidateFaktur_rec;
+   }
+
    #endregion Utils
 
    #region Concrete API / EndPoint methods implementations - 'ZEBRA'
@@ -2203,36 +2246,45 @@ public static class Vv_eRacun_HTTP
 
       VvMER_RequestData MAP_requestData;
 
+      int zeroFakYearCount = paymentftransList.Count(ftr => ftr.T_fakYear.IsZero());
+
+      if(zeroFakYearCount.IsPositive()) ZXC.aim_emsg(MessageBoxIcon.Warning, $"Postoji {zeroFakYearCount} zatvaranja sa oznakom T_FakYear nula!?");
+
+      // Remove one koji su prije 2026 
+      paymentftransList.RemoveAll(ftr => ftr.T_fakYear.NotZero() && ftr.T_fakYear < 2026);
+
       foreach(Ftrans paymentftrans_rec in paymentftransList)
       {
-         MAP_CandidateFaktur_rec = new Faktur();
+         //MAP_CandidateFaktur_rec = new Faktur();
+         //
+         //if(paymentftrans_rec.T_fakRecID.NotZero()) 
+         //{
+         //   if(paymentftrans_rec.T_fakYear.IsZero())
+         //   {
+         //      ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakYear IsZero!!!");
+         //      continue;
+         //   }
+         //
+         //   if(paymentftrans_rec.T_fakYear == ZXC.projectYearAsInt) // uplata se odnosi na Faktur iz ove godine 
+         //   {
+         //      MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(theUC.TheDbConnection, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+         //   }
+         //   else // uplata se odnosi na Faktur iz neke PROŠLE godine 
+         //   {
+         //      MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/ZXC.TheSecondDbConn_SameDB_OtherYear((int)paymentftrans_rec.T_fakYear), paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+         //   }
+         //
+         //   thePaymentMethod = paymentftrans_rec.T_TT == Nalog.IZ_TT ? "T" : paymentftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
+         //}
+         //else
+         //{
+         //   ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakRecID IsZero!!!");
+         //
+         //   MAP_CandidateFaktur_rec = null;
+         //   // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a ... ili kojiK ... npr ako je R1/R2 'po naplati' 
+         //}
 
-         if(paymentftrans_rec.T_fakRecID.NotZero()) 
-         {
-            if(paymentftrans_rec.T_fakYear.IsZero())
-            {
-               ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakYear IsZero!!!");
-               continue;
-            }
-
-            if(paymentftrans_rec.T_fakYear == ZXC.projectYearAsInt) // uplata se odnosi na Faktur iz ove godine 
-            {
-               MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(theUC.TheDbConnection, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
-            }
-            else // uplata se odnosi na Faktur iz neke PROŠLE godine 
-            {
-               MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/ZXC.TheSecondDbConn_SameDB_OtherYear((int)paymentftrans_rec.T_fakYear), paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
-            }
-
-            thePaymentMethod = paymentftrans_rec.T_TT == Nalog.IZ_TT ? "T" : paymentftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
-         }
-         else
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Error, $"{paymentftrans_rec.ToShortString()}{Environment.NewLine}T_fakRecID IsZero!!!");
-
-            MAP_CandidateFaktur_rec = null;
-            // TODO: ako ispadne da je T_fakRecID prazan, ovdje treba potražiti fakturu preko T_tipBr-a ... ili kojiK ... npr ako je R1/R2 'po naplati' 
-         }
+         MAP_CandidateFaktur_rec = GetFakturFromPaymentFtrans(paymentftrans_rec, theUC.TheDbConnection, out thePaymentMethod);
 
          if(MAP_CandidateFaktur_rec == null)
          {
@@ -3579,6 +3631,13 @@ public static class Vv_eRacun_HTTP
     //theUC.TheFtransList = FtransDao.Get_MAP_FtransList       (theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
       theUC.TheFtransList = FtransDao.Get_Zatvaranja_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans     zatvaranja / naplate od KUPACa                      
 
+      int zeroFakYearCount = theUC.TheFtransList.Count(ftr => ftr.T_fakYear.IsZero());
+
+      if(zeroFakYearCount.IsPositive()) ZXC.aim_emsg(MessageBoxIcon.Warning, $"Postoji {zeroFakYearCount} zatvaranja sa oznakom T_FakYear nula!?");
+
+      // Remove one koji su prije 2026 
+      theUC.TheFtransList.RemoveAll(ftr => ftr.T_fakYear.NotZero() && ftr.T_fakYear < 2026);
+
       if(theUC.TheFtransList.NotEmpty()) theUC.PutDgvFields();
 
       int newsCount = 0;
@@ -3588,6 +3647,229 @@ public static class Vv_eRacun_HTTP
       return newsCount;
    }
 
+   /* NNN */internal static int Create_MAP_XML_From_NIR(F2_NIR_UC theUC)
+   {
+      #region Init & Get Dialog Fields AND Create MAP_XML_List 
+
+      int newsCount = 0;
+
+      List<(Ftrans ftrans, Faktur faktur)> MAP_ActionsList = new List<(Ftrans ftrans, Faktur faktur)>();
+
+      Faktur MAP_CandidateFaktur_rec;
+
+      List<VvReportSourceUtil> messageList = new List<VvReportSourceUtil>();
+
+      List<Ftrans> paymentftransList;
+
+      string thePaymentMethod = "T"; // T je default a dole se jos postavlja prema TT-u 
+
+      paymentftransList = FtransDao.Get_MAP_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+
+      if(paymentftransList.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Nema ništa za slanje.");
+         return 0;
+      }
+
+      VvMER_RequestData MAP_requestData;
+
+      int zeroFakYearCount = paymentftransList.Count(ftr => ftr.T_fakYear.IsZero());
+
+      if(zeroFakYearCount.IsPositive()) ZXC.aim_emsg(MessageBoxIcon.Warning, $"Postoji {zeroFakYearCount} zatvaranja sa oznakom T_FakYear nula!?");
+
+      // Remove one koji su prije 2026 
+      paymentftransList.RemoveAll(ftr => /*ftr.T_fakYear.NotZero() &&*/ ftr.T_fakYear < 2026);
+
+      foreach(Ftrans paymentftrans_rec in paymentftransList)
+      {
+         MAP_CandidateFaktur_rec = GetFakturFromPaymentFtrans(paymentftrans_rec, theUC.TheDbConnection, out thePaymentMethod);
+
+         if(MAP_CandidateFaktur_rec == null)
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Ne mogu pronaći fakturu za MAP!? Ftrans: {0}", paymentftrans_rec);
+            continue; 
+         }
+
+         MAP_ActionsList.Add((paymentftrans_rec, MAP_CandidateFaktur_rec));
+
+         messageList.Add(new VvReportSourceUtil()
+         {
+          //IsNekakav  = MAP_CandidateFaktur_rec.Is_MAP_with_ElectronicID,
+
+            TheCD      = MAP_CandidateFaktur_rec.TipBr,
+            DevName    = MAP_CandidateFaktur_rec.DokDate.ToString(ZXC.VvDateFormat),
+            KupdobName = MAP_CandidateFaktur_rec.KupdobName,
+            TheMoney   = MAP_CandidateFaktur_rec.S_ukKCRP,
+
+            String1    = paymentftrans_rec.T_dokDate.ToString(ZXC.VvDateFormat),
+            TheMoney2  = paymentftrans_rec.T_pot,
+            String2    = thePaymentMethod,
+            String3    = paymentftrans_rec.T_dokNum.ToString() + "/" + paymentftrans_rec.T_serial.ToString(),
+            String4    = paymentftrans_rec.T_opis,
+            String5    = paymentftrans_rec.T_konto,
+
+            UtilUint   = paymentftrans_rec.T_recID
+
+         });
+
+      } // foreach(Ftrans paymentftrans_rec in paymentftransList) 
+
+      VvMessageBoxDLG  MAP_CandidatesFtransList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_MAP_candidates);
+      MAP_CandidatesFtransList_InfoDLG.Text = "Kandidati za slanje prijave plaćanja:";
+
+      MAP_CandidatesFtransList_InfoDLG.TheUC.PutDgvFields_F2_MAP_candidates(messageList);
+      MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_IsAutoMAP = ZXC.RRD.Dsc_F2_IsAutoMAP;
+
+      DialogResult dlgResult = MAP_CandidatesFtransList_InfoDLG.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         MAP_CandidatesFtransList_InfoDLG.Dispose();
+         return -1;
+      }
+
+      int numOfFirstLinesOnly   =  MAP_CandidatesFtransList_InfoDLG.TheUC.Fld_NumOfFirstLinesOnly_MAP;
+
+      #region Izbaci 'preskočene'
+
+      bool shouldSkip;
+      uint ftrRecIDtoSkip;
+      int foundCount;
+
+      for(int rIdx = 0; rIdx < MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.RowCount /*- 1*/; ++rIdx)
+      {
+         shouldSkip = MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.GetBoolCell(MAP_CandidatesFtransList_InfoDLG.TheUC.DgvCI.iT_shouldS, rIdx, false);
+
+         if(shouldSkip)
+         {
+            ftrRecIDtoSkip = MAP_CandidatesFtransList_InfoDLG.TheUC.TheGrid.GetUint32Cell(MAP_CandidatesFtransList_InfoDLG.TheUC.DgvCI.iT_ftrRecID, rIdx, false);
+            
+            foundCount = MAP_ActionsList.RemoveAll(MAPal => MAPal.ftrans.T_recID == ftrRecIDtoSkip);
+
+            if(foundCount.IsZero()) ZXC.aim_emsg(MessageBoxIcon.Error, "shouldSkip MAP_action NOT FOUND!");
+         }
+      }
+
+      #endregion Izbaci 'preskočene'
+
+      MAP_CandidatesFtransList_InfoDLG.Dispose();
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.SetStatusText("Create_MAP_XML_From_NIR");
+
+      int mapCount = 0; bool MAP_OK;
+
+      System.Diagnostics.Stopwatch dispatchStopWatch = System.Diagnostics.Stopwatch.StartNew();
+
+      uint soFarCount      = 0;
+       int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : paymentftransList.Count;
+      long elapsedTicks    = 0, remainTicks;
+      decimal soFarKoef       ;
+      TimeSpan elapsedTime = new TimeSpan(0);
+      TimeSpan remainTime     ;
+      string statusText       ;
+
+      WebApiResult<VvMER_ResponseData> webApiResult;
+
+      Xtrano F2_MAP_Xtrano_rec;
+
+      #endregion Init & Get Dialog Fields AND Create MAP_ActionsList 
+
+      #region The MAP API Loop - foreach MAP_ActionsList
+
+      EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev MAP_XML = EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev.Create_MAP_XML_fromFtrans(theUC.TheDbConnection);
+
+      foreach((Ftrans ftrans, Faktur faktur) MAP_Action in MAP_ActionsList)
+      {
+         Cursor.Current = Cursors.WaitCursor;
+
+#if TUMOROU
+         #region SET XML Line
+
+         //webApiResult = WS_Mark_Paid_With_OR_Without_ElectronicID(MAP_Action.request, true /*MAP_Action.faktur.Is_MAP_with_ElectronicID*/);
+         //
+         MAP_OK       = true;
+         
+         if(MAP_OK)
+         {
+            mapCount++;
+         
+            F2_MAP_Xtrano_rec = VvMER_ResponseData.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_Action.ftrans, MAP_Action.faktur/*, webApiResult.ResponseData*/);
+         
+            if(F2_MAP_Xtrano_rec != null)
+            {
+               byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
+         
+               bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2_MAP_Xtrano_rec, /*false*/true, false, false, false);
+         
+               if(OK)
+               {
+                  newsCount++;
+         
+                  theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_MAP_Xtrano_rec);
+         
+                  F2_MAP_Xtrano_rec.T_XmlZip = T_XmlZip;
+         
+                  VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2_MAP_Xtrano_rec, "t_XmlZip", F2_MAP_Xtrano_rec.T_XmlZip);
+         
+                  theUC.TheVvTabPage.TheVvForm.EndEdit(F2_MAP_Xtrano_rec);
+               }
+            }
+         }
+
+         #endregion SET XML Line
+#endif
+         #region set status text
+
+         soFarCount++;
+
+         #region soFar vs remaining calc
+
+         soFarKoef     = ZXC.DivSafe(soFarCount, ofTotalCount);
+         elapsedTicks += dispatchStopWatch.Elapsed.Ticks          ;
+         elapsedTime  += dispatchStopWatch.Elapsed                ;
+         remainTicks   = (long)(ZXC.DivSafe((decimal)elapsedTicks, soFarKoef) - elapsedTicks);
+         remainTime    = new TimeSpan(remainTicks);
+
+         #endregion soFar vs remaining calc
+
+         statusText =
+            dispatchStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
+            "(" + (elapsedTime.TotalSeconds / (double)soFarCount).ToString1Vv() + "s avg) done " +
+             (/*++*/soFarCount).ToString() +
+             " of " + ofTotalCount +
+             " (" + (soFarKoef * 100M).ToString0Vv() + "%)" +
+            //" <"   + remainTime + "> "                              +
+             string.Format(" remain <{0:00}:{1:00}:{2:00}> ", remainTime.Hours, remainTime.Minutes, remainTime.Seconds) +
+             " " + MAP_Action.ftrans.ToString();
+
+         dispatchStopWatch.Restart();
+
+         ZXC.SetStatusText(statusText); Cursor.Current = Cursors.WaitCursor;
+
+         #endregion set status text
+
+         if(numOfFirstLinesOnly.NotZero() && /*sendCount*/soFarCount == numOfFirstLinesOnly) break;
+
+      } // foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList) 
+
+      #endregion The MAP API Loop - foreach MAP_ActionsList
+
+      #region Finish
+
+    //ZXC.FakturRec = null;
+
+      ZXC.SetStatusText("");
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} prijava plaćanja.", mapCount);
+
+      return newsCount;
+
+      #endregion Finish
+   }
    #endregion NIR
 
    #endregion FIR / FUR / NIR Load List and SubmodulActions
@@ -4069,16 +4351,18 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
    /// <param name="ftrans_rec"></param>
    /// <param name="faktur_rec"></param>
    /// <returns></returns>
-   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans MAPftrans_rec, Faktur MAPfaktur_rec, VvMER_ResponseData responseData)
+   public static Xtrano F2_MAPtrans_SetXtranoFrom_Ftrans(Ftrans MAPftrans_rec, Faktur MAPfaktur_rec, VvMER_ResponseData responseData = null)
    {
       Xtrano MAPxtrano_rec = null;
 
-      byte[] zipped_xmlString = VvStringCompressor.CompressXml(responseData.EncodedXml);
+      // 13.02.206: gasimo jer ne vidimo smisao ('xml' string je nečitljiv ne kuzimo cemu sluzi)
+    //byte[] zipped_xmlString = VvStringCompressor.CompressXml(responseData?.EncodedXml);
 
       MAPxtrano_rec = new Xtrano()
       {
-         T_XmlZip   = zipped_xmlString                             , // !!! Observacija od 05.12.2025: treba li nam ovo?! tako i onako ga imas u AIR Xtrano-u a potencijalno napuhava database !!! 
-         T_dokDate  = (DateTime)responseData.FiscalizationTimestamp,
+       //T_XmlZip   = zipped_xmlString                             , // !!! Observacija od 05.12.2025: treba li nam ovo?! tako i onako ga imas u AIR Xtrano-u a potencijalno napuhava database !!! 
+         
+         T_dokDate  = (responseData != null ? (DateTime)responseData?.FiscalizationTimestamp : DateTime.Now),
                                                 
          T_TT       = Mixer.TT_MAP                                 ,
                                                                    
@@ -5027,8 +5311,12 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
 
    private void F2_MAPaj_From_NIR(object sender, EventArgs e)
-   { 
-   
+   {
+      Vv_eRacun_HTTP.InitProjectData();
+
+      int newsCount = /*DDD*/Vv_eRacun_HTTP.Create_MAP_XML_From_NIR(/*(F2_Izlaz_UC)*/TheVvUC as F2_NIR_UC);
+
+      if(newsCount.IsZeroOrPositive()) F2_RefreshNIR_FtransLis(sender, e); // -1 means 'cancel' button clicked 
    }
    private void F2_MAPaj_From_NIR_zaRzadoblje(object sender, EventArgs e)
    {

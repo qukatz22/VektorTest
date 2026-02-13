@@ -10550,28 +10550,55 @@ public class F2_NIR_UC : VvUserControl
    /*private*/
    internal void PutDgvLineFields(int rowIdx, Ftrans ftrans_rec)
    {
-      Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar(ftrans_rec.T_kupdob_cd);
-      string tipUpl = ftrans_rec.T_TT == Nalog.IZ_TT ? "T" : ftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
+      //Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar(ftrans_rec.T_kupdob_cd);
+      string tipUpl/* = ftrans_rec.T_TT == Nalog.IZ_TT ? "T" : ftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.*/;
 
+      Faktur faktur_rec = Vv_eRacun_HTTP.GetFakturFromPaymentFtrans(ftrans_rec, TheDbConnection, out tipUpl);
 
+      if(faktur_rec == null)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, $"Ne mogu naći Faktur: {ftrans_rec.T_tipBr}\n\r\n\rFakRecID: {ftrans_rec.T_fakRecID} FakYear: {ftrans_rec.T_fakYear}");
+      }
+      else
+      { 
+         // Faktur 
+         TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.TtNumFiskal);
+         TheG.PutCell(ci.iT_date       , rowIdx, faktur_rec.DokDate    );
+         TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName );
+         TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP   );
+      }
+
+      // Ftrans 
       TheG.PutCell(ci.iT_tt         , rowIdx, ftrans_rec.T_tipBr);
-      TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, "" );
-      TheG.PutCell(ci.iT_date       , rowIdx, "" );
-      TheG.PutCell(ci.iT_partner    , rowIdx, kupdob_rec.Naziv );
-      TheG.PutCell(ci.iT_iznos      , rowIdx, "" );
-      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec.T_parentID + "/" + ftrans_rec.T_serial);
       TheG.PutCell(ci.iT_dateUpl    , rowIdx, ftrans_rec.T_dokDate );
+      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec.T_parentID + "/" + ftrans_rec.T_serial);
       TheG.PutCell(ci.iT_konto      , rowIdx, ftrans_rec.T_konto );
       TheG.PutCell(ci.iT_opis       , rowIdx, ftrans_rec.T_opis );
       TheG.PutCell(ci.iT_tipUpl     , rowIdx, tipUpl);
-
       TheG.PutCell(ci.iT_uplata     , rowIdx, ftrans_rec.T_pot);
-      TheG.PutCell(ci.iT_markPaid   , rowIdx, "");
-      TheG.PutCell(ci.iT_razlikaUpl , rowIdx, "");
 
+      // Xtrano 
+      Xtrano xtrano_rec = XtranoDao.SetMe_MAP_XtranoForThis_FtransRecID(TheDbConnection, ftrans_rec.T_recID);
+      
+      bool xtranoFound = xtrano_rec != null;
 
-      if(FtransDao.IsMAPdone(TheDbConnection, ftrans_rec)) TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
-      else                                                 TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
+      decimal razlika = 0M;
+
+      if(xtranoFound)
+      {
+         razlika = ftrans_rec.T_pot - xtrano_rec.T_moneyA;
+
+         TheG.PutCell(ci.iT_markPaid  , rowIdx, xtrano_rec.T_moneyA);
+         TheG.PutCell(ci.iT_razlikaUpl, rowIdx, razlika            );
+      }
+      else
+      {
+         TheG.PutCell(ci.iT_markPaid  , rowIdx, 0M);
+         TheG.PutCell(ci.iT_razlikaUpl, rowIdx, 0M);
+      }
+
+      if(xtranoFound) TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
+      else            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
    }
 
    public override void GetFields(bool fuse)

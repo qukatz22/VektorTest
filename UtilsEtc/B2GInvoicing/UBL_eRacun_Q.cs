@@ -2939,12 +2939,10 @@ namespace EN16931.UBL
 
 namespace EN16931.UBL.QWE2
 {
-   namespace EN16931.UBL.QWE2
+   public partial class EvidentirajNaplatuZahtjev
    {
-      public partial class EvidentirajNaplatuZahtjev
-      {
-         private static System.Xml.Serialization.XmlSerializer serializer;
-         private static System.Xml.Serialization.XmlSerializer Serializer
+      private static System.Xml.Serialization.XmlSerializer serializer;
+      private static System.Xml.Serialization.XmlSerializer Serializer
          {
             get
             {
@@ -2956,7 +2954,7 @@ namespace EN16931.UBL.QWE2
             }
          }
 
-         public static EvidentirajNaplatuZahtjev Deserialize(string xml)
+      public static EvidentirajNaplatuZahtjev Deserialize(string xml)
          {
             System.IO.StringReader stringReader = null;
             try
@@ -2973,7 +2971,7 @@ namespace EN16931.UBL.QWE2
             }
          }
 
-         public virtual string Serialize(System.Text.Encoding encoding)
+      public virtual string Serialize(System.Text.Encoding encoding)
          {
             System.IO.StreamReader streamReader = null;
             System.IO.MemoryStream memoryStream = null;
@@ -3014,7 +3012,7 @@ namespace EN16931.UBL.QWE2
             }
          }
 
-         public virtual string SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+      public virtual string SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
          {
             exception = null;
             try
@@ -3029,17 +3027,17 @@ namespace EN16931.UBL.QWE2
             }
          }
 
-         public virtual string SaveToFile(string fileName, out System.Exception exception)
+      public virtual string SaveToFile(string fileName, out System.Exception exception)
          {
             return SaveToFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM, out exception);
          }
 
-         public virtual string SaveToFile(string fileName)
+      public virtual string SaveToFile(string fileName)
          {
             return SaveToFile(fileName, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
          }
 
-         public virtual string SaveToFile(string fileName, System.Text.Encoding encoding)
+      public virtual string SaveToFile(string fileName, System.Text.Encoding encoding)
          {
             string xmlString = "";
 
@@ -3061,6 +3059,17 @@ namespace EN16931.UBL.QWE2
 
             return xmlString;
          }
+      public static EvidentirajNaplatuZahtjev Create_MAP_XML_fromFtrans(XSqlConnection conn/*, Ftrans ftrans_rec*/)
+      {
+         EvidentirajNaplatuZahtjev the_MAP_XML = new EvidentirajNaplatuZahtjev();
+
+         the_MAP_XML.Zaglavlje = new Zaglavlje();
+
+         the_MAP_XML.Zaglavlje.datumVrijemeSlanja = DateTime.Now;
+
+
+         return the_MAP_XML;
       }
+
    }
 }
