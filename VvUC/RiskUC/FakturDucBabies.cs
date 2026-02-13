@@ -9073,6 +9073,7 @@ public class ZAR_DUC         : FakturExtDUC
 
 #endregion TETRAGRAM
 
+
 #region Fiskalizacija F2
 
 public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
@@ -9151,6 +9152,231 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
 
    #endregion Fld_
 }
+
+public class F2_NIR_MapajRazdoblje_Dlg : VvDialog
+{
+   #region Filedz
+
+   private Button    okButton, cancelButton;
+   private VvHamper  hamper;
+   private int       dlgWidth, dlgHeight;
+
+   private VvDateTimePicker dtp_DatumOD, dtp_DatumDO;
+   private VvTextBox        tbx_DatumOD, tbx_DatumDO;
+
+   #endregion Filedz
+
+   #region Constructor
+
+   public F2_NIR_MapajRazdoblje_Dlg()
+   {
+      this.StartPosition = FormStartPosition.CenterScreen;
+      this.Text          = "Ödaberite razdoblje za prijavu naplate";
+
+      CreateHamper();
+
+      dlgWidth  = hamper.Right + ZXC.QunMrgn;
+      dlgHeight = hamper.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
+      this.ClientSize = new Size(dlgWidth, dlgHeight);
+
+      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
+      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      VvHamper.Open_Close_Fields_ForWriting(tbx_DatumOD, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+      VvHamper.Open_Close_Fields_ForWriting(tbx_DatumDO, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
+
+   }
+
+   #endregion Constructor
+   
+   #region hamper
+
+   private void CreateHamper()
+   {
+      hamper = new VvHamper(4, 3, "", this, false);
+
+      hamper.Location = new Point(ZXC.QunMrgn, ZXC.QunMrgn);
+
+      hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q4un, ZXC.Q4un, ZXC.Q4un};
+      hamper.VvSpcBefCol   = new int[] { ZXC.Qun2, ZXC.Qun8, ZXC.Qun2, ZXC.Qun8};
+      hamper.VvRightMargin = hamper.VvLeftMargin;
+
+      for(int i = 0; i < hamper.VvNumOfRows; i++)
+      {
+         hamper.VvRowHgt[i]    = ZXC.QUN;
+         hamper.VvSpcBefRow[i] = ZXC.QUN;
+      }
+      hamper.VvBottomMargin = hamper.VvTopMargin;
+
+      hamper.CreateVvLabel(0, 0, "Razdoblje uplata za prijavu naplata:", 3, 0, ContentAlignment.MiddleLeft);
+
+
+                    hamper.CreateVvLabel  (0, 1, "OD datuma:", ContentAlignment.MiddleRight);
+      tbx_DatumOD = hamper.CreateVvTextBox(1, 1, "tbx_datumOd", "Od datuma");
+      tbx_DatumOD.JAM_IsForDateTimePicker = true;
+      dtp_DatumOD = hamper.CreateVvDateTimePicker(1, 1, "", tbx_DatumOD);
+      dtp_DatumOD.Name = "dtp_DatumOD";
+      dtp_DatumOD.Tag  = tbx_DatumOD;
+      tbx_DatumOD.Tag  = dtp_DatumOD;
+
+                    hamper.CreateVvLabel  (2, 1, "DO datuma:", ContentAlignment.MiddleRight);
+      tbx_DatumDO = hamper.CreateVvTextBox(3, 1, "tbx_datumDo", "", 12);
+      tbx_DatumDO.JAM_IsForDateTimePicker = true;
+      dtp_DatumDO = hamper.CreateVvDateTimePicker(3, 1, "", tbx_DatumDO);
+      dtp_DatumDO.Name = "dtp_DatumDO";
+      dtp_DatumDO.Tag = tbx_DatumDO;
+      tbx_DatumDO.Tag = dtp_DatumDO;
+
+      tbx_DatumOD.ContextMenu = dtp_DatumOD.ContextMenu =
+      tbx_DatumDO.ContextMenu = dtp_DatumDO.ContextMenu = CreateNewContexMenu_Date();
+   }
+  
+   private VvStandardTextBoxContextMenu CreateNewContexMenu_Date()
+   {
+      VvStandardTextBoxContextMenu date_ContexMenu = new VvStandardTextBoxContextMenu(new MenuItem[] 
+            { 
+               new MenuItem("Danas"           , IspuniDatume),
+               new MenuItem("Tekuća godina"   , IspuniDatume),
+               new MenuItem("Tekući mjesec"   , IspuniDatume),
+               new MenuItem("Prvi kvartal"    , IspuniDatume),
+               new MenuItem("Drugi kvartal"   , IspuniDatume),
+               new MenuItem("Treći kvartal"   , IspuniDatume),
+               new MenuItem("Četvrti kvartal" , IspuniDatume),
+               new MenuItem("1 -11 mjesec"    , IspuniDatume),
+               new MenuItem("1 -10 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 9 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 8 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 7 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 6 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 5 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 4 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 3 mjesec"    , IspuniDatume),
+               new MenuItem("1 - 2 mjesec"    , IspuniDatume),
+               new MenuItem("Siječanj"        , IspuniDatume),
+               new MenuItem("Veljača"         , IspuniDatume),
+               new MenuItem("Ožujak"          , IspuniDatume),
+               new MenuItem("Travanj"         , IspuniDatume),
+               new MenuItem("Svibanj"         , IspuniDatume),
+               new MenuItem("Lipanj"          , IspuniDatume),
+               new MenuItem("Srpanj"          , IspuniDatume),
+               new MenuItem("Kolovoz"         , IspuniDatume),
+               new MenuItem("Rujan"           , IspuniDatume),
+               new MenuItem("Listopad"        , IspuniDatume),
+               new MenuItem("Studeni"         , IspuniDatume),
+               new MenuItem("Prosinac"        , IspuniDatume),
+               new MenuItem("-")
+            });
+
+      return date_ContexMenu;
+   }
+   private void IspuniDatume(object sender, EventArgs e)
+   {
+      MenuItem tsmi = sender as MenuItem;
+
+      string text = tsmi.Text;
+      string textOd = "";
+      string textDo = "";
+      string mj02 = "28"; ;
+
+      // ovo je dobro. ostavi ovako (TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage.ProjectYear;) 
+      string godina = ZXC.projectYear;
+      int god = int.Parse(godina);
+
+      if(DateTime.IsLeapYear(god)) mj02 = "29";
+      else mj02 = "28";
+
+      switch(text)
+      { //                              mmOD           dd.mmDO
+         case "Tekuća godina"  : textOd = "01"; textDo = "31.12"; break;
+         case "Tekući mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
+         case "Prvi kvartal"   : textOd = "01"; textDo = "31.03"; break;
+         case "Drugi kvartal"  : textOd = "04"; textDo = "30.06"; break;
+         case "Treći kvartal"  : textOd = "07"; textDo = "30.09"; break;
+         case "Četvrti kvartal": textOd = "10"; textDo = "31.12"; break;
+         case "1 -11 mjesec"   : textOd = "01"; textDo = "30.11"; break;
+         case "1 -10 mjesec"   : textOd = "01"; textDo = "31.10"; break;
+         case "1 - 9 mjesec"   : textOd = "01"; textDo = "30.09"; break;
+         case "1 - 8 mjesec"   : textOd = "01"; textDo = "31.08"; break;
+         case "1 - 7 mjesec"   : textOd = "01"; textDo = "31.07"; break;
+         case "1 - 6 mjesec"   : textOd = "01"; textDo = "30.06"; break;
+         case "1 - 5 mjesec"   : textOd = "01"; textDo = "31.05"; break;
+         case "1 - 4 mjesec"   : textOd = "01"; textDo = "30.04"; break;
+         case "1 - 3 mjesec"   : textOd = "01"; textDo = "31.03"; break;
+         case "1 - 2 mjesec"   : textOd = "01"; textDo = mj02 + ".02"; break;
+         case "Siječanj"       : textOd = "01"; textDo = "31.01"; break;
+         case "Veljača"        : textOd = "02"; textDo = mj02 + ".02"; break;
+         case "Ožujak"         : textOd = "03"; textDo = "31.03"; break;
+         case "Travanj"        : textOd = "04"; textDo = "30.04"; break;
+         case "Svibanj"        : textOd = "05"; textDo = "31.05"; break;
+         case "Lipanj"         : textOd = "06"; textDo = "30.06"; break;
+         case "Srpanj"         : textOd = "07"; textDo = "31.07"; break;
+         case "Kolovoz"        : textOd = "08"; textDo = "31.08"; break;
+         case "Rujan"          : textOd = "09"; textDo = "30.09"; break;
+         case "Listopad"       : textOd = "10"; textDo = "31.10"; break;
+         case "Studeni"        : textOd = "11"; textDo = "30.11"; break;
+         case "Prosinac"       : textOd = "12"; textDo = "31.12"; break;
+         case "Danas"          : textOd = ""  ; textDo = ""     ; break;
+      }
+
+      if(text == "Danas")
+      {
+         tbx_DatumOD.Text = DateTime.Today.ToString("dd.MM.yyyy");
+         tbx_DatumDO.Text = DateTime.Today.ToString("dd.MM.yyyy");
+      }
+      else
+      {
+         tbx_DatumOD.Text = "01." + textOd + "." + godina;
+         tbx_DatumDO.Text = textDo + "." + godina;
+      }
+      
+      dtp_DatumOD.Value = DateTime.Parse(tbx_DatumOD.Text);
+      dtp_DatumDO.Value = DateTime.Parse(tbx_DatumDO.Text);
+
+   }
+
+   #endregion hamper
+   
+   #region Button_Click
+
+   void cancelButton_Click(object sender, EventArgs e)
+   {
+      this.Close();
+   }
+
+   #endregion Button_Click
+
+   #region Fld_
+
+   public DateTime Fld_DatumOd
+   {
+      get
+      {
+         return ZXC.ValOr_01010001_DtpDateTime(dtp_DatumOD.Value);
+      }
+      set
+      {
+         dtp_DatumOD.Value = ZXC.ValOr_01011753_DateTime(value);
+         tbx_DatumOD.Text  = ZXC.ValOrEmpty_DtpDateTime_AsText(dtp_DatumOD);
+      }
+   }
+
+   public DateTime Fld_DatumDo
+   {
+      get
+      {
+         return ZXC.ValOr_01010001_DtpDateTime(dtp_DatumDO.Value);
+      }
+      set
+      {
+         dtp_DatumDO.Value = ZXC.ValOr_01011753_DateTime(value);
+         tbx_DatumDO.Text = ZXC.ValOrEmpty_DtpDateTime_AsText(dtp_DatumDO);
+      }
+   }
+
+   #endregion Fld_
+}
+
+
 public class F2_Izlaz_UC : VvUserControl
 {
    #region Fieldz
@@ -9623,6 +9849,7 @@ public class F2_Izlaz_UC : VvUserControl
 #endif
    }
 }
+
 public class F2_Ulaz_UC : VvUserControl
 {
    #region Fieldz
@@ -10071,6 +10298,7 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 }
+
 public class F2_NIR_UC : VvUserControl
 {
    #region Fieldz
@@ -10205,22 +10433,25 @@ public class F2_NIR_UC : VvUserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      vvtb_tt         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_tt"           , null, -12, "TipBr"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"        , "Tip"           , ZXC.Q2un           ); vvtb_tt       .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-    //vvtb_fiskTtNum  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_fiskTtNum"    , null, -12, "Fiskalni broj"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fiskTtNum , null, "R_fiskTtNum" , "Fiskalni IntBr", ZXC.Q4un           ); vvtb_fiskTtNum.JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_date       = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(   "vvtb_date"         , null, -12, "DatumRn"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_date      , null, "R_date"      , "Datum"         , ZXC.Q4un + ZXC.Qun4); vvtb_date     .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_partner    = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_partner"      , null, -12, "Partner"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner   , null, "R_partner"   , "Partner"       , ZXC.Q9un           ); vvtb_partner  .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un;    colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-      vvtb_iznos      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (2, "vvtb_iznos"        , null, -12, "Iznos"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznos     , null, "R_iznos"     , "Iznos"         , ZXC.Q4un           ); vvtb_iznos    .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-                                                                                                                                                                                                                
-      vvtb_dateUpl    = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(   "vvtb_dateUpl"      , null, -12, "DatumUpl"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateUpl   , null, "R_dateUpl"   , "DatumUpl"      , ZXC.Q4un + ZXC.Qun4); vvtb_dateUpl.JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-                      
-      vvtb_nalog      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_nalog "       , null, -12, "Nalog/Red"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_nalog     , null, "R_nalog"     , "Nalog/Red"     , ZXC.Q4un           ); vvtb_nalog        .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_konto      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_konto "       , null, -12, "Konto"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_konto     , null, "R_konto"     , "Konto"         , ZXC.Q4un           ); vvtb_konto        .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_opis       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_opis  "       , null, -12, "Opis uplate"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis      , null, "R_opis"      , "Opis uplate"   , ZXC.Q7un           ); vvtb_opis         .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_tipUpl     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (   "vvtb_tipUpl"       , null, -12, "TipUpl"       ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tipUpl    , null, "R_tipUpl"    , "TipUpl"        , ZXC.Q2un           ); vvtb_tipUpl       .JAM_ReadOnly = true; /*colVvText.ReadOnly = true;*/ colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; // colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
+      vvtb_fiskTtNum  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_fiskTtNum"    , null, -12, "BrojRn"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_fiskTtNum , null, "R_fiskTtNum" , "BrojRn"        , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_date       = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(    "vvtb_date"         , null, -12, "DatumRn"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_date      , null, "R_date"      , "DatumRn"       , ZXC.Q4un + ZXC.Qun4); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_partner    = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_partner"      , null, -12, "Partner"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_partner   , null, "R_partner"   , "Partner"       , ZXC.Q9un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_iznos      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate ( 2, "vvtb_iznos"        , null, -12, "IznosRn"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznos     , null, "R_iznos"     , "IznosRn"       , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+ 
+      colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
+                                                                                                                                                                                                             
+      vvtb_tt         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_tt"           , null, -12, "TipBr"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"        , "TipBr"         , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_dateUpl    = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(    "vvtb_dateUpl"      , null, -12, "DatumUpl"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateUpl   , null, "R_dateUpl"   , "DatumUpl"      , ZXC.Q4un + ZXC.Qun4); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_nalog      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_nalog "       , null, -12, "Nalog/Red"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_nalog     , null, "R_nalog"     , "Nalog/Red"     , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_konto      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_konto "       , null, -12, "Konto"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_konto     , null, "R_konto"     , "Konto"         , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_opis       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_opis  "       , null, -12, "Opis uplate"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis      , null, "R_opis"      , "Opis uplate"   , ZXC.Q10un          ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un;
+      vvtb_tipUpl     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_tipUpl"       , null, -12, "TipUpl"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tipUpl    , null, "R_tipUpl"    , "TipUpl"        , ZXC.Q2un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
 
-      vvtb_uplata     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_uplata"    , null, -12, "Uplaćeno"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata    , null, "R_uplata"    , "Naplaćeno"  , ZXC.Q4un); /*vvtb_uplata    .JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_markPaid   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_markPaid"  , null, -12, "Prijavljeno"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid  , null, "R_markPaid"  , "Prijavljeno", ZXC.Q4un); /*vvtb_markPaid  .JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_razlikaUpl = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (   2, "vvtb_razlikaUpl", null, -12, "Razlika"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_razlikaUpl, null, "R_razlikaUpl", "Razlika"    , ZXC.Q4un); /*vvtb_razlikaUpl.JAM_ReadOnly = true;*/  colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
+
+      vvtb_uplata     = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate ( 2, "vvtb_uplata"       , null, -12, "Uplaćeno"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_uplata    , null, "R_uplata"    , "Naplaćeno"     , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  
+      vvtb_markPaid   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate ( 2, "vvtb_markPaid"     , null, -12, "Prijavljeno"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_markPaid  , null, "R_markPaid"  , "Prijavljeno"   , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  
+      vvtb_razlikaUpl = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate ( 2, "vvtb_razlikaUpl"   , null, -12, "Razlika"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_razlikaUpl, null, "R_razlikaUpl", "Razlika"       , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back;  
 
       vvtb_uplata.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
 
@@ -10303,34 +10534,44 @@ public class F2_NIR_UC : VvUserControl
 
       TheG.Rows.Clear();
 
-    //for(rowIdx = 0; rowIdx < TheFakturList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
-    //{
-    //   TheG.Rows.Add();
-    //
-    //   PutDgvLineFields(rowIdx/*, TheFakturList[rowIdx]*/);
-    //
-    //   TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-    //}
+      if(TheFtransList.IsEmpty()) return;
+
+      for(rowIdx = 0; rowIdx < TheFtransList.Count; ++rowIdx)  // 'exists safe': PutCell vodi brigu da li col uopce postoji 
+      {
+         TheG.Rows.Add();
+      
+         PutDgvLineFields(rowIdx, TheFtransList[rowIdx]);
+      
+         TheG.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+      }
 
    }
 
-   /*private*/internal void PutDgvLineFields(int rowIdx/*, Faktur faktur_rec*/)
+   /*private*/
+   internal void PutDgvLineFields(int rowIdx, Ftrans ftrans_rec)
    {
+      Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar(ftrans_rec.T_kupdob_cd);
+      string tipUpl = ftrans_rec.T_TT == Nalog.IZ_TT ? "T" : ftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
 
-      TheG.PutCell(ci.iT_tt         , rowIdx, "" );
-      TheG.PutCell(ci.iT_ttNum      , rowIdx, "" );
+
+      TheG.PutCell(ci.iT_tt         , rowIdx, ftrans_rec.T_tipBr);
       TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, "" );
       TheG.PutCell(ci.iT_date       , rowIdx, "" );
-      TheG.PutCell(ci.iT_partner    , rowIdx, "" );
+      TheG.PutCell(ci.iT_partner    , rowIdx, kupdob_rec.Naziv );
       TheG.PutCell(ci.iT_iznos      , rowIdx, "" );
-      TheG.PutCell(ci.iT_nalog      , rowIdx, "" );
-      TheG.PutCell(ci.iT_konto      , rowIdx, "" );
-      TheG.PutCell(ci.iT_opis       , rowIdx, "" );
-      TheG.PutCell(ci.iT_tipUpl     , rowIdx, "" );
+      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec.T_parentID + "/" + ftrans_rec.T_serial);
+      TheG.PutCell(ci.iT_dateUpl    , rowIdx, ftrans_rec.T_dokDate );
+      TheG.PutCell(ci.iT_konto      , rowIdx, ftrans_rec.T_konto );
+      TheG.PutCell(ci.iT_opis       , rowIdx, ftrans_rec.T_opis );
+      TheG.PutCell(ci.iT_tipUpl     , rowIdx, tipUpl);
 
-      TheG.PutCell(ci.iT_uplata     , rowIdx, "");
+      TheG.PutCell(ci.iT_uplata     , rowIdx, ftrans_rec.T_pot);
       TheG.PutCell(ci.iT_markPaid   , rowIdx, "");
       TheG.PutCell(ci.iT_razlikaUpl , rowIdx, "");
+
+
+      if(FtransDao.IsMAPdone(TheDbConnection, ftrans_rec)) TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
+      else                                                 TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
    }
 
    public override void GetFields(bool fuse)

@@ -6117,12 +6117,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             else if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.HR   ) theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.KOL14));
             else if(faktur_rec.PdvGEOkind == ZXC.PdvGEOkindEnum.WORLD) theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.KOL15));
          }
-
+         //13.02.2026.
+         if(ZXC.IsTETRAGRAM_ANY && artikl_rec.PdvKat == "PS" && (this is IRA_MPC_DUC || this is PON_MPC_DUC || this is OPN_MPC_DUC || this is IZD_MPC_DUC))
+         {
+            theGrid.PutCell(ci.iT_pdvKolTip, currRowIdx, GetOneLetter4PdvKolTip(ZXC.PdvKolTipEnum.PROLAZ));
+         }
          #endregion Tetragram pdvKolTip - oslobođeno od PDVa
 
-         #region KPD 2026
+            #region KPD 2026
 
-         if(ci.iT_KPD.IsPositive())
+            if(ci.iT_KPD.IsPositive())
          {
             theGrid.PutCell(ci.iT_KPD, currRowIdx, artikl_rec.KPD);
          }

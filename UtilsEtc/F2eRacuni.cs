@@ -5026,4 +5026,25 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       ((F2_NIR_UC)TheVvUC).INIT_NIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
 
+   private void F2_MAPaj_From_NIR(object sender, EventArgs e)
+   { 
+   
+   }
+   private void F2_MAPaj_From_NIR_zaRzadoblje(object sender, EventArgs e)
+   {
+      F2_NIR_MapajRazdoblje_Dlg dlg = new F2_NIR_MapajRazdoblje_Dlg();
+
+      DialogResult dlgResult = dlg.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         dlg.Dispose();
+         return;
+      }
+      DateTime datumOd = dlg.Fld_DatumOd;
+      DateTime datumDo = dlg.Fld_DatumDo;
+
+      dlg.Dispose();
+
+   }
 }
