@@ -7785,6 +7785,7 @@ public class RptR_PDV_PDV            : RptR_PDV
    public bool PdvSchema_2014;
    public bool PdvSchema_2015;
    public bool PdvSchema_2023;
+   public bool PdvSchema_2026;
 
    public RptR_PDV_PDV(ReportDocument _reportDocument, string _reportName, VvRpt_RiSk_Filter _rptFilter, bool isPdvK) : base(_reportDocument, _reportName, _rptFilter)
    {
@@ -7800,6 +7801,7 @@ public class RptR_PDV_PDV            : RptR_PDV
       this.PdvSchema_2014    = RptFilter.DatumOd >= ZXC.Date01012014  && RptFilter.DatumOd < ZXC.Date01012015                                               ;
       this.PdvSchema_2015    = RptFilter.DatumOd >= ZXC.Date01012015  && RptFilter.DatumOd < ZXC.Date01012023                                               ; 
       this.PdvSchema_2023    = RptFilter.DatumOd >= ZXC.Date01012023                                                                                        ;
+      this.PdvSchema_2026    = RptFilter.DatumOd >= ZXC.Date01012026                                                                                        ;
 
       if(isPdvK && PdvSchema_2013)
       {
@@ -7980,6 +7982,12 @@ public class RptR_PDV_PDV            : RptR_PDV
             valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacPDV/v10-0", @"XSD\ObrazacPDVtipovi-v10-0.xsd"    ));
             valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/Metapodaci/v2-0"          , @"XSD\ObrazacPDVmetapodaci-v10-0.xsd"));
          }
+         else if(PdvSchema_2026)
+         {
+            valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacPDV/v11-0", @"XSD\ObrazacPDV-v11-0.xsd"          ));
+            valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacPDV/v11-0", @"XSD\ObrazacPDVtipovi-v11-0.xsd"    ));
+            valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/Metapodaci/v2-0"          , @"XSD\ObrazacPDVmetapodaci-v11-0.xsd"));
+         }
       }
       valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/Metapodaci/v2-0"         , @"XSD\MetapodaciTipovi-v2-0.xsd"));
       valDataList.Add(new ZXC.VvXmlValidationData(@"http://e-porezna.porezna-uprava.hr/sheme/TemeljniTipovi/v2-1"     , @"XSD\TemeljniTipovi-v2-1.xsd"      ));
@@ -8076,6 +8084,11 @@ public class RptR_PDV_PDV            : RptR_PDV
                writer.WriteStartElement("ObrazacPDV", @"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacPDV/v10-0");
                writer.WriteAttributeString("verzijaSheme",                                                           "10.0");
             }
+            else if(PdvSchema_2026)
+            {
+               writer.WriteStartElement("ObrazacPDV", @"http://e-porezna.porezna-uprava.hr/sheme/zahtjevi/ObrazacPDV/v11-0");
+               writer.WriteAttributeString("verzijaSheme",                                                           "11.0");
+            }
          }
 
 #endregion Init Xml Document
@@ -8109,6 +8122,7 @@ public class RptR_PDV_PDV            : RptR_PDV
                else if(PdvSchema_2014)    writer.WriteRaw(ident + ident + "<Uskladjenost dc=\"http://purl.org/dc/terms/conformsTo\">ObrazacPDV-v8-0</Uskladjenost>\n");
                else if(PdvSchema_2015)    writer.WriteRaw(ident + ident + "<Uskladjenost dc=\"http://purl.org/dc/terms/conformsTo\">ObrazacPDV-v9-0</Uskladjenost>\n");
                else if(PdvSchema_2023)    writer.WriteRaw(ident + ident + "<Uskladjenost dc=\"http://purl.org/dc/terms/conformsTo\">ObrazacPDV-v10-0</Uskladjenost>\n");
+               else if(PdvSchema_2026)    writer.WriteRaw(ident + ident + "<Uskladjenost dc=\"http://purl.org/dc/terms/conformsTo\">ObrazacPDV-v11-0</Uskladjenost>\n");
             }
 
             writer.WriteRaw(ident + ident + "<Tip dc=\"http://purl.org/dc/elements/1.1/type\">Elektronički obrazac</Tip>\n");
@@ -8119,6 +8133,8 @@ public class RptR_PDV_PDV            : RptR_PDV
 #endregion Write Header Data
 
 #region Zaglavlje
+
+         // sambapati
 
          writer.WriteStartElement("Zaglavlje");
 
@@ -9342,6 +9358,152 @@ public class RptR_PDV_PDV            : RptR_PDV
 
             #endregion PdvSchema_2023
          } // else // PdvSchema_2023 
+
+         // sambapati
+
+         else if(PdvSchema_2026) // PdvSchema_2026 
+         {
+#region PdvSchema_2026
+            writer.WriteElementString("Podatak000", p000.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak100", p100.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak101", p101.ToStringVv_NoGroup_ForceDot()); 
+               writer.WriteElementString("Podatak102", p102.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak103", p103.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak104", p104.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak105", p105.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak106", p106.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak107", p107.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak108", p108.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak109", p109.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak110", p110.ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Podatak111", p111.ToStringVv_NoGroup_ForceDot());
+            writer.WriteStartElement("Podatak200");
+               writer.WriteElementString("Vrijednost", p200vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p200pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak201");
+               writer.WriteElementString("Vrijednost", p201vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p201pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak202");
+               writer.WriteElementString("Vrijednost", p202vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p202pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak203");
+               writer.WriteElementString("Vrijednost", p203vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p203pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak204");
+               writer.WriteElementString("Vrijednost", p204vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p204pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak205");
+               writer.WriteElementString("Vrijednost", p205vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p205pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak206");
+               writer.WriteElementString("Vrijednost", p206vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p206pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak207");
+               writer.WriteElementString("Vrijednost", p207vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p207pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak208");
+               writer.WriteElementString("Vrijednost", p208vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p208pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak209");
+               writer.WriteElementString("Vrijednost", p209vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p209pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak210");
+               writer.WriteElementString("Vrijednost", p210vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p210pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak211");
+               writer.WriteElementString("Vrijednost", p211vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p211pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak212");
+               writer.WriteElementString("Vrijednost", p212vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p212pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak213");
+               writer.WriteElementString("Vrijednost", p213vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p213pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak214");
+               writer.WriteElementString("Vrijednost", p214vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p214pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak215");
+               writer.WriteElementString("Vrijednost", p215vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p215pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak300");
+               writer.WriteElementString("Vrijednost", p300vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p300pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak301");
+               writer.WriteElementString("Vrijednost", p301vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p301pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak302");
+               writer.WriteElementString("Vrijednost", p302vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p302pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak303");
+               writer.WriteElementString("Vrijednost", p303vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p303pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak304");
+               writer.WriteElementString("Vrijednost", p304vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p304pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak305");
+               writer.WriteElementString("Vrijednost", p305vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p305pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak306");
+               writer.WriteElementString("Vrijednost", p306vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p306pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak307");
+               writer.WriteElementString("Vrijednost", p307vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p307pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak308");
+               writer.WriteElementString("Vrijednost", p308vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p308pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak309");
+               writer.WriteElementString("Vrijednost", p309vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p309pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak310");
+               writer.WriteElementString("Vrijednost", p310vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p310pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak311");
+               writer.WriteElementString("Vrijednost", p311vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p311pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak312");
+               writer.WriteElementString("Vrijednost", p312vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p312pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak313");
+               writer.WriteElementString("Vrijednost", p313vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p313pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteStartElement("Podatak314");
+               writer.WriteElementString("Vrijednost", p314vr .ToStringVv_NoGroup_ForceDot());
+               writer.WriteElementString("Porez"     , p314pdv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+            writer.WriteElementString("Podatak315", p315.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak400", p400.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak500", p500.ToStringVv_NoGroup_ForceDot());
+            
+            writer.WriteElementString("Podatak610", k610.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak611", k611.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak612", k612.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak613", k613.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak614", k614.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak615", k615.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak620", k620.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak630", k630.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak640", k640.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak650", k650.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("Podatak660", k660.ToString().ToLower());
+
+            if(RptFilter.PdvPovrat.NotZero())
+            {
+               writer.WriteElementString("Povrat", RptFilter.PdvPovrat.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("PovratIBAN", ZXC.GetIBANfromOldZiro(ZXC.CURR_prjkt_rec.Ziro1));
+            }
+            if(RptFilter.PdvPredujam.NotZero())
+            {
+               writer.WriteElementString("Predujam", RptFilter.PdvPredujam.ToStringVv_NoGroup_ForceDot());
+            }
+            if(RptFilter.PdvUstup.NotZero())
+            {
+               writer.WriteElementString("Predujam", RptFilter.PdvUstup.ToStringVv_NoGroup_ForceDot());
+            }
+
+
+            #endregion PdvSchema_2026
+
+         } // else // PdvSchema_2026 
 
          if(IsPdvK)
          {

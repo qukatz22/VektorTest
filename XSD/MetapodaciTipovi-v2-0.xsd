@@ -18,11 +18,11 @@
 		<xsd:annotation>
 			<xsd:documentation>Autor dokumenta (Ime i Prezime)</xsd:documentation>
 		</xsd:annotation>
-		<xsd:simpleContent>
-			<xsd:extension base="temeljni:tOgraniceniZnakovniNizMin2Max128">
-				<xsd:attribute name="dc" type="temeljni:tOgraniceniZnakovniNizMin2Max128" use="required" fixed="http://purl.org/dc/elements/1.1/creator"/>
-			</xsd:extension>
-		</xsd:simpleContent>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="dc" type="temeljni:tOgraniceniZnakovniNizMin2Max128" use="required" fixed="http://purl.org/dc/elements/1.1/creator"/>
+      </xsd:extension>
+    </xsd:simpleContent>
 	</xsd:complexType>
 	<xsd:complexType name="sDatumTemeljni">
 		<xsd:annotation>
