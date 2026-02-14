@@ -30,7 +30,7 @@ namespace EN16931.UBL
    {
       // 14.10.2025: serializator za Time zaprlja nesto sa milisekundama pa da s ovim ocistimo
       /* byQ timeAbrakakobredabra: */
-      private static string NormalizeIssueTimeToHHmmss(string xml)
+      internal static string NormalizeIssueTimeToHHmmss(string xml)
       {
          // Match the cbc:IssueTime content regardless of what .NET emitted (e.g., 11:34:37.0000000+02:00)
          // and replace it with HH:mm:ss.

@@ -2999,6 +2999,8 @@ namespace EN16931.UBL.QWE2
                streamReader = new System.IO.StreamReader(memoryStream);
                xmlString = streamReader.ReadToEnd();
 
+               xmlString = InvoiceType.NormalizeIssueTimeToHHmmss(xmlString);
+
                return xmlString;
             }
             finally
@@ -3047,7 +3049,9 @@ namespace EN16931.UBL.QWE2
             try
             {
                xmlString = Serialize(encoding);
-               streamWriter = new System.IO.StreamWriter(fileName, false, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
+               xmlString = InvoiceType.NormalizeIssueTimeToHHmmss(xmlString); // jebemvamsvimamater 
+
+            streamWriter = new System.IO.StreamWriter(fileName, false, /*Encoding.UTF8*/ ZXC.VvUTF8Encoding_noBOM);
                streamWriter.WriteLine(xmlString);
                streamWriter.Close();
             }
@@ -3061,7 +3065,45 @@ namespace EN16931.UBL.QWE2
 
             return xmlString;
          }
-      public static EvidentirajNaplatuZahtjev Create_MAP_XML_fromFtrans(XSqlConnection conn/*, Ftrans ftrans_rec*/)
+      /// <summary>
+      /// Normalizes datumVrijemeSlanja to HH:mm:ss format in XML
+      /// </summary>
+      public static string NormalizeDatumVrijemeSlanjaToHHmmss(string xmlString)
+      {
+         if(string.IsNullOrEmpty(xmlString))
+            return xmlString;
+
+         try
+         {
+            System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Parse(xmlString);
+
+            // Find all datumVrijemeSlanja elements
+            var datumVrijemeSlanjaElements = doc.Descendants()
+               .Where(e => e.Name.LocalName == "datumVrijemeSlanja");
+
+            foreach(var element in datumVrijemeSlanjaElements)
+            {
+               string value = element.Value;
+               if(!string.IsNullOrEmpty(value))
+               {
+                  // Try to parse as DateTime
+                  if(DateTime.TryParse(value, out DateTime dt))
+                  {
+                     // Format to ensure HH:mm:ss time portion
+                     element.Value = dt.ToString("yyyy-MM-ddTHH:mm:ss");
+                  }
+               }
+            }
+
+            return doc.ToString();
+         }
+         catch(Exception ex)
+         {
+            System.Diagnostics.Debug.WriteLine($"Error normalizing datumVrijemeSlanja: {ex.Message}");
+            return xmlString; // Return original if error
+         }
+      }
+      public static EvidentirajNaplatuZahtjev Create_MAP_XML_ZAGLAVLJE()
       {
          EvidentirajNaplatuZahtjev the_MAP_XML = new EvidentirajNaplatuZahtjev();
 
@@ -3069,23 +3111,25 @@ namespace EN16931.UBL.QWE2
 
          the_MAP_XML.Zaglavlje.datumVrijemeSlanja = DateTime.Now;
 
-         the_MAP_XML.Naplata = new Naplata[]
+         return the_MAP_XML;
+      }
+
+      public static Naplata Create_MAP_XML_Naplata_From_MAPaction((Ftrans ftrans, Faktur faktur) MAP_Action)
+      {
+         nacinPlacanja theNacinPlacanja = (nacinPlacanja)Enum.Parse(typeof(nacinPlacanja), MAP_Action.faktur.CjenikTT);
+
+         Naplata theNaplata = new Naplata()
          {
-            new Naplata()
-            {
-               brojDokumenta             = "1-2-3"          /*FiskalTTNum         */,
-               datumIzdavanja            = DateTime.Now     /*FakturDokDate       */,
-               oibPorezniBrojIzdavatelja = "60042587515"    /*prjktOIB            */,
-               oibPorezniBrojPrimatelja  = "85821130368"    /*KupdobOIB           */,
-               datumNaplate              = DateTime.Now     /*ftransDate          */,
-               naplaceniIznos            = 1234.56M         /*ftrans t dug        */,
-               nacinPlacanja             = nacinPlacanja.T  /*ovisno o tipu Naloga*/, 
-            }
+            brojDokumenta             = MAP_Action.faktur.TtNumFiskal,
+            datumIzdavanja            = MAP_Action.faktur.DokDate    ,
+            oibPorezniBrojIzdavatelja = ZXC.CURR_prjkt_rec.Oib       ,
+            oibPorezniBrojPrimatelja  = MAP_Action.faktur.KdOib      ,
+            datumNaplate              = MAP_Action.ftrans.T_dokDate  ,
+            naplaceniIznos            = MAP_Action.ftrans.T_pot      ,
+            nacinPlacanja             = theNacinPlacanja              
          };
 
-            
-
-         return the_MAP_XML;
+         return theNaplata;
       }
 
    }

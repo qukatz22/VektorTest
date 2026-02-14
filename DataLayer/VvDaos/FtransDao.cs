@@ -808,7 +808,7 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
          catch(XSqlException ex)
          {
             success = false;
-            VvSQL.ReportSqlError("Get_TodoMAP_FtransList_For_FakRecID", ex, System.Windows.Forms.MessageBoxButtons.OK);
+            VvSQL.ReportSqlError("Get_MAP_FtransList", ex, System.Windows.Forms.MessageBoxButtons.OK);
 
             ZXC.sqlErrNo = ex.Number;
          }
@@ -847,7 +847,46 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
          catch(XSqlException ex)
          {
             success = false;
-            VvSQL.ReportSqlError("Get_TodoMAP_FtransList_For_FakRecID", ex, System.Windows.Forms.MessageBoxButtons.OK);
+            VvSQL.ReportSqlError("Get_Zatvaranja_FtransList", ex, System.Windows.Forms.MessageBoxButtons.OK);
+
+            ZXC.sqlErrNo = ex.Number;
+         }
+      } // using 
+
+      return zatvaranja_FtransList;
+   }
+
+   public static List<Ftrans> Get_Zatvaranja_FtransList_byDate(XSqlConnection conn, DateTime dateOD, DateTime dateDO)
+   {
+      bool success = true;
+      Ftrans todoMAP_ftrans_rec = new Ftrans();
+      List<Ftrans> zatvaranja_FtransList = new List<Ftrans>();
+
+      ZXC.sqlErrNo = 0;
+
+      using(XSqlCommand cmd = (VvSQL.Get_Zatvaranja_FtransList_byDate_Command(conn, dateOD, dateDO)))
+      {
+         try
+         {
+            using(XSqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult))
+            {
+               success = reader.HasRows;
+
+               while(success && reader.Read())
+               {
+                  todoMAP_ftrans_rec = new Ftrans();
+
+                  ZXC.FtransDao.FillFromDataReader(todoMAP_ftrans_rec, reader, false);
+
+                  zatvaranja_FtransList.Add(todoMAP_ftrans_rec);
+               }
+               reader.Close();
+            }
+         }
+         catch(XSqlException ex)
+         {
+            success = false;
+            VvSQL.ReportSqlError("Get_Zatvaranja_FtransList_byDate", ex, System.Windows.Forms.MessageBoxButtons.OK);
 
             ZXC.sqlErrNo = ex.Number;
          }

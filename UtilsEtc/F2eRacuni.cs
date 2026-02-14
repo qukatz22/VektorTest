@@ -2,30 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
-using System.Xml;
 using System.Linq;
 using System.Web;
-using System.Reflection;
-using System.Net.Http.Headers;
 using CrystalDecisions.Shared;
-using System.Net.Security;
 using System.Drawing;
-using System.Diagnostics.SymbolStore;
 using EN16931.UBL;
 using System.Xml.Linq;
-using static F2_Ulaz_UC;
-
-
-
-
-
-
-
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -696,6 +682,9 @@ public static class Vv_eRacun_HTTP
          }
 
          paymentMethod = paymentftrans_rec.T_TT == Nalog.IZ_TT ? "T" : paymentftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.
+
+         // trik, da paymentMethod pospremimo u faktur za kasnije 
+         MAP_CandidateFaktur_rec.CjenikTT = paymentMethod;
       }
       else
       {
@@ -2420,7 +2409,7 @@ public static class Vv_eRacun_HTTP
 
             if(F2_MAP_Xtrano_rec != null)
             {
-               byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
+             //byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
 
                bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2_MAP_Xtrano_rec, /*false*/true, false, false, false);
 
@@ -2428,13 +2417,14 @@ public static class Vv_eRacun_HTTP
                {
                   newsCount++;
 
-                  theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_MAP_Xtrano_rec);
-
-                  F2_MAP_Xtrano_rec.T_XmlZip = T_XmlZip;
-
-                  VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2_MAP_Xtrano_rec, "t_XmlZip", F2_MAP_Xtrano_rec.T_XmlZip);
-
-                  theUC.TheVvTabPage.TheVvForm.EndEdit(F2_MAP_Xtrano_rec);
+                  // 14.02.2026: ugaseno jer vise ne spremamo T_XmlZip za 'MAP' Xtrano 
+                //theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_MAP_Xtrano_rec);
+                //
+                //F2_MAP_Xtrano_rec.T_XmlZip = T_XmlZip;
+                //
+                //VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2_MAP_Xtrano_rec, "t_XmlZip", F2_MAP_Xtrano_rec.T_XmlZip);
+                //
+                //theUC.TheVvTabPage.TheVvForm.EndEdit(F2_MAP_Xtrano_rec);
                }
             }
          }
@@ -3244,77 +3234,6 @@ public static class Vv_eRacun_HTTP
 
       return false;
    }
-   private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID_OLD(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
-   {
-      WebApiResult<VvMER_ResponseData> webApiResult = null;
-
-      bool receiveOK = true;
-
-      uint arhivaXtrano_recID = 0;
-
-      switch(ZXC.F2_TheProvider)
-      {
-         case ZXC.F2_Provider_enum.MER:
-            {
-               try
-               {
-                  webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
-
-                  // za provjeru: 
-                  EN16931.UBL.InvoiceType deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(webApiResult.ResponseData.DocumentXml, true);
-
-                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty() || deserialized_InvoiceType == null)
-                  {
-                     Show_WebApiResult_ErrorMessageBox(webApiResult);
-                     receiveOK = false;
-                  }
-               }
-               catch(Exception ex)
-               {
-                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-                  receiveOK = false;
-               }
-
-               if(receiveOK)
-               {
-                  Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(webApiResult.ResponseData.DocumentXml, F2_IRn_faktur_rec);
-
-                  if(F2arhivaXtrano_rec != null)
-                  {
-                     byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
-
-                     bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2arhivaXtrano_rec, /*false*/true, false, false, false);
-
-                     if(OK)
-                     {
-                        theUC.TheVvTabPage.TheVvForm.BeginEdit(F2arhivaXtrano_rec);
-
-                        F2arhivaXtrano_rec.T_XmlZip = T_XmlZip;
-
-                        VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2arhivaXtrano_rec, "t_XmlZip", F2arhivaXtrano_rec.T_XmlZip);
-
-                        theUC.TheVvTabPage.TheVvForm.EndEdit(F2arhivaXtrano_rec);
-                     }
-
-                     if(OK)
-                     {
-                        arhivaXtrano_recID = F2arhivaXtrano_rec.T_recID;
-                     }
-                  }
-               }
-
-               return arhivaXtrano_recID;
-
-            } // case ZXC.F2_Provider_enum.MER: 
-
-         case ZXC.F2_Provider_enum.PND:
-            {
-               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
-            }
-      }
-
-      return 0;
-   }
    private static uint WS_Get_RECEIVE_Izlaz_Document2Arhiva_ForElectronicID(F2_Izlaz_UC theUC, uint electronicID, Faktur F2_IRn_faktur_rec)
    {
       WebApiResult<VvMER_ResponseData> webApiResult = null;
@@ -3629,7 +3548,11 @@ public static class Vv_eRacun_HTTP
       string thePaymentMethod = "T"; // T je default a dole se jos postavlja prema TT-u 
 
     //theUC.TheFtransList = FtransDao.Get_MAP_FtransList       (theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
-      theUC.TheFtransList = FtransDao.Get_Zatvaranja_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans     zatvaranja / naplate od KUPACa                      
+      theUC.TheFtransList = FtransDao.Get_Zatvaranja_FtransList(theUC.TheDbConnection)
+         .OrderByDescending(ftr => ftr.T_dokDate)
+         .ThenByDescending (ftr => ftr.T_dokNum )
+         .ThenByDescending (ftr => ftr.T_serial )
+         .ToList(); // ftrans     zatvaranja / naplate od KUPACa                      
 
       int zeroFakYearCount = theUC.TheFtransList.Count(ftr => ftr.T_fakYear.IsZero());
 
@@ -3647,9 +3570,11 @@ public static class Vv_eRacun_HTTP
       return newsCount;
    }
 
-   /* NNN */internal static int Create_MAP_XML_From_NIR(F2_NIR_UC theUC)
+   /* NNN */internal static int Create_MAP_XML_From_NIR(F2_NIR_UC theUC, bool isByDates = false, DateTime? dateOD = null, DateTime? dateDO = null)
    {
       #region Init & Get Dialog Fields AND Create MAP_XML_List 
+
+      string theXmlString;
 
       int newsCount = 0;
 
@@ -3663,15 +3588,20 @@ public static class Vv_eRacun_HTTP
 
       string thePaymentMethod = "T"; // T je default a dole se jos postavlja prema TT-u 
 
-      paymentftransList = FtransDao.Get_MAP_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      if(isByDates)
+      {
+         paymentftransList = FtransDao.Get_Zatvaranja_FtransList_byDate(theUC.TheDbConnection, dateOD.Value, dateDO.Value).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      }
+      else
+      {
+         paymentftransList = FtransDao.Get_MAP_FtransList(theUC.TheDbConnection).OrderBy(ftr => ftr.T_dokNum).ToList(); // ftrans 'MAP' kandidati: naplate od KUPACa koje nisu jos MAPane 
+      }
 
       if(paymentftransList.IsEmpty())
       {
          ZXC.aim_emsg(MessageBoxIcon.Information, "Nema ništa za slanje.");
          return 0;
       }
-
-      VvMER_RequestData MAP_requestData;
 
       int zeroFakYearCount = paymentftransList.Count(ftr => ftr.T_fakYear.IsZero());
 
@@ -3763,14 +3693,14 @@ public static class Vv_eRacun_HTTP
       System.Diagnostics.Stopwatch dispatchStopWatch = System.Diagnostics.Stopwatch.StartNew();
 
       uint soFarCount      = 0;
-       int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : paymentftransList.Count;
-      long elapsedTicks    = 0, remainTicks;
-      decimal soFarKoef       ;
-      TimeSpan elapsedTime = new TimeSpan(0);
-      TimeSpan remainTime     ;
-      string statusText       ;
-
-      WebApiResult<VvMER_ResponseData> webApiResult;
+      // int ofTotalCount    = numOfFirstLinesOnly.NotZero() ? numOfFirstLinesOnly : paymentftransList.Count;
+      //long elapsedTicks    = 0, remainTicks;
+      //decimal soFarKoef       ;
+      //TimeSpan elapsedTime = new TimeSpan(0);
+      //TimeSpan remainTime     ;
+      //string statusText       ;
+      //
+      //WebApiResult<VvMER_ResponseData> webApiResult;
 
       Xtrano F2_MAP_Xtrano_rec;
 
@@ -3778,19 +3708,26 @@ public static class Vv_eRacun_HTTP
 
       #region The MAP API Loop - foreach MAP_ActionsList
 
-      EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev MAP_XML = EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev.Create_MAP_XML_fromFtrans(theUC.TheDbConnection);
+      EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev theNaplataZahtjev = EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev.Create_MAP_XML_ZAGLAVLJE();
+
+      EN16931.UBL.QWE2.Naplata theNaplata;
+
+      List<EN16931.UBL.QWE2.Naplata> naplataList = new List<EN16931.UBL.QWE2.Naplata>();
 
       foreach((Ftrans ftrans, Faktur faktur) MAP_Action in MAP_ActionsList)
       {
          Cursor.Current = Cursors.WaitCursor;
 
-#if TUMOROU
          #region SET XML Line
 
          //webApiResult = WS_Mark_Paid_With_OR_Without_ElectronicID(MAP_Action.request, true /*MAP_Action.faktur.Is_MAP_with_ElectronicID*/);
          //
          MAP_OK       = true;
-         
+
+         theNaplata = EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev.Create_MAP_XML_Naplata_From_MAPaction(MAP_Action);
+
+         naplataList.Add(theNaplata);
+
          if(MAP_OK)
          {
             mapCount++;
@@ -3799,7 +3736,7 @@ public static class Vv_eRacun_HTTP
          
             if(F2_MAP_Xtrano_rec != null)
             {
-               byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
+             //byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
          
                bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2_MAP_Xtrano_rec, /*false*/true, false, false, false);
          
@@ -3807,46 +3744,47 @@ public static class Vv_eRacun_HTTP
                {
                   newsCount++;
          
-                  theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_MAP_Xtrano_rec);
-         
-                  F2_MAP_Xtrano_rec.T_XmlZip = T_XmlZip;
-         
-                  VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2_MAP_Xtrano_rec, "t_XmlZip", F2_MAP_Xtrano_rec.T_XmlZip);
-         
-                  theUC.TheVvTabPage.TheVvForm.EndEdit(F2_MAP_Xtrano_rec);
+                  // 14.02.2026: ugaseno jer vise ne spremamo T_XmlZip za 'MAP' Xtrano 
+                //theUC.TheVvTabPage.TheVvForm.BeginEdit(F2_MAP_Xtrano_rec);
+                //
+                //F2_MAP_Xtrano_rec.T_XmlZip = T_XmlZip;
+                //
+                //VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2_MAP_Xtrano_rec, "t_XmlZip", F2_MAP_Xtrano_rec.T_XmlZip);
+                //
+                //theUC.TheVvTabPage.TheVvForm.EndEdit(F2_MAP_Xtrano_rec);
                }
             }
          }
 
          #endregion SET XML Line
-#endif
+
          #region set status text
 
-         soFarCount++;
-
-         #region soFar vs remaining calc
-
-         soFarKoef     = ZXC.DivSafe(soFarCount, ofTotalCount);
-         elapsedTicks += dispatchStopWatch.Elapsed.Ticks          ;
-         elapsedTime  += dispatchStopWatch.Elapsed                ;
-         remainTicks   = (long)(ZXC.DivSafe((decimal)elapsedTicks, soFarKoef) - elapsedTicks);
-         remainTime    = new TimeSpan(remainTicks);
-
-         #endregion soFar vs remaining calc
-
-         statusText =
-            dispatchStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
-            "(" + (elapsedTime.TotalSeconds / (double)soFarCount).ToString1Vv() + "s avg) done " +
-             (/*++*/soFarCount).ToString() +
-             " of " + ofTotalCount +
-             " (" + (soFarKoef * 100M).ToString0Vv() + "%)" +
-            //" <"   + remainTime + "> "                              +
-             string.Format(" remain <{0:00}:{1:00}:{2:00}> ", remainTime.Hours, remainTime.Minutes, remainTime.Seconds) +
-             " " + MAP_Action.ftrans.ToString();
-
-         dispatchStopWatch.Restart();
-
-         ZXC.SetStatusText(statusText); Cursor.Current = Cursors.WaitCursor;
+         //soFarCount++;
+         //
+         //#region soFar vs remaining calc
+         //
+         //soFarKoef     = ZXC.DivSafe(soFarCount, ofTotalCount);
+         //elapsedTicks += dispatchStopWatch.Elapsed.Ticks          ;
+         //elapsedTime  += dispatchStopWatch.Elapsed                ;
+         //remainTicks   = (long)(ZXC.DivSafe((decimal)elapsedTicks, soFarKoef) - elapsedTicks);
+         //remainTime    = new TimeSpan(remainTicks);
+         //
+         //#endregion soFar vs remaining calc
+         //
+         //statusText =
+         //   dispatchStopWatch.Elapsed.TotalSeconds.ToString1Vv() + "s " +
+         //   "(" + (elapsedTime.TotalSeconds / (double)soFarCount).ToString1Vv() + "s avg) done " +
+         //    (/*++*/soFarCount).ToString() +
+         //    " of " + ofTotalCount +
+         //    " (" + (soFarKoef * 100M).ToString0Vv() + "%)" +
+         //   //" <"   + remainTime + "> "                              +
+         //    string.Format(" remain <{0:00}:{1:00}:{2:00}> ", remainTime.Hours, remainTime.Minutes, remainTime.Seconds) +
+         //    " " + MAP_Action.ftrans.ToString();
+         //
+         //dispatchStopWatch.Restart();
+         //
+         //ZXC.SetStatusText(statusText); Cursor.Current = Cursors.WaitCursor;
 
          #endregion set status text
 
@@ -3854,11 +3792,45 @@ public static class Vv_eRacun_HTTP
 
       } // foreach(Faktur sendCandidateFaktur_rec in sendCandidatesFakturList) 
 
+      theNaplataZahtjev.Naplata = naplataList.ToArray();
+
       #endregion The MAP API Loop - foreach MAP_ActionsList
+
+      #region Write MAP_XML to file
+
+      string dateID = isByDates ? dateOD.Value.ToString(ZXC.VvDateDdMmYyyyFormat) + "_" + dateDO.Value.ToString(ZXC.VvDateDdMmYyyyFormat) : DateTime.Now.ToString(ZXC.VvDateDdMmYyyyFormat);
+
+      string fileName = "eNaplate_" + ZXC.CURR_prjkt_rec.Ticker + "_" + dateID + ".xml";
+      
+      string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
+
+      string todayDir = "NIR" + "_XML_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+      
+      string dirName = Path.Combine(deaultVvPDFdirectoryName, todayDir);
+      
+      string fullName = Path.Combine(dirName, fileName);
+
+      if(!Directory.Exists(dirName))
+      {
+         Directory.CreateDirectory(dirName);
+      }
+
+      theXmlString = theNaplataZahtjev.Serialize(ZXC.VvUTF8Encoding_noBOM);
+
+      theXmlString = EN16931.UBL.QWE2.EvidentirajNaplatuZahtjev.NormalizeDatumVrijemeSlanjaToHHmmss(theXmlString); // jebemvamsvimamater 
+
+      bool saveOK = EN16931.UBL.InvoiceType.VvSaveToFile(theXmlString, fullName, ZXC.VvUTF8Encoding_noBOM);
+    //string theXmlString = theNaplataZahtjev.SaveToFile(fullName, ZXC.VvUTF8Encoding_noBOM);
+
+
+      // upali ako os debagirati
+      //System.Diagnostics.Process.Start(fullName);
+
+      #endregion Write MAP_XML to file
 
       #region Finish
 
-    //ZXC.FakturRec = null;
+      //ZXC.FakturRec = null;
 
       ZXC.SetStatusText("");
 
@@ -3870,6 +3842,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
+
    #endregion NIR
 
    #endregion FIR / FUR / NIR Load List and SubmodulActions
@@ -4374,6 +4347,8 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_moneyA   = MAPftrans_rec.T_pot                          , // Ftrans: t_moneyA je iznos UPLATE        
          T_opis_128 = MAPftrans_rec.T_tipBr                        , //                                         
          T_devName  = ""                                           , // fuse                                    
+
+         T_theBool  = responseData == null                         // znaci, ovo je true ako je MAPano sa NIR-a 
       };
 
       return MAPxtrano_rec;
@@ -5202,6 +5177,11 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       string fullName = Path.Combine(dirName, fileName);
 
+      if(!Directory.Exists(dirName))
+      {
+         Directory.CreateDirectory(dirName);
+      }
+
       bool saveOK = EN16931.UBL.InvoiceType.VvSaveToFile(theXmlString, fullName, ZXC.VvUTF8Encoding_noBOM);
 
       System.Diagnostics.Process.Start(fullName);
@@ -5309,12 +5289,11 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    {
       ((F2_NIR_UC)TheVvUC).INIT_NIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
-
    private void F2_MAPaj_From_NIR(object sender, EventArgs e)
    {
       Vv_eRacun_HTTP.InitProjectData();
 
-      int newsCount = /*DDD*/Vv_eRacun_HTTP.Create_MAP_XML_From_NIR(/*(F2_Izlaz_UC)*/TheVvUC as F2_NIR_UC);
+      int newsCount = /*NNN*/Vv_eRacun_HTTP.Create_MAP_XML_From_NIR(TheVvUC as F2_NIR_UC);
 
       if(newsCount.IsZeroOrPositive()) F2_RefreshNIR_FtransLis(sender, e); // -1 means 'cancel' button clicked 
    }
@@ -5334,5 +5313,10 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       dlg.Dispose();
 
+      Vv_eRacun_HTTP.InitProjectData();
+
+      int newsCount = /*NNN*/Vv_eRacun_HTTP.Create_MAP_XML_From_NIR(TheVvUC as F2_NIR_UC, true, datumOd, datumDo);
+
+      if(newsCount.IsZeroOrPositive()) F2_RefreshNIR_FtransLis(sender, e); // -1 means 'cancel' button clicked 
    }
 }
