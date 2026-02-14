@@ -10,6 +10,8 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using System.Diagnostics.Eventing.Reader;
 using System.Web.UI.WebControls;
+using Raverus.FiskalizacijaDEV.Schema;
+
 
 
 #if MICROSOFT
@@ -3067,6 +3069,21 @@ namespace EN16931.UBL.QWE2
 
          the_MAP_XML.Zaglavlje.datumVrijemeSlanja = DateTime.Now;
 
+         the_MAP_XML.Naplata = new Naplata[]
+         {
+            new Naplata()
+            {
+               brojDokumenta             = "1-2-3"          /*FiskalTTNum         */,
+               datumIzdavanja            = DateTime.Now     /*FakturDokDate       */,
+               oibPorezniBrojIzdavatelja = "60042587515"    /*prjktOIB            */,
+               oibPorezniBrojPrimatelja  = "85821130368"    /*KupdobOIB           */,
+               datumNaplate              = DateTime.Now     /*ftransDate          */,
+               naplaceniIznos            = 1234.56M         /*ftrans t dug        */,
+               nacinPlacanja             = nacinPlacanja.T  /*ovisno o tipu Naloga*/, 
+            }
+         };
+
+            
 
          return the_MAP_XML;
       }
