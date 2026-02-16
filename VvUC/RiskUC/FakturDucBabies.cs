@@ -9873,6 +9873,7 @@ public class F2_Ulaz_UC : VvUserControl
                      vvtb_ttNum   ,
                      vvtb_sentDate ,
                      vvtb_dokDate,
+      vvtb_dateRn,
                      vvtb_napomena
                      ;
 
@@ -9992,13 +9993,14 @@ public class F2_Ulaz_UC : VvUserControl
 
    private void CreateColumn(VvDataGridView theGrid)
    {
-      vvtb_elID       = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_elID"      , null, -12, "elID"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_elID      , null, "R_elID"      , "ElectronicID"  , ZXC.Q4un           ); vvtb_elID      .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;//  colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
-      vvtb_sentDate   = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_sentDate"  , null, -12, "Datum slanja"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_sentDate  , null, "R_sentDate"  , "Datum slanja"  , ZXC.Q3un + ZXC.Qun2); vvtb_sentDate  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;//  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
-      vvtb_senderName = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_senderName", null, -12, "Dobavljač"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_senderName, null, "R_partner"   , "Dobavljač"     , ZXC.Q10un          ); vvtb_senderName.JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un ; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-      vvtb_senderOIB  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_senderOIB" , null, -12, "Dobavljač"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_senderOIB , null, "R_partnerOIB", "OIB dobavljača", ZXC.Q4un           ); vvtb_senderOIB .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-      vvtb_documentNr = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_documentNr", null, -12, "Broj Računa" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_documentNr, null, "R_origBrRn"  , "Broj Računa"   , ZXC.Q8un           ); vvtb_documentNr.JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-      vvtb_iznosRn    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (    2, "vvtb_iznosRn"   , null, -12, "IznosRn"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznosRn   , null, "R_iznosRn"   , "IznosRn"       , ZXC.Q4un           ); vvtb_iznosRn   .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
-      vvtb_statusID   = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_statusID"  , null, -12, "Status"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_statusID  , null, "R_statusID"  , "Status"        , ZXC.Q3un           ); vvtb_statusID  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_elID       = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_elID"      , null, -12, "elID"        ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_elID      , null, "R_elID"       , "ElectronicID"  , ZXC.Q4un           ); vvtb_elID      .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;//  colVvText.DefaultCellStyle.ForeColor = clr_sky_fc;
+      vvtb_sentDate   = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_sentDate"  , null, -12, "Datum slanja"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_sentDate  , null, "R_sentDate"   , "Datum slanja"  , ZXC.Q3un + ZXC.Qun2); vvtb_sentDate  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;//  colVvText.DefaultCellStyle.ForeColor = clr_oth_fc;
+      vvtb_dateRn     = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(       "vvtb_dateRn"    , null, -12, "Datum Rn"    ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateRn    , null, "R_datumRn"    , "Datum Računa"  , ZXC.Q4un           ); vvtb_dateRn    .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_senderName = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_senderName", null, -12, "Dobavljač"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_senderName, null, "R_partner"    , "Dobavljač"     , ZXC.Q10un          ); vvtb_senderName.JAM_ReadOnly = true; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un ; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_senderOIB  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_senderOIB" , null, -12, "Dobavljač"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_senderOIB , null, "R_partnerOIB" , "OIB dobavljača", ZXC.Q4un           ); vvtb_senderOIB .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back;  //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_documentNr = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (       "vvtb_documentNr", null, -12, "Broj Računa" ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_documentNr, null, "R_origBrRn"   , "Broj Računa"   , ZXC.Q8un           ); vvtb_documentNr.JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_iznosRn    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate (    2, "vvtb_iznosRn"   , null, -12, "IznosRn"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_iznosRn   , null, "R_iznosRn"    , "IznosRn"       , ZXC.Q4un           ); vvtb_iznosRn   .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
+      vvtb_statusID   = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate (false, "vvtb_statusID"  , null, -12, "Status"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_statusID  , null, "R_statusID"   , "Status"        , ZXC.Q3un           ); vvtb_statusID  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.BackColor = clr_eRacun_Back; //colVvText.DefaultCellStyle.ForeColor = clr_lan_fc;
  
       colRazmak = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
 
@@ -10074,18 +10076,18 @@ public class F2_Ulaz_UC : VvUserControl
    public Ulaz_colIdx DgvCI { get { return ci; } }
    public struct Ulaz_colIdx
    {
-      internal int iT_elID      ; 
-      internal int iT_sentDate  ; 
+      internal int iT_elID     ; 
+      internal int iT_sentDate ; 
       internal int iT_sender   ; 
       internal int iT_senderOIB;
       internal int iT_documNr  ; 
-      internal int iT_statusID  ; 
-      internal int iT_iznosRn    ; 
+      internal int iT_statusID ; 
+      internal int iT_iznosRn  ; 
+      internal int iT_datumRn  ;
 
-      
-      internal int iT_isFisk     ;
-      internal int iT_isReject   ;
-      internal int iT_isArhiv    ;
+      internal int iT_isFisk   ;
+      internal int iT_isReject ;
+      internal int iT_isArhiv  ;
 
       internal int iT_tt       ; 
       internal int iT_ttNum    ; 
@@ -10108,6 +10110,7 @@ public class F2_Ulaz_UC : VvUserControl
       ci.iT_documNr   = TheG.IdxForColumn("R_origBrRn"  );
       ci.iT_statusID  = TheG.IdxForColumn("R_statusID"  );
       ci.iT_iznosRn   = TheG.IdxForColumn("R_iznosRn"   );
+      ci.iT_datumRn   = TheG.IdxForColumn("R_datumRn"   );
 
       ci.iT_isFisk    = TheG.IdxForColumn("fis");
       ci.iT_isArhiv   = TheG.IdxForColumn("arh");
@@ -10154,6 +10157,7 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.PutCell(ci.iT_senderOIB, rowIdx, xtrano_rec.T_konto        );
       TheG.PutCell(ci.iT_statusID , rowIdx, xtrano_rec.T_devName      );
       TheG.PutCell(ci.iT_iznosRn  , rowIdx, xtrano_rec.T_moneyA       );
+      TheG.PutCell(ci.iT_datumRn  , rowIdx, xtrano_rec.T_dokDate2     );
 
            if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.DA_JE     ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_green ;
       else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.Na_cekanju) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_yellow;
