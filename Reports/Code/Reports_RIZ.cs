@@ -8256,7 +8256,15 @@ public class RptR_PDV_PDV            : RptR_PDV
             p314vr   = 0.00M,
             p314pdv  = 0.00M,
             p315     = 0.00M,
-            p700     = 0.00M;
+            p700     = 0.00M,
+            p701nv   = 0.00M,// novo shema2026
+            p701pv   = 0.00M,// novo shema2026
+            p702nv   = 0.00M,// novo shema2026
+            p702pv   = 0.00M,// novo shema2026
+            p703nv   = 0.00M,// novo shema2026
+            p703pv   = 0.00M,// novo shema2026
+            p704nv   = 0.00M,// novo shema2026
+            p704pv   = 0.00M;// novo shema2026
 
          PdvObrazacData pdv = new PdvObrazacData(Faktur_rec_SumaRazdoblja_URA, Faktur_rec_SumaRazdoblja_IRA, RptFilter);
 
@@ -8791,9 +8799,16 @@ public class RptR_PDV_PDV            : RptR_PDV
             k650   = pdv.pdv_860     .Ron2();// news - old k860   
             k660   = (ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.OBRT_R2 || ZXC.CURR_prjkt_rec.PdvRTip == ZXC.PdvRTipEnum.POD_PO_NAPL) ? true : false; // da li ide po naplacenom 
 
+            p701nv = 0.00M; 
+            p701pv = 0.00M; 
+            p702nv = 0.00M; 
+            p702pv = 0.00M; 
+            p703nv = 0.00M; 
+            p703pv = 0.00M; 
+            p704nv = 0.00M; 
+            p704pv = 0.00M; 
 
-
-#endregion PdvSchema_2023
+            #endregion PdvSchema_2023
          }
          // PDV 2023 --------- END ----------------------------------------
 
@@ -9483,6 +9498,19 @@ public class RptR_PDV_PDV            : RptR_PDV
             writer.WriteElementString("Podatak640", k640.ToStringVv_NoGroup_ForceDot());
             writer.WriteElementString("Podatak650", k650.ToStringVv_NoGroup_ForceDot());
             writer.WriteElementString("Podatak660", k660.ToString().ToLower());
+
+               writer.WriteStartElement("Podatak701");
+            writer.WriteElementString("NabavnaVrijednost" , p701nv.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("ProdajnaVrijednost", p701pv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+               writer.WriteStartElement("Podatak702");
+            writer.WriteElementString("NabavnaVrijednost" , p702nv.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("ProdajnaVrijednost", p702pv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+               writer.WriteStartElement("Podatak703");
+            writer.WriteElementString("NabavnaVrijednost" , p703nv.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("ProdajnaVrijednost", p703pv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
+               writer.WriteStartElement("Podatak704");
+            writer.WriteElementString("NabavnaVrijednost" , p704nv.ToStringVv_NoGroup_ForceDot());
+            writer.WriteElementString("ProdajnaVrijednost", p704pv.ToStringVv_NoGroup_ForceDot()); writer.WriteEndElement();
 
             if(RptFilter.PdvPovrat.NotZero())
             {

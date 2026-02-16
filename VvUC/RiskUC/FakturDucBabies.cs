@@ -10046,7 +10046,8 @@ public class F2_Ulaz_UC : VvUserControl
       {
          column.SortMode = DataGridViewColumnSortMode.NotSortable;
       }
-  }
+
+   }
 
    private void SetColors()
    {
@@ -10357,7 +10358,7 @@ public class F2_NIR_UC : VvUserControl
       TheG.TabStop = false;
       TheG.ClearSelection();
 
-    //TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
+      TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
 
    }
    internal void INIT_NIR()
@@ -10464,7 +10465,6 @@ public class F2_NIR_UC : VvUserControl
 
       colScrol.DefaultCellStyle.BackColor = TheG.ColumnHeadersDefaultCellStyle.BackColor;
 
-
       foreach(DataGridViewColumn column in TheG.Columns)
       {
          column.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -10493,7 +10493,7 @@ public class F2_NIR_UC : VvUserControl
    public struct Izlaz_colIdx
    {
       internal int iT_tt        ;
-      internal int iT_ttNum     ;
+    //internal int iT_ttNum     ;
       internal int iT_fiskTtNum ;
       internal int iT_date      ;
       internal int iT_dateUpl;
@@ -10514,7 +10514,7 @@ public class F2_NIR_UC : VvUserControl
       ci = new Izlaz_colIdx();
 
       ci.iT_tt         = TheG.IdxForColumn("R_tt"         );
-      ci.iT_ttNum      = TheG.IdxForColumn("R_ttNum"      );
+    //ci.iT_ttNum      = TheG.IdxForColumn("R_ttNum"      );
       ci.iT_fiskTtNum  = TheG.IdxForColumn("R_fiskTtNum"  );
       ci.iT_date       = TheG.IdxForColumn("R_date"       );
       ci.iT_dateUpl    = TheG.IdxForColumn("R_dateUpl"    );
@@ -10576,7 +10576,7 @@ public class F2_NIR_UC : VvUserControl
       // Ftrans 
       TheG.PutCell(ci.iT_tt         , rowIdx, ftrans_rec.T_tipBr);
       TheG.PutCell(ci.iT_dateUpl    , rowIdx, ftrans_rec.T_dokDate );
-      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec./*T_parentID*/T_dokNum + "/" + ftrans_rec.T_serial);
+      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec.T_dokNum + "/" + ftrans_rec.T_serial);
       TheG.PutCell(ci.iT_konto      , rowIdx, ftrans_rec.T_konto );
       TheG.PutCell(ci.iT_opis       , rowIdx, ftrans_rec.T_opis );
       TheG.PutCell(ci.iT_tipUpl     , rowIdx, tipUpl);
@@ -10613,7 +10613,28 @@ public class F2_NIR_UC : VvUserControl
 
    #endregion PutDgvFields1
 
-}
+   private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
 
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+    
+      if(e.ColumnIndex == ci.iT_tt || e.ColumnIndex == ci.iT_fiskTtNum)
+      {
+         string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false);
+
+         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+      }
+
+      if(e.ColumnIndex == ci.iT_uplata || e.ColumnIndex == ci.iT_nalog)
+      {
+         ZXC.TheVvForm.ShowNalogDUC_For_DokNum(TheFtransList[rowIdx].T_dokNum.ToString());
+      }
+
+   }
+
+}
 
 #endregion Fiskalizacija F2
