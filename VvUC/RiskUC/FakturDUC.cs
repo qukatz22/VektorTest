@@ -19803,7 +19803,7 @@ public class F2_Rules_UC : VvOtherUC
    private VvTextBox tbx_DefaultKPD, tbx_Default_eRposProc, tbx_DefaultKPDOpis, tbx_Default_eRposProcOpis, tbx_F2_TT, tbx_numOfRows;
    private RadioButton rbt_Ascending, rbt_Descending, 
                        rbt_F2_IFA, rbt_F2_IRA, rbt_F2_IRM, rbt_F2_none;
-   private CheckBox cbx_isAutoSend, cbx_isAutoMAP, cbx_isAutoImport;
+   private CheckBox cbx_isAutoSend, cbx_isAutoMAP, cbx_isAutoImport, cbx_isSintStavkeFUR, cbx_isSintStavkeFIR;
 
    public /*protected*/ VvSQL.OrderDirectEnum asc_or_desc = VvSQL.OrderDirectEnum.ASC;
 
@@ -19971,7 +19971,7 @@ public class F2_Rules_UC : VvOtherUC
 
    private void InitializeHamper_AutoFIR(out VvHamper hamper)
    { 
-      hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
+      hamper = new VvHamper(1, 3, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un*3 };
       hamper.VvSpcBefCol   = new int[] { ZXC.QUN };
@@ -19980,19 +19980,23 @@ public class F2_Rules_UC : VvOtherUC
       for(int i = 0; i < hamper.VvNumOfRows; i++)
       {
          hamper.VvRowHgt[i]    = ZXC.QUN;
-         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+         hamper.VvSpcBefRow[i] = ZXC.Qun4;
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isAutoSend = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune prilikom otvaranja FIR-a (uz dodatnu potvrdu)"       , RightToLeft.No);
-      cbx_isAutoMAP  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplate eRačuna prilikom otvaranja FIR-a (uz dodatnu potvrdu)", RightToLeft.No);
+      cbx_isAutoSend       = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski pošalji eRačune prilikom otvaranja FIR-a (uz dodatnu potvrdu)"       , RightToLeft.No);
+      cbx_isAutoMAP        = hamper.CreateVvCheckBox_OLD(0, 1, null, "Automatski prijavi uplate eRačuna prilikom otvaranja FIR-a (uz dodatnu potvrdu)", RightToLeft.No);
+      
+      cbx_isSintStavkeFIR  = hamper.CreateVvCheckBox_OLD(0, 2, null, "Sumiraj stavke računa u jednu stavku", RightToLeft.No);
+
+      cbx_isSintStavkeFIR.Visible = (ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipA);
 
       hamper.Visible = isFIR;
    }
 
    private void InitializeHamper_AutoFUR(out VvHamper hamper)
    { 
-      hamper = new VvHamper(1, 1, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
+      hamper = new VvHamper(1, 2, "", this, false, ZXC.QunMrgn, hamp_numOfRows.Bottom + ZXC.QUN, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un*3 };
       hamper.VvSpcBefCol   = new int[] { ZXC.QUN};
@@ -20001,11 +20005,13 @@ public class F2_Rules_UC : VvOtherUC
       for(int i = 0; i < hamper.VvNumOfRows; i++)
       {
          hamper.VvRowHgt[i]    = ZXC.QUN;
-         hamper.VvSpcBefRow[i] = ZXC.Qun8;
+         hamper.VvSpcBefRow[i] = ZXC.Qun4;
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isAutoImport = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski uvezi ulazne eRačune prilikom otvaranja FUR-a (uz dodatnu potvrdu)", RightToLeft.No);
+      cbx_isAutoImport     = hamper.CreateVvCheckBox_OLD(0, 0, null, "Automatski uvezi ulazne eRačune prilikom otvaranja FUR-a (uz dodatnu potvrdu)", RightToLeft.No);
+
+      cbx_isSintStavkeFUR  = hamper.CreateVvCheckBox_OLD(0, 1, null, "Sumiraj stavke računa u jednu stavku", RightToLeft.No);
 
       hamper.Visible = !isFIR;
    }
@@ -20062,6 +20068,9 @@ public class F2_Rules_UC : VvOtherUC
    public string Fld_DefaultKPDOpis        {  set { tbx_DefaultKPDOpis.Text = value; } }
    public string Fld_Default_eRposProcOpis {  set { tbx_Default_eRposProcOpis.Text = value; } }
 
+   public bool Fld_F2_IsSintFIR   { get { return cbx_isSintStavkeFIR.Checked; } set { cbx_isSintStavkeFIR.Checked = value; } }
+   public bool Fld_F2_IsSintFUR   { get { return cbx_isSintStavkeFUR.Checked; } set { cbx_isSintStavkeFUR.Checked = value; } }
+
    #endregion Fld_
 
    #region PutFields(), GetFields()
@@ -20076,6 +20085,8 @@ public class F2_Rules_UC : VvOtherUC
       Fld_F2_IsAutoSend     = RRD.Dsc_F2_IsAutoSend    ;
       Fld_F2_IsAutoMAP      = RRD.Dsc_F2_IsAutoMAP     ;
       Fld_F2_IsAutoImport   = RRD.Dsc_F2_IsAutoImport  ;
+      Fld_F2_IsSintFIR      = RRD.Dsc_F2_IsNIR         ;
+      Fld_F2_IsSintFUR      = RRD.Dsc_F2_IsNUR         ;
 
       VvLookUpItem theLui = ZXC.luiListaeRacPoslProc.SingleOrDefault(lui => lui.Cd == Fld_Default_eRposProc);
       if(theLui != null) Fld_Default_eRposProcOpis = theLui.Name;
@@ -20095,6 +20106,8 @@ public class F2_Rules_UC : VvOtherUC
       ZXC.RRD.Dsc_F2_IsAutoSend     = Fld_F2_IsAutoSend    ;
       ZXC.RRD.Dsc_F2_IsAutoMAP      = Fld_F2_IsAutoMAP     ;
       ZXC.RRD.Dsc_F2_IsAutoImport   = Fld_F2_IsAutoImport  ;
+      ZXC.RRD.Dsc_F2_IsNIR          = Fld_F2_IsSintFIR     ;
+      ZXC.RRD.Dsc_F2_IsNUR          = Fld_F2_IsSintFUR     ;
 
       ZXC.RRD.SaveDscToLookUpItemList();
    }

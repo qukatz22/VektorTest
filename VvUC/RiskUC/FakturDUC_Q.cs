@@ -11209,9 +11209,6 @@ public class RiskRulesDsc : VvLookupAsDsc
    public bool Dsc_F2_IsNIR                    { get; set; }
    public bool Dsc_F2_IsNUR                    { get; set; }
 
-
-
-
    #endregion DataLayer Propertiz
 
    #region Constructor
