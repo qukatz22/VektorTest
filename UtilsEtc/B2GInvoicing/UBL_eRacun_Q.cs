@@ -2132,11 +2132,16 @@ namespace EN16931.UBL
 
          ushort line = 0;
 
-         List<Rtrans> rtransList = new List<Rtrans>(this.InvoiceLine.Length);
+         List<Rtrans> newANA_rtransList        = new List<Rtrans>(this.InvoiceLine.Length);
+         List<Rtrans> newSIN_rtransList = null;
 
          bool OK = true;
          //Faktur fak;
          //Rtrans rtr;
+
+         // koristimo stare obsolete Dsc-ove NIR/NUR, pazi da te ne zbuni sa NIR_UC-om! 
+         // isIFA je u vezi FIR XXX-a ('Veleform-a'), a isUFA za FUR                    
+         bool wantsOneSintStavka = isIFA ? ZXC.RRD.Dsc_F2_IsNIR : ZXC.RRD.Dsc_F2_IsNUR;
 
          #endregion init
 
@@ -2144,15 +2149,15 @@ namespace EN16931.UBL
 
          // From Kupdob 
 
-         faktur_rec.KupdobName = faktur_rec.PosJedName = kupdob_rec.Naziv;
-         faktur_rec.KupdobCD = faktur_rec.PosJedCD = kupdob_rec.KupdobCD;
-         faktur_rec.KupdobTK = faktur_rec.PosJedTK = kupdob_rec.Ticker;
-         faktur_rec.KdUlica = faktur_rec.PosJedUlica = kupdob_rec.Ulica1;
-         faktur_rec.KdZip = faktur_rec.PosJedZip = kupdob_rec.PostaBr;
-         faktur_rec.KdMjesto = faktur_rec.PosJedMjesto = kupdob_rec.Grad;
-         faktur_rec.KdOib = kupdob_rec.Oib;
+         faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv;
+         faktur_rec.KupdobCD     = faktur_rec.PosJedCD     = kupdob_rec.KupdobCD;
+         faktur_rec.KupdobTK     = faktur_rec.PosJedTK     = kupdob_rec.Ticker;
+         faktur_rec.KdUlica      = faktur_rec.PosJedUlica  = kupdob_rec.Ulica1;
+         faktur_rec.KdZip        = faktur_rec.PosJedZip    = kupdob_rec.PostaBr;
+         faktur_rec.KdMjesto     = faktur_rec.PosJedMjesto = kupdob_rec.Grad;
+         faktur_rec.KdOib        = kupdob_rec.Oib;
          faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
-         //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
+       //faktur_rec.KdAdresa     = Faktur.GetAdresa(Fld_KupdobUlica, Fld_KupdobZip, Fld_KupdobMjesto); ;
 
          faktur_rec.F2_R1kind = kupdob_rec.R1kind;
 
@@ -2201,15 +2206,15 @@ namespace EN16931.UBL
 
          #region STAVKE računa
 
-         //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
+       //int numOfRbt_ByDocument = AllowanceCharge?.Length ?? 0;
          int numOfRbt_ByDocument = AllowanceCharge?.Count(ac => ac?.Amount?.Value.NotZero() == true) ?? 0;
 
-         //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
+       //bool isRbt_ByDocument   = this.LegalMonetaryTotal?.AllowanceTotalAmount?.Value.NotZero() ?? false;
          bool isRbt_ByDocument = numOfRbt_ByDocument.IsPositive();
 
          bool isRbt_ByLine;
          bool isThereAnyRbt;
-         //bool isRbtCOMPLICATED   ;
+       //bool isRbtCOMPLICATED   ;
          bool isRbtNOTCOMPLICATED;
          int numOfRbt_ByLine = 0;
 
@@ -2355,21 +2360,49 @@ namespace EN16931.UBL
 
             rtrans_rec.CalcTransResults(null);
 
-            rtransList.Add(rtrans_rec);
+            newANA_rtransList.Add(rtrans_rec);
 
          } // foreach(InvoiceLineType invoiceLine in this.InvoiceLine) 
 
          #endregion STAVKE računa
 
+         #region wantsOneSintStavka
+
+         if(wantsOneSintStavka)
+         {
+            newSIN_rtransList = new List<Rtrans>();
+
+            var pdvGR_rtransList = newANA_rtransList.GroupBy(rtr => rtr.T_pdvSt);
+
+            foreach(var pdvGR_rtrans in pdvGR_rtransList)
+            {
+               Rtrans sintRtrans_rec = new Rtrans()
+               {
+                  T_artiklName = $"Suma {pdvGR_rtrans.Count()} stav. računa po PDV stopi od {pdvGR_rtrans.Key}%",
+                  T_kol        = 1,
+                  T_pdvSt      = pdvGR_rtrans.Key,
+
+                  T_cij        = pdvGR_rtrans.Sum(rtr => rtr.R_KCR)
+               };
+
+               sintRtrans_rec.CalcTransResults(null);
+
+               newSIN_rtransList.Add(sintRtrans_rec);
+            }
+         }
+
+         #endregion wantsOneSintStavka
+
          #region TakeTransesSumToDokumentSum
 
-         faktur_rec.Transes = rtransList;
+         faktur_rec.Transes = wantsOneSintStavka ? newSIN_rtransList : newANA_rtransList;
+
          faktur_rec.TakeTransesSumToDokumentSum(true);
          faktur_rec.Transes = null;
 
          #endregion TakeTransesSumToDokumentSum
 
-         foreach(Rtrans rtrans in rtransList)
+         foreach(Rtrans rtrans in wantsOneSintStavka ? newSIN_rtransList : newANA_rtransList)
          {
             OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
          }

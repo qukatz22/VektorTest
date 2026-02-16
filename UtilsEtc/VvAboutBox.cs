@@ -1330,7 +1330,7 @@ public class VvMessageBox_UC : UserControl
 
       colCbxClassic.DataGridView.CellClick += (s, e) =>
       {
-         if(e.RowIndex < 0) return;
+         if(e.RowIndex < 0 || e.ColumnIndex != colCbxClassic.Index) return;  // Add column check
          DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)theGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
          bool isChecked = (chk.Value == null ? false : (bool)chk.Value);
          chk.Value = !isChecked;

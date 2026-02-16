@@ -25,6 +25,7 @@ public struct XtranoStruct
 
    /* 12 */   internal string    _t_theString     ;  
    /* 13 */   internal bool      _t_theBool       ;  
+   /* 14 */   internal DateTime  _t_dokDate2      ;
 }
 
 #endregion struct XtranoStruct
@@ -78,6 +79,7 @@ public class Xtrano : VvTransRecord
       /* 11 */ this.currentData._t_XmlZip           = null; 
       /* 12 */ this.currentData._t_theString        = ""; 
       /* 13 */ this.currentData._t_theBool          = false; 
+      /* 14 */ this.currentData._t_dokDate2         = DateTime.MinValue;
 
    }
 
@@ -274,6 +276,11 @@ public class Xtrano : VvTransRecord
    {
       get { return this.currentData._t_theBool; }
       set {        this.currentData._t_theBool = value; }
+   }
+   /* 14 */ public DateTime T_dokDate2
+   {
+      get { return this.currentData._t_dokDate2; }
+      set {        this.currentData._t_dokDate2 = value; }
    }
    public bool F2_IsReject
    {

@@ -2888,7 +2888,7 @@ public static class Vv_eRacun_HTTP
 
       int newsCount = 0;
 
-      bool addrecKupdobOK, kupdobOK;
+      bool addrecKupdobOK, foundKupdobOK;
 
       string theOIB, theXmlString;
       Kupdob kupdob_rec;
@@ -2918,7 +2918,6 @@ public static class Vv_eRacun_HTTP
 
       foreach(Xtrano xtranoForImport_rec in XtranosForImport_List)
       {
-
          messageList.Add(new VvReportSourceUtil()
          {
             KupdobCD   = xtranoForImport_rec.F2_ElectronicID,
@@ -2928,10 +2927,10 @@ public static class Vv_eRacun_HTTP
             String2    = xtranoForImport_rec.T_konto,
             String3    = xtranoForImport_rec.T_devName,
             TheMoney   = xtranoForImport_rec.T_moneyA,
-            
+            TheDate2   = xtranoForImport_rec.T_dokDate2,
+
             UtilUint   = xtranoForImport_rec.T_recID,
          });
-
       } 
 
       VvMessageBoxDLG  FUR_ImportCandidatesXtranoList_InfoDLG = new VvMessageBoxDLG (false, ZXC.VvmBoxKind.F2_IMPORT_candidates);
@@ -3011,10 +3010,10 @@ public static class Vv_eRacun_HTTP
 
          kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
 
-         if(kupdob_rec != null) kupdobOK = true;
-         else                   kupdobOK = false;
+         if(kupdob_rec != null) foundKupdobOK = true;
+         else                   foundKupdobOK = false;
 
-         if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+         if(foundKupdobOK == false) // try to create NEW Kupdob from eRacun data 
          {
             kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_eRacun(theUC.TheDbConnection, deserialized_eRacun, false);
 
@@ -3030,12 +3029,12 @@ public static class Vv_eRacun_HTTP
 
                   theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
 
-                  kupdobOK = true;
+                  foundKupdobOK = true;
                }
                else
                {
                   ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom ADDREC novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", AURxtrano_rec.F2_ElectronicID, theOIB);
-                  kupdobOK = false;
+                  foundKupdobOK = false;
                }
             }
             else
@@ -3046,7 +3045,7 @@ public static class Vv_eRacun_HTTP
 
          #endregion Get Kupdob / New Kupdob?
 
-         if(kupdobOK || addrecKupdobOK)
+         if(foundKupdobOK || addrecKupdobOK)
          {
             // 2. Create new Faktur bussiness object record from 'InvoiceType' in XML document 
 
@@ -3822,7 +3821,6 @@ public static class Vv_eRacun_HTTP
       bool saveOK = EN16931.UBL.InvoiceType.VvSaveToFile(theXmlString, fullName, ZXC.VvUTF8Encoding_noBOM);
     //string theXmlString = theNaplataZahtjev.SaveToFile(fullName, ZXC.VvUTF8Encoding_noBOM);
 
-
       // upali ako os debagirati
       //System.Diagnostics.Process.Start(fullName);
 
@@ -3836,7 +3834,18 @@ public static class Vv_eRacun_HTTP
 
       Cursor.Current = Cursors.Default;
 
-      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Završeno slanje {0} prijava plaćanja.", mapCount);
+      ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, "Kreirana je datoteka u kojoj je {0} prijava plaćanja.\n\r\n\rOtvaram directory lokacije datoteke\n\rte ju, po želji, možete kopirati i na neko drugo mjesto.", mapCount);
+
+      if(saveOK)
+      {
+         // Open File Explorer and select the file
+         System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{fullName}\"");
+      }
+      else
+      {
+         ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error,
+            "Neuspješno spremanje XML datoteke.\n\nPutanja: {0}", fullName);
+      }
 
       return newsCount;
 
@@ -4274,15 +4283,16 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
    
       bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.TaxInclusiveAmount?.Value == null;
    
-      decimal theMoney = 0M;
+      decimal  invoiceTypeMoney = 0M;
+      DateTime invoiceTypeDokDate = DateTime.MinValue;
       
       if(deserialized_eRacun_Is_Unreadable)
       {
 #if !DEBUG
          // Try to extract TaxInclusiveAmount directly from XML as fallback
-         theMoney = ExtractTaxInclusiveAmountFromXml(xmlString);
+         invoiceTypeMoney = ExtractTaxInclusiveAmountFromXml(xmlString);
 #endif
-         if(theMoney.IsZero())
+         if(invoiceTypeMoney.IsZero())
          {
             string debugPath = @"C:\temp\debug_invoice_" + responseData.ElectronicId.ToString() + "_" + responseData.SenderBusinessName + ".xml";
             System.IO.Directory.CreateDirectory(@"C:\temp");
@@ -4294,25 +4304,27 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          else
          {
             // Successfully extracted from XML
-            ZXC.aim_emsg(MessageBoxIcon.Information, $"Deserialized eRacun failed but TaxInclusiveAmount extracted from XML: {theMoney:F2}");
+            ZXC.aim_emsg(MessageBoxIcon.Information, $"Deserialized eRacun failed but TaxInclusiveAmount extracted from XML: {invoiceTypeMoney:F2}");
          }
       }
       else
       {
-         theMoney = deserialized_eRacun.LegalMonetaryTotal.TaxInclusiveAmount.Value;
+         invoiceTypeMoney   = deserialized_eRacun.LegalMonetaryTotal.TaxInclusiveAmount.Value;
+         invoiceTypeDokDate = deserialized_eRacun.IssueDate?.Value ?? DateTime.MinValue;
       }
    
       Xtrano xmlXtrano_rec = new Xtrano()
       {               
-         T_XmlZip        = zipped_xmlString                 ,
-         F2_ElectronicID = (uint)responseData.ElectronicId  ,
-         T_dokDate       = (DateTime)responseData.Sent      ,
-         T_opis_128      = responseData.SenderBusinessName	,
-         T_theString     = responseData.DocumentNr          ,
-         T_konto	       = responseData.SenderBusinessNumber,
-         T_devName       = responseData.StatusId.ToString() ,
-         T_TT            = Mixer.TT_AUR                     ,
-         T_moneyA        = theMoney,
+         T_XmlZip        = zipped_xmlString                 , // from XML 
+         F2_ElectronicID = (uint)responseData.ElectronicId  , // from response 
+         T_dokDate       = (DateTime)responseData.Sent      , // from response 
+         T_dokDate2      = invoiceTypeDokDate               , // from XML 
+         T_opis_128      = responseData.SenderBusinessName	, // from response 
+         T_theString     = responseData.DocumentNr          , // from response 
+         T_konto	       = responseData.SenderBusinessNumber, // from response 
+         T_devName       = responseData.StatusId.ToString() , // from response
+         T_TT            = Mixer.TT_AUR                     , // from XML 
+         T_moneyA        = invoiceTypeMoney,
       };
    
       return xmlXtrano_rec;
