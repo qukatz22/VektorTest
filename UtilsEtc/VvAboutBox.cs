@@ -1189,11 +1189,11 @@ public class VvMessageBox_UC : UserControl
       CreateColumn_ftrRecID(theGrid, "FtrRecID"    , ZXC.Q5un        ); // u ovom slucaju  tu ide Xtrano? RecID, sam smo ostavili naziv Ftrans 
       CreateColumn_skip    (theGrid, "Preskoči"    , ZXC.Q3un        );
 
-    //CreateColumn_electronicId(theGrid, "ElectronicID", ZXC.Q7un);
-      CreateColumn_datum       (theGrid, "Datum slanja", ZXC.Q4un   );
-      CreateColumn_partner     (theGrid, "Dobavljač"   , ZXC.Q10un + ZXC.Q3un);
-      CreateColumn_tipBr       (theGrid, "Broj Racuna" , ZXC.Q9un);
-      CreateColumn_iznos       (theGrid, "IznosRn"     , ZXC.Q4un);
+      CreateColumn_datum   (theGrid, "Datum slanja" , ZXC.Q4un + ZXC.Qun2);
+      CreateColumn_datumUpl(theGrid, "Datum računa ", ZXC.Q4un + ZXC.Qun2);
+      CreateColumn_partner (theGrid, "Dobavljač"    , ZXC.Q10un + ZXC.Q3un);
+      CreateColumn_tipBr   (theGrid, "Broj Racuna"  , ZXC.Q9un);
+      CreateColumn_iznos   (theGrid, "IznosRn"      , ZXC.Q4un);
 
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
    }
@@ -1623,7 +1623,8 @@ public class VvMessageBox_UC : UserControl
          TheGrid.Rows.Add();
          
          TheGrid.PutCell(ci.iT_partner , rowIdx, messageList[rowIdx].KupdobName);
-         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].TheDate.ToString(ZXC.VvDateFormat));
+         TheGrid.PutCell(ci.iT_datum   , rowIdx, messageList[rowIdx].TheDate .ToString(ZXC.VvDateFormat));
+         TheGrid.PutCell(ci.iT_datumUpl, rowIdx, messageList[rowIdx].TheDate2.ToString(ZXC.VvDateFormat));
          TheGrid.PutCell(ci.iT_tipBr   , rowIdx, messageList[rowIdx].String1);
          TheGrid.PutCell(ci.iT_iznos   , rowIdx, messageList[rowIdx].TheMoney  );
          TheGrid.PutCell(ci.iT_ftrRecID, rowIdx, messageList[rowIdx].UtilUint  );
