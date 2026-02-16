@@ -9835,7 +9835,12 @@ public class F2_Izlaz_UC : VvUserControl
 
       if(e.ColumnIndex == ci.iT_uplata )
       {
-         
+         string tt    = theG.GetStringCell(ci.iT_tt   , rowIdx, false);
+         uint   ttNum = theG.GetUint32Cell(ci.iT_ttNum, rowIdx, false);
+
+         Nalog nalog_rec = FtransDao.GetNalog_ForIFA_TtAndTtNum(TheDbConnection, tt, ttNum);
+
+         ZXC.TheVvForm.ShowNalogDUC_For_DokNum(nalog_rec.DokNum.ToString());
       }
 
    }
@@ -10571,7 +10576,7 @@ public class F2_NIR_UC : VvUserControl
       // Ftrans 
       TheG.PutCell(ci.iT_tt         , rowIdx, ftrans_rec.T_tipBr);
       TheG.PutCell(ci.iT_dateUpl    , rowIdx, ftrans_rec.T_dokDate );
-      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec.T_parentID + "/" + ftrans_rec.T_serial);
+      TheG.PutCell(ci.iT_nalog      , rowIdx, ftrans_rec./*T_parentID*/T_dokNum + "/" + ftrans_rec.T_serial);
       TheG.PutCell(ci.iT_konto      , rowIdx, ftrans_rec.T_konto );
       TheG.PutCell(ci.iT_opis       , rowIdx, ftrans_rec.T_opis );
       TheG.PutCell(ci.iT_tipUpl     , rowIdx, tipUpl);

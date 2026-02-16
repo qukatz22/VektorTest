@@ -7800,7 +7800,7 @@ public class RptR_PDV_PDV            : RptR_PDV
       this.PdvSchema_2013_EU = RptFilter.DatumOd >= ZXC.PdvEU_EraDate && RptFilter.DatumOd < ZXC.Date01012014                                               ; 
       this.PdvSchema_2014    = RptFilter.DatumOd >= ZXC.Date01012014  && RptFilter.DatumOd < ZXC.Date01012015                                               ;
       this.PdvSchema_2015    = RptFilter.DatumOd >= ZXC.Date01012015  && RptFilter.DatumOd < ZXC.Date01012023                                               ; 
-      this.PdvSchema_2023    = RptFilter.DatumOd >= ZXC.Date01012023                                                                                        ;
+      this.PdvSchema_2023    = RptFilter.DatumOd >= ZXC.Date01012023  && RptFilter.DatumOd < ZXC.Date01012026                                               ; 
       this.PdvSchema_2026    = RptFilter.DatumOd >= ZXC.Date01012026                                                                                        ;
 
       if(isPdvK && PdvSchema_2013)
@@ -8134,8 +8134,6 @@ public class RptR_PDV_PDV            : RptR_PDV
 
 #region Zaglavlje
 
-         // sambapati
-
          writer.WriteStartElement("Zaglavlje");
 
             writer.WriteStartElement("Razdoblje");
@@ -8146,8 +8144,9 @@ public class RptR_PDV_PDV            : RptR_PDV
             writer.WriteStartElement("Obveznik");
                writer.WriteElementString("Naziv", ZXC.CURR_prjkt_rec.Naziv);
                writer.WriteElementString("OIB", ZXC.CURR_prjkt_rec.Oib);
-               if(PdvSchema_2013_EU == false && PdvSchema_2014 == false && PdvSchema_2015 == false && PdvSchema_2023 == false) 
-               writer.WriteElementString("SifraDjelatnosti", ZXC.CURR_prjkt_rec.SifDcd);
+               // 16.02.2026: gasimo SifraDjelatnosti
+             //if(PdvSchema_2013_EU == false && PdvSchema_2014 == false && PdvSchema_2015 == false && PdvSchema_2023 == false) 
+             //writer.WriteElementString("SifraDjelatnosti", ZXC.CURR_prjkt_rec.SifDcd);
                writer.WriteStartElement("Adresa");
                   writer.WriteElementString("Mjesto", ZXC.CURR_prjkt_rec.Grad);
                   writer.WriteElementString("Ulica", ZXC.CURR_prjkt_rec.UlicaBezBroja_1);
@@ -8158,10 +8157,11 @@ public class RptR_PDV_PDV            : RptR_PDV
             writer.WriteStartElement("ObracunSastavio");
                writer.WriteElementString("Ime"    , ZXC.CURR_prjkt_rec.Ime);
                writer.WriteElementString("Prezime", ZXC.CURR_prjkt_rec.Prezime);
-               if(PdvSchema_2015 == false && PdvSchema_2023 == false)
-               writer.WriteElementString("Telefon", /*ZXC.CURR_prjkt_rec.Tel1 zbog validacije:*/ZXC.CURR_prjkt_rec.Tel2);
-               if(PdvSchema_2015 == false && PdvSchema_2023 == false)
-               writer.WriteElementString("Email", ZXC.CURR_prjkt_rec.Email);
+               // 16.02.2026: gasimo Telefon i Email 
+             //if(PdvSchema_2015 == false && PdvSchema_2023 == false)
+             //writer.WriteElementString("Telefon", /*ZXC.CURR_prjkt_rec.Tel1 zbog validacije:*/ZXC.CURR_prjkt_rec.Tel2);
+             //if(PdvSchema_2015 == false && PdvSchema_2023 == false)
+             //writer.WriteElementString("Email", ZXC.CURR_prjkt_rec.Email);
             writer.WriteEndElement(); // ObracunSastavio 
             
          writer.WriteElementString("Ispostava", ZXC.CURR_prjkt_rec.OpcCd);
@@ -9359,8 +9359,6 @@ public class RptR_PDV_PDV            : RptR_PDV
             #endregion PdvSchema_2023
          } // else // PdvSchema_2023 
 
-         // sambapati
-
          else if(PdvSchema_2026) // PdvSchema_2026 
          {
 #region PdvSchema_2026
@@ -9489,7 +9487,7 @@ public class RptR_PDV_PDV            : RptR_PDV
             if(RptFilter.PdvPovrat.NotZero())
             {
                writer.WriteElementString("Povrat", RptFilter.PdvPovrat.ToStringVv_NoGroup_ForceDot());
-            writer.WriteElementString("PovratIBAN", ZXC.GetIBANfromOldZiro(ZXC.CURR_prjkt_rec.Ziro1));
+               writer.WriteElementString("PovratIBAN", ZXC.GetIBANfromOldZiro(ZXC.CURR_prjkt_rec.Ziro1));
             }
             if(RptFilter.PdvPredujam.NotZero())
             {

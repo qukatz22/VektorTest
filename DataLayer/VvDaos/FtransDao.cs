@@ -901,4 +901,34 @@ LoadGenericVvDataRecordList<Faktur>(dbConn, rnpFakturList   , GetFM_fakOTP(raspD
       return XtranoDao.SetMe_MAP_XtranoForThis_FtransRecID(conn, ftrans_rec.T_recID) != null;
    }
 
+   public static Nalog GetNalog_ForIFA_TipBr(XSqlConnection conn, string tipBr)
+   {
+      Ftrans.ParseTipBr(tipBr, out string tt, out uint ttNum); // primjer inlined variable daclaration-a 
+
+      if(tt.IsEmpty() || ttNum.IsZero()) return null;
+
+      return GetNalog_ForIFA_TtAndTtNum(conn, tt, ttNum);
+   }
+   public static Nalog GetNalog_ForIFA_TtAndTtNum(XSqlConnection conn, string tt, uint ttNum)
+   {
+      Faktur faktur_rec = new Faktur();
+
+      bool fakturOK = FakturDao.SetMeFaktur(conn, faktur_rec, tt, ttNum, false);
+
+      if(!fakturOK) return null;
+
+      List<Ftrans> MAP_naplacenoFtransList = FtransDao.Get_Naplaceno_OR_TodoMAP_FtransList_For_FakRecID(conn, faktur_rec.RecID, false);
+
+      int MAP_Ftr_naplacenoCount = MAP_naplacenoFtransList.Count;
+
+      if(MAP_Ftr_naplacenoCount.IsZero()) return null;
+
+      if(MAP_Ftr_naplacenoCount > 1) ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Information, $"Ima sveukupno {MAP_Ftr_naplacenoCount} naplata. Prikazujem prvu.");
+
+      Nalog nalog_rec = new Nalog();
+
+      nalog_rec.VvDao.SetMe_Record_byRecID_Complete(conn, MAP_naplacenoFtransList.First().T_parentID, nalog_rec);
+
+      return nalog_rec;
+   }
 }
