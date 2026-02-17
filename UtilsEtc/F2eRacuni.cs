@@ -2630,7 +2630,7 @@ public static class Vv_eRacun_HTTP
 
          #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
-         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, true) : null;
+         deserialized_eRacun = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, /*true*/false) : null;
 
          string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
 
@@ -4230,47 +4230,6 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_moneyA        = faktur_rec.S_ukKCRP       ,
          T_opis_128      = faktur_rec.KupdobName     , // fuse 
          T_devName       = ""                        , // fuse 
-      };
-
-      return xmlXtrano_rec;
-   }
-   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_ResponseOLD(string xmlString, VvMER_ResponseData responseData, EN16931.UBL.InvoiceType deserialized_eRacun) // ovo je QueryInbox ResponseData (NE od Fiscalization Status Inbox) 
-   {
-      if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
-
-      byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
-
-      bool deserialized_eRacun_Is_Unreadable = deserialized_eRacun?.LegalMonetaryTotal?.TaxInclusiveAmount?.Value == null;
-
-      decimal theMoney = deserialized_eRacun_Is_Unreadable ? 0.00M : deserialized_eRacun.LegalMonetaryTotal.TaxInclusiveAmount.Value;
-
-      if(deserialized_eRacun_Is_Unreadable)
-      {
-
-         string debugPath = @"C:\temp\debug_invoice_" + responseData.ElectronicId.ToString() + "_" + responseData.SenderBusinessName + ".xml";
-         System.IO.Directory.CreateDirectory(@"C:\temp");
-         System.IO.File.WriteAllText(debugPath, xmlString, System.Text.Encoding.UTF8);
-         System.Diagnostics.Debug.WriteLine($"XML saved to: {debugPath}");
-
-         ZXC.aim_emsg(MessageBoxIcon.Exclamation, $"Deserialized eRacun Is Unreadable. Money will be zero!{Environment.NewLine}{Environment.NewLine}[{debugPath}]  file created.");
-      }
-
-      Xtrano xmlXtrano_rec = null;
-
-      xmlXtrano_rec   = new Xtrano()
-      {               
-         T_XmlZip        = zipped_xmlString                 ,
-
-         F2_ElectronicID = (uint)responseData.ElectronicId  ,
-         T_dokDate       = (DateTime)responseData.Sent      ,
-         T_opis_128      = responseData.SenderBusinessName	,
-         T_theString     = responseData.DocumentNr          ,
-         T_konto	       = responseData.SenderBusinessNumber,
-         T_devName       = responseData.StatusId.ToString() ,
-                         
-         T_TT            = Mixer.TT_AUR                     ,
-
-         T_moneyA        = theMoney,
       };
 
       return xmlXtrano_rec;

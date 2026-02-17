@@ -10164,7 +10164,8 @@ public class F2_Ulaz_UC : VvUserControl
       else if(xtrano_rec.F2_IsFisk == F2_StatusInAndOutBoxEnum.NE_NIJE   ) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_red   ;
       else                                                                 ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isFisk]).Value = img_empty ;
 
-      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
+      if(xtrano_rec.T_XmlZip != null) ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_green;
+      else                            ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isArhiv]).Value = img_red;
  
       if(xtrano_rec.F2_IsReject)((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_green;
       else                      ((DataGridViewImageCell)TheG.Rows[rowIdx].Cells[ci.iT_isReject]).Value = img_empty;
@@ -10416,6 +10417,29 @@ public class F2_NIR_UC : VvUserControl
       //   ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
       //}
    }
+
+   private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)
+   {
+      VvDataGridView theG = sender as VvDataGridView;
+
+      int rowIdx = e.RowIndex;
+
+      if(rowIdx.IsNegative()) return;
+
+      if(e.ColumnIndex == ci.iT_tt || e.ColumnIndex == ci.iT_fiskTtNum)
+      {
+         string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false);
+
+         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
+      }
+
+      if(e.ColumnIndex == ci.iT_uplata || e.ColumnIndex == ci.iT_nalog)
+      {
+         ZXC.TheVvForm.ShowNalogDUC_For_DokNum(TheFtransList[rowIdx].T_dokNum.ToString());
+      }
+
+   }
+
    #endregion Constructor
 
    #region TheGrid and columns
@@ -10571,7 +10595,7 @@ public class F2_NIR_UC : VvUserControl
       else
       { 
          // Faktur 
-         TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.TtNumFiskal);
+         TheG.PutCell(ci.iT_fiskTtNum  , rowIdx, faktur_rec.VezniDok   );
          TheG.PutCell(ci.iT_date       , rowIdx, faktur_rec.DokDate    );
          TheG.PutCell(ci.iT_partner    , rowIdx, faktur_rec.KupdobName );
          TheG.PutCell(ci.iT_iznos      , rowIdx, faktur_rec.S_ukKCRP   );
@@ -10616,29 +10640,6 @@ public class F2_NIR_UC : VvUserControl
    }
 
    #endregion PutDgvFields1
-
-   private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)
-   {
-      VvDataGridView theG = sender as VvDataGridView;
-
-      int rowIdx = e.RowIndex;
-
-      if(rowIdx.IsNegative()) return;
-    
-      if(e.ColumnIndex == ci.iT_tt || e.ColumnIndex == ci.iT_fiskTtNum)
-      {
-         string tipBr = theG.GetStringCell(ci.iT_tt, rowIdx, false);
-
-         ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
-      }
-
-      if(e.ColumnIndex == ci.iT_uplata || e.ColumnIndex == ci.iT_nalog)
-      {
-         ZXC.TheVvForm.ShowNalogDUC_For_DokNum(TheFtransList[rowIdx].T_dokNum.ToString());
-      }
-
-   }
-
 }
 
 #endregion Fiskalizacija F2

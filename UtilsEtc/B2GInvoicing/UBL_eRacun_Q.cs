@@ -2372,24 +2372,56 @@ namespace EN16931.UBL
          {
             newSIN_rtransList = new List<Rtrans>();
 
-            var pdvGR_rtransList = newANA_rtransList.GroupBy(rtr => rtr.T_pdvSt);
+            string  taxCategory;
+            string  taxExemptionReason;
+            decimal taxAmount;
+            string artiklName;
 
-            foreach(var pdvGR_rtrans in pdvGR_rtransList)
+            // probaj prvo po TaxTotalima 
+            foreach(var taxTotal in this.TaxTotal)
+            { 
+               foreach(var taxSubtotal in taxTotal.TaxSubtotal)
+               {
+                  taxCategory        = taxSubtotal.TaxCategory.Percent.Value.ToString();
+                  taxExemptionReason = taxSubtotal.TaxCategory?.TaxExemptionReason?.FirstOrDefault()?.Value ?? $"Stav. računa po PDV stopi od {taxCategory}%";
+                  taxAmount          = taxSubtotal.TaxAmount.Value;
+
+                  artiklName = $"Stav. računa po PDV stopi od {taxCategory}% (u iznosu od {taxAmount})";
+
+                  Rtrans sintRtrans_rec = new Rtrans()
+                  {
+                     T_artiklName = taxSubtotal.TaxCategory.Percent.Value.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
+                     T_kol        = 1,
+                     T_pdvSt      = taxSubtotal.TaxCategory.Percent.Value,
+
+                     T_cij        = taxSubtotal.TaxableAmount.Value
+                  };
+
+                  sintRtrans_rec.CalcTransResults(null);
+
+                  newSIN_rtransList.Add(sintRtrans_rec);
+               }
+
+            } // foreach(var taxTotal in this.TaxTotal)
+
+            // a kako nema TaxTotala, uzmi LegalMonetaryTotal stuff 
+            if(newSIN_rtransList.Count.IsZero())
             {
                Rtrans sintRtrans_rec = new Rtrans()
                {
-                  T_artiklName = $"Suma {pdvGR_rtrans.Count()} stav. računa po PDV stopi od {pdvGR_rtrans.Key}%",
+                  T_artiklName = $"Sumirane stavke računa",
                   T_kol        = 1,
-                  T_pdvSt      = pdvGR_rtrans.Key,
 
-                  T_cij        = pdvGR_rtrans.Sum(rtr => rtr.R_KCR)
+                  T_cij        = this.LegalMonetaryTotal?.TaxExclusiveAmount?.Value ?? 0M // ili mozda PayableAmount? 
                };
 
                sintRtrans_rec.CalcTransResults(null);
 
                newSIN_rtransList.Add(sintRtrans_rec);
-            }
-         }
+
+            } // if(newSIN_rtransList.Count.IsZero())
+
+         } // if(wantsOneSintStavka)
 
          #endregion wantsOneSintStavka
 
@@ -3153,7 +3185,7 @@ namespace EN16931.UBL.QWE2
 
          Naplata theNaplata = new Naplata()
          {
-            brojDokumenta             = MAP_Action.faktur.TtNumFiskal,
+            brojDokumenta             = MAP_Action.faktur./*TtNumFiskal*/VezniDok,
             datumIzdavanja            = MAP_Action.faktur.DokDate    ,
             oibPorezniBrojIzdavatelja = ZXC.CURR_prjkt_rec.Oib       ,
             oibPorezniBrojPrimatelja  = MAP_Action.faktur.KdOib      ,
