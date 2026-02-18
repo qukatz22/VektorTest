@@ -10475,12 +10475,12 @@ public class F2_NIR_UC : VvUserControl
  
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
                                                                                                                                                                                                              
-      vvtb_tt         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_tt"           , null, -12, "TipBr"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"        , "TipBr"         , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
-      vvtb_dateUpl    = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(    "vvtb_dateUpl"      , null, -12, "DatumUpl"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateUpl   , null, "R_dateUpl"   , "DatumUpl"      , ZXC.Q4un + ZXC.Qun4); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
-      vvtb_nalog      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_nalog "       , null, -12, "Nalog/Red"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_nalog     , null, "R_nalog"     , "Nalog/Red"     , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
-      vvtb_konto      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_konto "       , null, -12, "Konto"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_konto     , null, "R_konto"     , "Konto"         , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
-      vvtb_opis       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_opis  "       , null, -12, "Opis uplate"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis      , null, "R_opis"      , "Opis uplate"   , ZXC.Q10un          ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un;
-      vvtb_tipUpl     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_tipUpl"       , null, -12, "TipUpl"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tipUpl    , null, "R_tipUpl"    , "TipUpl"        , ZXC.Q2un           ); colVvText.DefaultCellStyle.BackColor = clr_colIfa_Back; 
+      vvtb_tt         = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_tt"           , null, -12, "TipBr"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tt        , null, "R_tt"        , "TipBr"         , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back; 
+      vvtb_dateUpl    = theGrid.CreateVvTextBoxFor_DateTime_ColumnTemplate(    "vvtb_dateUpl"      , null, -12, "DatumUpl"   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_dateUpl   , null, "R_dateUpl"   , "DatumUpl"      , ZXC.Q4un + ZXC.Qun4); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back; 
+      vvtb_nalog      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_nalog "       , null, -12, "Nalog/Red"  ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_nalog     , null, "R_nalog"     , "Nalog/Red"     , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back; 
+      vvtb_konto      = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_konto "       , null, -12, "Konto"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_konto     , null, "R_konto"     , "Konto"         , ZXC.Q4un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back; 
+      vvtb_opis       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_opis  "       , null, -12, "Opis uplate"); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_opis      , null, "R_opis"      , "Opis uplate"   , ZXC.Q10un          ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back; colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; colVvText.MinimumWidth = ZXC.Q7un;
+      vvtb_tipUpl     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate  (    "vvtb_tipUpl"       , null, -12, "TipUpl"     ); colVvText = theGrid.CreateVvTextBoxColumn(vvtb_tipUpl    , null, "R_tipUpl"    , "TipUpl"        , ZXC.Q2un           ); colVvText.DefaultCellStyle.BackColor = clr_Mp_Back; 
 
       colRazmak        = theGrid.CreateScrollColumn("razmak", ZXC.Qun4);
 
@@ -10631,8 +10631,24 @@ public class F2_NIR_UC : VvUserControl
          TheG.PutCell(ci.iT_razlikaUpl, rowIdx, 0M);
       }
 
-      if(xtranoFound) TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
-      else            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
+    //if(xtranoFound) TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
+    //else            TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
+
+      DataGridViewCell cell;
+
+      for(int i = 0; i < TheG.Rows[rowIdx].Cells.Count; ++i)
+      {
+         if(i == ci.iT_uplata || i == ci.iT_markPaid || i == ci.iT_razlikaUpl)
+         {
+            cell = TheG.Rows[rowIdx].Cells[i];
+      
+            if(xtranoFound) cell.Style.BackColor = Color.FromArgb(204, 255, 204);
+            else            cell.Style.ForeColor = Color.FromArgb(255, 194, 179);
+         }
+      }
+
+
+
    }
 
    public override void GetFields(bool fuse)
