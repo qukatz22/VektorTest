@@ -2578,7 +2578,7 @@ namespace EN16931.UBL
 
          return cleanOIB;
       }
-      internal static Kupdob Create_Kupdob_from_eRacun(MySqlConnection conn, InvoiceType invoiceType, bool isKupac)
+      internal static Kupdob Create_Kupdob_from_InvoiceType(MySqlConnection conn, InvoiceType invoiceType, bool isKupac)
       {
          bool isDobav = !isKupac;
 
@@ -2783,105 +2783,6 @@ namespace EN16931.UBL
          }
 
          return kupdob_rec;
-      }
-      internal Faktur Create_Faktur_From_CreditNoteDELLMELATTER(XSqlConnection conn, EN16931.UBL.CreditNoteType creditNote, uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA)
-      {
-         try
-         {
-            bool isUFA = !isIFA;
-
-            // Kreiraj bazni Faktur za CreditNote (YRN - odobrenje) 
-            Faktur faktur_rec = new Faktur();
-
-            // Postavi zajednicke F2 atribute 
-            faktur_rec.F2_R1kind = ZXC.F2_R1enum.B2B;
-
-            #region ZAGLAVLJE računa
-
-            // From Kupdob 
-
-            faktur_rec.KupdobName = faktur_rec.PosJedName = kupdob_rec.Naziv;
-            faktur_rec.KupdobCD = faktur_rec.PosJedCD = kupdob_rec.KupdobCD;
-            faktur_rec.KupdobTK = faktur_rec.PosJedTK = kupdob_rec.Ticker;
-            faktur_rec.KdUlica = faktur_rec.PosJedUlica = kupdob_rec.Ulica1;
-            faktur_rec.KdZip = faktur_rec.PosJedZip = kupdob_rec.PostaBr;
-            faktur_rec.KdMjesto = faktur_rec.PosJedMjesto = kupdob_rec.Grad;
-            faktur_rec.KdOib = kupdob_rec.Oib;
-            faktur_rec.VatCntryCode = kupdob_rec.VatCntryCode;
-
-            faktur_rec.F2_R1kind = kupdob_rec.R1kind;
-
-            if(isUFA)
-               faktur_rec.ZiroRn = kupdob_rec.Ziro1;
-
-            // From CreditNoteType 
-
-            faktur_rec.DokDate = (creditNote.IssueTime != null && creditNote.IssueTime.Value != DateTime.MinValue)
-               ? creditNote.IssueDate.Value.Date.Add(creditNote.IssueTime.Value.TimeOfDay)
-               : creditNote.IssueDate.Value;
-
-            faktur_rec.PdvDate = creditNote.TaxPointDate?.Value == null ? creditNote.IssueDate.Value : creditNote.TaxPointDate.Value;
-            faktur_rec.VezniDok = creditNote.ID.Value;
-            faktur_rec.Napomena = ZXC.F2_Unprocessed;
-
-            for(int i = 0; creditNote.Note != null && i < creditNote.Note.Length; i++)
-            {
-               faktur_rec.Opis += creditNote.Note[i].Value + Environment.NewLine;
-            }
-
-            faktur_rec.DevName = creditNote.DocumentCurrencyCode.Value;
-
-            // From some Response 
-            if(ZXC.IsF2_2026_rules == false) faktur_rec.FiskPrgBr = "[" + electronicID.ToString() + "]";
-            faktur_rec.F2_ElectronicID = electronicID;
-            faktur_rec.F2_SentTS = sentDate;
-
-            #endregion ZAGLAVLJE računa
-
-            #region STAVKE računa
-
-            if(creditNote.CreditNoteLine != null && creditNote.CreditNoteLine.Length > 0)
-            {
-               ushort line = 0;
-               List<Rtrans> rtransList = new List<Rtrans>(creditNote.CreditNoteLine.Length);
-               bool OK = true;
-
-               foreach(EN16931.UBL.CreditNoteLineType creditNoteLine in creditNote.CreditNoteLine)
-               {
-                  Rtrans rtrans_rec = new Rtrans();
-
-                  rtrans_rec.T_artiklName = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
-                  rtrans_rec.T_kol = creditNoteLine.CreditedQuantity.Value;
-                  rtrans_rec.T_cij = creditNoteLine.Price.PriceAmount.Value;
-                  rtrans_rec.T_pdvSt = creditNoteLine.Item.ClassifiedTaxCategory[0].Percent.Value;
-
-                  rtrans_rec.CalcTransResults(null);
-
-                  rtransList.Add(rtrans_rec);
-
-               } // foreach(EN16931.UBL.CreditNoteLineType creditNoteLine in creditNote.CreditNoteLine)
-
-               faktur_rec.Transes = rtransList;
-               faktur_rec.TakeTransesSumToDokumentSum(true);
-               faktur_rec.Transes = null;
-
-               foreach(Rtrans rtrans in rtransList)
-               {
-                  OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
-               }
-
-               if(!OK) return null;
-            }
-
-            #endregion STAVKE računa
-
-            return faktur_rec;
-         }
-         catch(Exception ex)
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Error, "Greška prilikom kreiranja Faktur iz CreditNote: {0}", ex.Message);
-            return null;
-         }
       }
       public Faktur Create_Faktur_From_CreditNoteType(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, uint xtranoRecID = 0)
       {
