@@ -1221,7 +1221,7 @@ public static class Vv_eRacun_HTTP
 
       return newsCount;
    }
-   /* XXX */internal static int WS_Ufati_Veleform_Ritam(F2_Izlaz_UC theUC)
+   /* XXX */internal static int WS_Import_Extern_Faktur_IFA/*WS_Ufati_Veleform_Ritam*/(F2_Izlaz_UC theUC)
    {
       #region Init
 
@@ -1357,6 +1357,17 @@ public static class Vv_eRacun_HTTP
          {
             deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false) : null;
             deserialized_CreditNoteType = null;
+         }
+         else 
+         {
+          //ZXC.aim_emsg(MessageBoxIcon.Error, $"Outbox dokument {webApiResult.ResponseData} nije niti račun (InvoiceType) niti odobrenje (CreditNote). Dokument neće biti učitan u IFA-e.");
+            ZXC.aim_emsg(MessageBoxIcon.Error,
+               $"Outbox dokument nije niti račun (InvoiceType) niti odobrenje (CreditNote).{Environment.NewLine}Dokument neće biti učitan u IFA-e.{Environment.NewLine}{Environment.NewLine}" +
+               $"Elektronski ID: {responseData.ElectronicId}{Environment.NewLine}" +
+               $"Broj dokumenta: {responseData.DocumentNr ?? "N/A"}{Environment.NewLine}" +
+               $"Pošiljatelj: {responseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
+               $"Datum slanja: {responseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
+               $"Status: {responseData.StatusName ?? responseData.StatusId?.ToString() ?? "N/A"}");
          }
 
          bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
@@ -2487,12 +2498,508 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
+   /* QQQ */internal static int HDD_Import_Extern_Faktur_IFA/*NOT WS_Ufati_Veleform_Ritam*/(F2_Izlaz_UC theUC)
+   {
+      #region Init
+
+      Cursor.Current = Cursors.WaitCursor;
+
+      ZXC.SetStatusText("Učitavam klijentove izlazne račune");
+
+      int newsCount = 0;
+
+      (DateTime queryOutbox_DateOD, DateTime queryOutbox_DateDO) = GetF2QueryDateRange();
+
+      bool isNewFaktur, addrecOK, kupdobOK, xmlValidationOK;
+
+      string theXmlString = "", theOIB = "";
+
+      Faktur existingFaktur_byElectronicID, existingFaktur_byTtNumFiskal, newIFA_Faktur_rec = null;
+
+      EN16931.UBL.InvoiceType    deserialized_InvoiceType    = null;
+      EN16931.UBL.CreditNoteType deserialized_CreditNoteType = null;
+
+      Kupdob kupdob_rec;
+
+      List<string> updatedStatusInfoList = new List<string>();
+           string  updatedStatusInfo                         ;
+
+      List<string> newKupdobInfoList = new List<string>();
+           string  newKupdobInfo                         ;
+
+      string fullDirectoryPath;
+
+      using(FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+      {
+         folderBrowserDialog.Description = "Odaberite direktorij sa XML datotekama:";
+         folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+         folderBrowserDialog.ShowNewFolderButton = false;
+
+         // Set initial directory to eRacuni folder if it exists
+         string initialDir = VvForm.GetLocalDirectoryForVvFile(ZXC.eRacuniDIR);
+         if(Directory.Exists(initialDir))
+         {
+            folderBrowserDialog.SelectedPath = initialDir;
+         }
+
+         DialogResult result = folderBrowserDialog.ShowDialog();
+
+         if(result != DialogResult.OK || string.IsNullOrEmpty(folderBrowserDialog.SelectedPath))
+         {
+            ZXC.SetStatusText("");
+            Cursor.Current = Cursors.Default;
+            return 0;
+         }
+
+         fullDirectoryPath = folderBrowserDialog.SelectedPath;
+      }
+
+      #endregion Init
+
+      #region Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+
+    //WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(                   queryOutbox_DateOD, queryOutbox_DateDO);
+      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_LocalDisk_QueryOutbox_List     (fullDirectoryPath, queryOutbox_DateOD, queryOutbox_DateDO);
+
+      if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
+      {
+         if(webApiResultWithList == null)
+         {
+            webApiResultWithList = new WebApiResult<List<VvMER_ResponseData>>()
+            {
+               WebApiKind        = ZXC.F2_WebApi.OutboxTRNstatusListAsKnjigServis,
+               WebApiAddr        = webApiResultWithList.WebApiAddr,
+               StatusCode        = -1,
+               StatusDescription = "No response data",
+               ErrorBody         = "No response data"
+            };
+         }
+         else
+         {
+            if(webApiResultWithList.ResponseData != null && webApiResultWithList.ResponseData.IsEmpty())
+            {
+               webApiResultWithList.ErrorBody = "Lista je prazna";
+            }
+         }
+
+         //Show_WebApiResult_ErrorMessageBox(webApiResultWithList);
+         Show_WebApiResult_ErrorMessageBox<VvMER_ResponseData>(webApiResultWithList);
+
+         return 0;
+      }
+
+      List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd.Created).ToList();
+      
+      foreach(VvMER_ResponseData responseData in loopList)
+      {
+         Cursor.Current = Cursors.WaitCursor;
+
+       //existingFaktur_byElectronicID = theUC.TheFakturList./*Single*/FirstOrDefault(f => f.F2_ElectronicID         == responseData.ElectronicId);
+         existingFaktur_byTtNumFiskal  = theUC.TheFakturList./*Single*/FirstOrDefault(f => f./*TtNumFiskal*/VezniDok == responseData.DocumentNr  );
+
+         isNewFaktur = /*existingFaktur_byElectronicID == null &&*/ existingFaktur_byTtNumFiskal == null;
+
+         if(isNewFaktur == false) continue;
+
+         // here we go 
+
+         #region 1. Call RECEIVE to get full XML document
+
+         WebApiResult<VvMER_ResponseData> webApiResult = null;
+
+         bool receiveOK = true;
+
+         switch(ZXC.F2_TheProvider)
+         {
+            case ZXC.F2_Provider_enum.MER:
+            {
+                  try
+                  {
+                     webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML((uint)responseData.ElectronicId);
+
+                     theXmlString = webApiResult.ResponseData.DocumentXml;
+
+                     if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty())
+                     {
+                        Show_WebApiResult_ErrorMessageBox(webApiResult);
+                        receiveOK = false;
+                     }
+                  }
+                  catch(Exception ex)
+                  {
+                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
+                     receiveOK = false;
+                  }
+
+                  break;
+
+            } // case ZXC.F2_Provider_enum.MER: 
+
+            case ZXC.F2_Provider_enum.PND:
+            {
+               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+               receiveOK = false;
+               break;
+            }
+         }
+
+         #endregion 1. Call RECEIVE to get full XML document
+
+         #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
+
+         xmlValidationOK = false;
+
+         bool isCreditNote = receiveOK && theXmlString.TrimStart().Contains("<CreditNote ");
+         bool isInvoice    = receiveOK && theXmlString.TrimStart().Contains("<Invoice ");
+
+         if(isCreditNote)
+         {
+            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false) : null;
+            deserialized_InvoiceType = null;
+         }
+         else if(isInvoice)
+         {
+            deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false) : null;
+            deserialized_CreditNoteType = null;
+         }
+         else 
+         {
+          //ZXC.aim_emsg(MessageBoxIcon.Error, $"Outbox dokument {webApiResult.ResponseData} nije niti račun (InvoiceType) niti odobrenje (CreditNote). Dokument neće biti učitan u IFA-e.");
+            ZXC.aim_emsg(MessageBoxIcon.Error,
+               $"Outbox dokument nije niti račun (InvoiceType) niti odobrenje (CreditNote).{Environment.NewLine}Dokument neće biti učitan u IFA-e.{Environment.NewLine}{Environment.NewLine}" +
+               $"Elektronski ID: {responseData.ElectronicId}{Environment.NewLine}" +
+               $"Broj dokumenta: {responseData.DocumentNr ?? "N/A"}{Environment.NewLine}" +
+               $"Pošiljatelj: {responseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
+               $"Datum slanja: {responseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
+               $"Status: {responseData.StatusName ?? responseData.StatusId?.ToString() ?? "N/A"}");
+         }
+
+         bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
+
+         if(hasDeserializedDocument)
+         {
+            try
+            {
+               if(!isCreditNote)
+                  xmlValidationOK = Vv_XSD_Bussiness_BASE<EN16931.UBL.InvoiceType>.ValidateXmlAgainstXsd(theXmlString);
+               else
+                  xmlValidationOK = true; // TODO: dodati XSD validaciju za CreditNote ako bude potrebno 
+            }
+            catch(Exception ex)
+            {
+               ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, ex.Message);
+            }
+         }
+
+         #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
+
+         #region 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
+
+         if(receiveOK && hasDeserializedDocument && xmlValidationOK)
+         {
+            #region Get Kupdob / New Kupdob?
+
+            if(isInvoice)         theOIB = deserialized_InvoiceType   .VvCustomerOIB;
+            else if(isCreditNote) theOIB = deserialized_CreditNoteType.VvCustomerOIB;
+
+            if(theOIB.IsEmpty())
+            {
+               kupdob_rec = null;
+            }
+            else
+            {
+               kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
+            }
+
+            if(kupdob_rec != null) kupdobOK = true ;
+            else                   kupdobOK = false;
+
+            if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+            {
+               if(isInvoice)
+               {
+                  kupdob_rec = EN16931.UBL.InvoiceType.Create_Kupdob_from_InvoiceType(theUC.TheDbConnection, deserialized_InvoiceType, true);
+               }
+               else if(isCreditNote)
+               {
+                  kupdob_rec = EN16931.UBL.CreditNoteType.Create_Kupdob_from_CreditNote(theUC.TheDbConnection, deserialized_CreditNoteType, true);
+               }
+
+               if(kupdob_rec != null) // NEW Kupdob created ok 
+               {
+                  addrecOK = kupdob_rec.VvDao.ADDREC(theUC.TheDbConnection, kupdob_rec);
+
+                  if(addrecOK)
+                  {
+                     newKupdobInfo = string.Format("Novi kupac [{0}],  OIB: [{1}], Ulica: {2}, Mjesto: {3}", kupdob_rec.Naziv, kupdob_rec.Oib, kupdob_rec.Ulica1, kupdob_rec.ZipAndMjesto);
+
+                     newKupdobInfoList.Add(newKupdobInfo);
+
+                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+
+                     kupdobOK = true;
+                  }
+                  else
+                  {
+                     ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom ADDREC novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
+                     kupdobOK = false;
+                  }
+               }
+               else
+               {
+                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom kreiranja novog kupca (kupdob) iz eRačuna s eID={0} za OIB [{1}].", responseData.ElectronicId, theOIB);
+               }
+
+            } // if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
+            
+            else // kupdobOK == true, provjeri ima li dobar R1_Kind ... i ak nema ...
+            {
+               if(kupdob_rec.R1kind != ZXC.F2_R1enum.B2B)
+               {
+                  theUC.TheVvTabPage.TheVvForm.BeginEdit(kupdob_rec);
+
+                  kupdob_rec.R1kind = ZXC.F2_R1enum.B2B;
+
+                  kupdob_rec.VvDao.RWTREC(theUC.TheDbConnection, kupdob_rec, false, true, false);
+
+                  theUC.TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
+
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); // REFRESH sifrar! 
+               }
+            }
+
+            #endregion Get Kupdob / New Kupdob?
+
+            // 2. Create new Faktur bussiness object record from 'InvoiceType' OR 'CreditNoteType' in XML document 
+
+            if(isInvoice)
+            {
+               newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+            }
+            else if(isCreditNote)
+            {
+               newIFA_Faktur_rec = deserialized_CreditNoteType.Create_Faktur_From_CreditNoteType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+            }
+
+            if(newIFA_Faktur_rec != null)
+            {
+               theUC.TheFakturList.Add(newIFA_Faktur_rec);
+
+               newsCount++;
+            
+               updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
+                                             newIFA_Faktur_rec.TipBr,
+                                             newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
+                                             "DODANA u lokalnu bazu",
+                                             newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+            
+               updatedStatusInfoList.Add(updatedStatusInfo);
+
+               ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
+            }
+
+         } // if(receiveOK) 
+
+         #endregion 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
+
+      } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
+
+      #endregion Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+
+      #region TheFakturList ... OrderBy And PutDgvFields
+
+      //if(ZXC.RRD.Dsc_F2_IsAsc == false) theUC.TheFakturList = theUC.TheFakturList.OrderByDescending(f => f.TtNum).ToList();
+      //else                              theUC.TheFakturList = theUC.TheFakturList.OrderBy          (f => f.TtNum).ToList();
+      //
+      //if(theUC.TheFakturList.NotEmpty()) theUC.PutDgvFields();
+
+      #endregion TheFakturList ... OrderBy And PutDgvFields
+
+      #region Finish
+
+      Cursor.Current = Cursors.Default;
+
+      ZXC.SetStatusText("");
+
+      if(updatedStatusInfoList.NotEmpty())
+      {
+         Load_IRn_FakturList(theUC);
+
+         ZXC.aim_emsg_List(string.Format("DODANO je {0} novih klijentovih računa u Vektorovu bazu podataka.", updatedStatusInfoList.Count), updatedStatusInfoList);
+      }
+
+      if(newKupdobInfoList.NotEmpty())
+      {
+         ZXC.aim_emsg_List(string.Format("DODANO je {0} novih partnera (kupaca) u Vektorovu bazu podataka.", newKupdobInfoList.Count), newKupdobInfoList);
+      }
+
+      return newsCount;
+
+      #endregion Finish
+   }
+
+   private static WebApiResult<List<VvMER_ResponseData>> VvMER_LocalDisk_QueryOutbox_List(string fullDirectoryPath, DateTime queryOutbox_DateOD, DateTime queryOutbox_DateDO)
+   {
+      WebApiResult<List<VvMER_ResponseData>> webApiResult = new WebApiResult<List<VvMER_ResponseData>>()
+      {
+         WebApiKind = ZXC.F2_WebApi.HDD_OutboxListAsKnjigServis,
+         WebApiAddr = fullDirectoryPath,
+      };
+
+      try
+      {
+         // Validate directory
+         if(string.IsNullOrEmpty(fullDirectoryPath) || !Directory.Exists(fullDirectoryPath))
+         {
+            webApiResult.StatusCode = -1;
+            webApiResult.StatusDescription = "Directory not found";
+            webApiResult.ErrorBody = $"Direktorij ne postoji: {fullDirectoryPath}";
+            return webApiResult;
+         }
+
+         // Get all XML files from directory
+         string[] xmlFileNamesList = Directory.GetFiles(fullDirectoryPath, "*.xml", SearchOption.TopDirectoryOnly);
+
+         if(xmlFileNamesList.Length == 0)
+         {
+            webApiResult.StatusCode = -1;
+            webApiResult.StatusDescription = "No XML files found";
+            webApiResult.ErrorBody = $"Nema XML datoteka u direktoriju: {fullDirectoryPath}";
+            return webApiResult;
+         }
+
+         List<VvMER_ResponseData> responseDataList = new List<VvMER_ResponseData>();
+
+         foreach(string xmlFileName in xmlFileNamesList)
+         {
+            try
+            {
+               string xmlString = File.ReadAllText(xmlFileName, Encoding.UTF8);
+
+               if(xmlString.IsEmpty()) continue;
+
+               bool isCreditNote = xmlString.TrimStart().Contains("<CreditNote ");
+               bool isInvoice    = xmlString.TrimStart().Contains("<Invoice ");
+
+               if(!isInvoice && !isCreditNote) continue; // skip non-UBL files
+
+               string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+               string documentNr  = null;
+               string senderOIB   = null;
+               string senderName  = null;
+               DateTime? issueDate = null;
+               decimal   money     = 0M;
+
+               if(isInvoice)
+               {
+                  EN16931.UBL.InvoiceType deserialized = null;
+                  try { deserialized = EN16931.UBL.InvoiceType.Deserialize(cleanedXmlString); } catch { /* skip */ }
+
+                  if(deserialized != null)
+                  {
+                     documentNr = deserialized.ID?.Value;
+                     issueDate  = deserialized.IssueDate?.Value;
+                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
+                     senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
+                               ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
+                     money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
+                  }
+                  else
+                  {
+                     // fallback: try to extract basic info from XML directly
+                     //money = ExtractTaxInclusiveAmountFromXml(xmlString);
+                  }
+               }
+               else // isCreditNote
+               {
+                  EN16931.UBL.CreditNoteType deserialized = null;
+                  try { deserialized = EN16931.UBL.CreditNoteType.Deserialize(cleanedXmlString); } catch { /* skip */ }
+
+                  if(deserialized != null)
+                  {
+                     documentNr = deserialized.ID?.Value;
+                     issueDate  = deserialized.IssueDate?.Value;
+                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
+                     senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
+                               ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
+                     money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
+                  }
+                  else
+                  {
+                     //money = ExtractTaxInclusiveAmountFromXml(xmlString);
+                  }
+               }
+
+               // Filter by date range (analogno WebService filtriranju po Issued datumu)
+               if(issueDate.HasValue && (issueDate.Value < queryOutbox_DateOD || issueDate.Value > queryOutbox_DateDO))
+               {
+                  continue;
+               }
+
+               // Build VvMER_ResponseData equivalent to what WebService returns
+               VvMER_ResponseData responseData = new VvMER_ResponseData()
+               {
+                  ElectronicId       = 0                              , // nema electronicId kod lokalnih datoteka
+                  DocumentNr         = documentNr ?? Path.GetFileNameWithoutExtension(xmlFileName),
+                  SenderBusinessNumber = senderOIB                    ,
+                  SenderBusinessName = senderName ?? ""               ,
+                  StatusId           = 40                             , // 40 = "Preuzet"
+                  StatusName         = "Preuzet",
+                  Issued             = issueDate                      ,
+                  Sent               = issueDate ?? File.GetCreationTime(xmlFileName),
+                  Created            = File.GetCreationTime(xmlFileName),
+                  DocumentXml        = xmlString                      , // spremamo originalni XML za kasniji RECEIVE
+               };
+
+               responseDataList.Add(responseData);
+            }
+            catch(Exception exFile)
+            {
+               System.Diagnostics.Debug.WriteLine($"Error processing XML file [{xmlFileName}]: {exFile.Message}");
+               // skip problematic file, continue with next
+            }
+
+         } // foreach xmlFilePath
+
+         webApiResult.ResponseData = responseDataList;
+         webApiResult.StatusCode = 200;
+         webApiResult.StatusDescription = $"Loaded {responseDataList.Count} documents from disk";
+
+         // Filter by project year (analogno VvMER_WebService_QueryOutbox_TRN_List)
+         if(webApiResult.ResponseData != null)
+         {
+            webApiResult.ResponseData = webApiResult.ResponseData
+               .Where(rd => rd.Issued.HasValue && rd.Issued.Value.Year == ZXC.projectYearAsInt)
+               .ToList();
+         }
+      }
+      catch(Exception ex)
+      {
+         webApiResult.StatusCode = -1;
+         webApiResult.StatusDescription = "Error reading directory";
+         webApiResult.ErrorBody = ex.Message;
+         webApiResult.ExceptionMessage = ex.Message;
+      }
+
+      return webApiResult;
+   }
+
+
+
+
+
+
+
+
+
 
    #endregion FIR
 
    #region FUR
 
-   /* 111 */ internal static int Load_AUR_XtranoList(F2_Ulaz_UC theUC)
+   /* 111 */
+   internal static int Load_AUR_XtranoList(F2_Ulaz_UC theUC)
    {
       ZXC.SetStatusText("Load_AUR_XtranoList");
 
@@ -2649,6 +3156,16 @@ public static class Vv_eRacun_HTTP
          {
             deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false) : null;
             deserialized_CreditNoteType = null;
+         }
+         else
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error,
+               $"Inbox dokument nije niti račun (InvoiceType) niti odobrenje (CreditNote).{Environment.NewLine}Dokument neće biti učitan u Arhivu ulaznih računa.{Environment.NewLine}{Environment.NewLine}" +
+               $"Elektronski ID: {responseData.ElectronicId}{Environment.NewLine}" +
+               $"Broj dokumenta: {responseData.DocumentNr ?? "N/A"}{Environment.NewLine}" +
+               $"Pošiljatelj: {responseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
+               $"Datum slanja: {responseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
+               $"Status: {responseData.StatusName ?? responseData.StatusId?.ToString() ?? "N/A"}");
          }
 
          //string xsdFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XSD", "eRacun", "UBL-Invoice-2.1.xsd");
@@ -3033,6 +3550,10 @@ public static class Vv_eRacun_HTTP
             deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(theXmlString, false);
             deserialized_CreditNoteType = null;
          }
+         else
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "Nije niti račun (InvoiceType) niti odobrenje (CreditNote)?!");
+         }
 
          bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
 
@@ -3321,7 +3842,16 @@ public static class Vv_eRacun_HTTP
                   EN16931.UBL.CreditNoteType deserialized_CreditNoteType = GetCreditNoteTypeByDeserializing_xmlString(docXml, true);
                   deserializationOK = deserialized_CreditNoteType != null;
                }
-
+               else
+               {
+                  ZXC.aim_emsg(MessageBoxIcon.Error,
+                     $"Outbox dokument nije niti račun (InvoiceType) niti odobrenje (CreditNote).{Environment.NewLine}Dokument neće biti učitan u IFA-e.{Environment.NewLine}{Environment.NewLine}" +
+                     $"Elektronski ID: {webApiResult.ResponseData.ElectronicId}{Environment.NewLine}" +
+                     $"Broj dokumenta: {webApiResult.ResponseData.DocumentNr ?? "N/A"}{Environment.NewLine}" +
+                     $"Pošiljatelj: {webApiResult.ResponseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
+                     $"Datum slanja: {webApiResult.ResponseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
+                     $"Status: {webApiResult.ResponseData.StatusName ?? webApiResult.ResponseData.StatusId?.ToString() ?? "N/A"}");
+               }
                if(webApiResult.ResponseData == null || docXml.IsEmpty() || !deserializationOK)
                {
                   Show_WebApiResult_ErrorMessageBox(webApiResult);
@@ -3499,7 +4029,7 @@ public static class Vv_eRacun_HTTP
       DialogResult dlgResult = Send_OR_eIzvj_ErrorMessageBox.ShowDialog();
       Send_OR_eIzvj_ErrorMessageBox.Dispose();
    }   
-   internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
+   internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString_OLD(string xmlString, bool beSilent)
    {
       EN16931.UBL.InvoiceType theInvoiceType = null;
 
@@ -3523,7 +4053,48 @@ public static class Vv_eRacun_HTTP
 
       return theInvoiceType;
    }
-   internal static EN16931.UBL.CreditNoteType GetCreditNoteTypeByDeserializing_xmlString(string xmlString, bool beSilent)
+   internal static EN16931.UBL.InvoiceType GetInvoiceTypeByDeserializing_xmlString(string xmlString, bool beSilent)
+   {
+      EN16931.UBL.InvoiceType theInvoiceType = null;
+
+      try
+      {
+         // Ukloni UBLExtensions elemente prije deserializacije
+         string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+         theInvoiceType = EN16931.UBL.InvoiceType.Deserialize(cleanedXmlString);
+      }
+      catch(Exception ex)
+      {
+         if(!beSilent)
+         {
+            string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+            // Save XML to temp file for attachment
+            string debugPath = Path.Combine(@"C:\temp", $"failed_invoice_deserialization_{DateTime.Now:yyyyMMdd_HHmmss}.xml");
+            System.IO.Directory.CreateDirectory(@"C:\temp");
+            System.IO.File.WriteAllText(debugPath, /*xmlString*/cleanedXmlString, System.Text.Encoding.UTF8);
+
+            // Create WebApiResult for error display
+            WebApiResult<VvMER_ResponseData> webApiResult = new WebApiResult<VvMER_ResponseData>
+            {
+               WebApiKind = ZXC.F2_WebApi.RECEIVEdocument,
+               WebApiAddr = "Deserialization",
+               StatusCode = -1,
+               StatusDescription = "XML Deserialization Failed",
+               ErrorBody = $"Ne mogu deserijalizirati InvoiceType iz XML stringa.\n\r\n\r" +
+                           "U PITANJU JE GREŠKA SA STRANE POŠILJATELJA RAČUNA.\n\r\n\rZamolite dobavljača da ovaj račun stornira/otkaže\n\rte nanovo pošalje ispravan eRačun.\n\r",
+               ExceptionMessage = $"Exception: {ex.Message}\n\nInner Exception: {ex.InnerException?.Message}",
+               ResponseData = new VvMER_ResponseData()
+            };
+
+            Show_WebApiResult_ErrorMessageBox(webApiResult, null, debugPath);
+         }
+      }
+
+      return theInvoiceType;
+   }
+   internal static EN16931.UBL.CreditNoteType GetCreditNoteTypeByDeserializing_xmlString_OLD(string xmlString, bool beSilent)
    {
       EN16931.UBL.CreditNoteType theCreditNoteType = null;
 
@@ -3554,7 +4125,46 @@ public static class Vv_eRacun_HTTP
 
       return theCreditNoteType;
    }
+   internal static EN16931.UBL.CreditNoteType GetCreditNoteTypeByDeserializing_xmlString(string xmlString, bool beSilent)
+   {
+      EN16931.UBL.CreditNoteType theCreditNoteType = null;
 
+      try
+      {
+         // Ukloni UBLExtensions elemente prije deserializacije
+         string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+         theCreditNoteType = EN16931.UBL.CreditNoteType.Deserialize(cleanedXmlString);
+      }
+      catch(Exception ex)
+      {
+         if(!beSilent)
+         {
+            string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+            // Save XML to temp file for attachment
+            string debugPath = Path.Combine(@"C:\temp", $"failed_creditnote_deserialization_{DateTime.Now:yyyyMMdd_HHmmss}.xml");
+            System.IO.Directory.CreateDirectory(@"C:\temp");
+            System.IO.File.WriteAllText(debugPath, /*xmlString*/cleanedXmlString, System.Text.Encoding.UTF8);
+
+            // Create WebApiResult for error display
+            WebApiResult<VvMER_ResponseData> webApiResult = new WebApiResult<VvMER_ResponseData>
+            {
+               WebApiKind = ZXC.F2_WebApi.RECEIVEdocument,
+               WebApiAddr = "Deserialization",
+               StatusCode = -1,
+               StatusDescription = "XML Deserialization Failed",
+               ErrorBody = $"Ne mogu deserijalizirati CreditNote iz XML stringa.",
+               ExceptionMessage = $"Exception: {ex.Message}\n\nInner Exception: {ex.InnerException?.Message}",
+               ResponseData = new VvMER_ResponseData()
+            };
+
+            Show_WebApiResult_ErrorMessageBox(webApiResult, null, debugPath);
+         }
+      }
+
+      return theCreditNoteType;
+   }
    public /*private*/ static string RemoveSignatureElements(string xmlString)
    {
       try

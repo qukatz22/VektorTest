@@ -9503,7 +9503,7 @@ public class F2_Izlaz_UC : VvUserControl
     //if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
       if(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipA)
       {
-      /* XXX */ newsCount += Vv_eRacun_HTTP.WS_Ufati_Veleform_Ritam(this);
+      /* XXX */ newsCount += Vv_eRacun_HTTP.WS_Import_Extern_Faktur_IFA(this);
       }
 
       if(ZXC.RRD.Dsc_F2_IsAutoSend)
