@@ -10643,7 +10643,7 @@ public class F2_NIR_UC : VvUserControl
             cell = TheG.Rows[rowIdx].Cells[i];
       
             if(xtranoFound) cell.Style.BackColor = Color.FromArgb(204, 255, 204);
-            else            cell.Style.ForeColor = Color.FromArgb(255, 194, 179);
+            else            cell.Style.BackColor = Color.FromArgb(255, 194, 179);
          }
       }
 
