@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto.Prng;
+using static VvForm;
 using static ZXC;
 
 public class UFADUC              : FakturExtDUC
@@ -9444,6 +9445,8 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
+      SetEnableDisableTsButtons();
+
 #if !DEBUG
       INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
 #endif
@@ -9526,7 +9529,26 @@ public class F2_Izlaz_UC : VvUserControl
       }
    }
 
-#endregion Constructor
+   private void SetEnableDisableTsButtons()
+   {
+      Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
+      ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
+
+      ts.Items["f2_send"     ].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL;  
+
+      ts.Items["f2_refreshRn"].Enabled = 
+      ts.Items["f2_map"      ].Enabled = (ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL || 
+                                          ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipA          ||
+                                          ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipB            );
+
+      ts.Items["f2_vidiPdf"  ].Enabled = 
+      ts.Items["f2_vidiXml"  ].Enabled = true;
+
+      ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
+
+   }
+
+   #endregion Constructor
 
    #region TheGrid and columns
 
@@ -9912,6 +9934,8 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
+      SetEnableDisableTsButtons();
+
 #if !DEBUG
       INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
 #endif
@@ -9971,7 +9995,24 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 
-#endregion Constructor
+   private void SetEnableDisableTsButtons()
+   {
+      Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
+      ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
+
+      ts.Items["ucitajUleR"   ].Enabled = 
+      ts.Items["f2_refreshFUR"].Enabled = 
+      ts.Items["f2_ponoviArh" ].Enabled = !(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC);
+
+      ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
+
+      ts.Items["f2_vidiPdf"   ].Enabled = 
+      ts.Items["f2_vidiXml"   ].Enabled = 
+      ts.Items["f2_vidiDisPdf"].Enabled = 
+      ts.Items["f2_vidiDisXml"].Enabled = true;
+   }
+
+   #endregion Constructor
 
    #region TheGrid and columns
 
