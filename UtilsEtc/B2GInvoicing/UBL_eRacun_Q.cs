@@ -2173,10 +2173,10 @@ namespace EN16931.UBL
          //faktur_rec.DospDate  = this.DueDate.Value;
          if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate = this.DueDate.Value;
 
-         faktur_rec.PdvDate = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
-         faktur_rec.VezniDok = this.ID.Value;
-         //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
-         faktur_rec.Napomena = ZXC.F2_Unprocessed;
+         faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         faktur_rec.VezniDok  = this.ID.Value;
+        //faktur_rec.Napomena = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
+         faktur_rec.Napomena  = ZXC.F2_Unprocessed;
          for(int i = 0; this.Note != null && i < this.Note.Length; i++)
          {
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
