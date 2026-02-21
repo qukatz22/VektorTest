@@ -5367,7 +5367,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       }
       // 06.02.2026: 
     //if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT)
-      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT && !(this is ZAR_DUC))
+      if(TheVvTabPage.WriteMode == ZXC.WriteMode.None && faktur_rec.IsUMJETNINA && faktur_rec.TtInfo.IsIzlazniPdvTT && !(this is ZAR_DUC) && !(this is BlgUplat_M_DUC))
       {
          if(ZXC.AlmostEqual(rtrans_rec.R_Ira_NC, rtrans_rec.T_ppmvOsn, 0.02M) == false)
          {

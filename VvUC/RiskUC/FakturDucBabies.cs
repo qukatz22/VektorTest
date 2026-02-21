@@ -9445,11 +9445,12 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
-      SetEnableDisableTsButtons();
+      // premjesteno u INIT_FIR() 
+    //SetEnableDisableTsButtons();
 
-#if !DEBUG
+//#if !DEBUG
       INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
-#endif
+//#endif
       //PutDgvFields();
 
       TheG.TabStop = false;
@@ -9464,6 +9465,8 @@ public class F2_Izlaz_UC : VvUserControl
       if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
+
+      SetEnableDisableTsButtons();
 
       #region Check Tables 
 
@@ -9503,7 +9506,11 @@ public class F2_Izlaz_UC : VvUserControl
 
       if(newsCount.IsNegative()) return; // neinicijalizirani projekt - nema jos table-ova 
 
-    //if(ZXC.CURR_prjkt_rec.F2_IsKlijentServisaNaMERu)
+      if(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC)
+      {
+         return; // QQQ Only 
+      }
+
       if(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipA)
       {
       /* XXX */ newsCount += Vv_eRacun_HTTP.WS_Import_Extern_Faktur_IFA(this);
@@ -9936,9 +9943,12 @@ public class F2_Ulaz_UC : VvUserControl
 
       SetEnableDisableTsButtons();
 
-#if !DEBUG
-      INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
-#endif
+//#if !DEBUG
+      if(ZXC.CURR_prjkt_rec.F2_RolaKind != F2_RolaKind.KlijentServisa_TipC)
+      {
+         INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+      }
+//#endif
 
       //PutDgvFields();
 
@@ -10398,9 +10408,11 @@ public class F2_NIR_UC : VvUserControl
 
       SetColumnIndexes();
 
-#if !DEBUG
+      if(ZXC.CURR_prjkt_rec.F2_RolaKind != F2_RolaKind.KlijentServisa_TipC) return;
+
+//#if !DEBUG
       INIT_NIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
-#endif
+//#endif
 
       TheG.TabStop = false;
       TheG.ClearSelection();

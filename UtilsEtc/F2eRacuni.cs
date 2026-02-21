@@ -2556,13 +2556,17 @@ public static class Vv_eRacun_HTTP
 
       using(OpenFileDialog openFileDialog = new OpenFileDialog())
       {
-         string initialDir = VvForm.GetLocalDirectoryForVvFile(ZXC.eRacuniDIR);
+         string initialDir = ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName.IsEmpty() ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
+                             ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName;
 
-         openFileDialog.Title = "Odaberite direktorij sa XML datotekama";
-         openFileDialog.ValidateNames = false;
+         openFileDialog.Title           = "Odaberite direktorij sa XML datotekama";
+         openFileDialog.ValidateNames   = false;
          openFileDialog.CheckFileExists = false;
          openFileDialog.CheckPathExists = true;
-         openFileDialog.FileName = "Folder Selection.";
+         openFileDialog.FileName        = "Odaberite directory";
+         openFileDialog.DefaultExt      = ".xml";
+       //openFileDialog.ReadOnlyChecked = true;
+       //openFileDialog.ShowReadOnly    = true;
 
          if(Directory.Exists(initialDir))
          {
@@ -2578,12 +2582,19 @@ public static class Vv_eRacun_HTTP
             return 0;
          }
 
+         ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName =
+
          fullDirectoryPath = Path.GetDirectoryName(openFileDialog.FileName);
       }
 
+      bool thisXMLhaswrongOIB = false;
+      bool wrongOIBdetected   = false;
+
+      int rIdx;
+
       #endregion Init
 
-      #region Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+      #region Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from HDD directory 
 
     //WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryOutbox_TRN_List(                   queryOutbox_DateOD, queryOutbox_DateDO);
       WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_LocalDisk_QueryOutbox_List     (fullDirectoryPath, queryOutbox_DateOD, queryOutbox_DateDO);
@@ -2650,11 +2661,15 @@ public static class Vv_eRacun_HTTP
          {
             deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
             deserialized_InvoiceType = null;
+
+            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_CreditNoteType.VvSupplierOIB;
          }
          else if(isInvoice)
          {
             deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
             deserialized_CreditNoteType = null;
+
+            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_InvoiceType.VvSupplierOIB;
          }
          else 
          {
@@ -2666,6 +2681,12 @@ public static class Vv_eRacun_HTTP
                $"Pošiljatelj: {responseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
                $"Datum slanja: {responseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
                $"Status: {responseData.StatusName ?? responseData.StatusId?.ToString() ?? "N/A"}");
+         }
+
+         if(thisXMLhaswrongOIB)
+         {
+            wrongOIBdetected = true;
+            continue;
          }
 
          bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
@@ -2796,9 +2817,51 @@ public static class Vv_eRacun_HTTP
 
          #endregion 3. Create_Faktur_From_eRacun & ADDREC to Vektor DataLayer
 
-      } // foreach(VvMER_Response_Data_AllActions responseData in webApiResultWithList.ResponseData.OrderBy(rd => rd.Created)) 
+         #region 4. Odglumi RECEIVE eRacun for Arhiva
 
-      #endregion Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from QueryOutbox 
+         if(newIFA_Faktur_rec.F2_HasNoSense_RECEIVE_document2arhiva) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+         
+         newIFA_Faktur_rec.VvDao.SetMe_Record_byRecID_Complete(theUC.TheDbConnection, newIFA_Faktur_rec.RecID, newIFA_Faktur_rec);
+         
+         uint arhivaXtrano_recID = HDD_Get_Izlaz_Document2Arhiva(theUC, theXmlString, newIFA_Faktur_rec);
+         
+         if(arhivaXtrano_recID.NotZero() && newIFA_Faktur_rec.F2_ArhRecID.IsZero())
+         {
+            // update Faktur dataLayer 
+         
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(newIFA_Faktur_rec);
+         
+            newIFA_Faktur_rec.F2_ArhRecID = arhivaXtrano_recID;
+         
+            bool rwtOK = newIFA_Faktur_rec.VvDao.RWTREC(theUC.TheDbConnection, newIFA_Faktur_rec, false, true, false);
+         
+            theUC.TheVvTabPage.TheVvForm.EndEdit(newIFA_Faktur_rec);
+         
+            if(rwtOK)
+            {
+               newsCount++;
+         
+               rIdx = theUC.TheFakturList.IndexOf(newIFA_Faktur_rec);
+         
+               //theUC.PutDgvLineFields(rIdx, newIFA_Faktur_rec); // osvjezi prikaz 
+         
+               updatedStatusInfo = string.Format("{0} ({1}) Novi eRačun u arhivi:      {2}      {3} {4}",
+                                             newIFA_Faktur_rec.TipBr,
+                                             newIFA_Faktur_rec.F2_ElectronicID,
+                                             "ARHIVIRANO",
+                                             newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
+         
+               updatedStatusInfoList.Add(updatedStatusInfo);
+         
+            } // if(rwtOK)
+         
+         }
+
+         #endregion 4. Odglumi RECEIVE eRacun for Arhiva
+
+      } // foreach(VvMER_ResponseData responseData in loopList) 
+
+      #endregion Synchronise Servis Faktur DataLayer with Klijent Faktur DataLayer via news from HDD directory 
 
       #region TheFakturList ... OrderBy And PutDgvFields
 
@@ -2825,6 +2888,16 @@ public static class Vv_eRacun_HTTP
       if(newKupdobInfoList.NotEmpty())
       {
          ZXC.aim_emsg_List(string.Format("DODANO je {0} novih partnera (kupaca) u Vektorovu bazu podataka.", newKupdobInfoList.Count), newKupdobInfoList);
+      }
+
+      if(newsCount.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
+      }
+
+      if(wrongOIBdetected)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Exclamation, "Pronađene su datoteke sa neodgovarajućim OIB-om!\n\r\n\rKrivi projekt ili krivo odabrani directory?");
       }
 
       return newsCount;
@@ -3911,6 +3984,37 @@ public static class Vv_eRacun_HTTP
       }
 
       return 0;
+   }
+   private static uint HDD_Get_Izlaz_Document2Arhiva(F2_Izlaz_UC theUC, string theXmlString, Faktur F2_IRn_faktur_rec)
+   {
+      Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(theXmlString, F2_IRn_faktur_rec);
+
+      uint arhivaXtrano_recID = 0;
+
+      if(F2arhivaXtrano_rec != null)
+      {
+         byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
+
+         bool OK = ZXC.XtranoDao.ADDREC(theUC.TheDbConnection, F2arhivaXtrano_rec, /*false*/true, false, false, false);
+
+         if(OK)
+         {
+            theUC.TheVvTabPage.TheVvForm.BeginEdit(F2arhivaXtrano_rec);
+
+            F2arhivaXtrano_rec.T_XmlZip = T_XmlZip;
+
+            VvDaoBase.Rwtrec_BLOBsingleColumn(theUC.TheDbConnection, F2arhivaXtrano_rec, "t_XmlZip", F2arhivaXtrano_rec.T_XmlZip);
+
+            theUC.TheVvTabPage.TheVvForm.EndEdit(F2arhivaXtrano_rec);
+         }
+
+         if(OK)
+         {
+            arhivaXtrano_recID = F2arhivaXtrano_rec.T_recID;
+         }
+      }
+
+      return arhivaXtrano_recID;
    }
    private static WebApiResult<VvMER_ResponseData> WS_Mark_Paid_With_OR_Without_ElectronicID(VvMER_RequestData MAP_requestData, bool isWithElectronicID)
    {
