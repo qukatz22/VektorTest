@@ -9917,6 +9917,14 @@ public class F2_Ulaz_UC : VvUserControl
    
    Image img_red, img_yellow, img_green, img_empty;
 
+   // SEARCH FIELDS
+   private VvHamper hamp_search;
+   private VvTextBox tbx_searchText;
+   private ComboBox cmb_searchColumn;
+   private Button btn_search, btn_clearSearch, btn_prevMatch, btn_nextMatch;
+   private List<int> matchedRowIndexes;
+   private int currentMatchIndex;
+
    #endregion Fieldz
 
    #region Constructor
@@ -9929,6 +9937,11 @@ public class F2_Ulaz_UC : VvUserControl
       this.Dock = DockStyle.Fill;
 
       SetColors();
+
+      matchedRowIndexes = new List<int>();
+      currentMatchIndex = -1;
+
+      CreateSearchHamper(); // Create search first
 
       CreateTheGrid();
       this.ResumeLayout();
@@ -9956,6 +9969,9 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.ClearSelection();
 
       TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
+
+      // Populate search columns after grid is fully created
+      PopulateSearchColumns();
 
    }
 
@@ -10360,6 +10376,466 @@ public class F2_Ulaz_UC : VvUserControl
          ZXC.TheVvForm.ShowFakturDUC_For_TipBr(tipBr);
       }
    }
+
+   #region Search by theCP
+
+   #region Search Hamper Creation
+
+   private void CreateSearchHamper()
+   {
+      int searchHamperY = ZXC.QunMrgn;
+      int searchHamperX = ZXC.QunMrgn;
+
+      hamp_search = new VvHamper(6, 1, "Pretraživanje", this, true, searchHamperX, searchHamperY, ZXC.Qun4);
+
+      hamp_search.VvColWdt = new int[]
+      {
+         ZXC.Q2un,           // Label "Kolona:"
+         ZXC.Q5un,           // ComboBox with columns
+         ZXC.Q8un,           // Search text box
+         ZXC.Q2un,           // Search button
+         ZXC.Qun8 + ZXC.Qun4,// Previous button
+         ZXC.Qun8 + ZXC.Qun4 // Next button
+      };
+
+      hamp_search.VvSpcBefCol = new int[]
+      {
+         ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4
+      };
+
+      hamp_search.VvRightMargin = hamp_search.VvLeftMargin;
+
+      hamp_search.VvRowHgt = new int[] { ZXC.QUN };
+      hamp_search.VvSpcBefRow = new int[] { ZXC.Qun4 };
+      hamp_search.VvBottomMargin = hamp_search.VvTopMargin;
+
+      CreateSearchControls();
+   }
+
+   private void CreateSearchControls()
+   {
+      // Column label
+      Label lblColumn = hamp_search.CreateVvLabel(0, 0, "Kolona:", ContentAlignment.MiddleRight);
+      lblColumn.Font = ZXC.vvFont.BaseFont;
+
+      // Column ComboBox
+      cmb_searchColumn = new ComboBox();
+      cmb_searchColumn.DropDownStyle = ComboBoxStyle.DropDownList;
+      cmb_searchColumn.Font = ZXC.vvFont.BaseFont;
+
+      int col1_X = hamp_search.VvLeftMargin + hamp_search.VvSpcBefCol[0] +
+                   hamp_search.VvColWdt[0] + hamp_search.VvSpcBefCol[1];
+      int row0_Y = hamp_search.VvTopMargin + hamp_search.VvSpcBefRow[0];
+
+      cmb_searchColumn.Location = new Point(col1_X, row0_Y);
+      cmb_searchColumn.Width = hamp_search.VvColWdt[1];
+      cmb_searchColumn.Height = ZXC.QUN - 2;
+      hamp_search.Controls.Add(cmb_searchColumn);
+
+      // Search TextBox
+      tbx_searchText = hamp_search.CreateVvTextBox(2, 0, "tbx_searchText", "Unesite tekst za pretraživanje");
+      tbx_searchText.JAM_CharacterCasing = CharacterCasing.Upper;
+      tbx_searchText.KeyDown += TbxSearchText_KeyDown;
+      tbx_searchText.Font = ZXC.vvFont.BaseFont;
+
+      // Search Button
+      btn_search = hamp_search.CreateVvButton(3, 0, new EventHandler(BtnSearch_Click), "Traži");
+      btn_search.Image = VvIco.FindPage.ToBitmap();
+      btn_search.ImageAlign = ContentAlignment.MiddleLeft;
+      btn_search.TextAlign = ContentAlignment.MiddleRight;
+      btn_search.Font = ZXC.vvFont.SmallFont;
+
+      // Previous Button
+      btn_prevMatch = hamp_search.CreateVvButton(4, 0, new EventHandler(BtnPrevMatch_Click), "◄");
+      btn_prevMatch.Font = new Font(ZXC.vvFont.BaseFont.FontFamily, 10, FontStyle.Bold);
+      btn_prevMatch.FlatStyle = FlatStyle.Flat;
+
+      ToolTip tt1 = new ToolTip();
+      tt1.SetToolTip(btn_prevMatch, "Prethodni rezultat (Shift+F3)");
+
+      // Next Button
+      btn_nextMatch = hamp_search.CreateVvButton(5, 0, new EventHandler(BtnNextMatch_Click), "►");
+      btn_nextMatch.Font = new Font(ZXC.vvFont.BaseFont.FontFamily, 10, FontStyle.Bold);
+      btn_nextMatch.FlatStyle = FlatStyle.Flat;
+
+      ToolTip tt2 = new ToolTip();
+      tt2.SetToolTip(btn_nextMatch, "Sljedeći rezultat (F3)");
+
+      // Clear Button (X inside textbox)
+      btn_clearSearch = new Button();
+      btn_clearSearch.Text = "✖";
+      btn_clearSearch.Width = ZXC.Qun8;
+      btn_clearSearch.Height = ZXC.Qun8;
+      btn_clearSearch.FlatStyle = FlatStyle.Flat;
+      btn_clearSearch.FlatAppearance.BorderSize = 0;
+      btn_clearSearch.BackColor = Color.Transparent;
+      btn_clearSearch.Cursor = Cursors.Hand;
+      btn_clearSearch.Font = new Font(ZXC.vvFont.BaseFont.FontFamily, 8, FontStyle.Bold);
+      btn_clearSearch.ForeColor = Color.Gray;
+      btn_clearSearch.Location = new Point(
+         tbx_searchText.Right - btn_clearSearch.Width - 2,
+         tbx_searchText.Top + (tbx_searchText.Height - btn_clearSearch.Height) / 2
+      );
+      btn_clearSearch.Click += BtnClearSearch_Click;
+      btn_clearSearch.Visible = false;
+      hamp_search.Controls.Add(btn_clearSearch);
+      btn_clearSearch.BringToFront();
+
+      ToolTip tt3 = new ToolTip();
+      tt3.SetToolTip(btn_clearSearch, "Obriši pretraživanje (Esc)");
+   }
+
+   #endregion
+
+   #region Populate Search Columns
+
+   private void PopulateSearchColumns()
+   {
+      cmb_searchColumn.Items.Clear();
+
+      // Add "All columns" option
+      cmb_searchColumn.Items.Add(new SearchColumnItem
+      {
+         DisplayName = "Sve kolone",
+         ColumnIndex = -1,
+         ColumnName = ""
+      });
+
+      // Add grid columns
+      if(TheG != null && TheG.Columns.Count > 0)
+      {
+         foreach(DataGridViewColumn col in TheG.Columns)
+         {
+            // Skip invisible, image, utility columns
+            if(!col.Visible) continue;
+            if(col.Name.ToLower().Contains("recid")) continue;
+            if(col.Name.ToLower().Contains("scroll")) continue;
+            if(col.Name.ToLower().Contains("razmak")) continue;
+            if(col is DataGridViewImageColumn) continue;
+
+            string displayName = string.IsNullOrEmpty(col.HeaderText)
+               ? col.Name
+               : col.HeaderText;
+
+            cmb_searchColumn.Items.Add(new SearchColumnItem
+            {
+               DisplayName = displayName,
+               ColumnIndex = col.Index,
+               ColumnName = col.Name
+            });
+         }
+      }
+
+      cmb_searchColumn.DisplayMember = "DisplayName";
+
+      if(cmb_searchColumn.Items.Count > 0)
+         cmb_searchColumn.SelectedIndex = 0;
+   }
+
+   #endregion
+
+   #region Search Event Handlers
+
+   private void TbxSearchText_KeyDown(object sender, KeyEventArgs e)
+   {
+      if(e.KeyCode == Keys.Enter)
+      {
+         e.SuppressKeyPress = true;
+         BtnSearch_Click(sender, e);
+      }
+      else if(e.KeyCode == Keys.F3)
+      {
+         e.SuppressKeyPress = true;
+         if(e.Shift)
+            BtnPrevMatch_Click(sender, e);
+         else
+            BtnNextMatch_Click(sender, e);
+      }
+      else if(e.KeyCode == Keys.Escape)
+      {
+         e.SuppressKeyPress = true;
+         BtnClearSearch_Click(sender, e);
+      }
+   }
+
+   private void BtnSearch_Click(object sender, EventArgs e)
+   {
+      string searchText = tbx_searchText.Text.Trim();
+
+      if(string.IsNullOrEmpty(searchText))
+      {
+         ZXC.aim_emsg("Unesite tekst za pretraživanje.", "Pretraživanje");
+         tbx_searchText.Focus();
+         return;
+      }
+
+      SearchColumnItem selectedColumn = cmb_searchColumn.SelectedItem as SearchColumnItem;
+      if(selectedColumn == null)
+      {
+         ZXC.aim_emsg("Odaberite kolonu za pretraživanje.", "Pretraživanje");
+         return;
+      }
+
+      PerformSearch(searchText, selectedColumn);
+
+      btn_clearSearch.Visible = !string.IsNullOrEmpty(searchText);
+   }
+
+   #endregion
+
+   #region Perform Search
+
+   private void PerformSearch(string searchText, SearchColumnItem searchColumn)
+   {
+      matchedRowIndexes.Clear();
+      currentMatchIndex = -1;
+
+      ClearSearchHighlighting();
+
+      if(TheG == null || TheG.Rows.Count == 0)
+      {
+         ZXC.aim_emsg("Nema podataka za pretraživanje.", "Pretraživanje");
+         return;
+      }
+
+      searchText = searchText.ToUpper();
+
+      // Search through grid
+      for(int rowIdx = 0; rowIdx < TheG.Rows.Count; rowIdx++)
+      {
+         if(TheG.Rows[rowIdx].IsNewRow) continue;
+
+         bool rowMatches = false;
+
+         if(searchColumn.ColumnIndex == -1) // All columns
+         {
+            foreach(DataGridViewCell cell in TheG.Rows[rowIdx].Cells)
+            {
+               if(cell.OwningColumn is DataGridViewImageColumn) continue;
+               if(!cell.Visible) continue;
+
+               if(cell.Value != null && CellMatchesSearch(cell.Value.ToString(), searchText))
+               {
+                  rowMatches = true;
+                  HighlightCell(rowIdx, cell.ColumnIndex);
+               }
+            }
+         }
+         else // Specific column
+         {
+            if(searchColumn.ColumnIndex >= 0 && searchColumn.ColumnIndex < TheG.Columns.Count)
+            {
+               DataGridViewCell cell = TheG.Rows[rowIdx].Cells[searchColumn.ColumnIndex];
+               if(cell.Value != null && CellMatchesSearch(cell.Value.ToString(), searchText))
+               {
+                  rowMatches = true;
+                  HighlightCell(rowIdx, cell.ColumnIndex);
+               }
+            }
+         }
+
+         if(rowMatches)
+         {
+            matchedRowIndexes.Add(rowIdx);
+         }
+      }
+
+      // Show results
+      if(matchedRowIndexes.Count > 0)
+      {
+         currentMatchIndex = 0;
+         NavigateToMatch(0);
+
+         string columnInfo = searchColumn.ColumnIndex == -1
+            ? "svim kolonama"
+            : $"koloni '{searchColumn.DisplayName}'";
+
+         ZXC.SetStatusText($"Pronađeno {matchedRowIndexes.Count} rezultata u {columnInfo}");
+      }
+      else
+      {
+         ZXC.aim_emsg($"Nije pronađen tekst '{searchText}' u odabranoj koloni.", "Pretraživanje");
+         ZXC.SetStatusText("Nema rezultata pretraživanja");
+      }
+   }
+
+   private bool CellMatchesSearch(string cellValue, string searchText)
+   {
+      if(string.IsNullOrEmpty(cellValue)) return false;
+      return cellValue.ToUpper().Contains(searchText);
+   }
+
+   #endregion
+
+   #region Highlighting
+
+   private void HighlightCell(int rowIdx, int colIdx)
+   {
+      if(rowIdx < 0 || rowIdx >= TheG.Rows.Count) return;
+      if(colIdx < 0 || colIdx >= TheG.Columns.Count) return;
+
+      TheG.Rows[rowIdx].Cells[colIdx].Style.BackColor = Color.Yellow;
+      TheG.Rows[rowIdx].Cells[colIdx].Style.ForeColor = Color.Black;
+      TheG.Rows[rowIdx].Cells[colIdx].Style.SelectionBackColor = Color.Yellow;
+      TheG.Rows[rowIdx].Cells[colIdx].Style.SelectionForeColor = Color.Black;
+   }
+
+   private void ClearSearchHighlighting()
+   {
+      if(TheG == null) return;
+
+      foreach(DataGridViewRow row in TheG.Rows)
+      {
+         foreach(DataGridViewCell cell in row.Cells)
+         {
+            // Reset to default colors
+            cell.Style.BackColor = TheG.DefaultCellStyle.BackColor;
+            cell.Style.ForeColor = TheG.DefaultCellStyle.ForeColor;
+            cell.Style.SelectionBackColor = TheG.DefaultCellStyle.SelectionBackColor;
+            cell.Style.SelectionForeColor = TheG.DefaultCellStyle.SelectionForeColor;
+         }
+      }
+   }
+
+   #endregion
+
+   #region Navigation
+
+   private void NavigateToMatch(int matchIndex)
+   {
+      if(matchIndex < 0 || matchIndex >= matchedRowIndexes.Count) return;
+
+      int rowIdx = matchedRowIndexes[matchIndex];
+
+      // Highlight current match with orange
+      foreach(DataGridViewCell cell in TheG.Rows[rowIdx].Cells)
+      {
+         if(cell.Style.BackColor == Color.Yellow)
+         {
+            cell.Style.BackColor = Color.Orange;
+            cell.Style.SelectionBackColor = Color.Orange;
+         }
+      }
+
+      // Scroll and select
+      try
+      {
+         if(rowIdx >= 0 && rowIdx < TheG.Rows.Count)
+         {
+            TheG.FirstDisplayedScrollingRowIndex = Math.Max(0, rowIdx - 2);
+
+            // Find first visible non-image column
+            int visibleColIdx = 0;
+            for(int i = 0; i < TheG.Columns.Count; i++)
+            {
+               if(TheG.Columns[i].Visible && !(TheG.Columns[i] is DataGridViewImageColumn))
+               {
+                  visibleColIdx = i;
+                  break;
+               }
+            }
+
+            TheG.CurrentCell = TheG.Rows[rowIdx].Cells[visibleColIdx];
+            TheG.Rows[rowIdx].Selected = true;
+         }
+      }
+      catch(Exception ex)
+      {
+         ZXC.aim_emsg($"Greška pri navigaciji: {ex.Message}");
+      }
+
+      ZXC.SetStatusText($"Rezultat {matchIndex + 1} od {matchedRowIndexes.Count}");
+   }
+
+   private void BtnNextMatch_Click(object sender, EventArgs e)
+   {
+      if(matchedRowIndexes.Count == 0)
+      {
+         BtnSearch_Click(sender, e);
+         return;
+      }
+
+      // Reset previous to yellow
+      if(currentMatchIndex >= 0 && currentMatchIndex < matchedRowIndexes.Count)
+      {
+         int prevRowIdx = matchedRowIndexes[currentMatchIndex];
+         foreach(DataGridViewCell cell in TheG.Rows[prevRowIdx].Cells)
+         {
+            if(cell.Style.BackColor == Color.Orange)
+            {
+               cell.Style.BackColor = Color.Yellow;
+               cell.Style.SelectionBackColor = Color.Yellow;
+            }
+         }
+      }
+
+      currentMatchIndex++;
+      if(currentMatchIndex >= matchedRowIndexes.Count)
+         currentMatchIndex = 0;
+
+      NavigateToMatch(currentMatchIndex);
+   }
+
+   private void BtnPrevMatch_Click(object sender, EventArgs e)
+   {
+      if(matchedRowIndexes.Count == 0)
+      {
+         BtnSearch_Click(sender, e);
+         return;
+      }
+
+      // Reset previous to yellow
+      if(currentMatchIndex >= 0 && currentMatchIndex < matchedRowIndexes.Count)
+      {
+         int prevRowIdx = matchedRowIndexes[currentMatchIndex];
+         foreach(DataGridViewCell cell in TheG.Rows[prevRowIdx].Cells)
+         {
+            if(cell.Style.BackColor == Color.Orange)
+            {
+               cell.Style.BackColor = Color.Yellow;
+               cell.Style.SelectionBackColor = Color.Yellow;
+            }
+         }
+      }
+
+      currentMatchIndex--;
+      if(currentMatchIndex < 0)
+         currentMatchIndex = matchedRowIndexes.Count - 1;
+
+      NavigateToMatch(currentMatchIndex);
+   }
+
+   private void BtnClearSearch_Click(object sender, EventArgs e)
+   {
+      tbx_searchText.Text = "";
+      ClearSearchHighlighting();
+      matchedRowIndexes.Clear();
+      currentMatchIndex = -1;
+      btn_clearSearch.Visible = false;
+      ZXC.SetStatusText("Pretraživanje obrisano");
+      tbx_searchText.Focus();
+   }
+
+   #endregion
+
+   #region Helper Class
+
+   private class SearchColumnItem
+   {
+      public string DisplayName { get; set; }
+      public int ColumnIndex { get; set; }
+      public string ColumnName { get; set; }
+
+      public override string ToString()
+      {
+         return DisplayName;
+      }
+   }
+
+   #endregion
+
+   #endregion Search by theCP
+
 }
 
 public class F2_NIR_UC : VvUserControl

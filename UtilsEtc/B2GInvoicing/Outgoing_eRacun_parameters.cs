@@ -22,6 +22,8 @@ public class Outgoing_eRacun_parameters
    /*         */ public string     qwePDFfullPathAndName   { get { return System.IO.Path.Combine(qweTheDirectoryName, qwePDFfileNameOnly); } }
    /*         */ public string     qweXMLfullPathAndName   { get { return System.IO.Path.Combine(qweTheDirectoryName, qweXMLfileNameOnly); } }
                  public bool       wantsKOPIJA             { get; set; }
+   /* oeRp_5. */ public byte[]     ADR_as_base64_byteArray { get; set; } // ADR - AdditionalDocumentReference
+
    public string suggestedXmlFileName
    {
       get

@@ -69,7 +69,9 @@ namespace EN16931.UBL
          Kupdob kupdob_rec = oeRp.kupdob_rec;
          Kupdob primPlat_rec = oeRp.primPlat_rec;
          byte[] PDF_as_base64_bytes = oeRp.PDF_as_base64_byteArray;
+         byte[] ADR_as_base64_bytes = oeRp.ADR_as_base64_byteArray;
          string pdf_fileName = oeRp./*pdfFileNameOnly*/qwePDFfileNameOnly;
+         string adr_fileName = null;
 
          EN16931.UBL.InvoiceType the_eRacun = new EN16931.UBL.InvoiceType();
 
@@ -306,46 +308,47 @@ namespace EN16931.UBL
          #endregion Referenca STORNO i stornoAVANSa racuna
 
          #region PDF
-
-         the_eRacun.AdditionalDocumentReference = new DocumentReferenceType[]
+         
+         List<DocumentReferenceType> documentReferenceList = new List<DocumentReferenceType>();
+         
+         // Dodaj glavni PDF računa
+         documentReferenceList.Add(new DocumentReferenceType
          {
-            new DocumentReferenceType
+            ID = new IDType { Value = "1" },
+            DocumentDescription = new DocumentDescriptionType[] { new DocumentDescriptionType { Value = "Faktura" } },
+            Attachment = new AttachmentType
             {
-               ID = new IDType { Value = "1" },
-               DocumentDescription = new DocumentDescriptionType[] { new DocumentDescriptionType { Value = "Faktura"} },
+               EmbeddedDocumentBinaryObject = new EmbeddedDocumentBinaryObjectType
+               {
+                  filename = pdf_fileName,
+                  mimeCode = "application/pdf",
+                  Value    = PDF_as_base64_bytes,
+               }
+            }
+         });
+         
+         // Dodaj dodatni PDF ako postoji
+         if(faktur_rec.ExternLink1.NotEmpty() && ADR_as_base64_bytes != null)
+         {
+            adr_fileName = Path.GetFileName(faktur_rec.ExternLink1);
+            documentReferenceList.Add(new DocumentReferenceType
+            {
+               ID = new IDType { Value = "2" },
+               DocumentDescription = new DocumentDescriptionType[] { new DocumentDescriptionType { Value = "Dodatni dokument" } },
                Attachment = new AttachmentType
                {
                   EmbeddedDocumentBinaryObject = new EmbeddedDocumentBinaryObjectType
                   {
-                     filename = pdf_fileName       ,
-                     mimeCode = "application/pdf"  ,
-                     Value    = PDF_as_base64_bytes,
+                     filename = adr_fileName,
+                     mimeCode = "application/pdf",
+                     Value    = ADR_as_base64_bytes,
                   }
                }
-            }
-         };
-
-         //the_eRacun.AdditionalDocumentReference = new DocumentReferenceType
-         //{
-         //   ID = new IDType { Value = "1" },
-         //   DocumentDescription = new DocumentDescriptionType[]
-         //      {
-         //         new DocumentDescriptionType { Value = "Faktura"}
-         //      },
-         //      Attachment = new AttachmentType
-         //      {
-         //         new AttachmentType
-         //         {
-         //            EmbeddedDocumentBinaryObject = new EmbeddedDocumentBinaryObjectType
-         //            {
-         //               mimeCode = "application/pdf",
-         //               filename = "19705983.pdf",
-         //               Value    = PDF_as_base64_bytes 
-         //            }
-         //         }
-         //      }
-         //};
-
+            });
+         }
+         
+         the_eRacun.AdditionalDocumentReference = documentReferenceList.ToArray();
+         
          #endregion PDF
 
          #region BG-4 BG-5 Prodavatelj (Prjkt)

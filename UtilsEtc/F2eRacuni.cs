@@ -549,9 +549,9 @@ public static class Vv_eRacun_HTTP
 
       return pdfFilePath;
    }
-   public static string ExtractEmbeddedPdfsFromXmlFile(string xmlFilePath)
+   public static List<string> ExtractEmbeddedPdfsFromXmlFile(string xmlFilePath)
    {
-      string pdfFilePath = "";
+      List<string> extractedPdfPaths = new List<string>();
 
       try
       {
@@ -584,6 +584,8 @@ public static class Vv_eRacun_HTTP
             string xmlDirectory = Path.GetDirectoryName(xmlFilePath);
             string xmlFileNameWithoutExtension = Path.GetFileNameWithoutExtension(xmlFilePath);
 
+            int pdfCounter = 0;
+
             foreach(var docRef in pdfElements)
             {
                var attachment = docRef.Element(cac + "Attachment");
@@ -599,17 +601,26 @@ public static class Vv_eRacun_HTTP
                   {
                      byte[] pdfBytes = Convert.FromBase64String(base64Content);
 
-                     // Create PDF file path (same directory as XML, using XML base name + PDF filename)
-                     pdfFilePath = Path.Combine(xmlDirectory, $"{xmlFileNameWithoutExtension}_{filename}");
+                     // Create unique PDF file path (same directory as XML, using XML base name + counter + PDF filename)
+                     string pdfFilePath;
+                     if(pdfCounter == 0)
+                     {
+                        pdfFilePath = Path.Combine(xmlDirectory, $"{xmlFileNameWithoutExtension}_{filename}");
+                     }
+                     else
+                     {
+                        string fileNameWithoutExt = Path.GetFileNameWithoutExtension(filename);
+                        string fileExt = Path.GetExtension(filename);
+                        pdfFilePath = Path.Combine(xmlDirectory, $"{xmlFileNameWithoutExtension}_{fileNameWithoutExt}_{pdfCounter}{fileExt}");
+                     }
 
                      // Write PDF file
                      File.WriteAllBytes(pdfFilePath, pdfBytes);
 
                      Console.WriteLine($"PDF extracted successfully to: {pdfFilePath}");
 
-                     // For now, return the first PDF found
-                     // If multiple PDFs exist, this could be enhanced to handle all of them
-                     break;
+                     extractedPdfPaths.Add(pdfFilePath);
+                     pdfCounter++;
                   }
                }
             }
@@ -622,10 +633,9 @@ public static class Vv_eRacun_HTTP
       catch(Exception ex)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Xml datoteka ne izgleda kao eRačun.");
-         pdfFilePath = "";
       }
 
-      return pdfFilePath;
+      return extractedPdfPaths;
    }
    internal static string Get_MER_TransportStatus_Safe(int f2_StatusCD)
    {
@@ -5702,6 +5712,19 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       /*         */ oeRp.wantsKOPIJA             = _wantsKOPIJA                                    ;
       // NOTA BENE! imas malo povise #region 2026 totalno sam popizdio s starim varijablama pa radim nove 
 
+      // 22.02.2026: 
+      if(oeRp.faktur_rec.ExternLink1.NotEmpty())
+      {
+         if(System.IO.File.Exists(oeRp.faktur_rec.ExternLink1))
+         {
+            oeRp.ADR_as_base64_byteArray = System.IO.File.ReadAllBytes(oeRp.faktur_rec.ExternLink1);
+         }
+         else
+         {
+            ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, $"Ne mogu pronaći datoteku navedenu u ExternLink1 polju.\n\r\n\rPutanja:\n\r{oeRp.faktur_rec.ExternLink1}\n\r\n\rADR će biti prazan.");
+         }
+      }
+
       return oeRp;
    }
    private void F2_RefreshFUR_QueryInboxAndFakturListAndStatuses(object sender, EventArgs e) 
@@ -6052,15 +6075,23 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       {
          string full_XML_PathName = openFileDialog.FileName;
 
-         string full_PDF_PathName = Vv_eRacun_HTTP.ExtractEmbeddedPdfsFromXmlFile(full_XML_PathName);
+         List<string> pdfPaths = Vv_eRacun_HTTP.ExtractEmbeddedPdfsFromXmlFile(full_XML_PathName);
+         
+         int counter = 0;
 
-         if(full_PDF_PathName.NotEmpty())
+         foreach(string pdfPath in pdfPaths)
          {
-            System.Diagnostics.Process.Start(full_PDF_PathName);
-         }
-         else
-         {
-            ZXC.aim_emsg(MessageBoxIcon.Exclamation, "Ne mogu isčitati ugrađene PDF-ove u odabranoj XML datoteci.");
+            if(File.Exists(pdfPath))
+            {
+               counter++;
+
+               if(counter > 1) ZXC.aim_emsg(MessageBoxIcon.Information, $"Prikazujem {counter}. od {pdfPaths.Count}");
+               System.Diagnostics.Process.Start(pdfPath);
+            }
+            else
+            {
+               ZXC.aim_emsg(MessageBoxIcon.Exclamation, $"Ne mogu pronaći PDF datoteku na disku:\n\r{pdfPath}");
+            }
          }
       }
 
