@@ -9154,7 +9154,7 @@ public class F2_FUR_addNpomenaUFA_Dlg : VvDialog
    #endregion Fld_
 }
 
-public class F2_NIR_MapajRazdoblje_Dlg : VvDialog
+public class F2_ZaRazdoblje_Dlg : VvDialog
 {
    #region Filedz
 
@@ -9164,15 +9164,17 @@ public class F2_NIR_MapajRazdoblje_Dlg : VvDialog
 
    private VvDateTimePicker dtp_DatumOD, dtp_DatumDO;
    private VvTextBox        tbx_DatumOD, tbx_DatumDO;
+   private string           text;
 
    #endregion Filedz
 
    #region Constructor
 
-   public F2_NIR_MapajRazdoblje_Dlg()
+   public F2_ZaRazdoblje_Dlg(string _text)
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = "Ödaberite razdoblje za prijavu naplate";
+      this.Text          = "Ödaberite razdoblje";
+      text               = _text;
 
       CreateHamper();
 
@@ -9209,7 +9211,7 @@ public class F2_NIR_MapajRazdoblje_Dlg : VvDialog
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "Razdoblje uplata za prijavu naplata:", 3, 0, ContentAlignment.MiddleLeft);
+      hamper.CreateVvLabel(0, 0, text, 3, 0, ContentAlignment.MiddleLeft);
 
 
                     hamper.CreateVvLabel  (0, 1, "OD datuma:", ContentAlignment.MiddleRight);
@@ -9377,7 +9379,6 @@ public class F2_NIR_MapajRazdoblje_Dlg : VvDialog
    #endregion Fld_
 }
 
-
 public class F2_Izlaz_UC : VvUserControl
 {
    #region Fieldz
@@ -9444,9 +9445,6 @@ public class F2_Izlaz_UC : VvUserControl
       SetColumnIndexes();
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
-
-      // premjesteno u INIT_FIR() 
-    //SetEnableDisableTsButtons();
 
 //#if !DEBUG
       INIT_FIR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
@@ -9954,8 +9952,6 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
-      SetEnableDisableTsButtons();
-
 //#if !DEBUG
       if(ZXC.CURR_prjkt_rec.F2_RolaKind != F2_RolaKind.KlijentServisa_TipC)
       {
@@ -9980,6 +9976,8 @@ public class F2_Ulaz_UC : VvUserControl
       if(Vv_eRacun_HTTP.Is_FUR_ON() == false) return;
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
+
+      SetEnableDisableTsButtons();
 
       #region Check Tables 
 

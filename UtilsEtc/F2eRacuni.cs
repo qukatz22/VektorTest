@@ -6410,7 +6410,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
    private void F2_MAPaj_From_NIR_zaRzadoblje(object sender, EventArgs e)
    {
-      F2_NIR_MapajRazdoblje_Dlg dlg = new F2_NIR_MapajRazdoblje_Dlg();
+      F2_ZaRazdoblje_Dlg dlg = new F2_ZaRazdoblje_Dlg("Razdoblje uplata za prijavu naplata:");
 
       DialogResult dlgResult = dlg.ShowDialog();
 
@@ -6452,4 +6452,25 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       //if(newsCount.IsZeroOrPositive()) ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
+
+   private void F2_FindOnGrid(object sender, EventArgs e) { }
+   private void F2_ExportXml(object sender, EventArgs e) 
+   { 
+      F2_ZaRazdoblje_Dlg dlg = new F2_ZaRazdoblje_Dlg("Razdoblje za export xml-a:");
+
+      DialogResult dlgResult = dlg.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         dlg.Dispose();
+         return;
+      }
+      DateTime datumOd = dlg.Fld_DatumOd;
+      DateTime datumDo = dlg.Fld_DatumDo;
+
+      dlg.Dispose();
+
+   
+   }
+
 }
