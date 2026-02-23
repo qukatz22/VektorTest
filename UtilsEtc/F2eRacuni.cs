@@ -2566,10 +2566,12 @@ public static class Vv_eRacun_HTTP
 
       using(OpenFileDialog openFileDialog = new OpenFileDialog())
       {
-         string initialDir = ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName.IsEmpty() ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
-                             ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName;
+         string initialDir = (ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName.IsEmpty() ||
+                              ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName == @".\"   ) ? 
+                              Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
+                              ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_IFA_Prefs.DirectoryName;
 
-         openFileDialog.Title           = "Odaberite direktorij sa XML datotekama";
+         openFileDialog.Title           = "Odaberite direktorij sa XML datotekama IZLAZNIH računa";
          openFileDialog.ValidateNames   = false;
          openFileDialog.CheckFileExists = false;
          openFileDialog.CheckPathExists = true;
@@ -3788,11 +3790,52 @@ public static class Vv_eRacun_HTTP
       List<string> updatedStatusInfoList = new List<string>();
            string  updatedStatusInfo                         ;
 
+      string fullDirectoryPath;
+
+      using(OpenFileDialog openFileDialog = new OpenFileDialog())
+      {
+         string initialDir = (ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_UFA_Prefs.DirectoryName.IsEmpty() ||
+                              ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_UFA_Prefs.DirectoryName == @".\"   ) ? 
+                              Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
+                              ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_UFA_Prefs.DirectoryName;
+
+         openFileDialog.Title           = "Odaberite direktorij sa XML datotekama ULAZNIH računa";
+         openFileDialog.ValidateNames   = false;
+         openFileDialog.CheckFileExists = false;
+         openFileDialog.CheckPathExists = true;
+         openFileDialog.FileName        = "Odaberite directory";
+         openFileDialog.DefaultExt      = ".xml";
+       //openFileDialog.ReadOnlyChecked = true;
+       //openFileDialog.ShowReadOnly    = true;
+
+         if(Directory.Exists(initialDir))
+         {
+            openFileDialog.InitialDirectory = initialDir;
+         }
+
+         DialogResult result = openFileDialog.ShowDialog();
+
+         if(result != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+         {
+            ZXC.SetStatusText("");
+            Cursor.Current = Cursors.Default;
+            return 0;
+         }
+
+         ZXC.TheVvForm.VvPref.theHDD_Import_Extern_Faktur_UFA_Prefs.DirectoryName =
+
+         fullDirectoryPath = Path.GetDirectoryName(openFileDialog.FileName);
+      }
+
+      bool thisXMLhaswrongOIB = false;
+      bool wrongOIBdetected   = false;
+
       #endregion Init
 
       #region Synchronise Xtrano DataLayer (FUR Inbox i Arhiva) with provider via news from QueryInbox
 
-      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(queryInbox_DateOD, queryInbox_DateDO);
+    //WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_WebService_QueryInbox_List(                   queryInbox_DateOD, queryInbox_DateDO);
+      WebApiResult<List<VvMER_ResponseData>> webApiResultWithList = Vv_eRacun_HTTP.VvMER_LocalHDD_QueryInbox_List  (fullDirectoryPath, queryInbox_DateOD, queryInbox_DateDO);
 
     //if(webApiResultWithList == null || webApiResultWithList.ResponseData == null /*|| webApiResultWithList.ResponseData.IsEmpty()*/)
       if(webApiResultWithList == null || webApiResultWithList.ResponseData == null   || webApiResultWithList.ResponseData.IsEmpty()  )
@@ -3831,7 +3874,8 @@ public static class Vv_eRacun_HTTP
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.F2_ElectronicID == responseData.ElectronicId);
+       //existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.F2_ElectronicID == responseData.ElectronicId);
+         existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.T_theString     == responseData.DocumentNr  );
 
          isNewXtrano = existingXtrano == null;
 
@@ -3841,42 +3885,10 @@ public static class Vv_eRacun_HTTP
 
          #region 1. Call RECEIVE to get full XML document
 
-         WebApiResult<VvMER_ResponseData> webApiResult = null;
+         // NIJE RECEIVE API nego xml dode iz fajla z diska 
+         theXmlString = responseData.DocumentXml;
 
          bool receiveOK = true;
-
-         switch(ZXC.F2_TheProvider)
-         {
-            case ZXC.F2_Provider_enum.MER:
-            {
-               try
-               {
-                  webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML((uint)responseData.ElectronicId);
-
-                  theXmlString = webApiResult.ResponseData.DocumentXml;
-
-                  if(webApiResult.ResponseData == null || webApiResult.ResponseData.DocumentXml.IsEmpty())
-                  {
-                     Show_WebApiResult_ErrorMessageBox(webApiResult, responseData);
-                     receiveOK = false;
-                  }
-               }
-               catch(Exception ex)
-               {
-                  ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Greška prilikom slanja na WebServis: {0}", ex.Message);
-                  receiveOK = false;
-               }
-               break;
-
-            } // case ZXC.F2_Provider_enum.MER: 
-
-            case ZXC.F2_Provider_enum.PND:
-            {
-               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
-               receiveOK = false;
-               break;
-            }
-         }
 
          #endregion 1. Call RECEIVE to get full XML document
 
@@ -3895,6 +3907,9 @@ public static class Vv_eRacun_HTTP
             {
                deserialized_CreditNoteType = Create_BareBone_CreditNoteType_FromProblematicXml(theXmlString);
             }
+            
+            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_CreditNoteType.VvCustomerOIB;
+
          }
          else if(isInvoice)
          {
@@ -3906,6 +3921,9 @@ public static class Vv_eRacun_HTTP
             {
                deserialized_InvoiceType = Create_BareBone_InvoiceType_FromProblematicXml(theXmlString);
             }
+
+            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_InvoiceType.VvCustomerOIB;
+
          }
          else
          {
@@ -3916,6 +3934,12 @@ public static class Vv_eRacun_HTTP
                $"Pošiljatelj: {responseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
                $"Datum slanja: {responseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
                $"Status: {responseData.StatusName ?? responseData.StatusId?.ToString() ?? "N/A"}");
+         }
+
+         if(thisXMLhaswrongOIB)
+         {
+            wrongOIBdetected = true;
+            continue;
          }
 
          bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
@@ -3997,9 +4021,165 @@ public static class Vv_eRacun_HTTP
          ZXC.aim_emsg_List(string.Format("Ima {0} novosti.", updatedStatusInfoList.Count), updatedStatusInfoList);
       }
 
+      if(newsCount.IsZero())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Information, "Nema novosti.");
+      }
+
+      if(wrongOIBdetected)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Exclamation, "Pronađene su datoteke sa neodgovarajućim OIB-om!\n\r\n\rKrivi projekt ili krivo odabrani directory?");
+      }
+
       return newsCount;
 
       #endregion Finish
+   }
+   private static WebApiResult<List<VvMER_ResponseData>> VvMER_LocalHDD_QueryInbox_List(string fullDirectoryPath, DateTime queryInbox_DateOD, DateTime queryInbox_DateDO)
+   {
+      WebApiResult<List<VvMER_ResponseData>> webApiResult = new WebApiResult<List<VvMER_ResponseData>>()
+      {
+         WebApiKind = ZXC.F2_WebApi.HDD_InboxListAsKnjigServis,
+         WebApiAddr = fullDirectoryPath,
+      };
+
+      try
+      {
+         // Validate directory
+         if(string.IsNullOrEmpty(fullDirectoryPath) || !Directory.Exists(fullDirectoryPath))
+         {
+            webApiResult.StatusCode = -1;
+            webApiResult.StatusDescription = "Directory not found";
+            webApiResult.ErrorBody = $"Direktorij ne postoji: {fullDirectoryPath}";
+            return webApiResult;
+         }
+
+         // Get all XML files from directory
+         string[] xmlFileNamesList = Directory.GetFiles(fullDirectoryPath, "*.xml", SearchOption.TopDirectoryOnly);
+
+         if(xmlFileNamesList.Length == 0)
+         {
+            webApiResult.StatusCode = -1;
+            webApiResult.StatusDescription = "No XML files found";
+            webApiResult.ErrorBody = $"Nema XML datoteka u direktoriju: {fullDirectoryPath}";
+            return webApiResult;
+         }
+
+         List<VvMER_ResponseData> responseDataList = new List<VvMER_ResponseData>();
+
+         foreach(string xmlFileName in xmlFileNamesList)
+         {
+            try
+            {
+               string xmlString = File.ReadAllText(xmlFileName, Encoding.UTF8);
+
+               if(xmlString.IsEmpty()) continue;
+
+               bool isCreditNote = xmlString.TrimStart().Contains("<CreditNote ");
+               bool isInvoice    = xmlString.TrimStart().Contains("<Invoice ");
+
+               if(!isInvoice && !isCreditNote) continue; // skip non-UBL files
+
+               string cleanedXmlString = RemoveSignatureElements(xmlString);
+
+               string documentNr  = null;
+               string senderOIB   = null;
+               string senderName  = null;
+               DateTime? issueDate = null;
+               decimal   money     = 0M;
+
+               if(isInvoice)
+               {
+                  EN16931.UBL.InvoiceType deserialized = null;
+                  try { deserialized = EN16931.UBL.InvoiceType.Deserialize(cleanedXmlString); } catch { /* skip */ }
+
+                  if(deserialized != null)
+                  {
+                     documentNr = deserialized.ID?.Value;
+                     issueDate  = deserialized.IssueDate?.Value;
+                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
+                     senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
+                               ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
+                     money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
+                  }
+                  else
+                  {
+                     // fallback: try to extract basic info from XML directly
+                     //money = ExtractTaxInclusiveAmountFromXml(xmlString);
+                  }
+               }
+               else // isCreditNote
+               {
+                  EN16931.UBL.CreditNoteType deserialized = null;
+                  try { deserialized = EN16931.UBL.CreditNoteType.Deserialize(cleanedXmlString); } catch { /* skip */ }
+
+                  if(deserialized != null)
+                  {
+                     documentNr = deserialized.ID?.Value;
+                     issueDate  = deserialized.IssueDate?.Value;
+                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
+                     senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
+                               ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
+                     money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
+                  }
+                  else
+                  {
+                     //money = ExtractTaxInclusiveAmountFromXml(xmlString);
+                  }
+               }
+
+               // Filter by date range (analogno WebService filtriranju po Issued datumu)
+               if(issueDate.HasValue && (issueDate.Value < queryInbox_DateOD || issueDate.Value > queryInbox_DateDO))
+               {
+                  continue;
+               }
+
+               // Build VvMER_ResponseData equivalent to what WebService returns
+               VvMER_ResponseData responseData = new VvMER_ResponseData()
+               {
+                  ElectronicId       = 0                              , // nema electronicId kod lokalnih datoteka
+                  DocumentNr         = documentNr ?? Path.GetFileNameWithoutExtension(xmlFileName),
+                  SenderBusinessNumber = senderOIB                    ,
+                  SenderBusinessName = senderName ?? ""               ,
+                  StatusId           = 40                             , // 40 = "Preuzet"
+                  StatusName         = "Preuzet",
+                  Issued             = issueDate                      ,
+                  Sent               = issueDate ?? File.GetCreationTime(xmlFileName),
+                  Created            = File.GetCreationTime(xmlFileName),
+                  DocumentXml        = xmlString                      , // spremamo originalni XML za kasniji RECEIVE
+               };
+
+               responseDataList.Add(responseData);
+            }
+            catch(Exception exFile)
+            {
+               System.Diagnostics.Debug.WriteLine($"Error processing XML file [{xmlFileName}]: {exFile.Message}");
+               // skip problematic file, continue with next
+            }
+
+         } // foreach xmlFilePath
+
+         webApiResult.ResponseData = responseDataList;
+         webApiResult.StatusCode = 200;
+         webApiResult.StatusDescription = $"Loaded {responseDataList.Count} documents from disk";
+
+         // Filter by project year (analogno VvMER_WebService_QueryOutbox_TRN_List)
+         if(webApiResult.ResponseData != null)
+         {
+            webApiResult.ResponseData = webApiResult.ResponseData
+               .Where(rd => rd.Issued.HasValue && rd.Issued.Value.Year == ZXC.projectYearAsInt)
+               .ToList();
+         }
+      }
+      catch(Exception ex)
+      {
+         webApiResult.StatusCode = -1;
+         webApiResult.StatusDescription = "Error reading directory";
+         webApiResult.ErrorBody = ex.Message;
+         webApiResult.ExceptionMessage = ex.Message;
+      }
+
+      return webApiResult;
    }
 
    #endregion FUR
@@ -6454,7 +6634,15 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    }
 
    private void F2_FindOnGrid(object sender, EventArgs e) { }
-   private void F2_ExportXml(object sender, EventArgs e) 
+   private void F2_ExportFIRXml(object sender, EventArgs e)
+   {
+      F2_ExportXml_Job("AIR");
+   }
+   private void F2_ExportFURXml(object sender, EventArgs e)
+   {
+      F2_ExportXml_Job("AUR");
+   }
+   private void F2_ExportXml_Job(string xtrTT) 
    { 
       F2_ZaRazdoblje_Dlg dlg = new F2_ZaRazdoblje_Dlg("Razdoblje za export xml-a:");
 
@@ -6470,7 +6658,59 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       dlg.Dispose();
 
-   
+      if(datumOd.IsEmpty()) datumOd = ZXC.projectYearFirstDay;
+      if(datumDo.IsEmpty()) datumDo = ZXC.projectYearLastDay ;
+
+      string dateID = datumOd.ToString(ZXC.VvDateDdMmYyyyFormat) + "_" + datumDo.ToString(ZXC.VvDateDdMmYyyyFormat);
+      string fileName, fullName;
+      string deaultVvPDFdirectoryName = VvForm.GetLocalDirectoryForVvFile(/*"_ eRacun IZLAZNI"*/ZXC.eRacuniDIR);
+      string todayDir = xtrTT + "_XML_EXPORT_" + DateTime.Today.ToString(ZXC.VvDateYyyyMmDdMySQLFormat);
+      string dirName = Path.Combine(deaultVvPDFdirectoryName, todayDir);
+      uint expCount = 0;
+      bool saveOK;
+
+      if(!Directory.Exists(dirName))
+      {
+         Directory.CreateDirectory(dirName);
+      }
+
+      string theXmlString;
+
+      List<Xtrano> xtranoList = new List<Xtrano>();
+
+      List<VvSqlFilterMember> filterMembers = new List<VvSqlFilterMember>(3);
+
+      filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_tt], "theTT", xtrTT, " = "));
+
+      if(xtrTT == "AIR")
+      {
+         filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate], "theDokDateOd", datumOd, " >= "));
+         filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate], "theDokDateDo", datumDo, " <= "));
+      }
+      else if(xtrTT == "AUR")
+      {
+         filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate2], "theDokDate2Od", datumOd, " >= "));
+         filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate2], "theDokDate2Do", datumDo, " <= "));
+      }
+
+      VvDaoBase.LoadGenericVvDataRecordList<Xtrano>(TheDbConnection, xtranoList, filterMembers, "", "t_dokDate ", false);
+
+      foreach(Xtrano xtrano_rec in xtranoList)
+      {
+         theXmlString = VvStringCompressor.DecompressXml(xtrano_rec.T_XmlZip);
+
+         fileName = xtrTT + "_" + ZXC.CURR_prjkt_rec.Ticker + "_" + xtrano_rec.T_dokNum + ".xml";
+
+         fullName = Path.Combine(dirName, fileName);
+
+         saveOK = EN16931.UBL.InvoiceType.VvSaveToFile(theXmlString, fullName, ZXC.VvUTF8Encoding_noBOM);
+
+         if(saveOK) expCount++;
+         else ZXC.aim_emsg(System.Windows.Forms.MessageBoxIcon.Error, "Neuspješno spremanje XML datoteke.\n\nPutanja: {0}", fullName);
+
+      }
+
+      ZXC.aim_emsg(MessageBoxIcon.Information, $"Gotovo, exportirao {expCount} računa u direcctory\n\r\n\r{dirName}");
    }
 
 }

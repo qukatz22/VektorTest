@@ -521,6 +521,17 @@ public class VvPref
       }
    }
 
+   public struct HDD_Import_Extern_Faktur_UFA_Prefs
+   {
+      private string directoryName;
+
+      public string DirectoryName
+      {
+         get { return directoryName.NotEmpty() ? directoryName : @".\"; }
+         set { directoryName = value; }
+      }
+   }
+
    public struct LoadPopratPrefs
    {
       private string directoryName;
@@ -1236,6 +1247,7 @@ public class VvPref
    public eRacun_Outgoing_Prefs eRacun_Izlaz_Prefs;
 
    public HDD_Import_Extern_Faktur_IFA_Prefs theHDD_Import_Extern_Faktur_IFA_Prefs;
+   public HDD_Import_Extern_Faktur_UFA_Prefs theHDD_Import_Extern_Faktur_UFA_Prefs;
 
    #endregion Serializible Propertiz
 

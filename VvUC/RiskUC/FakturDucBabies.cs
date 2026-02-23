@@ -9953,7 +9953,7 @@ public class F2_Ulaz_UC : VvUserControl
       TheVvTabPage.TheVvUC = this; // !!! ??? (treba ti za GetFisk_RecID_Oper) 
 
 //#if !DEBUG
-      if(ZXC.CURR_prjkt_rec.F2_RolaKind != F2_RolaKind.KlijentServisa_TipC)
+    //if(ZXC.CURR_prjkt_rec.F2_RolaKind != F2_RolaKind.KlijentServisa_TipC)
       {
          INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
       }
