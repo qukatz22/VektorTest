@@ -1103,6 +1103,16 @@ be_fast:
                ZXC.MIXER_CopyToOtherDUC_inProgress == true) ts_Set.Items["StartLink"].Text = "EndLink";
             else                                            ts_Set.Items["StartLink"].Text = "StartLink";
          }
+
+         if((this.TheVvUC is F2_Izlaz_UC))
+         {
+            (this.TheVvUC as F2_Izlaz_UC).SetEnableDisableTsButtons();
+         }
+         if((this.TheVvUC is F2_Ulaz_UC))
+         {
+            (this.TheVvUC as F2_Ulaz_UC).SetEnableDisableTsButtons();
+         }
+
       }
    }
 

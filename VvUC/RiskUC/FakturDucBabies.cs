@@ -9536,7 +9536,7 @@ public class F2_Izlaz_UC : VvUserControl
       }
    }
 
-   private void SetEnableDisableTsButtons()
+   public void SetEnableDisableTsButtons()
    {
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
@@ -10021,7 +10021,7 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 
-   private void SetEnableDisableTsButtons()
+   public void SetEnableDisableTsButtons()
    {
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
