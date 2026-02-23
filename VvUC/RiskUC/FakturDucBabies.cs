@@ -9941,7 +9941,7 @@ public class F2_Ulaz_UC : VvUserControl
       matchedRowIndexes = new List<int>();
       currentMatchIndex = -1;
 
-      CreateSearchHamper(); // Create search first
+      // PATATACreateSearchHamper(); // Create search first
 
       CreateTheGrid();
       this.ResumeLayout();
@@ -9971,7 +9971,7 @@ public class F2_Ulaz_UC : VvUserControl
       TheG.CellMouseDoubleClick += TheGrid_CellMouseDoubleClick_OpenSomeDUC;
 
       // Populate search columns after grid is fully created
-      PopulateSearchColumns();
+      // PATATAPopulateSearchColumns();
 
    }
 
@@ -10010,6 +10010,11 @@ public class F2_Ulaz_UC : VvUserControl
       int newsCount = 0;
 
       /* 111 */              Vv_eRacun_HTTP.Load_AUR_XtranoList(this);
+
+      if(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC)
+      {
+         return; // QQQ Only 
+      }
 
       /* YYY */ newsCount += Vv_eRacun_HTTP.WS_QueryInbox_Receive_StatusInbox(this);
 
