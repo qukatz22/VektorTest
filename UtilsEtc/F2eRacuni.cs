@@ -6636,11 +6636,11 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
    private void F2_FindOnGrid(object sender, EventArgs e) { }
    private void F2_ExportFIRXml(object sender, EventArgs e)
    {
-      F2_ExportXml_Job("AIR");
+      F2_ExportXml_Job(Mixer.TT_AIR);
    }
    private void F2_ExportFURXml(object sender, EventArgs e)
    {
-      F2_ExportXml_Job("AUR");
+      F2_ExportXml_Job(Mixer.TT_AUR);
    }
    private void F2_ExportXml_Job(string xtrTT) 
    { 
@@ -6682,12 +6682,12 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_tt], "theTT", xtrTT, " = "));
 
-      if(xtrTT == "AIR")
+      if(xtrTT == Mixer.TT_AIR)
       {
          filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate], "theDokDateOd", datumOd, " >= "));
          filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate], "theDokDateDo", datumDo, " <= "));
       }
-      else if(xtrTT == "AUR")
+      else if(xtrTT == Mixer.TT_AUR)
       {
          filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate2], "theDokDate2Od", datumOd, " >= "));
          filterMembers.Add(new VvSqlFilterMember(ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokDate2], "theDokDate2Do", datumDo, " <= "));
