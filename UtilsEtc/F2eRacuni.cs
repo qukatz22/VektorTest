@@ -6633,7 +6633,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       //if(newsCount.IsZeroOrPositive()) ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
 
-   private void F2_FindOnGrid(object sender, EventArgs e) { }
    private void F2_ExportFIRXml(object sender, EventArgs e)
    {
       F2_ExportXml_Job(Mixer.TT_AIR);
@@ -6711,6 +6710,24 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       }
 
       ZXC.aim_emsg(MessageBoxIcon.Information, $"Gotovo, exportirao {expCount} računa u direcctory\n\r\n\r{dirName}");
+   }
+
+   private void F2_FindOnFIRgrid(object sender, EventArgs e) { F2_FindOnGrid((TheVvUC as F2_Izlaz_UC).TheG); }
+   private void F2_FindOnFURgrid(object sender, EventArgs e) { F2_FindOnGrid((TheVvUC as F2_Ulaz_UC ).TheG); }
+   private void F2_FindOnGrid(VvDataGridView TheG) 
+   { 
+      F2_Find_Dlg dlg = new F2_Find_Dlg(TheG);
+
+      DialogResult dlgResult = dlg.ShowDialog();
+
+      if(dlgResult != DialogResult.OK)
+      {
+         dlg.Dispose();
+         return;
+      }
+
+      dlg.Dispose();
+
    }
 
 }
