@@ -2176,7 +2176,13 @@ namespace EN16931.UBL
          //faktur_rec.DospDate  = this.DueDate.Value;
          if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate = this.DueDate.Value;
 
-         faktur_rec.PdvDate   = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         // 25.02.2026: dodan if 
+         if(ZXC.CURR_prjkt_rec.PdvRTip != ZXC.PdvRTipEnum.OBRT_R2 &&
+            ZXC.CURR_prjkt_rec.PdvRTip != ZXC.PdvRTipEnum.POD_PO_NAPL)
+         {
+            faktur_rec.PdvDate = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         }
+
          faktur_rec.VezniDok  = this.ID.Value;
         //faktur_rec.Napomena = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
          faktur_rec.Napomena  = ZXC.F2_Unprocessed;
@@ -2505,7 +2511,6 @@ namespace EN16931.UBL
          return faktur_rec;
       }
 
-
       [System.Xml.Serialization.XmlIgnore]
       internal string VvSupplierOIB
       {
@@ -2513,18 +2518,20 @@ namespace EN16931.UBL
          {
             try
             {
+               // 25.02.2026: Obrćemo logiku i prvo pokušavamo dohvatiti OIB iz EndpointID-a 
+
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
+               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
+               {
+                  return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
+               }
+
                // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:60042587515</cbc:ID>)
                if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
                   this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
                   this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
-               }
-
-               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
-               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
-               {
-                  return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvSupplierOIB: Supplier OIB not found in eRacun XML.");
@@ -2545,18 +2552,20 @@ namespace EN16931.UBL
          {
             try
             {
+               // 25.02.2026: Obrćemo logiku i prvo pokušavamo dohvatiti OIB iz EndpointID-a 
+
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
+               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
+               {
+                  return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
+               }
+
                // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:85821130368</cbc:ID>)
                if(this.AccountingCustomerParty?.Party?.PartyIdentification != null &&
                    this.AccountingCustomerParty.Party.PartyIdentification.Length > 0 &&
                    this.AccountingCustomerParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.PartyIdentification[0].ID.Value); // !!! CustomerID !!! ... ili ti ga 9934:OIB
-               }
-
-               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
-               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
-               {
-                  return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvCustomerOIB: Customer OIB not found in eRacun XML.");
@@ -2669,18 +2678,18 @@ namespace EN16931.UBL
          {
             try
             {
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
+               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
+               {
+                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
+               }
+
                // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:60042587515</cbc:ID>)
                if(this.AccountingSupplierParty?.Party?.PartyIdentification != null &&
                   this.AccountingSupplierParty.Party.PartyIdentification.Length > 0 &&
                   this.AccountingSupplierParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.PartyIdentification[0].ID.Value); // !!! SupplierID !!! ... ili ti ga 9934:OIB
-               }
-
-               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
-               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
-               {
-                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvSupplierOIB: Supplier OIB not found in eRacun XML.");
@@ -2701,18 +2710,18 @@ namespace EN16931.UBL
          {
             try
             {
+               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
+               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
+               {
+                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
+               }
+
                // 1. Pokušaj dohvatiti OIB iz PartyIdentification (npr. <cbc:ID>9934:85821130368</cbc:ID>)
                if(this.AccountingCustomerParty?.Party?.PartyIdentification != null &&
                    this.AccountingCustomerParty.Party.PartyIdentification.Length > 0 &&
                    this.AccountingCustomerParty.Party.PartyIdentification[0]?.ID?.Value != null)
                {
                   return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.PartyIdentification[0].ID.Value); // !!! CustomerID !!! ... ili ti ga 9934:OIB
-               }
-
-               // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
-               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
-               {
-                  return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
                }
 
                ZXC.aim_emsg(MessageBoxIcon.Error, "Error getting VvCustomerOIB: Customer OIB not found in eRacun XML.");
@@ -2835,7 +2844,13 @@ namespace EN16931.UBL
          //faktur_rec.DospDate  = this.DueDate.Value;
          //if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate  = this.DueDate.Value  ;
 
-         faktur_rec.PdvDate = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         // 25.02.2026: dodan if 
+         if(ZXC.CURR_prjkt_rec.PdvRTip != ZXC.PdvRTipEnum.OBRT_R2 &&
+            ZXC.CURR_prjkt_rec.PdvRTip != ZXC.PdvRTipEnum.POD_PO_NAPL)
+         {
+            faktur_rec.PdvDate = this.TaxPointDate?.Value == null ? this.IssueDate.Value : this.TaxPointDate.Value;
+         }
+
          faktur_rec.VezniDok = this.ID.Value;
          //faktur_rec.Napomena  = this.Note[0].Value  ; // hocemo li samo prvu napomenu?
          faktur_rec.Napomena = ZXC.F2_Unprocessed;
