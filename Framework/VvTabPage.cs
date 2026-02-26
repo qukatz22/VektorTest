@@ -1106,11 +1106,11 @@ be_fast:
 
          if((this.TheVvUC is F2_Izlaz_UC))
          {
-            (this.TheVvUC as F2_Izlaz_UC).SetEnableDisableTsButtons();
+            (this.TheVvUC as F2_Izlaz_UC).SetEnableDisableTsButtons(false);
          }
          if((this.TheVvUC is F2_Ulaz_UC))
          {
-            (this.TheVvUC as F2_Ulaz_UC).SetEnableDisableTsButtons();
+            (this.TheVvUC as F2_Ulaz_UC).SetEnableDisableTsButtons(false);
          }
 
       }

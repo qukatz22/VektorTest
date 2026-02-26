@@ -6712,9 +6712,23 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       ZXC.aim_emsg(MessageBoxIcon.Information, $"Gotovo, exportirao {expCount} računa u direcctory\n\r\n\r{dirName}");
    }
 
-   private void F2_FindOnFIRgrid(object sender, EventArgs e) { F2_FindOnGrid((TheVvUC as F2_Izlaz_UC).TheG); }
-   private void F2_FindOnFURgrid(object sender, EventArgs e) { F2_FindOnGrid((TheVvUC as F2_Ulaz_UC ).TheG); }
-   private void F2_FindOnGrid(VvDataGridView TheG) 
+   private void F2_FindOn_FIR_grid(object sender, EventArgs e) 
+   {
+      if(TheVvUC is F2_Izlaz_UC == false) return;
+
+      F2_FindOnGrid((TheVvUC as F2_Izlaz_UC).TheG);
+      
+      (TheVvUC as F2_Izlaz_UC).INIT_FIR();
+   }
+   private void F2_FindOn_FUR_grid(object sender, EventArgs e) 
+   {
+      if(TheVvUC is F2_Ulaz_UC == false) return;
+
+      F2_FindOnGrid((TheVvUC as F2_Ulaz_UC ).TheG); 
+
+      (TheVvUC as F2_Ulaz_UC).INIT_FUR();
+   }
+   private void F2_FindOnGrid(VvDataGridView TheG)
    { 
       F2_Find_Dlg dlg = new F2_Find_Dlg(TheG);
 
@@ -6727,7 +6741,25 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
       }
 
       dlg.Dispose();
+   }
 
+   private void F2_SortFUR_kupdob(object sender, EventArgs e)
+   {
+      if((TheVvUC as F2_Ulaz_UC).IsSortable == true) (TheVvUC as F2_Ulaz_UC).IsSortable = false;
+      else                                           (TheVvUC as F2_Ulaz_UC).IsSortable = true;
+         
+      (TheVvUC as F2_Ulaz_UC).SetEnableDisableTsButtons((TheVvUC as F2_Ulaz_UC).IsSortable);
+
+      if((TheVvUC as F2_Ulaz_UC).IsSortable == false) (TheVvUC as F2_Ulaz_UC).INIT_FUR();
+   }
+   private void F2_SortFIR_kupdob(object sender, EventArgs e)
+   {
+      if((TheVvUC as F2_Izlaz_UC).IsSortable == true) (TheVvUC as F2_Izlaz_UC).IsSortable = false;
+      else                                            (TheVvUC as F2_Izlaz_UC).IsSortable = true;
+         
+      (TheVvUC as F2_Izlaz_UC).SetEnableDisableTsButtons((TheVvUC as F2_Izlaz_UC).IsSortable);
+
+      if((TheVvUC as F2_Izlaz_UC).IsSortable == false) (TheVvUC as F2_Izlaz_UC).INIT_FIR();
    }
 
 }

@@ -9401,9 +9401,9 @@ public class F2_Find_Dlg : VvDialog
 
    public F2_Find_Dlg(VvDataGridView _TheG)
    {
-      this.StartPosition = FormStartPosition.Manual;
+      this.StartPosition = FormStartPosition.CenterScreen;
 
-      this.Text          = "Trazi";
+      this.Text          = "Traži";
       this.TheG          = _TheG;
 
       matchedRowIndexes = new List<int>();
@@ -9415,19 +9415,13 @@ public class F2_Find_Dlg : VvDialog
       dlgHeight       = hamp_search.Bottom + ZXC.QunMrgn * 2 + ZXC.QunBtnH;
       this.ClientSize = new Size(dlgWidth, dlgHeight);
 
-      AddOkCancelButtons(out okButton, out cancelButton, dlgWidth, dlgHeight);
-      okButton.Anchor = cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-    //okButton.Visible = cancelButton.Visible = false;
-
-      this.Location = new Point(ZXC.TheVvForm.Right - dlgWidth - ZXC.Q5un, ZXC.Q2un);
-    //this.Location = new Point(ZXC.TheVvForm.Left + ZXC.QUN, ZXC.Q3un);
-
+      AddCancelButton(out cancelButton, dlgWidth, dlgHeight);
+      cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+    
       VvHamper.Open_Close_Fields_ForWriting(tbx_searchText  , ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
       VvHamper.Open_Close_Fields_ForWriting(cmb_searchColumn, ZXC.ZaUpis.Otvoreno, ZXC.ParentControlKind.VvDialog);
 
-      // Populate search columns after grid is fully created
       PopulateSearchColumns();
-
    }
 
    #endregion Constructor
@@ -9438,30 +9432,26 @@ public class F2_Find_Dlg : VvDialog
 
    private void CreateSearchHamper()
    {
-      int searchHamperY = ZXC.QunMrgn;
-      int searchHamperX = ZXC.QunMrgn;
-
-      hamp_search = new VvHamper(6, 1, "Pretraživanje", this, false, searchHamperX, searchHamperY, ZXC.Qun4);
+      hamp_search = new VvHamper(5, 2, "Pretraživanje", this, false, ZXC.QunMrgn, ZXC.QunMrgn, ZXC.Qun4);
 
       hamp_search.VvColWdt = new int[]
       {
-         ZXC.Q4un, // Label "Kolona:"
-         ZXC.Q8un, // ComboBox with columns
-         ZXC.Q8un, // Search text box
-         ZXC.Q4un, // Search button
-         ZXC.Q2un, // Previous button
-         ZXC.Q2un  // Next button
+         ZXC.Q7un   , // ComboBox with columns
+         ZXC.Q8un   , // Search text box
+         ZXC.QunBtnW, // Search button
+         ZXC.QunBtnW, // Previous button
+         ZXC.QunBtnW  // Next button
       };
 
       hamp_search.VvSpcBefCol = new int[]
       {
-         ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4
+         ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4, ZXC.Qun4
       };
 
       hamp_search.VvRightMargin = hamp_search.VvLeftMargin;
 
-      hamp_search.VvRowHgt       = new int[] { ZXC.QUN };
-      hamp_search.VvSpcBefRow    = new int[] { ZXC.Qun4 };
+      hamp_search.VvRowHgt       = new int[] { ZXC.QUN , ZXC.QunBtnH};
+      hamp_search.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4   };
       hamp_search.VvBottomMargin = hamp_search.VvTopMargin;
 
       CreateSearchControls();
@@ -9469,17 +9459,20 @@ public class F2_Find_Dlg : VvDialog
 
    private void CreateSearchControls()
    {
-      Label lblColumn = hamp_search.CreateVvLabel(0, 0, "Kolona:", ContentAlignment.MiddleRight);
-      lblColumn.Font = ZXC.vvFont.BaseFont;
+      Label lblText = hamp_search.CreateVvLabel(0, 0, "Tekst pretrage:", ContentAlignment.MiddleRight);
+      lblText.Font = ZXC.vvFont.BaseFont;
 
-      cmb_searchColumn = hamp_search.CreateVvComboBox(1, 0, "Sve kolone", "cmb_searchColumn", ComboBoxStyle.DropDownList);
-      hamp_search.Controls.Add(cmb_searchColumn);
-
-      tbx_searchText = hamp_search.CreateVvTextBox(2, 0, "tbx_searchText", "Unesite tekst za pretraživanje");
+      tbx_searchText = hamp_search.CreateVvTextBox(1, 0, "tbx_searchText", "Unesite tekst za pretraživanje");
       tbx_searchText.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_searchText.KeyDown += TbxSearchText_KeyDown;
 
-      btn_search            = hamp_search.CreateVvButton(3, 0, new EventHandler(BtnSearch_Click), "Traži");
+      Label lblColumn = hamp_search.CreateVvLabel(0, 1, "Kolona:", ContentAlignment.MiddleRight);
+      lblColumn.Font = ZXC.vvFont.BaseFont;
+
+      cmb_searchColumn = hamp_search.CreateVvComboBox(1, 1, "Sve kolone", "cmb_searchColumn", ComboBoxStyle.DropDownList);
+      hamp_search.Controls.Add(cmb_searchColumn);
+
+      btn_search = hamp_search.CreateVvButton(2, 1, new EventHandler(BtnSearch_Click), "Traži");
       btn_search.TextAlign  = ContentAlignment.MiddleCenter;
       btn_search.Font       = ZXC.vvFont.BaseFont;
 
@@ -9489,7 +9482,7 @@ public class F2_Find_Dlg : VvDialog
       btn_prevMatch.Parent                  = hamp_search;
       btn_prevMatch.ForeColor               = System.Drawing.SystemColors.ControlText;
       btn_prevMatch.Location                = new Point(btn_search.Right + ZXC.Qun4, btn_search.Top);
-      btn_prevMatch.Size                    = new Size(ZXC.Q2un, ZXC.QUN);
+      btn_prevMatch.Size                    = new Size(ZXC.QunBtnW, ZXC.QunBtnH);
       btn_prevMatch.UseVisualStyleBackColor = true;
       btn_prevMatch.Image                   = VvIco.ExLinkLeft16/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.sorry.ico")), 16, 16)*/.ToBitmap();
       btn_prevMatch.ImageAlign              = System.Drawing.ContentAlignment.MiddleCenter;
@@ -9502,7 +9495,7 @@ public class F2_Find_Dlg : VvDialog
       btn_nextMatch.Parent                  = hamp_search;
       btn_nextMatch.ForeColor               = System.Drawing.SystemColors.ControlText;
       btn_nextMatch.Location                = new Point(btn_prevMatch.Right + ZXC.Qun4, btn_prevMatch.Top);
-      btn_nextMatch.Size                    = new Size(ZXC.Q2un, ZXC.QUN);
+      btn_nextMatch.Size                    = new Size(ZXC.QunBtnW, ZXC.QunBtnH);
       btn_nextMatch.UseVisualStyleBackColor = true;
       btn_nextMatch.Image                   = VvIco.LinkRight16/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.sorry.ico")), 16, 16)*/.ToBitmap();
       btn_nextMatch.ImageAlign              = System.Drawing.ContentAlignment.MiddleCenter;
@@ -9935,6 +9928,8 @@ public class F2_Izlaz_UC : VvUserControl
 
    internal List<Faktur> TheFakturList { get; set; }
 
+   public bool IsSortable { get; set; }
+
    #endregion Fieldz
 
    #region Constructor
@@ -9977,7 +9972,7 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      SetEnableDisableTsButtons();
+      SetEnableDisableTsButtons(false);
 
       #region Check Tables 
 
@@ -10047,23 +10042,36 @@ public class F2_Izlaz_UC : VvUserControl
       }
    }
 
-   public void SetEnableDisableTsButtons()
+   public void SetEnableDisableTsButtons(bool isSortable)
    {
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
 
-      ts.Items["f2_send"     ].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL;  
+      if(isSortable)
+      { 
+         ts.Items["f2_send"     ].Enabled =   
+         ts.Items["f2_refreshRn"].Enabled = 
+         ts.Items["f2_map"      ].Enabled = 
+         ts.Items["f2_HDDOutbox"].Enabled = 
+         ts.Items["f2_exportXml"].Enabled = false;
 
-      ts.Items["f2_refreshRn"].Enabled = 
-      ts.Items["f2_map"      ].Enabled = (ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL || 
-                                          ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipA          ||
-                                          ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipB            );
+         TheG.Columns[ci.iT_partner].SortMode = DataGridViewColumnSortMode.Automatic;
+      }
+      else
+      {
+         ts.Items["f2_send"     ].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL;  
 
-      ts.Items["f2_vidiPdf"  ].Enabled = 
-      ts.Items["f2_vidiXml"  ].Enabled = true;
+         ts.Items["f2_refreshRn"].Enabled = 
+         ts.Items["f2_map"      ].Enabled = (ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL || 
+                                             ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipA          ||
+                                             ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipB            );
 
-      ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
+         ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
 
+         ts.Items["f2_exportXml"].Enabled = true;
+
+         TheG.Columns[ci.iT_partner].SortMode = DataGridViewColumnSortMode.NotSortable;
+      }
    }
 
    #endregion Constructor
@@ -10399,6 +10407,7 @@ public class F2_Izlaz_UC : VvUserControl
 public class F2_Ulaz_UC : VvUserControl
 {
    #region Fieldz
+
    public VvDataGridView TheG { get; set; }
 
    private VvTextBox vvtb_senderName , vvtb_senderOIB, vvtb_statusID,
@@ -10436,6 +10445,8 @@ public class F2_Ulaz_UC : VvUserControl
    private List<int> matchedRowIndexes;
    private int currentMatchIndex;
 
+   public bool IsSortable { get; set; }
+
    #endregion Fieldz
 
    #region Constructor
@@ -10453,6 +10464,8 @@ public class F2_Ulaz_UC : VvUserControl
       currentMatchIndex = -1;
 
       // PATATACreateSearchHamper(); // Create search first
+
+      IsSortable = false;
 
       CreateTheGrid();
       this.ResumeLayout();
@@ -10490,7 +10503,7 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      SetEnableDisableTsButtons();
+      SetEnableDisableTsButtons(false);
 
       #region Check Tables 
 
@@ -10537,21 +10550,34 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 
-   public void SetEnableDisableTsButtons()
+   public void SetEnableDisableTsButtons(bool isSortable)
    {
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
 
-      ts.Items["f2_refreshFUR"].Enabled = 
-      ts.Items["f2_ponoviArh" ].Enabled = !(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC);
+      if(isSortable)
+      {
+         ts.Items["f2_refreshFUR"].Enabled =
+         ts.Items["f2_ucitajUleR"].Enabled =
+         ts.Items["f2_HDDOutbox"].Enabled =
+         ts.Items["f2_exportXml"].Enabled = false;
 
-      ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
+         TheG.Columns[ci.iT_kupDob].SortMode = DataGridViewColumnSortMode.Automatic;
+         TheG.Columns[ci.iT_sender].SortMode = DataGridViewColumnSortMode.Automatic;
+      }
+      else
+      { 
+         ts.Items["f2_refreshFUR"].Enabled = 
+         ts.Items["f2_ponoviArh" ].Enabled = !(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC);
 
-      ts.Items["ucitajUleR"   ].Enabled =
-      ts.Items["f2_vidiPdf"   ].Enabled = 
-      ts.Items["f2_vidiXml"   ].Enabled = 
-      ts.Items["f2_vidiDisPdf"].Enabled = 
-      ts.Items["f2_vidiDisXml"].Enabled = true;
+         ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
+
+         ts.Items["f2_ucitajUleR"].Enabled = true;
+         ts.Items["f2_exportXml" ].Enabled = true;
+
+         TheG.Columns[ci.iT_kupDob].SortMode = DataGridViewColumnSortMode.NotSortable;
+         TheG.Columns[ci.iT_sender].SortMode = DataGridViewColumnSortMode.NotSortable;
+      }
    }
 
    #endregion Constructor
@@ -10560,8 +10586,8 @@ public class F2_Ulaz_UC : VvUserControl
 
    private void CreateTheGrid()
    {
-      TheG = CreateDataGridView_ReadOnly(this, "FUR");
-      TheG.Dock = DockStyle.Fill;
+      TheG                                         = CreateDataGridView_ReadOnly(this, "FUR");
+      TheG.Dock                                    = DockStyle.Fill;
       TheG.ColumnHeadersDefaultCellStyle.BackColor = Color.MediumAquamarine;
       TheG.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
       TheG.RowHeadersDefaultCellStyle.BackColor    = Color.MediumAquamarine;
