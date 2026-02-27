@@ -3245,6 +3245,9 @@ public static class Vv_eRacun_HTTP
                $"Pošiljatelj: {responseData.SenderBusinessName ?? "N/A"}{Environment.NewLine}" +
                $"Datum slanja: {responseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
                $"Status: {responseData.StatusName ?? responseData.StatusId?.ToString() ?? "N/A"}");
+
+            // 27.02.2026: TODO ... vidi par redova nize 
+
          }
 
          bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
@@ -3262,6 +3265,13 @@ public static class Vv_eRacun_HTTP
             else if(isInvoice)
             {
                newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_InvoiceType(theXmlString, responseData, deserialized_InvoiceType);
+            }
+            // 27.02.2026: TODO
+            else
+            {
+               // da ovaj F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type napravi kakav-takav newAUR_Xtrano_rec kako bi se i za takve falične mofgao bar vidjeti PDF i XML 
+               // i to traba i za XXX, i vidi di jos (svugdje gdje je niti invoice niti credit al da ipak ...) 
+               //newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(theXmlString, responseData/*, deserialized_InvoiceType*/);
             }
 
             if(newAUR_Xtrano_rec != null)
