@@ -1299,10 +1299,10 @@ public static class Vv_eRacun_HTTP
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         existingFaktur_byElectronicID = theUC.TheFakturList./*Single*/FirstOrDefault(f => f.F2_ElectronicID         == responseData.ElectronicId);
-         existingFaktur_byTtNumFiskal  = theUC.TheFakturList./*Single*/FirstOrDefault(f => f./*TtNumFiskal*/VezniDok == responseData.DocumentNr  );
+         existingFaktur_byElectronicID = theUC.TheFakturList./*Single*/FirstOrDefault(f => f.F2_ElectronicID == responseData.ElectronicId);
+         existingFaktur_byTtNumFiskal = theUC.TheFakturList./*Single*/FirstOrDefault(f => f./*TtNumFiskal*/VezniDok == responseData.DocumentNr);
 
-       //isNewFaktur = existingFaktur_byElectronicID == null                                        ; 
+         //isNewFaktur = existingFaktur_byElectronicID == null                                        ; 
          isNewFaktur = existingFaktur_byElectronicID == null && existingFaktur_byTtNumFiskal == null;
 
          if(isNewFaktur == false) continue;
@@ -1318,7 +1318,7 @@ public static class Vv_eRacun_HTTP
          switch(ZXC.F2_TheProvider)
          {
             case ZXC.F2_Provider_enum.MER:
-            {
+               {
                   try
                   {
                      webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML((uint)responseData.ElectronicId);
@@ -1339,14 +1339,14 @@ public static class Vv_eRacun_HTTP
 
                   break;
 
-            } // case ZXC.F2_Provider_enum.MER: 
+               } // case ZXC.F2_Provider_enum.MER: 
 
             case ZXC.F2_Provider_enum.PND:
-            {
-               throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
-               receiveOK = false;
-               break;
-            }
+               {
+                  throw new NotImplementedException("Get_FISK_Status_ForElectronicID: F2 Provider PND not implemented yet.");
+                  receiveOK = false;
+                  break;
+               }
          }
 
          #endregion 1. Call RECEIVE to get full XML document
@@ -1355,8 +1355,8 @@ public static class Vv_eRacun_HTTP
 
          xmlValidationOK = false;
 
-         bool isCreditNote = receiveOK && theXmlString.TrimStart().Contains("<CreditNote ");
-         bool isInvoice    = receiveOK && theXmlString.TrimStart().Contains("<Invoice ");
+         bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
+         bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
          if(isCreditNote)
          {
@@ -1368,9 +1368,9 @@ public static class Vv_eRacun_HTTP
             deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
             deserialized_CreditNoteType = null;
          }
-         else 
+         else
          {
-          //ZXC.aim_emsg(MessageBoxIcon.Error, $"Outbox dokument {webApiResult.ResponseData} nije niti račun (InvoiceType) niti odobrenje (CreditNote). Dokument neće biti učitan u IFA-e.");
+            //ZXC.aim_emsg(MessageBoxIcon.Error, $"Outbox dokument {webApiResult.ResponseData} nije niti račun (InvoiceType) niti odobrenje (CreditNote). Dokument neće biti učitan u IFA-e.");
             ZXC.aim_emsg(MessageBoxIcon.Error,
                $"Outbox dokument nije niti račun (InvoiceType) niti odobrenje (CreditNote).{Environment.NewLine}Dokument neće biti učitan u IFA-e.{Environment.NewLine}{Environment.NewLine}" +
                $"Elektronski ID: {responseData.ElectronicId}{Environment.NewLine}" +
@@ -1405,7 +1405,7 @@ public static class Vv_eRacun_HTTP
          {
             #region Get Kupdob / New Kupdob?
 
-            if(isInvoice)         theOIB = deserialized_InvoiceType   .VvCustomerOIB;
+            if(isInvoice) theOIB = deserialized_InvoiceType.VvCustomerOIB;
             else if(isCreditNote) theOIB = deserialized_CreditNoteType.VvCustomerOIB;
 
             if(theOIB.IsEmpty())
@@ -1417,8 +1417,8 @@ public static class Vv_eRacun_HTTP
                kupdob_rec = theUC.Get_Kupdob_FromVvUcSifrar_byOIB(theOIB);
             }
 
-            if(kupdob_rec != null) kupdobOK = true ;
-            else                   kupdobOK = false;
+            if(kupdob_rec != null) kupdobOK = true;
+            else kupdobOK = false;
 
             if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
             {
@@ -1457,7 +1457,7 @@ public static class Vv_eRacun_HTTP
                }
 
             } // if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
-            
+
             else // kupdobOK == true, provjeri ima li dobar R1_Kind ... i ak nema ...
             {
                if(kupdob_rec.R1kind != ZXC.F2_R1enum.B2B)
@@ -1492,13 +1492,13 @@ public static class Vv_eRacun_HTTP
                theUC.TheFakturList.Add(newIFA_Faktur_rec);
 
                newsCount++;
-            
+
                updatedStatusInfo = string.Format("{0} (OrigBrDok: {1}) Nova IFA klijenta je {2} {3} {4}",
                                              newIFA_Faktur_rec.TipBr,
                                              newIFA_Faktur_rec./*F2_ElectronicID*/VezniDok,
                                              "DODANA u lokalnu bazu",
                                              newIFA_Faktur_rec.DokDate.ToString(ZXC.VvDateFormat), newIFA_Faktur_rec.KupdobName);
-            
+
                updatedStatusInfoList.Add(updatedStatusInfo);
 
                ZXC.SetStatusText($"{newsCount}. od {loopList.Count}: {updatedStatusInfo}");
@@ -1543,7 +1543,9 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, bool isManual)
+
+   /* BBB */
+   internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, bool isManual)
    {
       #region Init & Get Dialog Fields
 
@@ -2666,8 +2668,8 @@ public static class Vv_eRacun_HTTP
 
          xmlValidationOK = false;
 
-         bool isCreditNote = receiveOK && theXmlString.TrimStart().Contains("<CreditNote ");
-         bool isInvoice    = receiveOK && theXmlString.TrimStart().Contains("<Invoice ");
+         bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
+         bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
          if(isCreditNote)
          {
@@ -2952,16 +2954,16 @@ public static class Vv_eRacun_HTTP
          {
             try
             {
-               string xmlString = File.ReadAllText(xmlFileName, Encoding.UTF8);
+               string theXmlString = File.ReadAllText(xmlFileName, Encoding.UTF8);
 
-               if(xmlString.IsEmpty()) continue;
+               if(theXmlString.IsEmpty()) continue;
 
-               bool isCreditNote = xmlString.TrimStart().Contains("<CreditNote ");
-               bool isInvoice    = xmlString.TrimStart().Contains("<Invoice ");
+               bool isCreditNote = IsXmlCreditNoteType(theXmlString);
+               bool isInvoice    = IsXmlInvoiceType   (theXmlString);
 
                if(!isInvoice && !isCreditNote) continue; // skip non-UBL files
 
-               string cleanedXmlString = RemoveSignatureElements(xmlString);
+               string cleanedXmlString = RemoveSignatureElements(theXmlString);
 
                string documentNr  = null;
                string senderOIB   = null;
@@ -2971,17 +2973,17 @@ public static class Vv_eRacun_HTTP
 
                if(isInvoice)
                {
-                  EN16931.UBL.InvoiceType deserialized = null;
-                  try { deserialized = EN16931.UBL.InvoiceType.Deserialize(cleanedXmlString); } catch { /* skip */ }
+                  EN16931.UBL.InvoiceType deserializedInvoiceType = null;
+                  try { deserializedInvoiceType = EN16931.UBL.InvoiceType.Deserialize(cleanedXmlString); } catch { /* skip */ }
 
-                  if(deserialized != null)
+                  if(deserializedInvoiceType != null)
                   {
-                     documentNr = deserialized.ID?.Value;
-                     issueDate  = deserialized.IssueDate?.Value;
-                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
-                     senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
-                               ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
-                     money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
+                     documentNr = deserializedInvoiceType.ID?.Value;
+                     issueDate  = deserializedInvoiceType.IssueDate?.Value;
+                     senderOIB  = deserializedInvoiceType.VvSupplierOIB;
+                     senderName = deserializedInvoiceType.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
+                               ?? deserializedInvoiceType.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
+                     money      = deserializedInvoiceType.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
                   }
                   else
                   {
@@ -2991,17 +2993,17 @@ public static class Vv_eRacun_HTTP
                }
                else // isCreditNote
                {
-                  EN16931.UBL.CreditNoteType deserialized = null;
-                  try { deserialized = EN16931.UBL.CreditNoteType.Deserialize(cleanedXmlString); } catch { /* skip */ }
+                  EN16931.UBL.CreditNoteType deserializedCreditNote = null;
+                  try { deserializedCreditNote = EN16931.UBL.CreditNoteType.Deserialize(cleanedXmlString); } catch { /* skip */ }
 
-                  if(deserialized != null)
+                  if(deserializedCreditNote != null)
                   {
-                     documentNr = deserialized.ID?.Value;
-                     issueDate  = deserialized.IssueDate?.Value;
-                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
-                     senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
-                               ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
-                     money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
+                     documentNr = deserializedCreditNote.ID?.Value;
+                     issueDate  = deserializedCreditNote.IssueDate?.Value;
+                     senderOIB  = deserializedCreditNote.VvSupplierOIB;
+                     senderName = deserializedCreditNote.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
+                               ?? deserializedCreditNote.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
+                     money      = deserializedCreditNote.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
                   }
                   else
                   {
@@ -3027,7 +3029,7 @@ public static class Vv_eRacun_HTTP
                   Issued             = issueDate                      ,
                   Sent               = issueDate ?? File.GetCreationTime(xmlFileName),
                   Created            = File.GetCreationTime(xmlFileName),
-                  DocumentXml        = xmlString                      , // spremamo originalni XML za kasniji RECEIVE
+                  DocumentXml        = theXmlString                      , // spremamo originalni XML za kasniji RECEIVE
                };
 
                responseDataList.Add(responseData);
@@ -3168,7 +3170,7 @@ public static class Vv_eRacun_HTTP
 
          // here we go 
 
-         #region 1. Call RECEIVE to get full XML document
+         #region 1. Call RECEIVE to get theXmlString
 
          WebApiResult<VvMER_ResponseData> webApiResult = null;
 
@@ -3207,12 +3209,12 @@ public static class Vv_eRacun_HTTP
             }
          }
 
-         #endregion 1. Call RECEIVE to get full XML document
+         #endregion 1. Call RECEIVE to get theXmlString
 
          #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
-         bool isCreditNote = receiveOK && theXmlString.TrimStart().Contains("<CreditNote ");
-         bool isInvoice    = receiveOK && theXmlString.TrimStart().Contains("<Invoice ");
+         bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
+         bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
          if(isCreditNote)
          {
@@ -3266,12 +3268,9 @@ public static class Vv_eRacun_HTTP
             {
                newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_InvoiceType(theXmlString, responseData, deserialized_InvoiceType);
             }
-            // 27.02.2026: TODO
             else
             {
-               // da ovaj F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type napravi kakav-takav newAUR_Xtrano_rec kako bi se i za takve falične mofgao bar vidjeti PDF i XML 
-               // i to traba i za XXX, i vidi di jos (svugdje gdje je niti invoice niti credit al da ipak ...) 
-               //newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(theXmlString, responseData/*, deserialized_InvoiceType*/);
+               newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(theXmlString, responseData/*, deserialized_InvoiceType*/);
             }
 
             if(newAUR_Xtrano_rec != null)
@@ -3627,8 +3626,8 @@ public static class Vv_eRacun_HTTP
       {
          theXmlString = VvStringCompressor.DecompressXml(AURxtrano_rec.T_XmlZip);
 
-         bool isCreditNote = theXmlString.TrimStart().Contains("<CreditNote ");
-         bool isInvoice    = theXmlString.TrimStart().Contains("<Invoice ");
+         bool isCreditNote = IsXmlCreditNoteType(theXmlString);
+         bool isInvoice    = IsXmlInvoiceType   (theXmlString);
 
          if(isCreditNote)
          {
@@ -3904,8 +3903,8 @@ public static class Vv_eRacun_HTTP
 
          #region 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
-         bool isCreditNote = receiveOK && theXmlString.TrimStart().Contains("<CreditNote ");
-         bool isInvoice    = receiveOK && theXmlString.TrimStart().Contains("<Invoice ");
+         bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
+         bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
          if(isCreditNote)
          {
@@ -3967,6 +3966,10 @@ public static class Vv_eRacun_HTTP
             else if(isInvoice)
             {
                newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_InvoiceType(theXmlString, responseData, deserialized_InvoiceType);
+            }
+            else
+            {
+               newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(theXmlString, responseData/*, deserialized_InvoiceType*/);
             }
 
             if(newAUR_Xtrano_rec != null)
@@ -4081,16 +4084,16 @@ public static class Vv_eRacun_HTTP
          {
             try
             {
-               string xmlString = File.ReadAllText(xmlFileName, Encoding.UTF8);
+               string theXmlString = File.ReadAllText(xmlFileName, Encoding.UTF8);
 
-               if(xmlString.IsEmpty()) continue;
+               if(theXmlString.IsEmpty()) continue;
 
-               bool isCreditNote = xmlString.TrimStart().Contains("<CreditNote ");
-               bool isInvoice    = xmlString.TrimStart().Contains("<Invoice ");
+               bool isCreditNote = IsXmlCreditNoteType(theXmlString);
+               bool isInvoice    = IsXmlInvoiceType   (theXmlString);
 
                if(!isInvoice && !isCreditNote) continue; // skip non-UBL files
 
-               string cleanedXmlString = RemoveSignatureElements(xmlString);
+               string cleanedXmlString = RemoveSignatureElements(theXmlString);
 
                string documentNr  = null;
                string senderOIB   = null;
@@ -4107,7 +4110,7 @@ public static class Vv_eRacun_HTTP
                   {
                      documentNr = deserialized.ID?.Value;
                      issueDate  = deserialized.IssueDate?.Value;
-                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
+                     senderOIB  = deserialized.VvSupplierOIB;
                      senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
                                ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
                      money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
@@ -4127,7 +4130,7 @@ public static class Vv_eRacun_HTTP
                   {
                      documentNr = deserialized.ID?.Value;
                      issueDate  = deserialized.IssueDate?.Value;
-                     senderOIB  = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.CompanyID?.Value;
+                     senderOIB  = deserialized.VvSupplierOIB;
                      senderName = deserialized.AccountingSupplierParty?.Party?.PartyLegalEntity?.FirstOrDefault()?.RegistrationName?.Value
                                ?? deserialized.AccountingSupplierParty?.Party?.PartyName?.FirstOrDefault()?.Name?.Value;
                      money      = deserialized.LegalMonetaryTotal?.TaxInclusiveAmount?.Value ?? 0M;
@@ -4156,7 +4159,7 @@ public static class Vv_eRacun_HTTP
                   Issued             = issueDate                      ,
                   Sent               = issueDate ?? File.GetCreationTime(xmlFileName),
                   Created            = File.GetCreationTime(xmlFileName),
-                  DocumentXml        = xmlString                      , // spremamo originalni XML za kasniji RECEIVE
+                  DocumentXml        = theXmlString                      , // spremamo originalni XML za kasniji RECEIVE
                };
 
                responseDataList.Add(responseData);
@@ -4330,21 +4333,21 @@ public static class Vv_eRacun_HTTP
                webApiResult = Vv_eRacun_HTTP.VvMER_WebService_Receive_XML(electronicID);
 
                // za provjeru: pokušaj deserijalizirati kao InvoiceType ili CreditNoteType 
-               string docXml = webApiResult.ResponseData?.DocumentXml;
+               string theXmlString = webApiResult.ResponseData?.DocumentXml;
 
-               bool isCreditNote = docXml.NotEmpty() && docXml.TrimStart().Contains("<CreditNote ");
-               bool isInvoice    = docXml.NotEmpty() && docXml.TrimStart().Contains("<Invoice ");
+               bool isCreditNote = theXmlString.NotEmpty() && IsXmlCreditNoteType(theXmlString);
+               bool isInvoice    = theXmlString.NotEmpty() && IsXmlInvoiceType   (theXmlString);
 
                bool deserializationOK = false;
 
                if(isInvoice)
                {
-                  EN16931.UBL.InvoiceType deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(docXml, true);
+                  EN16931.UBL.InvoiceType deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(theXmlString, true);
                   deserializationOK = deserialized_InvoiceType != null;
                }
                else if(isCreditNote)
                {
-                  EN16931.UBL.CreditNoteType deserialized_CreditNoteType = GetCreditNoteTypeByDeserializing_xmlString(docXml, true);
+                  EN16931.UBL.CreditNoteType deserialized_CreditNoteType = GetCreditNoteTypeByDeserializing_xmlString(theXmlString, true);
                   deserializationOK = deserialized_CreditNoteType != null;
                }
                else
@@ -4357,7 +4360,7 @@ public static class Vv_eRacun_HTTP
                      $"Datum slanja: {webApiResult.ResponseData.Sent?.ToString(ZXC.VvDateFormat) ?? "N/A"}{Environment.NewLine}" +
                      $"Status: {webApiResult.ResponseData.StatusName ?? webApiResult.ResponseData.StatusId?.ToString() ?? "N/A"}");
                }
-               if(webApiResult.ResponseData == null || docXml.IsEmpty() || !deserializationOK)
+               if(webApiResult.ResponseData == null || theXmlString.IsEmpty() || !deserializationOK)
                {
                   Show_WebApiResult_ErrorMessageBox(webApiResult);
                   receiveOK = false;
@@ -4739,11 +4742,34 @@ public static class Vv_eRacun_HTTP
       }
    }
 
+   private static bool IsXmlInvoiceType(string theXmlString)
+   {
+      if(string.IsNullOrEmpty(theXmlString)) return false;
+      string trimmed = theXmlString.TrimStart();
+      return trimmed.Contains("<Invoice ")
+          || trimmed.Contains("<Invoice>")
+          || trimmed.Contains(":Invoice ")
+          || trimmed.Contains(":Invoice>")
+          || trimmed.Contains("urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
+   }
+
+   private static bool IsXmlCreditNoteType(string theXmlString)
+   {
+      if(string.IsNullOrEmpty(theXmlString)) return false;
+      string trimmed = theXmlString.TrimStart();
+      return trimmed.Contains("<CreditNote ")
+          || trimmed.Contains("<CreditNote>")
+          || trimmed.Contains(":CreditNote ")
+          || trimmed.Contains(":CreditNote>")
+          || trimmed.Contains("urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2");
+   }
+   
    #endregion Other
 
    #region NIR
 
-   /* AAA */internal static int Load_MAP_FtransList(F2_NIR_UC theUC)
+   /* AAA */
+   internal static int Load_MAP_FtransList(F2_NIR_UC theUC)
    {
       ZXC.SetStatusText("Load_MAP_FtransList");
 
@@ -5545,6 +5571,31 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_devName       = responseData.StatusId.ToString() , // from response
          T_TT            = Mixer.TT_AUR                     , // from XML 
          T_moneyA        = creditNoteTypeMoney,
+      };
+   
+      return xmlXtrano_rec;
+   }
+   public static Xtrano F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(string xmlString, VvMER_ResponseData responseData/*, EN16931.UBL.InvoiceType deserialized_InvoiceType*/)
+   {
+      if(responseData == null) throw new Exception("F2_SetXtranoFrom_XmlDocument: response is null!");
+   
+      byte[] zipped_xmlString = VvStringCompressor.CompressXml(xmlString);
+   
+      decimal  invoiceTypeMoney = 0M;
+      DateTime invoiceTypeDokDate = DateTime.MinValue;
+      
+      Xtrano xmlXtrano_rec = new Xtrano()
+      {               
+         T_XmlZip        = zipped_xmlString                 , // from XML 
+         F2_ElectronicID = (uint)responseData.ElectronicId  , // from response 
+         T_dokDate       = (DateTime)responseData.Sent      , // from response 
+         T_dokDate2      = invoiceTypeDokDate               , // from XML 
+         T_opis_128      = responseData.SenderBusinessName	, // from response 
+         T_theString     = responseData.DocumentNr          , // from response 
+         T_konto	       = responseData.SenderBusinessNumber, // from response 
+         T_devName       = responseData.StatusId.ToString() , // from response
+         T_TT            = Mixer.TT_AUR                     , 
+         T_moneyA        = invoiceTypeMoney                 , // from XML 
       };
    
       return xmlXtrano_rec;
@@ -6642,7 +6693,6 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       //if(newsCount.IsZeroOrPositive()) ((F2_Ulaz_UC)TheVvUC).INIT_FUR(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
    }
-
    private void F2_ExportFIRXml(object sender, EventArgs e)
    {
       F2_ExportXml_Job(Mixer.TT_AIR);
@@ -6721,14 +6771,13 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       ZXC.aim_emsg(MessageBoxIcon.Information, $"Gotovo, exportirao {expCount} računa u direcctory\n\r\n\r{dirName}");
    }
-
    private void F2_FindOn_FIR_grid(object sender, EventArgs e) 
    {
       if(TheVvUC is F2_Izlaz_UC == false) return;
 
       F2_FindOnGrid((TheVvUC as F2_Izlaz_UC).TheG);
       
-      (TheVvUC as F2_Izlaz_UC).INIT_FIR();
+      //(TheVvUC as F2_Izlaz_UC).INIT_FIR();
    }
    private void F2_FindOn_FUR_grid(object sender, EventArgs e) 
    {
@@ -6736,7 +6785,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       F2_FindOnGrid((TheVvUC as F2_Ulaz_UC ).TheG); 
 
-      (TheVvUC as F2_Ulaz_UC).INIT_FUR();
+      //(TheVvUC as F2_Ulaz_UC).INIT_FUR();
    }
    private void F2_FindOnGrid(VvDataGridView TheG)
    { 
@@ -6752,24 +6801,23 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       dlg.Dispose();
    }
-
    private void F2_SortFUR_kupdob(object sender, EventArgs e)
    {
-      if((TheVvUC as F2_Ulaz_UC).IsSortable == true) (TheVvUC as F2_Ulaz_UC).IsSortable = false;
-      else                                           (TheVvUC as F2_Ulaz_UC).IsSortable = true;
-         
-      (TheVvUC as F2_Ulaz_UC).SetEnableDisableTsButtons((TheVvUC as F2_Ulaz_UC).IsSortable);
+      F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
 
-      if((TheVvUC as F2_Ulaz_UC).IsSortable == false) (TheVvUC as F2_Ulaz_UC).INIT_FUR();
+      theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
+
+      theUC.PutDgvFields();
    }
    private void F2_SortFIR_kupdob(object sender, EventArgs e)
    {
-      if((TheVvUC as F2_Izlaz_UC).IsSortable == true) (TheVvUC as F2_Izlaz_UC).IsSortable = false;
-      else                                            (TheVvUC as F2_Izlaz_UC).IsSortable = true;
-         
-      (TheVvUC as F2_Izlaz_UC).SetEnableDisableTsButtons((TheVvUC as F2_Izlaz_UC).IsSortable);
+      F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
 
-      if((TheVvUC as F2_Izlaz_UC).IsSortable == false) (TheVvUC as F2_Izlaz_UC).INIT_FIR();
+      if(theUC.TheFakturList.IsEmpty()) return;
+
+      theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
+
+      theUC.PutDgvFields();
    }
 
 }
