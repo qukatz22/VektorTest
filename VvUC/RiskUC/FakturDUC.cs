@@ -19946,6 +19946,8 @@ public class F2_Rules_UC : VvOtherUC
       rbt_Ascending = hamper.CreateVvRadioButton(1, 0, new EventHandler(radioButtonAscending_Click), "Raste od prvog", TextImageRelation.ImageAboveText);
       rbt_Ascending .Checked = true;
       rbt_Descending = hamper.CreateVvRadioButton(2, 0, new EventHandler(radioButtonDescending_Click), "Pada od zadnjeg", TextImageRelation.ImageAboveText);
+
+      hamper.Visible = false;
    }
 
    private void InitializeHamper_NumOfRows(out VvHamper hamper)

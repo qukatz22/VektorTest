@@ -9972,7 +9972,7 @@ public class F2_Izlaz_UC : VvUserControl
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      SetEnableDisableTsButtons(false);
+      SetEnableDisableTsButtons(true);
 
       #region Check Tables 
 
@@ -10042,23 +10042,13 @@ public class F2_Izlaz_UC : VvUserControl
       }
    }
 
-   public void SetEnableDisableTsButtons(bool isSortable)
+   public void SetEnableDisableTsButtons(bool isOrifSort)
    {
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
 
-      if(isSortable)
+      if(isOrifSort)
       { 
-         ts.Items["f2_send"     ].Enabled =   
-         ts.Items["f2_refreshRn"].Enabled = 
-         ts.Items["f2_map"      ].Enabled = 
-         ts.Items["f2_HDDOutbox"].Enabled = 
-         ts.Items["f2_exportXml"].Enabled = false;
-
-         TheG.Columns[ci.iT_partner].SortMode = DataGridViewColumnSortMode.Automatic;
-      }
-      else
-      {
          ts.Items["f2_send"     ].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL;  
 
          ts.Items["f2_refreshRn"].Enabled = 
@@ -10069,8 +10059,14 @@ public class F2_Izlaz_UC : VvUserControl
          ts.Items["f2_HDDOutbox"].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC;
 
          ts.Items["f2_exportXml"].Enabled = true;
-
-         TheG.Columns[ci.iT_partner].SortMode = DataGridViewColumnSortMode.NotSortable;
+      }
+      else
+      {
+         ts.Items["f2_send"     ].Enabled =   
+         ts.Items["f2_refreshRn"].Enabled = 
+         ts.Items["f2_map"      ].Enabled = 
+         ts.Items["f2_HDDOutbox"].Enabled = 
+         ts.Items["f2_exportXml"].Enabled = false;
       }
    }
 
@@ -10445,8 +10441,6 @@ public class F2_Ulaz_UC : VvUserControl
    private List<int> matchedRowIndexes;
    private int currentMatchIndex;
 
-   public bool IsSortable { get; set; }
-
    #endregion Fieldz
 
    #region Constructor
@@ -10464,8 +10458,6 @@ public class F2_Ulaz_UC : VvUserControl
       currentMatchIndex = -1;
 
       // PATATACreateSearchHamper(); // Create search first
-
-      IsSortable = false;
 
       CreateTheGrid();
       this.ResumeLayout();
@@ -10503,7 +10495,7 @@ public class F2_Ulaz_UC : VvUserControl
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      SetEnableDisableTsButtons(false);
+      SetEnableDisableTsButtons(true);
 
       #region Check Tables 
 
@@ -10550,23 +10542,13 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 
-   public void SetEnableDisableTsButtons(bool isSortable)
+   public void SetEnableDisableTsButtons(bool isOrigSort)
    {
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
 
-      if(isSortable)
+      if(isOrigSort)
       {
-         ts.Items["f2_refreshFUR"].Enabled =
-         ts.Items["f2_ucitajUleR"].Enabled =
-         ts.Items["f2_HDDOutbox"].Enabled =
-         ts.Items["f2_exportXml"].Enabled = false;
-
-         TheG.Columns[ci.iT_kupDob].SortMode = DataGridViewColumnSortMode.Automatic;
-         TheG.Columns[ci.iT_sender].SortMode = DataGridViewColumnSortMode.Automatic;
-      }
-      else
-      { 
          ts.Items["f2_refreshFUR"].Enabled = 
          ts.Items["f2_ponoviArh" ].Enabled = !(ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.KlijentServisa_TipC);
 
@@ -10574,9 +10556,13 @@ public class F2_Ulaz_UC : VvUserControl
 
          ts.Items["f2_ucitajUleR"].Enabled = true;
          ts.Items["f2_exportXml" ].Enabled = true;
-
-         TheG.Columns[ci.iT_kupDob].SortMode = DataGridViewColumnSortMode.NotSortable;
-         TheG.Columns[ci.iT_sender].SortMode = DataGridViewColumnSortMode.NotSortable;
+      }
+      else
+      { 
+         ts.Items["f2_refreshFUR"].Enabled =
+         ts.Items["f2_ucitajUleR"].Enabled =
+         ts.Items["f2_HDDOutbox"].Enabled =
+         ts.Items["f2_exportXml"].Enabled = false;
       }
    }
 

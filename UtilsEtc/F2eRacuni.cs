@@ -6807,6 +6807,7 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
 
+      theUC.SetEnableDisableTsButtons(false);
       theUC.PutDgvFields();
    }
    private void F2_SortFIR_kupdob(object sender, EventArgs e)
@@ -6817,6 +6818,47 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
 
+      theUC.SetEnableDisableTsButtons(false);
+      theUC.PutDgvFields();
+   }
+   private void F2_FUR_InvertSort(object sender, EventArgs e)
+   {
+      F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
+
+    //theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
+
+      theUC.SetEnableDisableTsButtons(false);
+      theUC.PutDgvFields();
+   }
+   private void F2_FIR_InvertSort(object sender, EventArgs e)
+   {
+      F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
+
+      if(theUC.TheFakturList.IsEmpty()) return;
+
+    //theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
+
+      theUC.SetEnableDisableTsButtons(false);
+      theUC.PutDgvFields();
+   }
+   private void F2_FUR_OriginalSort(object sender, EventArgs e)
+   {
+      F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
+
+    //theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
+
+      theUC.SetEnableDisableTsButtons(true);
+      theUC.PutDgvFields();
+   }
+   private void F2_FIR_OriginalSort(object sender, EventArgs e)
+   {
+      F2_Izlaz_UC theUC = TheVvUC as F2_Izlaz_UC;
+
+      if(theUC.TheFakturList.IsEmpty()) return;
+
+    //theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
+
+      theUC.SetEnableDisableTsButtons(true);
       theUC.PutDgvFields();
    }
 
