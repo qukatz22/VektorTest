@@ -3155,14 +3155,44 @@ public static class Vv_eRacun_HTTP
 
       List<VvMER_ResponseData> loopList = webApiResultWithList.ResponseData.OrderBy(rd => rd./*Created*/Sent).ToList();
 
+      // Check for duplicate ElectronicId entries in loopList
+      var duplicateElectronicIds = loopList
+         .Where(rd => rd.ElectronicId.HasValue && rd.ElectronicId.Value != 0)
+         .GroupBy(rd => rd.ElectronicId)
+         .Where(g => g.Count() > 1)
+         .Select(g => g.Key)
+         .ToList();
+
+      if(duplicateElectronicIds.NotEmpty())
+      {
+         string dupList = string.Join(Environment.NewLine, duplicateElectronicIds.Select(id => $"  ElectronicId: {id}"));
+         ZXC.aim_emsg(MessageBoxIcon.Error,
+            $"Pronađeni su duplikati ElectronicId-a u Inbox listi!{Environment.NewLine}{Environment.NewLine}" +
+            $"Broj duplikata: {duplicateElectronicIds.Count}{Environment.NewLine}{Environment.NewLine}" +
+            $"{dupList}{Environment.NewLine}{Environment.NewLine}" +
+            $"Operacija je prekinuta.");
+         return 0;
+      }
+
       EN16931.UBL.InvoiceType    deserialized_InvoiceType    = null;
       EN16931.UBL.CreditNoteType deserialized_CreditNoteType = null;
-
+     
       foreach(VvMER_ResponseData responseData in loopList)
       {
          Cursor.Current = Cursors.WaitCursor;
 
-         existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.F2_ElectronicID == responseData.ElectronicId);
+         try
+         {
+            existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.F2_ElectronicID == responseData.ElectronicId);
+         }
+         catch(InvalidOperationException)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, $"Više od jednog Xtrano zapisa sa istim ElectronicId={responseData.ElectronicId} u lokalnoj bazi!");
+            //return 0;
+
+            // TheXtranoList sadrži više zapisa s istim F2_ElectronicID - uzimamo prvi
+            existingXtrano = theUC.TheXtranoList.FirstOrDefault(xtr => xtr.F2_ElectronicID == responseData.ElectronicId);
+         }
 
          isNewXtrano = existingXtrano == null;
 
@@ -3252,13 +3282,15 @@ public static class Vv_eRacun_HTTP
 
          }
 
-         bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
+         // 02.03.2026: 
+       //bool hasDeserializedDocument = (deserialized_InvoiceType != null || deserialized_CreditNoteType != null);
 
          #endregion 2. Deserialize eRacun XML document into 'InvoiceType' bussiness object & Validate XML against XSD schema
 
          #region 3. Create AUR Xtrano as ARHIVA
 
-         if(receiveOK && /*deserialized_eRacun != null*/hasDeserializedDocument /*&& xmlValidationOK*/)
+       //if(receiveOK && /*deserialized_eRacun != null*/hasDeserializedDocument /*&& xmlValidationOK*/)
+         if(receiveOK                                                                                 )
          {
             if(isCreditNote)
             {
@@ -6807,7 +6839,10 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
 
-      theUC.SetEnableDisableTsButtons(false);
+      theUC.IsOrigSort    = false;
+      theUC.IsPartnerSort = true;
+
+      theUC.SetEnableDisableTsButtons(/*false*/);
       theUC.PutDgvFields();
    }
    private void F2_SortFIR_kupdob(object sender, EventArgs e)
@@ -6818,16 +6853,22 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
 
-      theUC.SetEnableDisableTsButtons(false);
+      theUC.IsOrigSort    = false;
+      theUC.IsPartnerSort = true;
+
+      theUC.SetEnableDisableTsButtons(/*false*/);
       theUC.PutDgvFields();
    }
    private void F2_FUR_InvertSort(object sender, EventArgs e)
    {
       F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
 
-    //theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
+      theUC.TheXtranoList.Reverse();
 
-      theUC.SetEnableDisableTsButtons(false);
+      if(theUC.IsPartnerSort == false) theUC.IsOrigSort = !theUC.IsOrigSort;
+      else                             theUC.IsOrigSort = false            ;
+
+      theUC.SetEnableDisableTsButtons();
       theUC.PutDgvFields();
    }
    private void F2_FIR_InvertSort(object sender, EventArgs e)
@@ -6836,18 +6877,24 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       if(theUC.TheFakturList.IsEmpty()) return;
 
-    //theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
+      theUC.TheFakturList.Reverse();
 
-      theUC.SetEnableDisableTsButtons(false);
+      if(theUC.IsPartnerSort == false) theUC.IsOrigSort = !theUC.IsOrigSort;
+      else                             theUC.IsOrigSort = false            ;
+
+      theUC.SetEnableDisableTsButtons(/*false*/);
       theUC.PutDgvFields();
    }
    private void F2_FUR_OriginalSort(object sender, EventArgs e)
    {
       F2_Ulaz_UC theUC = TheVvUC as F2_Ulaz_UC;
 
-    //theUC.TheXtranoList = theUC.TheXtranoList.OrderBy(xtr => xtr.T_opis_128).ThenBy(xtr => xtr.T_theString).ToList();
+      theUC.TheXtranoList = theUC.TheXtranoList.OrderByDescending(xtr => xtr.T_dokDate).ToList();
 
-      theUC.SetEnableDisableTsButtons(true);
+      theUC.IsOrigSort    = true;
+      theUC.IsPartnerSort = false;
+
+      theUC.SetEnableDisableTsButtons(/*true*/);
       theUC.PutDgvFields();
    }
    private void F2_FIR_OriginalSort(object sender, EventArgs e)
@@ -6856,9 +6903,12 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       if(theUC.TheFakturList.IsEmpty()) return;
 
-    //theUC.TheFakturList = theUC.TheFakturList.OrderBy(fak => fak.KupdobName).ThenBy(fak => fak.TtNum).ToList();
+      theUC.TheFakturList = theUC.TheFakturList.OrderByDescending(fak => fak.TtNum).ToList();
 
-      theUC.SetEnableDisableTsButtons(true);
+      theUC.IsOrigSort    = true;
+      theUC.IsPartnerSort = false;
+
+      theUC.SetEnableDisableTsButtons(/*true*/);
       theUC.PutDgvFields();
    }
 

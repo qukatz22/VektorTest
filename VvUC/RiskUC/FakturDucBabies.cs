@@ -9928,7 +9928,8 @@ public class F2_Izlaz_UC : VvUserControl
 
    internal List<Faktur> TheFakturList { get; set; }
 
-   public bool IsSortable { get; set; }
+   internal bool IsOrigSort    { get; set; }
+   internal bool IsPartnerSort { get; set; }
 
    #endregion Fieldz
 
@@ -9968,11 +9969,14 @@ public class F2_Izlaz_UC : VvUserControl
 
    internal void INIT_FIR()
    {
+      this.IsOrigSort    = true;
+      this.IsPartnerSort = false;
+
       if(Vv_eRacun_HTTP.Is_FIR_ON() == false) return;
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      SetEnableDisableTsButtons(true);
+      SetEnableDisableTsButtons(/*true*/);
 
       #region Check Tables 
 
@@ -10042,12 +10046,14 @@ public class F2_Izlaz_UC : VvUserControl
       }
    }
 
-   public void SetEnableDisableTsButtons(bool isOrifSort)
+   public void SetEnableDisableTsButtons(/*bool isOrigSort*/)
    {
+      bool isOrigSort = this.IsOrigSort;
+
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
 
-      if(isOrifSort)
+      if(isOrigSort)
       { 
          ts.Items["f2_send"     ].Enabled = ZXC.CURR_prjkt_rec.F2_RolaKind == F2_RolaKind.VlastitoKnjigovodstvo_F2_ALL;  
 
@@ -10394,9 +10400,9 @@ public class F2_Izlaz_UC : VvUserControl
    {
       if(newPage is VvTabPage == false) return;
 
-#if !DEBUG
+//#if !DEBUG
       if((newPage as VvTabPage).TheVvUC is F2_Izlaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Izlaz_UC).INIT_FIR();
-#endif
+//#endif
    }
 }
 
@@ -10440,6 +10446,9 @@ public class F2_Ulaz_UC : VvUserControl
    private Button btn_search, btn_clearSearch, btn_prevMatch, btn_nextMatch;
    private List<int> matchedRowIndexes;
    private int currentMatchIndex;
+
+   internal bool IsOrigSort    { get; set; }
+   internal bool IsPartnerSort { get; set; }
 
    #endregion Fieldz
 
@@ -10491,11 +10500,14 @@ public class F2_Ulaz_UC : VvUserControl
 
    internal void INIT_FUR()
    {
+      this.IsOrigSort    = true;
+      this.IsPartnerSort = false;
+
       if(Vv_eRacun_HTTP.Is_FUR_ON() == false) return;
 
       TheVvTabPage.ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet();
 
-      SetEnableDisableTsButtons(true);
+      SetEnableDisableTsButtons(/*true*/);
 
       #region Check Tables 
 
@@ -10542,8 +10554,10 @@ public class F2_Ulaz_UC : VvUserControl
       }
    }
 
-   public void SetEnableDisableTsButtons(bool isOrigSort)
+   public void SetEnableDisableTsButtons(/*bool isOrigSort*/)
    {
+      bool isOrigSort = this.IsOrigSort;
+
       Point xy     = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];
 
@@ -10884,9 +10898,9 @@ public class F2_Ulaz_UC : VvUserControl
    {
       if(newPage is VvTabPage == false) return;
 
-#if !DEBUG
+//#if !DEBUG
       if((newPage as VvTabPage).TheVvUC is F2_Ulaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Ulaz_UC).INIT_FUR();
-#endif
+//#endif
    }
 
    private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)

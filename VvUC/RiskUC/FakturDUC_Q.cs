@@ -11202,7 +11202,10 @@ public class RiskRulesDsc : VvLookupAsDsc
    public string Dsc_Default_eRposProc         { get; set; }
    public int Dsc_F2_NumOfRows                 { get; set; }
    public string Dsc_F2_TT                     { get; set; }
-   public bool Dsc_F2_IsAsc                    { get; set; }
+
+   // 02.03.2026: 
+ //public bool Dsc_F2_IsAsc                    { get; set; }
+   public bool Dsc_F2_IsAsc                    { get => false; set { } }
    public bool Dsc_F2_IsAutoSend               { get; set; }
    public bool Dsc_F2_IsAutoMAP                { get; set; }
    public bool Dsc_F2_IsAutoImport             { get; set; }
