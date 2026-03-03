@@ -2436,7 +2436,7 @@ public static class Vv_eRacun_HTTP
 
             F2_MAP_Xtrano_rec = VvMER_ResponseData.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_Action.ftrans, MAP_Action.faktur, webApiResult.ResponseData);
 
-            if(F2_MAP_Xtrano_rec != null)
+            if(F2_MAP_Xtrano_rec != null && !XtranoExists(theUC.TheDbConnection, F2_MAP_Xtrano_rec))
             {
              //byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
 
@@ -2510,7 +2510,9 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-   /* QQQ */internal static int HDD_Import_Extern_Faktur_IFA/*NOT WS_Ufati_Veleform_Ritam*/(F2_Izlaz_UC theUC)
+
+   /* QQQ */
+   internal static int HDD_Import_Extern_Faktur_IFA/*NOT WS_Ufati_Veleform_Ritam*/(F2_Izlaz_UC theUC)
    {
       #region Init
 
@@ -3020,7 +3022,8 @@ public static class Vv_eRacun_HTTP
                // Build VvMER_ResponseData equivalent to what WebService returns
                VvMER_ResponseData responseData = new VvMER_ResponseData()
                {
-                  ElectronicId       = 0                              , // nema electronicId kod lokalnih datoteka
+                //ElectronicId       = 0                              , // nema electronicId kod lokalnih datoteka
+                  ElectronicId       = (long)((uint)((documentNr ?? "").GetHashCode() ^ (senderOIB ?? "").GetHashCode()) & 0x7FFFFFFF), // generiraj pseudo-ID na osnovu hash-a dokumenta i OIB-a (nije savršeno, ali bolje nego 0)
                   DocumentNr         = documentNr ?? Path.GetFileNameWithoutExtension(xmlFileName),
                   SenderBusinessNumber = senderOIB                    ,
                   SenderBusinessName = senderName ?? ""               ,
@@ -3305,7 +3308,7 @@ public static class Vv_eRacun_HTTP
                newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(theXmlString, responseData/*, deserialized_InvoiceType*/);
             }
 
-            if(newAUR_Xtrano_rec != null)
+            if(newAUR_Xtrano_rec != null && !XtranoExists(theUC.TheDbConnection, newAUR_Xtrano_rec))
             {
                byte[] T_XmlZip = newAUR_Xtrano_rec.T_XmlZip;
 
@@ -3916,7 +3919,10 @@ public static class Vv_eRacun_HTTP
          Cursor.Current = Cursors.WaitCursor;
 
        //existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.F2_ElectronicID == responseData.ElectronicId);
-         existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.T_theString     == responseData.DocumentNr  );
+       //existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.T_theString     == responseData.DocumentNr  );
+
+         existingXtrano = theUC.TheXtranoList.SingleOrDefault(xtr => xtr.T_theString     == responseData.DocumentNr &&
+                                                                     xtr.T_konto         == responseData.SenderBusinessNumber);
 
          isNewXtrano = existingXtrano == null;
 
@@ -4004,7 +4010,7 @@ public static class Vv_eRacun_HTTP
                newAUR_Xtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AUR_XtranoFrom_Response_UNKNOWN_Type(theXmlString, responseData/*, deserialized_InvoiceType*/);
             }
 
-            if(newAUR_Xtrano_rec != null)
+            if(newAUR_Xtrano_rec != null && !XtranoExists(theUC.TheDbConnection, newAUR_Xtrano_rec))
             {
                byte[] T_XmlZip = newAUR_Xtrano_rec.T_XmlZip;
 
@@ -4182,7 +4188,8 @@ public static class Vv_eRacun_HTTP
                // Build VvMER_ResponseData equivalent to what WebService returns
                VvMER_ResponseData responseData = new VvMER_ResponseData()
                {
-                  ElectronicId       = 0                              , // nema electronicId kod lokalnih datoteka
+                //ElectronicId       = 0                              , // nema electronicId kod lokalnih datoteka
+                  ElectronicId       = (long)((uint)((documentNr ?? "").GetHashCode() ^ (senderOIB ?? "").GetHashCode()) & 0x7FFFFFFF), // generiramo pseudo-ID na temelju hash koda dokumenta i OIB-a, castamo u uint da bude pozitivan, pa onda u long
                   DocumentNr         = documentNr ?? Path.GetFileNameWithoutExtension(xmlFileName),
                   SenderBusinessNumber = senderOIB                    ,
                   SenderBusinessName = senderName ?? ""               ,
@@ -4408,7 +4415,7 @@ public static class Vv_eRacun_HTTP
             {
                Xtrano F2arhivaXtrano_rec = VvMER_ResponseData.F2_eRacun_Arhiva_Set_AIR_XtranoFrom_XmlDocument_And_Faktur(webApiResult.ResponseData.DocumentXml, F2_IRn_faktur_rec);
 
-               if(F2arhivaXtrano_rec != null)
+               if(F2arhivaXtrano_rec != null && !XtranoExists(theUC.TheDbConnection, F2arhivaXtrano_rec))
                {
                   byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
 
@@ -4450,7 +4457,7 @@ public static class Vv_eRacun_HTTP
 
       uint arhivaXtrano_recID = 0;
 
-      if(F2arhivaXtrano_rec != null)
+      if(F2arhivaXtrano_rec != null && !XtranoExists(theUC.TheDbConnection, F2arhivaXtrano_rec))
       {
          byte[] T_XmlZip = F2arhivaXtrano_rec.T_XmlZip;
 
@@ -4795,7 +4802,14 @@ public static class Vv_eRacun_HTTP
           || trimmed.Contains(":CreditNote>")
           || trimmed.Contains("urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2");
    }
-   
+
+   private static bool XtranoExists(XSqlConnection conn, Xtrano f2_MAP_Xtrano_rec)
+   {
+      Xtrano existingXtrano_rec = XtranoDao.SetMe_XtranoForThis_TT_And_T_dokNum(conn, f2_MAP_Xtrano_rec.T_TT, f2_MAP_Xtrano_rec.T_dokNum);
+
+      return existingXtrano_rec != null;
+   }
+
    #endregion Other
 
    #region NIR
@@ -4998,7 +5012,7 @@ public static class Vv_eRacun_HTTP
          
             F2_MAP_Xtrano_rec = VvMER_ResponseData.F2_MAPtrans_SetXtranoFrom_Ftrans(MAP_Action.ftrans, MAP_Action.faktur/*, webApiResult.ResponseData*/);
          
-            if(F2_MAP_Xtrano_rec != null)
+            if(F2_MAP_Xtrano_rec != null && !XtranoExists(theUC.TheDbConnection, F2_MAP_Xtrano_rec))
             {
              //byte[] T_XmlZip = F2_MAP_Xtrano_rec.T_XmlZip;
          
@@ -5657,8 +5671,11 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
          T_konto    = MAPfaktur_rec.TT                             ,
          T_parentID = MAPftrans_rec.T_recID                        , // Ftrans LINK: t_parentID je ftrans recID --- > JOIN!     
          T_ttNum    = MAPfaktur_rec.RecID                          , // Faktur LINK: t_ttNum    je faktur recID ---> nije join! 
-         T_dokNum   = MAPfaktur_rec.F2_ElectronicID                ,                                            
-         T_serial   = 1                                            ,                                            
+
+         T_dokNum   = MAPfaktur_rec.F2_ElectronicID.NotZero() ? MAPfaktur_rec.F2_ElectronicID :
+                      ((uint)((MAPfaktur_rec.VezniDok ?? "").GetHashCode() ^ (MAPfaktur_rec.KdOib ?? "").GetHashCode()) & 0x7FFFFFFF), // generiramo pseudo-ID na temelju hash koda dokumenta i OIB-a, castamo u uint da bude pozitivan, pa onda u long
+
+         T_serial = 1                                              ,                                            
          T_moneyA   = MAPftrans_rec.T_pot                          , // Ftrans: t_moneyA je iznos UPLATE        
          T_opis_128 = MAPftrans_rec.T_tipBr                        , //                                         
          T_devName  = ""                                           , // fuse                                    

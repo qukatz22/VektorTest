@@ -7222,6 +7222,19 @@ public static class VvSQL
       return (cmd);
    }
 
+   public static XSqlCommand SetMe_XtranoForThis_TT_And_T_dokNum_Command(XSqlConnection conn, string t_tt, uint t_dokNum)
+   {
+      XSqlCommand cmd = InitCommand(conn);
+
+      CreateCommandNamedParameter(cmd, "", "t_tt"    , t_tt    , ZXC.XtranoSchemaRows[ZXC.XtoCI.t_tt    ]);
+      CreateCommandNamedParameter(cmd, "", "t_dokNum", t_dokNum, ZXC.XtranoSchemaRows[ZXC.XtoCI.t_dokNum]);
+
+      cmd.CommandText = "SELECT * FROM " + Xtrano.recordName + "\n" +
+
+                        $" WHERE t_tt     = ?t_tt     " + "\n" +
+                         " AND   t_dokNum = ?t_dokNum ";
+      return (cmd);
+   }
 
    #endregion MIXER specials
 

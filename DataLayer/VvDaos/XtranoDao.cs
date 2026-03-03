@@ -303,4 +303,19 @@ public sealed class XtranoDao : VvDaoBase, IVvDao
       else         return MAPxtrano_rec;
    }
 
+   public static /*bool*/Xtrano SetMe_XtranoForThis_TT_And_T_dokNum(XSqlConnection conn, string t_tt, uint t_dokNum)
+   {
+      bool success = true;
+
+      Xtrano xtrano_rec = new Xtrano();
+
+      using(XSqlCommand cmd = VvSQL.SetMe_XtranoForThis_TT_And_T_dokNum_Command(conn, t_tt, t_dokNum))
+      {
+         success = ZXC.XtranoDao.ExecuteSingleFillFromDataReader(xtrano_rec, false, cmd, false);
+      } 
+
+      if(!success) return null;
+      else         return xtrano_rec;
+   }
+
 }
