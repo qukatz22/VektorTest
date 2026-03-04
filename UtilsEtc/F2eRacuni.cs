@@ -76,6 +76,7 @@ public static class Vv_eRacun_HTTP
       { /*"45"*/ 45, "Otkazano"           }, // TRN 
       { /*"50"*/ 50, "Neuspjelo"          }, // TRN 
       { /*"70"*/ 70, "Poslan kao eIZVJ"   }, // TRN 
+      { /*"11"*/ 11, "HDD Import"         }, // HDD 
 
       // kako MER navodi da su DPS statusi deprecated/obsolete, prestali smo API-jem ic po njih   
       // ako ikada vratimo da idemo po njih, tada vrati ovo ... al vidi kako ces tretirati 'zero' 
@@ -1480,7 +1481,7 @@ public static class Vv_eRacun_HTTP
 
             if(isInvoice)
             {
-               newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+               newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true, ZXC.F2_CreateFakturKind.From_WS_XXX);
             }
             else if(isCreditNote)
             {
@@ -2805,7 +2806,7 @@ public static class Vv_eRacun_HTTP
 
             if(isInvoice)
             {
-               newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true);
+               newIFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, (uint)responseData.ElectronicId, (DateTime)responseData.Sent, kupdob_rec, true, ZXC.F2_CreateFakturKind.From_HDD_XXX);
             }
             else if(isCreditNote)
             {
@@ -3743,7 +3744,7 @@ public static class Vv_eRacun_HTTP
 
             if(isInvoice) // InvoiceType 
             {
-               newUFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, AURxtrano_rec.F2_ElectronicID, AURxtrano_rec.T_dokDate, kupdob_rec, false, AURxtrano_rec.T_recID);
+               newUFA_Faktur_rec = deserialized_InvoiceType.Create_Faktur_From_InvoiceType(theUC.TheDbConnection, AURxtrano_rec.F2_ElectronicID, AURxtrano_rec.T_dokDate, kupdob_rec, false, ZXC.F2_CreateFakturKind.From_WS_MyOwn, AURxtrano_rec.T_recID);
             }
             else if(isCreditNote) // CreditNoteType 
             {

@@ -2123,7 +2123,7 @@ namespace EN16931.UBL
 
       #region Create Faktur object From eRacun (InvoiceType)
 
-      public Faktur Create_Faktur_From_InvoiceType(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, uint xtranoRecID = 0)
+      public Faktur Create_Faktur_From_InvoiceType(XSqlConnection conn, /*VvMER_ResponseData responseData*/ uint electronicID, DateTime sentDate, Kupdob kupdob_rec, bool isIFA, ZXC.F2_CreateFakturKind createKind,  uint xtranoRecID = 0)
       {
          #region init
 
@@ -2150,6 +2150,11 @@ namespace EN16931.UBL
 
          #region ZAGLAVLJE računa
 
+         if(createKind == ZXC.F2_CreateFakturKind.From_HDD_XXX)
+         {
+            faktur_rec.F2_StatusCD = 11;
+         }
+
          // From Kupdob 
 
          faktur_rec.KupdobName   = faktur_rec.PosJedName   = kupdob_rec.Naziv;
@@ -2173,8 +2178,13 @@ namespace EN16931.UBL
             ? this.IssueDate.Value.Date.Add(this.IssueTime.Value.TimeOfDay)
             : this.IssueDate.Value;
 
-         //faktur_rec.DospDate  = this.DueDate.Value;
-         if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue) faktur_rec.DospDate = this.DueDate.Value;
+       //faktur_rec.DospDate  = this.DueDate.Value;
+         if(this.DueDate != null && this.DueDate.Value != DateTime.MinValue)
+         { 
+            faktur_rec.DospDate = this.DueDate.Value;
+
+            faktur_rec.RokPlac  = (int)(faktur_rec.DospDate.Date - faktur_rec.DokDate.Date).TotalDays;
+         }
 
          // 25.02.2026: dodan if 
          if(ZXC.CURR_prjkt_rec.PdvRTip != ZXC.PdvRTipEnum.OBRT_R2 &&
