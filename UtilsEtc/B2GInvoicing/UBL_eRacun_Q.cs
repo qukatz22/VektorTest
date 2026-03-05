@@ -2531,7 +2531,8 @@ namespace EN16931.UBL
                // 25.02.2026: Obrćemo logiku i prvo pokušavamo dohvatiti OIB iz EndpointID-a 
 
                // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
-               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
+               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null &&
+                  this.AccountingSupplierParty?.Party?.EndpointID?.schemeID == "9934")
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
                }
@@ -2565,7 +2566,8 @@ namespace EN16931.UBL
                // 25.02.2026: Obrćemo logiku i prvo pokušavamo dohvatiti OIB iz EndpointID-a 
 
                // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
-               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
+               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null &&
+                  this.AccountingCustomerParty?.Party?.EndpointID?.schemeID == "9934")
                {
                   return Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
                }
@@ -2689,7 +2691,8 @@ namespace EN16931.UBL
             try
             {
                // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">60042587515</cbc:EndpointID>)
-               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null)
+               if(this.AccountingSupplierParty?.Party?.EndpointID?.Value != null &&
+                  this.AccountingSupplierParty?.Party?.EndpointID?.schemeID == "9934")
                {
                   return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingSupplierParty.Party.EndpointID.Value);
                }
@@ -2721,7 +2724,8 @@ namespace EN16931.UBL
             try
             {
                // 2. Fallback: pokušaj dohvatiti OIB iz EndpointID (npr. <cbc:EndpointID schemeID="9934">85821130368</cbc:EndpointID>)
-               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null)
+               if(this.AccountingCustomerParty?.Party?.EndpointID?.Value != null &&
+                  this.AccountingCustomerParty?.Party?.EndpointID?.schemeID == "9934")
                {
                   return InvoiceType.Get_CleanOIB_From_DirtyOIB(this.AccountingCustomerParty.Party.EndpointID.Value);
                }
@@ -2867,6 +2871,8 @@ namespace EN16931.UBL
          for(int i = 0; this.Note != null && i < this.Note.Length; i++)
          {
             faktur_rec.Opis += this.Note[i].Value + Environment.NewLine;
+
+            faktur_rec.Opis = ZXC.LenLimitedStr(faktur_rec.Opis, ZXC.FakturDao.GetSchemaColumnSize(ZXC.FakCI.opis));
          }
 
          faktur_rec.DevName = this.DocumentCurrencyCode.Value;

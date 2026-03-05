@@ -2836,7 +2836,7 @@ public static class Vv_eRacun_HTTP
 
          #region 4. Odglumi RECEIVE eRacun for Arhiva
 
-         if(newIFA_Faktur_rec.F2_HasNoSense_RECEIVE_document2arhiva) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+         if(newIFA_Faktur_rec == null || newIFA_Faktur_rec.F2_HasNoSense_RECEIVE_document2arhiva) continue; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          
          newIFA_Faktur_rec.VvDao.SetMe_Record_byRecID_Complete(theUC.TheDbConnection, newIFA_Faktur_rec.RecID, newIFA_Faktur_rec);
          

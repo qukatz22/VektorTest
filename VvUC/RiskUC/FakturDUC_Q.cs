@@ -8058,7 +8058,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             if(faktur_rec.Is_F2_AlreadySent && faktur_rec.F2_StatusCD != 50)
             {
                if(ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipA ||
-                  ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB  )
+                  ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipB ||
+                  ZXC.CURR_prjkt_rec.F2_RolaKind == ZXC.F2_RolaKind.KlijentServisa_TipC  )
                {
                   //ZXC.aim_emsg(MessageBoxIcon.Warning, "Upozorenje.\n\nDokument je već poslan kao eRačun.");
                }
@@ -8115,7 +8116,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          case ZXC.WriteMode.Delete: ///////////////////////////////////////////////////////////////////////////////////////////////// 
 
-            if(faktur_rec.Is_F2_AlreadySent && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA)
+            if(faktur_rec.Is_F2_AlreadySent && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipA && ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.KlijentServisa_TipC)
             {
                ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljeno brisanje.\n\nDokument je već poslan kao eRačun.");
                return false;
