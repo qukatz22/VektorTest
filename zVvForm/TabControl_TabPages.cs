@@ -55,6 +55,11 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm
       {
          vvTabPage_GotFocus(null, EventArgs.Empty);
       }
+
+      ZXC.FakturRec                      = null;
+      ZXC.RISK_CopyToOtherDUC_inProgress = false;
+      ZXC.RISK_CopyToMixerDUC_inProgress = false;
+      ZXC.OffixImport_InProgress         = false;
    }
    
    private void CloseTabPage_CtrlW(object sender, EventArgs e)
