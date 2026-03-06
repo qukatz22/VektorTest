@@ -12399,7 +12399,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
 
       #region IMPR
 
-      bool isIMPR = true /*todo ... repertDovument is kuracp[alac*/;
+      bool isIMPR = reportDocument is Vektor.Reports.RIZ.CR_IMPRizj;
 
       if(isIMPR)
       {
