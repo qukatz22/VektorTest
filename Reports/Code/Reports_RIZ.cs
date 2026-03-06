@@ -2102,7 +2102,7 @@ public class RptR_StandardRiskReport : VvRiskReport
    /*private*/
    protected void GetRtransWithArtstatList()
    {
-      GetRtransWithArtstatList(ZXC.projectYearFirstDay.Year);
+       GetRtransWithArtstatList(ZXC.projectYearFirstDay.Year);
    }
    protected void GetRtransWithArtstatList(int year)
    {
@@ -12396,6 +12396,135 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
       }
 
       #endregion Check NoNeedForZaliha_ArtiklTSs
+
+      #region IMPR
+
+      bool isIMPR = true /*todo ... repertDovument is kuracp[alac*/;
+
+      if(isIMPR)
+      {
+         DataRow drSchema;
+
+         List<VvReportSourceUtil> theDeviznaSumaListAAA = new List<VvReportSourceUtil>();
+         List<VvReportSourceUtil> theDeviznaSumaListBBB = new List<VvReportSourceUtil>();
+
+         DateTime aaaDateOD = new DateTime(RptFilter.DatumOd.Year - 1, 12, 01);
+         DateTime aaaDateDO = new DateTime(RptFilter.DatumOd.Year - 1, 12, 31).EndOfDay();
+
+         int rptMonth = RptFilter.DatumOd.Month;
+         int rptYear  = RptFilter.DatumOd.Year ;
+
+         DateTime bbbDateOD = new DateTime(rptMonth > 1 ? rptYear : rptYear - 1, rptMonth > 1 ? rptMonth - 1 : 12, 01)            ;
+         DateTime bbbDateDO = new DateTime(rptYear                             , rptMonth                        , 01).AddDays(-1);
+
+         DateTime cccDateOD = RptFilter.DatumOd;
+         DateTime cccDateDO = RptFilter.DatumDo;
+
+         // AAA 
+         RptFilter.DatumOd = aaaDateOD;
+         RptFilter.DatumDo = aaaDateDO;
+
+         for(int i = 0; i < RptFilter.FilterMembers.Count; i++)
+         {
+            VvSqlFilterMember fm = RptFilter.FilterMembers[i];
+
+            if(fm.name == "DateOD") { fm.value = aaaDateOD; fm.strValue = aaaDateOD.ToString("dd.MM.yyyy."); RptFilter.FilterMembers[i] = fm; }
+            if(fm.name == "DateDO") { fm.value = aaaDateDO; fm.strValue = aaaDateDO.ToString("dd.MM.yyyy."); RptFilter.FilterMembers[i] = fm; }
+         }
+
+         TheRtransList = new List<Rtrans>();
+         GetRtransWithArtstatList(aaaDateOD.Year);
+
+         theDeviznaSumaListAAA =
+
+         TheRtransList
+         .GroupBy(R => R.T_artiklCD)
+         .Select(grp => new VvReportSourceUtil
+            (/* DevName   */ grp.First().T_artiklName,
+             /* TheCD     */ grp.Key,
+             /* Count     */ grp.Count(),
+             /* Kol       */ grp.Sum(R => IsOrgPak ? R.R_kolOP : R.R_kol),
+             /*TheMoneyKCR*/ grp.Sum(R => (R.R_KCR)),
+             /* TheMoney  */ grp.Sum(R => (isMalopSkl ? R.R_KCRP : R.R_KCR)),
+             /* TheMoney2 */ grp.Sum(R => R.R_Kol_Puta_PrNabCij),
+             /* TheSaldo  */ grp.Sum(R => R.R_Ira_RUV)
+               ))
+            .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+            .ToList();
+
+         // BBB 
+         RptFilter.DatumOd = bbbDateOD;
+         RptFilter.DatumDo = bbbDateDO;
+
+         for(int i = 0; i < RptFilter.FilterMembers.Count; i++)
+         {
+            VvSqlFilterMember fm = RptFilter.FilterMembers[i];
+
+            if(fm.name == "DateOD") { fm.value = bbbDateOD; fm.strValue = bbbDateOD.ToString("dd.MM.yyyy."); RptFilter.FilterMembers[i] = fm; }
+            if(fm.name == "DateDO") { fm.value = bbbDateDO; fm.strValue = bbbDateDO.ToString("dd.MM.yyyy."); RptFilter.FilterMembers[i] = fm; }
+         }
+
+         TheRtransList = new List<Rtrans>();
+         GetRtransWithArtstatList(bbbDateOD.Year);
+
+         theDeviznaSumaListBBB =
+
+         TheRtransList
+         .GroupBy(R => R.T_artiklCD)
+         .Select(grp => new VvReportSourceUtil
+            (/* DevName   */ grp.First().T_artiklName,
+             /* TheCD     */ grp.Key,
+             /* Count     */ grp.Count(),
+             /* Kol       */ grp.Sum(R => IsOrgPak ? R.R_kolOP : R.R_kol),
+             /*TheMoneyKCR*/ grp.Sum(R => (R.R_KCR)),
+             /* TheMoney  */ grp.Sum(R => (isMalopSkl ? R.R_KCRP : R.R_KCR)),
+             /* TheMoney2 */ grp.Sum(R => R.R_Kol_Puta_PrNabCij),
+             /* TheSaldo  */ grp.Sum(R => R.R_Ira_RUV)
+               ))
+            .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
+            .ToList();
+
+         VvReportSourceUtil rsuAAA;
+         VvReportSourceUtil rsuBBB;
+         Kupdob kupdob_rec;
+
+         foreach(VvReportSourceUtil rsuCCC in TheDeviznaSumaList)
+         {
+            rsuAAA = theDeviznaSumaListAAA.SingleOrDefault(rAAA => rAAA.TheCD == rsuCCC.TheCD);
+            rsuBBB = theDeviznaSumaListBBB.SingleOrDefault(rBBB => rBBB.TheCD == rsuCCC.TheCD);
+
+            if(rsuAAA != null)
+            {
+               rsuCCC.Dec01 = rsuAAA.TheMoney;
+               rsuCCC.Dec02 = rsuAAA.Average1;
+            }
+            if(rsuBBB != null)
+            {
+               rsuCCC.TheSaldo = rsuBBB.Average1;
+            }
+
+            kupdob_rec = TheReportUC.Get_Kupdob_FromVvUcSifrar(rsuCCC.KupdobCD);
+
+            if(kupdob_rec != null)
+            {
+               rsuCCC.String1 = kupdob_rec.Drzava;
+            }
+         }
+
+         // CCC restore 
+         RptFilter.DatumOd = cccDateOD;
+         RptFilter.DatumDo = cccDateDO;
+         for(int i = 0; i < RptFilter.FilterMembers.Count; i++)
+         {
+            VvSqlFilterMember fm = RptFilter.FilterMembers[i];
+
+            if(fm.name == "DateOD") { fm.value = cccDateOD; fm.strValue = cccDateOD.ToString("dd.MM.yyyy."); RptFilter.FilterMembers[i] = fm; }
+            if(fm.name == "DateDO") { fm.value = cccDateDO; fm.strValue = cccDateDO.ToString("dd.MM.yyyy."); RptFilter.FilterMembers[i] = fm; }
+         }
+
+      }
+
+      #endregion IMPR
 
       return TheDeviznaSumaList.Count;
    }
