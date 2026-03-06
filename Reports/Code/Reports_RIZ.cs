@@ -12196,12 +12196,12 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
             TheRtransList 
             .GroupBy(R => R.T_artiklCD)
             .Select(grp => new VvReportSourceUtil
-               (/* DevName   */ grp.First().T_artiklName, 
-                /* TheCD     */ grp.Key, 
-                /* Count     */ grp.Count(), 
+               (/* DevName   */ grp.First().T_artiklName,
+                /* TheCD     */ grp.Key,
+                /* Count     */ grp.Count(),
                 /* Kol       */ grp.Sum(R => IsOrgPak ? R.R_kolOP : R.R_kol),
-                /*TheMoneyKCR*/ grp.Sum(R => (                        R.R_KCR)), 
-                /* TheMoney  */ grp.Sum(R => (isMalopSkl ? R.R_KCRP : R.R_KCR)), 
+                /*TheMoneyKCR*/ grp.Sum(R => (R.R_KCR)),
+                /* TheMoney  */ grp.Sum(R => (isMalopSkl ? R.R_KCRP : R.R_KCR)),
                 /* TheMoney2 */ grp.Sum(R => R.R_Kol_Puta_PrNabCij),
                 /* TheSaldo  */ grp.Sum(R => R.R_Ira_RUV)
 
@@ -12209,7 +12209,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
                 ,
                 /* IsNekakav */ grp.Any(R => R.T_skladCD == "50") //_SVDsamoLijekovi_23_11_2021_zaUpravnoVijece
 #endif
-               ))
+               ) { KupdobCD = grp.First().T_kupdobCD } )
             .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
             .ToList();
 
