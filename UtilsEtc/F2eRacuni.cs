@@ -1406,7 +1406,7 @@ public static class Vv_eRacun_HTTP
          {
             #region Get Kupdob / New Kupdob?
 
-            if(isInvoice) theOIB = deserialized_InvoiceType.VvCustomerOIB;
+            if(isInvoice)         theOIB = deserialized_InvoiceType   .VvCustomerOIB;
             else if(isCreditNote) theOIB = deserialized_CreditNoteType.VvCustomerOIB;
 
             if(theOIB.IsEmpty())
@@ -1419,7 +1419,7 @@ public static class Vv_eRacun_HTTP
             }
 
             if(kupdob_rec != null) kupdobOK = true;
-            else kupdobOK = false;
+            else                   kupdobOK = false;
 
             if(kupdobOK == false) // try to create NEW Kupdob from eRacun data 
             {
@@ -1442,7 +1442,7 @@ public static class Vv_eRacun_HTTP
 
                      newKupdobInfoList.Add(newKupdobInfo);
 
-                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name, true);
 
                      kupdobOK = true;
                   }
@@ -1471,7 +1471,7 @@ public static class Vv_eRacun_HTTP
 
                   theUC.TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
 
-                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); // REFRESH sifrar! 
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name, true); // REFRESH sifrar! 
                }
             }
 
@@ -2767,7 +2767,7 @@ public static class Vv_eRacun_HTTP
 
                      newKupdobInfoList.Add(newKupdobInfo);
 
-                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+                     theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name, true);
 
                      kupdobOK = true;
                   }
@@ -2796,7 +2796,7 @@ public static class Vv_eRacun_HTTP
 
                   theUC.TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
 
-                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name); // REFRESH sifrar! 
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name, true); // REFRESH sifrar! 
                }
             }
 
@@ -3720,7 +3720,7 @@ public static class Vv_eRacun_HTTP
 
                   newKupdobInfoList.Add(newKupdobInfo);
 
-                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name);
+                  theUC.SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name, true);
 
                   foundKupdobOK = true;
                }

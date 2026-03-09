@@ -12098,7 +12098,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
                    /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, grp.Key.T_artiklCD),
                    /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key.T_artiklCD),
                    /* TheSaldo     */ grp.Sum(gr => gr.R.R_Ira_RUV)
-                  ))
+                  ) { KupdobCD = grp.First().R.T_kupdobCD } )
                .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
                .ToList();
          }
@@ -12122,7 +12122,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
                    /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key.T_artiklCD),
                    /* TheSaldo     */ grp.Sum(gr => gr.R.R_Ira_RUV)
             
-                  ))
+                  ) { KupdobCD = grp.First().R.T_kupdobCD } )
                .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
                .ToList();
 
@@ -12177,7 +12177,7 @@ public class RptR_PrometArtikla    : RptR_StandardRiskReport
                 /* ArtiklGrCD   */ GetArtGrCD  (ArtiklGR, grp.Key),
                 /* ArtiklGrName */ GetArtGrName(ArtiklGR, grp.Key),
                 /* TheSaldo     */ grp.Sum(gr => gr.R_Ira_RUV)
-               ))
+               ) { KupdobCD = grp.First().T_kupdobCD } )
             .OrderBy(R => (RptFilter.SorterType_Sifrar == VvSQL.SorterType.Code ? R.TheCD : R.DevName))
             .ToList();
       }
