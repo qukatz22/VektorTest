@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+//using System.Text.Json.Serialization;
 using System.Linq;
 using System.Web;
 using CrystalDecisions.Shared;
@@ -329,15 +329,15 @@ public static class Vv_eRacun_HTTP
 
          // Use reflection to get all properties with JsonPropertyName attribute
          var properties = typeof(TRequest).GetProperties()
-             .Where(p => p.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any());
+             .Where(p => p.GetCustomAttributes(typeof(JsonPropertyAttribute), false).Any());
 
          foreach(var prop in properties)
          {
             var value = prop.GetValue(request);
             if(value != null)
             {
-               var jsonAttr = (JsonPropertyNameAttribute)prop.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).First();
-               string paramName = jsonAttr.Name;
+               var jsonAttr = (JsonPropertyAttribute)prop.GetCustomAttributes(typeof(JsonPropertyAttribute), false).First();
+               string paramName = jsonAttr.PropertyName;
 
                // Handle different types of values using traditional if-else
                string paramValue;
@@ -5141,24 +5141,24 @@ public static class Vv_eRacun_HTTP
 #region Bussiness Classes for JSON Request/Response
 public class MER_CredentialsData
 {
-   [JsonPropertyName("Username")]
+   [JsonProperty("Username")]
    public string Username { get; set; }
 
-   [JsonPropertyName("Password")]
+   [JsonProperty("Password")]
    public string Password { get; set; }
 
-   [JsonPropertyName("CompanyId")]
+   [JsonProperty("CompanyId")]
    public string CompanyId { get; set; }
 
-   [JsonPropertyName("CompanyBu")]
+   [JsonProperty("CompanyBu")]
    public string CompanyBu { get; set; }
 
    // MER ima veliko slovo S u SoftwareId 
    // PND ima malo   slovo s u softwareId 
    // jos ne znamo koje su reperkusije toga 
-   [JsonPropertyName("SoftwareId")]
+   [JsonProperty("SoftwareId")]
    public string SoftwareId { get; set; }
-   //[JsonPropertyName("softwareId")]
+   //[JsonProperty("softwareId")]
    //public string softwareId { get; set; }
 }
 public class VvMER_RequestData : MER_CredentialsData
@@ -5238,101 +5238,101 @@ public class VvMER_RequestData : MER_CredentialsData
    #endregion Constructors and Init
 
    // Document core properties
-   [JsonPropertyName("ElectronicId")]
+   [JsonProperty("ElectronicId")]
    public long? ElectronicId { get; set; }
 
-   [JsonPropertyName("StatusId")]
+   [JsonProperty("StatusId")]
    public int? StatusId { get; set; }
 
-   [JsonPropertyName("File")]
+   [JsonProperty("File")]
    public string File { get; set; }
 
    // eIzvj request specific properties - start 
 
-   [JsonPropertyName("xmlInvoice")]
+   [JsonProperty("xmlInvoice")]
    public string xmlInvoice { get; set; }
 
-   [JsonPropertyName("DeliveryDate")]
+   [JsonProperty("DeliveryDate")]
    public DateTime? DeliveryDate { get; set; }
 
-   [JsonPropertyName("IsCopy")]
+   [JsonProperty("IsCopy")]
    public bool IsCopy { get; set; }
 
-   [JsonPropertyName("InvoiceType")]
+   [JsonProperty("InvoiceType")]
    public string InvoiceType { get; set; }
 
    // eIzvj request specific properties -  end   
 
-   [JsonPropertyName("Filter")]
+   [JsonProperty("Filter")]
    public string Filter { get; set; }
 
-   [JsonPropertyName("ActionType")]
+   [JsonProperty("ActionType")]
    public string ActionType { get; set; }
 
    // ovog dole MessageType smo mi rucno dodali za FISK status 
    // a ovog gore ActionType je iz MER API-ja izmislio Copilot 
-   [JsonPropertyName("MessageType")]
+   [JsonProperty("MessageType")]
    public string MessageType { get; set; }
 
-   [JsonPropertyName("RejectReason")]
+   [JsonProperty("RejectReason")]
    public string RejectReason { get; set; }
 
    // Payment related
-   [JsonPropertyName("PaymentDate")]
+   [JsonProperty("PaymentDate")]
    public DateTime? PaymentDate { get; set; }
 
-   [JsonPropertyName("PaymentAmount")]
+   [JsonProperty("PaymentAmount")]
    public decimal? PaymentAmount { get; set; }
 
-   [JsonPropertyName("PaymentMethod")]
+   [JsonProperty("PaymentMethod")]
    public string PaymentMethod { get; set; }
 
-   [JsonPropertyName("IssueDate")]
+   [JsonProperty("IssueDate")]
    public DateTime? IssueDate { get; set; }
 
-   [JsonPropertyName("InternalMark")]
+   [JsonProperty("InternalMark")]
    public string InternalMark { get; set; }
 
-   [JsonPropertyName("SenderIdentifierValue")]
+   [JsonProperty("SenderIdentifierValue")]
    public string SenderIdentifierValue { get; set; }
 
-   [JsonPropertyName("RecipientIdentifierValue")]
+   [JsonProperty("RecipientIdentifierValue")]
    public string RecipientIdentifierValue { get; set; }
 
 
    // Query date range
-   [JsonPropertyName("From")]
+   [JsonProperty("From")]
    public DateTime? From { get; set; }
 
-   [JsonPropertyName("To")]
+   [JsonProperty("To")]
    public DateTime? To { get; set; }
 
    // Registration and identification
-   [JsonPropertyName("CompanyNumber")]
+   [JsonProperty("CompanyNumber")]
    public string CompanyNumber { get; set; }
 
-   [JsonPropertyName("IdentifierType")]
+   [JsonProperty("IdentifierType")]
    public /*int?*/string IdentifierType { get; set; }
 
-   [JsonPropertyName("IdentifierValue")]
+   [JsonProperty("IdentifierValue")]
    public string IdentifierValue { get; set; }
 
    // Classification
-   [JsonPropertyName("KPDCode")]
+   [JsonProperty("KPDCode")]
    public string KPDCode { get; set; }
 
    #region PND specifics
 
-   [JsonPropertyName("document")]
+   [JsonProperty("document")]
    public string document { get; set; }
 
-   [JsonPropertyName("identifier")]
+   [JsonProperty("identifier")]
    public string identifier { get; set; }
 
-   [JsonPropertyName("schema")]
+   [JsonProperty("schema")]
    public string schema { get; set; }
 
-   [JsonPropertyName("type")]
+   [JsonProperty("type")]
    public string type { get; set; }
 
    #endregion PND specifics
@@ -5343,140 +5343,140 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
    #region Propertiz 
 
    // Document identification
-   [JsonPropertyName("ElectronicId")]
+   [JsonProperty("ElectronicId")]
    public long? ElectronicId { get; set; }
 
-   [JsonPropertyName("DocumentNr")]
+   [JsonProperty("DocumentNr")]
    public string DocumentNr { get; set; }
 
-   [JsonPropertyName("DocumentTypeId")]
+   [JsonProperty("DocumentTypeId")]
    public int? DocumentTypeId { get; set; }
 
-   [JsonPropertyName("DocumentTypeName")]
+   [JsonProperty("DocumentTypeName")]
    public string DocumentTypeName { get; set; }
 
    // Status information
-   [JsonPropertyName("Status")]
+   [JsonProperty("Status")]
    public string Status { get; set; }
 
-   [JsonPropertyName("StatusId")]
+   [JsonProperty("StatusId")]
    public int? StatusId { get; set; }
 
-   [JsonPropertyName("StatusName")]
+   [JsonProperty("StatusName")]
    public string StatusName { get; set; }
 
-   [JsonPropertyName("DokumentProcessStatus")]
+   [JsonProperty("DokumentProcessStatus")]
    public int? DokumentProcessStatus { get; set; }
 
    // Success indicators
-   [JsonPropertyName("Success")]
+   [JsonProperty("Success")]
    public bool? Success { get; set; }
 
-   [JsonPropertyName("IsSuccess")]
+   [JsonProperty("IsSuccess")]
    public bool? IsSuccess { get; set; }
 
-   [JsonPropertyName("IsRegistered")]
+   [JsonProperty("IsRegistered")]
    public bool? IsRegistered { get; set; }
 
    // Business entities information
-   [JsonPropertyName("SenderBusinessNumber")]
+   [JsonProperty("SenderBusinessNumber")]
    public string SenderBusinessNumber { get; set; }
 
-   [JsonPropertyName("SenderBusinessUnit")]
+   [JsonProperty("SenderBusinessUnit")]
    public string SenderBusinessUnit { get; set; }
 
-   [JsonPropertyName("SenderBusinessName")]
+   [JsonProperty("SenderBusinessName")]
    public string SenderBusinessName { get; set; }
 
-   [JsonPropertyName("RecipientBusinessNumber")]
+   [JsonProperty("RecipientBusinessNumber")]
    public string RecipientBusinessNumber { get; set; }
 
-   [JsonPropertyName("RecipientBusinessUnit")]
+   [JsonProperty("RecipientBusinessUnit")]
    public string RecipientBusinessUnit { get; set; }
 
-   [JsonPropertyName("RecipientBusinessName")]
+   [JsonProperty("RecipientBusinessName")]
    public string RecipientBusinessName { get; set; }
 
-   [JsonPropertyName("CompanyName")]
+   [JsonProperty("CompanyName")]
    public string CompanyName { get; set; }
 
    // Timestamps
-   [JsonPropertyName("Created")]
+   [JsonProperty("Created")]
    public DateTime? Created { get; set; }
 
-   [JsonPropertyName("Modified")]
+   [JsonProperty("Modified")]
    public DateTime? Modified { get; set; }
 
-   [JsonPropertyName("Updated")]
+   [JsonProperty("Updated")]
    public DateTime? Updated { get; set; }
 
-   [JsonPropertyName("Sent")]
+   [JsonProperty("Sent")]
    public DateTime? Sent { get; set; }
 
-   [JsonPropertyName("Delivered")]
+   [JsonProperty("Delivered")]
    public DateTime? Delivered { get; set; }
 
-   [JsonPropertyName("Issued")]
+   [JsonProperty("Issued")]
    public DateTime? Issued { get; set; }
 
-   [JsonPropertyName("UpdateDate")]
+   [JsonProperty("UpdateDate")]
    public DateTime? UpdateDate { get; set; }
 
-   [JsonPropertyName("FiscalizationDate")]
+   [JsonProperty("FiscalizationDate")]
    public DateTime? FiscalizationDate { get; set; }
 
-   [JsonPropertyName("FiscalizationTimestamp")]
+   [JsonProperty("FiscalizationTimestamp")]
    public DateTime? FiscalizationTimestamp { get; set; }
 
-   [JsonPropertyName("RejectTimestamp")]
+   [JsonProperty("RejectTimestamp")]
    public DateTime? RejectTimestamp { get; set; }
 
-   [JsonPropertyName("RegistrationDate")]
+   [JsonProperty("RegistrationDate")]
    public DateTime? RegistrationDate { get; set; }
 
    // Document content
-   [JsonPropertyName("DocumentXml")]
+   [JsonProperty("DocumentXml")]
    public string DocumentXml { get; set; }
 
-   [JsonPropertyName("EncodedXml")]
+   [JsonProperty("EncodedXml")]
    public string EncodedXml { get; set; }
 
-   [JsonPropertyName("Description")]
+   [JsonProperty("Description")]
    public string Description { get; set; }
 
    //// Collection properties
-   //[JsonPropertyName("Documents")]
+   //[JsonProperty("Documents")]
    //public List<DocumentInfo_Data> Documents { get; set; }
 
-   //[JsonPropertyName("messages")]
+   //[JsonProperty("messages")]
    //public List<VvMER_Response_Data_AllActions> messages { get; set; }
 
    // State indicators
-   [JsonPropertyName("Imported")]
+   [JsonProperty("Imported")]
    public bool? Imported { get; set; }
 
    // Messages
-   [JsonPropertyName("Message")]
+   [JsonProperty("Message")]
    public string Message { get; set; }
 
    #region PND specifics
 
-   [JsonPropertyName("id")]
+   [JsonProperty("id")]
    public long Id { get; set; } // If the API returns a GUID/string, change to string.
 
-   [JsonPropertyName("insertedOn")]
+   [JsonProperty("insertedOn")]
    public DateTime? InsertedOn { get; set; }
 
-   [JsonPropertyName("identifier")]
+   [JsonProperty("identifier")]
    public string identifier { get; set; }
 
-   [JsonPropertyName("published​On​Ams")]
+   [JsonProperty("published​On​Ams")]
    public bool? published​On​Ams { get; set; }
 
-   [JsonPropertyName("schema")]
+   [JsonProperty("schema")]
    public string schema { get; set; }
 
-   [JsonPropertyName("mps​Endpoint")]
+   [JsonProperty("mps​Endpoint")]
    public string mps​Endpoint { get; set; }
 
    #endregion PND specifics
@@ -5781,15 +5781,15 @@ public class VvMER_ResponseData : Vv_XSD_Bussiness_BASE<VvMER_ResponseData>
 #region Bussiness Classes for JSON Response - FiscalizationStatus
 public class VvMER_FiscalizationMessage
 {
-   [JsonPropertyName("fiscalizationRequestId")]
+   [JsonProperty("fiscalizationRequestId")]
    public string FiscalizationRequestId { get; set; }
 
-   [JsonPropertyName("dateOfFiscalization")]
+   [JsonProperty("dateOfFiscalization")]
    public DateTime? DateOfFiscalization { get; set; }
 
-   //[JsonPropertyName("isSuccess")]
+   //[JsonProperty("isSuccess")]
    //public bool? IsSuccess { get; set; }
-   [JsonPropertyName("status")]
+   [JsonProperty("status")]
    public int Status { get; set; }
 
    // 5.6. Status
@@ -5817,22 +5817,22 @@ public class VvMER_FiscalizationMessage
       }
    }
 
-   [JsonPropertyName("message")]
+   [JsonProperty("message")]
    public string Message { get; set; }
 
-   [JsonPropertyName("encodedXml")]
+   [JsonProperty("encodedXml")]
    public string EncodedXml { get; set; }
 
-   [JsonPropertyName("errorCode")]
+   [JsonProperty("errorCode")]
    public string ErrorCode { get; set; }
 
-   [JsonPropertyName("errorCodeDescription")]
+   [JsonProperty("errorCodeDescription")]
    public string ErrorCodeDescription { get; set; }
 
-   [JsonPropertyName("messageType")]
+   [JsonProperty("messageType")]
    public int? MessageType { get; set; }
 
-   [JsonPropertyName("messageTypeDescription")]
+   [JsonProperty("messageTypeDescription")]
    public string MessageTypeDescription { get; set; }
 
    // za JOIN sa Faktur iz TheFakturList 
@@ -5841,22 +5841,22 @@ public class VvMER_FiscalizationMessage
 }
 public class VvMER_Response_Data_FiscalizationStatus
 {
-   [JsonPropertyName("electronicId")]
+   [JsonProperty("electronicId")]
    public long? ElectronicId { get; set; }
 
-   [JsonPropertyName("RecipientIdentifierValue")]
+   [JsonProperty("RecipientIdentifierValue")]
    public string RecipientIdentifierValue { get; set; }
 
-   [JsonPropertyName("RecipientName")]
+   [JsonProperty("RecipientName")]
    public string RecipientName { get; set; }
 
-   [JsonPropertyName("channelType")]
+   [JsonProperty("channelType")]
    public int? ChannelType { get; set; }
 
-   [JsonPropertyName("channelTypeDescription")]
+   [JsonProperty("channelTypeDescription")]
    public string ChannelTypeDescription { get; set; }
 
-   [JsonPropertyName("messages")]
+   [JsonProperty("messages")]
    public List<VvMER_FiscalizationMessage> Messages { get; set; }
 
    public VvMER_Response_Data_FiscalizationStatus()
