@@ -1544,9 +1544,7 @@ public static class Vv_eRacun_HTTP
 
       #endregion Finish
    }
-
-   /* BBB */
-   internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, bool isManual)
+   /* BBB */internal static int WS_Discover_Candidates_And_Eventually_SEND_eRacune(F2_Izlaz_UC theUC, bool isManual)
    {
       #region Init & Get Dialog Fields
 
@@ -2512,8 +2510,7 @@ public static class Vv_eRacun_HTTP
       #endregion Finish
    }
 
-   /* QQQ */
-   internal static int HDD_Import_Extern_Faktur_IFA/*NOT WS_Ufati_Veleform_Ritam*/(F2_Izlaz_UC theUC)
+   /* QQQ */internal static int HDD_Import_Extern_Faktur_IFA/*NOT WS_Ufati_Veleform_Ritam*/(F2_Izlaz_UC theUC)
    {
       #region Init
 
@@ -5949,7 +5946,6 @@ public class WebApiResult<T>
 
 #endregion Bussiness Classes for JSON Request/Response
 
-// VvForm Submodul Actions about F2 fiscalization 
 public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagicForm
 {
    private void F2_UserManual_OnClick(object sender, EventArgs e)
