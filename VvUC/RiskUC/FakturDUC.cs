@@ -2060,7 +2060,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       TheG.PutCell(ci.iT_konto, vvTbKonto.EditingControlDataGridView.CurrentRow.Index, cleanString);
 
       // 2026: 
-      bool shouldSave = true; // todo ... samo za F2 ... samo servisi ... ??? 
+      bool shouldSave = ZXC.CURR_prjkt_rec.F2_RolaKind != ZXC.F2_RolaKind.NEMA_F2; // todo ... samo za F2 ... samo servisi ... ??? 
 
       if(shouldSave)
       {
