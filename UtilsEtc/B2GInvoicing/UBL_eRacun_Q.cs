@@ -2246,6 +2246,8 @@ namespace EN16931.UBL
             //rtrans_rec.T_artiklCD    = ;
             rtrans_rec.T_artiklName = ZXC.LenLimitedStr(invoiceLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
 
+            rtrans_rec.T_konto = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak;
+
             //rtrans_rec.T_jedMj       = ; 
             rtrans_rec.T_kol = invoiceLine.InvoicedQuantity.Value;
 
@@ -2413,6 +2415,8 @@ namespace EN16931.UBL
                      T_kol        = 1,
                      T_pdvSt      = taxSubtotal.TaxCategory.Percent.Value,
 
+                     T_konto      = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
+
                      T_cij        = taxSubtotal.TaxableAmount.Value
                   };
 
@@ -2431,7 +2435,9 @@ namespace EN16931.UBL
                   T_artiklName = $"Sumirane stavke računa",
                   T_kol        = 1,
 
-                  T_cij        = this.LegalMonetaryTotal?.TaxExclusiveAmount?.Value ?? 0M // ili mozda PayableAmount? 
+                  T_konto = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
+
+                  T_cij = this.LegalMonetaryTotal?.TaxExclusiveAmount?.Value ?? 0M // ili mozda PayableAmount? 
                };
 
                sintRtrans_rec.CalcTransResults(null);
@@ -2899,6 +2905,8 @@ namespace EN16931.UBL
             rtrans_rec = new Rtrans();
 
             rtrans_rec.T_artiklName = ZXC.LenLimitedStr(creditNoteLine.Item.Name.Value, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName));
+
+            rtrans_rec.T_konto = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak;
 
             rtrans_rec.T_kol = /*creditNoteLine.InvoicedQuantity.Value;*/ 1M;
 

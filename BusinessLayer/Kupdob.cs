@@ -133,6 +133,8 @@ public struct KupdobStruct
    /*113 */ internal string   _idNumber    ;
    /*114 */ internal string   _idIssuer    ;
    /*115 */ internal string   _idCitizenshp;
+   /*116 */ internal string   _kontoPrihod;
+   /*117 */ internal string   _kontoTrosak;
 }
 
 #endregion struct KupdobStruct
@@ -314,6 +316,8 @@ public class Kupdob : VvSifrarRecord
       /*113 */ this.currentData._idNumber     = "";    
       /*114 */ this.currentData._idIssuer     = "";    
       /*115 */ this.currentData._idCitizenshp = "";    
+      /*116 */ this.currentData._kontoPrihod  = "";    
+      /*117 */ this.currentData._kontoTrosak  = "";    
    }
 
    #endregion Constructors
@@ -1040,6 +1044,7 @@ public class Kupdob : VvSifrarRecord
 
    public bool IsKomisMalopSkl { get { return Komisija == ZXC.KomisijaKindEnum.MALOPRODAJNA ? true : false; } }
 
+   // FUSE!!! 
    /* 88 */ public string SklKonto
    {
       get { return this.currentData._sklKonto; }
@@ -1125,6 +1130,8 @@ public class Kupdob : VvSifrarRecord
    /*113 */ public string   IdNumber     { get { return this.currentData._idNumber    ; } set { this.currentData._idNumber     = value; } }
    /*114 */ public string   IdIssuer     { get { return this.currentData._idIssuer    ; } set { this.currentData._idIssuer     = value; } }
    /*115 */ public string   IdCitizenshp { get { return this.currentData._idCitizenshp; } set { this.currentData._idCitizenshp = value; } }
+   /*116 */ public string   KontoPrihod { get { return this.currentData._kontoPrihod; } set { this.currentData._kontoPrihod    = value; } }
+   /*117 */ public string   KontoTrosak { get { return this.currentData._kontoTrosak; } set { this.currentData._kontoTrosak    = value; } }
 
    //private bool ziroListLoaded = false;
    private List<ZXC.CdAndName_CommonStruct> ziroList;

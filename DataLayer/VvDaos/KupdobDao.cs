@@ -39,7 +39,7 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
 
    #region CreateTableKupdob
 
-   public static   uint TableVersionStatic { get { return /*!!!*/ 41 /*!!!*/; } }
+   public static   uint TableVersionStatic { get { return /*!!!*/ 42 /*!!!*/; } }
 
    public override uint TableVersion       { get { return TableVersionStatic; } }
 
@@ -165,6 +165,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
          /*113 */  "idNumber     varchar(64)         NOT NULL default '',\n"           +
          /*114 */  "idIssuer     varchar(64)         NOT NULL default '',\n"           +
          /*115 */  "idCitizenshp varchar(64)         NOT NULL default '',\n"           +
+         /*116 */  "kontoPrihod  varchar(8)          NOT NULL default '',\n"           +
+         /*117 */  "kontoTrosak  varchar(8)          NOT NULL default '',\n"           +
 
          (needsPrjktExtensions ? PrjktDao.Create_table_PrjktExtensions_definition() : "") +
 
@@ -360,6 +362,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
             return ("ADD COLUMN f2_UserName      varchar(64)         NOT NULL default '' AFTER f2_RolaKind, " +
                     "ADD COLUMN f2_Password      varchar(64)         NOT NULL default '' AFTER f2_UserName  ; \n");
 
+         case 42: return ("ADD COLUMN kontoPrihod  varchar(8)          NOT NULL default ''          AFTER idCitizenshp ,\n" +
+                          "ADD COLUMN kontoTrosak  varchar(8)          NOT NULL default ''          AFTER kontoPrihod  ;\n");
 
 
          default: throw new Exception("For table " + Kupdob.recordName + " version no. " + catchingVersion + " doesn't exists!");
@@ -511,6 +515,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /*113 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdNumber    , TheSchemaTable.Rows[CI.idNumber    ]);  
       /*114 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdIssuer    , TheSchemaTable.Rows[CI.idIssuer    ]);  
       /*115 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.IdCitizenshp, TheSchemaTable.Rows[CI.idCitizenshp]);  
+      /*116 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.KontoPrihod , TheSchemaTable.Rows[CI.kontoPrihod ]);  
+      /*117 */ VvSQL.CreateCommandParameter(cmd, preffix, kupdob.KontoTrosak , TheSchemaTable.Rows[CI.kontoTrosak ]);  
 
          if(isArhiva)
          {
@@ -744,6 +750,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /*113 */      rdrData._idNumber     = reader.GetString  (CI.idNumber)    ;
       /*114 */      rdrData._idIssuer     = reader.GetString  (CI.idIssuer)    ;
       /*115 */      rdrData._idCitizenshp = reader.GetString  (CI.idCitizenshp);
+      /*116 */      rdrData._kontoPrihod  = reader.GetString  (CI.kontoPrihod) ;
+      /*117 */      rdrData._kontoTrosak  = reader.GetString  (CI.kontoTrosak) ;
 
       ((Kupdob)vvDataRecord).CurrentData = rdrData;
 
@@ -890,6 +898,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       /*113 */ internal int idNumber    ;
       /*114 */ internal int idIssuer    ;
       /*115 */ internal int idCitizenshp;
+      /*116 */ internal int kontoPrihod ;
+      /*117 */ internal int kontoTrosak ;
       
       internal int origRecID;
       internal int recVer;
@@ -1025,6 +1035,8 @@ public sealed class KupdobDao : VvDaoBase, IVvDao
       CI.idNumber     = GetSchemaColumnIndex("idNumber");
       CI.idIssuer     = GetSchemaColumnIndex("idIssuer");
       CI.idCitizenshp = GetSchemaColumnIndex("idCitizenshp");
+      CI.kontoPrihod  = GetSchemaColumnIndex("kontoPrihod");
+      CI.kontoTrosak  = GetSchemaColumnIndex("kontoTrosak");
 
       CI.origRecID      = GetSchemaColumnIndex("origRecID");
       CI.recVer         = GetSchemaColumnIndex("recVer");

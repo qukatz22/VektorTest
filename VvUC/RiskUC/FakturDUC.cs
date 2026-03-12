@@ -2046,17 +2046,50 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       VvTextBoxEditingControl vvTbKonto = sender as VvTextBoxEditingControl;
 
+      if(vvTbKonto.Text.Length.IsZero()) return;
+
       string dirtyString = vvTbKonto.Text, cleanString;
 
       int spaceIdx = dirtyString.IndexOf(' ');
 
-      if(dirtyString.Length.IsZero() || spaceIdx.IsNegative()) return;
-
-      cleanString = dirtyString.Substring(0, spaceIdx);
+      if(spaceIdx.IsNegative()) cleanString = dirtyString;
+      else                      cleanString = dirtyString.Substring(0, spaceIdx);
 
       //vvTbKonto.Text = cleanString;
       //TheG.EditingControl.Text = cleanString;
       TheG.PutCell(ci.iT_konto, vvTbKonto.EditingControlDataGridView.CurrentRow.Index, cleanString);
+
+      // 2026: 
+      bool shouldSave = true; // todo ... samo za F2 ... samo servisi ... ??? 
+
+      if(shouldSave)
+      {
+         bool isIFA = faktur_rec.TtInfo.IsIzlazniPdvTT;
+
+         Kupdob kupdob_rec = Get_Kupdob_FromVvUcSifrar((this as FakturExtDUC).Fld_KupdobCd);
+
+         if(kupdob_rec != null)
+         {
+            string oldKonto = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak;
+            string newKonto = cleanString;
+
+            if(oldKonto != newKonto)
+            {
+               TheVvTabPage.TheVvForm.BeginEdit(kupdob_rec);
+
+               if(isIFA) kupdob_rec.KontoPrihod = newKonto;
+               else      kupdob_rec.KontoTrosak = newKonto;
+
+               kupdob_rec.VvDao.RWTREC(TheDbConnection, kupdob_rec, false, true, false);
+
+               TheVvTabPage.TheVvForm.EndEdit(kupdob_rec);
+
+               SetSifrarAndAutocomplete<Kupdob>(null, VvSQL.SorterType.Name, true); // REFRESH sifrar! 
+
+               ZXC.aim_emsg(MessageBoxIcon.Information, "Zapamtio sam konto " + (isIFA ? "prihoda" : "troška") + $" za partnera {(this as FakturExtDUC).Fld_KupdobName}.");
+            }
+         }
+      }
    }
 
    protected void T_kol_CreateColumn(int _width, int numOfDecimalPlaces, bool isVisible, string _colHeader, string _statusText)
