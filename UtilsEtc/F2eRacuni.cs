@@ -6652,7 +6652,9 @@ public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagic
 
       string tt    = theUC.TheG.GetStringCell(theUC.DgvCI.iT_tt   , rowIdx, false);
       uint   ttNum = theUC.TheG.GetUint32Cell(theUC.DgvCI.iT_ttNum, rowIdx, false);
-      
+
+      if(tt.IsEmpty() || ttNum.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Stop, "Nema lokalne UFA-e!"); return; }
+
       Faktur faktur_rec = new Faktur();
 
       FakturDao.SetMeFaktur(TheDbConnection, faktur_rec, tt, ttNum, false);
