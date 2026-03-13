@@ -23,6 +23,7 @@ using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using XSqlCommand = MySql.Data.MySqlClient.MySqlCommand;
 #endif
 
+// FILIPIDIPI FILIPIDIPI FILIPIDIPI 
 public static class Vv_eRacun_HTTP
 {
    public const bool DEMO = false;
