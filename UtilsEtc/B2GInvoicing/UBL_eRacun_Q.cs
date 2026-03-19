@@ -130,7 +130,7 @@ namespace EN16931.UBL
          if(isIRM)
          {
             if(isIRMcalcB) faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_B();
-            else faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
+            else           faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
          }
          else // classic 
          {
@@ -1807,11 +1807,11 @@ namespace EN16931.UBL
          {
             //ZAGLAVLJE:
 
-            case "BT106": theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS : faktur_rec.S_ukKC; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS  : faktur_rec.S_ukKC ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
             case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
 
-            //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
-            case "BT109": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
+          //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR                         ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
+            case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
 
             //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                                                   ; break; //BT-112 Ukupni iznos računa s PDV-om		    
             //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                                                 ; break; //BT-112 Ukupni iznos računa s PDV-om   2026 

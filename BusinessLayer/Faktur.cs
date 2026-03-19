@@ -4773,16 +4773,30 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
          IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
       }
 
-      IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
-      IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2();
+      // 19.03.2026: gasimo TakeTransesSumToDokumentSum jer je većina suma dobra, a i mora ostati kako je i na orginal PDF-u fakture 
+      // dok je bilo ovako imali smo slucajeva da faktura u vektoru iznosi 778,90 a u xml-u eRacuna zavrsi kao 779.10                
+      // umjesto toga ciljano stelamo S_ukKC, i po potrebi R_KC i R_KCR prve stavke                                                  
+    //IRAfaktur_rec.TakeTransesSumToDokumentSum(true);                                                                               
 
+      decimal diff;
 
-      // !!! !!! !!! 
-      if(IRAfaktur_rec.S_ukKCR != (IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukRbt1))
+      IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2(); // ovaj red je umjesto TakeTransesSumToDokumentSum 
+
+      diff = IRAfaktur_rec.S_ukKCR - (IRAfaktur_rec.S_ukKC - IRAfaktur_rec.S_ukRbt1);
+
+      if(diff.NotZero())
       {
-         IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukKCR;
+         IRAfaktur_rec.Transes[0].R_KC += diff;
+
+         IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2(); // ovaj red je umjesto TakeTransesSumToDokumentSum 
       }
 
+      diff = IRAfaktur_rec.S_ukKCR - IRAfaktur_rec.TrnSum_KCR.Ron2();
+
+      if (diff.NotZero())
+      {
+         IRAfaktur_rec.Transes[0].R_KCR += diff;
+      }
 
       return IRAfaktur_rec;
    }
