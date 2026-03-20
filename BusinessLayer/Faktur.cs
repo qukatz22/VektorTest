@@ -4760,6 +4760,33 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    // faktur_rec.S_ukKCR    rtrans_rec.R_KC     - faktur_rec.S_ukRbt1  
    //                                                                  
 
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_A0() // dobar za Metaflex 
+   {
+      Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
+
+      IRAfaktur_rec.TT = Faktur.TT_IRA;
+
+      for (int i = 0; i < this.Transes.Count; ++i)
+      {
+         IRAfaktur_rec.Transes[i].T_TT = IRAfaktur_rec.TT;
+         IRAfaktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(this.Transes[i].T_cij, this.Transes[i].T_pdvSt);
+         IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
+      }
+
+      IRAfaktur_rec.TakeTransesSumToDokumentSum(true); // ovo tu treba ili ugasiti ali onda ne valja suK_KC za malop ... 
+      IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2();
+
+
+      // !!! !!! !!! 
+      if (IRAfaktur_rec.S_ukKCR != (IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukRbt1))
+      {
+         IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukKCR;
+      }
+
+
+      return IRAfaktur_rec;
+   }
+
    public Faktur Convert_IRM_Faktur_To_IRA_Faktur_A() // dobar za Metaflex 
    {
       Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
@@ -4768,9 +4795,12 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       for(int i = 0; i < this.Transes.Count; ++i)
       {
-         IRAfaktur_rec.Transes[i].T_TT  = IRAfaktur_rec.TT;
-         IRAfaktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(this.Transes[i].T_cij, this.Transes[i].T_pdvSt);
-         IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
+         IRAfaktur_rec.Transes[i].T_TT   = IRAfaktur_rec.TT;
+         IRAfaktur_rec.Transes[i].T_cij  = ZXC.VvGet_100_from_125(this.Transes[i].T_cij , this.Transes[i].T_pdvSt);
+         IRAfaktur_rec.Transes[i].R_rbt1 = ZXC.VvGet_100_from_125(this.Transes[i].R_rbt1, this.Transes[i].T_pdvSt).Ron2();
+         IRAfaktur_rec.Transes[i].R_KC   = (IRAfaktur_rec.Transes[i].R_kol * IRAfaktur_rec.Transes[i].T_cij).Ron2();
+
+       //IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
       }
 
       // 19.03.2026: gasimo TakeTransesSumToDokumentSum jer je većina suma dobra, a i mora ostati kako je i na orginal PDF-u fakture 
@@ -4780,7 +4810,11 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
       decimal diff;
 
-      IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2(); // ovaj red je umjesto TakeTransesSumToDokumentSum 
+      IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.TrnSum_KC.Ron2(); // ovaj red je umjesto TakeTransesSumToDokumentSum 
+      IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_Rbt25 + 
+                               IRAfaktur_rec.TrnSum_Rbt10 + 
+                               IRAfaktur_rec.TrnSum_Rbt05 + 
+                               IRAfaktur_rec.TrnSum_Rbt00 ;    // ovaj red je umjesto TakeTransesSumToDokumentSum 
 
       diff = IRAfaktur_rec.S_ukKCR - (IRAfaktur_rec.S_ukKC - IRAfaktur_rec.S_ukRbt1);
 

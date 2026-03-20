@@ -922,10 +922,10 @@ namespace EN16931.UBL
 
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
-            LineExtensionAmount = new LineExtensionAmountType { Value = Fak2eR_Decimal("BT106", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
+            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
             AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
-            TaxExclusiveAmount = new TaxExclusiveAmountType { Value = Fak2eR_Decimal("BT109", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
-            TaxInclusiveAmount = new TaxInclusiveAmountType { Value = Fak2eR_Decimal("BT112", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
+            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
+            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
 
 
             PayableAmount = new PayableAmountType
