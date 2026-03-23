@@ -2397,13 +2397,15 @@ namespace EN16931.UBL
             string  taxExemptionReason;
             decimal taxAmount;
             string artiklName;
+            decimal taxPercent;
 
             // probaj prvo po TaxTotalima 
             foreach(var taxTotal in this.TaxTotal)
             { 
                foreach(var taxSubtotal in taxTotal.TaxSubtotal)
                {
-                  taxCategory        = taxSubtotal.TaxCategory.Percent.Value.ToString();
+                  taxPercent         = taxSubtotal.TaxCategory.Percent?.Value ?? 0M;
+                  taxCategory        = taxPercent.ToString();
                   taxExemptionReason = taxSubtotal.TaxCategory?.TaxExemptionReason?.FirstOrDefault()?.Value ?? $"Stav. računa po PDV stopi od {taxCategory}%";
                   taxAmount          = taxSubtotal.TaxAmount.Value;
 
@@ -2411,9 +2413,9 @@ namespace EN16931.UBL
 
                   Rtrans sintRtrans_rec = new Rtrans()
                   {
-                     T_artiklName = taxSubtotal.TaxCategory.Percent.Value.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
+                     T_artiklName = taxPercent.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
                      T_kol        = 1,
-                     T_pdvSt      = taxSubtotal.TaxCategory.Percent.Value,
+                     T_pdvSt      = taxPercent,
 
                      T_konto      = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
 

@@ -2828,6 +2828,27 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       if(dateNow.Year  == PdvDate.Year && 
          dateNow.Month == PdvDate.Month) return false;
 
+      isPdvDateTooOld = ZXC.MonthDifference(dateNow, PdvDate) >= 2; // 0 and 1 monthDiff is ok 
+
+      return isPdvDateTooOld;
+   }
+   public bool IsPdvDateTooOld_ORIG()
+   {
+      if(this.TtInfo.IsPdvTT == false || this.PdvR12 != ZXC.PdvR12Enum.R1) return false;
+
+      bool isPdvDateTooOld;
+
+      if(PdvDate.IsEmpty())
+      {
+         ZXC.aim_emsg("PdvDate is empty! {0}\n\n{1}", PdvDate, this);
+         return false;
+      }
+
+      DateTime dateNow = DateTime.Now;
+
+      if(dateNow.Year  == PdvDate.Year && 
+         dateNow.Month == PdvDate.Month) return false;
+
       if(dateNow.Day <= 20) // do  20-og u mjesecu jos uvijek mogu u prosli mjesec 
       {
          isPdvDateTooOld = ZXC.MonthDifference(dateNow, PdvDate) >  1; // 0 and 1 monthDiff is ok 
