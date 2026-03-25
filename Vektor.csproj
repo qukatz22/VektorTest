@@ -4788,7 +4788,11 @@
     <None Include="UtilsEtc\Fiskalizacija\xmldsig-core-schema.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="vvBkpScript.md" />
+    <None Include="UtilsEtc\vvBkpScript_CLD.bat" />
+    <None Include="UtilsEtc\vvBkpScript_GPT.ps1" />
+    <None Include="UtilsEtc\vvBkpScript_GPT_v2.ps1" />
+    <None Include="UtilsEtc\vvBkpScript_GMN.bat" />
+    <None Include="UtilsEtc\vvRestore_CLD.bat" />
     <None Include="Web References\StatusService\GetStatus.disco" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\CbuCba.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_green2.ico" />
