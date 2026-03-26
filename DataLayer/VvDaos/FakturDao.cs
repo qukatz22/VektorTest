@@ -2313,7 +2313,9 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
          Load_Fak2Nal_URM_FakturList(conn, fakturList, filterMembers, anotherJoinClause);
 
          // 02.10.2013: 
-         anotherJoinClause = anotherJoinClause.Replace("F.RecID", "L.RecID"); 
+         anotherJoinClause = anotherJoinClause.Replace("F.RecID"  , "L.RecID"  );
+         // 26.03.2026: 
+         anotherJoinClause = anotherJoinClause.Replace("F.DokDate", "L.DokDate");
       }
 
       #endregion Get fakturList MALOPRODAJNI RACUNI Ulazni, URM-UFM-VMU-NIV-ZPC

@@ -48,7 +48,7 @@ IF /I "%vvDomena%"=="NULL" (
 SET "logFile=%vvBkpDir%\vvBkpLog.txt"
 SET "tempBkpDir=%vvBkpDir%\temp_%theYYYYMMDD%"
 SET "tarFile=%vvBkpDir%\%bkpFileName%.tar.gz"
-SET "encryptedFile=%vvBkpDir%\%bkpFileName%.%qcFextension%"
+SET "encryptedFile=%vvBkpDir%\%bkpFileName%.tar.gz.%qcFextension%"
 
 ECHO.
 ECHO ======================================================================
@@ -134,21 +134,26 @@ SET "cleanupScript=%TEMP%\vvBkpCleanup.ps1"
 
 (
     ECHO $bkpDir = '%vvBkpDir%'
-    ECHO $ext = '%qcFextension%'
     ECHO $monday = ^(Get-Date^).AddDays(-^(^(Get-Date^).DayOfWeek.value__ - 1^)^).Date
     ECHO.
-    ECHO Get-ChildItem -Path $bkpDir -Filter "vvBkp_*.$ext" ^| ForEach-Object {
-    ECHO     $dateStr = $_.BaseName.Substring^($_.BaseName.Length - 8^)
-    ECHO     $fileDate = [datetime]::ParseExact^($dateStr, 'yyyyMMdd', $null^)
-    ECHO     if ^($fileDate -lt $monday^) {
-    ECHO         if ^($fileDate.DayOfWeek -ne 'Friday'^) {
-    ECHO             Write-Host "  Deleting: $^($_.Name^)"
-    ECHO             Remove-Item $_.FullName -Force
+    ECHO Get-ChildItem -Path $bkpDir -Filter "vvBkp_*.tar.gz.vvv" ^| ForEach-Object {
+    ECHO     # Extract date from filename: vvBkp_XXX_YYYY_YYYYMMDD.tar.gz.vvv
+    ECHO     $name = $_.Name -replace '\.tar\.gz\.vvv$', ''
+    ECHO     $dateStr = $name.Substring^($name.Length - 8^)
+    ECHO     try {
+    ECHO         $fileDate = [datetime]::ParseExact^($dateStr, 'yyyyMMdd', $null^)
+    ECHO         if ^($fileDate -lt $monday -and $fileDate -ne $today^) {
+    ECHO             if ^($fileDate.DayOfWeek -ne 'Friday'^) {
+    ECHO                 Write-Host "  Deleting: $^($_.Name^)"
+    ECHO                 Remove-Item $_.FullName -Force
+    ECHO             } else {
+    ECHO                 Write-Host "  Keeping ^(Friday^): $^($_.Name^)"
+    ECHO             }
     ECHO         } else {
-    ECHO             Write-Host "  Keeping ^(Friday^): $^($_.Name^)"
+    ECHO             Write-Host "  Keeping ^(current week^): $^($_.Name^)"
     ECHO         }
-    ECHO     } else {
-    ECHO         Write-Host "  Keeping ^(current week^): $^($_.Name^)"
+    ECHO     } catch {
+    ECHO         Write-Host "  Skipping ^(invalid date^): $^($_.Name^)"
     ECHO     }
     ECHO }
 ) > "%cleanupScript%"
@@ -163,7 +168,7 @@ ECHO.
 ECHO [STEP 5] Copying to Dropbox: %vvDropBox%...
 
 XCOPY "%encryptedFile%" "%vvDropBox%\" /V /Y /F
-SET "copiedBkpFile=%vvDropBox%\%bkpFileName%.%qcFextension%"
+SET "copiedBkpFile=%vvDropBox%\%bkpFileName%.tar.gz.%qcFextension%"
 
 IF NOT EXIST "%copiedBkpFile%" GOTO :ERROR_DROPBOX_COPY
 
@@ -175,7 +180,7 @@ ECHO [STEP 6] Cleaning old backups in Dropbox (keeping last 2)...
 
 :: Count and delete old files, keeping only the 2 most recent
 SET "fileCount=0"
-FOR /f "delims=" %%f IN ('DIR /B /O-D "%vvDropBox%\vvBkp_*.%qcFextension%" 2^>nul') DO (
+FOR /f "delims=" %%f IN ('DIR /B /O-D "%vvDropBox%\vvBkp_*.tar.gz.%qcFextension%" 2^>nul') DO (
     SET /A "fileCount+=1"
     IF !fileCount! GTR 2 (
         ECHO   Deleting: %%f

@@ -3609,7 +3609,9 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
       {
          int min_rsOD, max_rsDO;
 
-         foreach(var ptranErow in ptraneRowsOfThisPtrans)
+         bool ptrane61exists = ptraneRowsOfThisPtrans.Any(pte => pte.t_rsOO == "61");
+
+         foreach (var ptranErow in ptraneRowsOfThisPtrans)
          {
             // yapravo ni ovo ne valja jer bi trebao uzeti min od OD i max od DO
           //min_rsOD = ptraneRowsOfThisPtrans.First(p => ((int)p.t_rsOD).NotZero()).t_rsOD;
@@ -3633,7 +3635,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
           //jpdBstranaRow = Add_jpdBstranaRow(pR, jpdBstranaTable, ptransRow, personRowOfCurrentTrans, ptranErow.t_vrstaR_cd, ptranErow.t_rsOO, ptranErow.t_rsOD, ptranErow.t_rsDO, min_rsOD, max_rsDO, izDisOOnaTeretHZZOa, ptranErow.t_sati, ptranErow.t_stjecatCD, ptranErow.t_primDohCD, ptranErow.t_pocKrajCD);
             if(((vrstaJoppd == "2" || vrstaJoppd == "3") && ptranErow.t_rbrIsprJop != 0.00M) || (vrstaJoppd == "1"))
             { 
-               Add_jpdBstranaRow(pR, jpdBstranaTable, ptransRow, personRowOfCurrentTrans, ptranErow.t_vrstaR_cd, ptranErow.t_rsOO, ptranErow.t_rsOD, ptranErow.t_rsDO, min_rsOD, max_rsDO, izDisOOnaTeretHZZOa, ptranErow.t_sati, ptranErow.t_stjecatCD, ptranErow.t_primDohCD, ptranErow.t_pocKrajCD, vrstaJoppd, ptranErow.t_rbrIsprJop);
+               Add_jpdBstranaRow(pR, jpdBstranaTable, ptransRow, personRowOfCurrentTrans, ptranErow.t_vrstaR_cd, ptranErow.t_rsOO, ptranErow.t_rsOD, ptranErow.t_rsDO, min_rsOD, max_rsDO, izDisOOnaTeretHZZOa, ptranErow.t_sati, ptranErow.t_stjecatCD, ptranErow.t_primDohCD, ptranErow.t_pocKrajCD, vrstaJoppd, ptranErow.t_rbrIsprJop, ptrane61exists);
             }
 
          } // foreach(var ptranErow in ptraneRowsOfThisPtrans)
@@ -3938,7 +3940,7 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
 
    // 21.04.2016. vrstaJoppd za ispravak i dopunu
  //private DS_Placa.jpdBstranaRow Add_jpdBstranaRow(PrulesStruct pR, DS_Placa.jpdBstranaDataTable jpdBstranaTable, /*uint jpdRbr,*/ DS_Placa.IzvjTableRow ptransRow, DS_Placa.personRow personRow, string t_vrstaR_cd, string t_rsOO, int t_rsOD, int t_rsDO, int min_rsOD, int max_rsDO, bool izDisOOnaTeretHZZOa, decimal t_sati, string t_stjecatCD, string t_primDohCD, string t_pocKrajCD)
-   private DS_Placa.jpdBstranaRow Add_jpdBstranaRow(PrulesStruct pR, DS_Placa.jpdBstranaDataTable jpdBstranaTable, /*uint jpdRbr,*/ DS_Placa.IzvjTableRow ptransRow, DS_Placa.personRow personRow, string t_vrstaR_cd, string t_rsOO, int t_rsOD, int t_rsDO, int min_rsOD, int max_rsDO, bool izDisOOnaTeretHZZOa, decimal t_sati, string t_stjecatCD, string t_primDohCD, string t_pocKrajCD, string vrstaJoppd, int rbrJop)
+   private DS_Placa.jpdBstranaRow Add_jpdBstranaRow(PrulesStruct pR, DS_Placa.jpdBstranaDataTable jpdBstranaTable, /*uint jpdRbr,*/ DS_Placa.IzvjTableRow ptransRow, DS_Placa.personRow personRow, string t_vrstaR_cd, string t_rsOO, int t_rsOD, int t_rsDO, int min_rsOD, int max_rsDO, bool izDisOOnaTeretHZZOa, decimal t_sati, string t_stjecatCD, string t_primDohCD, string t_pocKrajCD, string vrstaJoppd, int rbrJop, bool ptrane61exists = false)
    {
       DS_Placa.IzvjTableDataTable ptransTable   = ds_PlacaReport.IzvjTable;
       DS_Placa.placaSumDataTable  placaSumTable = ds_PlacaReport.placaSum;
@@ -4169,8 +4171,11 @@ public /*abstract*/ partial class VvPlacaReport : VvReport
          // 14.01.2015.
          //jpdBstranaRow.b_radVr     = ptransRow.t_isPoluSat == 0      ? "1" : "2"; // jos treba doraditi
      //29.05.2025. kako jos doraditi ya HZTK da dodje broj 3???????
-        jpdBstranaRow.b_radVr = ((ptransRow.t_dnFondSati == 0 || ptransRow.t_dnFondSati == 8) && ptransRow.t_isPoluSat == 0) ? "1" : "2"; 
+         jpdBstranaRow.b_radVr = ((ptransRow.t_dnFondSati == 0 || ptransRow.t_dnFondSati == 8) && ptransRow.t_isPoluSat == 0) ? "1" : "2"; 
          
+         // 26.03.2026:
+         if(jpdBstranaRow.b_radVr == "2" && ptrane61exists) jpdBstranaRow.b_radVr = "3";
+
          jpdBstranaRow.b_nacIsplCD = ptransRow.t_nacIsplCD.IsEmpty() ? "1" : ptransRow.t_nacIsplCD; ;
 //       jpdBstranaRow.b_MioOsn    = ptransRow.R_TheBruto;  15.10.2014. kada je osnovica min ili maks onda ne dolazi dobro, ne zanm kak to do sada nitko nije primjetio
 //       jpdBstranaRow.b_MioOsn    = ptransRow.R_MioOsn;    13.05.2015. ovdje treba doci osnovica doprionosa NA placu a ne mio koja je kod velikih placa bruto a kod malih mioOsn
