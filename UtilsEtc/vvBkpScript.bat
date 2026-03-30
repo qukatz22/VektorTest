@@ -4,6 +4,7 @@ SETLOCAL EnableDelayedExpansion
 :: ======================================================================
 :: vvBkpScript.bat - MySQL Database Backup Script
 :: Usage: vvBkpScript.bat BkpID Domain DataDir BkpDir DropBox Year Password
+:: Requires: 7-Zip installed at "C:\Program Files\7-Zip\7z.exe"
 :: ======================================================================
 
 :: CLS
@@ -31,6 +32,16 @@ IF "%vvDropBox%"=="" GOTO :USAGE
 IF "%vvYear%"=="" GOTO :USAGE
 IF "%vvPassword%"=="" GOTO :USAGE
 
+:: ===== CHECK FOR 7-ZIP =====
+SET "sevenZip="
+IF EXIST "C:\Program Files\7-Zip\7z.exe" SET "sevenZip=C:\Program Files\7-Zip\7z.exe"
+IF EXIST "C:\Program Files (x86)\7-Zip\7z.exe" SET "sevenZip=C:\Program Files (x86)\7-Zip\7z.exe"
+
+IF NOT DEFINED sevenZip (
+    SET "errorMsg=7-Zip not installed. Please install from https://www.7-zip.org/"
+    GOTO :SEND_ERROR
+)
+
 :: ===== INITIALIZE LOG FILE EARLY =====
 SET "logFile=%vvBkpDir%\vvBkpLog.txt"
 
@@ -49,8 +60,8 @@ IF /I "%vvDomena%"=="NULL" (
 )
 
 SET "tempBkpDir=%vvBkpDir%\temp_%theYYYYMMDD%"
-SET "tarFile=%vvBkpDir%\%bkpFileName%.tar.gz"
-SET "encryptedFile=%vvBkpDir%\%bkpFileName%.tar.gz.%qcFextension%"
+SET "archiveFile=%vvBkpDir%\%bkpFileName%.7z"
+SET "encryptedFile=%vvBkpDir%\%bkpFileName%.7z.%qcFextension%"
 
 :: ===== VALIDATE DATA DIRECTORY EXISTS =====
 IF NOT EXIST "%vvDataDir%" (
@@ -65,6 +76,7 @@ ECHO.
 ECHO ======================================================================
 ECHO   vvBkpScript - Starting backup: %bkpFileName%
 ECHO   Start time: %startTimestamp%
+ECHO   Compression: 7-Zip maximum
 ECHO ======================================================================
 ECHO.
 
@@ -123,31 +135,42 @@ IF !yearDbCount! EQU 0 (
     GOTO :SEND_ERROR
 )
 
+:: Get uncompressed size
+FOR /f %%i IN ('powershell -NoProfile -Command "(Get-ChildItem -Path '%tempBkpDir%' -Recurse | Measure-Object -Property Length -Sum).Sum"') DO SET "sizeBeforeBytes=%%i"
+FOR /f %%i IN ('powershell -NoProfile -Command "[math]::Round((Get-ChildItem -Path '%tempBkpDir%' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB, 2)"') DO SET "sizeBeforeMB=%%i"
+
 ECHO [STEP 1] Complete. Copied !dbCopyCount! database(s).
+ECHO   Uncompressed size: %sizeBeforeMB% MB
 ECHO.
 
-:: ===== STEP 2: GZIP INTO SINGLE FILE =====
-ECHO [STEP 2] Creating compressed archive...
+:: ===== STEP 2: CREATE COMPRESSED ARCHIVE (7-ZIP) =====
+ECHO [STEP 2] Creating compressed archive with 7-Zip (maximum compression)...
 
-:: Delete existing tar file if present
-IF EXIST "%tarFile%" DEL "%tarFile%"
+:: Delete existing archive file if present
+IF EXIST "%archiveFile%" DEL "%archiveFile%"
 
-pushd "%tempBkpDir%"
-tar -czvf "%tarFile%" *
-SET "tarExitCode=!ERRORLEVEL!"
-popd
+"%sevenZip%" a -t7z -mx=9 -mfb=64 -md=32m "%archiveFile%" "%tempBkpDir%\*"
+SET "compressExitCode=!ERRORLEVEL!"
 
-IF !tarExitCode! NEQ 0 (
-    SET "errorMsg=tar command failed with exit code !tarExitCode!"
+IF !compressExitCode! NEQ 0 (
+    SET "errorMsg=7-Zip compression failed with exit code !compressExitCode!"
     GOTO :SEND_ERROR
 )
 
-IF NOT EXIST "%tarFile%" GOTO :ERROR_GZIP
+IF NOT EXIST "%archiveFile%" GOTO :ERROR_COMPRESS
+
+:: Get compressed size and calculate ratio
+FOR /f %%i IN ('powershell -NoProfile -Command "(Get-Item '%archiveFile%').Length"') DO SET "sizeAfterBytes=%%i"
+FOR /f %%i IN ('powershell -NoProfile -Command "[math]::Round((Get-Item '%archiveFile%').Length / 1MB, 2)"') DO SET "sizeAfterMB=%%i"
+FOR /f %%i IN ('powershell -NoProfile -Command "if (%sizeAfterBytes% -gt 0) { [math]::Round(%sizeBeforeBytes% / %sizeAfterBytes%, 2) } else { 0 }"') DO SET "compressionRatio=%%i"
+FOR /f %%i IN ('powershell -NoProfile -Command "if (%sizeBeforeBytes% -gt 0) { [math]::Round(%sizeAfterBytes% / %sizeBeforeBytes% * 100, 1) } else { 0 }"') DO SET "percentOfOriginal=%%i"
 
 :: Cleanup temp directory
 RD /S /Q "%tempBkpDir%"
 
-ECHO [STEP 2] Complete: %tarFile%
+ECHO [STEP 2] Complete: %archiveFile%
+ECHO   Compressed size: %sizeAfterMB% MB
+ECHO   Compression: %compressionRatio%:1 (%percentOfOriginal%%% of original)
 ECHO.
 
 :: ===== STEP 3: ENCRYPT WITH DLOCK2 =====
@@ -156,7 +179,7 @@ ECHO [STEP 3] Encrypting backup file...
 :: Delete existing encrypted file if present
 IF EXIST "%encryptedFile%" DEL "%encryptedFile%"
 
-dlock2 /E /S "%tarFile%" "%encryptedFile%" /P"%vvPassword%"
+dlock2 /E /S "%archiveFile%" "%encryptedFile%" /P"%vvPassword%"
 SET "dlockExitCode=!ERRORLEVEL!"
 
 IF !dlockExitCode! NEQ 0 (
@@ -167,9 +190,13 @@ IF !dlockExitCode! NEQ 0 (
 IF NOT EXIST "%encryptedFile%" GOTO :ERROR_ENCRYPT
 
 :: Delete unencrypted file
-DEL "%tarFile%"
+DEL "%archiveFile%"
+
+:: Get final encrypted file size
+FOR /f %%i IN ('powershell -NoProfile -Command "[math]::Round((Get-Item '%encryptedFile%').Length / 1MB, 2)"') DO SET "sizeFinalMB=%%i"
 
 ECHO [STEP 3] Complete: %encryptedFile%
+ECHO   Final size: %sizeFinalMB% MB
 ECHO.
 
 :: ===== STEP 4: DELETE OLD BACKUPS IN BKPDIR =====
@@ -182,9 +209,9 @@ SET "cleanupScript=%TEMP%\vvBkpCleanup.ps1"
     ECHO $bkpDir = '%vvBkpDir%'
     ECHO $monday = ^(Get-Date^).AddDays(-^(^(Get-Date^).DayOfWeek.value__ - 1^)^).Date
     ECHO.
-    ECHO Get-ChildItem -Path $bkpDir -Filter "vvBkp_*.tar.gz.vvv" ^| ForEach-Object {
-    ECHO     # Extract date from filename: vvBkp_XXX_YYYY_YYYYMMDD.tar.gz.vvv
-    ECHO     $name = $_.Name -replace '\.tar\.gz\.vvv$', ''
+    ECHO Get-ChildItem -Path $bkpDir -Filter "vvBkp_*.7z.vvv" ^| ForEach-Object {
+    ECHO     # Extract date from filename: vvBkp_XXX_YYYY_YYYYMMDD.7z.vvv
+    ECHO     $name = $_.Name -replace '\.7z\.vvv$', ''
     ECHO     $dateStr = $name.Substring^($name.Length - 8^)
     ECHO     try {
     ECHO         $fileDate = [datetime]::ParseExact^($dateStr, 'yyyyMMdd', $null^)
@@ -224,7 +251,7 @@ IF ERRORLEVEL 1 (
     GOTO :SEND_ERROR
 )
 
-SET "copiedBkpFile=%vvDropBox%\%bkpFileName%.tar.gz.%qcFextension%"
+SET "copiedBkpFile=%vvDropBox%\%bkpFileName%.7z.%qcFextension%"
 
 IF NOT EXIST "%copiedBkpFile%" GOTO :ERROR_DROPBOX_COPY
 
@@ -236,7 +263,7 @@ ECHO [STEP 6] Cleaning old backups in Dropbox (keeping last 2)...
 
 :: Count and delete old files, keeping only the 2 most recent
 SET "fileCount=0"
-FOR /f "delims=" %%f IN ('DIR /B /O-D "%vvDropBox%\vvBkp_*.tar.gz.%qcFextension%" 2^>nul') DO (
+FOR /f "delims=" %%f IN ('DIR /B /O-D "%vvDropBox%\vvBkp_*.7z.%qcFextension%" 2^>nul') DO (
     SET /A "fileCount+=1"
     IF !fileCount! GTR 2 (
         ECHO   Deleting: %%f
@@ -260,13 +287,14 @@ IF "%duration%"=="" SET "duration=00:00:00"
 IF "%duration%"=="hh:mm:ss" SET "duration=ERROR"
 
 ECHO [STEP 7] Writing to log file...
-ECHO %theYYYYMMDD%	%bkpFileName%	Start: %startTime%	End: %endTime%	Duration: %duration%	OK >> "%logFile%"
+ECHO %theYYYYMMDD%	%bkpFileName%	Start: %startTime%	End: %endTime%	Duration: %duration%	Size: %sizeBeforeMB%MB-^>%sizeAfterMB%MB (%percentOfOriginal%%%)	OK >> "%logFile%"
 
 ECHO.
 ECHO ======================================================================
 ECHO   BACKUP COMPLETED SUCCESSFULLY!
-ECHO   File: %bkpFileName%.%qcFextension%
+ECHO   File: %bkpFileName%.7z.%qcFextension%
 ECHO   Duration: %duration%
+ECHO   Size: %sizeBeforeMB% MB -^> %sizeFinalMB% MB (%percentOfOriginal%%% of original)
 ECHO ======================================================================
 ECHO.
 
@@ -277,8 +305,8 @@ GOTO :END
 SET "errorMsg=Error copying database directories"
 GOTO :SEND_ERROR
 
-:ERROR_GZIP
-SET "errorMsg=Error creating gzip archive: %tarFile%"
+:ERROR_COMPRESS
+SET "errorMsg=Error creating 7z archive: %archiveFile%"
 GOTO :SEND_ERROR
 
 :ERROR_ENCRYPT
@@ -299,8 +327,8 @@ ECHO.
 
 :: Cleanup temp directory if it exists
 IF EXIST "%tempBkpDir%" RD /S /Q "%tempBkpDir%"
-:: Cleanup partial tar file if it exists
-IF EXIST "%tarFile%" DEL "%tarFile%"
+:: Cleanup partial archive file if it exists
+IF EXIST "%archiveFile%" DEL "%archiveFile%"
 
 :: Get end time for logging
 FOR /f %%i IN ('powershell -NoProfile -Command "Get-Date -Format HH:mm:ss"') DO SET "endTime=%%i"
@@ -320,6 +348,8 @@ ECHO.
 ECHO Usage: vvBkpScript.bat BkpID VvDomena DataDir BkpDir DropBox Year Password
 ECHO.
 ECHO Example: vvBkpScript.bat ROZEL NULL D:\VIPER\MyVvData D:\VIPER\MyVvBackup D:\VIPER\Dropbox 2026 myPassword
+ECHO.
+ECHO Requires: 7-Zip installed at "C:\Program Files\7-Zip\7z.exe"
 ECHO.
 EXIT /B 1
 
