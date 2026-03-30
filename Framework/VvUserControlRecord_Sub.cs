@@ -662,43 +662,44 @@ public abstract class VvDocumentRecordUC  : VvDocumLikeRecordUC
    private void grid_CellEnter_CopyPrevRowValue(object sender, DataGridViewCellEventArgs e)
    {
       VvDataGridView dgv = sender as VvDataGridView;
+      if (dgv == null) return;
 
-      if(ZXC.TheVvForm.TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+      if (ZXC.TheVvForm?.TheVvTabPage?.WriteMode == ZXC.WriteMode.None) return;
 
-      VvTextBox vvtb = dgv.Columns[e.ColumnIndex].Tag as VvTextBox;
+      if (e.ColumnIndex < 0 || e.ColumnIndex >= dgv.Columns.Count) return;
 
-      if(vvtb != null && (vvtb.JAM_ShouldCopyPrevRow || vvtb.JAM_ShouldCopyPrevRowUnCond))
+      VvTextBox vvtb = dgv.Columns[e.ColumnIndex]?.Tag as VvTextBox;
+
+      if (vvtb != null && (vvtb.JAM_ShouldCopyPrevRow || vvtb.JAM_ShouldCopyPrevRowUnCond))
       {
          int currRow = e.RowIndex;
          int currCol = e.ColumnIndex;
 
-         if(currRow < 1) return;
+         if (currRow < 1) return;
 
-         if(vvtb.JAM_ShouldCopyPrevRowUnCond == false &&
-            ((currRow != dgv.RowCount - 2)) && // samo za zadnji red 
-            (currRow != dgv.RowCount - 1 && currCol != 2))  // ako je prva kolona, onda je rowcount jos uvijek -1, a currCol = 2 je prva visible kolona 
+         if (vvtb.JAM_ShouldCopyPrevRowUnCond == false &&
+            ((currRow != dgv.RowCount - 2)) &&
+            (currRow != dgv.RowCount - 1 && currCol != 2))
             return;
 
          object prevValueAsObject = dgv.GetCellValueAsObject(currCol, currRow - 1, false);
-         object currValueAsObject = dgv.GetCellValueAsObject(currCol, currRow    , false);
+         object currValueAsObject = dgv.GetCellValueAsObject(currCol, currRow, false);
 
-         if(prevValueAsObject != null && 
-            (currValueAsObject == null              || 
-             currValueAsObject.ToString().IsEmpty() || 
-             currValueAsObject.ToString() == "0")   ||
-             currValueAsObject.ToString()	== "01.01.0001. 0:00:00"	)
+         string currValueStr = currValueAsObject?.ToString() ?? "";
+
+         // Fixed condition - all checks properly grouped
+         if (prevValueAsObject != null &&
+            (currValueAsObject == null ||
+             currValueStr.IsEmpty() ||
+             currValueStr == "0" ||
+             currValueStr == "01.01.0001. 0:00:00"))
          {
             dgv.PutCell(currCol, currRow, prevValueAsObject);
             dgv.BeginEdit(true);
-            originalText = ""; // da digne evantualni OnExit event
+            originalText = "";
          }
-
-         //// ako je bila prva visible kolona onda ovom akcijom se popuni kolona ali na otvara se novi (onaj zadnji - prazni) red automatski nago moras vako rucno 
-         //if(currRow == dgv.RowCount - 1 && currCol == 2) TheG.Rows.Add();
-         // ma ne pomaze, nemozes iz ovog eventa dodavati grid-u row, jer skoci 'InvalidOperationException'..!?  jebo te DataGridView 
       }
    }
-
    private void grid_CellEnter_SetStatusText(object sender, DataGridViewCellEventArgs e)
    {
       DataGridView dgv = sender as DataGridView;

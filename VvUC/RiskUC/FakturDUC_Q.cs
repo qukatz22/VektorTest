@@ -3733,6 +3733,16 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #endregion Tetragram
 
+      #region BUG Kupdob.TickerToken u Nazivu
+
+      if(faktur_rec.KupdobName.Contains(Kupdob.TickerToken))
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Error, $"Greška: Partner naziv sadrži '{Kupdob.TickerToken}'\n\r\n\rPobrišite pa nanovo zadajte partnera.");
+         e.Cancel = true;
+      }
+
+      #endregion BUG Kupdob.TickerToken u Nazivu
+
    } // void FakturDUC_Validating(object sender, CancelEventArgs e)
 
    #region M2PAY Hapi
