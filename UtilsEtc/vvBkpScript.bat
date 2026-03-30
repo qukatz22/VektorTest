@@ -1,4 +1,4 @@
-﻿@ECHO off
+@ECHO off
 SETLOCAL EnableDelayedExpansion
 
 :: ======================================================================
@@ -6,7 +6,7 @@ SETLOCAL EnableDelayedExpansion
 :: Usage: vvBkpScript.bat BkpID Domain DataDir BkpDir DropBox Year Password
 :: ======================================================================
 
-CLS
+:: CLS
 
 :: ===== PARSE COMMAND LINE ARGUMENTS =====
 SET "vvBkpID=%~1"
@@ -31,6 +31,9 @@ IF "%vvDropBox%"=="" GOTO :USAGE
 IF "%vvYear%"=="" GOTO :USAGE
 IF "%vvPassword%"=="" GOTO :USAGE
 
+:: ===== INITIALIZE LOG FILE EARLY =====
+SET "logFile=%vvBkpDir%\vvBkpLog.txt"
+
 :: ===== GET CURRENT DATE/TIME =====
 FOR /f %%i IN ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd"') DO SET "theYYYYMMDD=%%i"
 FOR /f %%i IN ('powershell -NoProfile -Command "Get-Date -Format HH:mm:ss"') DO SET "startTime=%%i"
@@ -45,10 +48,18 @@ IF /I "%vvDomena%"=="NULL" (
     SET "vvektorDB=%vvDomena%_vvektor"
 )
 
-SET "logFile=%vvBkpDir%\vvBkpLog.txt"
 SET "tempBkpDir=%vvBkpDir%\temp_%theYYYYMMDD%"
 SET "tarFile=%vvBkpDir%\%bkpFileName%.tar.gz"
 SET "encryptedFile=%vvBkpDir%\%bkpFileName%.tar.gz.%qcFextension%"
+
+:: ===== VALIDATE DATA DIRECTORY EXISTS =====
+IF NOT EXIST "%vvDataDir%" (
+    SET "errorMsg=Data directory does not exist: %vvDataDir%"
+    GOTO :SEND_ERROR
+)
+
+:: ===== TRACK DATABASE COPY COUNT =====
+SET "dbCopyCount=0"
 
 ECHO.
 ECHO ======================================================================
@@ -62,23 +73,31 @@ ECHO [STEP 1] Copying database directories from %vvDataDir% to temp folder...
 
 IF EXIST "%tempBkpDir%" RD /S /Q "%tempBkpDir%"
 MD "%tempBkpDir%"
+IF ERRORLEVEL 1 (
+    SET "errorMsg=Failed to create temp directory: %tempBkpDir%"
+    GOTO :SEND_ERROR
+)
 
-:: Copy mysql database (always)
+:: Copy mysql database (required)
 IF EXIST "%vvDataDir%\mysql" (
     XCOPY "%vvDataDir%\mysql" "%tempBkpDir%\mysql\" /E /I /Q /Y
     IF ERRORLEVEL 1 GOTO :ERROR_COPY
     ECHO   - mysql [OK]
+    SET /A "dbCopyCount+=1"
 ) ELSE (
-    ECHO   - mysql [NOT FOUND - SKIPPING]
+    SET "errorMsg=Required directory not found: %vvDataDir%\mysql"
+    GOTO :SEND_ERROR
 )
 
-:: Copy vvektor database
+:: Copy vvektor database (required)
 IF EXIST "%vvDataDir%\%vvektorDB%" (
     XCOPY "%vvDataDir%\%vvektorDB%" "%tempBkpDir%\%vvektorDB%\" /E /I /Q /Y
     IF ERRORLEVEL 1 GOTO :ERROR_COPY
     ECHO   - %vvektorDB% [OK]
+    SET /A "dbCopyCount+=1"
 ) ELSE (
-    ECHO   - %vvektorDB% [NOT FOUND - SKIPPING]
+    SET "errorMsg=Required directory not found: %vvDataDir%\%vvektorDB%"
+    GOTO :SEND_ERROR
 )
 
 :: Copy all databases for the specified year
@@ -88,22 +107,40 @@ IF /I "%vvDomena%"=="NULL" (
     SET "yearPattern=%vvDomena%_vv%vvYear%_*"
 )
 
+SET "yearDbCount=0"
 FOR /D %%d IN ("%vvDataDir%\%yearPattern%") DO (
     SET "dbName=%%~nxd"
     XCOPY "%%d" "%tempBkpDir%\!dbName!\" /E /I /Q /Y
     IF ERRORLEVEL 1 GOTO :ERROR_COPY
     ECHO   - !dbName! [OK]
+    SET /A "dbCopyCount+=1"
+    SET /A "yearDbCount+=1"
 )
 
-ECHO [STEP 1] Complete.
+:: Verify at least one year database was found
+IF !yearDbCount! EQU 0 (
+    SET "errorMsg=No databases found matching pattern: %yearPattern%"
+    GOTO :SEND_ERROR
+)
+
+ECHO [STEP 1] Complete. Copied !dbCopyCount! database(s).
 ECHO.
 
 :: ===== STEP 2: GZIP INTO SINGLE FILE =====
 ECHO [STEP 2] Creating compressed archive...
 
+:: Delete existing tar file if present
+IF EXIST "%tarFile%" DEL "%tarFile%"
+
 pushd "%tempBkpDir%"
 tar -czvf "%tarFile%" *
+SET "tarExitCode=!ERRORLEVEL!"
 popd
+
+IF !tarExitCode! NEQ 0 (
+    SET "errorMsg=tar command failed with exit code !tarExitCode!"
+    GOTO :SEND_ERROR
+)
 
 IF NOT EXIST "%tarFile%" GOTO :ERROR_GZIP
 
@@ -116,7 +153,16 @@ ECHO.
 :: ===== STEP 3: ENCRYPT WITH DLOCK2 =====
 ECHO [STEP 3] Encrypting backup file...
 
+:: Delete existing encrypted file if present
+IF EXIST "%encryptedFile%" DEL "%encryptedFile%"
+
 dlock2 /E /S "%tarFile%" "%encryptedFile%" /P"%vvPassword%"
+SET "dlockExitCode=!ERRORLEVEL!"
+
+IF !dlockExitCode! NEQ 0 (
+    SET "errorMsg=dlock2 encryption failed with exit code !dlockExitCode!"
+    GOTO :SEND_ERROR
+)
 
 IF NOT EXIST "%encryptedFile%" GOTO :ERROR_ENCRYPT
 
@@ -167,7 +213,17 @@ ECHO.
 :: ===== STEP 5: COPY TO DROPBOX =====
 ECHO [STEP 5] Copying to Dropbox: %vvDropBox%...
 
+IF NOT EXIST "%vvDropBox%" (
+    SET "errorMsg=Dropbox directory does not exist: %vvDropBox%"
+    GOTO :SEND_ERROR
+)
+
 XCOPY "%encryptedFile%" "%vvDropBox%\" /V /Y /F
+IF ERRORLEVEL 1 (
+    SET "errorMsg=XCOPY to Dropbox failed"
+    GOTO :SEND_ERROR
+)
+
 SET "copiedBkpFile=%vvDropBox%\%bkpFileName%.tar.gz.%qcFextension%"
 
 IF NOT EXIST "%copiedBkpFile%" GOTO :ERROR_DROPBOX_COPY
@@ -235,20 +291,38 @@ GOTO :SEND_ERROR
 
 :SEND_ERROR
 ECHO.
-ECHO ERROR: %errorMsg%
+ECHO ======================================================================
+ECHO   BACKUP FAILED!
+ECHO   ERROR: %errorMsg%
+ECHO ======================================================================
 ECHO.
+
+:: Cleanup temp directory if it exists
+IF EXIST "%tempBkpDir%" RD /S /Q "%tempBkpDir%"
+:: Cleanup partial tar file if it exists
+IF EXIST "%tarFile%" DEL "%tarFile%"
+
+:: Get end time for logging
 FOR /f %%i IN ('powershell -NoProfile -Command "Get-Date -Format HH:mm:ss"') DO SET "endTime=%%i"
+
+:: Write error to log file
+IF "%bkpFileName%"=="" SET "bkpFileName=UNKNOWN"
 ECHO %theYYYYMMDD%	%bkpFileName%	Start: %startTime%	End: %endTime%	ERROR: %errorMsg% >> "%logFile%"
+
+:: Send email notification
 blat -subject "[vvBkp ERROR] %vvBkpID%: %errorMsg%" -body "Backup: %bkpFileName%\nError: %errorMsg%\nTime: %DATE% %endTime%" -server %outgoingMailServer% -f %fromEmail% -to %toEmail%
-GOTO :END
+
+:: Exit with error code
+EXIT /B 1
 
 :USAGE
 ECHO.
-ECHO Usage: vvBkpScript.bat BkpID Domain DataDir BkpDir DropBox Year Password
+ECHO Usage: vvBkpScript.bat BkpID VvDomena DataDir BkpDir DropBox Year Password
 ECHO.
 ECHO Example: vvBkpScript.bat ROZEL NULL D:\VIPER\MyVvData D:\VIPER\MyVvBackup D:\VIPER\Dropbox 2026 myPassword
 ECHO.
-GOTO :END
+EXIT /B 1
 
 :END
 ENDLOCAL
+EXIT /B 0
