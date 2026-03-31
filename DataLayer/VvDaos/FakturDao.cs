@@ -1001,11 +1001,11 @@ if(isIRMgrouping) faktur_rec.PdvDate     = reader.GetDateTime(colIdx++);
       return success;
    }
 
-   public static bool SetMeFaktur_ByKupdobOIBAndVezniDok(XSqlConnection conn, Faktur faktur_rec, string kdOIB, string vezniDok/*, bool _shouldBeSilent*/)
+   public static bool SetMe_FUR_Faktur_ByKupdobOIBAndVezniDok(XSqlConnection conn, Faktur faktur_rec, string kdOIB, string vezniDok/*, bool _shouldBeSilent*/)
    {
       bool success = true;
 
-      using(XSqlCommand cmd = VvSQL.SetMeFaktur_ByKupdobOIBAndVezniDok_Command(conn, kdOIB, vezniDok))
+      using(XSqlCommand cmd = VvSQL.SetMe_FUR_Faktur_ByKupdobOIBAndVezniDok_Command(conn, kdOIB, vezniDok))
       {
          success = ZXC.FakturDao.ExecuteSingleFillFromDataReader(faktur_rec, false, cmd, true);
       } // using cmd 

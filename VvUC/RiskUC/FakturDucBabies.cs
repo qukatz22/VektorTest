@@ -10829,7 +10829,7 @@ public class F2_Ulaz_UC : VvUserControl
 
       if(!fakturDataLayer_FOUNDv1)
       {
-         fakturDataLayer_FOUNDv2 = FakturDao.SetMeFaktur_ByKupdobOIBAndVezniDok(TheDbConnection, faktur_rec, fakturKdOIB, fakturVezniDok);
+         fakturDataLayer_FOUNDv2 = FakturDao.SetMe_FUR_Faktur_ByKupdobOIBAndVezniDok(TheDbConnection, faktur_rec, fakturKdOIB, fakturVezniDok);
       }
 
       if(fakturDataLayer_FOUNDv2)
