@@ -4789,6 +4789,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="UtilsEtc\vvBkpScript.bat" />
+    <None Include="UtilsEtc\vvBkpScript_UNIV.bat" />
     <None Include="UtilsEtc\vvRestore.bat" />
     <None Include="Web References\StatusService\GetStatus.disco" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\CbuCba.ico" />
