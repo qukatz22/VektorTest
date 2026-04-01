@@ -1794,7 +1794,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
                ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl nije 'ZAR' artikl!\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
                e.Cancel = true;
             }
-            if(this is ZAR_DUC == false && this is PON_MPC_DUC == false && artikl_rec != null && artikl_rec.TS == "ZAR")
+          //if(this is ZAR_DUC == false &&                                    this is PON_MPC_DUC == false && artikl_rec != null && artikl_rec.TS == "ZAR")
+            if(this is ZAR_DUC == false && this is BlgUplat_M_DUC == false && this is PON_MPC_DUC == false && artikl_rec != null && artikl_rec.TS == "ZAR")
             {
                ZXC.aim_emsg(MessageBoxIcon.Error, "Artikl je 'ZAR' artikl!\n\nRedak: {0} ArtiklCD: {1}", (rowIdx + 1), artiklCD);
                e.Cancel = true;
@@ -3712,7 +3713,8 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             e.Cancel = true;
          }
 
-         if(isZAR_SkladCD == false)
+       //if(isZAR_SkladCD == false                                   )
+         if(isZAR_SkladCD == false && this is BlgUplat_M_DUC == false)
          {
             if(faktur_rec.Transes.Any(rtr => rtr.T_artiklCD.StartsWith("ZAR")))
             {
