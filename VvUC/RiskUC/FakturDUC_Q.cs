@@ -3737,7 +3737,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
       #region BUG Kupdob.TickerToken u Nazivu
 
-      if(faktur_rec.KupdobName.Contains(Kupdob.TickerToken))
+      if(faktur_rec.TheEx != null && faktur_rec.KupdobName != null && faktur_rec.KupdobName.Contains(Kupdob.TickerToken))
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, $"Greška: Partner naziv sadrži '{Kupdob.TickerToken}'\n\r\n\rPobrišite pa nanovo zadajte partnera.");
          e.Cancel = true;
