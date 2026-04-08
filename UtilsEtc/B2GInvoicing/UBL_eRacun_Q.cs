@@ -2135,7 +2135,7 @@ namespace EN16931.UBL
 
          ushort line = 0;
 
-         List<Rtrans> newANA_rtransList        = new List<Rtrans>(this.InvoiceLine.Length);
+         List<Rtrans> newANA_rtransList = new List<Rtrans>(this.InvoiceLine.Length);
          List<Rtrans> newSIN_rtransList = null;
 
          bool OK = true;
@@ -2830,11 +2830,14 @@ namespace EN16931.UBL
 
          ushort line = 0;
 
-         List<Rtrans> rtransList = new List<Rtrans>(this.CreditNoteLine.Length);
+         List<Rtrans> newANA_rtransList = new List<Rtrans>(this.CreditNoteLine.Length);
+         List<Rtrans> newSIN_rtransList = null;
 
          bool OK = true;
          //Faktur fak;
          //Rtrans rtr;
+
+         bool wantsOneSintStavka = isIFA ? ZXC.RRD.Dsc_F2_IsNIR : ZXC.RRD.Dsc_F2_IsNUR;
 
          #endregion init
 
@@ -2919,21 +2922,87 @@ namespace EN16931.UBL
 
             rtrans_rec.CalcTransResults(null);
 
-            rtransList.Add(rtrans_rec);
+            newANA_rtransList.Add(rtrans_rec);
 
          } // foreach(InvoiceLineType invoiceLine in this.InvoiceLine) 
 
          #endregion STAVKE računa
 
+         #region wantsOneSintStavka
+
+         if(wantsOneSintStavka)
+         {
+            newSIN_rtransList = new List<Rtrans>();
+
+            string  taxCategory;
+            string  taxExemptionReason;
+            decimal taxAmount;
+            string artiklName;
+            decimal taxPercent;
+
+            // probaj prvo po TaxTotalima 
+            foreach(var taxTotal in this.TaxTotal)
+            { 
+               foreach(var taxSubtotal in taxTotal.TaxSubtotal)
+               {
+                  taxPercent         = taxSubtotal.TaxCategory.Percent?.Value ?? 0M;
+                  taxCategory        = taxPercent.ToString();
+                  taxExemptionReason = taxSubtotal.TaxCategory?.TaxExemptionReason?.FirstOrDefault()?.Value ?? $"Stav. po PDV stopi od {taxCategory}%";
+                  taxAmount          = taxSubtotal.TaxAmount.Value;
+
+                  artiklName = $"Stav. po PDV stopi od {taxCategory}% (u iznosu od {taxAmount})";
+
+                  Rtrans sintRtrans_rec = new Rtrans()
+                  {
+                     T_artiklName = taxPercent.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
+                     T_kol        = 1,
+                     T_pdvSt      = taxPercent,
+
+                     T_konto      = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
+
+                     T_cij        = taxSubtotal.TaxableAmount.Value
+                  };
+
+                  sintRtrans_rec.CalcTransResults(null);
+
+                  newSIN_rtransList.Add(sintRtrans_rec);
+               }
+
+            } // foreach(var taxTotal in this.TaxTotal)
+
+            // a kako nema TaxTotala, uzmi LegalMonetaryTotal stuff 
+            if(newSIN_rtransList.Count.IsZero())
+            {
+               Rtrans sintRtrans_rec = new Rtrans()
+               {
+                  T_artiklName = $"Sumirane stavke",
+                  T_kol        = 1,
+
+                  T_konto = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
+
+                  T_cij = this.LegalMonetaryTotal?.TaxExclusiveAmount?.Value ?? 0M // ili mozda PayableAmount? 
+               };
+
+               sintRtrans_rec.CalcTransResults(null);
+
+               newSIN_rtransList.Add(sintRtrans_rec);
+
+            } // if(newSIN_rtransList.Count.IsZero())
+
+         } // if(wantsOneSintStavka)
+
+         #endregion wantsOneSintStavka
+
          #region TakeTransesSumToDokumentSum
 
-         faktur_rec.Transes = rtransList;
+         faktur_rec.Transes = wantsOneSintStavka ? newSIN_rtransList : newANA_rtransList;
+
          faktur_rec.TakeTransesSumToDokumentSum(true);
          faktur_rec.Transes = null;
 
          #endregion TakeTransesSumToDokumentSum
 
-         foreach(Rtrans rtrans in rtransList)
+         foreach(Rtrans rtrans in wantsOneSintStavka ? newSIN_rtransList : newANA_rtransList)
          {
             OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
          }

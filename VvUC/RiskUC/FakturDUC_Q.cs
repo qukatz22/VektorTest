@@ -1764,7 +1764,9 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
          #region KPD sifra
 
-         if(artiklCD.NotEmpty() && IsF012DUC && faktur_rec.IsF2)
+         // 07.04.2026: 
+       //if(artiklCD.NotEmpty() && IsF012DUC &&  faktur_rec.IsF2                                         )
+         if(artiklCD.NotEmpty() && IsF012DUC && (faktur_rec.IsF2 || ZXC.CURR_prjkt_rec.F2_ImaSamo_F2_B2B))
          {
             string kpdSifra = TheG.GetStringCell(ci.iT_KPD, rowIdx, false);
 
