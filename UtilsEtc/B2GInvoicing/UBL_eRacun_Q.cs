@@ -130,7 +130,7 @@ namespace EN16931.UBL
          if(isIRM)
          {
             if(isIRMcalcB) faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_B();
-            else faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
+            else           faktur_rec = ORIG_faktur_rec.Convert_IRM_Faktur_To_IRA_Faktur_A();
          }
          else // classic 
          {
@@ -922,10 +922,10 @@ namespace EN16931.UBL
 
          the_eRacun.LegalMonetaryTotal = new MonetaryTotalType
          {
-            LineExtensionAmount = new LineExtensionAmountType { Value = Fak2eR_Decimal("BT106", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
+            LineExtensionAmount  = new LineExtensionAmountType  { Value = Fak2eR_Decimal("BT106", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih neto iznosa stavki racuna    = sumi neto iznosa stavki BT-131
             AllowanceTotalAmount = new AllowanceTotalAmountType { Value = Fak2eR_Decimal("BT107", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih rabata na razini dokumenta   = sumi rabata BT-92             
-            TaxExclusiveAmount = new TaxExclusiveAmountType { Value = Fak2eR_Decimal("BT109", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
-            TaxInclusiveAmount = new TaxInclusiveAmountType { Value = Fak2eR_Decimal("BT112", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
+            TaxExclusiveAmount   = new TaxExclusiveAmountType   { Value = Fak2eR_Decimal("BT109", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// zbroj svih iznosa bez PDV-a             = sumaBT-131 - BT-107 + BT-108  
+            TaxInclusiveAmount   = new TaxInclusiveAmountType   { Value = Fak2eR_Decimal("BT112", faktur_rec, null), currencyID = faktur_rec.CurrencyID },// ukupni iznos racuna s PDV-om            =BT-109 + BT-110                
 
 
             PayableAmount = new PayableAmountType
@@ -1807,11 +1807,11 @@ namespace EN16931.UBL
          {
             //ZAGLAVLJE:
 
-            case "BT106": theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS : faktur_rec.S_ukKC; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
+            case "BT106"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKC_SUM_AVANS  : faktur_rec.S_ukKC ; break; //BT-106 Zbroj svih neto iznosa stavki računa	                     
             case "BT109old": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR; break; //BT-109 Ukupni iznos računa bez PDV-a i bez PPMV !!!!             
 
-            //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS  : faktur_rec.S_ukKCR                          ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
-            case "BT109": theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
+          //case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR                         ; break; //BT-109 Ukupni iznos računa bez PDV-a 	                           
+            case "BT109"   : theDecimal = needsAvansValues ? faktur_rec.R_ukKCR_SUM_AVANS : faktur_rec.S_ukKCR + faktur_rec.R_ukPpmvIzn; break; //BT-109 Ukupni iznos računa bez PDV-a 	ali sa PPMV-om !!!!!       
 
             //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.S_ukKCRP                                                   ; break; //BT-112 Ukupni iznos računa s PDV-om		    
             //case "BT112": theDecimal = needsAvansValues ? faktur_rec.R_ukKCRP_SUM_AVANS : faktur_rec.Skn_ukKCRP                                                 ; break; //BT-112 Ukupni iznos računa s PDV-om   2026 
@@ -2135,7 +2135,7 @@ namespace EN16931.UBL
 
          ushort line = 0;
 
-         List<Rtrans> newANA_rtransList        = new List<Rtrans>(this.InvoiceLine.Length);
+         List<Rtrans> newANA_rtransList = new List<Rtrans>(this.InvoiceLine.Length);
          List<Rtrans> newSIN_rtransList = null;
 
          bool OK = true;
@@ -2397,13 +2397,15 @@ namespace EN16931.UBL
             string  taxExemptionReason;
             decimal taxAmount;
             string artiklName;
+            decimal taxPercent;
 
             // probaj prvo po TaxTotalima 
             foreach(var taxTotal in this.TaxTotal)
             { 
                foreach(var taxSubtotal in taxTotal.TaxSubtotal)
                {
-                  taxCategory        = taxSubtotal.TaxCategory.Percent.Value.ToString();
+                  taxPercent         = taxSubtotal.TaxCategory.Percent?.Value ?? 0M;
+                  taxCategory        = taxPercent.ToString();
                   taxExemptionReason = taxSubtotal.TaxCategory?.TaxExemptionReason?.FirstOrDefault()?.Value ?? $"Stav. računa po PDV stopi od {taxCategory}%";
                   taxAmount          = taxSubtotal.TaxAmount.Value;
 
@@ -2411,9 +2413,9 @@ namespace EN16931.UBL
 
                   Rtrans sintRtrans_rec = new Rtrans()
                   {
-                     T_artiklName = taxSubtotal.TaxCategory.Percent.Value.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
+                     T_artiklName = taxPercent.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
                      T_kol        = 1,
-                     T_pdvSt      = taxSubtotal.TaxCategory.Percent.Value,
+                     T_pdvSt      = taxPercent,
 
                      T_konto      = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
 
@@ -2828,11 +2830,14 @@ namespace EN16931.UBL
 
          ushort line = 0;
 
-         List<Rtrans> rtransList = new List<Rtrans>(this.CreditNoteLine.Length);
+         List<Rtrans> newANA_rtransList = new List<Rtrans>(this.CreditNoteLine.Length);
+         List<Rtrans> newSIN_rtransList = null;
 
          bool OK = true;
          //Faktur fak;
          //Rtrans rtr;
+
+         bool wantsOneSintStavka = isIFA ? ZXC.RRD.Dsc_F2_IsNIR : ZXC.RRD.Dsc_F2_IsNUR;
 
          #endregion init
 
@@ -2917,21 +2922,87 @@ namespace EN16931.UBL
 
             rtrans_rec.CalcTransResults(null);
 
-            rtransList.Add(rtrans_rec);
+            newANA_rtransList.Add(rtrans_rec);
 
          } // foreach(InvoiceLineType invoiceLine in this.InvoiceLine) 
 
          #endregion STAVKE računa
 
+         #region wantsOneSintStavka
+
+         if(wantsOneSintStavka)
+         {
+            newSIN_rtransList = new List<Rtrans>();
+
+            string  taxCategory;
+            string  taxExemptionReason;
+            decimal taxAmount;
+            string artiklName;
+            decimal taxPercent;
+
+            // probaj prvo po TaxTotalima 
+            foreach(var taxTotal in this.TaxTotal)
+            { 
+               foreach(var taxSubtotal in taxTotal.TaxSubtotal)
+               {
+                  taxPercent         = taxSubtotal.TaxCategory.Percent?.Value ?? 0M;
+                  taxCategory        = taxPercent.ToString();
+                  taxExemptionReason = taxSubtotal.TaxCategory?.TaxExemptionReason?.FirstOrDefault()?.Value ?? $"Stav. po PDV stopi od {taxCategory}%";
+                  taxAmount          = taxSubtotal.TaxAmount.Value;
+
+                  artiklName = $"Stav. po PDV stopi od {taxCategory}% (u iznosu od {taxAmount})";
+
+                  Rtrans sintRtrans_rec = new Rtrans()
+                  {
+                     T_artiklName = taxPercent.NotZero() ? artiklName : ZXC.LenLimitedStr(taxExemptionReason, ZXC.RtransDao.GetSchemaColumnSize(ZXC.RtrCI.t_artiklName)),
+                     T_kol        = 1,
+                     T_pdvSt      = taxPercent,
+
+                     T_konto      = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
+
+                     T_cij        = taxSubtotal.TaxableAmount.Value
+                  };
+
+                  sintRtrans_rec.CalcTransResults(null);
+
+                  newSIN_rtransList.Add(sintRtrans_rec);
+               }
+
+            } // foreach(var taxTotal in this.TaxTotal)
+
+            // a kako nema TaxTotala, uzmi LegalMonetaryTotal stuff 
+            if(newSIN_rtransList.Count.IsZero())
+            {
+               Rtrans sintRtrans_rec = new Rtrans()
+               {
+                  T_artiklName = $"Sumirane stavke",
+                  T_kol        = 1,
+
+                  T_konto = isIFA ? kupdob_rec.KontoPrihod : kupdob_rec.KontoTrosak,
+
+                  T_cij = this.LegalMonetaryTotal?.TaxExclusiveAmount?.Value ?? 0M // ili mozda PayableAmount? 
+               };
+
+               sintRtrans_rec.CalcTransResults(null);
+
+               newSIN_rtransList.Add(sintRtrans_rec);
+
+            } // if(newSIN_rtransList.Count.IsZero())
+
+         } // if(wantsOneSintStavka)
+
+         #endregion wantsOneSintStavka
+
          #region TakeTransesSumToDokumentSum
 
-         faktur_rec.Transes = rtransList;
+         faktur_rec.Transes = wantsOneSintStavka ? newSIN_rtransList : newANA_rtransList;
+
          faktur_rec.TakeTransesSumToDokumentSum(true);
          faktur_rec.Transes = null;
 
          #endregion TakeTransesSumToDokumentSum
 
-         foreach(Rtrans rtrans in rtransList)
+         foreach(Rtrans rtrans in wantsOneSintStavka ? newSIN_rtransList : newANA_rtransList)
          {
             OK = FakturDao.AutoSetFaktur(conn, ref line, faktur_rec, rtrans);
          }

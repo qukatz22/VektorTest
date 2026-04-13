@@ -9472,7 +9472,7 @@ public class F2_Find_Dlg : VvDialog
       cmb_searchColumn = hamp_search.CreateVvComboBox(1, 1, "Sve kolone", "cmb_searchColumn", ComboBoxStyle.DropDownList);
       hamp_search.Controls.Add(cmb_searchColumn);
 
-      btn_search = hamp_search.CreateVvButton(2, 1, new EventHandler(BtnSearch_Click), "Traži");
+      btn_search = hamp_search.CreateVvButton(2, 0, new EventHandler(BtnSearch_Click), "Traži", 1, 0);
       btn_search.TextAlign  = ContentAlignment.MiddleCenter;
       btn_search.Font       = ZXC.vvFont.BaseFont;
 
@@ -9481,7 +9481,8 @@ public class F2_Find_Dlg : VvDialog
       btn_prevMatch = new Button();
       btn_prevMatch.Parent                  = hamp_search;
       btn_prevMatch.ForeColor               = System.Drawing.SystemColors.ControlText;
-      btn_prevMatch.Location                = new Point(btn_search.Right + ZXC.Qun4, btn_search.Top);
+    //btn_prevMatch.Location                = new Point(btn_search.Right + ZXC.Qun4, btn_search.Top);
+      btn_prevMatch.Location                = new Point(btn_search.Left            , btn_search.Bottom +ZXC.Qun4);
       btn_prevMatch.Size                    = new Size(ZXC.QunBtnW, ZXC.QunBtnH);
       btn_prevMatch.UseVisualStyleBackColor = true;
       btn_prevMatch.Image                   = VvIco.ExLinkLeft16/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.sorry.ico")), 16, 16)*/.ToBitmap();
@@ -10828,7 +10829,7 @@ public class F2_Ulaz_UC : VvUserControl
 
       if(!fakturDataLayer_FOUNDv1)
       {
-         fakturDataLayer_FOUNDv2 = FakturDao.SetMeFaktur_ByKupdobOIBAndVezniDok(TheDbConnection, faktur_rec, fakturKdOIB, fakturVezniDok);
+         fakturDataLayer_FOUNDv2 = FakturDao.SetMe_FUR_Faktur_ByKupdobOIBAndVezniDok(TheDbConnection, faktur_rec, fakturKdOIB, fakturVezniDok);
       }
 
       if(fakturDataLayer_FOUNDv2)

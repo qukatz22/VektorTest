@@ -6708,7 +6708,7 @@ public static class VvSQL
       return (cmd);
    }
 
-   public static XSqlCommand SetMeFaktur_ByKupdobOIBAndVezniDok_Command(XSqlConnection conn, string kdOIB, string vezniDok)
+   public static XSqlCommand SetMe_FUR_Faktur_ByKupdobOIBAndVezniDok_Command(XSqlConnection conn, string kdOIB, string vezniDok)
    {
       XSqlCommand cmd = InitCommand(conn);
 
@@ -6718,7 +6718,8 @@ public static class VvSQL
       cmd.CommandText = "SELECT * FROM "  + Faktur.recordName + " L " + "\n" +
                         "LEFT     JOIN "  + FaktEx.recordName + " R " + "\n" +
                         "ON L.RecID = R.fakturRecID"                  + "\n" +
-                        " WHERE " + "kdOib = ?kdOIB AND vezniDok = ?vezniDok";
+                        " WHERE " + "kdOib = ?kdOIB AND vezniDok = ?vezniDok \n" +
+                        " AND (L.tt = 'UFA' OR L.tt = 'URA' OR L.tt = 'URM')";
       return (cmd);
    }
 

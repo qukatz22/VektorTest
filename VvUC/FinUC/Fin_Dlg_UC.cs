@@ -407,6 +407,8 @@ public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDial
       VvHamper.AttachEscPressForEachControl(this);
 
       TheUC.OtsInfoSelectionList = new List<OtsTipBrGroupInfo>();
+
+      ZXC.LoadIzvodDLG_isON = true;
    }
 
    #endregion Constructor
@@ -490,6 +492,9 @@ public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDial
    void LoadIzvodDLG_Load(object sender, EventArgs e)
    {
       ZXC.CurrentForm = this;
+
+      // 01.04.2026:|
+      ZXC.LoadIzvodDLG_isON = true;
    }
 
    private void LoadIzvodDLG_FormClosing_ClosePreviewForm(object sender, FormClosingEventArgs e)
@@ -509,6 +514,9 @@ public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDial
    void RestoreZxcCurrentForm_FormClosing(object sender, FormClosingEventArgs e)
    {
       ZXC.CurrentForm = ZXC.TheVvForm;
+
+      // 01.04.2026:|
+      ZXC.LoadIzvodDLG_isON = false;
    }
 
    #endregion FormClosing + Load

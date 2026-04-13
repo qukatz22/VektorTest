@@ -48,10 +48,10 @@
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
-    <MinimumRequiredVersion>8.26.0.50</MinimumRequiredVersion>
+    <MinimumRequiredVersion>8.26.0.55</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>50</ApplicationRevision>
+    <ApplicationRevision>55</ApplicationRevision>
     <ApplicationVersion>8.26.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -4788,6 +4788,9 @@
     <None Include="UtilsEtc\Fiskalizacija\xmldsig-core-schema.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="UtilsEtc\vvBkpScript.bat" />
+    <None Include="UtilsEtc\vvBkpScript_UNIV.bat" />
+    <None Include="UtilsEtc\vvRestore.bat" />
     <None Include="Web References\StatusService\GetStatus.disco" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\CbuCba.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\bullet_triangle_green2.ico" />

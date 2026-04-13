@@ -2828,6 +2828,27 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
       if(dateNow.Year  == PdvDate.Year && 
          dateNow.Month == PdvDate.Month) return false;
 
+      isPdvDateTooOld = ZXC.MonthDifference(dateNow, PdvDate) >= 2; // 0 and 1 monthDiff is ok 
+
+      return isPdvDateTooOld;
+   }
+   public bool IsPdvDateTooOld_ORIG()
+   {
+      if(this.TtInfo.IsPdvTT == false || this.PdvR12 != ZXC.PdvR12Enum.R1) return false;
+
+      bool isPdvDateTooOld;
+
+      if(PdvDate.IsEmpty())
+      {
+         ZXC.aim_emsg("PdvDate is empty! {0}\n\n{1}", PdvDate, this);
+         return false;
+      }
+
+      DateTime dateNow = DateTime.Now;
+
+      if(dateNow.Year  == PdvDate.Year && 
+         dateNow.Month == PdvDate.Month) return false;
+
       if(dateNow.Day <= 20) // do  20-og u mjesecu jos uvijek mogu u prosli mjesec 
       {
          isPdvDateTooOld = ZXC.MonthDifference(dateNow, PdvDate) >  1; // 0 and 1 monthDiff is ok 
@@ -4760,15 +4781,15 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
    // faktur_rec.S_ukKCR    rtrans_rec.R_KC     - faktur_rec.S_ukRbt1  
    //                                                                  
 
-   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_A() // dobar za Metaflex 
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_A0() // dobar za Metaflex 
    {
       Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
 
       IRAfaktur_rec.TT = Faktur.TT_IRA;
 
-      for(int i = 0; i < this.Transes.Count; ++i)
+      for (int i = 0; i < this.Transes.Count; ++i)
       {
-         IRAfaktur_rec.Transes[i].T_TT  = IRAfaktur_rec.TT;
+         IRAfaktur_rec.Transes[i].T_TT = IRAfaktur_rec.TT;
          IRAfaktur_rec.Transes[i].T_cij = ZXC.VvGet_100_from_125(this.Transes[i].T_cij, this.Transes[i].T_pdvSt);
          IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
       }
@@ -4778,11 +4799,59 @@ ZXC.ShouldFak2NalEnum _ShouldFak2Nal,
 
 
       // !!! !!! !!! 
-      if(IRAfaktur_rec.S_ukKCR != (IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukRbt1))
+      if (IRAfaktur_rec.S_ukKCR != (IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukRbt1))
       {
          IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_KC - IRAfaktur_rec.S_ukKCR;
       }
 
+
+      return IRAfaktur_rec;
+   }
+
+   public Faktur Convert_IRM_Faktur_To_IRA_Faktur_A() // dobar za Metaflex 
+   {
+      Faktur IRAfaktur_rec = (Faktur)this.CreateNewRecordAndCloneItComplete();
+
+      IRAfaktur_rec.TT = Faktur.TT_IRA;
+
+      for(int i = 0; i < this.Transes.Count; ++i)
+      {
+         IRAfaktur_rec.Transes[i].T_TT   = IRAfaktur_rec.TT;
+         IRAfaktur_rec.Transes[i].T_cij  = ZXC.VvGet_100_from_125(this.Transes[i].T_cij , this.Transes[i].T_pdvSt);
+         IRAfaktur_rec.Transes[i].R_rbt1 = ZXC.VvGet_100_from_125(this.Transes[i].R_rbt1, this.Transes[i].T_pdvSt).Ron2();
+         IRAfaktur_rec.Transes[i].R_KC   = (IRAfaktur_rec.Transes[i].R_kol * IRAfaktur_rec.Transes[i].T_cij).Ron2();
+
+       //IRAfaktur_rec.Transes[i].CalcTransResults(IRAfaktur_rec);
+      }
+
+      // 19.03.2026: gasimo TakeTransesSumToDokumentSum jer je većina suma dobra, a i mora ostati kako je i na orginal PDF-u fakture 
+      // dok je bilo ovako imali smo slucajeva da faktura u vektoru iznosi 778,90 a u xml-u eRacuna zavrsi kao 779.10                
+      // umjesto toga ciljano stelamo S_ukKC, i po potrebi R_KC i R_KCR prve stavke                                                  
+    //IRAfaktur_rec.TakeTransesSumToDokumentSum(true);                                                                               
+
+      decimal diff;
+
+      IRAfaktur_rec.S_ukKC   = IRAfaktur_rec.TrnSum_KC.Ron2(); // ovaj red je umjesto TakeTransesSumToDokumentSum 
+      IRAfaktur_rec.S_ukRbt1 = IRAfaktur_rec.TrnSum_Rbt25 + 
+                               IRAfaktur_rec.TrnSum_Rbt10 + 
+                               IRAfaktur_rec.TrnSum_Rbt05 + 
+                               IRAfaktur_rec.TrnSum_Rbt00 ;    // ovaj red je umjesto TakeTransesSumToDokumentSum 
+
+      diff = IRAfaktur_rec.S_ukKCR - (IRAfaktur_rec.S_ukKC - IRAfaktur_rec.S_ukRbt1);
+
+      if(diff.NotZero())
+      {
+         IRAfaktur_rec.Transes[0].R_KC += diff;
+
+         IRAfaktur_rec.S_ukKC = IRAfaktur_rec.TrnSum_KC.Ron2(); // ovaj red je umjesto TakeTransesSumToDokumentSum 
+      }
+
+      diff = IRAfaktur_rec.S_ukKCR - IRAfaktur_rec.TrnSum_KCR.Ron2();
+
+      if (diff.NotZero())
+      {
+         IRAfaktur_rec.Transes[0].R_KCR += diff;
+      }
 
       return IRAfaktur_rec;
    }
