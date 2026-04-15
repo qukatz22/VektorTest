@@ -4740,7 +4740,7 @@
     <None Include="DataLayer\DS_Reports\DS_ZapIzvodNEW.xss">
       <DependentUpon>DS_ZapIzvodNEW.xsd</DependentUpon>
     </None>
-    <None Include="MarkDowns\DevExpress_Migration.md" />
+    <None Include="MarkDowns\DevExpress_Migration_V2.md" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Resources\Prirucnik  ZAH_SVD v04.pdf" />
