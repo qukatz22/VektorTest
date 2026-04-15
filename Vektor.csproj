@@ -48,10 +48,10 @@
     <TargetCulture>hr-HR</TargetCulture>
     <ProductName>Vektor</ProductName>
     <PublisherName>VIPER</PublisherName>
-    <MinimumRequiredVersion>8.26.0.56</MinimumRequiredVersion>
+    <MinimumRequiredVersion>8.26.0.57</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>56</ApplicationRevision>
+    <ApplicationRevision>57</ApplicationRevision>
     <ApplicationVersion>8.26.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -4740,7 +4740,7 @@
     <None Include="DataLayer\DS_Reports\DS_ZapIzvodNEW.xss">
       <DependentUpon>DS_ZapIzvodNEW.xsd</DependentUpon>
     </None>
-    <None Include="MarkDowns\DevExpress_Migration.md" />
+    <None Include="MarkDowns\DevExpress_Migration_V2.md" />
     <None Include="MarkDowns\vvBkpScript.md" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
