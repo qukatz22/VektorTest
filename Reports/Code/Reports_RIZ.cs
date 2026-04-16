@@ -2993,7 +2993,7 @@ public class RptR_StandardRiskReport : VvRiskReport
          });
       }
 
-      if(true) // Ostavi samo one artikle koji su 'na rezervaciji' 
+      if(RptFilter.OnlyArtiklsRezerv) // Ostavi samo one artikle koji su 'na rezervaciji' 
       {
          TheArtiklList.RemoveAll(ars => ars.AS_UkStanjeKolRezerv.IsZero());
       }

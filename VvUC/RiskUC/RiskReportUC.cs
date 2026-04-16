@@ -301,7 +301,7 @@ public partial class RiskFilterUC : VvFilterUC
                     cbx_isPrjktTel, cbx_isPrjktFax, cbx_IsPrjktMail,
                     cbx_isVisibleTT, cbx_isVisibleAdress, cbx_isCurrUser,
                     cbx_otsAnalitika, cbx_otsDospjeca, cbx_otsKontakt, cbx_otsLineTipBr, cbx_otsDospjelo, cbx_isPrihodTT, cbx_isMpskPoNBC, cbx_isNoColor, cbx_isOtsNevezano,
-                    cbx_isPoslJed, cbx_isPecatPotpis, cbx_onlyArtiklSaStanjem, cbx_isForceOtsByDokDate, cbx_isRashodTT, cbx_isChkO, cbx_isOpzStatVezDok, cbx_IsBlgInIzvVal,
+                    cbx_isPoslJed, cbx_isPecatPotpis, cbx_onlyArtiklSaStanjem, cbx_onlyArtikliSaRezerv, cbx_isForceOtsByDokDate, cbx_isRashodTT, cbx_isChkO, cbx_isOpzStatVezDok, cbx_IsBlgInIzvVal,
                     cbx_FRUF_BiloGdjeU, cbx_uvozIzvozOnly, cbx_IsMalopUlazForPrmArtTT, cbx_IsMalopIzlazForPrmArtTT, cbx_IsVelepUlazForPrmArtTT, cbx_IsVelepIzlazForPrmArtTT;
 
    private Label lbl_grupa, lbl_grupa_skl2, lbl_ThKune, lbl_partner, lbl_tipKD, lbl_komerc;
@@ -523,7 +523,8 @@ public partial class RiskFilterUC : VvFilterUC
       hamper_TTSklad   .Location = new Point(nextX            , hamper_TT        .Bottom + razmakIzmjedjuHampera);
       hamper_ODDoTT    .Location = new Point(nextX            , hamper_TTSklad   .Bottom + razmakIzmjedjuHampera);
       hamper_ODDoArtikl.Location = new Point(nextX            , hamper_ODDoTT    .Bottom + razmakIzmjedjuHampera);
-      hamper_Bool2     .Location = new Point(nextX + ZXC.Qun10, hamper_ODDoArtikl.Bottom - ZXC.QUN - ZXC.Qun4  - ZXC.Qun8); hamper_Bool2.BringToFront(); //14.09.2017.
+    //hamper_Bool2     .Location = new Point(nextX + ZXC.Qun10, hamper_ODDoArtikl.Bottom - ZXC.QUN  - ZXC.Qun4  - ZXC.Qun8); hamper_Bool2.BringToFront(); //14.09.2017.
+      hamper_Bool2     .Location = new Point(nextX + ZXC.Qun10, hamper_ODDoArtikl.Bottom - ZXC.Q2un - ZXC.Qun4  - ZXC.Qun8); hamper_Bool2.BringToFront(); //16.04.2026.
       hamper_NacPlac   .Location = new Point(nextX            , hamper_ODDoArtikl.Bottom + razmakIzmjedjuHampera);
       hamper_Partner   .Location = new Point(nextX            , hamper_NacPlac   .Bottom + razmakIzmjedjuHampera);
       hamper_ArtSort   .Location = new Point(nextX            , hamper_Partner   .Bottom + razmakIzmjedjuHampera);
@@ -790,7 +791,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper = new VvHamper(1, 1, "", this, false);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un};
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8 };
+      hamper.VvSpcBefCol   = new int[] { 0/*ZXC.Qun8*/ };
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -904,7 +905,7 @@ public partial class RiskFilterUC : VvFilterUC
 
    private void InitializeHamper_OdDo_Artikl(out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 4, "", this, false);
+      hamper = new VvHamper(3, 5, "", this, false);
 
       hamper.VvColWdt      = new int[] { ZXC.Q4un - ZXC.Qun4 - ZXC.Qun8, ZXC.Q4un, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -912,7 +913,7 @@ public partial class RiskFilterUC : VvFilterUC
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
       {
-         hamper.VvRowHgt[i] = ZXC.QUN;
+         hamper.VvRowHgt[i]    = ZXC.QUN;
          hamper.VvSpcBefRow[i] = ZXC.Qun8;
       }
       hamper.VvRowHgt[2] = ZXC.QUN;
@@ -933,6 +934,8 @@ public partial class RiskFilterUC : VvFilterUC
 
       cbx_onlyArtiklSaStanjem = hamper.CreateVvCheckBox_OLD(0, 2, null, 2, 0, "Artikli sa stanjem", System.Windows.Forms.RightToLeft.Yes);
       cbx_onlyArtiklSaStanjem.Checked = true;
+
+      cbx_onlyArtikliSaRezerv = hamper.CreateVvCheckBox_OLD(0, 3, null, 2, 0, "Samo Artikli s rezervacijom", System.Windows.Forms.RightToLeft.No);
 
       VvHamper.AddLabelLine(hamper);
 
@@ -2057,7 +2060,7 @@ public partial class RiskFilterUC : VvFilterUC
       hamper = new VvHamper(1, 3, "", this, false);
       
       hamper.VvColWdt      = new int[] { ZXC.Q10un + ZXC.Q3un};
-      hamper.VvSpcBefCol   = new int[] { ZXC.Qun8};
+      hamper.VvSpcBefCol   = new int[] { 0 /*ZXC.Qun8*/};
       hamper.VvRightMargin = hamper.VvLeftMargin;
 
       for(int i = 0; i < hamper.VvNumOfRows; i++)
@@ -3002,6 +3005,7 @@ public partial class RiskFilterUC : VvFilterUC
    public bool Fld_IsBlgInIzvVal  { get { return cbx_IsBlgInIzvVal.Checked; } set { cbx_IsBlgInIzvVal.Checked = value; } }
 
    public bool Fld_OnlyArtiklSaStanjem { get { return cbx_onlyArtiklSaStanjem.Checked; } set { cbx_onlyArtiklSaStanjem.Checked = value; } }
+   public bool Fld_OnlyArtiklisRezerv { get { return cbx_onlyArtikliSaRezerv.Checked; } set { cbx_onlyArtikliSaRezerv.Checked = value; } }
 
    public uint   Fld_Putnik_PersonCD      { get { return tbx_personCD.GetSomeRecIDField(); } set { tbx_personCD.PutSomeRecIDField(value); } }
    public string Fld_PersonCdAsTxt        { get { return tbx_personCD.Text;                } set { tbx_personCD.Text = value;             } }
@@ -3268,6 +3272,7 @@ public partial class RiskFilterUC : VvFilterUC
          Fld_PdvGEOkind             = TheRtransFilter.PdvGeoKind;
          Fld_IsPecatotpis           = TheRtransFilter.IsPecatPotpis;
          Fld_OnlyArtiklSaStanjem    = TheRtransFilter.FuseBool4;
+         Fld_OnlyArtiklisRezerv     = TheRtransFilter.OnlyArtiklsRezerv;
 
          Fld_Putnik_PersonCD        = TheRtransFilter.Putnik_PersonCD  ;
          Fld_Putnik_PersonName      = TheRtransFilter.Putnik_PersonName;
@@ -3500,6 +3505,9 @@ public partial class RiskFilterUC : VvFilterUC
       TheRtransFilter.OPP_PDV_LuiBr          = Fld_OPP_PDV_LuiBr;
       TheRtransFilter.OPP_PDV_LuiOPP         = Fld_OPP_PDV_LuiOPP;
       TheRtransFilter.OPP_PDV_LuiCd          = Fld_OPP_PDV_LuiCd;
+
+      TheRtransFilter.OnlyArtiklsRezerv     = Fld_OnlyArtiklisRezerv ;
+
    }
 
    #endregion PutFilterFields(), GetFilterFields()
