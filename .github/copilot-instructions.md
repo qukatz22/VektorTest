@@ -1,8 +1,7 @@
 # Vektor Project - Copilot Instructions
 
 ## Project Overview
-Croatian accounting/ERP desktop application (.NET Framework 4.8, C# 7.3, WinForms).
-Implements the Croatian eRačun (e-invoice) ecosystem: MER (moj-eracun.hr) and PND (eposlovanje.hr) providers.
+Croatian accounting/ERP desktop application (.NET Framework 4.8, C# 7.3, WinForms). Implements the Croatian eRačun (e-invoice) ecosystem: MER (moj-eracun.hr) and PND (eposlovanje.hr) providers.
 
 ## Architecture
 - `Vv_eRacun_HTTP` – static class, all HTTP API calls (MER/PND web services)
@@ -58,3 +57,6 @@ Implements the Croatian eRačun (e-invoice) ecosystem: MER (moj-eracun.hr) and P
 - Do not use C# 8+ features (switch expressions, records, nullable reference types, `??=`)
 - Do not use `System.Text.Json` — always use `Newtonsoft.Json`
 - Do not hardcode English UI strings — use Croatian
+
+## Response Formatting
+- Format all responses as one continuous block (jedan window) to allow for easy application and copying of the entire response at once, avoiding fragmented multi-block responses.
