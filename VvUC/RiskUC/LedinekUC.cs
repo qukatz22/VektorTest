@@ -64,7 +64,7 @@ public class LedinekUC : VvUserControl
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       
-      Label lbl = hamper.CreateVvLabel  (0, 0, "L I J E V I   1", ContentAlignment.MiddleCenter);
+      Label lbl = hamper.CreateVvLabel  (0, 0, "L I J E V I   222", ContentAlignment.MiddleCenter);
       
       lbl.Font      = new Font("comic sans ms", 25, ZXC.vvFont.LargeBoldFont.Style);
       lbl.ForeColor = Color.Red; 
