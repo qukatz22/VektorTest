@@ -2993,6 +2993,11 @@ public class RptR_StandardRiskReport : VvRiskReport
          });
       }
 
+      if(RptFilter.OnlyArtiklsRezerv) // Ostavi samo one artikle koji su 'na rezervaciji' 
+      {
+         TheArtiklList.RemoveAll(ars => ars.AS_UkStanjeKolRezerv.IsZero());
+      }
+
    } // private  void GetArtiklWithArtstatList() 
 
    private void Podmetni_HalmedDAta_ToSome_ArtiklData(Artikl artikl_rec, Halmed_SVD.HALMEDartikl halmedArtikl)

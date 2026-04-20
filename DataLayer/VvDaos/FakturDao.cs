@@ -2337,7 +2337,9 @@ ZXC.PdvKnjigaEnum f_PdvKnjiga      ,
          }
 
          if(ZXC.projectYearAsInt > 2025) anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID AND YEAR(L.DokDate) = Ft.t_fakYear AND Ft.t_tt != 'IZ'" + "\n"; // da bi vidjeli nije li vec prebaceno 
-         else /* old version */          anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID                                    AND Ft.t_tt != 'IZ'" + "\n"; // da bi vidjeli nije li vec prebaceno 
+         // 16.04. 2026: 
+       //else /* old version */          anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID                                    AND Ft.t_tt != 'IZ'"                     + "\n"; // da bi vidjeli nije li vec prebaceno 
+         else /* old version */          anotherJoinClause = @"LEFT JOIN ftrans Ft FORCE INDEX(BY_FakRecID) ON L.RecID = Ft.t_fakRecID                                    AND Ft.t_tt != 'IZ' AND Ft.t_tt != 'PS'" + "\n"; // da bi vidjeli nije li vec prebaceno 
 
          VvDaoBase.LoadGenericVvDataRecordList(conn, fakturList, filterMembers, "", orderBy, true, selectWhat, anotherJoinClause);
       }
