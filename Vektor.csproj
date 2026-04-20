@@ -4485,6 +4485,7 @@
     <EmbeddedResource Include="Icons\ToolStrip_Modul\Kn.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\EurZ.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\KnEur.ico" />
+    <Content Include="MarkDowns\Pismo Njemu.txt" />
     <Content Include="XSD\id1-obrazac_4_0.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -4740,6 +4741,10 @@
     <None Include="DataLayer\DS_Reports\DS_ZapIzvodNEW.xss">
       <DependentUpon>DS_ZapIzvodNEW.xsd</DependentUpon>
     </None>
+    <None Include="MarkDowns\DevExpress_Migration_V2.md" />
+    <None Include="MarkDowns\DevExpress_Migration_V3.md" />
+    <None Include="MarkDowns\Sync-FromProduction.ps1" />
+    <None Include="MarkDowns\vvBkpScript.md" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Resources\Prirucnik  ZAH_SVD v04.pdf" />
@@ -5524,7 +5529,5 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MarkDowns\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
