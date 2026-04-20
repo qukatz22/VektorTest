@@ -2722,6 +2722,9 @@
     <Compile Include="VvUC\RiskUC\FakturListUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="VvUC\RiskUC\LedinekUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="VvUC\RiskUC\PTG_DUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
