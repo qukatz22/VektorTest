@@ -876,6 +876,12 @@ be_fast:
       {
          TheVvUC = new F2_NIR_UC(panelZaUC, vvSubModul);
       }
+
+      if(TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_LED)
+      {
+         TheVvUC = new LedinekUC(panelZaUC, vvSubModul);
+      }
+
    }
 
    #endregion Create_OtherUC
