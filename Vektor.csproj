@@ -4486,6 +4486,7 @@
     <EmbeddedResource Include="Icons\ToolStrip_Modul\EurZ.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\KnEur.ico" />
     <Content Include="MarkDowns\Pismo Njemu.txt" />
+    <Content Include="MarkDowns\TextFile1.txt" />
     <Content Include="XSD\id1-obrazac_4_0.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
