@@ -1,0 +1,43 @@
+﻿#file:DevExpress_Migration_V2.md
+#file:DevExpress_Migration_V3.md
+
+Tema: migracija Vektor-a sa Crownwooda na DevExpress.
+
+Činjenica 1: osim portanja zatečenih funkcionalnosti SWAP-anjem Crownwood → DevExpress, 
+želim i dodavanje nove FLOATING-DETACH funkcionalnosti.
+
+Činjenica 2: nije mi bitan redosljed postupaka. Tebe sam tražio V3 misleći da bi bilo mudrije/efikasnije
+ići manjim koracima,  tj. prvo izbaciti crownwood iz upotrebe a zatim dodavati nove funkcionalnosti.
+
+Činjenica 3: rješenje ovog procesa nije hitno, ne žurim. Ne mislim tako skoro implementirati novost u produkciju.
+Prvo ću ekstenzivno testirati.
+
+Čitajući tvoje odgovore na tu temu sam se pokolebao u vezi toga, nisam više siguran kako je bolje.
+
+Želim tvoj nedvosmisleni i argumentirani odgovor: razriješi dilemu kojom od ponuđenih strategija (A i B) bi bilo bolje krenuti.
+
+
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+
+Tema: sinhronizacija repositorija Vektor (produkcija) i VektorTEST (testiranje implementacije migracije Crownwood -> DevExpress)
+
+Svakodnevno će VektorTEST preko GitHub-a dobivati novosti iz produkcijskog Vektor-a. 
+Kada se obave sve faze migraciju u VektorTEST-u još ćemo ga dugo vremena testirati.
+U međuvremenu, u produkcijski Vektor ćemo možda dodavati promjene po nekim UserControl-ama.
+
+Kako efikasno koncipirati prenos novosti iz produkcije u test i nakon obavljenog procesa migracije?
+
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+****************************************************************************************************************************************************************************
+
+Kako postići da VektorTEST GitHub repository preuzme novosti iz produkcijskog Vektor repositorija.
+Molim powershel skriptu koja će to uraditi.
