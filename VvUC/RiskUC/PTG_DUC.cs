@@ -156,7 +156,7 @@ public class KUG_PTG_DUC : FakturExtDUC
 
    #endregion Hampers
 
-   public string PTG_DanFakturiranjaString //opciAvalue
+   public string PTG_DanFakturiranjaString //opciAvalueQWE
    {
       get { return tbx_DanFakturiranja.Text; }
       set {        tbx_DanFakturiranja.Text = value; }
