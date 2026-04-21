@@ -4488,6 +4488,7 @@
     <EmbeddedResource Include="Icons\ToolStrip_Modul\Kn.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\EurZ.ico" />
     <EmbeddedResource Include="Icons\ToolStrip_Modul\KnEur.ico" />
+    <Content Include="MarkDowns\0MSTR_Branch_TextFile1.txt" />
     <Content Include="XSD\id1-obrazac_4_0.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
