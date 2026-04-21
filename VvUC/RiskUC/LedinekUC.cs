@@ -21,6 +21,8 @@ using Vektor.Reports.PIZ;
 using System.ComponentModel;
 #endif
 
+
+//                         MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER MASTER 
 public class LedinekUC : VvUserControl
 {
    #region Fieldz
