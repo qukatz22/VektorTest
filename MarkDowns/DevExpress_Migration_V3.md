@@ -412,4 +412,4 @@ Dvije moguće strategije:
 - **NE mijenjamo u ovoj fazi:** MenuStrip, ToolStrip, VvHamper, ZXC singleton, detach.
 - **Najveći rizik:** extrakcija `VvTabPage_VisibleChanged` u `OnActivated`/`OnDeactivated` + reroute preko `SelectedPageChanged`.
 - **Procjena:** 9–13 radnih dana za čisti swap.
-- **Sinergija s V2:** V3 pokriva Fazu 2 + 5 iz V2; detach (V2 Faza 4) ostaje za kasnije.
+- **Sinergija s V2:** V3 pokriva Fazu 2 + 5 iz V2; detach (V2 Faza 4) ostaje za kasnije. 
