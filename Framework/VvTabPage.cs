@@ -171,7 +171,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          //if(this.IsForReport == false && VvDataRecord.ThisTypeIsFrom_VvProjektiDB(TheVvDataRecord.GetType()))
          if(ThisVvModulIsFrom_VvProjektiDB(this.vvSubModul.modulEnum))
          {
-            dbNameForThisTabPage = TheVvForm.GetvvDB_prjktDB_name();
+            dbNameForThisTabPage = ZXC.VvDB_prjktDB_Name;
          }
          else
          {

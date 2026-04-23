@@ -2257,7 +2257,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
    {
       // 23.11.2012: 
     //if(VvSQL.GetDbNameForThisTableName(VirtualDataRecord.VirtualRecordName) == TheVvTabPage.TheVvForm.GetvvDB_prjktDB_name() /*ZXC.vvDB_prjktDB_Name*/)
-      if(VvSQL.GetDbNameForThisTableName(VirtualDataRecord.VirtualRecordName) == ZXC.TheVvForm.GetvvDB_prjktDB_name() /*ZXC.vvDB_prjktDB_Name*/)
+      if(VvSQL.GetDbNameForThisTableName(VirtualDataRecord.VirtualRecordName) == ZXC.VvDB_prjktDB_Name /*ZXC.vvDB_prjktDB_Name*/)
       {
          ZXC.aim_emsg(MessageBoxIcon.Error, "Kopiranje ne radi za datoteku {0}!", VirtualDataRecord.VirtualRecordName);
          return;

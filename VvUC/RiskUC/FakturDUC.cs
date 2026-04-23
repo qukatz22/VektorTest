@@ -22947,7 +22947,7 @@ public class SVD_Odobrenje_Dlg : VvDialog
       string userName4connection = ZXC.CURR_user_rec.UserName/*4Sql*/     ;
       string password4connection = ZXC.CURR_user_rec.PasswdEncodedAsInFile;
 
-      using(XSqlConnection tmpUserConn = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, userName4connection, password4connection, ZXC.TheVvForm.GetvvDB_prjktDB_name(), true))
+      using(XSqlConnection tmpUserConn = VvSQL.CREATE_AND_OPEN_XSqlConnection(ZXC.vvDB_Server, userName4connection, password4connection, ZXC.VvDB_prjktDB_Name, true))
       {
          if(tmpUserConn == null || tmpUserConn.State != ConnectionState.Open) return;
 
@@ -22958,7 +22958,7 @@ public class SVD_Odobrenje_Dlg : VvDialog
 
          //===== RWTREC for selected 'ZXC.vvDB_User' =================================
 
-         ZXC.UserDao = UserDao.Instance(/*ZXC.PrjConnection*/tmpUserConn, ZXC.TheVvForm.GetvvDB_prjktDB_name());
+         ZXC.UserDao = UserDao.Instance(/*ZXC.PrjConnection*/tmpUserConn, ZXC.VvDB_prjktDB_Name);
          User user_rec = new User(0); // Dakle ovaj type initializer bi dizao gore spomenuti Exception; Reference not set, ... 
 
          OK = ZXC.UserDao.SetMe_Record_byUserName(/*ZXC.PrjConnection*/tmpUserConn, user_rec, Fld_UserName);

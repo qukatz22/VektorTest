@@ -591,7 +591,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       foreach(HtransStruct htrans_rec in hnbDevTec.Transes)
       {
        //AutoSetDevTec(ZXC.PrjConnection, ref line,
-         AutoSetDevTec(ZXC.TheSecondDbConn_OtherDB(ZXC.TheVvForm.GetvvDB_prjktDB_name()), ref line,
+         AutoSetDevTec(ZXC.TheSecondDbConn_OtherDB(ZXC.VvDB_prjktDB_Name), ref line,
             // 12.05.2025. vidi opasku u ZXC.cs                                                                          
           //hnbDevTec.HeadRecord._dokDate,
                                   dokDate,
@@ -606,7 +606,7 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
       }
 
       // 09.02.2023: 
-      ZXC.DevTecRec.VvDao.LoadTranses(/*conn*//*ZXC.PrjConnection*/ZXC.TheSecondDbConn_OtherDB(ZXC.TheVvForm.GetvvDB_prjktDB_name()), ZXC.DevTecRec, false);
+      ZXC.DevTecRec.VvDao.LoadTranses(/*conn*//*ZXC.PrjConnection*/ZXC.TheSecondDbConn_OtherDB(ZXC.VvDB_prjktDB_Name), ZXC.DevTecRec, false);
 
       return true;
    }

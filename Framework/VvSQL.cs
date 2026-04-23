@@ -1818,7 +1818,7 @@ public static class VvSQL
    public static ZXC.VvDataBaseInfo? GetVvDataBaseInfoForKupdobCD(XSqlConnection tmpConn, string year, uint KupdobCD)
    {
       bool success = true;
-      string returnedName = "", searchPattern = ZXC.vvDB_www_preffix + ZXC.TheVvForm.GetvvDB_prefix() + year + "_%_" + KupdobCD.ToString("000000");
+      string returnedName = "", searchPattern = ZXC.vvDB_www_preffix + ZXC.vvDB_prefix + year + "_%_" + KupdobCD.ToString("000000");
 
       using(XSqlCommand cmd = CHECK_DATABASE_EXISTS_Command(tmpConn, searchPattern))
       {
@@ -3068,7 +3068,7 @@ public static class VvSQL
          tableName.StartsWith(ZXC.vvDB_luiPrefix) /*||
          tableName.StartsWith(ZXC.vvDB_SKYlogTableName)*/) 
       {
-         return ZXC.TheVvForm.GetvvDB_prjktDB_name();
+         return ZXC.VvDB_prjktDB_Name;
       }
       else
       {
@@ -5448,7 +5448,7 @@ public static class VvSQL
 
       // 27.02.2024: 
     //cmd.CommandText = "GRANT ALL ON `" + ZXC.TheVvForm.GetvvDB_prefix() + "%`.* TO "  + user_rec.UserName4Sql      ;
-      cmd.CommandText = "GRANT ALL ON `" + ZXC.TheVvForm.GetvvDB_prefix() + "%`.* TO '" + user_rec.UserName4Sql + "'";
+      cmd.CommandText = "GRANT ALL ON `" + ZXC.vvDB_prefix + "%`.* TO '" + user_rec.UserName4Sql + "'";
 
       return (cmd);
    }
