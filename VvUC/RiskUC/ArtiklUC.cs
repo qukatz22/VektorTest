@@ -19,7 +19,7 @@ using Vektor.Reports.PIZ;
 using System.ComponentModel;
 #endif
 
-public class ArtiklUC : VvSifrarRecordUC // MASTER MASTER MASTER 
+public class ArtiklUC : VvSifrarRecordUC 
 {
    #region Fieldz
 

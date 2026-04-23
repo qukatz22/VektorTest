@@ -394,7 +394,7 @@ detach, arhiva putuje s tabom** (preporuka).
    `SkinStyle` bazi.
 
 5. **`DocumentManager` floating: RAW custom.** Default DevExpress floating je lightweight
-   child window. Za pravi top-level Form s taskbar ikonom i **neovisnim menijima**, koristi
+   child window. Za pravi top-level Form s taskbar ikonom i **neovisnim menijima/toolstripom**, koristi
    se `DocumentFloating` event + manual `VvFloatingForm` kreacija (v. Faza 3).
 
 ### 2.3 Ciljana arhitektura (dijagram)
@@ -762,12 +762,28 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 ## 6. Otvorena pitanja (za odluke prije početka)
 
-1. **DX verzija i licenca.** Koji license tier? Subscription ili perpetual? Koje komponente su licencirane (Bars, TreeList su u Basic paketu; Docking2010 može biti u višem).
-2. **DX skin default.** Koji skin želiš kao default za prvog korisnika bez saved preference? (Prijedlog V4: `Office2019 Colorful`.)
-3. **TreeList vs native TreeView za `TreeView_Modul`.** Potvrđuješ li `TreeList`? Native TreeView je niži rizik ali miješa DX/native UI estetiku.
-4. **DBconcurrency strategy za Fazu 3.** Lock-based (preporuka V4) vs per-host pool (ako performanse pokažu problem)?
-5. **Detach UX.** Želiš li drag-za-reattach (DX standard) ili samo close-za-reattach?
-6. **Perzistencija pozicija detached prozora.** V4 preporučuje **NE** u prvoj iteraciji. Slažeš li se?
+### Odluke donesene za Faze 0–2 (SWAP)
+
+1. **DX verzija i licenca.** ✅ **ODLUČENO:** `DevExpress WinForms Controls v25.2.6` (Licensed).
+   - Koristi se postojeća licenca; sve potrebne komponente (Bars, TreeList, XtraTab, XtraEditors, Docking2010) pokrivene su u ovoj verziji.
+   - Fiksirati točno ovu verziju u Koraku 2a NuGet paketa (ne „najnoviji 23.x LTS" kako je prvotno predložio V4).
+   - Napomena: minimum target `.NET Framework 4.5.2+` zadovoljen (projekt je na 4.8).
+
+2. **DX skin default.** ✅ **ODLUČENO:** `Office 2019 Colorful` (prihvaćen V4 prijedlog).
+   - Postavlja se u `Program.cs Main()`: `UserLookAndFeel.Default.SetSkinStyle(SkinStyle.Office2019Colorful)`.
+   - Primjenjuje se samo ako korisnik nema saved preference u `VvEnvironmentDescriptor`.
+
+3. **TreeList vs native TreeView za `TreeView_Modul`.** ✅ **ODLUČENO:** `TreeList` (prihvaćen V4 prijedlog).
+   - Konzistentnost s ostalim DX kontrolama nadjačava niži rizik native `TreeView`-a.
+   - Implementacija: 1 `TreeListColumn`, populate preko `AppendNode`, event `FocusedNodeChanged`, ikone preko `SelectImageIndex` (v. §2.1 / Korak 2h).
+
+### Otvorena pitanja za Fazu 3 (DETACH) — odgovor kasnije
+
+4. **DB concurrency strategy za Fazu 3.** ⏳ **PENDING** — Lock-based (preporuka V4) vs per-host pool. Odluka se donosi prije početka Faze 3, nakon što Faza 2 bude u produkciji i performanse shared konekcija budu izmjerene.
+
+5. **Detach UX.** ⏳ **PENDING** — drag-za-reattach (DX standard) vs samo close-za-reattach.
+
+6. **Perzistencija pozicija detached prozora.** ⏳ **PENDING** — V4 preporučuje **NE** u prvoj iteraciji.
 
 ---
 
