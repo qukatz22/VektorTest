@@ -391,6 +391,7 @@
     </Compile>
     <Compile Include="Framework\VvImpExp.cs" />
     <Compile Include="Framework\VvSubModul.cs" />
+    <Compile Include="Framework\VvToolbarFactory.cs" />
     <Compile Include="Framework\Vv_XSD_Bussiness_BASE.cs" />
     <Compile Include="Icons\VvIco.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
