@@ -381,6 +381,7 @@
     <Compile Include="DataLayer\VvDaos\UserDao.cs" />
     <Compile Include="DataLayer\VvDaos\XtranoDao.cs" />
     <Compile Include="DataLayer\VvDaos\XtransDao.cs" />
+    <Compile Include="Framework\IVvDocumentHost.cs" />
     <Compile Include="Framework\VvEditingControlCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -2750,6 +2751,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="zVvForm\TabControl_TabPages.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zVvForm\VvForm_IVvDocumentHost.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="zVvForm\VvForm_Q.cs">

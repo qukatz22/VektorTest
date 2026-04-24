@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 
-public /*sealed*/ partial class VvForm : DotNetMagicForm
+public /*sealed*/ partial class VvForm : DotNetMagicForm, IVvDocumentHost
 {
 
    #region Main
