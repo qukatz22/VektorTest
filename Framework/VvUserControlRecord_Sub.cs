@@ -704,12 +704,16 @@ public abstract class VvDocumentRecordUC  : VvDocumLikeRecordUC
    {
       DataGridView dgv = sender as DataGridView;
 
-      if(ZXC.TheVvForm.TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+      // Faza 1d / C14: WriteMode preko C12-settable TheVvTabPage (u Fazi 3
+      // respektira host-specific tab); status text kroz ZXC.StatusTextPusher.
+      if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
       VvTextBox vvtb = dgv.Columns[e.ColumnIndex].Tag as VvTextBox;
 
       if(vvtb != null && vvtb.JAM_StatusText.NotEmpty())
       {
+         if(ZXC.StatusTextPusher != null) { ZXC.StatusTextPusher(vvtb.JAM_StatusText); return; }
+
          ZXC.TheVvForm.statusTextBackup       = ZXC.TheVvForm.TStripStatusLabel.Text;
          ZXC.TheVvForm.TStripStatusLabel.Text = vvtb.JAM_StatusText;
       }
@@ -719,16 +723,19 @@ public abstract class VvDocumentRecordUC  : VvDocumLikeRecordUC
    {
       DataGridView dgv = sender as DataGridView;
 
-      if(ZXC.TheVvForm.TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
+      // Faza 1d / C14: isto kao gore — TheVvTabPage kroz C12 setter; pop kroz ZXC.StatusTextPopper.
+      if(this.TheVvTabPage.WriteMode == ZXC.WriteMode.None) return;
 
       VvTextBox vvtb = dgv.Columns[e.ColumnIndex].Tag as VvTextBox;
 
       if(vvtb != null && vvtb.JAM_StatusText.NotEmpty())
       {
+         if(ZXC.StatusTextPopper != null) { ZXC.StatusTextPopper(); return; }
+
        //17.05.2019. da ne skace
        //                                           ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup;
-       if(ZXC.TheVvForm.statusTextBackup.IsEmpty()) ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup = "...";
-       else                                         ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup        ;
+        if(ZXC.TheVvForm.statusTextBackup.IsEmpty()) ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup = "...";
+        else                                         ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup        ;
       }
    }
 

@@ -130,6 +130,16 @@ public static class ZXC
    public static Action<string> StatusTextSetter;
    public static Action         StatusTextClearer;
 
+   // Faza 1d / sub-korak C14 (DevExpress_Migration_V4.md §3.1d, §1.9)
+   // Push/Pop semantika za status text (koristi je VvTextBox OnEnter/OnExit i
+   // VvUserControlRecord_Sub.grid_CellEnter/Leave za tool-tip-style status
+   // hint-ove). Prije C14 call-siteovi su direktno citali/pisali
+   // ZXC.TheVvForm.statusTextBackup; sada delegati VvForma drze backup privatno.
+   // U Fazi 3 detach: svaki host cuva svoj vlastiti backup pa pop vraca host-specific
+   // tekst — bez diranja call-siteova.
+   public static Action<string> StatusTextPusher;
+   public static Action         StatusTextPopper;
+
    #endregion Status Text Sink  (Phase 1a / C5)
 
    #region Active Record UC Providers  (Phase 1d / C13)

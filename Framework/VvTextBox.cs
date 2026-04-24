@@ -1016,6 +1016,9 @@ public class VvTextBox : TextBox, IEditableObject
    {
       if(this.JAM_IsForDateTimePicker) return;
 
+      // Faza 1d / C14: kroz ZXC.StatusTextPusher; fallback na TheVvForm.
+      if(ZXC.StatusTextPusher != null) { ZXC.StatusTextPusher(statusText); return; }
+
       if(ZXC.TheVvForm.TStripStatusLabel != null)
       {
          ZXC.TheVvForm.statusTextBackup       = ZXC.TheVvForm.TStripStatusLabel.Text;
@@ -1025,6 +1028,9 @@ public class VvTextBox : TextBox, IEditableObject
    private void OnExitRestoreStatusText(object sender, EventArgs e)
    {
       if(this.JAM_IsForDateTimePicker) return;
+
+      // Faza 1d / C14: kroz ZXC.StatusTextPopper; fallback na TheVvForm.
+      if(ZXC.StatusTextPopper != null) { ZXC.StatusTextPopper(); return; }
 
       if(ZXC.TheVvForm.TStripStatusLabel != null)
       {
