@@ -101,6 +101,22 @@ public static class ZXC
 
    #endregion ActiveDocumentHost  (Phase 1a / C1)
 
+   #region Path Providers  (Phase 1a / C4)
+
+   // Faza 1a / sub-korak C4 (DevExpress_Migration_V4.md §3.1a)
+   // Indirekcija ka VvForm-ovim helperima za putanje: ZXC metode (aim_log_file_name,
+   // VvSerializedDR_DirectoryName) više NE zovu VvForm tipom direktno, nego kroz
+   // delegate providere koje VvForm postavi u InitializeVvForm().
+   //
+   // Napomena: ne cache-amo rezultat jer ovisi o dinamickom stanju (PUG_ID, vvDB_User).
+   // Fallback na VvForm putanju ostaje radi sigurnosti ako provider nije postavljen
+   // (npr. dijagnostika prije InitializeVvForm()).
+
+   public static Func<bool, string>   ProjectAndUserDocumentsLocationProvider;
+   public static Func<string, string> LocalDirectoryForVvFileProvider;
+
+   #endregion Path Providers  (Phase 1a / C4)
+
    public static VvFont vvFont;
    public static VvColorsAndStyles vvColors;
 
@@ -5489,7 +5505,12 @@ public static class ZXC
    {
       if(ZXC.utilTS.IsEmpty()) ZXC.utilTS = DateTime.Now;
 
-      string fName = ZXC.TheVvForm.Get_MyDocumentsLocation_ProjectAndUser_Dependent(false) + @"\" + ZXC.vv_PRODUCT_Name + "Log_"  + ZXC.utilTS.ToString(ZXC.VvTimeStampFormat4FileName) + @".TXT";
+      // Faza 1a / C4: kroz ZXC.ProjectAndUserDocumentsLocationProvider; fallback na VvForm.
+      string baseDir = ZXC.ProjectAndUserDocumentsLocationProvider != null
+                     ? ZXC.ProjectAndUserDocumentsLocationProvider(false)
+                     : ZXC.TheVvForm.Get_MyDocumentsLocation_ProjectAndUser_Dependent(false);
+
+      string fName = baseDir + @"\" + ZXC.vv_PRODUCT_Name + "Log_"  + ZXC.utilTS.ToString(ZXC.VvTimeStampFormat4FileName) + @".TXT";
 
       return (fName);
    }
@@ -7418,7 +7439,11 @@ public static class ZXC
    {
       get
       {
-         return VvForm.GetLocalDirectoryForVvFile(@"VvSerializedDR_" + ZXC.PUG_ID);
+         // Faza 1a / C4: kroz ZXC.LocalDirectoryForVvFileProvider; fallback na VvForm.
+         string subDir = @"VvSerializedDR_" + ZXC.PUG_ID;
+         return ZXC.LocalDirectoryForVvFileProvider != null
+              ? ZXC.LocalDirectoryForVvFileProvider(subDir)
+              : VvForm.GetLocalDirectoryForVvFile(subDir);
       }
    }
 
