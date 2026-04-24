@@ -68,4 +68,13 @@ public interface IVvDocumentHost
 
    /// <summary>Host kao WinForms Form (za MessageBox owner, ShowDialog, Invoke, ...).</summary>
    Form AsForm { get; }
+
+   // ---- Per-host state (Faza 1e / C15) ----
+
+   /// <summary>
+   /// Per-host flag bucket (§1.14, §3.1e). Dormant kontrakt u Fazi 1 — tijela
+   /// flagova i dalje zive u ZXC staticima; u Fazi 3 (VvFloatingForm) call-siteovi
+   /// flipaju s ZXC.FlagName na host.PerHost.FlagName.
+   /// </summary>
+   VvPerHostState PerHost { get; }
 }

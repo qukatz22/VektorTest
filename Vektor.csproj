@@ -385,6 +385,7 @@
     <Compile Include="Framework\VvEditingControlCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Framework\VvPerHostState.cs" />
     <Compile Include="Framework\VvSkyLab.cs" />
     <Compile Include="Framework\VvRichTextBoxToolStrip.cs">
       <SubType>Component</SubType>

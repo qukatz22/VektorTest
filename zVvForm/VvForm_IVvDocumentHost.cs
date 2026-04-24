@@ -50,4 +50,9 @@ public partial class VvForm : IVvDocumentHost
    // ---- Form pristup ----
 
    Form IVvDocumentHost.AsForm { get { return this; } }
+
+   // ---- Per-host state (Faza 1e / C15) ----
+
+   private readonly VvPerHostState _perHost = new VvPerHostState();
+   VvPerHostState IVvDocumentHost.PerHost { get { return _perHost; } }
 }

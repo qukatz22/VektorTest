@@ -99,6 +99,21 @@ public static class ZXC
       }
    }
 
+   // Faza 1e / C15 — convenience getter za per-host flag bucket aktivnog host-a.
+   // Vraca null ako nema registriranog host-a (bootstrap prije InitializeVvForm ili
+   // testni scenariji). Call-siteovi (u Fazi 3) koriste null-safe pattern:
+   //   var ph = ZXC.ActivePerHostState;
+   //   if (ph != null) ph.RISK_FinalRn_inProgress = true; else ZXC.RISK_FinalRn_inProgress = true;
+   // U C15 jos uvijek dormant — tijela flagova zive u ZXC staticima.
+   public static VvPerHostState ActivePerHostState
+   {
+      get
+      {
+         var h = ActiveDocumentHost as IVvDocumentHost;
+         return h != null ? h.PerHost : null;
+      }
+   }
+
    #endregion ActiveDocumentHost  (Phase 1a / C1)
 
    #region Path Providers  (Phase 1a / C4)
@@ -360,15 +375,23 @@ public static class ZXC
       Reset_PerHost_StatusVariables_ForAllHosts();
    }
 
-   // Faza 1a / sub-korak C7 — placeholder do Faze 1b (IVvDocumentHost).
-   // U Fazi 1b ce se ovdje iterirati DocumentHosts i pozvati host.ResetPerHostStatusVariables().
-   // Do tada, per-host flagovi (v. §1.14: Record-level, UI state, RISK field ops, Cross-DUC copy)
-   // i dalje zive kao ZXC statics i resetiraju se defanzivno ovdje.
+   // Faza 1a / C7 → prosireno u Fazi 1e / C15 (DevExpress_Migration_V4.md §1.14, §3.1e).
+   // U C15: primarni path iterira registrirane DocumentHosts i zove host.PerHost.ResetAll().
+   // Defanzivni ZXC static resetovi i dalje ostaju ispod — tijela flagova su u C15 jos
+   // uvijek u ZXC staticima (Option B: infrastruktura prije bodies; v. VvPerHostState.cs).
+   // U Fazi 3, kad call-siteovi flipnu na host.PerHost.FlagName, defanzivni blok moze otici.
    internal static void Reset_PerHost_StatusVariables_ForAllHosts()
    {
-      // TODO (Faza 1b): premjestiti ove flagove na IVvDocumentHost i iterirati DocumentHosts.
-      // Do tada — defanzivan reset na ZXC static razini da project-switch ne ostavi stale mutex.
+      // --- Primary path (C15): iteriraj registrirane hostove i resetiraj per-host bucket ---
+      foreach (var rawHost in DocumentHosts)
+      {
+         var host = rawHost as IVvDocumentHost;
+         host?.PerHost?.ResetAll();
+      }
 
+      // --- Defanzivni fallback (C15): tijela flagova jos zive u ZXC staticima
+      // (Option B: call-siteovi se ne diraju do Faze 3). Ovaj blok osigurava da
+      // project-switch ne ostavi stale mutex dok flip nije dovrsen.
       RISK_SaveVvDataRecord_inProgress                             = false;
       GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
       RISK_FinalRn_inProgress                                      = false;
