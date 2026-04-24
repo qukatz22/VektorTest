@@ -261,11 +261,105 @@ public static class ZXC
 
    public static VvDataBaseInfo VvDataBaseInfoInUse;
 
-   // TODO: ovdje sada treba resetirati sve potrebite. Koji su to, otkriti ces s vremenom kada budu javljali bug-ove. 
+   // Faza 1a / sub-korak C7 (DevExpress_Migration_V4.md §1.14, §3.1e)
+   // Resetira SVE globalne *_InProgress / *_Checked / *_HasErrors flagove klasificirane kao
+   // Global u §1.14. Per-DocumentHost flagovi (record-level, UI state, RISK field ops, cross-DUC copy)
+   // NAMJERNO nisu ovdje — oni zive na IVvDocumentHost instanci (Faza 1b/3e) i resetiraju se
+   // kroz Reset_PerHost_StatusVariables_ForAllHosts() ispod (placeholder do Faze 1b).
+   //
+   // Zove se iz project-switch putanje (VvForm_Q.tsCbxVvDataBase_SelectedIndexChanged_JOB) —
+   // svaka nova Global flag deklaracija klasificirana kao Global u §1.14 mora biti dodana i ovdje.
    internal static void ResetAll_GlobalStatusVariables()
    {
-      Fak2NalAutomationChecked = false;
-      LastUsedProjektTT_IsDiscovered = false;
+      // --- Session-once checks (v. §1.14: Session-once) ---
+      Fak2NalAutomationChecked                = false;
+      RISK_Cache_Checked                      = false;
+      RISK_PrNabCij_Checked                   = false;
+      RISK_BadMSU_Checked                     = false;
+      RISK_NOTfisk_Checked                    = false;
+      RISK_TtNum_Slijednost_Checked           = false;
+      DUC_UnlinkedTranses_Checked             = false;
+      LastUsedProjektTT_IsDiscovered          = false;
+
+      // --- Long-running ops (process mutex) ---
+      RenewCache_InProgress                   = false;
+      RewriteAllDocuments_InProgress          = false;
+      RepairMissingFakturEx_InProgress        = false;
+      FakturList_To_PDF_InProgress            = false;
+      FakturList_To_PDF_subDsc                = 0;
+      RISK_VvPDFreporter_InProgress           = false;
+
+      // --- Import/export (file I/O) ---
+      Restore_FromVvXmlDR_InProgress          = false;
+      OffixImport_InProgress                  = false;
+      LoadPoprat_InProgress                   = false;
+      CopyOut_InProgress                      = false;
+      KOPfromFUG_InProgress                   = false;
+      KOPfromUGAN_InProgress                  = false;
+      KOPfromUGAN_TabIndex                    = 0;
+
+      // --- Cache management ---
+      RISK_DisableCacheTemporarily            = false;
+      RISK_DisableAutoFiskTemporarily         = false;
+      ShouldForceSifrarRefreshing             = false;
+      RISK_NewCache_InProgress                = false;
+
+      // --- Sky sync (single server endpoint) ---
+      // NAPOMENA: SENDorRECEIVE_SKY_InProgress je computed property (OR ova dva) — ne resetira se eksplicitno.
+      SENDtoSKY_InProgress                    = false;
+      RECEIVEfromSKY_InProgress               = false;
+
+      // --- M2PAY hardware (fizicki singleton) ---
+      // NAPOMENA: M2PAY_API_Initialized / M2PAY_Device_Connected NE resetiramo — oni
+      // reflektiraju stvarno stanje hardvera, ne session state. AuthorizationStatus
+      // je per-transakcija, resetiramo na neutralno.
+      M2PAY_AuthorizationStatus               = com.handpoint.api.FinancialStatus.UNDEFINED;
+
+      // --- Misc ---
+      LoadImportFile_HasErrors                = false;
+      LoadCrystalReports_HasErrors            = false;
+      VvXmlDR_LastDocumentMissing_AlertRaised = false;
+      ForceXtablePreffix                      = false;
+      GOST_SOBA_BOR_SetOtherData_InProgress   = false;
+      RISK_FiskParagon_InProgress             = false;
+      // InitializeApplication_InProgress — NE resetirati (startup-only; u ovoj tocki je vec false).
+
+      // Per-host reset: prolazi kroz sve registrirane hostove (Faza 1b+).
+      Reset_PerHost_StatusVariables_ForAllHosts();
+   }
+
+   // Faza 1a / sub-korak C7 — placeholder do Faze 1b (IVvDocumentHost).
+   // U Fazi 1b ce se ovdje iterirati DocumentHosts i pozvati host.ResetPerHostStatusVariables().
+   // Do tada, per-host flagovi (v. §1.14: Record-level, UI state, RISK field ops, Cross-DUC copy)
+   // i dalje zive kao ZXC statics i resetiraju se defanzivno ovdje.
+   internal static void Reset_PerHost_StatusVariables_ForAllHosts()
+   {
+      // TODO (Faza 1b): premjestiti ove flagove na IVvDocumentHost i iterirati DocumentHosts.
+      // Do tada — defanzivan reset na ZXC static razini da project-switch ne ostavi stale mutex.
+
+      RISK_SaveVvDataRecord_inProgress                             = false;
+      GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
+      RISK_FinalRn_inProgress                                      = false;
+      RISK_Edit_RtranoOnly_InProgress                              = false;
+      DupCopyMenu_inProgress                                       = false;
+
+      RISK_CopyToOtherDUC_inProgress                               = false;
+      RISK_CopyToMixerDUC_inProgress                               = false;
+      MIXER_CopyToOtherDUC_inProgress                              = false;
+
+      RESET_InitialLayout_InProgress                               = false;
+      MenuReset_SvDUH_ZAHonly_InProgress                           = false;
+      PutRiskFilterFieldsInProgress                                = false;
+      DumpChosenOtsList_OnNalogDUC_InProgress                      = false;
+      LoadIzvodDLG_isON                                            = false;
+
+      RISK_ToggleKnDeviza_InProgress                               = false;
+      RISK_InitZPCvalues_InProgress                                = false;
+      RISK_PULXPIZX_Calc_InProgress                                = false;
+      RISK_CheckPrNabDokCij_inProgress                             = false;
+      RISK_CheckZPCkol_inProgress                                  = false;
+      RISK_PromjenaNacPlac_inProgress                              = false;
+      RISK_AutoAddInventuraDiff_inProgress                         = false;
    }
 
    // 30.03.2015: stavio init ZXC.RRD u InitializeVvDao() 

@@ -807,7 +807,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 | C4 | `ZXC` path provideri — `ProjectAndUserDocumentsLocationProvider`, `LocalDirectoryForVvFileProvider` (delegate-based zbog `PUG_ID` mutabilnosti) | ✅ |
 | C5 | `ZXC` status text sink — `StatusTextSetter`, `StatusTextClearer` (delegate-based; u Fazi 3 rutira kroz `ActiveDocumentHost` bez diranja call-siteova) | ✅ |
 | C6 | `ZXC.VvDB_prjktDB_Name` dead backing field + dead setter uklonjeni; `PrjConnection` i `VvDB_NameConstructor()` potvrđeno čitaju direktno iz ZXC-a (ne kroz `TheVvForm.Getvv*()`). Build green. Napomena: `VvForm.GetvvDB_prjktDB_name()` / `GetvvDB_prefix()` / `Getvv_PRODUCT_name()` **zadržani** — koriste se interno u `VvForm` partial fileovima; plan je ukloniti ih u Fazi 1f audit-u. | ✅ |
-| C7 | `ResetAll_GlobalStatusVariables()` proširenje po klasifikaciji §1.14 (global flagovi) + per-host reset path | ⏳ |
+| C7 | `ResetAll_GlobalStatusVariables()` proširenje po klasifikaciji §1.14 — resetirani svi Global-scope flagovi (Session-once, Long-running, Import/export, Cache mgmt, Sky sync, Misc) + M2PAY authorization status; `SENDorRECEIVE_SKY_InProgress` preskočen jer je computed property (OR dvaju flagova); M2PAY_API_Initialized / M2PAY_Device_Connected namjerno ne resetirani (reflektiraju hardverski state). Dodan sibling `Reset_PerHost_StatusVariables_ForAllHosts()` kao placeholder do Faze 1b — trenutno defanzivno resetira per-host flagove (Record-level, Cross-DUC copy, UI state, RISK field ops) na ZXC static razini; u Fazi 1b iteracija DocumentHosts pozvat ce host.ResetPerHostStatusVariables(). Zove se iz `VvForm_Q` project-switch putanje (`tsCbxVvDataBase_SelectedIndexChanged_JOB`). Build green. | ✅ |
 
 ### Otvorena pitanja za Fazu 3 (DETACH) — odgovor kasnije
 
