@@ -117,6 +117,21 @@ public static class ZXC
 
    #endregion Path Providers  (Phase 1a / C4)
 
+   #region Status Text Sink  (Phase 1a / C5)
+
+   // Faza 1a / sub-korak C5 (DevExpress_Migration_V4.md §3.1a)
+   // ZXC.SetStatusText / ClearStatusText vise ne diraju TheVvForm.TStripStatusLabel
+   // direktno, nego idu kroz delegate sink koji VvForm postavi u InitializeVvForm().
+   // U Fazi 3 (detach) sink ce rutirati kroz ActiveDocumentHost (svaka VvFloatingForm
+   // ima vlastiti status label) — tada cemo ovdje samo zamijeniti implementaciju
+   // postavljanja sink-a, a call siteovi (Mixer/Placa/Ptrane/Person/Htrans...) ostaju
+   // nepromijenjeni.
+
+   public static Action<string> StatusTextSetter;
+   public static Action         StatusTextClearer;
+
+   #endregion Status Text Sink  (Phase 1a / C5)
+
    public static VvFont vvFont;
    public static VvColorsAndStyles vvColors;
 
@@ -7251,6 +7266,13 @@ public static class ZXC
 
    public static void SetStatusText(string statusText)
    {
+      // Faza 1a / C5: kroz ZXC.StatusTextSetter; fallback na TheVvForm.TStripStatusLabel.
+      if(ZXC.StatusTextSetter != null)
+      {
+         ZXC.StatusTextSetter(statusText);
+         return;
+      }
+
       if(ZXC.TheVvForm != null && ZXC.TheVvForm.TStripStatusLabel != null)
       {
          ZXC.TheVvForm.TStripStatusLabel.Text = statusText;
@@ -7262,6 +7284,13 @@ public static class ZXC
 
    public static void ClearStatusText()
    {
+      // Faza 1a / C5: kroz ZXC.StatusTextClearer; fallback na TheVvForm.TStripStatusLabel.
+      if(ZXC.StatusTextClearer != null)
+      {
+         ZXC.StatusTextClearer();
+         return;
+      }
+
       if(ZXC.TheVvForm != null && ZXC.TheVvForm.TStripStatusLabel != null)
       {
          ZXC.TheVvForm.TStripStatusLabel.Text = "";
