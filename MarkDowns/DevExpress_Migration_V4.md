@@ -290,6 +290,24 @@ Interno u `ZXC.cs` ključne točke:
 **`PrjConnection` je najutjecajnija sprega u cijelom codebaseu** — svaka DB operacija
 prolazi kroz nju. Mora biti rano extracted (Faza 1a).
 
+**Status implementacije (Faza 1a, commiti C1–C5):** sljedeće točke iz tablice su već
+riješene **delegate-based indirekcijom** (ne cached standalone properties, kako je
+prvotni plan V4 pretpostavljao):
+
+| Točka | Commit | Mehanizam |
+|---|---|---|
+| `aim_log_file_name()` | C4 | `ZXC.ProjectAndUserDocumentsLocationProvider` (Func<bool,string>) |
+| `VvSerializedDR_DirectoryName` | C4 | `ZXC.LocalDirectoryForVvFileProvider` (Func<string,string>) |
+| `SetStatusText` / `ClearStatusText` | C5 | `ZXC.StatusTextSetter` (Action<string>) + `ZXC.StatusTextClearer` (Action) |
+| `ActiveDocumentHost` registar | C1 | `ZXC.RegisterDocumentHost` / `UnregisterDocumentHost` / `SetActiveDocumentHost` (tip `object` do Faze 1b) |
+| `VvForm.VvSubModul` nested extract | C3 | `Framework\VvSubModul.cs` — global namespace, kao i `VvSubMenu` + `VvReportSubModul` |
+
+**Važna spoznaja (C4):** `ZXC.PUG_ID` je computed getter iz `CURR_prjkt_rec` — **mijenja
+se tijekom sesije** na project switchu. Zato `VvSerializedDR_DirectoryName` **ne smije**
+biti cached property (kao što je plan §3.1a prvotno sugerirao za log/VvSerializedDR —
+„set pri loginu"); mora ostati computed ili delegate-based. Ovo pravilo vrijedi za svaku
+putanju koja koristi `PUG_ID` ili ostale per-project promjenljivi state.
+
 ### 1.14 `*_InProgress` flag inventar (klasifikacija)
 
 | Kategorija | Flagovi | Scope nakon detacha |
@@ -439,10 +457,12 @@ dirati istu bazu dva puta).
 
 - [ ] **`ZXC.PrjktDB_Name`** kao standalone property; `PrjConnection` getter više ne zove `TheVvForm.GetvvDB_prjktDB_name()`. **Postavi pri loginu.** *(kritično — svaka DAO operacija)*
 - [ ] **`ZXC.VvDB_Prefix`** standalone; `VvDB_NameConstructor()` ga čita. **Postavi pri loginu.** *(kritično — sva DB imena)*
-- [ ] `ZXC.ActiveDocumentHost` (`IVvDocumentHost`) + `RegisterDocumentHost` / `UnregisterDocumentHost` (lista svih hostova)
-- [ ] Extract `VvForm.VvSubModul` nested type u `ZXC.VvSubModul` (ili standalone) — eliminira type-level ovisnost business layera na `VvForm`
-- [ ] `ZXC.SetStatusText()` / `ClearStatusText()` → usmjeriti kroz `ActiveDocumentHost` umjesto `TheVvForm.TStripStatusLabel`
-- [ ] `aim_log_file_name()`, `VvSerializedDR_DirectoryName` → extract lokaciju u standalone ZXC property set pri loginu
+- [x] `ZXC.ActiveDocumentHost` (`object` do 1b, kasnije `IVvDocumentHost`) + `RegisterDocumentHost` / `UnregisterDocumentHost` (lista svih hostova) — **C1 ✅**
+- [x] Extract `VvForm.VvSubModul` nested type u standalone `Framework\VvSubModul.cs` (zajedno s `VvSubMenu` + `VvReportSubModul`) — eliminira type-level ovisnost business layera na `VvForm` — **C3 ✅**
+- [x] `ZXC.SetStatusText()` / `ClearStatusText()` → kroz **delegate sink** (`StatusTextSetter` / `StatusTextClearer`) koji VvForm postavi u `InitializeVvForm()`. U Fazi 3 tijelo delegata rutira kroz `ActiveDocumentHost` bez diranja call-siteova — **C5 ✅**
+- [x] `aim_log_file_name()`, `VvSerializedDR_DirectoryName` → kroz **delegate providere** (`ProjectAndUserDocumentsLocationProvider`, `LocalDirectoryForVvFileProvider`) umjesto cached propertyja. Razlog: ovisnost o mutabilnom `PUG_ID` / `vvDB_User` koji se mijenja pri project switchu (v. §1.13) — **C4 ✅**
+- [ ] **`ZXC.PrjktDB_Name`** kao standalone property; `PrjConnection` getter više ne zove `TheVvForm.GetvvDB_prjktDB_name()`. **Postavi pri loginu.** *(kritično — svaka DAO operacija)* — **C6 planirano**
+- [ ] **`ZXC.VvDB_Prefix`** standalone; `VvDB_NameConstructor()` ga čita. **Postavi pri loginu.** *(kritično — sva DB imena)* — **C6 planirano**
 
 #### 1b — `IVvDocumentHost` + `VvToolbarFactory`
 
@@ -723,7 +743,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 | # | Rizik | Faza | Mitigacija |
 |---|---|---|---|
-| R1 | `PrjConnection` je na kritičnom putusvake DB operacije | 1a | Extract `ZXC.PrjktDB_Name` rano, prije bilo kakve druge promjene |
+| R1 | `PrjConnection` je na kritičnom putusvake DB operacije | 1a | Extract `ZXC.PrjktDB_Name` rano, prije bilo kakve druge promjene. **Napomena (C2):** `TheThirdDbConn_SameDB` je ranije provjeravao `.Database != PrjConnection` i bacao `MySqlException` pri uklanjanju `GetvvDB_` indirekcije; fix — usporedba ide s backing fieldom `theMainDbConnection.Database`, ne s izvedenim `PrjConnection`-om. Ako netko u Fazi 1b/2 ponovno dira DB connection accessore, ovo mora ostati. |
 | R2 | `VvTabPage_VisibleChanged` ima ~100 redaka specijalne logike | 2c | Extract u`OnActivated`/`OnDeactivated` s identičnim grananjem; unit testove ponašanja napisati prije |
 | R3 | `Parent.Parent` navigacija puca pri reparent-u | 1c | Settable `TheVvTabPage` property — fallback tek ako property nije postavljen |
 | R4 | `Rtrans.Get_S_KC_fromScreen()` business ↔ UI sprega | 1d | Kroz `DocumentHost`/ argument injection |
@@ -776,6 +796,18 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 3. **TreeList vs native TreeView za `TreeView_Modul`.** ✅ **ODLUČENO:** `TreeList` (prihvaćen V4 prijedlog).
    - Konzistentnost s ostalim DX kontrolama nadjačava niži rizik native `TreeView`-a.
    - Implementacija: 1 `TreeListColumn`, populate preko `AppendNode`, event `FocusedNodeChanged`, ikone preko `SelectImageIndex` (v. §2.1 / Korak 2h).
+
+### Progres Faze 1a (commit-level tracker)
+
+| Commit | Opseg | Status |
+|---|---|---|
+| C1 | `ZXC.ActiveDocumentHost` skelet (object-typed; Register/Unregister/SetActive, thread-safe) | ✅ |
+| C2 | `TheThirdDbConn_SameDB` MySqlException fix + uklanjanje `GetvvDB_` indirekcije iz ZXC-a | ✅ |
+| C3 | `VvSubModul` / `VvSubMenu` / `VvReportSubModul` extrakcija iz nested `VvForm` tipa u `Framework\VvSubModul.cs` (global namespace) | ✅ |
+| C4 | `ZXC` path provideri — `ProjectAndUserDocumentsLocationProvider`, `LocalDirectoryForVvFileProvider` (delegate-based zbog `PUG_ID` mutabilnosti) | ✅ |
+| C5 | `ZXC` status text sink — `StatusTextSetter`, `StatusTextClearer` (delegate-based; u Fazi 3 rutira kroz `ActiveDocumentHost` bez diranja call-siteova) | ✅ |
+| C6 | `ZXC.VvDB_prjktDB_Name` dead backing field + dead setter uklonjeni; `PrjConnection` i `VvDB_NameConstructor()` potvrđeno čitaju direktno iz ZXC-a (ne kroz `TheVvForm.Getvv*()`). Build green. Napomena: `VvForm.GetvvDB_prjktDB_name()` / `GetvvDB_prefix()` / `Getvv_PRODUCT_name()` **zadržani** — koriste se interno u `VvForm` partial fileovima; plan je ukloniti ih u Fazi 1f audit-u. | ✅ |
+| C7 | `ResetAll_GlobalStatusVariables()` proširenje po klasifikaciji §1.14 (global flagovi) + per-host reset path | ⏳ |
 
 ### Otvorena pitanja za Fazu 3 (DETACH) — odgovor kasnije
 

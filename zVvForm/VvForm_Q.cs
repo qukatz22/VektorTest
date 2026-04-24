@@ -2930,19 +2930,18 @@ thisIsHektorProject_label:
       finally { }
    }
 
-   // ovo ide kada ti treba vvDB_name prije constructora VvForma, gdje je to onda jos i overridano...
+   // C6 (Phase 1a): ove metode SAMO bounceaju na ZXC (nema overrida u projektu).
+   // Zadrzane jer ih VvForm partial fileovi jos uvijek internall koriste; TODO Fazu 1f: zamijeniti sve interne pozive izravnim ZXC pristupom i onda ih ukloniti.
    public virtual string GetvvDB_prjktDB_name()
    {
       return ZXC.VvDB_prjktDB_Name;
    }
 
-   // ovo ide kada ti treba vvDB_name prije constructora VvForma, gdje je to onda jos i overridano...
    public virtual string Getvv_PRODUCT_name()
    {
       return ZXC.vv_PRODUCT_Name;
    }
 
-   // ovo ide kada ti treba vvDB_name prije constructora VvForma, gdje je to onda jos i overridano...
    public virtual string GetvvDB_prefix()
    {
       return ZXC.vvDB_prefix;

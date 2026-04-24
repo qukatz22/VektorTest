@@ -969,11 +969,12 @@ public static class ZXC
       }
    }
 
-   private static/*const*/ string vvDB_prjktDB_Name;
+   // C6 (Phase 1a): standalone property — `PrjConnection` i `VvDB_NameConstructor()` čitaju izravno iz ZXC-a.
+   // Value je izvedena iz `vvDB_www_preffix` (koji se postavlja pri loginu preko `vvDB_VvDomena`);
+   // dead backing field + dead setter uklonjeni jer ih nitko nije koristio.
    public static string VvDB_prjktDB_Name
    {
       get { return vvDB_www_preffix + "vvektor"; }
-      set { vvDB_prjktDB_Name = value; }
    }
 
    public static string GetUserNameWithWwwPreffix(string cleanUserName)
