@@ -132,6 +132,28 @@ public static class ZXC
 
    #endregion Status Text Sink  (Phase 1a / C5)
 
+   #region Active Record UC Providers  (Phase 1d / C13)
+
+   // Faza 1d / sub-korak C13 (DevExpress_Migration_V4.md §3.1d, R4)
+   // Business layer (Rtrans.cs) vise NE smije gadjati ZXC.TheVvForm.TheVvRecordUC /
+   // TheVvDocumentRecordUC direktno. Umjesto toga, VvForm u InitializeVvForm() postavi
+   // ova dva delegata, a Rtrans-ove UI-sprega-metode (Get_S_KC_fromScreen,
+   // Get_S_OrgPakKol_fromScreen, CheckZtrColExists, GetFakturRecForZavisniPurposes)
+   // ih pozivaju kroz provider.
+   //
+   // U Fazi 3 (detach) VvFloatingForm takodjer pise u ove delegate pri aktivaciji
+   // (ili delegate body ruta kroz ZXC.ActiveDocumentHost — ista strategija kao C5
+   // status sink). Time Rtrans pri calc-u dokumenta uvijek pogadja ispravan DUC (onaj
+   // u trenutno aktivnom host-u), a ne glavnu formu (sto bi u detach scenariju bio bug).
+   //
+   // Fallback: ako provider nije postavljen (npr. pri samom startu prije InitializeVvForm()),
+   // potrosaci padaju na stari put kroz ZXC.TheVvForm — ocuvava postojece ponasanje.
+
+   public static System.Func<VvRecordUC>         ActiveRecordUCProvider;
+   public static System.Func<VvDocumentRecordUC> ActiveDocumentRecordUCProvider;
+
+   #endregion Active Record UC Providers  (Phase 1d / C13)
+
    public static VvFont vvFont;
    public static VvColorsAndStyles vvColors;
 

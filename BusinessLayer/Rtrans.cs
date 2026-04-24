@@ -2702,7 +2702,11 @@ struct IRA   *iraPtr;
    {
       if(_faktur_rec != null) return _faktur_rec;
 
-      FakturDUC theDUC = ZXC.TheVvForm.TheVvRecordUC as FakturDUC;
+      // Faza 1d / C13: kroz ZXC.ActiveRecordUCProvider; fallback na ZXC.TheVvForm.
+      VvRecordUC recUC = ZXC.ActiveRecordUCProvider != null
+                       ? ZXC.ActiveRecordUCProvider()
+                       : ZXC.TheVvForm.TheVvRecordUC;
+      FakturDUC theDUC = recUC as FakturDUC;
 
       if(theDUC != null && theDUC.TheVvTabPage.WriteMode != ZXC.WriteMode.None) return theDUC.faktur_rec;
 
@@ -2711,7 +2715,11 @@ struct IRA   *iraPtr;
 
    internal /*private*/ static bool CheckZtrColExists()
    {
-      FakturDUC theDUC = ZXC.TheVvForm.TheVvRecordUC as FakturDUC;
+      // Faza 1d / C13: kroz ZXC.ActiveRecordUCProvider; fallback na ZXC.TheVvForm.
+      VvRecordUC recUC = ZXC.ActiveRecordUCProvider != null
+                       ? ZXC.ActiveRecordUCProvider()
+                       : ZXC.TheVvForm.TheVvRecordUC;
+      FakturDUC theDUC = recUC as FakturDUC;
       // some check 
       Faktur faktur_rec;
 
@@ -2809,12 +2817,20 @@ struct IRA   *iraPtr;
 
    private decimal Get_S_KC_fromScreen()
    {
-      return ((FakturDUC)ZXC.TheVvForm.TheVvDocumentRecordUC).Get_S_KC_fromScreen();
+      // Faza 1d / C13: kroz ZXC.ActiveDocumentRecordUCProvider; fallback na ZXC.TheVvForm.
+      VvDocumentRecordUC docUC = ZXC.ActiveDocumentRecordUCProvider != null
+                               ? ZXC.ActiveDocumentRecordUCProvider()
+                               : ZXC.TheVvForm.TheVvDocumentRecordUC;
+      return ((FakturDUC)docUC).Get_S_KC_fromScreen();
    }
 
    private decimal Get_S_OrgPakKol_fromScreen()
    {
-      return ((FakturDUC)ZXC.TheVvForm.TheVvDocumentRecordUC).Get_S_OrgPakKol_fromScreen();
+      // Faza 1d / C13: kroz ZXC.ActiveDocumentRecordUCProvider; fallback na ZXC.TheVvForm.
+      VvDocumentRecordUC docUC = ZXC.ActiveDocumentRecordUCProvider != null
+                               ? ZXC.ActiveDocumentRecordUCProvider()
+                               : ZXC.TheVvForm.TheVvDocumentRecordUC;
+      return ((FakturDUC)docUC).Get_S_OrgPakKol_fromScreen();
    }
 
    public static decimal GetZtrCut(decimal fak_S_ukZavisni, decimal fak_S_ukKC, decimal rtr_R_KC)
