@@ -1,22 +1,25 @@
 // =============================================================================
 // VvToolbarFactory.cs
 //
-// Faza 1b (C9): Skeleton static klase za buduce kreiranje i enable/disable
-// menija + toolbarova na `IVvDocumentHost`-u.
+// Faza 1b: Static klasa — sluzbeni ulazni kontrakt za buduce kreiranje i
+// enable/disable menija + toolbarova na `IVvDocumentHost`-u.
 //
-// Stanje u Fazi 1 (C9):
-//   - Samo signature-stubovi. Implementacije ostaju NotImplementedException.
-//   - `ApplyWriteMode` ce u C10 preuzeti tijelo iz
-//     `VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode_JOB` (bit-identicno).
-//   - `Create*` metode ostaju prazne do Faze 2g kada gradimo DevExpress `Bar`
-//     objekte iz postojecih `VvMenu[]` struktura (§1.5 V4).
+// Stanje nakon C10 (Option B — V4 §3.1b):
+//   - `ApplyWriteMode` je sluzbeni ulazni kontrakt. Tijelo FIZICKI OSTAJE u
+//     `VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode_JOB` do Faze 2g
+//     zbog dubokih ovisnosti o VvForm-private stateu (aMainMenu[][],
+//     aSubTopMenuItem[][], TheVvUC type-checks). Factory delegira na VvForm.
+//   - `Create*` metode ostaju signature-stubovi do Faze 2g kada gradimo
+//     DevExpress `Bar` objekte iz postojecih `VvMenu[]` struktura (§1.5 V4).
+//   - `ApplyProductTypeFilter` — signature-stub, tijelo iz
+//     `VvForm.InitalizeToolStrip_Modul` u buducem komitu po potrebi.
 //
-// Zasto stubovi vec sad:
-//   - Svaki buduci call-site koji treba enable/disable gumba mogao bi ODMAH
-//     pozvati `VvToolbarFactory.ApplyWriteMode(host, wm)` kao indirect wrapper
-//     oko postojece `VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode`.
-//     Time u Fazi 2g kada target prelazi s `ToolStripItem` na DX `BarButtonItem`,
-//     mijenjamo SAMO tijelo factory metoda — ne i call-siteove.
+// Zasto vec sad kontrakt (a ne tek u Fazi 2g):
+//   - Svi NOVI call-siteovi (business layer, Rtrans, detached VvFloatingForm)
+//     moraju ici kroz `VvToolbarFactory.ApplyWriteMode(host, wm)` — NIKAD
+//     direktno u VvForm. Time u Fazi 2g kada target flipa s `ToolStripItem`
+//     na DX `BarButtonItem`, mijenjamo SAMO tijelo factory metoda — ne i
+//     call-siteove.
 //   - Vidi V4 §3.1b i §1.6.
 // =============================================================================
 
@@ -76,22 +79,36 @@ public static class VvToolbarFactory
 
    // =========================================================================
    // ApplyWriteMode — single extraction point za sva WriteMode pravila.
-   // Faza 1b C10: tijelo se preuzima iz
-   //   VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode_JOB
-   // bit-identicno (ukljucujuci svih 7 specijalnih case-ova iz V4 §1.6:
-   // IsTEXTHOshop, IsPCTOGO × 4 varijante, KDCDUC, IsSvDUH_ZAHonly × 2).
+   //
+   // C10 Option B decision (V4 §3.1b / §1.6):
+   //   Tijelo FIZICKI OSTAJE u `VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode_JOB`
+   //   tijekom cijele Faze 1. Razlog — duboke ovisnosti o VvForm-private stateu
+   //   (aMainMenu[][], aSubTopMenuItem[][], TheVvUC type-checks, TheVvTabPage
+   //   .ArhivaTableIsNotEmpty) — premjestaj u factory trazio bi interface-pollution
+   //   (IVvDocumentHost bi morao izlagati te clanove) sto se kosi s atomic-commit
+   //   principom Faze 1b.
+   //
+   //   Ova metoda je SLUZBENI ULAZNI KONTRAKT. Svi NOVI call-siteovi (business
+   //   layer, Rtrans, detached VvFloatingForm iz Faze 3) ulaze kroz
+   //   `VvToolbarFactory.ApplyWriteMode(host, wm)` — NIKAD direktno u VvForm
+   //   metodu. Postojeci VvForm-interni pozivi ostaju direktni (ne dira se bit).
+   //
+   //   Fizicki premjestaj tijela: Faza 2g, kad target flipa s `ToolStripButton`
+   //   na DX `BarButtonItem`. Tada `_JOB` nestaje s VvForma i seli se ovdje u
+   //   retypiranom obliku.
    // =========================================================================
 
    /// <summary>
-   /// Primjeni WriteMode na sve relevantne menu/toolbar gumbe host-a.
-   /// Faza 1b C10: placeholder koji delegira na postojecu VvForm metodu.
+   /// Primjeni WriteMode na sve relevantne menu/toolbar gumbe host-a. Ovo je
+   /// sluzbeni ulazni kontrakt za enable/disable logiku — svi NOVI call-siteovi
+   /// moraju ici kroz ovu metodu. Vidi V4 §3.1b (Option B @ C10).
    /// </summary>
    public static void ApplyWriteMode(IVvDocumentHost host, ZXC.WriteMode writeMode)
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
 
-      // Faza 1b C10: privremeno delegiramo na postojecu VvForm implementaciju
-      // dok god je host VvForm singleton. U C10 se tijelo seli ovdje.
+      // Faza 1b C10: VvForm je jedini IVvDocumentHost u sistemu. Delegiramo na
+      // postojecu metodu (§1.6 single extraction point ostaje na VvFormu).
       VvForm vvForm = host as VvForm;
       if (vvForm != null)
       {
@@ -99,21 +116,24 @@ public static class VvToolbarFactory
          return;
       }
 
-      // Za detached VvFloatingForm (Faza 3): nema fallbacka — mora imati factory impl.
+      // Faza 3 (detach): VvFloatingForm mora imati vlastitu implementaciju
+      // — ili kroz premjesteno tijelo u C10(Faza 2g) ili kroz poseban factory
+      // path za DX BarManager. Do tada ne smije se pojaviti ne-VvForm host.
       throw new NotImplementedException(
-         "VvToolbarFactory.ApplyWriteMode: tijelo se seli iz " +
-         "VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode_JOB u C10.");
+         "VvToolbarFactory.ApplyWriteMode: host tipa " + host.GetType().Name +
+         " nije podrzan u Fazi 1b. Detach (Faza 3) ili Faza 2g ce dodati put.");
    }
 
    /// <summary>
    /// Primjeni product-site filtriranje na ts_Modul gumbe (Surger / Remonster / ostali).
-   /// Faza 1b C10: tijelo iz <c>VvForm.InitalizeToolStrip_Modul</c>.
+   /// Signature-stub — tijelo iz <c>VvForm.InitalizeToolStrip_Modul</c> seli se u
+   /// Fazi 2g kada target flipa na DX `BarItem`. Do tada VvForm gradi svoj ts_Modul interno.
    /// </summary>
    public static void ApplyProductTypeFilter(IVvDocumentHost host)
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
       throw new NotImplementedException(
-         "VvToolbarFactory.ApplyProductTypeFilter: tijelo se seli iz " +
-         "VvForm.InitalizeToolStrip_Modul u C10/C11 (po potrebi).");
+         "VvToolbarFactory.ApplyProductTypeFilter: tijelo se seli u Fazi 2g. " +
+         "Do tada koristi VvForm.InitalizeToolStrip_Modul interno.");
    }
 }
