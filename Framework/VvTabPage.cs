@@ -973,7 +973,8 @@ be_fast:
       switch (this.TabPageKind)
       {
          case ZXC.VvTabPageKindEnum.RECORD_TabPage:
-               TheVvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode(this.WriteMode);
+               // C11: vanjski call-site prolazi kroz sluzbeni factory kontrakt (V4 §3.1b / C10).
+               VvToolbarFactory.ApplyWriteMode(TheVvForm, this.WriteMode);
                // TODO: Tamara, cemu sluzi ovaj SetDirtyFlag? 
                TheVvForm.SetDirtyFlag("VvTabPage_VisibleChanged");
                TheVvForm.SetSorterComboBox();

@@ -786,7 +786,8 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       {
          if(Form.ActiveForm is VvForm) // zato da tsBtn na ts_record-u ostanu disebliran/enablitrani kak su bili prije pozivanja dlg
          {
-            ZXC.TheVvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode(ZXC.TheVvForm.TheVvTabPage.WriteMode);
+            // C11: vanjski call-site prolazi kroz sluzbeni factory kontrakt (V4 §3.1b / C10).
+            VvToolbarFactory.ApplyWriteMode(ZXC.TheVvForm, ZXC.TheVvForm.TheVvTabPage.WriteMode);
             // TODO: Tamara, cemu sluzi ovaj SetDirtyFlag? 
             ZXC.TheVvForm.SetDirtyFlag("SetVvMenuEnabledOrDisabled_HasFilter_FilterVisibiliti");
          }
