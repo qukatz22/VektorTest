@@ -102,23 +102,58 @@ public abstract class VvUserControl              : UserControl
    public Control ControlForInitialFocus;
    public ToolTip toolTip;
 
-   public VvTabPage TheVvTabPage
+   // ------------------------------------------------------------------
+   // C12 (Faza 1c, V4 §3.1c) — decoupling od fragilne Parent.Parent navigacije.
+   //
+   // Tri settable property-ja s fallback-safe ponasanjem:
+   //   - DocumentHost   : default = ZXC.TheVvForm (postojece ponasanje).
+   //                      U Fazi 3 VvFloatingForm postavlja sebe kao host.
+   //   - TheVvTabPage   : default = (VvTabPage)this.Parent.Parent (postojece).
+   //                      U Fazi 3 reparent u VvFloatingForm: setter se koristi
+   //                      da UC zadrzi referencu na ishodisni tab.
+   //   - TheDbConnection: fallback lanac prosiren s DocumentHost?.TheDbConnection
+   //                      izmedu tab-a i ZXC.TheVvForm (globalno) fallbacka.
+   //
+   // Nijedan postojeci call-site ne mijenja ponasanje dok property nije eksplicitno
+   // postavljen — zato C12 moze biti atomic commit bez regresija.
+   // ------------------------------------------------------------------
+
+   private IVvDocumentHost _documentHost;
+   public  IVvDocumentHost DocumentHost
+   {
+      get { return _documentHost ?? (IVvDocumentHost)ZXC.TheVvForm; }
+      set { _documentHost = value; }
+   }
+
+   private VvTabPage _theVvTabPage;
+   public  VvTabPage TheVvTabPage
    {
       get
       {
+         if(_theVvTabPage != null) return _theVvTabPage;
+
          if(this.Parent != null && this.Parent.Parent != null)
             return ((VvTabPage)(this.Parent.Parent));
          else
             return null;
       }
+      set { _theVvTabPage = value; }
    }
 
    /*protected*/internal XSqlConnection TheDbConnection
    {
-      get 
-      { 
-         if(pck == ZXC.ParentControlKind.VvFindDialog || TheVvTabPage == null) return ZXC.TheVvForm.TheVvTabPage.TheDbConnection;
-         else                                                                  return this         .TheVvTabPage.TheDbConnection; 
+      get
+      {
+         if(pck == ZXC.ParentControlKind.VvFindDialog || TheVvTabPage == null)
+         {
+            // C12: prvo pokusaj kroz DocumentHost (u Fazi 3 VvFloatingForm),
+            // pa tek onda globalni ZXC.TheVvForm fallback.
+            return DocumentHost?.TheDbConnection ?? ZXC.TheVvForm.TheVvTabPage.TheDbConnection;
+         }
+         else
+         {
+            return this.TheVvTabPage.TheDbConnection;
+         }
       }
    }
 
