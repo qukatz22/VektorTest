@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -51,7 +51,7 @@ public class FakturListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
    #region Constructor
 
-   public FakturListUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul, VvForm.VvSubModul vvMasterSubModul) : base(parent)
+   public FakturListUC(Control parent, Faktur _faktur, VvSubModul vvSubModul, VvSubModul vvMasterSubModul) : base(parent)
    {
       this.faktur_rec = _faktur;
 

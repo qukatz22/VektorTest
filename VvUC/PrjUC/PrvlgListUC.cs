@@ -20,7 +20,7 @@ public class PrvlgListUC : VvRecLstUC
 
    #region Constructor
 
-   public PrvlgListUC(Control parent, Prvlg _prvlg, VvForm.VvSubModul vvSubModul): base(parent)
+   public PrvlgListUC(Control parent, Prvlg _prvlg, VvSubModul vvSubModul): base(parent)
    {
       this.prvlg_rec = _prvlg;
 

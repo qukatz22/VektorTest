@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ public class RasterBDUC : MixerDUC
 
    #region Constructor
 
-   public RasterBDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public RasterBDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 

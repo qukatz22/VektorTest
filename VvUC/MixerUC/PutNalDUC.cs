@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ public partial class PutNalDUC : MixerDUC
 
    #region Constructor
 
-   public PutNalDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public PutNalDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
    }
 
@@ -1225,7 +1225,7 @@ public class PutNalTuzDUC : PutNalDUC
 {
    #region Constructor
 
-   public PutNalTuzDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul): base(parent, _mixer, vvSubModul)
+   public PutNalTuzDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul): base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 
@@ -1323,7 +1323,7 @@ public class PutNalInoDUC : PutNalDUC
 {
    #region Constructor
 
-   public PutNalInoDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public PutNalInoDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 
@@ -1424,7 +1424,7 @@ public class LokoVoznjaDUC : PutNalDUC
 {
    #region Constructor
 
-   public LokoVoznjaDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public LokoVoznjaDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 
@@ -1521,7 +1521,7 @@ public class PutRadListDUC : PutNalDUC
 {
    #region Constructor
 
-   public PutRadListDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public PutRadListDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 

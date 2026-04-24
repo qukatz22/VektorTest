@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ public partial class PlanDUC : MixerDUC
 
    #region Constructor
 
-   public PlanDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public PlanDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 

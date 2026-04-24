@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ public partial class ZLJ_DUC : MixerDUC
 
    #region Constructor
 
-   public ZLJ_DUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul)
+   public ZLJ_DUC(Control parent, Mixer _mixer, VvSubModul vvSubModul)
       : base(parent, _mixer, vvSubModul)
    {
 

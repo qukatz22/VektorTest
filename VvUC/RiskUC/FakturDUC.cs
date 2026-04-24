@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -256,7 +256,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
    public FakturDUC() { }
 
-   public FakturDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public FakturDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
    {
       SuspendLayout();
 
@@ -6386,9 +6386,9 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       return CreateFind_Faktur_Dialog(TheSubModul);
    }
 
-   public static VvFindDialog CreateFind_Faktur_Dialog(VvForm.VvSubModul theSubModul)
+   public static VvFindDialog CreateFind_Faktur_Dialog(VvSubModul theSubModul)
    {
-      VvForm.VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsFAK);
+      VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsFAK);
       VvDataRecord vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();
@@ -8635,7 +8635,7 @@ public partial class FakturExtDUC : FakturDUC
 
    #region Constructor
 
-   public FakturExtDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public FakturExtDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       SuspendLayout();
@@ -15433,7 +15433,7 @@ public class FakturPDUC : FakturExtDUC
 
    #region Constructor
 
-   public FakturPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public FakturPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       SuspendLayout();
@@ -16946,7 +16946,7 @@ public class VvCopyInNewTTDlg : VvDialog
    private VvHamper     hamper;
    private int          dlgWidth, dlgHeight;
    private RadioButton[] aRbtTargetDUC;
-   public VvForm.VvSubModul TheVvSubModul { get; set; }
+   public VvSubModul TheVvSubModul { get; set; }
 
    private VvDocumentRecordUC TheDUC;
 
@@ -16979,7 +16979,7 @@ public class VvCopyInNewTTDlg : VvDialog
 
    private void CreateHamper()
    {
-      VvForm.VvSubModul[] aMixerTargetSubModuls = new VvForm.VvSubModul[] // Tu sad samo dodajes ako se pojavi potreba za jos kojim MixerDUC-om 
+      VvSubModul[] aMixerTargetSubModuls = new VvSubModul[] // Tu sad samo dodajes ako se pojavi potreba za jos kojim MixerDUC-om 
       { 
          TheDUC.TheVvTabPage.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.X_ZAH),
          TheDUC.TheVvTabPage.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.X_ZAH_RNM), // 29.09.2016.????
@@ -17040,7 +17040,7 @@ public class VvCopyInNewTTDlg : VvDialog
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      VvForm.VvSubModul vvSubModul;
+      VvSubModul vvSubModul;
     //int hampRow  = 0;
     //int hampRow2 = 0;
     //int hampRow3 = 0;
@@ -17096,7 +17096,7 @@ public class VvCopyInNewTTDlg : VvDialog
    {
       RadioButton rbt = sender as RadioButton;
 
-      TheVvSubModul = (VvForm.VvSubModul)rbt.Tag;
+      TheVvSubModul = (VvSubModul)rbt.Tag;
    }
 
 }

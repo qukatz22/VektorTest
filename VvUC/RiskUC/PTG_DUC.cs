@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ public class KUG_PTG_DUC : FakturExtDUC
 {
    #region Constructor
 
-   public KUG_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public KUG_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[]
@@ -177,7 +177,7 @@ public class A1_KUG_PTG_DUC : KUG_PTG_DUC
 {
    #region Constructor
 
-   public A1_KUG_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public A1_KUG_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -198,7 +198,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
    #region Constructor
 
-   public UGNorAUN_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public UGNorAUN_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       this.PtgUgovor_rec = new PTG_Ugovor(faktur_rec);
 
@@ -1482,7 +1482,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
 
    public static VvFindDialog CreateFind_Xtrans_Dialog()
    {
-      VvForm.VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsKDC);
+      VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsKDC);
       VvDataRecord      vvDataRecord = new Xtrans();
 
       VvFindDialog vvFindDialog = new VvFindDialog();
@@ -1651,7 +1651,7 @@ public class UGO_PTG_DUC : UGNorAUN_PTG_DUC
 {
    #region Constructor (empty, only for calling base.Constructor)
 
-   public UGO_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public UGO_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]
@@ -1668,7 +1668,7 @@ public class ANU_PTG_DUC : UGNorAUN_PTG_DUC
 {
    #region Constructor
 
-   public ANU_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public ANU_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]
@@ -1684,7 +1684,7 @@ public class A1_ANU_PTG_DUC : UGNorAUN_PTG_DUC
 {
    #region Constructor
 
-   public A1_ANU_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public A1_ANU_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]
@@ -1700,7 +1700,7 @@ public class DIZ_PTG_DUC : FakturPDUC //FakturExtDUC
 {
    #region Constructor
 
-   public DIZ_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public DIZ_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[]
@@ -2251,7 +2251,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
 {
    #region Constructor
 
-   public PVR_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PVR_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[]
@@ -2854,7 +2854,7 @@ public class ZIZ_PTG_DUC : FakturPDUC
 {
    #region Constructor
 
-   public ZIZ_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public ZIZ_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[]
@@ -3502,7 +3502,7 @@ public class PRN_DIZ_PTG_DUC : DIZ_PTG_DUC
 {
    #region Constructor
 
-   public PRN_DIZ_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PRN_DIZ_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -3556,7 +3556,7 @@ public class FUG_PTG_UC : VvUserControl
 
    #region Constructor
 
-   public FUG_PTG_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   public FUG_PTG_UC(Control _parent, VvSubModul vvSubModul)
    {
       this.SuspendLayout();
       
@@ -4401,7 +4401,7 @@ public class URA_PTG_DUC : FakturPDUC
 {
    #region Constructor
 
-   public URA_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URA_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4525,7 +4525,7 @@ public class PRI_PTG_DUC : FakturPDUC
 {
 
    #region Constructor
-   public PRI_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PRI_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]
@@ -4643,7 +4643,7 @@ public class IRA_PTG_DUC : FakturPDUC
 {
    #region Constructor
 
-   public IRA_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRA_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4793,7 +4793,7 @@ public class IRA_PTG_DUC : FakturPDUC
 public class IZD_PTG_DUC : FakturPDUC
 {
    #region Constructor
-   public IZD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IZD_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]
@@ -4916,7 +4916,7 @@ public class MSI_PTG_DUC : FakturPDUC
 {
 
    #region Constructor
-   public MSI_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public MSI_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]
@@ -5007,7 +5007,7 @@ public class PST_PTG_DUC : FakturPDUC
 {
    #region Constructor
 
-   public PST_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PST_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6199,7 +6199,7 @@ public class MOD_PTG_DUC : FakturPDUC
 
    #region Constructor
 
-   public MOD_PTG_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public MOD_PTG_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[]

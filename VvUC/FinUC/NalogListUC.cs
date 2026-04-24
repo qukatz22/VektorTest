@@ -18,7 +18,7 @@ public class NalogListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
    #region Constructor
 
-   public NalogListUC(Control parent, Nalog _nalog, VvForm.VvSubModul vvSubModul) : base(parent)
+   public NalogListUC(Control parent, Nalog _nalog, VvSubModul vvSubModul) : base(parent)
    {
       this.nalog_rec = _nalog;
 
@@ -79,7 +79,7 @@ public class NalogListUC : /*VvRecLstUC*/VvDocumRecLstUC
       dtp_datum.Tag  = rbtSortByDatum;
 
       rbtSortByVKnum       = hampSpecifikum.CreateVvRadioButton  (0, 2, new EventHandler(rbtSortByVKnum_Click), "Od VK:", TextImageRelation.ImageAboveText);
-      tbx_VK = hampSpecifikum.CreateVvTextBoxLookUp(1, 2, " tbx_VK", "Od vrste knjiženja");
+      tbx_VK = hampSpecifikum.CreateVvTextBoxLookUp(1, 2, " tbx_VK", "Od vrste knjiï¿½enja");
       tbx_VK.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_VK.Tag           = rbtSortByVKnum;
       rbtSortByVKnum.Tag   = tbx_VK;
@@ -89,7 +89,7 @@ public class NalogListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
 
       Label lb                    = hampSpecifikum.CreateVvLabel  (2, 2, "Broj:"    , System.Drawing.ContentAlignment.MiddleRight);
-      tbx_VKnum                   = hampSpecifikum.CreateVvTextBox(3, 2, "tbx_TtNum", "Broj tipa transakcije - vrste knjiženja", 4);
+      tbx_VKnum                   = hampSpecifikum.CreateVvTextBox(3, 2, "tbx_TtNum", "Broj tipa transakcije - vrste knjiï¿½enja", 4);
       tbx_VKnum.JAM_CharEdits     = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_VKnum.JAM_FillCharacter = '0';
 
@@ -115,10 +115,10 @@ public class NalogListUC : /*VvRecLstUC*/VvDocumRecLstUC
       hampFilter.VvBottomMargin = hampFilter.VvTopMargin;
 
       Label lblFilter = hampFilter.CreateVvLabel(0, 0, "Izlistaj samo one koji se odnose na:", System.Drawing.ContentAlignment.MiddleRight);
-      Label lblvk     = hampFilter.CreateVvLabel(0, 1, "Vrstu knjiženja:"                    , System.Drawing.ContentAlignment.MiddleRight);
+      Label lblvk     = hampFilter.CreateVvLabel(0, 1, "Vrstu knjiï¿½enja:"                    , System.Drawing.ContentAlignment.MiddleRight);
       Label lblnapom  = hampFilter.CreateVvLabel(0, 2, "Napomenu:"                           , System.Drawing.ContentAlignment.MiddleRight);
 
-      tbx_filtVKnj = hampFilter.CreateVvTextBoxLookUp(1, 1, "tbx_filtVKnj", "Filtriraj prema zadanoj vrsti knjiženja");
+      tbx_filtVKnj = hampFilter.CreateVvTextBoxLookUp(1, 1, "tbx_filtVKnj", "Filtriraj prema zadanoj vrsti knjiï¿½enja");
       tbx_filtVKnj.JAM_CharacterCasing = CharacterCasing.Upper;
 
       tbx_filtVKOpis              = hampFilter.CreateVvTextBox(2, 1, "tbx_filtVKOpis", "");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using CrystalDecisions.CrystalReports.Engine;
 using Vektor.Reports.RIZ;
@@ -702,13 +702,13 @@ public abstract partial class VvRiskReport : VvReport
       switch(theTT)
       {
          case Faktur.TT_IFA:
-            theDUC = new IFADUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IFA));
+            theDUC = new IFADUC(null, faktur_rec, new VvSubModul(ZXC.VvSubModulEnum.R_IFA));
             break;
          case Faktur.TT_IRA:
-            theDUC = new IRADUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IRA));
+            theDUC = new IRADUC(null, faktur_rec, new VvSubModul(ZXC.VvSubModulEnum.R_IRA));
             break;
          case Faktur.TT_IRM: // dodano zbog senda 01.01.2026.
-            theDUC = new IRMDUC(null, faktur_rec, new VvForm.VvSubModul(ZXC.VvSubModulEnum.R_IRM));
+            theDUC = new IRMDUC(null, faktur_rec, new VvSubModul(ZXC.VvSubModulEnum.R_IRM));
             break;
       
          default: theDUC = null; break;

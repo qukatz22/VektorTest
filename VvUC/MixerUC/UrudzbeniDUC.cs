@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ public partial class UrudzbeniDUC : MixerDUC
 
    #region Constructor
 
-   public UrudzbeniDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul)
+   public UrudzbeniDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul)
       : base(parent, _mixer, vvSubModul)
    {
 

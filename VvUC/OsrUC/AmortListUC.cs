@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -17,7 +17,7 @@ public class AmortListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
    #region Constructor
 
-   public AmortListUC(Control parent, Amort _amort, VvForm.VvSubModul vvSubModul) : base(parent)
+   public AmortListUC(Control parent, Amort _amort, VvSubModul vvSubModul) : base(parent)
    {
       this.amort_rec = _amort;
 

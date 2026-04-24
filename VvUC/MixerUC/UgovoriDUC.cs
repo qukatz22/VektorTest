@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ public partial class UgovoriDUC : MixerDUC
 
    #region Constructor
 
-   public UgovoriDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul)
+   public UgovoriDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul)
       : base(parent, _mixer, vvSubModul)
    {
 

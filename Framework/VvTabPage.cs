@@ -55,8 +55,8 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    private VvForm theVvForm;
    public  VvForm TheVvForm { get { return this.theVvForm; } }
 
-   private VvForm.VvSubModul vvSubModul;
-   public  VvForm.VvSubModul TheVvSubModul
+   private VvSubModul vvSubModul;
+   public  VvSubModul TheVvSubModul
    {
       get { return vvSubModul; }
       set {        vvSubModul = value; }
@@ -297,7 +297,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    #region Constructor()
 
    public VvTabPage(// CONSTRUCTOR 
-      VvForm _vvForm, string _title, //VvForm.VvSubModul     _vvSubModul, 
+      VvForm _vvForm, string _title, //VvSubModul     _vvSubModul, 
       Point _xy, ZXC.VvTabPageKindEnum _tabPageKind, Crownwood.DotNetMagic.Controls.TabControl parentTabControl, VvDataRecord _initialVvDataRecord, uint? _initialVvDataRecord_RecID, VvRecLstUC _initialRecLstUC)
       : base(_title)
    {
@@ -446,7 +446,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          /****/
          /*********************************************************************************************************************************************************************/
 
-         /****... automatic, this goes in SkyLab only ... or 'ruèno' as AubModulAction   RtransDao.CheckAndRepare_ZPC_Kol_And_OldMpc(TheDbConnection);                     ****/
+         /****... automatic, this goes in SkyLab only ... or 'ruï¿½no' as AubModulAction   RtransDao.CheckAndRepare_ZPC_Kol_And_OldMpc(TheDbConnection);                     ****/
          /****/   // 30.11.2015: 
          /****/ //if( ZXC.RISK_PrNabCij_Checked == false || this.TheVvUC is RiskReportUC)                                                     { RtransDao.CheckPrNabDokCij(TheDbConnection); ZXC.RISK_PrNabCij_Checked = true; } /****/
          /****/   if((ZXC.RISK_PrNabCij_Checked == false || this.TheVvUC is RiskReportUC) && (!ZXC.IsTEXTHOcentrala || ZXC.vvDB_IsLocalhost)) { RtransDao.CheckPrNabDokCij(TheDbConnection); ZXC.RISK_PrNabCij_Checked = true; } /****/
@@ -488,7 +488,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
                // 30.01.2017: !!! BIG NEWS !!! 'ExecuteSynchronisation_SEND_then_RECEIVE' - BEFORE 'RISK_Fiskalize_AllPreviously_NOTfiskalized_JOB' 
                TheVvForm.VvForm_FormLoad_ExecuteSynchronisation_SEND_then_RECEIVE(this, EventArgs.Empty);
 
-               ZXC.aim_emsg(MessageBoxIcon.Warning, "Otkriveni su NEFISKALIZIRANI 'IRM' raèuni!\n\nFiskalizirati æu ih automatski.");
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "Otkriveni su NEFISKALIZIRANI 'IRM' raï¿½uni!\n\nFiskalizirati ï¿½u ih automatski.");
 
                // 25.01.2018: u danu kada CIS uopce ne radi, ipak im treba dati mogucnost da odustanu od ReFiskalizacije 
                // jer odervajs ulazak u program moze trajati satima ...                                                  
@@ -510,7 +510,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
 
             if(theFakturList.Count.NotZero())
             {
-               ZXC.aim_emsg_List("NE FISKALIZIRANI raèuni!", theFakturList.Select(fak => fak./*TT_And_TtNum*/ToString()).ToList());
+               ZXC.aim_emsg_List("NE FISKALIZIRANI raï¿½uni!", theFakturList.Select(fak => fak./*TT_And_TtNum*/ToString()).ToList());
             }
 
             ZXC.RISK_NOTfisk_Checked = true;
@@ -577,7 +577,7 @@ be_fast:
                   break;
             }
 
-            DialogResult result = MessageBox.Show("Otkrivena je greška!\n\nOve stavke dokumenta NEMAJU ZAGLAVLJE.\nDa li ih želite obrisati?\nAko niste sigurni, odgovorite NE te kontaktirajte Viper.\n\n" + errMessage,
+            DialogResult result = MessageBox.Show("Otkrivena je greï¿½ka!\n\nOve stavke dokumenta NEMAJU ZAGLAVLJE.\nDa li ih ï¿½elite obrisati?\nAko niste sigurni, odgovorite NE te kontaktirajte Viper.\n\n" + errMessage,
                "Potvrdite BRISANJE?!", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
             if(result != DialogResult.Yes) return;
@@ -613,7 +613,7 @@ be_fast:
    {
       if(IsArhivaTabPage)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Stop, "Izaðite, najprije, iz Arhive.");
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Izaï¿½ite, najprije, iz Arhive.");
          TheVvForm.TheTabControl.SelectedIndex = ArhivaTabPageSelectedIndex;
 
          e.Cancel = true;

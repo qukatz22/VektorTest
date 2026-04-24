@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -49,7 +49,7 @@ public class PlacaReportUC : VvReportUC
 
    #region Constructor
 
-   public PlacaReportUC(Control parent, VvRpt_Placa_Filter _rptFilter, VvForm.VvSubModul vvSubModul)
+   public PlacaReportUC(Control parent, VvRpt_Placa_Filter _rptFilter, VvSubModul vvSubModul)
    {
       this.TheSubModul = vvSubModul;
       this.TheRptFilter = _rptFilter;

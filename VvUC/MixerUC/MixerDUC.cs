@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -106,7 +106,7 @@ public partial class MixerDUC : VvPolyDocumRecordUC
 
    #region Constructor
 
-   public MixerDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul)
+   public MixerDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul)
    {
       SuspendLayout();
 
@@ -4382,9 +4382,9 @@ public partial class MixerDUC : VvPolyDocumRecordUC
       return CreateFind_Mixer_Dialog(TheSubModul);
    }
 
-   public static VvFindDialog CreateFind_Mixer_Dialog(VvForm.VvSubModul theSubModul)
+   public static VvFindDialog CreateFind_Mixer_Dialog(VvSubModul theSubModul)
    {
-      VvForm.VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsMIX);
+      VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsMIX);
       VvDataRecord vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();

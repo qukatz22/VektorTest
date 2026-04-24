@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -17,7 +17,7 @@ public class DevTecListUC : VvRecLstUC
 
    #region Constructor
 
-   public DevTecListUC(Control parent, DevTec2 _devTec, VvForm.VvSubModul vvSubModul) : base(parent)
+   public DevTecListUC(Control parent, DevTec2 _devTec, VvSubModul vvSubModul) : base(parent)
    {
       this.devTec_rec = _devTec;
 

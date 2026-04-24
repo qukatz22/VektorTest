@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
@@ -24,7 +24,7 @@ public class AmoReportUC : VvReportUC
 
    #region Constructor
 
-   public AmoReportUC(Control parent, VvRpt_Osred_Filter _rptFilter, VvForm.VvSubModul vvSubModul)
+   public AmoReportUC(Control parent, VvRpt_Osred_Filter _rptFilter, VvSubModul vvSubModul)
    {
      this.TheSubModul  = vvSubModul;
      this.TheRptFilter = _rptFilter;

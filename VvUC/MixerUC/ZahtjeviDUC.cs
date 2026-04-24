@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ public partial class ZahtjeviDUC : MixerDUC
 
    #region Constructor
 
-   public ZahtjeviDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public ZahtjeviDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
 
       string[] okTtList = ZXC.luiListaMixTypeZahtjev.Select(lui => lui.Cd).ToArray();

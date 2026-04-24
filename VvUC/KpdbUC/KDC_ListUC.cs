@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -16,7 +16,7 @@ public class KDC_ListUC : VvRecLstUC
 
    #region Constructor
 
-   public KDC_ListUC(Control parent, Xtrans _kdcXtrans, VvForm.VvSubModul vvSubModul) : base(parent)
+   public KDC_ListUC(Control parent, Xtrans _kdcXtrans, VvSubModul vvSubModul) : base(parent)
    {
       this.kdcXtrans_rec = _kdcXtrans;
 

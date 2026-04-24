@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class PrjktListUC : KupdobListUC
 {
 
-   public PrjktListUC(Control parent, Prjkt _prjkt, VvForm.VvSubModul vvSubModul) : base(parent, _prjkt, vvSubModul)
+   public PrjktListUC(Control parent, Prjkt _prjkt, VvSubModul vvSubModul) : base(parent, _prjkt, vvSubModul)
    {
       this.MasterSubModulEnum = ZXC.VvSubModulEnum.PRJ;
       this.TheSubModul        = vvSubModul;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ public partial class Statistika_NPF_DUC : /*MixerDUC*/GFI_TSI_DUC
 
    #region Constructor
 
-   public Statistika_NPF_DUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul)
+   public Statistika_NPF_DUC(Control parent, Mixer _mixer, VvSubModul vvSubModul)
       : base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor

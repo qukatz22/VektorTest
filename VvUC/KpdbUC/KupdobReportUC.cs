@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
@@ -14,7 +14,7 @@ public class KupdobReportUC : VvReportUC
 
    #region Constructor
 
-   public KupdobReportUC(Control parent, VvRpt_Kupdob_Filter _rptFilter, VvForm.VvSubModul vvSubModul)
+   public KupdobReportUC(Control parent, VvRpt_Kupdob_Filter _rptFilter, VvSubModul vvSubModul)
    {
      this.TheSubModul  = vvSubModul;
      this.TheRptFilter = _rptFilter;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
@@ -43,7 +43,7 @@ public class SkyRuleUC : VvRecordUC
 
    #region Constructor
 
-   public SkyRuleUC(Control parent, SkyRule _skyRule, VvForm.VvSubModul vvSubModul)
+   public SkyRuleUC(Control parent, SkyRule _skyRule, VvSubModul vvSubModul)
    {
       TheTabControl.TabPages.Add(CreateVvInnerTabPages("Matični", "", ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
@@ -585,7 +585,7 @@ public class SkyRuleUC : VvRecordUC
 
    public static VvFindDialog CreateFind_SkyRule_Dialog()
    {
-      VvForm.VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsSKY);
+      VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsSKY);
       VvDataRecord      vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();
@@ -1036,7 +1036,7 @@ public class SIN_UC : VvUserControl
 
    #region Constructor
 
-   public SIN_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   public SIN_UC(Control _parent, VvSubModul vvSubModul)
    {
       this.SuspendLayout();
       

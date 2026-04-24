@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -21,7 +21,7 @@ public class MixerReportUC              : VvReportUC
 
    #region Constructor
 
-   public MixerReportUC(Control parent, VvRpt_Mix_Filter _rptFilter, VvForm.VvSubModul vvSubModul)
+   public MixerReportUC(Control parent, VvRpt_Mix_Filter _rptFilter, VvSubModul vvSubModul)
    {
       this.TheRptFilter = _rptFilter;
       this.TheSubModul  = vvSubModul;

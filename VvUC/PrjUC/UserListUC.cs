@@ -16,7 +16,7 @@ public class UserListUC : VvRecLstUC
 
    #region Constructor
 
-   public UserListUC(Control parent, User _user, VvForm.VvSubModul vvSubModul) : base(parent)
+   public UserListUC(Control parent, User _user, VvSubModul vvSubModul) : base(parent)
    {
       this.user_rec = _user;
 

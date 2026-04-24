@@ -17,7 +17,7 @@ public class KplanListUC : VvRecLstUC
 
    #region Constructor
 
-   public KplanListUC(Control parent, Kplan _kplan, VvForm.VvSubModul vvSubModul) : base(parent)
+   public KplanListUC(Control parent, Kplan _kplan, VvSubModul vvSubModul) : base(parent)
    {
       this.kplan_rec = _kplan;
 

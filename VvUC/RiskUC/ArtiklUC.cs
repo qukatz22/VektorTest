@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
@@ -89,7 +89,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
    #region Constructor
 
-   public ArtiklUC(Control parent, Artikl _artikl, VvForm.VvSubModul vvSubModul)
+   public ArtiklUC(Control parent, Artikl _artikl, VvSubModul vvSubModul)
    {
       artikl_rec = _artikl;
 
@@ -3219,7 +3219,7 @@ public class ArtiklUC : VvSifrarRecordUC
 
    public static VvFindDialog CreateFind_Artikl_Dialog()
    {
-      VvForm.VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsART);
+      VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsART);
       VvDataRecord vvDataRecord    = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();

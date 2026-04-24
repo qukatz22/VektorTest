@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Linq;
 using MySql.Data.MySqlClient;
@@ -46,7 +46,7 @@ public class MixerListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
    #region Constructor
 
-   public MixerListUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul, VvForm.VvSubModul vvMasterSubModul)      : base(parent)
+   public MixerListUC(Control parent, Mixer _mixer, VvSubModul vvSubModul, VvSubModul vvMasterSubModul)      : base(parent)
    {
       this.mixer_rec = _mixer;
 

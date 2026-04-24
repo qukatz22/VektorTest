@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -22,7 +22,7 @@ public class RiskReportUC              : VvReportUC
 
    #region Constructor
 
-   public RiskReportUC(Control parent, VvRpt_RiSk_Filter _rptFilter, VvForm.VvSubModul vvSubModul)
+   public RiskReportUC(Control parent, VvRpt_RiSk_Filter _rptFilter, VvSubModul vvSubModul)
    {
       this.TheRptFilter = _rptFilter;
       this.TheSubModul  = vvSubModul;
@@ -3520,7 +3520,7 @@ public partial class RiskFilterUC : VvFilterUC
    //   {
    //      ((RiskReportUC)TheVvUC).TheFilterPanelBottom.Visible = true;
    //      btn_ArtiklList.Text = "Artikl -";
-   //      artiklListUc        = new ArtiklListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, artikl_rec, new VvForm.VvSubModul(true));
+   //      artiklListUc        = new ArtiklListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, artikl_rec, new VvSubModul(true));
 
    //      if(fakturListUc != null) fakturListUc.Visible = false;
 
@@ -3532,7 +3532,7 @@ public partial class RiskFilterUC : VvFilterUC
    //      {
    //         fakturListUc.Visible = false;
    //         btn_ArtiklList.Text = "Artikl -";
-   //         artiklListUc = new ArtiklListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, artikl_rec, new VvForm.VvSubModul(true));
+   //         artiklListUc = new ArtiklListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, artikl_rec, new VvSubModul(true));
    //         SetNotVisibilitiRecListHampers(artiklListUc);
    //      }
    //      else
@@ -3549,7 +3549,7 @@ public partial class RiskFilterUC : VvFilterUC
    //   {
    //      ((RiskReportUC)TheVvUC).TheFilterPanelBottom.Visible = true;
    //      btn_FakturList.Text = "Faktur -";
-   //      fakturListUc = new FakturListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, faktur_rec, new VvForm.VvSubModul(true), new VvForm.VvSubModul(true));
+   //      fakturListUc = new FakturListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, faktur_rec, new VvSubModul(true), new VvSubModul(true));
    //      if(artiklListUc != null) artiklListUc.Visible = false;
    //      SetNotVisibilitiRecListHampers(fakturListUc);
    //   }
@@ -3560,7 +3560,7 @@ public partial class RiskFilterUC : VvFilterUC
    //      {
    //         artiklListUc.Visible = false;
    //         btn_FakturList.Text = "Faktur -";
-   //         fakturListUc = new FakturListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, faktur_rec, new VvForm.VvSubModul(true), new VvForm.VvSubModul(true));
+   //         fakturListUc = new FakturListUC(((RiskReportUC)TheVvUC).TheFilterPanelBottom, faktur_rec, new VvSubModul(true), new VvSubModul(true));
    //         SetNotVisibilitiRecListHampers(fakturListUc);
    //      }
    //      else
@@ -4685,7 +4685,7 @@ public partial class RiskFilterUC : VvFilterUC
 
    #region SetFilterSet_OnRiskFilterUC
 
-   public void SetFilterSet_OnRiskFilterUC(VvForm.VvReportSubModul theReportSubModul)
+   public void SetFilterSet_OnRiskFilterUC(VvReportSubModul theReportSubModul)
    {
       //string currentFilterSetTabPageTitle = tabControlRiskFilterUC.SelectedTab.Title;
       string filterSetName = "";

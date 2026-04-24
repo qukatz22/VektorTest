@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -30,7 +30,7 @@ public class DevTecUC : VvDocumentRecordUC
 
    #region Constructor
 
-   public DevTecUC(Control parent, DevTec2 _devTec, VvForm.VvSubModul vvSubModul)
+   public DevTecUC(Control parent, DevTec2 _devTec, VvSubModul vvSubModul)
    {
       devTec_rec = _devTec;
 
@@ -728,7 +728,7 @@ public class DevTecUC : VvDocumentRecordUC
 
    public static VvFindDialog CreateFind_DevTec_Dialog()
    {
-      VvForm.VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsDTEC);
+      VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsDTEC);
       VvDataRecord    vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();

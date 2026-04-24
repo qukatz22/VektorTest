@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -14,7 +14,7 @@ public class UFADUC              : FakturExtDUC
 {
    #region Constructor
 
-   public UFADUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public UFADUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -114,7 +114,7 @@ public class UPADUC              : FakturExtDUC
 {
    #region Constructor
 
-   public UPADUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public UPADUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -210,7 +210,7 @@ public class UFMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public UFMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public UFMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -322,7 +322,7 @@ public class UFAdevDUC           : UFADUC
 {
    #region Constructor
 
-   public UFAdevDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public UFAdevDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -359,7 +359,7 @@ public class URADUC              : FakturExtDUC
 {
    #region Constructor
 
-   public URADUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URADUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -462,7 +462,7 @@ public class URMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public URMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -567,7 +567,7 @@ public class URMDUC_2            : URMDUC
 {
    #region Constructor
 
-   public URMDUC_2(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URMDUC_2(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -615,7 +615,7 @@ public class URMDUC_Dev          : URMDUC
 {
    #region Constructor
 
-   public URMDUC_Dev(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URMDUC_Dev(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -648,7 +648,7 @@ public class PrimkaVpDUC         : FakturExtDUC
 {
    #region Constructor
 
-   public PrimkaVpDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PrimkaVpDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -754,7 +754,7 @@ public class PrimkaBcDUC         : PrimkaVpDUC
 { 
    #region Constructor
 
-   public PrimkaBcDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PrimkaBcDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -789,7 +789,7 @@ public class PrimkaDevDUC        : PrimkaVpDUC
 {
    #region Constructor
 
-   public PrimkaDevDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PrimkaDevDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
       (Faktur.tt_colName, new string[] 
@@ -841,7 +841,7 @@ public class KalkulacijaMpDUC    : FakturExtDUC
 {
    #region Constructor
 
-   public KalkulacijaMpDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public KalkulacijaMpDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -937,7 +937,7 @@ public class KalkulacijaMpDUC_2  : KalkulacijaMpDUC
 {
    #region Constructor
 
-   public KalkulacijaMpDUC_2(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public KalkulacijaMpDUC_2(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -988,7 +988,7 @@ public class KalkulacijaMpDUC_Dev: KalkulacijaMpDUC
 {
    #region Constructor
 
-   public KalkulacijaMpDUC_Dev(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public KalkulacijaMpDUC_Dev(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1028,7 +1028,7 @@ public class KKMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public KKMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public KKMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1134,7 +1134,7 @@ public class PovratDobMalDUC     : FakturExtDUC
 {
    #region Constructor
 
-   public PovratDobMalDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PovratDobMalDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1223,7 +1223,7 @@ public class IFADUC              : FakturExtDUC
 {
    #region Constructor
 
-   public IFADUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IFADUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1362,7 +1362,7 @@ public class IFAdevDUC           : IFADUC
 {
    #region Constructor
 
-   public IFAdevDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IFAdevDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -1396,7 +1396,7 @@ public class IRADUC              : FakturExtDUC
 {
    #region Constructor
 
-   public IRADUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRADUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1537,7 +1537,7 @@ public class IRADUC_2              : FakturExtDUC
 {
    #region Constructor
 
-   public IRADUC_2(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRADUC_2(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1675,7 +1675,7 @@ public class IzdatnicaDUC        : FakturExtDUC
 {
    #region Constructor
 
-   public IzdatnicaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IzdatnicaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -1781,7 +1781,7 @@ public class IRMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public IRMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2069,7 +2069,7 @@ public class IRMDUC_2            : FakturExtDUC
 {
    #region Constructor
 
-   public IRMDUC_2(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRMDUC_2(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2220,7 +2220,7 @@ public class IZMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public IZMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IZMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2333,7 +2333,7 @@ public class IZMDUC_2            : IZMDUC
 {
    #region Constructor
 
-   public IZMDUC_2(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IZMDUC_2(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -2398,7 +2398,7 @@ public class OdobrKupcuDUC       : FakturExtDUC
 {
    #region Constructor
 
-   public OdobrKupcuDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public OdobrKupcuDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
@@ -2494,7 +2494,7 @@ public class PovratKupcaDUC      : FakturExtDUC
 {
    #region Constructor
 
-   public PovratKupcaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PovratKupcaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2590,7 +2590,7 @@ public class OdobrDobavDUC       : FakturExtDUC
 {
    #region Constructor
 
-   public OdobrDobavDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public OdobrDobavDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2677,7 +2677,7 @@ public class PovratDobaDUC       : FakturExtDUC
 {
    #region Constructor
 
-   public PovratDobaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PovratDobaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2766,7 +2766,7 @@ public class ObvezPonudaDUC      : FakturExtDUC
 {
    #region Constructor
 
-   public ObvezPonudaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public ObvezPonudaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2870,7 +2870,7 @@ public class PonudaDUC           : FakturExtDUC
 {
    #region Constructor
 
-   public PonudaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PonudaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -2977,7 +2977,7 @@ public class PonMalDUC           : FakturExtDUC
 {
    #region Constructor
 
-   public PonMalDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PonMalDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3098,7 +3098,7 @@ public class ReversDUC           : FakturExtDUC
 {
    #region Constructor
 
-   public ReversDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public ReversDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3181,7 +3181,7 @@ public class PovReversaDUC       : FakturExtDUC
 {
    #region Constructor
 
-   public PovReversaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PovReversaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3262,7 +3262,7 @@ public class NarudzbaDobavDUC    : FakturExtDUC
 {
    #region Constructor
 
-   public NarudzbaDobavDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public NarudzbaDobavDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3363,7 +3363,7 @@ public class NarudzDobUvozDUC    : FakturExtDUC
 {
    #region Constructor
 
-   public NarudzDobUvozDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public NarudzDobUvozDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3447,7 +3447,7 @@ public class NarudzDobUslugaDUC  : FakturExtDUC
 {
    #region Constructor
 
-   public NarudzDobUslugaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public NarudzDobUslugaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3531,7 +3531,7 @@ public class NarudzbaKupcaDUC    : FakturExtDUC
 {
    #region Constructor
 
-   public NarudzbaKupcaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public NarudzbaKupcaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3612,7 +3612,7 @@ public class NRMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public NRMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public NRMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3696,7 +3696,7 @@ public class BlgUplatDUC         : FakturExtDUC
 {
    #region Constructor
 
-   public BlgUplatDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public BlgUplatDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3782,7 +3782,7 @@ public class BlgUplat_M_DUC      : FakturExtDUC
 {
    #region Constructor
 
-   public BlgUplat_M_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public BlgUplat_M_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3870,7 +3870,7 @@ public class BlgIsplatDUC        : FakturExtDUC
 {
    #region Constructor
 
-   public BlgIsplatDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public BlgIsplatDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -3956,7 +3956,7 @@ public class BlgIsplat_M_DUC     : FakturExtDUC
 {
    #region Constructor
 
-   public BlgIsplat_M_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public BlgIsplat_M_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4042,7 +4042,7 @@ public class RNPDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public RNPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public RNPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
@@ -4133,7 +4133,7 @@ public class RNSDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public RNSDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public RNSDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
@@ -4220,7 +4220,7 @@ public class PRJDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public PRJDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul)
+   public PRJDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul)
       : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
@@ -4330,7 +4330,7 @@ public class RNMDUC              : FakturExtDUC, IVvRealizableFakturDUC
 
    #region Constructor
 
-   public RNMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public RNMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4693,7 +4693,7 @@ public class RNZDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public RNZDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public RNZDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4786,7 +4786,7 @@ public class PocetnoStanjeDUC    : FakturDUC
 {
    #region Constructor
 
-   public PocetnoStanjeDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PocetnoStanjeDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4866,7 +4866,7 @@ public class InventuraDUC        : FakturDUC
 {
    #region Constructor
 
-   public InventuraDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public InventuraDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -4956,7 +4956,7 @@ public class MedjuSkladDUC       : FakturDUC
 
    #region Constructor
 
-   public MedjuSkladDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public MedjuSkladDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5043,7 +5043,7 @@ public class MedjuSklad2DUC      : MedjuSkladDUC
 
    #region Constructor
 
-   public MedjuSklad2DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public MedjuSklad2DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -5063,7 +5063,7 @@ public class CjenikDUC           : FakturDUC
 
    #region Constructor
 
-   public CjenikDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public CjenikDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor(Faktur.tt_colName, new string[] 
       { 
@@ -5118,7 +5118,7 @@ public class ProizvodnjaDUC      : FakturExtDUC //FakturDUC
 
    public VvTextBox tbx_ncPerUlKol;
 
-   public ProizvodnjaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public ProizvodnjaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5211,7 +5211,7 @@ public class SkladOnlyDUC        : FakturDUC
 {
    #region Constructor
 
-   public SkladOnlyDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public SkladOnlyDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5275,7 +5275,7 @@ public class KorTemeljnicaDUC    : FakturDUC
 {
    #region Constructor
 
-   public KorTemeljnicaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public KorTemeljnicaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5337,7 +5337,7 @@ public class NivelacijaDUC       : FakturExtDUC
 {
    #region Constructor
 
-   public NivelacijaDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public NivelacijaDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5425,7 +5425,7 @@ public class IzdatnicaNaMjTRrDUC : FakturDUC
 {
    #region Constructor
 
-   public IzdatnicaNaMjTRrDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public IzdatnicaNaMjTRrDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5491,7 +5491,7 @@ public class PredatUProizDUC     : FakturDUC
 {
    #region Constructor
 
-   public PredatUProizDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PredatUProizDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5566,7 +5566,7 @@ public class PovratInterDUC      : FakturDUC
 {
    #region Constructor
 
-   public PovratInterDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PovratInterDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5635,7 +5635,7 @@ public class PIPDUC     : FakturDUC
 {
    #region Constructor
 
-   public PIPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PIPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5717,7 +5717,7 @@ public class PocetnoStanjeMPDUC  : FakturExtDUC
 {
    #region Constructor
 
-   public PocetnoStanjeMPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PocetnoStanjeMPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5806,7 +5806,7 @@ public class InventuraMPDUC      : FakturExtDUC
 {
    #region Constructor
 
-   public InventuraMPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public InventuraMPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5903,7 +5903,7 @@ public class MedjuSkladVMIuDUC   : FakturExtDUC
 {
    #region Constructor
 
-   public MedjuSkladVMIuDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public MedjuSkladVMIuDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -5998,7 +5998,7 @@ public class MedjuSkladVMI2DUC   : MedjuSkladVMIuDUC
 {
    #region Constructor
 
-   public MedjuSkladVMI2DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public MedjuSkladVMI2DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -6015,7 +6015,7 @@ public class KIZDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public KIZDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public KIZDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6127,7 +6127,7 @@ public class PIKDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public PIKDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PIKDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6225,7 +6225,7 @@ public class URPDUC              : FakturPDUC
 {
    #region Constructor
 
-   public URPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6335,7 +6335,7 @@ public class PRIpDUC             : FakturPDUC
 {
    #region Constructor
 
-   public PRIpDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PRIpDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6440,7 +6440,7 @@ public class IRPDUC              : FakturPDUC
 {
    #region Constructor
 
-   public IRPDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRPDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6612,7 +6612,7 @@ public class PIZpDUC             : FakturPDUC
 {
    #region Constructor
 
-   public PIZpDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PIZpDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6719,7 +6719,7 @@ public class BORDUC              : FakturPDUC
 {
    #region Constructor
 
-   public BORDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public BORDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6883,7 +6883,7 @@ public class PIMDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public PIMDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public PIMDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -6954,7 +6954,7 @@ public class NORDUC              : FakturExtDUC
 {
    #region Constructor
 
-   public NORDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public NORDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7017,7 +7017,7 @@ public class TransformDUC        : FakturExtDUC
 {
    #region Constructor
 
-   public TransformDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public TransformDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7108,7 +7108,7 @@ public class MedjuSkladMVIDUC    : FakturExtDUC
 {
    #region Constructor
 
-   public MedjuSkladMVIDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public MedjuSkladMVIDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7197,7 +7197,7 @@ public class MedjuSkladMVI2DUC   : MedjuSkladMVIDUC
 
    #region Constructor
 
-   public MedjuSkladMVI2DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public MedjuSkladMVI2DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
    }
 
@@ -7216,7 +7216,7 @@ public class MedjuSkladMMIDUC    : FakturExtDUC
 {
    #region Constructor
 
-   public MedjuSkladMMIDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
+   public MedjuSkladMMIDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul): base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7297,7 +7297,7 @@ public class WYRNDUC             : FakturExtDUC
 {
    #region Constructor
 
-   public WYRNDUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public WYRNDUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7400,7 +7400,7 @@ public class CjenikKupca_DUC         : FakturExtDUC
 {
    #region Constructor
 
-   public CjenikKupca_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public CjenikKupca_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7495,7 +7495,7 @@ public class URA_SVD_DUC         : FakturExtDUC
 
    #region Constructor
 
-   public URA_SVD_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public URA_SVD_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7616,7 +7616,7 @@ public class IZD_SVD_DUC         : FakturExtDUC
 
    #region Constructor
 
-   public IZD_SVD_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IZD_SVD_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7745,7 +7745,7 @@ public class NRD_SVD_DUC         : FakturExtDUC
 
    #region Constructor
 
-   public NRD_SVD_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public NRD_SVD_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7855,7 +7855,7 @@ public class UGODUC              : FakturExtDUC, IVvRealizableFakturDUC
 {
    #region Constructor
 
-   public UGODUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public UGODUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -7986,7 +7986,7 @@ public class ZAH_SVD_DUC         : FakturExtDUC
 
    #region Constructor
 
-   public ZAH_SVD_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public ZAH_SVD_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8198,7 +8198,7 @@ public class PON_MPC_DUC           : FakturExtDUC
 {
    #region Constructor
 
-   public PON_MPC_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public PON_MPC_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8314,7 +8314,7 @@ public class OPN_MPC_DUC           : FakturExtDUC
 {
    #region Constructor
 
-   public OPN_MPC_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public OPN_MPC_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8432,7 +8432,7 @@ public class IRA_MPC_DUC              : FakturExtDUC
 {
    #region Constructor
 
-   public IRA_MPC_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IRA_MPC_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8589,7 +8589,7 @@ public class IZD_MPC_DUC        : FakturExtDUC
 {
    #region Constructor
 
-   public IZD_MPC_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public IZD_MPC_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8691,7 +8691,7 @@ public class POT_DUC         : FakturExtDUC
 {
    #region Constructor
 
-   public POT_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public POT_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8795,7 +8795,7 @@ public class POU_DUC         : FakturExtDUC
 {
    #region Constructor
 
-   public POU_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public POU_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8879,7 +8879,7 @@ public class POI_DUC         : FakturExtDUC
 {
    #region Constructor
 
-   public POI_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public POI_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -8963,7 +8963,7 @@ public class ZAR_DUC         : FakturExtDUC
 {
    #region Constructor
 
-   public ZAR_DUC(Control parent, Faktur _faktur, VvForm.VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
+   public ZAR_DUC(Control parent, Faktur _faktur, VvSubModul vvSubModul) : base(parent, _faktur, vvSubModul)
    {
       dbNavigationRestrictor_TT = new ZXC.DbNavigationRestrictor
          (Faktur.tt_colName, new string[] 
@@ -9936,7 +9936,7 @@ public class F2_Izlaz_UC : VvUserControl
 
    #region Constructor
 
-   public F2_Izlaz_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   public F2_Izlaz_UC(Control _parent, VvSubModul vvSubModul)
    {
       this.SuspendLayout();
 
@@ -10455,7 +10455,7 @@ public class F2_Ulaz_UC : VvUserControl
 
    #region Constructor
 
-   public F2_Ulaz_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   public F2_Ulaz_UC(Control _parent, VvSubModul vvSubModul)
    {
       this.SuspendLayout();
 
@@ -11411,7 +11411,7 @@ public class F2_NIR_UC : VvUserControl
 
    #region Constructor
 
-   public F2_NIR_UC(Control _parent, VvForm.VvSubModul vvSubModul)
+   public F2_NIR_UC(Control _parent, VvSubModul vvSubModul)
    {
       this.SuspendLayout();
 

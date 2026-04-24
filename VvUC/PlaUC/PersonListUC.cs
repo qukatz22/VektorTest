@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -31,7 +31,7 @@ public class PersonListUC : VvRecLstUC
 
    #region Constructor
 
-   public PersonListUC(Control parent, Person _person, VvForm.VvSubModul vvSubModul): base(parent)
+   public PersonListUC(Control parent, Person _person, VvSubModul vvSubModul): base(parent)
    {
       this.person_rec = _person;
 

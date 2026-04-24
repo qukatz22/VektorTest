@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ public partial class EvidencijaDUC : MixerDUC
 
    #region Constructor
 
-   public EvidencijaDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul)  : base(parent, _mixer, vvSubModul)
+   public EvidencijaDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul)  : base(parent, _mixer, vvSubModul)
    {
       //------ 
       //string[] okTtList = new string[ZXC.luiListaMixTypeEvidencija.Count];

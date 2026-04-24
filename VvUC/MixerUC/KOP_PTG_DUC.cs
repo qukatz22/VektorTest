@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ public partial class KOP_PTG_DUC : MixerDUC
 
    #region Constructor
 
-   public KOP_PTG_DUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul): base(parent, _mixer, vvSubModul)
+   public KOP_PTG_DUC(Control parent, Mixer _mixer, VvSubModul vvSubModul): base(parent, _mixer, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
          (Mixer.tt_colName, new string[] 

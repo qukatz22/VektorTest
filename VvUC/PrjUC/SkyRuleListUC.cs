@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -20,7 +20,7 @@ public class SkyRuleListUC : VvRecLstUC
 
    #region Constructor
 
-   public SkyRuleListUC(Control parent, SkyRule _skyRule, VvForm.VvSubModul vvSubModul): base(parent)
+   public SkyRuleListUC(Control parent, SkyRule _skyRule, VvSubModul vvSubModul): base(parent)
    {
       this.skyRule_rec = _skyRule;
 

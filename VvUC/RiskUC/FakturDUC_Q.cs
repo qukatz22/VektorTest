@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -6392,7 +6392,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
          ZXC.LastUsedProjektTT_IsDiscovered = true;
       }
 
-      VvForm.VvSubModul theVvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(GetVvSubModulEnum_ForTT(ZXC.LastUsedProjektTT));
+      VvSubModul theVvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(GetVvSubModulEnum_ForTT(ZXC.LastUsedProjektTT));
 
       VvFindDialog dlg = CreateFind_Faktur_Dialog(theVvSubModul);
 

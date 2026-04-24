@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -106,7 +106,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
    #region Constructor
 
-   public PlacaBaseDUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul)
+   public PlacaBaseDUC(Control parent, Placa _placa, VvSubModul vvSubModul)
    {
       placa_rec = _placa;
 
@@ -4680,7 +4680,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
    public static VvFindDialog CreateFind_Placa_Dialog()
    {
-      VvForm.VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsPLA);
+      VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsPLA);
       VvDataRecord vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();
@@ -4785,7 +4785,7 @@ public partial class PlacaDUC     : PlacaBaseDUC//VvPolyDocumRecordUC
 
    #region Constructor
 
-   public PlacaDUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
+   public PlacaDUC(Control parent, Placa _placa, VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
       (Placa.tt_colName, new string[] 
@@ -4984,7 +4984,7 @@ public partial class Placa2014DUC : PlacaBaseDUC // placa od 2014 nadalje!!!
 
    #region Constructor
 
-   public Placa2014DUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
+   public Placa2014DUC(Control parent, Placa _placa, VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
       (Placa.tt_colName, new string[] 
@@ -5238,7 +5238,7 @@ public partial class PlacaOd2024DUC : PlacaBaseDUC // placa od 2024 nadalje!!!
 
    #region Constructor
 
-   public PlacaOd2024DUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
+   public PlacaOd2024DUC(Control parent, Placa _placa, VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
    {
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
       (Placa.tt_colName, new string[] 
@@ -5496,7 +5496,7 @@ public partial class PlacaNPDUC   : PlacaBaseDUC
 
    #region Constructor
 
-   public PlacaNPDUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
+   public PlacaNPDUC(Control parent, Placa _placa, VvSubModul vvSubModul): base(parent, _placa, vvSubModul)
    {
 
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor
@@ -5622,7 +5622,7 @@ public class Placa_AddPersonsDlg : VvDialog
 
    private void AddRecListUC()
    {
-      VvForm.VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsPER);
+      VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsPER);
       VvDataRecord vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       vvRecListUC = new PersonListUC(this, (Person)vvDataRecord, vvSubModul);

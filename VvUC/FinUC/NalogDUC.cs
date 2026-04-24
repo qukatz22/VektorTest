@@ -13,7 +13,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
    
    protected KtoShemaDsc KSD ;
 
-   public NalogDUC(Control parent, Nalog _nalog, VvForm.VvSubModul vvSubModul)
+   public NalogDUC(Control parent, Nalog _nalog, VvSubModul vvSubModul)
    {
       nalog_rec = _nalog;
 
@@ -183,7 +183,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
       if(nalog_rec.Saldo.NotZero())
       {
-         DialogResult result = MessageBox.Show("Knjiženja nisu u ravnoteži.\n\nSaldo: " + nalog_rec.Saldo.ToStringVv() + "\n\nŽelite li zaista usnimiti ovaj nalog?", "Potvrdite usnimavanje NEURAVNOTEŽENOG naloga?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+         DialogResult result = MessageBox.Show("Knjiï¿½enja nisu u ravnoteï¿½i.\n\nSaldo: " + nalog_rec.Saldo.ToStringVv() + "\n\nï¿½elite li zaista usnimiti ovaj nalog?", "Potvrdite usnimavanje NEURAVNOTEï¿½ENOG naloga?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
          if(result != DialogResult.Yes) e.Cancel = true;
       }
@@ -199,7 +199,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       {
          if(KplanSifrar.Select(kplan => kplan.Konto).Contains(ftrans_rec.T_konto) == false)
          {
-            DialogResult result = MessageBox.Show("Konto ne postoji.\n\n(Redak: " + ftrans_rec.T_serial + " Konto: " + ftrans_rec.T_konto + "\n\nŽelite li zaista usnimiti ovaj nalog?", "Potvrdite usnimavanje naloga?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult result = MessageBox.Show("Konto ne postoji.\n\n(Redak: " + ftrans_rec.T_serial + " Konto: " + ftrans_rec.T_konto + "\n\nï¿½elite li zaista usnimiti ovaj nalog?", "Potvrdite usnimavanje naloga?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if(result != DialogResult.Yes) e.Cancel = true;
          }
@@ -208,7 +208,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
             string theTip = KplanSifrar.Single(kplan => kplan.Konto == ftrans_rec.T_konto).Tip;
             if(theTip != "A")
             {
-               DialogResult result = MessageBox.Show("Tip konta: " + theTip + " nedozvoljen.\n\n(Redak: " + ftrans_rec.T_serial + " Konto: " + ftrans_rec.T_konto + "\n\nŽelite li zaista usnimiti ovaj nalog?", "Potvrdite usnimavanje naloga?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+               DialogResult result = MessageBox.Show("Tip konta: " + theTip + " nedozvoljen.\n\n(Redak: " + ftrans_rec.T_serial + " Konto: " + ftrans_rec.T_konto + "\n\nï¿½elite li zaista usnimiti ovaj nalog?", "Potvrdite usnimavanje naloga?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                if(result != DialogResult.Yes) e.Cancel = true;
             }
@@ -227,17 +227,17 @@ public abstract class NalogDUC : VvDocumentRecordUC
          {
             string kto = ftrans_rec.T_konto;
 
-            // 1. konta 3-8 moraju imati mjesto troška,
+            // 1. konta 3-8 moraju imati mjesto troï¿½ka,
             if(kto.StartsWith("3") || kto.StartsWith("4") || kto.StartsWith("5") || kto.StartsWith("6") || kto.StartsWith("7") || kto.StartsWith("8"))
             {
-               if(ftrans_rec.T_mtros_cd.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {0}\n\nMjesto troška ne smije biti prazno.\n\nKonto [{1}]", ftrans_rec.T_serial, ftrans_rec.T_konto);  e.Cancel = true; }
+               if(ftrans_rec.T_mtros_cd.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {0}\n\nMjesto troï¿½ka ne smije biti prazno.\n\nKonto [{1}]", ftrans_rec.T_serial, ftrans_rec.T_konto);  e.Cancel = true; }
             }
 
-            // 2. Saldakonti konta moraju imati partnera a možda i ttBr 
-            if(NalogDao.IsSaldaKontiKTO(kto) && (ftrans_rec.T_kupdob_cd.IsZero() || ftrans_rec.T_tipBr.IsEmpty())) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {0}\n\nPopuniti i partnera i broj raèuna.\n\nKonto [{1}]", ftrans_rec.T_serial, ftrans_rec.T_konto); e.Cancel = true; }
+            // 2. Saldakonti konta moraju imati partnera a moï¿½da i ttBr 
+            if(NalogDao.IsSaldaKontiKTO(kto) && (ftrans_rec.T_kupdob_cd.IsZero() || ftrans_rec.T_tipBr.IsEmpty())) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {0}\n\nPopuniti i partnera i broj raï¿½una.\n\nKonto [{1}]", ftrans_rec.T_serial, ftrans_rec.T_konto); e.Cancel = true; }
 
-            // 3. Ne smije otiæi u novi redak ako je ostavila prazno dug ili pot, 
-            if(ftrans_rec.T_dug.IsZero() && ftrans_rec.T_pot.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {0}\n\nDopuniti ili duguje ili potražuje.\n\nKonto [{1}]", ftrans_rec.T_serial, ftrans_rec.T_konto); e.Cancel = true; }
+            // 3. Ne smije otiï¿½i u novi redak ako je ostavila prazno dug ili pot, 
+            if(ftrans_rec.T_dug.IsZero() && ftrans_rec.T_pot.IsZero()) { ZXC.aim_emsg(MessageBoxIcon.Error, "Redak {0}\n\nDopuniti ili duguje ili potraï¿½uje.\n\nKonto [{1}]", ftrans_rec.T_serial, ftrans_rec.T_konto); e.Cancel = true; }
          }
 
          #endregion 2018 Kerempuh oce strogo
@@ -265,7 +265,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       #region Check DokDate, SkladDate
 
       if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Date < ZXC.projectYearFirstDay) ZXC.aim_emsg(MessageBoxIcon.Warning, "Datum dokumenta: {0} je stariji od prvog dana u radnoj godini!?", Fld_DokDate.ToString(ZXC.VvDateFormat));
-      if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Date > DateTime.Now.Date      ) ZXC.aim_emsg(MessageBoxIcon.Warning, "Datum dokumenta: {0} je iz buduænosti!?", Fld_DokDate.ToString(ZXC.VvDateFormat));
+      if(Fld_DokDate != DateTimePicker.MinimumDateTime && Fld_DokDate.Date > DateTime.Now.Date      ) ZXC.aim_emsg(MessageBoxIcon.Warning, "Datum dokumenta: {0} je iz buduï¿½nosti!?", Fld_DokDate.ToString(ZXC.VvDateFormat));
 
       #endregion Check DokDate, SkladDate
 
@@ -281,7 +281,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
          // Nema EDIT-a zelenih ftrans redaka 
          if(ftrans_rec.SaveTransesWriteMode == ZXC.WriteMode.Edit && ftrans_rec.R_IsMAPcandidate_Ftr && FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
          {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ne smije se mijenjati 'Oznaèen Kao Plaæen' redak naplate. Raèun: {ftrans_rec.T_tipBr}!{Environment.NewLine}{Environment.NewLine}Preostaje opcija storna.");
+            ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ne smije se mijenjati 'Oznaï¿½en Kao Plaï¿½en' redak naplate. Raï¿½un: {ftrans_rec.T_tipBr}!{Environment.NewLine}{Environment.NewLine}Preostaje opcija storna.");
 
             e.Cancel = true;
          }
@@ -289,7 +289,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
          // Nema DELETE-a zelenih ftrans redaka 
          if(ftrans_rec.SaveTransesWriteMode == ZXC.WriteMode.Delete && ftrans_rec.R_IsMAPcandidate_Ftr && FtransDao.IsMAPdone(TheDbConnection, ftrans_rec))
          {
-            ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ne smije se brisati 'Oznaèen Kao Plaæen' redak naplate. Raèun: {ftrans_rec.T_tipBr}!{Environment.NewLine}{Environment.NewLine}Preostaje opcija storna.");
+            ZXC.aim_emsg(MessageBoxIcon.Stop, $"Ne smije se brisati 'Oznaï¿½en Kao Plaï¿½en' redak naplate. Raï¿½un: {ftrans_rec.T_tipBr}!{Environment.NewLine}{Environment.NewLine}Preostaje opcija storna.");
 
             e.Cancel = true;
          }
@@ -494,7 +494,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
    public static VvFindDialog CreateFind_Nalog_Dialog()
    {
-      VvForm.VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsNAL);
+      VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsNAL);
       VvDataRecord      vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();
@@ -531,7 +531,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
    {
       get
       {
-         return "NALOG ZA KNJIŽENJE";
+         return "NALOG ZA KNJIï¿½ENJE";
       }
    }
 
@@ -608,7 +608,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
       zaglavljeHamper.CreateVvLabel(0, 0, "Broj naloga:"    , ContentAlignment.MiddleRight);
       zaglavljeHamper.CreateVvLabel(2, 0, "Datum:"          , ContentAlignment.MiddleRight);
-      zaglavljeHamper.CreateVvLabel(4, 0, "Vrsta knjiženja:", ContentAlignment.MiddleRight);
+      zaglavljeHamper.CreateVvLabel(4, 0, "Vrsta knjiï¿½enja:", ContentAlignment.MiddleRight);
       zaglavljeHamper.CreateVvLabel(0, 1, "Napomena:"       , ContentAlignment.MiddleRight);
 
       tbx_brNaloga = zaglavljeHamper.CreateVvTextBox(1, 0, "tbx_brNaloga", "Ovo bolje ostavi kako je...", 6);
@@ -625,7 +625,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       dTP_datum.Name      = "dTP_datum";
       dTP_datum.ValueChanged += new EventHandler(dtp_DokDate_ValueChanged_CheckYear);
 
-      tbx_vrstaKnj = zaglavljeHamper.CreateVvTextBoxLookUp(5, 0, "tbx_vrstaKnj", "Tip transakcije - vrsta knjiženja");
+      tbx_vrstaKnj = zaglavljeHamper.CreateVvTextBoxLookUp(5, 0, "tbx_vrstaKnj", "Tip transakcije - vrsta knjiï¿½enja");
       tbx_vrstaKnj.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_vrstaKnj.JAM_DataRequired = true;
       tbx_vrstaKnj.JAM_MustTabOutBeforeSubmit = true;
@@ -633,7 +633,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       tbx_VrKnjizOpis              = zaglavljeHamper.CreateVvTextBox(6, 0, "tbx_VKOpis_InVisible", "");
       tbx_VrKnjizOpis.JAM_ReadOnly = true;
 
-      tbx_VKnum                   = zaglavljeHamper.CreateVvTextBox(7, 0, "tbx_TtNum", "Redni broj po Vrsti knjiženja", 4);
+      tbx_VKnum                   = zaglavljeHamper.CreateVvTextBox(7, 0, "tbx_TtNum", "Redni broj po Vrsti knjiï¿½enja", 4);
       //tbx_VKnum.JAM_StatusText    = "Ovo bolje ostavi kako je...";
       tbx_VKnum.JAM_CharEdits     = ZXC.JAM_CharEdits.DigitsOnly;
       tbx_VKnum.JAM_FillCharacter = '0';
@@ -643,7 +643,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       tbx_vrstaKnj.JAM_lui_NameTaker_JAM_Name = tbx_VrKnjizOpis.JAM_Name;
       tbx_vrstaKnj.JAM_ttNumTaker_JAM_Name    = tbx_VKnum.JAM_Name;
 
-      tbx_napomena = zaglavljeHamper.CreateVvTextBox(1, 1, "tbx_napomena", "Opis knjiženja / napomena.", /*80*/ GetDB_ColumnSize(DB_ci.napomena), 8, 0);
+      tbx_napomena = zaglavljeHamper.CreateVvTextBox(1, 1, "tbx_napomena", "Opis knjiï¿½enja / napomena.", /*80*/ GetDB_ColumnSize(DB_ci.napomena), 8, 0);
 
                     zaglavljeHamper.CreateVvLabel(8, 0, "IzvVal:", ContentAlignment.MiddleRight);
       tbx_ValName = zaglavljeHamper.CreateVvTextBoxLookUp(9, 0, "tbx_ValName", "Naziv devizne valute", GetDB_ColumnSize(DB_ci.devName));
@@ -860,7 +860,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
    protected void T_opis_CreateColumn()
    {
-      vvtbT_opis = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_opis", TheVvDaoTrans, DB_Tci.t_opis, "Tekstualni opis knjiženja.");
+      vvtbT_opis = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_opis", TheVvDaoTrans, DB_Tci.t_opis, "Tekstualni opis knjiï¿½enja.");
       //vvtbT_opis.JAM_FieldEntryMethod = new EventHandler(TestingFldEntryFunction);
       //vvtbT_opis.JAM_FieldExitMethod  = new EventHandler(TestingFldExitFunction);
       //vvtbT_opis.JAM_FieldExitWithValidationMethod = new CancelEventHandler(TestingFldValidation);
@@ -894,7 +894,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
    protected void T_mtros_cd_CreateColumn(int _width, bool isVisible)
    {
-      vvtbT_mtros_cd = TheG.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColT_mtros_cd", TheVvDaoTrans, DB_Tci.t_mtros_cd, "Šifra mjesta troška");
+      vvtbT_mtros_cd = TheG.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColT_mtros_cd", TheVvDaoTrans, DB_Tci.t_mtros_cd, "ï¿½ifra mjesta troï¿½ka");
       vvtbT_mtros_cd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyMtrosTextBoxLeave));
       if(ZXC.CURR_prjkt_rec.IsNeprofit == false) vvtbT_mtros_cd.JAM_ShouldCopyPrevRowUnCond = true;
 
@@ -904,7 +904,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
    protected void T_mtros_tk_CreateColumn(int _width, bool isVisible)
    {
-      vvtbT_mtros_tk = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_mtros_tk", TheVvDaoTrans, DB_Tci.t_mtros_tk, "Ticker mjesta troška iz adresara");
+      vvtbT_mtros_tk = TheG.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_mtros_tk", TheVvDaoTrans, DB_Tci.t_mtros_tk, "Ticker mjesta troï¿½ka iz adresara");
       vvtbT_mtros_tk.JAM_CharacterCasing = CharacterCasing.Upper;
       vvtbT_mtros_tk.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyMtrosTextBoxLeave));
 
@@ -974,7 +974,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
       vvtbT_pot.JAM_ShouldSumGrid = true;
       //vvtb4ColT_dug.JAM_MarkAsNumericTextBox(2, true, 1000, true);
 
-      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_pot, TheVvDaoTrans, DB_Tci.t_pot, "Potražuje", _width);
+      colVvText = TheG.CreateVvTextBoxColumn(vvtbT_pot, TheVvDaoTrans, DB_Tci.t_pot, "Potraï¿½uje", _width);
       // colVvText.AutoSizeMode= DataGridViewAutoSizeColumnMode.AllCells; ___ne zbog sume
       colVvText.MinimumWidth = _width;             // __mora biti == sum.MinWidth
    }
@@ -1053,7 +1053,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
                               (Fld_TipTran == "UR" || Fld_TipTran == "IR");
             if(shouldCheck)
             {
-               ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE!!!\n\nZa zadani 'TT Br' (broj raèuna)\n\n ne mogu pronaæi vezani dokument u modulu 'RAÈUNI I SKLADIŠTE'.\n\nBuduæe automatsko uèitavanje raèuna æe biti pogrešno i/ili duplo!\n\nPreporuka je da ovaj podatak ostavite kakav je bio pri automatskom uèitavanju.");
+               ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE!!!\n\nZa zadani 'TT Br' (broj raï¿½una)\n\n ne mogu pronaï¿½i vezani dokument u modulu 'RAï¿½UNI I SKLADIï¿½TE'.\n\nBuduï¿½e automatsko uï¿½itavanje raï¿½una ï¿½e biti pogreï¿½no i/ili duplo!\n\nPreporuka je da ovaj podatak ostavite kakav je bio pri automatskom uï¿½itavanju.");
             }
             // 12.01.2017:  end  
 
@@ -1632,7 +1632,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
             {
                TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(204, 255, 204);
             }
-            else // nismo još MAPali 
+            else // nismo joï¿½ MAPali 
             {
                TheG.Rows[rowIdx].DefaultCellStyle.BackColor = Color.FromArgb(255, 194, 179);
             }
@@ -1959,7 +1959,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
                if(ftransList.Any(ftr => FtransDao.IsMAPdone(TheDbConnection, ftr)) == true)
                {
-                  ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne smije se brisati nalog koji sadrži stavke 'Oznaèeno Kao Plaæeno'.");
+                  ZXC.aim_emsg(MessageBoxIcon.Stop, "Ne smije se brisati nalog koji sadrï¿½i stavke 'Oznaï¿½eno Kao Plaï¿½eno'.");
 
                   return false; // ima MAPane redke, odbij DELETE 
                }
@@ -2001,7 +2001,7 @@ public abstract class NalogDUC : VvDocumentRecordUC
 
 public class NalogFirmaDUC : NalogDUC
 {
-   public NalogFirmaDUC(Control parent, Nalog _nalog, VvForm.VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
+   public NalogFirmaDUC(Control parent, Nalog _nalog, VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
    {
    }
 
@@ -2056,7 +2056,7 @@ public class NalogFirmaDUC : NalogDUC
 
 public class NalogObrtDUC  : NalogDUC
 {
-   public NalogObrtDUC(Control parent, Nalog _nalog, VvForm.VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
+   public NalogObrtDUC(Control parent, Nalog _nalog, VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
    {
    }
 
@@ -2101,7 +2101,7 @@ public class NalogObrtDUC  : NalogDUC
 
 public class NalogMtrDUC   : NalogDUC
 {
-   public NalogMtrDUC(Control parent, Nalog _nalog, VvForm.VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
+   public NalogMtrDUC(Control parent, Nalog _nalog, VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
    {
    }
 
@@ -2145,7 +2145,7 @@ public class NalogMtrDUC   : NalogDUC
 
 public class NalogProjektDUC : NalogDUC
 {
-   public NalogProjektDUC(Control parent, Nalog _nalog, VvForm.VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
+   public NalogProjektDUC(Control parent, Nalog _nalog, VvSubModul vvSubModul) : base(parent, _nalog, vvSubModul)
    {
    }
 

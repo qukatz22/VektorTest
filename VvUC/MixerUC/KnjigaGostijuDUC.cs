@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ public partial class KnjigaGostijuDUC : MixerDUC
 
    #region Constructor
 
-   public KnjigaGostijuDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public KnjigaGostijuDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
 
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor

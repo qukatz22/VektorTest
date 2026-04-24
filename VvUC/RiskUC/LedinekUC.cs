@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
@@ -33,7 +33,7 @@ public class LedinekUC : VvUserControl
 
    #region Constructor
 
-   public LedinekUC(Control parent, VvForm.VvSubModul vvSubModul)
+   public LedinekUC(Control parent, VvSubModul vvSubModul)
    {
       
       this.TheSubModul = vvSubModul;

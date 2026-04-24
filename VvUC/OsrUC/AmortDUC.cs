@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -32,7 +32,7 @@ public class AmortDUC : VvDocumentRecordUC
 
    #region Constructor
 
-   public AmortDUC(Control parent, Amort _amort, VvForm.VvSubModul vvSubModul)
+   public AmortDUC(Control parent, Amort _amort, VvSubModul vvSubModul)
    {
       amort_rec = _amort;
 
@@ -866,7 +866,7 @@ public class AmortDUC : VvDocumentRecordUC
 
    public static VvFindDialog CreateFind_Amort_Dialog()
    {
-      VvForm.VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsAMO);
+      VvSubModul vvSubModul   = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.LsAMO);
       VvDataRecord      vvDataRecord = ZXC.TheVvForm.CreateTheVvDataRecord_SwitchSubModulEnum(vvSubModul);
 
       VvFindDialog vvFindDialog = new VvFindDialog();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -40,7 +40,7 @@ public class ArtiklListUC : VvRecLstUC
 
    #region Constructor
 
-   public ArtiklListUC(Control parent, Artikl _artikl, VvForm.VvSubModul vvSubModul): base(parent)
+   public ArtiklListUC(Control parent, Artikl _artikl, VvSubModul vvSubModul): base(parent)
    {
       this.artikl_rec = _artikl;
 
@@ -1977,7 +1977,7 @@ public class RtransListUC : VvDocumRecLstUC
 
    #region Constructor
 
-   public RtransListUC(Control parent, Rtrans _rtrans, VvForm.VvSubModul vvSubModul ) : base(parent)
+   public RtransListUC(Control parent, Rtrans _rtrans, VvSubModul vvSubModul ) : base(parent)
    {
       this.rtrans_rec = _rtrans;
       this.Parent.Text = "Lista RISK stavaka";
@@ -2495,7 +2495,7 @@ public class RtranoListUC : VvRecLstUC
 
    #region Constructor
 
-   public RtranoListUC(Control parent, Rtrano _rtrano, VvForm.VvSubModul vvSubModul ) : base(parent)
+   public RtranoListUC(Control parent, Rtrano _rtrano, VvSubModul vvSubModul ) : base(parent)
    {
       this.rtrano_rec  = _rtrano;
       this.Parent.Text = "Serno info";

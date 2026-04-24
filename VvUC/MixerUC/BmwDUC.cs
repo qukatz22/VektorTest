@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ public partial class BmwDUC : MixerDUC
 
    #region Constructor
 
-   public BmwDUC(Control parent, Mixer _mixer, VvForm.VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
+   public BmwDUC(Control parent, Mixer _mixer, VvSubModul vvSubModul) : base(parent, _mixer, vvSubModul)
    {
 
       dbNavigationRestrictor = new ZXC.DbNavigationRestrictor

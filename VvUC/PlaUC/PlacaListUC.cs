@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
@@ -19,7 +19,7 @@ public class PlacaListUC : /*VvRecLstUC*/VvDocumRecLstUC
 
    #region Constructor
 
-   public PlacaListUC(Control parent, Placa _placa, VvForm.VvSubModul vvSubModul) : base(parent)
+   public PlacaListUC(Control parent, Placa _placa, VvSubModul vvSubModul) : base(parent)
    {
       this.placa_rec = _placa;
 
