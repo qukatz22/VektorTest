@@ -1360,15 +1360,15 @@ public static class Vv_eRacun_HTTP
          bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
          bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
-         if(isCreditNote)
-         {
-            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
-            deserialized_InvoiceType = null;
-         }
-         else if(isInvoice)
+         if(isInvoice)
          {
             deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
             deserialized_CreditNoteType = null;
+         }
+         else if(isCreditNote)
+         {
+            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
+            deserialized_InvoiceType = null;
          }
          else
          {
@@ -2672,19 +2672,19 @@ public static class Vv_eRacun_HTTP
          bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
          bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
-         if(isCreditNote)
-         {
-            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
-            deserialized_InvoiceType = null;
-
-            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_CreditNoteType.VvSupplierOIB;
-         }
-         else if(isInvoice)
+         if(isInvoice)
          {
             deserialized_InvoiceType = receiveOK ? GetInvoiceTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
             deserialized_CreditNoteType = null;
 
             thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_InvoiceType.VvSupplierOIB;
+         }
+         else if(isCreditNote)
+         {
+            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
+            deserialized_InvoiceType = null;
+
+            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_CreditNoteType.VvSupplierOIB;
          }
          else 
          {
@@ -3248,18 +3248,7 @@ public static class Vv_eRacun_HTTP
          bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
          bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
-         if(isCreditNote)
-         {
-            deserialized_InvoiceType = null;
-
-            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
-
-            if(deserialized_CreditNoteType == null) // deser. nije uspjela. Idemo pokusati barem krnjim deserialized_CreditNoteType-om omoguciti ulazak u Inbox zbogradi vidi PDF mogucnosti 
-            {
-               deserialized_CreditNoteType = Create_BareBone_CreditNoteType_FromProblematicXml(theXmlString);
-            }
-         }
-         else if(isInvoice)
+         if(isInvoice)
          {
             deserialized_CreditNoteType = null;
 
@@ -3268,6 +3257,17 @@ public static class Vv_eRacun_HTTP
             if(deserialized_InvoiceType == null) // deser. nije uspjela. Idemo pokusati barem krnjim deserialized_InvoiceType-om omoguciti ulazak u Inbox zbogradi vidi PDF mogucnosti 
             {
                deserialized_InvoiceType = Create_BareBone_InvoiceType_FromProblematicXml(theXmlString);
+            }
+         }
+         else if(isCreditNote)
+         {
+            deserialized_InvoiceType = null;
+
+            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
+
+            if(deserialized_CreditNoteType == null) // deser. nije uspjela. Idemo pokusati barem krnjim deserialized_CreditNoteType-om omoguciti ulazak u Inbox zbogradi vidi PDF mogucnosti 
+            {
+               deserialized_CreditNoteType = Create_BareBone_CreditNoteType_FromProblematicXml(theXmlString);
             }
          }
          else
@@ -3663,15 +3663,15 @@ public static class Vv_eRacun_HTTP
          bool isCreditNote = IsXmlCreditNoteType(theXmlString);
          bool isInvoice    = IsXmlInvoiceType   (theXmlString);
 
-         if(isCreditNote)
-         {
-            deserialized_CreditNoteType = GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false);
-            deserialized_InvoiceType = null;
-         }
-         else if(isInvoice)
+         if(isInvoice)
          {
             deserialized_InvoiceType = GetInvoiceTypeByDeserializing_xmlString(theXmlString, false);
             deserialized_CreditNoteType = null;
+         }
+         else if(isCreditNote)
+         {
+            deserialized_CreditNoteType = GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false);
+            deserialized_InvoiceType = null;
          }
          else
          {
@@ -3943,21 +3943,7 @@ public static class Vv_eRacun_HTTP
          bool isCreditNote = receiveOK && IsXmlCreditNoteType(theXmlString);
          bool isInvoice    = receiveOK && IsXmlInvoiceType   (theXmlString);
 
-         if(isCreditNote)
-         {
-            deserialized_InvoiceType = null;
-
-            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
-
-            if(deserialized_CreditNoteType == null) // deser. nije uspjela. Idemo pokusati barem krnjim deserialized_CreditNoteType-om omoguciti ulazak u Inbox zbogradi vidi PDF mogucnosti 
-            {
-               deserialized_CreditNoteType = Create_BareBone_CreditNoteType_FromProblematicXml(theXmlString);
-            }
-            
-            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_CreditNoteType.VvCustomerOIB;
-
-         }
-         else if(isInvoice)
+         if(isInvoice)
          {
             deserialized_CreditNoteType = null;
 
@@ -3969,6 +3955,20 @@ public static class Vv_eRacun_HTTP
             }
 
             thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_InvoiceType.VvCustomerOIB;
+
+         }
+         else if(isCreditNote)
+         {
+            deserialized_InvoiceType = null;
+
+            deserialized_CreditNoteType = receiveOK ? GetCreditNoteTypeByDeserializing_xmlString(theXmlString, false, responseData) : null;
+
+            if(deserialized_CreditNoteType == null) // deser. nije uspjela. Idemo pokusati barem krnjim deserialized_CreditNoteType-om omoguciti ulazak u Inbox zbogradi vidi PDF mogucnosti 
+            {
+               deserialized_CreditNoteType = Create_BareBone_CreditNoteType_FromProblematicXml(theXmlString);
+            }
+            
+            thisXMLhaswrongOIB = ZXC.CURR_prjkt_rec.Oib != deserialized_CreditNoteType.VvCustomerOIB;
 
          }
          else
