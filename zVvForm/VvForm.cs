@@ -9,6 +9,8 @@ using System.IO;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Common;
 using Crownwood.DotNetMagic.Forms;
+using DevExpress.LookAndFeel;
+using DevExpress.Skins;
 using System.Deployment.Application;
 using System.Reflection;
 using System.Diagnostics;
@@ -31,6 +33,14 @@ public /*sealed*/ partial class VvForm : DotNetMagicForm, IVvDocumentHost
 
 
       Application.SetCompatibleTextRenderingDefault(false);
+
+      // P2a / C18: DevExpress default skin init.
+      // Postavlja se PRIJE bilo kakve Form instance kreacije (Application.Run dolje).
+      // U Fazi 2 nema DX kontrola u Crownwood UI hijerarhiji, pa skin samo "tinja"
+      // do Faze 2b kad VvForm postane XtraForm. Office 2019 Colorful = default odluka iz V4 §6.
+      // Saved-preference detekcija (VvEnvironmentDescriptor) doci ce u kasnijem komitu (Faza 2i).
+      SkinManager.EnableFormSkins();
+      UserLookAndFeel.Default.SetSkinStyle("Office 2019 Colorful");
 
       // 18.10.2021: pali / gasi if !DEBUG ako oces da ti Exception stane u kodu 
       // !!! ALI POSLIJE VRATI 
