@@ -58,5 +58,65 @@ Croatian accounting/ERP desktop application (.NET Framework 4.8, C# 7.3, WinForm
 - Do not use `System.Text.Json` — always use `Newtonsoft.Json`
 - Do not hardcode English UI strings — use Croatian
 
+## DevExpress migration — authoritative plan (branch `DevEx-JamesBond`)
+
+When working on the DevExpress migration, the file
+`MarkDowns/DevExpress_Migration_V4.md` is the **AUTHORITATIVE plan**. The user
+explicitly accepted V4 after deliberation between V2/V3/V4 alternatives — V4
+is the ratified contract, not a draft.
+
+**Strict rules for the AI assistant:**
+
+1. **Before any strategic decision** (direction, ordering, type targets, scope
+   of a phase), the assistant must:
+   - Read the relevant V4 paragraph (§0–§5) explicitly.
+   - Quote the paragraph in the response that proposes the action.
+   - Confirm the proposed action matches the quoted paragraph.
+   - If it does **not** match V4, STOP and ask the user for explicit
+     authorization before proceeding. The deviation must also be recorded
+     as a V4 amendment (new entry in §6 marked
+     `V4-deviation — REQUIRES V4 amendment`).
+2. **Tracker entries in V4 §6 do not override V4 §0–§5.** A tracker row
+   describing an action that contradicts the strategic plan is a bug, not a
+   decision. If found, alert the user and revert/rewrite the row before
+   continuing.
+3. **Tactical-execution detail** (which exact file to edit, which exact API
+   call to use for an already-V4-approved swap, error handling within an
+   approved phase) does **not** require pre-quote — only strategic decisions do.
+
+## Git discipline
+
+The AI assistant must **not** invoke mutate-history git commands without
+explicit per-occasion authorization from the user in the same turn.
+
+- **Forbidden without permission:** `git commit`, `git push`, `git reset --hard`,
+  `git revert`, `git rebase`, `git cherry-pick`, `git stash drop`, `git tag`,
+  branch deletion, force-push.
+- **Permitted freely (read-only):** `git status`, `git log`, `git diff`,
+  `git show`, `git for-each-ref`, `git branch -r --contains`.
+- **Permitted as recovery only:** `git checkout -- <file>` and
+  `git update-ref refs/backup/...` — solely to recover from an error the
+  assistant itself made in the working tree, with the recovery purpose
+  clearly stated.
+- **Workflow:** the assistant prepares all edits in the working tree; the user
+  reviews the diff (VS Git UI or `git diff`) and decides commit timing,
+  granularity, and message.
+
+## Build verification
+
+When the assistant claims "build green", it must use the **clean-then-build**
+sequence (per V4_RESUME.md discipline rule #8), not incremental build:
+
+```powershell
+$msb = 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe'
+& $msb 'Vektor.csproj' /t:Clean /v:minimal /nologo
+& $msb 'Vektor.csproj' /v:minimal /nologo /p:Configuration=Debug
+```
+
+Exit code `0` = green; anything else = red. The Copilot agent's `run_build`
+tool is incremental-only and may report stale `CS0246` errors against
+correctly-resolved types — its result is advisory; the CLI sequence is
+authoritative.
+
 ## Response Formatting
 - Format all responses as one continuous block (jedan window) to allow for easy application and copying of the entire response at once, avoiding fragmented multi-block responses.
