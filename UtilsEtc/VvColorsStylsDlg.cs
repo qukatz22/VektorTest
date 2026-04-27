@@ -149,9 +149,10 @@ public class VvColorsStylsDlg : VvDialog
       RadioButton rBtn = sender as RadioButton;
 
       tabControlColors.Style          = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
-      ZXC.TheVvForm.Style             = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
+      // C19: ZXC.TheVvForm.Style ne postoji na XtraForm. Faza 2i preuzima.
+      //ZXC.TheVvForm.Style             = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
       ZXC.vvColors.vvform_VisualStyle = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
-      
+
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
       VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
       VvHamper.ApplyVVColorAndStyleChangeOkolina(ZXC.TheVvForm.modulPanel);

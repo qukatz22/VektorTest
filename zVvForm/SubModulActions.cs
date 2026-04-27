@@ -25,7 +25,7 @@ using System.Net;
 using Org.BouncyCastle.Math.EC;
 using static ArtiklDao;
 
-public /*sealed*/ partial class VvForm : DotNetMagicForm
+public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 {
    #region Prjkt
 

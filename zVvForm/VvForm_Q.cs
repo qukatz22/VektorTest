@@ -30,7 +30,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 #endif
 
-public /*sealed*/ partial class VvForm : DotNetMagicForm, Events.Required, Events.Status
+public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events.Required, Events.Status
 {
    #region Test Something
 

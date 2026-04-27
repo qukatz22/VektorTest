@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Forms;
 
-public /*sealed*/ partial class VvForm : DotNetMagicForm
+public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 {
 
    #region InitializeWorkTabControl

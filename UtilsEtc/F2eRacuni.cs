@@ -5947,7 +5947,7 @@ public class WebApiResult<T>
 
 #endregion Bussiness Classes for JSON Request/Response
 
-public /*sealed*/ partial class VvForm : Crownwood.DotNetMagic.Forms.DotNetMagicForm
+public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 {
    private void F2_UserManual_OnClick(object sender, EventArgs e)
    {
