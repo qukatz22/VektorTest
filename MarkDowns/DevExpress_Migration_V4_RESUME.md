@@ -10,14 +10,19 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni korak:** **Faza 1f / C16** — Audit report (discovery-only,
-zero code change).
+**Zadnji završeni korak:** **Faza 2a / C17** — DevExpress reference setup
+(Opcija B: direct DLL references, 6 DX DLL-ova ubačeno u `Vektor.csproj`;
+clean-then-build verificiran EXIT 0).
 
-**Sljedeći korak:** **Faza 2a / C17** — DevExpress infrastruktura setup (prvi
-stvarni dodir DX-a u solution).
+**Sljedeći korak:** **Faza 2a / C18** — Default skin init (`Office 2019 Colorful`)
+u `static void Main()` u `zVvForm\VvForm.cs` (NE `Program.cs` — ne postoji;
+`<StartupObject>VvForm</StartupObject>`). Ovo je **prvi runtime semantic change**
+u Fazi 2 i zato u zasebnom commitu.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
+
+**Status Faze 2 (SWAP):** ⏳ započeta s C17.
 
 ---
 
@@ -31,6 +36,7 @@ commite C1–C16).
 | 1d — Business layer decoupling | C13, C14 | `Rtrans` rutiran kroz `Active(Document)RecordUCProvider`; status text push/pop sink (`StatusTextPusher`/`Popper`) |
 | 1e — Per-host flag bucket | C15 | `Framework\VvPerHostState.cs` + `IVvDocumentHost.PerHost` (infrastruktura; flipanje call-siteova u Fazi 3) |
 | 1f — Audit | C16 | Workspace census: **1 755 `ZXC.TheVvForm` call-siteova / 120 fajlova**; V4 §3.1f popis pokriva samo 10 %; R7 potvrđen |
+| 2a — DX reference setup | C17 | 6 DX DLL referenci dodano u `Vektor.csproj` (Opcija B: direct DLL, ne NuGet); pokriva XtraEditors, XtraBars, XtraTreeList + dependencies; clean-then-build verificiran EXIT 0; uvedeno **pravilo discipline #8** (clean-then-build invarianta) |
 
 **Princip disciplinea kroz cijelu Fazu 1:** atomic commiti, fallback-safe delegation
 (svaki call-site zadržava staru putanju ako delegat nije postavljen), zero behavioral
@@ -38,55 +44,47 @@ change, build green nakon svakog commita.
 
 ---
 
-## ▶️ Sljedeći korak: P2a / C17 — DevExpress NuGet setup
+## ▶️ Sljedeći korak: P2a / C18 — Default skin init
 
-Per V4 §3.2a — **infrastrukturna priprema** (nijedan Crownwood dodir još se ne
-mijenja).
+Per V4 §3.2a (preostali dio nakon C17 references) — **prvi runtime semantic change** u
+Fazi 2. C17 je uveo DX reference; C18 ih prvi put **koristi** u runtime kodu.
 
 ### Fiksirane odluke (V4 §6)
 
-- **DX verzija:** `DevExpress WinForms Controls v25.2.6` (Licensed) — NE „najnoviji
-  23.x LTS" kako je V4 originalno sugerirao.
-- **Default skin:** `Office 2019 Colorful` — `UserLookAndFeel.Default.SetSkinStyle(SkinStyle.Office2019Colorful)`
-  u `Program.cs Main()`, samo ako user nema saved preference.
-- **TreeView_Modul → TreeList** (odluka za Fazu 2h, ne C17).
+- **DX verzija:** `DevExpress WinForms Controls v25.2.6` (Licensed) — već referencirana u csproj-u (C17).
+- **Default skin:** `Office 2019 Colorful` — `UserLookAndFeel.Default.SetSkinStyle(SkinStyle.Office2019Colorful)`.
+- **Lokacija init poziva:** `zVvForm\VvForm.cs` `static void Main()` (NE `Program.cs` — ne postoji).
+- **TreeView_Modul → TreeList** (Faza 2h, ne C18).
 
-### C17 checklist
+### C18 checklist
 
-- [ ] Dodati NuGet pakete verzije `25.2.6` u projekt(e) koji će hostati DX UI:
-  - `DevExpress.Win.Design`
-  - `DevExpress.Win.Navigation`
-  - `DevExpress.Win.TreeList`
-  - `DevExpress.Data`
-  - `DevExpress.Utils`
-  - `DevExpress.Images`
-  - `DevExpress.XtraEditors`
-  - `DevExpress.XtraBars`
-  - `DevExpress.XtraTab`
-  - `DevExpress.XtraBars.Docking2010`
-- [ ] Dodati `licenses.licx` sa svim korištenim DX komponentama (ili potvrditi
-  da postoji i proširiti ako treba).
-- [ ] `Program.cs Main()` — dodati skin init **prije** `Application.Run(…)`, ali
-  iza eventualnog `VvEnvironmentDescriptor` loada (saved preference pobjeđuje default).
-- [ ] **NIKAKVA druga izmjena.** Crownwood reference ostaju netaknute.
-- [ ] Build solucije — validacija da DX reference koegzistiraju s Crownwoodom bez
-  konflikta (namespace, version, licensing).
-- [ ] Smoketest: aplikacija se pokrene kao prije; skin inicijalizacija se odvija
-  ali vizualno ništa ne smije biti promijenjeno (Crownwood forme/controli ignoriraju
-  DX skin).
-- [ ] Append C17 row u `DevExpress_Migration_V4.md` §6 tracker (nakon C16).
+- [ ] Otvoriti `zVvForm\VvForm.cs` i locirati `static void Main(string[] args)`.
+- [ ] Dodati skin init **iza** `Application.SetCompatibleTextRenderingDefault(false)`,
+  **prije** `Application.Run(new VvForm())`. Razlog: skin treba biti postavljen prije
+  prve DX kontrole (kojih u Fazi 2 odmah još nema, ali disciplina za buduće faze).
+- [ ] Conditional: ako `VvEnvironmentDescriptor` ima saved skin preference (Faza 2i
+  proširenje), koristiti tu; inače default `Office2019Colorful`. **U C18 zasad samo
+  default** — saved-preference detekcija dolazi u C2X kad se VvColors konvertira.
+- [ ] `using DevExpress.LookAndFeel;` + `using DevExpress.Skins;` na vrh fajla.
+- [ ] **NIKAKVA druga izmjena** — ne diramo Crownwood, ne diramo VvForm konstruktor,
+  ne diramo InitializeVvForm.
+- [ ] **Clean-then-build (per pravilo #8)** — verificirati EXIT 0 prije commita.
+- [ ] Smoketest: aplikacija se pokrene; budući da nema ijedne DX kontrole instancirane,
+  vizualno **ništa** ne smije biti drugačije. Skin engine se učitava ali nema na čemu
+  raditi (Crownwood forme/controli ignoriraju DX skin).
+- [ ] Append C18 row u V4 §6 tracker.
 
-### Potencijalni rizici za C17
+### Potencijalni rizici za C18
 
-- **Licenca:** DX 25.2.6 zahtijeva aktivnu licencu na build mašini. Ako buildmachine
-  nema DX instaliran, NuGet paketi će se instalirati ali `licenses.licx` može javljati
-  greške. Validirati prije push-a.
-- **Namespace clash:** `DevExpress.XtraEditors.XtraForm` vs `Crownwood.DotNetMagic.Forms.DotNetMagicForm`
-  — samo ako se istovremeno using-aju u istom fajlu; u C17 ih ne diramo zajedno.
-- **Version pinning:** fiksirati točno `25.2.6` (ne `[25.2.*,)`) da se izbjegne
-  slučajni bump tijekom restore-a.
-- **Restore time:** prvi `nuget restore` s DX paketima može biti znatno sporiji;
-  očekivano.
+- **DX runtime initialization side-effects.** `SetSkinStyle` ne smije zatražiti licencu
+  niti inicijalizirati XPF/Workspace ako se samo poziva čisti method. Validirati da
+  app start time nije značajno usporen.
+- **Static field initialization order.** `VvForm` ima statičke field initialise-ove
+  (singleton, ZXC.TheVvForm setting). DX skin treba biti postavljen **prije** ijedne
+  Form instance kreacije. Trenutni `Main()` već dobro slijedi taj pattern (`Application.Run`
+  je posljednja linija) — naša izmjena ide samo iznad njega.
+- **`VvApplication_ThreadException` nije dirana** — DX licensing greške bi se trebale
+  pojaviti kao DialogResult, ne kao thread exception. Ako greška ne dođe u smoketestu, OK.
 
 ---
 
@@ -111,8 +109,9 @@ Prioritet čitanja (sljedeći put):
 
 ```
 Faza 1 (Decoupling)   ✅ ZAVRŠENO  (C1–C16)
-Faza 2 (SWAP)         ⏳ POČINJE   (C17 = 2a infrastruktura)
-  ├── 2a NuGet setup  ← SLJEDEĆE
+Faza 2 (SWAP)         ⏳ U TIJEKU  (C17 done — references; C18 next — skin init)
+  ├── 2a NuGet setup  ✅ C17 — direct DLL references, Opcija B (NE NuGet)
+  │                   ⏳ C18 — skin init u VvForm.Main()
   ├── 2b VvForm → XtraForm
   ├── 2c TheTabControl → DocumentManager+TabbedView (najosjetljivije!)
   ├── 2d VvTabPage rebase
@@ -148,6 +147,27 @@ Iskustva iz Faze 1 koja su se pokazala ispravnima:
    — codebase konvencije se ne dodiruju.
 7. **Jedan kontinuirani response block** po turn-u (user preference iz
    copilot-instructions).
+8. **Clean-then-build pri verifikaciji „build green".** MSBuild incremental cache
+   (`obj\` folder + `.suo`/`.vs` cache) zna tvrditi `CS0246` greške na tipovima
+   koje csproj zapravo uredno resolva (otkriveno između C16 i C17 pri istrazi
+   phantom `Hapi`/`HandpointSDK`/`PusherClient` greške). **Disciplina:** prije
+   svakog tvrdnje „build green" pokrenuti **clean-then-build** sekvencu, ne samo
+   incremental build.
+   - **Iz CLI-a (autoritativno):**
+     ```powershell
+     $msb = 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe'
+     & $msb 'Vektor.csproj' /t:Clean /v:minimal /nologo
+     & $msb 'Vektor.csproj' /v:minimal /nologo /p:Configuration=Debug
+     ```
+     Exit code `0` = green; bilo što drugo = red.
+   - **Iz VS-a (sekundarno, brže za development):** `Build → Clean Solution`,
+     pa `Build → Build Solution` (NE samo F6 koji je incremental).
+   - Copilot agent `run_build` tool je **incremental-only** i ne čisti cache —
+     njegov rezultat treba uzimati s rezervom; pri sumnji preferirati CLI sekvencu
+     iznad.
+   - Phantom `PusherClient.dll` missing-dep warning **NIJE blocker** (transitive
+     dep koji nijedan source kod ne koristi) — može se ignorirati u tracker
+     row-ovima ako MSBuild exit kod je 0.
 
 ---
 
@@ -165,4 +185,4 @@ Iskustva iz Faze 1 koja su se pokazala ispravnima:
 ---
 
 **Kraj handoff dokumenta.** Sljedeći prompt nakon pauze može biti jednostavno
-„P2a / C17" i imaš sve što trebaš.
+„P2a / C18" i imaš sve što trebaš.

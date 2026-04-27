@@ -143,6 +143,40 @@
       <HintPath>C:\VvLibraries\DotNetMagic.DLL</HintPath>
       <Private>True</Private>
     </Reference>
+    <!-- ============================================================
+         DevExpress WinForms Controls v25.2.6 (Faza 2a / C17)
+         Direct DLL references; HintPath points to DX installer location.
+         ============================================================ -->
+    <Reference Include="DevExpress.Data.v25.2, Version=25.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\DevExpress 25.2\Components\Bin\Framework\DevExpress.Data.v25.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Images.v25.2, Version=25.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\DevExpress 25.2\Components\Bin\Framework\DevExpress.Images.v25.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v25.2, Version=25.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\DevExpress 25.2\Components\Bin\Framework\DevExpress.Utils.v25.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraBars.v25.2, Version=25.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\DevExpress 25.2\Components\Bin\Framework\DevExpress.XtraBars.v25.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v25.2, Version=25.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\DevExpress 25.2\Components\Bin\Framework\DevExpress.XtraEditors.v25.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraTreeList.v25.2, Version=25.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\DevExpress 25.2\Components\Bin\Framework\DevExpress.XtraTreeList.v25.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HandpointSDK, Version=4.2.1.0, Culture=neutral, PublicKeyToken=3225e2704fc065cf, processorArchitecture=MSIL">
       <HintPath>packages\HandpointSDK.4.2.1\lib\net461\HandpointSDK.dll</HintPath>
     </Reference>
