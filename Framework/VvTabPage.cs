@@ -888,35 +888,44 @@ be_fast:
 
    #region VvTabPage_VisibleChanged
 
+   // C20a (P2c): VvTabPage_VisibleChanged je sada thin dispatcher koji forwarda na
+   // OnActivated() / OnDeactivated(). Cilj: u Fazi 2c (C20b) DocumentManager.TabbedView.DocumentActivated
+   // i DocumentDeactivated event-i moci ce zvati OnActivated() / OnDeactivated() direktno,
+   // bez Crownwood VisibleChanged signala. Body je doslovno premjesten — zero behavioral change.
+   // Postojeci hookovi (this.VisibleChanged += ...) i programski poziv VvTabPage_VisibleChanged(null, null)
+   // i dalje rade kao prije.
+
    public void VvTabPage_VisibleChanged(object sender, EventArgs e)
    {
-      if(this.Visible == false) // ovaj, dakle, upravo GUBI visibility (napustamo ga, vec je prije otvoren) 
+      if(this.Visible == false) OnDeactivated();
+      else                      OnActivated();
+   }
+
+   public void OnDeactivated() // ovaj, dakle, upravo GUBI visibility (napustamo ga, vec je prije otvoren) 
+   {
+      if(IsArhivaTabPage) ArhivaTabPageSelectedIndex = TheVvForm.TheTabControl.SelectedIndex;
+      else                ArhivaTabPageSelectedIndex = -1;
+
+      thisIsFirstAppereance = false;
+
+      GetTSB_EnabledStateSnapshot();
+   }
+
+   public void OnActivated()
+   {
+      TheVvForm.TH_CheckAndForceFiskalization(); 
+
+      // 15.12.2011 
+      ZXC.TheVvForm.VvPref.login.TheINITIAL_VvSubModulEnum_AsInt = (int)TheVvSubModul.subModulEnum;
+
+      //13.04.2012. za FullScreen
+      if(this.TabPageKind == ZXC.VvTabPageKindEnum.RECORD_TabPage)
       {
-         if(IsArhivaTabPage) ArhivaTabPageSelectedIndex = TheVvForm.TheTabControl.SelectedIndex;
-         else                ArhivaTabPageSelectedIndex = -1;
-
-         thisIsFirstAppereance = false;
-
-         GetTSB_EnabledStateSnapshot();
-
-         return;
+         if(theVvForm.ts_Record.Visible == false) theVvForm.ts_Record.Visible = true;
       }
-      else
+      else if(this.TabPageKind == ZXC.VvTabPageKindEnum.REPORT_TabPage)
       {
-         TheVvForm.TH_CheckAndForceFiskalization(); 
-
-         // 15.12.2011 
-         ZXC.TheVvForm.VvPref.login.TheINITIAL_VvSubModulEnum_AsInt = (int)TheVvSubModul.subModulEnum;
-
-         //13.04.2012. za FullScreen
-         if(this.TabPageKind == ZXC.VvTabPageKindEnum.RECORD_TabPage)
-         {
-            if(theVvForm.ts_Record.Visible == false) theVvForm.ts_Record.Visible = true;
-         }
-         else if(this.TabPageKind == ZXC.VvTabPageKindEnum.REPORT_TabPage)
-         {
-            if(theVvForm.ts_Record.Visible == true && ZXC.TheVvForm.menuStrip.Visible == false) theVvForm.ts_Record.Visible = false;
-         }
+         if(theVvForm.ts_Record.Visible == true && ZXC.TheVvForm.menuStrip.Visible == false) theVvForm.ts_Record.Visible = false;
       }
 
       if(!thisIsFirstAppereance)
@@ -956,10 +965,10 @@ be_fast:
          //02.02.2022. da kad se vratimo na faktur koji ima zoom taj zoom ostane zoom a ne da se smanji
          if(TheVvUC is FakturExtDUC) ((FakturExtDUC)TheVvUC).TheTabControl_SelectionChanged_Zoom(null, null, ((FakturExtDUC)TheVvUC).TheTabControl.SelectedTab); ;
 
-         
+
          if(TheVvUC is F2_Izlaz_UC) ((F2_Izlaz_UC)TheVvUC).Refresh_FIR(null, null, ((F2_Izlaz_UC)TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
          if(TheVvUC is F2_Ulaz_UC ) ((F2_Ulaz_UC )TheVvUC).Refresh_FUR(null, null, ((F2_Ulaz_UC )TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
-         
+
          return;
       }
 
