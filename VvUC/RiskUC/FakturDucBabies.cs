@@ -10399,11 +10399,7 @@ public class F2_Izlaz_UC : VvUserControl
 
    public /*override*/ void Refresh_FIR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      if(newPage is VvTabPage == false) return;
-
-//#if !DEBUG
-      if((newPage as VvTabPage).TheVvUC is F2_Izlaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Izlaz_UC).INIT_FIR();
-//#endif
+      INIT_FIR();
    }
 }
 
@@ -10897,11 +10893,7 @@ public class F2_Ulaz_UC : VvUserControl
 
    public /*override*/ void Refresh_FUR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      if(newPage is VvTabPage == false) return;
-
-//#if !DEBUG
-      if((newPage as VvTabPage).TheVvUC is F2_Ulaz_UC) ((newPage as VvTabPage).TheVvUC as F2_Ulaz_UC).INIT_FUR();
-//#endif
+      INIT_FUR();
    }
 
    private void TheGrid_CellMouseDoubleClick_OpenSomeDUC(object sender, DataGridViewCellMouseEventArgs e)

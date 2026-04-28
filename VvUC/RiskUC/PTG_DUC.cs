@@ -3591,7 +3591,7 @@ public class FUG_PTG_UC : VvUserControl
 
    public void SetEnableDisableTsButtonsOnFugDUC(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
    {
-      bool isFUGgettingVisibility = TheVvTabPage.TheVvForm.TheTabControl.SelectedTab.Title == "FUG [PCTOGO]";
+      bool isFUGgettingVisibility = TheVvTabPage.TheVvForm.TheTabControl.ActiveDocument != null && TheVvTabPage.TheVvForm.TheTabControl.ActiveDocument.Caption == "FUG [PCTOGO]";
 
       bool isNewPage = newPage.StartFocus == null;
 

@@ -5,6 +5,9 @@ using Crownwood.DotNetMagic.Controls;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using DevExpress.XtraBars.Docking2010;
+using DevExpress.XtraBars.Docking2010.Views;
+using DevExpress.XtraBars.Docking2010.Views.Tabbed;
 
 #if MICROSOFT
 using                  System.Data.SqlClient;
@@ -16,7 +19,7 @@ using XSqlConnection = MySql.Data.MySqlClient.MySqlConnection;
 using XSqlCommand    = MySql.Data.MySqlClient.MySqlCommand;
 #endif
 
-public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
+public class VvTabPage : UserControl, IDisposable
 {
    #region Fieldz
 
@@ -41,6 +44,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    private VvDataRecord initialVvDataRecord;
 
    /*private*/ public bool thisIsFirstAppereance = true;
+   public bool IsInitializedForActivation { get; private set; }
 
    #endregion Fieldz
 
@@ -294,13 +298,89 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
    
    #endregion struct TsbEnabled
 
+   #region C20b/C21 — DocumentManager + TabbedView integration
+
+   /// <summary>
+   /// Reference na DX `Document` koji wrapa ovu VvTabPage UserControl instancu unutar `TabbedView`.
+   /// Postavlja se u konstruktoru kad parentTabbedView.AddDocument(this) vrati Document objekt.
+   /// Per V4 §2c/§2d.
+   /// </summary>
+   private BaseDocument myDocument;
+   private string title;
+   private Image image;
+
+   public string Title
+   {
+      get { return title; }
+      set
+      {
+         title = value;
+         if(myDocument != null) myDocument.Caption = value;
+      }
+   }
+
+   public Image Image
+   {
+      get { return image; }
+      set
+      {
+         image = value;
+         if(myDocument != null) myDocument.ImageOptions.Image = value;
+      }
+   }
+
+   /// <summary>
+   /// DX-equivalent za stari `parentTabControl.TabPages.Remove(this)` call.
+   /// Sigurno radi i ako je AddDocument propao (myDocument == null).
+   /// </summary>
+   private void RemoveMyDocument(TabbedView parentTabbedView)
+   {
+      if(parentTabbedView == null || myDocument == null) return;
+      parentTabbedView.Documents.Remove(myDocument);
+      myDocument = null;
+   }
+
+   /// <summary>
+   /// SHIM (per V4 §2d): zadržava stari `Selected = true` call-site kontrakt,
+   /// a stvarnu aktivaciju preusmjerava na `TabbedView.Controller.Activate(document)`.
+   /// </summary>
+   public new bool Selected
+   {
+      get
+      {
+         // U TabbedView modelu, "selected" znaci "ovaj je ActiveDocument".
+         if(myDocument == null) return ContainsFocus;
+         TabbedView tv = myDocument.Manager != null ? myDocument.Manager.View as TabbedView : null;
+         return tv != null && tv.ActiveDocument == myDocument;
+      }
+      set
+      {
+         if(myDocument != null)
+         {
+            TabbedView tv = myDocument.Manager != null ? myDocument.Manager.View as TabbedView : null;
+            if(tv != null && value && tv.ActiveDocument != myDocument)
+            {
+               tv.Controller.Activate(myDocument);
+            }
+            // value == false: TabbedView nema "explicit deselect" \u2014 user mora aktivirati drugi document.
+            // To odgovara semantici starog Crownwood koda gdje se `Selected = false` rijetko koristio.
+         }
+         else
+         {
+            if(value) Focus();
+         }
+      }
+   }
+
+   #endregion C20b/C21 — DocumentManager + TabbedView integration
+
    #region Constructor()
 
    public VvTabPage(// CONSTRUCTOR 
       VvForm _vvForm, string _title, //VvSubModul     _vvSubModul, 
-      Point _xy, ZXC.VvTabPageKindEnum _tabPageKind, Crownwood.DotNetMagic.Controls.TabControl parentTabControl, VvDataRecord _initialVvDataRecord, uint? _initialVvDataRecord_RecID, VvRecLstUC _initialRecLstUC)
-      : base(_title)
+      Point _xy, ZXC.VvTabPageKindEnum _tabPageKind, TabbedView parentTabbedView, VvDataRecord _initialVvDataRecord, uint? _initialVvDataRecord_RecID, VvRecLstUC _initialRecLstUC)
    {
+      Title = _title;
       this.theVvForm     = _vvForm;
       //this.TheVvSubModul = _vvSubModul;
       this.TheVvSubModul = TheVvForm.aModuli[_xy.X].aSubModuls[_xy.Y];
@@ -327,12 +407,28 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
 
       CalcTextBoxWidth();
 
-      if(parentTabControl != null) parentTabControl.TabPages.Add(this);
+      // Per V4 §3.2c korak 1: AddDocument umjesto TabPages.Add. Reference na pripadni Document
+      // čuva se u myDocument polju radi brzog Selected-shim aktivacije i removal-a.
+      if(parentTabbedView != null)
+      {
+         this.Dock = DockStyle.Fill;
+         myDocument = parentTabbedView.AddDocument(this);
+         if(myDocument != null)
+         {
+            myDocument.Caption = Title;
+            myDocument.ImageOptions.Image = Image;
+         }
+      }
 
       this.Selected = true;
 
-      if(this.TabPageKind != ZXC.VvTabPageKindEnum.RECORD_TabPage_INTERACTIVE)
-         this.VisibleChanged += new EventHandler(VvTabPage_VisibleChanged);
+      // C20a: VvTabPage_VisibleChanged hookup je RETIRED u C20b — DocumentActivated /
+      // DocumentDeactivated u VvForm hosting kontejneru pozivaju OnActivated() / OnDeactivated()
+      // direktno (V4 §3.2c korak 3). Crownwood VisibleChanged se vise ne pali pri tab switchu
+      // jer TabbedView ne flipa VvTabPage.Visible — sve VvTabPage instance ostaju Visible=true
+      // u Control tree-ju, samo jedna je ActiveDocument.
+      //if(this.TabPageKind != ZXC.VvTabPageKindEnum.RECORD_TabPage_INTERACTIVE)
+      //   this.VisibleChanged += new EventHandler(VvTabPage_VisibleChanged);
 
       bool localOK = true;
 
@@ -341,8 +437,8 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
          case  ZXC.VvTabPageKindEnum.RECORD_TabPage: 
          case  ZXC.VvTabPageKindEnum.RECORD_TabPage_INTERACTIVE:
 
-            InitializeTamponPanel_Header(parentTabControl);
-            InitializeTamponPanel_Footer(parentTabControl);
+            InitializeTamponPanel_Header(this);
+            InitializeTamponPanel_Footer(this);
             panelZaUC.Location          = new Point(0, tamponPanel_Header.Bottom);
             panelZaUC.Size              = new Size(this.Width, this.Height - tamponPanel_Header.Height - tamponPanel_Footer.Height);
             tamponPanel_Footer.Location = new Point(0, panelZaUC.Bottom);
@@ -355,8 +451,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
             if(!localOK)
             {
                //if(conn != null) conn.Close();
-               this.VisibleChanged -= new EventHandler(VvTabPage_VisibleChanged);
-               parentTabControl.TabPages.Remove(this);
+               RemoveMyDocument(parentTabbedView);
             }
             //else
             //{
@@ -368,7 +463,7 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
 
          case ZXC.VvTabPageKindEnum.RecLIST_TabPage:
 
-            InitializeTamponPanel_Header(parentTabControl);
+            InitializeTamponPanel_Header(this);
             panelZaUC.Location = new Point(0, tamponPanel_Header.Bottom);
             panelZaUC.Size     = new Size(this.Width, this.Height - tamponPanel_Header.Height);
 
@@ -377,36 +472,41 @@ public class VvTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
             if(!localOK)
             {
                //if(conn != null) conn.Close();
-               this.VisibleChanged -= new EventHandler(VvTabPage_VisibleChanged);
-               parentTabControl.TabPages.Remove(this);
+               RemoveMyDocument(parentTabbedView);
             }
             break;
 
 
          case ZXC.VvTabPageKindEnum.REPORT_TabPage:
-            InitializeTamponPanel_Header(parentTabControl);
+            InitializeTamponPanel_Header(this);
             panelZaUC.Location = new Point(0, tamponPanel_Header.Bottom);
             panelZaUC.Size     = new Size(this.Width, this.Height - tamponPanel_Header.Height);
-           
+
             Create_vvRptFilter_and_vvReportUC();
             CreateBackgroundWorker();
 
             break;
 
          case ZXC.VvTabPageKindEnum.OTHER_TabPage:
-            InitializeTamponPanel_Header(parentTabControl);
+            InitializeTamponPanel_Header(this);
             panelZaUC.Location = new Point(0, tamponPanel_Header.Bottom);
             panelZaUC.Size     = new Size(this.Width, this.Height - tamponPanel_Header.Height);
             Create_OtherUC();
 
             break;
-      
+
       }
-      
+
       WriteMode = ZXC.WriteMode.None;
 
-      if(localOK && TabPageKind != ZXC.VvTabPageKindEnum.RECORD_TabPage_INTERACTIVE) 
-         VvTabPage_VisibleChanged(null, null); // da dignemo VisibleChanged event, za SubModul ToolStrip ovoOno... 
+      // Per V4 §3.2c korak 3: programski invoke OnActivated() umjesto starog
+      // VvTabPage_VisibleChanged(null, null) trika — DocumentActivated event
+      // ce se prirodno pokrenuti kasnije od TabbedView-a, a SubModul ToolStrip
+      // logiku trebamo odmah primijeniti.
+       IsInitializedForActivation = localOK;
+
+       if(localOK && TabPageKind != ZXC.VvTabPageKindEnum.RECORD_TabPage_INTERACTIVE) 
+          OnActivated();
 
       if(this.Visible && this.TabPageKind != ZXC.VvTabPageKindEnum.OTHER_TabPage) 
          VvHamper.ApplyVVColorAndStyleTabCntrolChange(this);
@@ -614,7 +714,8 @@ be_fast:
       if(IsArhivaTabPage)
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Iza�ite, najprije, iz Arhive.");
-         TheVvForm.TheTabControl.SelectedIndex = ArhivaTabPageSelectedIndex;
+         if(ArhivaTabPageSelectedIndex >= 0 && ArhivaTabPageSelectedIndex < TheVvForm.TheTabControl.Documents.Count)
+            TheVvForm.TheTabControl.Controller.Activate(TheVvForm.TheTabControl.Documents[ArhivaTabPageSelectedIndex]);
 
          e.Cancel = true;
       }
@@ -903,7 +1004,13 @@ be_fast:
 
    public void OnDeactivated() // ovaj, dakle, upravo GUBI visibility (napustamo ga, vec je prije otvoren) 
    {
-      if(IsArhivaTabPage) ArhivaTabPageSelectedIndex = TheVvForm.TheTabControl.SelectedIndex;
+      if(IsArhivaTabPage)
+      {
+         // Index ActiveDocument-a u Documents kolekciji (ekvivalent Crownwood SelectedIndex).
+         ArhivaTabPageSelectedIndex = TheVvForm.TheTabControl.ActiveDocument != null
+            ? TheVvForm.TheTabControl.Documents.IndexOf(TheVvForm.TheTabControl.ActiveDocument)
+            : -1;
+      }
       else                ArhivaTabPageSelectedIndex = -1;
 
       thisIsFirstAppereance = false;
@@ -966,8 +1073,8 @@ be_fast:
          if(TheVvUC is FakturExtDUC) ((FakturExtDUC)TheVvUC).TheTabControl_SelectionChanged_Zoom(null, null, ((FakturExtDUC)TheVvUC).TheTabControl.SelectedTab); ;
 
 
-         if(TheVvUC is F2_Izlaz_UC) ((F2_Izlaz_UC)TheVvUC).Refresh_FIR(null, null, ((F2_Izlaz_UC)TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
-         if(TheVvUC is F2_Ulaz_UC ) ((F2_Ulaz_UC )TheVvUC).Refresh_FUR(null, null, ((F2_Ulaz_UC )TheVvUC).TheVvTabPage.TheVvForm.TheTabControl.SelectedTab);
+         if(TheVvUC is F2_Izlaz_UC) ((F2_Izlaz_UC)TheVvUC).INIT_FIR();
+         if(TheVvUC is F2_Ulaz_UC ) ((F2_Ulaz_UC )TheVvUC).INIT_FUR();
 
          return;
       }
@@ -1452,7 +1559,7 @@ be_fast:
 
    }
 
-   private void InitializeTamponPanel_Footer(Crownwood.DotNetMagic.Controls.TabControl parentVvTp)
+   private void InitializeTamponPanel_Footer(Control parentVvTp)
    {
       tamponPanel_Footer           = new Panel();
       tamponPanel_Footer.Parent    = this;
@@ -1825,14 +1932,7 @@ public class VvAddInteractiveSifrarRecordDlg : Crownwood.DotNetMagic.Forms.DotNe
 
    private void CreateTabControlAndAddVvabPage()
    {
-      tabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      tabControl.Parent           = this;
-      tabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      tabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      tabControl.HideTabsMode     = HideTabsModes.HideAlways;
-      tabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
-
-      tabControl.TabPages.Add(TheVvTabPage);
+      TheVvTabPage.Parent = this;
    }
 
    private void CalcLocationAndSize()
@@ -1843,12 +1943,9 @@ public class VvAddInteractiveSifrarRecordDlg : Crownwood.DotNetMagic.Forms.DotNe
 
       TheVvTabPage.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
-      tabControl.Location = new Point(0, ts_AddSifrar.Height + menuStrip.Height);
+      TheVvTabPage.Location = new Point(0, ts_AddSifrar.Height + menuStrip.Height);
 
-      tabControl.Size = TheVvTabPage.Size;
-      tabControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-
-      this.ClientSize = new Size(tabControl.Width, tabControl.Height + ts_AddSifrar.Height + menuStrip.Height);
+      this.ClientSize = new Size(TheVvTabPage.Width, TheVvTabPage.Height + ts_AddSifrar.Height + menuStrip.Height);
       this.MinimumSize = this.Size;
    }
   

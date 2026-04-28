@@ -14,6 +14,8 @@ using com.handpoint.api;
 using System.Numerics;
 using Newtonsoft.Json;
 using CrystalDecisions.CrystalReports.Engine;
+using DevExpress.XtraBars.Docking2010;
+using DevExpress.XtraBars.Docking2010.Views.Tabbed;
 
 
 #if MICROSOFT
@@ -87,10 +89,10 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
    {
       get 
       {
-         if(TheTabControl             == null) return null;
-         if(TheTabControl.SelectedTab == null) return null;
+         if(TheTabControl                == null) return null;
+         if(TheTabControl.ActiveDocument == null) return null;
 
-         return (VvTabPage)TheTabControl.SelectedTab; 
+         return TheTabControl.ActiveDocument.Control as VvTabPage; 
       }
    }
 
@@ -234,16 +236,22 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
    }
 
    /// <summary>
-   /// TabControl on VvForm
+   /// Glavni tab kontejner na VvFormu. Per V4 §2.1 + §2.2 #1 (post-C20b):
+   /// `DocumentManager` + `TabbedView` od Faze 2 odmah (NE XtraTabControl).
+   /// `workDocumentManager` (deklariran u zVvForm\VvForm.cs Fieldz region) drži
+   /// DocumentManager komponentu; ovaj getter vraća njen `View as TabbedView`.
+   /// AllowFloating je u Fazi 2 isključen — tek u Fazi 3 (DETACH) se uključuje.
    /// </summary>
-   public Crownwood.DotNetMagic.Controls.TabControl TheTabControl
+   public TabbedView TheTabControl
    {
       get 
       {
-         if(workTabControl == null) return null;
-         return                     workTabControl; 
+         if(workDocumentManager == null) return null;
+         return                            workDocumentManager.View as TabbedView; 
       }
-      set {        workTabControl = value; }
+      // Setter zadržan ali no-op: TabbedView se kreira interno u InitializeWorkTabControl();
+      // nijedan postojeći call-site ne assigna TheTabControl izvana.
+      set { /* no-op u DX modelu */ }
    }
 
    /// <summary>
@@ -1195,7 +1203,7 @@ thisIsHektorProject_label:
    void tsCbxVvDataBase_SelectedIndexChanged(object sender, EventArgs e)
    {
       // 26.11.2019: start
-      bool imaOtvorenTabPage = TheTabControl.TabPages.Count > 0;
+      bool imaOtvorenTabPage = TheTabControl.Documents.Count > 0;
 
       if(imaOtvorenTabPage)
       {
@@ -8909,7 +8917,7 @@ thisIsHektorProject_label:
 
       VvSubModul FUGvvSubModul = GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.R_FUG_PTG);
 
-      VvTabPage FUGtabPage = TheTabControl.TabPages.Cast<VvTabPage>()
+      VvTabPage FUGtabPage = TheTabControl.Documents.Select(d => d.Control as VvTabPage).Where(p => p != null)
          .FirstOrDefault(tab => tab.SubModul_xy == FUGvvSubModul.xy);
 
       if(FUGtabPage != null) FUGtabPage.Selected = true;
@@ -8921,16 +8929,18 @@ thisIsHektorProject_label:
    {
       VvSubModul KOPvvSubModul = GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.X_KOP);
 
-      VvTabPage KOPtabPage = TheTabControl.TabPages.Cast<VvTabPage>()
+      VvTabPage KOPtabPage = TheTabControl.Documents.Select(d => d.Control as VvTabPage).Where(p => p != null)
          .FirstOrDefault(tab => tab.SubModul_xy == KOPvvSubModul.xy);
 
       if(KOPtabPage != null)
       {
          KOPtabPage.Dispose();
 
-         this.TheTabControl.TabPages.Remove(KOPtabPage);
+         var kopDoc = TheTabControl.Documents.FirstOrDefault(d => d.Control == KOPtabPage);
+         if(kopDoc != null) this.TheTabControl.Controller.Close(kopDoc);
 
-         TheTabControl.SelectedIndex = ZXC.KOPfromUGAN_TabIndex;
+         if(ZXC.KOPfromUGAN_TabIndex >= 0 && ZXC.KOPfromUGAN_TabIndex < TheTabControl.Documents.Count)
+            TheTabControl.Controller.Activate(TheTabControl.Documents[ZXC.KOPfromUGAN_TabIndex]);
 
          ZXC.KOPfromUGAN_InProgress = false;
          ZXC.KOPfromUGAN_TabIndex   =     0;

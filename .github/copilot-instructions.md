@@ -54,7 +54,7 @@ Croatian accounting/ERP desktop application (.NET Framework 4.8, C# 7.3, WinForm
 
 ## Do Not
 - Do not use `HttpClient` — always use `HttpWebRequest`/`HttpWebResponse`
-- Do not use C# 8+ features (switch expressions, records, nullable reference types, `??=`)
+- Do not use C# 8+ features (switch expressions, records, nullable reference types, `??=")
 - Do not use `System.Text.Json` — always use `Newtonsoft.Json`
 - Do not hardcode English UI strings — use Croatian
 
@@ -92,8 +92,7 @@ explicit per-occasion authorization from the user in the same turn.
 - **Forbidden without permission:** `git commit`, `git push`, `git reset --hard`,
   `git revert`, `git rebase`, `git cherry-pick`, `git stash drop`, `git tag`,
   branch deletion, force-push.
-- **Permitted freely (read-only):** `git status`, `git log`, `git diff`,
-  `git show`, `git for-each-ref`, `git branch -r --contains`.
+- **Permitted freely (read-only):** `git status`, `git log`, `git diff`, `git show`, `git for-each-ref`, `git branch -r --contains`.
 - **Permitted as recovery only:** `git checkout -- <file>` and
   `git update-ref refs/backup/...` — solely to recover from an error the
   assistant itself made in the working tree, with the recovery purpose
@@ -120,3 +119,6 @@ authoritative.
 
 ## Response Formatting
 - Format all responses as one continuous block (jedan window) to allow for easy application and copying of the entire response at once, avoiding fragmented multi-block responses.
+
+## User Expectations
+- Continue executing multi-step coding/migration tasks to completion without unnecessary pauses or requiring repeated 'nastavi' prompts, while still reporting concise progress.

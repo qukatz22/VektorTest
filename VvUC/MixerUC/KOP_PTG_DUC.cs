@@ -135,7 +135,7 @@ public partial class KOP_PTG_DUC : MixerDUC
          tt = Faktur.TT_AUN;
       }
 
-      VvTabPage existingTabPage = ZXC.TheVvForm.TheVvTabPage.TheVvForm.TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModulXY);
+      VvTabPage existingTabPage = ZXC.TheVvForm.TheVvTabPage.TheVvForm.TheTabControl.Documents.Select(d => d.Control as VvTabPage).Where(p => p != null).FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModulXY);
 
       Faktur linkedFaktur_rec;
 

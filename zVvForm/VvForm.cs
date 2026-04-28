@@ -442,7 +442,9 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, IVvDoc
    #region Fieldz
 
    private LoginForm loginForm;
-   private Crownwood.DotNetMagic.Controls.TabControl workTabControl;
+   // Per V4 §2.1 + §2.2 #1 (post-C20b): glavni tab kontejner ide na DocumentManager + TabbedView.
+   // workDocumentManager hosta TabbedView View; public TheTabControl getter (u VvForm_Q.cs) vraæa (TabbedView)View.
+   private DevExpress.XtraBars.Docking2010.DocumentManager workDocumentManager;
 
    private Splitter spliterModulPanelTabControl;
 

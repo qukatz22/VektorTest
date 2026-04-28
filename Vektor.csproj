@@ -2832,7 +2832,7 @@
     <Compile Include="Framework\VvLookUpLista.cs" />
     <Compile Include="UtilsEtc\VvFont.cs" />
     <Compile Include="Framework\VvTabPage.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Framework\VvUserControl.cs">
       <SubType>UserControl</SubType>

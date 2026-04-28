@@ -2885,7 +2885,7 @@ public abstract  class VvRecLstUC : VvUserControl, IVvRecordAssignableUC
 
       int gridHeight;
       if(this.Parent is Panel && ZXC.TheVvForm.miSub_SubModulSetToolStripVisible.Checked
-                              && ZXC.TheVvForm.TheTabControl.TabPages.Count <= 1)
+                              && ZXC.TheVvForm.TheTabControl.Documents.Count <= 1)
          gridHeight = TheGrid.Height - ZXC.TheVvForm.ts_Record.Height;
       else gridHeight = TheGrid.Height;
 

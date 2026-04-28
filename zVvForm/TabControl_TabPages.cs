@@ -1,9 +1,13 @@
 using System;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Forms;
+using DevExpress.XtraBars.Docking2010;
+using DevExpress.XtraBars.Docking2010.Views;
+using DevExpress.XtraBars.Docking2010.Views.Tabbed;
 
 public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 {
@@ -12,38 +16,119 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 
    protected void InitializeWorkTabControl()
    {
-      TheTabControl                   = new Crownwood.DotNetMagic.Controls.TabControl();
-      TheTabControl.Parent            = this;
-      TheTabControl.Dock              = DockStyle.Fill;
-      TheTabControl.Appearance        = VisualAppearance.MultiDocument;
-      TheTabControl.HotTrack          = true;  // ovo mece positionTop na true
-      TheTabControl.BringToFront();
-      TheTabControl.BoldSelectedPage  = true;
-      TheTabControl.OfficePixelBorder = false;
-      TheTabControl.OfficeStyle       = ZXC.vvColors.tabControl_OfficeStyle;
-      TheTabControl.Style             = ZXC.vvColors.vvform_VisualStyle;
-      ShowCloseAndArrowsDropSelectOnWorkTabControl(false);
-      TheTabControl.ClosePressed += new EventHandler(TheTabControl_ClosePressed);
-      TheTabControl.PositionTop = false;
-      TheTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
+      // Per V4 §2.1 + §2.2 #1: DocumentManager + TabbedView od poèetka.
+      workDocumentManager = new DocumentManager();
+      workDocumentManager.ContainerControl = this;
+
+      TabbedView tv = new TabbedView((System.ComponentModel.IContainer)null);
+      workDocumentManager.ViewCollection.Add(tv);
+      workDocumentManager.View = tv;
+
+      // Per V4 §3.2c korak 6: floating eksplicitno OFF u Fazi 2; tek u Fazi 3 (DETACH) se ukljuèuje.
+      tv.DocumentProperties.AllowFloat = false;
+      tv.DocumentProperties.AllowPin   = false;
+
+      // X gumb na tab-u; ekvivalent Crownwood ShowClose dynamic logici
+      // (gasi se u ShowCloseAndArrowsDropSelectOnWorkTabControl kad nema open tab-ova).
+      tv.DocumentProperties.AllowClose = false;
+
+      // Per V4 §3.2c korak 3 (binding na C20a OnActivated/OnDeactivated metode).
+      tv.DocumentActivated   += new DocumentEventHandler(TheTabControl_DocumentActivated);
+      tv.DocumentDeactivated += new DocumentEventHandler(TheTabControl_DocumentDeactivated);
+
+      // Per V4 §3.2c korak 4 (Crownwood ClosePressed + Validating arhiva-blokada -> DocumentClosing).
+      tv.DocumentClosing += new DocumentCancelEventHandler(TheTabControl_DocumentClosing);
+      tv.DocumentClosed  += new DocumentEventHandler      (TheTabControl_DocumentClosed);
+
+      // Per V4 §3.2c korak 4: mouse tab-switch mora zadržati staru Validating arhiva-blokadu.
+      tv.TabMouseActivating += new DocumentCancelEventHandler(TheTabControl_TabMouseActivating);
    }
 
    private void ShowCloseAndArrowsDropSelectOnWorkTabControl(bool _showCA)
    {
-      TheTabControl.ShowClose      = _showCA;
-      TheTabControl.ShowArrows     = _showCA;
-      TheTabControl.ShowDropSelect = _showCA;
+      // X gumb se pojavljuje/skriva globalno preko DocumentProperties.AllowClose.
+      // ShowArrows / ShowDropSelect (Crownwood) nemaju 1:1 ekvivalent — TabbedView automatski
+      // upravlja overflow strijelama i ima ugraðen document-selector dropdown.
+      if(TheTabControl == null) return;
+      TheTabControl.DocumentProperties.AllowClose = _showCA;
    }
 
-   private void TheTabControl_ClosePressed(object sender, EventArgs e)
+   /// <summary>
+   /// Per V4 §3.2c korak 3: binding-target za TabbedView.DocumentActivated.
+   /// Delegira u OnActivated() na VvTabPage (extracted u C20a).
+   /// </summary>
+   private void TheTabControl_DocumentActivated(object sender, DocumentEventArgs e)
    {
-      if(HasTheTabPageAnyUnsavedData(TheVvTabPage)) return;
+      VvTabPage vvTabPage = e.Document.Control as VvTabPage;
+      if(vvTabPage != null && vvTabPage.IsInitializedForActivation) vvTabPage.OnActivated();
+   }
 
-      TheVvTabPage.Dispose();
+   /// <summary>
+   /// Per V4 §3.2c korak 3: binding-target za TabbedView.DocumentDeactivated.
+   /// Delegira u OnDeactivated() na VvTabPage (extracted u C20a).
+   /// </summary>
+   private void TheTabControl_DocumentDeactivated(object sender, DocumentEventArgs e)
+   {
+      VvTabPage vvTabPage = e.Document.Control as VvTabPage;
+      if(vvTabPage != null) vvTabPage.OnDeactivated();
+   }
 
-      this.TheTabControl.TabPages.Remove(TheVvTabPage);
+   /// <summary>
+   /// Per V4 §3.2c korak 4: TabbedView.DocumentClosing apsorbira raniju Crownwood
+   /// kombinaciju ClosePressed + VvTabPage_Validating (arhiva-blokada).
+   /// e.Cancel = true zaustavlja zatvaranje (npr. unsaved data ili arhiva mode).
+   /// </summary>
+   private void TheTabControl_DocumentClosing(object sender, DocumentCancelEventArgs e)
+   {
+      VvTabPage vvTabPage = e.Document.Control as VvTabPage;
+      if(vvTabPage == null) return;
 
-      if(this.TheTabControl.TabPages.Count == 0)
+      // Arhiva-blokada (preuzeto iz VvTabPage_Validating logike).
+      if(vvTabPage.IsArhivaTabPage)
+      {
+         e.Cancel = true;
+         return;
+      }
+
+      // Unsaved data dialog — ako user odustane, otkaži zatvaranje.
+      if(HasTheTabPageAnyUnsavedData(vvTabPage))
+      {
+         e.Cancel = true;
+         return;
+      }
+   }
+
+   /// <summary>
+   /// Per V4 §3.2c korak 4: TabbedView.TabMouseActivating zadržava staro ponašanje
+   /// VvTabPage_Validating kod pokušaja odlaska s taba u arhivi.
+   /// </summary>
+   private void TheTabControl_TabMouseActivating(object sender, DocumentCancelEventArgs e)
+   {
+      if(TheTabControl == null || TheTabControl.ActiveDocument == null) return;
+
+      VvTabPage activeTabPage = TheTabControl.ActiveDocument.Control as VvTabPage;
+      if(activeTabPage == null) return;
+
+      if(activeTabPage.IsArhivaTabPage)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Izaðite, najprije, iz Arhive.");
+         e.Cancel = true;
+         return;
+      }
+
+   }
+
+   /// <summary>
+   /// Post-close cleanup (raniji TheTabControl_ClosePressed body, prilagoðen za DX).
+   /// TabbedView je veæ maknuo Document iz Documents kolekcije do trenutka kad ovaj event okida.
+   /// </summary>
+   private void TheTabControl_DocumentClosed(object sender, DocumentEventArgs e)
+   {
+      VvTabPage vvTabPage = e.Document.Control as VvTabPage;
+
+      if(vvTabPage != null) vvTabPage.Dispose();
+
+      if(this.TheTabControl.Documents.Count == 0)
       {
          ShowCloseAndArrowsDropSelectOnWorkTabControl(false);
          EnableDisable_VvReportSubModuls_onCmdPanel(false, Point.Empty);
@@ -61,16 +146,24 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       ZXC.RISK_CopyToMixerDUC_inProgress = false;
       ZXC.OffixImport_InProgress         = false;
    }
-   
+
    private void CloseTabPage_CtrlW(object sender, EventArgs e)
    {
-     if(TheTabControl.ShowClose == true) TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
+      if(TheTabControl == null || TheTabControl.ActiveDocument == null) return;
+      // Programatski close — prolazi kroz isti DocumentClosing/Closed pipeline.
+      TheTabControl.Controller.Close(TheTabControl.ActiveDocument);
    }
-   
+
    private void CloseAllOpenTabPage(object sender, EventArgs e)
    {
-      //while(TheTabControl.ShowClose == true) TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
-      while(this.TheTabControl.TabPages.Count > 0) TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
+      if(TheTabControl == null) return;
+
+      // Snapshot jer Controller.Close mijenja Documents kolekciju.
+      var docs = TheTabControl.Documents.ToArray();
+      foreach(BaseDocument d in docs)
+      {
+         TheTabControl.Controller.Close(d);
+      }
 
       // 11.03.2014: 
       VvUserControl.NullifyAllSifrars();
@@ -147,9 +240,15 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       VvSubModul vvSubModul = aModuli[xy.X].aSubModuls[xy.Y];
       string     nazivTabPage;
 
+      if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Izaðite, najprije, iz Arhive.");
+         return;
+      }
+
       if(ZXC.IsTEXTHOshop && vvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_IRM)
       {
-         foreach(VvTabPage tp in TheTabControl.TabPages)
+          foreach(VvTabPage tp in GetOpenVvTabPages())
          {
             // 08.07.2015: ma, jos stroze! 
           //if(tp.TheVvSubModul.subModulEnum == ZXC.VvSubModulEnum.R_IRM && tp.HasUnsavedChanges)
@@ -190,7 +289,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
  
       if(vvTabPage.TheDbConnection == null || vvTabPage.TheDbConnection.State != System.Data.ConnectionState.Open) return;
 
-      if(TheTabControl.SelectedTab == null) return;
+      if(TheTabControl.ActiveDocument == null) return;
 
       // preselili u constructor VvTabPage da izbjegnemo kokos/jaje...     vvTabPage.Selected = true;
 
@@ -232,6 +331,39 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 
       // note: vvTabPage (tj. 'sender') NIJE jednako TheVvTabPage-u u slucaju kada se upravo 'radja' novi tab page sa nekog FindDialog-a     
       // jer onaj TabPage sa kojega je otvaran Find privremeno dobije focus gasenjem find-a, a selectedTabPage od TabControle je vec novi TP 
+   }
+
+   private System.Collections.Generic.IEnumerable<VvTabPage> GetOpenVvTabPages()
+   {
+      if(TheTabControl == null) yield break;
+
+      foreach(BaseDocument document in TheTabControl.Documents)
+      {
+         VvTabPage vvTabPage = document.Control as VvTabPage;
+         if(vvTabPage != null) yield return vvTabPage;
+      }
+   }
+
+   private int GetActiveVvTabPageIndex()
+   {
+      if(TheTabControl == null || TheTabControl.ActiveDocument == null) return -1;
+
+      for(int i = 0; i < TheTabControl.Documents.Count; i++)
+      {
+         if(TheTabControl.Documents[i] == TheTabControl.ActiveDocument) return i;
+      }
+
+      return -1;
+   }
+
+   private bool IsTabControlPositionTop
+   {
+      get { return TheTabControl != null && TheTabControl.DocumentGroupProperties.HeaderLocation == DevExpress.XtraTab.TabHeaderLocation.Top; }
+      set
+      {
+         if(TheTabControl == null) return;
+         TheTabControl.DocumentGroupProperties.HeaderLocation = value ? DevExpress.XtraTab.TabHeaderLocation.Top : DevExpress.XtraTab.TabHeaderLocation.Bottom;
+      }
    }
 
    #endregion CreateVvTabPage

@@ -1848,7 +1848,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 
       ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
       if(existingTabPage != null) existingTabPage.Selected = true;
       else                        OpenNew_Record_TabPage(vvSubModul.xy, null);
@@ -3706,7 +3706,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 
       ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
       // 06.05.2016: 
       bool isRisk2Mixer = vvSubModul.modulEnum == ZXC.VvModulEnum.MODUL_OTHER;
@@ -3771,7 +3771,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       else
       {
          ZXC.aim_emsg(MessageBoxIcon.Stop, "Nedozvoljeno kopiranje zbog broja decimala cijene!\n\npolazno {0} decimala\n\ndolazno {1} decimala", polazniNumOf_T_cij_decimalPlaces, dolazniNumOf_T_cij_decimalPlaces);
-         TheTabControl_ClosePressed(TheTabControl, EventArgs.Empty);
+         CloseTabPage_CtrlW(TheTabControl, EventArgs.Empty);
       }
 
       // 31.03.2018: 
@@ -7371,7 +7371,7 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
 
          ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-         VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+          VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
          ZXC.FakturRec = (Faktur)(TheVvDataRecord.CreateNewRecordAndCloneItComplete());
 
@@ -7888,7 +7888,7 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
 
       ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
       ZXC.FakturRec = (Faktur)(TheVvDataRecord.CreateNewRecordAndCloneItComplete());
 
@@ -11336,7 +11336,7 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
 
       ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
       ZXC.FakturRec = (Faktur)(TheVvDataRecord.CreateNewRecordAndCloneItComplete()); // trebamo ga za PutDefaultDUCfields 
 
@@ -11391,7 +11391,7 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
    private void RISK_PTG_UGAN_to_KOP(object sender, EventArgs e)
    {
       ZXC.KOPfromUGAN_InProgress = true;
-      ZXC.KOPfromUGAN_TabIndex   = TheTabControl.SelectedIndex;
+      ZXC.KOPfromUGAN_TabIndex   = GetActiveVvTabPageIndex();
 
       PTG_CreateNew_OrEditExisting_KOP(new PTG_Ugovor(((Faktur)TheVvDataRecord)));
    }
@@ -11434,7 +11434,7 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
 
       ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
     //ZXC.FakturRec = (Faktur)(TheVvDataRecord.CreateNewRecordAndCloneItComplete()); // trebamo ga za PutDefaultDUCfields 
     //ZXC.MixerRec  = (Mixer) (TheVvDataRecord.CreateNewRecordAndCloneItComplete()); // trebamo ga za PutDefaultDUCfields 
@@ -12454,7 +12454,7 @@ label_execute:
 
       ZXC.VvDataBaseInfo tabPageOD_dbi = TheVvTabPage.TheVvDatabaseInfoOn_SelectedVvTabPage;
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
       ZXC.FakturRec = (Faktur)(TheVvDataRecord.CreateNewRecordAndCloneItComplete()); // trebamo ga za PutDefaultDUCfields 
 
@@ -15997,7 +15997,7 @@ label_execute:
 
       VvSubModul vvSubModul = ZXC.TheVvForm.GetVvSubModulFrom_SubModulEnum(ZXC.VvSubModulEnum.X_RUG);
 
-      VvTabPage existingTabPage = TheTabControl.TabPages.Cast<VvTabPage>().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
+      VvTabPage existingTabPage = GetOpenVvTabPages().FirstOrDefault(tab => tab.WriteMode == ZXC.WriteMode.None && tab.SubModul_xy == vvSubModul.xy && tab.TheVvDatabaseInfoOn_SelectedVvTabPage.DataBaseName == tabPageOD_dbi.DataBaseName);
 
       ZXC.MixerRec = (Mixer)(TheVvDataRecord.CreateNewRecordAndCloneItComplete());
 

@@ -154,7 +154,10 @@ public class VvColorsStylsDlg : VvDialog
       ZXC.vvColors.vvform_VisualStyle = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
 
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-      VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
+      // C20b: TabbedView nije Control — VvHamper.ApplyVVColorAndStyleTabCntrolChange ne može primiti njega.
+      // TODO Faza 2i (V4 §3.2j): kompletan VvColors → SkinStyle refactor preuzima ovu logiku.
+      // Skin engine (Office 2019 Colorful, postavljen u C18) auto-renderira boje glavnog tab kontejnera.
+      //VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
       VvHamper.ApplyVVColorAndStyleChangeOkolina(ZXC.TheVvForm.modulPanel);
       VvHamper.ApplyVVColorAndStyleVvForm(ZXC.TheVvForm);
    }
@@ -201,9 +204,10 @@ public class VvColorsStylsDlg : VvDialog
       RadioButton rBtn = sender as RadioButton;
       tabControlColors.OfficeStyle        = (OfficeStyle)rBtn.Tag;
       ZXC.vvColors.tabControl_OfficeStyle = (OfficeStyle)rBtn.Tag;
-      
+
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-      VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
+      // C20b: vidi komentar na liniji 157 (TabbedView nije Control; Faza 2i preuzima).
+      //VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
    }
 
    private void InitializeTabControlMediaPlayerStyle(out VvHamper hampTabCtrlMediaPlayerStyle)
@@ -244,9 +248,10 @@ public class VvColorsStylsDlg : VvDialog
       RadioButton rBtn                        = sender as RadioButton;
       tabControlColors.MediaPlayerStyle       = (MediaPlayerStyle)rBtn.Tag;
       ZXC.vvColors.tabControl_MediaPlayerStyle = (MediaPlayerStyle)rBtn.Tag;
-      
+
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-      VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
+      // C20b: vidi komentar na liniji 157 (TabbedView nije Control; Faza 2i preuzima).
+      //VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
    }
 
    private void InitializeTabControlColorsHamper(out VvHamper tabControlColorsHamper)
@@ -351,7 +356,8 @@ public class VvColorsStylsDlg : VvDialog
    
       ZXC.vvColors.dataGrid_BackgroundColor             = ZXC.vvColors.dataGridCellReadOnly_True_BackColor;
 
-      VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
+      // C20b: vidi komentar na liniji 157 (TabbedView nije Control; Faza 2i preuzima).
+      //VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
 
       br.Dispose();
    }
