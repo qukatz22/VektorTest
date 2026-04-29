@@ -143,6 +143,48 @@ public static class VvToolbarFactory
       return item;
    }
 
+   public static BarSubItem CreateSubItem(IVvDocumentHost host, VvSubMenu subMenu)
+   {
+      if(host == null) throw new ArgumentNullException(nameof(host));
+
+      BarSubItem item = new BarSubItem(host.DxBarManager, subMenu.subMenuText);
+      item.Name = subMenu.btnName.IsEmpty() ? subMenu.subMenuText : subMenu.btnName;
+      item.Caption = subMenu.subMenuText;
+      item.Enabled = subMenu.enabledInWriteMode == false;
+      item.Hint = (subMenu.subMenuDescription.IsEmpty() || subMenu.subMenuDescription == "Description: ") ? subMenu.subMenuText : subMenu.subMenuDescription;
+
+      if(subMenu.icon != null)
+      {
+         item.ImageOptions.Image = new Icon(subMenu.icon, 16, 16).ToBitmap();
+      }
+
+      ApplyShortcut(item, subMenu.shortKeys);
+      RegisterItem(host, item);
+
+      return item;
+   }
+
+   public static BarButtonItem CreateStaticChildItem(IVvDocumentHost host, string text, EventHandler eventHandler)
+   {
+      if(host == null) throw new ArgumentNullException(nameof(host));
+
+      BarButtonItem item = new BarButtonItem(host.DxBarManager, text);
+      item.Name = text;
+      item.Caption = text;
+
+      if(eventHandler != null)
+      {
+         item.ItemClick += delegate(object sender, ItemClickEventArgs e)
+         {
+            eventHandler(sender, EventArgs.Empty);
+         };
+      }
+
+      RegisterItem(host, item);
+
+      return item;
+   }
+
    private static void RegisterItem(IVvDocumentHost host, BarItem item)
    {
       if(item == null || item.Name.IsEmpty()) return;

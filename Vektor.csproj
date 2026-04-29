@@ -4794,6 +4794,7 @@
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Resources\Prirucnik  ZAH_SVD v04.pdf" />
+    <None Include="Tools\git-utf16-textconv.ps1" />
     <None Include="UtilsEtc\B2GInvoicing\B2GIncoming_Receive\B2GFinaInvoiceWebService.wsdl" />
     <None Include="UtilsEtc\B2GInvoicing\B2GIncoming_Receive\ChangeB2GIncomingInvoiceStatusMsg.xsd">
       <SubType>Designer</SubType>
