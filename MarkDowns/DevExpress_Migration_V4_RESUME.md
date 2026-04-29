@@ -10,24 +10,40 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2g / C31 modul panel paths** — commit `6db16c5`
-(`C31 map modul panel paths to BarItems`). `MenuItem_SplitBtnModul` paralelno
-kreira DX `BarSubItem` na `DxBar_Record`, a `MenuItem_RightModulPanel` i
-`MenuItem_LeftModulPanel` paralelno kreiraju DX `BarButtonItem` stavke na
-`DxMenuBar`. Legacy `ToolStripSplitButton` i legacy menu stavke ostaju netaknuti.
-
-**Trenutni necommitani checkpoint:** **Faza 2g / C32 finish** — dodani su DX
-`BarEditItem` combo placeholder-i za postojeće `ToolStripComboBox` pathove,
-`VvEnvironmentDescriptor` paralelno sprema/učitava `BarManager` layout XML,
-custom merge skriva nove DX linkove koji ne postoje u korisničkom layout XML-u,
-legacy `VisualStyle` se mapira u DX skin name, a postojeći WriteMode/explicit
-enable helperi sinkroniziraju DX `BarItem.Enabled` i `BarItem.Visibility` preko
-`DxBarItemsByName`. Clean-then-build EXIT 0 uz postojeće Crystal Reports
+**Zadnji završeni commit:** **Faza 2g / C32 finish** — commit `f3de18d`
+(`C32 finish BarManager phase`). Dodani su DX `BarEditItem` combo placeholder-i za
+postojeće `ToolStripComboBox` pathove; `VvEnvironmentDescriptor` paralelno
+sprema/učitava `BarManager` layout XML; custom merge skriva nove DX linkove koji
+ne postoje u korisničkom layout XML-u; legacy `VisualStyle` se mapira u DX skin
+name; postojeći WriteMode/explicit enable helperi sinkroniziraju DX
+`BarItem.Enabled` i `BarItem.Visibility` preko `DxBarItemsByName`. V4 §2g checklist
+označen je dovršenim. Clean-then-build EXIT 0 uz postojeće Crystal Reports
 `MSB3187` warninge.
 
-**Sljedeći korak:** nakon commita C32 krenuti u Fazu 2h (`TreeView_Modul`:
-`Crownwood.TreeControl` → DX `TreeList` ili odobrena alternativa). Detach ostaje
-za Fazu 3.
+**Trenutni necommitani checkpoint:** nema — pauza nakon C32.
+
+**Sljedeći korak:** krenuti u Fazu 2h (`TreeView_Modul`: `Crownwood.TreeControl` →
+DX `TreeList`) prema V4 preporuci. Detach ostaje za Fazu 3.
+
+**2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
+konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
+event mapping `AfterSelect` → `FocusedNodeChanged`; ikone preko `SelectImageIndex`.
+
+**2h code surface koji prvo treba dirati/pročitati:**
+- `zVvForm\Initializations_Settings.cs` — TreePanel fields: `TreeView_Modul`,
+  `aTreeNode0_Modul`, `aTreeNode1_SubModul`, `aTreeNode2_ReportModul`.
+- `zVvForm\Moduls_CommandPanel.cs` — init/populate path: `TreeView_Modul = new
+  TreeControl()`, `TreeView_Modul_AfterSelect`, `InitializeTreeView_ModulNode0`,
+  node arrays, `Nodes.Add`, `ImageIndex`, `SelectedImageIndex`, `ExpandedChanged`.
+- `zVvForm\OnClick_EventHandlers.cs` — event sender casts to `TreeControl` and
+  `SelectedNode.Tag` in modul/report click paths.
+- `zVvForm\TabControl_TabPages.cs` — calls to `aTreeNode0_Modul[xy.X].Expand()` and
+  `aTreeNode1_SubModul[xy.X][xy.Y].Expand()`.
+
+**Predloženi C33 slicing:** prvo uvesti TreeList field/reference i minimalni init
+bez promjene business click behaviora; zatim migrirati populate (`AppendNode` +
+Tag); zatim event mapping i expand helper shim; tek nakon build-green ukloniti
+preostale Crownwood `TreeControl` usage-e za `TreeView_Modul`.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
