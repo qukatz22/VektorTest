@@ -10,31 +10,25 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni korak:** **Faza 2c/2d / C20b-C21** — commit `447ce29`
-(`C20b-C21: migrate main tab host to TabbedView and rebase VvTabPage`). Glavni
-`TheTabControl` je migriran na DevExpress `DocumentManager` + `TabbedView`,
-`DocumentActivated`/`DocumentDeactivated` zovu `VvTabPage.OnActivated()` /
-`OnDeactivated()`, `DocumentClosing` pokriva close + dirty prompt, a floating je
-u Fazi 2 eksplicitno isključen. Ključna spoznaja: content se nije vidio dok je
-`VvTabPage` ostao `Crownwood.TabPage`; V4 §2d je zato proveden u istom checkpointu
-i `VvTabPage` sada nasljeđuje `UserControl`, uz `Title`, `Image` i `Selected`
-shimove prema `TabbedView.Document`. Smoketest ✅: content se vidi, dirty tab
-switch više ne pita save yes/no, dirty close/exit i dalje pitaju, arhiva blokira
-otvaranje novog taba, clean-then-build EXIT 0 uz postojeće Crystal Reports
-`MSB3187` warninge.
+**Zadnji završeni checkpoint:** **Faza 2f / C23** — inner tab consumer cleanup po
+V4 §2f. `SkyRuleUC.cs` i `Fin_Dlg_UC.cs` migrirani su s direktnih
+`Crownwood.DotNetMagic.Controls.TabControl/TabPage` fieldova/instanciranja na
+`VvInnerTabControl` / `VvInnerTabPage`; `PTG_DUC.cs` je očišćen od zadnje
+komentirane Crownwood inner-tab signature reference. Završni audit svih V4 §2f
+targeta više ne nalazi direktne Crownwood inner-tab ni `SelectedIndexChanged`
+reference. Clean-then-build EXIT 0 uz postojeće Crystal Reports `MSB3187`
+warninge.
 
-**Sljedeći korak:** **Faza 2e / C22** — `VvInnerTabPage` bazna klasa i unutarnji
-tabovi: `Crownwood.DotNetMagic.Controls.TabPage` → `DevExpress.XtraTab.XtraTabPage`,
-a DUC-internal `Crownwood.TabControl` → `XtraTabControl` prema V4 §2e/§2f. Prvo
-pročitati V4 §2e i §2f; očekivani prvi kandidati su izolirani ili najčešće
-korišteni unutarnji tabovi, ali strateški smjer mora ostati V4: glavni host je
-već `DocumentManager + TabbedView`, a detach ostaje za Fazu 3.
+**Sljedeći korak:** **Faza 2g** — `MenuStrip` + `ToolStrip` → DevExpress
+`BarManager` prema V4 §2g. Prije strateškog poteza ponovno pročitati V4 §2g i
+relevantne §1.5/§1b toolbar factory napomene; detach ostaje za Fazu 3.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
 
 **Status Faze 2 (SWAP):** ⏳ pod-faze 2a (C17, C18), 2b (C19), 2c-refactor
-(C20a), 2c-kontejner (C20b) i početni 2d rebase (C21) završeni; 2e je sljedeća.
+(C20a), 2c-kontejner (C20b), početni 2d rebase (C21), 2e (C22) i 2f (C23)
+završeni; 2g je sljedeća.
 
 ---
 

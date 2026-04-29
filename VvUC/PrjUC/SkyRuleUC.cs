@@ -1005,8 +1005,8 @@ public class SIN_UC : VvUserControl
 {
    #region Fieldz
 
-   private Crownwood.DotNetMagic.Controls.TabControl ThePolyGridTabControl { get; set; }
-   private Crownwood.DotNetMagic.Controls.TabPage    tabPage1, tabPage2;
+   private VvInnerTabControl ThePolyGridTabControl { get; set; }
+   private VvInnerTabPage    tabPage1, tabPage2;
 
    public Sin_VvSyncInfo_UC TheUC { get; private set; }
 
@@ -1077,21 +1077,14 @@ public class SIN_UC : VvUserControl
 
    private void CreateThePolyGridTabControl()
    {
-      ThePolyGridTabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      ThePolyGridTabControl.Appearance       = Crownwood.DotNetMagic.Controls.VisualAppearance.MultiDocument;
-      ThePolyGridTabControl.ShowArrows       = false;
-      ThePolyGridTabControl.ShowClose        = false;
-      ThePolyGridTabControl.HotTrack         = true;
-      ThePolyGridTabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      ThePolyGridTabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      ThePolyGridTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
-      ThePolyGridTabControl.Parent           = this;
-      ThePolyGridTabControl.Location         = new Point(ZXC.Qun8, ZXC.Qun8);
-      ThePolyGridTabControl.Dock             = DockStyle.Fill;
+      ThePolyGridTabControl          = new VvInnerTabControl();
+      ThePolyGridTabControl.Parent   = this;
+      ThePolyGridTabControl.Location = new Point(ZXC.Qun8, ZXC.Qun8);
+      ThePolyGridTabControl.Dock     = DockStyle.Fill;
 
 
-      tabPage1 = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle1);
-      tabPage2 = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle2);
+      tabPage1 = new VvInnerTabPage(TabPageTitle1, TabPageTitle1, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage);
+      tabPage2 = new VvInnerTabPage(TabPageTitle2, TabPageTitle2, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage);
       ThePolyGridTabControl.TabPages.Add(tabPage1);
       ThePolyGridTabControl.TabPages.Add(tabPage2);
 

@@ -4246,7 +4246,7 @@ public partial class ObrProUC : VvOtherUC
    private CheckBox         cbx_isSkladGotProizv;
 
    public KtoShemaDsc KSD { get; set; }
-   public Crownwood.DotNetMagic.Controls.TabControl ThePolyGridTabControl { get; set; }
+   public VvInnerTabControl ThePolyGridTabControl { get; set; }
 
    public VvDataGridView TheGrid_1 { get; set; }
    public VvDataGridView TheGrid_2 { get; set; }
@@ -4893,23 +4893,16 @@ public partial class ObrProUC : VvOtherUC
 
    private void CreateThePolyGridTabControl()
    {
-      ThePolyGridTabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      ThePolyGridTabControl.Appearance       = Crownwood.DotNetMagic.Controls.VisualAppearance.MultiDocument;
-      ThePolyGridTabControl.ShowArrows       = false;
-      ThePolyGridTabControl.ShowClose        = false;
-      ThePolyGridTabControl.HotTrack         = true;
-      ThePolyGridTabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      ThePolyGridTabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      ThePolyGridTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
-      ThePolyGridTabControl.Parent           = this;
-      ThePolyGridTabControl.Location         = new Point(ZXC.Qun8, panel_hampers.Bottom + ZXC.Qun8);
+      ThePolyGridTabControl          = new VvInnerTabControl();
+      ThePolyGridTabControl.Parent   = this;
+      ThePolyGridTabControl.Location = new Point(ZXC.Qun8, panel_hampers.Bottom + ZXC.Qun8);
 
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle1));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle2));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle6));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle3));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle4));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle5));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle1, TabPageTitle1, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle2, TabPageTitle2, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle6, TabPageTitle6, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle3, TabPageTitle3, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle4, TabPageTitle4, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle5, TabPageTitle5, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
       ThePolyGridTabControl.TabPages[TabPageTitle1].BackColor = ZXC.vvColors.tabPage4TheG_BackColor;
       ThePolyGridTabControl.TabPages[TabPageTitle2].BackColor = Color.NavajoWhite;
@@ -6021,7 +6014,7 @@ public partial class AnalizaProizUC : VvOtherUC
    private CheckBox         cbx_isSkladGotProizv, cbx_hocuAmort;
 
    public KtoShemaDsc KSD { get; set; }
-   public Crownwood.DotNetMagic.Controls.TabControl ThePolyGridTabControl { get; set; }
+   public VvInnerTabControl ThePolyGridTabControl { get; set; }
 
    public VvDataGridView TheGrid_1 { get; set; }
    public VvDataGridView TheGrid_2 { get; set; }
@@ -6761,19 +6754,12 @@ public partial class AnalizaProizUC : VvOtherUC
 
    private void CreateThePolyGridTabControl()
    {
-      ThePolyGridTabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      ThePolyGridTabControl.Appearance       = Crownwood.DotNetMagic.Controls.VisualAppearance.MultiDocument;
-      ThePolyGridTabControl.ShowArrows       = false;
-      ThePolyGridTabControl.ShowClose        = false;
-      ThePolyGridTabControl.HotTrack         = true;
-      ThePolyGridTabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      ThePolyGridTabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      ThePolyGridTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
-      ThePolyGridTabControl.Parent           = this;
-      ThePolyGridTabControl.Location         = new Point(ZXC.Qun8, panel_hampers.Bottom + ZXC.Qun8);
+      ThePolyGridTabControl          = new VvInnerTabControl();
+      ThePolyGridTabControl.Parent   = this;
+      ThePolyGridTabControl.Location = new Point(ZXC.Qun8, panel_hampers.Bottom + ZXC.Qun8);
 
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle1));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle2));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle1, TabPageTitle1, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle2, TabPageTitle2, ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
 
       ThePolyGridTabControl.TabPages[TabPageTitle1].BackColor = ZXC.vvColors.tabPage4TheG_BackColor;
       ThePolyGridTabControl.TabPages[TabPageTitle2].BackColor = Color.NavajoWhite;

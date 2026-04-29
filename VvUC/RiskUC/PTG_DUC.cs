@@ -228,7 +228,7 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
       //ThePolyGridTabControl.SelectionChanged += ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs;
    }
 
-   //private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   //private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(VvInnerTabControl theTabControl, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    //{
    //   if(newPage.Enabled == false)
    //   { 
