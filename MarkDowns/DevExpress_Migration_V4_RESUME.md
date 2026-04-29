@@ -10,34 +10,31 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2g / C27-C30 menu paths** — commit `e43ad4c`
-(`C27-C30 map menu paths to BarItems`). `CreateButtonItem`, `CreateSubItem` i
-`CreateStaticChildItem` spojeni su u record/report/menu/dropdown construction
-pathove (`MenuItemAndButton`, `MenuItemAndButtonReport`, `MenuItem_Only`,
-`DropDownMenuItem_VisibleToolStrip`, `DropDown_ZoomReport`, `DropDown_IconSize`,
-`DropDown_ScalingFont`) kao paralelni DX `BarItem` placeholder-i bez mijenjanja
-postojećeg WinForms UI-a. Clean-then-build EXIT 0 uz postojeće Crystal Reports
+**Zadnji završeni commit:** **Faza 2g / C31 modul panel paths** — commit `6db16c5`
+(`C31 map modul panel paths to BarItems`). `MenuItem_SplitBtnModul` paralelno
+kreira DX `BarSubItem` na `DxBar_Record`, a `MenuItem_RightModulPanel` i
+`MenuItem_LeftModulPanel` paralelno kreiraju DX `BarButtonItem` stavke na
+`DxMenuBar`. Legacy `ToolStripSplitButton` i legacy menu stavke ostaju netaknuti.
+
+**Trenutni necommitani checkpoint:** **Faza 2g / C32 finish** — dodani su DX
+`BarEditItem` combo placeholder-i za postojeće `ToolStripComboBox` pathove,
+`VvEnvironmentDescriptor` paralelno sprema/učitava `BarManager` layout XML,
+custom merge skriva nove DX linkove koji ne postoje u korisničkom layout XML-u,
+legacy `VisualStyle` se mapira u DX skin name, a postojeći WriteMode/explicit
+enable helperi sinkroniziraju DX `BarItem.Enabled` i `BarItem.Visibility` preko
+`DxBarItemsByName`. Clean-then-build EXIT 0 uz postojeće Crystal Reports
 `MSB3187` warninge.
 
-**Trenutni necommitani checkpoint:** **Faza 2g / C31 modul panel paths** —
-`MenuItem_SplitBtnModul` sada paralelno kreira DX `BarSubItem` na `DxBar_Record`,
-a `MenuItem_RightModulPanel` i `MenuItem_LeftModulPanel` paralelno kreiraju DX
-`BarButtonItem` stavke na `DxMenuBar`. Legacy `ToolStripSplitButton` i legacy menu
-stavke ostaju netaknuti. Clean-then-build EXIT 0 uz postojeće Crystal Reports
-`MSB3187` warninge. Preostali 2g surface je `VvEnvironmentDescriptor` layout
-merge/persistence i završno prebacivanje enable/disable logike prema DX itemima.
-
-**Sljedeći korak:** nastaviti Fazu 2g atomizirano: custom layout merge za DX
-layout persistence (`VvEnvironmentDescriptor` kompatibilnost), zatim završno
-prebacivanje enable/disable logike prema `BarButtonItem.Enabled`. Detach ostaje
+**Sljedeći korak:** nakon commita C32 krenuti u Fazu 2h (`TreeView_Modul`:
+`Crownwood.TreeControl` → DX `TreeList` ili odobrena alternativa). Detach ostaje
 za Fazu 3.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
 
 **Status Faze 2 (SWAP):** ⏳ pod-faze 2a (C17, C18), 2b (C19), 2c-refactor
-(C20a), 2c-kontejner (C20b), početni 2d rebase (C21), 2e (C22) i 2f (C23)
-završeni; 2g je u tijeku kroz C31.
+(C20a), 2c-kontejner (C20b), početni 2d rebase (C21), 2e (C22), 2f (C23) i
+2g završeni; sljedeća je 2h.
 
 ---
 

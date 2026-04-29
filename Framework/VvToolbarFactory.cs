@@ -27,6 +27,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
+using DevExpress.XtraEditors.Repository;
 
 /// <summary>
 /// Static factory za izgradnju i upravljanje menija/toolbara na
@@ -179,6 +180,24 @@ public static class VvToolbarFactory
             eventHandler(sender, EventArgs.Empty);
          };
       }
+
+      RegisterItem(host, item);
+
+      return item;
+   }
+
+   public static BarEditItem CreateComboItem(IVvDocumentHost host, string name, string caption, int width)
+   {
+      if(host == null) throw new ArgumentNullException(nameof(host));
+
+      RepositoryItemComboBox repositoryItem = new RepositoryItemComboBox();
+      repositoryItem.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+      host.DxBarManager.RepositoryItems.Add(repositoryItem);
+
+      BarEditItem item = new BarEditItem(host.DxBarManager, repositoryItem);
+      item.Name = name;
+      item.Caption = caption;
+      item.EditWidth = width;
 
       RegisterItem(host, item);
 

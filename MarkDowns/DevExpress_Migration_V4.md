@@ -573,13 +573,13 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 
 #### 2g — `MenuStrip` + `ToolStrip` → `BarManager`
 
-- [ ] `VvForm` dobiva `BarManager` (jedan per forma)
-- [ ] `VvToolbarFactory` metode (iz Faze 1b bile su stubovi) sada grade `Bar` objekte s `BarButtonItem`,`BarSubItem`, `BarEditItem`
-- [ ] Data-driven kreacija iz `VvMenu[]` struktura (§1.5) mapira se izravno u DX `BarItem`-e — struct array ostaje nepromijenjen
-- [ ] Shortcut keys (`vvSubMenu.shortKeys`) → `BarItem.ItemShortcut`
-- [ ] `VvEnvironmentDescriptor` perzistencija: DX ima `BarManager.SaveLayoutToXml` / `RestoreLayoutFromXml`, ALI naš postojeći merge pattern (novi gumbi u kodu →dodani s `visible=false`) DX ne podržava direktno. **Implementirati custom merge step** koji radi istu stvar nad DX layout XML-om.
-- [ ] Migracija postojećih user `VvEnvironmentDescriptor.xml` fileova — lookup tablica: stari `VisualStyle` string → novi skin name
-- [ ] Enable/disable po WriteMode sada ide kroz `BarButtonItem.Enabled` (factory metoda `ApplyWriteMode` iz Faze 1b pretače target sa `ToolStripItem` na `BarButtonItem`)
+- [x] `VvForm` dobiva `BarManager` (jedan per forma)
+- [x] `VvToolbarFactory` metode (iz Faze 1b bile su stubovi) sada grade `Bar` objekte s `BarButtonItem`,`BarSubItem`, `BarEditItem`
+- [x] Data-driven kreacija iz `VvMenu[]` struktura (§1.5) mapira se izravno u DX `BarItem`-e — struct array ostaje nepromijenjen
+- [x] Shortcut keys (`vvSubMenu.shortKeys`) → `BarItem.ItemShortcut`
+- [x] `VvEnvironmentDescriptor` perzistencija: DX ima `BarManager.SaveLayoutToXml` / `RestoreLayoutFromXml`, ALI naš postojeći merge pattern (novi gumbi u kodu →dodani s `visible=false`) DX ne podržava direktno. **Implementirati custom merge step** koji radi istu stvar nad DX layout XML-om.
+- [x] Migracija postojećih user `VvEnvironmentDescriptor.xml` fileova — lookup tablica: stari `VisualStyle` string → novi skin name
+- [x] Enable/disable po WriteMode sada ide kroz `BarButtonItem.Enabled` (factory metoda `ApplyWriteMode` iz Faze 1b pretače target sa `ToolStripItem` na `BarButtonItem`)
 
 #### 2h — `TreeView_Modul`: `Crownwood.TreeControl` → `TreeList` (ili native `TreeView`)
 
