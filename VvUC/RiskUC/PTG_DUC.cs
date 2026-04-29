@@ -210,13 +210,13 @@ public class UGNorAUN_PTG_DUC : FakturPDUC // FakturExtDUC
    //   Faktur.TT_UGN
    //});
 
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_OPL_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Faktur_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Rtrans_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrans_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrano_Grid);
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_PTG_DOD_Rtrano_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_OPL_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_DOD_Faktur_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_DOD_Rtrans_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrans_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_NajamStanje_Rtrano_Grid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_PTG_DOD_Rtrano_Grid);
 
       //ThePolyGridTabControl.TabPages["Osnovno"].Title = ptgOsn_TabPageName;
 
@@ -2266,7 +2266,7 @@ public class PVR_PTG_DUC : FakturPDUC //FakturExtDUC
       TheSumGrid.Visible = true;
 
    }
-   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(VvInnerTabControl theTabControl, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(newPage.Enabled == false)
       {
@@ -3522,8 +3522,8 @@ public class FUG_PTG_UC : VvUserControl
    private RadioButton rbt_grupnoFak, rbt_pojedinFak, rbt_otkupFak, rbt_uslugeA1Fak,
                        rbt_ispisNaEmail, rbt_ispisNaPisacSvi, rbt_ispisNaPisacPosta, rbt_ispisNaPdf, rbt_ispisEracun;
 
-   internal Crownwood.DotNetMagic.Controls.TabControl ThePolyGridTabControl { get; set; }
-   internal Crownwood.DotNetMagic.Controls.TabPage    tabPage_ListaRata, tabPage_ListaFaktura;
+   internal VvInnerTabControl ThePolyGridTabControl { get; set; }
+   internal VvInnerTabPage    tabPage_ListaRata, tabPage_ListaFaktura;
 
    public VvDataGridView TheG_1 { get; set; }
    public VvDataGridView TheG_2 { get; set; }
@@ -3566,7 +3566,7 @@ public class FUG_PTG_UC : VvUserControl
       CreateThePolyGridTabControl();
       SetEnableDisableTsButtons(true);
 
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(ThePolyGridTabControl_SelectionChanged);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(ThePolyGridTabControl_SelectionChanged);
 
       CreateHampers();
 
@@ -3589,7 +3589,7 @@ public class FUG_PTG_UC : VvUserControl
 
    }
 
-   public void SetEnableDisableTsButtonsOnFugDUC(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public void SetEnableDisableTsButtonsOnFugDUC(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool isFUGgettingVisibility = TheVvTabPage.TheVvForm.TheTabControl.ActiveDocument != null && TheVvTabPage.TheVvForm.TheTabControl.ActiveDocument.Caption == "FUG [PCTOGO]";
 
@@ -3617,24 +3617,17 @@ public class FUG_PTG_UC : VvUserControl
 
    private void CreateThePolyGridTabControl()
    {
-      ThePolyGridTabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      ThePolyGridTabControl.Parent           = this;
-      ThePolyGridTabControl.Dock             = DockStyle.Fill;
-      ThePolyGridTabControl.Appearance       = Crownwood.DotNetMagic.Controls.VisualAppearance.MultiDocument;
-      ThePolyGridTabControl.ShowArrows       = false;
-      ThePolyGridTabControl.ShowClose        = false;
-      ThePolyGridTabControl.HotTrack         = true;
-      ThePolyGridTabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      ThePolyGridTabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      ThePolyGridTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
+      ThePolyGridTabControl        = new VvInnerTabControl();
+      ThePolyGridTabControl.Parent = this;
+      ThePolyGridTabControl.Dock   = DockStyle.Fill;
 
-      tabPage_ListaRata = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle1);
+      tabPage_ListaRata = new VvInnerTabPage(TabPageTitle1, TabPageTitle1, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage);
       ThePolyGridTabControl.TabPages.Add(tabPage_ListaRata);
       tabPage_ListaRata.BackColor = Color.NavajoWhite;
       tabPage_ListaRata.Name = TabPageTitle1;
 
 
-      tabPage_ListaFaktura = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle2);
+      tabPage_ListaFaktura = new VvInnerTabPage(TabPageTitle2, TabPageTitle2, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage);
       ThePolyGridTabControl.TabPages.Add(tabPage_ListaFaktura);
       tabPage_ListaFaktura.BackColor = Color.FromArgb(255, 255, 165);
 
@@ -3644,7 +3637,7 @@ public class FUG_PTG_UC : VvUserControl
 
    #region ThePolyGridTabControl_SelectionChanged
 
-   internal void ThePolyGridTabControl_SelectionChanged(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   internal void ThePolyGridTabControl_SelectionChanged(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool isNewPageTabPageListaRata = newPage == ThePolyGridTabControl.TabPages[0];
 
@@ -6255,7 +6248,7 @@ public class MOD_PTG_DUC : FakturPDUC
       }
    }
 
-   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(VvInnerTabControl theTabControl, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(newPage.Enabled == false)
       {

@@ -257,11 +257,11 @@ public partial class MixerDUC : VvPolyDocumRecordUC
       if(this is BmwDUC)
       {
          TheTabControl.TabPages.Add(CreateVvInnerTabPages("Zoom", "Zoom", ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
-         TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(TheTabControl_SelectionChanged_OsnovnoZoom);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(TheTabControl_SelectionChanged_OsnovnoZoom);
       }
    }
 
-   private void TheTabControl_SelectionChanged_OsnovnoZoom(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void TheTabControl_SelectionChanged_OsnovnoZoom(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
 

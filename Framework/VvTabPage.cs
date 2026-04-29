@@ -1844,13 +1844,159 @@ be_fast:
 
 }
 
-public class VvInnerTabPage : Crownwood.DotNetMagic.Controls.TabPage, IDisposable
+public delegate void VvSelectTabHandler(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage);
+
+public class VvInnerTabPageCollection
+{
+   private readonly VvInnerTabControl owner;
+
+   public VvInnerTabPageCollection(VvInnerTabControl owner)
+   {
+      this.owner = owner;
+   }
+
+   public VvInnerTabPage this[int index]
+   {
+      get { return owner.InnerTabPages[index] as VvInnerTabPage; }
+   }
+
+   public VvInnerTabPage this[string name]
+   {
+      get
+      {
+         foreach(DevExpress.XtraTab.XtraTabPage tabPage in owner.InnerTabPages)
+         {
+            VvInnerTabPage vvInnerTabPage = tabPage as VvInnerTabPage;
+            if(vvInnerTabPage != null && (vvInnerTabPage.Name == name || vvInnerTabPage.Title == name || vvInnerTabPage.Text == name)) return vvInnerTabPage;
+         }
+
+         return null;
+      }
+   }
+
+   public int Count
+   {
+      get { return owner.InnerTabPages.Count; }
+   }
+
+   public VvInnerTabPage Add(VvInnerTabPage tabPage)
+   {
+      owner.InnerTabPages.Add(tabPage);
+
+      return tabPage;
+   }
+
+   public void Remove(VvInnerTabPage tabPage)
+   {
+      owner.InnerTabPages.Remove(tabPage);
+   }
+
+   public void RemoveAt(int index)
+   {
+      owner.InnerTabPages.RemoveAt(index);
+   }
+
+   public int IndexOf(VvInnerTabPage tabPage)
+   {
+      return owner.InnerTabPages.IndexOf(tabPage);
+   }
+
+   public bool Contains(VvInnerTabPage tabPage)
+   {
+      return tabPage != null && owner.InnerTabPages.Contains(tabPage);
+   }
+
+   public System.Collections.IEnumerator GetEnumerator()
+   {
+      foreach(DevExpress.XtraTab.XtraTabPage tabPage in owner.InnerTabPages)
+      {
+         yield return tabPage as VvInnerTabPage;
+      }
+   }
+}
+
+public class VvInnerTabControl : DevExpress.XtraTab.XtraTabControl
+{
+   private readonly VvInnerTabPageCollection tabPages;
+
+   internal DevExpress.XtraTab.XtraTabPageCollection InnerTabPages
+   {
+      get { return base.TabPages; }
+   }
+
+   public new VvInnerTabPageCollection TabPages
+   {
+      get { return tabPages; }
+   }
+
+   public VvInnerTabPage SelectedTab
+   {
+      get { return this.SelectedTabPage; }
+      set { this.SelectedTabPage = value; }
+   }
+
+   public int SelectedIndex
+   {
+      get { return this.SelectedTabPageIndex; }
+      set { this.SelectedTabPageIndex = value; }
+   }
+
+   public new VvInnerTabPage SelectedTabPage
+   {
+      get { return base.SelectedTabPage as VvInnerTabPage; }
+      set { base.SelectedTabPage = value; }
+   }
+
+   public event VvSelectTabHandler SelectionChanged;
+
+   public VvInnerTabControl()
+   {
+      tabPages = new VvInnerTabPageCollection(this);
+
+      this.Margin      = Padding.Empty;
+      this.Padding     = Padding.Empty;
+      this.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+
+      this.SelectedPageChanged += VvInnerTabControl_SelectedPageChanged;
+   }
+
+   private void VvInnerTabControl_SelectedPageChanged(object sender, DevExpress.XtraTab.TabPageChangedEventArgs e)
+   {
+      VvSelectTabHandler handler = SelectionChanged;
+
+      if(handler != null) handler(this, e.PrevPage as VvInnerTabPage, e.Page as VvInnerTabPage);
+   }
+}
+
+public class VvInnerTabPage : DevExpress.XtraTab.XtraTabPage, IDisposable
 {
    public ZXC.VvInnerTabPageKindEnum TheInnerTabPageKindEnum { get; set; }
 
+   public string Title
+   {
+      get { return this.Text; }
+      set { this.Text = value; }
+   }
+
+   public Image Image
+   {
+      get { return this.ImageOptions.Image; }
+      set { this.ImageOptions.Image = value; }
+   }
+
+   public bool Selected
+   {
+      get { return this.TabControl != null && this.TabControl.SelectedTabPage == this; }
+      set { if(value && this.TabControl != null) this.TabControl.SelectedTabPage = this; }
+   }
+
+   public Control StartFocus { get; set; }
+
    public VvInnerTabPage(string _title, string _name, ZXC.VvInnerTabPageKindEnum _theInnerTabPageKindEnum)
    {
-      this.AutoScroll              = true;  // mora biti da ga TheG ne dobije
+      this.AutoScroll              = false;
+      this.Margin                  = Padding.Empty;
+      this.Padding                 = Padding.Empty;
       this.BackColor               = ZXC.vvColors.userControl_BackColor;
 
       this.Title                   = _title;

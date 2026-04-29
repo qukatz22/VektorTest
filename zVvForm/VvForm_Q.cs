@@ -1036,8 +1036,8 @@ thisIsHektorProject_label:
       {
          int norr = -1;
 
-         Crownwood.DotNetMagic.Controls.TabControl tabCtrl = TheVvRecordUC.TheTabControl;
-         Crownwood.DotNetMagic.Controls.TabPage    tabPage;
+          VvInnerTabControl tabCtrl = TheVvRecordUC.TheTabControl;
+          VvInnerTabPage    tabPage;
 
          if(tabCtrl.TabPages.Contains(tabCtrl.TabPages["PredPrint"]) == false)
          {
@@ -1111,7 +1111,7 @@ thisIsHektorProject_label:
 
    private void HidePredPrintTabPage()
    {
-         Crownwood.DotNetMagic.Controls.TabControl tabCtrl = TheVvRecordUC.TheTabControl;
+          VvInnerTabControl tabCtrl = TheVvRecordUC.TheTabControl;
 
          if(tabCtrl.TabPages.Contains(tabCtrl.TabPages["PredPrint"]) == true)
          {

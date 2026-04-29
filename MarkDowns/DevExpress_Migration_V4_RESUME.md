@@ -10,34 +10,31 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni korak:** **Faza 2c (refactor) / C20a** — pure refactor:
-`VvTabPage_VisibleChanged` body extract u `OnActivated()` + `OnDeactivated()`
-public metode na `VvTabPage`. `VvTabPage_VisibleChanged` zadržava istu javnu
-signaturu i postaje 4-redni dispatcher (`if (Visible == false) OnDeactivated();
-else OnActivated();`). Hookovi (`this.VisibleChanged += ...`) i programski poziv
-`VvTabPage_VisibleChanged(null, null)` netaknuti. Helper metode
-(`PutTSB_EnabledStateSnapshot`, `GetTSB_EnabledStateSnapshot`,
-`ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet`) i `VvTabPage_Validating`
-netaknuti. Diff: 33 insertions / 24 deletions (text). Encoding UTF-8 noBOM
-očuvan. Clean-then-build EXIT 0, zero CS errors. Smoketest ✅: aplikacija
-identično se ponaša kao C19. Iskoristit će se u 2c kontejner swapu kad nove
-metode budu binding-target za DX `DocumentActivated`/`DocumentDeactivated`
-event-e (per V4 §3.2c korak 3).
+**Zadnji završeni korak:** **Faza 2c/2d / C20b-C21** — commit `447ce29`
+(`C20b-C21: migrate main tab host to TabbedView and rebase VvTabPage`). Glavni
+`TheTabControl` je migriran na DevExpress `DocumentManager` + `TabbedView`,
+`DocumentActivated`/`DocumentDeactivated` zovu `VvTabPage.OnActivated()` /
+`OnDeactivated()`, `DocumentClosing` pokriva close + dirty prompt, a floating je
+u Fazi 2 eksplicitno isključen. Ključna spoznaja: content se nije vidio dok je
+`VvTabPage` ostao `Crownwood.TabPage`; V4 §2d je zato proveden u istom checkpointu
+i `VvTabPage` sada nasljeđuje `UserControl`, uz `Title`, `Image` i `Selected`
+shimove prema `TabbedView.Document`. Smoketest ✅: content se vidi, dirty tab
+switch više ne pita save yes/no, dirty close/exit i dalje pitaju, arhiva blokira
+otvaranje novog taba, clean-then-build EXIT 0 uz postojeće Crystal Reports
+`MSB3187` warninge.
 
-**Sljedeći korak:** **Faza 2c (kontejner) / C20b** — glavni `TheTabControl`:
-`Crownwood.DotNetMagic.Controls.TabControl` → **`DocumentManager` + `TabbedView`**
-(per V4 §3.2c). **NE `XtraTabControl`** — V4 §2.2 #1 to eksplicitno odbija:
-*"Glavni tab: DocumentManager + TabbedView od Faze 2 odmah. Iako V3 preporuka
-bijaše XtraTabControl, odlučujemo od početka koristiti TabbedView jer: API je
-kompatibilan za običan tabbed rad (swap faza); Kad dođe Faza 3 (detach), ne
-treba druga migracija; Izbjegava se dvostruko diranje istog koda (ključni
-argument za V4)."* Detalji u V4 §3.2c (linije 531-539).
+**Sljedeći korak:** **Faza 2e / C22** — `VvInnerTabPage` bazna klasa i unutarnji
+tabovi: `Crownwood.DotNetMagic.Controls.TabPage` → `DevExpress.XtraTab.XtraTabPage`,
+a DUC-internal `Crownwood.TabControl` → `XtraTabControl` prema V4 §2e/§2f. Prvo
+pročitati V4 §2e i §2f; očekivani prvi kandidati su izolirani ili najčešće
+korišteni unutarnji tabovi, ali strateški smjer mora ostati V4: glavni host je
+već `DocumentManager + TabbedView`, a detach ostaje za Fazu 3.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
 
-**Status Faze 2 (SWAP):** ⏳ pod-faze 2a (C17, C18), 2b (C19) i 2c-refactor (C20a)
-završene; 2c-kontejner (C20b) sljedeća per V4 §3.2c.
+**Status Faze 2 (SWAP):** ⏳ pod-faze 2a (C17, C18), 2b (C19), 2c-refactor
+(C20a), 2c-kontejner (C20b) i početni 2d rebase (C21) završeni; 2e je sljedeća.
 
 ---
 
@@ -55,6 +52,7 @@ završene; 2c-kontejner (C20b) sljedeća per V4 §3.2c.
 | 2a — DX skin init | C18 | `Office 2019 Colorful` skin postavljen u `Main()`; `SkinManager.EnableFormSkins()` + `UserLookAndFeel.Default.SetSkinStyle("Office 2019 Colorful")`; 2 nova `using`-a (`DevExpress.LookAndFeel`, `DevExpress.Skins`); zero behavioral impact (nema DX kontrola u UI hijerarhiji); skin engine učitan i čeka Fazu 2b |
 | 2b — VvForm base swap | C19 | `VvForm : DotNetMagicForm` → `VvForm : DevExpress.XtraEditors.XtraForm` u **9 partial deklaracija** (`zVvForm\VvForm.cs`, `Initializations_Settings.cs`, `Menus_ToolStrips.cs`, `Moduls_CommandPanel.cs`, `OnClick_EventHandlers.cs`, `SubModulActions.cs`, `TabControl_TabPages.cs`, `VvForm_Q.cs`, `UtilsEtc\F2eRacuni.cs`); FQN korišten (bez novog `using DevExpress.XtraEditors;`); `VvForm_IVvDocumentHost.cs` netaknut (samo interface, bez base). Decommissioning: 5 `Form.Style` referenci komentirano (3× `this.Style = …`, 1 compound `ZXC.vvColors.vvform_VisualStyle = this.Style = X;` razdvojen, 1× `ZXC.TheVvForm.Style` u `VvColorsStylsDlg.cs`). `ZXC.vvColors.vvform_VisualStyle` field i `tabControlColors.Style` zadržani (Crownwood child controls i dalje žive). **Tool discipline:** isključivo `multi_replace_string_in_file` (14/14 OK u jednom batch-u); zero PowerShell `WriteAllText`. Encoding očuvan: 4× UTF-16 LE, 5× UTF-8 noBOM, 1× UTF-8 BOM (verificirano BOM signature inspection). Clean-then-build EXIT 0, smoketest ✅: app startira, Office 2019 Colorful vidljiv na glavnoj formi, tabovi i login funkcionalni. Lekcija: prošli failed C19 attempt pokvario je 5 UTF-16 fajlova `WriteAllText` overwriteom; retry plan dokumentiran u tracker razgovoru. |
 | 2c (refactor) — VvTabPage event extract | C20a | `VvTabPage_VisibleChanged` body u `Framework\VvTabPage.cs` extracted u dvije nove `public` metode: `OnActivated()` (cijeli `else`-blok aktivacije — first appearance + repeat-activation grane) i `OnDeactivated()` (`if (Visible == false)` deaktivacijski blok). Stari `VvTabPage_VisibleChanged(sender, e)` postaje 4-redni dispatcher koji čita `this.Visible` i poziva odgovarajuću metodu. Sve postojeće hookove (`this.VisibleChanged += ...`), programski poziv `VvTabPage_VisibleChanged(null, null)` i helper metode (`PutTSB_EnabledStateSnapshot`, `GetTSB_EnabledStateSnapshot`, `ChangeVisibilitiOfToolStripAndMenuItem_SubModulSet`, `VvTabPage_Validating`) **netaknute**. Imena `OnActivated`/`OnDeactivated` sigurna (Crownwood `TabPage` ne emita virtuale tih imena; workspace-wide regex scan zero matches). Diff: 33 insertions / 24 deletions, text mode. Encoding UTF-8 noBOM očuvan. Clean-then-build EXIT 0, zero CS errors, smoketest ✅ (identično ponašanje kao C19). **Strateški cilj per V4 §3.2c korak 3:** sad postoje gotove metode kao binding-target za DX event-e: `tabbedView.DocumentActivated += (s,e) => ((VvTabPage)e.Document.Control).OnActivated();`. Bez ovog refactor-a, C20b kontejner swap morao bi istovremeno raditi i extract — razbijanje na C20a + C20b je primjena **pravila atomic commiti (#1)**. |
+| 2c/2d — main tab host + VvTabPage rebase | C20b-C21 (`447ce29`) | Glavni `TheTabControl` prešao na `DocumentManager` + `TabbedView`; `VvTabPage` rebase-an na `UserControl` jer se content nije prikazivao dok je ostao Crownwood `TabPage`. Dodani `Title`/`Image`/`Selected` shimovi za `Document.Caption`, `Document.ImageOptions.Image` i `TabbedView.Controller.Activate`. Dirty prompt uklonjen iz običnog tab switcha; ostaje na close/exit. Arhiva blokira close/switch i otvaranje novog taba. `F2_Izlaz_UC`/`F2_Ulaz_UC` refresh castovi prilagođeni. Clean-then-build EXIT 0; F5 smoke ✅ content visible. |
 
 **Princip disciplinea kroz cijelu Fazu 1:** atomic commiti, fallback-safe delegation
 (svaki call-site zadržava staru putanju ako delegat nije postavljen), zero behavioral
@@ -191,11 +189,9 @@ Faza 2 (SWAP)         ⏳ U TIJEKU
   │                            ✅ C18 — skin init u VvForm.Main() (Office 2019 Colorful)
   ├── 2b VvForm → XtraForm     ✅ C19
   ├── 2c (refactor) VisibleChanged extract  ✅ C20a
-  ├── 2c (kontejner) TheTabControl → DocumentManager+TabbedView   ⏳ SLJEDEĆE (C20b)
-  │     per V4 §2.2 #1 + §3.2c — NE XtraTabControl (V4 svjesno odbacio tu rutu
-  │     da se izbjegne dvostruki rad kad dođe Faza 3 detach)
-  ├── 2d VvTabPage rebase (Crownwood.TabPage → UserControl/XtraTabPage per V4 §3.2d)
-  ├── 2e VvInnerTabPage → XtraTabPage + DUC-internal Crownwood.TabControl → XtraTabControl
+  ├── 2c (kontejner) TheTabControl → DocumentManager+TabbedView   ✅ C20b
+  ├── 2d VvTabPage rebase (Crownwood.TabPage → UserControl)        ✅ C21
+  ├── 2e VvInnerTabPage → XtraTabPage + DUC-internal Crownwood.TabControl → XtraTabControl  ⏳ SLJEDEĆE
   ├── 2f UC-ovi s unutarnjim TabControl-ima (priority rewritten per C16 audit —
   │      FakturDUC family first, not V4 §3.1f order)
   ├── 2g MenuStrip+ToolStrip → BarManager (tu ApplyWriteMode tijelo migrira iz

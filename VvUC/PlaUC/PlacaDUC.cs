@@ -118,7 +118,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
       TheTabControl.TabPages.Add(CreateVvInnerTabPages("Plaća", "", ZXC.VvInnerTabPageKindEnum.ReadWrite_TabPage));
       ThePolyGridTabControl.Parent = TheTabControl.TabPages[0];
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(ThePolyGridTabControl_SelectionChanged);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(ThePolyGridTabControl_SelectionChanged);
 
       CreateHampers();
 
@@ -215,7 +215,7 @@ public partial class PlacaBaseDUC : VvPolyDocumRecordUC
 
    #region ThePolyGridTabControl_SelectionChanged
 
-   private void ThePolyGridTabControl_SelectionChanged(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void ThePolyGridTabControl_SelectionChanged(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       Point xy = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
       ToolStrip ts = ZXC.TheVvForm.ats_SubModulSet[xy.X][xy.Y];

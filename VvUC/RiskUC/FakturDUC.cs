@@ -550,6 +550,10 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          CalcLocationSizeAnchor_TheDGVAndTheSumGrid_WidthTbxBottomOfSumGrid_WidthChooserGrid(TheG, ZXC.QunMrgn, ZXC.Qun4, hamp_SukKC_K, hamp_IznosUvaluti, false);
       }
 
+      AdjustFakturGridBottomForSummaryFields();
+      TheG.Parent.Resize -= FakturGridParent_Resize;
+      TheG.Parent.Resize += FakturGridParent_Resize;
+
       #endregion CalcLocationSizeAnchor
 
       SetRtransColumnIndexes();
@@ -663,11 +667,11 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
 
       #endregion dbNavigationRestrictor_SKL
 
-      TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(DecideIfShouldLoad_FakLinkgrid);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(DecideIfShouldLoad_FakLinkgrid);
 
       // 27.04.2016. ovo je inace na FakturExtDUC-u ali ima previse dodatnih stvari kojih nema u FakturDUC-u pa da ne poprckam
       // dodala ovaj jednostavan zbog novog tab-a Veze a i na nekima koji imaju SaldaKonti da se ne prikazuje filter
-      if(this is FakturExtDUC == false) TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(TheTabControl_SelectionChanged_FakturDUC);
+      if(this is FakturExtDUC == false) TheTabControl.SelectionChanged += new VvSelectTabHandler(TheTabControl_SelectionChanged_FakturDUC);
 
       // 17.10.2017: first day on range w P26 Legion! :-)
       // Da li bi trebalo tu staviti i sve ostale? 
@@ -7061,17 +7065,17 @@ if(isRNM) { colOp = AddDGVColum_Decimal_4GridReadOnly (RealizacGrid, R_cijOP_Col
 
    }
 
-   private void TheTabControl_SelectionChanged_FakturDUC(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void TheTabControl_SelectionChanged_FakturDUC(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage == null) return;
 
       if(TheVvTabPage.IsArhivaTabPage) return;
 
-      if(((VvInnerTabPage)newPage) == null) return;
+      if(newPage == null) return;
 
-      if(((VvInnerTabPage)newPage).TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.ReportViewer_TabPage) return;
+      if(newPage.TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.ReportViewer_TabPage) return;
 
-      if(((VvInnerTabPage)newPage).TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
+      if(newPage.TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
       {
          ThePanelForFilterUC_PrintTemplateUC.Visible = false;
          ftransGrid.TabStop = false;
@@ -7343,7 +7347,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    #region IfShould_Load_PTG OPL DOD UNA_ANA UNA_SIN Grid
 
    //public /*override*/ void IfShould_Load_PTG_OplGrid()
-   public /*override*/ void IfShould_Load_PTG_OPL_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_OPL_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool OPL_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgOpl_TabPageName;
       
@@ -7356,7 +7360,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_DOD_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_DOD_Rtrans_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool DOD_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStavkeDodataka_TabPageName;
 
@@ -7370,7 +7374,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStavkeUGANiDOD_TabPageName;
 
@@ -7383,7 +7387,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrans_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrans_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool UNA_SIN_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStanjeNajmaRtrans_TabPageName;
 
@@ -7396,7 +7400,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrano_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrano_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool StanjeSerno_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStanjeNajmaRtrano_TabPageName;
 
@@ -7409,7 +7413,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_DOD_Faktur_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_DOD_Faktur_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDodaciDokumenti_TabPageName;
 
@@ -7422,7 +7426,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       }
    }
 
-   public /*override*/ void IfShould_Load_PTG_DOD_Rtrano_Grid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_PTG_DOD_Rtrano_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       bool dodRtrano_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgSerijskiBrojeviDOD_TabPageName;
 
@@ -8055,7 +8059,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    
    protected const string F2_Info_TabPageName = "F2 Info";
 
-   public override void DecideIfShouldLoad_TransDGV(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public override void DecideIfShouldLoad_TransDGV(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
 
@@ -8068,7 +8072,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
 
    }
 
-   public /*override*/ void IfShould_Load_RealizacGrid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+public /*override*/ void IfShould_Load_RealizacGrid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
     //ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
 
@@ -8092,7 +8096,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       get 
       {
          List<string> tpNameList = new List<string>();
-         foreach(Crownwood.DotNetMagic.Controls.TabPage tp in TheTabControl.TabPages)
+          foreach(VvInnerTabPage tp in TheTabControl.TabPages)
          {
             tpNameList.Add(tp.Name);
          }
@@ -8100,7 +8104,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
       } 
    }
 
-   public /*override*/ void DecideIfShouldLoad_FakLinkgrid(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void DecideIfShouldLoad_FakLinkgrid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
     //ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
 
@@ -8486,6 +8490,33 @@ if(isRNM)RealizacGrid[ colIdx++, rowIdx].Value = rtrans_rec.T_serlot    ;
 
    #endregion Put Ftrans & RNM DGV Fileds
    
+   private void AdjustFakturGridBottomForSummaryFields()
+   {
+      if(TheG == null || TheG.TheLinkedGrid_Sum == null) return;
+
+      int bottom = 0;
+
+      if(hamp_IznosUvaluti != null && hamp_IznosUvaluti.Visible) bottom = Math.Max(bottom, hamp_IznosUvaluti.Height);
+      if(hamp_SukKC_K != null && hamp_SukKC_K.Visible) bottom = Math.Max(bottom, hamp_SukKC_K.Height);
+      if(hamp_twin != null && hamp_twin.Visible) bottom = Math.Max(bottom, hamp_twin.Height);
+
+      if(bottom <= 0) bottom = ZXC.QUN;
+
+      bottom += ZXC.QUN + ZXC.Qun12;
+
+      int maxGridHeight = TheG.Parent.ClientSize.Height - TheG.Top - TheG.TheLinkedGrid_Sum.Height - bottom;
+
+      if(maxGridHeight > 0 && TheG.Height > maxGridHeight) TheG.Height = maxGridHeight;
+
+      TheG.TheLinkedGrid_Sum.Width = TheG.Width;
+      TheG.TheLinkedGrid_Sum.Location = new Point(TheG.Left, TheG.Bottom + ZXC.Qun4);
+   }
+
+   private void FakturGridParent_Resize(object sender, EventArgs e)
+   {
+      AdjustFakturGridBottomForSummaryFields();
+   }
+
    protected virtual bool VezniDokIsReadOnly { get { return false; } }
 }
 
@@ -8684,15 +8715,15 @@ public partial class FakturExtDUC : FakturDUC
          TheTabControl.TabPages.Add(CreateVvInnerTabPages(fakLink_TabPageName, fakLink_TabPageName, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
       }
 
-      TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(TheTabControl_SelectionChanged_OsnovnoResult);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(TheTabControl_SelectionChanged_OsnovnoResult);
    }
 
-   private void TheTabControl_SelectionChanged_OsnovnoResult(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void TheTabControl_SelectionChanged_OsnovnoResult(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
 
-      if(TheVvTabPage != null && ((VvInnerTabPage)newPage) != null && ((VvInnerTabPage)newPage).TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.ReportViewer_TabPage) return;
-      if(TheVvTabPage != null && ((VvInnerTabPage)newPage) != null && ((VvInnerTabPage)newPage).TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
+      if(TheVvTabPage != null && newPage != null && newPage.TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.ReportViewer_TabPage) return;
+      if(TheVvTabPage != null && newPage != null && newPage.TheInnerTabPageKindEnum == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
       {
          ThePanelForFilterUC_PrintTemplateUC.Visible = false;
          ftransGrid.TabStop = false;
@@ -8702,7 +8733,7 @@ public partial class FakturExtDUC : FakturDUC
 
       if(newPage.Name == "Zoom")
       {
-         ThePolyGridTabControl.Parent = (VvInnerTabPage)newPage;
+         ThePolyGridTabControl.Parent = newPage;
          ControlUnderMigLeftParentA.Location = Point.Empty;
          CalcLocationSizeAnchor_ThePolyGridTabControl(ThePolyGridTabControl.Parent, nextX, 0);
       }
@@ -8711,7 +8742,7 @@ public partial class FakturExtDUC : FakturDUC
       }
       else
       {
-         ThePolyGridTabControl.Parent = (VvInnerTabPage)newPage;
+         ThePolyGridTabControl.Parent = newPage;
          if(newPage.Name == "Osnovno") CalcLocationSizeAnchor_ThePolyGridTabControl(ThePolyGridTabControl.Parent, nextX, CalcRazmakZaPolyGridTabControl());
          else if(newPage.Name == "Sume") CalcLocationSizeAnchor_ThePolyGridTabControl(ThePolyGridTabControl.Parent, nextX, CalcRazmakZaPolyGridTabControl_Sume());
          else if(newPage.Name == "Prosireno") CalcLocationSizeAnchor_ThePolyGridTabControl(ThePolyGridTabControl.Parent, nextX, CalcRazmakZaPolyGridTabControl_Prosireno());
@@ -8751,7 +8782,7 @@ public partial class FakturExtDUC : FakturDUC
       return panel_MigratorsRightA.Bottom;
    }
 
-   public void TheTabControl_SelectionChanged_Zoom(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public void TheTabControl_SelectionChanged_Zoom(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(newPage.Name == "Zoom")
       {
@@ -12856,6 +12887,37 @@ public partial class FakturExtDUC : FakturDUC
          panel_NoMigratorsRight.Size     = new Size(panel_MigratorsRightA.Width, panel_MigratorsRightA.Height);
       }
 
+      panel_MigratorsRightA.BringToFront();
+      panel_MigratorsRightB.BringToFront();
+
+      EnsureProsirenoMigratorPanelsLayout();
+
+   }
+
+   private void EnsureProsirenoMigratorPanelsLayout()
+   {
+      VvInnerTabPage prosirenoTabPage = TheTabControl.TabPages["Prošireno"] ?? TheTabControl.TabPages["Prosireno"];
+
+      if(prosirenoTabPage == null) return;
+
+      panel_MigratorsRightA.Parent = prosirenoTabPage;
+      panel_MigratorsRightB.Parent = prosirenoTabPage;
+
+      panel_MigratorsRightA.Location = Point.Empty;
+      panel_MigratorsRightB.Location = new Point(panel_MigratorsRightA.Right, 0);
+
+      if(panel_MigratorsRightA.Width <= 0 || panel_MigratorsRightA.Height <= 0)
+      {
+         panel_MigratorsRightA.Size = new Size(prosirenoTabPage.ClientSize.Width / 2, prosirenoTabPage.ClientSize.Height);
+      }
+
+      if(panel_MigratorsRightB.Width <= 0 || panel_MigratorsRightB.Height <= 0)
+      {
+         panel_MigratorsRightB.Size = new Size(Math.Max(0, prosirenoTabPage.ClientSize.Width - panel_MigratorsRightA.Right), prosirenoTabPage.ClientSize.Height);
+      }
+
+      panel_MigratorsRightA.BringToFront();
+      panel_MigratorsRightB.BringToFront();
    }
 
    public void SetParentOfhampers()
@@ -16848,7 +16910,7 @@ public class FakturPDUC : FakturExtDUC
    }
 
    #region PTG rtrano DUC
-   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(Crownwood.DotNetMagic.Controls.TabControl theTabControl, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void ThePolyGridTabControl_SelectionChanged_SupressSelectingDisabledTabs(VvInnerTabControl theTabControl, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(newPage.Enabled == false)
       { 

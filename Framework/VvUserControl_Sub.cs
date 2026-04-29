@@ -732,29 +732,22 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
 
    #region TheTabControl
 
-   public Crownwood.DotNetMagic.Controls.TabControl TheTabControl { get; set; }
+   public VvInnerTabControl TheTabControl { get; set; }
 
    public void CreateTheTabControl()
    {
-      TheTabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      TheTabControl.Parent           = this;
-      TheTabControl.Dock             = DockStyle.Fill;
-      TheTabControl.Appearance       = VisualAppearance.MultiDocument;
-      TheTabControl.ShowArrows       = false;
-      TheTabControl.ShowClose        = false;
-      TheTabControl.HotTrack         = true;
-      TheTabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      TheTabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      TheTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
+      TheTabControl        = new VvInnerTabControl();
+      TheTabControl.Parent = this;
+      TheTabControl.Dock   = DockStyle.Fill;
 
-      TheTabControl.SelectionChanged += new SelectTabHandler(DecideIfShouldLoad_TransDGV);
-      TheTabControl.SelectionChanged += new SelectTabHandler(DecideIfShouldLoad_VvReport);
-      TheTabControl.SelectionChanged += new SelectTabHandler(SetVvMenuEnabledOrDisabled_HasFilter_FilterVisibiliti);
-      TheTabControl.SelectionChanged += new SelectTabHandler(Changed_SubModulSet);
-      TheTabControl.SelectionChanged += new SelectTabHandler(Changed_HamperPrintDocVisibiliti);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(DecideIfShouldLoad_TransDGV);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(DecideIfShouldLoad_VvReport);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(SetVvMenuEnabledOrDisabled_HasFilter_FilterVisibiliti);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(Changed_SubModulSet);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(Changed_HamperPrintDocVisibiliti);
    }
 
-   public virtual void DecideIfShouldLoad_TransDGV(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public virtual void DecideIfShouldLoad_TransDGV(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       // mejbi bu overriden, mejbi not 
       // npr DUC-evi ju ne trebaju jer nemaju innerTabPage 'Transakcije' 
@@ -766,7 +759,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       // npr DUC-evi ju ne trebaju jer nemaju innerTabPage 'Transakcije' 
    }
 
-   private void SetVvMenuEnabledOrDisabled_HasFilter_FilterVisibiliti(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void SetVvMenuEnabledOrDisabled_HasFilter_FilterVisibiliti(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
 
@@ -796,7 +789,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
       }
    }
 
-   private void Changed_SubModulSet(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void Changed_SubModulSet(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       Point xy = ZXC.TheVvForm.TheVvTabPage.SubModul_xy;
 
@@ -814,13 +807,13 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
    }
 
 
-   public Crownwood.DotNetMagic.Controls.TabPage CreateVvInnerTabPages(string title, string name, ZXC.VvInnerTabPageKindEnum _vvInnerTabPageKindEnum)
+   public VvInnerTabPage CreateVvInnerTabPages(string title, string name, ZXC.VvInnerTabPageKindEnum _vvInnerTabPageKindEnum)
    {
       VvInnerTabPage vvInerTapPage = new VvInnerTabPage(title, name, _vvInnerTabPageKindEnum);
       return vvInerTapPage;
    }
 
-   public void Changed_HamperPrintDocVisibiliti(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public void Changed_HamperPrintDocVisibiliti(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
 
@@ -950,7 +943,7 @@ public abstract  class VvRecordUC : VvUserControl, IVvRecordAssignableUC, IVvPri
    // Tu dodjemo na 2 nacina:                          
    // 1. PutFields (overriden-ani) od pojedinih UC-ova 
    // 2. TheTabControl.SelectionChanged                
-   public void DecideIfShouldLoad_VvReport(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public void DecideIfShouldLoad_VvReport(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
 

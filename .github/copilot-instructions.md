@@ -54,7 +54,7 @@ Croatian accounting/ERP desktop application (.NET Framework 4.8, C# 7.3, WinForm
 
 ## Do Not
 - Do not use `HttpClient` — always use `HttpWebRequest`/`HttpWebResponse`
-- Do not use C# 8+ features (switch expressions, records, nullable reference types, `??=")
+- Do not use C# 8+ features (switch expressions, records, nullable reference types, `??=`)
 - Do not use `System.Text.Json` — always use `Newtonsoft.Json`
 - Do not hardcode English UI strings — use Croatian
 

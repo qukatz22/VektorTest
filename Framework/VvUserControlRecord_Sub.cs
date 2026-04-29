@@ -1752,7 +1752,7 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
       set;
    }
 
-   public Crownwood.DotNetMagic.Controls.TabControl ThePolyGridTabControl { get; set; }
+   public VvInnerTabControl ThePolyGridTabControl { get; set; }
 
    //=== PtranE, Trans2, VirtualTranses2, TheG2, ... ============================================= 
    public abstract VvDaoBase TheVvDaoTrans2
@@ -1902,18 +1902,11 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
   
    private void CreateThePolyGridTabControl()
    {
-      ThePolyGridTabControl                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      ThePolyGridTabControl.Appearance       = VisualAppearance.MultiDocument;
-      ThePolyGridTabControl.ShowArrows       = false;
-      ThePolyGridTabControl.ShowClose        = false;
-      ThePolyGridTabControl.HotTrack         = true;
-      ThePolyGridTabControl.Style            = ZXC.vvColors.vvform_VisualStyle;
-      ThePolyGridTabControl.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      ThePolyGridTabControl.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
+      ThePolyGridTabControl = new VvInnerTabControl();
 
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle1));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle2));
-      ThePolyGridTabControl.TabPages.Add(new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle3));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle1, TabPageTitle1, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle2, TabPageTitle2, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
+      ThePolyGridTabControl.TabPages.Add(new VvInnerTabPage(TabPageTitle3, TabPageTitle3, ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage));
 
       ThePolyGridTabControl.TabPages[TabPageTitle1].BackColor = ZXC.vvColors.tabPage4TheG_BackColor;
       ThePolyGridTabControl.TabPages[TabPageTitle2].BackColor = ZXC.vvColors.tabPage4TheG2_BackColor;
@@ -1943,8 +1936,30 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
       
       ThePolyGridTabControl.Anchor   = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
+      ThePolyGridTabControl.Resize -= ThePolyGridTabControl_Resize;
+      ThePolyGridTabControl.Resize += ThePolyGridTabControl_Resize;
+
       //ResumeLayout();
 
+   }
+
+   private void ThePolyGridTabControl_Resize(object sender, EventArgs e)
+   {
+      foreach(VvInnerTabPage tabPage in ThePolyGridTabControl.TabPages)
+      {
+         foreach(Control control in tabPage.Controls)
+         {
+            VvDataGridView grid = control as VvDataGridView;
+
+            if(grid == null || grid.TheLinkedGrid_Sum == null) continue;
+
+            grid.Width = Math.Max(0, tabPage.ClientSize.Width - 2 * grid.Left);
+            grid.Height = Math.Max(0, tabPage.ClientSize.Height - grid.Top - ZXC.QUN - grid.TheLinkedGrid_Sum.Height);
+
+            grid.TheLinkedGrid_Sum.Width = grid.Width;
+            grid.TheLinkedGrid_Sum.Location = new Point(grid.Left, grid.Bottom + ZXC.Qun12);
+         }
+      }
    }
 
    #endregion ThePolyGridTabControl

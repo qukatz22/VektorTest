@@ -128,8 +128,8 @@ public class KupdobUC : VvSifrarRecordUC
             CreateDataGrid_InitializeTheGrid_ReadOnly_Columns();
          }
 
-         TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(TheTabControl_SelectionChanged_ShouldLoadKDC_Tab);
-         TheTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(TheTabControl_SelectionChanged_ShouldLoadKDC_Osnovno);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(TheTabControl_SelectionChanged_ShouldLoadKDC_Tab);
+      TheTabControl.SelectionChanged += new VvSelectTabHandler(TheTabControl_SelectionChanged_ShouldLoadKDC_Osnovno);
 
       }
 
@@ -155,7 +155,7 @@ public class KupdobUC : VvSifrarRecordUC
       }
    }
 
-   private void TheTabControl_SelectionChanged_ShouldLoadKDC_Tab(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void TheTabControl_SelectionChanged_ShouldLoadKDC_Tab(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
       if(newPage.Name != KDC_TabPageName)                      return;
@@ -170,7 +170,7 @@ public class KupdobUC : VvSifrarRecordUC
 
    }
 
-   private void TheTabControl_SelectionChanged_ShouldLoadKDC_Osnovno(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   private void TheTabControl_SelectionChanged_ShouldLoadKDC_Osnovno(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       if(TheVvTabPage != null && TheVvTabPage.IsArhivaTabPage) return;
       if(newPage.Name != "Osnovno")                            return;
@@ -2518,7 +2518,7 @@ public class KupdobUC : VvSifrarRecordUC
       TheFinFilterUC.PutFilterFields(TheFtransFilter);
    }
 
-   public override void DecideIfShouldLoad_TransDGV(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public override void DecideIfShouldLoad_TransDGV(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
      

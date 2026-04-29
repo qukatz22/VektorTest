@@ -4401,7 +4401,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             bool wasG2 = false;
 
-            Crownwood.DotNetMagic.Controls.TabPage currTabPage = thePduc.ThePolyGridTabControl.SelectedTab;
+            VvInnerTabPage currTabPage = thePduc.ThePolyGridTabControl.SelectedTab;
 
             if(currTabPage.Title != TabPageTitle1) wasG2 = true;
 

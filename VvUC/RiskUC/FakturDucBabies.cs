@@ -4346,7 +4346,7 @@ public class RNMDUC              : FakturExtDUC, IVvRealizableFakturDUC
       CreateHamperDiff_AKS();
       CreateHamperPG();
 
-      ThePolyGridTabControl.SelectionChanged += new Crownwood.DotNetMagic.Controls.SelectTabHandler(IfShould_Load_RealizacGrid);
+      ThePolyGridTabControl.SelectionChanged += new VvSelectTabHandler(IfShould_Load_RealizacGrid);
       hamp_IznosUvaluti.Visible = false;
 
       hamp_diffAKS.Location = new Point(TheG.Right - hamp_diffAKS.Width + ZXC.Qun4, 0);
