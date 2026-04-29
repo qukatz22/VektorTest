@@ -24,6 +24,9 @@
 // =============================================================================
 
 using System;
+using System.Drawing;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
 
 /// <summary>
 /// Static factory za izgradnju i upravljanje menija/toolbara na
@@ -43,7 +46,12 @@ public static class VvToolbarFactory
    public static void CreateBar_Record(IVvDocumentHost host)
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
-      throw new NotImplementedException("VvToolbarFactory.CreateBar_Record: Faza 2g.");
+
+      VvForm vvForm = host as VvForm;
+      if(vvForm != null && vvForm.DxBar_Record == null)
+      {
+         vvForm.DxBar_Record = CreateBar(host.DxBarManager, "Record", false);
+      }
    }
 
    /// <summary>
@@ -52,7 +60,12 @@ public static class VvToolbarFactory
    public static void CreateBar_Report(IVvDocumentHost host)
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
-      throw new NotImplementedException("VvToolbarFactory.CreateBar_Report: Faza 2g.");
+
+      VvForm vvForm = host as VvForm;
+      if(vvForm != null && vvForm.DxBar_Report == null)
+      {
+         vvForm.DxBar_Report = CreateBar(host.DxBarManager, "Report", false);
+      }
    }
 
    /// <summary>
@@ -61,7 +74,8 @@ public static class VvToolbarFactory
    public static void CreateBar_SubModul(IVvDocumentHost host)
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
-      throw new NotImplementedException("VvToolbarFactory.CreateBar_SubModul: Faza 2g.");
+
+      host.DxBarManager.ForceInitialize();
    }
 
    /// <summary>
@@ -74,7 +88,73 @@ public static class VvToolbarFactory
    public static void CreateMenuBar(IVvDocumentHost host, bool isDetached = false)
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
-      throw new NotImplementedException("VvToolbarFactory.CreateMenuBar: Faza 2g.");
+
+      VvForm vvForm = host as VvForm;
+      if(vvForm != null && vvForm.DxMenuBar == null)
+      {
+         vvForm.DxMenuBar = CreateBar(host.DxBarManager, isDetached ? "Detached menu" : "Main menu", true);
+      }
+   }
+
+   private static Bar CreateBar(BarManager barManager, string barName, bool isMainMenu)
+   {
+      if(barManager == null) throw new ArgumentNullException(nameof(barManager));
+
+      Bar bar = new Bar(barManager, barName);
+      barManager.Bars.Add(bar);
+      bar.Visible = false;
+
+      if(isMainMenu)
+      {
+         bar.OptionsBar.MultiLine = true;
+         bar.OptionsBar.UseWholeRow = true;
+         barManager.MainMenu = bar;
+      }
+
+      return bar;
+   }
+
+   public static BarButtonItem CreateButtonItem(IVvDocumentHost host, VvSubMenu subMenu)
+   {
+      if(host == null) throw new ArgumentNullException(nameof(host));
+
+      BarButtonItem item = new BarButtonItem(host.DxBarManager, subMenu.subMenuText);
+      item.Name = subMenu.btnName;
+      item.Caption = subMenu.subMenuText;
+      item.Enabled = subMenu.enabledInWriteMode == false;
+      item.Hint = (subMenu.subMenuDescription.IsEmpty() || subMenu.subMenuDescription == "Description: ") ? subMenu.subMenuText : subMenu.subMenuDescription;
+
+      if(subMenu.icon != null)
+      {
+         item.ImageOptions.Image = new Icon(subMenu.icon, 16, 16).ToBitmap();
+      }
+
+      if(subMenu.evHandler != null)
+      {
+         item.ItemClick += delegate(object sender, ItemClickEventArgs e)
+         {
+            subMenu.evHandler(sender, EventArgs.Empty);
+         };
+      }
+
+      ApplyShortcut(item, subMenu.shortKeys);
+      RegisterItem(host, item);
+
+      return item;
+   }
+
+   private static void RegisterItem(IVvDocumentHost host, BarItem item)
+   {
+      if(item == null || item.Name.IsEmpty()) return;
+
+      host.DxBarItemsByName[item.Name] = item;
+   }
+
+   private static void ApplyShortcut(BarItem item, Keys shortcutKeys)
+   {
+      if(item == null || shortcutKeys == Keys.None) return;
+
+      item.ItemShortcut = new BarShortcut(shortcutKeys);
    }
 
    // =========================================================================

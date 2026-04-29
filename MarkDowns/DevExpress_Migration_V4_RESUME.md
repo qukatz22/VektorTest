@@ -10,25 +10,41 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni checkpoint:** **Faza 2f / C23** — inner tab consumer cleanup po
-V4 §2f. `SkyRuleUC.cs` i `Fin_Dlg_UC.cs` migrirani su s direktnih
-`Crownwood.DotNetMagic.Controls.TabControl/TabPage` fieldova/instanciranja na
-`VvInnerTabControl` / `VvInnerTabPage`; `PTG_DUC.cs` je očišćen od zadnje
-komentirane Crownwood inner-tab signature reference. Završni audit svih V4 §2f
-targeta više ne nalazi direktne Crownwood inner-tab ni `SelectedIndexChanged`
-reference. Clean-then-build EXIT 0 uz postojeće Crystal Reports `MSB3187`
-warninge.
+**Zadnji završeni commit:** **Faza 2f / C23** — commit `0e33621`
+(`C23 complete inner tab consumer cleanup`). `SkyRuleUC.cs` i `Fin_Dlg_UC.cs`
+migrirani su s direktnih `Crownwood.DotNetMagic.Controls.TabControl/TabPage`
+fieldova/instanciranja na `VvInnerTabControl` / `VvInnerTabPage`; `PTG_DUC.cs`
+je očišćen od zadnje komentirane Crownwood inner-tab signature reference.
+Završni audit svih V4 §2f targeta više ne nalazi direktne Crownwood inner-tab ni
+`SelectedIndexChanged` reference. Clean-then-build EXIT 0 uz postojeće Crystal
+Reports `MSB3187` warninge.
 
-**Sljedeći korak:** **Faza 2g** — `MenuStrip` + `ToolStrip` → DevExpress
-`BarManager` prema V4 §2g. Prije strateškog poteza ponovno pročitati V4 §2g i
-relevantne §1.5/§1b toolbar factory napomene; detach ostaje za Fazu 3.
+**Trenutni necommitani checkpoint:** **Faza 2g / C24-C26 foundation** —
+`IVvDocumentHost` sada izlaže `DxBarManager`, `DxBar_Record`, `DxBar_Report`,
+`DxMenuBar` i `DxBarItemsByName`; `VvForm` lazy kreira jedan
+`DevExpress.XtraBars.BarManager` po formi i lookup cache za legacy name → DX
+`BarItem`. `VvToolbarFactory.CreateBar_Record/CreateBar_Report/CreateMenuBar`
+prestaju bacati `NotImplementedException` za VvForm i kreiraju skrivene DX Bar
+placeholder-e. C25 dodaje `CreateButtonItem(IVvDocumentHost, VvSubMenu)` helper
+koji mapira `VvSubMenu` text/name/icon/handler/tooltip/shortcut u
+`BarButtonItem`, uključujući `BarShortcut` i cache registraciju. C26 spaja helper
+u prvi live construction path (`MenuItemAndButton` record toolbar path) i
+paralelno kreira DX `BarButtonItem` bez mijenjanja postojećeg WinForms UI-a.
+Clean-then-build EXIT 0 uz postojeće Crystal Reports `MSB3187` warninge.
+Preostali 2g surface je velik i koncentriran u `zVvForm\Menus_ToolStrips.cs`
+plus `VvEnvironmentDescriptor` layout merge.
+
+**Sljedeći korak:** nastaviti Fazu 2g atomizirano: spojiti isti helper u report
+toolbar path (`MenuItemAndButtonReport`), zatim širiti na ostale
+`VvMenu[]`/ToolStrip konstrukcije i tek onda custom layout merge. Detach ostaje
+za Fazu 3.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
 
 **Status Faze 2 (SWAP):** ⏳ pod-faze 2a (C17, C18), 2b (C19), 2c-refactor
 (C20a), 2c-kontejner (C20b), početni 2d rebase (C21), 2e (C22) i 2f (C23)
-završeni; 2g je sljedeća.
+završeni; 2g je u tijeku kroz C24.
 
 ---
 

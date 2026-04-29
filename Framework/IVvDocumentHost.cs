@@ -21,6 +21,8 @@
 // =============================================================================
 
 using System.Windows.Forms;
+using System.Collections.Generic;
+using DevExpress.XtraBars;
 
 #if MICROSOFT
 using XSqlConnection = System.Data.SqlClient.SqlConnection;
@@ -47,6 +49,21 @@ public interface IVvDocumentHost
 
    /// <summary>Glavni meni forme.</summary>
    MenuStrip TheMenuStrip { get; }
+
+   /// <summary>DevExpress manager za meni i toolbarove host-a (Faza 2g).</summary>
+   BarManager DxBarManager { get; }
+
+   /// <summary>DevExpress Bar_Record placeholder za CRUD+nav gumbe (Faza 2g).</summary>
+   Bar DxBar_Record { get; }
+
+   /// <summary>DevExpress Bar_Report placeholder za report operacije (Faza 2g).</summary>
+   Bar DxBar_Report { get; }
+
+   /// <summary>DevExpress menu bar placeholder glavnog menija (Faza 2g).</summary>
+   Bar DxMenuBar { get; }
+
+   /// <summary>Lookup DX itema po legacy ToolStrip/MenuItem imenu (Faza 2g).</summary>
+   Dictionary<string, BarItem> DxBarItemsByName { get; }
 
    /// <summary>Status label na status stripu.</summary>
    ToolStripStatusLabel TStripStatusLabel { get; }
