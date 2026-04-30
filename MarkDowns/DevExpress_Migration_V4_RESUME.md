@@ -10,29 +10,22 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2h / C35 FocusedNodeChanged bridge** — commit
-`4fcbcaf` (`C35 bridge TreeList focus events`). DX `TreeList` ima
-`FocusedNodeChanged` handler koji dispatcha preko zajedničkog
-`HandleTreeView_ModulNodeTag(...)` helpera. Legacy `TreeView_Modul_AfterSelect` koristi
-isti helper, pa oba patha dijele business routing. `OnClick_EventHandlers.cs` dobio
-je fallback za izvlačenje `FocusedNode.Tag` iz `DevExpress.XtraTreeList.TreeList` u
-submodule i report click pathovima. DX tree je u C35 još bio skriven; legacy
-`TreeControl` runtime host. Clean-then-build EXIT 0 uz postojeće Crystal Reports
-`MSB3187` warninge.
+**Zadnji završeni commit:** **Faza 2h / C37 TreeList runtime routing isolation** —
+commit `f67ad03` (`C37 isolate TreeList runtime routing`). C36 je prije toga flipao
+runtime host tako da je DX `TreeList` vidljiv, a legacy `TreeControl` skriveni
+fallback. C37 je zatim koncentrirao report tree expand u `ExpandTreeViewModulReportNode(Point xy)`:
+DX helper je primarni path, a legacy `aTreeNode*` expand ostaje samo fallback. DX
+`FocusedNodeChanged` bridge više ne prosljeđuje `TreeList` sender prema centralnim
+click metodama niti čita `FocusedNode.Tag` nakon focus clear-a; routing ide preko
+tag helpera (`Point` / `Koordinata_3D`) i zadržava postojeće report validacije.
+Build je korisnički potvrđen green; postojeći Crystal Reports `MSB3187` warningi
+ostaju neblokirajući.
 
-**Trenutni necommitani checkpoint:** **Faza 2h / C36 runtime visibility flip** —
-`Moduls_CommandPanel.cs` sada skriva legacy `TreeView_Modul` (`TreeControl`) i čini
-`DxTreeView_Modul` (`TreeList`) vidljivim. DX TreeList već ima paralelni sadržaj i
-`FocusedNodeChanged` routing iz C34/C35. Crownwood-only style calls ostaju netaknuti
-na skrivenom fallback `TreeControl`-u; DX skin/color detalji ostaju za 2i. Regression
-fix nakon user testa: `SetVisibilitiOfReportModulButton(Point xy)` sada zove
-`ExpandDxTreeViewModulReportNode(xy)`, pa se pri otvaranju report UC-a (npr. IZVJ
-RISK) u vidljivom DX tree-u odmah rastvori odgovarajući submodul/report-menu node.
-Clean-then-build EXIT 0 uz postojeće Crystal Reports `MSB3187` warninge.
+**Trenutni necommitani checkpoint:** nema — pauza nakon C37.
 
-**Sljedeći korak:** nastaviti C37: izolirati ili ukloniti preostale Crownwood
-`TreeControl` usage-e za `TreeView_Modul` gdje više nisu runtime potrebni, uz oprez
-oko expand helpera i fallback node arrayeva. Detach ostaje za Fazu 3.
+**Sljedeći korak:** nastaviti C38: dodatno izolirati preostale Crownwood
+`TreeControl` usage-e za `TreeView_Modul`, osobito legacy populate/fallback fieldove
+i style pozive, bez prelaska na Fazu 2i dok 2h nije zatvoren. Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;

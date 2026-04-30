@@ -583,9 +583,9 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 
 #### 2h — `TreeView_Modul`: `Crownwood.TreeControl` → `TreeList` (ili native `TreeView`)
 
-- [ ] Odluka: `TreeList` (bogatije API, DX izgled) vs native `TreeView` (najmanji rizik, gotovo identičan Crownwood API). **Preporuka V4: `TreeList`** — svi ostali kontroli su DX, konzistencija je bitnija od jednostavnosti.
-- [ ] Konfigurirati 1 `TreeListColumn`, populate preko `AppendNode`
-- [ ] Event mapping: `AfterSelect` → `FocusedNodeChanged`, ikone preko `SelectImageIndex`
+- [x] Odluka: `TreeList` (bogatije API, DX izgled) vs native `TreeView` (najmanji rizik, gotovo identičan Crownwood API). **Preporuka V4: `TreeList`** — svi ostali kontroli su DX, konzistencija je bitnija od jednostavnosti.
+- [x] Konfigurirati 1 `TreeListColumn`, populate preko `AppendNode`
+- [x] Event mapping: `AfterSelect` → `FocusedNodeChanged`, ikone preko `SelectImageIndex`
 
 #### 2i — Skin sustav (`VvColors` + `VvColorsStylsDlg`)
 
