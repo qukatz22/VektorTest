@@ -17,15 +17,15 @@ Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrol
 i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
 QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani. V4 §2j je zatvoren.
 
-**Trenutni necommitani checkpoint:** **Faza 2k / C48 blocker census** —
-`Framework\VvHamper.cs` još treba `using Crownwood.DotNetMagic.Common` zbog
-legacy `VisualStyle`, `Office2007ColorTable` i `MediaPlayerColorTable` lookup-a.
-Potpuni Crownwood DLL cleanup još nije siguran jer census pokazuje aktivne legacy
-tipove u `Moduls_CommandPanel`, `VvColors`/`VvColorsStylsDlg`, `RiskReportUC` i
-`VvForm_Q.CreateWaitingForConnectionForm()`.
+**Trenutni necommitani checkpoint:** **Faza 2k / C49 waiting form cleanup** —
+`zVvForm\VvForm_Q.cs` `CreateWaitingForConnectionForm()` vraća i instancira obični
+WinForms `Form` umjesto `DotNetMagicForm`; uklonjen je Crownwood `Style` assignment
+i `using Crownwood.DotNetMagic.Forms` iz tog partiala. Potpuni Crownwood DLL cleanup
+još nije siguran jer census pokazuje aktivne legacy tipove u `Moduls_CommandPanel`,
+`VvColors`/`VvColorsStylsDlg`, `RiskReportUC` i drugim legacy dijalozima.
 
-**Sljedeći korak:** validirati C48 build i commitati blocker-census dokumentaciju,
-zatim planirati zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
+**Sljedeći korak:** validirati C49 build i commitati waiting-form cleanup, zatim
+nastaviti zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
 Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX

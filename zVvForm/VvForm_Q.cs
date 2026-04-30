@@ -2,7 +2,6 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using Crownwood.DotNetMagic.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
@@ -308,9 +307,9 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
 
    protected Form ProgressForm { get; set; }
 
-   public DotNetMagicForm CreateWaitingForConnectionForm(/*Icon icon*/)
+   public Form CreateWaitingForConnectionForm(/*Icon icon*/)
    {
-      DotNetMagicForm progressForm = new DotNetMagicForm();
+      Form progressForm = new Form();
     //progressForm.StartPosition = FormStartPosition.CenterScreen;
       progressForm.Location = new Point(606, 606);
       progressForm.Size = new Size(400, 400);
@@ -321,7 +320,6 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
       //progressForm.BackgroundImage = new Icon(this.Icon, 256, 256).ToBitmap();
       progressForm.BackgroundImage = new Bitmap(GetManifestResourceStream("Vektor.Icons.app_intro3_400.png"));
       progressForm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      progressForm.Style = Crownwood.DotNetMagic.Common.VisualStyle.MediaPlayerBlue;
       progressForm.Opacity = /*0.85*/1.00;
       progressForm.Icon = this.Icon;
 
