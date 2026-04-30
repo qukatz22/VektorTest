@@ -5793,7 +5793,6 @@ public class Placa2NalogRulesDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -8118,3 +8117,4 @@ public class Placa_CalcOvrvRestdlg : VvDialog
    #endregion Event cancelButton
 
 }
+

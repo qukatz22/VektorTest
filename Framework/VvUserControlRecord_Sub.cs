@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Crownwood.DotNetMagic.Controls;
 using System.Collections.Generic;
 using CrystalDecisions.Windows.Forms;
 using System.Linq;
@@ -1863,35 +1862,35 @@ public abstract class VvPolyDocumRecordUC : VvDocumentRecordUC
 
    public override void PutDgvLineFields(VvTransRecord trans_rec, int rowIdx, bool skipRecID_andSerial_Columns)
    {
-           if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle1) PutDgvLineFields1(trans_rec, rowIdx, skipRecID_andSerial_Columns);
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2) PutDgvLineFields2(trans_rec, rowIdx, skipRecID_andSerial_Columns);
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3) PutDgvLineFields3(trans_rec, rowIdx, skipRecID_andSerial_Columns);
-      else throw new Exception("VvUserControlRecord_Sub.TheCurrentG: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
+           if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle1) PutDgvLineFields1(trans_rec, rowIdx, skipRecID_andSerial_Columns);
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle2) PutDgvLineFields2(trans_rec, rowIdx, skipRecID_andSerial_Columns);
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle3) PutDgvLineFields3(trans_rec, rowIdx, skipRecID_andSerial_Columns);
+      else throw new Exception("VvUserControlRecord_Sub.TheCurrentG: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTabPage.Title + "] Nepoznat!");
    }
 
    // TODO: !!!!!!!! 
    public override VvTransRecord GetDgvLineFields(int rIdx, bool dirtyFlagging, uint[] recIDtable)
    {
-           if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle1) return GetDgvLineFields1(rIdx, dirtyFlagging, recIDtable);
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2) return GetDgvLineFields2(rIdx, dirtyFlagging, recIDtable);
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3) return GetDgvLineFields3(rIdx, dirtyFlagging, recIDtable);
-      else throw new Exception("VvUserControlRecord_Sub.TheCurrentG: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
+           if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle1) return GetDgvLineFields1(rIdx, dirtyFlagging, recIDtable);
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle2) return GetDgvLineFields2(rIdx, dirtyFlagging, recIDtable);
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle3) return GetDgvLineFields3(rIdx, dirtyFlagging, recIDtable);
+      else throw new Exception("VvUserControlRecord_Sub.TheCurrentG: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTabPage.Title + "] Nepoznat!");
    }
 
    public override void PutDgvLineResultsFields(VvTransRecord trans_rec, int rIdx, bool passPtrResultsToZaglavljeTranses)
    {
-           if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle1) PutDgvLineResultsFields1(rIdx, trans_rec, passPtrResultsToZaglavljeTranses);
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2) PutDgvLineResultsFields2(rIdx, trans_rec, passPtrResultsToZaglavljeTranses);
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3) PutDgvLineResultsFields3(rIdx, trans_rec, passPtrResultsToZaglavljeTranses);
-      else throw new Exception("VvUserControlRecord_Sub.PutDgvLineResultsFields: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
+           if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle1) PutDgvLineResultsFields1(rIdx, trans_rec, passPtrResultsToZaglavljeTranses);
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle2) PutDgvLineResultsFields2(rIdx, trans_rec, passPtrResultsToZaglavljeTranses);
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle3) PutDgvLineResultsFields3(rIdx, trans_rec, passPtrResultsToZaglavljeTranses);
+      else throw new Exception("VvUserControlRecord_Sub.PutDgvLineResultsFields: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTabPage.Title + "] Nepoznat!");
    }
 
    public override void PutDgvTransSumFields()
    {
-           if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle1)      PutDgvTransSumFields1();
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle2)      PutDgvTransSumFields2();
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitle3)      PutDgvTransSumFields3();
-      else if(ThePolyGridTabControl.SelectedTab.Title == TabPageTitleResult)                        ; // do nothing 
+           if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle1)      PutDgvTransSumFields1();
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle2)      PutDgvTransSumFields2();
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitle3)      PutDgvTransSumFields3();
+      else if(ThePolyGridTabControl.SelectedTabPage.Title == TabPageTitleResult)                        ; // do nothing 
       // 09.06.2022: throw komentiran 
     //else throw new Exception("VvUserControlRecord_Sub.PutDgvTransSumFields: ThePolyGridTabCOntrol.SelectedTab.Title [" + ThePolyGridTabControl.SelectedTab.Title + "] Nepoznat!");
    }

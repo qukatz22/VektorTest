@@ -655,7 +655,7 @@ public partial class ObrProDLG : Form// VvDialog{
 
       #region FillDataset, CreateReportDocument, SetDataSource, AssignReportSource
 
-      SetReportAndReportName_ForThisInnerTabPage(TheUC.ThePolyGridTabControl.SelectedTab.Title, ThePreviewForm);
+      SetReportAndReportName_ForThisInnerTabPage(TheUC.ThePolyGridTabControl.SelectedTabPage.Title, ThePreviewForm);
 
       #endregion FillDataset, CreateReportDocument, SetDataSource, AssignReportSource
 

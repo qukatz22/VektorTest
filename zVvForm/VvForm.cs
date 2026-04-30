@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
-using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Common;
 using DevExpress.LookAndFeel;
 using DevExpress.Skins;
@@ -451,9 +450,9 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, IVvDoc
 
    public  Panel                 modulPanel;
    private Panel[]               aModulPanel;
-   private TitleBar[]            aModulButton;
-   public  ButtonWithStyle[][]   aSubModulButton;
-   private ButtonWithStyle[][][] aReportModulButton;
+   private Button[]              aModulButton;
+   public  Button[][]            aSubModulButton;
+   private Button[][][]          aReportModulButton;
 
    private int modulButtonsHeight;// = 22;
    private int activeModulButtonIndex, actxI, actxJ;

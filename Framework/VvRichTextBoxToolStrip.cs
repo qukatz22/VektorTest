@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
-using Crownwood.DotNetMagic.Common;
 using System.Runtime.InteropServices;
 
 [System.Security.SecuritySafeCritical]

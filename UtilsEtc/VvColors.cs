@@ -1,17 +1,18 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Crownwood.DotNetMagic.Forms;
+using DevExpress.XtraEditors;
+using DevExpress.XtraTab;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Common;
 
-public class VvColors : DotNetMagicForm
+public class VvColors : XtraForm
 {
    private Button[] btnColor;
-   private ButtonWithStyle[] btnName;
+   private Button[] btnName;
    private Color selectedColor;
-   private Crownwood.DotNetMagic.Controls.TabControl tabControlBojice;
-   private Crownwood.DotNetMagic.Controls.TabPage tabPageWeb, tabPageSystem, tabPageProf, tabPageOffice;
+   private XtraTabControl tabControlBojice;
+   private XtraTabPage tabPageWeb, tabPageSystem, tabPageProf, tabPageOffice;
    private Color[] aSystemColors, aProfessionalColors, aColor, aOffice2007ColorTable/*, aMediaPlayerColorTable*/;
    private String[] aTextColorsProf, aTextColorsOffice;
 
@@ -384,25 +385,24 @@ public class VvColors : DotNetMagicForm
 
    private void InitializeTabControlBojice()
    {
-      tabControlBojice                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      tabControlBojice.Parent           = this;
-      tabControlBojice.Location         = new Point(0, 0);
-      tabControlBojice.Size             = new Size(this.Width - 10, this.Height - 30);
-      tabControlBojice.Anchor           = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-      tabControlBojice.Appearance       = VisualAppearance.MultiDocument;
-      tabControlBojice.PositionTop      = true;
-      tabControlBojice.ShowClose        = false;
-      tabControlBojice.Style            = ZXC.vvColors.vvform_VisualStyle;
-      tabControlBojice.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      tabControlBojice.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
+      tabControlBojice          = new XtraTabControl();
+      tabControlBojice.Parent   = this;
+      tabControlBojice.Location = new Point(0, 0);
+      tabControlBojice.Size     = new Size(this.Width - 10, this.Height - 30);
+      tabControlBojice.Anchor   = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+      tabControlBojice.ClosePageButtonShowMode = ClosePageButtonShowMode.InAllTabPagesAndTabControlHeader;
 
-      tabPageSystem = new Crownwood.DotNetMagic.Controls.TabPage("System");
+      tabPageSystem = new XtraTabPage();
+      tabPageSystem.Text = "System";
       tabControlBojice.TabPages.Add(tabPageSystem);
-      tabPageProf = new Crownwood.DotNetMagic.Controls.TabPage("Professional");
+      tabPageProf = new XtraTabPage();
+      tabPageProf.Text = "Professional";
       tabControlBojice.TabPages.Add(tabPageProf);
-      tabPageWeb = new Crownwood.DotNetMagic.Controls.TabPage("Web");
+      tabPageWeb = new XtraTabPage();
+      tabPageWeb.Text = "Web";
       tabControlBojice.TabPages.Add(tabPageWeb);
-      tabPageOffice = new Crownwood.DotNetMagic.Controls.TabPage("Office2007");
+      tabPageOffice = new XtraTabPage();
+      tabPageOffice.Text = "Office2007";
       tabControlBojice.TabPages.Add(tabPageOffice);
 
       tabPageSystem.AutoScroll = tabPageProf.AutoScroll = tabPageWeb.AutoScroll = tabPageOffice.AutoScroll = true;
@@ -413,20 +413,20 @@ public class VvColors : DotNetMagicForm
 
    #region ColorAndNameButtons
 
-   private void ColorAndNameButtons(Color[] _aColors, Crownwood.DotNetMagic.Controls.TabPage _tabPage, String[] _aText)
+   private void ColorAndNameButtons(Color[] _aColors, XtraTabPage _tabPage, String[] _aText)
    {
-      btnName = new ButtonWithStyle[_aColors.Length];
+      btnName = new Button[_aColors.Length];
       btnColor = new Button[_aColors.Length];
 
       for (int i = 0; i < _aColors.Length; i++)
       {
-         btnName[i]            = new ButtonWithStyle();
+         btnName[i]            = new Button();
          btnName[i].Parent     = _tabPage;
          btnName[i].Size       = new Size(_tabPage.Width - 50, 20);
          btnName[i].BackColor  = Color.White;
          btnName[i].Location   = new Point(0, i * btnName[i].Height + 5);
          btnName[i].Tag        = _aColors[i];
-         btnName[i].TextAlignH = StringAlignment.Far;
+         btnName[i].TextAlign  = ContentAlignment.MiddleRight;
          btnName[i].Click += new EventHandler(btnColor_Click);
          
          if (_aText == null)
@@ -451,7 +451,7 @@ public class VvColors : DotNetMagicForm
          {
             btnName[i].BackColor = ProfessionalColors.ButtonSelectedGradientMiddle;
             btnName[i].Select();
-            _tabPage.Selected = true;
+            tabControlBojice.SelectedTabPage = _tabPage;
          }
       }
    }
@@ -468,7 +468,7 @@ public class VvColors : DotNetMagicForm
       }
       else
       {
-         ButtonWithStyle btn = sender as ButtonWithStyle;
+         Button btn = sender as Button;
          Color bc = (Color)btn.Tag;
          selectedColor = bc;
       }

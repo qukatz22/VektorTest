@@ -5923,7 +5923,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
       uint[] recIDtable;
       int rIdx;
 
-      if(dirtyFlagging && ThePolyGridTabControl.SelectedTab.Title != TabPageTitle1) return;
+      if(dirtyFlagging && ThePolyGridTabControl.SelectedTabPage.Title != TabPageTitle1) return;
 
       if(dirtyFlagging == true && ZXC.TheVvForm.VvFlag_RowsAreAddingOrDeletingOrBoth == false)
       {
@@ -6500,7 +6500,7 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is ProizvodnjaDUC)                                return new RptR_IRA(new Vektor.Reports.RIZ.CR_ProizvodnjaDUC(), reportName, fakturFilter);
          else if(this is RNMDUC)
          {
-            if(ThePolyGridTabControl.SelectedTab.Title == "Realizacija") return new RptR_IRA(new Vektor.Reports.RIZ.CR_RNM_Realizacija(), reportName, fakturFilter);
+            if(ThePolyGridTabControl.SelectedTabPage.Title == "Realizacija") return new RptR_IRA(new Vektor.Reports.RIZ.CR_RNM_Realizacija(), reportName, fakturFilter);
             else                                                         return new RptR_IRA(new Vektor.Reports.RIZ.CR_RNM_Nalog(), reportName, fakturFilter);
          }
          else if(this is RNZDUC)
@@ -6512,8 +6512,8 @@ public partial class FakturDUC : VvPolyDocumRecordUC, IVvHasSumInDataLayerDocume
          else if(this is UGODUC )                                        return new RptR_IRA(new Vektor.Reports.RIZ.CR_SVD_UGO(), reportName, fakturFilter);
          else if(this is UGNorAUN_PTG_DUC)
          {
-               if(ThePolyGridTabControl.SelectedTab.Title == ptgOpl_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_OPL() */, reportName, fakturFilter);
-          else if(ThePolyGridTabControl.SelectedTab.Title == ptgStavkeDodataka_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_DOD() */, reportName, fakturFilter);
+               if(ThePolyGridTabControl.SelectedTabPage.Title == ptgOpl_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_OPL() */, reportName, fakturFilter);
+          else if(ThePolyGridTabControl.SelectedTabPage.Title == ptgStavkeDodataka_TabPageName) return new RptR_IRA(new Vektor.Reports.RIZ.CR_MVI_DUC()/*CR_PTG_DOD() */, reportName, fakturFilter);
           else                                                                   return new RptR_IRA(new Vektor.Reports.RIZ.CR_VMI_DUC()/*CR_PTG_UGAN()*/, reportName, fakturFilter);
          }
          else if(this is POT_DUC)
@@ -7349,7 +7349,7 @@ col = AddDGVColum_String_4GridReadOnly  (PTG_OplGrid, "KOP"         , ZXC.Q2un  
    //public /*override*/ void IfShould_Load_PTG_OplGrid()
 public /*override*/ void IfShould_Load_PTG_OPL_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool OPL_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgOpl_TabPageName;
+      bool OPL_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgOpl_TabPageName;
       
       if(PTG_OplLoaded == false && this is UGNorAUN_PTG_DUC && OPL_TabPageIsVisible)
       {
@@ -7362,7 +7362,7 @@ public /*override*/ void IfShould_Load_PTG_OPL_Grid(VvInnerTabControl sender, Vv
 
 public /*override*/ void IfShould_Load_PTG_DOD_Rtrans_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool DOD_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStavkeDodataka_TabPageName;
+      bool DOD_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgStavkeDodataka_TabPageName;
 
       if(/*/*PTG_DOD_Grid_Loaded*//*PTG_Rtrans_DOD_Loaded == false &&*/ this is UGNorAUN_PTG_DUC && DOD_TabPageIsVisible)
       {
@@ -7376,7 +7376,7 @@ public /*override*/ void IfShould_Load_PTG_DOD_Rtrans_Grid(VvInnerTabControl sen
 
 public /*override*/ void IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStavkeUGANiDOD_TabPageName;
+      bool UNA_ANA_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgStavkeUGANiDOD_TabPageName;
 
       if(PTG_Rtrans_Merged_UGANiDOD_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_ANA_TabPageIsVisible)
       {
@@ -7389,7 +7389,7 @@ public /*override*/ void IfShould_Load_PTG_Merged_UgAn_i_DOD_Rtrans_Grid(VvInner
 
 public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrans_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool UNA_SIN_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStanjeNajmaRtrans_TabPageName;
+      bool UNA_SIN_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgStanjeNajmaRtrans_TabPageName;
 
       if(PTG_Rtrans_StanjeNajma_Loaded == false && this is UGNorAUN_PTG_DUC && UNA_SIN_TabPageIsVisible)
       {
@@ -7402,7 +7402,7 @@ public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrans_Grid(VvInnerTabCon
 
 public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrano_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool StanjeSerno_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgStanjeNajmaRtrano_TabPageName;
+      bool StanjeSerno_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgStanjeNajmaRtrano_TabPageName;
 
       if(PTG_Rtrano_U_Najmu_Loaded == false && this is UGNorAUN_PTG_DUC && StanjeSerno_TabPageIsVisible)
       {
@@ -7415,7 +7415,7 @@ public /*override*/ void IfShould_Load_PTG_NajamStanje_Rtrano_Grid(VvInnerTabCon
 
 public /*override*/ void IfShould_Load_PTG_DOD_Faktur_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgDodaciDokumenti_TabPageName;
+      bool dokumenti_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgDodaciDokumenti_TabPageName;
 
       if(PTG_Faktur_DOD_Loaded == false && this is UGNorAUN_PTG_DUC && dokumenti_TabPageIsVisible)
       {
@@ -7428,7 +7428,7 @@ public /*override*/ void IfShould_Load_PTG_DOD_Faktur_Grid(VvInnerTabControl sen
 
 public /*override*/ void IfShould_Load_PTG_DOD_Rtrano_Grid(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      bool dodRtrano_TabPageIsVisible = ThePolyGridTabControl.SelectedTab.Name == ptgSerijskiBrojeviDOD_TabPageName;
+      bool dodRtrano_TabPageIsVisible = ThePolyGridTabControl.SelectedTabPage.Name == ptgSerijskiBrojeviDOD_TabPageName;
 
       if(PTG_Rtrano_DOD_Loaded == false && this is UGNorAUN_PTG_DUC && dodRtrano_TabPageIsVisible)
       {
@@ -8061,7 +8061,7 @@ public /*override*/ void IfShould_Load_PTG_DOD_Rtrano_Grid(VvInnerTabControl sen
 
    public override void DecideIfShouldLoad_TransDGV(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
+      ZXC.VvInnerTabPageKindEnum innerTabPageKind = TheTabControl.SelectedTabPage.TheInnerTabPageKindEnum;
 
       if(ftransesLoaded == false && innerTabPageKind == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
       {
@@ -8111,7 +8111,7 @@ public /*override*/ void IfShould_Load_RealizacGrid(VvInnerTabControl sender, Vv
     //if(RNM_rtransesLoaded == false /*&& innerTabPageKind == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage*/)
     //if(RNM_rtransesLoaded == false /*&& ThePolyGridTabControl.SelectedTab.Title == "Realizacija"*/)
 
-      bool fakLingTabPageIsVisible = TheTabControl.SelectedTab.Name == fakLink_TabPageName;
+      bool fakLingTabPageIsVisible = TheTabControl.SelectedTabPage.Name == fakLink_TabPageName;
 
       if(fakLinkLoaded == false && thisFakturDUC_hasFakLinkTabPage && fakLingTabPageIsVisible)
       {
@@ -16411,7 +16411,7 @@ public class FakturPDUC : FakturExtDUC
       uint[] recIDtable;
       int rIdx;
 
-      if(dirtyFlagging && ThePolyGridTabControl.SelectedTab.Title != TabPageTitle2) return;
+      if(dirtyFlagging && ThePolyGridTabControl.SelectedTabPage.Title != TabPageTitle2) return;
 
       if(dirtyFlagging == true && ZXC.TheVvForm.VvFlag_RowsAreAddingOrDeletingOrBoth == false)
       {
@@ -16451,7 +16451,7 @@ public class FakturPDUC : FakturExtDUC
       uint[] recIDtable;
       int rIdx;
 
-      if(dirtyFlagging && ThePolyGridTabControl.SelectedTab.Title != TabPageTitle2) return;
+      if(dirtyFlagging && ThePolyGridTabControl.SelectedTabPage.Title != TabPageTitle2) return;
 
       if(dirtyFlagging == true && ZXC.TheVvForm.VvFlag_RowsAreAddingOrDeletingOrBoth == false)
       {
@@ -17242,7 +17242,6 @@ public class Fak2NalogRulesDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -19187,7 +19186,6 @@ public class RiskRulesDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -19857,7 +19855,6 @@ public class F2_Rules_Dlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -20239,7 +20236,6 @@ public class FiskalizePoslProstorDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -20551,7 +20547,6 @@ public class AddArtiklUMJDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -20668,7 +20663,6 @@ public class ShowArtiklInfoDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -21380,7 +21374,6 @@ public class PutAndCalcOtpadPiljDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -21508,7 +21501,6 @@ public class Create_manyZPCDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -23086,7 +23078,6 @@ public class SVD_PotrosnjaInfoDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -23867,4 +23858,5 @@ public class VvTetragamIRA_to_RozelIFA_Dlg : VvDialog
 
 
 #endregion Other RISK Dialogs and UserControls
+
 

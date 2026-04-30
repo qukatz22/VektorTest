@@ -1,4 +1,4 @@
-Ôªøusing System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -59,7 +59,7 @@ public class NalogClose47DLG : VvDialog
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
       string text = "";
-           if (ZXC.CURR_prjkt_rec.IsNeprofit)                          text = "Prijenos na obraƒçun prihoda i rashoda (52110)";
+           if (ZXC.CURR_prjkt_rec.IsNeprofit)                          text = "Prijenos na obraËun prihoda i rashoda (52110)";
       else if (ZXC.CURR_prjkt_rec.PlanKind == ZXC.PlanKindEnum.PlnBy_FOND) text = "";
       else                                                             text = "Prijenos na rashode (7000)";
 
@@ -96,7 +96,7 @@ public class PrenosPsDLG : VvDialog
    public PrenosPsDLG(string prevYear, string newYear, bool _isFromNalog)
    {
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = "Potvrdite prijenos poƒçetnog stanja " + prevYear + " ---> " + newYear;
+      this.Text          = "Potvrdite prijenos poËetnog stanja " + prevYear + " ---> " + newYear;
       
       this.isFromNalog   = _isFromNalog;
       
@@ -125,15 +125,15 @@ public class PrenosPsDLG : VvDialog
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.QUN, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                   hamper.CreateVvLabel(0, 0, "Pro≈°logod. podaci:", ContentAlignment.MiddleRight);
+                   hamper.CreateVvLabel(0, 0, "Proölogod. podaci:", ContentAlignment.MiddleRight);
       tbx_dbName = hamper.CreateVvTextBox(1, 0, "tbx_dbName", "");
       
-      cbx_preskoci_WYRN = hamper.CreateVvCheckBox_OLD(0, 1, null, 1, 2, "\t\tPRESKOƒåI kreiranje WYRN dokumenata\n\t\t(potrebnih za OPZ-STAT-1)", System.Windows.Forms.RightToLeft.No);
+      cbx_preskoci_WYRN = hamper.CreateVvCheckBox_OLD(0, 1, null, 1, 2, "\t\tPRESKO»I kreiranje WYRN dokumenata\n\t\t(potrebnih za OPZ-STAT-1)", System.Windows.Forms.RightToLeft.No);
       cbx_preskoci_WYRN.Visible = isFromNalog;
 
       Label lblSkl  = hamper.CreateVvLabel        (0, 2, "Samo za Sklad:", ContentAlignment.MiddleRight);
-      tbx_skladCd   = hamper.CreateVvTextBoxLookUp(0, 3, "tbx_skladCd", "≈†ifra skladi≈°ta");
-      tbx_skladOpis = hamper.CreateVvTextBox      (1, 3, "tbx_skladOpis_InVisible", "Naziv skladi≈°ta");
+      tbx_skladCd   = hamper.CreateVvTextBoxLookUp(0, 3, "tbx_skladCd", "äifra skladiöta");
+      tbx_skladOpis = hamper.CreateVvTextBox      (1, 3, "tbx_skladOpis_InVisible", "Naziv skladiöta");
       tbx_skladCd.JAM_CharacterCasing = CharacterCasing.Upper;
       tbx_skladCd.JAM_Set_LookUpTable(ZXC.luiListaSkladista, (int)ZXC.Kolona.prva);
       tbx_skladCd.JAM_lui_NameTaker_JAM_Name = tbx_skladOpis.JAM_Name;
@@ -362,7 +362,7 @@ public class LoadIzvodDLG : Form// VvDialog{
       this.MaximizeBox = false;
       
       this.StartPosition = FormStartPosition.Manual;
-      this.Text          = "Uƒçitaj Izvod";
+      this.Text          = "UËitaj Izvod";
 
       CreateToolStripIzvod();
       CreateTheUC();
@@ -440,7 +440,7 @@ public class LoadIzvodDLG : Form// VvDialog{
       menu.Items.Add(mi_Open);
 
       tsb_acceptIzv             = new ToolStripButton("Start", VvIco.Next32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.next.ico")), 32, 32)*/.ToBitmap(), new EventHandler(StartButton_Click), "tsb_acceptIzv");
-      tsb_acceptIzv.ToolTipText = "Zapoƒçni kreiranje naloga odobranog izvoda";
+      tsb_acceptIzv.ToolTipText = "ZapoËni kreiranje naloga odobranog izvoda";
       ts_izvod.Items.Add(tsb_acceptIzv);
 
       tsb_okStav             = new ToolStripButton("Prihvati", VvIco.IzvOk32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.IzvOk.ico")), 32, 32)*/.ToBitmap(), new EventHandler(PrihvatiStavkuButton_Click), "tsb_okStav");
@@ -461,7 +461,7 @@ public class LoadIzvodDLG : Form// VvDialog{
       menu.Items.Add(mi_prew);
 
       tsb_abort             = new ToolStripButton("Prekid", VvIco.Esc32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Record.esc.ico")), 32, 32)*/.ToBitmap(), new EventHandler(AbortIzvodButton_Click), "tsb_abort");
-      tsb_abort.ToolTipText = "Odustani od uƒçitavanja izvoda";
+      tsb_abort.ToolTipText = "Odustani od uËitavanja izvoda";
       ts_izvod.Items.Add(tsb_abort);
 
       foreach(ToolStripButton tsb in ts_izvod.Items)
@@ -958,7 +958,7 @@ public class LoadIzvodUC : VvOtherUC
 
       tbx_directoryName.JAM_ReadOnly = true;
 
-      cbx_quickLoad = hamper.CreateVvCheckBox_OLD(0, 3, null, 1, 0, "Automatski uƒçitaj cijeli nalog bez pojedinaƒçnih potvrda", RightToLeft.Yes);
+      cbx_quickLoad = hamper.CreateVvCheckBox_OLD(0, 3, null, 1, 0, "Automatski uËitaj cijeli nalog bez pojedinaËnih potvrda", RightToLeft.Yes);
 
    }
 
@@ -974,7 +974,7 @@ public class LoadIzvodUC : VvOtherUC
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4, ZXC.Qun4, ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      Label kto = hamper.CreateVvLabel(0, 0, "Konto ≈æiro-raƒçuna:", 2, 0, ContentAlignment.MiddleLeft);
+      Label kto = hamper.CreateVvLabel(0, 0, "Konto ûiro-raËuna:", 2, 0, ContentAlignment.MiddleLeft);
       Label kta = hamper.CreateVvLabel(0, 1, "Konta za nepoznatu vrstu prometa:", 3, 0, ContentAlignment.MiddleLeft);
       Label dug = hamper.CreateVvLabel(0, 2, "DUG:", ContentAlignment.MiddleRight);
       Label pot = hamper.CreateVvLabel(2, 2, "POT:", ContentAlignment.MiddleRight);
@@ -1007,8 +1007,8 @@ public class LoadIzvodUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lb    = hamper.CreateVvLabel      (0, 0, "Promet izvoda je:", ContentAlignment.MiddleLeft);
-      rbt_frstKnj = hamper.CreateVvRadioButton(0, 1, null, "Prvo knji≈æenje", TextImageRelation.ImageBeforeText);
-      rbt_lastKnj = hamper.CreateVvRadioButton(0, 2, null, "Zadnje knji≈æenje", TextImageRelation.ImageBeforeText);
+      rbt_frstKnj = hamper.CreateVvRadioButton(0, 1, null, "Prvo knjiûenje", TextImageRelation.ImageBeforeText);
+      rbt_lastKnj = hamper.CreateVvRadioButton(0, 2, null, "Zadnje knjiûenje", TextImageRelation.ImageBeforeText);
       rbt_frstKnj.Checked = true;
    }
 
@@ -1067,7 +1067,7 @@ public class LoadIzvodUC : VvOtherUC
       lbBroj.Font = lbDatu.Font = ZXC.vvFont.BaseFont;
 
                      hamper.CreateVvLabel(0, 4, "Valuta:", ContentAlignment.MiddleRight);
-                     hamper.CreateVvLabel(0, 5, "Teƒçaj:", ContentAlignment.MiddleRight);
+                     hamper.CreateVvLabel(0, 5, "TeËaj:", ContentAlignment.MiddleRight);
 
 
       tbx_iz_br      = hamper.CreateVvTextBox(1, 1, "tbx_iz_br"     , "");
@@ -1128,7 +1128,7 @@ public class LoadIzvodUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label dug = hamper.CreateVvLabel(2, 0, "Duguje"   , ContentAlignment.MiddleRight);
-      Label pot = hamper.CreateVvLabel(3, 0, "Potra≈æuje", ContentAlignment.MiddleRight);
+      Label pot = hamper.CreateVvLabel(3, 0, "Potraûuje", ContentAlignment.MiddleRight);
 
       Label psk = hamper.CreateVvLabel(0, 1, "Preth. saldo kta:"             , ContentAlignment.MiddleRight);
       Label pss = hamper.CreateVvLabel(0, 2, "Prethodni saldo izvoda:" , 1, 0, ContentAlignment.MiddleRight);
@@ -1216,14 +1216,14 @@ public class LoadIzvodUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lb1 = hamper.CreateVvLabel(0, 1, "Red.broj", ContentAlignment.MiddleRight);
-      Label lb2 = hamper.CreateVvLabel(1, 0, "Raƒçun i naziv", ContentAlignment.MiddleLeft);
+      Label lb2 = hamper.CreateVvLabel(1, 0, "RaËun i naziv", ContentAlignment.MiddleLeft);
       Label lb3 = hamper.CreateVvLabel(1, 1, "uplatitelja/primatelja", ContentAlignment.MiddleLeft);
-      Label lb4 = hamper.CreateVvLabel(4, 0, "Poziv na broj zadu≈æenja", 1, 0, ContentAlignment.MiddleLeft);
+      Label lb4 = hamper.CreateVvLabel(4, 0, "Poziv na broj zaduûenja", 1, 0, ContentAlignment.MiddleLeft);
       Label lb5 = hamper.CreateVvLabel(2, 0, "Poziv na broj odobrenja", 1, 0, ContentAlignment.MiddleLeft);
       Label lb6 = hamper.CreateVvLabel(2, 1, "Opis prometa / svrha doznake", 2, 0, ContentAlignment.MiddleLeft);
       Label lb7 = hamper.CreateVvLabel(6, 0, "Dugovni", ContentAlignment.MiddleRight);
       Label lb8 = hamper.CreateVvLabel(6, 1, "promet", ContentAlignment.MiddleRight);
-      Label lb9 = hamper.CreateVvLabel(7, 0, "Potra≈æni", ContentAlignment.MiddleRight);
+      Label lb9 = hamper.CreateVvLabel(7, 0, "Potraûni", ContentAlignment.MiddleRight);
       Label lb10 = hamper.CreateVvLabel(7, 1, "promet", ContentAlignment.MiddleRight);
 
       tbx_rbr = hamper.CreateVvTextBox(0, 2, "tbx_rbr", "");
@@ -1311,7 +1311,7 @@ public class LoadIzvodUC : VvOtherUC
       colVvText = TheGrid.CreateVvTextBoxColumn(vvtbT_konto, TheVvDaoTrans, DB_Tci.t_konto, "Konto", ZXC.Q4un);
       //AddDGVRedakIzvColum("Konto", ZXC.Q4un);
 
-      vvtbT_opis = TheGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_opis", TheVvDaoTrans, DB_Tci.t_opis, "Tekstualni opis knji≈æenja.");
+      vvtbT_opis = TheGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_opis", TheVvDaoTrans, DB_Tci.t_opis, "Tekstualni opis knjiûenja.");
       colVvText  = TheGrid.CreateVvTextBoxColumn(vvtbT_opis, TheVvDaoTrans, DB_Tci.t_opis, "Opis", 0);
       colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       colVvText.MinimumWidth = ZXC.Q10un;
@@ -1362,12 +1362,12 @@ public class LoadIzvodUC : VvOtherUC
       vvtbT_mtros_tk = TheGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColT_mtros_tk", TheVvDaoTrans, DB_Tci.t_mtros_tk, "Ticker iz adresara");
       vvtbT_mtros_tk.JAM_CharacterCasing = CharacterCasing.Upper;
       vvtbT_mtros_tk.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterTicker.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterTicker), new EventHandler(AnyMtrosTextBoxLeave));
-      colVvText = TheGrid.CreateVvTextBoxColumn(vvtbT_mtros_tk, TheVvDaoTrans, DB_Tci.t_mtros_tk, "MjTro≈°ka", ZXC.Q4un);
+      colVvText = TheGrid.CreateVvTextBoxColumn(vvtbT_mtros_tk, TheVvDaoTrans, DB_Tci.t_mtros_tk, "MjTroöka", ZXC.Q4un);
       colVvText.Visible = (TheDUC is NalogMtrDUC || KSD.Dsc_IsVisibleColMtrosTK);
 
-      vvtbT_mtros_cd = TheGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColT_mtros_cd", TheVvDaoTrans, DB_Tci.t_mtros_cd, "≈†ifra iz adresara");
+      vvtbT_mtros_cd = TheGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColT_mtros_cd", TheVvDaoTrans, DB_Tci.t_mtros_cd, "äifra iz adresara");
       vvtbT_mtros_cd.JAM_SetAutoCompleteData(Kupdob.recordName, Kupdob.sorterKCD.SortType, ZXC.AutoCompleteRestrictor.KID_Mtros_Only, new EventHandler(OnVvTBEnter_SetAutocmplt_Kupdob_sorterSifra), new EventHandler(AnyMtrosTextBoxLeave));
-      colVvText = TheGrid.CreateVvTextBoxColumn(vvtbT_mtros_cd, TheVvDaoTrans, DB_Tci.t_mtros_cd, "≈†if MjTr", ZXC.Q4un);
+      colVvText = TheGrid.CreateVvTextBoxColumn(vvtbT_mtros_cd, TheVvDaoTrans, DB_Tci.t_mtros_cd, "äif MjTr", ZXC.Q4un);
       colVvText.Visible = (TheDUC is NalogMtrDUC || KSD.Dsc_IsVisibleColMtrosCD);
 
       colDate = TheGrid.CreateCalendarColumn(TheVvDaoTrans, DB_Tci.t_valuta, "Valuta", ZXC.Q5un + ZXC.Qun4 + ZXC.Qun8);
@@ -1383,7 +1383,7 @@ public class LoadIzvodUC : VvOtherUC
       vvtbT_pot.JAM_ShouldSumGrid = true;
       colVvText = TheGrid.CreateVvTextBoxColumn(vvtbT_pot, TheVvDaoTrans, DB_Tci.t_pot, "Potrazuje", ZXC.Q5un);
       colVvText.MinimumWidth = ZXC.Q5un;             // __mora biti == sum.MinWidth
-      //AddDGVRedakIzvColum("Potra≈æuje", ZXC.Q5un);
+      //AddDGVRedakIzvColum("Potraûuje", ZXC.Q5un);
 
       int sumoOfColumns = 0;
 
@@ -1870,7 +1870,7 @@ public class LoadIzvodUC : VvOtherUC
       Fld_A_FileName = zapIzvod_rec.FileName;
       Fld_A_DirectoryName = TheIzvod.DirectoryName;
 
-      this.Text = "Uƒçitaj Izvod [" + TheIzvod.FileName + "]";
+      this.Text = "UËitaj Izvod [" + TheIzvod.FileName + "]";
    }
 
    private void PutBetaFields(ZapIzvod zapIzvod_rec)
@@ -2383,13 +2383,13 @@ public class LoadIzvodUC : VvOtherUC
 
       Kupdob kupdob_rec = null;
 
-      System.Text.StringBuilder massaze = new System.Text.StringBuilder("U datoteci postoje dva partnera sa tra≈æenim ≈æiro raƒçunom:\n\n");
+      System.Text.StringBuilder massaze = new System.Text.StringBuilder("U datoteci postoje dva partnera sa traûenim ûiro raËunom:\n\n");
 
-      massaze.AppendFormat("≈ær [{0}] od [{1}]\n\n", trans_rec.t_kd_ziro, trans_rec.t_kupdob);
+      massaze.AppendFormat("ûr [{0}] od [{1}]\n\n", trans_rec.t_kd_ziro, trans_rec.t_kupdob);
       massaze.Append("Odaberite jednoga sa liste.\n\n");
       massaze.Append("Ukoliko stavku izvoda nije potrebno uparivati sa Partnerom kiliknite 'Cancel'.");
 
-      if(VvSQL.ReportGenericError("UPARIVANJE PUTEM ≈ΩIRO RAƒåUNA", massaze.ToString(), System.Windows.Forms.MessageBoxButtons.OKCancel) == false) return kupdob_rec;
+      if(VvSQL.ReportGenericError("UPARIVANJE PUTEM éIRO RA»UNA", massaze.ToString(), System.Windows.Forms.MessageBoxButtons.OKCancel) == false) return kupdob_rec;
 
       // 21.09.2012: 
     //return AddNew_OR_PairOld_OR_ChooseOneOfMany(trans_rec, "!", trans_rec.t_kd_ziro); // '!' ti je po ASCII sortu prvi. 
@@ -2405,11 +2405,11 @@ public class LoadIzvodUC : VvOtherUC
 
       System.Text.StringBuilder massaze = new System.Text.StringBuilder("Ne mogu upariti podatke iz izvoda:\n\n");
 
-      massaze.AppendFormat("≈ær [{0}] od [{1}]\n\n", trans_rec.t_kd_ziro, trans_rec.t_kupdob);
-      massaze.Append("sa podacima iz Adresara Partnera. Ukoliko partner veƒá postoji u datoteci,\nodaberite ga sa liste a ako ne, kliknite 'Dodaj Novi'.\n\n");
+      massaze.AppendFormat("ûr [{0}] od [{1}]\n\n", trans_rec.t_kd_ziro, trans_rec.t_kupdob);
+      massaze.Append("sa podacima iz Adresara Partnera. Ukoliko partner veÊ postoji u datoteci,\nodaberite ga sa liste a ako ne, kliknite 'Dodaj Novi'.\n\n");
       massaze.Append("Ukoliko stavku izvoda nije potrebno uparivati sa Partnerom kiliknite 'Cancel'.");
 
-      if(VvSQL.ReportGenericError("UPARIVANJE PUTEM ≈ΩIRO RAƒåUNA", massaze.ToString(), System.Windows.Forms.MessageBoxButtons.OKCancel) == false) return kupdob_rec;
+      if(VvSQL.ReportGenericError("UPARIVANJE PUTEM éIRO RA»UNA", massaze.ToString(), System.Windows.Forms.MessageBoxButtons.OKCancel) == false) return kupdob_rec;
 
       return AddNew_OR_PairOld_OR_ChooseOneOfMany(trans_rec, trans_rec.t_kupdob.Substring(0, 3), "");
    }
@@ -2470,8 +2470,8 @@ public class LoadIzvodUC : VvOtherUC
 
    private void RwtrecKupdob(Kupdob kupdob_rec, ZapIzvod.TransRecordStruct trans_rec)
    {
-      DialogResult result = MessageBox.Show("Da li zelite usnimiti ≈æiro raƒçun [" + trans_rec.t_kd_ziro + "] na partnera [" + kupdob_rec.Naziv + "] ?",
-         "Usnimiti ≈æiro raƒçun?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+      DialogResult result = MessageBox.Show("Da li zelite usnimiti ûiro raËun [" + trans_rec.t_kd_ziro + "] na partnera [" + kupdob_rec.Naziv + "] ?",
+         "Usnimiti ûiro raËun?!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
       if(result != DialogResult.Yes) return;
 
@@ -2492,7 +2492,7 @@ public class LoadIzvodUC : VvOtherUC
       else if(kupdob_rec.Ziro4.IsEmpty()) { kupdob_rec.Ziro4 = wz; if(isHNB) kupdob_rec.Ziro1PnbV = wzPnb; }
       else
       { 
-         ZXC.aim_emsg("Svi su ≈æiro raƒçuni popunjeni!!!");
+         ZXC.aim_emsg("Svi su ûiro raËuni popunjeni!!!");
          kupdob_rec.EndEdit();
          return;
       }
@@ -2795,7 +2795,7 @@ public class LoadIzvodUC : VvOtherUC
 
 }
 
-public class SelectOTSdlg : VvDialog // Crownwood.DotNetMagic.Forms.DotNetMagicForm
+public class SelectOTSdlg : VvDialog
 {
    #region Fieldz
 
@@ -2823,7 +2823,6 @@ public class SelectOTSdlg : VvDialog // Crownwood.DotNetMagic.Forms.DotNetMagicF
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
       //this.MaximizeBox = false;
 
@@ -2938,8 +2937,8 @@ public class SelectOTSUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lbl1 = hamper.CreateVvLabel(0, 0, "Ukupan Fond    : ", ContentAlignment.MiddleRight);
-      Label lbl2 = hamper.CreateVvLabel(2, 0, "Raspolo≈æiv Fond: ", ContentAlignment.MiddleRight);
-      Label lbl3 = hamper.CreateVvLabel(4, 0, "Iskori≈°ten Fond: ", ContentAlignment.MiddleRight);
+      Label lbl2 = hamper.CreateVvLabel(2, 0, "Raspoloûiv Fond: ", ContentAlignment.MiddleRight);
+      Label lbl3 = hamper.CreateVvLabel(4, 0, "Iskoriöten Fond: ", ContentAlignment.MiddleRight);
 
       tbx_FndUkupno      = hamper.CreateVvTextBox(1, 0, "tbx_FndUkupno"     , "", 12);
       tbx_FndRaspolozivo = hamper.CreateVvTextBox(3, 0, "tbx_FndRaspolozivo", "", 12);
@@ -3322,13 +3321,13 @@ public class VvAddDataGridRowFromOtherDocDlg : VvDialog
    {
       if(Fld_TtNum.IsZero() && ZXC.ThisIsVektorProject == true)
       {
-         ZXC.RaiseErrorProvider(tbx_TtNum, "Molim, zadajte broj dokumenta sa kojega ≈æelite pridodati stavke.");
+         ZXC.RaiseErrorProvider(tbx_TtNum, "Molim, zadajte broj dokumenta sa kojega ûelite pridodati stavke.");
          e.Cancel = true;
       }
 
       if(Fld_DocNum.IsZero() && ZXC.ThisIsVektorProject == false)
       {
-         ZXC.RaiseErrorProvider(tbx_DokNum, "Molim, zadajte broj dokumenta sa kojega ≈æelite pridodati stavke.");
+         ZXC.RaiseErrorProvider(tbx_DokNum, "Molim, zadajte broj dokumenta sa kojega ûelite pridodati stavke.");
          e.Cancel = true;
       }
 
@@ -3462,7 +3461,7 @@ public class VvCreateNalogDUCDlg : VvDialog
       hamper.VvSpcBefRow    = new int[] { ZXC.Qun4 };
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      cbx_isOpenNalog = hamper.CreateVvCheckBox_OLD(0, 0, null, "Prika≈æi novododani nalog", RightToLeft.No);
+      cbx_isOpenNalog = hamper.CreateVvCheckBox_OLD(0, 0, null, "Prikaûi novododani nalog", RightToLeft.No);
       cbx_isOpenNalog.Checked = true;
 
 
@@ -3524,11 +3523,10 @@ public class LoadFaktur2NalogDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text          = "Prijenos Raƒçuna u Glavnu Knjigu / Salda Konti";
+      this.Text          = "Prijenos RaËuna u Glavnu Knjigu / Salda Konti";
 
       CreateTheUC();
 
@@ -3768,13 +3766,13 @@ public class LoadFaktur2NalogUC : VvOtherUC
       rbt_ulazni     = hamper.CreateVvRadioButton(0, 0, new EventHandler(rbt_checked), "Ulazni: UFA, URA, UOD, UPV"                 , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_izlazni_VP = hamper.CreateVvRadioButton(0, 1, new EventHandler(rbt_checked), "Izlazni: IFA, IRA, IOD, IPV"                , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_ulazni_MP  = hamper.CreateVvRadioButton(0, 2, new EventHandler(rbt_checked), "Ulazni Maloprodaja: URM, UFM, VMI, ZPC, NIV", 2, 0, TextImageRelation.ImageBeforeText);
-      rbt_VMI        = hamper.CreateVvRadioButton(0, 3, new EventHandler(rbt_checked), "Meƒëuskaldi≈°nica Velep/Malop : VMI"          , 2, 0, TextImageRelation.ImageBeforeText);
+      rbt_VMI        = hamper.CreateVvRadioButton(0, 3, new EventHandler(rbt_checked), "Meuskaldiönica Velep/Malop : VMI"          , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_izlazni_MP = hamper.CreateVvRadioButton(0, 4, new EventHandler(rbt_checked), "Izlazni Maloprodaja: IRM"                   , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_blg        = hamper.CreateVvRadioButton(0, 5, new EventHandler(rbt_checked), "Blagajna: UPL, ISP"                         , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_intU       = hamper.CreateVvRadioButton(0, 6, new EventHandler(rbt_checked), "Interni Ulaz: "                             , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_intI       = hamper.CreateVvRadioButton(0, 7, new EventHandler(rbt_checked), "Interni Izlaz: PPR, POV"                    , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_samoTT     = hamper.CreateVvRadioButton(0, 8, new EventHandler(rbt_checked), "Samo TT"                                    ,       TextImageRelation.ImageBeforeText);
-      rbt_IRA_Rlz    = hamper.CreateVvRadioButton(0, 9, new EventHandler(rbt_checked), "IRA: knji≈æenje razlike realizacije"         , 2, 0, TextImageRelation.ImageBeforeText);
+      rbt_IRA_Rlz    = hamper.CreateVvRadioButton(0, 9, new EventHandler(rbt_checked), "IRA: knjiûenje razlike realizacije"         , 2, 0, TextImageRelation.ImageBeforeText);
       rbt_ulazni.Checked = true;
 
       tbx_TT     = hamper.CreateVvTextBoxLookUp(1, 8, "tbx_TT", "Tip transakcije");
@@ -3833,12 +3831,12 @@ public class LoadFaktur2NalogUC : VvOtherUC
       VvStandardTextBoxContextMenu date_ContexMenu = new VvStandardTextBoxContextMenu(new MenuItem[] 
             { 
                new MenuItem("Danas"           , IspuniDatume),
-               new MenuItem("Tekuƒáa godina"   , IspuniDatume),
-               new MenuItem("Tekuƒái mjesec"   , IspuniDatume),
+               new MenuItem("TekuÊa godina"   , IspuniDatume),
+               new MenuItem("TekuÊi mjesec"   , IspuniDatume),
                new MenuItem("Prvi kvartal"    , IspuniDatume),
                new MenuItem("Drugi kvartal"   , IspuniDatume),
-               new MenuItem("Treƒái kvartal"   , IspuniDatume),
-               new MenuItem("ƒåetvrti kvartal" , IspuniDatume),
+               new MenuItem("TreÊi kvartal"   , IspuniDatume),
+               new MenuItem("»etvrti kvartal" , IspuniDatume),
                new MenuItem("1 -11 mjesec"    , IspuniDatume),
                new MenuItem("1 -10 mjesec"    , IspuniDatume),
                new MenuItem("1 - 9 mjesec"    , IspuniDatume),
@@ -3849,9 +3847,9 @@ public class LoadFaktur2NalogUC : VvOtherUC
                new MenuItem("1 - 4 mjesec"    , IspuniDatume),
                new MenuItem("1 - 3 mjesec"    , IspuniDatume),
                new MenuItem("1 - 2 mjesec"    , IspuniDatume),
-               new MenuItem("Sijeƒçanj"        , IspuniDatume),
-               new MenuItem("Veljaƒça"         , IspuniDatume),
-               new MenuItem("O≈æujak"          , IspuniDatume),
+               new MenuItem("SijeËanj"        , IspuniDatume),
+               new MenuItem("VeljaËa"         , IspuniDatume),
+               new MenuItem("Oûujak"          , IspuniDatume),
                new MenuItem("Travanj"         , IspuniDatume),
                new MenuItem("Svibanj"         , IspuniDatume),
                new MenuItem("Lipanj"          , IspuniDatume),
@@ -3885,12 +3883,12 @@ public class LoadFaktur2NalogUC : VvOtherUC
 
       switch(text)
       { //                              mmOD           dd.mmDO
-         case "Tekuƒáa godina"  : textOd = "01"; textDo = "31.12"; break;
-         case "Tekuƒái mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
+         case "TekuÊa godina"  : textOd = "01"; textDo = "31.12"; break;
+         case "TekuÊi mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
          case "Prvi kvartal"   : textOd = "01"; textDo = "31.03"; break;
          case "Drugi kvartal"  : textOd = "04"; textDo = "30.06"; break;
-         case "Treƒái kvartal"  : textOd = "07"; textDo = "30.09"; break;
-         case "ƒåetvrti kvartal": textOd = "10"; textDo = "31.12"; break;
+         case "TreÊi kvartal"  : textOd = "07"; textDo = "30.09"; break;
+         case "»etvrti kvartal": textOd = "10"; textDo = "31.12"; break;
          case "1 -11 mjesec"   : textOd = "01"; textDo = "30.11"; break;
          case "1 -10 mjesec"   : textOd = "01"; textDo = "31.10"; break;
          case "1 - 9 mjesec"   : textOd = "01"; textDo = "30.09"; break;
@@ -3901,9 +3899,9 @@ public class LoadFaktur2NalogUC : VvOtherUC
          case "1 - 4 mjesec"   : textOd = "01"; textDo = "30.04"; break;
          case "1 - 3 mjesec"   : textOd = "01"; textDo = "31.03"; break;
          case "1 - 2 mjesec"   : textOd = "01"; textDo = mj02 + ".02"; break;
-         case "Sijeƒçanj"       : textOd = "01"; textDo = "31.01"; break;
-         case "Veljaƒça"        : textOd = "02"; textDo = mj02 + ".02"; break;
-         case "O≈æujak"         : textOd = "03"; textDo = "31.03"; break;
+         case "SijeËanj"       : textOd = "01"; textDo = "31.01"; break;
+         case "VeljaËa"        : textOd = "02"; textDo = mj02 + ".02"; break;
+         case "Oûujak"         : textOd = "03"; textDo = "31.03"; break;
          case "Travanj"        : textOd = "04"; textDo = "30.04"; break;
          case "Svibanj"        : textOd = "05"; textDo = "31.05"; break;
          case "Lipanj"         : textOd = "06"; textDo = "30.06"; break;
@@ -4084,7 +4082,7 @@ public partial class ObrProDLG : Form// VvDialog{
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;
-      this.Text = "Obraƒçun proizvodnje";
+      this.Text = "ObraËun proizvodnje";
 
       CreateToolStripIzvod();
       CreateTheUC();
@@ -4142,12 +4140,12 @@ public partial class ObrProDLG : Form// VvDialog{
       menu.Parent    = this;
       menu.Visible   = false;
 
-      tsb_ucitaj = new ToolStripButton("Uƒçitaj", VvIco.UcitajRn32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.ucitajRacune.ico")), 32, 32)*/.ToBitmap(), new EventHandler(UcitajButton_Click), "tsb_ucitaj");
-      tsb_ucitaj.ToolTipText = "Uƒçitaj podatke";
+      tsb_ucitaj = new ToolStripButton("UËitaj", VvIco.UcitajRn32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.ucitajRacune.ico")), 32, 32)*/.ToBitmap(), new EventHandler(UcitajButton_Click), "tsb_ucitaj");
+      tsb_ucitaj.ToolTipText = "UËitaj podatke";
       ts_izvod.Items.Add(tsb_ucitaj);
 
       tsb_nalog = new ToolStripButton("Nalog", VvIco.Next32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.next.ico")), 32, 32)*/.ToBitmap(), new EventHandler(NaNalogButton_Click), "tsb_nalog");
-      tsb_nalog.ToolTipText = "Proknji≈æi obraƒçun na nalog";
+      tsb_nalog.ToolTipText = "Proknjiûi obraËun na nalog";
       ts_izvod.Items.Add(tsb_nalog);
 
       tsb_qPrint = new ToolStripButton("Print", VvIco.PrintPrw32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Record.printPrw.ico")), 32, 32)*/.ToBitmap(), new EventHandler(QPrint_Click), "tsb_qPrint");
@@ -4155,7 +4153,7 @@ public partial class ObrProDLG : Form// VvDialog{
       ts_izvod.Items.Add(tsb_qPrint);
 
       tsb_abort             = new ToolStripButton("Prekid", VvIco.Esc32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Record.esc.ico")), 32, 32)*/.ToBitmap(), new EventHandler(AbortButton_Click), "tsb_abort");
-      tsb_abort.ToolTipText = "Odustani od obraƒçuna";
+      tsb_abort.ToolTipText = "Odustani od obraËuna";
       ts_izvod.Items.Add(tsb_abort);
 
       foreach(ToolStripButton tsb in ts_izvod.Items)
@@ -4407,9 +4405,9 @@ public partial class ObrProUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "PR - poƒçetak razdoblja (stanje na poƒçetku razdoblja obraƒçuna)", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(1, 0, "UR - u razdoblju (promet tro≈°kova unutar razdoblja)", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(2, 0, "KR - kraj razdoblja (stanje na kraju razdoblja obraƒçuna)", ContentAlignment.MiddleRight); 
+      hamper.CreateVvLabel(0, 0, "PR - poËetak razdoblja (stanje na poËetku razdoblja obraËuna)", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(1, 0, "UR - u razdoblju (promet troökova unutar razdoblja)", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(2, 0, "KR - kraj razdoblja (stanje na kraju razdoblja obraËuna)", ContentAlignment.MiddleRight); 
 
    }
 
@@ -4428,7 +4426,7 @@ public partial class ObrProUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                    hamper.CreateVvLabel   (0, 0, "Direktni tro≈°kovi:", ContentAlignment.MiddleRight); 
+                    hamper.CreateVvLabel   (0, 0, "Direktni troökovi:", ContentAlignment.MiddleRight); 
       tbx_dirTrsk = hamper.CreateVvTextBox (1, 0, "tbx_direktniTrsk"  , "", 12);
       tbx_dirTrsk.JAM_ReadOnly = true;
       tbx_dirTrsk.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
@@ -4441,7 +4439,7 @@ public partial class ObrProUC : VvOtherUC
       tbx_koefDir.JAM_MarkAsNumericTextBox(6, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_koefDir.JAM_Highlighted = true;
 
-                         hamper.CreateVvLabel   (0, 2, "Nerasporeƒëeni tro≈°kovi:", ContentAlignment.MiddleRight); 
+                         hamper.CreateVvLabel   (0, 2, "Nerasporeeni troökovi:", ContentAlignment.MiddleRight); 
       tbx_iznosIndirTr = hamper.CreateVvTextBox (1, 2, "tbx_iznosIndirTr"    , "", 12);
       tbx_iznosIndirTr.JAM_ReadOnly = true;
       tbx_iznosIndirTr.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
@@ -4464,7 +4462,7 @@ public partial class ObrProUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                         hamper.CreateVvLabel         (0, 0, "Razdoblje obraƒçuna:", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel         (0, 0, "Razdoblje obraËuna:", ContentAlignment.MiddleRight);
       tbx_DatumOD      = hamper.CreateVvTextBox       (1, 0, "tbx_datumOd", "Od datuma");
       tbx_DatumOD.JAM_IsForDateTimePicker = true;
       dtp_DatumOD      = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DatumOD);
@@ -4486,8 +4484,8 @@ public partial class ObrProUC : VvOtherUC
                   hamper.CreateVvLabel  (3, 0 , "TT Rad.Nal/Proj:", ContentAlignment.MiddleRight)      ; 
       tbx_tipRN = hamper.CreateVvTextBox(4, 0, "tbx_tipRN"           , "");
 
-                   hamper.CreateVvLabel        (5, 0, "Preskoƒçi:", ContentAlignment.MiddleRight);
-      tbx_status = hamper.CreateVvTextBoxLookUp(6, 0, "tbx_Status", "Preskoƒçi naloge sa odobranim statusom", 1);
+                   hamper.CreateVvLabel        (5, 0, "PreskoËi:", ContentAlignment.MiddleRight);
+      tbx_status = hamper.CreateVvTextBoxLookUp(6, 0, "tbx_Status", "PreskoËi naloge sa odobranim statusom", 1);
 
       tbx_status.JAM_Set_LookUpTable(ZXC.luiListaRiskStatus, (int)ZXC.Kolona.prva);
       tbx_status.JAM_lookUp_NOTobligatory = false;
@@ -4514,10 +4512,10 @@ public partial class ObrProUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                       hamper.CreateVvLabel  (0, 0, "Analitiƒçka grupa konta:", ContentAlignment.MiddleRight); 
-                       hamper.CreateVvLabel  (1, 0, "Direktnih tro≈°kova:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (0, 0, "AnalitiËka grupa konta:", ContentAlignment.MiddleRight); 
+                       hamper.CreateVvLabel  (1, 0, "Direktnih troökova:", ContentAlignment.MiddleRight);
       tbx_anaGrDirTr = hamper.CreateVvTextBox(2, 0, "tbx_anaGrDirTr", "");
-                       hamper.CreateVvLabel  (3, 0, "Indirektnih tro≈°kova:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (3, 0, "Indirektnih troökova:", ContentAlignment.MiddleRight);
       tbx_anaGrIndTr = hamper.CreateVvTextBox(4, 0, "tbx_anaGrIndTr", "");
 
       tbx_anaGrDirTr.TextChanged += new EventHandler(DisableNalogAction);
@@ -4540,8 +4538,8 @@ public partial class ObrProUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                       hamper.CreateVvLabel       (0, 0, "Raspored tro≈°kova koef:", ContentAlignment.MiddleRight);
-      rbt_trDirMat   = hamper.CreateVvRadioButton (1, 0, new EventHandler(DisableNalogAction), "Direktni tro≈°kovi", TextImageRelation.ImageBeforeText);
+                       hamper.CreateVvLabel       (0, 0, "Raspored troökova koef:", ContentAlignment.MiddleRight);
+      rbt_trDirMat   = hamper.CreateVvRadioButton (1, 0, new EventHandler(DisableNalogAction), "Direktni troökovi", TextImageRelation.ImageBeforeText);
       rbt_trCijProiz = hamper.CreateVvRadioButton (1, 1, new EventHandler(DisableNalogAction), "Planirana cijena" , TextImageRelation.ImageBeforeText);
       rbt_trDirMat.Checked = true;
       rbt_trDirMat  .Tag = 0; //vvtbR_RD_year;
@@ -4563,7 +4561,7 @@ public partial class ObrProUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                         hamper.CreateVvLabel      (0, 0,       "Knji≈æi na:"  , ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel      (0, 0,       "Knjiûi na:"  , ContentAlignment.MiddleRight);
       rbt_ktoIndirSame = hamper.CreateVvRadioButton(1, 0, null, "Isti konto"  , TextImageRelation.ImageBeforeText);
       rbt_ktoIndirEnd  = hamper.CreateVvRadioButton(1, 1, null, "Zadnja znamenka:", TextImageRelation.ImageBeforeText);
       rbt_ktoIndirEnd.Checked = true;
@@ -4590,14 +4588,14 @@ public partial class ObrProUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lbDir        = hamper.CreateVvLabel  (0,  0, "KONTA:", 1, 0, ContentAlignment.MiddleRight);
-                           hamper.CreateVvLabel  (0,  0, "Raspored tro≈°kova:"             , 2, 0, ContentAlignment.MiddleRight); 
-      tbx_ktoPreraspTrsk = hamper.CreateVvTextBox(3,  0, "tbx_ktoPreraspTrsk",      "Raspored tro≈°kova za obraƒçun proizvoda i usluga (prema HSFI 10 i MRS-u 2 i MRS-u 11) - uskladi≈°tivi tro≈°kovi (na raƒçune 60, 62 i 63)", 8);
+                           hamper.CreateVvLabel  (0,  0, "Raspored troökova:"             , 2, 0, ContentAlignment.MiddleRight); 
+      tbx_ktoPreraspTrsk = hamper.CreateVvTextBox(3,  0, "tbx_ktoPreraspTrsk",      "Raspored troökova za obraËun proizvoda i usluga (prema HSFI 10 i MRS-u 2 i MRS-u 11) - uskladiötivi troökovi (na raËune 60, 62 i 63)", 8);
                            hamper.CreateVvLabel  (0,  1, "Proizvodnja u  tijeku:"         , 2, 0, ContentAlignment.MiddleRight); 
       tbx_ktoProizv      = hamper.CreateVvTextBox(3,  1, "tbx_ktoProizv",           "Proizvodnja u tijeku", 8);
-                           hamper.CreateVvLabel  (0,  2, "Tro≈°ak zaliha prodanih proizvoda:"   , 2, 0, ContentAlignment.MiddleRight); 
-      tbx_kto7trosProizv = hamper.CreateVvTextBox(3,  2, "tbx_kto7trosProizv"  ,    "Tro≈°ak zaliha prodanih proizvoda (60, 62, 63 i 64)", 8);
-                           hamper.CreateVvLabel  (1,  3, "Gotovi proizvodi na skladi≈°tu:"   , 1, 0, ContentAlignment.MiddleRight); 
-      tbx_ktoGotProiz    = hamper.CreateVvTextBox(3,  3, "tbx_ktoGotProiz"     ,    "Gotovi proizvodi na skladi≈°tu", 8);
+                           hamper.CreateVvLabel  (0,  2, "Troöak zaliha prodanih proizvoda:"   , 2, 0, ContentAlignment.MiddleRight); 
+      tbx_kto7trosProizv = hamper.CreateVvTextBox(3,  2, "tbx_kto7trosProizv"  ,    "Troöak zaliha prodanih proizvoda (60, 62, 63 i 64)", 8);
+                           hamper.CreateVvLabel  (1,  3, "Gotovi proizvodi na skladiötu:"   , 1, 0, ContentAlignment.MiddleRight); 
+      tbx_ktoGotProiz    = hamper.CreateVvTextBox(3,  3, "tbx_ktoGotProiz"     ,    "Gotovi proizvodi na skladiötu", 8);
 
       cbx_isSkladGotProizv = hamper.CreateVvCheckBox_OLD(0, 3, null, "", RightToLeft.Yes);
 
@@ -4624,12 +4622,12 @@ public partial class ObrProUC : VvOtherUC
       VvStandardTextBoxContextMenu date_ContexMenu = new VvStandardTextBoxContextMenu(new MenuItem[] 
             { 
                new MenuItem("Danas"           , IspuniDatume),
-               new MenuItem("Tekuƒáa godina"   , IspuniDatume),
-               new MenuItem("Tekuƒái mjesec"   , IspuniDatume),
+               new MenuItem("TekuÊa godina"   , IspuniDatume),
+               new MenuItem("TekuÊi mjesec"   , IspuniDatume),
                new MenuItem("Prvi kvartal"    , IspuniDatume),
                new MenuItem("Drugi kvartal"   , IspuniDatume),
-               new MenuItem("Treƒái kvartal"   , IspuniDatume),
-               new MenuItem("ƒåetvrti kvartal" , IspuniDatume),
+               new MenuItem("TreÊi kvartal"   , IspuniDatume),
+               new MenuItem("»etvrti kvartal" , IspuniDatume),
                new MenuItem("1 -11 mjesec"    , IspuniDatume),
                new MenuItem("1 -10 mjesec"    , IspuniDatume),
                new MenuItem("1 - 9 mjesec"    , IspuniDatume),
@@ -4640,9 +4638,9 @@ public partial class ObrProUC : VvOtherUC
                new MenuItem("1 - 4 mjesec"    , IspuniDatume),
                new MenuItem("1 - 3 mjesec"    , IspuniDatume),
                new MenuItem("1 - 2 mjesec"    , IspuniDatume),
-               new MenuItem("Sijeƒçanj"        , IspuniDatume),
-               new MenuItem("Veljaƒça"         , IspuniDatume),
-               new MenuItem("O≈æujak"          , IspuniDatume),
+               new MenuItem("SijeËanj"        , IspuniDatume),
+               new MenuItem("VeljaËa"         , IspuniDatume),
+               new MenuItem("Oûujak"          , IspuniDatume),
                new MenuItem("Travanj"         , IspuniDatume),
                new MenuItem("Svibanj"         , IspuniDatume),
                new MenuItem("Lipanj"          , IspuniDatume),
@@ -4676,12 +4674,12 @@ public partial class ObrProUC : VvOtherUC
 
       switch(text)
       { //                              mmOD           dd.mmDO
-         case "Tekuƒáa godina"  : textOd = "01"; textDo = "31.12"; break;
-         case "Tekuƒái mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
+         case "TekuÊa godina"  : textOd = "01"; textDo = "31.12"; break;
+         case "TekuÊi mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
          case "Prvi kvartal"   : textOd = "01"; textDo = "31.03"; break;
          case "Drugi kvartal"  : textOd = "04"; textDo = "30.06"; break;
-         case "Treƒái kvartal"  : textOd = "07"; textDo = "30.09"; break;
-         case "ƒåetvrti kvartal": textOd = "10"; textDo = "31.12"; break;
+         case "TreÊi kvartal"  : textOd = "07"; textDo = "30.09"; break;
+         case "»etvrti kvartal": textOd = "10"; textDo = "31.12"; break;
          case "1 -11 mjesec"   : textOd = "01"; textDo = "30.11"; break;
          case "1 -10 mjesec"   : textOd = "01"; textDo = "31.10"; break;
          case "1 - 9 mjesec"   : textOd = "01"; textDo = "30.09"; break;
@@ -4692,9 +4690,9 @@ public partial class ObrProUC : VvOtherUC
          case "1 - 4 mjesec"   : textOd = "01"; textDo = "30.04"; break;
          case "1 - 3 mjesec"   : textOd = "01"; textDo = "31.03"; break;
          case "1 - 2 mjesec"   : textOd = "01"; textDo = mj02 + ".02"; break;
-         case "Sijeƒçanj"       : textOd = "01"; textDo = "31.01"; break;
-         case "Veljaƒça"        : textOd = "02"; textDo = mj02 + ".02"; break;
-         case "O≈æujak"         : textOd = "03"; textDo = "31.03"; break;
+         case "SijeËanj"       : textOd = "01"; textDo = "31.01"; break;
+         case "VeljaËa"        : textOd = "02"; textDo = mj02 + ".02"; break;
+         case "Oûujak"         : textOd = "03"; textDo = "31.03"; break;
          case "Travanj"        : textOd = "04"; textDo = "30.04"; break;
          case "Svibanj"        : textOd = "05"; textDo = "31.05"; break;
          case "Lipanj"         : textOd = "06"; textDo = "30.06"; break;
@@ -4873,12 +4871,12 @@ public partial class ObrProUC : VvOtherUC
 
    #region TabPageTitle
 
-   public string TabPageTitle1 { get { return "¬∞  Obraƒçun Tro≈°kova Proizvodnje  ¬∞"; } }
-   public string TabPageTitle2 { get { return "¬∞  Projekti / Radni Nalozi  ¬∞"; } }
-   public string TabPageTitle3 { get { return "¬∞  Nerasporeƒëeni Indirektni Tr. A  ¬∞"; } }
-   public string TabPageTitle4 { get { return "¬∞  Direktni Tro≈°kovi Proizvodnje  ¬∞"; } }
-   public string TabPageTitle5 { get { return "¬∞  Proizvodnja U Tijeku  ¬∞"; } }
-   public string TabPageTitle6 { get { return "¬∞  Nerasporeƒëeni Indirektni Tr. S  ¬∞"; } }
+   public string TabPageTitle1 { get { return "∞  ObraËun Troökova Proizvodnje  ∞"; } }
+   public string TabPageTitle2 { get { return "∞  Projekti / Radni Nalozi  ∞"; } }
+   public string TabPageTitle3 { get { return "∞  Nerasporeeni Indirektni Tr. A  ∞"; } }
+   public string TabPageTitle4 { get { return "∞  Direktni Troökovi Proizvodnje  ∞"; } }
+   public string TabPageTitle5 { get { return "∞  Proizvodnja U Tijeku  ∞"; } }
+   public string TabPageTitle6 { get { return "∞  Nerasporeeni Indirektni Tr. S  ∞"; } }
 
    #endregion TabPageTitle
 
@@ -5189,26 +5187,26 @@ public partial class ObrProUC : VvOtherUC
    private void CreateColumn_1(VvDataGridView theGrid)
    {
       vvtbR_projektCD_otp = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb4ColR_projektCD_otp", null, -12, "Projekt"                                                              );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_projektCD_otp, null, "R_projektCD"    , "Projekt\n1"                       , ZXC.Q5un); vvtbR_projektCD_otp.JAM_ReadOnly = true;
-      vvtbR_investit_otp  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb4ColR_projektCD_otp", null, -12, "Nar/Investi"                                                          );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_investit_otp , null, "R_investit_otp" , "Naruƒçitelj / Investitor\n2"       ,        0); vvtbR_investit_otp.JAM_ReadOnly = true;
+      vvtbR_investit_otp  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb4ColR_projektCD_otp", null, -12, "Nar/Investi"                                                          );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_investit_otp , null, "R_investit_otp" , "NaruËitelj / Investitor\n2"       ,        0); vvtbR_investit_otp.JAM_ReadOnly = true;
       colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       colVvText.MinimumWidth = ZXC.Q6un;
 
-      vvtbR_dovrsenost    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_dovrsenost"   , null, -12, "Unos % dovr≈°enosti"); 
+      vvtbR_dovrsenost    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_dovrsenost"   , null, -12, "Unos % dovröenosti"); 
       vvtbR_dovrsenost.JAM_IsForPercent = true;                            
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dovrsenost   , null, "R_dovrsenost"   , "Dovr≈° %\n3"       , ZXC.Q3un - ZXC.Qun4);                                               colVvText.MinimumWidth = ZXC.Q3un- ZXC.Qun4;
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dovrsenost   , null, "R_dovrsenost"   , "Dovrö %\n3"       , ZXC.Q3un - ZXC.Qun4);                                               colVvText.MinimumWidth = ZXC.Q3un- ZXC.Qun4;
       vvtbR_dovrsenost.JAM_FieldExitMethod = new EventHandler(CalcOnExitPostoDovrseno);  
      
       vvtbR_PlanCijena    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PlanCijena"   , null, -12, "Planirana cijena proizvodnje"                                         );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PlanCijena   , null, "R_PlanCijena"   , "PlaniranaCijena\n"+  "4"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_PlanCijena   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_PlanCijena   .JAM_ReadOnly = true;
-      vvtbR_PUT_dug_year  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PUT_dug_year" , null, -12, "Proizvodnja u tijeku od 1.1. tekuƒáe godine do zadanog razdoblja"      );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PUT_dug_year , null, "R_PUT_dug_year" , "ProizvUtijekuPR\n"+  "5"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_PUT_dug_year .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_PUT_dug_year .JAM_ReadOnly = true;
-      vvtbR_PUT_pot_year  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PUT_pot_year" , null, -12, "Zavr≈°ena proizvodnja od 1.1. tekuƒáe godine do zadanog razdoblja"      );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PUT_pot_year , null, "R_PUT_pot_year" , "ProizvedenoPR\n"  +  "6"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_PUT_pot_year .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_PUT_pot_year .JAM_ReadOnly = true;
-      vvtbR_RD_razd       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RD_razd"      , null, -12, "Direktni tro≈°kovi zadanog razdoblja"                                  );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RD_razd      , null, "R_RD_razd"      , "DirektniTr\n"     +  "7"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_RD_razd      .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_RD_razd      .JAM_ReadOnly = true;
-      vvtbR_RD_year       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RD_year"      , null, -12, "Rasporeƒëeni tro≈°kovi od 1.1. tekuƒáe godine"                           );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RD_year      , null, "R_RD_year"      , "RasporeƒëenTr\n"   +  "8 (5 + 7)"    /*PUT_dug_year + RD_razd                    */, ZXC.Q5un - ZXC.Qun4); vvtbR_RD_year      .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_RD_year      .JAM_ReadOnly = true;
-      vvtbR_NIraspored    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NIraspored"   , null, -12, "Raspored nerasporeƒëenih tro≈°kova zadanog razdoblja"                   );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NIraspored   , null, "R_NIraspored"   , "NovoRaspTr\n"     +  "9 (8 * koef)" /*RD_year      * Fld_KoefDir                */, ZXC.Q5un - ZXC.Qun4); vvtbR_NIraspored   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_NIraspored   .JAM_ReadOnly = true;      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+      vvtbR_PUT_dug_year  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PUT_dug_year" , null, -12, "Proizvodnja u tijeku od 1.1. tekuÊe godine do zadanog razdoblja"      );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PUT_dug_year , null, "R_PUT_dug_year" , "ProizvUtijekuPR\n"+  "5"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_PUT_dug_year .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_PUT_dug_year .JAM_ReadOnly = true;
+      vvtbR_PUT_pot_year  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PUT_pot_year" , null, -12, "Zavröena proizvodnja od 1.1. tekuÊe godine do zadanog razdoblja"      );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PUT_pot_year , null, "R_PUT_pot_year" , "ProizvedenoPR\n"  +  "6"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_PUT_pot_year .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_PUT_pot_year .JAM_ReadOnly = true;
+      vvtbR_RD_razd       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RD_razd"      , null, -12, "Direktni troökovi zadanog razdoblja"                                  );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RD_razd      , null, "R_RD_razd"      , "DirektniTr\n"     +  "7"            /*                                          */, ZXC.Q5un - ZXC.Qun4); vvtbR_RD_razd      .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_RD_razd      .JAM_ReadOnly = true;
+      vvtbR_RD_year       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RD_year"      , null, -12, "Rasporeeni troökovi od 1.1. tekuÊe godine"                           );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RD_year      , null, "R_RD_year"      , "RasporeenTr\n"   +  "8 (5 + 7)"    /*PUT_dug_year + RD_razd                    */, ZXC.Q5un - ZXC.Qun4); vvtbR_RD_year      .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_RD_year      .JAM_ReadOnly = true;
+      vvtbR_NIraspored    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NIraspored"   , null, -12, "Raspored nerasporeenih troökova zadanog razdoblja"                   );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NIraspored   , null, "R_NIraspored"   , "NovoRaspTr\n"     +  "9 (8 * koef)" /*RD_year      * Fld_KoefDir                */, ZXC.Q5un - ZXC.Qun4); vvtbR_NIraspored   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_NIraspored   .JAM_ReadOnly = true;      colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
       vvtbR_PostoRaspored = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PostoRaspored", null, -12, "Postotni udio u nerasporedjenim troskovima"); vvtbR_PostoRaspored.JAM_IsForPercent = true; colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PostoRaspored, null, "R_PostoRaspored", "Udio %\n"         + "10"            /*                                          */, ZXC.Q3un - ZXC.Qun4); vvtbR_PostoRaspored.JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q3un- ZXC.Qun4; vvtbR_PostoRaspored.JAM_ReadOnly = true;
-      vvtbR_NewTr_razd    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NewTr_razd"   , null, -12, "Ukupni novi tro≈°kovi zadanog razdoblja"                               );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_razd   , null, "R_NewTr_razd"   , "UkTro≈°koviUR\n"   + "11 (7 + 9)"    /*RD_razd      + NIraspored                 */, ZXC.Q5un - ZXC.Qun4); vvtbR_NewTr_razd   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_NewTr_razd   .JAM_ReadOnly = true;
-      vvtbR_Otp_razd      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_Otp_razd"     , null, -12, "Zavr≈°ena proizvodnja zadanog razdoblja"                               );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_Otp_razd     , null, "R_Otp_razd"     , "ProizvednoUR\n"   + "12 (13*3 - 6)" /*R_NewTr_year * dovrsenost - R_PUT_pot_year*/, ZXC.Q5un - ZXC.Qun4); vvtbR_Otp_razd     .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_Otp_razd     .JAM_ReadOnly = true;
-      vvtbR_NewTr_year    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NewTr_year"   , null, -12, "Ukupni tro≈°kovi proizvodnje od 1.1. tekuƒáe godine"                    );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_year   , null, "R_NewTr_year"   , "UkTro≈°koviKR\n"   + "13 (5 + 11)"   /*PUT_dug_year + NewTr_razd                 */, ZXC.Q5un - ZXC.Qun4); vvtbR_NewTr_year   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_NewTr_year   .JAM_ReadOnly = true;
-      vvtbR_Otp_year      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_Otp_year"     , null, -12, "Zavr≈°ena proizvodnja od 1.1. tekuƒáe godine do kraja zadanog razdoblja");                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_Otp_year     , null, "R_Otp_year"     , "ProizvedenoKR\n"  + "14 (6 + 12)"   /*PUT_pot_year + Otp_razd                   */, ZXC.Q5un - ZXC.Qun4); vvtbR_Otp_year     .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_Otp_year     .JAM_ReadOnly = true;
+      vvtbR_NewTr_razd    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NewTr_razd"   , null, -12, "Ukupni novi troökovi zadanog razdoblja"                               );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_razd   , null, "R_NewTr_razd"   , "UkTroökoviUR\n"   + "11 (7 + 9)"    /*RD_razd      + NIraspored                 */, ZXC.Q5un - ZXC.Qun4); vvtbR_NewTr_razd   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_NewTr_razd   .JAM_ReadOnly = true;
+      vvtbR_Otp_razd      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_Otp_razd"     , null, -12, "Zavröena proizvodnja zadanog razdoblja"                               );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_Otp_razd     , null, "R_Otp_razd"     , "ProizvednoUR\n"   + "12 (13*3 - 6)" /*R_NewTr_year * dovrsenost - R_PUT_pot_year*/, ZXC.Q5un - ZXC.Qun4); vvtbR_Otp_razd     .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_Otp_razd     .JAM_ReadOnly = true;
+      vvtbR_NewTr_year    = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NewTr_year"   , null, -12, "Ukupni troökovi proizvodnje od 1.1. tekuÊe godine"                    );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_year   , null, "R_NewTr_year"   , "UkTroökoviKR\n"   + "13 (5 + 11)"   /*PUT_dug_year + NewTr_razd                 */, ZXC.Q5un - ZXC.Qun4); vvtbR_NewTr_year   .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_NewTr_year   .JAM_ReadOnly = true;
+      vvtbR_Otp_year      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_Otp_year"     , null, -12, "Zavröena proizvodnja od 1.1. tekuÊe godine do kraja zadanog razdoblja");                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_Otp_year     , null, "R_Otp_year"     , "ProizvedenoKR\n"  + "14 (6 + 12)"   /*PUT_pot_year + Otp_razd                   */, ZXC.Q5un - ZXC.Qun4); vvtbR_Otp_year     .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un;           vvtbR_Otp_year     .JAM_ReadOnly = true;
 
 
       if(rbt_trDirMat.Checked) vvtbR_RD_year   .JAM_Highlighted = true; // ovo ne sljaka
@@ -5269,9 +5267,9 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_status_fa, null, "R_status_fa", "Status", ZXC.Q2un);
       vvtbR_status_fa.JAM_ReadOnly = true;
 
-      vvtbR_dovrsenost_fa = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_dovrsenost_fa", null, -12, "% Dovr≈°enosti");
+      vvtbR_dovrsenost_fa = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_dovrsenost_fa", null, -12, "% Dovröenosti");
       vvtbR_dovrsenost_fa.JAM_IsForPercent = true;
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dovrsenost_fa, null, "R_dovrsenost_fa", "Dovr≈° %", ZXC.Q3un - ZXC.Qun4);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dovrsenost_fa, null, "R_dovrsenost_fa", "Dovrö %", ZXC.Q3un - ZXC.Qun4);
       colVvText.MinimumWidth = ZXC.Q3un - ZXC.Qun4; 
       vvtbR_dovrsenost_fa.JAM_ReadOnly = true;
 
@@ -5280,12 +5278,12 @@ public partial class ObrProUC : VvOtherUC
       vvtbR_ugCijena_fa.JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_ugCijena_fa.JAM_ReadOnly = true;
       
 
-      vvtbR_narInv_fa     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_narInv_fa"    , null, -12, "Naruƒçitelj/Investitor" ); 
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_narInv_fa    , null, "R_narInv_fa"    , "Naruƒçitelj / Investitor", ZXC.Q8un); 
+      vvtbR_narInv_fa     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_narInv_fa"    , null, -12, "NaruËitelj/Investitor" ); 
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_narInv_fa    , null, "R_narInv_fa"    , "NaruËitelj / Investitor", ZXC.Q8un); 
       vvtbR_narInv_fa    .JAM_ReadOnly = true;
 
-      vvtbR_objektCd_fa   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_objektCd_fa"  , null, -12, "Objekt ≈°ifra"          ); 
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_objektCd_fa  , null, "R_objektCd_fa"  , "≈†ifObjekta"      , ZXC.Q4un); 
+      vvtbR_objektCd_fa   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_objektCd_fa"  , null, -12, "Objekt öifra"          ); 
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_objektCd_fa  , null, "R_objektCd_fa"  , "äifObjekta"      , ZXC.Q4un); 
       vvtbR_objektCd_fa  .JAM_ReadOnly = true;
 
       vvtbR_objektName_fa = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_objektName_fa", null, -12, "Objekt"                ); 
@@ -5298,9 +5296,9 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_refDok_fa    , null, "R_refDok_fa"    , "RefDok"        , ZXC.Q10un); 
       vvtbR_refDok_fa    .JAM_ReadOnly = true;
 
-      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateStart_fa", "PoƒçIzvoƒë", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
+      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateStart_fa", "PoËIzvo", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
       
-      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateRokIsp_fa", "RokIzvoƒë", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
+      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateRokIsp_fa", "RokIzvo", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
 
      
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
@@ -5319,7 +5317,7 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dokNum_ni     , null, "R_dokNum"     , "DokBroj"   , ZXC.Q3un);
       vvtbR_dokNum_ni.JAM_ReadOnly = true;
 
-      vvtbR_ttNum_ni       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (      "vvtb4ColR_ttNum_ni"      , null, -12, "Vrsta knji≈æenja");
+      vvtbR_ttNum_ni       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (      "vvtb4ColR_ttNum_ni"      , null, -12, "Vrsta knjiûenja");
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_ttNum_ni, null, "R_ttNum", "VK", ZXC.Q2un);
       vvtbR_ttNum_ni.JAM_ReadOnly = true;
 
@@ -5341,7 +5339,7 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_ticker_ni, null, "R_ticker", "Ticker", ZXC.Q3un);
       vvtbR_ticker_ni.JAM_ReadOnly = true;
       
-      vvtbR_kupdob_cd_ni = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColR_kupdob_cd_ni", null, -6, "≈†ifra partnera");
+      vvtbR_kupdob_cd_ni = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColR_kupdob_cd_ni", null, -6, "äifra partnera");
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_kupdob_cd_ni, null, "R_kupdob_cd", "SifK/D", ZXC.Q3un);
       vvtbR_kupdob_cd_ni.JAM_ReadOnly = true;
      
@@ -5355,8 +5353,8 @@ public partial class ObrProUC : VvOtherUC
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_dug_ni.JAM_ReadOnly = true;
 
-      vvtbR_pot_ni = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_ni", null, -12, "Iznos potra≈æuje");
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_ni, null, "R_pot", "Potra≈æuje", ZXC.Q5un);
+      vvtbR_pot_ni = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_ni", null, -12, "Iznos potraûuje");
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_ni, null, "R_pot", "Potraûuje", ZXC.Q5un);
       vvtbR_pot_ni.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_pot_ni.JAM_ReadOnly = true;
@@ -5375,7 +5373,7 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dokNum_rd     , null, "R_dokNum"     , "DokBroj"   , ZXC.Q3un);
       vvtbR_dokNum_rd.JAM_ReadOnly = true;
 
-      vvtbR_ttNum_rd       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (      "vvtb4ColR_ttNum_rd"      , null, -12, "Vrsta knji≈æenja");
+      vvtbR_ttNum_rd       = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (      "vvtb4ColR_ttNum_rd"      , null, -12, "Vrsta knjiûenja");
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_ttNum_rd, null, "R_ttNum", "VK", ZXC.Q2un);
       vvtbR_ttNum_rd.JAM_ReadOnly = true;
 
@@ -5397,7 +5395,7 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_ticker_rd, null, "R_ticker", "Ticker", ZXC.Q3un);
       vvtbR_ticker_rd.JAM_ReadOnly = true;
 
-      vvtbR_kupdob_cd_rd = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColR_kupdob_cd_rd", null, -6, "≈†ifra partnera");
+      vvtbR_kupdob_cd_rd = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColR_kupdob_cd_rd", null, -6, "äifra partnera");
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_kupdob_cd_rd, null, "R_kupdob_cd", "SifK/D", ZXC.Q3un);
       vvtbR_kupdob_cd_rd.JAM_ReadOnly = true;
 
@@ -5411,8 +5409,8 @@ public partial class ObrProUC : VvOtherUC
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_dug_rd.JAM_ReadOnly = true;
 
-      vvtbR_pot_rd = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_rd", null, -12, "Iznos potra≈æuje");
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_rd, null, "R_pot", "Potra≈æuje", ZXC.Q5un);
+      vvtbR_pot_rd = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_rd", null, -12, "Iznos potraûuje");
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_rd, null, "R_pot", "Potraûuje", ZXC.Q5un);
       vvtbR_pot_rd.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_pot_rd.JAM_ReadOnly = true;
@@ -5432,7 +5430,7 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dokNum_pt     , null, "R_dokNum"     , "DokBroj"   , ZXC.Q3un);
       vvtbR_dokNum_pt.JAM_ReadOnly = true;
 
-      vvtbR_ttNum_pt = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_ttNum_pt", null, -12, "Vrsta knji≈æenja");
+      vvtbR_ttNum_pt = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_ttNum_pt", null, -12, "Vrsta knjiûenja");
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_ttNum_pt, null, "R_ttNum", "VK", ZXC.Q2un);
       vvtbR_ttNum_pt.JAM_ReadOnly = true;
 
@@ -5454,7 +5452,7 @@ public partial class ObrProUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_ticker_pt, null, "R_ticker", "Ticker", ZXC.Q3un);
       vvtbR_ticker_pt.JAM_ReadOnly = true;
 
-      vvtbR_kupdob_cd_pt = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColR_kupdob_cd_pt", null, -6, "≈†ifra partnera");
+      vvtbR_kupdob_cd_pt = theGrid.CreateVvTextBoxFor_Integer_ColumnTemplate(true, "vvtb4ColR_kupdob_cd_pt", null, -6, "äifra partnera");
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_kupdob_cd_pt, null, "R_kupdob_cd", "SifK/D", ZXC.Q3un);
       vvtbR_kupdob_cd_pt.JAM_ReadOnly = true;
 
@@ -5469,8 +5467,8 @@ public partial class ObrProUC : VvOtherUC
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_dug_pt.JAM_ReadOnly = true;
 
-      vvtbR_pot_pt = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_pt", null, -12, "Iznos potra≈æuje");
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_pt, null, "R_pot", "Potra≈æuje", ZXC.Q5un);
+      vvtbR_pot_pt = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_pt", null, -12, "Iznos potraûuje");
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_pt, null, "R_pot", "Potraûuje", ZXC.Q5un);
       vvtbR_pot_pt.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_pot_pt.JAM_ReadOnly = true;
@@ -5496,8 +5494,8 @@ public partial class ObrProUC : VvOtherUC
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_dug_ni_S.JAM_ReadOnly = true;
 
-      vvtbR_pot_ni_S = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_ni_S", null, -12, "Iznos potra≈æuje");
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_ni_S, null, "R_pot", "Potra≈æuje", ZXC.Q5un);
+      vvtbR_pot_ni_S = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_pot_ni_S", null, -12, "Iznos potraûuje");
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_pot_ni_S, null, "R_pot", "Potraûuje", ZXC.Q5un);
       vvtbR_pot_ni_S.JAM_ShouldSumGrid = true;
       colVvText.MinimumWidth = ZXC.Q4un;
       vvtbR_pot_ni_S.JAM_ReadOnly = true;
@@ -5773,7 +5771,7 @@ public partial class AnalizaProizDLG : Form// VvDialog{
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;
-      this.Text = "Integralna Analiza Tro≈°kova Proizvodnje";
+      this.Text = "Integralna Analiza Troökova Proizvodnje";
 
       CreateToolStripIzvod();
       CreateTheUC();
@@ -5831,8 +5829,8 @@ public partial class AnalizaProizDLG : Form// VvDialog{
       menu.Parent    = this;
       menu.Visible   = false;
 
-      tsb_ucitaj = new ToolStripButton("Uƒçitaj", VvIco.UcitajRn32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.ucitajRacune.ico")), 32, 32)*/.ToBitmap(), new EventHandler(UcitajButton_Click), "tsb_ucitaj");
-      tsb_ucitaj.ToolTipText = "Uƒçitaj podatke";
+      tsb_ucitaj = new ToolStripButton("UËitaj", VvIco.UcitajRn32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Modul.ucitajRacune.ico")), 32, 32)*/.ToBitmap(), new EventHandler(UcitajButton_Click), "tsb_ucitaj");
+      tsb_ucitaj.ToolTipText = "UËitaj podatke";
       ts_izvod.Items.Add(tsb_ucitaj);
 
       tsb_printPrw = new ToolStripButton("QPrint", VvIco.PrintPrw32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Record.printPrw.ico")), 32, 32)*/.ToBitmap(), new EventHandler(QPrint_Click), "tsb_qPrint");
@@ -5840,7 +5838,7 @@ public partial class AnalizaProizDLG : Form// VvDialog{
       ts_izvod.Items.Add(tsb_printPrw);
 
       tsb_abort             = new ToolStripButton("Prekid", VvIco.Esc32/*new Icon(new Icon(ZXC.TheVvForm.GetManifestResourceStream("Vektor.Icons.ToolStrip_Record.esc.ico")), 32, 32)*/.ToBitmap(), new EventHandler(AbortButton_Click), "tsb_abort");
-      tsb_abort.ToolTipText = "Odustani od obraƒçuna";
+      tsb_abort.ToolTipText = "Odustani od obraËuna";
       ts_izvod.Items.Add(tsb_abort);
 
       foreach(ToolStripButton tsb in ts_izvod.Items)
@@ -5926,7 +5924,7 @@ public partial class AnalizaProizDLG : Form// VvDialog{
 
       #region FillDataset, CreateReportDocument, SetDataSource, AssignReportSource
 
-      SetReportAndReportName_ForThisInnerTabPage(TheUC.ThePolyGridTabControl.SelectedTab.Title, ThePreviewForm);
+      SetReportAndReportName_ForThisInnerTabPage(TheUC.ThePolyGridTabControl.SelectedTabPage.Title, ThePreviewForm);
 
       #endregion FillDataset, CreateReportDocument, SetDataSource, AssignReportSource
 
@@ -6169,9 +6167,9 @@ public partial class AnalizaProizUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-      hamper.CreateVvLabel(0, 0, "PR - poƒçetak razdoblja (stanje na poƒçetku razdoblja obraƒçuna)", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(1, 0, "UR - u razdoblju (promet tro≈°kova unutar razdoblja)", ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(2, 0, "KR - kraj razdoblja (stanje na kraju razdoblja obraƒçuna)", ContentAlignment.MiddleRight); 
+      hamper.CreateVvLabel(0, 0, "PR - poËetak razdoblja (stanje na poËetku razdoblja obraËuna)", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(1, 0, "UR - u razdoblju (promet troökova unutar razdoblja)", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(2, 0, "KR - kraj razdoblja (stanje na kraju razdoblja obraËuna)", ContentAlignment.MiddleRight); 
 
    }
 
@@ -6190,13 +6188,13 @@ public partial class AnalizaProizUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                         hamper.CreateVvLabel   (0, 0, "Re≈æijski tro≈°kovi 100%:", ContentAlignment.MiddleRight); 
+                         hamper.CreateVvLabel   (0, 0, "Reûijski troökovi 100%:", ContentAlignment.MiddleRight); 
       tbx_iznosIndirTr = hamper.CreateVvTextBox (1, 0, "tbx_iznosIndirTr"    , "", 12);
       tbx_iznosIndirTr.JAM_ReadOnly = true;
       tbx_iznosIndirTr.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
       tbx_iznosIndirTr.JAM_Highlighted = true;
 
-                        hamper.CreateVvLabel   (0, 1, "Re≈æijski tro≈°kovi u %:", ContentAlignment.MiddleRight); 
+                        hamper.CreateVvLabel   (0, 1, "Reûijski troökovi u %:", ContentAlignment.MiddleRight); 
       tbx_rezijaPosto = hamper.CreateVvTextBox (1, 1, "tbx_rezijaPosto"    , "", 12);
       tbx_rezijaPosto.JAM_ReadOnly = true;
       tbx_rezijaPosto.JAM_MarkAsNumericTextBox(2, true, decimal.MaxValue, decimal.MinValue, true);
@@ -6232,7 +6230,7 @@ public partial class AnalizaProizUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                         hamper.CreateVvLabel         (0, 0, "Razdoblje obraƒçuna:", ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel         (0, 0, "Razdoblje obraËuna:", ContentAlignment.MiddleRight);
       tbx_DatumOD      = hamper.CreateVvTextBox       (1, 0, "tbx_datumOd", "Od datuma");
       tbx_DatumOD.JAM_IsForDateTimePicker = true;
       dtp_DatumOD      = hamper.CreateVvDateTimePicker(1, 0, "", tbx_DatumOD);
@@ -6254,8 +6252,8 @@ public partial class AnalizaProizUC : VvOtherUC
                   hamper.CreateVvLabel  (3, 0 , "TT Rad.Nal/Proj:", ContentAlignment.MiddleRight)      ; 
       tbx_tipRN = hamper.CreateVvTextBox(4, 0, "tbx_tipRN"           , "");
 
-                   hamper.CreateVvLabel        (5, 0, "Preskoƒçi:", ContentAlignment.MiddleRight);
-      tbx_status = hamper.CreateVvTextBoxLookUp(6, 0, "tbx_Status", "Preskoƒçi naloge sa odobranim statusom", 1);
+                   hamper.CreateVvLabel        (5, 0, "PreskoËi:", ContentAlignment.MiddleRight);
+      tbx_status = hamper.CreateVvTextBoxLookUp(6, 0, "tbx_Status", "PreskoËi naloge sa odobranim statusom", 1);
 
       tbx_status.JAM_Set_LookUpTable(ZXC.luiListaRiskStatus, (int)ZXC.Kolona.prva);
       tbx_status.JAM_lookUp_NOTobligatory = false;
@@ -6282,14 +6280,14 @@ public partial class AnalizaProizUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                       hamper.CreateVvLabel  (0, 0, "Analitiƒçka grupa konta:", 1, 0, ContentAlignment.MiddleRight); 
-                       hamper.CreateVvLabel  (2, 0, "Direktnih tro≈°kova:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (0, 0, "AnalitiËka grupa konta:", 1, 0, ContentAlignment.MiddleRight); 
+                       hamper.CreateVvLabel  (2, 0, "Direktnih troökova:", ContentAlignment.MiddleRight);
       tbx_anaGrDirTr = hamper.CreateVvTextBox(3, 0, "tbx_anaGrDirTr", "");
-                       hamper.CreateVvLabel  (4, 0, "Indirektnih tro≈°kova:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (4, 0, "Indirektnih troökova:", ContentAlignment.MiddleRight);
       tbx_anaGrIndTr = hamper.CreateVvTextBox(5, 0, "tbx_anaGrIndTr", "");
-                       hamper.CreateVvLabel  (6, 0, "Re≈æijskih tro≈°kova:", ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (6, 0, "Reûijskih troökova:", ContentAlignment.MiddleRight);
       tbx_anaGrRrTr  = hamper.CreateVvTextBox(7, 0, "tbx_anaGrDirTr", "");
-                       hamper.CreateVvLabel  (0, 1, "% Priznatih Re≈æijskih tro≈°kova:", 1, 0, ContentAlignment.MiddleRight);
+                       hamper.CreateVvLabel  (0, 1, "% Priznatih Reûijskih troökova:", 1, 0, ContentAlignment.MiddleRight);
       tbx_postoRr    = hamper.CreateVvTextBox(2, 1, "tbx_postoRr", "", 6, 1, 0);
 
       tbx_anaGrDirTr.TextChanged += new EventHandler(DisablePrintPrwAction);
@@ -6314,8 +6312,8 @@ public partial class AnalizaProizUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                       hamper.CreateVvLabel       (0, 0, "Raspored tro≈°kova koef:", ContentAlignment.MiddleRight);
-      rbt_trDirMat   = hamper.CreateVvRadioButton (1, 0, new EventHandler(DisablePrintPrwAction), "Direktni tro≈°kovi", TextImageRelation.ImageBeforeText);
+                       hamper.CreateVvLabel       (0, 0, "Raspored troökova koef:", ContentAlignment.MiddleRight);
+      rbt_trDirMat   = hamper.CreateVvRadioButton (1, 0, new EventHandler(DisablePrintPrwAction), "Direktni troökovi", TextImageRelation.ImageBeforeText);
       rbt_trCijProiz = hamper.CreateVvRadioButton (1, 1, new EventHandler(DisablePrintPrwAction), "Planirana cijena" , TextImageRelation.ImageBeforeText);
       rbt_trDirMat.Checked = true;
       rbt_trDirMat  .Tag = 0; //vvtbR_RD_year;
@@ -6337,7 +6335,7 @@ public partial class AnalizaProizUC : VvOtherUC
       }
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
-                         hamper.CreateVvLabel      (0, 0,       "Knji≈æi na:"  , ContentAlignment.MiddleRight);
+                         hamper.CreateVvLabel      (0, 0,       "Knjiûi na:"  , ContentAlignment.MiddleRight);
       rbt_ktoIndirSame = hamper.CreateVvRadioButton(1, 0, null, "Isti konto"  , TextImageRelation.ImageBeforeText);
       rbt_ktoIndirEnd  = hamper.CreateVvRadioButton(1, 1, null, "Zadnja znamenka:", TextImageRelation.ImageBeforeText);
       rbt_ktoIndirEnd.Checked = true;
@@ -6364,19 +6362,19 @@ public partial class AnalizaProizUC : VvOtherUC
       hamper.VvBottomMargin = hamper.VvTopMargin;
 
       Label lbDir        = hamper.CreateVvLabel  (0,  0, "KONTA:", ContentAlignment.MiddleRight);
-      //                     hamper.CreateVvLabel  (0,  0, "Raspored tro≈°kova:"             , 2, 0, ContentAlignment.MiddleRight); 
-      tbx_ktoPreraspTrsk = hamper.CreateVvTextBox(3,  0, "tbx_ktoPreraspTrsk",      "Raspored tro≈°kova za obraƒçun proizvoda i usluga (prema HSFI 10 i MRS-u 2 i MRS-u 11) - uskladi≈°tivi tro≈°kovi (na raƒçune 60, 62 i 63)", 8);
+      //                     hamper.CreateVvLabel  (0,  0, "Raspored troökova:"             , 2, 0, ContentAlignment.MiddleRight); 
+      tbx_ktoPreraspTrsk = hamper.CreateVvTextBox(3,  0, "tbx_ktoPreraspTrsk",      "Raspored troökova za obraËun proizvoda i usluga (prema HSFI 10 i MRS-u 2 i MRS-u 11) - uskladiötivi troökovi (na raËune 60, 62 i 63)", 8);
                            hamper.CreateVvLabel  (0,  0, "Amortizacija korijen konta:", 2, 0, ContentAlignment.MiddleRight); 
-      tbx_ktoAmKorjen    = hamper.CreateVvTextBox(3,  0, "tbx_ktoAmKorjen",  "Korijen konta tro≈°kova amortizacije", 8);
+      tbx_ktoAmKorjen    = hamper.CreateVvTextBox(3,  0, "tbx_ktoAmKorjen",  "Korijen konta troökova amortizacije", 8);
 
       
       
                            hamper.CreateVvLabel  (0,  1, "Proizvodnja u  tijeku:"         , 2, 0, ContentAlignment.MiddleRight); 
       tbx_ktoProizv      = hamper.CreateVvTextBox(3,  1, "tbx_ktoProizv",           "Proizvodnja u tijeku", 8);
-      //                     hamper.CreateVvLabel  (0,  2, "Tro≈°ak zaliha prodanih proizvoda:"   , 2, 0, ContentAlignment.MiddleRight); 
-      tbx_kto7trosProizv = hamper.CreateVvTextBox(3,  2, "tbx_kto7trosProizv"  ,    "Tro≈°ak zaliha prodanih proizvoda (60, 62, 63 i 64)", 8);
-      //                     hamper.CreateVvLabel  (1,  3, "Gotovi proizvodi na skladi≈°tu:"   , 1, 0, ContentAlignment.MiddleRight); 
-      tbx_ktoGotProiz    = hamper.CreateVvTextBox(3,  3, "tbx_ktoGotProiz"     ,    "Gotovi proizvodi na skladi≈°tu", 8);
+      //                     hamper.CreateVvLabel  (0,  2, "Troöak zaliha prodanih proizvoda:"   , 2, 0, ContentAlignment.MiddleRight); 
+      tbx_kto7trosProizv = hamper.CreateVvTextBox(3,  2, "tbx_kto7trosProizv"  ,    "Troöak zaliha prodanih proizvoda (60, 62, 63 i 64)", 8);
+      //                     hamper.CreateVvLabel  (1,  3, "Gotovi proizvodi na skladiötu:"   , 1, 0, ContentAlignment.MiddleRight); 
+      tbx_ktoGotProiz    = hamper.CreateVvTextBox(3,  3, "tbx_ktoGotProiz"     ,    "Gotovi proizvodi na skladiötu", 8);
 
       cbx_isSkladGotProizv = hamper.CreateVvCheckBox_OLD(0, 3, null, "", RightToLeft.Yes);
       cbx_hocuAmort        = hamper.CreateVvCheckBox_OLD(0, 3, null, 2, 0, "Prikazi i amortizaciju",  RightToLeft.Yes);
@@ -6423,7 +6421,7 @@ public partial class AnalizaProizUC : VvOtherUC
 
                             hamper.CreateVvLabel  (0, 0, "Korijeni konta KUPCI:"               , ContentAlignment.MiddleLeft);
                             hamper.CreateVvLabel  (1, 0, "Korijeni konta PRIMLJENI PREDUJMOVI:", ContentAlignment.MiddleLeft);
-                            hamper.CreateVvLabel  (2, 0, "Korijeni konta DOBAVLJAƒåI:"          , ContentAlignment.MiddleLeft);
+                            hamper.CreateVvLabel  (2, 0, "Korijeni konta DOBAVLJA»I:"          , ContentAlignment.MiddleLeft);
                             hamper.CreateVvLabel  (3, 0, "Korijeni konta DANI PREDUJMOVI:"     , ContentAlignment.MiddleLeft);
 
       tbx_kupciKonto      = hamper.CreateVvTextBox(0, 1, "tbx_kupciKonto"    , "");
@@ -6468,12 +6466,12 @@ public partial class AnalizaProizUC : VvOtherUC
       VvStandardTextBoxContextMenu date_ContexMenu = new VvStandardTextBoxContextMenu(new MenuItem[] 
             { 
                new MenuItem("Danas"           , IspuniDatume),
-               new MenuItem("Tekuƒáa godina"   , IspuniDatume),
-               new MenuItem("Tekuƒái mjesec"   , IspuniDatume),
+               new MenuItem("TekuÊa godina"   , IspuniDatume),
+               new MenuItem("TekuÊi mjesec"   , IspuniDatume),
                new MenuItem("Prvi kvartal"    , IspuniDatume),
                new MenuItem("Drugi kvartal"   , IspuniDatume),
-               new MenuItem("Treƒái kvartal"   , IspuniDatume),
-               new MenuItem("ƒåetvrti kvartal" , IspuniDatume),
+               new MenuItem("TreÊi kvartal"   , IspuniDatume),
+               new MenuItem("»etvrti kvartal" , IspuniDatume),
                new MenuItem("1 -11 mjesec"    , IspuniDatume),
                new MenuItem("1 -10 mjesec"    , IspuniDatume),
                new MenuItem("1 - 9 mjesec"    , IspuniDatume),
@@ -6484,9 +6482,9 @@ public partial class AnalizaProizUC : VvOtherUC
                new MenuItem("1 - 4 mjesec"    , IspuniDatume),
                new MenuItem("1 - 3 mjesec"    , IspuniDatume),
                new MenuItem("1 - 2 mjesec"    , IspuniDatume),
-               new MenuItem("Sijeƒçanj"        , IspuniDatume),
-               new MenuItem("Veljaƒça"         , IspuniDatume),
-               new MenuItem("O≈æujak"          , IspuniDatume),
+               new MenuItem("SijeËanj"        , IspuniDatume),
+               new MenuItem("VeljaËa"         , IspuniDatume),
+               new MenuItem("Oûujak"          , IspuniDatume),
                new MenuItem("Travanj"         , IspuniDatume),
                new MenuItem("Svibanj"         , IspuniDatume),
                new MenuItem("Lipanj"          , IspuniDatume),
@@ -6520,12 +6518,12 @@ public partial class AnalizaProizUC : VvOtherUC
 
       switch(text)
       { //                              mmOD           dd.mmDO
-         case "Tekuƒáa godina"  : textOd = "01"; textDo = "31.12"; break;
-         case "Tekuƒái mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
+         case "TekuÊa godina"  : textOd = "01"; textDo = "31.12"; break;
+         case "TekuÊi mjesec"  : textOd = DateTime.Today.Month.ToString(); textDo = DateTime.DaysInMonth(god, DateTime.Today.Month).ToString() + "." + DateTime.Today.Month.ToString(); break;
          case "Prvi kvartal"   : textOd = "01"; textDo = "31.03"; break;
          case "Drugi kvartal"  : textOd = "04"; textDo = "30.06"; break;
-         case "Treƒái kvartal"  : textOd = "07"; textDo = "30.09"; break;
-         case "ƒåetvrti kvartal": textOd = "10"; textDo = "31.12"; break;
+         case "TreÊi kvartal"  : textOd = "07"; textDo = "30.09"; break;
+         case "»etvrti kvartal": textOd = "10"; textDo = "31.12"; break;
          case "1 -11 mjesec"   : textOd = "01"; textDo = "30.11"; break;
          case "1 -10 mjesec"   : textOd = "01"; textDo = "31.10"; break;
          case "1 - 9 mjesec"   : textOd = "01"; textDo = "30.09"; break;
@@ -6536,9 +6534,9 @@ public partial class AnalizaProizUC : VvOtherUC
          case "1 - 4 mjesec"   : textOd = "01"; textDo = "30.04"; break;
          case "1 - 3 mjesec"   : textOd = "01"; textDo = "31.03"; break;
          case "1 - 2 mjesec"   : textOd = "01"; textDo = mj02 + ".02"; break;
-         case "Sijeƒçanj"       : textOd = "01"; textDo = "31.01"; break;
-         case "Veljaƒça"        : textOd = "02"; textDo = mj02 + ".02"; break;
-         case "O≈æujak"         : textOd = "03"; textDo = "31.03"; break;
+         case "SijeËanj"       : textOd = "01"; textDo = "31.01"; break;
+         case "VeljaËa"        : textOd = "02"; textDo = mj02 + ".02"; break;
+         case "Oûujak"         : textOd = "03"; textDo = "31.03"; break;
          case "Travanj"        : textOd = "04"; textDo = "30.04"; break;
          case "Svibanj"        : textOd = "05"; textDo = "31.05"; break;
          case "Lipanj"         : textOd = "06"; textDo = "30.06"; break;
@@ -6736,8 +6734,8 @@ public partial class AnalizaProizUC : VvOtherUC
 
    #region TabPageTitle
 
-   public string TabPageTitle1 { get { return "¬∞  Integralna Analiza Tro≈°kova Proizvodnje  ¬∞"; } }
-   public string TabPageTitle2 { get { return "¬∞  Projekti / Radni Nalozi  ¬∞"; } }
+   public string TabPageTitle1 { get { return "∞  Integralna Analiza Troökova Proizvodnje  ∞"; } }
+   public string TabPageTitle2 { get { return "∞  Projekti / Radni Nalozi  ∞"; } }
 
    #endregion TabPageTitle
 
@@ -7014,18 +7012,18 @@ public partial class AnalizaProizUC : VvOtherUC
    private void CreateColumn_1(VvDataGridView theGrid)
    {
       vvtbR_projektCD_otp = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb4ColR_projektCD_otp", null, -12, "Projekt"                                                              );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_projektCD_otp, null, "R_projektCD"    , "Projekt\n1"          , ZXC.Q5un); vvtbR_projektCD_otp.JAM_ReadOnly = true;
-      vvtbR_investit_otp  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb4ColR_projektCD_otp", null, -12, "Nar/Investi"                                                          );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_investit_otp , null, "R_investit_otp" , "Naruƒçitelj / Investitor\n2"       ,        0); vvtbR_investit_otp.JAM_ReadOnly = true;
+      vvtbR_investit_otp  = theGrid.CreateVvTextBoxFor_String_ColumnTemplate (   "vvtb4ColR_projektCD_otp", null, -12, "Nar/Investi"                                                          );                   colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_investit_otp , null, "R_investit_otp" , "NaruËitelj / Investitor\n2"       ,        0); vvtbR_investit_otp.JAM_ReadOnly = true;
       colVvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
       colVvText.MinimumWidth = ZXC.Q6un;
 
        vvtbR_PlanCijena   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PlanCijena"   , null, -12, "Planirana cijena proizvodnje"                                   ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PlanCijena  , null, "R_PlanCijena"  , "PlanProdCijena\n"  +  "3"         , ZXC.Q5un); vvtbR_PlanCijena  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_PlanCijena  .JAM_ReadOnly = true;
-       vvtbR_PUT_dug_year = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PUT_dug_year" , null, -12, "Proizvodnja u tijeku od 1.1. tekuƒáe godine do zadanog razdoblja"); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PUT_dug_year, null, "R_PUT_dug_year", "Tro≈°kovi PR\n"     +  "4"         , ZXC.Q5un); vvtbR_PUT_dug_year.JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_PUT_dug_year.JAM_ReadOnly = true;
-       vvtbR_RD_razd      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RD_razd"      , null, -12, "Direktni tro≈°kovi zadanog razdoblja"                            ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RD_razd     , null, "R_RD_razd"     , "DirektniTr\n"      +  "5"         , ZXC.Q5un); vvtbR_RD_razd     .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_RD_razd     .JAM_ReadOnly = true;
-       vvtbR_NIraspored   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NIraspored"   , null, -12, "Raspored nerasporeƒëenih tro≈°kova zadanog razdoblja"             ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NIraspored  , null, "R_NIraspored"  , "IndirektniTr\n"    +  "6"         , ZXC.Q5un); vvtbR_NIraspored  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_NIraspored  .JAM_ReadOnly = true; 
-       vvtbR_RRraspored   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RRraspored"   , null, -12, "Re≈æijski tro≈°kovi"                                              ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RRraspored  , null, "R_RRraspored"  , "Re≈æijskiTr\n"      +  "7"         , ZXC.Q5un); vvtbR_RRraspored  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_RRraspored  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
-       vvtbR_AMraspored   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_AMraspored"   , null, -12, "Tro≈°kovi amortizacije"                                          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_AMraspored  , null, "R_AMraspored"  , "Amortizacija\n"    +  "8"         , ZXC.Q5un); vvtbR_AMraspored  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_AMraspored  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
-       vvtbR_NewTr_year   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NewTr_year"   , null, -12, "Ukupni tro≈°kovi od 1.1. tekuƒáe godine"                          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_year  , null, "R_NewTr_year"  , "UkTro≈°koviRazd\n"  + "9 (5+6+7+8)", ZXC.Q5un); vvtbR_NewTr_year  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_NewTr_year  .JAM_ReadOnly = true;
-       vvtbR_UkTrRN       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_UkTrRN"       , null, -12, "Ukupni tro≈°kovi po Radnom nalogu"                               ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_year  , null, "R_UkTrRN"      , "SveukupniTr\n"     + "10 (9 + 4)" , ZXC.Q5un); vvtbR_UkTrRN      .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_UkTrRN      .JAM_ReadOnly = true;
+       vvtbR_PUT_dug_year = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_PUT_dug_year" , null, -12, "Proizvodnja u tijeku od 1.1. tekuÊe godine do zadanog razdoblja"); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_PUT_dug_year, null, "R_PUT_dug_year", "Troökovi PR\n"     +  "4"         , ZXC.Q5un); vvtbR_PUT_dug_year.JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_PUT_dug_year.JAM_ReadOnly = true;
+       vvtbR_RD_razd      = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RD_razd"      , null, -12, "Direktni troökovi zadanog razdoblja"                            ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RD_razd     , null, "R_RD_razd"     , "DirektniTr\n"      +  "5"         , ZXC.Q5un); vvtbR_RD_razd     .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_RD_razd     .JAM_ReadOnly = true;
+       vvtbR_NIraspored   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NIraspored"   , null, -12, "Raspored nerasporeenih troökova zadanog razdoblja"             ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NIraspored  , null, "R_NIraspored"  , "IndirektniTr\n"    +  "6"         , ZXC.Q5un); vvtbR_NIraspored  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_NIraspored  .JAM_ReadOnly = true; 
+       vvtbR_RRraspored   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RRraspored"   , null, -12, "Reûijski troökovi"                                              ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RRraspored  , null, "R_RRraspored"  , "ReûijskiTr\n"      +  "7"         , ZXC.Q5un); vvtbR_RRraspored  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_RRraspored  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+       vvtbR_AMraspored   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_AMraspored"   , null, -12, "Troökovi amortizacije"                                          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_AMraspored  , null, "R_AMraspored"  , "Amortizacija\n"    +  "8"         , ZXC.Q5un); vvtbR_AMraspored  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_AMraspored  .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
+       vvtbR_NewTr_year   = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_NewTr_year"   , null, -12, "Ukupni troökovi od 1.1. tekuÊe godine"                          ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_year  , null, "R_NewTr_year"  , "UkTroökoviRazd\n"  + "9 (5+6+7+8)", ZXC.Q5un); vvtbR_NewTr_year  .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_NewTr_year  .JAM_ReadOnly = true;
+       vvtbR_UkTrRN       = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_UkTrRN"       , null, -12, "Ukupni troökovi po Radnom nalogu"                               ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_NewTr_year  , null, "R_UkTrRN"      , "SveukupniTr\n"     + "10 (9 + 4)" , ZXC.Q5un); vvtbR_UkTrRN      .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_UkTrRN      .JAM_ReadOnly = true;
        vvtbR_RazlikaPlan  = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_RazlikaPlan"  , null, -12, "Razlika u odnosu na Planiranu Prodajnu Cijenu Proizvodnje"      ); colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_RazlikaPlan , null, "R_RazlikaPlan" , "RUC\n"             + "11 (3-10)"  , ZXC.Q5un); vvtbR_RazlikaPlan .JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_RazlikaPlan .JAM_ReadOnly = true; colVvText.DefaultCellStyle.Font = ZXC.vvFont.BaseBoldFont;
        
       vvtbR_projektCD_otp.JAM_ForeColor = Color.Black;
@@ -7066,9 +7064,9 @@ public partial class AnalizaProizUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_status_fa, null, "R_status_fa", "Status", ZXC.Q2un);
       vvtbR_status_fa.JAM_ReadOnly = true;
 
-      vvtbR_dovrsenost_fa = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_dovrsenost_fa", null, -12, "% Dovr≈°enosti");
+      vvtbR_dovrsenost_fa = theGrid.CreateVvTextBoxFor_Decimal_ColumnTemplate(2, "vvtb4ColR_dovrsenost_fa", null, -12, "% Dovröenosti");
       vvtbR_dovrsenost_fa.JAM_IsForPercent = true;
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dovrsenost_fa, null, "R_dovrsenost_fa", "Dovr≈° %", ZXC.Q3un - ZXC.Qun4);
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_dovrsenost_fa, null, "R_dovrsenost_fa", "Dovrö %", ZXC.Q3un - ZXC.Qun4);
       colVvText.MinimumWidth = ZXC.Q3un - ZXC.Qun4; 
       vvtbR_dovrsenost_fa.JAM_ReadOnly = true;
 
@@ -7077,12 +7075,12 @@ public partial class AnalizaProizUC : VvOtherUC
       vvtbR_ugCijena_fa.JAM_ShouldSumGrid = true; colVvText.MinimumWidth = ZXC.Q4un; vvtbR_ugCijena_fa.JAM_ReadOnly = true;
       
 
-      vvtbR_narInv_fa     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_narInv_fa"    , null, -12, "Naruƒçitelj/Investitor" ); 
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_narInv_fa    , null, "R_narInv_fa"    , "Naruƒçitelj / Investitor", ZXC.Q8un); 
+      vvtbR_narInv_fa     = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_narInv_fa"    , null, -12, "NaruËitelj/Investitor" ); 
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_narInv_fa    , null, "R_narInv_fa"    , "NaruËitelj / Investitor", ZXC.Q8un); 
       vvtbR_narInv_fa    .JAM_ReadOnly = true;
 
-      vvtbR_objektCd_fa   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_objektCd_fa"  , null, -12, "Objekt ≈°ifra"          ); 
-      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_objektCd_fa  , null, "R_objektCd_fa"  , "≈†ifObjekta"      , ZXC.Q4un); 
+      vvtbR_objektCd_fa   = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_objektCd_fa"  , null, -12, "Objekt öifra"          ); 
+      colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_objektCd_fa  , null, "R_objektCd_fa"  , "äifObjekta"      , ZXC.Q4un); 
       vvtbR_objektCd_fa  .JAM_ReadOnly = true;
 
       vvtbR_objektName_fa = theGrid.CreateVvTextBoxFor_String_ColumnTemplate("vvtb4ColR_objektName_fa", null, -12, "Objekt"                ); 
@@ -7095,9 +7093,9 @@ public partial class AnalizaProizUC : VvOtherUC
       colVvText = theGrid.CreateVvTextBoxColumn(vvtbR_refDok_fa    , null, "R_refDok_fa"    , "RefDok"        , ZXC.Q10un); 
       vvtbR_refDok_fa    .JAM_ReadOnly = true;
 
-      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateStart_fa", "PoƒçIzvoƒë", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
+      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateStart_fa", "PoËIzvo", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
       
-      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateRokIsp_fa", "RokIzvoƒë", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
+      colDate = theGrid.CreateCalendarColumn_R(null, "R_dateRokIsp_fa", "RokIzvo", ZXC.Q3un + ZXC.Qun2); colDate.ReadOnly = true;
 
      
       colScrol = theGrid.CreateScrollColumn("scrol", ZXC.QUN);
@@ -7304,7 +7302,7 @@ public class NiceKnDlg : VvDialog
       hamper.VvBottomMargin = hamper.VvTopMargin;
       
       lbl_rowIdx     = hamper.CreateVvLabel(0, 0, "Redak:", ContentAlignment.MiddleRight);
-      lbl_artiklCD   = hamper.CreateVvLabel(0, 1, "≈†ifra:", ContentAlignment.MiddleRight);
+      lbl_artiklCD   = hamper.CreateVvLabel(0, 1, "äifra:", ContentAlignment.MiddleRight);
       lbl_artiklName = hamper.CreateVvLabel(0, 2, "Naziv:", ContentAlignment.MiddleRight);
 
       tbx_redak      = hamper.CreateVvTextBox(1, 0, "tbx_redak"     , redak     , 120, 2, 0);
@@ -7465,7 +7463,6 @@ public class AddDateToWYRNdlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -7556,27 +7553,27 @@ public class AddDateToWYRNUC : VvOtherUC
       decimal thisCalcKCRP =                      Fld_Osnovica + Fld_Pdv   + Fld_Prolaz;
       if(ZXC.AlmostEqual(Fld_KCRP, thisCalcKCRP, 0.02M) == false)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "GRE≈†KA:\n\nIskalkulirane sume se ne poklapaju sa iznosom raƒçuna.\n\nRaƒçun\t{0}\nOvajKlk\t{1}", Fld_KCRP, thisCalcKCRP);
+         ZXC.aim_emsg(MessageBoxIcon.Error, "GREäKA:\n\nIskalkulirane sume se ne poklapaju sa iznosom raËuna.\n\nRaËun\t{0}\nOvajKlk\t{1}", Fld_KCRP, thisCalcKCRP);
          e.Cancel = true;
       }
     //if(CtrlOK(theFakturExtDUC.tbx_KupdobCd) && (faktur_rec.KupdobCD.IsZero() || faktur_rec.KupdobName.IsEmpty() || faktur_rec.KupdobTK.IsEmpty()))
     //{
-    //   ZXC.aim_emsg(MessageBoxIcon.Error, "GRE≈†KA:\n\nMolim, zadajte partnera prije usnimavanja.");
+    //   ZXC.aim_emsg(MessageBoxIcon.Error, "GREäKA:\n\nMolim, zadajte partnera prije usnimavanja.");
     //   e.Cancel = true;
     //}
       if(Fld_TipBr.IsEmpty() || Fld_DospDate.IsEmpty() || Fld_DokDate.IsEmpty())
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "GRE≈†KA:\n\nBroj raƒçuna, datum raƒçuna i dospjeƒáe (valuta) plaƒáanja\n\nMORAJU BITI ZADANI!", Fld_KCRP, thisCalcKCRP);
+         ZXC.aim_emsg(MessageBoxIcon.Error, "GREäKA:\n\nBroj raËuna, datum raËuna i dospjeÊe (valuta) plaÊanja\n\nMORAJU BITI ZADANI!", Fld_KCRP, thisCalcKCRP);
          e.Cancel = true;
       }
       if(Fld_DospDate.NotEmpty() && Fld_DokDate.NotEmpty() && Fld_DospDate < Fld_DokDate)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "GRE≈†KA:\n\nDatum dospjeƒáa (valute) ne smije biti manji od datuma raƒçuna!\n\nDatum rn\t{1}\n\nValuta rn\t{0}", Fld_DospDate.ToString(ZXC.VvDateFormat), Fld_DokDate.ToString(ZXC.VvDateFormat));
+         ZXC.aim_emsg(MessageBoxIcon.Error, "GREäKA:\n\nDatum dospjeÊa (valute) ne smije biti manji od datuma raËuna!\n\nDatum rn\t{1}\n\nValuta rn\t{0}", Fld_DospDate.ToString(ZXC.VvDateFormat), Fld_DokDate.ToString(ZXC.VvDateFormat));
          e.Cancel = true;
       }
       if(Fld_DokDate.Year == ZXC.projectYearFirstDay.Year)
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "GRE≈†KA:\n\nDatum raƒçuna ne mo≈æe biti iz tekuƒáe godine!");
+         ZXC.aim_emsg(MessageBoxIcon.Error, "GREäKA:\n\nDatum raËuna ne moûe biti iz tekuÊe godine!");
          e.Cancel = true;
       }
    }
@@ -7645,15 +7642,15 @@ public class AddDateToWYRNUC : VvOtherUC
       tbx_tipBr = hamper.CreateVvTextBox(1, 0, "tbx_tipBr", "", 40, 1, 0);
 
 
-                    hamper.CreateVvLabel  (0, 2, "Datum raƒçuna :", 1, 0, ContentAlignment.MiddleRight);
-      tbx_dokDate = hamper.CreateVvTextBox(2, 2, "tbx_datumOd", "Datum raƒçuna");
+                    hamper.CreateVvLabel  (0, 2, "Datum raËuna :", 1, 0, ContentAlignment.MiddleRight);
+      tbx_dokDate = hamper.CreateVvTextBox(2, 2, "tbx_datumOd", "Datum raËuna");
       tbx_dokDate.JAM_IsForDateTimePicker = true;
       dtp_dokDate = hamper.CreateVvDateTimePicker(2, 2, "", tbx_dokDate);
       dtp_dokDate.Name = "dtp_dokDate";
       dtp_dokDate.Tag  = tbx_dokDate;
       tbx_dokDate.Tag  = dtp_dokDate;
 
-                     hamper.CreateVvLabel  (0, 3, "Valuta plaƒáanja:", 1, 0, ContentAlignment.MiddleRight);
+                     hamper.CreateVvLabel  (0, 3, "Valuta plaÊanja:", 1, 0, ContentAlignment.MiddleRight);
       tbx_dospDate = hamper.CreateVvTextBox(2, 3, "tbx_datumDo", "");
       tbx_dospDate.JAM_IsForDateTimePicker = true;
       dtp_dospDate = hamper.CreateVvDateTimePicker(2, 3, "", tbx_dospDate);
@@ -7685,7 +7682,7 @@ public class AddDateToWYRNUC : VvOtherUC
       hamper.CreateVvLabel(0, 2, "Iznos PDV-a:"        , ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(0, 3, "ProlaznaSt:"         , ContentAlignment.MiddleRight);
       hamper.CreateVvLabel(0, 4, "PK kolona:"          , ContentAlignment.MiddleRight);
-      hamper.CreateVvLabel(0, 5, "Ukupan iznos raƒçuna:", ContentAlignment.MiddleRight);
+      hamper.CreateVvLabel(0, 5, "Ukupan iznos raËuna:", ContentAlignment.MiddleRight);
                                                                          
       tbx_kcr        = hamper.CreateVvTextBox(1, 0, "tbx_kcr"      , "", 12, 1, 0);
       tbx_pdvSt      = hamper.CreateVvTextBox(1, 1, "tbx_pdvSt"    , "",  6, 1, 0);
@@ -7706,7 +7703,7 @@ public class AddDateToWYRNUC : VvOtherUC
       tbx_pdvKolTip.JAM_AllowedInputCharacters = "7890123456MNPUA";
       tbx_pdvKolTip.JAM_CharacterCasing = CharacterCasing.Upper;
 
-      //URA: M-mo≈æe se odbiti, N-ne mo≈æe se odbiti, P-prolazna stavka   
+      //URA: M-moûe se odbiti, N-ne moûe se odbiti, P-prolazna stavka   
       //IRA: 7-kolona 7, 8-kolona 8, 9-kolona 9, 0-kolona 10, 1-kolona 11, 2-kolona 12, 3-kolona 13, 4-kolona 14, 5-kolona 15, 6-kolona 16
       //A-avans, U-umjetnina
    }
@@ -7806,7 +7803,7 @@ public class VvBackup_FromVvXmlDRDlg : VvDialog
    public VvBackup_FromVvXmlDRDlg()
    {
       this.StartPosition = FormStartPosition.WindowsDefaultLocation;
-      this.Text = "Uƒçitavanje xml-a";
+      this.Text = "UËitavanje xml-a";
 
       CreateHamper();
 
@@ -7880,4 +7877,5 @@ public class VvBackup_FromVvXmlDRDlg : VvDialog
    #endregion Fld_
 
 }
+
 

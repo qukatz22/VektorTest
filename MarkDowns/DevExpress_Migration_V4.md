@@ -558,15 +558,15 @@ identično** kao prije migracije.
 
 Poredak od najmanjeg do najvećeg rizika:
 
-1. [ ] `UtilsEtc\VvAboutBox.cs` — izoliran
-2. [ ] `VvUC\PlaUC\PersonUC.cs`
-3. [ ] `VvUC\MixerUC\UgovoriDUC.cs`, `ZahtjeviDUC.cs`
-4. [ ] `VvUC\PrjUC\SkyRuleUC.cs`
-5. [ ] `VvUC\FinUC\Fin_Dlg_UC.cs`, `Fin_Dlg_UC_Q.cs`
-6. [ ] `VvUC\RiskUC\PTG_DUC.cs`
-7. [ ] `Framework\VvUserControlRecord_Sub.cs`
-8. [ ] `VvUC\FakturExtDUC.cs`
-9. [ ] `VvUC\RiskUC\FUG_PTG_UC.cs` (PolyGrid)
+1. [x] `UtilsEtc\VvAboutBox.cs` — izoliran
+2. [x] `VvUC\PlaUC\PersonUC.cs`
+3. [x] `VvUC\MixerUC\UgovoriDUC.cs`, `ZahtjeviDUC.cs` — no-op: već koristi `TheTabControl.TabPages[0]`, bez legacy `SelectedTab`/Crownwood API-ja
+4. [x] `VvUC\PrjUC\SkyRuleUC.cs` — no-op: već koristi DevExpress-kompatibilni `TheTabControl.TabPages[0]`, bez legacy `SelectedTab`/Crownwood API-ja
+5. [x] `VvUC\FinUC\Fin_Dlg_UC.cs`, `Fin_Dlg_UC_Q.cs` — swap: `ThePolyGridTabControl.SelectedTab.Title` → `SelectedTabPage.Title`; clean-build green
+6. [x] `VvUC\RiskUC\PTG_DUC.cs` — no-op: koristi `VvInnerTabControl`/`VvInnerTabPage` wrapper i nema legacy `SelectedTab`/Crownwood API-ja
+7. [x] `Framework\VvUserControlRecord_Sub.cs` — swap: `ThePolyGridTabControl.SelectedTab.Title` → `SelectedTabPage.Title`; clean-build green
+8. [x] `FakturExtDUC` (`VvUC\RiskUC\FakturDUC.cs`, `VvUC\RiskUC\FakturDUC_Q.cs`) — swap: aktivni `SelectedTab` pristupi → `SelectedTabPage`; clean-build green
+9. [x] `FUG_PTG_UC` (`VvUC\RiskUC\PTG_DUC.cs`) (PolyGrid) — no-op: embedded klasa već koristi `VvInnerTabControl`/`VvInnerTabPage` wrapper, bez aktivnog legacy `SelectedTab`/Crownwood API-ja; clean-build green
 
 Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage`,
 (d) event rename `SelectedIndexChanged` → `SelectedPageChanged` s `TabPageChangedEventArgs`.
@@ -631,6 +631,12 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] Mrtve/unused `DotNetMagicForm` preview reference uklonjene iz `PutNalDUC`, `VirmaniDUC` i `Fin_Dlg_UC`
   - [x] `UtilsEtc\VvColorsStylsDlg.cs` tab container prebačen s Crownwood `TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`
   - [x] `VvUC\RiskUC\RiskReportUC.cs` report filter tab container prebačen s Crownwood `TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`
+  - [x] `UtilsEtc\VvColors.cs` color picker prebačen s `DotNetMagicForm` + Crownwood `TabControl`/`TabPage` + `ButtonWithStyle` na `XtraForm` + `XtraTabControl`/`XtraTabPage` + WinForms `Button`
+  - [x] `UtilsEtc\VvEnvironmentDescriptor.cs` mrtvi `using Crownwood.DotNetMagic.Common` uklonjen; clean-build green
+  - [x] Mrtvi `using Crownwood.DotNetMagic.Controls` uklonjeni iz `Framework\VvUserControlRecord_Sub.cs`, `Framework\VvUserControl_Sub.cs`, `VvUC\KpdbUC\KupdobUC.cs` i `VvUC\PrjUC\PrjktUC.cs`; clean-build green
+  - [x] Mrtvi Crownwood `using`-i uklonjeni iz `Framework\VvRichTextBoxToolStrip.cs` i `zVvForm\TabControl_TabPages.cs`; clean-build green
+  - [x] `Framework\VvDialog.cs` prebačen s `DotNetMagicForm` na WinForms `Form`; obsolete `Style` assignment-i uklonjeni iz izvedenih `VvDialog` dijaloga; clean-build green
+  - [x] `Framework\VvTabPage.cs` obsolete unused Crownwood `TabControl` field i `using Crownwood.DotNetMagic.Controls` uklonjeni; clean-build green
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a

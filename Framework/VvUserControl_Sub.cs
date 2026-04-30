@@ -4,7 +4,6 @@ using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Windows.Forms;
 using System;
 using System.Data;
-using Crownwood.DotNetMagic.Controls;
 using System.Linq;
 using System.ComponentModel;
 

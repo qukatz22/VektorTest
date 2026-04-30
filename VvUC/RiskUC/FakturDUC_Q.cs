@@ -2858,7 +2858,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
             e.Cancel = true;
          }
 
-         if(ThePolyGridTabControl.SelectedTab.Title == "Realizacija")
+         if(ThePolyGridTabControl.SelectedTabPage.Title == "Realizacija")
          {
             ZXC.aim_emsg(MessageBoxIcon.Error, "GREŠKA:\n\nVratite se sa Tab-a 'Realizacija' na Tab 'Nalog' prije usnimavanja.");
 
@@ -4401,7 +4401,7 @@ public abstract partial class FakturDUC : VvPolyDocumRecordUC//, Events.Required
 
             bool wasG2 = false;
 
-            VvInnerTabPage currTabPage = thePduc.ThePolyGridTabControl.SelectedTab;
+            VvInnerTabPage currTabPage = thePduc.ThePolyGridTabControl.SelectedTabPage;
 
             if(currTabPage.Title != TabPageTitle1) wasG2 = true;
 

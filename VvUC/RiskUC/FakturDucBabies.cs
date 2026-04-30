@@ -10397,7 +10397,7 @@ public class F2_Izlaz_UC : VvUserControl
 
    }
 
-   public /*override*/ void Refresh_FIR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void Refresh_FIR(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       INIT_FIR();
    }
@@ -10891,7 +10891,7 @@ public class F2_Ulaz_UC : VvUserControl
 
    #endregion PutDgvFields1
 
-   public /*override*/ void Refresh_FUR(Crownwood.DotNetMagic.Controls.TabControl sender, Crownwood.DotNetMagic.Controls.TabPage oldPage, Crownwood.DotNetMagic.Controls.TabPage newPage)
+   public /*override*/ void Refresh_FUR(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
       INIT_FUR();
    }

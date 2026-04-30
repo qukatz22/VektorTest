@@ -121,7 +121,8 @@ authoritative.
 - Format all responses as one continuous block (jedan window) to allow for easy application and copying of the entire response at once, avoiding fragmented multi-block responses.
 
 ## User Expectations
-- Continue executing multi-step coding/migration tasks to completion without unnecessary pauses or requiring repeated 'nastavi' prompts, while still reporting concise progress.
+- Continue executing multi-step coding/migration tasks to completion without unnecessary pauses or requiring repeated 'nastavi' prompts, while still reporting concise progress. During V4 DevExpress Phase 2, only stop for real blockers such as failed validation, V4 strategic deviation, unsafe git history operations beyond allowed commits, or required human runtime smoke tests.
+- Autonomous execution of every remaining DevExpress migration slice through the end of Phase 2 without waiting for repeated "nastavi" prompts, stopping only for real blockers, required authorization, or human runtime smoke tests.
 
 ## Independent Commit Authorization
 - The assistant is granted permission to commit independently through the end of Phase 2 of the V4 DevExpress migration, while still following project build/validation discipline. This includes executing autonomous build-green atomic commits to streamline the migration process.

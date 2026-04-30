@@ -1311,7 +1311,6 @@ public partial class Sin_VvSyncInfoDLG :  VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;

@@ -5174,7 +5174,6 @@ public partial class PCK_ArtiklList_Dlg :  VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;
@@ -7158,7 +7157,6 @@ public class UDP_Dlg :  VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -7426,3 +7424,4 @@ public class VvRenameSernoDlg : VvDialog
    #endregion Fld_
 
 }
+

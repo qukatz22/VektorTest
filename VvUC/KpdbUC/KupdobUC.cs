@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Crownwood.DotNetMagic.Controls;
 using System.Linq;
 
 #if MICROSOFT

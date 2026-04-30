@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Crownwood.DotNetMagic.Controls;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -2014,8 +2013,6 @@ public class VvAddInteractiveSifrarRecordDlg : Form
    private ToolStripButton   tsb_Save, tsb_Esc;
    private MenuStrip         menuStrip;
    private ToolStripMenuItem tsMi_datoteka, tsMi_Save, tsMi_Esc;
-   
-   private Crownwood.DotNetMagic.Controls.TabControl tabControl;
 
    #endregion Fieldz
 

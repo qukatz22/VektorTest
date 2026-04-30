@@ -1,6 +1,5 @@
 using System.Windows.Forms;
 using System.Drawing;
-using Crownwood.DotNetMagic.Common;
 using System.Collections.Generic;
 
 public class VvEnvironmentDescriptor

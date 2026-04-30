@@ -2212,14 +2212,15 @@ public class PersonUC : VvSifrarRecordUC
    // 2. TheTabControl.SelectionChanged 
    public override void DecideIfShouldLoad_TransDGV(VvInnerTabControl sender, VvInnerTabPage oldPage, VvInnerTabPage newPage)
    {
-      ZXC.VvInnerTabPageKindEnum innerTabPageKind = ((VvInnerTabPage)TheTabControl.SelectedTab).TheInnerTabPageKindEnum;
+      VvInnerTabPage selectedTabPage = TheTabControl.SelectedTabPage;
+      ZXC.VvInnerTabPageKindEnum innerTabPageKind = selectedTabPage.TheInnerTabPageKindEnum;
 
 
       if(innerTabPageKind == ZXC.VvInnerTabPageKindEnum.TransGrid_TabPage)
       {
          ThePersonFilter.IsPopulatingTransDGV = true;
 
-         ThePersonFilter.PersonCards = (PersonCardFilter.PersonCardsEnum)Enum.Parse(typeof(PersonCardFilter.PersonCardsEnum), ((VvInnerTabPage)TheTabControl.SelectedTab).Name);
+         ThePersonFilter.PersonCards = (PersonCardFilter.PersonCardsEnum)Enum.Parse(typeof(PersonCardFilter.PersonCardsEnum), selectedTabPage.Name);
 
          ThePersonFilterUC.Fld_PersonCard = ThePersonFilter.PersonCards;
 

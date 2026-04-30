@@ -1893,7 +1893,6 @@ public class CiribuCiribaDlg : VvDialog
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -3181,3 +3180,4 @@ public class LoadExcelPnrUC : VvOtherUC
 
 #endif
 }
+
