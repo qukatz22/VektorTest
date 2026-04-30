@@ -8,10 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
-using Crownwood.DotNetMagic.Forms;
 using static KupdobDao;
 
-public class VvAboutBox : DotNetMagicForm
+public class VvAboutBox : Form
 {
    #region Fieldz
 
@@ -48,7 +47,6 @@ public class VvAboutBox : DotNetMagicForm
 
    private void InitializeVvAboutBox()
    {
-      this.Style = ZXC.vvColors.vvform_VisualStyle;
       this.Text  = String.Format("About {0} {1}", AssemblyCompany, AssemblyTitle);
 
       nextX = nextY = ZXC.Qun4;
