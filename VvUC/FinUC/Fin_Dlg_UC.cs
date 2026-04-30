@@ -3496,7 +3496,7 @@ public class LoadFaktur2NalogDlg : VvDialog
       set {        theRules = value; }
    }
 
-   private Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewFaktur2NalogForm { get; set; }
+   private Form ThePreviewFaktur2NalogForm { get; set; }
    private Vektor.Reports.RIZ.CR_PreviewFaktur2Nalog   TheCR_PreviewFaktur2Nalog  { get; set; }
  
    public List<Faktur> fakturList ;
@@ -3613,14 +3613,13 @@ public class LoadFaktur2NalogDlg : VvDialog
 
       #region Set Form
 
-      ThePreviewFaktur2NalogForm = new Crownwood.DotNetMagic.Forms.DotNetMagicForm();
+      ThePreviewFaktur2NalogForm = new Form();
 
       ThePreviewFaktur2NalogForm.Show();
       
       btn_Preview.Enabled = false;
 
       ThePreviewFaktur2NalogForm.Font      = ZXC.vvFont.BaseFont;
-      ThePreviewFaktur2NalogForm.Style     = ZXC.vvColors.vvform_VisualStyle;
       ThePreviewFaktur2NalogForm.BackColor = ZXC.vvColors.userControl_BackColor;
 
       ThePreviewFaktur2NalogForm.FormClosing += new FormClosingEventHandler(ThePreviewFaktur2NalogForm_FormClosing_EnabledPreviewButton);
