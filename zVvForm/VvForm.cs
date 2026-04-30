@@ -8,7 +8,6 @@ using System.Xml.Serialization;
 using System.IO;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Common;
-using Crownwood.DotNetMagic.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.Skins;
 using System.Deployment.Application;
