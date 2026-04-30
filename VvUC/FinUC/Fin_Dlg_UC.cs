@@ -154,7 +154,7 @@ public class PrenosPsDLG : VvDialog
 
 }
 
-public class PreviewZNPdlg : Crownwood.DotNetMagic.Forms.DotNetMagicForm
+public class PreviewZNPdlg : Form
 {
    #region Constructor, Porpertiez, Methodz, ...
 
@@ -174,7 +174,6 @@ public class PreviewZNPdlg : Crownwood.DotNetMagic.Forms.DotNetMagicForm
       SuspendLayout();
 
       this.Font      = ZXC.vvFont.BaseFont;
-      this.Style     = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.CenterScreen;
