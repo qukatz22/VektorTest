@@ -10,23 +10,23 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2h / C40 TreeList closure handoff** — commit
-`dd0ff3e` (`C40 close TreeList migration handoff`). 2h je funkcionalno zatvoren:
-DX `TreeList` je vidljivi runtime host, populate ide preko `AppendNode`, routing
-preko `FocusedNodeChanged`, ikone preko `SelectImageIndex`, a C39 je prenio Risk
-report group expand ponašanje na DX `AfterExpand`. Preostali Crownwood tree kod je
-skriveni populate/model bridge i pripada kasnijem cleanupu, ne runtime gap-u.
+**Zadnji završeni commit:** **Faza 2i / C41 skin migration foundation** — commit
+`630c294` (`C41 add skin migration mapping`). `Initializations_Settings.cs` ima
+centralni legacy `VisualStyle` → DX skin mapper usklađen s V4 tablicom, a reset
+colors path primjenjuje isti DX skin mapper. C41 je zadržao stari XML fallback i
+nije još mijenjao dialog UI.
 
-**Trenutni necommitani checkpoint:** **Faza 2i / C41 skin migration foundation** —
-`Initializations_Settings.cs` ima centralni legacy `VisualStyle` → DX skin mapper
-usklađen s V4 tablicom (`IDE2005` → `Visual Studio 2013 Light`, `Office2003` →
-`Office 2007 Silver`, `Office2007Blue` → `Office 2019 Colorful`, `Office2007Black`
-→ `The Bezier`, `Office2007Silver` → `Office 2019 Black`). Reset colors path sada
-primjenjuje isti DX skin mapper. `VvColorsStylsDlg` UI još nije migriran.
+**Trenutni necommitani checkpoint:** **Faza 2i / C42 skin dialog list** —
+`VvColorsAndStyles` je dobio backward-compatible `DxSkinName` string field.
+`VvColorsStylsDlg.cs` form-style radio list sada prikazuje DX skin name izbor
+(`Office 2019 Colorful`, `Office 2019 Black`, `The Bezier`, `Visual Studio 2013 Light`,
+`Office 2007 Silver`) umjesto Crownwood `VisualStyle` enum liste; izbor se odmah
+primjenjuje kroz `VvForm.ApplyDxSkin(...)`. Stari XML bez `DxSkinName` i dalje pada
+natrag na legacy `VisualStyle` mapper iz C41.
 
-**Sljedeći korak:** završiti C41 build/smoke, zatim u C42 migrirati
-`VvColorsStylsDlg.cs` da umjesto Crownwood `VisualStyle` radio buttona prikazuje
-DX skin listu (`SkinManager.Default.Skins`). Detach ostaje za Fazu 3.
+**Sljedeći korak:** validirati C42 build/smoke, zatim u C43 očistiti preostale
+`vvform_VisualStyle` write pathove gdje su ostali samo legacy fallback i pripremiti
+V4 §2i checklist zatvaranje. Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;

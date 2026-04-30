@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DevExpress.LookAndFeel;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Common;
 
@@ -13,7 +14,7 @@ public class VvColorsStylsDlg : VvDialog
    private int razmakHamp = ZXC.Qun4, nextX = 0, nextY = 0;
    private int tabCtrlWidth, tabCtrlHeight, dlgWidth, dlgHeight;
    public event EventHandler ResetEventHandler;
-   private RadioButton[] aRBtnVisStyle;
+   private RadioButton[] aRBtnDxSkin;
    private RadioButton[] aRBtnOffStyle;
    private RadioButton[] aRBtnTabCtrMedPlayStyle;
    private RadioButton[] aRBtnTreeControlStyle;
@@ -114,10 +115,10 @@ public class VvColorsStylsDlg : VvDialog
 
    private void InitializeFormVisualStyleHamper(out VvHamper formVisualStyleHamper)
    {
-      VisualStyle[] aVisualStyle = new VisualStyle[] {VisualStyle.MediaPlayerBlue, VisualStyle.MediaPlayerOrange, VisualStyle.MediaPlayerPurple, VisualStyle.Office2007Blue, VisualStyle.Office2007Silver, VisualStyle.Office2007Black,
-                                                      VisualStyle.Office2003    , VisualStyle.IDE2005         ,VisualStyle.Plain};
+      string[] dxSkinNames = new string[] { "Office 2019 Colorful", "Office 2019 Black", "The Bezier", "Visual Studio 2013 Light", "Office 2007 Silver" };
+      string currentSkinName = VvForm.GetDxSkinNameFromEnvironment(ZXC.vvColors);
 
-      formVisualStyleHamper = new VvHamper(1, aVisualStyle.Length, "", tabPageFormStyle, false, nextX + ZXC.Qun4, nextY + ZXC.Qun4, razmakHamp);
+      formVisualStyleHamper = new VvHamper(1, dxSkinNames.Length, "", tabPageFormStyle, false, nextX + ZXC.Qun4, nextY + ZXC.Qun4, razmakHamp);
 
       formVisualStyleHamper.VvColWdt      = new int[] { ZXC.Q6un};
       formVisualStyleHamper.VvSpcBefCol   = new int[] { ZXC.Qun4 };
@@ -130,16 +131,16 @@ public class VvColorsStylsDlg : VvDialog
       }
       formVisualStyleHamper.VvBottomMargin = formVisualStyleHamper.VvTopMargin;
 
-      aRBtnVisStyle = new RadioButton[aVisualStyle.Length];
+      aRBtnDxSkin = new RadioButton[dxSkinNames.Length];
 
-      for (int i = 0; i < aVisualStyle.Length; i++)
+      for (int i = 0; i < dxSkinNames.Length; i++)
       {
-         aRBtnVisStyle[i]     = formVisualStyleHamper.CreateVvRadioButton(0, i, RadioBtn_FormStyle, aVisualStyle[i].ToString(), TextImageRelation.ImageBeforeText);
-         aRBtnVisStyle[i].Tag = aVisualStyle[i];
+         aRBtnDxSkin[i]     = formVisualStyleHamper.CreateVvRadioButton(0, i, RadioBtn_FormStyle, dxSkinNames[i], TextImageRelation.ImageBeforeText);
+         aRBtnDxSkin[i].Tag = dxSkinNames[i];
 
-         if (ZXC.vvColors.vvform_VisualStyle == (VisualStyle)aRBtnVisStyle[i].Tag)
+         if (currentSkinName == (string)aRBtnDxSkin[i].Tag)
          {
-            aRBtnVisStyle[i].Checked = true;
+            aRBtnDxSkin[i].Checked = true;
          }
       }
    }
@@ -148,12 +149,10 @@ public class VvColorsStylsDlg : VvDialog
    {
       RadioButton rBtn = sender as RadioButton;
 
-      tabControlColors.Style          = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
-      // C19: ZXC.TheVvForm.Style ne postoji na XtraForm. Faza 2i preuzima.
-      //ZXC.TheVvForm.Style             = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
-      ZXC.vvColors.vvform_VisualStyle = (Crownwood.DotNetMagic.Common.VisualStyle)rBtn.Tag;
+      string skinName = (string)rBtn.Tag;
 
-      VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
+      ZXC.vvColors.DxSkinName = skinName;
+      VvForm.ApplyDxSkin(skinName);
       // C20b: TabbedView nije Control — VvHamper.ApplyVVColorAndStyleTabCntrolChange ne može primiti njega.
       // TODO Faza 2i (V4 §3.2j): kompletan VvColors → SkinStyle refactor preuzima ovu logiku.
       // Skin engine (Office 2019 Colorful, postavljen u C18) auto-renderira boje glavnog tab kontejnera.

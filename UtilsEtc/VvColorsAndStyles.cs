@@ -7,6 +7,7 @@ using Crownwood.DotNetMagic.Controls;
 public struct VvColorsAndStyles
 {
    public VisualStyle vvform_VisualStyle;
+   public string DxSkinName;
    public OfficeStyle tabControl_OfficeStyle;
    public bool        enableHeadersVisualStylesForDataGrid;
 
