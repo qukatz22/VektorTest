@@ -10,28 +10,28 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2g / C32 finish** — commit `f3de18d`
-(`C32 finish BarManager phase`). Dodani su DX `BarEditItem` combo placeholder-i za
-postojeće `ToolStripComboBox` pathove; `VvEnvironmentDescriptor` paralelno
-sprema/učitava `BarManager` layout XML; custom merge skriva nove DX linkove koji
-ne postoje u korisničkom layout XML-u; legacy `VisualStyle` se mapira u DX skin
-name; postojeći WriteMode/explicit enable helperi sinkroniziraju DX
-`BarItem.Enabled` i `BarItem.Visibility` preko `DxBarItemsByName`. V4 §2g checklist
-označen je dovršenim. Clean-then-build EXIT 0 uz postojeće Crystal Reports
-`MSB3187` warninge.
+**Zadnji završeni commit:** **Faza 2h / C33 start TreeList bridge** — commit
+`24d4541` (`C33 start TreeList bridge`). `Initializations_Settings.cs` ima
+paralelne DX fieldove `DxTreeView_Modul` i `dxTreeView_ModulColumn` uz postojeći
+Crownwood `TreeView_Modul`/`Node` arrayeve. `Moduls_CommandPanel.cs` dodaje
+minimalni `InitializeDxTreeViewModul()` koji kreira skriveni DX `TreeList`, docka
+ga u `treePanel`, konfigurira 1 `TreeListColumn`, postavlja read-only/options i
+koristi isti `imglistTree` preko `SelectImageList`. Legacy `TreeControl` ostaje
+vidljiv i runtime ponašanje nije flipano. Clean-then-build EXIT 0 uz postojeće
+Crystal Reports `MSB3187` warninge.
 
-**Trenutni necommitani checkpoint:** **Faza 2h / C33 start TreeList bridge** —
-`Initializations_Settings.cs` sada ima paralelne DX fieldove `DxTreeView_Modul` i
-`dxTreeView_ModulColumn` uz postojeći Crownwood `TreeView_Modul`/`Node` arrayeve.
-`Moduls_CommandPanel.cs` dodaje minimalni `InitializeDxTreeViewModul()` koji kreira
-skriveni DX `TreeList`, docka ga u `treePanel`, konfigurira 1 `TreeListColumn`,
-postavlja read-only/options i koristi isti `imglistTree` preko `SelectImageList`.
-Legacy `TreeControl` ostaje vidljiv i runtime ponašanje nije flipano. Clean-then-build
-EXIT 0 uz postojeće Crystal Reports `MSB3187` warninge.
+**Trenutni necommitani checkpoint:** **Faza 2h / C34 parallel TreeList populate** —
+dodani su paralelni DX `TreeListNode` arrayevi (`aDxTreeNode0_Modul`,
+`aDxTreeNode1_SubModul`, `aDxTreeNode2_ReportModul`) i helper `AppendDxTreeNode(...)`.
+Legacy module/submodule/report populate pathovi sada paralelno pune DX tree preko
+`AppendNode` + `Tag` + `ImageIndex` + `SelectImageIndex`, uključujući root module,
+root submodule, grupirane submodule, root report nodeove i report-group child
+nodeove. Legacy `TreeControl` još ostaje vidljiv i business click behavior nije
+flipan. Clean-then-build EXIT 0 uz postojeće Crystal Reports `MSB3187` warninge.
 
-**Sljedeći korak:** nastaviti C34: migrirati populate path paralelno na DX
-`AppendNode` + `Tag` + `SelectImageIndex`, i dalje bez flipanja business click
-behaviora dok DX tree ne dobije isti sadržaj kao legacy tree. Detach ostaje za Fazu 3.
+**Sljedeći korak:** nastaviti C35: dodati `FocusedNodeChanged` handler i sender/tag
+shim za DX `TreeList`, još s mogućnošću fallbacka na legacy behavior. Detach ostaje
+za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
@@ -48,10 +48,9 @@ event mapping `AfterSelect` → `FocusedNodeChanged`; ikone preko `SelectImageIn
 - `zVvForm\TabControl_TabPages.cs` — calls to `aTreeNode0_Modul[xy.X].Expand()` and
   `aTreeNode1_SubModul[xy.X][xy.Y].Expand()`.
 
-**Predloženi nastavak 2h slicing:** C34 migrira populate (`AppendNode` + `Tag` +
-`SelectImageIndex`) paralelno; C35 dodaje `FocusedNodeChanged` i sender/tag shim;
-C36 flip-a vidljivost na DX TreeList nakon build-green provjere; C37 uklanja ili
-izolira preostale Crownwood `TreeControl` usage-e za `TreeView_Modul`.
+**Predloženi nastavak 2h slicing:** C35 dodaje `FocusedNodeChanged` i sender/tag
+shim; C36 flip-a vidljivost na DX TreeList nakon build-green provjere; C37 uklanja
+ili izolira preostale Crownwood `TreeControl` usage-e za `TreeView_Modul`.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
