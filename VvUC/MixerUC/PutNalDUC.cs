@@ -1874,12 +1874,6 @@ public class PutNalFilter : VvRpt_Mix_Filter
 
 public class CiribuCiribaDlg : VvDialog
 {
-   #region Propertiez
-
-   private Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewCiribuCiribaDlgForm { get; set; }
-
-   #endregion Propertiez
-
    #region Fieldz
 
    private Button okButton, cancelButton;
@@ -2422,8 +2416,6 @@ public class LoadExcelPnrDLG : Form
 
    public LoadExcelPnrUC TheUC { get; private set; }
 
- //private Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewExcelForm { get; set; }
-
    private OpenFileDialog TheOpenFileDialog { get; set; }
 
    private CrystalDecisions.CrystalReports.Engine.ReportDocument TheCR_PreviewExcel    { get; set; }
@@ -2694,69 +2686,6 @@ public class LoadExcelPnrDLG : Form
 
       TheOpenFileDialog.Dispose();
    }
-
-#if NJETT
-   private void PreviewExcelButton_Click(object sender, EventArgs e)
-   {
-      SuspendLayout();
-
-      Cursor.Current = Cursors.WaitCursor;
-
-      SetForm4Preview();
-
-      #region Set VvPreviewReportUC
-
-      VvStandAloneReportViewerUC thePreviewExcelUC = new VvStandAloneReportViewerUC();
-
-      thePreviewExcelUC.Parent = ThePreviewExcelForm;
-      thePreviewExcelUC.Dock   = DockStyle.Fill;
-
-      #endregion Set VvPreviewReportUC
-
-      ResumeLayout();
-
-      #region FillDataset, CreateReportDocument, SetDataSource, AssignReportSource
-
-      bool isAnalyse = (LoadRasterAction == ZXC.ImportMode.ANALYSE_Obrok_Only);
-
-      TheUC.FillIzvodDataSet(TheUC.ThePNRraster, isAnalyse);
-
-      if(isAnalyse) TheCR_PreviewExcel = new Remonster.Reports.CR_AnalizaExcela(); 
-      else          TheCR_PreviewExcel = new Remonster.Reports.CR_PreviewExcel();
-
-      thePreviewExcelUC.SetDataSource_And_AssignReportSource(TheCR_PreviewExcel, TheUC.TheDS_DbtReport);
-
-      #endregion FillDataset, CreateReportDocument, SetDataSource, AssignReportSource
-
-      ZXC.TheVvForm.ToolStripReportVisible_tsBtnOnTsReportVisible(false, ZXC.ReportMode.Done, false);
-
-      Cursor.Current = Cursors.Default;
-   }
-
-   private void SetForm4Preview()
-   {
-      ThePreviewExcelForm = new Crownwood.DotNetMagic.Forms.DotNetMagicForm();
-
-      ThePreviewExcelForm.Show();
-
-      tsb_previewIzv.Enabled = false;
-
-      ThePreviewExcelForm.Font      = ZXC.vvFont.BaseFont;
-      ThePreviewExcelForm.Style     = ZXC.vvColors.vvform_VisualStyle;
-      ThePreviewExcelForm.BackColor = ZXC.vvColors.userControl_BackColor;
-
-
-      ThePreviewExcelForm.FormClosing += new FormClosingEventHandler(ThePreviewExcelForm_FormClosing_EnabledPreviewButton);
-
-      //this.Location                = new Point(0, 0);
-      //ThePreviewExcelForm.Location = new Point(this.Right, 0);
-      ThePreviewExcelForm.Location = Point.Empty;
-      ThePreviewExcelForm.Size     = new Size(SystemInformation.WorkingArea.Width - this.Width, SystemInformation.WorkingArea.Height);
-      this.Location                = new Point(ThePreviewExcelForm.Right, 0);
-   }
-
-
-#endif
 
    private void AbortExcelButton_Click(object sender, EventArgs e)
    {

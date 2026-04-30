@@ -832,8 +832,6 @@ public class LoadIzvodUC : VvOtherUC
 
    public  Vektor.DataLayer.DS_Reports.DS_ZapIzvodNEW TheDS_ZapIzvod     { get; set; }
 
-   //private Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewIzvodForm { get; set; }
-
    public VvDataGridView TheGrid { get; set; }
 
    public ZapIzvod TheIzvod { get; set; }

@@ -401,12 +401,6 @@ public class VirmanDocFilter : VvRpt_Mix_Filter
 
 public class ProjektPayDlg : VvDialog
 {
-   #region Propertiez
-
-   private Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewProjektPayForm { get; set; }
-
-   #endregion Propertiez
-
    #region Fieldz
 
    private Button okButton, cancelButton;
