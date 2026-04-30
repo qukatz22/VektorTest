@@ -26,7 +26,6 @@ public class VvColors : DotNetMagicForm
 
       this.Size      = new Size(300, 600);
       this.BackColor = Color.White;
-      this.Style     = ZXC.vvColors.vvform_VisualStyle;
 
       selectedColor = btnColors;
 

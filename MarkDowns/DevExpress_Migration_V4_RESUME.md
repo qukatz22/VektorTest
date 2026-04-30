@@ -10,21 +10,20 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2i / C42 skin dialog list** — commit `c4dd820`
-(`C42 migrate skin dialog choices`). `VvColorsAndStyles` je dobio backward-compatible
-`DxSkinName` string field. `VvColorsStylsDlg.cs` form-style radio list sada prikazuje
-DX skin name izbor umjesto Crownwood `VisualStyle` enum liste; izbor se odmah
-primjenjuje kroz `VvForm.ApplyDxSkin(...)`. Stari XML bez `DxSkinName` pada natrag
-na legacy `VisualStyle` mapper iz C41.
+**Zadnji završeni commit:** **Faza 2i / C43 skin persistence cleanup** — commit
+`9f4d9d5` (`C43 persist selected DX skin`). Load path kopira
+`VvColorsAndStylesEnv.DxSkinName` prije fallback mappinga, pa se spremljeni DX skin
+poštuje nakon restarta. Default `InitializeVvColorsAndStyles()` postavlja
+`DxSkinName` preko istog fallback helpera. `vvform_VisualStyle` ostaje samo legacy
+XML fallback za stare environment datoteke.
 
-**Trenutni necommitani checkpoint:** **Faza 2i / C43 skin persistence cleanup** —
-load path sada kopira `VvColorsAndStylesEnv.DxSkinName` prije fallback mappinga,
-pa se spremljeni DX skin poštuje nakon restarta. Default `InitializeVvColorsAndStyles()`
-postavlja `DxSkinName` preko istog fallback helpera. `vvform_VisualStyle` ostaje
-samo legacy XML fallback za stare environment datoteke.
+**Trenutni necommitani checkpoint:** **Faza 2i / C44 skin phase closure** —
+`UtilsEtc\VvColors.cs` više ne postavlja `this.Style = ZXC.vvColors.vvform_VisualStyle`.
+V4 §2i checklist u `DevExpress_Migration_V4.md` označen je dovršenim: mapper,
+dialog DX skin izbor i environment fallback/load path su implementirani.
 
-**Sljedeći korak:** validirati C43 build/smoke, zatim zatvoriti V4 §2i checklist i
-krenuti u 2j (`VvHamper` decouple). Detach ostaje za Fazu 3.
+**Sljedeći korak:** validirati C44 build/smoke, zatim krenuti u 2j (`VvHamper`
+decouple). Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;

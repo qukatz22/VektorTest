@@ -589,8 +589,8 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 
 #### 2i — Skin sustav (`VvColors` + `VvColorsStylsDlg`)
 
-- [ ] Izbaciti `Crownwood.Common.VisualStyle` iz `VvColors.cs`
-- [ ] Napraviti **lookup tablicu `OldStyleName → NewSkinName`** za migraciju user preferenci:
+- [x] Izbaciti `Crownwood.Common.VisualStyle` iz `VvColors.cs`
+- [x] Napraviti **lookup tablicu `OldStyleName → NewSkinName`** za migraciju user preferenci:
 
 | Crownwood VisualStyle | DevExpress Skin |
 |---|---|
@@ -600,8 +600,8 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 | `Office2007Black` | `The Bezier` |
 | `Office2007Silver` | `Office 2019 Black` |
 
-- [ ] `VvColorsStylsDlg.cs` — ne prikazuje više Crownwood enum, nego listu `SkinManager.Default.Skins`
-- [ ] `VvEnvironmentDescriptor` load path detektira stari format i primjenjuje lookup
+- [x] `VvColorsStylsDlg.cs` — ne prikazuje više Crownwood enum, nego listu `SkinManager.Default.Skins`
+- [x] `VvEnvironmentDescriptor` load path detektira stari format i primjenjuje lookup
 
 #### 2j — `VvHamper` — zadržati, decouplati od Crownwooda
 
