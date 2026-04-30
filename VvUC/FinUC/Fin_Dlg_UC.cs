@@ -336,7 +336,7 @@ public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDial
 
    public LoadIzvodUC TheUC { get; private set; } 
    
-   private Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewIzvodForm { get; set; }
+   private Form ThePreviewIzvodForm { get; set; }
   
    private OpenFileDialog  TheOpenFileDialog { get; set; }
    
@@ -592,14 +592,13 @@ public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDial
 
       #region Set Form
 
-      ThePreviewIzvodForm = new Crownwood.DotNetMagic.Forms.DotNetMagicForm();
+      ThePreviewIzvodForm = new Form();
 
       ThePreviewIzvodForm.Show();
 
       tsb_previewIzv.Enabled = false;
 
       ThePreviewIzvodForm.Font      = ZXC.vvFont.BaseFont;
-      ThePreviewIzvodForm.Style     = ZXC.vvColors.vvform_VisualStyle;
       ThePreviewIzvodForm.BackColor = ZXC.vvColors.userControl_BackColor;
 
 
