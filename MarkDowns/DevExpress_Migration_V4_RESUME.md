@@ -10,22 +10,25 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2h / C37 TreeList runtime routing isolation** —
-commit `f67ad03` (`C37 isolate TreeList runtime routing`). C36 je prije toga flipao
-runtime host tako da je DX `TreeList` vidljiv, a legacy `TreeControl` skriveni
-fallback. C37 je zatim koncentrirao report tree expand u `ExpandTreeViewModulReportNode(Point xy)`:
-DX helper je primarni path, a legacy `aTreeNode*` expand ostaje samo fallback. DX
-`FocusedNodeChanged` bridge više ne prosljeđuje `TreeList` sender prema centralnim
-click metodama niti čita `FocusedNode.Tag` nakon focus clear-a; routing ide preko
-tag helpera (`Point` / `Koordinata_3D`) i zadržava postojeće report validacije.
-Build je korisnički potvrđen green; postojeći Crystal Reports `MSB3187` warningi
-ostaju neblokirajući.
+**Zadnji završeni commit:** **Faza 2h / C38 TreeControl sender fallback removal** —
+commit `1f459a7` (`C38 remove TreeControl sender fallbacks`). C38 je uklonio
+centralne `TreeControl`/`TreeView` sender branch-eve iz `OnClick_EventHandlers.cs`
+i maknuo neiskorišteni `sender` parametar iz `HandleTreeView_ModulNodeTag(...)`.
+DX runtime routing sada ide preko tag helpera (`Point` / `Koordinata_3D`), dok
+legacy `TreeControl` ostaje samo skriveni populate/fallback bridge. Clean-then-build
+je korisnički potvrđen green; postojeći Crystal Reports `MSB3187` warningi ostaju
+neblokirajući.
 
-**Trenutni necommitani checkpoint:** nema — pauza nakon C37.
+**Trenutni necommitani checkpoint:** **Faza 2h / C39 DX report group expand bridge** —
+`Moduls_CommandPanel.cs` sada hooka `DxTreeView_Modul.AfterExpand` i oba patha
+(DX `TreeList.AfterExpand` i legacy `Node2_ExpandedChanged`) koriste isti
+`HandleTreeView_ModulReportGroupExpanded(...)` helper. Time se postojeća Risk
+filter UI logika za expand report group node-a prenosi s Crownwood-only eventa na
+vidljivi DX tree. Commit još nije napravljen u trenutku ovog checkpointa.
 
-**Sljedeći korak:** nastaviti C38: dodatno izolirati preostale Crownwood
-`TreeControl` usage-e za `TreeView_Modul`, osobito legacy populate/fallback fieldove
-i style pozive, bez prelaska na Fazu 2i dok 2h nije zatvoren. Detach ostaje za Fazu 3.
+**Sljedeći korak:** validirati C39 clean-then-build, smoke testirati expand report
+group behavior u Risk report tree-u, zatim odlučiti je li 2h zatvoren ili treba još
+jedan model cleanup prije Faze 2i. Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
