@@ -417,9 +417,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       OrganizeModulButtons(xy.X, true);
 
 #region Tree
-      aTreeNode0_Modul[xy.X].Expand();
-      aTreeNode1_SubModul[xy.X][xy.Y].Expand();
-      ExpandDxTreeViewModulReportNode(xy);
+      ExpandTreeViewModulReportNode(xy);
       //da li da druge Colapsam
 #endregion Tree
 
