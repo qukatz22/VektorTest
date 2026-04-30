@@ -124,4 +124,4 @@ authoritative.
 - Continue executing multi-step coding/migration tasks to completion without unnecessary pauses or requiring repeated 'nastavi' prompts, while still reporting concise progress.
 
 ## Independent Commit Authorization
-- The assistant is granted permission to commit independently through the end of Phase 2 of the V4 DevExpress migration, while still following project build/validation discipline.
+- The assistant is granted permission to commit independently through the end of Phase 2 of the V4 DevExpress migration, while still following project build/validation discipline. This includes executing autonomous build-green atomic commits to streamline the migration process.
