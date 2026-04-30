@@ -314,7 +314,7 @@ public class PreviewZNPdlg : Form
 
 }
 
-public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDialog{
+public class LoadIzvodDLG : Form// VvDialog{
 {
    #region Fieldz
 
@@ -358,7 +358,6 @@ public class LoadIzvodDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDial
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
       this.MaximizeBox = false;
       
