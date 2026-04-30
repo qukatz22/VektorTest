@@ -10,23 +10,21 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2i / C41 skin migration foundation** — commit
-`630c294` (`C41 add skin migration mapping`). `Initializations_Settings.cs` ima
-centralni legacy `VisualStyle` → DX skin mapper usklađen s V4 tablicom, a reset
-colors path primjenjuje isti DX skin mapper. C41 je zadržao stari XML fallback i
-nije još mijenjao dialog UI.
+**Zadnji završeni commit:** **Faza 2i / C42 skin dialog list** — commit `c4dd820`
+(`C42 migrate skin dialog choices`). `VvColorsAndStyles` je dobio backward-compatible
+`DxSkinName` string field. `VvColorsStylsDlg.cs` form-style radio list sada prikazuje
+DX skin name izbor umjesto Crownwood `VisualStyle` enum liste; izbor se odmah
+primjenjuje kroz `VvForm.ApplyDxSkin(...)`. Stari XML bez `DxSkinName` pada natrag
+na legacy `VisualStyle` mapper iz C41.
 
-**Trenutni necommitani checkpoint:** **Faza 2i / C42 skin dialog list** —
-`VvColorsAndStyles` je dobio backward-compatible `DxSkinName` string field.
-`VvColorsStylsDlg.cs` form-style radio list sada prikazuje DX skin name izbor
-(`Office 2019 Colorful`, `Office 2019 Black`, `The Bezier`, `Visual Studio 2013 Light`,
-`Office 2007 Silver`) umjesto Crownwood `VisualStyle` enum liste; izbor se odmah
-primjenjuje kroz `VvForm.ApplyDxSkin(...)`. Stari XML bez `DxSkinName` i dalje pada
-natrag na legacy `VisualStyle` mapper iz C41.
+**Trenutni necommitani checkpoint:** **Faza 2i / C43 skin persistence cleanup** —
+load path sada kopira `VvColorsAndStylesEnv.DxSkinName` prije fallback mappinga,
+pa se spremljeni DX skin poštuje nakon restarta. Default `InitializeVvColorsAndStyles()`
+postavlja `DxSkinName` preko istog fallback helpera. `vvform_VisualStyle` ostaje
+samo legacy XML fallback za stare environment datoteke.
 
-**Sljedeći korak:** validirati C42 build/smoke, zatim u C43 očistiti preostale
-`vvform_VisualStyle` write pathove gdje su ostali samo legacy fallback i pripremiti
-V4 §2i checklist zatvaranje. Detach ostaje za Fazu 3.
+**Sljedeći korak:** validirati C43 build/smoke, zatim zatvoriti V4 §2i checklist i
+krenuti u 2j (`VvHamper` decouple). Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
