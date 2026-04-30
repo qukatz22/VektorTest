@@ -10,24 +10,23 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2h / C39 DX report group expand bridge** —
-commit `9e8ae96` (`C39 bridge TreeList report expand`). C38 je prije toga uklonio
-centralne `TreeControl`/`TreeView` sender branch-eve iz `OnClick_EventHandlers.cs`.
-C39 je hookao `DxTreeView_Modul.AfterExpand`; DX `TreeList.AfterExpand` i legacy
-`Node2_ExpandedChanged` sada koriste isti `HandleTreeView_ModulReportGroupExpanded(...)`
-helper. Time se postojeća Risk filter UI logika za expand report group node-a
-prenijela s Crownwood-only eventa na vidljivi DX tree. Build je korisnički potvrđen
-green; postojeći Crystal Reports `MSB3187` warningi ostaju neblokirajući.
+**Zadnji završeni commit:** **Faza 2h / C40 TreeList closure handoff** — commit
+`dd0ff3e` (`C40 close TreeList migration handoff`). 2h je funkcionalno zatvoren:
+DX `TreeList` je vidljivi runtime host, populate ide preko `AppendNode`, routing
+preko `FocusedNodeChanged`, ikone preko `SelectImageIndex`, a C39 je prenio Risk
+report group expand ponašanje na DX `AfterExpand`. Preostali Crownwood tree kod je
+skriveni populate/model bridge i pripada kasnijem cleanupu, ne runtime gap-u.
 
-**Trenutni necommitani checkpoint:** **Faza 2h / C40 closure assessment** —
-scan nakon C39 nije našao novi runtime 2h gap. Preostali Crownwood tree kod je
-skriveni populate/model bridge (`TreeView_Modul`, `aTreeNode*`, legacy group
-organizing) koji još hrani DX ikonice i group ordering; to nije siguran C40 cleanup
-bez šireg model refactora. Jedini dodatni hit je `VvHamper.ApplyVVColorAndStyleTreeControl(TreeView_Modul)`,
-koji prirodno prelazi u Fazu 2i/2j (Skin/VvHamper cleanup).
+**Trenutni necommitani checkpoint:** **Faza 2i / C41 skin migration foundation** —
+`Initializations_Settings.cs` ima centralni legacy `VisualStyle` → DX skin mapper
+usklađen s V4 tablicom (`IDE2005` → `Visual Studio 2013 Light`, `Office2003` →
+`Office 2007 Silver`, `Office2007Blue` → `Office 2019 Colorful`, `Office2007Black`
+→ `The Bezier`, `Office2007Silver` → `Office 2019 Black`). Reset colors path sada
+primjenjuje isti DX skin mapper. `VvColorsStylsDlg` UI još nije migriran.
 
-**Sljedeći korak:** zatvoriti 2h kao funkcionalno dovršen nakon clean-then-builda,
-pa krenuti u Fazu 2i (`VvColors` + skin system) prema V4. Detach ostaje za Fazu 3.
+**Sljedeći korak:** završiti C41 build/smoke, zatim u C42 migrirati
+`VvColorsStylsDlg.cs` da umjesto Crownwood `VisualStyle` radio buttona prikazuje
+DX skin listu (`SkinManager.Default.Skins`). Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
