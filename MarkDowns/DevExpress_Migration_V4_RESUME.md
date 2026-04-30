@@ -17,15 +17,14 @@ Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrol
 i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
 QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani. V4 §2j je zatvoren.
 
-**Trenutni necommitani checkpoint:** **Faza 2k / C51 zVvForm Forms using cleanup** —
-Mrtvi `using Crownwood.DotNetMagic.Forms` uklonjeni su iz 7 `zVvForm` partiala:
-`Initializations_Settings.cs`, `Menus_ToolStrips.cs`, `Moduls_CommandPanel.cs`,
-`OnClick_EventHandlers.cs`, `SubModulActions.cs`, `TabControl_TabPages.cs` i
-`VvForm.cs`. `Crownwood.DotNetMagic.Controls` i `Common` using-i ostaju gdje još
-pokrivaju aktivne legacy tipove. Potpuni Crownwood DLL cleanup još nije siguran.
+**Trenutni necommitani checkpoint:** **Faza 2k / C52 LoadExcelPnrDLG cleanup** —
+`VvUC\MixerUC\PutNalDUC.cs` `LoadExcelPnrDLG` sada nasljeđuje WinForms `Form`
+umjesto `DotNetMagicForm`; uklonjen je DotNetMagic `this.Style` assignment.
+`#if NJETT` preview blok s komentiranim/isključenim preview form kodom nije diran.
+Potpuni Crownwood DLL cleanup još nije siguran.
 
-**Sljedeći korak:** validirati C51 build i commitati using cleanup, zatim nastaviti
-zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
+**Sljedeći korak:** validirati C52 build i commitati `LoadExcelPnrDLG` cleanup,
+zatim nastaviti zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
 Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX

@@ -2400,7 +2400,7 @@ public class CiribuCiribaUC  : VvOtherUC
 }
 
 
-public class LoadExcelPnrDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm
+public class LoadExcelPnrDLG : Form
 {
    #region Fieldz
 
@@ -2443,7 +2443,6 @@ public class LoadExcelPnrDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
       this.MaximizeBox = false;
 
