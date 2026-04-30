@@ -10,20 +10,22 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2j / C46 VvHamper tab styling cleanup** — commit
-`1e32d3c` (`C46 decouple VvHamper tab styling`).
-`ApplyVVColorAndStyleTabCntrolChange(Control thisControl)` više ne sadrži direktne
-Crownwood `TabControl`/`TabPage` styling grane. Postojeći `VvTabPage`, label,
-panel, textbox i grid styling putevi ostaju netaknuti.
-
-**Trenutni necommitani checkpoint:** **Faza 2j / C47 VvHamper okolina cleanup** —
+**Zadnji završeni commit:** **Faza 2j / C47 VvHamper okolina cleanup** — commit
+`344ab37` (`C47 close VvHamper Crownwood styling decouple`).
 `ApplyVVColorAndStyleChangeOkolina(Control thisControl)` više ne sadrži direktne
 Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrole
 i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
-QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani.
+QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani. V4 §2j je zatvoren.
 
-**Sljedeći korak:** validirati C47 build i commitati 2j closure, zatim krenuti u
-2k cleanup samo ako V4 i trenutni Crownwood usage census pokažu da je sigurno.
+**Trenutni necommitani checkpoint:** **Faza 2k / C48 blocker census** —
+`Framework\VvHamper.cs` još treba `using Crownwood.DotNetMagic.Common` zbog
+legacy `VisualStyle`, `Office2007ColorTable` i `MediaPlayerColorTable` lookup-a.
+Potpuni Crownwood DLL cleanup još nije siguran jer census pokazuje aktivne legacy
+tipove u `Moduls_CommandPanel`, `VvColors`/`VvColorsStylsDlg`, `RiskReportUC` i
+`VvForm_Q.CreateWaitingForConnectionForm()`.
+
+**Sljedeći korak:** validirati C48 build i commitati blocker-census dokumentaciju,
+zatim planirati zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
 Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX

@@ -614,6 +614,8 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 #### 2k — Cleanup
 
 - [ ] Ukloniti sve `using Crownwood.DotNetMagic.*` direktive
+  - [ ] `Framework\VvHamper.cs` još treba `Crownwood.DotNetMagic.Common` za legacy `VisualStyle`, `Office2007ColorTable` i `MediaPlayerColorTable` lookup
+  - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a
 - [ ] Fullregression test po svakom modulu: FIR outbound, FUR inbound, plaće, amortizacija, izvještaji, TEXTHOshop varijanta, PCTOGO varijanta, SvDUH varijanta
