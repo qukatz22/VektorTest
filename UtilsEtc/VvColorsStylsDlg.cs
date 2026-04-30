@@ -424,7 +424,6 @@ public class VvColorsStylsDlg : VvDialog
       ZXC.vvColors.treeControlStyle = (TreeControlStyles)rBtn.Tag;
 
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-      VvHamper.ApplyVVColorAndStyleTreeControl(ZXC.TheVvForm.TreeView_Modul);
    }
 
    #endregion TabPageTreeControlStyle

@@ -2061,19 +2061,6 @@ public class VvHamper: Panel
       }
    }
   
-   public static void ApplyVVColorAndStyleTreeControl(Control thisControl) 
-   {
-      if(thisControl is Crownwood.DotNetMagic.Controls.TreeControl)
-      {
-         ((Crownwood.DotNetMagic.Controls.TreeControl)thisControl).SetTreeControlStyle(ZXC.vvColors.treeControlStyle);
-      }
-   
-      foreach(Control childControl in thisControl.Controls)
-      {
-         ApplyVVColorAndStyleChangeOkolina(childControl);
-      }
-   }
-
    public static void ApplyVVColorAndStyleTabCntrolChange(Control thisControl)  // TabControl
    {
       #region TabControl

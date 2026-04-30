@@ -605,6 +605,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 
 #### 2j — `VvHamper` — zadržati, decouplati od Crownwooda
 
+- [x] Ukloniti obsolete `VvHamper.ApplyVVColorAndStyleTreeControl(...)` legacy helper nakon 2h `TreeList` swapa
 - [ ] `VvHamper.ApplyVVColorAndStyleTabCntrolChange(this)` signature mijenja se s Crownwood `TabPage` na novi tip
 - [ ] QUN-based grid sizing u `VvDocumentRecordUC` (ColumnHeadersHeight, RowTemplate.Height, RowHeadersWidth) **ostaje nepromijenjeno** — VvHamper nije Crownwood-specific u toj ulozi
 - [ ] Ostali VvHamper layout putevi (`ZXC.Redak`, `ZXC.Kolona`) — nema Crownwood ovisnosti, nema promjene
