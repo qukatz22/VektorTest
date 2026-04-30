@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
-using Crownwood.DotNetMagic.Common;
 using DevExpress.LookAndFeel;
 using DevExpress.Skins;
 using System.Deployment.Application;
