@@ -2061,31 +2061,8 @@ public class VvHamper: Panel
       }
    }
   
-   public static void ApplyVVColorAndStyleTabCntrolChange(Control thisControl)  // TabControl
+   public static void ApplyVVColorAndStyleTabCntrolChange(Control thisControl)
    {
-      #region TabControl
-
-      if (thisControl is Crownwood.DotNetMagic.Controls.TabControl)
-      {
-         ((Crownwood.DotNetMagic.Controls.TabControl)thisControl).OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-         ((Crownwood.DotNetMagic.Controls.TabControl)thisControl).Style            = ZXC.vvColors.vvform_VisualStyle;
-         ((Crownwood.DotNetMagic.Controls.TabControl)thisControl).MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
-      }
-      
-      #endregion TabControl
-
-      #region TabPage
-
-      if (thisControl is Crownwood.DotNetMagic.Controls.TabPage)
-      {
-         if(thisControl.Tag is Color)
-            ((Crownwood.DotNetMagic.Controls.TabPage)thisControl).BackColor = (Color)thisControl.Tag;
-         else
-         ((Crownwood.DotNetMagic.Controls.TabPage)thisControl).BackColor = ZXC.vvColors.userControl_BackColor;
-      }
-
-      #endregion TabPage
-
       #region VvTabPage
 
       if(thisControl is VvTabPage)

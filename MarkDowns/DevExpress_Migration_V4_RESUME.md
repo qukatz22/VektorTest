@@ -10,21 +10,21 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2i / C44 skin phase closure** — commit
-`e590d2c` (`C44 close skin migration phase`). `UtilsEtc\VvColors.cs` više ne
-postavlja `this.Style = ZXC.vvColors.vvform_VisualStyle`. V4 §2i checklist u
-`DevExpress_Migration_V4.md` označen je dovršenim: mapper, dialog DX skin izbor i
-environment fallback/load path su implementirani.
+**Zadnji završeni commit:** **Faza 2j / C45 VvHamper TreeControl cleanup** — commit
+`6c77df0` (`C45 decouple VvHamper TreeControl styling`). `Framework\VvHamper.cs`
+više nema `ApplyVVColorAndStyleTreeControl(...)`, a tri call-sitea na skriveni
+legacy `TreeView_Modul` uklonjena su iz VvForm init/reset i style-dialog puteva.
+DX `TreeList` je runtime host od 2h; QUN grid sizing i `ZXC.Redak/Kolona` layout
+putevi nisu dirani.
 
-**Trenutni necommitani checkpoint:** **Faza 2j / C45 VvHamper TreeControl cleanup** —
-`Framework\VvHamper.cs` više nema `ApplyVVColorAndStyleTreeControl(...)`, a tri
-call-sitea na skriveni legacy `TreeView_Modul` su uklonjena iz VvForm init/reset
-i style-dialog puteva. DX `TreeList` je runtime host od 2h; QUN grid sizing i
-`ZXC.Redak/Kolona` layout putevi nisu dirani.
+**Trenutni necommitani checkpoint:** **Faza 2j / C46 VvHamper tab styling cleanup** —
+`ApplyVVColorAndStyleTabCntrolChange(Control thisControl)` više ne sadrži direktne
+Crownwood `TabControl`/`TabPage` styling grane. Postojeći `VvTabPage`, label,
+panel, textbox i grid styling putevi ostaju netaknuti.
 
-**Sljedeći korak:** validirati C45 build, zatim nastaviti 2j audit za
-`ApplyVVColorAndStyleTabCntrolChange(...)` Crownwood `TabControl`/`TabPage` grane.
-Detach ostaje za Fazu 3.
+**Sljedeći korak:** validirati C46 build, zatim nastaviti 2j audit za preostale
+Crownwood grane u `ApplyVVColorAndStyleChangeOkolina(...)` (`TitleBar` /
+`ButtonWithStyle`). Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
