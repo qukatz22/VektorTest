@@ -630,6 +630,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] `Framework\VvTabPage.cs` `VvAddInteractiveSifrarRecordDlg` prebačen s `DotNetMagicForm` na WinForms `Form`
   - [x] Mrtve/unused `DotNetMagicForm` preview reference uklonjene iz `PutNalDUC`, `VirmaniDUC` i `Fin_Dlg_UC`
   - [x] `UtilsEtc\VvColorsStylsDlg.cs` tab container prebačen s Crownwood `TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`
+  - [x] `VvUC\RiskUC\RiskReportUC.cs` report filter tab container prebačen s Crownwood `TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a

@@ -17,13 +17,13 @@ Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrol
 i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
 QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani. V4 §2j je zatvoren.
 
-**Trenutni necommitani checkpoint:** **Faza 2k / C63 VvColorsStylsDlg tab cleanup** —
-`UtilsEtc\VvColorsStylsDlg.cs` tab container prebačen je s Crownwood
-`TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`. Legacy enum
-radio opcije ostaju jer još hrane `ZXC.vvColors`/`VvHamper` state.
+**Trenutni necommitani checkpoint:** **Faza 2k / C64 RiskReportUC tab cleanup** —
+`VvUC\RiskUC\RiskReportUC.cs` report filter tab container prebačen je s
+Crownwood `TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`;
+title-based tab lookupi idu kroz lokalni helper.
 Potpuni Crownwood DLL cleanup još nije siguran.
 
-**Sljedeći korak:** validirati C63 build i commitati `VvColorsStylsDlg` tab cleanup,
+**Sljedeći korak:** validirati C64 build i commitati `RiskReportUC` tab cleanup,
 zatim nastaviti zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
 Detach ostaje za Fazu 3.
 

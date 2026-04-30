@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CrystalDecisions.Windows.Forms;
 using System.Collections.Generic;
+using DevExpress.XtraTab;
 
 public class RiskReportUC              : VvReportUC
 {
@@ -5840,8 +5841,8 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private bool isFakExt;
   
-   private Crownwood.DotNetMagic.Controls.TabControl tabControlPrintFak;
-   private Crownwood.DotNetMagic.Controls.TabPage tabMemo, tabPartner, tabIzgled, tabKolone, tabOsobeVeze, tabOstalo, tabTextDopune, tabBlag;
+   private XtraTabControl tabControlPrintFak;
+   private XtraTabPage tabMemo, tabPartner, tabIzgled, tabKolone, tabOsobeVeze, tabOstalo, tabTextDopune, tabBlag;
 
    // 06.11.2013: 
    //public PrnFakDsc PFD { get; set; }
@@ -5905,27 +5906,21 @@ public class FakturDocFilterUC    : VvFilterUC
   
    private void CreateTabControlMitTabPages()
    {
-      tabControlPrintFak                  = new Crownwood.DotNetMagic.Controls.TabControl();
-      tabControlPrintFak.Parent           = this;
-      tabControlPrintFak.Location         = new Point(0, 0);
-      tabControlPrintFak.Size             = new Size(this.Width - ZXC.Q10un, this.Height);
-      tabControlPrintFak.Anchor           = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-      tabControlPrintFak.Appearance       = Crownwood.DotNetMagic.Controls.VisualAppearance.MultiDocument;
-      tabControlPrintFak.PositionTop      = true;
-      tabControlPrintFak.ShowClose        = false;
-      tabControlPrintFak.Style            = ZXC.vvColors.vvform_VisualStyle;
-      tabControlPrintFak.OfficeStyle      = ZXC.vvColors.tabControl_OfficeStyle;
-      tabControlPrintFak.MediaPlayerStyle = ZXC.vvColors.tabControl_MediaPlayerStyle;
-      tabControlPrintFak.Visible          = false;
+      tabControlPrintFak          = new XtraTabControl();
+      tabControlPrintFak.Parent   = this;
+      tabControlPrintFak.Location = new Point(0, 0);
+      tabControlPrintFak.Size     = new Size(this.Width - ZXC.Q10un, this.Height);
+      tabControlPrintFak.Anchor   = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+      tabControlPrintFak.Visible  = false;
 
-      tabMemo        = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle1);
-      tabPartner     = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle2);
-      tabIzgled      = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle3);
-      tabKolone      = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle4);
-      tabOsobeVeze   = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle5);
-      tabOstalo      = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle6);
-      tabTextDopune  = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle7);
-      tabBlag        = new Crownwood.DotNetMagic.Controls.TabPage(TabPageTitle8);
+      tabMemo        = CreatePrintFakTabPage(TabPageTitle1);
+      tabPartner     = CreatePrintFakTabPage(TabPageTitle2);
+      tabIzgled      = CreatePrintFakTabPage(TabPageTitle3);
+      tabKolone      = CreatePrintFakTabPage(TabPageTitle4);
+      tabOsobeVeze   = CreatePrintFakTabPage(TabPageTitle5);
+      tabOstalo      = CreatePrintFakTabPage(TabPageTitle6);
+      tabTextDopune  = CreatePrintFakTabPage(TabPageTitle7);
+      tabBlag        = CreatePrintFakTabPage(TabPageTitle8);
 
       if(TheVvUC is BlgUplatDUC || TheVvUC is BlgIsplatDUC || TheVvUC is BlgUplat_M_DUC || TheVvUC is BlgIsplat_M_DUC)
       {
@@ -5951,6 +5946,25 @@ public class FakturDocFilterUC    : VvFilterUC
       tabTextDopune.AutoScroll = true;
       tabBlag      .AutoScroll = true;
 
+   }
+
+   private XtraTabPage CreatePrintFakTabPage(string title)
+   {
+      XtraTabPage tabPage = new XtraTabPage();
+      tabPage.Text       = title;
+      tabPage.Name       = title;
+
+      return tabPage;
+   }
+
+   private XtraTabPage GetPrintFakTabPage(string title)
+   {
+      foreach(XtraTabPage tabPage in tabControlPrintFak.TabPages)
+      {
+         if(tabPage.Text == title || tabPage.Name == title) return tabPage;
+      }
+
+      return null;
    }
 
    public string TabPageTitle1 { get { return "Memo/Izgled"   ; } }
@@ -6103,7 +6117,7 @@ public class FakturDocFilterUC    : VvFilterUC
    
    private void CreateHamperOrient     (out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(3, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, nextY, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q4un, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6126,7 +6140,7 @@ public class FakturDocFilterUC    : VvFilterUC
    
    private void CreateHamper_migHF     (out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_orient.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(3, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_orient.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q4un, ZXC.Q4un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6151,7 +6165,7 @@ public class FakturDocFilterUC    : VvFilterUC
   
    private void CreateHamperLogo       (out VvHamper hamper)
    {
-      hamper = new VvHamper(6, 2, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_migHF.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(6, 2, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_migHF.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q3un , ZXC.Q4un - ZXC.Qun4, ZXC.Q3un - ZXC.Qun4, ZXC.Q3un - ZXC.Qun4, ZXC.Q4un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 , ZXC.Qun8, ZXC.Qun12, ZXC.Qun12, ZXC.Qun12 };
@@ -6186,7 +6200,7 @@ public class FakturDocFilterUC    : VvFilterUC
       cbx_ocuLogo = hamper.CreateVvCheckBox_OLD (2, 0, null, "Vidljiv Logo", RightToLeft.No);
       if(TheVvUC is BlgUplatDUC || TheVvUC is BlgIsplatDUC || TheVvUC is BlgUplat_M_DUC || TheVvUC is BlgIsplat_M_DUC)
       {
-         hamper.Parent = tabControlPrintFak.TabPages[TabPageTitle8];
+         hamper.Parent = GetPrintFakTabPage(TabPageTitle8);
          hamper.Location = new Point(nextX, hamp_Blg.Bottom + razmakIzmjedjuHampera);
       }
       VvHamper.HamperStyling(hamper);
@@ -6194,7 +6208,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamper_logo2Aligm(out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, hamp_logo.Right + razmakIzmjedjuHampera, hamp_logo.Bottom - ZXC.QUN - ZXC.Qun4, 0);
+      hamper = new VvHamper(4, 1, "", GetPrintFakTabPage(TabPageTitle1), false, hamp_logo.Right + razmakIzmjedjuHampera, hamp_logo.Bottom - ZXC.QUN - ZXC.Qun4, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q3un + ZXC.Qun8, ZXC.Q3un , ZXC.Q3un, ZXC.Q3un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 , ZXC.Qun12, ZXC.Qun12 };
@@ -6217,7 +6231,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamper_memo      (out VvHamper hamper)
    {
-      hamper = new VvHamper(7, 2, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_logo.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(7, 2, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_logo.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt = new int[] { ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q4un };
 
@@ -6248,7 +6262,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
       if(TheVvUC is BlgUplatDUC || TheVvUC is BlgIsplatDUC || TheVvUC is BlgUplat_M_DUC || TheVvUC is BlgIsplat_M_DUC)
       {
-         hamper.Parent = tabControlPrintFak.TabPages[TabPageTitle8];
+         hamper.Parent = GetPrintFakTabPage(TabPageTitle8);
       }
 
       VvHamper.HamperStyling(hamper);
@@ -6257,7 +6271,7 @@ public class FakturDocFilterUC    : VvFilterUC
  
    private void CreateHamper_memoAdd(out VvHamper hamper)
    {
-      hamper = new VvHamper(7, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, hamp_memo.Left, hamp_memo.Bottom + razmakIzmjedjuHampera, 0);
+      hamper = new VvHamper(7, 1, "", GetPrintFakTabPage(TabPageTitle1), false, hamp_memo.Left, hamp_memo.Bottom + razmakIzmjedjuHampera, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.Q10un*2 - ZXC.Q3un, ZXC.Q3un - ZXC.Qun2, ZXC.Q3un - ZXC.Qun4, ZXC.Q3un - ZXC.Qun4, ZXC.Q3un - ZXC.Qun4, ZXC.Q3un - ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,               ZXC.Qun8,                   0, ZXC.Qun12, ZXC.Qun12 , ZXC.Qun12, ZXC.Qun12 };
@@ -6285,7 +6299,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamperLeftMargin (out VvHamper hamper)
    {
-      hamper = new VvHamper(6, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_memoAdd.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(6, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_memoAdd.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6312,7 +6326,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamperRightMargin(out VvHamper hamper)
    {
-      hamper = new VvHamper(5, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_leftMargin.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(5, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_leftMargin.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8};
@@ -6339,7 +6353,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamper_pageHF    (out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_rightMargin.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(4, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_rightMargin.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6363,7 +6377,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamper_pageLCR   (out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_pageHF.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(4, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_pageHF.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6387,7 +6401,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamperFontOpis   (out VvHamper hamper)
    {
-      hamper = new VvHamper(5, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_pageLCR.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(5, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_pageLCR.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q2un, ZXC.Q2un, ZXC.Q2un, ZXC.Q3un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8};
@@ -6412,7 +6426,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamperFontBelGr  (out VvHamper hamper)
    {
-      hamper = new VvHamper(5, 1, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_FontOpis.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(5, 1, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_FontOpis.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un, ZXC.Q2un, ZXC.Q2un, ZXC.Q2un, ZXC.Q3un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6441,7 +6455,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamper_memoPOS(out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 6, "", tabControlPrintFak.TabPages[TabPageTitle1], false, nextX, hamp_FontBelGr.Bottom + ZXC.Qun4, 0);
+      hamper = new VvHamper(1, 6, "", GetPrintFakTabPage(TabPageTitle1), false, nextX, hamp_FontBelGr.Bottom + ZXC.Qun4, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un*2 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4             };
@@ -6467,7 +6481,7 @@ public class FakturDocFilterUC    : VvFilterUC
   
    private void CreateHamperAdres         (out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 1, "", tabControlPrintFak.TabPages[TabPageTitle2], false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(3, 1, "", GetPrintFakTabPage(TabPageTitle2), false, nextX, nextY, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q5un, ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6492,7 +6506,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamper_adresOkvir   (out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 1, "", tabControlPrintFak.TabPages[TabPageTitle2], false, nextX, hamp_adresLR.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(3, 1, "", GetPrintFakTabPage(TabPageTitle2), false, nextX, hamp_adresLR.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q5un, ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6516,7 +6530,7 @@ public class FakturDocFilterUC    : VvFilterUC
   
    private void CreateHamper_adresToFrom  (out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 1, "", tabControlPrintFak.TabPages[TabPageTitle2], false, nextX, hamp_adresOkvir.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(3, 1, "", GetPrintFakTabPage(TabPageTitle2), false, nextX, hamp_adresOkvir.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q5un, ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6539,7 +6553,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamper_adresSastojci(out VvHamper hamper)
    {
-      hamper = new VvHamper(7, 2, "", tabControlPrintFak.TabPages[TabPageTitle2], false, nextX, hamp_adresToFrom.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(7, 2, "", GetPrintFakTabPage(TabPageTitle2), false, nextX, hamp_adresToFrom.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt = new int[] { ZXC.Q4un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un, ZXC.Q3un};
 
@@ -6576,7 +6590,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamperPoslJed       (out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 6, "", tabControlPrintFak.TabPages[TabPageTitle2], false, nextX, hamp_adresSastojci.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(2, 6, "", GetPrintFakTabPage(TabPageTitle2), false, nextX, hamp_adresSastojci.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q8un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
@@ -6608,7 +6622,7 @@ public class FakturDocFilterUC    : VvFilterUC
    
    private void CreateHamperRnPnb         (out VvHamper hamper)
    {
-      hamper = new VvHamper(15, 3, "", tabControlPrintFak.TabPages[TabPageTitle3], false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(15, 3, "", GetPrintFakTabPage(TabPageTitle3), false, nextX, nextY, razmakHampGroup);
 
       //    0        1        2                           
       hamper.VvColWdt = new int[] { ZXC.Q4un, ZXC.Q3un -ZXC.Qun8, ZXC.QUN , 
@@ -6700,7 +6714,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamper_dokNumHFadres(out VvHamper hamper)
    {
-      hamper = new VvHamper(3, 1, "", tabControlPrintFak.TabPages[TabPageTitle3], false, nextX, hamp_RnPnb.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(3, 1, "", GetPrintFakTabPage(TabPageTitle3), false, nextX, hamp_RnPnb.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q5un, ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6723,7 +6737,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamper_dokNumLCR    (out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 1, "", tabControlPrintFak.TabPages[TabPageTitle3], false, nextX, hamp_dokNumHFadres.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(4, 1, "", GetPrintFakTabPage(TabPageTitle3), false, nextX, hamp_dokNumHFadres.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q6un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6747,7 +6761,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamper_dokNumTitle  (out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 3, "", tabControlPrintFak.TabPages[TabPageTitle3], false, nextX, hamp_dokNumLCR.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(1, 3, "", GetPrintFakTabPage(TabPageTitle3), false, nextX, hamp_dokNumLCR.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
@@ -6777,8 +6791,8 @@ public class FakturDocFilterUC    : VvFilterUC
   
    private void CreateHamperColumns(out VvHamper hamper)
    {
-//      hamper = new VvHamper(16, 6, "", tabControlPrintFak.TabPages[TabPageTitle4], false, nextX, nextY, razmakHampGroup);
-      hamper = new VvHamper(14, 7, "", tabControlPrintFak.TabPages[TabPageTitle4], false, nextX, nextY, razmakHampGroup);
+//      hamper = new VvHamper(16, 6, "", GetPrintFakTabPage(TabPageTitle4), false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(14, 7, "", GetPrintFakTabPage(TabPageTitle4), false, nextX, nextY, razmakHampGroup);
 
       hamper.VvColWdt = new int[] {ZXC.Q4un - ZXC.Qun4, ZXC.QUN - ZXC.Qun4, ZXC.Q4un - ZXC.Qun4, ZXC.QUN - ZXC.Qun4, 
                                    ZXC.Q4un - ZXC.Qun4, ZXC.QUN - ZXC.Qun4, ZXC.Q4un - ZXC.Qun4, ZXC.QUN - ZXC.Qun4,
@@ -6952,7 +6966,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamperFontCol(out VvHamper hamper)
    {
-      hamper = new VvHamper(5, 1, "", tabControlPrintFak.TabPages[TabPageTitle4], false, nextX, hamp_Columns.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(5, 1, "", GetPrintFakTabPage(TabPageTitle4), false, nextX, hamp_Columns.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q3un + ZXC.Qun2, ZXC.QUN + ZXC.Qun4, ZXC.QUN + ZXC.Qun4, ZXC.QUN + ZXC.Qun4, ZXC.QUN + ZXC.Qun2 + ZXC.Qun4 };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -6979,7 +6993,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHampCbxTablica(out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 10, "", tabControlPrintFak.TabPages[TabPageTitle4], false, nextX, hamp_FontCol.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(1, 10, "", GetPrintFakTabPage(TabPageTitle4), false, nextX, hamp_FontCol.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
@@ -7030,7 +7044,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
       if(TheVvUC is BlgUplatDUC || TheVvUC is BlgIsplatDUC || TheVvUC is BlgUplat_M_DUC || TheVvUC is BlgIsplat_M_DUC)
       {
-         hamper.Parent   = tabControlPrintFak.TabPages[TabPageTitle8];
+         hamper.Parent   = GetPrintFakTabPage(TabPageTitle8);
          hamper.Location = new Point(nextX, hamp_memo.Bottom + razmakIzmjedjuHampera);
       }
 
@@ -7043,7 +7057,7 @@ public class FakturDocFilterUC    : VvFilterUC
  
    private void CreateHamperPersoni (out VvHamper hamper)
    {
-      hamper = new VvHamper(6, 5, "", tabControlPrintFak.TabPages[TabPageTitle5], false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(6, 5, "", GetPrintFakTabPage(TabPageTitle5), false, nextX, nextY, razmakHampGroup);
 
       hamper.VvColWdt    = new int[] { ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un, ZXC.Q5un };
       hamper.VvSpcBefCol = new int[] { ZXC.Qun4, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8, ZXC.Qun8 };
@@ -7087,7 +7101,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHampOstalo    (out VvHamper hamper)
    {
-      hamper = new VvHamper(7, 4, "", tabControlPrintFak.TabPages[TabPageTitle5], false, nextX, hamp_personi.Bottom + ZXC.Qun4, razmakHampGroup);
+      hamper = new VvHamper(7, 4, "", GetPrintFakTabPage(TabPageTitle5), false, nextX, hamp_personi.Bottom + ZXC.Qun4, razmakHampGroup);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
@@ -7142,7 +7156,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamperBelowGrid(out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 10, "", tabControlPrintFak.TabPages[TabPageTitle6], false, nextX, nextY, 0);
+      hamper = new VvHamper(1, 10, "", GetPrintFakTabPage(TabPageTitle6), false, nextX, nextY, 0);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un*3 + ZXC.Q7un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4 };
@@ -7183,7 +7197,7 @@ public class FakturDocFilterUC    : VvFilterUC
   
    private void CreateHamperNRD     (out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 2, "", tabControlPrintFak.TabPages[TabPageTitle6], false, nextX, hamp_belowGrid.Bottom + ZXC.Qun4, razmakHampGroup);
+      hamper = new VvHamper(2, 2, "", GetPrintFakTabPage(TabPageTitle6), false, nextX, hamp_belowGrid.Bottom + ZXC.Qun4, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un,   ZXC.Q10un*3+ZXC.Q2un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,           ZXC.Qun8 };
@@ -7212,7 +7226,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamperPostotak (out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 2, "", tabControlPrintFak.TabPages[TabPageTitle6], false, nextX, hamp_NRD.Bottom + ZXC.Qun4, razmakHampGroup);
+      hamper = new VvHamper(2, 2, "", GetPrintFakTabPage(TabPageTitle6), false, nextX, hamp_NRD.Bottom + ZXC.Qun4, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q5un,   ZXC.Q10un*3+ZXC.Q2un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8,           ZXC.Qun8 };
@@ -7241,7 +7255,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamperOslobodenjePDV(out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 3, "", tabControlPrintFak.TabPages[TabPageTitle6], false, nextX, hamp_postotakOpis.Bottom + ZXC.Qun4, razmakHampGroup);
+      hamper = new VvHamper(1, 3, "", GetPrintFakTabPage(TabPageTitle6), false, nextX, hamp_postotakOpis.Bottom + ZXC.Qun4, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q10un*3 + ZXC.Q7un };
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun4 };
@@ -7274,7 +7288,7 @@ public class FakturDocFilterUC    : VvFilterUC
 
    private void CreateHamperValuta  (out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 1, "", tabControlPrintFak.TabPages[TabPageTitle7], false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(2, 1, "", GetPrintFakTabPage(TabPageTitle7), false, nextX, nextY, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q4un, ZXC.Q3un};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun8 };
@@ -7299,7 +7313,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHamperJezik   (out VvHamper hamper)
    {
-      hamper = new VvHamper(2, 5, "", tabControlPrintFak.TabPages[TabPageTitle7], false, nextX, hamp_valuta.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
+      hamper = new VvHamper(2, 5, "", GetPrintFakTabPage(TabPageTitle7), false, nextX, hamp_valuta.Bottom + razmakIzmjedjuHampera, razmakHampGroup);
 
       hamper.VvColWdt      = new int[] { ZXC.Q3un, ZXC.QUN};
       hamper.VvSpcBefCol   = new int[] { ZXC.Qun8, ZXC.Qun12 };
@@ -7337,7 +7351,7 @@ public class FakturDocFilterUC    : VvFilterUC
    }
    private void CreateHampCbxOstalo       (out VvHamper hamper)
    {
-      hamper = new VvHamper(1, 24, "", tabControlPrintFak.TabPages[TabPageTitle7], false, hamp_valuta.Right + ZXC.Qun4, nextY, razmakHampGroup);
+      hamper = new VvHamper(1, 24, "", GetPrintFakTabPage(TabPageTitle7), false, hamp_valuta.Right + ZXC.Qun4, nextY, razmakHampGroup);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
@@ -7450,7 +7464,7 @@ public class FakturDocFilterUC    : VvFilterUC
  
    private void CreateHampBlg(out VvHamper hamper)
    {
-      hamper = new VvHamper(4, 4, "", tabControlPrintFak.TabPages[TabPageTitle8], false, nextX, nextY, razmakHampGroup);
+      hamper = new VvHamper(4, 4, "", GetPrintFakTabPage(TabPageTitle8), false, nextX, nextY, razmakHampGroup);
 
       for(int i = 0; i < hamper.VvNumOfCols; i++)
       {
