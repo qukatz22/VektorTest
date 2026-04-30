@@ -625,6 +625,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] `VvUC\FinUC\Fin_Dlg_UC.cs` `AnalizaProizDLG` lokalni `ThePreviewForm` prebačen s `DotNetMagicForm` na WinForms `Form`
   - [x] `VvUC\FinUC\Fin_Dlg_UC*.cs` `ObrProDLG` i `AnalizaProizDLG` partial base prebačen s `DotNetMagicForm` na WinForms `Form`
   - [x] `VvUC\FinUC\Fin_Dlg_UC.cs` `PreviewZNPdlg` prebačen s `DotNetMagicForm` na WinForms `Form`
+  - [x] `VvUC\FinUC\Fin_Dlg_UC_Q.cs` lokalni `ThePreviewForm` prebačen s `DotNetMagicForm` na WinForms `Form`
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a

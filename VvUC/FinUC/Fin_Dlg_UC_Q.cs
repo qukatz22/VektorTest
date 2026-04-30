@@ -636,12 +636,11 @@ public partial class ObrProDLG : Form// VvDialog{
 
       #region Set Form
 
-      Crownwood.DotNetMagic.Forms.DotNetMagicForm ThePreviewForm = new Crownwood.DotNetMagic.Forms.DotNetMagicForm();
+      Form ThePreviewForm = new Form();
       ThePreviewForm.Show();
       
 
       ThePreviewForm.Font      = ZXC.vvFont.BaseFont;
-      ThePreviewForm.Style     = ZXC.vvColors.vvform_VisualStyle;
       ThePreviewForm.BackColor = ZXC.vvColors.userControl_BackColor;
 
       ThePreviewForm.FormClosing += new FormClosingEventHandler(ThePreviewIzvodForm_FormClosing_EnabledPreviewButton);
