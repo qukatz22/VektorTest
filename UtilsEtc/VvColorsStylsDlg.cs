@@ -1,14 +1,15 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DevExpress.XtraTab;
 using DevExpress.LookAndFeel;
 using Crownwood.DotNetMagic.Controls;
 using Crownwood.DotNetMagic.Common;
 
 public class VvColorsStylsDlg : VvDialog
 {
-   private Crownwood.DotNetMagic.Controls.TabControl tabControlColors;
-   private Crownwood.DotNetMagic.Controls.TabPage tabPageFormStyle, tabPageTabControlStyle, tabPageTreeControlStyle;
+   private XtraTabControl tabControlColors;
+   private XtraTabPage tabPageFormStyle, tabPageTabControlStyle, tabPageTreeControlStyle;
    private Button resetButton, doneButton;
    private VvHamper hampFormStyle, hampTabCtrlOfficeStyle, hampTabCtrlColors, hampTabCtrlMediaPlayerStyle, hampTreeControlStyle;
    private int razmakHamp = ZXC.Qun4, nextX = 0, nextY = 0;
@@ -89,22 +90,21 @@ public class VvColorsStylsDlg : VvDialog
 
    private void InitializeTabControlColors()
    {
-      tabControlColors              = new Crownwood.DotNetMagic.Controls.TabControl();
-      tabControlColors.Parent       = this;
-      tabControlColors.Location     = new Point(0, 0);
-      tabControlColors.Appearance   = VisualAppearance.MultiDocument;
-      tabControlColors.PositionTop  = true;
-      tabControlColors.ShowClose    = false;
-      tabControlColors.HotTrack     = true;
-      tabControlColors.Style        = ZXC.vvColors.vvform_VisualStyle;
-      tabPageFormStyle              = new Crownwood.DotNetMagic.Controls.TabPage("FormStyle");
+      tabControlColors             = new XtraTabControl();
+      tabControlColors.Parent      = this;
+      tabControlColors.Location    = new Point(0, 0);
+      tabControlColors.ClosePageButtonShowMode = ClosePageButtonShowMode.InAllTabPagesAndTabControlHeader;
+      tabPageFormStyle             = new XtraTabPage();
+      tabPageFormStyle.Text        = "FormStyle";
       tabControlColors.TabPages.Add(tabPageFormStyle);
-      tabPageTabControlStyle        = new Crownwood.DotNetMagic.Controls.TabPage("TabControlStyle");
+      tabPageTabControlStyle       = new XtraTabPage();
+      tabPageTabControlStyle.Text  = "TabControlStyle";
       tabControlColors.TabPages.Add(tabPageTabControlStyle);
 
       if(ZXC.ThisIsVektorProject)
       {
-         tabPageTreeControlStyle = new Crownwood.DotNetMagic.Controls.TabPage("TreeControlStyle");
+         tabPageTreeControlStyle      = new XtraTabPage();
+         tabPageTreeControlStyle.Text = "TreeControlStyle";
          tabControlColors.TabPages.Add(tabPageTreeControlStyle);
       }
     }
@@ -201,7 +201,6 @@ public class VvColorsStylsDlg : VvDialog
    void radBtn_TabControl(object sender, EventArgs e)
    {
       RadioButton rBtn = sender as RadioButton;
-      tabControlColors.OfficeStyle        = (OfficeStyle)rBtn.Tag;
       ZXC.vvColors.tabControl_OfficeStyle = (OfficeStyle)rBtn.Tag;
 
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
@@ -245,7 +244,6 @@ public class VvColorsStylsDlg : VvDialog
    void radBtn_TabControlMedia(object sender, EventArgs e)
    {
       RadioButton rBtn                        = sender as RadioButton;
-      tabControlColors.MediaPlayerStyle       = (MediaPlayerStyle)rBtn.Tag;
       ZXC.vvColors.tabControl_MediaPlayerStyle = (MediaPlayerStyle)rBtn.Tag;
 
       VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
