@@ -20,10 +20,18 @@ name; postojeći WriteMode/explicit enable helperi sinkroniziraju DX
 označen je dovršenim. Clean-then-build EXIT 0 uz postojeće Crystal Reports
 `MSB3187` warninge.
 
-**Trenutni necommitani checkpoint:** nema — pauza nakon C32.
+**Trenutni necommitani checkpoint:** **Faza 2h / C33 start TreeList bridge** —
+`Initializations_Settings.cs` sada ima paralelne DX fieldove `DxTreeView_Modul` i
+`dxTreeView_ModulColumn` uz postojeći Crownwood `TreeView_Modul`/`Node` arrayeve.
+`Moduls_CommandPanel.cs` dodaje minimalni `InitializeDxTreeViewModul()` koji kreira
+skriveni DX `TreeList`, docka ga u `treePanel`, konfigurira 1 `TreeListColumn`,
+postavlja read-only/options i koristi isti `imglistTree` preko `SelectImageList`.
+Legacy `TreeControl` ostaje vidljiv i runtime ponašanje nije flipano. Clean-then-build
+EXIT 0 uz postojeće Crystal Reports `MSB3187` warninge.
 
-**Sljedeći korak:** krenuti u Fazu 2h (`TreeView_Modul`: `Crownwood.TreeControl` →
-DX `TreeList`) prema V4 preporuci. Detach ostaje za Fazu 3.
+**Sljedeći korak:** nastaviti C34: migrirati populate path paralelno na DX
+`AppendNode` + `Tag` + `SelectImageIndex`, i dalje bez flipanja business click
+behaviora dok DX tree ne dobije isti sadržaj kao legacy tree. Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
@@ -40,10 +48,10 @@ event mapping `AfterSelect` → `FocusedNodeChanged`; ikone preko `SelectImageIn
 - `zVvForm\TabControl_TabPages.cs` — calls to `aTreeNode0_Modul[xy.X].Expand()` and
   `aTreeNode1_SubModul[xy.X][xy.Y].Expand()`.
 
-**Predloženi C33 slicing:** prvo uvesti TreeList field/reference i minimalni init
-bez promjene business click behaviora; zatim migrirati populate (`AppendNode` +
-Tag); zatim event mapping i expand helper shim; tek nakon build-green ukloniti
-preostale Crownwood `TreeControl` usage-e za `TreeView_Modul`.
+**Predloženi nastavak 2h slicing:** C34 migrira populate (`AppendNode` + `Tag` +
+`SelectImageIndex`) paralelno; C35 dodaje `FocusedNodeChanged` i sender/tag shim;
+C36 flip-a vidljivost na DX TreeList nakon build-green provjere; C37 uklanja ili
+izolira preostale Crownwood `TreeControl` usage-e za `TreeView_Modul`.
 
 **Status Faze 1 (Decoupling):** ✅ **POTPUNO ZAVRŠENA** (sve pod-faze 1a→1f kroz
 commite C1–C16).
