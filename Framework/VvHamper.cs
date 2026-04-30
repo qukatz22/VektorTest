@@ -2037,23 +2037,6 @@ public class VvHamper: Panel
       {
          ((Splitter)thisControl).BackColor = ZXC.vvColors.splitter_BackColor;
       }
-      if (thisControl is Crownwood.DotNetMagic.Controls.TitleBar)
-      {
-         ((Crownwood.DotNetMagic.Controls.TitleBar)thisControl).Style               = ZXC.vvColors.vvform_VisualStyle;
-         ((Crownwood.DotNetMagic.Controls.TitleBar)thisControl).BackColor           = ZXC.vvColors.modulButton_BackColor;
-         ((Crownwood.DotNetMagic.Controls.TitleBar)thisControl).ForeColor           = ZXC.vvColors.modulButton_ForeColor;
-         ((Crownwood.DotNetMagic.Controls.TitleBar)thisControl).GradientActiveColor = ZXC.vvColors.modulButton_GradientColor;
-
-      }
-      if (thisControl is Crownwood.DotNetMagic.Controls.ButtonWithStyle)
-      {
-         ((Crownwood.DotNetMagic.Controls.ButtonWithStyle)thisControl).Style = ZXC.vvColors.vvform_VisualStyle;
-
-         if (((Crownwood.DotNetMagic.Controls.ButtonWithStyle)thisControl).Tag.GetType() == typeof(ZXC.Koordinata_3D))
-         {
-            ((Crownwood.DotNetMagic.Controls.ButtonWithStyle)thisControl).BackColor = ZXC.vvColors.reportModulButton_BackColor;
-         }
-      }
 
       foreach (Control childControl in thisControl.Controls)
       {

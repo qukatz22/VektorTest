@@ -10,21 +10,21 @@
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2j / C45 VvHamper TreeControl cleanup** — commit
-`6c77df0` (`C45 decouple VvHamper TreeControl styling`). `Framework\VvHamper.cs`
-više nema `ApplyVVColorAndStyleTreeControl(...)`, a tri call-sitea na skriveni
-legacy `TreeView_Modul` uklonjena su iz VvForm init/reset i style-dialog puteva.
-DX `TreeList` je runtime host od 2h; QUN grid sizing i `ZXC.Redak/Kolona` layout
-putevi nisu dirani.
-
-**Trenutni necommitani checkpoint:** **Faza 2j / C46 VvHamper tab styling cleanup** —
+**Zadnji završeni commit:** **Faza 2j / C46 VvHamper tab styling cleanup** — commit
+`1e32d3c` (`C46 decouple VvHamper tab styling`).
 `ApplyVVColorAndStyleTabCntrolChange(Control thisControl)` više ne sadrži direktne
 Crownwood `TabControl`/`TabPage` styling grane. Postojeći `VvTabPage`, label,
 panel, textbox i grid styling putevi ostaju netaknuti.
 
-**Sljedeći korak:** validirati C46 build, zatim nastaviti 2j audit za preostale
-Crownwood grane u `ApplyVVColorAndStyleChangeOkolina(...)` (`TitleBar` /
-`ButtonWithStyle`). Detach ostaje za Fazu 3.
+**Trenutni necommitani checkpoint:** **Faza 2j / C47 VvHamper okolina cleanup** —
+`ApplyVVColorAndStyleChangeOkolina(Control thisControl)` više ne sadrži direktne
+Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrole
+i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
+QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani.
+
+**Sljedeći korak:** validirati C47 build i commitati 2j closure, zatim krenuti u
+2k cleanup samo ako V4 i trenutni Crownwood usage census pokažu da je sigurno.
+Detach ostaje za Fazu 3.
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;

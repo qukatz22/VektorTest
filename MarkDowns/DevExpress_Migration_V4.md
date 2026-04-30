@@ -607,8 +607,9 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
 
 - [x] Ukloniti obsolete `VvHamper.ApplyVVColorAndStyleTreeControl(...)` legacy helper nakon 2h `TreeList` swapa
 - [x] `VvHamper.ApplyVVColorAndStyleTabCntrolChange(this)` signature mijenja se s Crownwood `TabPage` na novi tip
-- [ ] QUN-based grid sizing u `VvDocumentRecordUC` (ColumnHeadersHeight, RowTemplate.Height, RowHeadersWidth) **ostaje nepromijenjeno** — VvHamper nije Crownwood-specific u toj ulozi
-- [ ] Ostali VvHamper layout putevi (`ZXC.Redak`, `ZXC.Kolona`) — nema Crownwood ovisnosti, nema promjene
+- [x] Ukloniti `TitleBar` / `ButtonWithStyle` legacy styling grane iz `ApplyVVColorAndStyleChangeOkolina(...)`
+- [x] QUN-based grid sizing u `VvDocumentRecordUC` (ColumnHeadersHeight, RowTemplate.Height, RowHeadersWidth) **ostaje nepromijenjeno** — VvHamper nije Crownwood-specific u toj ulozi
+- [x] Ostali VvHamper layout putevi (`ZXC.Redak`, `ZXC.Kolona`) — nema Crownwood ovisnosti, nema promjene
 
 #### 2k — Cleanup
 
