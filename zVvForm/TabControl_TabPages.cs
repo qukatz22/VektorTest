@@ -419,6 +419,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 #region Tree
       aTreeNode0_Modul[xy.X].Expand();
       aTreeNode1_SubModul[xy.X][xy.Y].Expand();
+      ExpandDxTreeViewModulReportNode(xy);
       //da li da druge Colapsam
 #endregion Tree
 
