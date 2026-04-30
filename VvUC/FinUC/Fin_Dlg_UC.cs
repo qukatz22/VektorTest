@@ -4048,7 +4048,7 @@ public class LoadFaktur2NalogUC : VvOtherUC
 }
 
 
-public partial class ObrProDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDialog{
+public partial class ObrProDLG : Form// VvDialog{
 {
    #region Fieldz
 
@@ -4085,7 +4085,6 @@ public partial class ObrProDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// V
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;
@@ -5731,7 +5730,7 @@ public partial class ObrProUC : VvOtherUC
 }
 
 
-public partial class AnalizaProizDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDialog{
+public partial class AnalizaProizDLG : Form// VvDialog{
 {
    #region Fieldz
 
@@ -5775,7 +5774,6 @@ public partial class AnalizaProizDLG : Crownwood.DotNetMagic.Forms.DotNetMagicFo
       SuspendLayout();
 
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
 
       this.StartPosition = FormStartPosition.Manual;

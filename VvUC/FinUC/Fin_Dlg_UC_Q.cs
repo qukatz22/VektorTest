@@ -127,7 +127,7 @@ public /*struct*/ class OTPdata
    //}
 }
 
-public partial class ObrProDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDialog{
+public partial class ObrProDLG : Form// VvDialog{
 {
    #region OTP data
 
@@ -1220,7 +1220,7 @@ public partial class ObrProUC : VvOtherUC
 
 }
 
-public partial class AnalizaProizDLG : Crownwood.DotNetMagic.Forms.DotNetMagicForm// VvDialog{
+public partial class AnalizaProizDLG : Form// VvDialog{
 {
    #region OTP data
 
