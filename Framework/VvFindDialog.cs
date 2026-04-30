@@ -3,9 +3,8 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
 using System.Drawing;
-using Crownwood.DotNetMagic.Forms;
 
-public class VvFindDialog : DotNetMagicForm
+public class VvFindDialog : Form
 {
    public  Button   button_OK, button_Cancel, button_Apply, button_OpenTPage, button_AddSifrarRec;
    private VvHamper hampButtons, hampOpenTabPage;
@@ -46,7 +45,6 @@ public class VvFindDialog : DotNetMagicForm
       //this.StartPosition   = FormStartPosition.CenterScreen;
       this.StartPosition   = FormStartPosition.Manual;
       this.Font            = ZXC.vvFont.BaseFont;
-      this.Style           = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor       = ZXC.vvColors.userControl_BackColor;
 
       //this.Size    = new Size(400, 725);

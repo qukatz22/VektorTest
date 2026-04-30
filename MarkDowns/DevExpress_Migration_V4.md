@@ -619,6 +619,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] `UtilsEtc\VvAboutBox.cs` prebačen s `DotNetMagicForm` na WinForms `Form`
   - [x] Mrtvi `using Crownwood.DotNetMagic.Forms` uklonjeni iz 7 `zVvForm` partiala
   - [x] `VvUC\MixerUC\PutNalDUC.cs` `LoadExcelPnrDLG` prebačen s `DotNetMagicForm` na WinForms `Form`
+  - [x] `Framework\VvFindDialog.cs` prebačen s `DotNetMagicForm` na WinForms `Form`
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a
