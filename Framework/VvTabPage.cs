@@ -2006,7 +2006,7 @@ public class VvInnerTabPage : DevExpress.XtraTab.XtraTabPage, IDisposable
    }
 }
 
-public class VvAddInteractiveSifrarRecordDlg : Crownwood.DotNetMagic.Forms.DotNetMagicForm
+public class VvAddInteractiveSifrarRecordDlg : Form
 {
    #region Fieldz
 
@@ -2056,7 +2056,6 @@ public class VvAddInteractiveSifrarRecordDlg : Crownwood.DotNetMagic.Forms.DotNe
       TheVvTabPage = vvTabPage;
            
       this.Font        = ZXC.vvFont.BaseFont;
-      this.Style       = ZXC.vvColors.vvform_VisualStyle;
       this.BackColor   = ZXC.vvColors.userControl_BackColor;
       this.MaximizeBox = false;
 
