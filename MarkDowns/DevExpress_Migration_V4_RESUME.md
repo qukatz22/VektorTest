@@ -17,13 +17,14 @@ Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrol
 i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
 QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani. V4 §2j je zatvoren.
 
-**Trenutni necommitani checkpoint:** **Faza 2k / C55 Fin Faktur preview cleanup** —
-`VvUC\FinUC\Fin_Dlg_UC.cs` `ThePreviewFaktur2NalogForm` sada je WinForms `Form`
-umjesto `DotNetMagicForm`; uklonjen je DotNetMagic `Style` assignment samo za taj
-preview prozor. `LoadFaktur2NalogDlg : VvDialog` ostaje netaknut u ovom sliceu.
-Potpuni Crownwood DLL cleanup još nije siguran.
+**Trenutni necommitani checkpoint:** **Faza 2k / C56 AnalizaProiz preview cleanup** —
+`VvUC\FinUC\Fin_Dlg_UC.cs` `AnalizaProizDLG.QPrint_Click(...)` lokalni
+`ThePreviewForm` sada je WinForms `Form` umjesto `DotNetMagicForm`; uklonjen je
+DotNetMagic `Style` assignment samo za taj preview prozor. `AnalizaProizDLG` base
+class ostaje DotNetMagic u ovom sliceu. Potpuni Crownwood DLL cleanup još nije
+siguran.
 
-**Sljedeći korak:** validirati C55 build i commitati Fin Faktur preview cleanup,
+**Sljedeći korak:** validirati C56 build i commitati AnalizaProiz preview cleanup,
 zatim nastaviti zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
 Detach ostaje za Fazu 3.
 
