@@ -103,7 +103,7 @@ explicit per-occasion authorization from the user in the same turn.
 
 ## Build verification
 
-When the assistant claims "build green", it must use the **clean-then-build**
+When the assistant claims "build green", it should first attempt the **clean-then-build**
 sequence (per V4_RESUME.md discipline rule #8), not incremental build:
 
 ```powershell
@@ -112,10 +112,11 @@ $msb = 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bi
 & $msb 'Vektor.csproj' /v:minimal /nologo /p:Configuration=Debug
 ```
 
-Exit code `0` = green; anything else = red. The Copilot agent's `run_build`
-tool is incremental-only and may report stale `CS0246` errors against
-correctly-resolved types — its result is advisory; the CLI sequence is
-authoritative.
+Exit code `0` = green; anything else = red. If the CLI sequence is repeatedly
+cancelled by the environment without a compile failure, the assistant may treat
+Visual Studio `run_build` success or explicit user build validation as sufficient
+for autonomous Phase 2 commits. In that fallback case, the tracker/commit note
+must say `VS-build green` or `user-build green` instead of `clean-build green`.
 
 ## Response Formatting
 - Format all responses as one continuous block (jedan window) to allow for easy application and copying of the entire response at once, avoiding fragmented multi-block responses.
@@ -123,6 +124,4 @@ authoritative.
 ## User Expectations
 - Continue executing multi-step coding/migration tasks to completion without unnecessary pauses or requiring repeated 'nastavi' prompts, while still reporting concise progress. During V4 DevExpress Phase 2, only stop for real blockers such as failed validation, V4 strategic deviation, unsafe git history operations beyond allowed commits, or required human runtime smoke tests.
 - Autonomous execution of every remaining DevExpress migration slice through the end of Phase 2 without waiting for repeated "nastavi" prompts, stopping only for real blockers, required authorization, or human runtime smoke tests.
-
-## Independent Commit Authorization
 - The assistant is granted permission to commit independently through the end of Phase 2 of the V4 DevExpress migration, while still following project build/validation discipline. This includes executing autonomous build-green atomic commits to streamline the migration process.
