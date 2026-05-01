@@ -104,6 +104,8 @@ Napomena P3-12: baseline P3-1..P3-11 je dokumentiran u `DevExpress_Phase3_Readin
 
 Napomena P3-13: main `VvForm` close sada prije standardnog open-tab dirty loopa zatvara sve registrirane `VvFloatingForm` hostove. Svaki floating close koristi postojeći reattach/dirty-cancel flow; ako neki detached close bude canceliran, cancelira se i main close.
 
+Napomena P3-14: uvedeni su `ZXC.UseSecondDbConnection(...)` i `ZXC.UseThirdDbConnection(...)` kao centralni lock helperi za V4 §3d lock-based serializaciju. Inventar accessora: `TheSecondDbConn_SameDB`, `TheSecondDbConn_SameDB_prevYear`, `TheSecondDbConn_SameDB_OtherYear(int)`, `TheSecondDbConn_OtherDB(string)`, `TheThirdDbConn_SameDB`, `TheThirdDbConn_OtherDB(string)`. Sljedeći reževi trebaju migrirati call-siteove na helper tako da `ChangeDatabase()+query` budu unutar istog locka.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

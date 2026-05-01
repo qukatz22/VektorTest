@@ -709,9 +709,9 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3d — DBkonekcije concurrency
 
-- [ ] Odluka: Lock-based vs per-host pool (vidi §1.15)
-- [ ] **Preporuka V4: Lock-based** u prvoj iteraciji (manja invazivnost). Poolje eskalacija.
-- [ ] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: wrap `ChangeDatabase()` + query u `lock(theConnection)` blok
+- [x] Odluka: Lock-based vs per-host pool (vidi §1.15) — P3-14 potvrđuje lock-based prvu iteraciju
+- [x] **Preporuka V4: Lock-based** u prvoj iteraciji (manja invazivnost). Pool je eskalacija.
+- [~] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: P3-14 dodaje centralne `UseSecondDbConnection` / `UseThirdDbConnection` lock helpere; call-site migracija ostaje u sljedećim rezovima
 - [ ] Testirati: dva prozora + simultani dokumenti s pozivima `TheSecondDbConn_SameDB_prevYear` vs `TheSecondDbConn_SameDB`
 
 #### 3e — Per-host `*_InProgress` flagovi

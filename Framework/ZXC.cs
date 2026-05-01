@@ -681,6 +681,41 @@ public static class ZXC
    }
 
    internal static XSqlConnection theSecondDbConnection;
+   private static readonly object secondDbConnectionSync = new object();
+   private static readonly object thirdDbConnectionSync = new object();
+
+   public static T UseSecondDbConnection<T>(Func<XSqlConnection> connectionFactory, Func<XSqlConnection, T> action)
+   {
+      if(connectionFactory == null) throw new ArgumentNullException("connectionFactory");
+      if(action == null) throw new ArgumentNullException("action");
+
+      lock(secondDbConnectionSync)
+      {
+         return action(connectionFactory());
+      }
+   }
+
+   public static void UseSecondDbConnection(Func<XSqlConnection> connectionFactory, Action<XSqlConnection> action)
+   {
+      UseSecondDbConnection(connectionFactory, conn => { action(conn); return true; });
+   }
+
+   public static T UseThirdDbConnection<T>(Func<XSqlConnection> connectionFactory, Func<XSqlConnection, T> action)
+   {
+      if(connectionFactory == null) throw new ArgumentNullException("connectionFactory");
+      if(action == null) throw new ArgumentNullException("action");
+
+      lock(thirdDbConnectionSync)
+      {
+         return action(connectionFactory());
+      }
+   }
+
+   public static void UseThirdDbConnection(Func<XSqlConnection> connectionFactory, Action<XSqlConnection> action)
+   {
+      UseThirdDbConnection(connectionFactory, conn => { action(conn); return true; });
+   }
+
    public static XSqlConnection TheSecondDbConn_SameDB
    {
       get
