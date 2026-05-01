@@ -116,6 +116,8 @@ Napomena P3-18: završni second-DB scan nakon P3-17 zatvorio je dodatne aktivne 
 
 Napomena P3-19: prvi minimalni per-host flag slice preselio je cache-suppression par `RISK_CheckPrNabDokCij_inProgress` / `RISK_CheckZPCkol_inProgress` iza postojećih `ZXC` property imena, ali vrijednosti se sada čitaju/pišu iz `ZXC.ActivePerHostState` kad postoji aktivni `IVvDocumentHost`. `ShouldSupressRenewCache` sada zbraja active-host state + legacy fallback + global `RISK_DisableCacheTemporarily`, čime se ispunjava prvi dio V4 §3e bez diranja kompleksnih save/copy workflow flagova.
 
+Napomena P3-20: dodani su mali private helperi u `ZXC` za per-host bool routing (`GetActivePerHostFlag`, `GetActiveOrFallbackPerHostFlag`, `SetActivePerHostFlag`) i P3-19 propertyji su refaktorirani na njih. Ovo je infrastrukturni, build-green refactor bez promjene javnih imena i bez dodatne business semantike; cilj je da sljedeći save/copy flagovi imaju manji i konzistentniji diff.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

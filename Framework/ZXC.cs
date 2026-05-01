@@ -114,6 +114,25 @@ public static class ZXC
       }
    }
 
+   private static bool GetActivePerHostFlag(Func<VvPerHostState, bool> perHostGetter, bool fallbackValue)
+   {
+      VvPerHostState perHost = ActivePerHostState;
+      return perHost != null ? perHostGetter(perHost) : fallbackValue;
+   }
+
+   private static bool GetActiveOrFallbackPerHostFlag(Func<VvPerHostState, bool> perHostGetter, bool fallbackValue)
+   {
+      VvPerHostState perHost = ActivePerHostState;
+      return (perHost != null && perHostGetter(perHost)) || fallbackValue;
+   }
+
+   private static void SetActivePerHostFlag(Action<VvPerHostState, bool> perHostSetter, ref bool fallbackValue, bool value)
+   {
+      VvPerHostState perHost = ActivePerHostState;
+      if(perHost != null) perHostSetter(perHost, value);
+      else fallbackValue = value;
+   }
+
    #endregion ActiveDocumentHost  (Phase 1a / C1)
 
    #region Path Providers  (Phase 1a / C4)
@@ -265,40 +284,24 @@ public static class ZXC
 
    public static bool RISK_CheckPrNabDokCij_inProgress
    {
-      get
-      {
-         VvPerHostState perHost = ActivePerHostState;
-         return perHost != null ? perHost.RISK_CheckPrNabDokCij_inProgress : risk_CheckPrNabDokCij_inProgress;
-      }
-      set
-      {
-         VvPerHostState perHost = ActivePerHostState;
-         if(perHost != null) perHost.RISK_CheckPrNabDokCij_inProgress = value;
-         else risk_CheckPrNabDokCij_inProgress = value;
-      }
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_CheckPrNabDokCij_inProgress, risk_CheckPrNabDokCij_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_CheckPrNabDokCij_inProgress = flagValue, ref risk_CheckPrNabDokCij_inProgress, value); }
    }
 
    public static bool RISK_CheckZPCkol_inProgress
    {
-      get
-      {
-         VvPerHostState perHost = ActivePerHostState;
-         return perHost != null ? perHost.RISK_CheckZPCkol_inProgress : risk_CheckZPCkol_inProgress;
-      }
-      set
-      {
-         VvPerHostState perHost = ActivePerHostState;
-         if(perHost != null) perHost.RISK_CheckZPCkol_inProgress = value;
-         else risk_CheckZPCkol_inProgress = value;
-      }
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_CheckZPCkol_inProgress, risk_CheckZPCkol_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_CheckZPCkol_inProgress = flagValue, ref risk_CheckZPCkol_inProgress, value); }
    }
 
    public static bool ShouldSupressRenewCache
    {
       get
       {
-         VvPerHostState perHost = ActivePerHostState;
-         bool hostShouldSuppressRenewCache = perHost != null && (perHost.RISK_CheckPrNabDokCij_inProgress || perHost.RISK_CheckZPCkol_inProgress);
+         bool hostShouldSuppressRenewCache =
+            GetActiveOrFallbackPerHostFlag(perHost => perHost.RISK_CheckPrNabDokCij_inProgress, risk_CheckPrNabDokCij_inProgress) ||
+            GetActiveOrFallbackPerHostFlag(perHost => perHost.RISK_CheckZPCkol_inProgress, risk_CheckZPCkol_inProgress);
+
          return hostShouldSuppressRenewCache || risk_CheckPrNabDokCij_inProgress || risk_CheckZPCkol_inProgress || RISK_DisableCacheTemporarily;
       }
    }
