@@ -784,9 +784,18 @@ public class PTG_OtplatniPlan
       {
          isSomePreviousYear = year < ZXC.projectYearFirstDay.Year;
 
-         conn4year = isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : conn;
-
-         rtransList.AddRange(RtransDao.GetRtransList_ForTT_And_Serlot(conn4year, Faktur.TT_IRA, serlot4Rtrans));
+         if(isSomePreviousYear)
+         {
+            int yearForLock = year;
+            rtransList.AddRange(ZXC.UseSecondDbConnection(
+               () => ZXC.TheSecondDbConn_SameDB_OtherYear(yearForLock),
+               secondDbConn => RtransDao.GetRtransList_ForTT_And_Serlot(secondDbConn, Faktur.TT_IRA, serlot4Rtrans)));
+         }
+         else
+         {
+            conn4year = conn;
+            rtransList.AddRange(RtransDao.GetRtransList_ForTT_And_Serlot(conn4year, Faktur.TT_IRA, serlot4Rtrans));
+         }
       }
 
       if(rtransList.IsEmpty()) return 0;

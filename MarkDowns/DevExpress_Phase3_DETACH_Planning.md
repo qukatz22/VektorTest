@@ -110,6 +110,8 @@ Napomena P3-15: prvi konkretni call-siteovi migrirani su na `UseSecondDbConnecti
 
 Napomena P3-16: svi pronađeni direct `TheThirdDbConn_SameDB` call-siteovi migrirani su na `UseThirdDbConnection` (`ArtStat`, `ArtiklDao`). Dodatno su high-risk `SendWriteOperationToSKY` second-DB write pathovi u `VvForm_Q` i `SubModulActions` migrirani na `UseSecondDbConnection`.
 
+Napomena P3-17: migriran je batch previous-year read pathova na `UseSecondDbConnection`: `Reports_RIZ` selected report reads, eRačun previous-faktur lookup (`UBL_eRacun_Q`, `F2eRacuni`) i `PTG_OtplatniPlan` previous-year rtrans lookup. Preostali direct usage-i trebaju novi scan nakon builda, ali glavni report/e-invoice batch je lock-serializiran.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

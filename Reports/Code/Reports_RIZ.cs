@@ -1481,8 +1481,23 @@ public /*partial*/ class RptR_IRA : VvRiskReport
           //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_kupRn, filterMembers_FTR_kupRn, "");
           //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_danA , filterMembers_FTR_danA , "");
           //VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dobRn, filterMembers_FTR_dobRn, "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_dirT , filterMembers_FTR_dirT , "");
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, ftransList_indT , filterMembers_FTR_indT , "");
+            if(isSomePreviousYear)
+            {
+               ZXC.UseSecondDbConnection(
+                  () => ZXC.TheSecondDbConn_SameDB_OtherYear(year),
+                  secondDbConn =>
+                  {
+                     VvDaoBase.LoadGenericVvDataRecordList(secondDbConn, ftransList_dirT , filterMembers_FTR_dirT , "");
+                     VvDaoBase.LoadGenericVvDataRecordList(secondDbConn, ftransList_indT , filterMembers_FTR_indT , "");
+                     VvDaoBase.LoadGenericVvDataRecordList(secondDbConn, TheFakturList, filterMembers_FAK, "", "", true);
+                  });
+            }
+            else
+            {
+               VvDaoBase.LoadGenericVvDataRecordList(TheDbConnection, ftransList_dirT , filterMembers_FTR_dirT , "");
+               VvDaoBase.LoadGenericVvDataRecordList(TheDbConnection, ftransList_indT , filterMembers_FTR_indT , "");
+               VvDaoBase.LoadGenericVvDataRecordList(TheDbConnection, TheFakturList, filterMembers_FAK, "", "", true);
+            }
             
             if(year == ZXC.projectYearFirstDay.Year)
             { 
@@ -1491,8 +1506,6 @@ public /*partial*/ class RptR_IRA : VvRiskReport
                VvDaoBase.LoadGenericVvDataRecordList(/*isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : */TheDbConnection, ftransList_danA , filterMembers_FTR_danA , "");
                VvDaoBase.LoadGenericVvDataRecordList(/*isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : */TheDbConnection, ftransList_dobRn, filterMembers_FTR_dobRn, "");
             }
-
-            VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturList, filterMembers_FAK, "", "", true);
 
             if(year < 2023)
             {

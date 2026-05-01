@@ -690,7 +690,10 @@ public static class Vv_eRacun_HTTP
          }
          else // uplata se odnosi na Faktur iz neke PROŠLE godine 
          {
-            MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/ZXC.TheSecondDbConn_SameDB_OtherYear((int)paymentftrans_rec.T_fakYear), paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec);
+            int fakYear = (int)paymentftrans_rec.T_fakYear;
+            ZXC.UseSecondDbConnection(
+               () => ZXC.TheSecondDbConn_SameDB_OtherYear(fakYear),
+               secondDbConn => MAP_CandidateFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(/*conn*/secondDbConn, paymentftrans_rec.T_fakRecID, MAP_CandidateFaktur_rec));
          }
 
          paymentMethod = paymentftrans_rec.T_TT == Nalog.IZ_TT ? "T" : paymentftrans_rec.T_TT == Nalog.KP_TT ? "O" : "Z"; //16.12.2025.

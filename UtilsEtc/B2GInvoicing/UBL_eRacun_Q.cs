@@ -276,7 +276,9 @@ namespace EN16931.UBL
             }
             else // prev fak je u nekoj prethodnoj godini 
             {
-               prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(ZXC.TheSecondDbConn_SameDB_OtherYear(prevFakYear), /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec);
+                ZXC.UseSecondDbConnection(
+                   () => ZXC.TheSecondDbConn_SameDB_OtherYear(prevFakYear),
+                   secondDbConn => prvFaktur_rec.VvDao.SetMe_Record_byRecID_Complete(secondDbConn, /*faktur_rec.F2_PrvFakYYiRecID*/ prevFakRecID, prvFaktur_rec));
 
                refFiskalBr = prvFaktur_rec./*VezniDok*/TtNumFiskal;
                refDokDate = prvFaktur_rec.DokDate;
