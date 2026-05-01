@@ -7416,6 +7416,13 @@ public static class ZXC
 
    public static void SetStatusText(string statusText)
    {
+      IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+      if(activeHost != null)
+      {
+         activeHost.SetStatusText(statusText);
+         return;
+      }
+
       // Faza 1a / C5: kroz ZXC.StatusTextSetter; fallback na TheVvForm.TStripStatusLabel.
       if(ZXC.StatusTextSetter != null)
       {
@@ -7434,6 +7441,13 @@ public static class ZXC
 
    public static void ClearStatusText()
    {
+      IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+      if(activeHost != null)
+      {
+         activeHost.ClearStatusText();
+         return;
+      }
+
       // Faza 1a / C5: kroz ZXC.StatusTextClearer; fallback na TheVvForm.TStripStatusLabel.
       if(ZXC.StatusTextClearer != null)
       {
