@@ -59,6 +59,9 @@ public interface IVvDocumentHost
    /// <summary>DevExpress Bar_Report placeholder za report operacije (Faza 2g).</summary>
    Bar DxBar_Report { get; set; }
 
+   /// <summary>DevExpress Bar_SubModul placeholder za per-SubModul operacije (Faza 2g / Faza 3).</summary>
+   Bar DxBar_SubModul { get; set; }
+
    /// <summary>DevExpress menu bar placeholder glavnog menija (Faza 2g).</summary>
    Bar DxMenuBar { get; set; }
 

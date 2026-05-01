@@ -27,6 +27,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    private BarManager dxBarManager;
    private Bar dxBar_Record;
    private Bar dxBar_Report;
+   private Bar dxBar_SubModul;
    private Bar dxMenuBar;
 
    public bool IsReattached
@@ -101,6 +102,12 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       set { dxBar_Report = value; }
    }
 
+   public Bar DxBar_SubModul
+   {
+      get { return dxBar_SubModul; }
+      set { dxBar_SubModul = value; }
+   }
+
    public Bar DxMenuBar
    {
       get { return dxMenuBar; }
@@ -146,6 +153,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       VvToolbarFactory.CreateMenuBar(this, true);
       VvToolbarFactory.CreateBar_Record(this);
+      VvToolbarFactory.CreateBar_SubModul(this);
       VvToolbarFactory.CreateBar_Report(this);
       PopulateDetachedBars();
       DxBarManager.ForceInitialize();
@@ -165,6 +173,13 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       if(DxBar_Record != null)
       {
          DxBar_Record.AddItem(titleItem);
+      }
+
+      if(DxBar_SubModul != null)
+      {
+         BarButtonItem subModulTitleItem = VvToolbarFactory.CreateStaticChildItem(this, "SubModul toolbar", null);
+         subModulTitleItem.Enabled = false;
+         DxBar_SubModul.AddItem(subModulTitleItem);
       }
    }
 

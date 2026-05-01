@@ -25,6 +25,7 @@ public partial class VvForm : IVvDocumentHost
    private BarManager dxBarManager;
    private Bar dxBar_Record;
    private Bar dxBar_Report;
+   private Bar dxBar_SubModul;
    private Bar dxMenuBar;
    private Dictionary<string, BarItem> dxBarItemsByName;
 
@@ -59,6 +60,12 @@ public partial class VvForm : IVvDocumentHost
    {
       get { return dxBar_Report; }
       set { dxBar_Report = value; }
+   }
+
+   public Bar DxBar_SubModul
+   {
+      get { return dxBar_SubModul; }
+      set { dxBar_SubModul = value; }
    }
 
    public Bar DxMenuBar

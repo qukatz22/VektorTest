@@ -668,7 +668,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 #### 3a — `VvFloatingForm`
 
 - [x] Klasa `VvFloatingForm : XtraForm, IVvDocumentHost` — P3-2/P3-4 baseline, VS-build green
-- [~] Vlastiti `BarManager`, vlastiti `Bar_Record`, `Bar_SubModul`, `Bar_Report` preko `VvToolbarFactory` — skeleton `DxMenuBar`/`DxBar_Record`/`DxBar_Report` postoji; `Bar_SubModul` i business item population ostaju otvoreni
+- [~] Vlastiti `BarManager`, vlastiti `Bar_Record`, `Bar_SubModul`, `Bar_Report` preko `VvToolbarFactory` — skeleton `DxMenuBar`/`DxBar_Record`/`DxBar_Report` postoji; P3-29 dodaje detached `DxBar_SubModul` skeleton; business item population ostaje otvoren
 - [x] `VvToolbarFactory.CreateMenuBar(…, isDetached: true)` parametar — detached skeleton menu postoji
 - [x] Status bar na formi s vlastitim `TStripStatusLabel` — P3-7 status routing kroz `ActiveDocumentHost`
 

@@ -134,6 +134,8 @@ Napomena P3-27: dodan je process-level M2PAY transaction guard (`ZXC.TryBeginM2P
 
 Napomena P3-28: detached forma sada dobiva V4-style title bar tekst `Vektor — {ModulName} / {SubModulName} — {WriteMode}` iz source `VvTabPage`/`VvSubModul` podataka i preuzima ikonu sa source/main forme, tako da se u taskbaru razlikuje kao pravi Vektor top-level prozor. Business toolbar populacija ostaje odvojena otvorena stavka.
 
+Napomena P3-29: dodan je detached `Bar_SubModul` skeleton kroz `IVvDocumentHost.DxBar_SubModul` i `VvToolbarFactory.CreateBar_SubModul`. `VvFloatingForm` sada ima vlastiti DX SubModul bar s disabled placeholder itemom; business item population namjerno ostaje otvorena odvojena stavka.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

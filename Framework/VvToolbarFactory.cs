@@ -74,7 +74,10 @@ public static class VvToolbarFactory
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
 
-      host.DxBarManager.ForceInitialize();
+      if(host.DxBar_SubModul == null)
+      {
+         host.DxBar_SubModul = CreateBar(host.DxBarManager, "SubModul", false);
+      }
    }
 
    /// <summary>
