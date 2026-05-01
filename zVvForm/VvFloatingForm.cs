@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -46,11 +48,12 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       this.detachedContext = detachedContext;
 
-      Text = detachedContext != null && detachedContext.Title.NotEmpty() ? "Detached tab - " + detachedContext.Title : "Detached tab";
+      Text = GetDetachedTitle(detachedContext);
       ShowInTaskbar = true;
       StartPosition = FormStartPosition.CenterParent;
       Width = 1024;
       Height = 768;
+      Icon = GetDetachedIcon(detachedContext);
 
       statusLabel = new ToolStripStatusLabel();
       statusStrip = new StatusStrip();
@@ -163,6 +166,44 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       {
          DxBar_Record.AddItem(titleItem);
       }
+   }
+
+   private static string GetDetachedTitle(VvDetachedDocumentContext detachedContext)
+   {
+      if(detachedContext == null || detachedContext.SourceTabPage == null)
+      {
+         return "Vektor — detached tab";
+      }
+
+      VvTabPage sourceTabPage = detachedContext.SourceTabPage;
+      string modulName = GetModulName(detachedContext.SourceForm, sourceTabPage.TheVvSubModul.modulEnum);
+      string subModulName = sourceTabPage.TheVvSubModul.subModul_name;
+      string writeModeName = sourceTabPage.WriteMode.ToString();
+
+      if(modulName.IsEmpty()) modulName = "Modul";
+      if(subModulName.IsEmpty()) subModulName = detachedContext.Title;
+      if(subModulName.IsEmpty()) subModulName = "SubModul";
+
+      return string.Format("Vektor — {0} / {1} — {2}", modulName, subModulName, writeModeName);
+   }
+
+   private static string GetModulName(VvForm sourceForm, ZXC.VvModulEnum modulEnum)
+   {
+      if(sourceForm == null || sourceForm.aModuli == null) return string.Empty;
+
+      VvForm.VvModul modul = sourceForm.aModuli.FirstOrDefault(vvModul => vvModul.modulEnum == modulEnum);
+
+      return modul.modul_name;
+   }
+
+   private static Icon GetDetachedIcon(VvDetachedDocumentContext detachedContext)
+   {
+      if(detachedContext != null && detachedContext.SourceForm != null && detachedContext.SourceForm.Icon != null)
+      {
+         return detachedContext.SourceForm.Icon;
+      }
+
+      return ZXC.TheVvForm != null ? ZXC.TheVvForm.Icon : null;
    }
 
    private void DetachedCloseItem_Click(object sender, EventArgs e)

@@ -741,8 +741,8 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3i — UX polish
 
-- [ ] Title bar detached forme: „Vektor — {ModulName}/ {SubModulName} — {WriteMode}"
-- [ ] Taskbar ikona ista kao glavna
+- [x] Title bar detached forme: „Vektor — {ModulName}/ {SubModulName} — {WriteMode}" — P3-28 gradi naslov iz source `VvTabPage` / `VvSubModul` / `WriteMode`
+- [x] Taskbar ikona ista kao glavna — P3-28 preuzima `Icon` sa source/main forme
 - [ ] Detach gesture: drag tab van granice `TabbedView`-a (standard DX gesture)
 - [ ] Reattach gesture: drag title bar detached forme natrag u glavnu → `Document` se vraća
 

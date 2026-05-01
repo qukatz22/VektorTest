@@ -132,6 +132,8 @@ Napomena P3-26: preostali RISK-field companion flagovi `RISK_ToggleKnDeviza_InPr
 
 Napomena P3-27: dodan je process-level M2PAY transaction guard (`ZXC.TryBeginM2PayTransaction` / `EndM2PayTransaction`) jer je M2PAY fizički hardware singleton. `Sale`, `Refund` i `SaleReversal` entry pointovi u `VvForm_Q` sada provjeravaju API/device preduvjete i zatim uzimaju globalni guard dok traje HAPI transaction start + modalni status dialog; drugi host dobiva hrvatsku UX poruku da je transakcija već u tijeku u drugom prozoru.
 
+Napomena P3-28: detached forma sada dobiva V4-style title bar tekst `Vektor — {ModulName} / {SubModulName} — {WriteMode}` iz source `VvTabPage`/`VvSubModul` podataka i preuzima ikonu sa source/main forme, tako da se u taskbaru razlikuje kao pravi Vektor top-level prozor. Business toolbar populacija ostaje odvojena otvorena stavka.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
