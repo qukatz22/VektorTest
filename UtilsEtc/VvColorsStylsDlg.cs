@@ -3,22 +3,17 @@ using System.Drawing;
 using System.Windows.Forms;
 using DevExpress.XtraTab;
 using DevExpress.LookAndFeel;
-using Crownwood.DotNetMagic.Controls;
-using Crownwood.DotNetMagic.Common;
 
 public class VvColorsStylsDlg : VvDialog
 {
    private XtraTabControl tabControlColors;
-   private XtraTabPage tabPageFormStyle, tabPageTabControlStyle, tabPageTreeControlStyle;
+   private XtraTabPage tabPageFormStyle, tabPageTabControlStyle;
    private Button resetButton, doneButton;
-   private VvHamper hampFormStyle, hampTabCtrlOfficeStyle, hampTabCtrlColors, hampTabCtrlMediaPlayerStyle, hampTreeControlStyle;
+   private VvHamper hampFormStyle, hampTabCtrlColors;
    private int razmakHamp = ZXC.Qun4, nextX = 0, nextY = 0;
    private int tabCtrlWidth, tabCtrlHeight, dlgWidth, dlgHeight;
    public event EventHandler ResetEventHandler;
    private RadioButton[] aRBtnDxSkin;
-   private RadioButton[] aRBtnOffStyle;
-   private RadioButton[] aRBtnTabCtrMedPlayStyle;
-   private RadioButton[] aRBtnTreeControlStyle;
 
    public VvColorsAndStyles oldValues;
 
@@ -41,16 +36,8 @@ public class VvColorsStylsDlg : VvDialog
       InitializeTabControlColors();
 
       InitializeFormVisualStyleHamper(out hampFormStyle);
-      InitializeTabControlStyleHamper(out hampTabCtrlOfficeStyle);
-      InitializeTreeControlStyleHamper(out hampTreeControlStyle);
-
-      InitializeTabControlStyleHamper(out hampTabCtrlOfficeStyle);
-      nextY = hampTabCtrlOfficeStyle.Bottom + ZXC.Qun2 + ZXC.Qun10 - ZXC.Qun12;
-
-      InitializeTabControlMediaPlayerStyle(out hampTabCtrlMediaPlayerStyle);
-
       nextY = 0;
-      nextX = hampTabCtrlOfficeStyle.Right;
+      nextX = 0;
       InitializeTabControlColorsHamper(out hampTabCtrlColors);
 
       InitializeSize();
@@ -68,8 +55,8 @@ public class VvColorsStylsDlg : VvDialog
 
    private void InitializeSize()
    {
-      tabCtrlHeight = hampTreeControlStyle.Height + ZXC.Q2un;
-      tabCtrlWidth  = hampTabCtrlOfficeStyle.Width + hampTabCtrlColors.Width + ZXC.Q2un;
+      tabCtrlHeight = Math.Max(hampFormStyle.Height, hampTabCtrlColors.Height) + ZXC.Q2un;
+      tabCtrlWidth  = Math.Max(hampFormStyle.Width, hampTabCtrlColors.Width) + ZXC.Q2un;
       dlgWidth      = tabCtrlWidth;
       dlgHeight     = tabCtrlHeight + ZXC.QunBtnH + 2 * ZXC.QunMrgn;
    }
@@ -98,15 +85,8 @@ public class VvColorsStylsDlg : VvDialog
       tabPageFormStyle.Text        = "FormStyle";
       tabControlColors.TabPages.Add(tabPageFormStyle);
       tabPageTabControlStyle       = new XtraTabPage();
-      tabPageTabControlStyle.Text  = "TabControlStyle";
+      tabPageTabControlStyle.Text  = "Colors";
       tabControlColors.TabPages.Add(tabPageTabControlStyle);
-
-      if(ZXC.ThisIsVektorProject)
-      {
-         tabPageTreeControlStyle      = new XtraTabPage();
-         tabPageTreeControlStyle.Text = "TreeControlStyle";
-         tabControlColors.TabPages.Add(tabPageTreeControlStyle);
-      }
     }
 
    #endregion TabControl
@@ -164,92 +144,6 @@ public class VvColorsStylsDlg : VvDialog
    #endregion TabPageFormStyle
 
    #region TabPageTabControlStyle
-
-   private void InitializeTabControlStyleHamper(out VvHamper tabControlStyleHamper)
-   {
-      tabControlStyleHamper = new VvHamper(1, 8, "OfficeStyle", tabPageTabControlStyle, true, nextX, nextY, razmakHamp);
-
-      tabControlStyleHamper.VvColWdt      = new int[] { ZXC.Q5un };
-      tabControlStyleHamper.VvSpcBefCol   = new int[] { ZXC.Qun4 };
-      tabControlStyleHamper.VvRightMargin = tabControlStyleHamper.VvLeftMargin;
-
-      for (int i = 0; i < tabControlStyleHamper.VvNumOfRows; i++)
-      {
-         tabControlStyleHamper.VvRowHgt[i]    = ZXC.QUN;
-         tabControlStyleHamper.VvSpcBefRow[i] = ZXC.Qun5;
-      }
-      tabControlStyleHamper.VvBottomMargin = tabControlStyleHamper.VvTopMargin;
-
-      OfficeStyle[] aOffStyle = new OfficeStyle[] {OfficeStyle.SoftWhite   , OfficeStyle.LightWhite   , OfficeStyle.DarkWhite,
-                                                   OfficeStyle.SoftEnhanced, OfficeStyle.LightEnhanced, OfficeStyle.DarkEnhanced,
-                                                   OfficeStyle.Light       , OfficeStyle.Dark};
-
-      aRBtnOffStyle = new RadioButton[aOffStyle.Length];
-      
-      for (int i = 0; i < aOffStyle.Length; i++)
-      {
-         aRBtnOffStyle[i]     = tabControlStyleHamper.CreateVvRadioButton(0, i, radBtn_TabControl, aOffStyle[i].ToString(), TextImageRelation.ImageBeforeText);
-         aRBtnOffStyle[i].Tag = aOffStyle[i];
-
-         if ((OfficeStyle)aRBtnOffStyle[i].Tag == ZXC.vvColors.tabControl_OfficeStyle)
-         {
-            aRBtnOffStyle[i].Checked = true;
-         }
-      }
-   }
-
-   void radBtn_TabControl(object sender, EventArgs e)
-   {
-      RadioButton rBtn = sender as RadioButton;
-      ZXC.vvColors.tabControl_OfficeStyle = (OfficeStyle)rBtn.Tag;
-
-      VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-      // C20b: vidi komentar na liniji 157 (TabbedView nije Control; Faza 2i preuzima).
-      //VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
-   }
-
-   private void InitializeTabControlMediaPlayerStyle(out VvHamper hampTabCtrlMediaPlayerStyle)
-   {
-      hampTabCtrlMediaPlayerStyle = new VvHamper(1, 8, "MediaPlayerStyle", tabPageTabControlStyle, true, nextX, nextY, razmakHamp);
-
-      hampTabCtrlMediaPlayerStyle.VvColWdt      = new int[] { ZXC.Q5un };
-      hampTabCtrlMediaPlayerStyle.VvSpcBefCol   = new int[] { ZXC.Qun4 };
-      hampTabCtrlMediaPlayerStyle.VvRightMargin = hampTabCtrlMediaPlayerStyle.VvLeftMargin;
-
-      for(int i = 0; i < hampTabCtrlMediaPlayerStyle.VvNumOfRows; i++)
-      {
-         hampTabCtrlMediaPlayerStyle.VvRowHgt[i] = ZXC.QUN;
-         hampTabCtrlMediaPlayerStyle.VvSpcBefRow[i] = ZXC.Qun5;
-      }
-      hampTabCtrlMediaPlayerStyle.VvBottomMargin = hampTabCtrlMediaPlayerStyle.VvTopMargin;
-
-      MediaPlayerStyle[] aMediaPlayerStyle = new MediaPlayerStyle[] { MediaPlayerStyle.Dark        , MediaPlayerStyle.DarkEnhanced , MediaPlayerStyle.DarkWhite,
-                                                                      MediaPlayerStyle.Light       , MediaPlayerStyle.LightEnhanced, MediaPlayerStyle.LightWhite,
-                                                                      MediaPlayerStyle.SoftEnhanced, MediaPlayerStyle.SoftWhite};
-
-      aRBtnTabCtrMedPlayStyle = new RadioButton[aMediaPlayerStyle.Length];
-
-      for(int i = 0; i < aMediaPlayerStyle.Length; i++)
-      {
-         aRBtnTabCtrMedPlayStyle[i]     = hampTabCtrlMediaPlayerStyle.CreateVvRadioButton(0, i, radBtn_TabControlMedia, aMediaPlayerStyle[i].ToString(), TextImageRelation.ImageBeforeText);
-         aRBtnTabCtrMedPlayStyle[i].Tag = aMediaPlayerStyle[i];
-
-         if((MediaPlayerStyle)aRBtnTabCtrMedPlayStyle[i].Tag == ZXC.vvColors.tabControl_MediaPlayerStyle)
-         {
-            aRBtnTabCtrMedPlayStyle[i].Checked = true;
-         }
-      }
-   }
-
-   void radBtn_TabControlMedia(object sender, EventArgs e)
-   {
-      RadioButton rBtn                        = sender as RadioButton;
-      ZXC.vvColors.tabControl_MediaPlayerStyle = (MediaPlayerStyle)rBtn.Tag;
-
-      VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-      // C20b: vidi komentar na liniji 157 (TabbedView nije Control; Faza 2i preuzima).
-      //VvHamper.ApplyVVColorAndStyleTabCntrolChange(ZXC.TheVvForm.TheTabControl);
-   }
 
    private void InitializeTabControlColorsHamper(out VvHamper tabControlColorsHamper)
    {
@@ -360,70 +254,5 @@ public class VvColorsStylsDlg : VvDialog
    }
 
    #endregion Btn_Color
-
-   #region TabPageTreeControlStyle
-
-   private void InitializeTreeControlStyleHamper(out VvHamper hampTreeControlStyle)
-   {
-      hampTreeControlStyle = new VvHamper(1, 19, "TreeControlStyles", tabPageTreeControlStyle, true, nextX, nextY, razmakHamp);
-
-      hampTreeControlStyle.VvColWdt      = new int[] { ZXC.Q7un };
-      hampTreeControlStyle.VvSpcBefCol   = new int[] { ZXC.Qun4 };
-      hampTreeControlStyle.VvRightMargin = hampTreeControlStyle.VvLeftMargin;
-
-      for(int i = 0; i < hampTreeControlStyle.VvNumOfRows; i++)
-      {
-         hampTreeControlStyle.VvRowHgt[i] = ZXC.QUN;
-         hampTreeControlStyle.VvSpcBefRow[i] = ZXC.Qun5;
-      }
-      hampTreeControlStyle.VvBottomMargin = hampTreeControlStyle.VvTopMargin;
-
-      TreeControlStyles[] aTreeControlStyle = new TreeControlStyles[] {
-                                                                        TreeControlStyles.StandardPlain         ,
-                                                                        TreeControlStyles.StandardThemed        ,
-                                                                        TreeControlStyles.Explorer              ,
-                                                                        TreeControlStyles.Navigator             ,
-                                                                        TreeControlStyles.Group                 ,
-                                                                        TreeControlStyles.GroupOfficeLight      ,
-                                                                        TreeControlStyles.GroupOfficeDark       ,
-                                                                       // TreeControlStyles.List                  ,
-                                                                        TreeControlStyles.GroupOfficeBlueLight  ,
-                                                                        TreeControlStyles.GroupOfficeBlueDark   ,
-                                                                        TreeControlStyles.GroupOfficeSilverLight,
-                                                                        TreeControlStyles.GroupOfficeSilverDark ,
-                                                                        TreeControlStyles.GroupOfficeBlackLight ,
-                                                                        TreeControlStyles.GroupOfficeBlackDark  ,
-                                                                        TreeControlStyles.GroupMediaBlueLight   ,
-                                                                        TreeControlStyles.GroupMediaBlueDark    ,
-                                                                        TreeControlStyles.GroupMediaOrangeLight ,
-                                                                        TreeControlStyles.GroupMediaOrangeDark  ,
-                                                                        TreeControlStyles.GroupMediaPurpleLight ,
-                                                                        TreeControlStyles.GroupMediaPurpleDark 
-      };
-
-      aRBtnTreeControlStyle = new RadioButton[aTreeControlStyle.Length];
-
-      for(int i = 0; i < aTreeControlStyle.Length; i++)
-      {
-         aRBtnTreeControlStyle[i] = hampTreeControlStyle.CreateVvRadioButton(0, i, radBtn_aTreeControlStyle, aTreeControlStyle[i].ToString(), TextImageRelation.ImageBeforeText);
-         aRBtnTreeControlStyle[i].Tag = aTreeControlStyle[i];
-
-         if((TreeControlStyles)aRBtnTreeControlStyle[i].Tag == ZXC.vvColors.treeControlStyle)
-         {
-            aRBtnTreeControlStyle[i].Checked = true;
-         }
-      }
-
-   }
-
-   void radBtn_aTreeControlStyle(object sender, EventArgs e)
-   {
-      RadioButton rBtn              = sender as RadioButton;
-      ZXC.vvColors.treeControlStyle = (TreeControlStyles)rBtn.Tag;
-
-      VvHamper.SetUpVisualStyle(ZXC.vvColors.vvform_VisualStyle);
-   }
-
-   #endregion TabPageTreeControlStyle
 
 }
