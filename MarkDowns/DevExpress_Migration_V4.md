@@ -638,6 +638,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] `Framework\VvDialog.cs` prebačen s `DotNetMagicForm` na WinForms `Form`; obsolete `Style` assignment-i uklonjeni iz izvedenih `VvDialog` dijaloga; clean-build green
   - [x] `Framework\VvTabPage.cs` obsolete unused Crownwood `TabControl` field i `using Crownwood.DotNetMagic.Controls` uklonjeni; clean-build green
   - [x] `zVvForm\Moduls_CommandPanel.cs` modul tree prebačen na postojeći DevExpress `TreeList` path; legacy Crownwood `TreeControl`/`Node` path uklonjen; clean-build green
+  - [x] `zVvForm\Initializations_Settings.cs` obsolete `TreeView_Modul` Crownwood `TreeControl` field uklonjen nakon `TreeList` swapa; user-build green
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a
