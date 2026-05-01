@@ -84,6 +84,8 @@ Napomena P3-2: skeleton još ne reparenta content i ne zove `VvToolbarFactory.Ap
 
 Napomena P3-3: `BeginFloating` sada otvara top-level `VvFloatingForm` preview s naslovom source taba i i dalje cancelira default DX lightweight floating. Content se još ne reparenta; ovo je dokaz da gesture može kreirati pravi host/form lifecycle bez diranja aktivnog taba.
 
+Napomena P3-4: dodan je `VvDetachedDocumentContext` i minimalni reparent flow. `VvFloatingForm` preuzima postojeći `VvUserControl` iz `VvTabPage.panelZaUC`, a na zatvaranje ga vraća u isti source tab container. DX `Document` se u ovom sliceu još ne uklanja iz glavnog `TabbedView` modela, dirty-close semantika još ostaje za sljedeći slice.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

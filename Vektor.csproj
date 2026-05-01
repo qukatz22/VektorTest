@@ -2785,6 +2785,7 @@
     <Compile Include="zVvForm\TabControl_TabPages.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="zVvForm\VvDetachedDocumentContext.cs" />
     <Compile Include="zVvForm\VvFloatingForm.cs">
       <SubType>Form</SubType>
     </Compile>

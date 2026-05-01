@@ -18,21 +18,30 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
 {
    private readonly VvPerHostState perHost = new VvPerHostState();
    private readonly Dictionary<string, BarItem> dxBarItemsByName = new Dictionary<string, BarItem>();
+   private readonly VvDetachedDocumentContext detachedContext;
    private readonly StatusStrip statusStrip;
    private readonly ToolStripStatusLabel statusLabel;
+   private bool reattached;
    private BarManager dxBarManager;
    private Bar dxBar_Record;
    private Bar dxBar_Report;
    private Bar dxMenuBar;
 
    public VvFloatingForm()
-      : this(null)
+      : this((VvDetachedDocumentContext)null)
    {
    }
 
    public VvFloatingForm(VvTabPage sourceTabPage)
+      : this(sourceTabPage != null ? new VvDetachedDocumentContext(sourceTabPage.TheVvForm, sourceTabPage) : null)
    {
-      Text = sourceTabPage != null && sourceTabPage.Title.NotEmpty() ? "Detached tab - " + sourceTabPage.Title : "Detached tab";
+   }
+
+   public VvFloatingForm(VvDetachedDocumentContext detachedContext)
+   {
+      this.detachedContext = detachedContext;
+
+      Text = detachedContext != null && detachedContext.Title.NotEmpty() ? "Detached tab - " + detachedContext.Title : "Detached tab";
       ShowInTaskbar = true;
       StartPosition = FormStartPosition.CenterParent;
       Width = 1024;
@@ -42,6 +51,11 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       statusStrip = new StatusStrip();
       statusStrip.Items.Add(statusLabel);
       Controls.Add(statusStrip);
+
+      if(detachedContext != null)
+      {
+         DetachContent();
+      }
 
       ZXC.RegisterDocumentHost(this);
    }
@@ -118,6 +132,27 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       statusLabel.Text = "";
    }
 
+   private void DetachContent()
+   {
+      VvUserControl hostedUserControl = detachedContext.HostedUserControl;
+      hostedUserControl.Parent = null;
+      hostedUserControl.Dock = DockStyle.Fill;
+      Controls.Add(hostedUserControl);
+      Controls.SetChildIndex(hostedUserControl, 0);
+      statusStrip.Dock = DockStyle.Bottom;
+   }
+
+   private void ReattachContent()
+   {
+      if(reattached || detachedContext == null) return;
+
+      VvUserControl hostedUserControl = detachedContext.HostedUserControl;
+      hostedUserControl.Parent = null;
+      hostedUserControl.Dock = DockStyle.Fill;
+      detachedContext.SourceTabPage.panelZaUC.Controls.Add(hostedUserControl);
+      reattached = true;
+   }
+
    protected override void OnActivated(EventArgs e)
    {
       base.OnActivated(e);
@@ -126,6 +161,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
 
    protected override void OnFormClosed(FormClosedEventArgs e)
    {
+      ReattachContent();
       ZXC.UnregisterDocumentHost(this);
       base.OnFormClosed(e);
    }
