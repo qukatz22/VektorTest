@@ -118,6 +118,8 @@ Napomena P3-19: prvi minimalni per-host flag slice preselio je cache-suppression
 
 Napomena P3-20: dodani su mali private helperi u `ZXC` za per-host bool routing (`GetActivePerHostFlag`, `GetActiveOrFallbackPerHostFlag`, `SetActivePerHostFlag`) i P3-19 propertyji su refaktorirani na njih. Ovo je infrastrukturni, build-green refactor bez promjene javnih imena i bez dodatne business semantike; cilj je da sljedeći save/copy flagovi imaju manji i konzistentniji diff.
 
+Napomena P3-21: record-level save flag `RISK_SaveVvDataRecord_inProgress` sada je migriran istim helper patternom na active-host `VvPerHostState` uz legacy fallback backing field. Time se prvi record-level flag ponaša per-host bez izmjene postojećih FakturDUC/VvForm_Q call-siteova; manual test “tab A save u toku, tab B drugi save” ostaje otvoren dok se ne migriraju i preostali save/copy companion flagovi.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

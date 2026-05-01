@@ -274,7 +274,7 @@ public static class ZXC
    public static bool RISK_CopyToMixerDUC_inProgress = false;
    public static bool MIXER_CopyToOtherDUC_inProgress = false;
    public static bool RISK_AutoAddInventuraDiff_inProgress = false;
-   public static bool RISK_SaveVvDataRecord_inProgress = false;
+   private static bool risk_SaveVvDataRecord_inProgress = false;
    private static bool risk_CheckPrNabDokCij_inProgress = false;
    private static bool risk_CheckZPCkol_inProgress = false;
    public static bool RISK_PromjenaNacPlac_inProgress = false;
@@ -286,6 +286,12 @@ public static class ZXC
    {
       get { return GetActivePerHostFlag(perHost => perHost.RISK_CheckPrNabDokCij_inProgress, risk_CheckPrNabDokCij_inProgress); }
       set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_CheckPrNabDokCij_inProgress = flagValue, ref risk_CheckPrNabDokCij_inProgress, value); }
+   }
+
+   public static bool RISK_SaveVvDataRecord_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_SaveVvDataRecord_inProgress, risk_SaveVvDataRecord_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_SaveVvDataRecord_inProgress = flagValue, ref risk_SaveVvDataRecord_inProgress, value); }
    }
 
    public static bool RISK_CheckZPCkol_inProgress
@@ -433,7 +439,7 @@ public static class ZXC
       // --- Defanzivni fallback (C15): tijela flagova jos zive u ZXC staticima
       // (Option B: call-siteovi se ne diraju do Faze 3). Ovaj blok osigurava da
       // project-switch ne ostavi stale mutex dok flip nije dovrsen.
-      RISK_SaveVvDataRecord_inProgress                             = false;
+      risk_SaveVvDataRecord_inProgress                             = false;
       GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
       RISK_FinalRn_inProgress                                      = false;
       RISK_Edit_RtranoOnly_InProgress                              = false;
