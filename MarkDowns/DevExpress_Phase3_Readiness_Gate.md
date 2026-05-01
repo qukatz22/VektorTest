@@ -76,7 +76,7 @@ Phase 3 runtime implementation may start only when:
 
 Decision:
 
-- [ ] GO — start P3-1 `DocumentFloating` interception spike.
+- [x] GO — start P3-1 floating interception spike.
 - [ ] NO-GO — fix Phase 2 SWAP regressions first.
 
 Decision owner:
@@ -87,9 +87,9 @@ Notes:
 
 ## 5. If GO: first implementation slice
 
-Start with P3-1 from `MarkDowns/DevExpress_Phase3_DETACH_Planning.md`:
+P3-1 from `MarkDowns/DevExpress_Phase3_DETACH_Planning.md`:
 
-1. Hook `TabbedView.DocumentFloating`.
+1. Hook `TabbedView.BeginFloating`.
 2. Verify the event provides the source `Document` and `VvTabPage`.
 3. Set `e.Cancel = true` to prevent DevExpress default lightweight floating.
 4. Log/diagnose source context.
@@ -100,6 +100,8 @@ Success criteria:
 - dragging a tab outside the main form does not create DevExpress lightweight float,
 - code can reliably identify source `Document`, `VvTabPage`, and `VvUserControl`,
 - no tab close/switch/dirty behavior changes in normal use.
+
+Implementation status: code compiled with VS-build green; runtime drag gesture still needs human smoke validation.
 
 ## 6. Stop conditions for P3-1
 

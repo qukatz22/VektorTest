@@ -2785,6 +2785,9 @@
     <Compile Include="zVvForm\TabControl_TabPages.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="zVvForm\VvFloatingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="zVvForm\VvForm_IVvDocumentHost.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -4785,6 +4788,8 @@
     <None Include="MarkDowns\DevExpress_Migration_V4.md" />
     <None Include="MarkDowns\DevExpress_Migration_V4_RESUME.md" />
     <None Include="MarkDowns\DevExpress_Phase1_Phase2_Team_Handoff.md" />
+    <None Include="MarkDowns\DevExpress_Phase3_DETACH_Planning.md" />
+    <None Include="MarkDowns\DevExpress_Phase3_Readiness_Gate.md" />
     <None Include="MarkDowns\Phase1_SmokeTests.md" />
     <None Include="MarkDowns\Sync-FromProduction.ps1" />
     <None Include="MarkDowns\vvBkpScript.md" />

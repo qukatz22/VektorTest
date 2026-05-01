@@ -22,8 +22,8 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       workDocumentManager.ViewCollection.Add(tv);
       workDocumentManager.View = tv;
 
-      // Per V4 §3.2c korak 6: floating eksplicitno OFF u Fazi 2; tek u Fazi 3 (DETACH) se ukljuèuje.
-      tv.DocumentProperties.AllowFloat = false;
+      // P3-1: floating gesture je ukljuèen, ali default DX lightweight floating se cancelira u BeginFloating.
+      tv.DocumentProperties.AllowFloat = true;
       tv.DocumentProperties.AllowPin   = false;
 
       // X gumb na tab-u; ekvivalent Crownwood ShowClose dynamic logici
@@ -40,6 +40,25 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 
       // Per V4 §3.2c korak 4: mouse tab-switch mora zadržati staru Validating arhiva-blokadu.
       tv.TabMouseActivating += new DocumentCancelEventHandler(TheTabControl_TabMouseActivating);
+
+      // P3-1: intercept default DevExpress lightweight floating prije kasnijeg VvFloatingForm reparent flowa.
+      tv.BeginFloating += new DocumentCancelEventHandler(TheTabControl_BeginFloating);
+   }
+
+   /// <summary>
+   /// P3-1 spike: prepoznaj floating gesture, sprijeèi default DX lightweight floating,
+   /// i validiraj da event nosi source Document/VvTabPage context.
+   /// </summary>
+   private void TheTabControl_BeginFloating(object sender, DocumentCancelEventArgs e)
+   {
+      e.Cancel = true;
+
+      VvTabPage vvTabPage = e.Document != null ? e.Document.Control as VvTabPage : null;
+      string title = vvTabPage != null ? vvTabPage.Title : "unknown";
+      System.Diagnostics.Debug.WriteLine("P3-3 DETACH preview: BeginFloating intercepted for tab '" + title + "'. Default DX floating cancelled.");
+
+      VvFloatingForm floatingForm = new VvFloatingForm(vvTabPage);
+      floatingForm.Show(this);
    }
 
    private void ShowCloseAndArrowsDropSelectOnWorkTabControl(bool _showCA)

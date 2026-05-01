@@ -61,18 +61,28 @@ Ne raditi u prvoj iteraciji:
 
 #### `VvFloatingForm`
 
-Planirana klasa:
+Klasa:
 
 - base: `DevExpress.XtraEditors.XtraForm`
 - interfaces: `IVvDocumentHost`
-- vlasništvo:
+- P3-2 skeleton postoji: `zVvForm\VvFloatingForm.cs`
+- trenutno vlasništvo:
+  - vlastiti `BarManager`,
+  - vlastiti status strip/status label,
+  - vlastiti `VvPerHostState`,
+  - registracija u `ZXC.RegisterDocumentHost`,
+  - aktivacija kroz `ZXC.SetActiveDocumentHost`,
+  - unregister na `FormClosed`.
+- planirano vlasništvo u sljedećim sliceovima:
   - source `VvTabPage`,
   - source `Document`,
   - hosted `VvUserControl`,
-  - vlastiti `BarManager`,
   - vlastiti `Bar_Record`, `Bar_Report`, `DxMenuBar`,
-  - vlastiti status strip/status label,
-  - vlastiti `VvPerHostState`.
+  - detach/reattach context.
+
+Napomena P3-2: skeleton još ne reparenta content i ne zove `VvToolbarFactory.ApplyWriteMode`, jer factory trenutno podržava samo `VvForm` path za stvarnu WriteMode logiku.
+
+Napomena P3-3: `BeginFloating` sada otvara top-level `VvFloatingForm` preview s naslovom source taba i i dalje cancelira default DX lightweight floating. Content se još ne reparenta; ovo je dokaz da gesture može kreirati pravi host/form lifecycle bez diranja aktivnog taba.
 
 Minimalne odgovornosti:
 
@@ -257,11 +267,14 @@ Plan:
 
 ### P3-1 — Event interception spike
 
-- hook `TabbedView.DocumentFloating`,
-- logirati source document/tab,
-- `e.Cancel = true`,
-- ne kreirati floating form još,
-- dokazati da default DX lightweight floating ne nastaje.
+- [x] Hook `TabbedView.BeginFloating` (`DocumentCancelEventHandler`).
+- [x] `DocumentProperties.AllowFloat = true` za gesture.
+- [x] `e.Cancel = true` za sprječavanje default DX lightweight floatinga.
+- [x] Logirati source `Document`/`VvTabPage` context preko `Debug.WriteLine`.
+- [x] Ne kreirati floating form još.
+- [x] VS-build green.
+
+**Rezultat P3-1:** DevExpress v25.2 `TabbedView` nema event imena `DocumentFloating`; metadata scan pokazuje `BeginFloating`, `Floating`, `EndFloating`. Za interception koristimo `BeginFloating` jer event args imaju `Document` i writable `Cancel`.
 
 ### P3-2 — `VvFloatingForm` skeleton
 
