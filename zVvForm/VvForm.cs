@@ -140,6 +140,12 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, IVvDoc
 
    #endregion Main
 
+   protected override void OnActivated(EventArgs e)
+   {
+      base.OnActivated(e);
+      ZXC.SetActiveDocumentHost(this);
+   }
+
    public VvForm()
    {
       ZXC.InitializeApplication_InProgress = true;

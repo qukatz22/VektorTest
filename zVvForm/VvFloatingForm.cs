@@ -138,6 +138,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       detachedContext.SourceTabPage.IsDetached = true;
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
+      WireActiveHostRouting(hostedUserControl);
       Controls.Add(hostedUserControl);
       Controls.SetChildIndex(hostedUserControl, 0);
       statusStrip.Dock = DockStyle.Bottom;
@@ -156,10 +157,44 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       VvUserControl hostedUserControl = detachedContext.HostedUserControl;
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
+      UnwireActiveHostRouting(hostedUserControl);
       detachedContext.SourceTabPage.panelZaUC.Controls.Add(hostedUserControl);
       detachedContext.SourceTabPage.IsDetached = false;
       detachedContext.SourceTabPage.Selected = true;
       ZXC.SetActiveDocumentHost(detachedContext.SourceForm);
+   }
+
+   private void WireActiveHostRouting(Control control)
+   {
+      if(control == null) return;
+
+      control.Enter += DetachedControl_ActivateHost;
+      control.GotFocus += DetachedControl_ActivateHost;
+      control.MouseDown += DetachedControl_ActivateHost;
+
+      foreach(Control child in control.Controls)
+      {
+         WireActiveHostRouting(child);
+      }
+   }
+
+   private void UnwireActiveHostRouting(Control control)
+   {
+      if(control == null) return;
+
+      control.Enter -= DetachedControl_ActivateHost;
+      control.GotFocus -= DetachedControl_ActivateHost;
+      control.MouseDown -= DetachedControl_ActivateHost;
+
+      foreach(Control child in control.Controls)
+      {
+         UnwireActiveHostRouting(child);
+      }
+   }
+
+   private void DetachedControl_ActivateHost(object sender, EventArgs e)
+   {
+      ZXC.SetActiveDocumentHost(this);
    }
 
    protected override void OnActivated(EventArgs e)

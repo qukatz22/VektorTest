@@ -92,6 +92,8 @@ Napomena P3-6: detached `FormClosing` sada privremeno vraća content u source ta
 
 Napomena P3-7: `ZXC.SetStatusText` i `ZXC.ClearStatusText` sada prvo rutiraju kroz `ZXC.ActiveDocumentHost as IVvDocumentHost`. Detached forma zato dobiva vlastite status poruke dok je aktivni host; ako host nije dostupan, ostaje stari delegate/fallback put na main `VvForm`.
 
+Napomena P3-8: detached content sada rekurzivno veže `Enter`, `GotFocus` i `MouseDown` na active-host routing, pa interakcija unutar floating forme vraća `ZXC.ActiveDocumentHost` na `VvFloatingForm`. `VvForm.OnActivated` vraća active host na main formu kad korisnik aktivira glavni prozor.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
