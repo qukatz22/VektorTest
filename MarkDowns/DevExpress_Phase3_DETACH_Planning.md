@@ -128,6 +128,8 @@ Napomena P3-24: cross-DUC copy flagovi `RISK_CopyToOtherDUC_inProgress`, `RISK_C
 
 Napomena P3-25: UI-state flagovi `RESET_InitialLayout_InProgress`, `MenuReset_SvDUH_ZAHonly_InProgress`, `PutRiskFilterFieldsInProgress`, `DumpChosenOtsList_OnNalogDUC_InProgress` i `LoadIzvodDLG_isON` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Scan nakon patcha potvrđuje da live call-siteovi ostaju na istim `ZXC` property imenima, a host-specific routing se događa centralno u `ZXC`.
 
+Napomena P3-26: preostali RISK-field companion flagovi `RISK_ToggleKnDeviza_InProgress`, `RISK_InitZPCvalues_InProgress`, `RISK_PULXPIZX_Calc_InProgress`, `RISK_PromjenaNacPlac_inProgress` i `RISK_AutoAddInventuraDiff_inProgress` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Time je kompletiran trenutni `VvPerHostState` flag routing set; stara `ZXC` imena ostaju kompatibilna property fasada za postojeće call-siteove.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

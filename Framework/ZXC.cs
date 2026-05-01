@@ -246,9 +246,6 @@ public static class ZXC
    public static bool CopyOut_InProgress = false;
    public static bool RewriteAllDocuments_InProgress = false;
    public static bool RepairMissingFakturEx_InProgress = false;
-   public static bool RISK_ToggleKnDeviza_InProgress = false;
-   public static bool RISK_InitZPCvalues_InProgress = false;
-   public static bool RISK_PULXPIZX_Calc_InProgress = false;
    public static bool GOST_SOBA_BOR_SetOtherData_InProgress = false;
 
    public static bool   FakturList_To_PDF_InProgress = false;
@@ -266,7 +263,6 @@ public static class ZXC
 
    public static List<string> ErrorsList = null;
    public static bool RISK_NewCache_InProgress = false;
-   public static bool RISK_AutoAddInventuraDiff_inProgress = false;
    private static bool risk_SaveVvDataRecord_inProgress = false;
    private static bool risk_CheckPrNabDokCij_inProgress = false;
    private static bool risk_CheckZPCkol_inProgress = false;
@@ -282,7 +278,11 @@ public static class ZXC
    private static bool putRiskFilterFieldsInProgress = false;
    private static bool dumpChosenOtsList_OnNalogDUC_InProgress = false;
    private static bool loadIzvodDLG_isON = false;
-   public static bool RISK_PromjenaNacPlac_inProgress = false;
+   private static bool risk_ToggleKnDeviza_InProgress = false;
+   private static bool risk_InitZPCvalues_InProgress = false;
+   private static bool risk_PULXPIZX_Calc_InProgress = false;
+   private static bool risk_PromjenaNacPlac_inProgress = false;
+   private static bool risk_AutoAddInventuraDiff_inProgress = false;
 
    public static bool RISK_CheckPrNabDokCij_inProgress
    {
@@ -366,6 +366,36 @@ public static class ZXC
    {
       get { return GetActivePerHostFlag(perHost => perHost.LoadIzvodDLG_isON, loadIzvodDLG_isON); }
       set { SetActivePerHostFlag((perHost, flagValue) => perHost.LoadIzvodDLG_isON = flagValue, ref loadIzvodDLG_isON, value); }
+   }
+
+   public static bool RISK_ToggleKnDeviza_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_ToggleKnDeviza_InProgress, risk_ToggleKnDeviza_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_ToggleKnDeviza_InProgress = flagValue, ref risk_ToggleKnDeviza_InProgress, value); }
+   }
+
+   public static bool RISK_InitZPCvalues_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_InitZPCvalues_InProgress, risk_InitZPCvalues_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_InitZPCvalues_InProgress = flagValue, ref risk_InitZPCvalues_InProgress, value); }
+   }
+
+   public static bool RISK_PULXPIZX_Calc_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_PULXPIZX_Calc_InProgress, risk_PULXPIZX_Calc_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_PULXPIZX_Calc_InProgress = flagValue, ref risk_PULXPIZX_Calc_InProgress, value); }
+   }
+
+   public static bool RISK_PromjenaNacPlac_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_PromjenaNacPlac_inProgress, risk_PromjenaNacPlac_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_PromjenaNacPlac_inProgress = flagValue, ref risk_PromjenaNacPlac_inProgress, value); }
+   }
+
+   public static bool RISK_AutoAddInventuraDiff_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_AutoAddInventuraDiff_inProgress, risk_AutoAddInventuraDiff_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_AutoAddInventuraDiff_inProgress = flagValue, ref risk_AutoAddInventuraDiff_inProgress, value); }
    }
 
    public static bool RISK_CheckZPCkol_inProgress
@@ -527,13 +557,13 @@ public static class ZXC
       dumpChosenOtsList_OnNalogDUC_InProgress                      = false;
       loadIzvodDLG_isON                                            = false;
 
-      RISK_ToggleKnDeviza_InProgress                               = false;
-      RISK_InitZPCvalues_InProgress                                = false;
-      RISK_PULXPIZX_Calc_InProgress                                = false;
+      risk_ToggleKnDeviza_InProgress                               = false;
+      risk_InitZPCvalues_InProgress                                = false;
+      risk_PULXPIZX_Calc_InProgress                                = false;
       risk_CheckPrNabDokCij_inProgress                             = false;
       risk_CheckZPCkol_inProgress                                  = false;
-      RISK_PromjenaNacPlac_inProgress                              = false;
-      RISK_AutoAddInventuraDiff_inProgress                         = false;
+      risk_PromjenaNacPlac_inProgress                              = false;
+      risk_AutoAddInventuraDiff_inProgress                         = false;
    }
 
    // 30.03.2015: stavio init ZXC.RRD u InitializeVvDao() 
