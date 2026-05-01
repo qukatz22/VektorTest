@@ -667,30 +667,30 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3a — `VvFloatingForm`
 
-- [ ] Klasa `VvFloatingForm : XtraForm, IVvDocumentHost`
-- [ ]Vlastiti `BarManager`, vlastiti `Bar_Record`, `Bar_SubModul`, `Bar_Report` preko `VvToolbarFactory`
-- [ ] `VvToolbarFactory.CreateMenuBar(…, isDetached: true)` parametar — detached ima reduciraniji meni (npr. nema „Nova SubModul tab" opcije, ili ih ima s efektom u originalnoj formi)
-- [ ] Status bar na formi s vlastitim `TStripStatusLabel`
+- [x] Klasa `VvFloatingForm : XtraForm, IVvDocumentHost` — P3-2/P3-4 baseline, VS-build green
+- [~] Vlastiti `BarManager`, vlastiti `Bar_Record`, `Bar_SubModul`, `Bar_Report` preko `VvToolbarFactory` — skeleton `DxMenuBar`/`DxBar_Record`/`DxBar_Report` postoji; `Bar_SubModul` i business item population ostaju otvoreni
+- [x] `VvToolbarFactory.CreateMenuBar(…, isDetached: true)` parametar — detached skeleton menu postoji
+- [x] Status bar na formi s vlastitim `TStripStatusLabel` — P3-7 status routing kroz `ActiveDocumentHost`
 
 #### 3b — Detach flow
 
   User povlači tab van TabbedView-a
         │
         ▼
-  TabbedView.DocumentFloating event
+  TabbedView.BeginFloating event
         │
         ▼
   e.Cancel = true (sprječavamo default lightweight floating)
         │
         ▼
   new VvFloatingForm(sourceTabPage):
-    ├── Create BarManager + Bar_Record/SubModul/Report preko VvToolbarFactory
+    ├── Create BarManager + Bar_Record/Report skeleton preko VvToolbarFactory
     ├── Reparent VvUserControl iz VvTabPage → this.Controls
-    ├── UC.DocumentHost = this
+    ├── ActiveDocumentHost/focus routing = this
     ├── UC.TheVvTabPage = sourceTabPage  (PRESERVE — ne resetiraj!)
-    ├── Savetoolbar snapshot (snimi stanje kao deaktivaciju taba)
+    ├── Safe toolbar skeleton itemi (business toolbar snapshot još otvoren)
     ├── ZXC.RegisterDocumentHost(this)
-    ├── ApplyWriteMode(this, sourceTabPage.WriteMode)
+    ├── ApplyWriteMode(this, sourceTabPage.WriteMode) — još otvoreno za non-VvForm host
     └── this.Show()
 
 #### 3c — Reattach flow
@@ -701,9 +701,9 @@ Zatvaranje detached forme vraća tab u glavnu formu.
   FormClosing event:
     ├── Ukloni UC iz this.Controls
     ├── Re-attach UC natrag u sourceTabPage.Controls
-    ├── UC.DocumentHost = ZXC.TheVvForm
-    ├── UC.TheVvTabPage = null (revert na Parent.Parent putanju)
-    ├── Restore toolbar snapshot (restore kao aktivaciju)
+    ├── ActiveDocumentHost = source VvForm
+    ├── Preserve UC.TheVvTabPage/source tab bridge
+    ├── Restore source tab activation
     ├── ZXC.UnregisterDocumentHost(this)
     └── Dispose
 
@@ -727,8 +727,8 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3g — Status bar routing
 
-- [ ] Svaka `VvFloatingForm` ima vlastiti status label — `DocumentHost.SetStatusText()` piše nasvoj, ne na glavne forme
-- [ ] Testirati: grid CellEnter/CellLeave statustext prikazuju se samo u prozoru u kojem je grid aktivan
+- [x] Svaka `VvFloatingForm` ima vlastiti status label — `DocumentHost.SetStatusText()` piše na svoj host preko `ZXC.ActiveDocumentHost`
+- [ ] Testirati: grid CellEnter/CellLeave status text prikazuju se samo u prozoru u kojem je grid aktivan
 
 #### 3h — Edge case-ovi
 

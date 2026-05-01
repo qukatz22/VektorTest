@@ -112,3 +112,40 @@ Stop and reassess if:
 - canceling default floating breaks normal tab behavior,
 - dirty/archive safeguards are bypassed,
 - DevExpress version lacks required event semantics.
+
+## 7. Phase 3 baseline smoke checklist (P3-1 through P3-11)
+
+Current implementation baseline:
+
+- `BeginFloating` cancels DevExpress lightweight floating.
+- `VvFloatingForm` is a true top-level `XtraForm` and `IVvDocumentHost`.
+- Existing `VvUserControl` is reparented without data reload.
+- Closing detached form reattaches content to the source tab.
+- Duplicate/unsafe detach attempts are blocked by `CanDetach`.
+- Dirty close and archive close use the existing source-tab close rules.
+- Status text routes through the active document host.
+- Detached host owns a separate `BarManager` and safe skeleton menu/toolbar items.
+
+Manual smoke tests:
+
+| Scenario | Expected result | Status | Notes |
+|---|---|---|---|
+| Drag clean record tab outside main form | Top-level detached form opens; no DX lightweight float appears | Pending |  |
+| Close detached clean tab | UC returns to source tab; source tab activates | Pending |  |
+| Drag same tab again while detached | Second detach is ignored/logged | Pending |  |
+| Dirty detached close: Yes | Existing save flow runs; close proceeds only if save succeeds | Pending |  |
+| Dirty detached close: No | Close proceeds; edit lock release follows existing helper | Pending |  |
+| Dirty detached close: Cancel | Floating form remains open; content remains detached | Pending |  |
+| Arhiva tab detach attempt | Detach is blocked/logged | Pending |  |
+| Status text in main tab | Main status bar updates | Pending |  |
+| Status text in detached tab | Detached status bar updates | Pending |  |
+| Activate main after detached interaction | Active host returns to main form | Pending |  |
+| Detached toolbar close item | Form close uses same dirty/reattach path | Pending |  |
+
+Known implementation boundaries before next slice:
+
+- Business toolbar actions (`SAV`, `ESC`, `PRN`, navigation, report actions) are not copied into detached toolbar yet.
+- `VvToolbarFactory.ApplyWriteMode` still throws for non-`VvForm` hosts.
+- DB lock serialization for secondary/third connections is not implemented yet.
+- Per-host `*_InProgress` flag migration is not implemented yet.
+- Main-form close with detached forms still needs explicit policy/prompt.

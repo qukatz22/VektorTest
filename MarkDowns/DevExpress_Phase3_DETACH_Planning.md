@@ -100,6 +100,8 @@ Napomena P3-10: detached skeleton barovi sada imaju samo sigurne iteme: `Zatvori
 
 Napomena P3-11: dodan je centralni `VvDetachedDocumentContext.CanDetach` eligibility guard. Detach se blokira za null tab, već-detached tab, arhiva tab, tab bez `VvUserControl` i UC koji se dispose-a; `BeginFloating` logira razlog i ne pokušava reparent.
 
+Napomena P3-12: baseline P3-1..P3-11 je dokumentiran u `DevExpress_Phase3_Readiness_Gate.md` s manual smoke checklistom i poznatim granicama prije business-toolbar, DB-lock i per-host flag sliceova.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
