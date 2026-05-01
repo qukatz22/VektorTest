@@ -1,14 +1,10 @@
 using System;
 using System.Drawing;
-using Crownwood.DotNetMagic.Common;
-using Crownwood.DotNetMagic.Controls;
 
 
 public struct VvColorsAndStyles
 {
-   public VisualStyle vvform_VisualStyle;
    public string DxSkinName;
-   public OfficeStyle tabControl_OfficeStyle;
    public bool        enableHeadersVisualStylesForDataGrid;
 
    public Color   modulPanel_BackColor, splitter_BackColor, 
@@ -97,7 +93,4 @@ public struct VvColorsAndStyles
                dataGridRowHeaders_ForeColorArgb,
 
                 mouseOverCmdButtArgb;
-
-   public TreeControlStyles treeControlStyle;
-   public MediaPlayerStyle  tabControl_MediaPlayerStyle;
 }

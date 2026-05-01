@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
-using Crownwood.DotNetMagic.Common;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -1869,121 +1868,21 @@ public class VvHamper: Panel
 
    #region SetUpVisualStyle
 
-   public static void SetUpVisualStyle(Crownwood.DotNetMagic.Common.VisualStyle visStyle)
+   public static void SetUpVisualStyle()
    {
-      switch (visStyle)
-      {
-         case VisualStyle.MediaPlayerBlue:
-         case VisualStyle.MediaPlayerOrange:
-         case VisualStyle.MediaPlayerPurple:
-
-            StartPostavKaoMediaPlayer(visStyle);
-
-            break;
-
-         case VisualStyle.Office2007Blue:
-         case VisualStyle.Office2007Silver:
-         case VisualStyle.Office2007Black:
-            ZXC.vvColors.userControl_BackColor          = Office2007ColorTable.SoftBackground(visStyle);
-            ZXC.vvColors.modulPanel_BackColor           = Office2007ColorTable.LightBackground(visStyle);
-            ZXC.vvColors.splitter_BackColor             = Office2007ColorTable.SoftBackground(visStyle);
-            ZXC.vvColors.tamponPanel_BackColor          = Office2007ColorTable.BorderColor(visStyle);
-            ZXC.vvColors.tamponPanel_ForeColor          = Color.White;
-            ZXC.vvColors.tamponPanel_Crta               = Color.White;
-            
-            ZXC.vvColors.tamponHeaderLeftTbx_BackColor  = ZXC.vvColors.userControl_BackColor;
-            ZXC.vvColors.hamperOnReportFilter_BackColor = Office2007ColorTable.SoftBackground(visStyle);
-           
-            ZXC.vvColors.tsPanel_BackColor = Office2007ColorTable.SoftBackground(visStyle);
-
-            ZXC.vvColors.enableHeadersVisualStylesForDataGrid = false;
-            ZXC.vvColors.dataGrid_GridColor              = Office2007ColorTable.SoftBackground(visStyle);
-            ZXC.vvColors.dataGridColumnHeaders_BackColor = Office2007ColorTable.LightBackground(visStyle);
-            ZXC.vvColors.dataGridColumnHeaders_ForeColor = Office2007ColorTable.StatusBarText(visStyle);
-            ZXC.vvColors.dataGridRowHeaders_BackColor    = Office2007ColorTable.LightBackground(visStyle);
-            ZXC.vvColors.dataGridRowHeaders_ForeColor    = Office2007ColorTable.StatusBarText(visStyle);
-        
-            ZXC.vvColors.modulButton_BackColor           = Office2007ColorTable.LightBackground(visStyle);
-            ZXC.vvColors.modulButton_ForeColor           = Office2007ColorTable.EnhancedBackground(visStyle);
-            ZXC.vvColors.modulButton_GradientColor       = Office2007ColorTable.SoftBackground(visStyle);
-            
-            ZXC.vvColors.reportModulButton_BackColor     = Office2007ColorTable.BorderColor(visStyle);
-            
-            break;
-
-         case VisualStyle.Office2003:
-
-            ZXC.vvColors.tamponPanel_BackColor = SystemColors.InactiveCaption;
-            ZXC.vvColors.userControl_BackColor = SystemColors.ControlLightLight;
-            ZXC.vvColors.modulPanel_BackColor  = ProfessionalColors.ImageMarginRevealedGradientBegin;
-            ZXC.vvColors.splitter_BackColor    = SystemColors.Desktop;
-            ZXC.vvColors.tamponPanel_ForeColor = Color.White;
-            ZXC.vvColors.tamponPanel_Crta      = Color.White;
-            ZXC.vvColors.tsPanel_BackColor     = ProfessionalColors.ImageMarginRevealedGradientBegin;
-
-            ZXC.vvColors.hamperOnReportFilter_BackColor = SystemColors.ControlLightLight;
-            ZXC.vvColors.tamponHeaderLeftTbx_BackColor  = SystemColors.ControlLightLight;
-
-            ZXC.vvColors.enableHeadersVisualStylesForDataGrid = false;
-            ZXC.vvColors.dataGrid_GridColor              = ControlPaint.LightLight(SystemColors.InactiveCaptionText);
-            ZXC.vvColors.dataGridColumnHeaders_BackColor = ProfessionalColors.ToolStripGradientBegin;
-            ZXC.vvColors.dataGridColumnHeaders_ForeColor = SystemColors.Desktop;
-            ZXC.vvColors.dataGridRowHeaders_BackColor    = ProfessionalColors.ToolStripGradientBegin;
-            //ZXC.vvColors.dataGridRowHeaders_BackColor    = ProfessionalColors.;
-            
-            break;
-
-         case VisualStyle.IDE2005:
-            ZXC.vvColors.tamponPanel_BackColor = SystemColors.ControlDarkDark;
-            ZXC.vvColors.userControl_BackColor = SystemColors.ControlLightLight;
-            ZXC.vvColors.modulPanel_BackColor  = SystemColors.ControlLightLight;
-            ZXC.vvColors.splitter_BackColor    = SystemColors.Desktop;
-            ZXC.vvColors.tamponPanel_ForeColor = Color.White;
-            ZXC.vvColors.tamponPanel_Crta      = Color.White;
-            ZXC.vvColors.tsPanel_BackColor     = SystemColors.ControlLight;
-
-            ZXC.vvColors.hamperOnReportFilter_BackColor = SystemColors.ControlLightLight;
-            ZXC.vvColors.tamponHeaderLeftTbx_BackColor  = SystemColors.ControlLightLight;
-
-            ZXC.vvColors.enableHeadersVisualStylesForDataGrid = true;
-            ZXC.vvColors.dataGrid_GridColor       = SystemColors.ControlLight;
-            
-            break;
-
-         case VisualStyle.Plain:
-            ZXC.vvColors.tamponPanel_BackColor = SystemColors.ControlDark;
-            ZXC.vvColors.userControl_BackColor = SystemColors.ControlLightLight;
-            ZXC.vvColors.modulPanel_BackColor  = SystemColors.Control;
-            ZXC.vvColors.splitter_BackColor    = SystemColors.Desktop;
-            ZXC.vvColors.tamponPanel_ForeColor = Color.White;
-            ZXC.vvColors.tamponPanel_Crta      = Color.White;
-            ZXC.vvColors.tsPanel_BackColor     = SystemColors.ControlLight;
-
-            ZXC.vvColors.hamperOnReportFilter_BackColor = SystemColors.ControlLightLight;
-            ZXC.vvColors.tamponHeaderLeftTbx_BackColor  = SystemColors.ControlLightLight;
-
-            ZXC.vvColors.enableHeadersVisualStylesForDataGrid = true;
-            ZXC.vvColors.dataGrid_GridColor                   = SystemColors.ControlLight;
-
-            break;
-         default:
-            break;
-      }
-
-      //ZXC.vvColors.dataGrid_BackgroundColor = ZXC.vvColors.dataGridCellReadOnly_True_BackColor;
-
+      StartPostavKaoMediaPlayer();
    }
 
-   public static void StartPostavKaoMediaPlayer(VisualStyle visStyle)
+   public static void StartPostavKaoMediaPlayer()
    {
-      ZXC.vvColors.userControl_BackColor          =         //MediaPlayerColorTable.SoftBackground(visStyle);
-      ZXC.vvColors.hamperOnReportFilter_BackColor =         //MediaPlayerColorTable.SoftBackground(visStyle);
-      ZXC.vvColors.tsPanel_BackColor              =         //MediaPlayerColorTable.SoftBackground(visStyle);
-      ZXC.vvColors.splitter_BackColor             = Office2007ColorTable.SoftBackground(VisualStyle.Office2007Black);        //MediaPlayerColorTable.SoftBackground(visStyle);
+      ZXC.vvColors.userControl_BackColor          = Color.FromArgb(210, 213, 218);
+      ZXC.vvColors.hamperOnReportFilter_BackColor = Color.FromArgb(210, 213, 218);
+      ZXC.vvColors.tsPanel_BackColor              = Color.FromArgb(210, 213, 218);
+      ZXC.vvColors.splitter_BackColor             = Color.FromArgb(210, 213, 218);
 
-      ZXC.vvColors.modulPanel_BackColor  = MediaPlayerColorTable.LightBackground(visStyle);
-      
-      ZXC.vvColors.tamponPanel_BackColor = MediaPlayerColorTable.BorderColor(visStyle);
+      ZXC.vvColors.modulPanel_BackColor  = Color.FromArgb(48, 48, 48);
+
+      ZXC.vvColors.tamponPanel_BackColor = Color.FromArgb(47, 47, 47);
       ZXC.vvColors.tamponPanel_ForeColor = Color.White;
       ZXC.vvColors.tamponPanel_Crta      = Color.White;
 
@@ -1991,17 +1890,17 @@ public class VvHamper: Panel
 
       
       ZXC.vvColors.enableHeadersVisualStylesForDataGrid = false;
-      ZXC.vvColors.dataGrid_GridColor              = MediaPlayerColorTable.SoftBackground(visStyle);
-      ZXC.vvColors.dataGridColumnHeaders_BackColor = MediaPlayerColorTable.LightBackground(visStyle);
-      ZXC.vvColors.dataGridColumnHeaders_ForeColor = MediaPlayerColorTable.StatusBarText(visStyle);
-      ZXC.vvColors.dataGridRowHeaders_BackColor    = MediaPlayerColorTable.LightBackground(visStyle);
-      ZXC.vvColors.dataGridRowHeaders_ForeColor    = MediaPlayerColorTable.StatusBarText(visStyle);
+      ZXC.vvColors.dataGrid_GridColor              = Color.FromArgb(210, 213, 218);
+      ZXC.vvColors.dataGridColumnHeaders_BackColor = Color.FromArgb(48, 48, 48);
+      ZXC.vvColors.dataGridColumnHeaders_ForeColor = Color.FromArgb(46, 53, 62);
+      ZXC.vvColors.dataGridRowHeaders_BackColor    = Color.FromArgb(48, 48, 48);
+      ZXC.vvColors.dataGridRowHeaders_ForeColor    = Color.FromArgb(46, 53, 62);
 
-      ZXC.vvColors.modulButton_BackColor     = MediaPlayerColorTable.LightBackground(visStyle);
-      ZXC.vvColors.modulButton_ForeColor     = MediaPlayerColorTable.EnhancedBackground(visStyle);
-      ZXC.vvColors.modulButton_GradientColor = MediaPlayerColorTable.SoftBackground(visStyle);
+      ZXC.vvColors.modulButton_BackColor     = Color.FromArgb(48, 48, 48);
+      ZXC.vvColors.modulButton_ForeColor     = Color.FromArgb(240, 241, 242);
+      ZXC.vvColors.modulButton_GradientColor = Color.FromArgb(210, 213, 218);
 
-      ZXC.vvColors.reportModulButton_BackColor = MediaPlayerColorTable.BorderColor(visStyle);
+      ZXC.vvColors.reportModulButton_BackColor = Color.FromArgb(47, 47, 47);
    }
 
    #endregion SetUpVisualStyle
