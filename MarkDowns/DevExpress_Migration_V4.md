@@ -734,7 +734,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 - [ ] Crystal Reports BackgroundWorker udetached formi — mora živjeti na `VvFloatingForm` context-u, ne na glavnom
 - [ ] Shortcut keys — samo fokusirani `BarManager` dobiva input
-- [ ] Arhiva mode u detached: dopušteno (Opcija B iz §1.16) — WriteMode putuje s tabom
+- [x] Arhiva mode u detached: dopušteno (Opcija B iz §1.16) — P3-32 uklanja archive detach block i dodaje `WriteModeAtDetach` / `IsArhivaAtDetach` snapshot
 - [x] Zatvaranje glavne forme s otvorenim detached tabovima: P3-13 zatvara detached forme prije standardnog dirty loopa; cancel u detached dirty promptu cancelira i main close
 - [ ] Crashu detached formi: oporavak — reattach UC na glavnu ili graceful dispose
 - [ ] `VvEnvironmentDescriptor` — zasad NE perzistirati pozicije detached prozora. Ako se pokaže potreba, dodati `List<VvFloatingFormState>` u descriptor.
@@ -748,7 +748,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3j — Testiranje
 
-- [ ] WriteMode neovisnost (glavni prozor:Edit; detached: Browse)
+- [~] WriteMode neovisnost (glavni prozor:Edit; detached: Browse) — P3-32 snapshot inicijalnog detached WriteMode-a; manual smoke test još otvoren
 - [ ] DB konekcije pod concurrent load
 - [ ] Flag izolacija (record-level ops u 2 prozora)
 - [ ] M2PAY guard

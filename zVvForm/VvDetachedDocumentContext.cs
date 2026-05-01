@@ -17,12 +17,16 @@ internal sealed class VvDetachedDocumentContext
       SourceTabPage = sourceTabPage;
       HostedUserControl = sourceTabPage.TheVvUC;
       Title = sourceTabPage.Title;
+      WriteModeAtDetach = sourceTabPage.WriteMode;
+      IsArhivaAtDetach = sourceTabPage.IsArhivaTabPage;
    }
 
    public VvForm SourceForm { get; private set; }
    public VvTabPage SourceTabPage { get; private set; }
    public VvUserControl HostedUserControl { get; private set; }
    public string Title { get; private set; }
+   public ZXC.WriteMode WriteModeAtDetach { get; private set; }
+   public bool IsArhivaAtDetach { get; private set; }
 
    public static bool CanDetach(VvTabPage sourceTabPage, out string reason)
    {
@@ -37,12 +41,6 @@ internal sealed class VvDetachedDocumentContext
       if(sourceTabPage.IsDetached)
       {
          reason = "tab je već detached";
-         return false;
-      }
-
-      if(sourceTabPage.IsArhivaTabPage)
-      {
-         reason = "tab je u Arhivi";
          return false;
       }
 

@@ -164,7 +164,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       if(detachedContext == null || detachedContext.SourceTabPage == null) return;
 
-      VvToolbarFactory.ApplyWriteMode(this, detachedContext.SourceTabPage.WriteMode);
+      VvToolbarFactory.ApplyWriteMode(this, detachedContext.WriteModeAtDetach);
    }
 
    private void PopulateDetachedBars()
@@ -201,11 +201,12 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       VvTabPage sourceTabPage = detachedContext.SourceTabPage;
       string modulName = GetModulName(detachedContext.SourceForm, sourceTabPage.TheVvSubModul.modulEnum);
       string subModulName = sourceTabPage.TheVvSubModul.subModul_name;
-      string writeModeName = sourceTabPage.WriteMode.ToString();
+      string writeModeName = detachedContext.WriteModeAtDetach.ToString();
 
       if(modulName.IsEmpty()) modulName = "Modul";
       if(subModulName.IsEmpty()) subModulName = detachedContext.Title;
       if(subModulName.IsEmpty()) subModulName = "SubModul";
+      if(detachedContext.IsArhivaAtDetach) writeModeName = "Arhiva / " + writeModeName;
 
       return string.Format("Vektor — {0} / {1} — {2}", modulName, subModulName, writeModeName);
    }

@@ -140,6 +140,8 @@ Napomena P3-30: `VvToolbarFactory.ApplyWriteMode` više ne baca `NotImplementedE
 
 Napomena P3-31: status hint push/pop putanja (`ZXC.StatusTextPusher` / `StatusTextPopper`) sada ruti kroz `ZXC.PushStatusText` / `PopStatusText`, koji koriste `ActiveDocumentHost` i per-host `VvPerHostState.StatusTextBackup`. Time grid `CellEnter/CellLeave` i `VvTextBox` hintovi više ne zatvaraju glavnu `VvForm` status traku kada je aktivan detached host; ručni smoke test s dva prozora ostaje za korisničku validaciju.
 
+Napomena P3-32: `VvDetachedDocumentContext` sada eksplicitno snima `WriteModeAtDetach` i `IsArhivaAtDetach`. Detached forma koristi taj snapshot za inicijalni `ApplyWriteMode` i title tekst, a `CanDetach` više ne blokira tabove u Arhivi jer V4 §1.16/§3h zahtijeva Opciju B: arhiva putuje s tabom. Zatvaranje detached forme i dalje provjerava archive-exit guard prije reattacha.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
