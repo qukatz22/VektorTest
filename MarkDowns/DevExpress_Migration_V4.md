@@ -722,8 +722,8 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3f — M2PAY hardware guard
 
-- [ ] Prije pokretanja M2PAY transakcije, provjeriti `M2PAY_API_Initialized` + dodatni process-level mutex — samo jedan host smije imati aktivnu transakciju
-- [ ] Prikazati UXporuku ako drugi host pokušava: „Plaćanje je u tijeku u prozoru {X}, zatvorite ili dovršite ga prvo."
+- [x] Prije pokretanja M2PAY transakcije, provjeriti `M2PAY_API_Initialized` + dodatni process-level mutex — P3-27 dodaje `ZXC.TryBeginM2PayTransaction` / `EndM2PayTransaction` i štiti `Sale`, `Refund` i `SaleReversal` entry pointove
+- [x] Prikazati UXporuku ako drugi host pokušava: „Plaćanje je u tijeku u prozoru {X}, zatvorite ili dovršite ga prvo." — P3-27 koristi Croatian warning s owner tekstom iz aktivnog taba/prozora
 
 #### 3g — Status bar routing
 

@@ -11142,20 +11142,32 @@ thisIsHektorProject_label:
          return;
       }
 
-      M2P_Statusdlg = new VvM2PayStatusDlg();
-      M2P_Statusdlg.lbl_m2PayStatus.Text = "Start POVRATA plaćanja ovog računa...";
+      if(InitHApi(false) == false) return;
 
-      ZXC.M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
+      if(ZXC.TryBeginM2PayTransaction(GetM2PayTransactionOwnerText()) == false) return;
+
+      try
+      {
+         M2P_Statusdlg = new VvM2PayStatusDlg();
+         M2P_Statusdlg.lbl_m2PayStatus.Text = "Start POVRATA plaćanja ovog računa...";
+
+         ZXC.M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
 
 
-    //int moneyAsInteger = (TheVvDataRecord as Faktur).M2P_moneyAsInteger;
+       //int moneyAsInteger = (TheVvDataRecord as Faktur).M2P_moneyAsInteger;
 
-      OperationStartResult result = TheHapi.Refund      (transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
-    //OperationStartResult result = TheHapi.Refund      (transactionResult.TotalAmount, transactionResult.Currency                                 ); // Voila! ####################################################################################################### 
-    //OperationStartResult result = TheHapi.SaleReversal(transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
+         OperationStartResult result = TheHapi.Refund      (transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
+       //OperationStartResult result = TheHapi.Refund      (transactionResult.TotalAmount, transactionResult.Currency                                 ); // Voila! ####################################################################################################### 
+       //OperationStartResult result = TheHapi.SaleReversal(transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
 
-      if(result.OperationStarted == true) { M2P_Statusdlg.ShowDialog();                                                                                             }
-      else                                { ZXC.aim_emsg(MessageBoxIcon.Error, "Start autorizacije nije uspio. Provjerite terminal te pokušajte ponovno."); return; }
+         if(result.OperationStarted == true) { M2P_Statusdlg.ShowDialog();                                                                                             }
+         else                                { ZXC.aim_emsg(MessageBoxIcon.Error, "Start autorizacije nije uspio. Provjerite terminal te pokušajte ponovno."); return; }
+
+      }
+      finally
+      {
+         ZXC.EndM2PayTransaction();
+      }
 
    }
 
@@ -11207,23 +11219,35 @@ thisIsHektorProject_label:
 
       if(!m2pAuthorizationNeeded) return;
 
+      if(ZXC.M2PAY_API_Initialized == false) return;
+
+      if(ZXC.TryBeginM2PayTransaction(GetM2PayTransactionOwnerText()) == false) return;
+
+      try
+      {
+
       //if(ZXC.M2PAY_Device_Connected == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "M2PAY uređaj nije spojen!"); return ; }
 
-      M2P_Statusdlg = new VvM2PayStatusDlg();
-      M2P_Statusdlg.lbl_m2PayStatus.Text = "Start autorizacije plaćanja ovog računa...";
+         M2P_Statusdlg = new VvM2PayStatusDlg();
+         M2P_Statusdlg.lbl_m2PayStatus.Text = "Start autorizacije plaćanja ovog računa...";
 
-      ZXC.M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
+         ZXC.M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
 
-    //int moneyAsInteger =       m2p_faktur_rec.M2P_moneyAsInteger;
-      int moneyAsInteger = (int)(m2p_faktur_rec.S_ukKCRP * 100);
+       //int moneyAsInteger =       m2p_faktur_rec.M2P_moneyAsInteger;
+         int moneyAsInteger = (int)(m2p_faktur_rec.S_ukKCRP * 100);
 
-      OperationStartResult result = TheHapi.Sale(new BigInteger(moneyAsInteger /*1000*/ /*37.84*/ ), Currency.EUR); // Voila! ####################################################################################################### 
+         OperationStartResult result = TheHapi.Sale(new BigInteger(moneyAsInteger /*1000*/ /*37.84*/ ), Currency.EUR); // Voila! ####################################################################################################### 
 
-      // Let´s start our first transaction for 10 euros                
-      // The amount should always be in the minor unit of the currency 
+         // Let´s start our first transaction for 10 euros                
+         // The amount should always be in the minor unit of the currency 
 
-      if(result.OperationStarted == true) { M2P_Statusdlg.ShowDialog(); }
-      else                                { ZXC.aim_emsg(MessageBoxIcon.Error, "Start autorizacije nije uspio. Provjerite terminal te pokušajte ponovno."); return ; }
+         if(result.OperationStarted == true) { M2P_Statusdlg.ShowDialog(); }
+         else                                { ZXC.aim_emsg(MessageBoxIcon.Error, "Start autorizacije nije uspio. Provjerite terminal te pokušajte ponovno."); return ; }
+      }
+      finally
+      {
+         ZXC.EndM2PayTransaction();
+      }
    }
 
    private void Swap_EnableDisable_M2PAY(object sender, EventArgs e)
@@ -11273,10 +11297,11 @@ thisIsHektorProject_label:
 
       if(ZXC.M2PAY_Device_Connected == false) { ZXC.aim_emsg(MessageBoxIcon.Stop, "M2PAY uređaj nije spojen!"); return; }
 
-      M2P_Statusdlg = new VvM2PayStatusDlg();
-      M2P_Statusdlg.lbl_m2PayStatus.Text = "Start autorizacije ...";
-
-      ZXC.M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
+      if(ZXC.M2PAY_API_Initialized == false)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "M2PAY API nije inicijaliziran!");
+         return;
+      }
 
       Faktur m2p_faktur_rec = TheVvDataRecord as Faktur;
       OperationStartResult result;
@@ -11288,26 +11313,45 @@ thisIsHektorProject_label:
          ZXC.aim_emsg(MessageBoxIcon.Error, "Ne mogu isčitati M2P TransactionResult");
          return;
       }
-      
-      M2P_Statusdlg = new VvM2PayStatusDlg();
-      M2P_Statusdlg.lbl_m2PayStatus.Text = "Start POVRATA sredstava na karticu po plaćanja ovog računa...";
 
-      bool isSaleReversal = m2p_faktur_rec.DokDate.Date == DateTime.Today.Date;
-      bool isRefund       = !isSaleReversal;
+      if(ZXC.TryBeginM2PayTransaction(GetM2PayTransactionOwnerText()) == false) return;
 
-      if(isRefund) result = TheHapi.Refund      (transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
-      else         result = TheHapi.SaleReversal(transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
-
-      if(result.OperationStarted == true) { M2P_Statusdlg.ShowDialog();                                                                            }
-      else                                { ZXC.aim_emsg(MessageBoxIcon.Error, "Start autorizacije nije uspio. Pokušajte ponovno."); return; }
-
-      if(ZXC.M2PAY_AuthorizationStatus != FinancialStatus.AUTHORISED)
+      try
       {
-         ZXC.aim_emsg(MessageBoxIcon.Error, "AUTORIZACIJA NIJE USPJELA!."); 
+         ZXC.M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
+      
+         M2P_Statusdlg = new VvM2PayStatusDlg();
+         M2P_Statusdlg.lbl_m2PayStatus.Text = "Start POVRATA sredstava na karticu po plaćanja ovog računa...";
+
+         bool isSaleReversal = m2p_faktur_rec.DokDate.Date == DateTime.Today.Date;
+         bool isRefund       = !isSaleReversal;
+
+         if(isRefund) result = TheHapi.Refund      (transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
+         else         result = TheHapi.SaleReversal(transactionResult.TotalAmount, transactionResult.Currency, transactionResult.TransactionId); // Voila! ####################################################################################################### 
+
+         if(result.OperationStarted == true) { M2P_Statusdlg.ShowDialog();                                                                            }
+         else                                { ZXC.aim_emsg(MessageBoxIcon.Error, "Start autorizacije nije uspio. Pokušajte ponovno."); return; }
+
+         if(ZXC.M2PAY_AuthorizationStatus != FinancialStatus.AUTHORISED)
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Error, "AUTORIZACIJA NIJE USPJELA!."); 
          
-         return;
+            return;
+         }
+
+      }
+      finally
+      {
+         ZXC.EndM2PayTransaction();
       }
 
+   }
+
+   private string GetM2PayTransactionOwnerText()
+   {
+      string tabTitle = TheVvTabPage != null ? TheVvTabPage.Title : string.Empty;
+
+      return tabTitle.IsEmpty() ? "aktivnom prozoru" : string.Format("prozoru '{0}'", tabTitle);
    }
 
    #endregion SubModulActions

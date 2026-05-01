@@ -130,6 +130,8 @@ Napomena P3-25: UI-state flagovi `RESET_InitialLayout_InProgress`, `MenuReset_Sv
 
 Napomena P3-26: preostali RISK-field companion flagovi `RISK_ToggleKnDeviza_InProgress`, `RISK_InitZPCvalues_InProgress`, `RISK_PULXPIZX_Calc_InProgress`, `RISK_PromjenaNacPlac_inProgress` i `RISK_AutoAddInventuraDiff_inProgress` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Time je kompletiran trenutni `VvPerHostState` flag routing set; stara `ZXC` imena ostaju kompatibilna property fasada za postojeće call-siteove.
 
+Napomena P3-27: dodan je process-level M2PAY transaction guard (`ZXC.TryBeginM2PayTransaction` / `EndM2PayTransaction`) jer je M2PAY fizički hardware singleton. `Sale`, `Refund` i `SaleReversal` entry pointovi u `VvForm_Q` sada provjeravaju API/device preduvjete i zatim uzimaju globalni guard dok traje HAPI transaction start + modalni status dialog; drugi host dobiva hrvatsku UX poruku da je transakcija već u tijeku u drugom prozoru.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

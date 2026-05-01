@@ -428,8 +428,39 @@ public static class ZXC
 
    public static bool M2PAY_API_Initialized = false;
    public static bool M2PAY_Device_Connected = false;
+   private static readonly object M2PAY_TransactionLock = new object();
+   private static bool M2PAY_Transaction_InProgress = false;
+   private static string M2PAY_TransactionOwner = string.Empty;
 
    public static com.handpoint.api.FinancialStatus M2PAY_AuthorizationStatus = com.handpoint.api.FinancialStatus.UNDEFINED;
+
+   public static bool TryBeginM2PayTransaction(string transactionOwner)
+   {
+      lock(M2PAY_TransactionLock)
+      {
+         if(M2PAY_Transaction_InProgress)
+         {
+            string owner = M2PAY_TransactionOwner.IsEmpty() ? "drugom prozoru" : M2PAY_TransactionOwner;
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "M2PAY transakcija je već u tijeku u {0}. Dovršite je prije pokretanja nove transakcije.", owner);
+
+            return false;
+         }
+
+         M2PAY_Transaction_InProgress = true;
+         M2PAY_TransactionOwner = transactionOwner.IsEmpty() ? "ovom prozoru" : transactionOwner;
+
+         return true;
+      }
+   }
+
+   public static void EndM2PayTransaction()
+   {
+      lock(M2PAY_TransactionLock)
+      {
+         M2PAY_Transaction_InProgress = false;
+         M2PAY_TransactionOwner = string.Empty;
+      }
+   }
 
    public static string UmjetninaGrCD = "UMJ";
    public static string MotVoziloGrCD = "MOT";
