@@ -1788,7 +1788,9 @@ public decimal PrNBCBefThisUlaz  { get { return this.currentData._prNBCBefThisUl
    /*private*/
    public static bool Get_isThisDirektStornoRtrans(string artiklCD, string skladCD, Rtrans forThisRtrans_rec)
    {
-      Rtrans prevRtrans_rec = FakturDao.SetMePreviousRtransForArtiklRobnaKarticaRtrans(ZXC.TheThirdDbConn_SameDB, artiklCD, skladCD, forThisRtrans_rec);
+      Rtrans prevRtrans_rec = ZXC.UseThirdDbConnection(
+         () => ZXC.TheThirdDbConn_SameDB,
+         thirdDbConn => FakturDao.SetMePreviousRtransForArtiklRobnaKarticaRtrans(thirdDbConn, artiklCD, skladCD, forThisRtrans_rec));
 
       if(prevRtrans_rec == null) return false;
 

@@ -17358,7 +17358,12 @@ label_execute:
          if(OK) WhenRecordInDBHasChangedAction(); // RRDREC 
 
          // 12.01.2017: 
-         if(OK && ZXC.IsSkyEnvironment && isManualyInitiated == true) VvDaoBase.SendWriteOperationToSKY(ZXC.TheSecondDbConn_SameDB, TheVvDataRecord, VvSQL.DB_RW_ActionType.RWT, /*true*/ false);
+         if(OK && ZXC.IsSkyEnvironment && isManualyInitiated == true)
+         {
+            ZXC.UseSecondDbConnection(
+               () => ZXC.TheSecondDbConn_SameDB,
+               secondDbConn => VvDaoBase.SendWriteOperationToSKY(secondDbConn, TheVvDataRecord, VvSQL.DB_RW_ActionType.RWT, /*true*/ false));
+         }
 
          //============================================================================================================================================ 
          //============== VOILA! ====================================================================================================================== 

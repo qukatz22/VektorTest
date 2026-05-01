@@ -920,7 +920,9 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
                   }
                   // vvDelf - 16.06.2015 - END
 
-                  cumulativeArtStat_rec.VvDao.ADDREC(ZXC.TheThirdDbConn_SameDB, cumulativeArtStat_rec, false, false, false, false);
+                  ZXC.UseThirdDbConnection(
+                     () => ZXC.TheThirdDbConn_SameDB,
+                     thirdDbConn => cumulativeArtStat_rec.VvDao.ADDREC(thirdDbConn, cumulativeArtStat_rec, false, false, false, false));
                }
 
                #endregion if(YES_UseCache && NOT_InMinus) Add it to List
@@ -993,7 +995,9 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
                      ZXC.RecIDinfoDict[rtrans.T_twinID] = cumulativeArtStat_rec.PrNabCij; // vidi malo, Delowsky, kak je ovo slick                         
                }
                // vvDelf - 16.06.2015 - END
-               cumulativeArtStat_rec.VvDao.ADDREC(ZXC.TheThirdDbConn_SameDB, cumulativeArtStat_rec, false, false, false, false);
+                ZXC.UseThirdDbConnection(
+                   () => ZXC.TheThirdDbConn_SameDB,
+                   thirdDbConn => cumulativeArtStat_rec.VvDao.ADDREC(thirdDbConn, cumulativeArtStat_rec, false, false, false, false));
             }
          }
 

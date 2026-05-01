@@ -108,6 +108,8 @@ Napomena P3-14: uvedeni su `ZXC.UseSecondDbConnection(...)` i `ZXC.UseThirdDbCon
 
 Napomena P3-15: prvi konkretni call-siteovi migrirani su na `UseSecondDbConnection`: HNB/DevTec import + reload (`DevTecDao`), Rtrans previous-year loadovi (`RtransDao`) i SKY write (`FakturDao`). Ciljano je da accessor `ChangeDatabase()` i neposredni query/write ostanu u istom critical sectionu.
 
+Napomena P3-16: svi pronađeni direct `TheThirdDbConn_SameDB` call-siteovi migrirani su na `UseThirdDbConnection` (`ArtStat`, `ArtiklDao`). Dodatno su high-risk `SendWriteOperationToSKY` second-DB write pathovi u `VvForm_Q` i `SubModulActions` migrirani na `UseSecondDbConnection`.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

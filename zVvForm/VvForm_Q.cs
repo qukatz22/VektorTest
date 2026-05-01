@@ -7724,7 +7724,12 @@ thisIsHektorProject_label:
 
       // 10.07.2015: 
     //if(OK && ZXC.IsSkyEnvironment) VvDaoBase.SendWriteOperationToSKY(TheDbConnection           , TheVvDataRecord, VvSQL.DB_RW_ActionType.DEL, true);
-      if(OK && ZXC.IsSkyEnvironment) VvDaoBase.SendWriteOperationToSKY(ZXC.TheSecondDbConn_SameDB, TheVvDataRecord, VvSQL.DB_RW_ActionType.DEL, true);
+      if(OK && ZXC.IsSkyEnvironment)
+      {
+         ZXC.UseSecondDbConnection(
+            () => ZXC.TheSecondDbConn_SameDB,
+            secondDbConn => VvDaoBase.SendWriteOperationToSKY(secondDbConn, TheVvDataRecord, VvSQL.DB_RW_ActionType.DEL, true));
+      }
 
       if(OK)
       {
@@ -8357,7 +8362,9 @@ thisIsHektorProject_label:
          {  // NE sinhroniziraj ako je VvXmlDRfilesAlertRaised i daj ga MarkAsSENDed 
             if(ZXC.VvXmlDR_LastDocumentMissing_AlertRaised == false)
             {
-               VvDaoBase.SendWriteOperationToSKY(ZXC.TheSecondDbConn_SameDB, TheVvDataRecord, VvSQL.DB_RW_ActionType.ADD, true); // normal defautl 
+               ZXC.UseSecondDbConnection(
+                  () => ZXC.TheSecondDbConn_SameDB,
+                  secondDbConn => VvDaoBase.SendWriteOperationToSKY(secondDbConn, TheVvDataRecord, VvSQL.DB_RW_ActionType.ADD, true)); // normal defautl 
 
                // 13.02.2024: neki je BUG kada je ADDREC Faktur bussinessa gdje ima ZTR-a i SendWriteOperationToSKY 
                if(TheVvDataRecord is Faktur && (TheVvDataRecord as Faktur).IsZtrPresent) // zbog drkanja po faktur biznisu zbog ZTR-a nekaj se zjebe pa treba refresh-ati record 
@@ -8525,7 +8532,12 @@ thisIsHektorProject_label:
 
                // 10.07.2015: 
              //if(OK && ZXC.IsSkyEnvironment) VvDaoBase.SendWriteOperationToSKY(TheDbConnection           , TheVvDataRecord, VvSQL.DB_RW_ActionType.RWT, true);
-               if(OK && ZXC.IsSkyEnvironment) VvDaoBase.SendWriteOperationToSKY(ZXC.TheSecondDbConn_SameDB, TheVvDataRecord, VvSQL.DB_RW_ActionType.RWT, true);
+               if(OK && ZXC.IsSkyEnvironment)
+               {
+                  ZXC.UseSecondDbConnection(
+                     () => ZXC.TheSecondDbConn_SameDB,
+                     secondDbConn => VvDaoBase.SendWriteOperationToSKY(secondDbConn, TheVvDataRecord, VvSQL.DB_RW_ActionType.RWT, true));
+               }
             }
 
             if(OK)
