@@ -711,7 +711,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 - [x] Odluka: Lock-based vs per-host pool (vidi §1.15) — P3-14 potvrđuje lock-based prvu iteraciju
 - [x] **Preporuka V4: Lock-based** u prvoj iteraciji (manja invazivnost). Pool je eskalacija.
-- [~] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: P3-14 dodaje centralne `UseSecondDbConnection` / `UseThirdDbConnection` lock helpere; call-site migracija ostaje u sljedećim rezovima
+- [~] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: P3-14 dodaje centralne `UseSecondDbConnection` / `UseThirdDbConnection` lock helpere; P3-15 migrira prve `TheSecondDbConn_*` call-siteove u `DevTecDao`, `RtransDao`, `FakturDao`; preostali call-siteovi ostaju otvoreni
 - [ ] Testirati: dva prozora + simultani dokumenti s pozivima `TheSecondDbConn_SameDB_prevYear` vs `TheSecondDbConn_SameDB`
 
 #### 3e — Per-host `*_InProgress` flagovi

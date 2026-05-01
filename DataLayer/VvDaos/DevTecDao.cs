@@ -588,25 +588,31 @@ public sealed class DevTecDao : VvDaoBase, IVvDao
 
       ushort line = 0;
 
-      foreach(HtransStruct htrans_rec in hnbDevTec.Transes)
-      {
-       //AutoSetDevTec(ZXC.PrjConnection, ref line,
-         AutoSetDevTec(ZXC.TheSecondDbConn_OtherDB(ZXC.VvDB_prjktDB_Name), ref line,
-            // 12.05.2025. vidi opasku u ZXC.cs                                                                          
-          //hnbDevTec.HeadRecord._dokDate,
-                                  dokDate,
-            "HNB",
-            hnbDevTec.HeadRecord._napomena,
-            hnbDevTec.HeadRecord._dateCreated,
-            hnbDevTec.HeadRecord._extDokNum,
-            htrans_rec._t_valName,
-            htrans_rec._t_kupovni,
-            htrans_rec._t_srednji,  
-            htrans_rec._t_prodajni);
-      }
+      ZXC.UseSecondDbConnection(
+         () => ZXC.TheSecondDbConn_OtherDB(ZXC.VvDB_prjktDB_Name),
+         secondDbConn =>
+         {
+            foreach(HtransStruct htrans_rec in hnbDevTec.Transes)
+            {
+             //AutoSetDevTec(ZXC.PrjConnection, ref line,
+               AutoSetDevTec(secondDbConn, ref line,
+                  // 12.05.2025. vidi opasku u ZXC.cs                                                                          
+                //hnbDevTec.HeadRecord._dokDate,
+                                        dokDate,
+                  "HNB",
+                  hnbDevTec.HeadRecord._napomena,
+                  hnbDevTec.HeadRecord._dateCreated,
+                  hnbDevTec.HeadRecord._extDokNum,
+                  htrans_rec._t_valName,
+                  htrans_rec._t_kupovni,
+                  htrans_rec._t_srednji,  
+                  htrans_rec._t_prodajni);
+            }
 
-      // 09.02.2023: 
-      ZXC.DevTecRec.VvDao.LoadTranses(/*conn*//*ZXC.PrjConnection*/ZXC.TheSecondDbConn_OtherDB(ZXC.VvDB_prjktDB_Name), ZXC.DevTecRec, false);
+            // 09.02.2023: 
+            ZXC.DevTecRec.VvDao.LoadTranses(/*conn*//*ZXC.PrjConnection*/secondDbConn, ZXC.DevTecRec, false);
+         });
+
 
       return true;
    }

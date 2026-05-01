@@ -3995,7 +3995,12 @@ theRules.KtoShemaDsc.Dsc_KnjiziMSK_izlaz == false)
       // 12.01.2017: epi brsdej, Tamara 
       if(ZXC.IsTEXTHOany)
       {
-         if(faktur_rec.RecID.NotZero() && ZXC.IsSkyEnvironment) VvDaoBase.SendWriteOperationToSKY(ZXC.TheSecondDbConn_SameDB, faktur_rec, VvSQL.DB_RW_ActionType.ADD, /*true*/false);
+         if(faktur_rec.RecID.NotZero() && ZXC.IsSkyEnvironment)
+         {
+            ZXC.UseSecondDbConnection(
+               () => ZXC.TheSecondDbConn_SameDB,
+               secondDbConn => VvDaoBase.SendWriteOperationToSKY(secondDbConn, faktur_rec, VvSQL.DB_RW_ActionType.ADD, /*true*/false));
+         }
       }
 
       return faktur_rec.RecID;

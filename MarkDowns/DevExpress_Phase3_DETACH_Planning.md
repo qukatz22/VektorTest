@@ -106,6 +106,8 @@ Napomena P3-13: main `VvForm` close sada prije standardnog open-tab dirty loopa 
 
 Napomena P3-14: uvedeni su `ZXC.UseSecondDbConnection(...)` i `ZXC.UseThirdDbConnection(...)` kao centralni lock helperi za V4 §3d lock-based serializaciju. Inventar accessora: `TheSecondDbConn_SameDB`, `TheSecondDbConn_SameDB_prevYear`, `TheSecondDbConn_SameDB_OtherYear(int)`, `TheSecondDbConn_OtherDB(string)`, `TheThirdDbConn_SameDB`, `TheThirdDbConn_OtherDB(string)`. Sljedeći reževi trebaju migrirati call-siteove na helper tako da `ChangeDatabase()+query` budu unutar istog locka.
 
+Napomena P3-15: prvi konkretni call-siteovi migrirani su na `UseSecondDbConnection`: HNB/DevTec import + reload (`DevTecDao`), Rtrans previous-year loadovi (`RtransDao`) i SKY write (`FakturDao`). Ciljano je da accessor `ChangeDatabase()` i neposredni query/write ostanu u istom critical sectionu.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

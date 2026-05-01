@@ -2471,7 +2471,10 @@ public sealed class RtransDao : VvDaoBase, IVvDao
 
       foreach(int year in prevYears)
       {
-         ZXC.RtransDao.LoadManyDocumentsTtranses(ZXC.TheSecondDbConn_SameDB_OtherYear(year), projektRtransList, rptFilter, orderBy);
+         int yearForLock = year;
+         ZXC.UseSecondDbConnection(
+            () => ZXC.TheSecondDbConn_SameDB_OtherYear(yearForLock),
+            secondDbConn => ZXC.RtransDao.LoadManyDocumentsTtranses(secondDbConn, projektRtransList, rptFilter, orderBy));
          projektRtransList.ForEach(rtr => rtr.R_utilBool = true); // flag da znamo da rtrans nije iz tekuce godine 
       }
 
@@ -3154,7 +3157,12 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       for(int year = dateOD.Year; year <= dateDO.Year && year <= ZXC.projectYearAsInt; ++year)
       {
          if(year < ZXC.projectYearAsInt) // neka prosla godina 
-            VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(ZXC.TheSecondDbConn_SameDB_OtherYear(year), rtransList, filterMembers, Rtrans.artiklOrderBy_ASC);
+         {
+            int yearForLock = year;
+            ZXC.UseSecondDbConnection(
+               () => ZXC.TheSecondDbConn_SameDB_OtherYear(yearForLock),
+               secondDbConn => VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(secondDbConn, rtransList, filterMembers, Rtrans.artiklOrderBy_ASC));
+         }
          else // ova godina 
             VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(conn                                      , rtransList, filterMembers, Rtrans.artiklOrderBy_ASC);
 
