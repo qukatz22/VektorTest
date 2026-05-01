@@ -57,6 +57,12 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       string title = vvTabPage != null ? vvTabPage.Title : "unknown";
       System.Diagnostics.Debug.WriteLine("P3-3 DETACH preview: BeginFloating intercepted for tab '" + title + "'. Default DX floating cancelled.");
 
+      if(vvTabPage == null || vvTabPage.IsDetached)
+      {
+         System.Diagnostics.Debug.WriteLine("P3-5 DETACH guard: duplicate or unknown detach request ignored for tab '" + title + "'.");
+         return;
+      }
+
       VvFloatingForm floatingForm = new VvFloatingForm(vvTabPage);
       floatingForm.Show(this);
    }

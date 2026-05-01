@@ -238,6 +238,8 @@ public class VvTabPage : UserControl, IDisposable
       set { hasUnsavedChanges = value; }
    }
 
+   public bool IsDetached { get; set; }
+
    public  ZXC.VvTabPageKindEnum TabPageKind { get; set; }
 
    public bool IsFiterVisible { get; set; }

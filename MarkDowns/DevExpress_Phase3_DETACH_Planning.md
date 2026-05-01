@@ -86,6 +86,8 @@ Napomena P3-3: `BeginFloating` sada otvara top-level `VvFloatingForm` preview s 
 
 Napomena P3-4: dodan je `VvDetachedDocumentContext` i minimalni reparent flow. `VvFloatingForm` preuzima postojeći `VvUserControl` iz `VvTabPage.panelZaUC`, a na zatvaranje ga vraća u isti source tab container. DX `Document` se u ovom sliceu još ne uklanja iz glavnog `TabbedView` modela, dirty-close semantika još ostaje za sljedeći slice.
 
+Napomena P3-5: dodan je `VvTabPage.IsDetached` lifecycle guard. Duplicate detach istog taba se ignorira, context konstruktor dodatno blokira već-detached tab, a reattach resetira marker, aktivira source tab i vraća `ZXC.ActiveDocumentHost` na source `VvForm`.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

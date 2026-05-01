@@ -10,6 +10,7 @@ internal sealed class VvDetachedDocumentContext
       if(sourceForm == null) throw new ArgumentNullException("sourceForm");
       if(sourceTabPage == null) throw new ArgumentNullException("sourceTabPage");
       if(sourceTabPage.TheVvUC == null) throw new InvalidOperationException("Detach nije moguć jer source tab nema VvUserControl.");
+      if(sourceTabPage.IsDetached) throw new InvalidOperationException("Detach nije moguć jer je tab već detached.");
 
       SourceForm = sourceForm;
       SourceTabPage = sourceTabPage;
