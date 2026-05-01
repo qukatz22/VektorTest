@@ -236,7 +236,6 @@ public static class ZXC
  //public static bool OldVvXmlDRfilesDeleted = false;
    public static bool VvXmlDR_LastDocumentMissing_AlertRaised = false;
 
-   public static bool DumpChosenOtsList_OnNalogDUC_InProgress = false;
    public static bool Restore_FromVvXmlDR_InProgress = false;
 
    public static string LastUsedProjektTT = Faktur.TT_RNP;
@@ -246,13 +245,10 @@ public static class ZXC
    public static bool RenewCache_InProgress = false;
    public static bool CopyOut_InProgress = false;
    public static bool RewriteAllDocuments_InProgress = false;
-   public static bool PutRiskFilterFieldsInProgress = false;
    public static bool RepairMissingFakturEx_InProgress = false;
    public static bool RISK_ToggleKnDeviza_InProgress = false;
    public static bool RISK_InitZPCvalues_InProgress = false;
    public static bool RISK_PULXPIZX_Calc_InProgress = false;
-   public static bool RESET_InitialLayout_InProgress = false;
-   public static bool MenuReset_SvDUH_ZAHonly_InProgress = false;
    public static bool GOST_SOBA_BOR_SetOtherData_InProgress = false;
 
    public static bool   FakturList_To_PDF_InProgress = false;
@@ -281,6 +277,11 @@ public static class ZXC
    private static bool risk_CopyToOtherDUC_inProgress = false;
    private static bool risk_CopyToMixerDUC_inProgress = false;
    private static bool mixer_CopyToOtherDUC_inProgress = false;
+   private static bool reset_InitialLayout_InProgress = false;
+   private static bool menuReset_SvDUH_ZAHonly_InProgress = false;
+   private static bool putRiskFilterFieldsInProgress = false;
+   private static bool dumpChosenOtsList_OnNalogDUC_InProgress = false;
+   private static bool loadIzvodDLG_isON = false;
    public static bool RISK_PromjenaNacPlac_inProgress = false;
 
    public static bool RISK_CheckPrNabDokCij_inProgress
@@ -337,6 +338,36 @@ public static class ZXC
       set { SetActivePerHostFlag((perHost, flagValue) => perHost.MIXER_CopyToOtherDUC_inProgress = flagValue, ref mixer_CopyToOtherDUC_inProgress, value); }
    }
 
+   public static bool RESET_InitialLayout_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RESET_InitialLayout_InProgress, reset_InitialLayout_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RESET_InitialLayout_InProgress = flagValue, ref reset_InitialLayout_InProgress, value); }
+   }
+
+   public static bool MenuReset_SvDUH_ZAHonly_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.MenuReset_SvDUH_ZAHonly_InProgress, menuReset_SvDUH_ZAHonly_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.MenuReset_SvDUH_ZAHonly_InProgress = flagValue, ref menuReset_SvDUH_ZAHonly_InProgress, value); }
+   }
+
+   public static bool PutRiskFilterFieldsInProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.PutRiskFilterFieldsInProgress, putRiskFilterFieldsInProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.PutRiskFilterFieldsInProgress = flagValue, ref putRiskFilterFieldsInProgress, value); }
+   }
+
+   public static bool DumpChosenOtsList_OnNalogDUC_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.DumpChosenOtsList_OnNalogDUC_InProgress, dumpChosenOtsList_OnNalogDUC_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.DumpChosenOtsList_OnNalogDUC_InProgress = flagValue, ref dumpChosenOtsList_OnNalogDUC_InProgress, value); }
+   }
+
+   public static bool LoadIzvodDLG_isON
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.LoadIzvodDLG_isON, loadIzvodDLG_isON); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.LoadIzvodDLG_isON = flagValue, ref loadIzvodDLG_isON, value); }
+   }
+
    public static bool RISK_CheckZPCkol_inProgress
    {
       get { return GetActivePerHostFlag(perHost => perHost.RISK_CheckZPCkol_inProgress, risk_CheckZPCkol_inProgress); }
@@ -364,7 +395,6 @@ public static class ZXC
    public static bool RISK_FiskParagon_InProgress = false;
 
    public static bool RISK_VvPDFreporter_InProgress = false;
-   public static bool LoadIzvodDLG_isON = false;
 
    public static bool M2PAY_API_Initialized = false;
    public static bool M2PAY_Device_Connected = false;
@@ -491,11 +521,11 @@ public static class ZXC
       risk_CopyToMixerDUC_inProgress                               = false;
       mixer_CopyToOtherDUC_inProgress                              = false;
 
-      RESET_InitialLayout_InProgress                               = false;
-      MenuReset_SvDUH_ZAHonly_InProgress                           = false;
-      PutRiskFilterFieldsInProgress                                = false;
-      DumpChosenOtsList_OnNalogDUC_InProgress                      = false;
-      LoadIzvodDLG_isON                                            = false;
+      reset_InitialLayout_InProgress                               = false;
+      menuReset_SvDUH_ZAHonly_InProgress                           = false;
+      putRiskFilterFieldsInProgress                                = false;
+      dumpChosenOtsList_OnNalogDUC_InProgress                      = false;
+      loadIzvodDLG_isON                                            = false;
 
       RISK_ToggleKnDeviza_InProgress                               = false;
       RISK_InitZPCvalues_InProgress                                = false;

@@ -126,6 +126,8 @@ Napomena P3-23: preostali record-level companion flagovi `RISK_FinalRn_inProgres
 
 Napomena P3-24: cross-DUC copy flagovi `RISK_CopyToOtherDUC_inProgress`, `RISK_CopyToMixerDUC_inProgress` i `MIXER_CopyToOtherDUC_inProgress` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Time copy/link workflow guardovi više nisu globalni kada postoji aktivni document host, dok postojeći call-siteovi i dalje ostaju na `ZXC` property imenima.
 
+Napomena P3-25: UI-state flagovi `RESET_InitialLayout_InProgress`, `MenuReset_SvDUH_ZAHonly_InProgress`, `PutRiskFilterFieldsInProgress`, `DumpChosenOtsList_OnNalogDUC_InProgress` i `LoadIzvodDLG_isON` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Scan nakon patcha potvrđuje da live call-siteovi ostaju na istim `ZXC` property imenima, a host-specific routing se događa centralno u `ZXC`.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
