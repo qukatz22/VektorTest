@@ -270,9 +270,6 @@ public static class ZXC
 
    public static List<string> ErrorsList = null;
    public static bool RISK_NewCache_InProgress = false;
-   public static bool RISK_CopyToOtherDUC_inProgress = false;
-   public static bool RISK_CopyToMixerDUC_inProgress = false;
-   public static bool MIXER_CopyToOtherDUC_inProgress = false;
    public static bool RISK_AutoAddInventuraDiff_inProgress = false;
    private static bool risk_SaveVvDataRecord_inProgress = false;
    private static bool risk_CheckPrNabDokCij_inProgress = false;
@@ -281,6 +278,9 @@ public static class ZXC
    private static bool risk_FinalRn_inProgress = false;
    private static bool risk_Edit_RtranoOnly_InProgress = false;
    private static bool dupCopyMenu_inProgress = false;
+   private static bool risk_CopyToOtherDUC_inProgress = false;
+   private static bool risk_CopyToMixerDUC_inProgress = false;
+   private static bool mixer_CopyToOtherDUC_inProgress = false;
    public static bool RISK_PromjenaNacPlac_inProgress = false;
 
    public static bool RISK_CheckPrNabDokCij_inProgress
@@ -317,6 +317,24 @@ public static class ZXC
    {
       get { return GetActivePerHostFlag(perHost => perHost.DupCopyMenu_inProgress, dupCopyMenu_inProgress); }
       set { SetActivePerHostFlag((perHost, flagValue) => perHost.DupCopyMenu_inProgress = flagValue, ref dupCopyMenu_inProgress, value); }
+   }
+
+   public static bool RISK_CopyToOtherDUC_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_CopyToOtherDUC_inProgress, risk_CopyToOtherDUC_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_CopyToOtherDUC_inProgress = flagValue, ref risk_CopyToOtherDUC_inProgress, value); }
+   }
+
+   public static bool RISK_CopyToMixerDUC_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_CopyToMixerDUC_inProgress, risk_CopyToMixerDUC_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_CopyToMixerDUC_inProgress = flagValue, ref risk_CopyToMixerDUC_inProgress, value); }
+   }
+
+   public static bool MIXER_CopyToOtherDUC_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.MIXER_CopyToOtherDUC_inProgress, mixer_CopyToOtherDUC_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.MIXER_CopyToOtherDUC_inProgress = flagValue, ref mixer_CopyToOtherDUC_inProgress, value); }
    }
 
    public static bool RISK_CheckZPCkol_inProgress
@@ -469,9 +487,9 @@ public static class ZXC
       risk_Edit_RtranoOnly_InProgress                              = false;
       dupCopyMenu_inProgress                                       = false;
 
-      RISK_CopyToOtherDUC_inProgress                               = false;
-      RISK_CopyToMixerDUC_inProgress                               = false;
-      MIXER_CopyToOtherDUC_inProgress                              = false;
+      risk_CopyToOtherDUC_inProgress                               = false;
+      risk_CopyToMixerDUC_inProgress                               = false;
+      mixer_CopyToOtherDUC_inProgress                              = false;
 
       RESET_InitialLayout_InProgress                               = false;
       MenuReset_SvDUH_ZAHonly_InProgress                           = false;

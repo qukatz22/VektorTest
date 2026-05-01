@@ -124,6 +124,8 @@ Napomena P3-22: record-level reentrancy guard `GetLineFlds_CalcTrans_PutLineFlds
 
 Napomena P3-23: preostali record-level companion flagovi `RISK_FinalRn_inProgress`, `RISK_Edit_RtranoOnly_InProgress` i `DupCopyMenu_inProgress` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Scan nakon patcha potvrđuje da live call-siteovi u `SubModulActions`, `VvForm_Q`, `FakturDUC` i `ArtiklUC` ostaju na istim `ZXC` property imenima, a host-specific routing se događa centralno u `ZXC`.
 
+Napomena P3-24: cross-DUC copy flagovi `RISK_CopyToOtherDUC_inProgress`, `RISK_CopyToMixerDUC_inProgress` i `MIXER_CopyToOtherDUC_inProgress` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Time copy/link workflow guardovi više nisu globalni kada postoji aktivni document host, dok postojeći call-siteovi i dalje ostaju na `ZXC` property imenima.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
