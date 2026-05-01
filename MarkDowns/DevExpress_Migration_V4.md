@@ -735,7 +735,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 - [ ] Crystal Reports BackgroundWorker udetached formi — mora živjeti na `VvFloatingForm` context-u, ne na glavnom
 - [ ] Shortcut keys — samo fokusirani `BarManager` dobiva input
 - [ ] Arhiva mode u detached: dopušteno (Opcija B iz §1.16) — WriteMode putuje s tabom
-- [ ] Zatvaranje glavne forme s otvorenim detached tabovima: prompt user-u, sve zatvoriti ili reattach-ati
+- [x] Zatvaranje glavne forme s otvorenim detached tabovima: P3-13 zatvara detached forme prije standardnog dirty loopa; cancel u detached dirty promptu cancelira i main close
 - [ ] Crashu detached formi: oporavak — reattach UC na glavnu ili graceful dispose
 - [ ] `VvEnvironmentDescriptor` — zasad NE perzistirati pozicije detached prozora. Ako se pokaže potreba, dodati `List<VvFloatingFormState>` u descriptor.
 

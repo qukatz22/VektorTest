@@ -102,6 +102,8 @@ Napomena P3-11: dodan je centralni `VvDetachedDocumentContext.CanDetach` eligibi
 
 Napomena P3-12: baseline P3-1..P3-11 je dokumentiran u `DevExpress_Phase3_Readiness_Gate.md` s manual smoke checklistom i poznatim granicama prije business-toolbar, DB-lock i per-host flag sliceova.
 
+Napomena P3-13: main `VvForm` close sada prije standardnog open-tab dirty loopa zatvara sve registrirane `VvFloatingForm` hostove. Svaki floating close koristi postojeći reattach/dirty-cancel flow; ako neki detached close bude canceliran, cancelira se i main close.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

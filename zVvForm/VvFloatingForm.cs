@@ -27,6 +27,11 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    private Bar dxBar_Report;
    private Bar dxMenuBar;
 
+   public bool IsReattached
+   {
+      get { return reattached; }
+   }
+
    public VvFloatingForm()
       : this((VvDetachedDocumentContext)null)
    {
