@@ -4784,6 +4784,7 @@
     <None Include="MarkDowns\DevExpress_Migration_V3.md" />
     <None Include="MarkDowns\DevExpress_Migration_V4.md" />
     <None Include="MarkDowns\DevExpress_Migration_V4_RESUME.md" />
+    <None Include="MarkDowns\DevExpress_Phase1_Phase2_Team_Handoff.md" />
     <None Include="MarkDowns\Phase1_SmokeTests.md" />
     <None Include="MarkDowns\Sync-FromProduction.ps1" />
     <None Include="MarkDowns\vvBkpScript.md" />
