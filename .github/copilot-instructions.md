@@ -113,7 +113,7 @@ $msb = 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bi
 ```
 
 Exit code `0` = green; anything else = red. If the CLI sequence is repeatedly
-cancelled by the environment without a compile failure, the assistant may treat
+cancelled by the environment, the assistant may treat
 Visual Studio `run_build` success or explicit user build validation as sufficient
 for autonomous Phase 2 commits. In that fallback case, the tracker/commit note
 must say `VS-build green` or `user-build green` instead of `clean-build green`.

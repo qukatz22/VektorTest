@@ -139,10 +139,6 @@
     <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="DotNetMagic">
-      <HintPath>C:\VvLibraries\DotNetMagic.DLL</HintPath>
-      <Private>True</Private>
-    </Reference>
     <!-- ============================================================
          DevExpress WinForms Controls v25.2.6 (Faza 2a / C17)
          Direct DLL references; HintPath points to DX installer location.

@@ -643,7 +643,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] `UtilsEtc\VvColorsStylsDlg.cs` obsolete Crownwood `OfficeStyle`/`MediaPlayerStyle`/`TreeControlStyles` UI uklonjen; ostaju DevExpress skin izbor i boje; VS-build green
   - [x] `VvColorsAndStyles`/`VvHamper`/`Initializations_Settings`/`OnClick_EventHandlers` legacy Crownwood style enum fields i setup pozivi uklonjeni; default color preset prebačen na RGB konstante; VS-build green
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
-- [ ] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References`
+- [x] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References` — `Vektor.csproj` i `SkyLab.csproj` `DotNetMagic` reference uklonjene; VS-build green
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a
 - [ ] Fullregression test po svakom modulu: FIR outbound, FUR inbound, plaće, amortizacija, izvještaji, TEXTHOshop varijanta, PCTOGO varijanta, SvDUH varijanta
 - [ ] Usporediti screenshot-e prije/poslije za referentne scenarije
