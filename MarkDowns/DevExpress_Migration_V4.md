@@ -642,6 +642,7 @@ Za svaki: (a) tippolja, (b) instantacija, (c) `SelectedTab` → `SelectedTabPage
   - [x] `UtilsEtc\VvColors.cs` color picker decouplan od Crownwood `Office2007ColorTable`/`VisualStyle` API-ja zamjenom istim RGB konstantama; user-build green
   - [x] `UtilsEtc\VvColorsStylsDlg.cs` obsolete Crownwood `OfficeStyle`/`MediaPlayerStyle`/`TreeControlStyles` UI uklonjen; ostaju DevExpress skin izbor i boje; VS-build green
   - [x] `VvColorsAndStyles`/`VvHamper`/`Initializations_Settings`/`OnClick_EventHandlers` legacy Crownwood style enum fields i setup pozivi uklonjeni; default color preset prebačen na RGB konstante; VS-build green
+  - [x] Stale legacy style helper nazivi uklonjeni iz aktivnog sourcea (`aOfficeColorTable`, DxSkinName-only environment fallback); VS-build green
   - [ ] Preostali `using`-i blokirani su aktivnim legacy tipovima (`DotNetMagicForm`, `TitleBar`, `ButtonWithStyle`, legacy color/report tab dialogs)
 - [x] Ukloniti Crownwood DLL iz `packages.config` / `PackageReference` i `References` — `Vektor.csproj` i `SkyLab.csproj` `DotNetMagic` reference uklonjene; VS-build green
 - [ ] UklonitiCrownwood DLL iz deploy skripta / installer-a

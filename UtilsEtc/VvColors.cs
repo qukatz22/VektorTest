@@ -11,7 +11,7 @@ public class VvColors : XtraForm
    private Color selectedColor;
    private XtraTabControl tabControlBojice;
    private XtraTabPage tabPageWeb, tabPageSystem, tabPageProf, tabPageOffice;
-   private Color[] aSystemColors, aProfessionalColors, aColor, aOffice2007ColorTable;
+   private Color[] aSystemColors, aProfessionalColors, aColor, aOfficeColorTable;
    private String[] aTextColorsProf, aTextColorsOffice;
 
    public Color SelectedColor
@@ -134,7 +134,7 @@ public class VvColors : XtraForm
          /*139*/Color.LightPink   
                            };
 
-      aOffice2007ColorTable = new Color[] { 
+      aOfficeColorTable = new Color[] { 
       /* 1*/   Color.FromArgb(243, 247, 221),
       /* 2*/   Color.FromArgb(254, 238, 170),
       /* 3*/   Color.FromArgb(255, 228, 145),
@@ -309,7 +309,7 @@ public class VvColors : XtraForm
       ColorAndNameButtons(aSystemColors, tabPageSystem, null);
       ColorAndNameButtons(aProfessionalColors, tabPageProf, aTextColorsProf);
       ColorAndNameButtons(aColor, tabPageWeb, null);
-      ColorAndNameButtons(aOffice2007ColorTable, tabPageOffice, aTextColorsOffice);
+      ColorAndNameButtons(aOfficeColorTable, tabPageOffice, aTextColorsOffice);
    }
 
    #region InitializeTabControlBojice
