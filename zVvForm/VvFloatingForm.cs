@@ -156,7 +156,15 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       VvToolbarFactory.CreateBar_SubModul(this);
       VvToolbarFactory.CreateBar_Report(this);
       PopulateDetachedBars();
+      ApplyDetachedWriteMode();
       DxBarManager.ForceInitialize();
+   }
+
+   private void ApplyDetachedWriteMode()
+   {
+      if(detachedContext == null || detachedContext.SourceTabPage == null) return;
+
+      VvToolbarFactory.ApplyWriteMode(this, detachedContext.SourceTabPage.WriteMode);
    }
 
    private void PopulateDetachedBars()

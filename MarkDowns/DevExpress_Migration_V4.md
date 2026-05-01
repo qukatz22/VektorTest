@@ -690,7 +690,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
     ├── UC.TheVvTabPage = sourceTabPage  (PRESERVE — ne resetiraj!)
     ├── Safe toolbar skeleton itemi (business toolbar snapshot još otvoren)
     ├── ZXC.RegisterDocumentHost(this)
-    ├── ApplyWriteMode(this, sourceTabPage.WriteMode) — još otvoreno za non-VvForm host
+    ├── ApplyWriteMode(this, sourceTabPage.WriteMode) — P3-30 minimalni detached DX skeleton path; full business enable/disable ostaje otvoren
     └── this.Show()
 
 #### 3c — Reattach flow

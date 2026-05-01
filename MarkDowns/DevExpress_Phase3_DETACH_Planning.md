@@ -136,6 +136,8 @@ Napomena P3-28: detached forma sada dobiva V4-style title bar tekst `Vektor — 
 
 Napomena P3-29: dodan je detached `Bar_SubModul` skeleton kroz `IVvDocumentHost.DxBar_SubModul` i `VvToolbarFactory.CreateBar_SubModul`. `VvFloatingForm` sada ima vlastiti DX SubModul bar s disabled placeholder itemom; business item population namjerno ostaje otvorena odvojena stavka.
 
+Napomena P3-30: `VvToolbarFactory.ApplyWriteMode` više ne baca `NotImplementedException` za detached `IVvDocumentHost`; dodan je minimalni DX skeleton path koji enable-a Record/SubModul barove i skriva Report bar u write-mode scenarijima. `VvFloatingForm` sada primjenjuje `SourceTabPage.WriteMode` nakon kreiranja detached barova; puna business enable/disable logika ostaje otvorena za business item population slice.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

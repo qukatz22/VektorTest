@@ -257,12 +257,29 @@ public static class VvToolbarFactory
          return;
       }
 
-      // Faza 3 (detach): VvFloatingForm mora imati vlastitu implementaciju
-      // — ili kroz premjesteno tijelo u C10(Faza 2g) ili kroz poseban factory
-      // path za DX BarManager. Do tada ne smije se pojaviti ne-VvForm host.
-      throw new NotImplementedException(
-         "VvToolbarFactory.ApplyWriteMode: host tipa " + host.GetType().Name +
-         " nije podrzan u Fazi 1b. Detach (Faza 3) ili Faza 2g ce dodati put.");
+      ApplyDetachedWriteModeSkeleton(host, writeMode);
+   }
+
+   private static void ApplyDetachedWriteModeSkeleton(IVvDocumentHost host, ZXC.WriteMode writeMode)
+   {
+      bool isWriteMode = writeMode != ZXC.WriteMode.None;
+
+      SetBarEnabled(host.DxBar_Record, true);
+      SetBarEnabled(host.DxBar_SubModul, true);
+      SetBarEnabled(host.DxBar_Report, !isWriteMode);
+   }
+
+   private static void SetBarEnabled(Bar bar, bool enabled)
+   {
+      if(bar == null) return;
+
+      foreach(BarItemLink link in bar.ItemLinks)
+      {
+         if(link != null && link.Item != null)
+         {
+            link.Item.Enabled = enabled && link.Item.Enabled;
+         }
+      }
    }
 
    /// <summary>
