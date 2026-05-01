@@ -96,6 +96,8 @@ Napomena P3-8: detached content sada rekurzivno veže `Enter`, `GotFocus` i `Mou
 
 Napomena P3-9: `IVvDocumentHost` DX bar placeholderi su settable, a `VvToolbarFactory` sada može kreirati skeleton `DxMenuBar`, `DxBar_Record` i `DxBar_Report` za bilo koji host. `VvFloatingForm` inicijalizira vlastiti `BarManager` i vlastite skeleton barove; business toolbar/menu item population ostaje za sljedeći slice.
 
+Napomena P3-10: detached skeleton barovi sada imaju samo sigurne iteme: `Zatvori detached tab` koji zove `Close()` i disabled title indicator. Business akcije (SAV/ESC/PRN/etc.) još se namjerno ne kopiraju dok se ne razriješe legacy handleri koji ovise o main `VvForm` stateu.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

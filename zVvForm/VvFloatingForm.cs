@@ -139,7 +139,30 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       VvToolbarFactory.CreateMenuBar(this, true);
       VvToolbarFactory.CreateBar_Record(this);
       VvToolbarFactory.CreateBar_Report(this);
+      PopulateDetachedBars();
       DxBarManager.ForceInitialize();
+   }
+
+   private void PopulateDetachedBars()
+   {
+      BarButtonItem closeItem = VvToolbarFactory.CreateStaticChildItem(this, "Zatvori detached tab", DetachedCloseItem_Click);
+      BarButtonItem titleItem = VvToolbarFactory.CreateStaticChildItem(this, Text, null);
+      titleItem.Enabled = false;
+
+      if(DxMenuBar != null)
+      {
+         DxMenuBar.AddItem(closeItem);
+      }
+
+      if(DxBar_Record != null)
+      {
+         DxBar_Record.AddItem(titleItem);
+      }
+   }
+
+   private void DetachedCloseItem_Click(object sender, EventArgs e)
+   {
+      Close();
    }
 
    private void DetachContent()
