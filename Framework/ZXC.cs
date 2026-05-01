@@ -7677,6 +7677,41 @@ public static class ZXC
       }
    }
 
+   public static void PushStatusText(string statusText)
+   {
+      IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+      if(activeHost != null && activeHost.TStripStatusLabel != null && activeHost.PerHost != null)
+      {
+         activeHost.PerHost.StatusTextBackup = activeHost.TStripStatusLabel.Text;
+         activeHost.SetStatusText(statusText);
+         return;
+      }
+
+      if(ZXC.TheVvForm != null && ZXC.TheVvForm.TStripStatusLabel != null)
+      {
+         ZXC.TheVvForm.statusTextBackup       = ZXC.TheVvForm.TStripStatusLabel.Text;
+         ZXC.TheVvForm.TStripStatusLabel.Text = statusText;
+      }
+   }
+
+   public static void PopStatusText()
+   {
+      IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+      if(activeHost != null && activeHost.PerHost != null)
+      {
+         string backup = activeHost.PerHost.StatusTextBackup;
+         if(backup.IsEmpty()) backup = activeHost.PerHost.StatusTextBackup = "...";
+         activeHost.SetStatusText(backup);
+         return;
+      }
+
+      if(ZXC.TheVvForm != null && ZXC.TheVvForm.TStripStatusLabel != null)
+      {
+         if(ZXC.TheVvForm.statusTextBackup.IsEmpty()) ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup = "...";
+         else                                         ZXC.TheVvForm.TStripStatusLabel.Text = ZXC.TheVvForm.statusTextBackup;
+      }
+   }
+
    internal static string[] GetStringArrayFromCommaSeparatedTokens(string commaSeparatedTokens)
    {
       // 13.01.2016: 

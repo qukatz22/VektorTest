@@ -138,6 +138,8 @@ Napomena P3-29: dodan je detached `Bar_SubModul` skeleton kroz `IVvDocumentHost.
 
 Napomena P3-30: `VvToolbarFactory.ApplyWriteMode` više ne baca `NotImplementedException` za detached `IVvDocumentHost`; dodan je minimalni DX skeleton path koji enable-a Record/SubModul barove i skriva Report bar u write-mode scenarijima. `VvFloatingForm` sada primjenjuje `SourceTabPage.WriteMode` nakon kreiranja detached barova; puna business enable/disable logika ostaje otvorena za business item population slice.
 
+Napomena P3-31: status hint push/pop putanja (`ZXC.StatusTextPusher` / `StatusTextPopper`) sada ruti kroz `ZXC.PushStatusText` / `PopStatusText`, koji koriste `ActiveDocumentHost` i per-host `VvPerHostState.StatusTextBackup`. Time grid `CellEnter/CellLeave` i `VvTextBox` hintovi više ne zatvaraju glavnu `VvForm` status traku kada je aktivan detached host; ručni smoke test s dva prozora ostaje za korisničku validaciju.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

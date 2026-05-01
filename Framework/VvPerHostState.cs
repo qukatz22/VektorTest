@@ -57,6 +57,9 @@ public class VvPerHostState
    public bool RISK_PromjenaNacPlac_inProgress;
    public bool RISK_AutoAddInventuraDiff_inProgress;
 
+   // --- Status bar hint backup (Faza 3g) ---
+   public string StatusTextBackup;
+
    /// <summary>
    /// Resetira sve per-host flagove na false. Zove se iz
    /// ZXC.Reset_PerHost_StatusVariables_ForAllHosts() (project-switch putanja)
@@ -87,5 +90,7 @@ public class VvPerHostState
       RISK_CheckZPCkol_inProgress                                  = false;
       RISK_PromjenaNacPlac_inProgress                              = false;
       RISK_AutoAddInventuraDiff_inProgress                         = false;
+
+      StatusTextBackup                                             = null;
    }
 }

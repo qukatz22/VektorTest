@@ -728,7 +728,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 #### 3g — Status bar routing
 
 - [x] Svaka `VvFloatingForm` ima vlastiti status label — `DocumentHost.SetStatusText()` piše na svoj host preko `ZXC.ActiveDocumentHost`
-- [ ] Testirati: grid CellEnter/CellLeave status text prikazuju se samo u prozoru u kojem je grid aktivan
+- [~] Testirati: grid CellEnter/CellLeave status text prikazuju se samo u prozoru u kojem je grid aktivan — P3-31 ruti `StatusTextPusher/Popper` kroz active host i per-host backup; manual smoke test još otvoren
 
 #### 3h — Edge case-ovi
 
@@ -754,6 +754,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 - [ ] M2PAY guard
 - [ ] Sifrar cache refresh concurrency
 - [ ] Crystal Reports u detached
+- [ ] Status hint smoke: grid/VvTextBox enter/leave mijenja samo status traku aktivnog detached/main prozora
 - [ ] Rtrans `Get_S_KC_fromScreen` ispravno gađa **vlastiti** FakturDUC (ne ZXC.TheVvForm-ov)
 - [ ] Reattach nakon dugog rada
 - [ ] Memory leak provjera — detach/reattach ciklus 100×
