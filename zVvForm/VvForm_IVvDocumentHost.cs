@@ -52,19 +52,19 @@ public partial class VvForm : IVvDocumentHost
    public Bar DxBar_Record
    {
       get { return dxBar_Record; }
-      internal set { dxBar_Record = value; }
+      set { dxBar_Record = value; }
    }
 
    public Bar DxBar_Report
    {
       get { return dxBar_Report; }
-      internal set { dxBar_Report = value; }
+      set { dxBar_Report = value; }
    }
 
    public Bar DxMenuBar
    {
       get { return dxMenuBar; }
-      internal set { dxMenuBar = value; }
+      set { dxMenuBar = value; }
    }
 
    public Dictionary<string, BarItem> DxBarItemsByName

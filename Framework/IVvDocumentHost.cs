@@ -54,13 +54,13 @@ public interface IVvDocumentHost
    BarManager DxBarManager { get; }
 
    /// <summary>DevExpress Bar_Record placeholder za CRUD+nav gumbe (Faza 2g).</summary>
-   Bar DxBar_Record { get; }
+   Bar DxBar_Record { get; set; }
 
    /// <summary>DevExpress Bar_Report placeholder za report operacije (Faza 2g).</summary>
-   Bar DxBar_Report { get; }
+   Bar DxBar_Report { get; set; }
 
    /// <summary>DevExpress menu bar placeholder glavnog menija (Faza 2g).</summary>
-   Bar DxMenuBar { get; }
+   Bar DxMenuBar { get; set; }
 
    /// <summary>Lookup DX itema po legacy ToolStrip/MenuItem imenu (Faza 2g).</summary>
    Dictionary<string, BarItem> DxBarItemsByName { get; }

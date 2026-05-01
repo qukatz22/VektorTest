@@ -52,6 +52,8 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       statusStrip.Items.Add(statusLabel);
       Controls.Add(statusStrip);
 
+      InitializeDetachedBars();
+
       if(detachedContext != null)
       {
          DetachContent();
@@ -82,19 +84,19 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    public Bar DxBar_Record
    {
       get { return dxBar_Record; }
-      internal set { dxBar_Record = value; }
+      set { dxBar_Record = value; }
    }
 
    public Bar DxBar_Report
    {
       get { return dxBar_Report; }
-      internal set { dxBar_Report = value; }
+      set { dxBar_Report = value; }
    }
 
    public Bar DxMenuBar
    {
       get { return dxMenuBar; }
-      internal set { dxMenuBar = value; }
+      set { dxMenuBar = value; }
    }
 
    public Dictionary<string, BarItem> DxBarItemsByName
@@ -130,6 +132,14 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    void IVvDocumentHost.ClearStatusText()
    {
       statusLabel.Text = "";
+   }
+
+   private void InitializeDetachedBars()
+   {
+      VvToolbarFactory.CreateMenuBar(this, true);
+      VvToolbarFactory.CreateBar_Record(this);
+      VvToolbarFactory.CreateBar_Report(this);
+      DxBarManager.ForceInitialize();
    }
 
    private void DetachContent()

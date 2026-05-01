@@ -48,10 +48,9 @@ public static class VvToolbarFactory
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
 
-      VvForm vvForm = host as VvForm;
-      if(vvForm != null && vvForm.DxBar_Record == null)
+      if(host.DxBar_Record == null)
       {
-         vvForm.DxBar_Record = CreateBar(host.DxBarManager, "Record", false);
+         host.DxBar_Record = CreateBar(host.DxBarManager, "Record", false);
       }
    }
 
@@ -62,10 +61,9 @@ public static class VvToolbarFactory
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
 
-      VvForm vvForm = host as VvForm;
-      if(vvForm != null && vvForm.DxBar_Report == null)
+      if(host.DxBar_Report == null)
       {
-         vvForm.DxBar_Report = CreateBar(host.DxBarManager, "Report", false);
+         host.DxBar_Report = CreateBar(host.DxBarManager, "Report", false);
       }
    }
 
@@ -90,10 +88,9 @@ public static class VvToolbarFactory
    {
       if (host == null) throw new ArgumentNullException(nameof(host));
 
-      VvForm vvForm = host as VvForm;
-      if(vvForm != null && vvForm.DxMenuBar == null)
+      if(host.DxMenuBar == null)
       {
-         vvForm.DxMenuBar = CreateBar(host.DxBarManager, isDetached ? "Detached menu" : "Main menu", true);
+         host.DxMenuBar = CreateBar(host.DxBarManager, isDetached ? "Detached menu" : "Main menu", true);
       }
    }
 
@@ -103,7 +100,7 @@ public static class VvToolbarFactory
 
       Bar bar = new Bar(barManager, barName);
       barManager.Bars.Add(bar);
-      bar.Visible = false;
+      bar.Visible = true;
 
       if(isMainMenu)
       {

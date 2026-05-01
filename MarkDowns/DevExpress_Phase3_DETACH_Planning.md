@@ -94,6 +94,8 @@ Napomena P3-7: `ZXC.SetStatusText` i `ZXC.ClearStatusText` sada prvo rutiraju kr
 
 Napomena P3-8: detached content sada rekurzivno veže `Enter`, `GotFocus` i `MouseDown` na active-host routing, pa interakcija unutar floating forme vraća `ZXC.ActiveDocumentHost` na `VvFloatingForm`. `VvForm.OnActivated` vraća active host na main formu kad korisnik aktivira glavni prozor.
 
+Napomena P3-9: `IVvDocumentHost` DX bar placeholderi su settable, a `VvToolbarFactory` sada može kreirati skeleton `DxMenuBar`, `DxBar_Record` i `DxBar_Report` za bilo koji host. `VvFloatingForm` inicijalizira vlastiti `BarManager` i vlastite skeleton barove; business toolbar/menu item population ostaje za sljedeći slice.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
