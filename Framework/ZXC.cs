@@ -278,9 +278,10 @@ public static class ZXC
    private static bool risk_CheckPrNabDokCij_inProgress = false;
    private static bool risk_CheckZPCkol_inProgress = false;
    private static bool getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
+   private static bool risk_FinalRn_inProgress = false;
+   private static bool risk_Edit_RtranoOnly_InProgress = false;
+   private static bool dupCopyMenu_inProgress = false;
    public static bool RISK_PromjenaNacPlac_inProgress = false;
-   public static bool RISK_FinalRn_inProgress = false;
-   public static bool DupCopyMenu_inProgress = false;
 
    public static bool RISK_CheckPrNabDokCij_inProgress
    {
@@ -298,6 +299,24 @@ public static class ZXC
    {
       get { return GetActivePerHostFlag(perHost => perHost.GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress, getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress); }
       set { SetActivePerHostFlag((perHost, flagValue) => perHost.GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = flagValue, ref getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress, value); }
+   }
+
+   public static bool RISK_FinalRn_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_FinalRn_inProgress, risk_FinalRn_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_FinalRn_inProgress = flagValue, ref risk_FinalRn_inProgress, value); }
+   }
+
+   public static bool RISK_Edit_RtranoOnly_InProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.RISK_Edit_RtranoOnly_InProgress, risk_Edit_RtranoOnly_InProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_Edit_RtranoOnly_InProgress = flagValue, ref risk_Edit_RtranoOnly_InProgress, value); }
+   }
+
+   public static bool DupCopyMenu_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.DupCopyMenu_inProgress, dupCopyMenu_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.DupCopyMenu_inProgress = flagValue, ref dupCopyMenu_inProgress, value); }
    }
 
    public static bool RISK_CheckZPCkol_inProgress
@@ -325,7 +344,6 @@ public static class ZXC
    public static bool VerboseLOG = false/*true*/;
 
    public static bool RISK_FiskParagon_InProgress = false;
-   public static bool RISK_Edit_RtranoOnly_InProgress = false;
 
    public static bool RISK_VvPDFreporter_InProgress = false;
    public static bool LoadIzvodDLG_isON = false;
@@ -447,9 +465,9 @@ public static class ZXC
       // project-switch ne ostavi stale mutex dok flip nije dovrsen.
       risk_SaveVvDataRecord_inProgress                             = false;
       getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
-      RISK_FinalRn_inProgress                                      = false;
-      RISK_Edit_RtranoOnly_InProgress                              = false;
-      DupCopyMenu_inProgress                                       = false;
+      risk_FinalRn_inProgress                                      = false;
+      risk_Edit_RtranoOnly_InProgress                              = false;
+      dupCopyMenu_inProgress                                       = false;
 
       RISK_CopyToOtherDUC_inProgress                               = false;
       RISK_CopyToMixerDUC_inProgress                               = false;

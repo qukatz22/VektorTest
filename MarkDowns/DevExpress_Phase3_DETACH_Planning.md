@@ -122,6 +122,8 @@ Napomena P3-21: record-level save flag `RISK_SaveVvDataRecord_inProgress` sada j
 
 Napomena P3-22: record-level reentrancy guard `GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress` sada je migriran na active-host `VvPerHostState` uz legacy fallback. Call-siteovi u `VvUserControlRecord_Sub` ostaju na istom `ZXC` imenu, ali guard više nije globalan kada postoji aktivni document host.
 
+Napomena P3-23: preostali record-level companion flagovi `RISK_FinalRn_inProgress`, `RISK_Edit_RtranoOnly_InProgress` i `DupCopyMenu_inProgress` sada su migrirani istim `ZXC` helper patternom na active-host `VvPerHostState` uz legacy fallback. Scan nakon patcha potvrđuje da live call-siteovi u `SubModulActions`, `VvForm_Q`, `FakturDUC` i `ArtiklUC` ostaju na istim `ZXC` property imenima, a host-specific routing se događa centralno u `ZXC`.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
