@@ -256,14 +256,52 @@ public static class ZXC
    public static bool MIXER_CopyToOtherDUC_inProgress = false;
    public static bool RISK_AutoAddInventuraDiff_inProgress = false;
    public static bool RISK_SaveVvDataRecord_inProgress = false;
-   public static bool RISK_CheckPrNabDokCij_inProgress = false;
-   public static bool RISK_CheckZPCkol_inProgress = false;
+   private static bool risk_CheckPrNabDokCij_inProgress = false;
+   private static bool risk_CheckZPCkol_inProgress = false;
    public static bool RISK_PromjenaNacPlac_inProgress = false;
    public static bool RISK_FinalRn_inProgress = false;
    public static bool GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
    public static bool DupCopyMenu_inProgress = false;
 
-   public static bool ShouldSupressRenewCache { get { return RISK_CheckPrNabDokCij_inProgress || RISK_CheckZPCkol_inProgress || RISK_DisableCacheTemporarily; } }
+   public static bool RISK_CheckPrNabDokCij_inProgress
+   {
+      get
+      {
+         VvPerHostState perHost = ActivePerHostState;
+         return perHost != null ? perHost.RISK_CheckPrNabDokCij_inProgress : risk_CheckPrNabDokCij_inProgress;
+      }
+      set
+      {
+         VvPerHostState perHost = ActivePerHostState;
+         if(perHost != null) perHost.RISK_CheckPrNabDokCij_inProgress = value;
+         else risk_CheckPrNabDokCij_inProgress = value;
+      }
+   }
+
+   public static bool RISK_CheckZPCkol_inProgress
+   {
+      get
+      {
+         VvPerHostState perHost = ActivePerHostState;
+         return perHost != null ? perHost.RISK_CheckZPCkol_inProgress : risk_CheckZPCkol_inProgress;
+      }
+      set
+      {
+         VvPerHostState perHost = ActivePerHostState;
+         if(perHost != null) perHost.RISK_CheckZPCkol_inProgress = value;
+         else risk_CheckZPCkol_inProgress = value;
+      }
+   }
+
+   public static bool ShouldSupressRenewCache
+   {
+      get
+      {
+         VvPerHostState perHost = ActivePerHostState;
+         bool hostShouldSuppressRenewCache = perHost != null && (perHost.RISK_CheckPrNabDokCij_inProgress || perHost.RISK_CheckZPCkol_inProgress);
+         return hostShouldSuppressRenewCache || risk_CheckPrNabDokCij_inProgress || risk_CheckZPCkol_inProgress || RISK_DisableCacheTemporarily;
+      }
+   }
    public static bool RISK_DisableCacheTemporarily = false;
    public static bool IsVELEFORM = false;
 
@@ -411,8 +449,8 @@ public static class ZXC
       RISK_ToggleKnDeviza_InProgress                               = false;
       RISK_InitZPCvalues_InProgress                                = false;
       RISK_PULXPIZX_Calc_InProgress                                = false;
-      RISK_CheckPrNabDokCij_inProgress                             = false;
-      RISK_CheckZPCkol_inProgress                                  = false;
+      risk_CheckPrNabDokCij_inProgress                             = false;
+      risk_CheckZPCkol_inProgress                                  = false;
       RISK_PromjenaNacPlac_inProgress                              = false;
       RISK_AutoAddInventuraDiff_inProgress                         = false;
    }

@@ -114,6 +114,8 @@ Napomena P3-17: migriran je batch previous-year read pathova na `UseSecondDbConn
 
 Napomena P3-18: završni second-DB scan nakon P3-17 zatvorio je dodatne aktivne call-siteove na `UseSecondDbConnection`: preostale `Reports_RIZ` previous-year read pathove (`GetRtransList`, `GetFakturList`, `GetRtransWithArtstatList`, BBB prior-period list), `ArtiklDao.GetPrNabCijFrom_One_LinkedIzlazRtrans`, `RtransDao` oldvej previous-year block, SKY RWT fallback u `VvDaoBase`, `VvDaoBase` next-year sifrar sync/check pathove i `SubModulActions` next-year/prev-year storno/popratnica pathove. Nakon build-green scan-a preostali `TheSecondDbConn_*` hitovi izvan `ZXC` su samo komentari ili lambda factory reference unutar `UseSecondDbConnection` wrappera; manual concurrency smoke test ostaje otvoren.
 
+Napomena P3-19: prvi minimalni per-host flag slice preselio je cache-suppression par `RISK_CheckPrNabDokCij_inProgress` / `RISK_CheckZPCkol_inProgress` iza postojećih `ZXC` property imena, ali vrijednosti se sada čitaju/pišu iz `ZXC.ActivePerHostState` kad postoji aktivni `IVvDocumentHost`. `ShouldSupressRenewCache` sada zbraja active-host state + legacy fallback + global `RISK_DisableCacheTemporarily`, čime se ispunjava prvi dio V4 §3e bez diranja kompleksnih save/copy workflow flagova.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

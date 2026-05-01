@@ -716,8 +716,8 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 #### 3e — Per-host `*_InProgress` flagovi
 
-- [ ] Preseliti ~15 flagova iz §1.14 s `[per-DocumentHost]` oznakom iz ZXC statics na `IVvDocumentHost` instance state
-- [ ] Revidirati `ShouldSupressRenewCache` da zbraja global + active host flagove
+- [~] Preseliti ~15 flagova iz §1.14 s `[per-DocumentHost]` oznakom iz ZXC statics na `IVvDocumentHost` instance state — P3-19 migrira prvi cache-suppression par (`RISK_CheckPrNabDokCij_inProgress`, `RISK_CheckZPCkol_inProgress`) kroz postojeća `ZXC` property imena na `ActivePerHostState`; save/copy workflow flagovi ostaju otvoreni
+- [x] Revidirati `ShouldSupressRenewCache` da zbraja global + active host flagove — P3-19 zbraja active host cache-suppression state, legacy fallback i global `RISK_DisableCacheTemporarily`
 - [ ] Test: tab A save u toku, tab B drugi save → očekivano behavior (blokiran ili ne, prema record-level flagu)
 
 #### 3f — M2PAY hardware guard
