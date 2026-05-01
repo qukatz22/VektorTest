@@ -120,6 +120,8 @@ Napomena P3-20: dodani su mali private helperi u `ZXC` za per-host bool routing 
 
 Napomena P3-21: record-level save flag `RISK_SaveVvDataRecord_inProgress` sada je migriran istim helper patternom na active-host `VvPerHostState` uz legacy fallback backing field. Time se prvi record-level flag ponaša per-host bez izmjene postojećih FakturDUC/VvForm_Q call-siteova; manual test “tab A save u toku, tab B drugi save” ostaje otvoren dok se ne migriraju i preostali save/copy companion flagovi.
 
+Napomena P3-22: record-level reentrancy guard `GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress` sada je migriran na active-host `VvPerHostState` uz legacy fallback. Call-siteovi u `VvUserControlRecord_Sub` ostaju na istom `ZXC` imenu, ali guard više nije globalan kada postoji aktivni document host.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

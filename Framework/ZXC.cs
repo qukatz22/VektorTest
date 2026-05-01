@@ -277,9 +277,9 @@ public static class ZXC
    private static bool risk_SaveVvDataRecord_inProgress = false;
    private static bool risk_CheckPrNabDokCij_inProgress = false;
    private static bool risk_CheckZPCkol_inProgress = false;
+   private static bool getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
    public static bool RISK_PromjenaNacPlac_inProgress = false;
    public static bool RISK_FinalRn_inProgress = false;
-   public static bool GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
    public static bool DupCopyMenu_inProgress = false;
 
    public static bool RISK_CheckPrNabDokCij_inProgress
@@ -292,6 +292,12 @@ public static class ZXC
    {
       get { return GetActivePerHostFlag(perHost => perHost.RISK_SaveVvDataRecord_inProgress, risk_SaveVvDataRecord_inProgress); }
       set { SetActivePerHostFlag((perHost, flagValue) => perHost.RISK_SaveVvDataRecord_inProgress = flagValue, ref risk_SaveVvDataRecord_inProgress, value); }
+   }
+
+   public static bool GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress
+   {
+      get { return GetActivePerHostFlag(perHost => perHost.GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress, getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress); }
+      set { SetActivePerHostFlag((perHost, flagValue) => perHost.GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = flagValue, ref getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress, value); }
    }
 
    public static bool RISK_CheckZPCkol_inProgress
@@ -440,7 +446,7 @@ public static class ZXC
       // (Option B: call-siteovi se ne diraju do Faze 3). Ovaj blok osigurava da
       // project-switch ne ostavi stale mutex dok flip nije dovrsen.
       risk_SaveVvDataRecord_inProgress                             = false;
-      GetLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
+      getLineFlds_CalcTrans_PutLineFlds_PutSumFlds_FOR_ALL_ROWS_inProgress = false;
       RISK_FinalRn_inProgress                                      = false;
       RISK_Edit_RtranoOnly_InProgress                              = false;
       DupCopyMenu_inProgress                                       = false;
