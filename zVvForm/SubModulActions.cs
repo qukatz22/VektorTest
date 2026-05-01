@@ -4769,17 +4769,17 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
    {
       ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Ovo je eksperimentalno rješenje.\n\r\n\rPotrebno je dobro provjeriti sadržaj novonastalog računa u novoj godini!!!");
    
-      XSqlConnection nextYearDbConn = ZXC.TheSecondDbConn_SameDB_OtherYear(DateTime.Now.Year);
-
-      bool OK;
-
       ZXC.CopyOut_InProgress = true;
 
       Faktur origFaktur_rec = (Faktur)(TheVvDataRecord);
 
       Faktur nyFaktur_rec = (Faktur)origFaktur_rec.CreateNewRecordAndCloneItComplete();
 
-      OK = VvRecLstUC.EnsureNonDuplicateKeys(nextYearDbConn, nyFaktur_rec, false, false);
+      bool OK = ZXC.UseSecondDbConnection(
+         () => ZXC.TheSecondDbConn_SameDB_OtherYear(DateTime.Now.Year),
+         nextYearDbConn =>
+         {
+            bool localOK = VvRecLstUC.EnsureNonDuplicateKeys(nextYearDbConn, nyFaktur_rec, false, false);
 
       #region Alter fields for storno
 
@@ -4833,7 +4833,10 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
 
       #endregion Alter fields for storno
 
-      OK = ZXC.FakturDao.ADDREC(nextYearDbConn, nyFaktur_rec, true, false, false, false);
+            localOK = ZXC.FakturDao.ADDREC(nextYearDbConn, nyFaktur_rec, true, false, false, false);
+
+            return localOK;
+         });
 
       ZXC.CopyOut_InProgress = false;
 
@@ -6739,7 +6742,9 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
 
                   if(!isLastRtrano_ForSerno_found) // try prev year 
                   {
-                      isLastRtrano_ForSerno_found = RtranoDao.Get_LastRtrano_ForSerno(ZXC.TheSecondDbConn_SameDB_prevYear, daPoprat_rtrano_rec, theSerNo, true);
+                       isLastRtrano_ForSerno_found = ZXC.UseSecondDbConnection(
+                          () => ZXC.TheSecondDbConn_SameDB_prevYear,
+                          secondDbConn => RtranoDao.Get_LastRtrano_ForSerno(secondDbConn, daPoprat_rtrano_rec, theSerNo, true));
                   }
 
                   #endregion On not found, try prev year
@@ -7242,17 +7247,17 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
    {
       ZXC.aim_emsg(MessageBoxIcon.Warning, "UPOZORENJE: Ovo je eksperimentalno rješenje.\n\r\n\rPotrebno je dobro provjeriti sadržaj novonastalog računa u novoj godini!!!");
    
-      XSqlConnection nextYearDbConn = ZXC.TheSecondDbConn_SameDB_OtherYear(DateTime.Now.Year);
-
-      bool OK;
-
       ZXC.CopyOut_InProgress = true;
 
       Faktur origFaktur_rec = (Faktur)(TheVvDataRecord);
 
       Faktur nyFaktur_rec = (Faktur)origFaktur_rec.CreateNewRecordAndCloneItComplete();
 
-      OK = VvRecLstUC.EnsureNonDuplicateKeys(nextYearDbConn, nyFaktur_rec, false, false);
+      bool OK = ZXC.UseSecondDbConnection(
+         () => ZXC.TheSecondDbConn_SameDB_OtherYear(DateTime.Now.Year),
+         nextYearDbConn =>
+         {
+            bool localOK = VvRecLstUC.EnsureNonDuplicateKeys(nextYearDbConn, nyFaktur_rec, false, false);
 
       #region Alter fields for storno
 
@@ -7309,7 +7314,10 @@ reopenDialogLABEL: rtrans_rec = (Rtrans)theDUC.GetDgvLineFields1(rowIdx, false, 
 
       #endregion Alter fields for storno
 
-      OK = ZXC.FakturDao.ADDREC(nextYearDbConn, nyFaktur_rec, true, false, false, false);
+            localOK = ZXC.FakturDao.ADDREC(nextYearDbConn, nyFaktur_rec, true, false, false, false);
+
+            return localOK;
+         });
 
       ZXC.CopyOut_InProgress = false;
 

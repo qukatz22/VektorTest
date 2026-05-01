@@ -711,7 +711,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 
 - [x] Odluka: Lock-based vs per-host pool (vidi §1.15) — P3-14 potvrđuje lock-based prvu iteraciju
 - [x] **Preporuka V4: Lock-based** u prvoj iteraciji (manja invazivnost). Pool je eskalacija.
-- [~] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: P3-14 dodaje centralne `UseSecondDbConnection` / `UseThirdDbConnection` lock helpere; P3-15 migrira prve `TheSecondDbConn_*` call-siteove; P3-16 migrira direct `TheThirdDbConn_SameDB` i SKY write pathove; P3-17 migrira selected report/e-invoice/PTG previous-year reads; preostali direct usage-i traže završni scan
+- [x] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: P3-14 dodaje centralne `UseSecondDbConnection` / `UseThirdDbConnection` lock helpere; P3-15 migrira prve `TheSecondDbConn_*` call-siteove; P3-16 migrira direct `TheThirdDbConn_SameDB` i SKY write pathove; P3-17 migrira selected report/e-invoice/PTG previous-year reads; P3-18 završni scan zatvara preostale aktivne second-DB call-siteove. Preostali scan hitovi izvan `ZXC` su komentari ili lambda factory reference unutar lock helpera.
 - [ ] Testirati: dva prozora + simultani dokumenti s pozivima `TheSecondDbConn_SameDB_prevYear` vs `TheSecondDbConn_SameDB`
 
 #### 3e — Per-host `*_InProgress` flagovi

@@ -1154,34 +1154,46 @@ public sealed class ArtiklDao : VvDaoBase, IVvDao
       izlaz_rec = null;
       foundArtstat = false;
 
-      XSqlConnection conn = ZXC.TheSecondDbConn_SameDB;
-
       Rtrans izlazRtrans_rec = new Rtrans();
 
-      if(!ZXC.RtransDao.SetMe_Record_bySomeUniqueColumn(conn, izlazRtrans_rec, ulazRtrans_rec.T_recID, ZXC.RtransSchemaRows[ZXC.RtrCI.t_twinID], false, false))
-      {
-         if(ZXC.VerboseLOG) ZXC.aim_log("ulazRtrans_rec Can't find izlazRtrans_rec: {0}", ulazRtrans_rec.T_recID);
+      bool localFoundArtstat = false;
 
-         return 0.00M;
+      decimal prNabCij = ZXC.UseSecondDbConnection(
+         () => ZXC.TheSecondDbConn_SameDB,
+         conn =>
+         {
+            if(!ZXC.RtransDao.SetMe_Record_bySomeUniqueColumn(conn, izlazRtrans_rec, ulazRtrans_rec.T_recID, ZXC.RtransSchemaRows[ZXC.RtrCI.t_twinID], false, false))
+            {
+               if(ZXC.VerboseLOG) ZXC.aim_log("ulazRtrans_rec Can't find izlazRtrans_rec: {0}", ulazRtrans_rec.T_recID);
+
+               return 0.00M;
+            }
+
+            ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(conn, izlazRtrans_rec);
+
+            if(ZXC.VerboseLOG) ZXC.aim_log("ulazRtrans_rec GetFromDisk: id: {0} twin id: {1} / {2}", izlazRtrans_rec.T_recID, izlazRtrans_rec.T_twinID, izlazRtrans_rec);
+
+            if(artStat_rec == null)
+            {
+               artStat_rec = RepareMissingArtstat(conn, izlazRtrans_rec);
+
+               if(artStat_rec == null) return 0.00M;
+            }
+
+            if(ZXC.VerboseLOG) ZXC.aim_log("artStat_rec Found On Disk: {0}", artStat_rec);
+
+            localFoundArtstat = true;
+
+            return artStat_rec.PrNabCij;
+         });
+
+      if(localFoundArtstat)
+      {
+         izlaz_rec = izlazRtrans_rec;
+         foundArtstat = true;
       }
 
-      ArtStat artStat_rec = ArtiklDao.GetArtiklStatus(conn, izlazRtrans_rec);
-
-      if(ZXC.VerboseLOG) ZXC.aim_log("ulazRtrans_rec GetFromDisk: id: {0} twin id: {1} / {2}", izlazRtrans_rec.T_recID, izlazRtrans_rec.T_twinID, izlazRtrans_rec);
-
-      if(artStat_rec == null)
-      {
-         artStat_rec = RepareMissingArtstat(conn, izlazRtrans_rec);
-
-         if(artStat_rec == null) return 0.00M;
-      }
-
-      if(ZXC.VerboseLOG) ZXC.aim_log("artStat_rec Found On Disk: {0}", artStat_rec);
-
-      izlaz_rec = izlazRtrans_rec;
-      foundArtstat = true;
-
-      return artStat_rec.PrNabCij;
+      return prNabCij;
    }
 
    // 24.10.2014: otkriveno da je ova metoda APSOLUTNO NEPOTREBNA 

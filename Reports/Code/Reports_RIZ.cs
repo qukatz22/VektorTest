@@ -1874,7 +1874,16 @@ public class RptR_StandardRiskReport : VvRiskReport
          localRptFilter.FilterMembers.RemoveAll(fm => fm.name.StartsWith("DevName"));
       }
 
-      ZXC.RtransDao.LoadManyDocumentsTtranses(isSomeOtherYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheRtransList, localRptFilter, "t_ttSort ASC, t_ttNum ASC, t_serial ASC "); 
+      if(isSomeOtherYear)
+      {
+         ZXC.UseSecondDbConnection(
+            () => ZXC.TheSecondDbConn_SameDB_OtherYear(year),
+            secondDbConn => ZXC.RtransDao.LoadManyDocumentsTtranses(secondDbConn, TheRtransList, localRptFilter, "t_ttSort ASC, t_ttNum ASC, t_serial ASC "));
+      }
+      else
+      {
+         ZXC.RtransDao.LoadManyDocumentsTtranses(TheDbConnection, TheRtransList, localRptFilter, "t_ttSort ASC, t_ttNum ASC, t_serial ASC ");
+      }
    }
 
 #region Sam Lokal Propertiz
@@ -1984,7 +1993,16 @@ public class RptR_StandardRiskReport : VvRiskReport
       //bool isBigData = recCount > ZXC.BigDataRecCountLimit;
       //// 24.11.2015: BigData logic ... end   
 
-      VvDaoBase.LoadGenericVvDataRecordList(isSomePreviousYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturList, filterMembers, "", FakturOrderBy, true);
+      if(isSomePreviousYear)
+      {
+         ZXC.UseSecondDbConnection(
+            () => ZXC.TheSecondDbConn_SameDB_OtherYear(year),
+            secondDbConn => VvDaoBase.LoadGenericVvDataRecordList(secondDbConn, TheFakturList, filterMembers, "", FakturOrderBy, true));
+      }
+      else
+      {
+         VvDaoBase.LoadGenericVvDataRecordList(TheDbConnection, TheFakturList, filterMembers, "", FakturOrderBy, true);
+      }
 
 #region WEB_DEMO_DATA
 #if(WWWDEMO)
@@ -2121,7 +2139,16 @@ public class RptR_StandardRiskReport : VvRiskReport
    {
       bool isSomeOtherYear = year < ZXC.projectYearFirstDay.Year;
       // 07.03.2012: ako ne ides na drill down tada ti i ne treba ORDER BY
-      RtransDao.GetRtransWithArtstatList(isSomeOtherYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheRtransList, "", RptFilter.FilterMembers, "");
+      if(isSomeOtherYear)
+      {
+         ZXC.UseSecondDbConnection(
+            () => ZXC.TheSecondDbConn_SameDB_OtherYear(year),
+            secondDbConn => RtransDao.GetRtransWithArtstatList(secondDbConn, TheRtransList, "", RptFilter.FilterMembers, ""));
+      }
+      else
+      {
+         RtransDao.GetRtransWithArtstatList(TheDbConnection, TheRtransList, "", RptFilter.FilterMembers, "");
+      }
     //RtransDao.GetRtransWithArtstatList(TheDbConnection, TheRtransList, "", RptFilter.FilterMembers, "R.t_" + ArtiklOrderBy + ", " + Rtrans.artiklOrderBy_ASC.Replace("t_", "R.t_"));
    }
 
@@ -4934,7 +4961,16 @@ public class RptR_RekapCompare      : RptR_RekapFaktur
       int year = RptFilter.Date2.Year;
       bool isSomeOtherYear = year < ZXC.projectYearFirstDay.Year;
 
-      VvDaoBase.LoadGenericVvDataRecordList(isSomeOtherYear ? ZXC.TheSecondDbConn_SameDB_OtherYear(year) : TheDbConnection, TheFakturBBBList, fmArray.ToList(), "", FakturOrderBy, true);
+      if(isSomeOtherYear)
+      {
+         ZXC.UseSecondDbConnection(
+            () => ZXC.TheSecondDbConn_SameDB_OtherYear(year),
+            secondDbConn => VvDaoBase.LoadGenericVvDataRecordList(secondDbConn, TheFakturBBBList, fmArray.ToList(), "", FakturOrderBy, true));
+      }
+      else
+      {
+         VvDaoBase.LoadGenericVvDataRecordList(TheDbConnection, TheFakturBBBList, fmArray.ToList(), "", FakturOrderBy, true);
+      }
 
       if(IsHRDkontra && year <= 2022)
       {

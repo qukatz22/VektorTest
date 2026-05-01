@@ -112,6 +112,8 @@ Napomena P3-16: svi pronađeni direct `TheThirdDbConn_SameDB` call-siteovi migri
 
 Napomena P3-17: migriran je batch previous-year read pathova na `UseSecondDbConnection`: `Reports_RIZ` selected report reads, eRačun previous-faktur lookup (`UBL_eRacun_Q`, `F2eRacuni`) i `PTG_OtplatniPlan` previous-year rtrans lookup. Preostali direct usage-i trebaju novi scan nakon builda, ali glavni report/e-invoice batch je lock-serializiran.
 
+Napomena P3-18: završni second-DB scan nakon P3-17 zatvorio je dodatne aktivne call-siteove na `UseSecondDbConnection`: preostale `Reports_RIZ` previous-year read pathove (`GetRtransList`, `GetFakturList`, `GetRtransWithArtstatList`, BBB prior-period list), `ArtiklDao.GetPrNabCijFrom_One_LinkedIzlazRtrans`, `RtransDao` oldvej previous-year block, SKY RWT fallback u `VvDaoBase`, `VvDaoBase` next-year sifrar sync/check pathove i `SubModulActions` next-year/prev-year storno/popratnica pathove. Nakon build-green scan-a preostali `TheSecondDbConn_*` hitovi izvan `ZXC` su samo komentari ili lambda factory reference unutar `UseSecondDbConnection` wrappera; manual concurrency smoke test ostaje otvoren.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

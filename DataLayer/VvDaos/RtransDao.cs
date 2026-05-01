@@ -3142,7 +3142,10 @@ public sealed class RtransDao : VvDaoBase, IVvDao
       { 
          for(int year = dateOD.Year; year < ZXC.projectYearFirstDay.Year; ++year)
          {
-            VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(ZXC.TheSecondDbConn_SameDB_OtherYear(year), rtransList, filterMembers, Rtrans.artiklOrderBy_ASC);
+            int yearForLock = year;
+            ZXC.UseSecondDbConnection(
+               () => ZXC.TheSecondDbConn_SameDB_OtherYear(yearForLock),
+               secondDbConn => VvDaoBase.LoadGenericVvDataRecordList<Rtrans>(secondDbConn, rtransList, filterMembers, Rtrans.artiklOrderBy_ASC));
          }
       }
       else // this year 
