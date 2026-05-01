@@ -88,6 +88,8 @@ Napomena P3-4: dodan je `VvDetachedDocumentContext` i minimalni reparent flow. `
 
 Napomena P3-5: dodan je `VvTabPage.IsDetached` lifecycle guard. Duplicate detach istog taba se ignorira, context konstruktor dodatno blokira već-detached tab, a reattach resetira marker, aktivira source tab i vraća `ZXC.ActiveDocumentHost` na source `VvForm`.
 
+Napomena P3-6: detached `FormClosing` sada privremeno vraća content u source tab i koristi postojeći `HasTheTabPageAnyUnsavedData` dirty prompt te arhiva-blokadu. Ako korisnik odustane, close se cancelira, content se vraća u floating formu i host ostaje detached.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

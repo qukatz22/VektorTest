@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 
 /// <summary>
 /// Phase 3 DETACH context for moving one tab content instance between hosts.
@@ -22,4 +23,15 @@ internal sealed class VvDetachedDocumentContext
    public VvTabPage SourceTabPage { get; private set; }
    public VvUserControl HostedUserControl { get; private set; }
    public string Title { get; private set; }
+
+   public bool ShouldCancelClose()
+   {
+      if(SourceTabPage.IsArhivaTabPage)
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Stop, "Izađite, najprije, iz Arhive.");
+         return true;
+      }
+
+      return SourceForm.HasTheTabPageAnyUnsavedData(SourceTabPage);
+   }
 }

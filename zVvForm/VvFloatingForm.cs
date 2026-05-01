@@ -147,6 +147,12 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       if(reattached || detachedContext == null) return;
 
+      ReattachContentCore();
+      reattached = true;
+   }
+
+   private void ReattachContentCore()
+   {
       VvUserControl hostedUserControl = detachedContext.HostedUserControl;
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
@@ -154,7 +160,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       detachedContext.SourceTabPage.IsDetached = false;
       detachedContext.SourceTabPage.Selected = true;
       ZXC.SetActiveDocumentHost(detachedContext.SourceForm);
-      reattached = true;
    }
 
    protected override void OnActivated(EventArgs e)
@@ -165,7 +170,23 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
 
    protected override void OnFormClosing(FormClosingEventArgs e)
    {
-      ReattachContent();
+      if(detachedContext != null && !reattached)
+      {
+         ReattachContentCore();
+
+         if(detachedContext.ShouldCancelClose())
+         {
+            e.Cancel = true;
+            detachedContext.SourceTabPage.IsDetached = true;
+            DetachContent();
+            ZXC.SetActiveDocumentHost(this);
+            base.OnFormClosing(e);
+            return;
+         }
+
+         reattached = true;
+      }
+
       base.OnFormClosing(e);
    }
 
