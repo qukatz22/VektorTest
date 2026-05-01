@@ -24,6 +24,43 @@ internal sealed class VvDetachedDocumentContext
    public VvUserControl HostedUserControl { get; private set; }
    public string Title { get; private set; }
 
+   public static bool CanDetach(VvTabPage sourceTabPage, out string reason)
+   {
+      reason = null;
+
+      if(sourceTabPage == null)
+      {
+         reason = "source tab nije dostupan";
+         return false;
+      }
+
+      if(sourceTabPage.IsDetached)
+      {
+         reason = "tab je već detached";
+         return false;
+      }
+
+      if(sourceTabPage.IsArhivaTabPage)
+      {
+         reason = "tab je u Arhivi";
+         return false;
+      }
+
+      if(sourceTabPage.TheVvUC == null)
+      {
+         reason = "tab nema VvUserControl";
+         return false;
+      }
+
+      if(sourceTabPage.TheVvUC.IsDisposed || sourceTabPage.TheVvUC.Disposing)
+      {
+         reason = "VvUserControl se zatvara";
+         return false;
+      }
+
+      return true;
+   }
+
    public bool ShouldCancelClose()
    {
       if(SourceTabPage.IsArhivaTabPage)

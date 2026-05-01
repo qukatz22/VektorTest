@@ -98,6 +98,8 @@ Napomena P3-9: `IVvDocumentHost` DX bar placeholderi su settable, a `VvToolbarFa
 
 Napomena P3-10: detached skeleton barovi sada imaju samo sigurne iteme: `Zatvori detached tab` koji zove `Close()` i disabled title indicator. Business akcije (SAV/ESC/PRN/etc.) još se namjerno ne kopiraju dok se ne razriješe legacy handleri koji ovise o main `VvForm` stateu.
 
+Napomena P3-11: dodan je centralni `VvDetachedDocumentContext.CanDetach` eligibility guard. Detach se blokira za null tab, već-detached tab, arhiva tab, tab bez `VvUserControl` i UC koji se dispose-a; `BeginFloating` logira razlog i ne pokušava reparent.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
