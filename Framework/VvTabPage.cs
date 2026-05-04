@@ -307,6 +307,7 @@ public class VvTabPage : UserControl, IDisposable
    /// Per V4 §2c/§2d.
    /// </summary>
    private BaseDocument myDocument;
+   private TabbedView detachedParentTabbedView;
    private string title;
    private Image image;
 
@@ -339,6 +340,30 @@ public class VvTabPage : UserControl, IDisposable
       if(parentTabbedView == null || myDocument == null) return;
       parentTabbedView.Documents.Remove(myDocument);
       myDocument = null;
+   }
+
+   internal void RemoveDocumentForDetach()
+   {
+      if(myDocument == null || myDocument.Manager == null) return;
+
+      detachedParentTabbedView = myDocument.Manager.View as TabbedView;
+      RemoveMyDocument(detachedParentTabbedView);
+   }
+
+   internal void RestoreDocumentAfterDetach()
+   {
+      if(myDocument != null || detachedParentTabbedView == null) return;
+
+      Dock = DockStyle.Fill;
+      myDocument = detachedParentTabbedView.AddDocument(this);
+      if(myDocument != null)
+      {
+         myDocument.Caption = Title;
+         myDocument.ImageOptions.Image = Image;
+         detachedParentTabbedView.Controller.Activate(myDocument);
+      }
+
+      detachedParentTabbedView = null;
    }
 
    /// <summary>

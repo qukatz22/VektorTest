@@ -103,6 +103,7 @@ public static class VvToolbarFactory
 
       Bar bar = new Bar(barManager, barName);
       barManager.Bars.Add(bar);
+      bar.DockStyle = BarDockStyle.Top;
       bar.Visible = true;
 
       if(isMainMenu)

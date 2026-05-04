@@ -152,6 +152,8 @@ Napomena P3-36: `VvFloatingForm` sada puni detached Record/Report/Menu barove iz
 
 Napomena P3-37: runtime smoke pokazao je da P3-36 još cilja main dokument i dodatno otvara nepotrebne floating DX toolbarove. Zato je agresivno `PopulateDetachedCommandBars` kloniranje uklonjeno, detached toolbar je vraćen na minimalni skeleton, a pravi root-cause targetiranja je prebačen u legacy accessore: `IVvDocumentHost` sada izlaže `ActiveTabPage` / `ActiveUserControl`, `VvFloatingForm` ih vraća iz detached contexta, a `VvForm.TheVvTabPage` / `TheVvUC` pri aktivnom detached hostu vraćaju detached tab/UC umjesto main active documenta.
 
+Napomena P3-38: runtime smoke pokazao je dvije dodatne regresije: DX barovi se mogu pojaviti kao floating toolbarovi i main `TabbedView` zadržava prazan source tab nakon reparenta UC-a. `VvToolbarFactory.CreateBar` sada eksplicitno docka barove na `BarDockStyle.Top`. `VvTabPage` dobiva `RemoveDocumentForDetach` / `RestoreDocumentAfterDetach`, a `VvFloatingForm` pri detach-u privremeno uklanja source document iz main `TabbedView`-a i pri reattach-u ga ponovno dodaje i aktivira.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

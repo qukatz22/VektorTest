@@ -267,6 +267,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       VvUserControl hostedUserControl = detachedContext.HostedUserControl;
       detachedContext.SourceTabPage.IsDetached = true;
+      detachedContext.SourceTabPage.RemoveDocumentForDetach();
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
       hostedUserControl.DocumentHost = this;
@@ -365,6 +366,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       UnwireActiveHostRouting(hostedUserControl);
       detachedContext.SourceTabPage.panelZaUC.Controls.Add(hostedUserControl);
       detachedContext.SourceTabPage.IsDetached = false;
+      detachedContext.SourceTabPage.RestoreDocumentAfterDetach();
       detachedContext.SourceTabPage.Selected = true;
       ZXC.SetActiveDocumentHost(detachedContext.SourceForm);
    }
