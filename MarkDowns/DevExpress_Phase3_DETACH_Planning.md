@@ -150,6 +150,8 @@ Napomena P3-35: shortcut routing ostaje DevExpress-native: svaki host ima vlasti
 
 Napomena P3-36: `VvFloatingForm` sada puni detached Record/Report/Menu barove iz source `VvForm.PopulateDetachedCommandBars(...)`, koristeći postojeće `VvSubMenu` metapodatke i iste legacy event handlere. `VvToolbarFactory.CreateButtonItem` izvršava handler kroz target `IVvDocumentHost` scope (`ZXC.SetActiveDocumentHost(host)`), a detach/reattach postavlja `VvUserControl.DocumentHost` i `TheVvTabPage`, tako toolbar commandi imaju host-local UC/tab context.
 
+Napomena P3-37: runtime smoke pokazao je da P3-36 još cilja main dokument i dodatno otvara nepotrebne floating DX toolbarove. Zato je agresivno `PopulateDetachedCommandBars` kloniranje uklonjeno, detached toolbar je vraćen na minimalni skeleton, a pravi root-cause targetiranja je prebačen u legacy accessore: `IVvDocumentHost` sada izlaže `ActiveTabPage` / `ActiveUserControl`, `VvFloatingForm` ih vraća iz detached contexta, a `VvForm.TheVvTabPage` / `TheVvUC` pri aktivnom detached hostu vraćaju detached tab/UC umjesto main active documenta.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

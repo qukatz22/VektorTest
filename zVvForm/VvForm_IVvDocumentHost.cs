@@ -90,6 +90,26 @@ public partial class VvForm : IVvDocumentHost
    // TStripStatusLabel vec postoji kao public property → implicitna implementacija.
    // TheDbConnection   vec postoji kao public property → implicitna implementacija.
 
+   public VvTabPage ActiveTabPage
+   {
+      get
+      {
+         if(TheTabControl                == null) return null;
+         if(TheTabControl.ActiveDocument == null) return null;
+
+         return TheTabControl.ActiveDocument.Control as VvTabPage;
+      }
+   }
+
+   public VvUserControl ActiveUserControl
+   {
+      get
+      {
+         VvTabPage activeTabPage = ActiveTabPage;
+         return activeTabPage != null ? activeTabPage.TheVvUC : null;
+      }
+   }
+
    // ---- Akcije (status bar) ----
 
    void IVvDocumentHost.SetStatusText(string text)

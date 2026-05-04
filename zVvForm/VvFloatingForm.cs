@@ -129,6 +129,16 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       get { return ZXC.TheVvForm != null ? ZXC.TheVvForm.TheDbConnection : null; }
    }
 
+   public VvTabPage ActiveTabPage
+   {
+      get { return detachedContext != null ? detachedContext.SourceTabPage : null; }
+   }
+
+   public VvUserControl ActiveUserControl
+   {
+      get { return detachedContext != null ? detachedContext.HostedUserControl : null; }
+   }
+
    public VvRecordUC ActiveRecordUC
    {
       get
@@ -190,11 +200,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       BarButtonItem closeItem = VvToolbarFactory.CreateStaticChildItem(this, "Zatvori detached tab", DetachedCloseItem_Click);
       BarButtonItem titleItem = VvToolbarFactory.CreateStaticChildItem(this, Text, null);
       titleItem.Enabled = false;
-
-      if(detachedContext != null && detachedContext.SourceForm != null)
-      {
-         detachedContext.SourceForm.PopulateDetachedCommandBars(this);
-      }
 
       if(DxMenuBar != null)
       {

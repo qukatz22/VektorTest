@@ -88,10 +88,10 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
    {
       get 
       {
-         if(TheTabControl                == null) return null;
-         if(TheTabControl.ActiveDocument == null) return null;
+         IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+         if(activeHost != null && !ReferenceEquals(activeHost, this) && activeHost.ActiveTabPage != null) return activeHost.ActiveTabPage;
 
-         return TheTabControl.ActiveDocument.Control as VvTabPage; 
+         return ActiveTabPage; 
       }
    }
 
@@ -100,7 +100,13 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
    /// </summary>
    public VvUserControl TheVvUC
    {
-      get { return TheVvTabPage.TheVvUC; }
+      get
+      {
+         IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+         if(activeHost != null && !ReferenceEquals(activeHost, this) && activeHost.ActiveUserControl != null) return activeHost.ActiveUserControl;
+
+         return ActiveUserControl;
+      }
    }
 
    /// <summary>
