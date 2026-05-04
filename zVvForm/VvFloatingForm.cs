@@ -191,6 +191,11 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       BarButtonItem titleItem = VvToolbarFactory.CreateStaticChildItem(this, Text, null);
       titleItem.Enabled = false;
 
+      if(detachedContext != null && detachedContext.SourceForm != null)
+      {
+         detachedContext.SourceForm.PopulateDetachedCommandBars(this);
+      }
+
       if(DxMenuBar != null)
       {
          DxMenuBar.AddItem(closeItem);
@@ -259,6 +264,8 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       detachedContext.SourceTabPage.IsDetached = true;
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
+      hostedUserControl.DocumentHost = this;
+      hostedUserControl.TheVvTabPage = detachedContext.SourceTabPage;
       WireActiveHostRouting(hostedUserControl);
       Controls.Add(hostedUserControl);
       Controls.SetChildIndex(hostedUserControl, 0);
@@ -348,6 +355,8 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       VvUserControl hostedUserControl = detachedContext.HostedUserControl;
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
+      hostedUserControl.DocumentHost = detachedContext.SourceForm;
+      hostedUserControl.TheVvTabPage = detachedContext.SourceTabPage;
       UnwireActiveHostRouting(hostedUserControl);
       detachedContext.SourceTabPage.panelZaUC.Controls.Add(hostedUserControl);
       detachedContext.SourceTabPage.IsDetached = false;

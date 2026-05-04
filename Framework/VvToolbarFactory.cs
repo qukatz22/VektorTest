@@ -134,7 +134,7 @@ public static class VvToolbarFactory
       {
          item.ItemClick += delegate(object sender, ItemClickEventArgs e)
          {
-            subMenu.evHandler(sender, EventArgs.Empty);
+            ExecuteInHostScope(host, sender, subMenu.evHandler);
          };
       }
 
@@ -142,6 +142,16 @@ public static class VvToolbarFactory
       RegisterItem(host, item);
 
       return item;
+   }
+
+   private static void ExecuteInHostScope(IVvDocumentHost host, object sender, EventHandler eventHandler)
+   {
+      if(host != null)
+      {
+         ZXC.SetActiveDocumentHost(host);
+      }
+
+      eventHandler(sender, EventArgs.Empty);
    }
 
    public static BarSubItem CreateSubItem(IVvDocumentHost host, VvSubMenu subMenu)

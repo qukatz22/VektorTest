@@ -148,6 +148,8 @@ Napomena P3-34: `IVvDocumentHost` sada izlaže `ActiveRecordUC` i `ActiveDocumen
 
 Napomena P3-35: shortcut routing ostaje DevExpress-native: svaki host ima vlastiti `BarManager` s `Form = this`, a `VvToolbarFactory.ApplyShortcut` mapira postojeće `vvSubMenu.shortKeys` u `BarItem.ItemShortcut`. `VvForm` i `VvFloatingForm` sada dodatno postavljaju `ZXC.ActiveDocumentHost` u `ProcessCmdKey` prije base dispatcha, tako shortcut handleri koji koriste globalne provider-e/status/flagove vide fokusirani host.
 
+Napomena P3-36: `VvFloatingForm` sada puni detached Record/Report/Menu barove iz source `VvForm.PopulateDetachedCommandBars(...)`, koristeći postojeće `VvSubMenu` metapodatke i iste legacy event handlere. `VvToolbarFactory.CreateButtonItem` izvršava handler kroz target `IVvDocumentHost` scope (`ZXC.SetActiveDocumentHost(host)`), a detach/reattach postavlja `VvUserControl.DocumentHost` i `TheVvTabPage`, tako toolbar commandi imaju host-local UC/tab context.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
