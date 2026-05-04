@@ -417,6 +417,12 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       ZXC.SetActiveDocumentHost(this);
    }
 
+   protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+   {
+      ZXC.SetActiveDocumentHost(this);
+      return base.ProcessCmdKey(ref msg, keyData);
+   }
+
    protected override void OnFormClosing(FormClosingEventArgs e)
    {
       if(detachedContext != null && !reattached)

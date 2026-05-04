@@ -146,6 +146,8 @@ Napomena P3-33: `VvFloatingForm` sada zatvara detached sadržaj preko validirano
 
 Napomena P3-34: `IVvDocumentHost` sada izlaže `ActiveRecordUC` i `ActiveDocumentRecordUC`. `VvForm` vraća aktivni UC glavnog `TabbedView` dokumenta, a `VvFloatingForm` vraća hosted detached UC. Globalni `ZXC.ActiveRecordUCProvider` / `ActiveDocumentRecordUCProvider` sada rutaju kroz `ZXC.ActiveDocumentHost`, pa Rtrans `Get_S_KC_fromScreen` i `Get_S_OrgPakKol_fromScreen` u detached FakturDUC scenariju ciljaju vlastiti host-local ekran umjesto main active taba.
 
+Napomena P3-35: shortcut routing ostaje DevExpress-native: svaki host ima vlastiti `BarManager` s `Form = this`, a `VvToolbarFactory.ApplyShortcut` mapira postojeće `vvSubMenu.shortKeys` u `BarItem.ItemShortcut`. `VvForm` i `VvFloatingForm` sada dodatno postavljaju `ZXC.ActiveDocumentHost` u `ProcessCmdKey` prije base dispatcha, tako shortcut handleri koji koriste globalne provider-e/status/flagove vide fokusirani host.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

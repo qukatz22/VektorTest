@@ -146,6 +146,12 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, IVvDoc
       ZXC.SetActiveDocumentHost(this);
    }
 
+   protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+   {
+      ZXC.SetActiveDocumentHost(this);
+      return base.ProcessCmdKey(ref msg, keyData);
+   }
+
    public VvForm()
    {
       ZXC.InitializeApplication_InProgress = true;
