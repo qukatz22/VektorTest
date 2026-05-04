@@ -125,3 +125,8 @@ must say `VS-build green` or `user-build green` instead of `clean-build green`.
 - Continue executing multi-step coding/migration tasks to completion without unnecessary pauses or requiring repeated 'nastavi' prompts, while still reporting concise progress. During V4 DevExpress Phase 2, only stop for real blockers such as failed validation, V4 strategic deviation, unsafe git history operations beyond allowed commits, or required human runtime smoke tests.
 - Autonomous execution of every remaining DevExpress migration slice through the end of Phase 2 without waiting for repeated "nastavi" prompts, stopping only for real blockers, required authorization, or human runtime smoke tests.
 - The assistant is granted permission to commit independently through the end of Phase 2 of the V4 DevExpress migration, while still following project build/validation discipline. This includes executing autonomous build-green atomic commits to streamline the migration process.
+- Execute Phase 3 work autonomously in as few turns as possible, with minimal waiting for 'nastavi', and generally agree with implementation suggestions unless a true blocker appears.
+
+## DevExpress Detach Behavior
+- Closing a detached form should only close the document; returning a detached document to the main interface must be done through mouse interaction, not automatically on close.
+- Detached forms should not display unnecessary top toolbars or menus.

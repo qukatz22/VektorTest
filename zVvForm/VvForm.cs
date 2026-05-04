@@ -143,12 +143,16 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, IVvDoc
    protected override void OnActivated(EventArgs e)
    {
       base.OnActivated(e);
-      ZXC.SetActiveDocumentHost(this);
+      if(ZXC.HasDetachedLastActiveDocumentHost) ZXC.SetActiveDocumentHost(this);
+      else if(ActiveTabPage != null) ZXC.SetActiveDocumentHostWithDocument(this);
+      else ZXC.SetActiveDocumentHost(this);
    }
 
    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
    {
-      ZXC.SetActiveDocumentHost(this);
+      if(ZXC.HasDetachedLastActiveDocumentHost) ZXC.SetActiveDocumentHost(this);
+      else if(ActiveTabPage != null) ZXC.SetActiveDocumentHostWithDocument(this);
+      else ZXC.SetActiveDocumentHost(this);
       return base.ProcessCmdKey(ref msg, keyData);
    }
 

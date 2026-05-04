@@ -310,6 +310,7 @@ public class VvTabPage : UserControl, IDisposable
    private TabbedView detachedParentTabbedView;
    private string title;
    private Image image;
+   private bool isActivatingAttachedHost;
 
    public string Title
    {
@@ -347,7 +348,40 @@ public class VvTabPage : UserControl, IDisposable
       if(myDocument == null || myDocument.Manager == null) return;
 
       detachedParentTabbedView = myDocument.Manager.View as TabbedView;
-      RemoveMyDocument(detachedParentTabbedView);
+      if(detachedParentTabbedView != null)
+      {
+         detachedParentTabbedView.RemoveDocument(this);
+      }
+
+      myDocument = null;
+      ActivateAnyDocumentAfterDetach(detachedParentTabbedView);
+   }
+
+   private static void ActivateAnyDocumentAfterDetach(TabbedView parentTabbedView)
+   {
+      if(parentTabbedView == null || parentTabbedView.Documents.Count == 0) return;
+
+      BaseDocument document = null;
+      foreach(BaseDocument candidate in parentTabbedView.Documents)
+      {
+         VvTabPage candidateTabPage = candidate.Control as VvTabPage;
+         if(candidateTabPage != null && !candidateTabPage.IsDetached)
+         {
+            document = candidate;
+            break;
+         }
+      }
+
+      if(document != null)
+      {
+         parentTabbedView.Controller.Activate(document);
+
+         VvTabPage activatedTabPage = document.Control as VvTabPage;
+         if(activatedTabPage != null && activatedTabPage.IsInitializedForActivation)
+         {
+            activatedTabPage.OnActivated();
+         }
+      }
    }
 
    internal void RestoreDocumentAfterDetach()
@@ -533,6 +567,11 @@ public class VvTabPage : UserControl, IDisposable
 
        if(localOK && TabPageKind != ZXC.VvTabPageKindEnum.RECORD_TabPage_INTERACTIVE) 
           OnActivated();
+
+      if(localOK)
+      {
+         WireAttachedHostRouting(this);
+      }
 
       if(this.Visible && this.TabPageKind != ZXC.VvTabPageKindEnum.OTHER_TabPage) 
          VvHamper.ApplyVVColorAndStyleTabCntrolChange(this);
@@ -1026,6 +1065,38 @@ be_fast:
    {
       if(this.Visible == false) OnDeactivated();
       else                      OnActivated();
+   }
+
+   private void WireAttachedHostRouting(Control control)
+   {
+      if(control == null) return;
+
+      control.Enter += AttachedControl_ActivateHost;
+      control.GotFocus += AttachedControl_ActivateHost;
+      control.MouseDown += AttachedControl_ActivateHost;
+
+      foreach(Control child in control.Controls)
+      {
+         WireAttachedHostRouting(child);
+      }
+   }
+
+   private void AttachedControl_ActivateHost(object sender, EventArgs e)
+   {
+      if(IsDetached || isActivatingAttachedHost) return;
+      if(!IsInitializedForActivation) return;
+      if(myDocument == null || myDocument.Manager == null) return;
+
+      try
+      {
+         isActivatingAttachedHost = true;
+         ZXC.SetActiveDocumentHostWithDocument(TheVvForm);
+         OnActivated();
+      }
+      finally
+      {
+         isActivatingAttachedHost = false;
+      }
    }
 
    public void OnDeactivated() // ovaj, dakle, upravo GUBI visibility (napustamo ga, vec je prije otvoren) 

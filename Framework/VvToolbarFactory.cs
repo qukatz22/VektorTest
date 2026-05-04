@@ -145,14 +145,40 @@ public static class VvToolbarFactory
       return item;
    }
 
+   public static EventHandler CreateEventHandler(IVvDocumentHost host, EventHandler eventHandler)
+   {
+      if(eventHandler == null) return null;
+
+      return delegate(object sender, EventArgs e)
+      {
+         ExecuteInHostScope(host, sender, eventHandler);
+      };
+   }
+
    private static void ExecuteInHostScope(IVvDocumentHost host, object sender, EventHandler eventHandler)
    {
-      if(host != null)
+      IVvDocumentHost commandHost = ResolveCommandHost(host);
+
+      if(commandHost != null)
       {
-         ZXC.SetActiveDocumentHost(host);
+         ZXC.SetActiveDocumentHost(commandHost);
       }
 
       eventHandler(sender, EventArgs.Empty);
+   }
+
+   private static IVvDocumentHost ResolveCommandHost(IVvDocumentHost host)
+   {
+      VvForm mainForm = host as VvForm;
+      if(mainForm == null) return host;
+
+      IVvDocumentHost lastDocumentHost = ZXC.LastActiveDocumentHost as IVvDocumentHost;
+      if(lastDocumentHost != null && !ReferenceEquals(lastDocumentHost, host) && lastDocumentHost.ActiveUserControl != null)
+      {
+         return lastDocumentHost;
+      }
+
+      return host;
    }
 
    public static BarSubItem CreateSubItem(IVvDocumentHost host, VvSubMenu subMenu)
@@ -188,7 +214,7 @@ public static class VvToolbarFactory
       {
          item.ItemClick += delegate(object sender, ItemClickEventArgs e)
          {
-            eventHandler(sender, EventArgs.Empty);
+            ExecuteInHostScope(host, sender, eventHandler);
          };
       }
 

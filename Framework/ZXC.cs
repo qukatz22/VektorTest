@@ -55,10 +55,29 @@ public static class ZXC
    private static readonly object              _documentHostsSync = new object();
    private static readonly List<object>        _documentHosts     = new List<object>();
    private static          object              _activeDocumentHost;
+   private static          object              _lastActiveDocumentHost;
 
    public static object ActiveDocumentHost
    {
       get { lock(_documentHostsSync) { return _activeDocumentHost; } }
+   }
+
+   public static object LastActiveDocumentHost
+   {
+      get { lock(_documentHostsSync) { return _lastActiveDocumentHost ?? _activeDocumentHost; } }
+   }
+
+   public static bool HasDetachedLastActiveDocumentHost
+   {
+      get
+      {
+         lock(_documentHostsSync)
+         {
+            if(_lastActiveDocumentHost == null) return false;
+            if(ReferenceEquals(_lastActiveDocumentHost, TheVvForm)) return false;
+            return _documentHosts.Contains(_lastActiveDocumentHost);
+         }
+      }
    }
 
    public static List<object> DocumentHosts
@@ -74,6 +93,7 @@ public static class ZXC
          if(_documentHosts.Contains(host)) return;
          _documentHosts.Add(host);
          if(_activeDocumentHost == null) _activeDocumentHost = host;
+         if(_lastActiveDocumentHost == null) _lastActiveDocumentHost = host;
       }
    }
 
@@ -87,6 +107,10 @@ public static class ZXC
          {
             _activeDocumentHost = _documentHosts.Count > 0 ? _documentHosts[0] : null;
          }
+         if(ReferenceEquals(_lastActiveDocumentHost, host))
+         {
+            _lastActiveDocumentHost = _activeDocumentHost;
+         }
       }
    }
 
@@ -96,6 +120,19 @@ public static class ZXC
       lock(_documentHostsSync)
       {
          if(_documentHosts.Contains(host)) _activeDocumentHost = host;
+      }
+   }
+
+   public static void SetActiveDocumentHostWithDocument(object host)
+   {
+      if(host == null) return;
+      lock(_documentHostsSync)
+      {
+         if(_documentHosts.Contains(host))
+         {
+            _activeDocumentHost = host;
+            _lastActiveDocumentHost = host;
+         }
       }
    }
 

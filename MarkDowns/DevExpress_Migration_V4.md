@@ -661,15 +661,17 @@ u produkciji prije Faze 3.
 
 **Cilj:** Povlačenje taba van glavne forme kreira pravutop-level formu s taskbar
 ikonom i **vlastitim neovisnim menijem/toolstripom**. Više detached formi koegzistira.
-Zatvaranje detached forme vraća tab u glavnu formu.
+**V4 amendment P3-39:** zatvaranje detached forme samo zatvara detached document;
+povratak detached documenta u glavnu formu obavlja se mouse reattach gestom, ne automatski
+na close.
 
 **Rizik: Srednji.** Dobro izoliran od Faze 2 zahvaljujući apstrakcijama iz Faze 1.
 
 #### 3a — `VvFloatingForm`
 
 - [x] Klasa `VvFloatingForm : XtraForm, IVvDocumentHost` — P3-2/P3-4 baseline, VS-build green
-- [~] Vlastiti `BarManager`, vlastiti `Bar_Record`, `Bar_SubModul`, `Bar_Report` preko `VvToolbarFactory` — skeleton `DxMenuBar`/`DxBar_Record`/`DxBar_Report` postoji; P3-29 dodaje detached `DxBar_SubModul` skeleton; business item population ostaje otvoren
-- [x] `VvToolbarFactory.CreateMenuBar(…, isDetached: true)` parametar — detached skeleton menu postoji
+- [x] Vlastiti `BarManager` postoji zbog `IVvDocumentHost` kontrakta i budućih command-surface potreba, ali P3-40 runtime UX uklanja detached top chrome: nema detached menu/record/submodul/report barova na vrhu forme
+- [x] `VvToolbarFactory.CreateMenuBar(…, isDetached: true)` parametar postoji kao factory kontrakt, ali P3-40 ga više ne koristi u `VvFloatingForm` startup-u zbog minimalnog detached chrome-a
 - [x] Status bar na formi s vlastitim `TStripStatusLabel` — P3-7 status routing kroz `ActiveDocumentHost`
 
 #### 3b — Detach flow
@@ -684,21 +686,25 @@ Zatvaranje detached forme vraća tab u glavnu formu.
         │
         ▼
   new VvFloatingForm(sourceTabPage):
-    ├── Create BarManager + Bar_Record/Report skeleton preko VvToolbarFactory
+    ├── Create BarManager host kontrakt bez top chrome barova
     ├── Reparent VvUserControl iz VvTabPage → this.Controls
     ├── ActiveDocumentHost/focus routing = this
     ├── UC.TheVvTabPage = sourceTabPage  (PRESERVE — ne resetiraj!)
-    ├── Safe toolbar skeleton itemi (business toolbar snapshot još otvoren)
+    ├── Bez detached top chrome/menu buttona (P3-40)
     ├── ZXC.RegisterDocumentHost(this)
-    ├── ApplyWriteMode(this, sourceTabPage.WriteMode) — P3-30 minimalni detached DX skeleton path; full business enable/disable ostaje otvoren
+    ├── ApplyWriteMode(this, sourceTabPage.WriteMode) — trenutno no-op za detached bez top barova
     └── this.Show()
 
 #### 3c — Reattach flow
 
-  User zatvara VvFloatingForm
+**V4 amendment P3-39:** ovaj flow više nije vezan na `VvFloatingForm.FormClosing`.
+Close detached forme je close-only; reattach mora doći iz mouse geste vraćanja detached
+documenta u glavnu formu.
+
+  User mouse gestom vraća detached document u glavnu formu
         │
         ▼
-  FormClosing event:
+  Reattach gesture handler:
     ├── Ukloni UC iz this.Controls
     ├── Re-attach UC natrag u sourceTabPage.Controls
     ├── ActiveDocumentHost = source VvForm
@@ -728,13 +734,15 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 #### 3g — Status bar routing
 
 - [x] Svaka `VvFloatingForm` ima vlastiti status label — `DocumentHost.SetStatusText()` piše na svoj host preko `ZXC.ActiveDocumentHost`
-- [~] Testirati: grid CellEnter/CellLeave status text prikazuju se samo u prozoru u kojem je grid aktivan — P3-31 ruti `StatusTextPusher/Popper` kroz active host i per-host backup; manual smoke test još otvoren
+- [x] Testirati: grid CellEnter/CellLeave status text prikazuju se samo u prozoru u kojem je grid aktivan — P3-31 ruti `StatusTextPusher/Popper` kroz active host i per-host backup; manual smoke green
 
 #### 3h — Edge case-ovi
 
 - [ ] Crystal Reports BackgroundWorker udetached formi — mora živjeti na `VvFloatingForm` context-u, ne na glavnom
-- [~] Shortcut keys — samo fokusirani `BarManager` dobiva input — P3-35 potvrđuje per-form `BarManager.Form` wiring i postavlja `ActiveDocumentHost` prije `ProcessCmdKey`; manual smoke još otvoren
-- [~] Detached toolbar command routing — P3-38 docka DX barove na Top i uklanja source `VvTabPage` document iz main `TabbedView`-a dok je tab detached; selektivni detached command itemi još otvoreni
+- [x] Shortcut keys — samo fokusirani `BarManager` dobiva input — P3-35 potvrđuje per-form `BarManager.Form` wiring i postavlja `ActiveDocumentHost` prije `ProcessCmdKey`; manual smoke green
+- [x] Detached toolbar command routing — P3-38 docka DX barove na Top i uklanja source `VvTabPage` document iz main `TabbedView`-a dok je tab detached; P3-39 mijenja close u close-only lifecycle; P3-40 uklanja detached top close menu, dodaje mouse reattach drop preko main forme i aktivira preostali main document nakon detach-a. Manual smoke green: close detached forme zatvara document, main forma aktivira preostali tab, reattach natrag na main radi; content je u jednom hostu samo.
+- [x] Reattach content recovery — P3-42/P3-43 su dokumentirani kao neuspjeli međukoraci; P3-44 konačno vraća Chrome-like remove/add lifecycle preko public DX `TabbedView.RemoveDocument(Control)` API-ja uz `DocumentClosed` detach guard. Manual smoke green: detached tab nestaje s main tab controla, reattach vraća tab s contentom, postojeći i novi tabovi zadržavaju content.
+- [~] Main toolbar refresh after detach — P3-46 eksplicitno poziva `OnActivated()` na odabranom non-detached main tabu nakon detach-a i ignorira detached shell u `DocumentActivated`/`DocumentDeactivated`; manual smoke otvoren
 - [x] Arhiva mode u detached: dopušteno (Opcija B iz §1.16) — P3-32 uklanja archive detach block i dodaje `WriteModeAtDetach` / `IsArhivaAtDetach` snapshot
 - [x] Zatvaranje glavne forme s otvorenim detached tabovima: P3-13 zatvara detached forme prije standardnog dirty loopa; cancel u detached dirty promptu cancelira i main close
 - [x] Crashu detached formi: oporavak — P3-33 dodaje validirani reattach i graceful dispose fallback kad source host/panel više nije živ
@@ -745,7 +753,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 - [x] Title bar detached forme: „Vektor — {ModulName}/ {SubModulName} — {WriteMode}" — P3-28 gradi naslov iz source `VvTabPage` / `VvSubModul` / `WriteMode`
 - [x] Taskbar ikona ista kao glavna — P3-28 preuzima `Icon` sa source/main forme
 - [ ] Detach gesture: drag tab van granice `TabbedView`-a (standard DX gesture)
-- [ ] Reattach gesture: drag title bar detached forme natrag u glavnu → `Document` se vraća
+- [x] Reattach gesture: drag title bar detached forme natrag u glavnu → P3-40 dodaje mouse drop preko source main forme; manual smoke green
 
 #### 3j — Testiranje
 

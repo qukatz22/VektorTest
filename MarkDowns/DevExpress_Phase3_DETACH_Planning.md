@@ -22,11 +22,12 @@ Korisnik povuče tab iz glavne forme. Umjesto default DevExpress lightweight flo
 
 - `VvFloatingForm : XtraForm, IVvDocumentHost`
 - vlastita taskbar ikona,
-- vlastiti `BarManager`, menu i toolbarovi,
+- vlastiti `BarManager` kao host kontrakt, ali bez detached top menu/toolbar chrome-a u P3-40 UX-u,
 - vlastiti status bar,
 - vlastiti per-host state,
 - isti `VvTabPage`/`VvUserControl` nastavlja živjeti, bez reloadanja podataka,
-- zatvaranje detached forme vraća sadržaj natrag u glavnu formu.
+- zatvaranje detached forme samo zatvara detached document,
+- vraćanje detached documenta u glavnu formu radi se mouse reattach gestom.
 
 ## 3. Ne-ciljevi prve iteracije
 
@@ -77,7 +78,7 @@ Klasa:
   - source `VvTabPage`,
   - source `Document`,
   - hosted `VvUserControl`,
-  - vlastiti `Bar_Record`, `Bar_Report`, `DxMenuBar`,
+  - bez visible detached top chrome-a dok se ne uvede novi eksplicitno odobren command-surface,
   - detach/reattach context.
 
 Napomena P3-2: skeleton još ne reparenta content i ne zove `VvToolbarFactory.ApplyWriteMode`, jer factory trenutno podržava samo `VvForm` path za stvarnu WriteMode logiku.
@@ -154,13 +155,27 @@ Napomena P3-37: runtime smoke pokazao je da P3-36 još cilja main dokument i dod
 
 Napomena P3-38: runtime smoke pokazao je dvije dodatne regresije: DX barovi se mogu pojaviti kao floating toolbarovi i main `TabbedView` zadržava prazan source tab nakon reparenta UC-a. `VvToolbarFactory.CreateBar` sada eksplicitno docka barove na `BarDockStyle.Top`. `VvTabPage` dobiva `RemoveDocumentForDetach` / `RestoreDocumentAfterDetach`, a `VvFloatingForm` pri detach-u privremeno uklanja source document iz main `TabbedView`-a i pri reattach-u ga ponovno dodaje i aktivira.
 
+Napomena P3-39: korisnik je finalizirao DETACH UX: close detached forme ne vraća document u main, nego samo zatvara detached document; povratak u main mora biti mouse reattach gesta. Zato `VvFloatingForm.OnFormClosing` više ne pokušava auto-reattach/recovery na normalnom close-u, nego samo provodi postojeći dirty/arhiva cancel guard i zatim dispose-a detached content. Detached top chrome reduciran je na minimalni close menu; business toolbar/menu surface ostaje odvojen budući mouse-reattach/command-surface slice.
+
+Napomena P3-40: runtime smoke nakon P3-39 potvrdio je close-only, ali otvorio tri follow-upa. Detached top `Zatvori` menu je uklonjen potpuno. `VvFloatingForm` sada na završetak move/resize operacije (`WM_EXITSIZEMOVE`) pokušava reattach ako je mouse drop iznad source main forme. Nakon `RemoveDocumentForDetach()` main `TabbedView` aktivira preostali document ako postoji, da glavna forma ne ostane na praznom shell-u detached taba. Manual smoke green: close detached forme zatvara document, main forma prikazuje preostali tab, reattach natrag na main radi. Potvrđeno ownership pravilo: content je samo u detached formi dok je document detached, ne i na glavnoj formi.
+
+Napomena P3-42: smoke nakon P3-40 potvrdio je status/shortcut routing, ali nakon reattach-a content se gubio na svim tabovima. Root cause: `RemoveDocumentForDetach()` može okinuti `DocumentClosed`, a handler je tretirao detach remove kao normalan close — dispose `VvTabPage` + global cleanup. Guard sada preskače normal-close cleanup kada je `vvTabPage.IsDetached == true`. Reattach dodatno vraća source `Document` prije vraćanja hosted UC-a u `panelZaUC`, pa DX document lifecycle i WinForms parent ownership ostaju konzistentni. Manual smoke otvoren.
+
+Napomena P3-43: P3-42 nije riješio runtime — nakon reattach-a content se i dalje gubio na reattachanom i novim tabovima dok se reattachani tab ne zatvori. Zato je remove/add `Document` model napušten. Detach više ne uklanja source `Document` iz `TabbedView.Documents`; samo označi tab kao detached, premjesti hosted UC u `VvFloatingForm` i aktivira prvi non-detached document na mainu. Reattach vraća hosted UC u source `panelZaUC` i aktivira postojeći source `Document`, bez `AddDocument(this)` i bez `DocumentClosed` side-effecta. Manual smoke otvoren.
+
+Napomena P3-44: korisnik je potvrdio da P3-43 čuva content, ali UX nije Chrome-like jer detached document ostaje kao prazan tab na mainu. BaseDocument nema writable hide/visible API, pa Chrome-like UX traži remove/add lifecycle. Novi pokušaj koristi public DevExpress API `TabbedView.RemoveDocument(Control)` umjesto direktnog `Documents.Remove(myDocument)`, uz `DocumentClosed` detach guard koji sprječava normal-close dispose/global cleanup dok je `IsDetached == true`. Reattach opet koristi `AddDocument(this)` i vraća hosted UC u source panel. Manual smoke green: detached tab nestaje s main tab controla, reattach vraća tab s contentom, postojeći i novi tabovi zadržavaju content.
+
+Napomena P3-45: manual smoke potvrdio je da status routing i shortcut routing rade nakon detached/reattach stabilizacije: status hintovi idu u aktivni host, shortcuti ciljaju fokusirani host, a P3-44 Chrome-like detach/reattach zadržava content na postojećim i novim tabovima. Otvoreno za sljedeći smoke ostaje WriteMode neovisnost i concurrency/edge-case testovi iz V4 §3j.
+
+Napomena P3-46: WriteMode smoke nije bio moguć jer nakon detach-a promjena fokusa na drugi main tab nije osvježavala toolbar state; ostajalo je stanje taba koji je bio aktivan prije detach-a. Fix: nakon detach-a helper za aktivaciju preostalog main documenta eksplicitno poziva `OnActivated()` na odabranom non-detached tabu, a `DocumentActivated`/`DocumentDeactivated` ignoriraju detached shell dok content živi u floating formi. Manual smoke otvoren.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.
 2. Izgraditi vlastite menu/toolbare preko `VvToolbarFactory`.
 3. Registrirati se kao document host.
 4. Rutirati status text u vlastiti status bar.
-5. Na zatvaranje reattachati content u originalni `VvTabPage`.
+5. Na zatvaranje close-only zatvoriti detached content; reattach je posebna mouse gesta.
 6. Unregister host.
 
 #### `VvDetachedDocumentContext`
@@ -212,7 +227,10 @@ Napomena: ne brisati source `VvTabPage` model ako treba služiti kao attach anch
 
 ## 7. Reattach flow
 
-Planirani flow na `VvFloatingForm.FormClosing`:
+V4 amendment P3-39: reattach flow nije `VvFloatingForm.FormClosing`. Close detached forme
+zatvara detached document; reattach se radi posebnom mouse gestom.
+
+Planirani flow na mouse reattach gesture:
 
 1. Ako UC ima dirty state, proći isti dirty prompt kao close tab.
 2. Ako korisnik odustane, cancel closing.

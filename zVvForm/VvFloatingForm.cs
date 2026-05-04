@@ -23,16 +23,18 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    private readonly VvDetachedDocumentContext detachedContext;
    private readonly StatusStrip statusStrip;
    private readonly ToolStripStatusLabel statusLabel;
+   private bool detachedContentClosed;
    private bool reattached;
    private BarManager dxBarManager;
    private Bar dxBar_Record;
    private Bar dxBar_Report;
    private Bar dxBar_SubModul;
    private Bar dxMenuBar;
+   private bool isActivatingDetachedTab;
 
    public bool IsReattached
    {
-      get { return reattached; }
+      get { return reattached || detachedContentClosed; }
    }
 
    public VvFloatingForm()
@@ -179,11 +181,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
 
    private void InitializeDetachedBars()
    {
-      VvToolbarFactory.CreateMenuBar(this, true);
-      VvToolbarFactory.CreateBar_Record(this);
-      VvToolbarFactory.CreateBar_SubModul(this);
-      VvToolbarFactory.CreateBar_Report(this);
-      PopulateDetachedBars();
       ApplyDetachedWriteMode();
       DxBarManager.ForceInitialize();
    }
@@ -193,30 +190,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       if(detachedContext == null || detachedContext.SourceTabPage == null) return;
 
       VvToolbarFactory.ApplyWriteMode(this, detachedContext.WriteModeAtDetach);
-   }
-
-   private void PopulateDetachedBars()
-   {
-      BarButtonItem closeItem = VvToolbarFactory.CreateStaticChildItem(this, "Zatvori detached tab", DetachedCloseItem_Click);
-      BarButtonItem titleItem = VvToolbarFactory.CreateStaticChildItem(this, Text, null);
-      titleItem.Enabled = false;
-
-      if(DxMenuBar != null)
-      {
-         DxMenuBar.AddItem(closeItem);
-      }
-
-      if(DxBar_Record != null)
-      {
-         DxBar_Record.AddItem(titleItem);
-      }
-
-      if(DxBar_SubModul != null)
-      {
-         BarButtonItem subModulTitleItem = VvToolbarFactory.CreateStaticChildItem(this, "SubModul toolbar", null);
-         subModulTitleItem.Enabled = false;
-         DxBar_SubModul.AddItem(subModulTitleItem);
-      }
    }
 
    private static string GetDetachedTitle(VvDetachedDocumentContext detachedContext)
@@ -258,11 +231,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       return ZXC.TheVvForm != null ? ZXC.TheVvForm.Icon : null;
    }
 
-   private void DetachedCloseItem_Click(object sender, EventArgs e)
-   {
-      Close();
-   }
-
    private void DetachContent()
    {
       VvUserControl hostedUserControl = detachedContext.HostedUserControl;
@@ -276,19 +244,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       Controls.Add(hostedUserControl);
       Controls.SetChildIndex(hostedUserControl, 0);
       statusStrip.Dock = DockStyle.Bottom;
-   }
-
-   private void ReattachContent()
-   {
-      if(reattached || detachedContext == null) return;
-
-      string recoveryMessage;
-      if(!TryReattachContentCore(out recoveryMessage))
-      {
-         RecoverDetachedContent(recoveryMessage);
-      }
-
-      reattached = true;
    }
 
    private bool TryReattachContentCore(out string recoveryMessage)
@@ -317,6 +272,56 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
          recoveryMessage = ex.Message;
          return false;
       }
+   }
+
+   private void CloseDetachedContent()
+   {
+      if(detachedContentClosed || detachedContext == null) return;
+
+      VvUserControl hostedUserControl = detachedContext.HostedUserControl;
+      UnwireActiveHostRouting(hostedUserControl);
+
+      if(hostedUserControl != null && !hostedUserControl.IsDisposed && !hostedUserControl.Disposing)
+      {
+         Controls.Remove(hostedUserControl);
+         hostedUserControl.Dispose();
+      }
+
+      if(detachedContext.SourceTabPage != null && !detachedContext.SourceTabPage.IsDisposed)
+      {
+         detachedContext.SourceTabPage.IsDetached = false;
+      }
+
+      detachedContentClosed = true;
+   }
+
+   private bool TryMouseReattachToSource()
+   {
+      if(detachedContentClosed || reattached) return false;
+
+      string recoveryMessage;
+      if(!TryReattachContentCore(out recoveryMessage))
+      {
+         if(!recoveryMessage.IsEmpty())
+         {
+            ZXC.aim_emsg(MessageBoxIcon.Warning, "Detached dokument nije moguće vratiti u glavni prozor.\n\n" + recoveryMessage);
+         }
+
+         return false;
+      }
+
+      reattached = true;
+      detachedContentClosed = true;
+      Close();
+
+      return true;
+   }
+
+   private bool IsMouseOverSourceForm()
+   {
+      if(detachedContext == null || detachedContext.SourceForm == null || detachedContext.SourceForm.IsDisposed) return false;
+
+      return detachedContext.SourceForm.Bounds.Contains(Cursor.Position);
    }
 
    private bool CanReattachContent(out string recoveryMessage)
@@ -359,6 +364,7 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    private void ReattachContentCore()
    {
       VvUserControl hostedUserControl = detachedContext.HostedUserControl;
+      detachedContext.SourceTabPage.RestoreDocumentAfterDetach();
       hostedUserControl.Parent = null;
       hostedUserControl.Dock = DockStyle.Fill;
       hostedUserControl.DocumentHost = detachedContext.SourceForm;
@@ -366,7 +372,6 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       UnwireActiveHostRouting(hostedUserControl);
       detachedContext.SourceTabPage.panelZaUC.Controls.Add(hostedUserControl);
       detachedContext.SourceTabPage.IsDetached = false;
-      detachedContext.SourceTabPage.RestoreDocumentAfterDetach();
       detachedContext.SourceTabPage.Selected = true;
       ZXC.SetActiveDocumentHost(detachedContext.SourceForm);
    }
@@ -424,45 +429,66 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
 
    private void DetachedControl_ActivateHost(object sender, EventArgs e)
    {
-      ZXC.SetActiveDocumentHost(this);
+      ActivateDetachedDocumentHost();
    }
 
    protected override void OnActivated(EventArgs e)
    {
       base.OnActivated(e);
-      ZXC.SetActiveDocumentHost(this);
+      ActivateDetachedDocumentHost();
    }
 
    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
    {
-      ZXC.SetActiveDocumentHost(this);
+      ActivateDetachedDocumentHost();
       return base.ProcessCmdKey(ref msg, keyData);
+   }
+
+   private void ActivateDetachedDocumentHost()
+   {
+      ZXC.SetActiveDocumentHostWithDocument(this);
+
+      if(isActivatingDetachedTab || detachedContentClosed || reattached) return;
+      if(detachedContext == null || detachedContext.SourceTabPage == null) return;
+      if(detachedContext.SourceTabPage.IsDisposed || detachedContext.SourceTabPage.Disposing) return;
+      if(!detachedContext.SourceTabPage.IsInitializedForActivation) return;
+
+      try
+      {
+         isActivatingDetachedTab = true;
+         detachedContext.SourceTabPage.OnActivated();
+      }
+      finally
+      {
+         isActivatingDetachedTab = false;
+      }
+   }
+
+   protected override void WndProc(ref Message m)
+   {
+      const int WM_EXITSIZEMOVE = 0x0232;
+
+      base.WndProc(ref m);
+
+      if(m.Msg == WM_EXITSIZEMOVE && IsMouseOverSourceForm())
+      {
+         TryMouseReattachToSource();
+      }
    }
 
    protected override void OnFormClosing(FormClosingEventArgs e)
    {
-      if(detachedContext != null && !reattached)
+      if(detachedContext != null && !detachedContentClosed)
       {
-         string recoveryMessage;
-         if(!TryReattachContentCore(out recoveryMessage))
-         {
-            RecoverDetachedContent(recoveryMessage);
-            reattached = true;
-            base.OnFormClosing(e);
-            return;
-         }
-
          if(detachedContext.ShouldCancelClose())
          {
             e.Cancel = true;
-            detachedContext.SourceTabPage.IsDetached = true;
-            DetachContent();
             ZXC.SetActiveDocumentHost(this);
             base.OnFormClosing(e);
             return;
          }
 
-         reattached = true;
+         CloseDetachedContent();
       }
 
       base.OnFormClosing(e);

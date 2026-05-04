@@ -84,7 +84,11 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
    private void TheTabControl_DocumentActivated(object sender, DocumentEventArgs e)
    {
       VvTabPage vvTabPage = e.Document.Control as VvTabPage;
-      if(vvTabPage != null && vvTabPage.IsInitializedForActivation) vvTabPage.OnActivated();
+      if(vvTabPage != null && !vvTabPage.IsDetached && vvTabPage.IsInitializedForActivation)
+      {
+         ZXC.SetActiveDocumentHostWithDocument(this);
+         vvTabPage.OnActivated();
+      }
    }
 
    /// <summary>
@@ -94,7 +98,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
    private void TheTabControl_DocumentDeactivated(object sender, DocumentEventArgs e)
    {
       VvTabPage vvTabPage = e.Document.Control as VvTabPage;
-      if(vvTabPage != null) vvTabPage.OnDeactivated();
+      if(vvTabPage != null && !vvTabPage.IsDetached) vvTabPage.OnDeactivated();
    }
 
    /// <summary>
@@ -149,6 +153,16 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
    private void TheTabControl_DocumentClosed(object sender, DocumentEventArgs e)
    {
       VvTabPage vvTabPage = e.Document.Control as VvTabPage;
+
+      if(vvTabPage != null && vvTabPage.IsDetached)
+      {
+         if(this.TheTabControl.Documents.Count > 0)
+         {
+            vvTabPage_GotFocus(null, EventArgs.Empty);
+         }
+
+         return;
+      }
 
       if(vvTabPage != null) vvTabPage.Dispose();
 

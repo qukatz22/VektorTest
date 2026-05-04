@@ -88,7 +88,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
    {
       get 
       {
-         IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+         IVvDocumentHost activeHost = ZXC.LastActiveDocumentHost as IVvDocumentHost;
          if(activeHost != null && !ReferenceEquals(activeHost, this) && activeHost.ActiveTabPage != null) return activeHost.ActiveTabPage;
 
          return ActiveTabPage; 
@@ -102,7 +102,7 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
    {
       get
       {
-         IVvDocumentHost activeHost = ZXC.ActiveDocumentHost as IVvDocumentHost;
+         IVvDocumentHost activeHost = ZXC.LastActiveDocumentHost as IVvDocumentHost;
          if(activeHost != null && !ReferenceEquals(activeHost, this) && activeHost.ActiveUserControl != null) return activeHost.ActiveUserControl;
 
          return ActiveUserControl;
