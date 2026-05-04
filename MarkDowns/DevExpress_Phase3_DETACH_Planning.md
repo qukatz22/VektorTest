@@ -142,6 +142,8 @@ Napomena P3-31: status hint push/pop putanja (`ZXC.StatusTextPusher` / `StatusTe
 
 Napomena P3-32: `VvDetachedDocumentContext` sada eksplicitno snima `WriteModeAtDetach` i `IsArhivaAtDetach`. Detached forma koristi taj snapshot za inicijalni `ApplyWriteMode` i title tekst, a `CanDetach` više ne blokira tabove u Arhivi jer V4 §1.16/§3h zahtijeva Opciju B: arhiva putuje s tabom. Zatvaranje detached forme i dalje provjerava archive-exit guard prije reattacha.
 
+Napomena P3-33: `VvFloatingForm` sada zatvara detached sadržaj preko validiranog `TryReattachContentCore` toka. Ako source forma/tab/panel ili hosted UC više nisu dostupni, recovery putanja skida active-host evente, spušta `IsDetached` gdje je moguće i kontrolirano dispose-a hosted UC uz hrvatsku warning poruku umjesto da close path ostavi orphan control ili sruši proces.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

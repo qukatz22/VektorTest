@@ -251,8 +251,78 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       if(reattached || detachedContext == null) return;
 
-      ReattachContentCore();
+      string recoveryMessage;
+      if(!TryReattachContentCore(out recoveryMessage))
+      {
+         RecoverDetachedContent(recoveryMessage);
+      }
+
       reattached = true;
+   }
+
+   private bool TryReattachContentCore(out string recoveryMessage)
+   {
+      recoveryMessage = null;
+
+      if(!CanReattachContent(out recoveryMessage)) return false;
+
+      try
+      {
+         ReattachContentCore();
+         return true;
+      }
+      catch(ObjectDisposedException ex)
+      {
+         recoveryMessage = ex.Message;
+         return false;
+      }
+      catch(InvalidOperationException ex)
+      {
+         recoveryMessage = ex.Message;
+         return false;
+      }
+      catch(ArgumentException ex)
+      {
+         recoveryMessage = ex.Message;
+         return false;
+      }
+   }
+
+   private bool CanReattachContent(out string recoveryMessage)
+   {
+      recoveryMessage = null;
+
+      if(detachedContext == null)
+      {
+         recoveryMessage = "Detached context nije dostupan.";
+         return false;
+      }
+
+      if(detachedContext.SourceForm == null || detachedContext.SourceForm.IsDisposed || detachedContext.SourceForm.Disposing)
+      {
+         recoveryMessage = "Glavna forma više nije dostupna.";
+         return false;
+      }
+
+      if(detachedContext.SourceTabPage == null || detachedContext.SourceTabPage.IsDisposed || detachedContext.SourceTabPage.Disposing)
+      {
+         recoveryMessage = "Source tab više nije dostupan.";
+         return false;
+      }
+
+      if(detachedContext.SourceTabPage.panelZaUC == null || detachedContext.SourceTabPage.panelZaUC.IsDisposed || detachedContext.SourceTabPage.panelZaUC.Disposing)
+      {
+         recoveryMessage = "Source panel više nije dostupan.";
+         return false;
+      }
+
+      if(detachedContext.HostedUserControl == null || detachedContext.HostedUserControl.IsDisposed || detachedContext.HostedUserControl.Disposing)
+      {
+         recoveryMessage = "Detached VvUserControl više nije dostupan.";
+         return false;
+      }
+
+      return true;
    }
 
    private void ReattachContentCore()
@@ -265,6 +335,29 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       detachedContext.SourceTabPage.IsDetached = false;
       detachedContext.SourceTabPage.Selected = true;
       ZXC.SetActiveDocumentHost(detachedContext.SourceForm);
+   }
+
+   private void RecoverDetachedContent(string recoveryMessage)
+   {
+      VvUserControl hostedUserControl = detachedContext != null ? detachedContext.HostedUserControl : null;
+
+      UnwireActiveHostRouting(hostedUserControl);
+
+      if(hostedUserControl != null && !hostedUserControl.IsDisposed && !hostedUserControl.Disposing)
+      {
+         Controls.Remove(hostedUserControl);
+         hostedUserControl.Dispose();
+      }
+
+      if(detachedContext != null && detachedContext.SourceTabPage != null && !detachedContext.SourceTabPage.IsDisposed)
+      {
+         detachedContext.SourceTabPage.IsDetached = false;
+      }
+
+      if(!recoveryMessage.IsEmpty())
+      {
+         ZXC.aim_emsg(MessageBoxIcon.Warning, "Detached prozor se zatvara, ali sadržaj nije moguće vratiti u glavni prozor.\n\n" + recoveryMessage);
+      }
    }
 
    private void WireActiveHostRouting(Control control)
@@ -310,7 +403,14 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       if(detachedContext != null && !reattached)
       {
-         ReattachContentCore();
+         string recoveryMessage;
+         if(!TryReattachContentCore(out recoveryMessage))
+         {
+            RecoverDetachedContent(recoveryMessage);
+            reattached = true;
+            base.OnFormClosing(e);
+            return;
+         }
 
          if(detachedContext.ShouldCancelClose())
          {

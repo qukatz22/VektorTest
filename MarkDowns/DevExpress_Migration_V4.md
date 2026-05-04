@@ -736,7 +736,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 - [ ] Shortcut keys — samo fokusirani `BarManager` dobiva input
 - [x] Arhiva mode u detached: dopušteno (Opcija B iz §1.16) — P3-32 uklanja archive detach block i dodaje `WriteModeAtDetach` / `IsArhivaAtDetach` snapshot
 - [x] Zatvaranje glavne forme s otvorenim detached tabovima: P3-13 zatvara detached forme prije standardnog dirty loopa; cancel u detached dirty promptu cancelira i main close
-- [ ] Crashu detached formi: oporavak — reattach UC na glavnu ili graceful dispose
+- [x] Crashu detached formi: oporavak — P3-33 dodaje validirani reattach i graceful dispose fallback kad source host/panel više nije živ
 - [ ] `VvEnvironmentDescriptor` — zasad NE perzistirati pozicije detached prozora. Ako se pokaže potreba, dodati `List<VvFloatingFormState>` u descriptor.
 
 #### 3i — UX polish
