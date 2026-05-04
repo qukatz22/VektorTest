@@ -755,7 +755,7 @@ Zatvaranje detached forme vraća tab u glavnu formu.
 - [ ] Sifrar cache refresh concurrency
 - [ ] Crystal Reports u detached
 - [ ] Status hint smoke: grid/VvTextBox enter/leave mijenja samo status traku aktivnog detached/main prozora
-- [ ] Rtrans `Get_S_KC_fromScreen` ispravno gađa **vlastiti** FakturDUC (ne ZXC.TheVvForm-ov)
+- [~] Rtrans `Get_S_KC_fromScreen` ispravno gađa **vlastiti** FakturDUC (ne ZXC.TheVvForm-ov) — P3-34 ruti `ActiveDocumentRecordUCProvider` kroz `ActiveDocumentHost`; manual smoke još otvoren
 - [ ] Reattach nakon dugog rada
 - [ ] Memory leak provjera — detach/reattach ciklus 100×
 

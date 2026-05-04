@@ -76,6 +76,12 @@ public interface IVvDocumentHost
    /// <summary>DB konekcija aktivnog taba / host-a.</summary>
    XSqlConnection TheDbConnection { get; }
 
+   /// <summary>Aktivni VvRecordUC u ovom host-u, ako host trenutno prikazuje record tab.</summary>
+   VvRecordUC ActiveRecordUC { get; }
+
+   /// <summary>Aktivni VvDocumentRecordUC u ovom host-u, ako host trenutno prikazuje document record tab.</summary>
+   VvDocumentRecordUC ActiveDocumentRecordUC { get; }
+
    // ---- Akcije ----
 
    /// <summary>Upisi tekst u status bar ovog host-a.</summary>

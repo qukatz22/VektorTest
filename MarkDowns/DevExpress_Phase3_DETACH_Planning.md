@@ -144,6 +144,8 @@ Napomena P3-32: `VvDetachedDocumentContext` sada eksplicitno snima `WriteModeAtD
 
 Napomena P3-33: `VvFloatingForm` sada zatvara detached sadržaj preko validiranog `TryReattachContentCore` toka. Ako source forma/tab/panel ili hosted UC više nisu dostupni, recovery putanja skida active-host evente, spušta `IsDetached` gdje je moguće i kontrolirano dispose-a hosted UC uz hrvatsku warning poruku umjesto da close path ostavi orphan control ili sruši proces.
 
+Napomena P3-34: `IVvDocumentHost` sada izlaže `ActiveRecordUC` i `ActiveDocumentRecordUC`. `VvForm` vraća aktivni UC glavnog `TabbedView` dokumenta, a `VvFloatingForm` vraća hosted detached UC. Globalni `ZXC.ActiveRecordUCProvider` / `ActiveDocumentRecordUCProvider` sada rutaju kroz `ZXC.ActiveDocumentHost`, pa Rtrans `Get_S_KC_fromScreen` i `Get_S_OrgPakKol_fromScreen` u detached FakturDUC scenariju ciljaju vlastiti host-local ekran umjesto main active taba.
+
 Minimalne odgovornosti:
 
 1. Preuzeti tab content iz main `TabbedView` documenta.

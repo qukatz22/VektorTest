@@ -129,12 +129,30 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, Events
       get { return (TheVvTabPage.TheVvRecordUC); }
    }
 
+   public VvRecordUC ActiveRecordUC
+   {
+      get
+      {
+         VvTabPage activeTabPage = TheVvTabPage;
+         return activeTabPage != null ? activeTabPage.TheVvUC as VvRecordUC : null;
+      }
+   }
+
    /// <summary>
    /// Current VvUserControl as VvDocumentRecordUC
    /// </summary>
    public VvDocumentRecordUC TheVvDocumentRecordUC
    {
       get { return (TheVvTabPage.TheVvDocumentRecordUC); }
+   }
+
+   public VvDocumentRecordUC ActiveDocumentRecordUC
+   {
+      get
+      {
+         VvTabPage activeTabPage = TheVvTabPage;
+         return activeTabPage != null ? activeTabPage.TheVvUC as VvDocumentRecordUC : null;
+      }
    }
 
    /// <summary>

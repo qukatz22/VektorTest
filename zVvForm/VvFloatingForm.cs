@@ -129,6 +129,24 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       get { return ZXC.TheVvForm != null ? ZXC.TheVvForm.TheDbConnection : null; }
    }
 
+   public VvRecordUC ActiveRecordUC
+   {
+      get
+      {
+         if(detachedContext == null || detachedContext.HostedUserControl == null) return null;
+         return detachedContext.HostedUserControl as VvRecordUC;
+      }
+   }
+
+   public VvDocumentRecordUC ActiveDocumentRecordUC
+   {
+      get
+      {
+         if(detachedContext == null || detachedContext.HostedUserControl == null) return null;
+         return detachedContext.HostedUserControl as VvDocumentRecordUC;
+      }
+   }
+
    public VvPerHostState PerHost
    {
       get { return perHost; }
