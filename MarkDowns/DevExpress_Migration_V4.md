@@ -718,13 +718,13 @@ documenta u glavnu formu.
 - [x] Odluka: Lock-based vs per-host pool (vidi §1.15) — P3-14 potvrđuje lock-based prvu iteraciju
 - [x] **Preporuka V4: Lock-based** u prvoj iteraciji (manja invazivnost). Pool je eskalacija.
 - [x] Za svaku accessor metodu `TheSecondDbConn_*` / `TheThirdDbConn_*`: P3-14 dodaje centralne `UseSecondDbConnection` / `UseThirdDbConnection` lock helpere; P3-15 migrira prve `TheSecondDbConn_*` call-siteove; P3-16 migrira direct `TheThirdDbConn_SameDB` i SKY write pathove; P3-17 migrira selected report/e-invoice/PTG previous-year reads; P3-18 završni scan zatvara preostale aktivne second-DB call-siteove. Preostali scan hitovi izvan `ZXC` su komentari ili lambda factory reference unutar lock helpera.
-- [ ] Testirati: dva prozora + simultani dokumenti s pozivima `TheSecondDbConn_SameDB_prevYear` vs `TheSecondDbConn_SameDB`
+- [x] Testirati: dva prozora + simultani dokumenti s pozivima `TheSecondDbConn_SameDB_prevYear` vs `TheSecondDbConn_SameDB` — **user smoke green** (concurrent prev-year vs same-year reads bez race-a, lock-based serijalizacija drži)
 
 #### 3e — Per-host `*_InProgress` flagovi
 
 - [x] Preseliti ~15 flagova iz §1.14 s `[per-DocumentHost]` oznakom iz ZXC statics na `IVvDocumentHost` instance state — P3-19 migrira prvi cache-suppression par (`RISK_CheckPrNabDokCij_inProgress`, `RISK_CheckZPCkol_inProgress`) kroz postojeća `ZXC` property imena na `ActivePerHostState`; P3-20 dodaje private helper pattern; P3-21 migrira record-level save flag `RISK_SaveVvDataRecord_inProgress`; P3-22 migrira record calc reentrancy flag; P3-23 migrira companion record-level flagove `RISK_FinalRn_inProgress`, `RISK_Edit_RtranoOnly_InProgress` i `DupCopyMenu_inProgress`; P3-24 migrira cross-DUC copy flagove `RISK_CopyToOtherDUC_inProgress`, `RISK_CopyToMixerDUC_inProgress` i `MIXER_CopyToOtherDUC_inProgress`; P3-25 migrira UI-state flagove `RESET_InitialLayout_InProgress`, `MenuReset_SvDUH_ZAHonly_InProgress`, `PutRiskFilterFieldsInProgress`, `DumpChosenOtsList_OnNalogDUC_InProgress` i `LoadIzvodDLG_isON`; P3-26 migrira preostale RISK-field companion flagove `RISK_ToggleKnDeviza_InProgress`, `RISK_InitZPCvalues_InProgress`, `RISK_PULXPIZX_Calc_InProgress`, `RISK_PromjenaNacPlac_inProgress` i `RISK_AutoAddInventuraDiff_inProgress`, čime je trenutni `VvPerHostState` flag routing set kompletiran.
 - [x] Revidirati `ShouldSupressRenewCache` da zbraja global + active host flagove — P3-19 zbraja active host cache-suppression state, legacy fallback i global `RISK_DisableCacheTemporarily`
-- [ ] Test: tab A save u toku, tab B drugi save → očekivano behavior (blokiran ili ne, prema record-level flagu)
+- [x] Test: tab A save u toku, tab B drugi save → očekivano behavior (blokiran ili ne, prema record-level flagu) — **user smoke green** (record-level flagovi izolirani per-host, save-in-progress u jednom hostu ne blokira drugi host)
 
 #### 3f — M2PAY hardware guard
 
@@ -738,7 +738,7 @@ documenta u glavnu formu.
 
 #### 3h — Edge case-ovi
 
-- [ ] Crystal Reports BackgroundWorker udetached formi — mora živjeti na `VvFloatingForm` context-u, ne na glavnom
+- [x] Crystal Reports BackgroundWorker u detached formi — mora živjeti na `VvFloatingForm` context-u, ne na glavnom — **user smoke green**: BW u detached prozoru ne curi state na glavni host, report life-cycle odvojen po hostu
 - [x] Shortcut keys — samo fokusirani `BarManager` dobiva input — P3-35 potvrđuje per-form `BarManager.Form` wiring i postavlja `ActiveDocumentHost` prije `ProcessCmdKey`; manual smoke green
 - [x] Detached toolbar command routing — P3-38 docka DX barove na Top i uklanja source `VvTabPage` document iz main `TabbedView`-a dok je tab detached; P3-39 mijenja close u close-only lifecycle; P3-40 uklanja detached top close menu, dodaje mouse reattach drop preko main forme i aktivira preostali main document nakon detach-a. Manual smoke green: close detached forme zatvara document, main forma aktivira preostali tab, reattach natrag na main radi; content je u jednom hostu samo.
 - [x] Reattach content recovery — P3-42/P3-43 su dokumentirani kao neuspjeli međukoraci; P3-44 konačno vraća Chrome-like remove/add lifecycle preko public DX `TabbedView.RemoveDocument(Control)` API-ja uz `DocumentClosed` detach guard. Manual smoke green: detached tab nestaje s main tab controla, reattach vraća tab s contentom, postojeći i novi tabovi zadržavaju content.
@@ -746,7 +746,7 @@ documenta u glavnu formu.
 - [x] Arhiva mode u detached: dopušteno (Opcija B iz §1.16) — P3-32 uklanja archive detach block i dodaje `WriteModeAtDetach` / `IsArhivaAtDetach` snapshot
 - [x] Zatvaranje glavne forme s otvorenim detached tabovima: P3-13 zatvara detached forme prije standardnog dirty loopa; cancel u detached dirty promptu cancelira i main close
 - [x] Crashu detached formi: oporavak — P3-33 dodaje validirani reattach i graceful dispose fallback kad source host/panel više nije živ
-- [ ] `VvEnvironmentDescriptor` — zasad NE perzistirati pozicije detached prozora. Ako se pokaže potreba, dodati `List<VvFloatingFormState>` u descriptor.
+- [x] `VvEnvironmentDescriptor` — **intentional design decision (V4 §3h):** NE perzistira pozicije detached prozora u prvoj iteraciji. Detached prozori su ephemeral; pozicija se gubi pri zatvaranju aplikacije. Eskalacija u `List<VvFloatingFormState>` ostaje opcija ako se pokaže produkcijska potreba — odgađa se za moguću Fazu 4+ iteraciju.
 
 #### 3i — UX polish
 
@@ -758,12 +758,12 @@ documenta u glavnu formu.
 #### 3j — Testiranje
 
 - [~] WriteMode neovisnost (glavni prozor:Edit; detached: Browse) — P3-32 snapshot inicijalnog detached WriteMode-a; manual smoke test još otvoren
-- [ ] DB konekcije pod concurrent load
-- [ ] Flag izolacija (record-level ops u 2 prozora)
+- [x] DB konekcije pod concurrent load — **user smoke green** (vidi §3d: prev-year vs same-year concurrent reads bez race-a)
+- [x] Flag izolacija (record-level ops u 2 prozora) — **user smoke green** (vidi §3e: record-level flagovi izolirani per-host)
 - [ ] M2PAY guard
 - [ ] Sifrar cache refresh concurrency
-- [ ] Crystal Reports u detached
-- [ ] Status hint smoke: grid/VvTextBox enter/leave mijenja samo status traku aktivnog detached/main prozora
+- [x] Crystal Reports u detached — **user smoke green** (vidi §3h: BW lifecycle odvojen po hostu)
+- [x] Status hint smoke: grid/VvTextBox enter/leave mijenja samo status traku aktivnog detached/main prozora — pokriveno P3-31 manual smoke testom
 - [~] Rtrans `Get_S_KC_fromScreen` ispravno gađa **vlastiti** FakturDUC (ne ZXC.TheVvForm-ov) — P3-34 ruti `ActiveDocumentRecordUCProvider` kroz `ActiveDocumentHost`; manual smoke još otvoren
 - [ ] Reattach nakon dugog rada
 - [ ] Memory leak provjera — detach/reattach ciklus 100×
