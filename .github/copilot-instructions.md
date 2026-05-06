@@ -57,6 +57,19 @@ Croatian accounting/ERP desktop application (.NET Framework 4.8, C# 7.3, WinForm
 - Do not use C# 8+ features (switch expressions, records, nullable reference types, `??=`)
 - Do not use `System.Text.Json` — always use `Newtonsoft.Json`
 - Do not hardcode English UI strings — use Croatian
+- Do not introduce `Crownwood.DotNetMagic.*` references — migrirano je na DevExpress (v25.2.6) i Crownwood je u potpunosti uklonjen iz aktivnih izvora i csproj referenci
+
+## DevExpress UI conventions (post-migration)
+- Glavna forma: `DevExpress.XtraEditors.XtraForm` (singleton `VvForm`); detached host: `VvFloatingForm : XtraForm, IVvDocumentHost`
+- Glavni tab kontejner: `DocumentManager` + `TabbedView` (`zVvForm\TabControl_TabPages.cs`); `Document.Control` hosta `VvTabPage` (UserControl)
+- Unutarnji tabovi u DUC-ovima: `XtraTabControl` + `XtraTabPage` (često wrapani u `VvInnerTabControl`/`VvInnerTabPage`)
+- Modul tree: `TreeList` (`DxTreeView_Modul`) — 1 kolona, populate `AppendNode`, `FocusedNodeChanged` event
+- Menu/toolbar: per-form `BarManager` + `Bar` + `BarButtonItem`; apstrahirano kroz `IVvDocumentHost`, `VvToolbarFactory`, `DxBarManager`, `DxBarItemsByName`
+- Skin: `UserLookAndFeel.Default.SetSkinStyle("Office 2019 Colorful")` (default), per-user override kroz `VvEnvironmentDescriptor.DxSkinName`
+- Detach: `TabbedView.BeginFloating` se cancela; `VvFloatingForm` reparenta UC iz `VvTabPage.panelZaUC`; close zatvara samo document; reattach mouse drop preko main forme
+- Active host routing: `ZXC.ActiveDocumentHost` (`IVvDocumentHost`); status text, record UC provider i per-host state idu kroz aktivnog hosta s fallback-om na main
+- Per-host state: `IVvDocumentHost.PerHost` (`VvPerHostState`) — record-level / cross-DUC copy / UI-state / RISK-field flagovi izolirani po hostu; global flagovi ostaju u `ZXC` statics
+- DB concurrency: `ZXC.UseSecondDbConnection(...)` / `UseThirdDbConnection(...)` lock helperi serijaliziraju `ChangeDatabase` + query critical sections; `SetMainDbConnDatabaseName` / `SetSkyDbConnDatabaseName` open-guarded prije `ChangeDatabase`
 
 ## DevExpress migration — authoritative plan (branch `DevEx-JamesBond`)
 

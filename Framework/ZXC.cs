@@ -883,14 +883,32 @@ public static class ZXC
 
    public static void SetMainDbConnDatabaseName(string dbName)
    {
-      if(theMainDbConnection.Database != dbName)
+      // Phase 3 fix: idi kroz guarded getter (TheMainDbConnection) koji osigurava
+      // da je conn otvorena (re-create ako je null/closed/ping-fail). Direktan
+      // backing-field pristup je u detach/reattach ciklusima znao zateći zatvorenu
+      // konekciju i puknuti sa "The connection is not open" pri ChangeDatabase().
+      XSqlConnection conn = ZXC.TheMainDbConnection;
+      if(conn == null) return;
+      if(conn.State != ConnectionState.Open)
       {
-         theMainDbConnection.ChangeDatabase(dbName);
+         try { conn.Open(); }
+         catch(Exception ex) { ZXC.aim_log("SetMainDbConnDatabaseName: Open() failed: {0}", ex.Message); return; }
+      }
+      if(conn.Database != dbName)
+      {
+         conn.ChangeDatabase(dbName);
       }
    }
 
    public static void SetSkyDbConnDatabaseName(string dbName)
    {
+      // Phase 3 fix: ista logika kao za main conn — ne diraj zatvorenu konekciju.
+      if(theSkyDbConnection == null) return;
+      if(theSkyDbConnection.State != ConnectionState.Open)
+      {
+         try { theSkyDbConnection.Open(); }
+         catch(Exception ex) { ZXC.aim_log("SetSkyDbConnDatabaseName: Open() failed: {0}", ex.Message); return; }
+      }
       if(theSkyDbConnection.Database != dbName)
       {
          theSkyDbConnection.ChangeDatabase(dbName);

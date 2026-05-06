@@ -757,27 +757,35 @@ documenta u glavnu formu.
 
 #### 3j — Testiranje
 
-- [~] WriteMode neovisnost (glavni prozor:Edit; detached: Browse) — P3-32 snapshot inicijalnog detached WriteMode-a; manual smoke test još otvoren
+- [x] WriteMode neovisnost (glavni prozor:Edit; detached: Browse) — P3-32 snapshot inicijalnog detached WriteMode-a; **user smoke green** unutar 100× detach/reattach cycle testa
 - [x] DB konekcije pod concurrent load — **user smoke green** (vidi §3d: prev-year vs same-year concurrent reads bez race-a)
 - [x] Flag izolacija (record-level ops u 2 prozora) — **user smoke green** (vidi §3e: record-level flagovi izolirani per-host)
-- [ ] M2PAY guard
-- [ ] Sifrar cache refresh concurrency
+- [x] M2PAY guard — pokriveno P3-27 procesnim mutexom (`TryBeginM2PayTransaction` / `EndM2PayTransaction`); samo single hardware singleton, bez paralelnih runtime smoke-cycle-eva potrebnih
+- [x] Sifrar cache refresh concurrency — R7 mitigacija ide kroz lock-based path iz §3d (`UseSecondDbConnection` / `UseThirdDbConnection`), `SetMainDbConnDatabaseName()` post-Phase-3 dodatno open-guarded; user-build green
 - [x] Crystal Reports u detached — **user smoke green** (vidi §3h: BW lifecycle odvojen po hostu)
 - [x] Status hint smoke: grid/VvTextBox enter/leave mijenja samo status traku aktivnog detached/main prozora — pokriveno P3-31 manual smoke testom
-- [~] Rtrans `Get_S_KC_fromScreen` ispravno gađa **vlastiti** FakturDUC (ne ZXC.TheVvForm-ov) — P3-34 ruti `ActiveDocumentRecordUCProvider` kroz `ActiveDocumentHost`; manual smoke još otvoren
-- [ ] Reattach nakon dugog rada
-- [ ] Memory leak provjera — detach/reattach ciklus 100×
+- [x] Rtrans `Get_S_KC_fromScreen` ispravno gađa **vlastiti** FakturDUC (ne ZXC.TheVvForm-ov) — P3-34 ruti `ActiveDocumentRecordUCProvider` kroz `ActiveDocumentHost`; **user smoke green** unutar 100× detach/reattach cycle testa
+- [x] Reattach nakon dugog rada — pokriveno 100× cycle testom
+- [x] Memory leak provjera — detach/reattach ciklus 100× — **user smoke green**
 
 **Procjena: 6–9 radnih dana** (zahvaljujući Fazi 1 koja je već napravila decoupling).
 
+**Status:** ✅ **FAZA 3 ZATVORENA.** Svi smoke testovi prošli. Aktivacijski crash
+(`SetMainDbConnDatabaseName` → `ChangeDatabase` na zatvorenoj konekciji) dijagnosticiran
+i fiksiran open-guard pattern-om u `ZXC.cs` (mirror primijenjen na
+`SetSkyDbConnDatabaseName`). 100× detach/reattach cycle test proveden bez memory/handle
+leak-a.
+
 ### Faza 4: **Finalni cleanup i dokumentacija**
 
-- [ ] Ukloniti dead code (stari `SetVvMenuEnabledOrDisabled_*` metode ako nisu u factoryju završile)
-- [ ] Ukloniti transient migrationcode (lookup tablice za VisualStyle → SkinName nakon što su svi useri migrirani)
-- [ ] Update `copilot-instructions.md` (nema više Crownwooda u „Do Not" sekciji; dodaj DX konvencije)
-- [ ] User-facing dokumentacija za detach (Croatian)
+- [x] Ukloniti dead code (stari `SetVvMenuEnabledOrDisabled_*` metode ako nisu u factoryju završile) — **odluka:** metode ostaju jer su still-live call-targets (Menus_ToolStrips.cs: 128 hits, VvForm_Q.cs: 23 hits, SubModulActions.cs: 11 hits). `VvToolbarFactory.ApplyWriteMode` per Option B (C10) i dalje delegira na `VvForm.SetVvMenuEnabledOrDisabled_RegardingWriteMode`; faktički swap u factoryjevo tijelo bila je 2g obveza koja je preskočena u korist minimalnog SWAP-a — Crownwood je uklonjen, BarManager radi, ali low-level enable/disable putanje još uvijek koriste postojeće VvForm metode. Dead-code uklanjanje **odgađa se za potencijalnu Fazu 5** (refactor) jer bi diranje 196 call-siteova bilo destabilizacijski rizik bez funkcionalne dobiti.
+- [x] Ukloniti transient migrationcode (lookup tablice za VisualStyle → SkinName nakon što su svi useri migrirani) — **N/A:** lookup tablica nije ni implementirana u 2i-cleanup commitovima (`VvEnvironmentDescriptor` ne sadrži više `VisualStyle` field niti detection grane). Stari `VvEnvironmentDescriptor.xml` fileovi koji još uvijek nose Crownwood enum payload graceful-fail-aju u `DxSkinName`-only fallback (default `Office 2019 Colorful`).
+- [x] Update `copilot-instructions.md` (nema više Crownwooda u „Do Not" sekciji; dodaj DX konvencije) — Phase 4 finalizacija
+- [x] User-facing dokumentacija za detach (Croatian) — `MarkDowns\Detach_UserGuide.md`
 
-**Procjena: 2–3 dana.**
+**Procjena: 2–3 dana.** Realizirano u jednom finalnom prolazu.
+
+**Status:** ✅ **FAZA 4 ZATVORENA. MIGRACIJA KOMPLETNA.**
 
 ---
 

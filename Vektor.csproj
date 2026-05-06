@@ -4785,6 +4785,7 @@
     <None Include="DataLayer\DS_Reports\DS_ZapIzvodNEW.xss">
       <DependentUpon>DS_ZapIzvodNEW.xsd</DependentUpon>
     </None>
+    <None Include="MarkDowns\Detach_UserGuide.md" />
     <None Include="MarkDowns\DevExpress_Migration_V2.md" />
     <None Include="MarkDowns\DevExpress_Migration_V3.md" />
     <None Include="MarkDowns\DevExpress_Migration_V4.md" />

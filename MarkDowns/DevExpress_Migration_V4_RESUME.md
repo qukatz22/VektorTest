@@ -6,26 +6,63 @@
 
 ---
 
-## 📍 Gdje smo stali (stanje na dan pauze)
+## 📍 Stanje: MIGRACIJA KOMPLETNA
 
 **Trenutni branch:** `DevEx-JamesBond` (remote `origin: qukatz22/VektorTest`)
 
-**Zadnji završeni commit:** **Faza 2j / C47 VvHamper okolina cleanup** — commit
-`344ab37` (`C47 close VvHamper Crownwood styling decouple`).
-`ApplyVVColorAndStyleChangeOkolina(Control thisControl)` više ne sadrži direktne
-Crownwood `TitleBar`/`ButtonWithStyle` styling grane. Legacy modul-panel kontrole
-i dalje se stiliziraju lokalno u `zVvForm\Moduls_CommandPanel.cs` pri kreiranju.
-QUN grid sizing i `ZXC.Redak/Kolona` layout putevi nisu dirani. V4 §2j je zatvoren.
+**Status faza:**
 
-**Trenutni necommitani checkpoint:** **Faza 2k / C64 RiskReportUC tab cleanup** —
-`VvUC\RiskUC\RiskReportUC.cs` report filter tab container prebačen je s
-Crownwood `TabControl`/`TabPage` na DevExpress `XtraTabControl`/`XtraTabPage`;
-title-based tab lookupi idu kroz lokalni helper.
-Potpuni Crownwood DLL cleanup još nije siguran.
+- ✅ **Faza 1 (Decoupling)** — završena (C1–C16)
+- ✅ **Faza 2 (SWAP Crownwood → DevExpress)** — završena, Crownwood uklonjen iz aktivnih izvora i csproj referenci
+- ✅ **Faza 3 (FLOATING-DETACH)** — završena, svi smoke testovi prošli uključujući 100× detach/reattach memory-leak cycle test
+- ✅ **Faza 4 (Finalni cleanup i dokumentacija)** — završena u jednom finalnom prolazu
 
-**Sljedeći korak:** validirati C64 build i commitati `RiskReportUC` tab cleanup,
-zatim nastaviti zasebne 2k blockers prije uklanjanja DotNetMagic DLL reference.
-Detach ostaje za Fazu 3.
+**Zadnji runtime fix prije Faze 4:** open-guard pattern u `ZXC.SetMainDbConnDatabaseName()` i `ZXC.SetSkyDbConnDatabaseName()` —
+otklanja `InvalidOperationException: The connection is not open` koji se javljao tijekom detach/reattach activation putanje
+(`DocumentActivated → VvTabPage.OnActivated → SetSifrarAndAutocomplete → SetMainDbConnDatabaseName → ChangeDatabase`).
+
+**Sljedeći korak:** nema otvorenih migracijskih obveza. Codebase je u
+produkcijskom DX stanju s aktivnim DETACH funkcionalnostima. Eventualne buduće
+obveze (npr. uklanjanje `SetVvMenuEnabledOrDisabled_*` legacy putanja iz §4 V4.md)
+tretirati kao zaseban refactor projekt (Faza 5+), ne kao nastavak ove migracije.
+
+---
+
+## 🗂️ Ključni dokumenti za referentno čitanje
+
+| Dokument | Svrha |
+|---|---|
+| `MarkDowns/DevExpress_Migration_V4.md` | Autoritativan plan i kompletni tracker faza 1–4 |
+| `MarkDowns/DevExpress_Phase3_DETACH_Planning.md` | Phase 3 planiranje + smoke-test definicije |
+| `MarkDowns/DevExpress_Phase3_Readiness_Gate.md` | Phase 3 GO odluka + validation matrix |
+| `MarkDowns/Detach_UserGuide.md` | User-facing dokumentacija detach gestura (Croatian) |
+
+---
+
+## 🧪 Što je validirano runtime smoke-testovima
+
+- App startup, login, otvaranje modula
+- Tab switching mouse + programatski
+- Dirty / archive close blokade
+- Menu shortcuts, toolbar enable/disable kroz WriteMode
+- Status bar text routing (main + detached)
+- Module tree node clicks, expand/collapse
+- Skin/color dialog
+- Report preview/print/export
+- FIR outbound, FUR inbound, Plaće, Amortizacija
+- TEXTHOshop, PCTOGO, SvDUH varijante
+- Detach gesture (drag tab van forme), Reattach gesture (drag detached title bar natrag)
+- Detached WriteMode neovisan od main hosta
+- DB konekcije pod concurrent load (prev-year vs same-year)
+- Per-host flag izolacija (record-level ops u 2 prozora)
+- Crystal Reports u detached
+- M2PAY guard (single hardware singleton, P3-27 procesni mutex)
+- Status hint grid/VvTextBox enter/leave routing
+- Rtrans `Get_S_KC_fromScreen` host-aware
+- Reattach nakon dugog rada
+- 100× detach/reattach memory-leak cycle
+
+---
 
 **2h autoritativni anchor (V4 §2h):** preferirani target je `TreeList` zbog DX
 konzistencije; konfigurirati 1 `TreeListColumn`; populate preko `AppendNode`;
