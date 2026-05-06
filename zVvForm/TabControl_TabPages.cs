@@ -363,6 +363,11 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm
       //VvTabPage vvTabPage = sender as VvTabPage;
       //Point xy = (Point)vvTabPage.Tag;
 
+      // P3 detach guard: nakon detacha (ili tijekom close-a) može se desiti da glavna forma dobije fokus
+      // a TheTabControl nema niti jedan ATTACHED document (svi su detached ili je posljednji upravo zatvoren).
+      // U tom sluèaju TheVvTabPage je null pa moramo izaæi bez NullReferenceException-a.
+      if(TheVvTabPage == null) return;
+
       if(TheVvTabPage.TabPageKind == ZXC.VvTabPageKindEnum.RECORD_TabPage) SetSorterComboBox();
 
       if(TheVvTabPage.TabPageKind == ZXC.VvTabPageKindEnum.REPORT_TabPage) SetReportComboBox(TheVvTabPage.SubModul_xy, tsCbxReport.SelectedIndex);

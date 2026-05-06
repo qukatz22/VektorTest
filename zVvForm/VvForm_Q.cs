@@ -2372,13 +2372,31 @@ thisIsHektorProject_label:
 
             //===================================================
 
-            this.alreadyDisposed = true;
-         }
-         finally
-         {
-            // Call Dispose on your base class.
-            base.Dispose(disposing);
-         }
+               this.alreadyDisposed = true;
+            }
+            finally
+            {
+               // P3 teardown: u prošlosti je neki BackgroundWorker / Hapi callback
+               // (DeviceDiscoveryFinished, ConnectionStatusChanged, ...) mogao taknuti
+               // child kontrolu (npr. ts_Modul = "Modul") s ne-UI threada i tako joj fiksirao
+               // creator-thread affinity. Sada, kod close-a, Form.Dispose -> ToolStripPanel.Dispose
+               // -> ToolStrip.Dispose -> Control.DestroyHandle -> get_Handle baca
+               // "Cross-thread operation not valid: Control 'Modul' ...".
+               // Tijekom samog teardowna ta validacija nije od koristi -- handles se ionako
+               // moraju srušiti -- pa privremeno isključujemo provjeru. Ne mijenja runtime
+               // ponašanje aplikacije izvan disposal flowa.
+               bool prevCheckCrossThread = Control.CheckForIllegalCrossThreadCalls;
+               Control.CheckForIllegalCrossThreadCalls = false;
+               try
+               {
+                  // Call Dispose on your base class.
+                  base.Dispose(disposing);
+               }
+               finally
+               {
+                  Control.CheckForIllegalCrossThreadCalls = prevCheckCrossThread;
+               }
+            }
       }
    }
 

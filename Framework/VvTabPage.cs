@@ -1071,8 +1071,11 @@ be_fast:
    {
       if(control == null) return;
 
-      control.Enter += AttachedControl_ActivateHost;
-      control.GotFocus += AttachedControl_ActivateHost;
+      // NAPOMENA: Enter/GotFocus se okidaju i pri chrome refokusu (npr. kad
+      // korisnik klikne main toolbar dok je floating fokusiran, main form
+      // dobije fokus i prethodno fokusirana kontrola unutar main taba zapuca
+      // GotFocus -> lazno promovira main kao last-active document host.
+      // Samo MouseDown je nedvosmislen signal stvarne korisnicke namjere.
       control.MouseDown += AttachedControl_ActivateHost;
 
       foreach(Control child in control.Controls)
@@ -1086,6 +1089,14 @@ be_fast:
       if(IsDetached || isActivatingAttachedHost) return;
       if(!IsInitializedForActivation) return;
       if(myDocument == null || myDocument.Manager == null) return;
+
+      // Defenzivni guard: focus events za vrijeme detach/remove tranzicije mogu zapucati
+      // na sibling tabPage cija je sourceTabPage upravo uklonjena iz TabbedView (DX
+      // SelectNextControl side-effect). Tada ovaj page jos nije ActiveDocument i
+      // OnActivated() bi pucao na null TheVvTabPage. Aktiviramo samo ako je stvarno
+      // aktivni dokument svog TabbedView-a.
+      TabbedView tv = myDocument.Manager.View as TabbedView;
+      if(tv == null || tv.ActiveDocument != myDocument) return;
 
       try
       {

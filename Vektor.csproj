@@ -412,6 +412,7 @@
     <Compile Include="DataLayer\VvDaos\XtranoDao.cs" />
     <Compile Include="DataLayer\VvDaos\XtransDao.cs" />
     <Compile Include="Framework\IVvDocumentHost.cs" />
+    <Compile Include="Framework\ToolStripMouseActivateFilter.cs" />
     <Compile Include="Framework\VvEditingControlCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>

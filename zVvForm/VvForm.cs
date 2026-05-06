@@ -143,17 +143,51 @@ public /*sealed*/ partial class VvForm : DevExpress.XtraEditors.XtraForm, IVvDoc
    protected override void OnActivated(EventArgs e)
    {
       base.OnActivated(e);
-      if(ZXC.HasDetachedLastActiveDocumentHost) ZXC.SetActiveDocumentHost(this);
-      else if(ActiveTabPage != null) ZXC.SetActiveDocumentHostWithDocument(this);
-      else ZXC.SetActiveDocumentHost(this);
+      // Chrome-level aktivacija (npr. klik na toolbar/title bar) ne smije promovirati
+      // ovu formu kao "last active document host" — toolbar dispatch mora ciljati zadnji
+      // stvarno fokusirani dokument. _lastActiveDocumentHost se postavlja iskljucivo kroz
+      // stvarne fokus-evente sadrzaja (WireAttachedHostRouting / WireActiveHostRouting)
+      // i kroz TabbedView.DocumentActivated.
+      ZXC.SetActiveDocumentHost(this);
    }
 
    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
    {
-      if(ZXC.HasDetachedLastActiveDocumentHost) ZXC.SetActiveDocumentHost(this);
-      else if(ActiveTabPage != null) ZXC.SetActiveDocumentHostWithDocument(this);
-      else ZXC.SetActiveDocumentHost(this);
+      ZXC.SetActiveDocumentHost(this);
       return base.ProcessCmdKey(ref msg, keyData);
+   }
+
+   protected override void OnShown(EventArgs e)
+   {
+      base.OnShown(e);
+      // Eliminira "first click eaten" za toolbar/menu klikove kad je forma
+      // neaktivna (npr. fokus na VvFloatingForm). Filter pretvara MA_ACTIVATEANDEAT
+      // odgovor pojedinog ToolStrip-a/MenuStrip-a u MA_ACTIVATE pa prvi klik
+      // odmah pogadja ToolStripButton.
+      ToolStripMouseActivateFilter.Attach(this);
+   }
+
+   // Eliminira "first click eaten" pattern kad je forma neaktivna (npr. fokus na
+   // floating prozoru): default WinForms ponasanje na klik toolbara vraca
+   // MA_ACTIVATEANDEAT pa se prvi klik samo aktivira a tek drugi izvrsava komandu.
+   // Pretvaramo ANDEAT varijante u "samo aktiviraj, ne pojedi klik" da prvi klik
+   // odmah pogadja ToolStripButton/BarItem.
+   protected override void WndProc(ref Message m)
+   {
+      const int WM_MOUSEACTIVATE = 0x0021;
+      const int MA_ACTIVATEANDEAT = 2;
+      const int MA_ACTIVATE = 1;
+      const int MA_NOACTIVATEANDEAT = 4;
+      const int MA_NOACTIVATE = 3;
+
+      base.WndProc(ref m);
+
+      if(m.Msg == WM_MOUSEACTIVATE)
+      {
+         int result = m.Result.ToInt32();
+         if(result == MA_ACTIVATEANDEAT)        m.Result = (IntPtr)MA_ACTIVATE;
+         else if(result == MA_NOACTIVATEANDEAT) m.Result = (IntPtr)MA_NOACTIVATE;
+      }
    }
 
    public VvForm()

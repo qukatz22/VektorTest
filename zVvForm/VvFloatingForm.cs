@@ -403,8 +403,9 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    {
       if(control == null) return;
 
-      control.Enter += DetachedControl_ActivateHost;
-      control.GotFocus += DetachedControl_ActivateHost;
+      // Kao i kod attached host routinga: samo MouseDown signalizira stvarnu
+      // korisnicku namjeru. Enter/GotFocus se okidaju i pri chrome refokusu
+      // pa bi lazno promovirali host pri kliku na suprotnu formu.
       control.MouseDown += DetachedControl_ActivateHost;
 
       foreach(Control child in control.Controls)
@@ -435,13 +436,24 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    protected override void OnActivated(EventArgs e)
    {
       base.OnActivated(e);
-      ActivateDetachedDocumentHost();
+      // Chrome-level aktivacija floating prozora (npr. klik na njegov toolbar/title bar)
+      // ne smije sama promovirati host kao "last active document". Stvarni fokus na
+      // sadrzaj ide kroz WireActiveHostRouting (Enter/GotFocus/MouseDown) i tek tada se
+      // _lastActiveDocumentHost postavlja kroz ActivateDetachedDocumentHost.
+      ZXC.SetActiveDocumentHost(this);
    }
 
    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
    {
       ActivateDetachedDocumentHost();
       return base.ProcessCmdKey(ref msg, keyData);
+   }
+
+   protected override void OnShown(EventArgs e)
+   {
+      base.OnShown(e);
+      // Eliminira "first click eaten" za eventualni toolbar/menu na floating formi.
+      ToolStripMouseActivateFilter.Attach(this);
    }
 
    private void ActivateDetachedDocumentHost()
@@ -467,12 +479,25 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
    protected override void WndProc(ref Message m)
    {
       const int WM_EXITSIZEMOVE = 0x0232;
+      const int WM_MOUSEACTIVATE = 0x0021;
+      const int MA_ACTIVATEANDEAT = 2;
+      const int MA_ACTIVATE = 1;
+      const int MA_NOACTIVATEANDEAT = 4;
+      const int MA_NOACTIVATE = 3;
 
       base.WndProc(ref m);
 
       if(m.Msg == WM_EXITSIZEMOVE && IsMouseOverSourceForm())
       {
          TryMouseReattachToSource();
+      }
+      else if(m.Msg == WM_MOUSEACTIVATE)
+      {
+         // Sprijeci "first click eaten" pri aktivaciji floatinga klikom na toolbar:
+         // pretvori ANDEAT varijante u ne-pojedi-klik da prvi klik odmah pogadja BarItem.
+         int result = m.Result.ToInt32();
+         if(result == MA_ACTIVATEANDEAT)        m.Result = (IntPtr)MA_ACTIVATE;
+         else if(result == MA_NOACTIVATEANDEAT) m.Result = (IntPtr)MA_NOACTIVATE;
       }
    }
 
