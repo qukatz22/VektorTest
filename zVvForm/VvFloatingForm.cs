@@ -524,4 +524,23 @@ internal sealed class VvFloatingForm : XtraForm, IVvDocumentHost
       ZXC.UnregisterDocumentHost(this);
       base.OnFormClosed(e);
    }
+
+   protected override void Dispose(bool disposing)
+   {
+      // P3 teardown (mirror VvForm.Dispose): isti razlog -- neki raniji ne-UI thread
+      // callback (BackgroundWorker / Hapi / sifrar refresh) mogao je taknuti child
+      // kontrolu pa joj je fiksirao creator-thread affinity. Tijekom Dispose-a to
+      // izaziva "Cross-thread operation not valid". Privremeno gasimo provjeru samo
+      // oko base.Dispose; izvan teardowna ponasanje aplikacije nije promijenjeno.
+      bool prevCheckCrossThread = Control.CheckForIllegalCrossThreadCalls;
+      Control.CheckForIllegalCrossThreadCalls = false;
+      try
+      {
+         base.Dispose(disposing);
+      }
+      finally
+      {
+         Control.CheckForIllegalCrossThreadCalls = prevCheckCrossThread;
+      }
+   }
 }
